@@ -1,30 +1,39 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.List;
+import java.util.Locale;
+
 // this widget shows info about the garden's composter
+@RegisterWidget
+public class ComposterWidget extends TabHudWidget {
 
-public class ComposterWidget extends Widget {
+	private static final MutableText TITLE = Text.literal("Composter").formatted(Formatting.GREEN,
+			Formatting.BOLD);
 
-    private static final MutableText TITLE = Text.literal("Composter").formatted(Formatting.GREEN,
-            Formatting.BOLD);
+	public ComposterWidget() {
+		super("Composter", TITLE, Formatting.GREEN.getColorValue());
+	}
 
-    public ComposterWidget() {
-        super(TITLE, Formatting.GREEN.getColorValue());
-    }
+	@Override
+	public void updateContent(List<Text> lines) {
 
-    @Override
-    public void updateContent() {
-        int offset = (PlayerListMgr.strAt(46) != null) ? 1 : 0;
-
-        this.addSimpleIcoText(Ico.SAPLING, "Organic Matter:", Formatting.YELLOW, 48 + offset);
-        this.addSimpleIcoText(Ico.FURNACE, "Fuel:", Formatting.BLUE, 49 + offset);
-        this.addSimpleIcoText(Ico.CLOCK, "Time Left:", Formatting.RED, 50 + offset);
-        this.addSimpleIcoText(Ico.COMPOSTER, "Stored Compost:", Formatting.DARK_GREEN, 51 + offset);
-    }
+		for (Text line : lines) {
+			switch (line.getString().toLowerCase(Locale.ENGLISH)) {
+				case String s when s.contains("organic") -> this.addComponent(Components.iconTextComponent(Ico.SAPLING, line));
+				case String s when s.contains("fuel") -> this.addComponent(Components.iconTextComponent(Ico.FURNACE, line));
+				case String s when s.contains("time") -> this.addComponent(Components.iconTextComponent(Ico.CLOCK, line));
+				case String s when s.contains("stored") -> this.addComponent(Components.iconTextComponent(Ico.COMPOSTER, line));
+				default -> this.addComponent(new PlainTextComponent(line));
+			}
+		}
+	}
 }

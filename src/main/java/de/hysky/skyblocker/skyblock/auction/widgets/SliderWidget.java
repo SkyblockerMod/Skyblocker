@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -44,8 +45,8 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
         }
 
 
-        context.getMatrices().push();
-        context.getMatrices().translate(getX(), getY(), 0);
+        context.getMatrices().pushMatrix();
+        context.getMatrices().translate(getX(), getY());
 
         int x = current.isVertical() ? 0 : Math.round(posProgress);
         int y = current.isVertical() ? Math.round(posProgress) : 0;
@@ -53,13 +54,13 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
         int optionWidth = current.getOptionSize()[0];
         int optionHeight = current.getOptionSize()[1];
 
-        context.drawTexture(current.getBackTexture(), 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
-        context.drawTexture(current.getOptionTexture(), x, y, 0, 0, optionWidth, optionHeight, optionWidth, optionHeight);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, current.getBackTexture(), 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, current.getOptionTexture(), x, y, 0, 0, optionWidth, optionHeight, optionWidth, optionHeight);
         if (isHovered()) {
-            context.drawTexture(current.getHoverTexture(), x, y, 0, 0, optionWidth, optionHeight, optionWidth, optionHeight);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, current.getHoverTexture(), x, y, 0, 0, optionWidth, optionHeight, optionWidth, optionHeight);
 
         }
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
     }
 
     @Override

@@ -1,16 +1,18 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -20,31 +22,41 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DungeonScore {
-	private static final DungeonsConfig.DungeonScore SCORE_CONFIG = SkyblockerConfigManager.get().dungeons.dungeonScore;
-	private static final DungeonsConfig.MimicMessage MIMIC_MESSAGE_CONFIG = SkyblockerConfigManager.get().dungeons.mimicMessage;
+	private static final Supplier<DungeonsConfig.DungeonScore> SCORE_CONFIG = () -> SkyblockerConfigManager.get().dungeons.dungeonScore;
+	private static final Supplier<DungeonsConfig.MimicMessage> MIMIC_MESSAGE_CONFIG = () -> SkyblockerConfigManager.get().dungeons.mimicMessage;
+	private static final Supplier<DungeonsConfig.PrinceMessage> PRINCE_MESSAGE_CONFIG = () -> SkyblockerConfigManager.get().dungeons.princeMessage;
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Dungeon Score");
 	//Scoreboard patterns
 	private static final Pattern CLEARED_PATTERN = Pattern.compile("Cleared: (?<cleared>\\d+)%.*");
 	private static final Pattern FLOOR_PATTERN = Pattern.compile(".*?(?=T)The Catacombs \\((?<floor>[EFM]\\D*\\d*)\\)");
 	//Playerlist patterns
 	private static final Pattern SECRETS_PATTERN = Pattern.compile("Secrets Found: (?<secper>\\d+\\.?\\d*)%");
-	private static final Pattern PUZZLES_PATTERN = Pattern.compile(".+?(?=:): \\[(?<state>.)](?: \\(\\w+\\))?");
+	private static final Pattern PUZZLES_PATTERN = Pattern.compile(".+?(?=:): \\[(?<state>.)](?: \\(\\w*\\))?");
 	private static final Pattern PUZZLE_COUNT_PATTERN = Pattern.compile("Puzzles: \\((?<count>\\d+)\\)");
 	private static final Pattern CRYPTS_PATTERN = Pattern.compile("Crypts: (?<crypts>\\d+)");
 	private static final Pattern COMPLETED_ROOMS_PATTERN = Pattern.compile(" *Completed Rooms: (?<rooms>\\d+)");
 	//Chat patterns
 	private static final Pattern DEATHS_PATTERN = Pattern.compile(" \\u2620 (?<whodied>\\S+) .*");
-	private static final Pattern MIMIC_PATTERN = Pattern.compile(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + MIMIC_MESSAGE_CONFIG.mimicMessage + "\\E)$");
+	//.*?(?:Mimic dead!?|Mimic Killed!|\$SKYTILS-DUNGEON-SCORE-MIMIC\$)$
+	private static final Pattern MIMIC_PATTERN = Pattern.compile(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$)$");
+	private static final String PRINCE_KILL_MESSAGE = "A Prince falls. +1 Bonus Score";
+	//.*?(?:Prince dead!?|Prince Killed!)$
+	private static final Pattern PRINCE_PATTERN = Pattern.compile(".*?(?:Prince dead!?|Prince Killed!)$");
 	//Other patterns
 	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]");
+	//Score messages sent in party chat
+	private static final String MIMIC_MESSAGE = "Mimic dead!";
+	private static final String PRINCE_MESSAGE = "Prince dead!";
 
 	private static FloorRequirement floorRequirement;
 	private static String currentFloor;
@@ -54,6 +66,7 @@ public class DungeonScore {
 	private static boolean sent270;
 	private static boolean sent300;
 	private static boolean mimicKilled;
+	private static boolean princeKilled;
 	private static boolean dungeonStarted;
 	private static boolean isMayorPaul;
 	private static boolean firstDeathHasSpiritPet;
@@ -63,23 +76,22 @@ public class DungeonScore {
 	private static int deathCount;
 	private static int score;
 
+	@Init
     public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonScore::tick, 20);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
-		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-			if (overlay || !Utils.isInDungeons()) return;
+		DungeonEvents.DUNGEON_STARTED.register(DungeonScore::onDungeonStart);
+		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+			if (overlay || !Utils.isInDungeons()) return true;
 			String str = message.getString();
-			if (!dungeonStarted) {
-				checkMessageForMort(str);
-			} else {
+			if (dungeonStarted) {
 				checkMessageForDeaths(str);
 				checkMessageForWatcher(str);
 				if (floorHasMimics) checkMessageForMimic(str); //Only called when the message is not cancelled & isn't on the action bar, complementing MimicFilter
+				checkMessageForPrince(str);
 			}
-		});
-		ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> {
-			if (overlay || !Utils.isInDungeons() || !dungeonStarted) return;
-			checkMessageForDeaths(message.getString());
+
+			return true;
 		});
 	}
 
@@ -93,36 +105,36 @@ public class DungeonScore {
 
 		score = calculateScore();
 		if (!sent270 && !sent300 && score >= 270 && score < 300) {
-			if (SCORE_CONFIG.enableDungeonScore270Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"));
+			if (SCORE_CONFIG.get().enableDungeonScore270Message) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270"), false);
 			}
-			if (SCORE_CONFIG.enableDungeonScore270Title) {
+			if (SCORE_CONFIG.get().enableDungeonScore270Title) {
 				client.inGameHud.setDefaultTitleFade();
-				client.inGameHud.setTitle(Constants.PREFIX.get().append(SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270")));
+				client.inGameHud.setTitle(Text.of(SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270")));
 			}
-			if (SCORE_CONFIG.enableDungeonScore270Sound) {
+			if (SCORE_CONFIG.get().enableDungeonScore270Sound) {
 				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
 			}
 			sent270 = true;
 		}
 
 		int crypts = getCrypts();
-		if (!sentCrypts && score >= SCORE_CONFIG.dungeonCryptsMessageThreshold && crypts < 5) {
-			if (SCORE_CONFIG.enableDungeonCryptsMessage) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)));
+		if (!sentCrypts && score >= SCORE_CONFIG.get().dungeonCryptsMessageThreshold && crypts < 5) {
+			if (SCORE_CONFIG.get().enableDungeonCryptsMessage) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)), false);
 			}
 			sentCrypts = true;
 		}
 
 		if (!sent300 && score >= 300) {
-			if (SCORE_CONFIG.enableDungeonScore300Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300"));
+			if (SCORE_CONFIG.get().enableDungeonScore300Message) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300"), false);
 			}
-			if (SCORE_CONFIG.enableDungeonScore300Title) {
+			if (SCORE_CONFIG.get().enableDungeonScore300Title) {
 				client.inGameHud.setDefaultTitleFade();
-				client.inGameHud.setTitle(Constants.PREFIX.get().append(SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300")));
+				client.inGameHud.setTitle(Text.of(SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300")));
 			}
-			if (SCORE_CONFIG.enableDungeonScore300Sound) {
+			if (SCORE_CONFIG.get().enableDungeonScore300Sound) {
 				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
 			}
 			sent300 = true;
@@ -138,6 +150,7 @@ public class DungeonScore {
 		sent270 = false;
 		sent300 = false;
 		mimicKilled = false;
+		princeKilled = false;
 		dungeonStarted = false;
 		isMayorPaul = false;
 		firstDeathHasSpiritPet = false;
@@ -149,10 +162,11 @@ public class DungeonScore {
 	}
 
 	private static void onDungeonStart() {
+		reset();
 		setCurrentFloor();
 		dungeonStarted = true;
 		puzzleCount = getPuzzleCount();
-		isMayorPaul = Utils.getMayor().equals("Paul");
+		isMayorPaul = MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("EZPZ")) || MayorUtils.getMinister().perk().name().equals("EZPZ");
 		startingTime = System.currentTimeMillis();
 		floorRequirement = FloorRequirement.valueOf(currentFloor);
 		floorHasMimics = MIMIC_FLOORS_PATTERN.matcher(currentFloor).matches();
@@ -166,14 +180,15 @@ public class DungeonScore {
 
 	private static int calculateSkillScore() {
 		int totalRooms = getTotalRooms(); //This is necessary to avoid division by 0 at the start of dungeons, which results in infinite score
-		return 20 + Math.max((totalRooms != 0 ? (int) (80.0 * (getCompletedRooms() + getExtraCompletedRooms()) / totalRooms) : 0) - getPuzzlePenalty() - getDeathScorePenalty(), 0); //Can't go below 20 skill score
+		int completedRoomScore = Math.clamp((totalRooms != 0 ? (int) (80.0 * (getCompletedRooms() + getExtraCompletedRooms()) / totalRooms) : 0), 0, 80);
+		return 20 + Math.clamp(completedRoomScore - getPuzzlePenalty() - getDeathScorePenalty(), 0, 80);
 	}
 
 	private static int calculateExploreScore() {
 		int totalRooms = getTotalRooms(); //This is necessary to avoid division by 0 at the start of dungeons, which results in infinite score
-		int completedRoomScore = totalRooms != 0 ? (int) (60.0 * (getCompletedRooms() + getExtraCompletedRooms()) / totalRooms) : 0;
-		int secretsScore = (int) (40 * Math.min(floorRequirement.percentage, getSecretsPercentage()) / floorRequirement.percentage);
-		return Math.max(completedRoomScore + secretsScore, 0);
+		int completedRoomScore = Math.clamp(totalRooms != 0 ? (int) (60.0 * (getCompletedRooms() + getExtraCompletedRooms()) / totalRooms) : 0, 0, 60);
+		int secretsScore = Math.clamp((int) (40 * Math.min(floorRequirement.percentage, getSecretsPercentage()) / floorRequirement.percentage), 0, 40);
+		return completedRoomScore + secretsScore; //Clamped between 0 and 100 due to the 2 clamps above
 	}
 
 	private static int calculateTimeScore() {
@@ -186,21 +201,23 @@ public class DungeonScore {
 		if (timePastRequirement < 40) return score - (int) (10 + (timePastRequirement - 20) / 4);
 		if (timePastRequirement < 50) return score - (int) (15 + (timePastRequirement - 40) / 5);
 		if (timePastRequirement < 60) return score - (int) (17 + (timePastRequirement - 50) / 6);
-		return Math.max(score - (int) (18 + (2.0 / 3.0) + (timePastRequirement - 60) / 7), 0); //This can theoretically go down to -20 if the time limit is one of the lower ones like 480, but individual score categories can't go below 0
+		//This can theoretically go down to -20 if the time limit is one of the lower ones like 480, but individual score categories can't go below 0, hence the clamp
+		return Math.clamp(score - (int) (18 + (2.0 / 3.0) + (timePastRequirement - 60) / 7), 0, 100);
 	}
 
 	private static int calculateBonusScore() {
 		int paulScore = isMayorPaul ? 10 : 0;
-		int cryptsScore = Math.min(getCrypts(), 5);
+		int cryptsScore = Math.clamp(getCrypts(), 0, 5);
 		int mimicScore = mimicKilled ? 2 : 0;
 		if (getSecretsPercentage() >= 100 && floorHasMimics) mimicScore = 2; //If mimic kill is not announced but all secrets are found, mimic must've been killed
-		return paulScore + cryptsScore + mimicScore;
+		int princeScore = princeKilled ? 1 : 0;
+		return paulScore + cryptsScore + mimicScore + princeScore;
 	}
 
 	public static boolean isEntityMimic(Entity entity) {
 		if (!Utils.isInDungeons() || !floorHasMimics || !(entity instanceof ZombieEntity zombie) || !zombie.isBaby()) return false;
 		try {
-			DefaultedList<ItemStack> armor = (DefaultedList<ItemStack>) zombie.getArmorItems();
+			List<ItemStack> armor = ItemUtils.getArmor(zombie);
 			return armor.stream().allMatch(ItemStack::isEmpty);
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to check if entity is a mimic!", e);
@@ -211,12 +228,23 @@ public class DungeonScore {
 	public static void handleEntityDeath(Entity entity) {
 		if (mimicKilled) return;
 		if (!isEntityMimic(entity)) return;
-		if (MIMIC_MESSAGE_CONFIG.sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown(MIMIC_MESSAGE_CONFIG.mimicMessage);
+		if (MIMIC_MESSAGE_CONFIG.get().sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + MIMIC_MESSAGE, false);
 		mimicKilled = true;
 	}
 
 	public static void onMimicKill() {
 		mimicKilled = true;
+	}
+
+	private static void onPrinceKill(boolean fromHypixel) {
+		if (princeKilled) return;
+		//Ensure that we don't send a prince kill message if a teammate does
+		if (PRINCE_MESSAGE_CONFIG.get().sendPrinceMessage && fromHypixel) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + PRINCE_MESSAGE, false);
+		princeKilled = true;
+	}
+
+	public static boolean wasPrinceKilled() {
+		return princeKilled;
 	}
 
 	//This is not very accurate at the beginning of the dungeon since clear percentage is rounded to the closest integer, so at lower percentages its effect on the result is quite high.
@@ -227,7 +255,7 @@ public class DungeonScore {
 	}
 
 	private static int getCompletedRooms() {
-		Matcher matcher = PlayerListMgr.regexAt(43, COMPLETED_ROOMS_PATTERN);
+		Matcher matcher = PlayerListManager.regexAt(43, COMPLETED_ROOMS_PATTERN);
 		return matcher != null ? Integer.parseInt(matcher.group("rooms")) : 0;
 	}
 
@@ -255,14 +283,14 @@ public class DungeonScore {
 	}
 
 	private static int getPuzzleCount() {
-		Matcher matcher = PlayerListMgr.regexAt(47, PUZZLE_COUNT_PATTERN);
+		Matcher matcher = PlayerListManager.regexAt(47, PUZZLE_COUNT_PATTERN);
 		return matcher != null ? Integer.parseInt(matcher.group("count")) : 0;
 	}
 
 	private static int getPuzzlePenalty() {
 		int incompletePuzzles = 0;
 		for (int index = 0; index < puzzleCount; index++) {
-			Matcher puzzleMatcher = PlayerListMgr.regexAt(48 + index, PUZZLES_PATTERN);
+			Matcher puzzleMatcher = PlayerListManager.regexAt(48 + index, PUZZLES_PATTERN);
 			if (puzzleMatcher == null) break;
 			if (puzzleMatcher.group("state").matches("[✖✦]")) incompletePuzzles++;
 		}
@@ -270,17 +298,22 @@ public class DungeonScore {
 	}
 
 	private static double getSecretsPercentage() {
-		Matcher matcher = PlayerListMgr.regexAt(44, SECRETS_PATTERN);
+		Matcher matcher = PlayerListManager.regexAt(44, SECRETS_PATTERN);
 		return matcher != null ? Double.parseDouble(matcher.group("secper")) : 0;
 	}
 
 	private static int getCrypts() {
-		Matcher matcher = PlayerListMgr.regexAt(33, CRYPTS_PATTERN);
-		if (matcher == null) matcher = PlayerListMgr.regexAt(32, CRYPTS_PATTERN); //If class milestone 9 is reached, crypts goes up by 1
+		Matcher matcher = PlayerListManager.regexAt(33, CRYPTS_PATTERN);
+		if (matcher == null) matcher = PlayerListManager.regexAt(32, CRYPTS_PATTERN); //If class milestone 9 is reached, crypts goes up by 1
 		return matcher != null ? Integer.parseInt(matcher.group("crypts")) : 0;
 	}
 
-	public static boolean hasSpiritPet(JsonObject player, String name) {
+	private static boolean hasSpiritPet(JsonObject player, String name) {
+		if (player == null) {
+			LOGGER.error("[Skyblocker] Spirit pet lookup by name failed! (likely due to an earlier error!) Name: {}", name);
+			return false;
+		}
+
 		try {
 			for (JsonElement pet : player.getAsJsonObject("pets_data").getAsJsonArray("pets")) {
 				if (!pet.getAsJsonObject().get("type").getAsString().equals("SPIRIT")) continue;
@@ -304,21 +337,21 @@ public class DungeonScore {
 			if (s.equals("You")) return MinecraftClient.getInstance().getSession().getUsername(); //This will be wrong if the dead player is called 'You' but that's unlikely
 			else return s;
 		});
-		ProfileUtils.updateProfileByName(whoDied).thenAccept(player -> firstDeathHasSpiritPet = hasSpiritPet(player, whoDied));
+		ProfileUtils.fetchProfileMember(whoDied).thenAccept(player -> firstDeathHasSpiritPet = hasSpiritPet(player, whoDied));
 	}
 
 	private static void checkMessageForWatcher(String message) {
 		if (message.equals("[BOSS] The Watcher: You have proven yourself. You may pass.")) bloodRoomCompleted = true;
 	}
 
-	private static void checkMessageForMort(String message) {
-		if (!message.equals("§e[NPC] §bMort§f: You should find it useful if you get lost.")) return;
-		onDungeonStart();
-	}
-
 	private static void checkMessageForMimic(String message) {
 		if (!MIMIC_PATTERN.matcher(message).matches()) return;
 		onMimicKill();
+	}
+
+	private static void checkMessageForPrince(String message) {
+		if (!PRINCE_PATTERN.matcher(message).matches() && !message.equals(PRINCE_KILL_MESSAGE)) return;
+		onPrinceKill(message.equals(PRINCE_KILL_MESSAGE));
 	}
 
 	public static void setCurrentFloor() {
@@ -370,4 +403,3 @@ public class DungeonScore {
 		}
 	}
 }
-

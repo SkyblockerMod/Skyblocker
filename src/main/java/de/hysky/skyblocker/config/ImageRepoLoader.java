@@ -108,7 +108,7 @@ public class ImageRepoLoader {
 
 	/**
 	 * Writes the {@code newHash} into a file to be used to check for repo updates.
-	 * 
+	 *
 	 * @implNote Checking whether the directory exists or not isn't needed as this is called after all files are written successfully.
 	 */
 	private static void writeCommitData(String newHash) throws IOException {
@@ -122,7 +122,7 @@ public class ImageRepoLoader {
 
 	/**
 	 * Deletes all directories (not files) inside of the {@link #REPO_DIRECTORY}
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private static void deleteDirectories() throws IOException {
 		Files.list(REPO_DIRECTORY)
@@ -140,6 +140,6 @@ public class ImageRepoLoader {
 		static final Codec<CommitData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("commit").forGetter(CommitData::commit),
 				Codec.LONG.fieldOf("lastUpdated").forGetter(CommitData::lastUpdated))
-				.apply(instance, CommitData::new));		
+				.apply(instance, CommitData::new));
 	}
 }

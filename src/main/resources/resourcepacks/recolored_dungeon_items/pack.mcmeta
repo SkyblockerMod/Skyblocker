@@ -1,6 +1,10 @@
 {
     "pack": {
-      "pack_format": 22,
+      "pack_format": 34,
+      "supported_formats": {
+        "min_inclusive": 34,
+        "max_inclusive": 2147483647
+      },
       "description": "Recolored textures found in dungeons"
     }
 }

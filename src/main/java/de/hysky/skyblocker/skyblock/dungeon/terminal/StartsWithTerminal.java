@@ -1,19 +1,22 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.container.ContainerSolver;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import de.hysky.skyblocker.utils.render.gui.ContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public final class StartsWithTerminal extends ContainerSolver implements TerminalSolver {
+public final class StartsWithTerminal extends SimpleContainerSolver implements TerminalSolver, StackDisplayModifier {
 	private final Int2ObjectOpenHashMap<ItemState> trackedItemStates = new Int2ObjectOpenHashMap<>();
 	private int lastKnownScreenId = Integer.MIN_VALUE;
 
@@ -22,13 +25,13 @@ public final class StartsWithTerminal extends ContainerSolver implements Termina
 	}
 
 	@Override
-	protected boolean isEnabled() {
+	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().dungeons.terminals.solveStartsWith;
 	}
 
 	@Override
-	protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
-		trimEdges(slots, 6);
+	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
+		ContainerSolver.trimEdges(slots, 6);
 		setupState(slots);
 
 		String prefix = groups[0];
@@ -50,9 +53,10 @@ public final class StartsWithTerminal extends ContainerSolver implements Termina
 	}
 
 	@Override
-	protected boolean onClickSlot(int slot, ItemStack stack, int screenId, String[] groups) {
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		//Some random glass pane was clicked or something
-		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return false;
+		//Block clicks for this because these slots are replaced with air items
+		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return shouldBlockIncorrectClicks();
 
 		ItemState state = trackedItemStates.get(slot);
 		String prefix = groups[0];
@@ -74,7 +78,13 @@ public final class StartsWithTerminal extends ContainerSolver implements Termina
 		return false;
 	}
 
-	//We only setup the state when all items aren't null or empty. This prevents the state from being reset due to unsent items or server lag spikes/bad TPS (fix ur servers Hypixel)
+	@Override
+	public ItemStack modifyDisplayStack(int slotIndex, @NotNull ItemStack stack) {
+		// rows * 9 = 54
+		return slotIndex >= 54 || stack.getName().getString().startsWith(groups[0]) ? stack : ItemStack.EMPTY;
+	}
+
+	//We only set up the state when all items aren't null or empty. This prevents the state from being reset due to unsent items or server lag spikes/bad TPS (fix ur servers Hypixel)
 	private void setupState(Int2ObjectMap<ItemStack> usefulSlots) {
 		Predicate<Int2ObjectMap.Entry<ItemStack>> notNullOrEmpty = e -> e.getValue() != null && !e.getValue().isEmpty();
 

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -14,6 +15,7 @@ public class QuiverWarning {
     @Nullable
     private static Type warning = null;
 
+    @Init
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(QuiverWarning::onChatMessage);
         Scheduler.INSTANCE.scheduleCyclic(QuiverWarning::update, 10);

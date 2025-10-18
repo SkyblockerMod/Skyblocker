@@ -13,6 +13,7 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.hysky.skyblocker.utils.ItemUtils;
 
@@ -52,7 +53,7 @@ public class FinderSettingsContainer extends ContainerWidget {
      * @return returns false if it doesn't know what's happening
      */
     public boolean handle(PartyFinderScreen screen, String inventoryName) {
-        String nameLowerCase = inventoryName.toLowerCase();
+        String nameLowerCase = inventoryName.toLowerCase(Locale.ENGLISH);
         GenericContainerScreenHandler handler = screen.getHandler();
         if (!isInitialized) {
             if (!nameLowerCase.contains("search settings")) return false;
@@ -63,7 +64,7 @@ public class FinderSettingsContainer extends ContainerWidget {
                 if (!slot.hasStack()) continue;
                 ItemStack stack = slot.getStack();
                 //System.out.println(stack.toString());
-                String name = stack.getName().getString().toLowerCase();
+                String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
                 if (name.contains("floor")) {
 
                     //System.out.println("Floor selector created");
@@ -125,11 +126,9 @@ public class FinderSettingsContainer extends ContainerWidget {
 
             if (nameLowerCase.contains("floor")) {
                 updateDropdownOptionWidget(handler, floorSelector);
-                currentlyOpenedOption = floorSelector;
                 return true;
             } else if (nameLowerCase.contains("select type")) {
                 updateDropdownOptionWidget(handler, dungeonTypeSelector);
-                currentlyOpenedOption = dungeonTypeSelector;
                 return true;
             } else if (nameLowerCase.contains("class level range")) {
                 updateRangedValue(handler, classLevelRange);
@@ -139,7 +138,6 @@ public class FinderSettingsContainer extends ContainerWidget {
                 return true;
             } else if (nameLowerCase.contains("sort")) {
                 updateDropdownOptionWidget(handler, sortGroupsSelector);
-                currentlyOpenedOption = sortGroupsSelector;
                 return true;
             }
         }
@@ -163,7 +161,7 @@ public class FinderSettingsContainer extends ContainerWidget {
      */
     private boolean setRangeFromTooltip(ItemStack stack, RangedValueWidget widget) {
         for (Text text : ItemUtils.getLore(stack)) {
-            String textLowerCase = text.getString().toLowerCase();
+            String textLowerCase = text.getString().toLowerCase(Locale.ENGLISH);
             if (textLowerCase.contains("selected:")) {
                 String[] split = text.getString().split(":");
                 if (split.length < 2) return false;
@@ -173,8 +171,8 @@ public class FinderSettingsContainer extends ContainerWidget {
                 //System.out.println("Min and max: " + minAndMax[0] + " " + minAndMax[1]);
                 int leMin = -1;
                 int leMax = -1;
-                try {leMin = Integer.parseInt(minAndMax[0].trim());} catch (NumberFormatException ignored) {}
-                try {leMax = Integer.parseInt(minAndMax[1].trim());} catch (NumberFormatException ignored) {}
+                try {leMin = Integer.parseInt(minAndMax[0].trim()); } catch (NumberFormatException ignored) {}
+                try {leMax = Integer.parseInt(minAndMax[1].trim()); } catch (NumberFormatException ignored) {}
 
                 widget.setMinAndMax(leMin, leMax);
                 return true;
@@ -188,7 +186,7 @@ public class FinderSettingsContainer extends ContainerWidget {
      */
     private boolean setSelectedElementFromTooltip(Slot slot, ItemStack stack, OptionDropdownWidget dropdownWidget) {
         for (Text text : ItemUtils.getLore(stack)) {
-            String textLowerCase = text.getString().toLowerCase();
+            String textLowerCase = text.getString().toLowerCase(Locale.ENGLISH);
             if (textLowerCase.contains("selected:")) {
                 String[] split = text.getString().split(":");
                 if (split.length < 2) return false;
@@ -212,7 +210,7 @@ public class FinderSettingsContainer extends ContainerWidget {
 
     private boolean updateValues(SignBlockEntity sign, boolean front, RangedValueWidget valueWidget) {
         RangedValueWidget.State state;
-        String lowerCase = sign.getText(front).getMessage(3, false).getString().toLowerCase();
+        String lowerCase = sign.getText(front).getMessage(3, false).getString().toLowerCase(Locale.ENGLISH);
         if (lowerCase.contains("max")) {
             state = RangedValueWidget.State.MODIFYING_MAX;
         } else if (lowerCase.contains("min")) {
@@ -224,6 +222,7 @@ public class FinderSettingsContainer extends ContainerWidget {
     }
 
     private void updateDropdownOptionWidget(GenericContainerScreenHandler handler, OptionDropdownWidget dropdownWidget) {
+		currentlyOpenedOption = dropdownWidget;
         List<OptionDropdownWidget.Option> entries = new ArrayList<>();
         for (Slot slot : handler.slots) {
             if (slot.id > (handler.getRows() - 1) * 9 - 1) break;
@@ -241,9 +240,9 @@ public class FinderSettingsContainer extends ContainerWidget {
         int max = -1;
         for (Slot slot : handler.slots) {
             if (slot.id > (handler.getRows() - 1) * 9 - 1) break;
-            if (slot.hasStack() && slot.getStack().getName().getString().toLowerCase().contains("min")) {
+            if (slot.hasStack() && slot.getStack().getName().getString().toLowerCase(Locale.ENGLISH).contains("min")) {
                 min = slot.id;
-            } else if (slot.hasStack() && slot.getStack().getName().getString().toLowerCase().contains("max")) {
+            } else if (slot.hasStack() && slot.getStack().getName().getString().toLowerCase(Locale.ENGLISH).contains("max")) {
                 max = slot.id;
             }
         }
@@ -265,12 +264,28 @@ public class FinderSettingsContainer extends ContainerWidget {
         return currentlyOpenedOption == null || currentlyOpenedOption == widget;
     }
 
-    @Override
+	public boolean hasOpenOption() {
+		return currentlyOpenedOption != null;
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (hasOpenOption()) {
+			return currentlyOpenedOption.mouseClicked(mouseX, mouseY, button);
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        if (!visible) return;
-        for (ContainerWidget initializedWidget : initializedWidgets) {
-            initializedWidget.render(context, mouseX, mouseY, delta);
-        }
+        if (!visible || !isInitialized) return;
+		this.classLevelRange.render(context, mouseX, mouseY, delta);
+		this.dungeonLevelRange.render(context, mouseX, mouseY, delta);
+
+		// Render the dropdowns last to fix overlap issue.
+		this.sortGroupsSelector.render(context, mouseX, mouseY, delta);
+		this.floorSelector.render(context, mouseX, mouseY, delta);
+		this.dungeonTypeSelector.render(context, mouseX, mouseY, delta);
     }
 
     @Override
@@ -280,4 +295,14 @@ public class FinderSettingsContainer extends ContainerWidget {
 
     @Override
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+
+	@Override
+	protected int getContentsHeightWithPadding() {
+		return 0;
+	}
+
+	@Override
+	protected double getDeltaYPerScroll() {
+		return 0;
+	}
 }

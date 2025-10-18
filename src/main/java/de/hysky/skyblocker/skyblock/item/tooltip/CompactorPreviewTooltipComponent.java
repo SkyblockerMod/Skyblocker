@@ -3,15 +3,15 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 public class CompactorPreviewTooltipComponent implements TooltipComponent {
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/generic_54.png");
-    private static final ItemStack BLACK_STAINED_GLASS_PANE = new ItemStack(Items.BLACK_STAINED_GLASS_PANE);
+    private static final Identifier DISABLED_SLOT = Identifier.ofVanilla("container/crafter/disabled_slot");
     private final Iterable<IntObjectPair<ItemStack>> items;
     private final IntIntPair dimensions;
     private final int columns;
@@ -23,7 +23,7 @@ public class CompactorPreviewTooltipComponent implements TooltipComponent {
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(TextRenderer textRenderer) {
         return dimensions.leftInt() * 18 + 17;
     }
 
@@ -41,35 +41,33 @@ public class CompactorPreviewTooltipComponent implements TooltipComponent {
      * 2 columns is not currently supported and will have an empty third column.
      */
     @Override
-    public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
+    public void drawItems(TextRenderer textRenderer, int x, int y, int width, int height, DrawContext context) {
         // Draw the background with `dimensions.leftInt()` rows and `columns` columns with some texture math
-        context.drawTexture(TEXTURE, x, y, 0, 0, columns * 18 + 7, dimensions.leftInt() * 18 + 17);
-        context.drawTexture(TEXTURE, x + columns * 18 + 7, y, 169, 0, 7, dimensions.leftInt() * 18 + 17);
-        context.drawTexture(TEXTURE, x, y + dimensions.leftInt() * 18 + 17, 0, 215, columns * 18 + 7, 7);
-        context.drawTexture(TEXTURE, x + columns * 18 + 7, y + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, columns * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x + columns * 18 + 7, y, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + dimensions.leftInt() * 18 + 17, 0, 215, columns * 18 + 7, 7, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x + columns * 18 + 7, y + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
 
         //Draw name - I don't think it needs to be translatable
-        context.drawText(textRenderer, "Contents", x + 8, y + 6, 0x404040, false);
+        context.drawText(textRenderer, "Contents", x + 8, y + 6, 0xFF404040, false);
 
         for (IntObjectPair<ItemStack> entry : items) {
             int itemX = x + entry.leftInt() % dimensions.rightInt() * 18 + 8;
             int itemY = y + entry.leftInt() / dimensions.rightInt() * 18 + 18;
 
-            // Draw a black stained glass pane to fill the left slot if there is only one column
+            // Draw a disabled slot to fill the left slot if there is only one column
             if (dimensions.rightInt() == 1) {
-                context.drawItem(BLACK_STAINED_GLASS_PANE, itemX, itemY);
-                context.drawItemInSlot(textRenderer, BLACK_STAINED_GLASS_PANE, itemX, itemY);
+                context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, DISABLED_SLOT, itemX - 1, itemY - 1, 18, 18);
                 itemX += 18;
             }
             if (entry.right() != null) {
                 context.drawItem(entry.right(), itemX, itemY);
-                context.drawItemInSlot(textRenderer, entry.right(), itemX, itemY);
+                context.drawStackOverlay(textRenderer, entry.right(), itemX, itemY);
             }
-            // Draw a black stained glass pane to fill the right slot if there is only one column
+            // Draw a disabled slot to fill the right slot if there is only one column
             if (dimensions.rightInt() == 1) {
                 itemX += 18;
-                context.drawItem(BLACK_STAINED_GLASS_PANE, itemX, itemY);
-                context.drawItemInSlot(textRenderer, BLACK_STAINED_GLASS_PANE, itemX, itemY);
+                context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, DISABLED_SLOT, itemX - 1, itemY - 1, 18, 18);
             }
         }
     }

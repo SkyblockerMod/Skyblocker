@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -30,7 +31,6 @@ public class DungeonMapConfigScreen extends Screen {
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
-		renderBackground(context, mouseX, mouseY, delta);
 		renderHUDMap(context, mapX, mapY);
 		renderHUDScore(context, scoreX, scoreY);
 		context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width >> 1, height >> 1, Color.GRAY.getRGB());
@@ -42,10 +42,10 @@ public class DungeonMapConfigScreen extends Screen {
 		float scoreScaling = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling;
 		int scoreWidth = (int) (textRenderer.getWidth(DungeonScoreHUD.getFormattedScoreText()) * scoreScaling);
 		int scoreHeight = (int) (textRenderer.fontHeight * scoreScaling);
-		if (RenderHelper.pointIsInArea(mouseX, mouseY, mapX, mapY, mapX + mapSize, mapY + mapSize) && button == 0) {
+		if (HudHelper.pointIsInArea(mouseX, mouseY, mapX, mapY, mapX + mapSize, mapY + mapSize) && button == 0) {
 			mapX = (int) Math.max(Math.min(mouseX - (mapSize >> 1), this.width - mapSize), 0);
 			mapY = (int) Math.max(Math.min(mouseY - (mapSize >> 1), this.height - mapSize), 0);
-		} else if (RenderHelper.pointIsInArea(mouseX, mouseY, scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight) && button == 0) {
+		} else if (HudHelper.pointIsInArea(mouseX, mouseY, scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight) && button == 0) {
 			scoreX = (int) Math.max(Math.min(mouseX - (scoreWidth >> 1), this.width - scoreWidth), 0);
 			scoreY = (int) Math.max(Math.min(mouseY - (scoreHeight >> 1), this.height - scoreHeight), 0);
 		}
@@ -66,11 +66,12 @@ public class DungeonMapConfigScreen extends Screen {
 
 	@Override
 	public void close() {
-		SkyblockerConfigManager.get().dungeons.dungeonMap.mapX = mapX;
-		SkyblockerConfigManager.get().dungeons.dungeonMap.mapY = mapY;
-		SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX = scoreX;
-		SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY = scoreY;
-		SkyblockerConfigManager.save();
+		SkyblockerConfigManager.update(config -> {
+			config.dungeons.dungeonMap.mapX = mapX;
+			config.dungeons.dungeonMap.mapY = mapY;
+			config.dungeons.dungeonScore.scoreX = scoreX;
+			config.dungeons.dungeonScore.scoreY = scoreY;
+		});
 
 		this.client.setScreen(parent);
 	}
@@ -78,7 +79,7 @@ public class DungeonMapConfigScreen extends Screen {
 	public void renderHUDMap(DrawContext context, int x, int y) {
 		float scaling = SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling;
 		int size = (int) (128 * scaling);
-		context.drawTexture(MAP_BACKGROUND, x, y, 0, 0, size, size, size, size);
+		context.drawTexture(RenderPipelines.GUI_TEXTURED, MAP_BACKGROUND, x, y, 0, 0, size, size, size, size);
 	}
 
 	public void renderHUDScore(DrawContext context, int x, int y) {

@@ -1,7 +1,12 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	// Building
+	id 'fabric-loom' version "${loom_version}"
+	id "de.hysky.skyblocker.annotation-processor"
+	id "com.diffplug.spotless" version "7.2.1"
+	id "checkstyle"
+	// Publishing
 	id 'maven-publish'
-	id "me.modmuss50.mod-publish-plugin" version "0.5.1"
+	id "me.modmuss50.mod-publish-plugin" version "0.8.1"
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -16,20 +21,120 @@ repositories {
 	flatDir {
 		dirs 'libs'
 	}
-	maven { url "https://maven.terraformersmc.com/releases" }
-	maven { url "https://maven.shedaniel.me/" }
-	maven { url "https://maven.isxander.dev/releases" }
-	maven { url "https://maven.isxander.dev/snapshots" } //For minecraft snapshots
+
 	maven {
-		url 'https://repo.maven.apache.org/maven2'
-		name 'Maven Central'
+		name = 'Maven Central'
+		url = 'https://repo.maven.apache.org/maven2'
 	}
+
+	// For ModMenu and EMI
+	exclusiveContent {
+		forRepository {
+			maven { url = "https://maven.terraformersmc.com/releases" }
+		}
+
+		filter {
+			includeGroup "com.terraformersmc"
+			includeGroup "dev.emi"
+		}
+	}
+
+	// For REI
+	exclusiveContent {
+		forRepository {
+			maven { url = "https://maven.shedaniel.me/" }
+		}
+
+		filter {
+			includeGroup "me.shedaniel"
+			includeGroup "me.shedaniel.cloth"
+			includeGroup "dev.architectury"
+		}
+	}
+
+	// For JEI
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
+
+	// YACL
 	maven {
-		name = "meteor-maven"
-		url = "https://maven.meteordev.org/releases"
+		url = "https://maven.isxander.dev/releases"
+
+		content {
+			includeGroup "dev.isxander"
+			includeGroup "org.quiltmc.parsers"
+		}
 	}
-	maven { url "https://repo.codemc.io/repository/maven-public/" } // For Occlusion Culling library
-	maven { url "https://repo.nea.moe/releases" } // For neu repoparser
+
+	// For Minecraft snapshots
+	maven {
+		url = "https://maven.isxander.dev/snapshots"
+
+		content {
+			includeGroup "dev.isxander"
+		}
+	}
+
+	// For Discord RPC
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "meteor-maven"
+				url = "https://maven.meteordev.org/releases"
+			}
+		}
+
+		filter {
+			includeGroup "meteordevelopment"
+		}
+	}
+
+	// For NEU repo parser
+	exclusiveContent {
+		forRepository {
+			maven { url = "https://repo.nea.moe/releases" }
+		}
+
+		filter {
+			includeGroup "moe.nea"
+		}
+	}
+
+	maven {
+		url = "https://maven.azureaaron.net/releases"
+
+		content {
+			includeGroup "net.azureaaron"
+		}
+	}
+
+	maven {
+		url = "https://maven.azureaaron.net/snapshots"
+
+		content {
+			includeGroup "net.azureaaron"
+		}
+	}
+
+	maven {
+		url = "https://maven.notenoughupdates.org/releases"
+
+		content {
+			includeGroup "org.notenoughupdates.moulconfig"
+		}
+	}
+
+	//mavenLocal()
 }
 
 dependencies {
@@ -44,38 +149,65 @@ dependencies {
 	}
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
+	// Loom does not always add this
+	implementation "ca.weblite:java-objc-bridge:1.1"
+
 	// Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
+	// Dandelion
+	include modImplementation("net.azureaaron:dandelion:${project.dandelion_version}")
+
 	// YACL
 	include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
+
+	// MoulConfig - Dandelion shades it in already
+	//modImplementation("org.notenoughupdates.moulconfig:${project.moulconfig_flavour}:${project.moulconfig_version}")
+
+	// HM API (Hypixel Mod API Library)
+	include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
 
 	// Mod Menu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	// REI
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
+	modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
+		exclude group: "net.fabricmc.fabric-api" //Stop this from importing an old version of FAPI that crashes everything
+	}
 	//modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	// EMI
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
 	//modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
+	// JEI (Using modrinth repo since official release is in mojmap and doesn't work)
+	modCompileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
+	//modRuntimeOnly "maven.modrinth:jei:${project.jei_version}-fabric"
+
 	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
 
 	include modImplementation("meteordevelopment:discord-ipc:1.1")
 
-	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
-	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
-
 	// NEU RepoParser
 	include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
+
+	// Networth Calculator (https://github.com/AzureAaron/networth-calculator)
+	include implementation("net.azureaaron:networth-calculator:${project.networth_calculator_version}")
+
+	// Legacy Item DFU
+	include implementation("net.azureaaron:legacy-item-dfu:${project.legacy_item_dfu_version}")
 
 	// JGit used pull data from the NEU item repo
 	include implementation("org.eclipse.jgit:org.eclipse.jgit:${project.jgit_version}")
 
 	// Apache Commons Math
 	include implementation("org.apache.commons:commons-math3:${project.commons_math_version}")
+
+	// Apache Commons Text
+	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
+
+	// Fabric Language Kotlin for using MoulConfig - we are still a Java-exclusive mod
+	modImplementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
 }
 
 loom {
@@ -83,6 +215,15 @@ loom {
 
 	mixin {
 		useLegacyMixinAp = false
+	}
+}
+
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "skyblocker-test"
+		enableGameTests = false
+		eula = true
 	}
 }
 
@@ -109,12 +250,97 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${base.archivesName.get()}"}
+		rename { "${it}_${base.archivesName.get()}" }
 	}
 }
 
 test {
 	useJUnitPlatform()
+
+	systemProperty("IS_TEST_ENV", "true")
+}
+
+spotless {
+	java {
+		removeUnusedImports()
+		//indentWithTabs() // TODO: turn on when more files are converted to tabs
+		trimTrailingWhitespace()
+		endWithNewline()
+		lineEndings = com.diffplug.spotless.LineEnding.UNIX
+	}
+
+	json {
+		target 'src/**/lang/en_us.json'
+		targetExclude 'src/**/generated/**'
+
+		gson()/*.sortByKeys()*/.indentWithSpaces(2) // TODO: turn on `sortByKeys` in the future
+		// Note: a stem is a part of a key between dots, e.g. "skyblocker.config.chat" has three stems: "skyblocker", "config", and "chat".
+		replaceRegex \
+				"Separate different first stems",
+				// Explanation of the regex:
+				// `^(  "`: matches the start of a line, begins capture group 1, and matches two spaces and a double quote
+				// `([^."]++)`: captures the first stem (everything before the first dot) in group 2
+				// `(?:\.[^"]++)?`: optionally matches a second stem (everything after the first stem before the next double quote)
+				// `": "`: matches the end of the key and the start of the value
+				// `(?:[^\\"]++|\\.)*+`: matches the value, which can be anything except a slash or double quote, special processing here for escaped characters
+				// `",)$`: matches the end of the line, capturing the whole line in group 1
+				// `\n`: matches a newline character
+				// `^(?=  "(?!\2[."]))`: positive lookahead to ensure the next line starts with two spaces and a key that does not start with the same first stem (group 2) followed by a dot or a double quote
+				// The last `[."]` is to ensure that the `\2` in the negative lookahead is being matched against an entire stem, not just the starting part of a stem.
+				/^(  "([^."]++)(?:\.[^"]++)?": "(?:[^\\"]++|\\.)*+",)$\n^(?=  "(?!\2[."]))/,
+				'$1\n\n'
+		replaceRegex \
+				"Separate different second stems if the first stem is skyblocker",
+				// The main difference is that the second and remaining stems are optional, allowing matching lines with only one stem (in this case "skyblocker"), and separating it from other keys that start with "skyblocker.[whatever]".
+				// This treats keys with only one stem as if they have an empty second stem, which is considered different from any other second stem, therefore inserting a newline after them.
+				/^(  "skyblocker(?:\.([^."]++)(?:\.[^"]++)?)?": "(?:[^\\"]++|\\.)*+",)$\n^(?=  "skyblocker\.(?!\2[."]))/,
+				'$1\n\n'
+		replaceRegex \
+				"Separate different thrid stems if the first two stems are skyblocker.config",
+				// The third and remaining stems are optional, allowing matching lines with only two stems (in this case "skyblocker.config"), and separating it from other keys that start with "skyblocker.config.[whatever]".
+				/^(  "skyblocker\.config(?:\.([^."]++)(?:\.[^"]++)?)?": "(?:[^\\"]++|\\.)*+",)$\n^(?=  "skyblocker\.config\.(?!\2[."]))/,
+				'$1\n\n'
+		final List<String> excludeCategories = ["debug", "eventNotifications", "quickNav", "shortcutToKeybindsSettings", "title"]
+		final String excludeCategoriesLookahead = /(?!(?:${excludeCategories.join('|')})(?=[."]))/
+		replaceRegex \
+				"Separate different fouth stems if the first three stems are skyblocker.config.[configCategory]",
+				// A negative lookahead is used before the third stem to exclude the above list of third stems.
+				// The fourth and remaining stems are optional, allowing matching lines with only three stems (such as "skyblocker.config.[configCategory]"), and separating them from other keys that start with "skyblocker.config.[configCategory].[whatever]".
+				// This treats keys with only three stems as if they have an empty fourth stem, which is considered different from any other fourth stem, therefore inserting a newline after them.
+				// Specifically, the `(?!\3[."])` part ensures that the next line does not start with the same fourth stem (group 3) followed by a dot or a double quote.
+				// If the previous line does not have a fourth stem, group 3 will be empty, and `(?!\3[."])` will attempt to match a dot or a double quote, effectively trying to apply a negative look ahead against an empty fourth stem, which will always succeed against "skyblocker.config.[configCategory].[whatever]".
+				/^(  "skyblocker\.config\.${excludeCategoriesLookahead}([^."]++)(?:\.([^."]++)(?:\.[^"]++)?)?": "(?:[^\\"]++|\\.)*+",)$\n^(?=  "skyblocker\.config\.\2\.(?!\3[."]))/,
+				'$1\n\n'
+	}
+
+	groovyGradle {
+		target 'src/**/*.gradle', '*.gradle', 'gradle/*.gradle'
+		greclipse().configProperties \
+				'groovy.formatter.multiline.indentation=2', // Default
+				'groovy.formatter.line.maxlength=999',
+				'groovy.formatter.longListLength=999',
+				'groovy.formatter.remove.unnecessary.semicolons=true'
+	}
+}
+
+checkstyle {
+	toolVersion = "10.20.2"
+	configFile = rootProject.file("checkstyle.xml")
+}
+
+def truncateChangelog = { String text, int limit ->
+	if (!text) return ''
+	def lines = text.readLines()
+	def sb = new StringBuilder()
+	for (line in lines) {
+		def toAdd = (sb.length() == 0 ? "" : "\n") + line
+		if (sb.length() + toAdd.length() > limit) {
+			sb.append("\nand more!")
+			break
+		}
+		sb.append(toAdd)
+	}
+	return sb.toString()
 }
 
 publishMods {
@@ -138,8 +364,9 @@ publishMods {
 		projectId = modrinth_id
 		minecraftVersions.add(minecraft_version)
 		announcementTitle = "<:modrinth:1237114573354438696> Download from Modrinth"
-		requires("fabric-api")
-		optional("modmenu", "rei", "emi")
+		requires("fabric-api", "fabric-language-kotlin")
+		optional("modmenu", "rei", "emi", "jei")
+		embeds("yacl")
 	}
 
 	curseforge {
@@ -148,14 +375,19 @@ publishMods {
 		minecraftVersions.add(minecraft_version)
 		announcementTitle = "<:curseforge:900697838453936149> Download from CurseForge"
 		projectSlug = "skyblocker"
-		requires("fabric-api")
-		optional("roughly-enough-items", "emi")
+		requires("fabric-api", "fabric-language-kotlin")
+		optional("roughly-enough-items", "emi", "jei")
+		embeds("yacl")
 	}
 
 	discord {
 		webhookUrl = System.getenv("DISCORD_WEBHOOK")
 		username = "Changelog"
-		content = changelog.map { "<@&1134565945482948638>\n## Skyblocker v${mod_version}\n" + it}
+		content = changelog.map {
+			def header = "<@&1134565945482948638>\n## Skyblocker v${mod_version} for ${minecraft_version}\n"
+			def truncatedChangelog = truncateChangelog(it, 1850)
+			header + truncatedChangelog
+		}
 	}
 }
 

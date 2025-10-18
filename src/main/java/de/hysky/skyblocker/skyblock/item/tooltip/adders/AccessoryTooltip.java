@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.AccessoriesHelper;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class AccessoryTooltip extends TooltipAdder {
+public class AccessoryTooltip extends SimpleTooltipAdder {
 	public AccessoryTooltip(int priority) {
 		super(priority);
 	}
@@ -21,7 +21,7 @@ public class AccessoryTooltip extends TooltipAdder {
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		final String internalID = stack.getSkyblockId();
-		if (TooltipInfoType.ACCESSORIES.isTooltipEnabledAndHasOrNullWarning(internalID)) {
+		if (TooltipInfoType.ACCESSORIES.hasOrNullWarning(internalID)) {
 			Pair<AccessoriesHelper.AccessoryReport, String> report = AccessoriesHelper.calculateReport4Accessory(internalID);
 
 			if (report.left() != AccessoriesHelper.AccessoryReport.INELIGIBLE) {
@@ -41,5 +41,10 @@ public class AccessoryTooltip extends TooltipAdder {
 				lines.add(title.append(stateText));
 			}
 		}
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return TooltipInfoType.ACCESSORIES.isTooltipEnabled();
 	}
 }

@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.skyblock.end;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
@@ -28,17 +30,19 @@ public class EnderNodes {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final Map<BlockPos, EnderNode> enderNodes = new HashMap<>();
 
+    @Init
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(EnderNodes::update, 20);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(EnderNodes::render);
+        WorldRenderExtractionCallback.EVENT.register(EnderNodes::extractRendering);
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
             enderNodes.remove(pos);
             return ActionResult.PASS;
         });
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+        ParticleEvents.FROM_SERVER.register(EnderNodes::onParticle);
     }
 
-    public static void onParticle(ParticleS2CPacket packet) {
+    private static void onParticle(ParticleS2CPacket packet) {
         if (!shouldProcess()) return;
         ParticleType<?> particleType = packet.getParameters().getType();
         if (!ParticleTypes.PORTAL.getType().equals(particleType) && !ParticleTypes.WITCH.getType().equals(particleType))
@@ -76,23 +80,26 @@ public class EnderNodes {
 
         EnderNode enderNode = enderNodes.computeIfAbsent(pos, EnderNode::new);
         IntIntPair particles = enderNode.particles.get(direction);
-        particles.left(particles.leftInt() + 1);
-        particles.right(particles.rightInt() + 1);
+        if (ParticleTypes.PORTAL.getType().equals(particleType)) {
+            particles.left(particles.leftInt() + 1);
+        } else if (ParticleTypes.WITCH.getType().equals(particleType)) {
+            particles.right(particles.rightInt() + 1);
+        }
     }
 
     private static void update() {
         if (shouldProcess()) {
             for (EnderNode enderNode : enderNodes.values()) {
-                enderNode.updateParticles();
+                enderNode.updateWaypoint();
             }
         }
     }
 
-    private static void render(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         if (shouldProcess()) {
             for (EnderNode enderNode : enderNodes.values()) {
                 if (enderNode.shouldRender()) {
-                    enderNode.render(context);
+                    enderNode.extractRendering(collector);
                 }
             }
         }
@@ -106,7 +113,7 @@ public class EnderNodes {
         enderNodes.clear();
     }
 
-    public static class EnderNode extends Waypoint {
+    public static class EnderNode extends SeenWaypoint {
         private final Map<Direction, IntIntPair> particles = Map.of(
                 Direction.UP, new IntIntMutablePair(0, 0),
                 Direction.DOWN, new IntIntMutablePair(0, 0),
@@ -118,10 +125,11 @@ public class EnderNodes {
         private long lastConfirmed;
 
         private EnderNode(BlockPos pos) {
-            super(pos, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, ColorUtils.getFloatComponents(DyeColor.CYAN), false);
+            super(pos, () -> SkyblockerConfigManager.get().otherLocations.end.enderNodeWaypointType, ColorUtils.getFloatComponents(DyeColor.CYAN));
         }
 
-        private void updateParticles() {
+        private void updateWaypoint() {
+            tick(client);
             long currentTimeMillis = System.currentTimeMillis();
             if (lastConfirmed + 2000 > currentTimeMillis || client.world == null || !particles.entrySet().stream().allMatch(entry -> entry.getValue().leftInt() >= 5 && entry.getValue().rightInt() >= 5 || !client.world.getBlockState(pos.offset(entry.getKey())).isAir())) return;
             lastConfirmed = currentTimeMillis;

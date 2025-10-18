@@ -1,9 +1,16 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarOrderTracker;
+import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
+import de.hysky.skyblocker.skyblock.dungeon.CroesusProfit;
+import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilSolver;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.ContainerMatcher;
+import de.hysky.skyblocker.utils.container.TooltipAdder;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
@@ -15,30 +22,45 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{
 			new LineSmoothener(), // Applies before anything else
+			new TrueHexDisplay(),
+			new TrueHexDyeScreenDisplay(),
 			new SupercraftReminder(),
-			new ChocolateFactorySolver.Tooltip(),
+			ChocolateFactorySolver.INSTANCE,
+			BitsHelper.INSTANCE,
+			new FossilSolver(),
+			new ReorderHelper(),
+			BazaarOrderTracker.INSTANCE,
+			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
 			new LBinTooltip(3),
 			new AvgBinTooltip(4),
-			new DungeonQualityTooltip(5),
-			new MotesTooltip(6),
-			new ObtainedDateTooltip(7),
-			new MuseumTooltip(8),
-			new ColorTooltip(9),
-			new AccessoryTooltip(10),
+			new EssenceShopPrice(5),
+			new CraftPriceTooltip(6),
+			new EstimatedItemValueTooltip(7),
+			new DungeonQualityTooltip(8),
+			new MotesTooltip(9),
+			new ObtainedDateTooltip(10),
+			new MuseumTooltip(11),
+			new ColorTooltip(12),
+			new AccessoryTooltip(13),
+			new DateCalculatorTooltip(14),
+			new HuntingBoxPriceTooltip(15),
+			CroesusProfit.INSTANCE, // priority = 16
 	};
-	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
+	private static List<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
 	private TooltipManager() {
 	}
 
+	@Init
 	public static void init() {
 		ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
 			if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen<?> handledScreen) {
@@ -49,19 +71,16 @@ public class TooltipManager {
 		});
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
 			onScreenChange(screen);
-			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
+			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders = List.of());
 		});
 	}
 
 	private static void onScreenChange(Screen screen) {
-		final String title = screen.getTitle().getString();
-		currentScreenAdders.clear();
-		for (TooltipAdder adder : adders) {
-			if (adder.titlePattern == null || adder.titlePattern.matcher(title).find()) {
-				currentScreenAdders.add(adder);
-			}
-		}
-		currentScreenAdders.sort(Comparator.comparingInt(adder -> adder.priority));
+		currentScreenAdders = Arrays.stream(adders)
+				.filter(ContainerMatcher::isEnabled)
+				.filter(adder -> adder.test(screen))
+				.sorted(Comparator.comparingInt(TooltipAdder::getPriority))
+				.toList();
 	}
 
 	/**

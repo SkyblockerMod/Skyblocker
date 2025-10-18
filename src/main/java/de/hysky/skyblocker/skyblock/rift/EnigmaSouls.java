@@ -13,10 +13,10 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandRegistryAccess;
@@ -43,7 +43,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class EnigmaSouls {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnigmaSouls.class);
 	private static final Supplier<Waypoint.Type> TYPE_SUPPLIER = () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType;
-	private static final Identifier WAYPOINTS_JSON = Identifier.of(SkyblockerMod.NAMESPACE, "rift/enigma_soul_waypoints.json");
+	private static final Identifier WAYPOINTS_JSON = SkyblockerMod.id("rift/enigma_soul_waypoints.json");
 	private static final Map<BlockPos, ProfileAwareWaypoint> SOUL_WAYPOINTS = new HashMap<>(42);
 	private static final Path FOUND_SOULS_FILE = SkyblockerMod.CONFIG_DIR.resolve("found_enigma_souls.json");
 	private static final float[] GREEN = ColorUtils.getFloatComponents(DyeColor.GREEN);
@@ -61,7 +61,7 @@ public class EnigmaSouls {
 				for (int i = 0; i < waypoints.size(); i++) {
 					JsonObject waypoint = waypoints.get(i).getAsJsonObject();
 					BlockPos pos = new BlockPos(waypoint.get("x").getAsInt(), waypoint.get("y").getAsInt(), waypoint.get("z").getAsInt());
-					SOUL_WAYPOINTS.put(pos, new ProfileAwareWaypoint(pos, TYPE_SUPPLIER, GREEN, RED));
+					SOUL_WAYPOINTS.put(pos, new EnigmaSoul(pos, TYPE_SUPPLIER, GREEN, RED));
 				}
 
 			} catch (IOException e) {
@@ -109,27 +109,27 @@ public class EnigmaSouls {
 		}
 	}
 
-	static void render(WorldRenderContext context) {
+	static void extractRendering(PrimitiveCollector collector) {
 		OtherLocationsConfig.Rift config = SkyblockerConfigManager.get().otherLocations.rift;
 
 		if (Utils.isInTheRift() && config.enigmaSoulWaypoints && soulsLoaded.isDone()) {
 			for (Waypoint soul : SOUL_WAYPOINTS.values()) {
-				if (soul.shouldRender()) {
-					soul.render(context);
-				} else if (config.highlightFoundEnigmaSouls) {
-					soul.render(context);
+				if (soul.shouldRender() || config.highlightFoundEnigmaSouls) {
+					soul.extractRendering(collector);
 				}
 			}
 		}
 	}
 
-	static void onMessage(Text text, boolean overlay) {
+	static boolean onMessage(Text text, boolean overlay) {
 		if (Utils.isInTheRift() && !overlay) {
 			String message = text.getString();
 
 			if (message.equals("You have already found that Enigma Soul!") || Formatting.strip(message).equals("SOUL! You unlocked an Enigma Soul!"))
 				markClosestSoulAsFound();
 		}
+
+		return true;
 	}
 
 	static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
@@ -160,5 +160,16 @@ public class EnigmaSouls {
 				.min(Comparator.comparingDouble(soul -> soul.pos.getSquaredDistance(player.getPos())))
 				.filter(soul -> soul.pos.getSquaredDistance(player.getPos()) <= 16)
 				.ifPresent(Waypoint::setFound);
+	}
+
+	private static class EnigmaSoul extends ProfileAwareWaypoint {
+		private EnigmaSoul(BlockPos pos, Supplier<Type> typeSupplier, float[] missingColor, float[] foundColor) {
+			super(pos, typeSupplier, missingColor, foundColor);
+		}
+
+		@Override
+		public boolean shouldRender() {
+			return super.shouldRender() || SkyblockerConfigManager.get().otherLocations.rift.highlightFoundEnigmaSouls;
+		}
 	}
 }

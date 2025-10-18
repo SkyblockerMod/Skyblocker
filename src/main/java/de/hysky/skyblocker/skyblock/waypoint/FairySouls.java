@@ -6,21 +6,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.PosUtils;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.*;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.player.PlayerEntity;
@@ -63,18 +61,19 @@ public class FairySouls {
         return location == null ? maxSouls : fairySouls.get(location).size();
     }
 
+    @Init
     public static void init() {
         loadFairySouls();
         ClientLifecycleEvents.CLIENT_STOPPING.register(FairySouls::saveFoundFairySouls);
         ClientCommandRegistrationCallback.EVENT.register(FairySouls::registerCommands);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(FairySouls::render);
-        ClientReceiveMessageEvents.GAME.register(FairySouls::onChatMessage);
+        WorldRenderExtractionCallback.EVENT.register(FairySouls::extractRendering);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(FairySouls::onChatMessage);
     }
 
     private static void loadFairySouls() {
         fairySoulsLoaded = NEURepoManager.runAsyncAfterLoad(() -> {
-            maxSouls = NEURepoManager.NEU_REPO.getConstants().getFairySouls().getMaxSouls();
-            NEURepoManager.NEU_REPO.getConstants().getFairySouls().getSoulLocations().forEach((location, fairiesForLocation) -> fairySouls.put(location, fairiesForLocation.stream().map(coordinate -> new BlockPos(coordinate.getX(), coordinate.getY(), coordinate.getZ())).collect(Collectors.toUnmodifiableMap(pos -> pos, pos -> new ProfileAwareWaypoint(pos, TYPE_SUPPLIER, ColorUtils.getFloatComponents(DyeColor.GREEN), ColorUtils.getFloatComponents(DyeColor.RED))))));
+            maxSouls = NEURepoManager.getConstants().getFairySouls().getMaxSouls();
+            NEURepoManager.getConstants().getFairySouls().getSoulLocations().forEach((location, fairiesForLocation) -> fairySouls.put(location, fairiesForLocation.stream().map(coordinate -> new BlockPos(coordinate.getX(), coordinate.getY(), coordinate.getZ())).collect(Collectors.toUnmodifiableMap(pos -> pos, pos -> new FairySoul(pos, TYPE_SUPPLIER, ColorUtils.getFloatComponents(DyeColor.GREEN), ColorUtils.getFloatComponents(DyeColor.RED))))));
             LOGGER.debug("[Skyblocker] Loaded {} fairy souls across {} locations", fairySouls.values().stream().mapToInt(Map::size).sum(), fairySouls.size());
 
             try (BufferedReader reader = Files.newBufferedReader(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json"))) {
@@ -142,25 +141,27 @@ public class FairySouls {
                         }))));
     }
 
-    private static void render(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         HelperConfig.FairySouls fairySoulsConfig = SkyblockerConfigManager.get().helpers.fairySouls;
 
         if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
             for (Waypoint fairySoul : fairySouls.get(Utils.getLocationRaw()).values()) {
                 boolean fairySoulNotFound = fairySoul.shouldRender();
-                if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.getSquaredDistance(context.camera().getPos()) > 2500) {
+                if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.getSquaredDistance(RenderHelper.getCamera().getPos()) > 2500) {
                     continue;
                 }
-                fairySoul.render(context);
+                fairySoul.extractRendering(collector);
             }
         }
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
+    private static boolean onChatMessage(Text text, boolean overlay) {
         String message = text.getString();
         if (message.equals("You have already found that Fairy Soul!") || message.equals("§d§lSOUL! §fYou found a §dFairy Soul§f!")) {
             markClosestFairyFound();
         }
+
+        return true;
     }
 
     private static void markClosestFairyFound() {
@@ -196,6 +197,20 @@ public class FairySouls {
         Map<BlockPos, ProfileAwareWaypoint> fairiesForLocation = fairySouls.get(Utils.getLocationRaw());
         if (fairiesForLocation != null) {
             fairiesForLocation.values().forEach(ProfileAwareWaypoint::setMissing);
+        }
+    }
+
+    private static class FairySoul extends ProfileAwareWaypoint {
+        private FairySoul(BlockPos pos, Supplier<Type> typeSupplier, float[] missingColor, float[] foundColor) {
+            super(pos, typeSupplier, missingColor, foundColor);
+        }
+
+        /**
+         * Less strict than the check {@link FairySouls#extractRendering(PrimitiveCollector)} since this only needs to ensure found fairy souls are rendered if the config is enabled.
+         */
+        @Override
+        public boolean shouldRender() {
+            return super.shouldRender() || SkyblockerConfigManager.get().helpers.fairySouls.highlightFoundSouls;
         }
     }
 }

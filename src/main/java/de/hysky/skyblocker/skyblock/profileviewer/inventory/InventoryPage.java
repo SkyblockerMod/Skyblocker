@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.BackpackItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.PetsInventoryItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.WardrobeInventoryItemLoader;
-import de.hysky.skyblocker.skyblock.profileviewer.utils.SkullCreator;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.SubPageSelectButton;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -22,15 +22,15 @@ import java.util.List;
 import java.util.Map;
 
 public class InventoryPage implements ProfileViewerPage {
-    private static final String[] INVENTORY_PAGES = {"Inventory", "Enderchest", "Backpack", "Wardrobe", "Pets", "Accessory Bag"};
+    private static final String[] INVENTORY_PAGES = {"inventory", "enderchest", "backpack", "wardrobe", "pets", "accessoryBag"};
     private static final int TOTAL_HEIGHT = 165;
     private static final Map<String, ItemStack> ICON_MAP = Map.ofEntries(
-            Map.entry("Wardrobe", Ico.L_CHESTPLATE),
-            Map.entry("Inventory", Ico.CHEST),
-            Map.entry("Backpack", SkullCreator.createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzYyZjNiM2EwNTQ4MWNkZTc3MjQwMDA1YzBkZGNlZTFjMDY5ZTU1MDRhNjJjZTA5Nzc4NzlmNTVhMzkzOTYxNDYifX19")),
-            Map.entry("Pets", Ico.BONE),
-            Map.entry("Enderchest", Ico.E_CHEST),
-            Map.entry("Accessory Bag", SkullCreator.createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTYxYTkxOGMwYzQ5YmE4ZDA1M2U1MjJjYjkxYWJjNzQ2ODkzNjdiNGQ4YWEwNmJmYzFiYTkxNTQ3MzA5ODVmZiJ9fX0="))
+            Map.entry("wardrobe", Ico.L_CHESTPLATE),
+            Map.entry("inventory", Ico.CHEST),
+            Map.entry("backpack", ProfileViewerUtils.createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzYyZjNiM2EwNTQ4MWNkZTc3MjQwMDA1YzBkZGNlZTFjMDY5ZTU1MDRhNjJjZTA5Nzc4NzlmNTVhMzkzOTYxNDYifX19")),
+            Map.entry("pets", Ico.BONE),
+            Map.entry("enderchest", Ico.E_CHEST),
+            Map.entry("accessoryBag", ProfileViewerUtils.createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTYxYTkxOGMwYzQ5YmE4ZDA1M2U1MjJjYjkxYWJjNzQ2ODkzNjdiNGQ4YWEwNmJmYzFiYTkxNTQ3MzA5ODVmZiJ9fX0="))
     );
 
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
@@ -47,11 +47,11 @@ public class InventoryPage implements ProfileViewerPage {
             JsonObject inventoryData = pProfile.getAsJsonObject("inventory");
             if (inventoryData == null) return;
             inventorySubPages[0] = new PlayerInventory(inventoryData);
-            inventorySubPages[1] = new Inventory(INVENTORY_PAGES[1], IntIntPair.of(5, 9), inventoryData.getAsJsonObject("ender_chest_contents"));
-            inventorySubPages[2] = new Inventory(INVENTORY_PAGES[2], IntIntPair.of(5, 9), inventoryData.getAsJsonObject("backpack_contents"), new BackpackItemLoader());
-            inventorySubPages[3] = new Inventory(INVENTORY_PAGES[3], IntIntPair.of(4, 9), inventoryData.getAsJsonObject("wardrobe_contents"), new WardrobeInventoryItemLoader(inventoryData));
+            if (inventoryData.has("ender_chest_contents")) inventorySubPages[1] = new Inventory(INVENTORY_PAGES[1], IntIntPair.of(5, 9), inventoryData.getAsJsonObject("ender_chest_contents"));
+            if (inventoryData.has("backpack_contents")) inventorySubPages[2] = new Inventory(INVENTORY_PAGES[2], IntIntPair.of(5, 9), inventoryData.getAsJsonObject("backpack_contents"), new BackpackItemLoader());
+            if (inventoryData.has("wardrobe_contents")) inventorySubPages[3] = new Inventory(INVENTORY_PAGES[3], IntIntPair.of(4, 9), inventoryData.getAsJsonObject("wardrobe_contents"), new WardrobeInventoryItemLoader(inventoryData));
             inventorySubPages[4] = new Inventory(INVENTORY_PAGES[4], IntIntPair.of(4, 9), pProfile, new PetsInventoryItemLoader());
-            inventorySubPages[5] = new Inventory(INVENTORY_PAGES[5], IntIntPair.of(5, 9), inventoryData.getAsJsonObject("bag_contents").getAsJsonObject("talisman_bag"));
+            if (inventoryData.has("bag_contents") && inventoryData.getAsJsonObject("bag_contents").has("talisman_bag")) inventorySubPages[5] = new Inventory(INVENTORY_PAGES[5], IntIntPair.of(5, 9), inventoryData.getAsJsonObject("bag_contents").getAsJsonObject("talisman_bag"));
         } catch (Exception e) {
             ProfileViewerScreen.LOGGER.error("[Skyblocker Profile Viewer] Error while loading inventory data: ", e);
         }

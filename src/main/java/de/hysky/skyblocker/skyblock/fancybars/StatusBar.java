@@ -3,16 +3,25 @@ package de.hysky.skyblocker.skyblock.fancybars;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,333 +30,425 @@ import java.util.function.Consumer;
 
 public class StatusBar implements Widget, Drawable, Element, Selectable {
 
-    private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
-    private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
+	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
+	public static final int ICON_SIZE = 9;
 
-   /* public static final Codec<StatusBar> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    Codec.INT.fieldOf("size").forGetter(bar -> bar.size),
-                    Codec.INT.fieldOf("x").forGetter(bar -> bar.gridX),
-                    Codec.INT.fieldOf("y").forGetter(bar -> bar.gridY),
-                    Codec.STRING.listOf().fieldOf("colors").xmap(
-                                    strings -> strings.stream().map(s -> Integer.parseInt(s, 16)).map(Color::new).toArray(Color[]::new),
-                                    colors -> Arrays.stream(colors).map(color -> Integer.toHexString(color.getRGB())).toList())
-                            .forGetter(StatusBar::getColors),
-                    Codec.STRING.optionalFieldOf("text_color").xmap(
-                                    s -> {
-                                        if (s.isPresent()) {
-                                            return Optional.of(new Color(Integer.parseInt(s.get(), 16)));
-                                        } else return Optional.empty();
-                                    },
-                                    o -> o.map(object -> Integer.toHexString(((Color) object).getRGB())))
-                            .forGetter(bar -> {
-                                if (bar.getTextColor() != null) {
-                                    return Optional.of(bar.getTextColor());
-                                } else return Optional.empty();
-                            }),
-                    Codec.BOOL.optionalFieldOf("show_text", true).forGetter(StatusBar::showText),
-                    Codec.STRING.fieldOf("icon_position").xmap(
-                            IconPosition::valueOf,
-                            Enum::toString
-                    ).forGetter(bar -> bar.iconPosition)
-            )
+	private final Identifier icon;
+	private final StatusBarType type;
+	private Color[] colors;
+	private @Nullable Color textColor;
 
-            .apply(instance, ));*/
+	public Color[] getColors() {
+		return colors;
+	}
 
-    private final Identifier icon;
+	public boolean hasOverflow() {
+		return type.hasOverflow();
+	}
 
-    public Color[] getColors() {
-        return colors;
-    }
+	public boolean hasMax() {
+		return type.hasMax();
+	}
 
-    public boolean hasOverflow() {
-        return hasOverflow;
-    }
+	public @Nullable Color getTextColor() {
+		return textColor;
+	}
 
-    public @Nullable Color getTextColor() {
-        return textColor;
-    }
+	public void setTextColor(@Nullable Color textColor) {
+		this.textColor = textColor;
+	}
 
-    private Color[] colors;
-    private final boolean hasOverflow;
+	public Text getName() {
+		return type.getName();
+	}
 
-    public void setTextColor(@Nullable Color textColor) {
-        this.textColor = textColor;
-    }
+	private @Nullable OnClick onClick = null;
+	public int gridX = 0;
+	public int gridY = 0;
+	public float x = 0;
+	public float y = 0;
+	public float width = 0;
+	public @Nullable BarPositioner.BarAnchor anchor = null;
 
-    private @Nullable Color textColor;
+	public int size = 1;
 
-    public Text getName() {
-        return name;
-    }
+	public float fill = 0;
+	public float overflowFill = 0;
+	public boolean inMouse = false;
+	/**
+	 * Used to hide the bar dynamically, like the oxygen bar
+	 */
+	public boolean visible = true;
+	public boolean enabled = true;
 
-    private final Text name;
+	private Object value = "???";
+	private @Nullable Object max = "???";
+	private @Nullable Object overflow = "???";
 
-    private @Nullable OnClick onClick = null;
-    public int gridX = 0;
-    public int gridY = 0;
-    public @Nullable BarPositioner.BarAnchor anchor = null;
+	private int renderX = 0;
+	private int renderY = 0;
+	private int renderWidth = 0;
 
-    public int size = 1;
-    private int width = 0;
+	private IconPosition iconPosition = IconPosition.LEFT;
+	private TextPosition textPosition = TextPosition.BAR_CENTER;
 
-    public float fill = 0;
-    public float overflowFill = 0;
-    public boolean inMouse = false;
+	public boolean showMax = false;
+	public boolean showOverflow = false;
 
-    private Object value = "";
+	public StatusBar(StatusBarType type) {
+		this.icon = SkyblockerMod.id("bars/icons/" + type.asString());
+		this.colors = type.getColors();
+		this.textColor = type.getTextColor();
+		this.type = type;
+	}
 
-    private int x = 0;
-    private int y = 0;
+	protected int transparency(int color) {
+		if (inMouse) return (color & 0x00FFFFFF) | 0x44_000000;
+		return color;
+	}
 
-    private IconPosition iconPosition = IconPosition.LEFT;
-    private boolean showText = true;
+	@Override
+	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		renderBar(context);
+		if (enabled) renderText(context);
+	}
 
-    public StatusBar(Identifier icon, Color[] colors, boolean hasOverflow, @Nullable Color textColor, Text name) {
-        this.icon = icon;
-        this.colors = colors;
-        this.hasOverflow = hasOverflow;
-        this.textColor = textColor;
-        this.name = name;
-    }
+	public void renderBar(DrawContext context) {
+		if (renderWidth <= 0) return;
+		int transparency = transparency(-1);
+		switch (iconPosition) {
+			case LEFT -> context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, icon, renderX, renderY, ICON_SIZE, ICON_SIZE, transparency);
+			case RIGHT -> context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, icon, renderX + renderWidth - ICON_SIZE, renderY, ICON_SIZE, ICON_SIZE, transparency);
+		}
 
-    public StatusBar(Identifier icon, Color[] colors, boolean hasOverflow, @Nullable Color textColor) {
-        this(icon, colors, hasOverflow, textColor, Text.empty());
-    }
+		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
+		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 1 : renderX;
+		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
+		drawBarFill(context, barX, barWidth);
+		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
+	}
 
-    @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        if (width <= 0) return;
-        // half works lol. only puts transparency on the filler of the bar
-        if (inMouse) context.setShaderColor(1f, 1f, 1f, 0.25f);
-        switch (iconPosition) {
-            case LEFT -> context.drawGuiTexture(icon, x, y, 9, 9);
-            case RIGHT -> context.drawGuiTexture(icon, x + width - 9, y, 9, 9);
-        }
+	protected void drawBarFill(DrawContext context, int barX, int barWith) {
+		HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
 
-        int barWith = iconPosition.equals(IconPosition.OFF) ? width : width - 10;
-        int barX = iconPosition.equals(IconPosition.LEFT) ? x + 10 : x;
-        context.drawGuiTexture(BAR_BACK, barX, y + 1, barWith, 7);
-        RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * fill), 5, colors[0]);
+		if (hasOverflow() && overflowFill > 0) {
+			HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
+		}
+	}
 
+	public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
+		this.value = text;
+		this.fill = Math.clamp(fill, 0, 1);
+		this.overflowFill = Math.clamp(overflowFill, 0, 1);
+		this.max = max;
+		this.overflow = overflow;
+	}
 
-        if (hasOverflow && overflowFill > 0) {
-            RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * overflowFill), 5, colors[1]);
-        }
-        if (inMouse) context.setShaderColor(1f, 1f, 1f, 1f);
-        //context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
-    }
+	public void updateWithResource(StatusBarTracker.Resource resource) {
+		updateValues(resource.value() / (float) resource.max(), resource.overflow() / (float) resource.max(), resource.value(), resource.max(), resource.overflow() > 0 ? resource.overflow() : null);
+	}
 
-    public void updateValues(float fill, float overflowFill, Object text) {
-        this.value = text;
-        this.fill = fill;
-        this.overflowFill = overflowFill;
-    }
+	public void renderText(DrawContext context) {
+		if (!showText()) return;
+		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
+		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 2 : renderX;
+		String stringValue = this.value.toString();
+		MutableText text = Text.literal(stringValue).styled(style -> style.withColor((textColor == null ? colors[0] : textColor).getRGB()));
 
-    public void renderText(DrawContext context) {
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        int barWith = iconPosition.equals(IconPosition.OFF) ? width : width - 10;
-        int barX = iconPosition.equals(IconPosition.LEFT) ? x + 11 : x;
-        String text = this.value.toString();
-        int x = barX + (barWith - textRenderer.getWidth(text)) / 2;
-        int y = this.y - 3;
+		if (hasMax() && showMax && max != null) {
+			text.append("/").append(max.toString());
+		}
+		if (hasOverflow() && showOverflow && overflow != null) {
+			MutableText literal = Text.literal(" + ").styled(style -> style.withColor(colors[1].getRGB()));
+			literal.append(overflow.toString());
+			text.append(literal);
+		}
 
-        final int[] offsets = new int[]{-1, 1};
-        for (int i : offsets) {
-            context.drawText(textRenderer, text, x + i, y, 0, false);
-            context.drawText(textRenderer, text, x, y + i, 0, false);
-        }
-        context.drawText(textRenderer, text, x, y, (textColor == null ? colors[0] : textColor).getRGB(), false);
-    }
+		int textWidth = textRenderer.getWidth(text);
+		int x;
+		switch (textPosition) {
+			case RIGHT -> x = barX + barWidth - textWidth;
+			case CENTER -> x = this.renderX + (renderWidth - textWidth) / 2;
+			case BAR_CENTER -> x = barX + (barWidth - textWidth) / 2;
+			case null, default -> x = barX; // Put on the left by default because I said so.
+		}
+		int y = this.renderY - 3;
 
-    public void renderCursor(DrawContext context, int mouseX, int mouseY, float delta) {
-        int temp_x = x;
-        int temp_y = y;
-        int temp_width = width;
-        boolean temp_ghost = inMouse;
+		int color = transparency((textColor == null ? colors[0] : textColor).getRGB());
+		int outlineColor = transparency(Colors.BLACK);
 
-        x = mouseX;
-        y = mouseY;
-        width = 100;
-        inMouse = false;
+		HudHelper.drawOutlinedText(context, Text.of(text), x, y, color, outlineColor);
+	}
 
-        render(context, mouseX, mouseY, delta);
+	public void renderCursor(DrawContext context, int mouseX, int mouseY, float delta) {
+		int temp_x = renderX;
+		int temp_y = renderY;
+		boolean temp_ghost = inMouse;
 
-        x = temp_x;
-        y = temp_y;
-        width = temp_width;
-        inMouse = temp_ghost;
-    }
+		renderX = mouseX;
+		renderY = mouseY;
+		inMouse = false;
 
-    // GUI shenanigans
+		render(context, mouseX, mouseY, delta);
 
-    @Override
-    public void setX(int x) {
-        this.x = x;
-    }
+		renderX = temp_x;
+		renderY = temp_y;
+		inMouse = temp_ghost;
+	}
 
-    @Override
-    public void setY(int y) {
-        this.y = y;
-    }
+	// GUI shenanigans
 
-    @Override
-    public int getX() {
-        return x;
-    }
+	@Override
+	public void setX(int x) {
+		this.renderX = x;
+	}
 
-    @Override
-    public int getY() {
-        return y;
-    }
+	@Override
+	public void setY(int y) {
+		this.renderY = y;
+	}
 
-    @Override
-    public int getWidth() {
-        return width;
-    }
+	@Override
+	public int getX() {
+		return renderX;
+	}
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
+	@Override
+	public int getY() {
+		return renderY;
+	}
 
-    @Override
-    public int getHeight() {
-        return 9;
-    }
+	@Override
+	public int getWidth() {
+		return renderWidth;
+	}
 
-    @Override
-    public ScreenRect getNavigationFocus() {
-        return Widget.super.getNavigationFocus();
-    }
+	public void setWidth(int width) {
+		this.renderWidth = width;
+	}
 
-    @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX >= x && mouseX <= x + getWidth() && mouseY >= y && mouseY <= y + getHeight();
-    }
+	@Override
+	public int getHeight() {
+		return 9;
+	}
 
-    @Override
-    public void forEachChild(Consumer<ClickableWidget> consumer) {
-    }
+	@Override
+	public ScreenRect getNavigationFocus() {
+		return Widget.super.getNavigationFocus();
+	}
 
-    @Override
-    public void setFocused(boolean focused) {
-    }
+	@Override
+	public boolean isMouseOver(double mouseX, double mouseY) {
+		return mouseX >= renderX && mouseX <= renderX + getWidth() && mouseY >= renderY && mouseY <= renderY + getHeight();
+	}
 
-    @Override
-    public boolean isFocused() {
-        return false;
-    }
+	@Override
+	public void forEachChild(Consumer<ClickableWidget> consumer) {
+	}
 
-    @Override
-    public SelectionType getType() {
-        return SelectionType.NONE;
-    }
+	@Override
+	public void setFocused(boolean focused) {
+	}
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!isMouseOver(mouseX, mouseY)) return false;
-        if (onClick != null) {
-            onClick.onClick(this, button, (int) mouseX, (int) mouseY);
-        }
-        return true;
-    }
+	@Override
+	public boolean isFocused() {
+		return false;
+	}
 
-    public void setOnClick(@Nullable OnClick onClick) {
-        this.onClick = onClick;
-    }
+	@Override
+	public SelectionType getType() {
+		return SelectionType.NONE;
+	}
 
-    @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
-    }
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (!isMouseOver(mouseX, mouseY)) return false;
+		if (onClick != null) {
+			onClick.onClick(this, button, (int) mouseX, (int) mouseY);
+		}
+		return true;
+	}
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("name", name)
-                .append("gridX", gridX)
-                .append("gridY", gridY)
-                .append("size", size)
-                .append("x", x)
-                .append("y", y)
-                .append("width", width)
-                .append("anchor", anchor)
-                .toString();
-    }
+	public void setOnClick(@Nullable OnClick onClick) {
+		this.onClick = onClick;
+	}
 
-    public IconPosition getIconPosition() {
-        return iconPosition;
-    }
+	@Override
+	public void appendNarrations(NarrationMessageBuilder builder) {
+	}
 
-    public void setIconPosition(IconPosition iconPosition) {
-        this.iconPosition = iconPosition;
-    }
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append("name", getName())
+				.append("gridX", gridX)
+				.append("gridY", gridY)
+				.append("size", size)
+				.append("x", renderX)
+				.append("y", renderY)
+				.append("width", renderWidth)
+				.append("anchor", anchor)
+				.toString();
+	}
 
-    public boolean showText() {
-        return showText;
-    }
+	public IconPosition getIconPosition() {
+		return iconPosition;
+	}
 
-    public void setShowText(boolean showText) {
-        this.showText = showText;
-    }
+	public void setIconPosition(IconPosition iconPosition) {
+		this.iconPosition = iconPosition;
+	}
 
-    public enum IconPosition {
-        LEFT,
-        RIGHT,
-        OFF
-    }
+	public boolean showText() {
+		return textPosition != TextPosition.OFF;
+	}
 
-    @FunctionalInterface
-    public interface OnClick {
+	public TextPosition getTextPosition() {
+		return textPosition;
+	}
 
-        void onClick(StatusBar statusBar, int button, int mouseX, int mouseY);
-    }
+	public void setTextPosition(TextPosition textPosition) {
+		this.textPosition = textPosition;
+	}
 
-    public void loadFromJson(JsonObject object) {
-        // Make colors optional, so it's easy to reset to default
-        if (object.has("colors")) {
-            JsonArray colors1 = object.get("colors").getAsJsonArray();
-            if (colors1.size() < 2 && hasOverflow) {
-                throw new IllegalStateException("Missing second color of bar that has overflow");
-            }
-            Color[] newColors = new Color[colors1.size()];
-            for (int i = 0; i < colors1.size(); i++) {
-                JsonElement jsonElement = colors1.get(i);
-                newColors[i] = new Color(Integer.parseInt(jsonElement.getAsString(), 16));
-            }
-            this.colors = newColors;
-        }
+	public enum IconPosition implements StringIdentifiable {
+		LEFT,
+		RIGHT,
+		OFF;
 
-        if (object.has("text_color")) this.textColor = new Color(Integer.parseInt(object.get("text_color").getAsString(), 16));
+		@Override
+		public String asString() {
+			return name();
+		}
 
-        String maybeAnchor = object.get("anchor").getAsString().trim();
-        this.anchor = maybeAnchor.equals("null") ? null : BarPositioner.BarAnchor.valueOf(maybeAnchor);
-        this.size = object.get("size").getAsInt();
-        this.gridX = object.get("x").getAsInt();
-        this.gridY = object.get("y").getAsInt();
-        // these are optional too, why not
-        if (object.has("icon_position")) this.iconPosition = IconPosition.valueOf(object.get("icon_position").getAsString().trim());
-        if (object.has("show_text")) this.showText = object.get("show_text").getAsBoolean();
+		@Override
+		public String toString() {
+			return I18n.translate("skyblocker.bars.config.commonPosition." + name());
+		}
+	}
 
-    }
+	public enum TextPosition implements StringIdentifiable {
+		LEFT,
+		CENTER,
+		BAR_CENTER,
+		RIGHT,
+		OFF;
 
-    public JsonObject toJson() {
-        JsonObject object = new JsonObject();
-        JsonArray colors1 = new JsonArray();
-        for (Color color : colors) {
-            colors1.add(Integer.toHexString(color.getRGB()).substring(2));
-        }
-        object.add("colors", colors1);
-        if (textColor != null) {
-            object.addProperty("text_color", Integer.toHexString(textColor.getRGB()).substring(2));
-        }
-        object.addProperty("size", size);
-        if (anchor != null) {
-            object.addProperty("anchor", anchor.toString());
-        } else object.addProperty("anchor", "null");
-        object.addProperty("x", gridX);
-        object.addProperty("y", gridY);
-        object.addProperty("icon_position", iconPosition.toString());
-        object.addProperty("show_text", showText);
-        return object;
-    }
+		@Override
+		public String asString() {
+			return name();
+		}
+
+		@Override
+		public String toString() {
+			if (this == CENTER || this == BAR_CENTER) return I18n.translate("skyblocker.bars.config.textPosition." + name());
+			return I18n.translate("skyblocker.bars.config.commonPosition." + name());
+		}
+	}
+
+	@FunctionalInterface
+	public interface OnClick {
+
+		void onClick(StatusBar statusBar, int button, int mouseX, int mouseY);
+	}
+
+	public void loadFromJson(JsonObject object) {
+		// Make colors optional, so it's easy to reset to default
+		if (object.has("colors")) {
+			JsonArray colors1 = object.get("colors").getAsJsonArray();
+			if (colors1.size() < 2 && hasOverflow()) {
+				throw new IllegalStateException("Missing second color of bar that has overflow");
+			}
+			Color[] newColors = new Color[colors1.size()];
+			for (int i = 0; i < colors1.size(); i++) {
+				JsonElement jsonElement = colors1.get(i);
+				newColors[i] = new Color(Integer.parseInt(jsonElement.getAsString(), 16));
+			}
+			this.colors = newColors;
+		}
+
+		if (object.has("text_color")) this.textColor = new Color(Integer.parseInt(object.get("text_color").getAsString(), 16));
+
+		String maybeAnchor = object.get("anchor").getAsString().trim();
+		this.anchor = maybeAnchor.equals("null") ? null : BarPositioner.BarAnchor.valueOf(maybeAnchor);
+		if (!object.has("enabled")) {
+			enabled = anchor != null;
+		} else enabled = object.get("enabled").getAsBoolean();
+		if (anchor != null) {
+			this.size = object.get("size").getAsInt();
+			this.gridX = object.get("x").getAsInt();
+			this.gridY = object.get("y").getAsInt();
+		} else {
+			this.width = object.get("size").getAsFloat();
+			this.x = object.get("x").getAsFloat();
+			this.y = object.get("y").getAsFloat();
+		}
+		// these are optional too, why not
+		if (object.has("icon_position")) this.iconPosition = IconPosition.valueOf(object.get("icon_position").getAsString().trim());
+		// backwards compat teehee
+		if (object.has("show_text")) this.textPosition = object.get("show_text").getAsBoolean() ? TextPosition.BAR_CENTER : TextPosition.OFF;
+		if (object.has("text_position")) this.textPosition = TextPosition.valueOf(object.get("text_position").getAsString().trim());
+		if (object.has("show_max")) this.showMax = object.get("show_max").getAsBoolean();
+		if (object.has("show_overflow")) this.showOverflow = object.get("show_overflow").getAsBoolean();
+	}
+
+	public JsonObject toJson() {
+		JsonObject object = new JsonObject();
+		JsonArray colors1 = new JsonArray();
+		for (Color color : colors) {
+			colors1.add(Integer.toHexString(color.getRGB()).substring(2));
+		}
+		object.add("colors", colors1);
+		if (textColor != null) {
+			object.addProperty("text_color", Integer.toHexString(textColor.getRGB()).substring(2));
+		}
+		if (anchor != null) {
+			object.addProperty("anchor", anchor.toString());
+		} else object.addProperty("anchor", "null");
+		if (anchor != null) {
+			object.addProperty("x", gridX);
+			object.addProperty("y", gridY);
+			object.addProperty("size", size);
+		} else {
+			object.addProperty("size", width);
+			object.addProperty("x", x);
+			object.addProperty("y", y);
+		}
+		object.addProperty("icon_position", iconPosition.asString());
+		object.addProperty("text_position", textPosition.asString());
+		object.addProperty("show_max", showMax);
+		object.addProperty("show_overflow", showOverflow);
+		object.addProperty("enabled", enabled);
+		return object;
+	}
+
+	public static class ManaStatusBar extends StatusBar {
+
+		public ManaStatusBar(StatusBarType type) {
+			super(type);
+		}
+
+		@Override
+		protected void drawBarFill(DrawContext context, int barX, int barWith) {
+			if (hasOverflow() && overflowFill > 0) {
+				if (overflowFill > fill && SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.IN_FRONT) {
+					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+				} else {
+					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+				}
+			} else {
+				HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+			}
+		}
+
+		@Override
+		public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
+			super.updateValues(fill, overflowFill, StatusBarTracker.isManaEstimated() ? "~" + text : text, max, overflow);
+		}
+	}
 }

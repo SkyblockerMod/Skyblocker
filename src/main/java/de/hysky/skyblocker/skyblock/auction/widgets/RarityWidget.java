@@ -2,25 +2,26 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
+
+import org.joml.Matrix3x2fStack;
 
 public class RarityWidget extends ClickableWidget {
 
-    private static final Identifier HOVER_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/rarity_widget/hover.png");
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/rarity_widget/background.png");
+    private static final Identifier HOVER_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/hover.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/background.png");
     private final SlotClickHandler onClick;
     private int slotId = -1;
 
@@ -31,30 +32,30 @@ public class RarityWidget extends ClickableWidget {
 
     @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        MatrixStack matrices = context.getMatrices();
-        matrices.push();
-        matrices.translate(getX(), getY(), 0);
+        Matrix3x2fStack matrices = context.getMatrices();
+        matrices.pushMatrix();
+        matrices.translate(getX(), getY());
         boolean onLeftArrow = isOnLeftArrow(mouseX);
         boolean onRightArrow = isOnRightArrow(mouseX);
-        context.drawTexture(TEXTURE, 0, 0, 0, 0, 48, 11, 48, 11);
-        if (onLeftArrow) context.drawTexture(HOVER_TEXTURE, 0, 0, 0, 0, 6, 11, 6, 11);
-        if (onRightArrow) context.drawTexture(HOVER_TEXTURE, 42, 0, 0, 0, 6, 11, 6, 11);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 0, 0, 48, 11, 48, 11);
+        if (onLeftArrow) context.drawTexture(RenderPipelines.GUI_TEXTURED, HOVER_TEXTURE, 0, 0, 0, 0, 6, 11, 6, 11);
+        if (onRightArrow) context.drawTexture(RenderPipelines.GUI_TEXTURED, HOVER_TEXTURE, 42, 0, 0, 0, 6, 11, 6, 11);
 
         // Text
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         int textWidth = textRenderer.getWidth(current);
         if (textWidth > 34) {
             float scale = 34f / textWidth;
-            matrices.push();
-            matrices.translate(0, 5.5, 0);
-            matrices.scale(scale, scale, 1);
+            matrices.pushMatrix();
+            matrices.translate(0f, 5.5f);
+            matrices.scale(scale, scale);
             context.drawCenteredTextWithShadow(textRenderer, current, (int) (24 / scale), -textRenderer.fontHeight / 2, color);
-            matrices.pop();
+            matrices.popMatrix();
         } else {
             context.drawCenteredTextWithShadow(textRenderer, current, 24, 2, color);
         }
 
-        matrices.pop();
+        matrices.popMatrix();
         if (!onLeftArrow && !onRightArrow && isHovered()) context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
 
     }
@@ -83,14 +84,8 @@ public class RarityWidget extends ClickableWidget {
     public void setText(List<Text> tooltip, String current) {
         this.tooltip = tooltip;
         this.current = current;
-        for (Map.Entry<String, SkyblockItemRarity> rarity : ItemRarityBackgrounds.LORE_RARITIES.entrySet()) {
-            if (current.toUpperCase().contains(rarity.getKey())) {
-                this.color = rarity.getValue().color | 0xFF000000;
-                return;
-            }
-        }
-        //noinspection DataFlowIssue
-        this.color = Formatting.GRAY.getColorValue() | 0xFF000000;
+		//noinspection DataFlowIssue
+		this.color = SkyblockItemRarity.containsName(current.toUpperCase(Locale.ENGLISH)).map(r -> r.color).orElse(Formatting.GRAY.getColorValue()) | 0xFF000000;
     }
 
     @Override

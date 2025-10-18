@@ -25,4 +25,8 @@ public final class PosUtils {
     public static String getPosString(BlockPos blockPos) {
         return blockPos.getX() + "," + blockPos.getY() + "," + blockPos.getZ();
     }
+
+    public static String toSpaceSeparatedString(BlockPos blockPos) {
+        return blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ();
+    }
 }

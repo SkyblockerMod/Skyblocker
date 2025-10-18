@@ -2,15 +2,15 @@ package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.mob.SilverfishEntity;
 import net.minecraft.util.DyeColor;
@@ -36,6 +36,7 @@ public class Silverfish extends DungeonPuzzle {
         super("silverfish", "ice-silverfish-room");
     }
 
+    @Init
     public static void init() {
         if (Debug.debugEnabled()) {
             ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
@@ -155,7 +156,7 @@ public class Silverfish extends DungeonPuzzle {
     }
 
     @Override
-    public void render(WorldRenderContext context) {
+    public void extractRendering(PrimitiveCollector collector) {
         if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveSilverfish || !DungeonManager.isCurrentRoomMatched() || silverfishPath.isEmpty()) {
             return;
         }
@@ -164,7 +165,7 @@ public class Silverfish extends DungeonPuzzle {
         for (int i = 0; i < silverfishPath.size() - 1; i++) {
             Vec3d start = Vec3d.ofCenter(room.relativeToActual(pos.set(23 - silverfishPath.get(i).y(), 67, 24 - silverfishPath.get(i).x())));
             Vec3d end = Vec3d.ofCenter(room.relativeToActual(pos.set(23 - silverfishPath.get(i + 1).y(), 67, 24 - silverfishPath.get(i + 1).x())));
-            RenderHelper.renderLinesFromPoints(context, new Vec3d[]{start, end}, RED_COLOR_COMPONENTS, 1f, 5f, true);
+            collector.submitLinesFromPoints(new Vec3d[]{start, end}, RED_COLOR_COMPONENTS, 1f, 5f, true);
         }
     }
 

@@ -1,13 +1,14 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
@@ -17,6 +18,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,7 @@ import java.util.regex.Pattern;
 
 public class MetalDetector {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    private static final float[] LIGHT_GRAY = { 192 / 255f, 192 / 255f, 192 / 255f };
+    private static final float[] LIGHT_GRAY = {192 / 255f, 192 / 255f, 192 / 255f};
     private static final Pattern TREASURE_PATTERN = Pattern.compile("(§3§lTREASURE: §b)(\\d+\\.?\\d?)m");
     private static final Pattern KEEPER_PATTERN = Pattern.compile("Keeper of (\\w+)");
     private static final Map<String, Vec3i> keeperOffsets = Map.of(
@@ -87,9 +89,10 @@ public class MetalDetector {
     private static boolean startedLooking = false;
     protected static List<Vec3i> possibleBlocks = new ArrayList<>();
 
+    @Init
     public static void init() {
-        ClientReceiveMessageEvents.GAME.register(MetalDetector::getDistanceMessage);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(MetalDetector::render);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(MetalDetector::getDistanceMessage);
+        WorldRenderExtractionCallback.EVENT.register(MetalDetector::extractRendering);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
     }
 
@@ -99,15 +102,15 @@ public class MetalDetector {
      * @param text    the message sent to the player
      * @param overlay if the message is an overlay message
      */
-    private static void getDistanceMessage(Text text, boolean overlay) {
+    private static boolean getDistanceMessage(Text text, boolean overlay) {
         if (!overlay || !SkyblockerConfigManager.get().mining.crystalHollows.metalDetectorHelper || !Utils.isInCrystalHollows() || !(Utils.getIslandArea().substring(2).equals("Mines of Divan")) || CLIENT.player == null) {
             checkChestFound(text);
-            return;
+            return true;
         }
         //in the mines of divan
         Matcher treasureDistanceMature = TREASURE_PATTERN.matcher(text.getString());
         if (!treasureDistanceMature.find()) {
-            return;
+            return true;
         }
         //find new values
         double distance = Double.parseDouble(treasureDistanceMature.group(2));
@@ -142,6 +145,8 @@ public class MetalDetector {
         //update previous positions
         previousDistance = distance;
         previousPlayerPos = playerPos;
+
+        return true;
     }
 
     /**
@@ -234,7 +239,7 @@ public class MetalDetector {
      *
      * @param context world render context
      */
-    private static void render(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         //only render enabled and if there is a few location options and in the mines of divan
         if (!SkyblockerConfigManager.get().mining.crystalHollows.metalDetectorHelper || !Utils.isInCrystalHollows() || possibleBlocks.isEmpty() || possibleBlocks.size() > 8 || !(Utils.getIslandArea().substring(2).equals("Mines of Divan"))) {
             return;
@@ -242,15 +247,15 @@ public class MetalDetector {
         //only one location render just that and guiding line to it
         if (possibleBlocks.size() == 1) {
             Vec3i block = possibleBlocks.getFirst().add(0, -1, 0); //the block you are taken to is one block above the chest
-            CrystalsWaypoint waypoint = new CrystalsWaypoint(CrystalsWaypoint.Category.CORLEONE, Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.treasure"), new BlockPos(block.getX(), block.getY(), block.getZ()));
-            waypoint.render(context);
-            RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(block), LIGHT_GRAY, 1f, 5f);
+            NamedWaypoint waypoint = new NamedWaypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.treasure").getString(), Color.yellow.getColorComponents(null));
+            waypoint.extractRendering(collector);
+            collector.submitLineFromCursor(Vec3d.ofCenter(block), LIGHT_GRAY, 1f, 5f);
             return;
         }
 
         for (Vec3i block : possibleBlocks) {
-            CrystalsWaypoint waypoint = new CrystalsWaypoint(CrystalsWaypoint.Category.CORLEONE, Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible"), new BlockPos(block.getX(), block.getY(), block.getZ()));
-            waypoint.render(context);
+            NamedWaypoint waypoint = new NamedWaypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible").getString(), Color.white.getColorComponents(null));
+            waypoint.extractRendering(collector);
         }
     }
 }

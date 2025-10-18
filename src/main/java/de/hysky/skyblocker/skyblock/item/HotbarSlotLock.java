@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -11,6 +12,7 @@ import java.util.List;
 public class HotbarSlotLock {
     public static KeyBinding hotbarSlotLock;
 
+    @Init
     public static void init() {
         hotbarSlotLock = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.hotbarSlotLock",
@@ -26,8 +28,8 @@ public class HotbarSlotLock {
     public static void handleInputEvents(ClientPlayerEntity player) {
         while (hotbarSlotLock.wasPressed()) {
             List<Integer> lockedSlots = SkyblockerConfigManager.get().general.lockedSlots;
-            int selected = player.getInventory().selectedSlot;
-            if (!isLocked(player.getInventory().selectedSlot)) lockedSlots.add(selected);
+            int selected = player.getInventory().getSelectedSlot();
+            if (!isLocked(player.getInventory().getSelectedSlot())) lockedSlots.add(selected);
             else lockedSlots.remove(Integer.valueOf(selected));
             SkyblockerConfigManager.save();
         }

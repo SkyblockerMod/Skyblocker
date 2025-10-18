@@ -1,85 +1,78 @@
 package de.hysky.skyblocker.skyblock.entity;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
-import de.hysky.skyblocker.skyblock.dungeon.LividColor;
-import de.hysky.skyblocker.skyblock.end.TheEnd;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.SlayerUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
+import de.hysky.skyblocker.annotations.Init;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.passive.BatEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
-import java.util.List;
+import java.util.*;
 
 public class MobGlow {
+	public static final int NO_GLOW = 0;
+	private static final List<MobGlowAdder> ADDERS = new ArrayList<>();
+	/**
+	 * Cache for mob glow. Absence means the entity does not have custom glow.
+	 * If an entity is in the cache, it must have custom glow.
+	 */
+	private static final Object2IntMap<Entity> CACHE = new Object2IntOpenHashMap<>();
 
-	public static boolean shouldMobGlow(Entity entity) {
-		Box box = entity.getBoundingBox();
+	@Init
+	public static void init() {
+		// Clear the cache every tick
+		ClientTickEvents.END_WORLD_TICK.register(client -> clearCache());
+	}
 
-		if (OcclusionCulling.getReducedCuller().isVisible(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) {
-			String name = entity.getName().getString();
+	public static boolean atLeastOneMobHasCustomGlow() {
+		return !CACHE.isEmpty();
+	}
 
+	protected static void registerGlowAdder(MobGlowAdder adder) {
+		ADDERS.add(adder);
+	}
 
-			// Dungeons
-			if (Utils.isInDungeons() && !entity.isInvisible()) {
-				return switch (entity) {
-					// Minibosses
-					case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobGlow;
-					case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.shouldGlow(name);
-
-					// Bats
-					case BatEntity b -> SkyblockerConfigManager.get().dungeons.starredMobGlow || SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
-
-					// Armor Stands
-					case ArmorStandEntity _armorStand -> false;
-
-					// Regular Mobs
-					default -> SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity);
-				};
-			}
-
-
-			return switch (entity) {
-				// Rift
-				case PlayerEntity p when Utils.isInTheRift() && !entity.isInvisible() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
-
-				// Enderman Slayer
-				// Highlights Nukekubi Heads
-				case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
-
-				// Special Zelot
-				case EndermanEntity enderman when Utils.isInTheEnd() && !entity.isInvisible() -> TheEnd.isSpecialZealot(enderman);
-
-				//dojo
-				case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmorStandName(zombie));
-
-				default -> false;
-			};
+	public static boolean hasOrComputeMobGlow(Entity entity) {
+		if (CACHE.containsKey(entity)) {
+			return true;
 		}
-
+		int color = computeMobGlow(entity);
+		if (color != NO_GLOW) {
+			CACHE.put(entity, color);
+			return true;
+		}
 		return false;
 	}
 
+	public static int getMobGlow(Entity entity) {
+		return CACHE.getInt(entity);
+	}
+
+	public static int getMobGlowOrDefault(Entity entity, int defaultColor) {
+		return CACHE.getOrDefault(entity, defaultColor);
+	}
+
+	public static void clearCache() {
+		CACHE.clear();
+	}
+
 	/**
-	 * Checks if an entity is starred by checking if its armor stand contains a star in its name.
-	 *
-	 * @param entity the entity to check.
-	 * @return true if the entity is starred, false otherwise
+	 * Computes the glow color for the given entity.
+	 * <p>Only non-zero colors are valid.
 	 */
-	public static boolean isStarred(Entity entity) {
-		List<ArmorStandEntity> armorStands = getArmorStands(entity);
-		return !armorStands.isEmpty() && armorStands.getFirst().getName().getString().contains("✯");
+	private static int computeMobGlow(Entity entity) {
+		for (MobGlowAdder adder : ADDERS) {
+			if (adder.isEnabled()) {
+				int glowColour = adder.computeColour(entity);
+
+				if (glowColour != NO_GLOW) return glowColour;
+			}
+		}
+
+		return NO_GLOW;
 	}
 
 	/**
@@ -102,35 +95,5 @@ public class MobGlow {
 
 	public static List<ArmorStandEntity> getArmorStands(World world, Box box) {
 		return world.getEntitiesByClass(ArmorStandEntity.class, box.expand(0, 2, 0), EntityPredicates.NOT_MOUNTED);
-	}
-
-	public static int getGlowColor(Entity entity) {
-		String name = entity.getName().getString();
-
-		return switch (entity) {
-			case PlayerEntity p when name.equals("Lost Adventurer") -> 0xfee15c;
-			case PlayerEntity p when name.equals("Shadow Assassin") -> 0x5b2cb2;
-			case PlayerEntity p when name.equals("Diamond Guy") -> 0x57c2f7;
-			case PlayerEntity p when LividColor.LIVID_NAMES.contains(name) -> LividColor.getGlowColor(name);
-			case PlayerEntity p when name.equals("Blobbercyst ") -> Formatting.GREEN.getColorValue();
-
-			case EndermanEntity enderman when TheEnd.isSpecialZealot(enderman) -> Formatting.RED.getColorValue();
-			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> 0x990099;
-			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.getColor();
-
-			default -> 0xf57738;
-		};
-	}
-
-	private static boolean isNukekubiHead(ArmorStandEntity entity) {
-		for (ItemStack armorItem : entity.getArmorItems()) {
-			// eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3 is texture id for the nukekubi head,
-			// compare against it to exclusively find armorstands that are nukekubi heads
-			// get the texture of the nukekubi head item itself and compare it
-			String texture = ItemUtils.getHeadTexture(armorItem);
-
-			return texture.contains("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=");
-		}
-		return false;
 	}
 }

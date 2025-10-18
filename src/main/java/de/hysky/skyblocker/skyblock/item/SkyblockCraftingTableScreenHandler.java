@@ -8,6 +8,7 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHandler {
 
@@ -27,7 +28,7 @@ public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHa
 
     public SkyblockCraftingTableScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, Inventory inventory, int rows) {
         super(type, syncId, playerInventory, inventory, rows);
-        mirrorverse = Utils.getIslandArea().toLowerCase().contains("mirrorverse");
+        mirrorverse = Utils.getIslandArea().toLowerCase(Locale.ENGLISH).contains("mirrorverse");
         int[] activeSlots = mirrorverse ? riftNormalSlots: normalSlots;
 
         for (int i = 0; i < rows * 9; i++) {
@@ -38,7 +39,7 @@ public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHa
                 slot.id = i;
                 slots.set(i, slot);
             } else {
-                DisabledSlot slot = new DisabledSlot(originalSlot.inventory, originalSlot.getIndex(), originalSlot.x, originalSlot.y);
+                DisabledSlot slot = new DisabledSlot(originalSlot.inventory, originalSlot.getIndex(), -20, -20);
                 slot.id = i;
                 slots.set(i, slot);
             }
@@ -66,7 +67,7 @@ public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHa
             if (slot == 23) return new int[]{124, 35};
             if (slot == 16 || slot == 25 || slot == 34) {
                 int y = (slot / 9 - 1) * 18 + 8;
-                return new int[]{174, y};
+                return new int[]{152, y};
             }
             int gridX = slot % 9 - 1;
             int gridY = slot / 9 - 1;

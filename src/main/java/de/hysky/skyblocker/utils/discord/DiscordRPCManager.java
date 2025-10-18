@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.discord;
 
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiscConfig;
 import de.hysky.skyblocker.events.SkyblockEvents;
@@ -26,6 +27,7 @@ public class DiscordRPCManager {
     public static long startTimeStamp;
     public static int cycleCount;
 
+    @Init
     public static void init() {
         SkyblockEvents.LEAVE.register(DiscordRPCManager::initAndUpdatePresence);
         SkyblockEvents.JOIN.register(() -> {
@@ -40,8 +42,7 @@ public class DiscordRPCManager {
     public static void updateDataAndPresence() {
         // If the custom message is empty, discord will keep the last message, this is can serve as a default if the user doesn't want a custom message
         if (SkyblockerConfigManager.get().misc.richPresence.customMessage.isEmpty()) {
-            SkyblockerConfigManager.get().misc.richPresence.customMessage = "Playing Skyblock";
-            SkyblockerConfigManager.save();
+        	SkyblockerConfigManager.update(config -> config.misc.richPresence.customMessage = "Playing Skyblock");
         }
         if (SkyblockerConfigManager.get().misc.richPresence.cycleMode) cycleCount = (cycleCount + 1) % 3;
         initAndUpdatePresence();

@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.text.MutableText;
@@ -12,7 +13,6 @@ import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.Map;
 
 public class ForceTestHelper {
 
@@ -59,11 +59,11 @@ public class ForceTestHelper {
         }
     }
 
-    protected static void render(WorldRenderContext context) {
+    protected static void extractRendering(PrimitiveCollector collector) {
         //render times
         long currentTime = System.currentTimeMillis();
-        for (Map.Entry<ZombieEntity, Long> zombie : zombies.object2LongEntrySet()) {
-            float secondsTime = Math.max((zombie.getValue() - currentTime) / 1000f, 0);
+        for (Object2LongMap.Entry<ZombieEntity> zombie : zombies.object2LongEntrySet()) {
+            float secondsTime = Math.max((zombie.getLongValue() - currentTime) / 1000f, 0);
 
             MutableText text = Text.literal(FORMATTER.format(secondsTime));
             if (secondsTime > 1) {
@@ -74,8 +74,8 @@ public class ForceTestHelper {
                 text = text.formatted(Formatting.RED);
             }
 
-            Vec3d labelPos = zombie.getKey().getCameraPosVec(context.tickCounter().getTickDelta(false));
-            RenderHelper.renderText(context, text, labelPos, 1.5f, true);
+            Vec3d labelPos = zombie.getKey().getCameraPosVec(RenderHelper.getTickCounter().getTickProgress(false));
+            collector.submitText(text, labelPos, 1.5f, true);
         }
     }
 }

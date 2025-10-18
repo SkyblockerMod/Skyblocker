@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 public class FileUtils {
@@ -41,6 +42,6 @@ public class FileUtils {
 	 * @implNote Designed to convert a file path to an {@link net.minecraft.util.Identifier}
 	 */
 	public static String normalizePath(Path path) {
-		return path.toString().toLowerCase().replaceAll("[^a-z0-9_.-]", "");
+		return path.toString().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9_.-]", "");
 	}
 }

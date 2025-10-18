@@ -25,27 +25,29 @@ public class MessageScheduler extends Scheduler {
      * Sends a chat message or command after the minimum cooldown. Prefer this method to send messages or commands to the server.
      *
      * @param message the message to send
+     * @param hide    whether to hide the message from the chat, default should be true for commands
      */
-    public void sendMessageAfterCooldown(String message) {
+    public void sendMessageAfterCooldown(String message, boolean hide) {
         if (lastMessage + MIN_DELAY < System.currentTimeMillis()) {
-            sendMessage(message);
+            sendMessage(message, hide);
             lastMessage = System.currentTimeMillis();
         } else {
-            queueMessage(message, 0);
+            queueMessage(message, hide, 0);
         }
     }
 
-    private void sendMessage(String message) {
+    private void sendMessage(String message, boolean hide) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null) {
             Scheduler.LOGGER.error("[Skyblocker Message Scheduler] Tried to send a message while player is null: {}", message);
             return;
         }
         message = StringHelper.truncateChat(StringUtils.normalizeSpace(message.trim()));
+
+        if (!hide) client.inGameHud.getChatHud().addToMessageHistory(message);
         if (message.startsWith("/")) {
-            client.player.networkHandler.sendCommand(message.substring(1));
+            client.player.networkHandler.sendChatCommand(message.substring(1));
         } else {
-            client.inGameHud.getChatHud().addToMessageHistory(message);
             client.player.networkHandler.sendChatMessage(message);
         }
     }
@@ -54,10 +56,11 @@ public class MessageScheduler extends Scheduler {
      * Queues a chat message or command to send in {@code delay} ticks. Use this method to send messages or commands a set time in the future. The minimum cooldown is still respected.
      *
      * @param message the message to send
+     * @param hide    whether to hide the message from the chat, default should be true for commands
      * @param delay   the delay before sending the message in ticks
      */
-    public void queueMessage(String message, int delay) {
-        schedule(() -> sendMessage(message), delay);
+    public void queueMessage(String message, boolean hide, int delay) {
+        schedule(() -> sendMessage(message, hide), delay);
     }
 
     @Override

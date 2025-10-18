@@ -7,29 +7,27 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
-public class SecretWaypoint extends NamedWaypoint {
+public class SecretWaypoint extends DistancedNamedWaypoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecretWaypoint.class);
     public static final Codec<SecretWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("secretIndex").forGetter(secretWaypoint -> secretWaypoint.secretIndex),
@@ -38,7 +36,7 @@ public class SecretWaypoint extends NamedWaypoint {
             BlockPos.CODEC.fieldOf("pos").forGetter(secretWaypoint -> secretWaypoint.pos)
     ).apply(instance, SecretWaypoint::new));
     public static final Codec<List<SecretWaypoint>> LIST_CODEC = CODEC.listOf();
-    static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
+    static final List<String> SECRET_ITEMS = List.of("Candycomb", "Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
     private static final Supplier<DungeonsConfig.SecretWaypoints> CONFIG = () -> SkyblockerConfigManager.get().dungeons.secretWaypoints;
     static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
     final int secretIndex;
@@ -63,11 +61,15 @@ public class SecretWaypoint extends NamedWaypoint {
     }
 
     static Predicate<SecretWaypoint> getRangePredicate(Entity entity) {
-        return secretWaypoint -> entity.squaredDistanceTo(secretWaypoint.centerPos) <= 36D;
+        return secretWaypoint -> entity.getPos().isInRange(secretWaypoint.centerPos, 16);
     }
 
     @Override
     public boolean shouldRender() {
+    	if (category.isPrince()) {
+    		return !DungeonScore.wasPrinceKilled() && category.isEnabled();
+    	}
+
         return super.shouldRender() && category.isEnabled();
     }
 
@@ -89,27 +91,26 @@ public class SecretWaypoint extends NamedWaypoint {
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj) || obj instanceof SecretWaypoint other && secretIndex == other.secretIndex && category == other.category && name.equals(other.name) && pos.equals(other.pos);
+        return this == obj || super.equals(obj) && obj instanceof SecretWaypoint other && secretIndex == other.secretIndex && category == other.category;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), secretIndex, category);
     }
 
     @Override
     protected boolean shouldRenderName() {
-        return CONFIG.get().showSecretText;
+        return super.shouldRenderName() && CONFIG.get().showSecretText;
     }
 
     /**
-     * Renders the secret waypoint, including a waypoint through {@link Waypoint#render(WorldRenderContext)}, the name, and the distance from the player.
+     * Extracts the rendering for the secret waypoint, including a waypoint through {@link Waypoint#extractRendering(PrimitiveCollector)}, the name, and the distance from the player.
      */
     @Override
-    public void render(WorldRenderContext context) {
-        //TODO In the future, shrink the box for wither essence and items so its more realistic
-        super.render(context);
-
-        if (CONFIG.get().showSecretText) {
-            Vec3d posUp = centerPos.add(0, 1, 0);
-            double distance = context.camera().getPos().distanceTo(centerPos);
-            RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, 1, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
-        }
+    public void extractRendering(PrimitiveCollector collector) {
+        //TODO In the future, shrink the box for wither essence and items so its more realistic - can be done with RenderHelper
+        super.extractRendering(collector);
     }
 
     @NotNull
@@ -129,6 +130,7 @@ public class SecretWaypoint extends NamedWaypoint {
         STONK("stonk", secretWaypoints -> secretWaypoints.enableStonkWaypoints, 146, 52, 235),
         AOTV("aotv", secretWaypoints -> secretWaypoints.enableAotvWaypoints, 252, 98, 3),
         PEARL("pearl", secretWaypoints -> secretWaypoints.enablePearlWaypoints, 57, 117, 125),
+        PRINCE("prince", secretWaypoints -> secretWaypoints.enablePrinceWaypoints, 133, 21, 13),
         DEFAULT("default", secretWaypoints -> secretWaypoints.enableDefaultWaypoints, 190, 255, 252);
         private static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
         private final String name;
@@ -162,6 +164,10 @@ public class SecretWaypoint extends NamedWaypoint {
 
         boolean isBat() {
             return this == BAT;
+        }
+
+        boolean isPrince() {
+            return this == PRINCE;
         }
 
         boolean isEnabled() {

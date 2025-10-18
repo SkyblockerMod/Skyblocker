@@ -1,129 +1,165 @@
 package de.hysky.skyblocker.skyblock.experiment;
 
-import com.google.common.collect.ImmutableMap;
-
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.client.gui.screen.Screen;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerListener;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ChronomatronSolver extends ExperimentSolver {
-    public static final ImmutableMap<Item, Item> TERRACOTTA_TO_GLASS = ImmutableMap.ofEntries(
-            new AbstractMap.SimpleImmutableEntry<>(Items.RED_TERRACOTTA, Items.RED_STAINED_GLASS),
-            new AbstractMap.SimpleImmutableEntry<>(Items.ORANGE_TERRACOTTA, Items.ORANGE_STAINED_GLASS),
-            new AbstractMap.SimpleImmutableEntry<>(Items.YELLOW_TERRACOTTA, Items.YELLOW_STAINED_GLASS),
-            new AbstractMap.SimpleImmutableEntry<>(Items.LIME_TERRACOTTA, Items.LIME_STAINED_GLASS),
-            new AbstractMap.SimpleImmutableEntry<>(Items.GREEN_TERRACOTTA, Items.GREEN_STAINED_GLASS),
-            new AbstractMap.SimpleImmutableEntry<>(Items.CYAN_TERRACOTTA, Items.CYAN_STAINED_GLASS),
-            new AbstractMap.SimpleImmutableEntry<>(Items.LIGHT_BLUE_TERRACOTTA, Items.LIGHT_BLUE_STAINED_GLASS),
-            new AbstractMap.SimpleImmutableEntry<>(Items.BLUE_TERRACOTTA, Items.BLUE_STAINED_GLASS),
-            new AbstractMap.SimpleImmutableEntry<>(Items.PURPLE_TERRACOTTA, Items.PURPLE_STAINED_GLASS),
-            new AbstractMap.SimpleImmutableEntry<>(Items.PINK_TERRACOTTA, Items.PINK_STAINED_GLASS)
-    );
+public final class ChronomatronSolver extends ExperimentSolver implements ScreenHandlerListener {
+	public static final Object2ObjectMap<Item, Item> TERRACOTTA_TO_GLASS = Object2ObjectMaps.unmodifiable(
+			new Object2ObjectArrayMap<>(
+					new Item[]{
+							Items.RED_TERRACOTTA, Items.ORANGE_TERRACOTTA, Items.YELLOW_TERRACOTTA, Items.LIME_TERRACOTTA, Items.GREEN_TERRACOTTA, Items.CYAN_TERRACOTTA, Items.LIGHT_BLUE_TERRACOTTA, Items.BLUE_TERRACOTTA, Items.PURPLE_TERRACOTTA, Items.PINK_TERRACOTTA
+					},
+					new Item[]{
+							Items.RED_STAINED_GLASS, Items.ORANGE_STAINED_GLASS, Items.YELLOW_STAINED_GLASS, Items.LIME_STAINED_GLASS, Items.GREEN_STAINED_GLASS, Items.CYAN_STAINED_GLASS, Items.LIGHT_BLUE_STAINED_GLASS, Items.BLUE_STAINED_GLASS, Items.PURPLE_STAINED_GLASS, Items.PINK_STAINED_GLASS
+					}
+			)
+	);
 
-    private final List<Item> chronomatronSlots = new ArrayList<>();
-    private int chronomatronChainLengthCount;
-    private int chronomatronCurrentSlot;
-    private int chronomatronCurrentOrdinal;
+	private GenericContainerScreen screen;
 
-    public ChronomatronSolver() {
-        super("^Chronomatron \\(\\w+\\)$");
-    }
+	/**
+	 * The list of items to remember, in order.
+	 */
+	private final List<Item> chronomatronSlots = new ArrayList<>();
+	/**
+	 * The index of the current item shown in the chain, used for remembering.
+	 */
+	private int chronomatronChainLengthCount;
+	/**
+	 * The slot id of the current item shown, used for detecting when the experiment finishes showing the current item.
+	 */
+	private int chronomatronCurrentSlot;
+	/**
+	 * The next index in the chain to click.
+	 */
+	private int chronomatronCurrentOrdinal;
 
-    public List<Item> getChronomatronSlots() {
-        return chronomatronSlots;
-    }
+	public ChronomatronSolver() {
+		super("^Chronomatron \\(\\w+\\)$");
+	}
 
-    public int getChronomatronCurrentOrdinal() {
-        return chronomatronCurrentOrdinal;
-    }
+	@Override
+	protected boolean isEnabled(HelperConfig.Experiments experimentsConfig) {
+		return experimentsConfig.enableChronomatronSolver;
+	}
 
-    public int incrementChronomatronCurrentOrdinal() {
-        return ++chronomatronCurrentOrdinal;
-    }
+	@Override
+	protected void tick(GenericContainerScreen screen) {
+	}
 
-    @Override
-    protected boolean isEnabled(HelperConfig.Experiments experimentsConfig) {
-        return experimentsConfig.enableChronomatronSolver;
-    }
+	@Override
+	public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
+		if (slotId < 10 || slotId > 42 && slotId != 49) return;
+		switch (getState()) {
+			case REMEMBER -> {
+				if (slotId == 49) break;
+				// Only try to look for items with enchantment glint if there is no item being currently shown.
+				if (chronomatronCurrentSlot == 0) {
+					if (stack.hasGlint()) {
+						// If the list of items is smaller than the index of the current item shown, add the item to the list and set the state to wait.
+						if (chronomatronSlots.size() <= chronomatronChainLengthCount) {
+							chronomatronSlots.add(TERRACOTTA_TO_GLASS.get(stack.getItem()));
+							setState(State.WAIT);
+						} else {
+							// If the item is already in the list, increment the current item shown index.
+							chronomatronChainLengthCount++;
+						}
+						// Remember the slot shown to detect when the experiment finishes showing the current item.
+						chronomatronCurrentSlot = slotId;
+					}
+					// If the current item shown no longer has enchantment glint, the experiment finished showing the current item.
+				} else if (chronomatronCurrentSlot == slotId && !stack.hasGlint()) {
+					chronomatronCurrentSlot = 0;
+				}
+			}
+			case WAIT -> {
+				if (slotId == 49 && stack.getName().getString().startsWith("Timer: ")) {
+					setState(State.SHOW);
+				}
+			}
+			case END -> {
+				String name = stack.getName().getString();
+				if (slotId == 49 && !name.startsWith("Timer: ")) {
+					// Get ready for another round if the instructions say to remember the pattern.
+					if (name.equals("Remember the pattern!")) {
+						chronomatronChainLengthCount = 0;
+						chronomatronCurrentOrdinal = 0;
+						setState(State.REMEMBER);
+					} else {
+						reset();
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    protected void tick(Screen screen) {
-        if (isEnabled() && screen instanceof GenericContainerScreen genericContainerScreen && genericContainerScreen.getTitle().getString().startsWith("Chronomatron (")) {
-            switch (getState()) {
-                case REMEMBER -> {
-                    Inventory inventory = genericContainerScreen.getScreenHandler().getInventory();
-                    if (chronomatronCurrentSlot == 0) {
-                        for (int index = 10; index < 43; index++) {
-                            if (inventory.getStack(index).hasGlint()) {
-                                if (chronomatronSlots.size() <= chronomatronChainLengthCount) {
-                                    chronomatronSlots.add(TERRACOTTA_TO_GLASS.get(inventory.getStack(index).getItem()));
-                                    setState(State.WAIT);
-                                } else {
-                                    chronomatronChainLengthCount++;
-                                }
-                                chronomatronCurrentSlot = index;
-                                return;
-                            }
-                        }
-                    } else if (!inventory.getStack(chronomatronCurrentSlot).hasGlint()) {
-                        chronomatronCurrentSlot = 0;
-                    }
-                }
-                case WAIT -> {
-                    if (genericContainerScreen.getScreenHandler().getInventory().getStack(49).getName().getString().startsWith("Timer: ")) {
-                        setState(State.SHOW);
-                    }
-                }
-                case END -> {
-                    String name = genericContainerScreen.getScreenHandler().getInventory().getStack(49).getName().getString();
-                    if (!name.startsWith("Timer: ")) {
-                        if (name.equals("Remember the pattern!")) {
-                            chronomatronChainLengthCount = 0;
-                            chronomatronCurrentOrdinal = 0;
-                            setState(State.REMEMBER);
-                        } else {
-                            reset();
-                        }
-                    }
-                }
-            }
-        } else {
-            reset();
-        }
-    }
+	/**
+	 * Highlights the slots that contain the item at index {@link #chronomatronCurrentOrdinal} of {@link #chronomatronSlots} in the chain.
+	 */
+	@Override
+	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
+		List<ColorHighlight> highlights = new ArrayList<>();
+		if (getState() == State.SHOW && chronomatronSlots.size() > chronomatronCurrentOrdinal) {
+			for (Int2ObjectMap.Entry<ItemStack> indexStack : slots.int2ObjectEntrySet()) {
+				int index = indexStack.getIntKey();
+				ItemStack stack = indexStack.getValue();
+				Item item = chronomatronSlots.get(chronomatronCurrentOrdinal);
+				if (stack.isOf(item) || TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) {
+					highlights.add(ColorHighlight.green(index));
+				}
+			}
+		}
+		return highlights;
+	}
 
-    @Override
-    protected List<ColorHighlight> getColors(String[] groups, Int2ObjectMap<ItemStack> slots) {
-        List<ColorHighlight> highlights = new ArrayList<>();
-        if (getState() == State.SHOW && chronomatronSlots.size() > chronomatronCurrentOrdinal) {
-            for (Int2ObjectMap.Entry<ItemStack> indexStack : slots.int2ObjectEntrySet()) {
-                int index = indexStack.getIntKey();
-                ItemStack stack = indexStack.getValue();
-                Item item = chronomatronSlots.get(chronomatronCurrentOrdinal);
-                if (stack.isOf(item) || TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) {
-                    highlights.add(ColorHighlight.green(index));
-                }
-            }
-        }
-        return highlights;
-    }
+	/**
+	 * Increments {@link #chronomatronCurrentOrdinal} if the item clicked matches the item at {@link #chronomatronCurrentOrdinal the current index} in the chain.
+	 */
+	@Override
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
+		if (getState() == State.SHOW) {
+			Item item = chronomatronSlots.get(chronomatronCurrentOrdinal);
+			if ((stack.isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(stack.getItem()) == item)) {
+				if (++chronomatronCurrentOrdinal >= chronomatronSlots.size()) {
+					setState(ExperimentSolver.State.END);
+				}
+			} else {
+				return shouldBlockIncorrectClicks();
+			}
+		}
+		return super.onClickSlot(slot, stack, screenId, button);
+	}
 
-    @Override
-    protected void reset() {
-        super.reset();
-        chronomatronSlots.clear();
-        chronomatronChainLengthCount = 0;
-        chronomatronCurrentSlot = 0;
-        chronomatronCurrentOrdinal = 0;
-    }
+	@Override
+	public void start(GenericContainerScreen screen) {
+		super.start(screen);
+		this.screen = screen;
+		screen.getScreenHandler().addListener(this);
+	}
+
+	@Override
+	public void reset() {
+		chronomatronSlots.clear();
+		chronomatronChainLengthCount = 0;
+		chronomatronCurrentSlot = 0;
+		chronomatronCurrentOrdinal = 0;
+		if (screen != null) screen.getScreenHandler().removeListener(this);
+		super.reset();
+	}
+
+	@Override
+	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {}
 }

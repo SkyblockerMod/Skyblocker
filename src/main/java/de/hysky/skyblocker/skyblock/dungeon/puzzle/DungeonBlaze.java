@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -38,6 +38,7 @@ public class DungeonBlaze extends DungeonPuzzle {
         super("blaze", "blaze-room-1-high", "blaze-room-1-low");
     }
 
+    @Init
     public static void init() {
     }
 
@@ -104,19 +105,17 @@ public class DungeonBlaze extends DungeonPuzzle {
     }
 
     /**
-     * Renders outlines for Blaze entities based on health and position.
-     *
-     * @param wrc The WorldRenderContext used for rendering.
+     * Extracts outlines for Blaze entities based on health and position.
      */
     @Override
-    public void render(WorldRenderContext wrc) {
+    public void extractRendering(PrimitiveCollector collector) {
         try {
             if (highestBlaze != null && lowestBlaze != null && highestBlaze.isAlive() && lowestBlaze.isAlive() && SkyblockerConfigManager.get().dungeons.puzzleSolvers.blazeSolver) {
                 if (highestBlaze.getY() < 69) {
-                    renderBlazeOutline(highestBlaze, nextHighestBlaze, wrc);
+                	extractBlazeOutline(highestBlaze, nextHighestBlaze, collector);
                 }
                 if (lowestBlaze.getY() > 69) {
-                    renderBlazeOutline(lowestBlaze, nextLowestBlaze, wrc);
+                	extractBlazeOutline(lowestBlaze, nextLowestBlaze, collector);
                 }
             }
         } catch (Exception e) {
@@ -125,24 +124,23 @@ public class DungeonBlaze extends DungeonPuzzle {
     }
 
     /**
-     * Renders outlines for Blaze entities and connections between them.
+     * Extracts outlines for Blaze entities and connections between them.
      *
      * @param blaze     The Blaze entity for which to render an outline.
      * @param nextBlaze The next Blaze entity for connection rendering.
-     * @param wrc       The WorldRenderContext used for rendering.
      */
-    private static void renderBlazeOutline(ArmorStandEntity blaze, ArmorStandEntity nextBlaze, WorldRenderContext wrc) {
+    private static void extractBlazeOutline(ArmorStandEntity blaze, ArmorStandEntity nextBlaze, PrimitiveCollector collector) {
         Box blazeBox = blaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-        RenderHelper.renderOutline(wrc, blazeBox, GREEN_COLOR_COMPONENTS, 5f, false);
+        collector.submitOutlinedBox(blazeBox, GREEN_COLOR_COMPONENTS, 5f, false);
 
         if (nextBlaze != null && nextBlaze.isAlive() && nextBlaze != blaze) {
             Box nextBlazeBox = nextBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
-            RenderHelper.renderOutline(wrc, nextBlazeBox, WHITE_COLOR_COMPONENTS, 5f, false);
+            collector.submitOutlinedBox(nextBlazeBox, WHITE_COLOR_COMPONENTS, 5f, false);
 
             Vec3d blazeCenter = blazeBox.getCenter();
             Vec3d nextBlazeCenter = nextBlazeBox.getCenter();
 
-            RenderHelper.renderLinesFromPoints(wrc, new Vec3d[]{blazeCenter, nextBlazeCenter}, WHITE_COLOR_COMPONENTS, 1f, 5f, false);
+            collector.submitLinesFromPoints(new Vec3d[]{blazeCenter, nextBlazeCenter}, WHITE_COLOR_COMPONENTS, 1f, 5f, false);
         }
     }
 

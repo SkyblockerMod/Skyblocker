@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.WitherSkeletonEntity;
@@ -62,16 +62,16 @@ public class ControlTestHelper {
      *
      * @param context render context
      */
-    protected static void render(WorldRenderContext context) {
+    protected static void extractRendering(PrimitiveCollector collector) {
         if (CLIENT.player != null && correctWitherSkeleton != null && pingOffset != null && lastPingOffset != null) {
-            float tickDelta = context.tickCounter().getTickDelta(false);
+            float tickDelta = RenderHelper.getTickCounter().getTickProgress(false);
             //how long until net update
             double updatePercent = (double) (System.currentTimeMillis() - lastUpdate) / 150;
-            Vec3d aimPos = correctWitherSkeleton.getEyePos().add(pingOffset.multiply(updatePercent)).add(lastPingOffset.multiply(1 - updatePercent));
+            Vec3d aimPos = correctWitherSkeleton.getCameraPosVec(tickDelta).add(pingOffset.multiply(updatePercent)).add(lastPingOffset.multiply(1 - updatePercent));
             Box targetBox = new Box(aimPos.add(-0.5, -0.5, -0.5), aimPos.add(0.5, 0.5, 0.5));
             boolean playerLookingAtBox = targetBox.raycast(CLIENT.player.getCameraPosVec(tickDelta), CLIENT.player.getCameraPosVec(tickDelta).add(CLIENT.player.getRotationVec(tickDelta).multiply(30))).isPresent();
             float[] boxColor = playerLookingAtBox ? Color.GREEN.getColorComponents(new float[]{0, 0, 0}) : Color.LIGHT_GRAY.getColorComponents(new float[]{0, 0, 0});
-            RenderHelper.renderOutline(context, targetBox, boxColor, 3, true);
+            collector.submitOutlinedBox(targetBox, boxColor, 3, true);
         }
     }
 }

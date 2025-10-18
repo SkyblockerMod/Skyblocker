@@ -1,22 +1,28 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.HudRenderEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 public class FireFreezeStaffTimer {
+	private static final Identifier FIRE_FREEZE_STAFF_TIMER = Identifier.of("skyblocker", "fire_freeze_staff_timer");
     private static long fireFreezeTimer;
 
+    @Init
     public static void init() {
-        HudRenderEvents.BEFORE_CHAT.register(FireFreezeStaffTimer::onDraw);
-        ClientReceiveMessageEvents.GAME.register(FireFreezeStaffTimer::onChatMessage);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.OVERLAY_MESSAGE, FIRE_FREEZE_STAFF_TIMER, FireFreezeStaffTimer::onDraw);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(FireFreezeStaffTimer::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> FireFreezeStaffTimer.reset());
     }
 
@@ -43,7 +49,7 @@ public class FireFreezeStaffTimer {
             int height = client.getWindow().getScaledHeight() / 2;
 
             context.drawCenteredTextWithShadow(
-                    renderer, "Fire freeze in: " + message, width, height, 0xffffff);
+                    renderer, "Fire freeze in: " + message, width, height, Colors.WHITE);
         }
     }
 
@@ -51,10 +57,12 @@ public class FireFreezeStaffTimer {
         fireFreezeTimer = 0;
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
+    private static boolean onChatMessage(Text text, boolean overlay) {
         if (!overlay && SkyblockerConfigManager.get().dungeons.theProfessor.fireFreezeStaffTimer && Formatting.strip(text.getString())
                 .equals("[BOSS] The Professor: Oh? You found my Guardians' one weakness?")) {
             fireFreezeTimer = System.currentTimeMillis() + 5000L;
         }
+
+        return true;
     }
 }

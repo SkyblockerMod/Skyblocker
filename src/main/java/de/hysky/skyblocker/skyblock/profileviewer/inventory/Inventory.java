@@ -1,13 +1,19 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
 import com.google.gson.JsonObject;
+
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
+import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.ItemLoader;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
@@ -16,11 +22,13 @@ import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Inventory implements ProfileViewerPage {
     private static final Identifier TEXTURE = Identifier.of("textures/gui/container/generic_54.png");
-    private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+    private static final TextRenderer textRenderer = CLIENT.textRenderer;
     private final IntIntPair dimensions;
     private final int itemsPerPage;
     private final List<ItemStack> containerList;
@@ -44,12 +52,12 @@ public class Inventory implements ProfileViewerPage {
 
     public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
         int rootYAdjusted = rootY + (26 - dimensions.leftInt() * 3);
-        context.drawTexture(TEXTURE, rootX, rootYAdjusted, 0, 0, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17);
-        context.drawTexture(TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted, 169, 0, 7, dimensions.leftInt() * 18 + 17);
-        context.drawTexture(TEXTURE, rootX, rootYAdjusted + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7);
-        context.drawTexture(TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted, 0, 0, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
 
-        context.drawText(textRenderer, containerName, rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
+        context.drawText(textRenderer,  I18n.translate("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
 
         if (containerList.size() > itemsPerPage) {
             previousPage.setX(rootX + 44);
@@ -65,21 +73,33 @@ public class Inventory implements ProfileViewerPage {
 
         int startIndex = activePage * itemsPerPage;
         int endIndex = Math.min(startIndex + itemsPerPage, containerList.size());
+        List<Text> tooltip = Collections.emptyList();
         for (int i = 0; i < endIndex - startIndex; i++) {
-            if (containerList.get(startIndex + i) == ItemStack.EMPTY) continue;
+            ItemStack stack = containerList.get(startIndex + i);
+            if (stack.isEmpty()) continue;
+
             int column = i % dimensions.rightInt();
             int row = i / dimensions.rightInt();
 
             int x = rootX + 8 + column * 18;
             int y = rootYAdjusted + 18 + row * 18;
-            context.drawItem(containerList.get(startIndex + i), x, y);
-            context.drawItemInSlot(textRenderer, containerList.get(startIndex + i), x, y);
 
-            if (mouseX > x && mouseX < x + 16 && mouseY > y && mouseY < y + 16) {
-                List<Text> tooltip = containerList.get(startIndex + i).getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC);
-                context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
+			ItemBackgroundManager.drawBackgrounds(stack, context, x, y);
+
+            if (ItemProtection.isItemProtected(stack)) {
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
+            }
+
+            context.drawItem(stack, x, y);
+            context.drawStackOverlay(textRenderer, stack, x, y);
+            SlotTextManager.renderSlotText(context, textRenderer, null, stack, i, x, y);
+
+            if (mouseX > x - 2 && mouseX < x + 16 + 1 && mouseY > y - 2 && mouseY < y + 16 + 1) {
+                tooltip = stack.getTooltip(Item.TooltipContext.DEFAULT, CLIENT.player, CLIENT.options.advancedItemTooltips ? TooltipType.ADVANCED : TooltipType.BASIC);
             }
         }
+
+        if (!tooltip.isEmpty()) context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
     }
 
     public void nextPage() {

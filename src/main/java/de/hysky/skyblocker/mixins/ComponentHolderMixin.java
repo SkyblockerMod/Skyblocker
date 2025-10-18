@@ -1,35 +1,39 @@
 package de.hysky.skyblocker.mixins;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
-import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
+import de.hysky.skyblocker.skyblock.item.custom.CustomHelmetTextures;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.component.ComponentHolder;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.trim.ArmorTrim;
+import net.minecraft.item.Items;
+import net.minecraft.item.equipment.trim.ArmorTrim;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ComponentHolder.class)
 public interface ComponentHolderMixin {
 
 	@SuppressWarnings("unchecked")
 	@ModifyReturnValue(method = "get", at = @At("RETURN"))
-	private <T> T skyblocker$customArmorTrims(T original, ComponentType<? extends T> dataComponentType) {
+	private <T> T skyblocker$customComponents(T original, ComponentType<? extends T> dataComponentType) {
 		if (Utils.isOnSkyblock() && ((Object) this) instanceof ItemStack stack) {
+			String itemUuid = stack.getUuid();
 			if (dataComponentType == DataComponentTypes.TRIM) {
 				Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customTrims = SkyblockerConfigManager.get().general.customArmorTrims;
-				String itemUuid = ItemUtils.getItemUuid(stack);
-
 				if (customTrims.containsKey(itemUuid)) {
 					CustomArmorTrims.ArmorTrimId trimKey = customTrims.get(itemUuid);
 					return (T) CustomArmorTrims.TRIMS_CACHE.getOrDefault(trimKey, (ArmorTrim) original);
+				}
+			} else if (dataComponentType == DataComponentTypes.PROFILE && stack.isOf(Items.PLAYER_HEAD)) {
+				Object2ObjectOpenHashMap<String, String> customTextures = SkyblockerConfigManager.get().general.customHelmetTextures;
+				if (customTextures.containsKey(itemUuid)) {
+					String tex = customTextures.get(itemUuid);
+					return (T) CustomHelmetTextures.getProfile(tex);
 				}
 			}
 		}

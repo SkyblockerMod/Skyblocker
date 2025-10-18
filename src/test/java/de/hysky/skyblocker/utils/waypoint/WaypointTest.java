@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.utils.waypoint;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +12,6 @@ public class WaypointTest {
     void testDefaultConstructor() {
         Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents);
         Assertions.assertEquals(BlockPos.ORIGIN, waypoint.pos);
-        Assertions.assertEquals(new Box(BlockPos.ORIGIN), waypoint.box);
         Assertions.assertEquals(type, waypoint.typeSupplier.get());
         Assertions.assertEquals(0f, waypoint.colorComponents[0]);
         Assertions.assertEquals(0.5f, waypoint.colorComponents[1]);

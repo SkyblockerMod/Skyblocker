@@ -1,115 +1,228 @@
 package de.hysky.skyblocker.skyblock;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
+import de.hysky.skyblocker.skyblock.fancybars.StatusBarType;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.world.World;
 
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StatusBarTracker {
-    private static final Pattern STATUS_HEALTH = Pattern.compile("§[6c](\\d+(,\\d\\d\\d)*)/(\\d+(,\\d\\d\\d)*)❤(?:(\\+§c(\\d+(,\\d\\d\\d)*). *)| *)");
-    private static final Pattern DEFENSE_STATUS = Pattern.compile("§a(\\d+(,\\d\\d\\d)*)§a❈ Defense *");
-    private static final Pattern MANA_USE = Pattern.compile("§b-(\\d+(,\\d\\d\\d)*) Mana \\(§\\S+(?:\\s\\S+)* *");
-    private static final Pattern MANA_STATUS = Pattern.compile("§b(\\d+(,\\d\\d\\d)*)/(\\d+(,\\d\\d\\d)*)✎ (?:Mana|§3(\\d+(,\\d\\d\\d)*)ʬ) *");
+	private static final Pattern STATUS_HEALTH = Pattern.compile("§[6c](?<health>[\\d,]+)/(?<max>[\\d,]+)❤ *(?<healing>\\+§c([\\d,]+). *)?");
+	private static final Pattern DEFENSE_STATUS = Pattern.compile("§a(?<defense>[\\d,]+)§a❈ Defense *");
+	private static final Pattern MANA_USE = Pattern.compile("§b-([\\d,]+) Mana \\(§.*?\\) *");
+	private static final Pattern MANA_STATUS = Pattern.compile("§b(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|§3(?<overflow>[\\d,]+)ʬ) *");
+	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
 
-    private Resource health = new Resource(100, 100, 0);
-    private Resource mana = new Resource(100, 100, 0);
-    private int defense = 0;
+	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static Resource health = new Resource(100, 100, 0);
+	private static Resource mana = new Resource(100, 100, 0);
+	private static Resource speed = new Resource(100, 400, 0);
+	private static Resource air = new Resource(100, 300, 0);
+	private static int defense = 0;
 
-    public void init() {
-        ClientReceiveMessageEvents.ALLOW_GAME.register(this::allowOverlayMessage);
-        ClientReceiveMessageEvents.MODIFY_GAME.register(this::onOverlayMessage);
-    }
+	private static int ticks;
+	private static int lastManaTick;
+	private static int lastMana;
+	private static int manaPerSecond;
 
-    public Resource getHealth() {
-        return this.health;
-    }
+	@Init
+	public static void init() {
+		ClientReceiveMessageEvents.ALLOW_GAME.register(StatusBarTracker::allowOverlayMessage);
+		ClientReceiveMessageEvents.MODIFY_GAME.register(StatusBarTracker::onOverlayMessage);
+		UseItemCallback.EVENT.register(StatusBarTracker::interactItem);
+		Scheduler.INSTANCE.scheduleCyclic(StatusBarTracker::tick, 1);
+	}
 
-    public Resource getMana() {
-        return this.mana;
-    }
+	public static Resource getHealth() {
+		return health;
+	}
 
-    public int getDefense() {
-        return this.defense;
-    }
+	public static Resource getMana() {
+		return mana;
+	}
 
-    private int parseInt(Matcher m, int group) {
-        return Integer.parseInt(m.group(group).replace(",", ""));
-    }
+	public static boolean isManaEstimated() {
+		return ticks - lastManaTick > 30;
+	}
 
-    private void updateMana(Matcher m) {
-        int value = parseInt(m, 1);
-        int max = parseInt(m, 3);
-        int overflow = m.group(5) == null ? 0 : parseInt(m, 5);
-        this.mana = new Resource(value, max, overflow);
-    }
+	public static int getDefense() {
+		return defense;
+	}
 
-    private void updateHealth(Matcher m) {
-        int value = parseInt(m, 1);
-        int max = parseInt(m, 3);
-        int overflow = Math.max(0, value - max);
-        if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
-            ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            value = (int) (player.getHealth() * max / player.getMaxHealth());
-            overflow = (int) (player.getAbsorptionAmount() * max / player.getMaxHealth());
-        }
-        this.health = new Resource(Math.min(value, max), max, Math.min(overflow, max));
-    }
+	public static Resource getSpeed() {
+		return speed;
+	}
 
-    private String reset(String str, Matcher m) {
-        str = str.substring(m.end());
-        m.reset(str);
-        return str;
-    }
+	public static Resource getAir() {
+		return air;
+	}
 
-    private boolean allowOverlayMessage(Text text, boolean overlay) {
-        onOverlayMessage(text, overlay);
-        return true;
-    }
+	private static void tick() {
+		if (client == null || client.player == null || !Utils.isOnSkyblock()) return;
+		ticks++;
+		updateHealth(health.value, health.max, health.overflow);
+		updateSpeed();
+		updateAir();
+		if (ticks - lastManaTick > 0 && (ticks - lastManaTick) % 20 == 0) {
+			mana = new Resource(Math.min(mana.value() + manaPerSecond, mana.max()), mana.max(), mana.overflow());
+		}
+	}
 
-    private Text onOverlayMessage(Text text, boolean overlay) {
-        if (!overlay || !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars || Utils.isInTheRift()) {
-            return text;
-        }
-        return Text.of(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
-    }
+	@SuppressWarnings("SameReturnValue")
+	private static ActionResult interactItem(PlayerEntity player, World world, Hand hand) {
+		if (client.player == null) return ActionResult.PASS;
+		ItemStack handStack = client.player.getMainHandStack();
+		int manaCost = 0;
+		boolean foundRightClick = false;
+		for (Text text : ItemUtils.getLore(handStack)) {
+			Matcher matcher;
+			if (foundRightClick && (matcher = MANA_LORE.matcher(text.getString())).matches()) {
+				manaCost = RegexUtils.parseIntFromMatcher(matcher, 1);
+				break;
+			}
+			if (text.getString().trim().toLowerCase(Locale.ENGLISH).endsWith("right click")) {
+				foundRightClick = true;
+			}
+		}
+		if (manaCost > 0 && manaCost <= mana.value()) {
+			mana = new Resource(Math.max(mana.value() - manaCost, 0), mana.max(), mana.overflow());
+		}
+		return ActionResult.PASS;
+	}
 
-    public String update(String actionBar, boolean filterManaUse) {
-        var sb = new StringBuilder();
-        Matcher matcher = STATUS_HEALTH.matcher(actionBar);
-        if (!matcher.lookingAt())
-            return actionBar;
-        updateHealth(matcher);
-        if (matcher.group(5) != null) {
-            sb.append("§c❤");
-            sb.append(matcher.group(5));
-        }
-        actionBar = reset(actionBar, matcher);
-        if (matcher.usePattern(MANA_STATUS).lookingAt()) {
-            defense = 0;
-            updateMana(matcher);
-            actionBar = reset(actionBar, matcher);
-        } else {
-            if (matcher.usePattern(DEFENSE_STATUS).lookingAt()) {
-                defense = parseInt(matcher, 1);
-                actionBar = reset(actionBar, matcher);
-            } else if (filterManaUse && matcher.usePattern(MANA_USE).lookingAt()) {
-                actionBar = reset(actionBar, matcher);
-            }
-            if (matcher.usePattern(MANA_STATUS).find()) {
-                updateMana(matcher);
-                matcher.appendReplacement(sb, "");
-            }
-        }
-        matcher.appendTail(sb);
-        String res = sb.toString().trim();
-        return res.isEmpty() ? null : res;
-    }
+	private static boolean allowOverlayMessage(Text text, boolean overlay) {
+		onOverlayMessage(text, overlay);
+		return true;
+	}
 
-    public record Resource(int value, int max, int overflow) {
-    }
+	private static Text onOverlayMessage(Text text, boolean overlay) {
+		if (!overlay || !Utils.isOnSkyblock() ||  Utils.isInTheRift()) {
+			return text;
+		}
+		if (!SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars) {
+			//still update values for other parts of the mod to use
+			update(text.getString(), SkyblockerConfigManager.get().chat.hideMana);
+			return text;
+		}
+		return Text.of(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
+	}
+
+	public static String update(String actionBar, boolean filterManaUse) {
+		var sb = new StringBuilder();
+
+		// Match health and don't add it to the string builder
+		// Append healing to the string builder if there is any healing
+		Matcher matcher = STATUS_HEALTH.matcher(actionBar);
+		if (!matcher.find()) return actionBar;
+		updateHealth(matcher);
+		if (matcher.group("healing") != null) {
+			sb.append("§c❤");
+		}
+		if (!FancyStatusBars.isHealthFancyBarEnabled()) matcher.appendReplacement(sb, "$0");
+		else matcher.appendReplacement(sb, "$3");
+
+		// Match defense or mana use and don't add it to the string builder
+		if (matcher.usePattern(DEFENSE_STATUS).find()) {
+			defense = RegexUtils.parseIntFromMatcher(matcher, "defense");
+			if (FancyStatusBars.isBarEnabled(StatusBarType.DEFENSE)) matcher.appendReplacement(sb, "");
+			else matcher.appendReplacement(sb, "$0");
+		} else if (filterManaUse && matcher.usePattern(MANA_USE).find()) {
+			matcher.appendReplacement(sb, "");
+		}
+
+		// Match mana and don't add it to the string builder
+		if (matcher.usePattern(MANA_STATUS).find()) {
+			updateMana(matcher);
+			if (FancyStatusBars.isBarEnabled(StatusBarType.INTELLIGENCE)) matcher.appendReplacement(sb, "");
+			else matcher.appendReplacement(sb, "$0");
+		}
+
+		// Append the rest of the message to the string builder
+		matcher.appendTail(sb);
+		String res = sb.toString().trim();
+		return res.isEmpty() ? null : res;
+	}
+
+	private static void updateHealth(Matcher matcher) {
+		int health = RegexUtils.parseIntFromMatcher(matcher, "health");
+		int max = RegexUtils.parseIntFromMatcher(matcher, "max");
+		updateHealth(health, max, Math.max(0, health - max));
+	}
+
+	private static void updateHealth(int value, int max, int overflow) {
+		if (client != null && client.player != null) {
+			value = (int) (client.player.getHealth() * max / client.player.getMaxHealth());
+			overflow = (int) (client.player.getAbsorptionAmount() * max / client.player.getMaxHealth());
+		}
+		health = new Resource(Math.min(value, max), max, Math.min(overflow, max));
+	}
+
+	private static void updateMana(Matcher m) {
+		int mana = RegexUtils.parseIntFromMatcher(m, "mana");
+		int max = RegexUtils.parseIntFromMatcher(m, "max");
+		int overflow = m.group("overflow") == null ? 0 : RegexUtils.parseIntFromMatcher(m, "overflow");
+		StatusBarTracker.mana = new Resource(mana, max, overflow);
+		if (mana != max && lastMana < mana) manaPerSecond = Math.max(mana - lastMana, 0);
+		if (lastMana != mana || mana == max) lastManaTick = ticks;
+		lastMana = mana;
+	}
+
+	private static void updateSpeed() {
+		// Black cat and racing helm are untested - I don't have the money to test atm, but no reason why they shouldn't work
+		assert client.player != null;
+		int value = (int) (client.player.isSprinting() ? (client.player.getMovementSpeed() / 1.3f) * 1000 : client.player.getMovementSpeed() * 1000);
+		int max = 400; // hardcoded limit (except for with cactus knife, black cat, snail, racing helm, young drag)
+		if (client.player.getMainHandStack().getName().getString().contains("Cactus Knife") && Utils.getLocation() == Location.GARDEN) {
+			max = 500;
+		}
+		Iterable<ItemStack> armor = ItemUtils.getArmor(client.player);
+		int youngDragCount = 0;
+		for (ItemStack armorPiece : armor) {
+			if (armorPiece.getName().getString().contains("Racing Helmet")) {
+				max = 500;
+			} else if (armorPiece.getName().getString().contains("Young Dragon")) {
+				youngDragCount++;
+			}
+		}
+		if (youngDragCount == 4) {
+			max = 500;
+		}
+
+		PetInfo pet = PetCache.getCurrentPet();
+		if (pet != null) {
+			if (pet.type().contains("BLACK_CAT")) {
+				max = 500;
+			} else if (pet.type().contains("SNAIL")) {
+				max = 100;
+			}
+		}
+		speed = new Resource(value, max, 0);
+	}
+
+	private static void updateAir() {
+		assert client.player != null;
+		int max = client.player.getMaxAir();
+		int value = Math.clamp(client.player.getAir(), 0, max);
+		air = new Resource(value, max, 0);
+	}
+
+	public record Resource(int value, int max, int overflow) {}
 }

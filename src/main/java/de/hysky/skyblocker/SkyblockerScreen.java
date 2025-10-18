@@ -1,11 +1,13 @@
 package de.hysky.skyblocker;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.Tips;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -23,7 +25,7 @@ public class SkyblockerScreen extends Screen {
 	private static final int SPACING = 8;
 	private static final int BUTTON_WIDTH = 210;
 	private static final int HALF_BUTTON_WIDTH = 101; //Same as (210 - 8) / 2
-	private static final Text TITLE = Text.literal("Skyblocker " + SkyblockerMod.VERSION);
+	private static final Text TITLE;
 	private static final Identifier ICON;
 	private static final Text CONFIGURATION_TEXT = Text.translatable("text.skyblocker.config");
 	private static final Text SOURCE_TEXT = Text.translatable("text.skyblocker.source");
@@ -38,13 +40,20 @@ public class SkyblockerScreen extends Screen {
 	static {
 		LocalDate date = LocalDate.now();
 
-		ICON = date.getMonthValue() == 4 && date.getDayOfMonth() == 1 ? Identifier.of(SkyblockerMod.NAMESPACE, "icons.png") : Identifier.of(SkyblockerMod.NAMESPACE, "icon.png");
+		if (date.getMonthValue() == 4 && date.getDayOfMonth() == 1) {
+			TITLE = Text.literal("Skibidiblocker " + SkyblockerMod.VERSION);
+			ICON = SkyblockerMod.id("icons.png");
+		} else {
+			TITLE = Text.literal("Skyblocker " + SkyblockerMod.VERSION);
+			ICON = SkyblockerMod.id("icon.png");
+		}
 	}
 
 	public SkyblockerScreen() {
 		super(TITLE);
 	}
 
+	@Init
 	public static void initClass() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
@@ -88,8 +97,8 @@ public class SkyblockerScreen extends Screen {
 	}
 
 	@Override
-	protected void initTabNavigation() {
-		super.initTabNavigation();
+	protected void refreshWidgetPositions() {
+		super.refreshWidgetPositions();
 		this.layout.refreshPositions();
 	}
 
@@ -99,7 +108,6 @@ public class SkyblockerScreen extends Screen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackground(context, mouseX, mouseY, delta);
 		super.render(context, mouseX, mouseY, delta);
 	}
 
@@ -128,7 +136,7 @@ public class SkyblockerScreen extends Screen {
 			int iconY = y - 13;
 
 			context.drawTextWithShadow(textRenderer, orderedText, x, y, this.getTextColor());
-			context.drawTexture(this.icon, iconX, iconY, 0, 0, 32, 32, 32, 32);
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, this.icon, iconX, iconY, 0, 0, 32, 32, 32, 32);
 		}
 
 		private OrderedText trim(Text text, int width) {

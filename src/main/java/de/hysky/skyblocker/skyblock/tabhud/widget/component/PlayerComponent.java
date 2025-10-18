@@ -1,39 +1,37 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.scoreboard.Team;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Component that consists of a player's skin icon and their name
  */
 public class PlayerComponent extends Component {
 
-    private static final int SKIN_ICO_DIM = 8;
+	private static final int SKIN_ICO_DIM = 8;
+	private final Text name;
+	private final Identifier tex;
 
-    private final Text name;
-    private final Identifier tex;
+	public PlayerComponent(PlayerListEntry ple) {
+		this(ple, null);
+	}
 
-    public PlayerComponent(PlayerListEntry ple) {
+	public PlayerComponent(PlayerListEntry ple, @Nullable Text name) {
+		this.name = name == null ? ple.getDisplayName() : name;
+		this.tex = ple.getSkinTextures().texture();
 
-    	boolean plainNames = SkyblockerConfigManager.get().uiAndVisuals.tabHud.plainPlayerNames;
-        Team team = ple.getScoreboardTeam();
-        String username = ple.getProfile().getName();
-        name = (team != null && !plainNames) ? Text.empty().append(team.getPrefix()).append(Text.literal(username).formatted(team.getColor())).append(team.getSuffix()) : Text.of(username);
-        tex = ple.getSkinTextures().texture();
+		this.width = SKIN_ICO_DIM + PAD_S + txtRend.getWidth(this.name);
+		this.height = txtRend.fontHeight;
+	}
 
-        this.width = SKIN_ICO_DIM + PAD_S + txtRend.getWidth(name);
-        this.height = txtRend.fontHeight;
-    }
-
-    @Override
-    public void render(DrawContext context, int x, int y) {
-        PlayerSkinDrawer.draw(context, tex, x, y, SKIN_ICO_DIM);
-        context.drawText(txtRend, name, x + SKIN_ICO_DIM + PAD_S, y, 0xffffffff, false);
-    }
-
+	@Override
+	public void render(DrawContext context, int x, int y) {
+		PlayerSkinDrawer.draw(context, tex, x, y, SKIN_ICO_DIM, true, false, -1);
+		context.drawText(txtRend, name, x + SKIN_ICO_DIM + PAD_S, y, Colors.WHITE, false);
+	}
 }

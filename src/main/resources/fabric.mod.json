@@ -4,8 +4,12 @@
   "version": "${version}",
   "name": "Skyblocker",
   "description": "Hypixel Skyblock Mod",
-  "authors": ["LifeIsAParadox/wohlhabend", "kevinthegreat1", "AzureAaron"],
-  "contributors": ["xMrVizzy", "d3dx9", "ExternalTime", "Zailer43", "TacoMonkey", "KonaeAkira", "Fix3dll", "null2264", "HyperSoop", "edgarogh", "TheColdPot", "Julienraptor01", "ADON15c", "catandA", "msg-programs", "lantice3720", "Futuremappermydud", "koloiyolo", "viciscat", "Grayray75", "alexiayaa", "KhafraDev", "btwonion", "Kaluub", "Emirlol", "LegendaryLilac", "olim88", "Ghost-3", "esteban4567890", "Fluboxer", "VeritasDL", "TheDearbear", "BigloBot", "f3shqt", "UpFault"],
+  "authors": ["LifeIsAParadox/wohlhabend", "kevinthegreat1", "AzureAaron", "viciscat", "Emirlol", "olim88", "Alex33856"],
+  "contributors": ["xMrVizzy", "d3dx9", "ExternalTime", "Zailer43", "TacoMonkey", "KonaeAkira", "Fix3dll", "null2264",
+    "HyperSoop", "edgarogh", "TheColdPot", "Julienraptor01", "ADON15c", "catandA", "msg-programs", "lantice3720",
+    "Futuremappermydud", "koloiyolo", "Grayray75", "alexiayaa", "KhafraDev", "btwonion", "Kaluub",
+    "LegendaryLilac", "Ghost-3", "esteban4567890", "Fluboxer", "VeritasDL", "TheDearbear", "BigloBot", "f3shqt",
+    "UpFault", "Vricken", "IBeHunting", "nea89o", "GatienDoesStuff"],
   "contact": {
     "homepage": "https://hysky.de",
     "sources": "https://github.com/SkyblockerMod/Skyblocker",
@@ -24,8 +28,14 @@
     "rei_client": [
       "de.hysky.skyblocker.compatibility.rei.SkyblockerREIClientPlugin"
     ],
+    "rei_common": [
+      "de.hysky.skyblocker.compatibility.rei.SkyblockerREICommonPlugin"
+    ],
     "emi": [
       "de.hysky.skyblocker.compatibility.emi.SkyblockerEMIPlugin"
+    ],
+    "jei_mod_plugin": [
+      "de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin"
     ]
   },
   "mixins": [
@@ -33,17 +43,20 @@
   ],
   "accessWidener": "skyblocker.accesswidener",
   "depends": {
-    "fabricloader": ">=0.15.11",
-    "fabric-api": ">=0.100.1+1.21",
-    "yet_another_config_lib_v3": ">=3.5.0+1.21",
-    "minecraft": "~1.21",
+    "fabricloader": ">=0.17.2",
+    "fabric-api": ">=0.127.0+1.21.6",
+	"dandelion": ">=1.0.0-alpha.5+1.21.8",
+    "yet_another_config_lib_v3": ">=3.7.1+1.21.6",
+	"fabric-language-kotlin": "*",
+    "hm-api": ">=1.0.1+1.21.2",
+    "minecraft": "~1.21.6",
     "java": ">=21"
   },
   "conflicts": {
-    "immediatelyfast": "<=1.2.18+1.21"
   },
   "breaks": {
-    "forcecloseworldloadingscreen": "<=2.2.0"
+    "forcecloseworldloadingscreen": "<=2.2.0",
+    "skyblockmod": "<=1.10.7"
   },
   "custom": {
     "modmenu": {

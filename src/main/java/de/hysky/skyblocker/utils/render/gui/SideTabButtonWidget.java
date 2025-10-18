@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
@@ -27,7 +28,7 @@ public class SideTabButtonWidget extends ToggleButtonWidget {
         Identifier identifier = textures.get(true, this.toggled);
         int x = getX();
         if (toggled) x -= 2;
-        context.drawGuiTexture(identifier, x, this.getY(), this.width, this.height);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, identifier, x, this.getY(), this.width, this.height);
         context.drawItem(icon, x + 9, getY() + 5);
     }
 

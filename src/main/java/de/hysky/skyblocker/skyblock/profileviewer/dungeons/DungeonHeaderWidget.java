@@ -5,11 +5,13 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 public class DungeonHeaderWidget {
     private LevelFinder.LevelInfo classLevel;
@@ -17,7 +19,7 @@ public class DungeonHeaderWidget {
 
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
     private static final DecimalFormat DF = new DecimalFormat("#.##");
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/dungeons_header.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/dungeons_header.png");
 
     public DungeonHeaderWidget(JsonObject playerProfile, String[] classes) {
         try {
@@ -27,7 +29,7 @@ public class DungeonHeaderWidget {
             float avg = 0;
             JsonObject CLASS_DATA = playerProfile.getAsJsonObject("dungeons").getAsJsonObject("player_classes");
             for (String element : classes) {
-                avg += LevelFinder.getLevelInfo("Catacombs", CLASS_DATA.getAsJsonObject(element.toLowerCase()).get("experience").getAsLong()).level;
+                avg += LevelFinder.getLevelInfo("Catacombs", CLASS_DATA.getAsJsonObject(element.toLowerCase(Locale.ENGLISH)).get("experience").getAsLong()).level;
             }
             classAvg = avg/classes.length;
         }  catch (Exception ignored) {
@@ -37,7 +39,7 @@ public class DungeonHeaderWidget {
     }
 
     public void render(DrawContext context, int x, int y) {
-        context.drawTexture(TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
 
         context.drawText(textRenderer, "§i§6§lCatacombs §r" + this.classLevel.level, x + 3, y + 4, Color.WHITE.getRGB(), true);
 

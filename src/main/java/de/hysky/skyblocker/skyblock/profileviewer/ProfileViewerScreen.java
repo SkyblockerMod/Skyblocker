@@ -5,38 +5,43 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.util.UndashedUuid;
+
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.mixins.accessors.SkullBlockEntityAccessor;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.profileviewer.collections.CollectionsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.dungeons.DungeonsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.InventoryPage;
 import de.hysky.skyblocker.skyblock.profileviewer.skills.SkillsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayersPage;
+import de.hysky.skyblocker.utils.ApiAuthentication;
 import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntImmutableList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.SkinTextures;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -47,14 +52,17 @@ public class ProfileViewerScreen extends Screen {
     public static final Logger LOGGER = LoggerFactory.getLogger(ProfileViewerScreen.class);
     private static final Text TITLE = Text.of("Skyblocker Profile Viewer");
     private static final String HYPIXEL_COLLECTIONS = "https://api.hypixel.net/v2/resources/skyblock/collections";
-    private static final Object2ObjectOpenHashMap<String, Map<String, ?>> COLLECTIONS_CACHE = new Object2ObjectOpenHashMap<>();
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/base_plate.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/base_plate.png");
     private static final int GUI_WIDTH = 322;
     private static final int GUI_HEIGHT = 180;
+    private static Map<String, String[]> COLLECTIONS;
+    private static Map<String, IntList> TIER_REQUIREMENTS;
 
     private String playerName;
     private JsonObject hypixelProfile;
     private JsonObject playerProfile;
+    private boolean profileNotFound = false;
+	private String errorMessage = "No Profile";
 
     private int activePage = 0;
     private static final String[] PAGE_NAMES = {"Skills", "Slayers", "Dungeons", "Inventories", "Collections"};
@@ -73,6 +81,8 @@ public class ProfileViewerScreen extends Screen {
     }
 
     private void initialisePagesAndWidgets() {
+        if (profileNotFound) return;
+
         textWidget = new ProfileViewerTextWidget(hypixelProfile, playerProfile);
 
         CompletableFuture<Void> skillsFuture = CompletableFuture.runAsync(() -> profileViewerPages[0] = new SkillsPage(hypixelProfile, playerProfile));
@@ -98,21 +108,22 @@ public class ProfileViewerScreen extends Screen {
         int rootX = width / 2 - GUI_WIDTH / 2;
         int rootY = height / 2 - GUI_HEIGHT / 2 + 5;
 
-        context.drawTexture(TEXTURE, rootX, rootY, 0, 0, GUI_WIDTH, GUI_HEIGHT, GUI_WIDTH, GUI_HEIGHT);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootY, 0, 0, GUI_WIDTH, GUI_HEIGHT, GUI_WIDTH, GUI_HEIGHT);
         for (ProfileViewerNavButton button : profileViewerNavButtons) {
             button.setX(rootX + button.getIndex() * 28 + 4);
             button.setY(rootY - 28);
             button.render(context, mouseX, mouseY, delta);
         }
 
-        if (textWidget != null) textWidget.render(context, textRenderer, rootX + 8, rootY + 120);
+
+		if (textWidget != null) textWidget.render(context, textRenderer, rootX + 8, rootY + 120, mouseX, mouseY);
         drawPlayerEntity(context, playerName != null ? playerName : "Loading...", rootX, rootY, mouseX, mouseY);
 
         if (profileViewerPages[activePage] != null) {
             profileViewerPages[activePage].markWidgetsAsVisible();
             profileViewerPages[activePage].render(context, mouseX, mouseY, delta, rootX + 93, rootY + 7);
         } else {
-            context.drawText(textRenderer, "Loading...", rootX + 180, rootY + 80, Color.WHITE.getRGB(), true);
+            context.drawCenteredTextWithShadow(textRenderer, profileNotFound ? errorMessage : "Loading...", rootX + 200, rootY + 80, Color.WHITE.getRGB());
         }
     }
 
@@ -120,46 +131,70 @@ public class ProfileViewerScreen extends Screen {
         if (entity != null)
             drawEntity(context, rootX + 9, rootY + 16, rootX + 89, rootY + 124, 42, 0.0625F, mouseX, mouseY, entity);
         context.drawCenteredTextWithShadow(textRenderer, username.length() > 15 ? username.substring(0, 15) : username, rootX + 47, rootY + 14, Color.WHITE.getRGB());
-
     }
 
     private CompletableFuture<Void> fetchPlayerData(String username) {
         CompletableFuture<Void> profileFuture = ProfileUtils.fetchFullProfile(username).thenAccept(profiles -> {
-            this.hypixelProfile = profiles.getAsJsonArray("profiles").asList().stream()
-                    .map(JsonElement::getAsJsonObject)
-                    .filter(profile -> profile.getAsJsonPrimitive("selected").getAsBoolean())
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("No selected profile found!"));
+            try {
+                Optional<JsonObject> selectedProfile = profiles.getAsJsonArray("profiles").asList().stream()
+                        .map(JsonElement::getAsJsonObject)
+                        .filter(profile -> profile.getAsJsonPrimitive("selected").getAsBoolean())
+                        .findFirst();
 
-            this.playerProfile = hypixelProfile.getAsJsonObject("members").get(ApiUtils.name2Uuid(username)).getAsJsonObject();
+                if (selectedProfile.isPresent()) {
+                    this.hypixelProfile = selectedProfile.get();
+                    this.playerProfile = hypixelProfile.getAsJsonObject("members").get(ApiUtils.name2Uuid(username)).getAsJsonObject();
+                }
+            } catch (Exception e) {
+				this.errorMessage = ApiAuthentication.getToken() == null ? "Invalid Skyblocker token" : "Skyblock profile not found";
+                this.profileNotFound = true;
+                LOGGER.warn("[Skyblocker Profile Viewer] Error while looking for profile", e);
+            }
         });
 
-        CompletableFuture<Void> minecraftProfileFuture = SkullBlockEntityAccessor.invokeFetchProfileByName(username).thenAccept(profile -> {
-            this.playerName = profile.get().getName();
-            entity = new OtherClientPlayerEntity(MinecraftClient.getInstance().world, profile.get()) {
-                @Override
-                public SkinTextures getSkinTextures() {
-                    PlayerListEntry playerListEntry = new PlayerListEntry(profile.get(), false);
-                    return playerListEntry.getSkinTextures();
-                }
+        CompletableFuture<Void> playerFuture = CompletableFuture.runAsync(() -> {
+    		String stringifiedUuid = ApiUtils.name2Uuid(username);
 
-                @Override
-                public boolean isPartVisible(PlayerModelPart modelPart) {
-                    return !(modelPart.getName().equals(PlayerModelPart.CAPE.getName()));
-                }
+    		if (stringifiedUuid.isEmpty()) {
+				// "Player not found" doesn't fit on the screen lol
+                this.playerName = "User not found";
+				this.errorMessage = "Player UUID not found";
+                this.profileNotFound = true;
+    		}
 
-                @Override
-                public boolean isInvisibleTo(PlayerEntity player) {
-                    return true;
-                }
-            };
-            entity.setCustomNameVisible(false);
-        }).exceptionally(ex -> {
-            this.playerName = "User not found";
-            return null;
-        });
+    		UUID uuid = UndashedUuid.fromStringLenient(stringifiedUuid);
 
-        return CompletableFuture.allOf(profileFuture, minecraftProfileFuture);
+    		//The fetch by name method can sometimes fail in weird cases and return a fake offline player
+    		SkullBlockEntity.fetchProfileByUuid(uuid).thenAccept(profile -> {
+                this.playerName = profile.get().getName();
+                entity = new OtherClientPlayerEntity(MinecraftClient.getInstance().world, profile.get()) {
+                    @Override
+                    public SkinTextures getSkinTextures() {
+                        PlayerListEntry playerListEntry = new PlayerListEntry(profile.get(), false);
+                        return playerListEntry.getSkinTextures();
+                    }
+
+                    @Override
+                    public boolean isPartVisible(PlayerModelPart modelPart) {
+                        return !(modelPart.getName().equals(PlayerModelPart.CAPE.getName()));
+                    }
+
+                    @Override
+                    public boolean isInvisibleTo(PlayerEntity player) {
+                        return true;
+                    }
+                };
+                entity.setCustomNameVisible(false);
+    		}).exceptionally(ex -> {
+				// "Player not found" doesn't fit on the screen lol
+                this.playerName = "User not found";
+				this.errorMessage = "Player skin not found";
+                this.profileNotFound = true;
+                return null;
+            }).join();
+    	});
+
+        return CompletableFuture.allOf(profileFuture, playerFuture);
     }
 
     public void onNavButtonClick(ProfileViewerNavButton clickedButton) {
@@ -183,48 +218,63 @@ public class ProfileViewerScreen extends Screen {
         }
     }
 
+    @Init
     public static void initClass() {
         fetchCollectionsData(); // caching on launch
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            LiteralArgumentBuilder<FabricClientCommandSource> literalArgumentBuilder =  ClientCommandManager.literal("pv")
-                            .then(ClientCommandManager.argument("username", StringArgumentType.string())
-                                    .executes(Scheduler.queueOpenScreenFactoryCommand(context -> new ProfileViewerScreen(StringArgumentType.getString(context, "username"))))
-                            )
-                            .executes(Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(MinecraftClient.getInstance().getSession().getUsername())));
+            LiteralArgumentBuilder<FabricClientCommandSource> literalArgumentBuilder = ClientCommandManager.literal("pv")
+                    .then(ClientCommandManager.argument("username", StringArgumentType.string())
+                            .suggests((source, builder) -> CommandSource.suggestMatching(getPlayerSuggestions(source.getSource()), builder))
+                            .executes(Scheduler.queueOpenScreenFactoryCommand(context -> new ProfileViewerScreen(StringArgumentType.getString(context, "username"))))
+                    )
+                    .executes(Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(MinecraftClient.getInstance().getSession().getUsername())));
             dispatcher.register(literalArgumentBuilder);
             dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(literalArgumentBuilder));
         });
     }
 
-    @NotNull
-    public static Map<String, Map<String, ?>> fetchCollectionsData() {
-        if (!COLLECTIONS_CACHE.isEmpty()) return COLLECTIONS_CACHE;
-        try {
-            JsonObject jsonObject = JsonParser.parseString(Http.sendGetRequest(HYPIXEL_COLLECTIONS)).getAsJsonObject();
-            if (jsonObject.get("success").getAsBoolean()) {
-                Map<String, String[]> collectionsMap = new HashMap<>();
-                Map<String, List<Integer>> tierRequirementsMap = new HashMap<>();
-                JsonObject collections = jsonObject.getAsJsonObject("collections");
-                collections.entrySet().forEach(entry -> {
-                    String category = entry.getKey();
-                    JsonObject itemsObject = entry.getValue().getAsJsonObject().getAsJsonObject("items");
-                    String[] items = itemsObject.keySet().toArray(new String[0]);
-                    collectionsMap.put(category, items);
-                    itemsObject.entrySet().forEach(itemEntry -> {
-                        List<Integer> tierReqs = new ArrayList<>();
-                        itemEntry.getValue().getAsJsonObject().getAsJsonArray("tiers").forEach(req ->
-                                tierReqs.add(req.getAsJsonObject().get("amountRequired").getAsInt()));
-                        tierRequirementsMap.put(itemEntry.getKey(), tierReqs);
+    private static void fetchCollectionsData() {
+        CompletableFuture.runAsync(() -> {
+            try {
+                JsonObject jsonObject = JsonParser.parseString(Http.sendGetRequest(HYPIXEL_COLLECTIONS)).getAsJsonObject();
+                if (jsonObject.get("success").getAsBoolean()) {
+                    Map<String, String[]> collectionsMap = new HashMap<>();
+                    Map<String, IntList> tierRequirementsMap = new HashMap<>();
+                    JsonObject collections = jsonObject.getAsJsonObject("collections");
+                    collections.entrySet().forEach(entry -> {
+                        String category = entry.getKey();
+                        JsonObject itemsObject = entry.getValue().getAsJsonObject().getAsJsonObject("items");
+                        String[] items = itemsObject.keySet().toArray(new String[0]);
+                        collectionsMap.put(category, items);
+                        itemsObject.entrySet().forEach(itemEntry -> {
+                            IntImmutableList tierReqs = IntImmutableList.toList(itemEntry.getValue().getAsJsonObject().getAsJsonArray("tiers").asList().stream()
+                                    .mapToInt(tier -> tier.getAsJsonObject().get("amountRequired").getAsInt())
+                            );
+                            tierRequirementsMap.put(itemEntry.getKey(), tierReqs);
+                        });
                     });
-                });
-                COLLECTIONS_CACHE.put("COLLECTIONS", collectionsMap);
-                COLLECTIONS_CACHE.put("TIER_REQS", tierRequirementsMap);
-                return COLLECTIONS_CACHE;
+                    COLLECTIONS = collectionsMap;
+                    TIER_REQUIREMENTS = tierRequirementsMap;
+                }
+            } catch (Exception e) {
+                LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
             }
-        } catch (IOException | InterruptedException e) {
-            LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
-        }
-        return Collections.emptyMap();
+        });
+    }
+
+    public static Map<String, String[]> getCollections() {
+        return COLLECTIONS;
+    }
+
+    public static Map<String, IntList> getTierRequirements() {
+        return TIER_REQUIREMENTS;
+    }
+
+    /**
+     * Ensures that "dummy" players aren't included in command suggestions
+     */
+    private static String[] getPlayerSuggestions(FabricClientCommandSource source) {
+        return source.getPlayerNames().stream().filter(playerName -> playerName.matches("[A-Za-z0-9_]+")).toArray(String[]::new);
     }
 }

@@ -12,14 +12,13 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Tickable;
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -34,7 +33,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
@@ -53,13 +51,18 @@ public class Room implements Tickable, Renderable {
     private static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
     private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
     private static final String LOCKED_CHEST = "That chest is locked!";
-    private static final Vec3d DOOR_SIZE = new Vec3d(3, 4, 3);
     protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
     protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
     @NotNull
     private final Type type;
     @NotNull
     final Set<Vector2ic> segments;
+    /**
+     * Used to allow rooms to have their secrets unmarked after the map detects the green checkmark.
+     *
+     * This should not be used for rendering as it would break the above case and having the prince waypoints show until a prince is killed.
+     */
+    protected boolean greenChecked = false;
 
     /**
      * The shape of the room. See {@link #getShape(IntSortedSet, IntSortedSet)}.
@@ -100,16 +103,6 @@ public class Room implements Tickable, Renderable {
     protected List<Renderable> renderables = new ArrayList<>();
     private BlockPos lastChestSecret;
     private long lastChestSecretTime;
-    /**
-     * Stores the next room in the dungeon. Currently only used if the next room is the fairy room.
-     */
-    @Nullable
-    protected Room nextRoom;
-    @Nullable
-    private BlockPos doorPos;
-    @Nullable
-    private Box doorBox;
-    protected boolean keyFound;
 
     public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
         this.type = type;
@@ -117,7 +110,7 @@ public class Room implements Tickable, Renderable {
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
         shape = getShape(segmentsX, segmentsY);
-        roomsData = DungeonManager.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(), Collections.emptyMap());
+        roomsData = DungeonManager.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(Locale.ENGLISH), Collections.emptyMap());
         possibleRooms = getPossibleRooms(segmentsX, segmentsY);
     }
 
@@ -309,14 +302,6 @@ public class Room implements Tickable, Renderable {
             tickable.tick(client);
         }
 
-        // Wither and blood door
-        if (SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight && doorPos == null) {
-            doorPos = DungeonMapUtils.getWitherBloodDoorPos(client.world, segments);
-            if (doorPos != null) {
-                doorBox = new Box(doorPos.getX(), doorPos.getY(), doorPos.getZ(), doorPos.getX() + DOOR_SIZE.getX(), doorPos.getY() + DOOR_SIZE.getY(), doorPos.getZ() + DOOR_SIZE.getZ());
-            }
-        }
-
         // Room scanning and matching
         // Logical AND has higher precedence than logical OR
         if (!type.needsScanning() || matchState != MatchState.MATCHING && matchState != MatchState.DOUBLE_CHECKING || !DungeonManager.isRoomsLoaded() || findRoom != null && !findRoom.isDone()) {
@@ -416,7 +401,8 @@ public class Room implements Tickable, Renderable {
             Scheduler.INSTANCE.schedule(() -> matchState = MatchState.MATCHING, 50);
             reset();
             return true;
-        } else if (matchingRoomsSize == 1) {
+        }
+        else if (matchingRoomsSize == 1) {
             if (matchState == MatchState.MATCHING) {
                 // If one room matches, load the secrets for that room and set state to double-checking.
                 Triple<Direction, Vector2ic, List<String>> directionRoom = possibleRooms.stream().filter(directionRooms -> directionRooms.getRight().size() == 1).findAny().orElseThrow();
@@ -509,6 +495,13 @@ public class Room implements Tickable, Renderable {
         return DungeonMapUtils.actualToRelative(direction, physicalCornerPos, pos);
     }
 
+	/**
+	 * Fails if !{@link #isMatched()}
+	 */
+	public Vec3d actualToRelative(Vec3d pos) {
+		return DungeonMapUtils.actualToRelative(direction, physicalCornerPos, pos);
+	}
+
     /**
      * Fails if !{@link #isMatched()}
      */
@@ -516,46 +509,38 @@ public class Room implements Tickable, Renderable {
         return DungeonMapUtils.relativeToActual(direction, physicalCornerPos, pos);
     }
 
+	/**
+	 * Fails if !{@link #isMatched()}
+	 */
+	public Vec3d relativeToActual(Vec3d pos) {
+		return DungeonMapUtils.relativeToActual(direction, physicalCornerPos, pos);
+	}
+
     /**
-     * Calls {@link SecretWaypoint#render(WorldRenderContext)} on {@link #secretWaypoints all secret waypoints} and renders a highlight around the wither or blood door, if it exists.
+     * Calls {@link SecretWaypoint#extractRendering(PrimitiveCollector)} on {@link #secretWaypoints all secret waypoints} and renders a highlight around the wither or blood door, if it exists.
      */
     @Override
-    public void render(WorldRenderContext context) {
+    public void extractRendering(PrimitiveCollector collector) {
         for (Renderable renderable : renderables) {
-            renderable.render(context);
+            renderable.extractRendering(collector);
         }
 
         synchronized (this) {
             if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
                 for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
                     if (secretWaypoint.shouldRender()) {
-                        secretWaypoint.render(context);
+                        secretWaypoint.extractRendering(collector);
                     }
                 }
             }
         }
-
-        if (!SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight || doorPos == null) {
-            return;
-        }
-        float[] colorComponents = keyFound ? GREEN_COLOR_COMPONENTS : RED_COLOR_COMPONENTS;
-        switch (SkyblockerConfigManager.get().dungeons.doorHighlight.doorHighlightType) {
-            case HIGHLIGHT -> RenderHelper.renderFilled(context, doorPos, DOOR_SIZE, colorComponents, 0.5f, true);
-            case OUTLINED_HIGHLIGHT -> {
-                RenderHelper.renderFilled(context, doorPos, DOOR_SIZE, colorComponents, 0.5f, true);
-                RenderHelper.renderOutline(context, doorBox, colorComponents, 5, true);
-            }
-            case OUTLINE -> RenderHelper.renderOutline(context, doorBox, colorComponents, 5, true);
-        }
     }
 
     /**
-     * Sets all secrets as found if {@link #isAllSecretsFound(String)} and sets {@link #lastChestSecret} as missing if message equals {@link #LOCKED_CHEST}.
+     * Sets {@link #lastChestSecret} as missing if message equals {@link #LOCKED_CHEST}.
      */
     protected void onChatMessage(String message) {
-        if (isAllSecretsFound(message)) {
-            secretWaypoints.values().forEach(SecretWaypoint::setFound);
-        } else if (LOCKED_CHEST.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
+        if (LOCKED_CHEST.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
             secretWaypoints.column(lastChestSecret).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
                     .ifPresent(secretWaypoint -> markSecretsAndLogInfo(secretWaypoint, false, "[Skyblocker Dungeon Secrets] Detected locked chest interaction, setting secret #{} as missing", secretWaypoint.secretIndex));
         }
@@ -586,7 +571,7 @@ public class Room implements Tickable, Renderable {
     protected void onUseBlock(World world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         if ((state.isOf(Blocks.CHEST) || state.isOf(Blocks.TRAPPED_CHEST)) && lastChestSecretTime + 1000 < System.currentTimeMillis() || state.isOf(Blocks.PLAYER_HEAD) || state.isOf(Blocks.PLAYER_WALL_HEAD)) {
-            secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
+            secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).filter(SecretWaypoint::isEnabled).findAny()
                     .ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
             if (state.isOf(Blocks.CHEST) || state.isOf(Blocks.TRAPPED_CHEST)) {
                 lastChestSecret = pos;
@@ -618,7 +603,7 @@ public class Room implements Tickable, Renderable {
      * @see #markSecretsFoundAndLogInfo(SecretWaypoint, String, Object...)
      */
     protected void onBatRemoved(AmbientEntity bat) {
-        secretWaypoints.values().stream().filter(SecretWaypoint::isBat).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(bat)))
+        secretWaypoints.values().stream().filter(SecretWaypoint::isBat).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(bat))).filter(SecretWaypoint.getRangePredicate(bat))
                 .ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} killed for a {} secret, setting secret #{} as found", bat.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
     }
 
@@ -635,6 +620,7 @@ public class Room implements Tickable, Renderable {
 
     /**
      * Marks all secret waypoints with the same index as the given {@link SecretWaypoint} as found or missing and logs the given message.
+     *
      * @param secretWaypoint the secret waypoint to read the index from.
      * @param found          whether to mark the secret as found or missing
      * @param msg            the message to log
@@ -655,11 +641,14 @@ public class Room implements Tickable, Renderable {
         }
     }
 
-    protected void keyFound() {
-        if (nextRoom != null && nextRoom.type == Type.FAIRY) {
-            nextRoom.keyFound = true;
-        }
-        keyFound = true;
+    protected void markAllSecrets(boolean found) {
+    	//Prevent a crash if this runs before the room is matched or something
+    	if (secretWaypoints == null) return;
+        secretWaypoints.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
+    }
+
+    protected int getSecretCount() {
+        return secretWaypoints.rowMap().size();
     }
 
     public enum Type {

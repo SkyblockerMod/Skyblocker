@@ -4,14 +4,16 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SkillsPage implements ProfileViewerPage {
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
     private static final String[] SKILLS = {"Combat", "Mining", "Farming", "Foraging", "Fishing", "Enchanting", "Alchemy", "Taming", "Carpentry", "Catacombs", "Runecraft", "Social"};
     private static final int ROW_GAP = 28;
 
@@ -28,7 +30,7 @@ public class SkillsPage implements ProfileViewerPage {
         try {
             this.skills = this.PLAYER_PROFILE.getAsJsonObject("player_data").getAsJsonObject("experience");
             for (String skill : SKILLS) {
-                skillWidgets.add(new SkillWidget(skill, getSkillXP("SKILL_" + skill.toUpperCase()), getSkillCap(skill)));
+                skillWidgets.add(new SkillWidget(skill, getSkillXP("SKILL_" + skill.toUpperCase(Locale.ENGLISH)), getSkillCap(skill)));
             }
         } catch (Exception e) {
             ProfileViewerScreen.LOGGER.error("[Skyblocker Profile Viewer] Error creating widgets.", e);
@@ -40,8 +42,8 @@ public class SkillsPage implements ProfileViewerPage {
         for (int i = 0; i < skillWidgets.size(); i++) {
             int x = (i < 6) ? rootX : column2;
             int y = rootY + (i % 6) * ROW_GAP;
-            context.drawTexture(TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-            skillWidgets.get(i).render(context, x, y + 3);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+            skillWidgets.get(i).render(context, mouseX, mouseY, x, y + 3);
         }
     }
 
@@ -49,6 +51,8 @@ public class SkillsPage implements ProfileViewerPage {
         try {
             return switch (skill) {
                 case "Farming" -> this.PLAYER_PROFILE.getAsJsonObject("jacobs_contest").getAsJsonObject("perks").get("farming_level_cap").getAsInt();
+                case "Taming" -> this.PLAYER_PROFILE.getAsJsonObject("pets_data").getAsJsonObject("pet_care").getAsJsonArray("pet_types_sacrificed").size();
+
                 default -> -1;
             };
         } catch (Exception e) {

@@ -42,9 +42,6 @@ public class DisciplineTestHelper {
             return false;
         }
         String heldId = CLIENT.player.getMainHandStack().getSkyblockId();
-        if (heldId == null) {
-            return false;
-        }
         return Objects.equals(SWORD_TO_NAME_LOOKUP.get(heldId), name);
     }
 
@@ -58,9 +55,6 @@ public class DisciplineTestHelper {
             return 0;
         }
         String heldId = CLIENT.player.getMainHandStack().getSkyblockId();
-        if (heldId == null) {
-            return 0;
-        }
         return SWORD_TO_COLOR_LOOKUP.getOrDefault(heldId, 0);
     }
 }

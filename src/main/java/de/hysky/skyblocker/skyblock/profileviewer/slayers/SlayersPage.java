@@ -7,6 +7,7 @@ import net.minecraft.client.gui.DrawContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SlayersPage implements ProfileViewerPage {
     private static final String[] SLAYERS = {"Zombie", "Spider", "Wolf", "Enderman", "Vampire", "Blaze"};
@@ -17,7 +18,7 @@ public class SlayersPage implements ProfileViewerPage {
     public SlayersPage(JsonObject pProfile) {
         try {
             for (String slayer : SLAYERS) {
-                slayerWidgets.add(new SlayerWidget(slayer, getSlayerXP(slayer.toLowerCase(), pProfile), pProfile));
+                slayerWidgets.add(new SlayerWidget(slayer, getSlayerXP(slayer.toLowerCase(Locale.ENGLISH), pProfile), pProfile));
             }
         } catch (Exception e) {
             ProfileViewerScreen.LOGGER.error("[Skyblocker Profile Viewer] Error creating slayer widgets", e);
@@ -26,7 +27,7 @@ public class SlayersPage implements ProfileViewerPage {
 
     public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
         for (int i = 0; i < slayerWidgets.size(); i++) {
-            slayerWidgets.get(i).render(context, rootX, rootY + i * ROW_GAP);
+            slayerWidgets.get(i).render(context, mouseX, mouseY, rootX, rootY + i * ROW_GAP);
         }
     }
 

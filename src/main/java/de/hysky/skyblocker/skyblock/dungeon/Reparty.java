@@ -1,94 +1,119 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.azureaaron.hmapi.data.party.PartyRole;
+import net.azureaaron.hmapi.events.HypixelPacketEvents;
+import net.azureaaron.hmapi.network.HypixelNetworking;
+import net.azureaaron.hmapi.network.packet.s2c.ErrorS2CPacket;
+import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket;
+import net.azureaaron.hmapi.network.packet.v2.s2c.PartyInfoS2CPacket;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.logging.LogUtils;
 
 public class Reparty extends ChatPatternListener {
-    private static final MinecraftClient client = MinecraftClient.getInstance();
-    public static final Pattern PLAYER = Pattern.compile(" ([a-zA-Z0-9_]{2,16}) ●");
-    private static final int BASE_DELAY = 10;
+	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final int BASE_DELAY = 10;
 
-    private String[] players;
-    private int playersSoFar;
-    private boolean repartying;
-    private String partyLeader;
+	private boolean repartying;
+	private String partyLeader;
 
-    public Reparty() {
-        super("^(?:You are not currently in a party\\." +
-                "|Party (?:Membe|Moderato)rs(?: \\(([0-9]+)\\)|:( .*))" +
-                "|([\\[A-z+\\]]* )?(?<disband>.*) has disbanded .*" +
-                "|.*\n([\\[A-z+\\]]* )?(?<invite>.*) has invited you to join their party!" +
-                "\nYou have 60 seconds to accept. Click here to join!\n.*)$");
+	public Reparty() {
+		super("^(?:([\\[A-z+\\]]* )?(?<disband>.*) has disbanded .*" +
+				"|.*\n([\\[A-z+\\]]* )?(?<invite>.*) has invited you to join their party!" +
+				"\nYou have 60 seconds to accept. Click here to join!\n.*)$");
 
-        this.repartying = false;
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("rp").executes(context -> {
-            if (!Utils.isOnSkyblock() || this.repartying || client.player == null) return 0;
-            this.repartying = true;
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown("/p list");
-            return 0;
-        })));
-    }
+		this.repartying = false;
+		HypixelPacketEvents.PARTY_INFO.register(this::onPacket);
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+			dispatcher.register(ClientCommandManager.literal("reparty").executes(this::executeCommand));
+			dispatcher.register(ClientCommandManager.literal("rp").executes(this::executeCommand));
+		});
+	}
 
-    @Override
-    public ChatFilterResult state() {
-        return (SkyblockerConfigManager.get().general.acceptReparty || this.repartying) ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
-    }
+	private int executeCommand(CommandContext<FabricClientCommandSource> source) {
+		if (!Utils.isOnSkyblock() || this.repartying || CLIENT.player == null) return 0;
 
-    @Override
-    public boolean onMatch(Text message, Matcher matcher) {
-        if (matcher.group(1) != null && repartying) {
-            this.playersSoFar = 0;
-            this.players = new String[Integer.parseInt(matcher.group(1)) - 1];
-        } else if (matcher.group(2) != null && repartying) {
-            Matcher m = PLAYER.matcher(matcher.group(2));
-            while (m.find()) {
-                this.players[playersSoFar++] = m.group(1);
-            }
-        } else if (matcher.group("disband") != null && !matcher.group("disband").equals(client.getSession().getUsername())) {
-            partyLeader = matcher.group("disband");
-            Scheduler.INSTANCE.schedule(() -> partyLeader = null, 61);
-            return false;
-        } else if (matcher.group("invite") != null && matcher.group("invite").equals(partyLeader)) {
-            String command = "/party accept " + partyLeader;
-            sendCommand(command, 0);
-            return false;
-        } else {
-            this.repartying = false;
-            return false;
-        }
-        if (this.playersSoFar == this.players.length) {
-            reparty();
-        }
-        return false;
-    }
+		this.repartying = true;
+		HypixelNetworking.sendPartyInfoC2SPacket(2);
 
-    private void reparty() {
-        ClientPlayerEntity playerEntity = client.player;
-        if (playerEntity == null) {
-            this.repartying = false;
-            return;
-        }
-        sendCommand("/p disband", 1);
-        for (int i = 0; i < this.players.length; ++i) {
-            String command = "/p invite " + this.players[i];
-            sendCommand(command, i + 2);
-        }
-        Scheduler.INSTANCE.schedule(() -> this.repartying = false, this.players.length + 2);
-    }
+		return Command.SINGLE_SUCCESS;
+	}
 
-    private void sendCommand(String command, int delay) {
-        MessageScheduler.INSTANCE.queueMessage(command, delay * BASE_DELAY);
-    }
+	private void onPacket(HypixelS2CPacket packet) {
+		switch (packet) {
+			case PartyInfoS2CPacket(var inParty, var members) when this.repartying -> {
+				UUID ourUuid = Objects.requireNonNull(CLIENT.getSession().getUuidOrNull());
+
+				if (inParty && members.get(ourUuid) == PartyRole.LEADER) {
+					sendCommand("/p disband", 1);
+					int count = 0;
+
+					for (Map.Entry<UUID, PartyRole> entry : members.entrySet()) {
+						UUID uuid = entry.getKey();
+						PartyRole role = entry.getValue();
+
+						//Don't invite ourself
+						if (role != PartyRole.LEADER) sendCommand("/p " + uuid.toString(), ++count + 2);
+					}
+
+					Scheduler.INSTANCE.schedule(() -> this.repartying = false, count * BASE_DELAY);
+				} else {
+					CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.reparty.notInPartyOrNotLeader")), false);
+					this.repartying = false;
+				}
+			}
+
+			case ErrorS2CPacket(var id, var error) when id.equals(PartyInfoS2CPacket.ID) && this.repartying -> {
+				CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.reparty.error")), false);
+				LOGGER.error("[Skyblocker Reparty] The party info packet returned an unexpected error! {}", error);
+
+				this.repartying = false;
+			}
+
+			default -> {} //Do nothing
+		}
+	}
+
+	@Override
+	public ChatFilterResult state() {
+		return SkyblockerConfigManager.get().general.acceptReparty ? ChatFilterResult.FILTER : ChatFilterResult.PASS;
+	}
+
+	@Override
+	public boolean onMatch(Text message, Matcher matcher) {
+		if (matcher.group("disband") != null && !matcher.group("disband").equals(CLIENT.getSession().getUsername())) {
+			partyLeader = matcher.group("disband");
+			Scheduler.INSTANCE.schedule(() -> partyLeader = null, 61);
+		} else if (matcher.group("invite") != null && matcher.group("invite").equals(partyLeader)) {
+			String command = "/party accept " + partyLeader;
+			sendCommand(command, 0);
+		}
+
+		return false;
+	}
+
+	private void sendCommand(String command, int delay) {
+		MessageScheduler.INSTANCE.queueMessage(command, true, delay * BASE_DELAY);
+	}
 }

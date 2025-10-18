@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 public class QuickNav {
-    private static final Logger LOGGER = LoggerFactory.getLogger(QuickNav.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(QuickNav.class);
 
     public static List<QuickNavButton> init(String screenTitle) {
         List<QuickNavButton> buttons = new ArrayList<>();
@@ -59,6 +59,10 @@ public class QuickNav {
                 player.sendMessage(Constants.PREFIX.get().append(Text.literal("Invalid regex in Quick Nav Button " + (id + 1) + "!").formatted(Formatting.RED)), false);
             }
         }
-        return new QuickNavButton(id, uiTitleMatches, buttonInfo.clickEvent, stack);
+
+		if (buttonInfo.doubleClick) {
+			return new QuickNavConfirmationButton(id, uiTitleMatches, buttonInfo.clickEvent, stack, buttonInfo.tooltip);
+		}
+        return new QuickNavButton(id, uiTitleMatches, buttonInfo.clickEvent, stack, buttonInfo.tooltip);
     }
 }

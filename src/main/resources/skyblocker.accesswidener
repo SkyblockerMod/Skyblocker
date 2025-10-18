@@ -1,20 +1,31 @@
 accessWidener v2 named
 
-accessible class net/minecraft/client/render/RenderLayer$MultiPhase
-accessible class net/minecraft/client/render/RenderLayer$MultiPhaseParameters
-accessible class net/minecraft/client/render/RenderPhase$Transparency
-accessible class net/minecraft/client/render/RenderPhase$ShaderProgram
-accessible class net/minecraft/client/render/RenderPhase$Texture
-accessible class net/minecraft/client/render/RenderPhase$TextureBase
-accessible class net/minecraft/client/render/RenderPhase$Texturing
-accessible class net/minecraft/client/render/RenderPhase$Lightmap
-accessible class net/minecraft/client/render/RenderPhase$Overlay
-accessible class net/minecraft/client/render/RenderPhase$Cull
-accessible class net/minecraft/client/render/RenderPhase$DepthTest
-accessible class net/minecraft/client/render/RenderPhase$WriteMaskState
-accessible class net/minecraft/client/render/RenderPhase$Layering
-accessible class net/minecraft/client/render/RenderPhase$Target
-accessible class net/minecraft/client/render/RenderPhase$LineWidth
-accessible class net/minecraft/client/render/RenderPhase$ColorLogic
-accessible class net/minecraft/client/render/RenderPhase$OffsetTexturing
-accessible class net/minecraft/client/render/RenderPhase$Textures
+# Command Argument Types
+accessible field net/minecraft/command/argument/BlockPosArgumentType EXAMPLES Ljava/util/Collection;
+
+# Recipe Book
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookResults PAGE_FORWARD_TEXTURES Lnet/minecraft/client/gui/screen/ButtonTextures;
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookResults PAGE_BACKWARD_TEXTURES Lnet/minecraft/client/gui/screen/ButtonTextures;
+accessible field net/minecraft/client/gui/screen/recipebook/AnimatedResultButton SLOT_CRAFTABLE_TEXTURE Lnet/minecraft/util/Identifier;
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeGroupButtonWidget TEXTURES Lnet/minecraft/client/gui/screen/ButtonTextures;
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget SEARCH_HINT_TEXT Lnet/minecraft/text/Text;
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget searchField Lnet/minecraft/client/gui/widget/TextFieldWidget;
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget searchFieldRect Lnet/minecraft/client/gui/ScreenRect;
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget parentWidth I
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget parentHeight I
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget leftOffset I
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget narrow Z
+extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget reset ()V
+extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget refreshResults (ZZ)V
+extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget refreshTabButtons (Z)V
+extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget refreshSearchResults ()V
+extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget triggerPirateSpeakEasterEgg (Ljava/lang/String;)V
+
+# Block Shapes
+accessible field net/minecraft/block/CarpetBlock SHAPE Lnet/minecraft/util/shape/VoxelShape;
+
+# Hud Rendering
+extendable class net/minecraft/client/gui/render/state/TextGuiElementRenderState
+accessible class net/minecraft/client/font/TextRenderer$Drawer
+accessible field net/minecraft/client/font/TextRenderer$Drawer x F
+accessible field net/minecraft/client/font/TextRenderer$Drawer y F

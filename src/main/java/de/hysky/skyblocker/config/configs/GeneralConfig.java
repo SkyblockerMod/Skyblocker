@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.item.CustomArmorAnimatedDyes;
-import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -15,119 +15,104 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeneralConfig {
-    @SerialEntry
     public boolean enableTips = true;
 
-    @SerialEntry
     public boolean acceptReparty = true;
 
-    @SerialEntry
+	public SpeedPresets speedPresets = new SpeedPresets();
+
     public Shortcuts shortcuts = new Shortcuts();
 
-    @SerialEntry
     public QuiverWarning quiverWarning = new QuiverWarning();
 
-    @SerialEntry
     public ItemList itemList = new ItemList();
 
-    @SerialEntry
     public ItemTooltip itemTooltip = new ItemTooltip();
 
-    @SerialEntry
     public ItemInfoDisplay itemInfoDisplay = new ItemInfoDisplay();
 
-    @SerialEntry
     public ItemProtection itemProtection = new ItemProtection();
 
-    @SerialEntry
     public WikiLookup wikiLookup = new WikiLookup();
 
-    @SerialEntry
     public SpecialEffects specialEffects = new SpecialEffects();
 
-    @SerialEntry
     public Hitbox hitbox = new Hitbox();
 
-    @SerialEntry
     public List<Integer> lockedSlots = new ArrayList<>();
 
     //maybe put this 5 somewhere else
-    @SerialEntry
     public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
 
-    @SerialEntry
     public Object2ObjectOpenHashMap<String, Text> customItemNames = new Object2ObjectOpenHashMap<>();
 
-    @SerialEntry
     public Object2IntOpenHashMap<String> customDyeColors = new Object2IntOpenHashMap<>();
 
-    @SerialEntry
     public Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customArmorTrims = new Object2ObjectOpenHashMap<>();
 
-    @SerialEntry
     public Object2ObjectOpenHashMap<String, CustomArmorAnimatedDyes.AnimatedDye> customAnimatedDyes = new Object2ObjectOpenHashMap<>();
 
+	public Object2ObjectOpenHashMap<String, String> customHelmetTextures = new Object2ObjectOpenHashMap<>();
+
+	public static class SpeedPresets {
+		public boolean enableSpeedPresets = true;
+	}
+
     public static class Shortcuts {
-        @SerialEntry
         public boolean enableShortcuts = true;
 
-        @SerialEntry
         public boolean enableCommandShortcuts = true;
 
-        @SerialEntry
         public boolean enableCommandArgShortcuts = true;
+
+		public boolean enableKeyBindingShortcuts = true;
     }
 
 
     public static class QuiverWarning {
-        @SerialEntry
         public boolean enableQuiverWarning = true;
 
-        @SerialEntry
         public boolean enableQuiverWarningInDungeons = true;
 
-        @SerialEntry
         public boolean enableQuiverWarningAfterDungeon = true;
     }
 
     public static class ItemList {
-        @SerialEntry
         public boolean enableItemList = true;
+
+		public boolean enableCollapsibleEntries = true;
     }
 
     public static class ItemTooltip {
-        @SerialEntry
         public boolean enableNPCPrice = true;
 
-        @SerialEntry
         public boolean enableMotesPrice = true;
 
-        @SerialEntry
         public boolean enableAvgBIN = true;
 
-        @SerialEntry
         public Average avg = Average.THREE_DAY;
 
-        @SerialEntry
         public boolean enableLowestBIN = true;
 
-        @SerialEntry
         public boolean enableBazaarPrice = true;
 
-        @SerialEntry
+        public Craft enableCraftingCost = Craft.OFF;
+
         public boolean enableObtainedDate = true;
 
-        @SerialEntry
         public boolean enableMuseumInfo = true;
 
-        @SerialEntry
         public boolean enableExoticTooltip = true;
 
-        @SerialEntry
         public boolean enableAccessoriesHelper = true;
 
-        @SerialEntry
         public boolean dungeonQuality = true;
+
+        public boolean showEssenceCost = true;
+
+        public boolean enableEstimatedItemValue = true;
+
+        public boolean enableStackingEnchantProgress = true;
     }
 
     public enum Average {
@@ -139,50 +124,74 @@ public class GeneralConfig {
         }
     }
 
-    public static class ItemInfoDisplay {
-        @SerialEntry
-        public boolean slotText = true;
+    public enum Craft {
+        SELL_ORDER, BUY_ORDER, OFF;
 
-        @SerialEntry
-        public boolean attributeShardInfo = true;
+        @Override
+        public String toString() {
+            return I18n.translate("skyblocker.config.general.itemTooltip.craft." + name());
+        }
 
-        @SerialEntry
-        public boolean itemRarityBackgrounds = false;
-
-        @SerialEntry
-        public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.CIRCULAR;
-
-        @SerialEntry
-        public float itemRarityBackgroundsOpacity = 1f;
+        public String getOrder() {
+            return switch (this) {
+                case SELL_ORDER -> "sellPrice";
+                case BUY_ORDER -> "buyPrice";
+                case OFF -> null;
+            };
+        }
     }
 
-    public enum RarityBackgroundStyle {
-        CIRCULAR(Identifier.of(SkyblockerMod.NAMESPACE, "item_rarity_background_circular")),
-        SQUARE(Identifier.of(SkyblockerMod.NAMESPACE, "item_rarity_background_square"));
+    public static class ItemInfoDisplay {
+        @Deprecated
+        public transient boolean slotText = true;
+
+		@Deprecated
+        public transient SlotTextMode slotTextMode = SlotTextMode.ENABLED;
+
+		@Deprecated
+        public transient boolean slotTextToggled = true;
+
+		@Deprecated
+        public transient boolean attributeShardInfo = true;
+
+		public ItemBackgroundStyle itemBackgroundStyle = ItemBackgroundStyle.SQUARE;
+
+		public float itemBackgroundOpacity = 0.5f;
+
+        public boolean itemRarityBackgrounds = true;
+
+		public boolean jacobMedalBackgrounds = true;
+
+		public boolean legacyAttributeBackgrounds = true;
+    }
+
+    public enum ItemBackgroundStyle {
+        CIRCULAR(SkyblockerMod.id("item_background_circular")),
+        SQUARE(SkyblockerMod.id("item_background_square"));
 
         public final Identifier tex;
 
-        RarityBackgroundStyle(Identifier tex) {
+        ItemBackgroundStyle(Identifier tex) {
             this.tex = tex;
         }
 
         @Override
         public String toString() {
-            return switch (this) {
-                case CIRCULAR -> "Circular";
-                case SQUARE -> "Square";
-            };
+            return I18n.translate("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style." + name());
         }
     }
 
     public static class ItemProtection {
-        @SerialEntry
-        public SlotLockStyle slotLockStyle = SlotLockStyle.FANCY;
+        public SlotLockStyle slotLockStyle = SlotLockStyle.CLASSIC;
+
+		public boolean displayChatNotification = true;
+
+        public boolean protectValuableConsumables = true;
     }
 
     public enum SlotLockStyle {
-        CLASSIC(Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png")),
-        FANCY(Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/fancy_slot_lock.png"));
+        CLASSIC(SkyblockerMod.id("textures/gui/slot_lock.png")),
+        FANCY(SkyblockerMod.id("textures/gui/fancy_slot_lock.png"));
 
         public final Identifier tex;
 
@@ -192,32 +201,32 @@ public class GeneralConfig {
 
         @Override
         public String toString() {
-            return switch (this) {
-                case CLASSIC -> "Classic";
-                case FANCY -> "FANCY";
-            };
+            return I18n.translate("skyblocker.config.general.itemProtection.slotLockStyle.style." + name());
         }
     }
 
     public static class WikiLookup {
-        @SerialEntry
         public boolean enableWikiLookup = true;
 
-        @SerialEntry
-        public boolean officialWiki = true;
+		@Deprecated
+		public transient boolean officialWiki = true;
     }
 
     public static class SpecialEffects {
-        @SerialEntry
         public boolean rareDungeonDropEffects = true;
+
+        public boolean rareDyeDropEffects = true;
     }
 
     public static class Hitbox {
-        @SerialEntry
-        public boolean oldFarmlandHitbox = false;
+        public boolean oldCactusHitbox = false;
 
-        @SerialEntry
+        @Deprecated
+        public transient boolean oldFarmlandHitbox = false;
+
         public boolean oldLeverHitbox = false;
+
+		public boolean oldMushroomHitbox = false;
     }
 
 }

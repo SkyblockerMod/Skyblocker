@@ -1,19 +1,19 @@
 package de.hysky.skyblocker.skyblock.end;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.HudRenderEvents;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.ProfiledData;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -30,29 +30,21 @@ import net.minecraft.util.math.ChunkPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 public class TheEnd {
     protected static final Logger LOGGER = LoggerFactory.getLogger(TheEnd.class);
+	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("end.json");
 
     public static Set<UUID> hitZealots = new HashSet<>();
-    public static int zealotsSinceLastEye = 0;
-    public static int zealotsKilled = 0;
-    public static int eyes = 0;
-    /**
-     * needs to be saved?
-     */
-    private static boolean dirty = false;
-    private static String currentProfile = "";
-    private static JsonObject PROFILES_STATS;
+	public static ProfiledData<EndStats> PROFILES_STATS = new ProfiledData<>(FILE, EndStats.CODEC);
 
-    private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("end.json");
     public static List<ProtectorLocation> protectorLocations = List.of(
             new ProtectorLocation(-649, -219, Text.translatable("skyblocker.end.hud.protectorLocations.left")),
             new ProtectorLocation(-644, -269, Text.translatable("skyblocker.end.hud.protectorLocations.front")),
@@ -65,6 +57,7 @@ public class TheEnd {
     public static ProtectorLocation currentProtectorLocation = null;
     public static int stage = 0;
 
+    @Init
     public static void init() {
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (entity instanceof EndermanEntity enderman && isZealot(enderman)) {
@@ -73,16 +66,8 @@ public class TheEnd {
             return ActionResult.PASS;
         });
 
-
-        HudRenderEvents.AFTER_MAIN_HUD.register((drawContext, tickCounter) -> {
-            if (!Utils.isInTheEnd()) return;
-            if (!SkyblockerConfigManager.get().otherLocations.end.hudEnabled) return;
-
-            EndHudWidget.INSTANCE.render(drawContext, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
-        });
-
         ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
-            String lowerCase = Utils.getIslandArea().toLowerCase();
+            String lowerCase = Utils.getIslandArea().toLowerCase(Locale.ENGLISH);
             if (Utils.isInTheEnd() || lowerCase.contains("the end") || lowerCase.contains("dragon's nest")) {
                 ChunkPos pos = chunk.getPos();
                 //
@@ -93,37 +78,30 @@ public class TheEnd {
                         if (isProtectorHere(world, protectorLocation)) break;
                     }
                 }
-                if (currentProfile.isEmpty()) load(); // Wacky fix for when you join skyblock, and you are directly in the end (profile id isn't parsed yet most of the time)
             }
-
-
         });
+		// Fix for when you join skyblock, and you are directly in the end
+		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> EndHudWidget.getInstance().update());
         // Reset when changing island
-        // TODO: Replace when a changed island event is added
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            resetLocation();
-            save();
-            load();
-            EndHudWidget.INSTANCE.update();
-        });
-        // Save when leaving as well
-        ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> save());
+        SkyblockEvents.LOCATION_CHANGE.register(location -> resetLocation());
 
-        ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-            if (!Utils.isInTheEnd() || overlay) return;
-            String lowerCase = message.getString().toLowerCase();
+        ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+            if (!Utils.isInTheEnd() || overlay) return true;
+            String lowerCase = message.getString().toLowerCase(Locale.ENGLISH);
             if (lowerCase.contains("tremor")) {
                 if (stage == 0) checkAllProtectorLocations();
                 else stage += 1;
             }
             else if (lowerCase.contains("rises from below")) stage = 5;
             else if (lowerCase.contains("protector down") || lowerCase.contains("has risen")) resetLocation();
-            else return;
-            EndHudWidget.INSTANCE.update();
+            else return true;
+            EndHudWidget.getInstance().update();
+
+            return true;
         });
 
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(TheEnd::renderWaypoint);
-        ClientLifecycleEvents.CLIENT_STARTED.register((client -> loadFile()));
+        WorldRenderExtractionCallback.EVENT.register(TheEnd::extractRendering);
+		PROFILES_STATS.init();
     }
 
     private static void checkAllProtectorLocations() {
@@ -146,7 +124,7 @@ public class TheEnd {
             if (world.getBlockState(new BlockPos(protectorLocation.x, i + 5, protectorLocation.z)).isOf(Blocks.PLAYER_HEAD)) {
                 stage = i + 1;
                 currentProtectorLocation = protectorLocation;
-                EndHudWidget.INSTANCE.update();
+                EndHudWidget.getInstance().update();
                 return true;
             }
         }
@@ -161,111 +139,48 @@ public class TheEnd {
     public static void onEntityDeath(Entity entity) {
         if (!(entity instanceof EndermanEntity enderman) || !isZealot(enderman)) return;
         if (hitZealots.contains(enderman.getUuid())) {
-            //MinecraftClient.getInstance().player.sendMessage(Text.literal("You killed a zealot!!!"));
+			EndStats stats = PROFILES_STATS.computeIfAbsent(EndStats.EMPTY);
             if (isSpecialZealot(enderman)) {
-                zealotsSinceLastEye = 0;
-                eyes++;
-            }
-            else zealotsSinceLastEye++;
-            zealotsKilled++;
-            dirty = true;
-            hitZealots.remove(enderman.getUuid());
-            EndHudWidget.INSTANCE.update();
+				PROFILES_STATS.put(new EndStats(stats.totalZealotKills() + 1, 0, stats.eyes() + 1));
+			} else {
+				PROFILES_STATS.put(new EndStats(stats.totalZealotKills() + 1, stats.zealotsSinceLastEye() + 1, stats.eyes()));
+			}
+			hitZealots.remove(enderman.getUuid());
+            EndHudWidget.getInstance().update();
         }
     }
 
     public static boolean isZealot(EndermanEntity enderman) {
-        if (enderman.getName().getString().toLowerCase().contains("zealot")) return true; // Future-proof. If they someday decide to actually rename the entities
+        if (enderman.getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot")) return true; // Future-proof. If they someday decide to actually rename the entities
         assert MinecraftClient.getInstance().world != null;
         List<ArmorStandEntity> entities = MinecraftClient.getInstance().world.getEntitiesByClass(
                 ArmorStandEntity.class,
                 enderman.getDimensions(null).getBoxAt(enderman.getPos()).expand(1),
-                armorStandEntity -> armorStandEntity.getName().getString().toLowerCase().contains("zealot"));
+                armorStandEntity -> armorStandEntity.getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot"));
         if (entities.isEmpty()) {
             return false;
         }
-        return entities.getFirst().getName().getString().toLowerCase().contains("zealot");
+        return entities.getFirst().getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot");
     }
 
     public static boolean isSpecialZealot(EndermanEntity enderman) {
         return isZealot(enderman) && enderman.getCarriedBlock() != null && enderman.getCarriedBlock().isOf(Blocks.END_PORTAL_FRAME);
     }
 
-    /**
-     * Loads if needed
-     */
-    public static void load() {
-        if (!Utils.isOnSkyblock() || Utils.getProfileId().isEmpty()) return;
-        String id = MinecraftClient.getInstance().getSession().getUuidOrNull().toString().replaceAll("-", "");
-        String profile = Utils.getProfileId();
-        if (!profile.equals(currentProfile) && PROFILES_STATS != null) {
-            currentProfile = profile;
-            JsonElement jsonElement = PROFILES_STATS.get(id);
-            if (jsonElement == null) return;
-            JsonElement jsonElement1 = jsonElement.getAsJsonObject().get(profile);
-            if (jsonElement1 == null) return;
-            zealotsKilled = jsonElement1.getAsJsonObject().get("totalZealotKills").getAsInt();
-            zealotsSinceLastEye = jsonElement1.getAsJsonObject().get("zealotsSinceLastEye").getAsInt();
-            eyes = jsonElement1.getAsJsonObject().get("eyes").getAsInt();
-            EndHudWidget.INSTANCE.update();
-        }
-    }
-
-    private static void loadFile() {
-        CompletableFuture.runAsync(() -> {
-            try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-                PROFILES_STATS = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
-                LOGGER.debug("[Skyblocker End] Loaded end stats");
-            } catch (NoSuchFileException ignored) {
-                PROFILES_STATS = new JsonObject();
-            } catch (Exception e) {
-                LOGGER.error("[Skyblocker End] Failed to load end stats", e);
-            }
-        });
-    }
-
-    /**
-     * Saves if dirty
-     */
-    public static void save() {
-        if (dirty && PROFILES_STATS != null) {
-            String uuid = MinecraftClient.getInstance().getSession().getUuidOrNull().toString().replaceAll("-", "");
-            JsonObject jsonObject = PROFILES_STATS.getAsJsonObject(uuid);
-            if (jsonObject == null) {
-                PROFILES_STATS.add(uuid, new JsonObject());
-                jsonObject = PROFILES_STATS.getAsJsonObject(uuid);
-            }
-
-            jsonObject.add(currentProfile, new JsonObject());
-            JsonElement jsonElement1 = jsonObject.get(currentProfile);
-
-            jsonElement1.getAsJsonObject().addProperty("totalZealotKills", zealotsKilled);
-            jsonElement1.getAsJsonObject().addProperty("zealotsSinceLastEye", zealotsSinceLastEye);
-            jsonElement1.getAsJsonObject().addProperty("eyes", eyes);
-
-            if (Utils.isOnSkyblock()) {
-                CompletableFuture.runAsync(TheEnd::performSave);
-            } else {
-                performSave();
-            }
-        }
-    }
-
-    private static void performSave() {
-        try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
-            SkyblockerMod.GSON.toJson(PROFILES_STATS, writer);
-            LOGGER.info("[Skyblocker End] Saved end stats");
-            dirty = false;
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker End] Failed to save end stats", e);
-        }
-    }
-
-    private static void renderWaypoint(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
         if (!SkyblockerConfigManager.get().otherLocations.end.waypoint) return;
         if (currentProtectorLocation == null || stage != 5) return;
-        currentProtectorLocation.waypoint().render(context);
+        currentProtectorLocation.waypoint().extractRendering(collector);
     }
+
+	public record EndStats(int totalZealotKills, int zealotsSinceLastEye, int eyes) {
+		private static final Codec<EndStats> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.INT.fieldOf("totalZealotKills").forGetter(EndStats::totalZealotKills),
+				Codec.INT.fieldOf("zealotsSinceLastEye").forGetter(EndStats::zealotsSinceLastEye),
+				Codec.INT.fieldOf("eyes").forGetter(EndStats::eyes)
+		).apply(instance, EndStats::new));
+		public static final Supplier<EndStats> EMPTY = () -> new EndStats(0, 0, 0);
+	}
 
     public record ProtectorLocation(int x, int z, Text name, Waypoint waypoint) {
         public ProtectorLocation(int x, int z, Text name) {

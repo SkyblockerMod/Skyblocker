@@ -1,26 +1,24 @@
 package de.hysky.skyblocker.skyblock.crimson.kuudra;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class Kuudra {
+	public static final int KUUDRA_MAGMA_CUBE_SIZE = 30;
+
 	static KuudraPhase phase = KuudraPhase.OTHER;
 
+	@Init
 	public static void init() {
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(KuudraWaypoints::render);
-		ClientLifecycleEvents.CLIENT_STARTED.register(KuudraWaypoints::load);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-		ClientReceiveMessageEvents.GAME.register(Kuudra::onMessage);
-		Scheduler.INSTANCE.scheduleCyclic(KuudraWaypoints::tick, 20);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(Kuudra::onMessage);
 	}
 
-	private static void onMessage(Text text, boolean overlay) {
+	private static boolean onMessage(Text text, boolean overlay) {
 		if (Utils.isInKuudra() && !overlay) {
 			String message = Formatting.strip(text.getString());
 
@@ -35,7 +33,13 @@ public class Kuudra {
 			if (message.equals("[NPC] Elle: POW! SURELY THAT'S IT! I don't think he has any more in him!")) {
 				phase = KuudraPhase.OTHER;
 			}
+
+			if (message.equals("[NPC] Elle: What just happened!? Is this Kuudra's real lair?")) {
+				phase = KuudraPhase.KUUDRA_LAIR;
+			}
 		}
+
+		return true;
 	}
 
 	private static void reset() {
@@ -45,6 +49,7 @@ public class Kuudra {
 	enum KuudraPhase {
 		OTHER,
 		RETRIEVE_SUPPLIES,
-		DPS;
+		DPS,
+		KUUDRA_LAIR; //Infernal Only
 	}
 }

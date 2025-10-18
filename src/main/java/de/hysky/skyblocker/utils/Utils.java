@@ -3,34 +3,48 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
-
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
-import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.utils.purse.PurseChangeCause;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.azureaaron.hmapi.data.rank.PackageRank;
+import net.azureaaron.hmapi.data.rank.RankType;
+import net.azureaaron.hmapi.data.server.Environment;
+import net.azureaaron.hmapi.events.HypixelPacketEvents;
+import net.azureaaron.hmapi.network.HypixelNetworking;
+import net.azureaaron.hmapi.network.packet.s2c.ErrorS2CPacket;
+import net.azureaaron.hmapi.network.packet.s2c.HelloS2CPacket;
+import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket;
+import net.azureaaron.hmapi.network.packet.v1.s2c.LocationUpdateS2CPacket;
+import net.azureaaron.hmapi.network.packet.v1.s2c.PlayerInfoS2CPacket;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.scoreboard.*;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.Locale;
+import java.util.OptionalInt;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utility variables and methods for retrieving Skyblock related information.
@@ -42,14 +56,27 @@ public class Utils {
     private static final String PROFILE_PREFIX = "Profile: ";
     private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
     public static final String PROFILE_ID_PREFIX = "Profile ID: ";
-    private static boolean isOnHypixel = false;
+    private static final String PROFILE_ID_SUGGEST_PREFIX = "CLICK THIS TO SUGGEST IT IN CHAT";
+	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
+	private static final RegistryWrapper.WrapperLookup LOOKUP = BuiltinRegistries.createWrapperLookup();
+	private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
-    private static boolean isInjected = false;
+
     /**
-     * Current Skyblock location (from /locraw)
+     * The player's rank.
+     */
+    @NotNull
+    private static RankType rank = PackageRank.NONE;
+    /**
+     * Current Skyblock location (from the Mod API)
      */
     @NotNull
     private static Location location = Location.UNKNOWN;
+    /**
+     * Current Skyblock island area.
+     */
+    @NotNull
+    private static Area area = Area.UNKNOWN;
     /**
      * The profile name parsed from the player list.
      */
@@ -61,9 +88,16 @@ public class Utils {
     @NotNull
     private static String profileId = "";
     /**
-     * The following fields store data returned from /locraw: {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
+     * The server from which we last received the profile id message from.
+     */
+    private static int profileIdRequest = 0;
+    private static int profileSuggestionMessages = Integer.MAX_VALUE / 2;
+    /**
+     * The following fields store data returned from the Mod API: {@link #environment}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
      */
     @SuppressWarnings("JavadocDeclaration")
+    @NotNull
+    private static Environment environment = Environment.PRODUCTION;
     @NotNull
     private static String server = "";
     @NotNull
@@ -72,13 +106,10 @@ public class Utils {
     private static String locationRaw = "";
     @NotNull
     private static String map = "";
-    private static long clientWorldJoinTime = 0;
-    private static boolean sentLocRaw = false;
-    private static boolean canSendLocRaw = false;
-    //This is required to prevent the location change event from being fired twice.
-    private static boolean locationChanged = true;
+    @NotNull
+    public static double purse = 0;
 
-    private static String mayor = "";
+	private static boolean firstProfileUpdate = true;
 
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
@@ -110,6 +141,10 @@ public class Utils {
         return location == Location.THE_RIFT;
     }
 
+	public static boolean isInGarden() {
+		return location == Location.GARDEN;
+	}
+
     /**
      * @return if the player is in the end island
      */
@@ -120,17 +155,26 @@ public class Utils {
     public static boolean isInKuudra() {
         return location == Location.KUUDRAS_HOLLOW;
     }
+
     public static boolean isInCrimson() {
         return location == Location.CRIMSON_ISLE;
     }
 
-    public static boolean isInModernForagingIsland() {
-        return location == Location.MODERN_FORAGING_ISLAND;
-    }
+	public static boolean isInFarm() {
+		return location == Location.THE_FARMING_ISLAND;
+	}
 
-    public static boolean isInjected() {
-        return isInjected;
-    }
+    public static boolean isInGalatea() { return location == Location.GALATEA; }
+
+	public static boolean isInHub() { return location == Location.HUB; }
+
+	public static boolean isInPrivateIsland() { return location == Location.PRIVATE_ISLAND; }
+
+	public static boolean isInPark() { return location == Location.THE_PARK; }
+
+	public static boolean isOnBingo() {
+		return profile.endsWith("Ⓑ");
+	}
 
     /**
      * @return the profile parsed from the player list.
@@ -146,7 +190,7 @@ public class Utils {
     }
 
     /**
-     * @return the location parsed from /locraw.
+     * @return the location parsed from the Mod API.
      */
     @NotNull
     public static Location getLocation() {
@@ -154,7 +198,27 @@ public class Utils {
     }
 
     /**
-     * @return the server parsed from /locraw.
+     * <b>Note: Under no circumstances should you skip checking the location if you also need the area.</b>
+     *
+     * @return the area parsed from the scoreboard.
+     */
+    @NotNull
+    public static Area getArea() {
+        return area;
+    }
+
+    /**
+     * Can be used to restrict features to being active only on the Alpha network.
+     *
+     * @return the current environment parsed from the Mod API.
+     */
+    @NotNull
+    public static Environment getEnvironment() {
+        return environment;
+    }
+
+    /**
+     * @return the server parsed from the Mod API.
      */
     @NotNull
     public static String getServer() {
@@ -162,7 +226,7 @@ public class Utils {
     }
 
     /**
-     * @return the game type parsed from /locraw.
+     * @return the game type parsed from the Mod API.
      */
     @NotNull
     public static String getGameType() {
@@ -170,7 +234,7 @@ public class Utils {
     }
 
     /**
-     * @return the location raw parsed from /locraw.
+     * @return the location raw parsed from the the Mod API.
      */
     @NotNull
     public static String getLocationRaw() {
@@ -178,7 +242,7 @@ public class Utils {
     }
 
     /**
-     * @return the map parsed from /locraw.
+     * @return the map parsed from the Mod API.
      */
     @NotNull
     public static String getMap() {
@@ -186,83 +250,60 @@ public class Utils {
     }
 
     /**
-     * @return the current mayor as cached on skyblock join.
+     * @return the player's rank
      */
     @NotNull
-    public static String getMayor() {
-        return mayor;
+    public static RankType getRank() {
+        return rank;
     }
 
+    @Init
     public static void init() {
-        SkyblockEvents.JOIN.register(() -> tickMayorCache(false));
-        ClientPlayConnectionEvents.JOIN.register(Utils::onClientWorldJoin);
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
-        ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
-        Scheduler.INSTANCE.scheduleCyclic(() -> tickMayorCache(true), 24_000, true); // Update every 20 minutes
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
+
+        //Register Mod API stuff
+        HypixelNetworking.registerToEvents(Util.make(new Object2IntOpenHashMap<>(), map -> map.put(LocationUpdateS2CPacket.ID, 1)));
+        HypixelPacketEvents.HELLO.register(Utils::onPacket);
+        HypixelPacketEvents.LOCATION_UPDATE.register(Utils::onPacket);
+        HypixelPacketEvents.PLAYER_INFO.register(Utils::onPacket);
     }
 
     /**
-     * Updates all the fields stored in this class from the sidebar, player list, and /locraw.
+     * Updates all the fields stored in this class from the sidebar, and player list.
      */
     public static void update() {
         MinecraftClient client = MinecraftClient.getInstance();
         updateScoreboard(client);
-        updatePlayerPresenceFromScoreboard(client);
+        updatePlayerPresence(client);
         updateFromPlayerList(client);
-        updateLocRaw();
     }
 
     /**
-     * Updates {@link #isOnSkyblock}, {@link #isInDungeons}, and {@link #isInjected} from the scoreboard.
+     * Updates {@link #isOnSkyblock} if in a development environment and {@link #isOnHypixel} in all environments.
      */
-    public static void updatePlayerPresenceFromScoreboard(MinecraftClient client) {
-        List<String> sidebar = STRING_SCOREBOARD;
-
+    private static void updatePlayerPresence(MinecraftClient client) {
         FabricLoader fabricLoader = FabricLoader.getInstance();
-        if (client.world == null || client.isInSingleplayer() || sidebar.isEmpty()) {
-            if (fabricLoader.isDevelopmentEnvironment()) {
-                sidebar = Collections.emptyList();
-            } else {
-                isOnSkyblock = false;
-                return;
+        if (client.world == null || client.isInSingleplayer()) {
+            if (fabricLoader.isDevelopmentEnvironment()) { // Pretend we're always in skyblock when in dev
+                isOnSkyblock = true;
             }
         }
-
-        if (sidebar.isEmpty() && !fabricLoader.isDevelopmentEnvironment()) return;
 
         if (fabricLoader.isDevelopmentEnvironment() || isConnectedToHypixel(client)) {
             if (!isOnHypixel) {
                 isOnHypixel = true;
             }
-            if (fabricLoader.isDevelopmentEnvironment() || sidebar.getFirst().contains("SKYBLOCK") || sidebar.getFirst().contains("SKIBLOCK")) {
-                if (!isOnSkyblock) {
-                    if (!isInjected) {
-                        isInjected = true;
-                    }
-                    isOnSkyblock = true;
-                    SkyblockEvents.JOIN.invoker().onSkyblockJoin();
-                }
-            } else {
-                onLeaveSkyblock();
-            }
         } else if (isOnHypixel) {
             isOnHypixel = false;
-            onLeaveSkyblock();
         }
     }
 
     private static boolean isConnectedToHypixel(MinecraftClient client) {
-        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
+        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase(Locale.ENGLISH) : "";
         String serverBrand = (client.player != null && client.player.networkHandler != null && client.player.networkHandler.getBrand() != null) ? client.player.networkHandler.getBrand() : "";
 
-        return serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
-    }
-
-    private static void onLeaveSkyblock() {
-        if (isOnSkyblock) {
-            isOnSkyblock = false;
-            SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
-        }
+        return (!serverAddress.isEmpty() && serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS)) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
     }
 
     public static String getIslandArea() {
@@ -278,22 +319,9 @@ public class Utils {
         return "Unknown";
     }
 
-    public static double getPurse() {
-        String purseString = null;
-        double purse = 0;
-
-        try {
-            for (String sidebarLine : STRING_SCOREBOARD) {
-                if (sidebarLine.contains("Piggy:") || sidebarLine.contains("Purse:")) purseString = sidebarLine;
-            }
-            if (purseString != null) purse = Double.parseDouble(purseString.replaceAll("[^0-9.]", "").strip());
-            else purse = 0;
-
-        } catch (IndexOutOfBoundsException e) {
-            LOGGER.error("[Skyblocker] Failed to get purse from sidebar", e);
-        }
-        return purse;
-    }
+	public static double getPurse() {
+		return purse;
+	}
 
     public static int getBits() {
         int bits = 0;
@@ -353,29 +381,42 @@ public class Utils {
 
             TEXT_SCOREBOARD.addAll(textLines);
             STRING_SCOREBOARD.addAll(stringLines);
+			if (isOnSkyblock) {
+				Utils.updatePurse();
+				SlayerManager.getSlayerBossInfo(true);
+				updateArea();
+			}
         } catch (NullPointerException e) {
             //Do nothing
         }
     }
 
-    // TODO: Combine with `ChocolateFactorySolver.formatTime` and move into `SkyblockTime`.
-    public static Text getDurationText(int timeInSeconds) {
-        int seconds = timeInSeconds % 60;
-        int minutes = (timeInSeconds/60) % 60;
-        int hours = (timeInSeconds/3600);
+    private static void updateArea() {
+		String areaName = getIslandArea().replaceAll("[⏣ф]", "").strip();
+		Area oldArea = area;
+		area = Area.from(areaName);
 
-        MutableText time = Text.empty();
-        if (hours > 0) {
-            time.append(hours + "h").append(" ");
-        }
-        if (hours > 0 || minutes > 0) {
-            time.append(minutes + "m").append(" ");
-        }
-        time.append(seconds + "s");
-        return time;
+		if (!oldArea.equals(area)) SkyblockEvents.AREA_CHANGE.invoker().onSkyblockAreaChange(area);
     }
 
-    private static void updateFromPlayerList(MinecraftClient client) {
+	public static void updatePurse() {
+		STRING_SCOREBOARD.stream().filter(s -> s.contains("Piggy:") || s.contains("Purse:")).findFirst().ifPresent(purseString -> {
+			Matcher matcher = PURSE.matcher(purseString);
+			if (matcher.find()) {
+				try {
+					double newPurse = Double.parseDouble(matcher.group("purse").replaceAll(",", ""));
+					double changeSinceLast = newPurse - Utils.purse;
+					if (changeSinceLast == 0) return;
+					SkyblockEvents.PURSE_CHANGE.invoker().onPurseChange(changeSinceLast, PurseChangeCause.getCause(changeSinceLast));
+					Utils.purse = newPurse;
+				} catch (NumberFormatException e) {
+					LOGGER.error("[Skyblocker] Failed to parse purse string. Input: '{}'", purseString, e);
+				}
+			}
+		});
+	}
+
+	private static void updateFromPlayerList(MinecraftClient client) {
         if (client.getNetworkHandler() == null) {
             return;
         }
@@ -390,26 +431,90 @@ public class Utils {
         }
     }
 
-    public static void onClientWorldJoin(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client) {
-        clientWorldJoinTime = System.currentTimeMillis();
-        resetLocRawInfo();
+    private static void onDisconnect() {
+        if (isOnSkyblock) SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
+
+        isOnSkyblock = false;
+        server = "";
+        gameType = "";
+        locationRaw = "";
+        location = Location.UNKNOWN;
+        area = Area.UNKNOWN;
+        map = "";
+    }
+
+    private static void onPacket(HypixelS2CPacket packet) {
+        switch (packet) {
+            case HelloS2CPacket(var environment) -> {
+                Utils.environment = environment;
+
+                //Request the player's rank information
+                HypixelNetworking.sendPlayerInfoC2SPacket(1);
+            }
+
+            case LocationUpdateS2CPacket(var serverName, var serverType, var _lobbyName, var mode, var map) -> {
+                Utils.server = serverName;
+                String previousServerType = Utils.gameType;
+                Utils.gameType = serverType.orElse("");
+                Utils.locationRaw = mode.orElse("");
+                Utils.location = Location.from(locationRaw);
+                Utils.map = map.orElse("");
+
+                SkyblockEvents.LOCATION_CHANGE.invoker().onSkyblockLocationChange(location);
+
+                if (Utils.gameType.equals("SKYBLOCK")) {
+                    isOnSkyblock = true;
+                    tickProfileId();
+
+                    if (!previousServerType.equals("SKYBLOCK")) SkyblockEvents.JOIN.invoker().onSkyblockJoin();
+                } else if (previousServerType.equals("SKYBLOCK")) {
+                    isOnSkyblock = false;
+                    SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
+                }
+            }
+
+            case ErrorS2CPacket(var id, var error) when id.equals(LocationUpdateS2CPacket.ID) -> {
+                server = "";
+                gameType = "";
+                locationRaw = "";
+                location = Location.UNKNOWN;
+                map = "";
+
+                ClientPlayerEntity player = MinecraftClient.getInstance().player;
+
+                if (player != null) {
+                    player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.utils.locationUpdateError").formatted(Formatting.RED)), false);
+                }
+
+                LOGGER.error("[Skyblocker] Failed to update your current location! Some features of the mod may not work correctly :( - Error: {}", error);
+            }
+
+            case PlayerInfoS2CPacket(var playerRank, var packageRank, var monthlyPackageRank, var _prefix) -> {
+                rank = RankType.getEffectiveRank(playerRank, packageRank, monthlyPackageRank);
+            }
+
+            default -> {} //Do Nothing
+        }
     }
 
     /**
-     * Sends /locraw to the server if the player is on skyblock and on a new island.
+     * After 8 seconds of having swapped servers we check if we've been sent the profile id message on
+     * this server and if we haven't then we send the /profileid command.
      */
-    private static void updateLocRaw() {
-        if (isOnSkyblock) {
-            long currentTime = System.currentTimeMillis();
-            if (!sentLocRaw && canSendLocRaw && currentTime > clientWorldJoinTime + 1000) {
-                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/locraw");
-                sentLocRaw = true;
-                canSendLocRaw = false;
-                locationChanged = true;
-            }
-        } else {
-            resetLocRawInfo();
-        }
+    private static void tickProfileId() {
+        profileIdRequest++;
+
+        Scheduler.INSTANCE.schedule(new Runnable() {
+            private final int requestId = profileIdRequest;
+
+		    @Override
+		    public void run() {
+		        if (requestId == profileIdRequest) {
+		        	MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid", true);
+		        	profileSuggestionMessages = 0;
+		        }
+		    }
+        }, 20 * 8); //8 seconds
     }
 
     /**
@@ -417,15 +522,18 @@ public class Utils {
      * and {@link #location}
      *
      * @param message json message from chat
+     * @deprecated Retained just in case the mod api doesn't work or gets disabled.
      */
+    @Deprecated
     private static void parseLocRaw(String message) {
         JsonObject locRaw = JsonParser.parseString(message).getAsJsonObject();
 
         if (locRaw.has("server")) {
             server = locRaw.get("server").getAsString();
         }
-        if (locRaw.has("gameType")) {
-            gameType = locRaw.get("gameType").getAsString();
+        if (locRaw.has("gametype")) {
+            gameType = locRaw.get("gametype").getAsString();
+            isOnSkyblock = gameType.equals("SKYBLOCK");
         }
         if (locRaw.has("mode")) {
             locationRaw = locRaw.get("mode").getAsString();
@@ -436,11 +544,6 @@ public class Utils {
         if (locRaw.has("map")) {
             map = locRaw.get("map").getAsString();
         }
-
-        if (locationChanged) {
-            SkyblockEvents.LOCATION_CHANGE.invoker().onSkyblockLocationChange(location);
-            locationChanged = false;
-        }
     }
 
     /**
@@ -449,60 +552,41 @@ public class Utils {
      * @return not display the message in chat if the command is sent by the mod
      */
     public static boolean onChatMessage(Text text, boolean overlay) {
+		if (overlay) return true;
         String message = text.getString();
 
         if (message.startsWith("{\"server\":") && message.endsWith("}")) {
             parseLocRaw(message);
-            boolean shouldFilter = !sentLocRaw;
-            sentLocRaw = false;
-
-            return shouldFilter;
         }
 
         if (isOnSkyblock) {
             if (message.startsWith(PROFILE_MESSAGE_PREFIX)) {
                 profile = message.substring(PROFILE_MESSAGE_PREFIX.length()).split("§b")[0];
             } else if (message.startsWith(PROFILE_ID_PREFIX)) {
+                String prevProfileId = profileId;
                 profileId = message.substring(PROFILE_ID_PREFIX.length());
+                profileIdRequest++;
 
-                MuseumItemCache.tick(profileId);
+                if (!prevProfileId.equals(profileId)) {
+                    SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
+                } else if (firstProfileUpdate) {
+					SkyblockEvents.PROFILE_INIT.invoker().onSkyblockProfileInit(profileId);
+	                firstProfileUpdate = false;
+                }
+            } else if (Formatting.strip(message).startsWith(PROFILE_ID_SUGGEST_PREFIX)) {
+            	int suggestions = profileSuggestionMessages;
+            	profileSuggestionMessages++;
+
+            	return suggestions >= 2;
             }
         }
 
         return true;
     }
 
-    private static void resetLocRawInfo() {
-        sentLocRaw = false;
-        canSendLocRaw = true;
-        server = "";
-        gameType = "";
-        locationRaw = "";
-        map = "";
-        location = Location.UNKNOWN;
-    }
-
-    private static void tickMayorCache(boolean refresh) {
-        if (!mayor.isEmpty() && !refresh) return;
-
-        CompletableFuture.supplyAsync(() -> {
-            try {
-                JsonObject json = JsonParser.parseString(Http.sendGetRequest("https://api.hypixel.net/v2/resources/skyblock/election")).getAsJsonObject();
-                if (json.get("success").getAsBoolean()) return json.get("mayor").getAsJsonObject().get("name").getAsString();
-                throw new IOException(json.get("cause").getAsString());
-            } catch (Exception e) {
-                LOGGER.error("[Skyblocker] Failed to get mayor status!", e);
-            }
-            return "";
-        }).thenAccept(s -> {
-            if (!s.isEmpty()) mayor = s;
-        });
-
-    }
-
     /**
      * Used to avoid triggering things like chat rules or chat listeners infinitely, do not use otherwise.
-     * 
+     * <p>
      * Bypasses MessageHandler#onGameMessage
      */
     public static void sendMessageToBypassEvents(Text message) {
@@ -513,7 +597,34 @@ public class Utils {
         client.getNarratorManager().narrateSystemMessage(message);
     }
 
+	public static UUID getUuid() {
+		return MinecraftClient.getInstance().getSession().getUuidOrNull();
+	}
+
     public static String getUndashedUuid() {
-        return UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
+        return UndashedUuid.toString(getUuid());
     }
+
+	/**
+	 * Tries to get the dynamic registry manager instance currently in use or else returns {@link #LOOKUP}
+	 */
+	public static RegistryWrapper.WrapperLookup getRegistryWrapperLookup() {
+		MinecraftClient client = MinecraftClient.getInstance();
+		// Null check on client for tests
+		return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : LOOKUP;
+	}
+
+	/**
+	 * Parses an int from a string
+	 * @param input the string to parse
+	 * @return the int parsed or an empty optional if it failed
+	 * @implNote Does not log the exception if thrown
+	 */
+	public static OptionalInt parseInt(String input) {
+		try {
+			return OptionalInt.of(Integer.parseInt(input));
+		} catch (NumberFormatException e) {
+			return OptionalInt.empty();
+		}
+	}
 }

@@ -1,20 +1,36 @@
 package de.hysky.skyblocker.injected;
 
-import org.jetbrains.annotations.Nullable;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import org.jetbrains.annotations.NotNull;
+
+import de.hysky.skyblocker.skyblock.item.PetInfo;
 
 public interface SkyblockerStack {
-	@Nullable
+	@NotNull
 	default String getSkyblockId() {
 		return "";
 	}
 
-	@Nullable
+	@NotNull
 	default String getSkyblockApiId() {
 		return "";
 	}
 
-	@Nullable
+	@NotNull
 	default String getNeuName() {
 		return "";
 	}
+
+	@NotNull
+	default String getUuid() {
+		return "";
+	}
+
+	@NotNull
+	default PetInfo getPetInfo() {
+		return PetInfo.EMPTY;
+	}
+
+	@NotNull
+	default SkyblockItemRarity getSkyblockRarity() { return SkyblockItemRarity.UNKNOWN; }
 }

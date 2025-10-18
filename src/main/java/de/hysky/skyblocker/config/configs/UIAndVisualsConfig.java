@@ -1,281 +1,445 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.GyroOverlay;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
 
 public class UIAndVisualsConfig {
-    @SerialEntry
-    public boolean compactorDeletorPreview = true;
 
-    @SerialEntry
-    public boolean dontStripSkinAlphaValues = true;
+	public boolean swingOnAbilities = false;
 
-    @SerialEntry
-    public boolean backpackPreviewWithoutShift = false;
+	public int nightVisionStrength = 100;
 
-    @SerialEntry
-    public boolean hideEmptyTooltips = true;
+	public boolean compactorDeletorPreview = true;
 
-    @SerialEntry
-    public boolean fancyCraftingTable = true;
+	public boolean dontStripSkinAlphaValues = true;
 
-    @SerialEntry
-    public boolean hideStatusEffectOverlay = false;
+	public boolean backpackPreviewWithoutShift = false;
 
-    @SerialEntry
+	public boolean hideEmptyTooltips = true;
+
+	public boolean fancyCraftingTable = true;
+
+	public boolean hideStatusEffectOverlay = true;
+
+	public boolean showEquipmentInInventory = true;
+
+	public boolean cancelComponentUpdateAnimation = true;
+
+	public boolean showCustomizeButton = true;
+
+	public boolean showConfigButton = false;
+
+	public boolean trueQuiverCount = true;
+
     public ChestValue chestValue = new ChestValue();
 
-    @SerialEntry
-    public ItemCooldown itemCooldown = new ItemCooldown();
+	public ItemCooldown itemCooldown = new ItemCooldown();
 
-    @SerialEntry
-    public TitleContainer titleContainer = new TitleContainer();
+	public boolean museumOverlay = true;
 
-    @SerialEntry
-    public TabHudConf tabHud = new TabHudConf();
+	public SlotText slotText = new SlotText();
 
-    @SerialEntry
-    public FancyAuctionHouse fancyAuctionHouse = new FancyAuctionHouse();
+	public InventorySearchConfig inventorySearch = new InventorySearchConfig();
 
-    @SerialEntry
-    public Bars bars = new Bars();
+	public TitleContainer titleContainer = new TitleContainer();
 
-    @SerialEntry
-    public Waypoints waypoints = new Waypoints();
+	public TabHudConf tabHud = new TabHudConf();
 
-    @SerialEntry
-    public TeleportOverlay teleportOverlay = new TeleportOverlay();
+	public FancyAuctionHouse fancyAuctionHouse = new FancyAuctionHouse();
 
-    @SerialEntry
-    public SearchOverlay searchOverlay = new SearchOverlay();
+	public Bars bars = new Bars();
 
-    @SerialEntry
-    public InputCalculator inputCalculator = new InputCalculator();
+	public Waypoints waypoints = new Waypoints();
 
-    @SerialEntry
-    public FlameOverlay flameOverlay = new FlameOverlay();
+	public TeleportOverlay teleportOverlay = new TeleportOverlay();
 
-    @SerialEntry
-    public CompactDamage compactDamage = new CompactDamage();
+	public SmoothAOTE smoothAOTE = new SmoothAOTE();
 
-    public static class ChestValue {
-        @SerialEntry
-        public boolean enableChestValue = true;
+	public SearchOverlay searchOverlay = new SearchOverlay();
 
-        @SerialEntry
-        public Formatting color = Formatting.DARK_GREEN;
+	public BazaarQuickQuantities bazaarQuickQuantities = new BazaarQuickQuantities();
 
-        @SerialEntry
-        public Formatting incompleteColor = Formatting.BLUE;
-    }
-
-    public static class ItemCooldown {
-        @SerialEntry
-        public boolean enableItemCooldowns = true;
-    }
+	public InputCalculator inputCalculator = new InputCalculator();
 
-    public static class TitleContainer {
-        @SerialEntry
-        public float titleContainerScale = 100;
+	public FlameOverlay flameOverlay = new FlameOverlay();
 
-        @SerialEntry
-        public int x = 540;
+	public CompactDamage compactDamage = new CompactDamage();
 
-        @SerialEntry
-        public int y = 10;
+	public HealthBars healthBars = new HealthBars();
 
-        @SerialEntry
-        public Direction direction = Direction.HORIZONTAL;
-
-        @SerialEntry
-        public Alignment alignment = Alignment.MIDDLE;
-    }
-
-    public enum Direction {
-        HORIZONTAL, VERTICAL;
+	public GyrokineticWandOverlay gyroOverlay = new GyrokineticWandOverlay();
 
-        @Override
-        public String toString() {
-            return switch (this) {
-                case HORIZONTAL -> "Horizontal";
-                case VERTICAL -> "Vertical";
-            };
-        }
-    }
+	public ItemPickup itemPickup = new ItemPickup();
 
-    public enum Alignment {
-        LEFT, RIGHT, MIDDLE;
+	public static class ChestValue {
+		public boolean enableChestValue = true;
 
-        @Override
-        public String toString() {
-            return switch (this) {
-                case LEFT -> "Left";
-                case RIGHT -> "Right";
-                case MIDDLE -> "Middle";
-            };
-        }
-    }
+		public Formatting color = Formatting.DARK_GREEN;
 
-    public static class TabHudConf {
-        @SerialEntry
-        public boolean tabHudEnabled = true;
+		public Formatting incompleteColor = Formatting.BLUE;
+	}
 
-        @SerialEntry
-        public int tabHudScale = 100;
+	public static class ItemCooldown {
+		public boolean enableItemCooldowns = true;
+	}
 
-        @SerialEntry
-        public boolean enableHudBackground = true;
+	public static class SlotText {
+		public SlotTextMode slotTextMode = SlotTextMode.ENABLED;
 
-        @SerialEntry
-        public boolean plainPlayerNames = false;
+		public Object2BooleanOpenHashMap<String> textEnabled = new Object2BooleanOpenHashMap<>();
 
-        @SerialEntry
-        public NameSorting nameSorting = NameSorting.DEFAULT;
-    }
+		public boolean slotTextToggled = true;
 
-    public enum NameSorting {
-        DEFAULT, ALPHABETICAL;
+	}
 
-        @Override
-        public String toString() {
-            return switch (this) {
-                case DEFAULT -> "Default";
-                case ALPHABETICAL -> "Alphabetical";
-            };
-        }
-    }
+	public static class InventorySearchConfig {
+		public EnableState enabled = EnableState.SKYBLOCK;
 
-    public static class FancyAuctionHouse {
-        @SerialEntry
-        public boolean enabled = true;
+		public boolean ctrlK = false;
 
-        @SerialEntry
-        public boolean highlightCheapBIN = true;
-    }
+		public boolean clickableText = false;
 
-    public static class Bars {
-        @SerialEntry
-        public boolean enableBars = true;
+		public enum EnableState {
+			OFF,
+			SKYBLOCK,
+			EVERYWHERE;
 
-        // Kept in for backwards compatibility, remove if needed
-        @SerialEntry
-        public OldBarPositions barPositions = new OldBarPositions();
-    }
+			@Override
+			public String toString() {
+				return I18n.translate("skyblocker.config.uiAndVisuals.inventorySearch.state." + this.name());
+			}
 
-    /**
-     * Backwards compat
-     */
-    public static class OldBarPositions {
-        @SerialEntry
-        public OldBarPosition healthBarPosition = OldBarPosition.LAYER1;
+			public boolean isEnabled() {
+				return switch (this) {
+					case OFF -> false;
+					case SKYBLOCK -> de.hysky.skyblocker.utils.Utils.isOnSkyblock();
+					case EVERYWHERE -> true;
+				};
+			}
+		}
+	}
 
-        @SerialEntry
-        public OldBarPosition manaBarPosition = OldBarPosition.LAYER1;
+	public static class TitleContainer {
+		public float titleContainerScale = 100;
 
-        @SerialEntry
-        public OldBarPosition defenceBarPosition = OldBarPosition.LAYER1;
+		public int x = -1;
 
-        @SerialEntry
-        public OldBarPosition experienceBarPosition = OldBarPosition.LAYER1;
+		public int y = -1;
 
-    }
+		public Direction direction = Direction.VERTICAL;
 
-    /**
-     * Backwards compat
-     */
-    public enum OldBarPosition {
-        LAYER1, LAYER2, RIGHT, NONE
-    }
+		public Alignment alignment = Alignment.MIDDLE;
 
-    public static class Waypoints {
-        @SerialEntry
-        public boolean enableWaypoints = true;
+		public float getRenderScale() {
+			return titleContainerScale * 0.03f;
+		}
+	}
+
+	public enum Direction {
+		HORIZONTAL, VERTICAL;
+
+		@Override
+		public String toString() {
+			return I18n.translate("skyblocker.config.uiAndVisuals.titleContainer.direction." + name());
+		}
+	}
+
+	public enum Alignment {
+		LEFT, MIDDLE, RIGHT;
+
+		@Override
+		public String toString() {
+			return I18n.translate("skyblocker.config.uiAndVisuals.titleContainer.alignment." + name());
+		}
+	}
+
+	public static class TabHudConf {
+		public boolean tabHudEnabled = true;
+
+		public int tabHudScale = 100;
+
+		public boolean showVanillaTabByDefault = false;
+
+		public TabHudStyle style = TabHudStyle.FANCY;
+
+		public boolean displayIcons = true;
+
+		public boolean compactWidgets = false;
+
+		public boolean enableHudBackground = true;
+
+		public boolean effectsFromFooter = false;
+
+		public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
+
+		@Deprecated
+		public transient boolean plainPlayerNames = false;
+
+		public NameSorting nameSorting = NameSorting.DEFAULT;
+	}
+
+	/**
+	 * @implNote Currently, there are no "decorations", meaning that there is no difference between the SIMPLE and CLASSIC styles.
+	 */
+	public enum TabHudStyle {
+		/**
+		 * The minimal style, with no decorations nor custom components,
+		 * rendered in a minimal rectangle background,
+		 * or no background at all if {@link TabHudConf#enableHudBackground} is false.
+		 */
+		MINIMAL,
+		/**
+		 * The simple style, with no decorations nor custom components.
+		 */
+		SIMPLE,
+		/**
+		 * The classic style, with decorations but no custom components.
+		 */
+		CLASSIC,
+		/**
+		 * The default style, with all custom components and decorations in use.
+		 */
+		FANCY;
+
+		public boolean isMinimal() {
+			return this == MINIMAL;
+		}
+
+		@Override
+		public String toString() {
+			return I18n.translate("skyblocker.config.uiAndVisuals.tabHud.style." + name());
+		}
+	}
 
-        @SerialEntry
-        public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
-    }
+	public enum NameSorting {
+		DEFAULT,
+		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
+		SKYBLOCK_LEVEL(Comparator.<PlayerListEntry>comparingInt(ple -> matchPlayerName(ple.getDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
 
-    public static class TeleportOverlay {
-        @SerialEntry
-        public boolean enableTeleportOverlays = true;
+		public final Comparator<PlayerListEntry> comparator;
 
-        @SerialEntry
-        public boolean enableWeirdTransmission = true;
+		NameSorting() {
+			this(null);
+		}
 
-        @SerialEntry
-        public boolean enableInstantTransmission = true;
+		NameSorting(Comparator<PlayerListEntry> comparator) {
+			this.comparator = comparator;
+		}
 
-        @SerialEntry
-        public boolean enableEtherTransmission = true;
+		private static Optional<String> matchPlayerName(String name, String group) {
+			Matcher matcher = PlayerListManager.PLAYER_NAME_PATTERN.matcher(name);
+			return matcher.matches() ? Optional.of(matcher.group(group)) : Optional.empty();
+		}
 
-        @SerialEntry
-        public boolean enableSinrecallTransmission = true;
+		@Override
+		public String toString() {
+			return switch (this) {
+				case DEFAULT -> "Default";
+				case ALPHABETICAL -> "Alphabetical";
+				case SKYBLOCK_LEVEL -> "Skyblock Level";
+			};
+		}
+	}
 
-        @SerialEntry
-        public boolean enableWitherImpact = true;
-    }
+	public static class FancyAuctionHouse {
+		public boolean enabled = false;
 
-    public static class SearchOverlay {
-        @SerialEntry
-        public boolean enableBazaar = true;
+		public boolean highlightCheapBIN = true;
+	}
 
-        @SerialEntry
-        public boolean enableAuctionHouse = true;
+	public static class Bars {
+		public boolean enableBars = true;
 
-        @SerialEntry
-        public boolean keepPreviousSearches = false;
+		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
 
-        @SerialEntry
-        public int maxSuggestions = 3;
+		// Kept in for backwards compatibility, remove if needed
+		@SuppressWarnings("DeprecatedIsStillUsed")
+		@Deprecated
+		public LegacyBarPositions barPositions = new LegacyBarPositions();
+	}
 
-        @SerialEntry
-        public int historyLength = 3;
+	public enum IntelligenceDisplay {
+		ORIGINAL,
+		ACCURATE,
+		IN_FRONT
+	}
 
-        @SerialEntry
-        public boolean enableCommands = false;
+	/**
+	 * Backwards compat.
+	 * <p>
+	 * Used to load the legacy bar positions, which will not have an effect once the bars are saved in the new format at {@code /skyblocker/status_bars.json}.
+	 * New bars do not need to be added here.
+	 */
+	@SuppressWarnings("DeprecatedIsStillUsed")
+	@Deprecated
+	public static class LegacyBarPositions {
+		public LegacyBarPosition healthBarPosition = LegacyBarPosition.LAYER1;
 
-        @SerialEntry
-        public List<String> bazaarHistory = new ArrayList<>();
+		public LegacyBarPosition manaBarPosition = LegacyBarPosition.LAYER1;
 
-        @SerialEntry
-        public List<String> auctionHistory = new ArrayList<>();
-    }
+		public LegacyBarPosition defenceBarPosition = LegacyBarPosition.RIGHT;
 
-    public static class InputCalculator {
-        @SerialEntry
-        public boolean enabled = true;
+		public LegacyBarPosition experienceBarPosition = LegacyBarPosition.LAYER2;
+	}
 
-        @SerialEntry
-        public boolean requiresEquals = false;
-    }
+	/**
+	 * Backwards compat
+	 */
+	public enum LegacyBarPosition {
+		LAYER1, LAYER2, RIGHT, NONE
+	}
 
-    public static class FlameOverlay {
-        @SerialEntry
-        public int flameHeight = 100;
+	public static class Waypoints {
+		public boolean enableWaypoints = true;
 
-        @SerialEntry
-        public int flameOpacity = 100;
-    }
+		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 
-    public static class CompactDamage {
-        @SerialEntry
-        public boolean enabled = true;
+		public boolean enableChatWaypoints = true;
+	}
 
-        @SerialEntry
-        public int precision = 1;
+	public static class TeleportOverlay {
+		public boolean enableTeleportOverlays = true;
 
-        @SerialEntry
-        public Color normalDamageColor = new Color(0xFFFFFF);
+		public boolean showWhenInAir = false;
 
-        @SerialEntry
-        public Color critDamageGradientStart = new Color(0xFFFF55);
+		public Color teleportOverlayColor = new Color(0x7F761594, true);
 
-        @SerialEntry
-        public Color critDamageGradientEnd = new Color(0xFF5555);
-    }
+		public boolean enableWeirdTransmission = false;
+
+		public boolean enableInstantTransmission = false;
+
+		public boolean enableEtherTransmission = true;
+
+		public boolean enableSinrecallTransmission = false;
+
+		public boolean enableWitherImpact = false;
+	}
+
+	public static class SmoothAOTE {
+		public boolean predictive = false;
+
+		public boolean enableWeirdTransmission = false;
+
+		public boolean enableInstantTransmission = false;
+
+		public boolean enableEtherTransmission = false;
+
+		public boolean enableSinrecallTransmission = false;
+
+		public boolean enableWitherImpact = false;
+
+		public int maximumAddedLag = 100;
+	}
+
+	public static class SearchOverlay {
+		public boolean enableBazaar = true;
+
+		public boolean enableAuctionHouse = true;
+
+		public boolean enableMuseum = true;
+
+		public boolean keepPreviousSearches = false;
+
+		public int maxSuggestions = 3;
+
+		public int historyLength = 3;
+
+		public boolean enableCommands = false;
+
+		public List<String> bazaarHistory = new ArrayList<>();
+
+		public List<String> auctionHistory = new ArrayList<>();
+
+		public List<String> museumHistory = new ArrayList<>();
+	}
+
+	public static class BazaarQuickQuantities {
+		public boolean enabled = false;
+
+		public boolean closeSignOnUse = false;
+
+		public int slot1Quantity = 28;
+
+		public int slot2Quantity = 2240;
+
+		public int slot3Quantity = 256;
+	}
+
+	public static class InputCalculator {
+		public boolean enabled = true;
+
+		public boolean requiresEquals = false;
+
+		public boolean closeSignsWithEnter = true;
+	}
+
+	public static class FlameOverlay {
+		public int flameHeight = 100;
+
+		public int flameOpacity = 100;
+	}
+
+	public static class CompactDamage {
+		public boolean enabled = true;
+
+		public int precision = 1;
+
+		public Color normalDamageColor = new Color(0xFFFFFF);
+
+		public Color critDamageGradientStart = new Color(0xFFFF55);
+
+		public Color critDamageGradientEnd = new Color(0xFF5555);
+	}
+
+	public static class HealthBars {
+		public boolean enabled = false;
+
+		public float scale = 1.5f;
+
+		public boolean removeHealthFromName = true;
+
+		public boolean removeMaxHealthFromName = true;
+
+		public boolean applyToHealthOnlyMobs = true;
+
+		public boolean hideFullHealth = false;
+
+		public Color fullBarColor = new Color(0x00FF00);
+
+		public Color halfBarColor = new Color(0xFFFF00);
+
+		public Color emptyBarColor = new Color(0xFF0000);
+	}
+
+	public static class GyrokineticWandOverlay {
+		public GyroOverlay.Mode gyroOverlayMode = GyroOverlay.Mode.OFF;
+
+		public Color gyroOverlayColor = new Color(0x7F761594, true);
+	}
+
+	public static class ItemPickup {
+		public boolean enabled = false;
+
+		public boolean sackNotifications = false;
+
+		public boolean showItemName = true;
+
+		public int lifeTime = 3;
+
+		public boolean splitNotifications = false;
+	}
 }

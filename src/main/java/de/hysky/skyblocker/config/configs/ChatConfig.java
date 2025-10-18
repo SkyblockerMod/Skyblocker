@@ -1,61 +1,52 @@
 package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
 public class ChatConfig {
-    @SerialEntry
-    public ChatFilterResult hideAbility = ChatFilterResult.PASS;
+	public boolean skyblockXpMessages = true;
 
-    @SerialEntry
-    public ChatFilterResult hideHeal = ChatFilterResult.PASS;
+	public boolean confirmationPromptHelper = false;
 
-    @SerialEntry
-    public ChatFilterResult hideAOTE = ChatFilterResult.PASS;
+	public ChatFilterResult hideAbility = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public ChatFilterResult hideImplosion = ChatFilterResult.PASS;
+	public ChatFilterResult hideHeal = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public ChatFilterResult hideMoltenWave = ChatFilterResult.PASS;
+	public ChatFilterResult hideAOTE = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public ChatFilterResult hideAds = ChatFilterResult.PASS;
+	public ChatFilterResult hideImplosion = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public ChatFilterResult hideTeleportPad = ChatFilterResult.PASS;
+	public ChatFilterResult hideMoltenWave = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public ChatFilterResult hideCombo = ChatFilterResult.PASS;
+	public ChatFilterResult hideAds = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public ChatFilterResult hideAutopet = ChatFilterResult.PASS;
+	public ChatFilterResult hideTeleportPad = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public ChatFilterResult hideShowOff = ChatFilterResult.PASS;
+	public ChatFilterResult hideCombo = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public ChatFilterResult hideToggleSkyMall = ChatFilterResult.PASS;
+	public ChatFilterResult hideAutopet = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public ChatFilterResult hideMimicKill = ChatFilterResult.PASS;
+	public ChatFilterResult hideShowOff = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public ChatFilterResult hideDeath = ChatFilterResult.PASS;
+	public ChatFilterResult hideToggleSkyMall = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public boolean hideMana = false;
+	public ChatFilterResult hideToggleLottery = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public ChatFilterResult hideDicer = ChatFilterResult.PASS;
+	public ChatFilterResult hideMimicKill = ChatFilterResult.PASS;
 
-    @SerialEntry
-    public ChatRuleConfig chatRuleConfig = new ChatRuleConfig();
+	public ChatFilterResult hideDeath = ChatFilterResult.PASS;
 
-    public static class ChatRuleConfig {
-        @SerialEntry
-        public int announcementLength = 60;
-        @SerialEntry
-        public int announcementScale = 3;
-    }
+	public boolean hideMana = false;
+
+	public ChatFilterResult hideDicer = ChatFilterResult.PASS;
+
+	public ChatFilterResult hideDungeonBreaker = ChatFilterResult.PASS;
+
+	public ChatRuleConfig chatRuleConfig = new ChatRuleConfig();
+
+	public static class ChatRuleConfig {
+		public int announcementLength = 60;
+
+		@Deprecated
+		public transient int announcementScale = 3;
+	}
 }

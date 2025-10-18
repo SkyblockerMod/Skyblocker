@@ -1,15 +1,16 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle.boulder;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.render.title.Title;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
@@ -18,13 +19,13 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class Boulder extends DungeonPuzzle {
-    private static final Boulder INSTANCE = new Boulder();
+    @SuppressWarnings("unused")
+	private static final Boulder INSTANCE = new Boulder();
     private static final float[] RED_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
     private static final float[] ORANGE_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.ORANGE);
     private static final int BASE_Y = 65;
@@ -35,6 +36,7 @@ public class Boulder extends DungeonPuzzle {
         super("boulder", "boxes-room");
     }
 
+    @Init
     public static void init() {
     }
 
@@ -106,7 +108,7 @@ public class Boulder extends DungeonPuzzle {
                     button = checkForButtonBlocksOnLine(client.world, point1, point2);
                     if (button != null) {
                         // If a button is found, calculate its bounding box
-                        boundingBox = getBlockBoundingBox(client.world, button);
+                        boundingBox = RenderHelper.getBlockBoundingBox(client.world, button);
                         break;
                     }
                 }
@@ -118,7 +120,7 @@ public class Boulder extends DungeonPuzzle {
         } else {
             // If no solution is found, display a title message and reset the puzzle
             Title title = new Title("skyblocker.dungeons.puzzle.boulder.noSolution", Formatting.GREEN);
-            RenderHelper.displayInTitleContainerAndPlaySound(title, 15);
+            TitleContainer.addTitleAndPlaySound(title, 15);
             reset();
         }
     }
@@ -179,20 +181,8 @@ public class Boulder extends DungeonPuzzle {
         return null;
     }
 
-    /**
-     * Retrieves the bounding box of a block in the world.
-     *
-     * @param world The client world.
-     * @param pos   The position of the block.
-     * @return The bounding box of the block.
-     */
-    public static Box getBlockBoundingBox(BlockView world, BlockPos pos) {
-        BlockState blockState = world.getBlockState(pos);
-        return blockState.getOutlineShape(world, pos).getBoundingBox().offset(pos);
-    }
-
     @Override
-    public void render(WorldRenderContext context) {
+    public void extractRendering(PrimitiveCollector collector) {
         if (!shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveBoulder || !DungeonManager.isCurrentRoomMatched())
             return;
         float alpha = 1.0f;
@@ -202,10 +192,11 @@ public class Boulder extends DungeonPuzzle {
             for (int i = 0; i < linePoints.length - 1; i++) {
                 Vec3d startPoint = linePoints[i];
                 Vec3d endPoint = linePoints[i + 1];
-                RenderHelper.renderLinesFromPoints(context, new Vec3d[]{startPoint, endPoint}, ORANGE_COLOR_COMPONENTS, alpha, lineWidth, true);
+                collector.submitLinesFromPoints(new Vec3d[]{startPoint, endPoint}, ORANGE_COLOR_COMPONENTS, alpha, lineWidth, true);
             }
             if (boundingBox != null) {
-                RenderHelper.renderOutline(context, boundingBox, RED_COLOR_COMPONENTS, 5, false);
+            	collector.submitFilledBox(boundingBox, RED_COLOR_COMPONENTS, 0.5f, false);
+            	collector.submitOutlinedBox(boundingBox, RED_COLOR_COMPONENTS, 5f, false);
             }
         }
     }

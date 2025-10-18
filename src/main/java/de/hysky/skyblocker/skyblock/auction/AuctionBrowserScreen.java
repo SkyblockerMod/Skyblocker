@@ -1,24 +1,23 @@
 package de.hysky.skyblocker.skyblock.auction;
 
-import com.google.gson.JsonElement;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.CategoryTabWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.RarityWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.SortWidget;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -28,7 +27,10 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
+
+import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,15 +39,16 @@ import java.awt.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/browser/background.png");
     private static final Identifier SCROLLER_TEXTURE = Identifier.ofVanilla("container/creative_inventory/scroller");
 
-    private static final Identifier up_arrow_tex = Identifier.of(SkyblockerMod.NAMESPACE, "up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
-    private static final Identifier down_arrow_tex = Identifier.of(SkyblockerMod.NAMESPACE, "down_arrow_even");
+    private static final Identifier up_arrow_tex = SkyblockerMod.id("up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
+    private static final Identifier down_arrow_tex = SkyblockerMod.id("down_arrow_even");
     public static final Supplier<Sprite> UP_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(up_arrow_tex);
     public static final Supplier<Sprite> DOWN_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(down_arrow_tex);
 
@@ -73,7 +76,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     private String search = "";
 
     public AuctionBrowserScreen(AuctionHouseScreenHandler handler, PlayerInventory inventory) {
-        super(handler, inventory, Text.literal("Auctions Browser"));
+        super(handler, inventory, ResourcePackCompatibility.options.renameAuctionBrowser().orElse(false) ? Text.literal("AuctionBrowserSkyblocker") : Text.literal("Auctions Browser"));
         this.backgroundHeight = 187;
         this.playerInventoryTitleY = 92;
         this.titleX = 999;
@@ -124,7 +127,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
-        context.drawTexture(TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
     }
 
     @Override
@@ -138,9 +141,9 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
             context.drawText(textRenderer, waiting, this.width - textRenderer.getWidth(waiting) - 5, this.height - textRenderer.fontHeight - 2, Colors.WHITE, true);
         }
 
-        MatrixStack matrices = context.getMatrices();
-        matrices.push();
-        matrices.translate(x, y, 0);
+        Matrix3x2fStack matrices = context.getMatrices();
+        matrices.pushMatrix();
+        matrices.translate(x, y);
         // Search
         context.enableScissor(x + 7, y + 4, x + 97, y + 16);
         context.drawText(textRenderer, Text.literal(search).fillStyle(Style.EMPTY.withUnderline(onSearchField(mouseX, mouseY))), 9, 6, Colors.WHITE, true);
@@ -149,22 +152,22 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         // Scrollbar
         if (prevPageVisible) {
             if (onScrollbarTop(mouseX, mouseY))
-                context.drawSprite(159, 13, 0, 6, 3, UP_ARROW.get());
-            else context.drawSprite(159, 13, 0, 6, 3, UP_ARROW.get(), 0.54f, 0.54f, 0.54f, 1);
+                context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, UP_ARROW.get(), 159, 13, 6, 3);
+            else context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, UP_ARROW.get(), 159, 13, 6, 3, ColorHelper.getArgb(137, 137, 137));
         }
 
         if (nextPageVisible) {
             if (onScrollbarBottom(mouseX, mouseY))
-                context.drawSprite(159, 72, 0, 6, 3, DOWN_ARROW.get());
-            else context.drawSprite(159, 72, 0, 6, 3, DOWN_ARROW.get(), 0.54f, 0.54f, 0.54f, 1);
+                context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3);
+            else context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3, ColorHelper.getArgb(137, 137, 137));
         }
         context.drawText(textRenderer, String.format("%d/%d", currentPage, totalPages), 111, 6, Colors.GRAY, false);
         if (totalPages <= 1)
-            context.drawGuiTexture(SCROLLER_TEXTURE, 156, 18, 12, 15);
+            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, 18, 12, 15);
         else
-            context.drawGuiTexture(SCROLLER_TEXTURE, 156, (int) (18 + (float) (Math.min(currentPage, totalPages) - 1) / (totalPages - 1) * 37), 12, 15);
+            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, (int) (18 + (float) (Math.min(currentPage, totalPages) - 1) / (totalPages - 1) * 37), 12, 15);
 
-        matrices.pop();
+        matrices.popMatrix();
 
         this.drawMouseoverTooltip(context, mouseX, mouseY);
     }
@@ -274,7 +277,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     categoryTabWidget.setIcon(handler.getSlot(slotId).getStack());
                     List<Text> tooltipDefault = ItemUtils.getLore(handler.getSlot(slotId).getStack());
                     for (int j = tooltipDefault.size() - 1; j >= 0; j--) {
-                        String lowerCase = tooltipDefault.get(j).getString().toLowerCase();
+                        String lowerCase = tooltipDefault.get(j).getString().toLowerCase(Locale.ENGLISH);
                         if (lowerCase.contains("currently")) {
                             categoryTabWidget.setToggled(true);
                             break;
@@ -289,24 +292,14 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     for (int k = tooltip.size() - 1; k >= 0; k--) {
                         Text text = tooltip.get(k);
                         String string = text.getString();
-                        if (string.toLowerCase().contains("buy it now:")) {
+                        if (string.toLowerCase(Locale.ENGLISH).contains("buy it now:")) {
                             String[] split = string.split(":");
                             if (split.length < 2) continue;
                             String coins = split[1].replace(",", "").replace("coins", "").trim();
                             try {
                                 long parsed = Long.parseLong(coins);
-                                String name = stack.getSkyblockApiId();
-                                String internalID = stack.getSkyblockId();
-                                String neuName = name;
-                                if (name == null || internalID == null) break;
-                                if (name.startsWith("ISSHINY_")) {
-                                    neuName = internalID;
-                                }
-                                JsonElement jsonElement = TooltipInfoType.THREE_DAY_AVERAGE.getData().get(ItemTooltip.getNeuName(internalID, neuName));
-                                if (jsonElement == null) break;
-                                else {
-                                    isSlotHighlighted.put(slotId, jsonElement.getAsDouble() > parsed);
-                                }
+                                double price = TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(stack.getNeuName());
+                                isSlotHighlighted.put(slotId, price > parsed);
                             } catch (Exception e) {
                                 LOGGER.error("[Skyblocker Fancy Auction House] Failed to parse BIN price", e);
                             }
@@ -374,16 +367,16 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
         // Code taken mostly from YACL by isxander. Love you <3
         @Override
-        public void drawMessage(DrawContext graphics, TextRenderer textRenderer, int color) {
+        public void drawMessage(DrawContext context, TextRenderer textRenderer, int color) {
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
-            MatrixStack pose = graphics.getMatrices();
+            Matrix3x2fStack matrices = context.getMatrices();
             float textScale = 2.f;
 
-            pose.push();
-            pose.translate(((this.getX() + this.width / 2f) - font.getWidth(getMessage()) * textScale / 2) + 1, (float) this.getY() + (this.height - font.fontHeight * textScale) / 2f - 1, 0);
-            pose.scale(textScale, textScale, 1);
-            graphics.drawText(font, getMessage(), 0, 0, color | MathHelper.ceil(this.alpha * 255.0F) << 24, true);
-            pose.pop();
+            matrices.pushMatrix();
+            matrices.translate(((this.getX() + this.width / 2f) - font.getWidth(getMessage()) * textScale / 2) + 1, (float) this.getY() + (this.height - font.fontHeight * textScale) / 2f - 1);
+            matrices.scale(textScale, textScale);
+            context.drawText(font, getMessage(), 0, 0, color | MathHelper.ceil(this.alpha * 255.0F) << 24, true);
+            matrices.popMatrix();
         }
     }
 }

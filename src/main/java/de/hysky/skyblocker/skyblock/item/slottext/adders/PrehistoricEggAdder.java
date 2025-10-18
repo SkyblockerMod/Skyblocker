@@ -1,34 +1,40 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PrehistoricEggAdder extends SlotTextAdder {
+public class PrehistoricEggAdder extends SimpleSlotTextAdder {
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"prehistoric_egg",
+			"skyblocker.config.uiAndVisuals.slotText.prehistoricEgg",
+			"skyblocker.config.uiAndVisuals.slotText.prehistoricEgg.@Tooltip");
+
+	public PrehistoricEggAdder() {
+		super(CONFIG_INFORMATION);
+	}
+
 	@Override
-	public @NotNull List<SlotText> getText(Slot slot) {
-		final ItemStack stack = slot.getStack();
-		if (!stack.isOf(Items.PLAYER_HEAD) || !StringUtils.equals(stack.getSkyblockId(), "PREHISTORIC_EGG")) return List.of();
+	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+		if (!stack.isOf(Items.PLAYER_HEAD) || !stack.getSkyblockId().equals("PREHISTORIC_EGG")) return List.of();
 		NbtCompound nbt = ItemUtils.getCustomData(stack);
-		if (!nbt.contains("blocks_walked", NbtElement.INT_TYPE)) return List.of();
-		int walked = nbt.getInt("blocks_walked");
+		if (!nbt.contains("blocks_walked")) return List.of();
+		int walked = nbt.getInt("blocks_walked", 0);
 
-		String walkedstr;
-		if (walked < 1000) walkedstr = String.valueOf(walked);
-		else if (walked < 10000) walkedstr = String.format("%.1fk", walked/1000.0f);
-		else walkedstr = walked / 1000 + "k";
+		String walkedStr;
+		if (walked < 1000) walkedStr = String.valueOf(walked);
+		else if (walked < 10000) walkedStr = String.format("%.1fk", walked/1000.0f);
+		else walkedStr = walked / 1000 + "k";
 
-		return List.of(SlotText.bottomLeft(Text.literal(walkedstr).withColor(0xFFDDC1)));
+		return SlotText.bottomLeftList(Text.literal(walkedStr).withColor(SlotText.CREAM));
 	}
 }

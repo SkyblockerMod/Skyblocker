@@ -17,20 +17,20 @@ public class ProfileAwareWaypointTest {
     }
 
     @Test
-    void testGetColorComponents() {
+    void testGetRenderColorComponents() {
         ProfileAwareWaypoint waypoint = new ProfileAwareWaypoint(BlockPos.ORIGIN, null, new float[]{0f, 0.5f, 1f}, new float[]{1f, 0.5f, 0f});
         waypoint.setFound("profile");
-        float[] colorComponents = waypoint.getColorComponents();
+        float[] colorComponents = waypoint.getRenderColorComponents();
         Assertions.assertEquals(0f, colorComponents[0]);
         Assertions.assertEquals(0.5f, colorComponents[1]);
         Assertions.assertEquals(1f, colorComponents[2]);
         waypoint.setFound("");
-        colorComponents = waypoint.getColorComponents();
+        colorComponents = waypoint.getRenderColorComponents();
         Assertions.assertEquals(1f, colorComponents[0]);
         Assertions.assertEquals(0.5f, colorComponents[1]);
         Assertions.assertEquals(0f, colorComponents[2]);
         waypoint.setMissing();
-        colorComponents = waypoint.getColorComponents();
+        colorComponents = waypoint.getRenderColorComponents();
         Assertions.assertEquals(0f, colorComponents[0]);
         Assertions.assertEquals(0.5f, colorComponents[1]);
         Assertions.assertEquals(1f, colorComponents[2]);

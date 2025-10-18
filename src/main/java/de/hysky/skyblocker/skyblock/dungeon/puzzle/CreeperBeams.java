@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -49,6 +49,7 @@ public class CreeperBeams extends DungeonPuzzle {
         super("creeper", "creeper-room");
     }
 
+    @Init
     public static void init() {
     }
 
@@ -175,7 +176,7 @@ public class CreeperBeams extends DungeonPuzzle {
     }
 
     @Override
-    public void render(WorldRenderContext wrc) {
+    public void extractRendering(PrimitiveCollector collector) {
 
         // don't render if solved or disabled
         if (!shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.creeperSolver) {
@@ -184,7 +185,7 @@ public class CreeperBeams extends DungeonPuzzle {
 
         // lines.size() is always <= 4 so no issues OOB issues with the colors here.
         for (int i = 0; i < beams.size(); i++) {
-            beams.get(i).render(wrc, COLORS[i]);
+            beams.get(i).extractRendering(collector, COLORS[i]);
         }
     }
 
@@ -197,20 +198,20 @@ public class CreeperBeams extends DungeonPuzzle {
     private static class Beam {
 
         // raw block pos of target
-        public BlockPos blockOne;
-        public BlockPos blockTwo;
+        private final BlockPos blockOne;
+        private final BlockPos blockTwo;
 
         // middle of targets used for rendering the line
-        public Vec3d[] line = new Vec3d[2];
+        private final Vec3d[] line = new Vec3d[2];
 
         // boxes used for rendering the block outline
-        public Box outlineOne;
-        public Box outlineTwo;
+        private final Box outlineOne;
+        private final Box outlineTwo;
 
         // state: is this beam created/inputted or not?
         private boolean toDo = true;
 
-        public Beam(BlockPos a, BlockPos b) {
+        private Beam(BlockPos a, BlockPos b) {
             blockOne = a;
             blockTwo = b;
             line[0] = new Vec3d(a.getX() + 0.5, a.getY() + 0.5, a.getZ() + 0.5);
@@ -220,7 +221,7 @@ public class CreeperBeams extends DungeonPuzzle {
         }
 
         // used to filter the list of all beams so that no two beams share a target
-        public boolean containsComponentOf(Beam other) {
+        private boolean containsComponentOf(Beam other) {
             return this.blockOne.equals(other.blockOne)
                     || this.blockOne.equals(other.blockTwo)
                     || this.blockTwo.equals(other.blockOne)
@@ -228,21 +229,21 @@ public class CreeperBeams extends DungeonPuzzle {
         }
 
         // update the state: is the beam created or not?
-        public void updateState(ClientWorld world) {
+        private void updateState(ClientWorld world) {
             toDo = !(world.getBlockState(blockOne).getBlock() == Blocks.PRISMARINE
                     && world.getBlockState(blockTwo).getBlock() == Blocks.PRISMARINE);
         }
 
         // render either in a color if not created or faintly green if created
-        public void render(WorldRenderContext wrc, float[] color) {
+        private void extractRendering(PrimitiveCollector collector, float[] color) {
             if (toDo) {
-                RenderHelper.renderOutline(wrc, outlineOne, color, 3, false);
-                RenderHelper.renderOutline(wrc, outlineTwo, color, 3, false);
-                RenderHelper.renderLinesFromPoints(wrc, line, color, 1, 2, false);
+            	collector.submitOutlinedBox(outlineOne, color, 3, false);
+            	collector.submitOutlinedBox(outlineTwo, color, 3, false);
+            	collector.submitLinesFromPoints(line, color, 1, 2, false);
             } else {
-                RenderHelper.renderOutline(wrc, outlineOne, GREEN_COLOR_COMPONENTS, 1, false);
-                RenderHelper.renderOutline(wrc, outlineTwo, GREEN_COLOR_COMPONENTS, 1, false);
-                RenderHelper.renderLinesFromPoints(wrc, line, GREEN_COLOR_COMPONENTS, 0.75f, 1, false);
+            	collector.submitOutlinedBox(outlineOne, GREEN_COLOR_COMPONENTS, 1, false);
+                collector.submitOutlinedBox(outlineTwo, GREEN_COLOR_COMPONENTS, 1, false);
+                collector.submitLinesFromPoints(line, GREEN_COLOR_COMPONENTS, 0.75f, 1, false);
             }
         }
     }

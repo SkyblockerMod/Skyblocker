@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.tictactoe.BoardIndex;
 import de.hysky.skyblocker.utils.tictactoe.TicTacToeUtils;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.map.MapState;
@@ -23,6 +24,7 @@ import java.util.List;
 public class TicTacToe extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TicTacToe.class);
 	private static final float[] RED_COLOR_COMPONENTS = { 1.0F, 0.0F, 0.0F };
+	private static final float[] GREEN_COLOR_COMPONENTS = { 0.0F, 1.0F, 0.0F };
 	@SuppressWarnings("unused")
 	private static final TicTacToe INSTANCE = new TicTacToe();
 	private static Box nextBestMoveToMake = null;
@@ -31,8 +33,9 @@ public class TicTacToe extends DungeonPuzzle {
 		super("tic-tac-toe", "tic-tac-toe-1");
 	}
 
-	public static void init() {
-	}
+	@Init
+    public static void init() {
+    }
 
 	@Override
 	public void tick(MinecraftClient client) {
@@ -101,7 +104,7 @@ public class TicTacToe extends DungeonPuzzle {
 				double nextZ = 17 - bestMove.column();
 
 				BlockPos nextPos = DungeonManager.getCurrentRoom().relativeToActual(BlockPos.ofFloored(nextX, nextY, nextZ));
-				nextBestMoveToMake = new Box(nextPos);
+				nextBestMoveToMake = RenderHelper.getBlockBoundingBox(client.world, nextPos);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Tic Tac Toe] Encountered an exception while determining a tic tac toe solution!", e);
@@ -109,10 +112,11 @@ public class TicTacToe extends DungeonPuzzle {
 	}
 
 	@Override
-	public void render(WorldRenderContext context) {
+	public void extractRendering(PrimitiveCollector collector) {
 		try {
 			if (SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveTicTacToe && nextBestMoveToMake != null) {
-				RenderHelper.renderOutline(context, nextBestMoveToMake, RED_COLOR_COMPONENTS, 5, false);
+				collector.submitFilledBox(nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 0.5f, false);
+				collector.submitOutlinedBox(nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 5f, false);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Tic Tac Toe] Encountered an exception while rendering the tic tac toe solution!", e);

@@ -478,7 +478,7 @@
       "item": {
         "id": "leather_chestplate",
         "count": 1,
-        "components": "[minecraft:dyed_color\u003d{rgb:8991416}]"
+        "components": "[minecraft:dyed_color\u003d8991416]"
       }
     },
     "button5": {

@@ -1,38 +1,42 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.Renderable;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.client.MinecraftClient;
+import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.util.DyeColor;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
-public record MiningLocationLabel(Category category, Vec3d centerPos) implements Renderable {
+import java.awt.*;
+
+public class MiningLocationLabel extends DistancedNamedWaypoint {
+    private final Category category;
+
     public MiningLocationLabel(Category category, BlockPos pos) {
-        this(category, pos.toCenterPos());
+        // Set enabled to false in order to prevent the waypoint from being rendered, but the name text and distance will still be rendered.
+        super(pos, getName(category), new float[]{0, 0, 0}, false);
+        this.category = category;
     }
 
-    private Text getName() {
+    private static Text getName(Category category) {
         if (SkyblockerConfigManager.get().mining.commissionWaypoints.useColor) {
             return Text.literal(category.getName()).withColor(category.getColor());
         }
         return Text.literal(category.getName());
     }
 
+    public Category category() {
+        return category;
+    }
+
     /**
-     * Renders the name and distance to the label scaled so can be seen at a distance
-     * @param context render context
+     * Override the {@link DistancedNamedWaypoint#shouldRenderName()} method to always return true,
+     * as the name should always be rendered, even though this waypoint is always disabled.
      */
     @Override
-    public void render(WorldRenderContext context) {
-        Vec3d posUp = centerPos.add(0, 1, 0);
-        double distance = context.camera().getPos().distanceTo(centerPos);
-        float scale = (float) (SkyblockerConfigManager.get().mining.commissionWaypoints.textScale * (distance / 10));
-        RenderHelper.renderText(context, getName(), posUp, scale, true);
-        RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
+    protected boolean shouldRenderName() {
+        return true;
     }
 
     public interface Category {
@@ -119,10 +123,10 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
     }
 
     enum GlaciteCategory implements Category {
-        AQUAMARINE("Aquamarine", 0x334cb1, new BlockPos[]{new BlockPos(-1, 139, 437), new BlockPos(90, 151, 229), new BlockPos(56, 151, 400), new BlockPos(51, 117, 303)}),
-        ONYX("Onyx", 0x191919, new BlockPos[]{new BlockPos(79, 119, 411), new BlockPos(-14, 132, 386), new BlockPos(18, 136, 370), new BlockPos(16, 138, 411), new BlockPos(-68, 130, 408)}),
-        PERIDOT("Peridot", 0x667f33, new BlockPos[]{new BlockPos(-61, 147, 302), new BlockPos(91, 122, 397), new BlockPos(-73, 122, 458), new BlockPos(-77, 120, 282)}),
-        CITRINE("Citrine", 0x664c33, new BlockPos[]{new BlockPos(-104, 144, 244), new BlockPos(39, 119, 386), new BlockPos(-57, 144, 421), new BlockPos(-47, 126, 418)}),
+        AQUAMARINE("Aquamarine", 0x334cb1, new BlockPos[]{new BlockPos(20, 136, 370), new BlockPos(-14, 132, 386), new BlockPos(6, 137, 411), new BlockPos(50, 117, 302)}),
+        ONYX("Onyx", 0x191919, new BlockPos[]{new BlockPos(4, 127, 307), new BlockPos(-3, 139, 434), new BlockPos(77, 118, 411), new BlockPos(-68, 130, 404)}),
+        PERIDOT("Peridot", 0x667f33, new BlockPos[]{new BlockPos(66, 144, 284), new BlockPos(94, 154, 284), new BlockPos(-62, 147, 303), new BlockPos(-77, 119, 283), new BlockPos(87, 122, 394), new BlockPos(-73, 122, 456)}),
+        CITRINE("Citrine", 0x664c33, new BlockPos[]{new BlockPos(-86, 143, 261), new BlockPos(74, 150, 327), new BlockPos(63, 137, 343), new BlockPos(38, 119, 386), new BlockPos(55, 150, 400), new BlockPos(-45, 127, 415), new BlockPos(-60, 144, 424), new BlockPos(-54, 132, 410)}),
         CAMPFIRE("Base Camp", 0x983333, new BlockPos[]{new BlockPos(-7, 126, 229)});
 
         private final String name;
@@ -154,4 +158,54 @@ public record MiningLocationLabel(Category category, Vec3d centerPos) implements
             return color;
         }
     }
+
+    /**
+     * enum for the different waypoints used int the crystals hud each with a {@link CrystalHollowsLocationsCategory#name} and associated {@link CrystalHollowsLocationsCategory#color}
+     */
+    public enum CrystalHollowsLocationsCategory implements Category, StringIdentifiable {
+        UNKNOWN("Unknown", Color.WHITE, null), //used when a location is known but what's at the location is not known
+        JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor()), "[NPC] Kalhuiki Door Guardian:"),
+        MINES_OF_DIVAN("Mines of Divan", Color.GREEN, "    Jade Crystal"),
+        GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor()), "    Amber Crystal"),
+        LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN, "    Sapphire Crystal"),
+        KHAZAD_DUM("Khazad-dûm", Color.YELLOW, "    Topaz Crystal"),
+        FAIRY_GROTTO("Fairy Grotto", Color.PINK, null),
+        DRAGONS_LAIR("Dragon's Lair", Color.BLACK, null),
+        CORLEONE("Corleone", Color.WHITE, null),
+        KING_YOLKAR("King Yolkar", Color.RED, "[NPC] King Yolkar:"),
+        ODAWA("Odawa", Color.MAGENTA, "[NPC] Odawa:"),
+        KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY, null);
+
+        public static final Codec<CrystalHollowsLocationsCategory> CODEC = StringIdentifiable.createBasicCodec(CrystalHollowsLocationsCategory::values);
+
+        public final Color color;
+        private final String name;
+        private final String linkedMessage;
+
+        CrystalHollowsLocationsCategory(String name, Color color, String linkedMessage) {
+            this.name = name;
+            this.color = color;
+            this.linkedMessage = linkedMessage;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public int getColor() {
+            return this.color.getRGB();
+        }
+
+        public String getLinkedMessage() {
+            return this.linkedMessage;
+        }
+
+        @Override
+        public String asString() {
+            return name();
+        }
+    }
+
 }

@@ -1,14 +1,12 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
@@ -255,14 +253,14 @@ public class StaminaTestHelper {
 
     }
 
-    protected static void render(WorldRenderContext context) {
+    protected static void extractRendering(PrimitiveCollector collector) {
         if (wallHoles.isEmpty() || CLIENT == null || CLIENT.player == null) {
             return;
         }
         BlockPos playerPos = CLIENT.player.getBlockPos();
         for (Box hole : wallHoles) {
             float[] color = isHoleIncoming(hole, holeDirections.get(hole), playerPos) ? INCOMING_COLOR : OUTGOING_COLOR;
-            RenderHelper.renderFilled(context, new BlockPos((int) hole.minX, (int) hole.minY, (int) hole.minZ), new Vec3d(hole.getLengthX(), hole.getLengthY(), hole.getLengthZ()), color, 0.3f, false);
+            collector.submitFilledBox(hole, color, 0.3f, false);
         }
     }
 

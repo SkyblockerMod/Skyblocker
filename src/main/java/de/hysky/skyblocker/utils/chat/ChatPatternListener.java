@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.chat;
 
 import net.minecraft.text.Text;
+import org.intellij.lang.annotations.Language;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,7 +10,7 @@ public abstract class ChatPatternListener implements ChatMessageListener {
     protected static final String NUMBER = "-?[0-9]{1,3}(?>,[0-9]{3})*(?:\\.[1-9])?";
     public final Pattern pattern;
 
-    public ChatPatternListener(String pattern) {
+    protected ChatPatternListener(@Language("RegExp") String pattern) {
         this.pattern = Pattern.compile(pattern);
     }
 

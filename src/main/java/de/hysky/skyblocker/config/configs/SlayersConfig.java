@@ -1,60 +1,94 @@
 package de.hysky.skyblocker.config.configs;
 
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import net.minecraft.client.resource.language.I18n;
 
 public class SlayersConfig {
-    @SerialEntry
-    public EndermanSlayer endermanSlayer = new EndermanSlayer();
+	public HighlightSlayerEntities highlightMinis = HighlightSlayerEntities.GLOW;
 
-    @SerialEntry
-    public VampireSlayer vampireSlayer = new VampireSlayer();
+	public HighlightSlayerEntities highlightBosses = HighlightSlayerEntities.GLOW;
 
-    public static class EndermanSlayer {
-        @SerialEntry
-        public boolean enableYangGlyphsNotification = true;
+	public boolean displayBossbar = true;
 
-        @SerialEntry
-        public boolean highlightBeacons = true;
+	public enum HighlightSlayerEntities {
+		OFF, GLOW, HITBOX;
 
-        @SerialEntry
-        public boolean highlightNukekubiHeads = true;
-    }
+		@Override
+		public String toString() {
+			return I18n.translate("skyblocker.config.slayer.highlightBosses." + name());
+		}
+	}
 
-    public static class VampireSlayer {
-        @SerialEntry
-        public boolean enableEffigyWaypoints = true;
+	public boolean bossSpawnAlert = true;
 
-        @SerialEntry
-        public boolean compactEffigyWaypoints;
+	public boolean miniBossSpawnAlert = true;
 
-        @SerialEntry
-        public int effigyUpdateFrequency = 5;
+	public boolean slainTime = true;
 
-        @SerialEntry
-        public boolean enableHolyIceIndicator = true;
+	public boolean enableHud = true;
 
-        @SerialEntry
-        public int holyIceIndicatorTickDelay = 10;
+	public CallMaddox callMaddox = new CallMaddox();
 
-        @SerialEntry
-        public int holyIceUpdateFrequency = 5;
+	public EndermanSlayer endermanSlayer = new EndermanSlayer();
 
-        @SerialEntry
-        public boolean enableHealingMelonIndicator = true;
+	public VampireSlayer vampireSlayer = new VampireSlayer();
 
-        @SerialEntry
-        public float healingMelonHealthThreshold = 4f;
+	public BlazeSlayer blazeSlayer = new BlazeSlayer();
 
-        @SerialEntry
-        public boolean enableSteakStakeIndicator = true;
+	public static class CallMaddox {
+		public boolean sendMessageOnFail = true;
 
-        @SerialEntry
-        public int steakStakeUpdateFrequency = 5;
+		public boolean sendMessageOnKill = false;
+	}
 
-        @SerialEntry
-        public boolean enableManiaIndicator = true;
+	public static class EndermanSlayer {
+		public boolean enableYangGlyphsNotification = true;
 
-        @SerialEntry
-        public int maniaUpdateFrequency = 5;
-    }
+		public boolean highlightBeacons = true;
+
+		public boolean highlightNukekubiHeads = true;
+
+		public boolean lazerTimer = true;
+	}
+
+	public static class VampireSlayer {
+		public boolean enableEffigyWaypoints = true;
+
+		public boolean compactEffigyWaypoints = false;
+
+		public int effigyUpdateFrequency = 5;
+
+		public boolean enableHolyIceIndicator = true;
+
+		public int holyIceIndicatorTickDelay = 5;
+
+		public int holyIceUpdateFrequency = 5;
+
+		public boolean enableHealingMelonIndicator = true;
+
+		public float healingMelonHealthThreshold = 4f;
+
+		public boolean enableSteakStakeIndicator = true;
+
+		public int steakStakeUpdateFrequency = 5;
+
+		public boolean enableManiaIndicator = true;
+
+		public int maniaUpdateFrequency = 5;
+	}
+
+	public static class BlazeSlayer {
+		public FirePillar firePillarCountdown = FirePillar.SOUND_AND_VISUAL;
+		public Boolean attunementHighlights = true;
+
+		public enum FirePillar {
+			OFF,
+			VISUAL,
+			SOUND_AND_VISUAL;
+
+			@Override
+			public String toString() {
+				return I18n.translate("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode." + name());
+			}
+		}
+	}
 }

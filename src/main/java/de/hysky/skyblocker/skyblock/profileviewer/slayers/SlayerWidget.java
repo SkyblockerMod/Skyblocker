@@ -4,14 +4,21 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class SlayerWidget {
@@ -19,19 +26,19 @@ public class SlayerWidget {
     private final LevelFinder.LevelInfo slayerLevel;
     private JsonObject slayerData = null;
 
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
-    private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
-    private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
+    private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+    private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
     private final Identifier item;
     private final ItemStack drop;
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
     private static final Map<String, Identifier> HEAD_ICON = Map.ofEntries(
-            Map.entry("Zombie", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/zombie.png")),
-            Map.entry("Spider", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/spider.png")),
-            Map.entry("Wolf", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/wolf.png")),
-            Map.entry("Enderman", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/enderman.png")),
-            Map.entry("Vampire", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/vampire.png")),
-            Map.entry("Blaze", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/blaze.png"))
+            Map.entry("Zombie", SkyblockerMod.id("textures/gui/profile_viewer/zombie.png")),
+            Map.entry("Spider", SkyblockerMod.id("textures/gui/profile_viewer/spider.png")),
+            Map.entry("Wolf", SkyblockerMod.id("textures/gui/profile_viewer/wolf.png")),
+            Map.entry("Enderman", SkyblockerMod.id("textures/gui/profile_viewer/enderman.png")),
+            Map.entry("Vampire", SkyblockerMod.id("textures/gui/profile_viewer/vampire.png")),
+            Map.entry("Blaze", SkyblockerMod.id("textures/gui/profile_viewer/blaze.png"))
     );
 
     private static final Map<String, ItemStack> DROP_ICON = Map.ofEntries(
@@ -49,24 +56,31 @@ public class SlayerWidget {
         this.item = HEAD_ICON.get(slayer);
         this.drop = DROP_ICON.getOrDefault(slayer, Ico.BARRIER);
         try {
-            this.slayerData = playerProfile.getAsJsonObject("slayer").getAsJsonObject("slayer_bosses").getAsJsonObject(this.slayerName.toLowerCase());
+            this.slayerData = playerProfile.getAsJsonObject("slayer").getAsJsonObject("slayer_bosses").getAsJsonObject(this.slayerName.toLowerCase(Locale.ENGLISH));
         } catch (Exception ignored) {}
     }
 
-    public void render(DrawContext context, int x, int y) {
-        context.drawTexture(TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-        context.drawTexture(this.item, x + 1, y + 3, 0, 0, 20, 20, 20, 20);
+    public void render(DrawContext context, int mouseX, int mouseY, int x, int y) {
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, this.item, x + 1, y + 3, 0, 0, 20, 20, 20, 20);
         context.drawText(textRenderer, slayerName + " " + slayerLevel.level, x + 31, y + 5, Color.white.hashCode(), false);
 
         int col2 = x + 113;
-        context.drawTexture(TEXTURE, col2, y, 0, 0, 109, 26, 109, 26);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, col2, y, 0, 0, 109, 26, 109, 26);
         context.drawItem(this.drop, col2 + 3, y + 5);
         context.drawText(textRenderer, "§aKills: §r" + findTotalKills(), col2 + 30, y + 4, Color.white.hashCode(), true);
         context.drawText(textRenderer, findTopTierKills(), findTopTierKills().equals("No Data") ? col2 + 30 : col2 + 29, y + 15, Color.white.hashCode(), true);
 
-        context.drawGuiTexture(BAR_BACK, x + 30, y + 15, 75, 6);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
         Color fillColor = slayerLevel.fill == 1 ? Color.MAGENTA : Color.green;
-        RenderHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * slayerLevel.fill), 6, fillColor);
+        HudHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * slayerLevel.fill), 6, fillColor);
+
+        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22){
+            List<Text> tooltipText = new ArrayList<>();
+            tooltipText.add(Text.literal(this.slayerName).formatted(Formatting.GREEN));
+            tooltipText.add(Text.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.slayerLevel.xp)).formatted(Formatting.GOLD));
+            context.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
+        }
     }
 
     private int findTotalKills() {

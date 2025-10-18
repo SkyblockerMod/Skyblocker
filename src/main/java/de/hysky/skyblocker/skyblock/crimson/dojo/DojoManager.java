@@ -1,13 +1,17 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.booleans.BooleanPredicate;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -28,7 +32,6 @@ import net.minecraft.world.World;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,9 +54,9 @@ public class DojoManager {
         TENACITY("Tenacity", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableTenacityHelper);
 
         private final String name;
-        private final Predicate<Boolean> enabled;
+        private final BooleanPredicate enabled;
 
-        DojoChallenges(String name, Predicate<Boolean> enabled) {
+        DojoChallenges(String name, BooleanPredicate enabled) {
             this.name = name;
             this.enabled = enabled;
         }
@@ -67,14 +70,17 @@ public class DojoManager {
     public static boolean inArena = false;
     protected static long ping = -1;
 
+    @Init
     public static void init() {
-        ClientReceiveMessageEvents.GAME.register(DojoManager::onMessage);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(DojoManager::render);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(DojoManager::onMessage);
+        WorldRenderExtractionCallback.EVENT.register(DojoManager::extractRendering);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
         ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
         ClientEntityEvents.ENTITY_UNLOAD.register(DojoManager::onEntityDespawn);
         AttackEntityCallback.EVENT.register(DojoManager::onEntityAttacked);
         Scheduler.INSTANCE.scheduleCyclic(DojoManager::update, 3);
+        WorldEvents.BLOCK_STATE_UPDATE.register(DojoManager::onBlockUpdate);
+        ParticleEvents.FROM_SERVER.register(DojoManager::onParticle);
     }
 
     private static void reset() {
@@ -94,27 +100,27 @@ public class DojoManager {
      * @param text    message
      * @param overlay is overlay
      */
-    private static void onMessage(Text text, Boolean overlay) {
+    private static boolean onMessage(Text text, Boolean overlay) {
         if (!Utils.isInCrimson() || overlay) {
-            return;
+            return true;
         }
         if (Objects.equals(Formatting.strip(text.getString()), START_MESSAGE)) {
             inArena = true;
             //update the players ping
             getPing();
-            return;
+            return true;
         }
         if (!inArena) {
-            return;
+            return true;
         }
         if (text.getString().matches(CHALLENGE_FINISHED_REGEX)) {
             reset();
-            return;
+            return true;
         }
 
         //look for a message saying what challenge is starting if one has not already been found
         if (currentChallenge != DojoChallenges.NONE) {
-            return;
+            return true;
         }
         Matcher nextChallenge = TEST_OF_PATTERN.matcher(text.getString());
         if (nextChallenge.matches()) {
@@ -123,6 +129,8 @@ public class DojoManager {
                 currentChallenge = DojoChallenges.NONE;
             }
         }
+
+        return true;
     }
 
     private static void getPing() {
@@ -183,15 +191,15 @@ public class DojoManager {
      * when a block is updated check the current challenge and send the packet to correct helper
      *
      * @param pos   the location of the updated block
-     * @param state the state of the new block
+     * @param newState the state of the new block
      */
-    public static void onBlockUpdate(BlockPos pos, BlockState state) {
+    private static void onBlockUpdate(BlockPos pos, BlockState oldStatem, BlockState newState) {
         if (!Utils.isInCrimson() || !inArena) {
             return;
         }
         switch (currentChallenge) {
-            case MASTERY -> MasteryTestHelper.onBlockUpdate(pos, state);
-            case SWIFTNESS -> SwiftnessTestHelper.onBlockUpdate(pos, state);
+            case MASTERY -> MasteryTestHelper.onBlockUpdate(pos.toImmutable(), newState);
+            case SWIFTNESS -> SwiftnessTestHelper.onBlockUpdate(pos.toImmutable(), newState);
         }
     }
 
@@ -200,7 +208,7 @@ public class DojoManager {
             return;
         }
         // Check if within 50 blocks and 5 blocks vertically
-        if (entity.squaredDistanceTo(CLIENT.player) > 2500 || Math.abs(entity.getBlockY() - CLIENT.player.getBlockY()) > 5) {
+		if (!entity.isInRange(CLIENT.player, 50, 5)) {
             return;
         }
         switch (currentChallenge) {
@@ -230,7 +238,7 @@ public class DojoManager {
         return ActionResult.PASS;
     }
 
-    public static void onParticle(ParticleS2CPacket packet) {
+    private static void onParticle(ParticleS2CPacket packet) {
         if (!Utils.isInCrimson() || !inArena) {
             return;
         }
@@ -239,17 +247,17 @@ public class DojoManager {
         }
     }
 
-    private static void render(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         if (!Utils.isInCrimson() || !inArena) {
             return;
         }
         switch (currentChallenge) {
-            case FORCE -> ForceTestHelper.render(context);
-            case STAMINA -> StaminaTestHelper.render(context);
-            case MASTERY -> MasteryTestHelper.render(context);
-            case SWIFTNESS -> SwiftnessTestHelper.render(context);
-            case CONTROL -> ControlTestHelper.render(context);
-            case TENACITY -> TenacityTestHelper.render(context);
+            case FORCE -> ForceTestHelper.extractRendering(collector);
+            case STAMINA -> StaminaTestHelper.extractRendering(collector);
+            case MASTERY -> MasteryTestHelper.extractRendering(collector);
+            case SWIFTNESS -> SwiftnessTestHelper.extractRendering(collector);
+            case CONTROL -> ControlTestHelper.extractRendering(collector);
+            case TENACITY -> TenacityTestHelper.extractRendering(collector);
         }
     }
 

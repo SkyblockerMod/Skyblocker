@@ -1,133 +1,256 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
-import io.github.moulberry.repo.data.NEUCraftingRecipe;
-import io.github.moulberry.repo.data.NEUItem;
-import io.github.moulberry.repo.data.NEURecipe;
+import io.github.moulberry.repo.data.*;
+import io.github.moulberry.repo.util.NEUId;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
+import net.minecraft.recipe.display.CuttingRecipeDisplay;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class ItemRepository {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(ItemRepository.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(ItemRepository.class);
 
-    private static final List<ItemStack> items = new ArrayList<>();
-    private static final Map<String, ItemStack> itemsMap = new HashMap<>();
-    private static final List<SkyblockCraftingRecipe> recipes = new ArrayList<>();
-    private static boolean filesImported = false;
+	private static final List<ItemStack> items = new ArrayList<>();
+	private static final Map<String, ItemStack> itemsMap = new HashMap<>();
+	private static final List<SkyblockRecipe> recipes = new ArrayList<>();
+	private static final HashMap<String, @NEUId String> bazaarStocks = new HashMap<>();
+	/**
+	 * Store callbacks so we can execute them each time the item repository
+	 * finishes loading.
+	 */
+	private static final List<AfterImportTask> afterImportTasks = new CopyOnWriteArrayList<>();
 
-    public static void init() {
-        NEURepoManager.runAsyncAfterLoad(ItemStackBuilder::loadPetNums);
-        NEURepoManager.runAsyncAfterLoad(ItemRepository::importItemFiles);
-    }
+	private record AfterImportTask(Runnable runnable, boolean async) {}
 
-    private static void importItemFiles() {
-        NEURepoManager.NEU_REPO.getItems().getItems().values().forEach(ItemRepository::loadItem);
-        NEURepoManager.NEU_REPO.getItems().getItems().values().forEach(ItemRepository::loadRecipes);
+	/**
+	 * Consumers must check this field when accessing `items` and `itemsMap`, or else thread safety is not guaranteed.
+	 */
+	private static boolean itemsImported = false;
+	/**
+	 * Consumers must check this field when accessing `recipes`, or else thread safety is not guaranteed.
+	 */
+	private static boolean filesImported = false;
 
-        items.sort((lhs, rhs) -> {
-            String lhsInternalName = ItemUtils.getItemId(lhs);
-            String lhsFamilyName = lhsInternalName.replaceAll(".\\d+$", "");
-            String rhsInternalName = ItemUtils.getItemId(rhs);
-            String rhsFamilyName = rhsInternalName.replaceAll(".\\d+$", "");
-            if (lhsFamilyName.equals(rhsFamilyName)) {
-                if (lhsInternalName.length() != rhsInternalName.length())
-                    return lhsInternalName.length() - rhsInternalName.length();
-                else return lhsInternalName.compareTo(rhsInternalName);
-            }
-            return lhsFamilyName.compareTo(rhsFamilyName);
-        });
-        filesImported = true;
-    }
+	@Init
+	public static void init() {
+		NEURepoManager.runAsyncAfterLoad(ItemStackBuilder::loadPetNums);
+		NEURepoManager.runAsyncAfterLoad(ItemRepository::importItemFiles);
+		NEURepoManager.runAsyncAfterLoad(ItemRepository::loadBazaarStocks);
+		runAsyncAfterImport(ItemRepository::handleRecipeSynchronization);
+		SkyblockEvents.JOIN.register(ItemRepository::handleRecipeSynchronization);
+	}
 
-    private static void loadItem(NEUItem item) {
-        try {
-            ItemStack stack = ItemStackBuilder.fromNEUItem(item);
-            items.add(stack);
-            itemsMap.put(item.getSkyblockItemId(), stack);
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker Item Repo Loader] Failed to load item, please report this! Skyblock Id: {}", item.getSkyblockItemId(), e);
-        }
-    }
+	/**
+	 * Load the recipes manually because Hypixel doesn't send any vanilla recipes to the client.
+	 * This also reloads REI to include the Skyblock items when the items are done loading.
+	 */
+	private static void handleRecipeSynchronization() {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.world == null || client.getNetworkHandler() == null) return;
 
-    private static void loadRecipes(NEUItem item) {
-        for (NEURecipe recipe : item.getRecipes()) {
-            if (recipe instanceof NEUCraftingRecipe neuCraftingRecipe) {
-                recipes.add(SkyblockCraftingRecipe.fromNEURecipe(neuCraftingRecipe));
-            }
-        }
-    }
+		SynchronizeRecipesS2CPacket packet = new SynchronizeRecipesS2CPacket(Map.of(), CuttingRecipeDisplay.Grouping.empty());
+		try {
+			client.execute(() -> client.getNetworkHandler().onSynchronizeRecipes(packet));
+		} catch (Exception e) {
+			LOGGER.info("[Skyblocker Item Repo] recipe sync error", e);
+		}
+	}
 
-    public static String getWikiLink(String internalName) {
-        NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(internalName);
-        if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
-            return null;
-        }
+	private static void importItemFiles() {
+		itemsImported = false;
+		filesImported = false;
 
-        List<String> info = item.getInfo();
-        String wikiLink0 = info.getFirst();
-        String wikiLink1 = info.size() > 1 ? info.get(1) : "";
-        String wikiDomain = SkyblockerConfigManager.get().general.wikiLookup.officialWiki ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
-        if (wikiLink0.startsWith(wikiDomain)) {
-            return wikiLink0;
-        } else if (wikiLink1.startsWith(wikiDomain)) {
-            return wikiLink1;
-        }
-        return null;
-    }
+		items.clear();
+		itemsMap.clear();
+		recipes.clear();
 
-    public static List<SkyblockCraftingRecipe> getRecipes(String internalName) {
-        List<SkyblockCraftingRecipe> result = new ArrayList<>();
-        for (SkyblockCraftingRecipe recipe : recipes) {
-            if (ItemUtils.getItemId(recipe.getResult()).equals(internalName)) result.add(recipe);
-        }
-        for (SkyblockCraftingRecipe recipe : recipes) {
-            for (ItemStack ingredient : recipe.getGrid()) {
-                if (!ingredient.getItem().equals(Items.AIR) && ItemUtils.getItemId(ingredient).equals(internalName)) {
-                    result.add(recipe);
-                    break;
-                }
-            }
-        }
-        return result;
-    }
+		NEURepoManager.forEachItem(ItemRepository::loadItem);
+		items.sort(Comparator.<ItemStack, String>comparing(stack -> stack.getSkyblockId().replaceAll(".\\d+$", ""))
+				.thenComparingInt(stack -> stack.getSkyblockId().length())
+				.thenComparing(ItemStack::getSkyblockId)
+		);
+		itemsImported = true;
 
-    public static boolean filesImported() {
-        return filesImported;
-    }
+		NEURepoManager.forEachItem(ItemRepository::loadRecipes);
+		filesImported = true;
 
-    public static void setFilesImported(boolean filesImported) {
-        ItemRepository.filesImported = filesImported;
-    }
+		afterImportTasks.forEach(task -> {
+			if (task.async) {
+				CompletableFuture.runAsync(task.runnable).exceptionally(e -> {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
+					return null;
+				});
+			} else {
+				try {
+					task.runnable.run();
+				} catch (Exception e) {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
+				}
+			}
+		});
+	}
 
-    public static List<ItemStack> getItems() {
-        return items;
-    }
+	private static void loadItem(NEUItem item) {
+		try {
+			ItemStack stack = ItemStackBuilder.fromNEUItem(item);
+			StackOverlays.applyOverlay(item, stack);
 
-    public static Stream<ItemStack> getItemsStream() {
-        return items.stream();
-    }
+			if (stack.isOf(Items.ENCHANTED_BOOK) && stack.getSkyblockId().contains(";")) {
+				ItemUtils.getCustomData(stack).putString("id", "ENCHANTED_BOOK");
+			}
 
-    /**
-     * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip#getNeuName(String, String) ItemTooltip#getNeuName(String, String)}
-     */
-    @Nullable
-    public static ItemStack getItemStack(String neuId) {
-        return itemsMap.get(neuId);
-    }
+			items.add(stack);
+			itemsMap.put(item.getSkyblockItemId(), stack);
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Item Repo Loader] Failed to load item, please report this! Skyblock Id: {}", item.getSkyblockItemId(), e);
+		}
+	}
 
-    public static Stream<SkyblockCraftingRecipe> getRecipesStream() {
-        return recipes.stream();
-    }
+	private static void loadRecipes(NEUItem item) {
+		item.getRecipes().stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull).forEach(recipes::add);
+	}
+
+	private static void loadBazaarStocks() {
+		bazaarStocks.clear();
+		NEURepoManager.getConstants().getBazaarStocks().getStocks().forEach((String neuId, String skyblockId) -> bazaarStocks.put(skyblockId, neuId));
+	}
+
+	public static String getWikiLink(String neuId, boolean useOfficial) {
+		NEUItem item = NEURepoManager.getItemByNeuId(neuId);
+		if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
+			return null;
+		}
+
+		List<String> info = item.getInfo();
+		String wikiLink0 = info.getFirst();
+		String wikiLink1 = info.size() > 1 ? info.get(1) : "";
+		String wikiDomain = getWikiLink(useOfficial);
+		if (wikiLink0.startsWith(wikiDomain)) {
+			return wikiLink0;
+		} else if (wikiLink1.startsWith(wikiDomain)) {
+			return wikiLink1;
+		}
+		return null;
+	}
+
+	public static String getWikiLink(boolean useOfficial) {
+		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
+	}
+
+	public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {
+		return Stream.concat(getRecipes(stack), getUsages(stack)).toList();
+	}
+
+	public static boolean filesImported() {
+		return filesImported;
+	}
+
+	public static List<ItemStack> getItems() {
+		return itemsImported ? items : List.of();
+	}
+
+	public static Stream<ItemStack> getItemsStream() {
+		return itemsImported ? items.stream() : Stream.empty();
+	}
+
+	public static Map<String, @NEUId String> getBazaarStocks() {
+		// This is not protected by `filesImported` because it is loaded asynchronously separately from `items`, `itemsMap`, and `recipes`.
+		return bazaarStocks;
+	}
+
+	/**
+	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName()}.
+	 */
+	@Nullable
+	public static ItemStack getItemStack(String neuId) {
+		return itemsImported ? itemsMap.get(neuId) : null;
+	}
+
+	@Contract("_, !null -> !null")
+	public static ItemStack getItemStack(String neuId, ItemStack defaultStack) {
+		ItemStack stack = getItemStack(neuId);
+		return stack != null ? stack : defaultStack;
+	}
+
+	/**
+	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName()}.
+	 */
+	public static Supplier<ItemStack> getItemStackSupplier(String neuId) {
+		return () -> itemsMap.get(neuId);
+	}
+
+	public static Stream<SkyblockRecipe> getRecipesStream() {
+		return filesImported ? recipes.stream() : Stream.empty();
+	}
+
+	public static Stream<SkyblockRecipe> getRecipes(ItemStack stack) {
+		return NEURepoManager.getRecipes().getOrDefault(stack.getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
+	}
+
+	public static Stream<SkyblockRecipe> getUsages(ItemStack stack) {
+		return NEURepoManager.getUsages().getOrDefault(stack.getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
+	}
+
+	private static SkyblockRecipe toSkyblockRecipe(NEURecipe neuRecipe) {
+		return switch (neuRecipe) {
+			case NEUCraftingRecipe craftingRecipe -> new SkyblockCraftingRecipe(craftingRecipe);
+			case NEUForgeRecipe forgeRecipe -> new SkyblockForgeRecipe(forgeRecipe);
+			case NEUNpcShopRecipe shopRecipe -> new SkyblockNpcShopRecipe(shopRecipe);
+			case null, default -> null;
+		};
+	}
+
+	/**
+	 * Runs the given runnable after the item repository has finished loading.
+	 * If the repository is already loaded the runnable is executed immediately.
+	 *
+	 * @param runnable the runnable to run
+	 */
+	public static void runAsyncAfterImport(Runnable runnable) {
+		runAfterImport(runnable, true);
+	}
+
+	/**
+	 * Runs the given runnable after the item repository has finished loading.
+	 * If the repository is already loaded the runnable is executed immediately.
+	 *
+	 * @param runnable the runnable to run
+	 * @param async    whether to run the runnable asynchronously
+	 */
+	public static void runAfterImport(Runnable runnable, boolean async) {
+		if (filesImported) {
+			if (async) {
+				CompletableFuture.runAsync(runnable).exceptionally(e -> {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
+					return null;
+				});
+			} else {
+				try {
+					runnable.run();
+				} catch (Exception e) {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
+				}
+			}
+		}
+		afterImportTasks.add(new AfterImportTask(runnable, async));
+	}
 }
-

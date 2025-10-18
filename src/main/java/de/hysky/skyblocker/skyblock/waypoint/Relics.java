@@ -6,26 +6,26 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,17 +49,18 @@ public class Relics {
     private static int totalRelics = 0;
     private static final Map<BlockPos, ProfileAwareWaypoint> relics = new HashMap<>();
 
+    @Init
     public static void init() {
         ClientLifecycleEvents.CLIENT_STARTED.register(Relics::loadRelics);
         ClientLifecycleEvents.CLIENT_STOPPING.register(Relics::saveFoundRelics);
         ClientCommandRegistrationCallback.EVENT.register(Relics::registerCommands);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(Relics::render);
-        ClientReceiveMessageEvents.GAME.register(Relics::onChatMessage);
+        WorldRenderExtractionCallback.EVENT.register(Relics::extractRendering);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(Relics::onChatMessage);
     }
 
     private static void loadRelics(MinecraftClient client) {
         relicsLoaded = CompletableFuture.runAsync(() -> {
-            try (BufferedReader reader = client.getResourceManager().openAsReader(Identifier.of(SkyblockerMod.NAMESPACE, "spidersden/relics.json"))) {
+            try (BufferedReader reader = client.getResourceManager().openAsReader(SkyblockerMod.id("spidersden/relics.json"))) {
                 for (Map.Entry<String, JsonElement> json : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
                     if (json.getKey().equals("total")) {
                         totalRelics = json.getValue().getAsInt();
@@ -67,7 +68,7 @@ public class Relics {
                         for (JsonElement locationJson : json.getValue().getAsJsonArray().asList()) {
                             JsonObject posData = locationJson.getAsJsonObject();
                             BlockPos pos = new BlockPos(posData.get("x").getAsInt(), posData.get("y").getAsInt(), posData.get("z").getAsInt());
-                            relics.put(pos, new ProfileAwareWaypoint(pos, TYPE_SUPPLIER, ColorUtils.getFloatComponents(DyeColor.YELLOW), ColorUtils.getFloatComponents(DyeColor.BROWN)));
+                            relics.put(pos, new Relic(pos, TYPE_SUPPLIER, ColorUtils.getFloatComponents(DyeColor.YELLOW), ColorUtils.getFloatComponents(DyeColor.BROWN)));
                         }
                     }
                 }
@@ -130,23 +131,25 @@ public class Relics {
                         }))));
     }
 
-    private static void render(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         OtherLocationsConfig.Relics config = SkyblockerConfigManager.get().otherLocations.spidersDen.relics;
 
         if (config.enableRelicsHelper && relicsLoaded.isDone() && Utils.getLocationRaw().equals("combat_1")) {
             for (ProfileAwareWaypoint relic : relics.values()) {
                 boolean isRelicMissing = relic.shouldRender();
                 if (!isRelicMissing && !config.highlightFoundRelics) continue;
-                relic.render(context);
+                relic.extractRendering(collector);
             }
         }
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
+    private static boolean onChatMessage(Text text, boolean overlay) {
         String message = text.getString();
         if (message.equals("You've already found this relic!") || message.startsWith("+10,000 Coins! (") && message.endsWith("/28 Relics)")) {
             markClosestRelicFound();
         }
+
+        return true;
     }
 
     private static void markClosestRelicFound() {
@@ -161,5 +164,16 @@ public class Relics {
                 .min(Comparator.comparingDouble(relic -> relic.pos.getSquaredDistance(player.getPos())))
                 .filter(relic -> relic.pos.getSquaredDistance(player.getPos()) <= 16)
                 .ifPresent(Waypoint::setFound);
+    }
+
+    private static class Relic extends ProfileAwareWaypoint {
+        private Relic(BlockPos pos, Supplier<Type> typeSupplier, float[] missingColor, float[] foundColor) {
+            super(pos, typeSupplier, missingColor, foundColor);
+        }
+
+        @Override
+        public boolean shouldRender() {
+            return super.shouldRender() || SkyblockerConfigManager.get().otherLocations.spidersDen.relics.highlightFoundRelics;
+        }
     }
 }
