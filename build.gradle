@@ -335,6 +335,7 @@ def truncateChangelog = { String text, int limit ->
 	for (line in lines) {
 		def toAdd = (sb.length() == 0 ? "" : "\n") + line
 		if (sb.length() + toAdd.length() > limit) {
+			sb.append("\nand more!")
 			break
 		}
 		sb.append(toAdd)
@@ -376,7 +377,7 @@ publishMods {
 		username = "Changelog"
 		content = changelog.map {
 			def header = "<@&1134565945482948638>\n## Skyblocker v${mod_version} for ${minecraft_version}\n"
-			def truncatedChangelog = truncateChangelog(it, 1900)
+			def truncatedChangelog = truncateChangelog(it, 1850)
 			header + truncatedChangelog
 		}
 	}

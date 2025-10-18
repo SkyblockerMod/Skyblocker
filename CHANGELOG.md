@@ -1,14 +1,13 @@
 # Release 5.8.0
 
 ## Highlight
-* Remove 1.8 Farmland hitbox feature
 * Improve Dungeons item secret detection
 * Add New /call features:
     * Add prompts for calling Trevor, Maddox, and Queen Mismyla
     * Add recall prompt for failed calls due to "bad signal"
     * Add /call NPC name autocomplete
 * Add Shortcut Key Combos
-* Add iris shader support
+* Add Iris shader support
 * Add bazaar order tracker
 * Add Builder's wand preview
 * Add support for NPC Shop Recipes in REI
@@ -63,6 +62,7 @@
 * Fix Skin Transparency
 * Fix QuickNav buttons being tab navigable
 * Fix Bestiary Regex
+* Remove 1.8 Farmland hitbox feature
 
 ## What's Changed
 * Update item secrets detection by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1624
