@@ -279,7 +279,6 @@
     "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Zeigt, wie oft du den Terracottablock drehen musst. Rechtsklick für positive und linksklick für negative Rotationen.",
     "skyblocker.containerValue.chestValue.@Tooltip": "Wert dieses Behälters berechnen",
     "skyblocker.config.general.hitbox": "Hitboxen",
-    "skyblocker.config.general.hitbox.oldFarmlandHitbox": "1.8-Hitbox für Ackerland aktivieren",
     "skyblocker.config.general.hitbox.oldMushroomHitbox": "1.8-Hitbox für Pilze aktivieren",
     "skyblocker.config.general.itemInfoDisplay": "Item-Info-Anzeige",
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style.SQUARE": "Eckig",

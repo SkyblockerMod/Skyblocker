@@ -328,6 +328,21 @@ checkstyle {
 	configFile = rootProject.file("checkstyle.xml")
 }
 
+def truncateChangelog = { String text, int limit ->
+	if (!text) return ''
+	def lines = text.readLines()
+	def sb = new StringBuilder()
+	for (line in lines) {
+		def toAdd = (sb.length() == 0 ? "" : "\n") + line
+		if (sb.length() + toAdd.length() > limit) {
+			sb.append("\nand more!")
+			break
+		}
+		sb.append(toAdd)
+	}
+	return sb.toString()
+}
+
 publishMods {
 	file = remapJar.archiveFile
 	changelog = System.getenv('CHANGELOG')
@@ -360,7 +375,11 @@ publishMods {
 	discord {
 		webhookUrl = System.getenv("DISCORD_WEBHOOK")
 		username = "Changelog"
-		content = changelog.map { "<@&1134565945482948638>\n## Skyblocker v${mod_version} for ${minecraft_version}\n" + it }
+		content = changelog.map {
+			def header = "<@&1134565945482948638>\n## Skyblocker v${mod_version} for ${minecraft_version}\n"
+			def truncatedChangelog = truncateChangelog(it, 1850)
+			header + truncatedChangelog
+		}
 	}
 }
 
