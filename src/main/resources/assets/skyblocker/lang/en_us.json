@@ -849,6 +849,9 @@
   "skyblocker.config.misc.configBackend": "Config Backend",
   "skyblocker.config.misc.configBackend.@Tooltip": "You can choose between having YetAnotherConfigLib (YACL) or MoulConfig as the Config Backend.",
 
+  "skyblocker.config.misc.disableBreakReminders": "Disable break reminders",
+  "skyblocker.config.misc.disableBreakReminders.@Tooltip": "This is meant for content creators. If you disable this, please remember to take breaks.",
+
   "skyblocker.config.misc.richPresence": "Discord RPC",
   "skyblocker.config.misc.richPresence.customMessage": "Custom Message",
   "skyblocker.config.misc.richPresence.cycleMode": "Cycle Skyblock Info",
@@ -1694,6 +1697,14 @@
   "skyblocker.profileviewer.inventory.inactive": "Locked Slot",
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
+
+  "skyblocker.potato.title": "You have been playing for %s hours.",
+  "skyblocker.potato.description0": "Get up and go get a glass of water.",
+  "skyblocker.potato.description1": "You are reaching critical levels of potato.",
+  "skyblocker.potato.description2": "Remember to take breaks!",
+  "skyblocker.potato.description3": "Don't forget to hydrate!",
+  "skyblocker.potato.description4": "Might be time for a break don't ya think?",
+  "skyblocker.potato.description5": "Are you using a macro?",
 
   "skyblocker.armorCustomization.animated": "Animated",
   "skyblocker.armorCustomization.cannotCustomizeColor": "Cannot customize this piece's color :(",

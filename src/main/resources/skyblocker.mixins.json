@@ -63,6 +63,7 @@
     "accessors.EntityRenderDispatcherAccessor",
     "accessors.FrustumInvoker",
     "accessors.HandledScreenAccessor",
+    "accessors.InactivityFpsLimiterAccessor",
     "accessors.InGameHudInvoker",
     "accessors.MapStateAccessor",
     "accessors.MessageHandlerAccessor",
