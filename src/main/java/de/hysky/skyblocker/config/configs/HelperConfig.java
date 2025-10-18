@@ -119,15 +119,19 @@ public class HelperConfig {
 	public static class ChocolateFactory {
 		public boolean enableChocolateFactoryHelper = true;
 
+		public boolean enableTimeTowerReminder = true;
+
+		public boolean straySound = true;
+
+		// Hoppity's Hunt
+
 		public boolean enableEggFinder = true;
 
 		public boolean sendEggFoundMessages = true;
 
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 
-		public boolean enableTimeTowerReminder = true;
-
-		public boolean straySound = true;
+		public boolean showThroughWalls = false;
 	}
 
 	public static class Carnival {

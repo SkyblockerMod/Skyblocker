@@ -289,31 +289,6 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableEggFinder"))
-								.description(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableEggFinder.@Tooltip"))
-								.binding(defaults.helpers.chocolateFactory.enableEggFinder,
-										() -> config.helpers.chocolateFactory.enableEggFinder,
-										newValue -> config.helpers.chocolateFactory.enableEggFinder = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.modifiable(false)
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages"))
-								.description(Text.translatable("skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages.@Tooltip"))
-								.binding(defaults.helpers.chocolateFactory.sendEggFoundMessages,
-										() -> config.helpers.chocolateFactory.sendEggFoundMessages,
-										newValue -> config.helpers.chocolateFactory.sendEggFoundMessages = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Waypoint.Type>createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.waypointType"))
-								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"))
-								.binding(defaults.helpers.chocolateFactory.waypointType,
-										() -> config.helpers.chocolateFactory.waypointType,
-										newValue -> config.helpers.chocolateFactory.waypointType = newValue)
-								.controller(ConfigUtils.createEnumController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder"))
 								.description(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip"))
 								.binding(defaults.helpers.chocolateFactory.enableTimeTowerReminder,
@@ -327,6 +302,43 @@ public class HelperCategory {
 								.binding(defaults.helpers.chocolateFactory.straySound,
 										() -> config.helpers.chocolateFactory.straySound,
 										newValue -> config.helpers.chocolateFactory.straySound = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt.enableEggFinder"))
+								.description(Text.translatable("skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip"))
+								.binding(defaults.helpers.chocolateFactory.enableEggFinder,
+										() -> config.helpers.chocolateFactory.enableEggFinder,
+										newValue -> config.helpers.chocolateFactory.enableEggFinder = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages"))
+								.description(Text.translatable("skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages.@Tooltip"))
+								.binding(defaults.helpers.chocolateFactory.sendEggFoundMessages,
+										() -> config.helpers.chocolateFactory.sendEggFoundMessages,
+										newValue -> config.helpers.chocolateFactory.sendEggFoundMessages = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Waypoint.Type>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt.waypointType"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"))
+								.binding(defaults.helpers.chocolateFactory.waypointType,
+										() -> config.helpers.chocolateFactory.waypointType,
+										newValue -> config.helpers.chocolateFactory.waypointType = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt.showThroughWalls"))
+								.description(Text.translatable("skyblocker.config.helpers.hoppitysHunt.showThroughWalls.@Tooltip"))
+								.binding(defaults.helpers.chocolateFactory.showThroughWalls,
+										() -> config.helpers.chocolateFactory.showThroughWalls,
+										newValue -> config.helpers.chocolateFactory.showThroughWalls = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
