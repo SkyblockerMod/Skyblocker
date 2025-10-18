@@ -156,7 +156,7 @@ public class Waypoints {
     public static String toSkyblocker(List<WaypointGroup> waypointGroups) {
         String waypointsJson = SkyblockerMod.GSON.toJson(CODEC.encodeStart(JsonOps.INSTANCE, waypointGroups).resultOrPartial(LOGGER::error).orElseThrow());
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try (GZIPOutputStream gzip = new GZIPOutputStream(output)){
+        try (GZIPOutputStream gzip = new GZIPOutputStream(output)) {
             gzip.write(waypointsJson.getBytes());
         } catch (IOException e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while serializing Skyblocker waypoint data", e);

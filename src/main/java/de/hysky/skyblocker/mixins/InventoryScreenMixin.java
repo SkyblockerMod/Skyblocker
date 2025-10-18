@@ -83,7 +83,7 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
 	@Inject(method = "<init>", at = @At("TAIL"), order = 900) // run it a little earlier in case firmament do stuff
 	private void skyblocker$furfskyCompat(CallbackInfo ci) {
 		if (Utils.isOnSkyblock() && ResourcePackCompatibility.options.renameInventoryScreen().orElse(false)) {
-			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenQuickNavSkyblocker": "InventoryScreenSkyblocker"));
+			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenQuickNavSkyblocker" : "InventoryScreenSkyblocker"));
 		}
 	}
 

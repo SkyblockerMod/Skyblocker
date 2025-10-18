@@ -39,7 +39,7 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
 
     @Override
     public List<RecipeSlot> getInputSlots(int width, int height) {
-        ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 27: 32));
+        ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 27 : 32));
         List<RecipeSlot> toReturn = new ArrayList<>(9);
         for (int i = 0; i < grid.size(); i++) {
             int x = i % 3;
@@ -51,7 +51,7 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
 
     @Override
     public List<RecipeSlot> getOutputSlots(int width, int height) {
-        ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 26: 31));
+        ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 26 : 31));
         return List.of(new RecipeSlot(start.x() + 95, start.y() + 19, result));
     }
 
@@ -83,7 +83,7 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
 
     @Override
     public @Nullable ScreenPos getArrowLocation(int width, int height) {
-        ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 26: 31));
+        ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 26 : 31));
         return new ScreenPos(start.x() + 60, start.y() + 18);
     }
 }
