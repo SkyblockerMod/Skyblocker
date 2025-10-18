@@ -143,6 +143,8 @@ public class MiningConfig {
 		public boolean autoShareCorpses = false;
 
 		public boolean enableCorpseProfitTracker = true;
+
+		public boolean forceEnglishCorpseProfitTracker = true;
 	}
 
 	/**

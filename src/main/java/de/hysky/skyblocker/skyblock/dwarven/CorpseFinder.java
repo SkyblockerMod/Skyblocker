@@ -185,7 +185,7 @@ public class CorpseFinder {
 						.append(Text.literal(WordUtils.capitalizeFully(corpse.corpseType.asString()) + " Corpse")
 								.withColor(corpse.corpseType.color.getColorValue()))
 						.append(" at " + corpse.entity.getBlockPos().up().toShortString() + "!")
-						.styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker corpseHelper shareLocation " + PosUtils.toSpaceSeparatedString(corpse.waypoint.pos) + " " + corpse.corpseType))
+						.styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker corpseHelper shareLocation " + PosUtils.toSpaceSeparatedString(corpse.waypoint.pos) + " " + corpse.corpseType.toString().toLowerCase(Locale.ENGLISH)))
 								.withHoverEvent(new HoverEvent.ShowText(Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))), false);
 	}
 

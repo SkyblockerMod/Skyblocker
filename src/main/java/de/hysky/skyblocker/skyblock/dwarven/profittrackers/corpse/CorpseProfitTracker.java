@@ -52,7 +52,10 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	public static final String CITRINE_CRYSTAL = "CITRINE_CRYSTAL";
 	public static final String RUBY_CRYSTAL = "RUBY_CRYSTAL";
 	public static final String JASPER_CRYSTAL = "JASPER_CRYSTAL";
+	public static final String ENCHANTMENT_ICE_COLD_1 = "ENCHANTMENT_ICE_COLD_1";	// fix for item repo
 	public static final @Unmodifiable List<String> PRICELESS_ITEMS = List.of(GLACITE_POWDER, OPAL_CRYSTAL, ONYX_CRYSTAL, AQUAMARINE_CRYSTAL, PERIDOT_CRYSTAL, CITRINE_CRYSTAL, RUBY_CRYSTAL, JASPER_CRYSTAL);
+	// English translation for that forceEnglishCorpseProfitTracker option
+	public static final String CORPSE_PROFIT_MESSAGE = "Corpse Profit: %s";
 
 	public static final CorpseProfitTracker INSTANCE = new CorpseProfitTracker();
 
@@ -139,15 +142,27 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 				MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
 						Constants.PREFIX.get().append(Text.translatable("skyblocker.corpseTracker.somethingWentWrong").formatted(Formatting.GOLD))
 				);
-			} else {
-				MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
-						Constants.PREFIX.get()
-										.append(Text.translatable("skyblocker.corpseTracker.corpseProfit", Text.literal(NumberFormat.getInstance().format(Math.round(lastCorpseLoot.profit()))).formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED)))
-										.styled(style ->
-														style.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
-															 .withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
-										)
-				);
+			} else {	// if forceEnglishCorpseProfitTracker is FALSE - use normal translation
+				if (!SkyblockerConfigManager.get().mining.glacite.forceEnglishCorpseProfitTracker) {
+					MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
+							Constants.PREFIX.get()
+									.append(Text.translatable("skyblocker.corpseTracker.corpseProfit", Text.literal(NumberFormat.getInstance().format(Math.round(lastCorpseLoot.profit()))).formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED)))
+									.styled(style ->
+											style.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
+													.withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
+									)
+					);
+				} else {	// else, if forceEnglishCorpseProfitTracker is TRUE - force English translation
+					MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
+							Constants.PREFIX.get()
+									.append(Text.literal(String.format("Corpse Profit: %s", NumberFormat.getInstance().format(Math.round(lastCorpseLoot.profit()))))
+											.formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED))
+									.styled(style ->
+											style.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
+													.withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
+									)
+					);
+				}
 			}
 			lastCorpseLoot = null;
 			insideRewardMessage = false;
@@ -265,9 +280,10 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		NAME2ID_MAP.put("Tungsten Key", "TUNGSTEN_KEY");
 		NAME2ID_MAP.put("Glacite Jewel", "GLACITE_JEWEL");
 		NAME2ID_MAP.put("Suspicious Scrap", "SUSPICIOUS_SCRAP");
-		NAME2ID_MAP.put("Ice Cold I", "ENCHANTMENT_ICE_COLD_1");
+		NAME2ID_MAP.put("Enchanted Book (Ice Cold I)", "ENCHANTMENT_ICE_COLD_1");
 		NAME2ID_MAP.put("Dwarven O's Metallic Minis", "DWARVEN_OS_METALLIC_MINIS");
 		NAME2ID_MAP.put("Shattered Locket", "SHATTERED_PENDANT");
+		NAME2ID_MAP.put("Frozen Scute", "FROZEN_SCUTE");
 
 		NAME2ID_MAP.put("Frostbitten Dye", "DYE_FROSTBITTEN");
 
