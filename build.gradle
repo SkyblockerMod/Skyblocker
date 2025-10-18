@@ -345,11 +345,19 @@ def truncateChangelog = { String text, int limit ->
 
 publishMods {
 	file = remapJar.archiveFile
-	changelog = System.getenv('CHANGELOG')
+	changelog = System.getenv('CHANGELOG_HIGHLIGHT')
 	version = "v${project.version}"
 	displayName = "Skyblocker ${mod_version} for ${minecraft_version}"
 	modLoaders.add("fabric")
 	type = STABLE
+
+	github {
+		accessToken = System.getenv("GITHUB_TOKEN")
+		repository = "SkyblockerMod/Skyblocker"
+		commitish = System.getenv("REF_NAME")
+		tagName = publishMods.version
+		changelog = System.getenv("CHANGELOG")
+	}
 
 	modrinth {
 		accessToken = System.getenv("MODRINTH_TOKEN")
