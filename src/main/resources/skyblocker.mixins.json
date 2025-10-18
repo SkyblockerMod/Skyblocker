@@ -21,6 +21,7 @@
     "EntityMixin",
     "EntityRenderDispatcherMixin",
     "EntityRendererMixin",
+    "EquipmentRendererMixin",
     "FishingBobberEntityMixin",
     "FogRendererMixin",
     "GameRendererMixin",

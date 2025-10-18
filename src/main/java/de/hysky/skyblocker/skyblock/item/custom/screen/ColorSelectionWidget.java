@@ -4,11 +4,13 @@ import com.demonwav.mcdev.annotations.Translatable;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
+import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
+import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -16,9 +18,14 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
+import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.item.equipment.EquipmentAsset;
+import net.minecraft.item.equipment.EquipmentAssetKeys;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -27,18 +34,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Closeable;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ColorSelectionWidget extends ContainerWidget implements Closeable {
+	private static final int PADDING = 3;
 
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
-	private static final Text RESET_COLOR_TEXT = Text.translatable("skyblocker.armorCustomization.resetColor");
-	private static final Text CANNOT_CUSTOMIZE_COLOR_TEXT = Text.translatable("skyblocker.armorCustomization.cannotCustomizeColor");
-	private static final Text ANIMATED_TEXT = Text.translatable("skyblocker.armorCustomization.animated");
-	private static final Text CYCLE_BACK_TEXT = Text.translatable("skyblocker.armorCustomization.cycleBack");
-	private static final Text DURATION_TOOLTIP_TEXT = Text.translatable("skyblocker.armorCustomization.durationTooltip");
-	private static final Text DELAY_TOOLTIP_TEXT = Text.translatable("skyblocker.armorCustomization.delayTooltip");
-	private static final String DURATION_TEXT = "skyblocker.armorCustomization.duration";
-	private static final String DELAY_TEXT = "skyblocker.armorCustomization.delay";
+	private static final Text RESET_COLOR_TEXT = Text.translatable("skyblocker.customization.armor.resetColor");
+	private static final Text CANNOT_CUSTOMIZE_COLOR_TEXT = Text.translatable("skyblocker.customization.armor.cannotCustomizeColor");
+	private static final Text ANIMATED_TEXT = Text.translatable("skyblocker.customization.armor.animated");
+	private static final Text CYCLE_BACK_TEXT = Text.translatable("skyblocker.customization.armor.cycleBack");
+	private static final Text DURATION_TOOLTIP_TEXT = Text.translatable("skyblocker.customization.armor.durationTooltip");
+	private static final Text DELAY_TOOLTIP_TEXT = Text.translatable("skyblocker.customization.armor.delayTooltip");
+	private static final String DURATION_TEXT = "skyblocker.customization.armor.duration";
+	private static final String DELAY_TEXT = "skyblocker.customization.armor.delay";
 
 	private final ColorPickerWidget colorPicker;
 	private final ARGBTextInput argbTextInput;
@@ -52,6 +61,8 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	private final CheckboxWidget animatedCheckbox;
 	private final TextWidget notCustomizableText;
 
+	private final SimplePositioningWidget layout;
+
 	private ItemStack currentItem;
 	private boolean animated;
 	private boolean customizable = false;
@@ -62,16 +73,13 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		super(x, y, width, height, Text.of("ColorSelectionWidget"));
 		int height1 = Math.min(Math.min(2 * height / 3, width / 5), height - 40); // 40 is the height of slider + timeline + some padding/margin
 
-		colorPicker = new ColorPickerWidget(x + 3, y + 3, height1 * 2, height1);
+		colorPicker = new ColorPickerWidget(0, 0, height1 * 2, height1);
 		colorPicker.setOnColorChange(this::onPickerColorChanged);
-		argbTextInput = new ARGBTextInput(0, y + 3, textRenderer, true);
-		argbTextInput.setX(colorPicker.getRight() + 5);
+		argbTextInput = new ARGBTextInput(0, 0, textRenderer, true);
 		argbTextInput.setOnChange(this::onTextInputColorChanged);
-		timelineWidget = new AnimatedDyeTimelineWidget(getX() + 3, getBottom() - 18, getWidth() - 6, 15, this::onTimelineFrameSelected);
+		timelineWidget = new AnimatedDyeTimelineWidget(0, 0, getWidth() - 6, 15, this::onTimelineFrameSelected);
 
 		resetColorButton = ButtonWidget.builder(RESET_COLOR_TEXT, this::onRemoveCustomColor).width(Math.min(150, x + width - argbTextInput.getRight() - 5)).build();
-
-		resetColorButton.setPosition(getRight() - resetColorButton.getWidth() - 3, getY() + 3);
 
 		notCustomizableText = new TextWidget(CANNOT_CUSTOMIZE_COLOR_TEXT, textRenderer);
 		SimplePositioningWidget.setPos(notCustomizableText, getX(), getY(), getWidth(), getHeight());
@@ -88,9 +96,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 				.build();
 
 		int sliderWidth = (int) (width * 0.35f);
-		boolean vertical = getRight() - sliderWidth - 3 > Math.max(animatedCheckbox.getRight(), cycleBackCheckbox.getRight());
-		int sliderY = vertical ? resetColorButton.getBottom() + 3 : timelineWidget.getY() - 17;
-		delaySlider = new Slider(getRight() - sliderWidth - 3, sliderY, sliderWidth, 0.0f, 2.0f, 0.02f, true, DELAY_TEXT, f -> {
+		delaySlider = new Slider(0, 0, sliderWidth, 0.0f, 2.0f, 0.02f, true, DELAY_TEXT, f -> {
 			String itemUuid = currentItem.getUuid();
 			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 			CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
@@ -103,16 +109,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		});
 		delaySlider.setTooltip(Tooltip.of(DELAY_TOOLTIP_TEXT));
 
-		int durationX;
-		int durationY;
-		if (vertical) {
-			durationX = delaySlider.getX();
-			durationY = delaySlider.getBottom() + 3;
-		} else {
-			durationX = delaySlider.getX() - sliderWidth - 3;
-			durationY = delaySlider.getY();
-		}
-		durationSlider = new Slider(durationX, durationY, sliderWidth, 0.1f, 10.0f, 0.1f, true, DURATION_TEXT, f -> {
+		durationSlider = new Slider(0, 0, sliderWidth, 0.1f, 10.0f, 0.1f, true, DURATION_TEXT, f -> {
 			String itemUuid = currentItem.getUuid();
 			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 			CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
@@ -126,6 +123,58 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		durationSlider.setTooltip(Tooltip.of(DURATION_TOOLTIP_TEXT));
 
 		children = List.of(colorPicker, argbTextInput, timelineWidget, resetColorButton, animatedCheckbox, notCustomizableText, cycleBackCheckbox, delaySlider, durationSlider);
+		int w = getWidth() - PADDING * 2;
+		int h = getHeight() - PADDING * 2;
+		layout = new SimplePositioningWidget(w, h);
+		layout.add(timelineWidget, Positioner::alignBottom);
+
+		GridWidget grid = new GridWidget().setSpacing(3);
+		grid.add(argbTextInput, 0, 1);
+		grid.add(resetColorButton, 0, 2, 1, 3, Positioner::alignRight);
+		grid.add(animatedCheckbox, 1, 1, 1, 2);
+		grid.add(delaySlider, 1, 3, 1, 2, Positioner::alignRight);
+		grid.add(cycleBackCheckbox, 2, 1, 1, 2);
+		grid.add(durationSlider, 2, 3, 1, 2, Positioner::alignRight);
+		grid.add(colorPicker, 0, 0, 3, 1);
+		layout.add(grid, Positioner::alignTop);
+		layout.add(notCustomizableText);
+		updateWidgetDimensions();
+	}
+
+	private void updateWidgetDimensions() {
+		int w = getWidth() - PADDING * 2;
+		int h = getHeight() - PADDING * 2;
+		timelineWidget.setWidth(w);
+		colorPicker.setHeight(Math.min(h - timelineWidget.getHeight() - 5, w / 3 / 2));
+		colorPicker.setWidth(colorPicker.getHeight() * 2);
+		delaySlider.setWidth((int) (w * 0.35f));
+		durationSlider.setWidth((int) (w * 0.35f));
+		layout.refreshPositions();
+		layout.setPosition(getX() + PADDING, getY() + PADDING);
+		width = layout.getWidth() + PADDING * 2;
+		height = layout.getHeight() + PADDING * 2;
+	}
+
+	@Override
+	public void setX(int x) {
+		super.setX(x);
+		layout.setX(getX() + PADDING);
+	}
+
+	@Override
+	public void setY(int y) {
+		super.setY(y);
+		layout.setY(getY() + PADDING);
+	}
+
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		updateWidgetDimensions();
+	}
+
+	public AnimatedDyeTimelineWidget getTimelineWidget() {
+		return timelineWidget;
 	}
 
 	private void onPickerColorChanged(int argb, boolean release) {
@@ -258,8 +307,25 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 	public void setCurrentItem(@NotNull ItemStack currentItem) {
 		this.currentItem = currentItem;
+		refresh();
+	}
+
+	public void refresh() {
 		String itemUuid = currentItem.getUuid();
-		customizable = currentItem.isIn(ItemTags.DYEABLE);
+		RegistryKey<EquipmentAsset> key = null;
+		if (SkyblockerConfigManager.get().general.customArmorModel.containsKey(itemUuid)) {
+			key = RegistryKey.of(EquipmentAssetKeys.REGISTRY_KEY, SkyblockerConfigManager.get().general.customArmorModel.get(itemUuid));
+		} else if (currentItem.contains(DataComponentTypes.EQUIPPABLE)) {
+			EquippableComponent component = currentItem.get(DataComponentTypes.EQUIPPABLE);
+			key = component.assetId().orElse(null);
+		}
+		if (key == null) customizable = false;
+		else {
+			EquipmentModel model = ((EntityRenderDispatcherAccessor) MinecraftClient.getInstance().getEntityRenderDispatcher()).getEquipmentModelLoader().get(key);
+			customizable = Stream.of(EquipmentModel.LayerType.HUMANOID, EquipmentModel.LayerType.HUMANOID_LEGGINGS, EquipmentModel.LayerType.WINGS)
+					.flatMap(l -> model.getLayers(l).stream())
+					.anyMatch(layer -> layer.dyeable().isPresent());
+		}
 		if (!customizable) {
 			animated = false;
 			((CheckboxWidgetAccessor) animatedCheckbox).setChecked(false);
