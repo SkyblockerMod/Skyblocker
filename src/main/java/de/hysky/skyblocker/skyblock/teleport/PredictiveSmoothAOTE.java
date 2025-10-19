@@ -207,7 +207,7 @@ public class PredictiveSmoothAOTE {
 		//work out start pos of warp and set start time. if there is an active warp going on make the end of that the start of the next one
 		if (teleportsAhead == 0 || startPos == null || teleportVector == null) {
 			//start of teleport sequence
-			startPos = CLIENT.player.getPos().add(0, 1.62, 0); // the eye poss should not be affected by crouching
+			startPos = CLIENT.player.getPos().add(0, getEyeHeight(), 0); // the eye poss should not be affected by crouching
 			cameraStartPos = CLIENT.player.getEyePos();
 			lastTeleportTime = System.currentTimeMillis();
 			// update the ping used for the teleport
@@ -244,12 +244,24 @@ public class PredictiveSmoothAOTE {
 			return;
 		}
 
-		//compensate for hypixel round to center of block (to x.5 y.62 z.5)
+		//compensate for hypixel round to center of block (to x.5 y.(eye height - 1), z.5)
 		Vec3d predictedEnd = startPos.add(teleportVector);
-		Vec3d offsetVec = new Vec3d(predictedEnd.x - roundToCenter(predictedEnd.x), predictedEnd.y - (Math.ceil(predictedEnd.y) + 0.62), predictedEnd.z - roundToCenter(predictedEnd.z));
+		Vec3d offsetVec = new Vec3d(predictedEnd.x - roundToCenter(predictedEnd.x), predictedEnd.y - (Math.ceil(predictedEnd.y) + getEyeHeight() - 1), predictedEnd.z - roundToCenter(predictedEnd.z));
 		teleportVector = teleportVector.subtract(offsetVec);
 		//add 1 to teleports ahead
 		teleportsAhead += 1;
+	}
+
+	/**
+	 * Get players eye height from the servers point of view based on it's minecraft version
+	 *
+	 * @return offset from players pos to their eyes
+	 */
+	protected static float getEyeHeight() {
+		if (CLIENT.player == null || !CLIENT.player.isSneaking()) return 1.62f;
+		//sneaking height is different depending on server
+		System.out.println(Utils.getLocation().isModern());
+		return Utils.getLocation().isModern() ? 1.27f : 1.54f;
 	}
 
 	/**
