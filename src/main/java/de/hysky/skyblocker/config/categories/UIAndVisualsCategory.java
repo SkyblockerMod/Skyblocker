@@ -397,6 +397,14 @@ public class UIAndVisualsCategory {
                                 .prompt(Text.translatable("text.skyblocker.open"))
                                 .action(screen -> MinecraftClient.getInstance().setScreen(new WaypointsScreen(screen)))
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                        		.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints"))
+                        		.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints.@Tooltip"))
+                        		.binding(defaults.uiAndVisuals.waypoints.enableChatWaypoints,
+                        				() -> config.uiAndVisuals.waypoints.enableChatWaypoints,
+                        				newValue -> config.uiAndVisuals.waypoints.enableChatWaypoints = newValue)
+                        		.controller(ConfigUtils.createBooleanController())
+                        		.build())
                         .build())
 
                 //Teleport Overlays

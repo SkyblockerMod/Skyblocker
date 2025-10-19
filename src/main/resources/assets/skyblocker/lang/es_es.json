@@ -16,7 +16,6 @@
     "skyblocker.config.general.itemTooltip.enableLowestBIN": "Habilitar el precio mas bajo de BIN",
     "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Habilitar los precios de compra/venta del Bazar",
     "skyblocker.config.general.hitbox": "Cajas de Colisión",
-    "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Habilitar la Caja de Colisión de la 1.8 para la tierra de cultivo",
     "skyblocker.config.general.hitbox.oldLeverHitbox": "Habilitar la Caja de Colisión de la 1.8 para la palanca",
     "skyblocker.itemTooltip.noData": "§cSin Información",
     "skyblocker.config.misc.richPresence": "Discord Rich Presence",

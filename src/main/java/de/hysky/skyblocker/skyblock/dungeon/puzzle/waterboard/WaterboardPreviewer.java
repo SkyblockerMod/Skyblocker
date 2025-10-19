@@ -6,8 +6,7 @@ import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -46,7 +45,7 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 	public void tick(MinecraftClient client) {}
 
 	@Override
-	public void render(WorldRenderContext context) {
+	public void extractRendering(PrimitiveCollector collector) {
 		if (!shouldSolve() || MinecraftClient.getInstance().world == null || MinecraftClient.getInstance().player == null || !DungeonManager.isCurrentRoomMatched()) {
 			return;
 		}
@@ -57,14 +56,14 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 
 		try {
 			findProspective();
-			renderWaterPath(context);
-			renderProspectiveChanges(context);
+			extractWaterPath(collector);
+			extractProspectiveChanges(collector);
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waterboard] Error while rendering previews", e);
 		}
 	}
 
-	private void renderWaterPath(WorldRenderContext context) {
+	private void extractWaterPath(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.previewWaterPath) {
 			return;
 		}
@@ -93,7 +92,7 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 			}
 
 			for (Vec3d[] line : lines) {
-				RenderHelper.renderLinesFromPoints(context, line,
+				collector.submitLinesFromPoints(line,
 						ColorUtils.getFloatComponents(LeverType.WATER.color), 1f, 3f, true);
 			}
 		}
@@ -196,7 +195,7 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 		}, (ctx) -> null);
 	}
 
-	private void renderProspectiveChanges(WorldRenderContext context) {
+	private void extractProspectiveChanges(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.previewLeverEffects || prospective == null) {
 			return;
 		}
@@ -207,9 +206,9 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 				BlockPos activePos = room.relativeToActual(new BlockPos(x, y, BOARD_Z));
 				BlockPos inactivePos = room.relativeToActual(new BlockPos(x, y, BOARD_Z + 1));
 				if (world.getBlockState(activePos).isOf(prospective.block)) {
-					RenderHelper.renderOutline(context, activePos, ColorUtils.getFloatComponents(prospective.color), 2f, true);
+					collector.submitOutlinedBox(activePos, ColorUtils.getFloatComponents(prospective.color), 2f, true);
 				} else if (world.getBlockState(inactivePos).isOf(prospective.block)) {
-					RenderHelper.renderFilled(context, activePos, ColorUtils.getFloatComponents(prospective.color), 0.8f, true);
+					collector.submitFilledBox(activePos, ColorUtils.getFloatComponents(prospective.color), 0.8f, true);
 				}
 			}
 		}

@@ -99,7 +99,7 @@ public class CrystalsHudWidget extends HudWidget {
 				Vector2ic renderPos = transformLocation(waypoint.centerPos.getX(), waypoint.centerPos.getZ());
 				int locationSize = SkyblockerConfigManager.get().mining.crystalsHud.locationSize;
 
-				if (SMALL_LOCATIONS.contains(category.getName())) {//if small location half the location size
+				if (SMALL_LOCATIONS.contains(category.getName())) { //if small location half the location size
 					locationSize /= 2;
 				}
 

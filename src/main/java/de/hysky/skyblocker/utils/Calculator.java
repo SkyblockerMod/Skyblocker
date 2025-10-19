@@ -189,7 +189,7 @@ public class Calculator {
 
 				case '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' -> {
 					Matcher numberMatcher = NUMBER_PATTERN.matcher(input.substring(i));
-					if (!numberMatcher.find()) {//invalid value to lex
+					if (!numberMatcher.find()) { //invalid value to lex
 						throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidCharacterError", input.substring(i));
 					}
 					int end = numberMatcher.end();

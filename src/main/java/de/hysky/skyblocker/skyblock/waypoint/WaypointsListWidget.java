@@ -156,7 +156,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
                 WaypointsListWidget.this.children().remove(this);
                 waypoints.remove(group);
             }).width(38).build();
-			Text arrow = Text.of(collapsed ? "▲" :"▼");
+			Text arrow = Text.of(collapsed ? "▲" : "▼");
 			collapseWaypoint = ButtonWidget.builder(arrow, button -> {
 				if (collapsed) collapsedGroups.remove(group); else collapsedGroups.add(group);
 				updateEntries();

@@ -33,6 +33,6 @@ public class DurationControllerWidget extends StringControllerElement {
     protected Text getValueText() {
         Text valueText = super.getValueText();
         boolean inputValid = control.isInputValid(valueText.getString());
-        return valueText.copy().formatted(inputValid ? Formatting.WHITE: Formatting.RED);
+        return valueText.copy().formatted(inputValid ? Formatting.WHITE : Formatting.RED);
     }
 }

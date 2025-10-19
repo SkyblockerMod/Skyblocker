@@ -5,13 +5,13 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.booleans.BooleanPredicate;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -73,7 +73,7 @@ public class DojoManager {
     @Init
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(DojoManager::onMessage);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(DojoManager::render);
+        WorldRenderExtractionCallback.EVENT.register(DojoManager::extractRendering);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
         ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
         ClientEntityEvents.ENTITY_UNLOAD.register(DojoManager::onEntityDespawn);
@@ -247,17 +247,17 @@ public class DojoManager {
         }
     }
 
-    private static void render(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         if (!Utils.isInCrimson() || !inArena) {
             return;
         }
         switch (currentChallenge) {
-            case FORCE -> ForceTestHelper.render(context);
-            case STAMINA -> StaminaTestHelper.render(context);
-            case MASTERY -> MasteryTestHelper.render(context);
-            case SWIFTNESS -> SwiftnessTestHelper.render(context);
-            case CONTROL -> ControlTestHelper.render(context);
-            case TENACITY -> TenacityTestHelper.render(context);
+            case FORCE -> ForceTestHelper.extractRendering(collector);
+            case STAMINA -> StaminaTestHelper.extractRendering(collector);
+            case MASTERY -> MasteryTestHelper.extractRendering(collector);
+            case SWIFTNESS -> SwiftnessTestHelper.extractRendering(collector);
+            case CONTROL -> ControlTestHelper.extractRendering(collector);
+            case TENACITY -> TenacityTestHelper.extractRendering(collector);
         }
     }
 

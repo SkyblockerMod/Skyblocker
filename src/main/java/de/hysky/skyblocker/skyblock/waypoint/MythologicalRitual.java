@@ -10,13 +10,12 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -62,7 +61,7 @@ public class MythologicalRitual {
 
     @Init
     public static void init() {
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(MythologicalRitual::render);
+        WorldRenderExtractionCallback.EVENT.register(MythologicalRitual::extractRendering);
         AttackBlockCallback.EVENT.register(MythologicalRitual::onAttackBlock);
         UseBlockCallback.EVENT.register(MythologicalRitual::onUseBlock);
         UseItemCallback.EVENT.register(MythologicalRitual::onUseItem);
@@ -206,21 +205,21 @@ public class MythologicalRitual {
         }
     }
 
-    public static void render(WorldRenderContext context) {
+    public static void extractRendering(PrimitiveCollector collector) {
         if (isActive()) {
             for (GriffinBurrow burrow : griffinBurrows.values()) {
                 if (burrow.shouldRender()) {
-                    burrow.render(context);
+                    burrow.extractRendering(collector);
                 }
                 if (burrow.confirmed != TriState.FALSE) {
                     if (burrow.nextBurrowLine != null) {
-                        RenderHelper.renderLinesFromPoints(context, burrow.nextBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
+                        collector.submitLinesFromPoints(burrow.nextBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
                     }
                     if (burrow.echoBurrowLine != null) {
-                        RenderHelper.renderLinesFromPoints(context, burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
+                    	collector.submitLinesFromPoints(burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
                     }
                     if (burrow.nextBurrowEstimatedPos != null && burrow.confirmed == TriState.DEFAULT) {
-                        RenderHelper.renderFilledWithBeaconBeam(context, burrow.nextBurrowEstimatedPos, RED_COLOR_COMPONENTS, 0.5f, true);
+                    	collector.submitFilledBoxWithBeaconBeam(burrow.nextBurrowEstimatedPos, RED_COLOR_COMPONENTS, 0.5f, true);
                     }
                 }
             }

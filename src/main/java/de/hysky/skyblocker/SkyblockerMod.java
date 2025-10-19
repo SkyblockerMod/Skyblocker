@@ -44,6 +44,11 @@ public class SkyblockerMod implements ClientModInitializer {
         INSTANCE = this;
     }
 
+    /**
+     * @deprecated This method is no longer used anywhere, this class no longer has any instance fields, and this is
+     * highly error-prone when used by code that is being tested (due to an instance likely being unavailable).
+     */
+    @Deprecated(since = "5.8.0", forRemoval = true)
     public static SkyblockerMod getInstance() {
         return INSTANCE;
     }
@@ -78,7 +83,7 @@ public class SkyblockerMod implements ClientModInitializer {
      *
      * @param client the Minecraft client.
      */
-    public void tick(MinecraftClient client) {
+    private void tick(MinecraftClient client) {
         Scheduler.INSTANCE.tick();
         MessageScheduler.INSTANCE.tick();
     }

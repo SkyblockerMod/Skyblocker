@@ -1,5 +1,10 @@
 package de.hysky.skyblocker.mixins;
 
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import net.minecraft.util.Identifier;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
@@ -12,8 +17,6 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.equipment.trim.ArmorTrim;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ComponentHolder.class)
 public interface ComponentHolderMixin {
@@ -25,19 +28,23 @@ public interface ComponentHolderMixin {
 			String itemUuid = stack.getUuid();
 			if (dataComponentType == DataComponentTypes.TRIM) {
 				Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customTrims = SkyblockerConfigManager.get().general.customArmorTrims;
-				if (customTrims.containsKey(itemUuid)) {
-					CustomArmorTrims.ArmorTrimId trimKey = customTrims.get(itemUuid);
-					return (T) CustomArmorTrims.TRIMS_CACHE.getOrDefault(trimKey, (ArmorTrim) original);
-				}
+				CustomArmorTrims.ArmorTrimId trimKey = customTrims.get(itemUuid);
+				if (trimKey != null) return (T) CustomArmorTrims.TRIMS_CACHE.getOrDefault(trimKey, (ArmorTrim) original);
 			} else if (dataComponentType == DataComponentTypes.PROFILE && stack.isOf(Items.PLAYER_HEAD)) {
 				Object2ObjectOpenHashMap<String, String> customTextures = SkyblockerConfigManager.get().general.customHelmetTextures;
-				if (customTextures.containsKey(itemUuid)) {
-					String tex = customTextures.get(itemUuid);
-					return (T) CustomHelmetTextures.getProfile(tex);
-				}
+				String tex = customTextures.get(itemUuid);
+				if (tex != null) return (T) CustomHelmetTextures.getProfile(tex);
+			} else if (dataComponentType == DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE) {
+				Object2BooleanMap<String> customGlint = SkyblockerConfigManager.get().general.customGlint;
+				@SuppressWarnings("deprecation")
+				Boolean glint = customGlint.get(itemUuid); // sorry fastutil :(
+				if (glint != null) return (T) glint;
+			} else if (dataComponentType == DataComponentTypes.ITEM_MODEL) {
+				Object2ObjectOpenHashMap<String, Identifier> customItemModel = SkyblockerConfigManager.get().general.customItemModel;
+				Identifier id = customItemModel.get(itemUuid);
+				if (id != null) return (T) id;
 			}
 		}
-
 		return original;
 	}
 }

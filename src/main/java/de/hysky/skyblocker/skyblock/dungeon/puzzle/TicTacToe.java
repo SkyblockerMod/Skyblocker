@@ -5,9 +5,9 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.tictactoe.BoardIndex;
 import de.hysky.skyblocker.utils.tictactoe.TicTacToeUtils;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.map.MapState;
@@ -112,11 +112,11 @@ public class TicTacToe extends DungeonPuzzle {
 	}
 
 	@Override
-	public void render(WorldRenderContext context) {
+	public void extractRendering(PrimitiveCollector collector) {
 		try {
 			if (SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveTicTacToe && nextBestMoveToMake != null) {
-				RenderHelper.renderFilled(context, nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 0.5f, false);
-				RenderHelper.renderOutline(context, nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 5f, false);
+				collector.submitFilledBox(nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 0.5f, false);
+				collector.submitOutlinedBox(nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 5f, false);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Tic Tac Toe] Encountered an exception while rendering the tic tac toe solution!", e);
