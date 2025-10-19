@@ -37,8 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,7 +47,6 @@ public class SearchOverManager {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Search Overlay");
 
-	private static final Pattern BAZAAR_ENCHANTMENT_PATTERN = Pattern.compile("Enchantment (\\D*) (\\d+)");
 	private static final String PET_NAME_START = "[Lvl {LVL}] ";
 
 	private static @Nullable SignBlockEntity sign = null;
@@ -128,19 +125,18 @@ public class SearchOverManager {
 			for (Map.Entry<String, BazaarProduct> entry : products.entrySet()) {
 				BazaarProduct product = entry.getValue();
 				String id = product.id();
-				String name = product.name();
+
 				int sellVolume = product.sellVolume();
 				if (sellVolume == 0)
 					continue; //do not add items that do not sell e.g. they are not actual in the bazaar
 
 				// Format Enchantments
-				Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(name);
-				if (matcher.matches() && ItemRepository.getBazaarStocks().containsKey(id)) {
+				if (id.startsWith("ENCHANTMENT_") && ItemRepository.getBazaarStocks().containsKey(id)) {
 					String neuId = ItemRepository.getBazaarStocks().get(id);
 					NEUItem neuItem = NEURepoManager.getItemByNeuId(neuId);
 					if (neuItem == null) continue;
 
-					name = Formatting.strip(neuItem.getLore().getFirst());
+					String name = Formatting.strip(neuItem.getLore().getFirst());
 					bazaarItems.add(name);
 					namesToNeuId.put(name, neuId);
 					continue;
@@ -154,7 +150,7 @@ public class SearchOverManager {
 				//look up id for name
 				NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
 				if (neuItem != null) {
-					name = Formatting.strip(neuItem.getDisplayName());
+					String name = Formatting.strip(neuItem.getDisplayName());
 					bazaarItems.add(name);
 					namesToNeuId.put(name, id);
 				}
