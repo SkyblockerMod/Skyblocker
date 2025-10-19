@@ -106,7 +106,7 @@ public class LividColor {
         if (CONFIG.get().enableLividColorText) {
             MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().append(message).getString(), false);
         }
-		if (CONFIG.get().enableLividColorTitle){
+		if (CONFIG.get().enableLividColorTitle) {
             client.inGameHud.setDefaultTitleFade();
             client.inGameHud.setTitle(message);
         }

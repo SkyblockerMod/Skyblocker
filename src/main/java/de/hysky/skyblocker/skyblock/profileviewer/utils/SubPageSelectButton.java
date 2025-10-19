@@ -44,7 +44,7 @@ public class SubPageSelectButton extends ClickableWidget {
 
     @Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
-        return this.active && this.visible &&(mouseX > getX() + 1 && mouseX < getX() + 19 && mouseY > getY() + 1 && mouseY < getY() + 19);
+        return this.active && this.visible && (mouseX > getX() + 1 && mouseX < getX() + 19 && mouseY > getY() + 1 && mouseY < getY() + 19);
     }
 
     @Override
