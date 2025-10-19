@@ -36,6 +36,7 @@ public interface ComponentHolderMixin {
 				if (tex != null) return (T) CustomHelmetTextures.getProfile(tex);
 			} else if (dataComponentType == DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE) {
 				Object2BooleanMap<String> customGlint = SkyblockerConfigManager.get().general.customGlint;
+				@SuppressWarnings("deprecation")
 				Boolean glint = customGlint.get(itemUuid); // sorry fastutil :(
 				if (glint != null) return (T) glint;
 			} else if (dataComponentType == DataComponentTypes.ITEM_MODEL) {
