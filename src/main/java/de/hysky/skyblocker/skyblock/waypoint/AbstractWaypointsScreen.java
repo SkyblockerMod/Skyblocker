@@ -175,7 +175,7 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 
 		@Override
 		public List<? extends Element> children() {
-			return visible ? children: List.of();
+			return visible ? children : List.of();
 		}
 
 		public void setWidget(Widget widget) {

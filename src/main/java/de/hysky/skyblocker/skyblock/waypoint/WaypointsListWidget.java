@@ -112,7 +112,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 						groupEntry = entry.groupEntry;
 						position = children().size() - children().indexOf(groupEntry) - 1;
 					}
-					case WaypointGroupEntry waypointGroupEntry when !collapsedGroups.contains(waypointGroupEntry.group)-> {
+					case WaypointGroupEntry waypointGroupEntry when !collapsedGroups.contains(waypointGroupEntry.group) -> {
 						groupEntry = waypointGroupEntry;
 						position = 0;
 					}
