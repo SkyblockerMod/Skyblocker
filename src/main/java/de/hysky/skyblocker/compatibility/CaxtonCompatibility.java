@@ -35,7 +35,7 @@ public final class CaxtonCompatibility {
 					"drawText4Way",
 					MethodType.methodType(void.class, DrawContext.class, TextRenderer.class, OrderedText.class, float.class, float.class, int.class, int.class));
 		} catch (NoSuchMethodException | IllegalAccessException e) {
-			LOGGER.error("[Skyblocker Caxton Compat] Could not drawText4Way method", e);
+			LOGGER.error("[Skyblocker Caxton Compat] Could not find drawText4Way method", e);
 			return null;
 		}
 	}
