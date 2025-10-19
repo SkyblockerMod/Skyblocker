@@ -2,7 +2,6 @@ package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import de.hysky.skyblocker.skyblock.tabhud.util.FancyTabWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.PlayerListWidget;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -183,9 +182,6 @@ public class UIAndVisualsConfig {
 
 		@Deprecated
 		public transient boolean effectsFromFooter = false;
-
-		@Deprecated
-		public transient FancyTabWidget.Positioner defaultPositioning = FancyTabWidget.Positioner.CENTERED;
 
 		@Deprecated
 		public transient boolean plainPlayerNames = false;

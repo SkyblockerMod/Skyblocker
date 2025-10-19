@@ -12,6 +12,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigScreen;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
@@ -90,6 +91,8 @@ public class WidgetManager {
 		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, FANCY_TAB_HUD, (context, tickCounter) -> render(context, true));
 		// Renders the tab widgets
 		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false));
+
+		PlayerListManager.registerTabListener(WidgetManager::onPlayerListChange);
 	}
 
 	private static void render(DrawContext context, boolean hud) {
@@ -134,9 +137,14 @@ public class WidgetManager {
 			currentLayer = layer;
 			currentBuilder = getScreenBuilder(currentLocation, currentLayer);
 			currentBuilder.updateWidgetsList();
+			currentBuilder.updateTabWidgetsList();
 			currentBuilder.updatePositions(w, h);
 		}
 		currentBuilder.render(context, w, h, false);
+	}
+
+	private static void onPlayerListChange() {
+		currentBuilder.updateTabWidgetsList();
 	}
 
 	public static void loadConfig() {

@@ -131,7 +131,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	@Override
 	public void renderBackground(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 		super.renderBackground(context, mouseX, mouseY, deltaTicks);
-		Text text = Text.literal("Right click to add and edit widgets."); // TODO translatable
+		Text text = Text.literal("Left click to add and move widgets, right click to edit stuff."); // TODO translatable
 		int textWidth = textRenderer.getWidth(text);
 		context.drawText(textRenderer, text, (width - textWidth) / 2, (height - textRenderer.fontHeight) / 2, ColorHelper.getWhite(0.8f), false);
 	}
@@ -284,12 +284,14 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		if (hoveredWidget == null) {
 			if (sidePanelWidget.isOpen()) sidePanelWidget.close();
 			selectedWidget = null;
-			if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 				List<HudWidget> availableWidgets = new ArrayList<>(WidgetManager.getWidgetsAvailableIn(currentLocation));
 				availableWidgets.removeAll(builder.getWidgets()); // remove already present widgets
 				addWidgetWidget.openWith(availableWidgets);
 				addWidgetWidget.setX(Math.clamp((int) mouseX, 5, width - addWidgetWidget.getWidth() - 5));
 				addWidgetWidget.setY(Math.clamp((int) mouseY, 5, height - addWidgetWidget.getHeight() - 5));
+			} else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+				System.out.println("hi");
 			}
 			return true;
 		}

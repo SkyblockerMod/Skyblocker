@@ -67,6 +67,14 @@ public class PlayerListManager {
 		return WIDGET_MAP.get(name);
 	}
 
+	public static @Nullable HudWidget getTabWidget(String name) {
+		return HANDLED_TAB_WIDGETS.get(name);
+	}
+
+	public static Set<String> getCurrentWidgets() {
+		return WIDGET_MAP.keySet();
+	}
+
 	public static List<Text> createErrorMessage(String widgetName) {
 		// TODO translatable
 		// TODO actually add the command
