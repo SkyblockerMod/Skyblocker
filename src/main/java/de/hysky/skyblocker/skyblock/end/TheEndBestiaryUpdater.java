@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 
 public class TheEndBestiaryUpdater extends SimpleContainerSolver {
 	private static final Pattern KILLS_PATTERN = Pattern.compile("Kills: ([0-9,]+)");
+	private static final int ALL_ZEALOTS_INDEX = 4;
+	private static final int SPECIAL_ZEALOT_INDEX = 22;
 
 	public TheEndBestiaryUpdater() {
 		super("The End ➜ Zealot");
@@ -22,10 +24,9 @@ public class TheEndBestiaryUpdater extends SimpleContainerSolver {
 
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
-		// Grab the total kills from the "title" entry (#4), and special zealot kills from its entry (#22)
-		slots.int2ObjectEntrySet().stream().filter(entry -> entry.getIntKey() == 4 || entry.getIntKey() == 22)
-				.map(Int2ObjectMap.Entry::getValue).filter(stack -> stack.isOf(Items.ENDER_CHEST)).forEach((stack) -> {
-					Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, KILLS_PATTERN);
+		slots.int2ObjectEntrySet().stream().filter(entry -> entry.getIntKey() == ALL_ZEALOTS_INDEX || entry.getIntKey() == SPECIAL_ZEALOT_INDEX)
+				.filter(entry -> entry.getValue().isOf(Items.ENDER_CHEST)).forEach((entry) -> {
+					Matcher matcher = ItemUtils.getLoreLineIfMatch(entry.getValue(), KILLS_PATTERN);
 					if (matcher == null) return;
 					String killsStr = matcher.group(1).replace(",", "");
 					if (!NumberUtils.isCreatable(killsStr)) return;
@@ -34,10 +35,9 @@ public class TheEndBestiaryUpdater extends SimpleContainerSolver {
 					var stats = TheEnd.PROFILES_STATS.computeIfAbsent(TheEnd.EndStats.EMPTY);
 					assert stats != null;
 
-					String name = stack.getName().getString();
-					if (name.startsWith("Zealot")) {
+					if (entry.getIntKey() == ALL_ZEALOTS_INDEX) {
 						TheEnd.PROFILES_STATS.put(new TheEnd.EndStats(kills, stats.zealotsSinceLastEye(), stats.eyes()));
-					} else if (name.contains("Special")) {
+					} else if (entry.getIntKey() == SPECIAL_ZEALOT_INDEX) {
 						TheEnd.PROFILES_STATS.put(new TheEnd.EndStats(stats.totalZealotKills(), stats.zealotsSinceLastEye(), kills));
 					}
 					EndHudWidget.getInstance().update();
