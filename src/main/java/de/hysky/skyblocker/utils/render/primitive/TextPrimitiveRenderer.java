@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
+import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -19,12 +20,14 @@ import net.minecraft.client.font.TextRenderer;
 
 public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRenderState> {
 	protected static final TextPrimitiveRenderer INSTANCE = new TextPrimitiveRenderer();
+	private static final RenderPipeline SEE_THROUGH = CaxtonCompatibility.getSeeThroughTextPipeline().orElse(RenderPipelines.RENDERTYPE_TEXT_SEETHROUGH);
+	private static final RenderPipeline NORMAL = CaxtonCompatibility.getTextPipeline().orElse(RenderPipelines.RENDERTYPE_TEXT);
 
 	private TextPrimitiveRenderer() {}
 
 	@Override
 	public void submitPrimitives(TextRenderState state, CameraRenderState cameraState) {
-		RenderPipeline pipeline = state.throughWalls ? RenderPipelines.RENDERTYPE_TEXT_SEETHROUGH : RenderPipelines.RENDERTYPE_TEXT;
+		RenderPipeline pipeline = state.throughWalls ? SEE_THROUGH : NORMAL;
 		Matrix4f positionMatrix = new Matrix4f()
 				.translate((float) (state.pos.getX() - cameraState.pos.getX()), (float) (state.pos.getY() - cameraState.pos.getY()), (float) (state.pos.getZ() - cameraState.pos.getZ()))
 				.rotate(cameraState.rotation)

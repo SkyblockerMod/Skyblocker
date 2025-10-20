@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.compatibility;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.logging.LogUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.Optional;
 
 public final class CaxtonCompatibility {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -33,8 +35,25 @@ public final class CaxtonCompatibility {
 					"drawText4Way",
 					MethodType.methodType(void.class, DrawContext.class, TextRenderer.class, OrderedText.class, float.class, float.class, int.class, int.class));
 		} catch (NoSuchMethodException | IllegalAccessException e) {
-			LOGGER.error("[Skyblocker Caxton Compat] Could not drawText4Way method", e);
+			LOGGER.error("[Skyblocker Caxton Compat] Could not find drawText4Way method", e);
 			return null;
+		}
+	}
+
+	private static Optional<RenderPipeline> getCaxtonPipeline(String name) {
+		if (!CAXTON_ENABLED) return Optional.empty();
+		Class<?> clazz;
+		try {
+			clazz = Class.forName("xyz.flirora.caxton.render.CaxtonShaders");
+		} catch (ClassNotFoundException e) {
+			LOGGER.error("[Skyblocker Caxton Compat] Could not find xyz.flirora.caxton.render.CaxtonShaders", e);
+			return Optional.empty();
+		}
+		try {
+			return Optional.of((RenderPipeline) clazz.getField(name).get(null));
+		} catch (IllegalAccessException | NoSuchFieldException e) {
+			LOGGER.error("[Skyblocker Caxton Compat] Could not find {} shader", name, e);
+			return Optional.empty();
 		}
 	}
 
@@ -51,5 +70,13 @@ public final class CaxtonCompatibility {
 			return false;
 		}
 		return true;
+	}
+
+	public static Optional<RenderPipeline> getSeeThroughTextPipeline() {
+		return getCaxtonPipeline("TEXT_SEE_THROUGH");
+	}
+
+	public static Optional<RenderPipeline> getTextPipeline() {
+		return getCaxtonPipeline("TEXT");
 	}
 }
