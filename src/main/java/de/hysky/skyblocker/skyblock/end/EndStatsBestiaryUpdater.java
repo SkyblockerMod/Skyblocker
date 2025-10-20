@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TheEndBestiaryUpdater extends SimpleContainerSolver {
+public class EndStatsBestiaryUpdater extends SimpleContainerSolver {
 	private static final Pattern KILLS_PATTERN = Pattern.compile("Kills: ([0-9,]+)");
 	private static final int ALL_ZEALOTS_INDEX = 4;
 	private static final int SPECIAL_ZEALOT_INDEX = 22;
 
-	public TheEndBestiaryUpdater() {
+	public EndStatsBestiaryUpdater() {
 		super("The End ➜ Zealot");
 	}
 
