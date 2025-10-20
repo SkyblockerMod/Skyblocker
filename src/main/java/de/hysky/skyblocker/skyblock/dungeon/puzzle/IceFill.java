@@ -106,6 +106,9 @@ public class IceFill extends DungeonPuzzle {
 		for (int row = 0; row < iceFillBoard.length; pos.move(iceFillBoard[row].length, 0, -1), row++) {
 			for (int col = 0; col < iceFillBoard[row].length; pos.move(Direction.WEST), col++) {
 				BlockPos actualPos = room.relativeToActual(pos);
+				// Don't solve the board if the block below is air
+				if (world.getBlockState(actualPos.down()).isAir()) return false;
+
 				boolean isBlock = !world.getBlockState(actualPos).isAir();
 				if (iceFillBoard[row][col] != isBlock) {
 					iceFillBoard[row][col] = isBlock;

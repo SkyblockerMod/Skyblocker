@@ -469,6 +469,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.devices.solveArrowAlign = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.devices.solveTargetPractice"))
+								.description(Text.translatable("skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip"))
+								.binding(defaults.dungeons.devices.solveTargetPractice,
+										() -> config.dungeons.devices.solveTargetPractice,
+										newValue -> config.dungeons.devices.solveTargetPractice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				// Waypoints for goldor phase in f7/m7
