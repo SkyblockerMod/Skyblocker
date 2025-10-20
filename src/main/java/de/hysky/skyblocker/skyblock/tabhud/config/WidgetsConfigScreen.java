@@ -291,7 +291,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 				addWidgetWidget.setX(Math.clamp((int) mouseX, 5, width - addWidgetWidget.getWidth() - 5));
 				addWidgetWidget.setY(Math.clamp((int) mouseY, 5, height - addWidgetWidget.getHeight() - 5));
 			} else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
-				System.out.println("hi");
+				client.setScreen(new ScreenConfigPopup(this, builder, currentScreenLayer != WidgetManager.ScreenLayer.HUD));
 			}
 			return true;
 		}

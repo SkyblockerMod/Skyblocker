@@ -177,9 +177,10 @@ public class WidgetManager {
 				}
 		).collect(Collectors.toMap(Pair::first, Pair::second));
 		// is it sign of bad code if intellij thinks I don't need to specify the generics when I actually do?
-		Map<Location, Map<ScreenLayer, ScreenBuilder.ScreenConfig>> perScreenConfig = new EnumMap<>(BUILDER_MAP.entrySet().stream().collect(Collectors.toMap(
+		//noinspection Convert2Diamond
+		Map<Location, Map<ScreenLayer, ScreenBuilder.ScreenConfig>> perScreenConfig = new EnumMap<Location, Map<ScreenLayer, ScreenBuilder.ScreenConfig>>(BUILDER_MAP.entrySet().stream().collect(Collectors.toMap(
 				Map.Entry::getKey,
-				e -> new EnumMap<>(e.getValue().entrySet().stream().collect(Collectors.toMap(
+				e -> new EnumMap<ScreenLayer, ScreenBuilder.ScreenConfig>(e.getValue().entrySet().stream().collect(Collectors.toMap(
 						Map.Entry::getKey,
 						f -> f.getValue().getConfig()
 				))))));

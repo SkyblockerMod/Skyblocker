@@ -14,12 +14,14 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.CodecUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.profiler.Profilers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -28,19 +30,14 @@ import java.util.stream.Collectors;
 
 public class ScreenBuilder {
 	public static final Logger LOGGER = LogUtils.getLogger();
-	private static boolean positionsDirty = false;
-
-	public static void markPositionsDirty() {
-		positionsDirty = true;
-	}
 
 
-	private @NotNull ScreenConfig config;
+	private final @NotNull ScreenConfig config;
 	private final @Nullable ScreenBuilder parent;
 	private int positionsHash = 0;
 
 	private final Set<HudWidget> widgets = new ObjectOpenHashSet<>();
-	private final Set<HudWidget> tabWidgets = new ObjectOpenHashSet<>(0);
+	private final Set<HudWidget> tabWidgets = new ObjectLinkedOpenHashSet<>(0); // Linked to keep the order
 	private final Set<HudWidget> renderedWidgets = new ObjectOpenHashSet<>();
 	public boolean hasFancyTabWidget = false;
 
@@ -58,20 +55,15 @@ public class ScreenBuilder {
 			parentConfig = new ScreenConfig();
 		}
 		if (addInheritedIndicator) {
-			parentConfig.widgetConfigs().replaceAll((s, widgetConfig) -> widgetConfig.getInherited());
+			parentConfig.widgetConfigs.replaceAll((s, widgetConfig) -> widgetConfig.getInherited());
 		}
-		for (Map.Entry<String, WidgetConfig> entry : config.widgetConfigs().entrySet()) {
-			parentConfig.widgetConfigs().put(entry.getKey(), entry.getValue());
-		}
+		parentConfig.widgetConfigs.putAll(config.widgetConfigs);
+		if (parentConfig.fancyTab().isEmpty()) parentConfig.fancyTab = config.fancyTab;
 		return parentConfig;
 	}
 
 	public @NotNull ScreenConfig getConfig() {
 		return config;
-	}
-
-	public void setConfig(@NotNull ScreenConfig config) {
-		this.config = config;
 	}
 
 	public void addWidget(@NotNull HudWidget widget) {
@@ -100,13 +92,13 @@ public class ScreenBuilder {
 			newConfig.put(widget.getId(), new WidgetConfig(Optional.empty(),  widgetConfig));
 		}
 		if (parent != null) {
-			for (String s : parent.getFullConfig(false).widgetConfigs().keySet()) {
+			for (String s : parent.getFullConfig(false).widgetConfigs.keySet()) {
 				if (!widgetIds.contains(s)) {
 					newConfig.put(s, new WidgetConfig(Optional.of(Boolean.FALSE), new JsonObject())); // explicitly mark it has disabled if parent(s) has it but not this.
 				}
 			}
 		}
-		setConfig(config.withWidgets(newConfig));
+		config.widgetConfigs = newConfig;
 	}
 
 	/**
@@ -115,10 +107,12 @@ public class ScreenBuilder {
 	public void updateWidgetsList() {
 		Profilers.get().push("skyblocker:updateWidgetsList");
 		widgets.clear();
-		for (Map.Entry<String, WidgetConfig> entry : getFullConfig(true).widgetConfigs().entrySet()) {
+		for (Map.Entry<String, WidgetConfig> entry : getFullConfig(true).widgetConfigs.entrySet()) {
+			Optional<Boolean> inherited = entry.getValue().inherited();
+			if (inherited.isPresent() && !inherited.get()) continue;
 			HudWidget widget = WidgetManager.getWidgetOrPlaceholder(entry.getKey());
 			JsonObject object = entry.getValue().config();
-			widget.setInherited(entry.getValue().inherited().orElse(false));
+			widget.setInherited(inherited.orElse(false));
 			List<WidgetOption<?>> options = new ArrayList<>();
 			widget.getPerScreenOptions(options);
 			for (WidgetOption<?> option : options) {
@@ -135,22 +129,22 @@ public class ScreenBuilder {
 			}
 			widgets.add(widget);
 		}
-		for (HudWidget widget : widgets) {
-			if (widget instanceof ComponentBasedWidget componentBasedWidget && !componentBasedWidget.shouldUpdateBeforeRendering()) componentBasedWidget.update();
-		}
 		updateRenderedWidgets();
 		Profilers.get().pop();
 	}
 
 	public void updateTabWidgetsList() {
-		if (!config.hasFancyTab()) return;
+		ScreenConfig fullConfig = getFullConfig(false);
+		hasFancyTabWidget = fullConfig.hasFancyTab();
+		if (!hasFancyTabWidget) return;
 		Profilers.get().push("skyblocker:updateTabWidgetsList");
-		Set<HudWidget> newTabWidgets = new ObjectOpenHashSet<>();
-		FancyTabConfig tabConfig = config.fancyTab().get();
-		for (String s : PlayerListManager.getCurrentWidgets()) {
+		Set<String> currentWidgets = PlayerListManager.getCurrentWidgets();
+		Set<HudWidget> newTabWidgets = new ObjectLinkedOpenHashSet<>(currentWidgets.size());
+		FancyTabConfig tabConfig = fullConfig.fancyTab().get();
+		for (String s : currentWidgets) {
 			HudWidget widget = PlayerListManager.getTabWidget(s);
 			if (widget == null) continue;
-			if (tabConfig.hiddenWidgets().contains(widget.getId())) continue;
+			if (tabConfig.hiddenWidgets.contains(widget.getId())) continue;
 			newTabWidgets.add(widget);
 		}
 		if (newTabWidgets.equals(tabWidgets)) return;
@@ -164,6 +158,9 @@ public class ScreenBuilder {
 		renderedWidgets.clear();
 		renderedWidgets.addAll(widgets);
 		renderedWidgets.addAll(tabWidgets);
+		for (HudWidget widget : renderedWidgets) {
+			if (widget instanceof ComponentBasedWidget componentBasedWidget && !componentBasedWidget.shouldUpdateBeforeRendering()) componentBasedWidget.update();
+		}
 		positionsHash = 0;
 	}
 
@@ -178,9 +175,8 @@ public class ScreenBuilder {
 			hash = hash * 31 + Integer.hashCode(widget.getScaledWidth());
 			hash = hash * 31 + Integer.hashCode(widget.getScaledHeight());
 		}
-		if (positionsDirty || positionsHash != hash) {
+		if (positionsHash != hash) {
 			positionsHash = hash;
-			positionsDirty = false;
 			updatePositions(screenWidth, screenHeight);
 		}
 		for (HudWidget widget : renderedWidgets) {
@@ -194,9 +190,14 @@ public class ScreenBuilder {
 	public void updatePositions(int screenWidth, int screenHeight) {
 		updatePositions(widgets, screenWidth, screenHeight);
 		if (config.hasFancyTab()) {
-			WidgetPositioner positioner = config.fancyTab().get().positioner().getNewPositioner(0.9f, screenHeight);
+			WidgetPositioner positioner = config.fancyTab().get().positioner.getNewPositioner(0.9f, screenHeight);
 			tabWidgets.forEach(positioner::positionWidget);
-			positioner.finalizePositioning();
+			Vector2i dimensions = positioner.finalizePositioning();
+			int x = (screenWidth - dimensions.x) / 2;
+			int y = (screenHeight - dimensions.y) / 2;
+			for (HudWidget widget : tabWidgets) {
+				widget.setPosition(widget.getX() + x, widget.getY() + y);
+			}
 		}
 	}
 
@@ -213,22 +214,38 @@ public class ScreenBuilder {
 		return widgets;
 	}
 
-	public record ScreenConfig(Optional<FancyTabConfig> fancyTab, Map<String, WidgetConfig> widgetConfigs) {
+	public static class ScreenConfig {
 		public static final Codec<ScreenConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				FancyTabConfig.CODEC.optionalFieldOf("fancy_tab").forGetter(ScreenConfig::fancyTab),
-				Codec.unboundedMap(Codec.STRING, WidgetConfig.CODEC).fieldOf("widgets").forGetter(ScreenConfig::widgetConfigs)
+				Codec.unboundedMap(Codec.STRING, WidgetConfig.CODEC).fieldOf("widgets").forGetter(c -> c.widgetConfigs)
 		).apply(instance, ScreenConfig::new));
+
+		public @Nullable FancyTabConfig fancyTab;
+		public Map<String, WidgetConfig> widgetConfigs;
+
+		@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+		public ScreenConfig(Optional<FancyTabConfig> fancyTab, Map<String, WidgetConfig> widgetConfigs) {
+			this.fancyTab = fancyTab.orElse(null);
+			this.widgetConfigs = widgetConfigs;
+		}
 
 		public ScreenConfig() {
 			this(Optional.empty(), new Object2ObjectOpenHashMap<>());
 		}
 
 		public boolean hasFancyTab() {
-			return fancyTab.map(FancyTabConfig::enabled).orElse(false);
+			return fancyTab != null && fancyTab.enabled;
 		}
 
-		public ScreenConfig withWidgets(Map<String, WidgetConfig> widgetConfigs) {
-			return new ScreenConfig(fancyTab, widgetConfigs);
+		public Optional<FancyTabConfig> fancyTab() {
+			return Optional.ofNullable(fancyTab);
+		}
+
+		public FancyTabConfig getOrCreateFancyTab() {
+			if (fancyTab == null) {
+				fancyTab = new FancyTabConfig();
+			}
+			return fancyTab;
 		}
 	}
 
@@ -243,12 +260,28 @@ public class ScreenBuilder {
 		}
 	}
 
-	public record FancyTabConfig(boolean enabled, Positioner positioner, List<String> hiddenWidgets) {
+	public static class FancyTabConfig {
 		public static final Codec<FancyTabConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.BOOL.fieldOf("enabled").forGetter(FancyTabConfig::enabled),
-				Positioner.CODEC.optionalFieldOf("positioner", Positioner.CENTERED).forGetter(FancyTabConfig::positioner),
-				Codec.STRING.listOf().optionalFieldOf("hidden_widgets", List.of()).forGetter(FancyTabConfig::hiddenWidgets)
+				Codec.BOOL.fieldOf("enabled").forGetter(c -> c.enabled),
+				Positioner.CODEC.optionalFieldOf("positioner", Positioner.CENTERED).forGetter(c -> c.positioner),
+				Codec.STRING.listOf().optionalFieldOf("hidden_widgets", List.of())
+						.xmap(ObjectOpenHashSet::new, List::copyOf)
+						.forGetter(c -> c.hiddenWidgets)
 		).apply(instance, FancyTabConfig::new));
+
+		public boolean enabled;
+		public Positioner positioner;
+		public ObjectOpenHashSet<String> hiddenWidgets;
+
+		public FancyTabConfig() {
+			this(true, Positioner.CENTERED, Set.of());
+		}
+
+		public FancyTabConfig(boolean enabled, Positioner positioner, Set<String> hiddenWidgets) {
+			this.enabled = enabled;
+			this.positioner = positioner;
+			this.hiddenWidgets = new ObjectOpenHashSet<>(hiddenWidgets);
+		}
 	}
 
 	public enum Positioner implements StringIdentifiable {
@@ -270,6 +303,14 @@ public class ScreenBuilder {
 		@Override
 		public String asString() {
 			return name().toLowerCase(Locale.ENGLISH);
+		}
+
+		@Override
+		public String toString() {
+			return switch (this) {
+				case TOP -> "Top";
+				case CENTERED -> "Centered";
+			};
 		}
 	}
 }
