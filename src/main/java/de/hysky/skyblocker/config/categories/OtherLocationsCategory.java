@@ -130,6 +130,7 @@ public class OtherLocationsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.otherLocations.end.zealotKillsEnabled"))
+								.description(Text.translatable("skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip"))
 								.binding(defaults.otherLocations.end.zealotKillsEnabled,
 										() -> config.otherLocations.end.zealotKillsEnabled,
 										newValue -> {
