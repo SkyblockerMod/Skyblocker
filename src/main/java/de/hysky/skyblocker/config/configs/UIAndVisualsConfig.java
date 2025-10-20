@@ -307,6 +307,8 @@ public class UIAndVisualsConfig {
 		public boolean enableWaypoints = true;
 
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+
+		public boolean enableChatWaypoints = true;
 	}
 
 	public static class TeleportOverlay {

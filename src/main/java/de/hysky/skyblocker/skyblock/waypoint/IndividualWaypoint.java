@@ -69,9 +69,9 @@ public class IndividualWaypoint extends NamedWaypoint {
 		setWaypoint(x, y, z, area);
 		if (area != null && !area.isEmpty()) {
 			area = "| " + area;
-			feedback.accept(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.displayed", x, y, z, area)));
+			feedback.accept(Constants.PREFIX.get().append(Text.translatable("skyblocker.waypoints.chat.displayed", x, y, z, area)));
 		} else {
-			feedback.accept(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.displayed", x, y, z, "")));
+			feedback.accept(Constants.PREFIX.get().append(Text.translatable("skyblocker.waypoints.chat.displayed", x, y, z, "")));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
