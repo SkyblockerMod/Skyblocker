@@ -111,7 +111,7 @@ public class AddWidgetWidget extends EntryListWidget<AddWidgetWidget.Entry> {
 
 		@Override
 		public void drawBorder(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickProgress) {
-			if (hovered){
+			if (hovered) {
 				context.fill(x, y, x + entryWidth, y + entryHeight, ColorHelper.getWhite(0.1f));
 			}
 		}

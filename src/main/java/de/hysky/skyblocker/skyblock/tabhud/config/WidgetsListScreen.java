@@ -160,8 +160,7 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 	protected void init() {
 		super.init();
 		widgetsElementList = new WidgetsElementList(this, client, 0, 0, 0);
-		back = ButtonWidget.builder(Text.literal("Back"), button -> {clickAndWaitForServer(48, 0);
-					System.out.println("aaaaaaaa"); })
+		back = ButtonWidget.builder(Text.literal("Back"), button -> clickAndWaitForServer(48, 0))
 				.size(64, 15)
 				.build();
 		thirdColumnButton = ButtonWidget.builder(Text.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))

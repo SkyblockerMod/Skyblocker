@@ -81,7 +81,7 @@ public class CommsWidget extends TabHudWidget {
 					Components.progressComponent(Ico.BOOK, Text.of(name), Text.of(barText), percent);
 		}
 		return barText == null ?
-				Components.iconTextComponent(Ico.BOOK, Text.literal(name).append(": ").append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent)))):
+				Components.iconTextComponent(Ico.BOOK, Text.literal(name).append(": ").append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent)))) :
 				Components.iconTextComponent(Ico.BOOK, Text.literal(name).append(": ").append(Text.literal(barText).withColor(ColorUtils.percentToColor(percent))));
 	}
 
