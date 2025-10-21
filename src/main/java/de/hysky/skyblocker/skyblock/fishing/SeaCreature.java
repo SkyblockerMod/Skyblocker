@@ -75,7 +75,7 @@ public enum SeaCreature {
 	ENT("Ent", "You've hooked an Ent, as ancient as the forest itself.", SkyblockItemRarity.EPIC, SeaCreatureCategory.GALATEA),
 	THE_LOCH_EMPEROR("The Loch Emperor", "The Loch Emperor arises from the depths.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.GALATEA),
 	STRIDERSURFER("Stridersurfer", "You caught a Stridersurfer.", SkyblockItemRarity.COMMON, SeaCreatureCategory.GALATEA);
-	
+
 	final String name;
 	final String chatMessage;
 	final SkyblockItemRarity rarity;
