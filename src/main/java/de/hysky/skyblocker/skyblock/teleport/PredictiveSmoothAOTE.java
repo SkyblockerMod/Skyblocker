@@ -260,7 +260,6 @@ public class PredictiveSmoothAOTE {
 	protected static float getEyeHeight() {
 		if (CLIENT.player == null || !CLIENT.player.isSneaking()) return 1.62f;
 		//sneaking height is different depending on server
-		System.out.println(Utils.getLocation().isModern());
 		return Utils.getLocation().isModern() ? 1.27f : 1.54f;
 	}
 
