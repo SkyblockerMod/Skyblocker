@@ -129,6 +129,9 @@ public class ScreenBuilder {
 			}
 			widgets.add(widget);
 		}
+		for (HudWidget widget : widgets) {
+			if (widget instanceof ComponentBasedWidget componentBasedWidget && !componentBasedWidget.shouldUpdateBeforeRendering()) componentBasedWidget.update();
+		}
 		updateRenderedWidgets();
 		Profilers.get().pop();
 	}
@@ -150,17 +153,17 @@ public class ScreenBuilder {
 		if (newTabWidgets.equals(tabWidgets)) return;
 		tabWidgets.clear();
 		tabWidgets.addAll(newTabWidgets);
+		for (HudWidget widget : tabWidgets) {
+			if (widget instanceof ComponentBasedWidget componentBasedWidget && !componentBasedWidget.shouldUpdateBeforeRendering()) componentBasedWidget.update();
+		}
 		updateRenderedWidgets();
 		Profilers.get().pop();
 	}
 
-	private void updateRenderedWidgets() {
+	public void updateRenderedWidgets() {
 		renderedWidgets.clear();
 		renderedWidgets.addAll(widgets);
 		renderedWidgets.addAll(tabWidgets);
-		for (HudWidget widget : renderedWidgets) {
-			if (widget instanceof ComponentBasedWidget componentBasedWidget && !componentBasedWidget.shouldUpdateBeforeRendering()) componentBasedWidget.update();
-		}
 		positionsHash = 0;
 	}
 

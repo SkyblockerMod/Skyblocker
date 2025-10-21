@@ -74,6 +74,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		currentScreenLayer = WidgetManager.ScreenLayer.HUD;
 		builder = WidgetManager.getScreenBuilder(currentLocation, currentScreenLayer);
 		builder.updateWidgetsList();
+		builder.updateTabWidgetsList();
 	}
 
 	public void setCurrentLocation(@NotNull Location newLocation) {
@@ -81,6 +82,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		this.currentLocation = newLocation;
 		builder = WidgetManager.getScreenBuilder(newLocation, currentScreenLayer);
 		builder.updateWidgetsList();
+		builder.updateTabWidgetsList();
 	}
 
 	public void setCurrentScreenLayer(@NotNull WidgetManager.ScreenLayer newScreenLayer) {
@@ -88,10 +90,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		this.currentScreenLayer = newScreenLayer;
 		builder = WidgetManager.getScreenBuilder(currentLocation, newScreenLayer);
 		builder.updateWidgetsList();
-	}
-
-	public boolean isGlobalScreen() {
-		return currentLocation == Location.UNKNOWN;
+		builder.updateTabWidgetsList();
 	}
 
 	@Override
@@ -118,6 +117,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 						(int) (client.mouse.getScaledY(client.getWindow()) / TabHud.getScaleFactor())
 				)
 		);
+		builder.updateRenderedWidgets();
 	}
 
 	@Override
@@ -290,8 +290,8 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 				addWidgetWidget.openWith(availableWidgets);
 				addWidgetWidget.setX(Math.clamp((int) mouseX, 5, width - addWidgetWidget.getWidth() - 5));
 				addWidgetWidget.setY(Math.clamp((int) mouseY, 5, height - addWidgetWidget.getHeight() - 5));
-			} else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
-				client.setScreen(new ScreenConfigPopup(this, builder, currentScreenLayer != WidgetManager.ScreenLayer.HUD));
+			} else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && currentScreenLayer != WidgetManager.ScreenLayer.HUD) {
+				client.setScreen(new ScreenConfigPopup(this, builder, true));
 			}
 			return true;
 		}
@@ -409,7 +409,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 			sidePanelWidget.close();
 			selectedWidget = null;
 		}
-		updateBuilderPositions();
+		builder.updateRenderedWidgets();
 	}
 
 	private void updateBuilderPositions() {
