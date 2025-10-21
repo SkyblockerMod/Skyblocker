@@ -1505,5 +1505,9 @@
     "skyblocker.customization.armor.modelOverride.tooltip": "可装备组件中的外观ID。\n例如：“leather”、“diamond”等。",
     "skyblocker.customization.item.modelOverride": "物品类型覆盖",
     "skyblocker.customization.armor.modelOverride": "护甲类型覆盖",
-    "skyblocker.customization.item.glint": "附魔光效：%s"
+    "skyblocker.customization.item.glint": "附魔光效：%s",
+    "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker": "强制尸体利润消息使用英文",
+    "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip": "此选项适用于非英语用户，以减小分享利润消息时的语言障碍。如果游戏语言设置为英语，该选项将无任何影响。",
+    "skyblocker.config.dungeons.devices.solveTargetPractice": "Target Practice助手",
+    "skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip": "以红色高亮目标。"
 }
