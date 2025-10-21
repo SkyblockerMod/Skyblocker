@@ -68,8 +68,14 @@ public enum SeaCreature {
 	WIKI_TIKI("Wiki Tiki", "§c§r§c§lThe water bubbles and froths. A massive form emerges- you have disturbed the Wiki Tiki! You shall pay the price.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.WATER_HOTSPOT),
 	BLUE_RINGED_OCTOPUS("Blue Ringed Octopus", "A garish set of tentacles arise. It's a Blue Ringed Octopus!", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.WATER_HOTSPOT),
 	SNAPPING_TURTLE("Snapping Turtle", "A Snapping Turtle is coming your way, and it's ANGRY!", SkyblockItemRarity.RARE, SeaCreatureCategory.WATER_HOTSPOT),
-	FROG_MAN("Frog Man", "Is it a frog? Is it a man? Well, yes, sorta, IT'S FROG MAN!!!!!!", SkyblockItemRarity.COMMON, SeaCreatureCategory.WATER_HOTSPOT);
-
+	FROG_MAN("Frog Man", "Is it a frog? Is it a man? Well, yes, sorta, IT'S FROG MAN!!!!!!", SkyblockItemRarity.COMMON, SeaCreatureCategory.WATER_HOTSPOT),
+	BOGGED("Bogged", "You've hooked a Bogged!", SkyblockItemRarity.COMMON, SeaCreatureCategory.GALATEA),
+	WETWING("Wetwing", "Look! A Wetwing emerges!", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.GALATEA),
+	TADGANG("Tadgang", "A gang of Liltads!", SkyblockItemRarity.RARE, SeaCreatureCategory.GALATEA),
+	ENT("Ent", "You've hooked an Ent, as ancient as the forest itself.", SkyblockItemRarity.EPIC, SeaCreatureCategory.GALATEA),
+	THE_LOCH_EMPEROR("The Loch Emperor", "The Loch Emperor arises from the depths.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.GALATEA),
+	STRIDERSURFER("Stridersurfer", "You caught a Stridersurfer.", SkyblockItemRarity.COMMON, SeaCreatureCategory.GALATEA);
+	
 	final String name;
 	final String chatMessage;
 	final SkyblockItemRarity rarity;
