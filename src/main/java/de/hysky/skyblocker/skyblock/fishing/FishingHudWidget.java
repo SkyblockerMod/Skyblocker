@@ -103,9 +103,9 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			float time = Math.round((System.currentTimeMillis() - FishingHelper.startTime) / 1000f);
 			float maxTime;
 			PetInfo pet = PetCache.getCurrentPet();
-			if (pet != null && pet.type().contains("SLUG")){
+			if (pet != null && pet.type().contains("SLUG")) {
 				int level = LevelFinder.getLevelInfo("PET_"+pet.tier(), (long) pet.exp()).level;
-				maxTime =20 * (1 - (level/200f));
+				maxTime = 20 * (1 - (level/200f));
 			} else {
 				maxTime = 20;
 			}

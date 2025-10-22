@@ -26,7 +26,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.ClickEvent;
@@ -52,7 +51,7 @@ import static net.minecraft.command.CommandSource.suggestMatching;
  * Manager for Crystal Hollows waypoints that handles {@link #update() location detection},
  * {@link #extractLocationFromMessage(Text, Boolean) waypoints receiving}, {@link #shareWaypoint(String) sharing},
  * {@link #registerWaypointLocationCommands(CommandDispatcher, CommandRegistryAccess) commands}, and
- * {@link #render(WorldRenderContext) rendering}.
+ * {@link #extractRendering(PrimitiveCollection) render extraction}.
  */
 public class CrystalsLocationsManager {
     private static final Logger LOGGER = LogUtils.getLogger();

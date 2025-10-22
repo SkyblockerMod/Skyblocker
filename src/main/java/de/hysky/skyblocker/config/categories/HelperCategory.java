@@ -398,6 +398,19 @@ public class HelperCategory {
 								.build())
 						.option(ConfigUtils.createShortcutToKeybindsScreen())
 						.build())
+				// Great Spook Event
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.greatSpook"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.greatSpook.enableMathTeacherHelper"))
+								.description(Text.translatable("skyblocker.config.helpers.greatSpook.enableMathTeacherHelper.@Tooltip"))
+								.binding(defaults.helpers.greatSpookEvent.enableMathTeacherHelper,
+										() -> config.helpers.greatSpookEvent.enableMathTeacherHelper,
+										newValue -> config.helpers.greatSpookEvent.enableMathTeacherHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
 				.build();
 	}
 }

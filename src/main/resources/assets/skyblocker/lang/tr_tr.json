@@ -10,7 +10,6 @@
     "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Pazar alış/satış fiyatını göster",
     "skyblocker.config.general.hitbox": "Hitbox'lar",
     "skyblocker.itemTooltip.nullMessage": "§cEşya açıklamasındaki ürün fiyat bilgisi en fazla 60 saniye içinde yenilenecektir. Aksi takdirde latest.log dosyasını kontrol edin",
-    "skyblocker.config.general.hitbox.oldFarmlandHitbox": "1.8 tarım hitboxlarını etkinleştir",
     "skyblocker.config.general.hitbox.oldLeverHitbox": "1.8 şalter hitboxunu etkinleştir",
     "skyblocker.itemTooltip.noData": "§cVeri yok",
     "skyblocker.config.misc.richPresence": "Discord Özel Durumu",
