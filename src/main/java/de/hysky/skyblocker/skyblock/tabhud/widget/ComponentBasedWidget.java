@@ -50,6 +50,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	private String lastError = null;
 
 	protected boolean drawBorder = true;
+	protected boolean drawTitle = true;
 	protected float backgroundOpacity = 0.75f;
 	protected boolean roundedCorners = true;
 
@@ -176,20 +177,26 @@ public abstract class ComponentBasedWidget extends HudWidget {
 			}
 		}
 
-		int strHeightHalf = txtRend.fontHeight / 2;
+		int strHeightHalf = drawTitle ? txtRend.fontHeight / 2 : 0;
 		int strWidth = txtRend.getWidth(title);
 		int strAreaWidth = strWidth + 4;
 
-		if (drawBorder) {
-			context.drawText(txtRend, title, 8, 2, this.color, false);
-		} else {
-			context.drawText(txtRend, title, (w - strWidth) / 2, 2, this.color, false);
+		if (drawTitle) {
+			if (drawBorder) {
+				context.drawText(txtRend, title, 8, 2, this.color, false);
+			} else {
+				context.drawText(txtRend, title, (w - strWidth) / 2, 2, this.color, false);
+			}
 		}
 
 		// Only draw borders if not in minimal mode
 		if (!SkyblockerConfigManager.get().uiAndVisuals.hud.style.isMinimal() && drawBorder) {
-			this.drawHLine(context, 2, 1 + strHeightHalf, 4);
-			this.drawHLine(context, 2 + strAreaWidth + 4, 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
+			if (drawTitle) {
+				this.drawHLine(context, 2, 1 + strHeightHalf, 4);
+				this.drawHLine(context, 2 + strAreaWidth + 4, 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
+			} else {
+				this.drawHLine(context, 2, 1 + strHeightHalf, w - 4);
+			}
 			this.drawHLine(context, 2, h - 2, w - 4);
 
 			int ypos = 2 + strHeightHalf + (roundedCorners ? 0 : -1);
@@ -198,12 +205,16 @@ public abstract class ComponentBasedWidget extends HudWidget {
 			this.drawVLine(context, w - 2, ypos, height);
 		}
 
-		int yOffs = BORDER_SZE_N + (drawBorder ? 0 : -2);
+		int yOffs = getBorderSizeNorth();
 
 		for (Component c : components) {
 			c.render(context, BORDER_SZE_W + (drawBorder ? 0 : -3), yOffs);
 			yOffs += c.getHeight() + Component.PAD_L;
 		}
+	}
+
+	private int getBorderSizeNorth() {
+		return drawTitle ? BORDER_SZE_N : 2;
 	}
 
 	/**
@@ -219,8 +230,8 @@ public abstract class ComponentBasedWidget extends HudWidget {
 			w = Math.max(w, c.getWidth() + Component.PAD_S);
 		}
 
-		h -= Component.PAD_L / 2; // less padding after lowest/last component
-		h += BORDER_SZE_N + BORDER_SZE_S - 2 + (drawBorder ? 0 : -6);
+		if (drawBorder) h -= Component.PAD_L / 2; // less padding after lowest/last component
+		h += getBorderSizeNorth() + BORDER_SZE_S - 2 + (drawBorder ? 0 : -4);
 		w += BORDER_SZE_E + BORDER_SZE_W + (drawBorder ? 0 : -6);
 
 		// min width is dependent on title
@@ -232,6 +243,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	public void getOptions(List<WidgetOption<?>> options) {
 		super.getOptions(options);
 		options.add(new BooleanOption("draw_border", Text.literal("Draw Border"), () -> drawBorder, b -> drawBorder = b, true));
+		options.add(new BooleanOption("draw_title", Text.literal("Show Title"), () -> drawTitle, b -> drawTitle = b, true));
 		options.add(new BooleanOption("rounded_corners", Text.literal("Rounded Corners"), () -> roundedCorners, b -> roundedCorners = b, true));
 		options.add(new FloatOption("background_opacity", Text.literal("Background Opacity"), () -> backgroundOpacity, b -> backgroundOpacity = b, 0.8f));
 	}

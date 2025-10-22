@@ -192,8 +192,9 @@ public class ScreenBuilder {
 
 	public void updatePositions(int screenWidth, int screenHeight) {
 		updatePositions(widgets, screenWidth, screenHeight);
-		if (config.hasFancyTab()) {
-			WidgetPositioner positioner = config.fancyTab().get().positioner.getNewPositioner(0.9f, screenHeight);
+		ScreenConfig fullConfig = getFullConfig(false);
+		if (fullConfig.hasFancyTab()) {
+			WidgetPositioner positioner = fullConfig.fancyTab().get().positioner.getNewPositioner(0.9f, screenHeight);
 			tabWidgets.forEach(positioner::positionWidget);
 			Vector2i dimensions = positioner.finalizePositioning();
 			int x = (screenWidth - dimensions.x) / 2;

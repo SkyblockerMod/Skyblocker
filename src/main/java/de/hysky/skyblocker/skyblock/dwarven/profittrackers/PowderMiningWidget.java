@@ -27,7 +27,7 @@ public class PowderMiningWidget extends HudWidget {
 			return;
 		}
 
-		int tempY = y;
+		int tempY = 0;
 		int maxWidth = 0;
 
 		for (Object2IntMap.Entry<Text> entry : set) {
@@ -40,10 +40,10 @@ public class PowderMiningWidget extends HudWidget {
 			if (width > maxWidth) maxWidth = width;
 		}
 		tempY += 10;
-		context.drawTextWithShadow(CLIENT.textRenderer, Text.translatable("skyblocker.powderTracker.profit", Formatters.DOUBLE_NUMBERS.format(PowderMiningTracker.getProfit())).formatted(Formatting.GOLD), x, tempY, Colors.WHITE);
+		context.drawTextWithShadow(CLIENT.textRenderer, Text.translatable("skyblocker.powderTracker.profit", Formatters.DOUBLE_NUMBERS.format(PowderMiningTracker.getProfit())).formatted(Formatting.GOLD), 0, tempY, Colors.WHITE);
 
 		w = maxWidth;
-		h = tempY - y + 10;
+		h = tempY + 10;
 	}
 
 	@Override
