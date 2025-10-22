@@ -33,7 +33,7 @@ public class PowderMiningWidget extends HudWidget {
 		for (Object2IntMap.Entry<Text> entry : set) {
 			Text price = Text.literal(Formatters.INTEGER_NUMBERS.format(entry.getIntValue())).withColor(Colors.WHITE);
 			Text text = entry.getKey().copy().append(" ").append(price);
-			context.drawTextWithShadow(CLIENT.textRenderer, text, x, tempY, Colors.WHITE);
+			context.drawTextWithShadow(CLIENT.textRenderer, text, 0, tempY, Colors.WHITE);
 
 			tempY += 10;
 			int width = CLIENT.textRenderer.getWidth(text);
