@@ -992,5 +992,8 @@
     "skyblocker.museum.hud.craftIngredient": "Fabricado com",
     "skyblocker.dungeons.dungeonScore.scoreText": "Pontuação: %s",
     "skyblocker.dungeons.splits.sadanGiants": "Gigantes do Sadan",
-    "skyblocker.exotic.fairy": "FADA"
+    "skyblocker.exotic.fairy": "FADA",
+    "skyblocker.fancyAuctionHouse.editBid": "Clique para editar o lance!",
+    "skyblocker.fancyAuctionHouse.price": "Preço:",
+    "skyblocker.copyUnderbidPrice.copied": "Preço de Lance Menor Copiado: %s"
 }
