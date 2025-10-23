@@ -995,5 +995,8 @@
     "skyblocker.exotic.fairy": "FADA",
     "skyblocker.fancyAuctionHouse.editBid": "Clique para editar o lance!",
     "skyblocker.fancyAuctionHouse.price": "Preço:",
-    "skyblocker.copyUnderbidPrice.copied": "Preço de Lance Menor Copiado: %s"
+    "skyblocker.copyUnderbidPrice.copied": "Preço de Lance Menor Copiado: %s",
+    "skyblocker.fancyAuctionHouse.newBid": "Novo Lance:",
+    "skyblocker.fancyAuctionHouse.buy": "Comprar!",
+    "skyblocker.fancyAuctionHouse.bid": "Oferta!"
 }
