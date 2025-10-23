@@ -260,7 +260,7 @@
     "skyblocker.config.dungeons.allowDroppingProtectedItems.@Tooltip": "Permet l'utilisation des capacités de classe dans les donjons dans un emplacement verrouillé ou en tenant un objet qui a été protégé en utilisant /skyblocker protectitem.",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType": "Type de marquage de porte",
     "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator": "Activer le calculateur de profit",
-    "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Met en surbrillance rouge les leviers à cliquer",
+    "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Met en surbrillance rouge les leviers à cliquer.",
     "skyblocker.config.dungeons.devices.solveSimonSays": "Résoudre Simon Says",
     "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight": "Activer la Surbrillance des Portes",
     "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight.@Tooltip": "Marque en rouge les portes de wither et de sang si elles sont verrouillées et en vert si elles sont déverrouillées.",
