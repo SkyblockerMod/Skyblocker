@@ -150,7 +150,8 @@ public class Calculator {
 			"k", 1_000L,
 			"m", 1_000_000L,
 			"b", 1_000_000_000L,
-			"t", 1_000_000_000_000L
+			"t", 1_000_000_000_000L,
+			"q", 1_000_000_000_000_000L
 	)));
 
 	private static List<AbstractToken<?>> lex(String input) throws CalculatorException {
