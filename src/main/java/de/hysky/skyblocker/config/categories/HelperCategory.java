@@ -366,6 +366,13 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.bazaar.fixBazaarCharts"))
+								.binding(defaults.helpers.bazaar.fixBazaarCharts,
+										() -> config.helpers.bazaar.fixBazaarCharts,
+										newValue -> config.helpers.bazaar.fixBazaarCharts = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup"))
 								.description(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip"))
 								.binding(defaults.helpers.itemPrice.enableItemPriceLookup,

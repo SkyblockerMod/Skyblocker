@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.bazaar;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -66,7 +67,7 @@ public class FixBazaarGraphs extends SimpleContainerSolver {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return SkyblockerConfigManager.get().helpers.bazaar.fixBazaarCharts;
 	}
 
 	private static class BazaarChartVisitor implements StringVisitable.Visitor<List<Text>> {
