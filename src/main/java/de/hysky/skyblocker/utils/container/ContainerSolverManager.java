@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.auction.CopyUnderbidPrice;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.dungeon.SellableItemsHighlighter;
+import de.hysky.skyblocker.skyblock.end.EndStatsBestiaryUpdater;
 import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusHelper;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusProfit;
@@ -69,7 +70,8 @@ public class ContainerSolverManager {
 			new CopyUnderbidPrice(),
 			new HuntingBoxHelper(),
 			new SellableItemsHighlighter(),
-			StereoHarmonyHelper.INSTANCE
+			StereoHarmonyHelper.INSTANCE,
+			new EndStatsBestiaryUpdater(),
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;
