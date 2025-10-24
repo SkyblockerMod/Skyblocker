@@ -2,34 +2,37 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.skyblock.item.custom.CustomAnimatedHelmetTextures;
 import de.hysky.skyblocker.skyblock.item.custom.CustomHelmetTextures;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class HeadSelectionWidget extends ContainerWidget {
-
-	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
-
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 
 	private final List<HeadButton> allButtons = new ArrayList<>();
 	private final List<HeadButton> visibleButtons = new ArrayList<>();
@@ -38,19 +41,29 @@ public class HeadSelectionWidget extends ContainerWidget {
 	private int buttonsPerRow = 1;
 
 	private ItemStack currentItem;
-	private String selectedTexture;
+	/**
+	 * Null if a custom (animated or not) head wasn't selected.
+	 */
+	@Nullable
+	private HeadButton selectedButton;
 
 	public HeadSelectionWidget(int x, int y, int width, int height) {
 		super(x, y, width, height, Text.of("HeadSelection"));
-		searchField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, x + 3, y + 3, width - 6, 12, Text.translatable("gui.recipebook.search_hint"));
-		searchField.setChangedListener(this::filterButtons);
+		this.searchField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, x + 3, y + 3, width - 6, 12, Text.translatable("gui.recipebook.search_hint"));
+		this.searchField.setChangedListener(this::filterButtons);
 
 		for (CustomHelmetTextures.NamedTexture tex : CustomHelmetTextures.getTextures()) {
 			ItemStack head = ProfileViewerUtils.createSkull(tex.texture());
-			HeadButton button = new HeadButton(tex.name(), tex.texture(), head, () -> onClick(tex.texture()));
-			allButtons.add(button);
+			HeadButton button = new HeadButton(tex.name(), tex.texture(), head, this::onClick);
+			this.allButtons.add(button);
 		}
-		noneButton = new HeadButton("", null, new ItemStack(Items.BARRIER), () -> onClick(null));
+
+		for (String id : CustomAnimatedHelmetTextures.getAnimatedHeadIds()) {
+			AnimatedHeadButton button = new AnimatedHeadButton(id, this::onClick);
+			this.allButtons.add(button);
+		}
+
+		this.noneButton = new HeadButton("", null, new ItemStack(Items.BARRIER), _ignored -> onClick(null));
 
 		filterButtons("");
 	}
@@ -64,36 +77,70 @@ public class HeadSelectionWidget extends ContainerWidget {
 		}
 	}
 
-	private void onClick(String texture) {
-		selectedTexture = texture;
+	@Override
+	public void setX(int x) {
+		super.setX(x);
+		searchField.setX(x + 3);
+		layoutButtons();
+	}
+
+	@Override
+	public void setY(int y) {
+		super.setY(y);
+		searchField.setY(y + 3);
+		layoutButtons();
+	}
+
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		searchField.setWidth(width - 6);
+		layoutButtons();
+	}
+
+	private void onClick(HeadButton button) {
+		selectedButton = button;
 		updateConfig();
 		updateButtons();
 	}
 
 	private void updateConfig() {
-		if (currentItem == null) return;
-		String uuid = ItemUtils.getItemUuid(currentItem);
-		if (selectedTexture == null) {
-			SkyblockerConfigManager.get().general.customHelmetTextures.remove(uuid);
-		} else {
-			SkyblockerConfigManager.get().general.customHelmetTextures.put(uuid, selectedTexture);
+		if (this.currentItem == null) return;
+		String uuid = this.currentItem.getUuid();
+
+		switch (this.selectedButton) {
+			case null -> {
+				SkyblockerConfigManager.get().general.customHelmetTextures.remove(uuid);
+				SkyblockerConfigManager.get().general.customAnimatedHelmetTextures.remove(uuid);
+			}
+			case AnimatedHeadButton button -> {
+				SkyblockerConfigManager.get().general.customAnimatedHelmetTextures.put(uuid, button.id);
+				SkyblockerConfigManager.get().general.customHelmetTextures.remove(uuid);
+			}
+			case HeadButton button -> {
+				SkyblockerConfigManager.get().general.customHelmetTextures.put(uuid, Objects.requireNonNull(button.texture));
+				SkyblockerConfigManager.get().general.customAnimatedHelmetTextures.remove(uuid);
+			}
 		}
 	}
 
 	private void updateButtons() {
-		for (HeadButton b : allButtons) {
-			b.selected = Objects.equals(b.texture, selectedTexture);
+		// Check all buttons, whether one is selected depends on if it matches the selectedButton
+		for (HeadButton b : this.allButtons) {
+			b.selected = b.equals(this.selectedButton);
 		}
-		noneButton.selected = selectedTexture == null;
+
+		// If the selectedButton is null then set the noneButton as selected
+		this.noneButton.selected = this.selectedButton == null;
 	}
 
 	private void filterButtons(String search) {
 		setScrollY(0);
-		String s = search.toLowerCase();
+		String s = search.toLowerCase(Locale.ENGLISH);
 		visibleButtons.clear();
 		visibleButtons.add(noneButton);
 		for (HeadButton b : allButtons) {
-			if (b.name.toLowerCase().contains(s)) {
+			if (b.name.toLowerCase(Locale.ENGLISH).contains(s)) {
 				visibleButtons.add(b);
 			}
 		}
@@ -152,43 +199,42 @@ public class HeadSelectionWidget extends ContainerWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
-		if (searchField.mouseClicked(click, doubled)) {
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (searchField.mouseClicked(mouseX, mouseY, button)) {
 			setFocused(searchField);
 			return true;
 		}
 
-		double adjustedMouseY = click.y() + getScrollY();
+		double adjustedMouseY = mouseY + getScrollY();
 		if (overflows()) {
 			int scrollbarX = getScrollbarX();
 			// Default scrollbar width is 6 pixels
-			if (click.x() >= scrollbarX && click.x() < scrollbarX + 6) {
+			if (mouseX >= scrollbarX && mouseX < scrollbarX + 6) {
 				int thumbY = getScrollbarThumbY();
 				int thumbHeight = getScrollbarThumbHeight();
-				if (click.y() >= thumbY && click.y() < thumbY + thumbHeight) {
-					adjustedMouseY = click.y();
+				if (mouseY >= thumbY && mouseY < thumbY + thumbHeight) {
+					adjustedMouseY = mouseY;
 				}
 			}
 		}
 
-		// TODO (1.21.9): Double check this works
-		return super.mouseClicked(new Click(click.x(), adjustedMouseY, click.buttonInfo()), doubled);
+		return super.mouseClicked(mouseX, adjustedMouseY, button);
 	}
 
 	@Override
-	public boolean charTyped(CharInput input) {
-		if (searchField.isFocused() && searchField.charTyped(input)) {
+	public boolean charTyped(char chr, int modifiers) {
+		if (searchField.isFocused() && searchField.charTyped(chr, modifiers)) {
 			return true;
 		}
-		return super.charTyped(input);
+		return super.charTyped(chr, modifiers);
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput input) {
-		if (searchField.isFocused() && searchField.keyPressed(input)) {
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (searchField.isFocused() && searchField.keyPressed(keyCode, scanCode, modifiers)) {
 			return true;
 		}
-		return super.keyPressed(input);
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override
@@ -208,20 +254,54 @@ public class HeadSelectionWidget extends ContainerWidget {
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 
 	public void setCurrentItem(@NotNull ItemStack item) {
-		currentItem = item;
-		String uuid = ItemUtils.getItemUuid(item);
-		selectedTexture = SkyblockerConfigManager.get().general.customHelmetTextures.get(uuid);
+		this.currentItem = item;
+		String uuid = item.getUuid();
+
+		String animatedHeadId = SkyblockerConfigManager.get().general.customAnimatedHelmetTextures.get(uuid);
+		String customHeadTexture = SkyblockerConfigManager.get().general.customHelmetTextures.get(uuid);
+		// The head button that should be selected (if any)
+		HeadButton intendedSelected;
+
+		// Search for the right button to select, defaulting to null if a suitable one cannot be found (e.g. texture changed, animated head removed)
+		if (animatedHeadId != null) {
+			intendedSelected = this.allButtons.stream()
+					.filter(AnimatedHeadButton.class::isInstance)
+					.map(AnimatedHeadButton.class::cast)
+					.filter(animatedHead -> animatedHead.id.equals(animatedHeadId))
+					.findFirst()
+					.orElse(null);
+		} else if (customHeadTexture != null) {
+			intendedSelected = this.allButtons.stream()
+					.filter(Predicate.not(AnimatedHeadButton.class::isInstance))
+					.filter(head -> Objects.requireNonNull(head.texture).equals(customHeadTexture))
+					.findFirst()
+					.orElse(null);
+		} else {
+			intendedSelected = null;
+		}
+
+		this.selectedButton = intendedSelected;
+
 		updateButtons();
-		filterButtons(searchField.getText());
+		filterButtons(this.searchField.getText());
 	}
 
 	private static class HeadButton extends ClickableWidget {
 		private final String name;
+		/**
+		 * Only null if this is an animated head.
+		 */
+		@UnknownNullability
 		private final String texture;
+		/**
+		 * Only null if this is an animated head.
+		 */
+		@UnknownNullability
 		private final ItemStack head;
+		private final Consumer<HeadButton> onPress;
 		private boolean selected = false;
 
-		HeadButton(String name, String texture, ItemStack head, Runnable onPress) {
+		HeadButton(String name, @UnknownNullability String texture, @UnknownNullability ItemStack head, Consumer<HeadButton> onPress) {
 			super(0, 0, 20, 20, Text.empty());
 			this.name = name;
 			this.texture = texture;
@@ -229,12 +309,19 @@ public class HeadSelectionWidget extends ContainerWidget {
 			this.onPress = onPress;
 		}
 
-		private final Runnable onPress;
+		/**
+		 * Retrieves the underlying {@link ItemStack} for displaying the head, required for animated heads.
+		 *
+		 * Will never return null.
+		 */
+		protected ItemStack getHead() {
+			return this.head;
+		}
 
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			context.drawItem(head, getX() + 2, getY() + 2);
-			if (selected) {
+			context.drawItem(this.getHead(), getX() + 2, getY() + 2);
+			if (this.selected) {
 				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
 			}
 			if (isHovered()) {
@@ -243,11 +330,39 @@ public class HeadSelectionWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onClick(Click click, boolean doubled) {
-			onPress.run();
+		public void onClick(double mouseX, double mouseY) {
+			this.onPress.accept(this);
 		}
 
 		@Override
 		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	}
+
+	private static class AnimatedHeadButton extends HeadButton {
+		private final String id;
+
+		AnimatedHeadButton(String id, Consumer<HeadButton> onPress) {
+			// The head stack is initially passed as null but initialized
+			// The texture is not needed so we leave it as null too as this is done by id
+			super(CustomAnimatedHelmetTextures.formatName(id), null, null, onPress);
+			this.id = id;
+		}
+
+		/**
+		 * Creates the item stack dynamically for each entry as the underlying stack will need to change.
+		 */
+		@Override
+		protected ItemStack getHead() {
+			ProfileComponent profile = CustomAnimatedHelmetTextures.animateHeadTexture(this.id);
+
+			if (profile != null) {
+				ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
+				stack.set(DataComponentTypes.PROFILE, profile);
+
+				return stack;
+			}
+
+			return Ico.BARRIER;
+		}
 	}
 }

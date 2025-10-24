@@ -34,7 +34,7 @@
 - **F3/M3 Guardian Health Display**
 - **F5/M5 Livid Color Highlight**
 - **F7/M7 Terminal/Device Waypoints/Highlight**
-- **Reparty:** Type /rp to reparty and enable auto-rejoin.
+- **Reparty:** Auto-rejoin and `/rp` command.
 - **AOTV & Pearl Secret Waypoints**
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
@@ -54,17 +54,22 @@
 - **Dungeon Splits Widget**
 - **Door Key Highlighter**
 
-### Foraging Features:
-- **Waypoints to forest nodes**
+### Hunting Features:
+- **Forest Node Highlighter**
 - **Lushlilac and Sea Lumies Highlighters**
-- **Forest temple puzzle solver**
-- **Hunting box helper**
-- **Hunting Mobs features**
-  - Silence Phantoms
-  - Highlight Hideonleaves
+- **Forest Temple puzzle solver**
+- **Hunting Box Helper**
 - **Hunting Box Shard Prices**
+- **Various Mob Features**
+    - Phantom Silencer
+    - Hideonleaf Highlighter
+    - Carolat Highlighter
+    - Shellwise Highlighter
+- **Lasso HUD**
+
+### Foraging Features:
 - **Sweep Overlay**
-  - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
+    - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
 - **Moonglade Beacon Tuner Helper**
 - **Tree Break Progress HUD**
 - **Sweep Details HUD**
@@ -170,7 +175,7 @@
     - Laser phase Timer
 - **Blaze Slayer:**
     - Attunement highlighting
-    - Fire Pillar Countdown Notifiications
+    - Fire Pillar Countdown Notifications
 - **General:**
     - Bossbars
     - Slayer HUD
@@ -204,7 +209,7 @@
 - **Compact damage**
 - **Waypoints for commissions in dwarven mines and glacite tunnels**
 - **Fancy Tab HUD:** Fully configurable, allowing individual widgets to be freely placed on the main screen.
-- **1.8 Hitbox for Lever, Farmland and mushroom**
+- **1.8 Hitbox for Levers, Mushrooms, and Cacti**
 - **Hide Status Effect Overlay**
 - **Personal Compactor/Deletor Preview**
 - **Hide Fake Players in Social Interactions Screen**
@@ -215,11 +220,11 @@
 - **Configure night vision strength**
 - **End HUD Widget:**
     - Zealots:
-        - *Since last eye*
-        - *Total zealots kills*
-        - *Avg kills per eye*
+        - *Kills Since Last Eye*
+        - *Total Zealots Kills*
+        - *Avg Kills per Eye*
     - Endstone Protector:
-        - *stage*
+        - *Stage*
         - *Location*
 - **Ender Nodes Helper**
 - **Powder mining tracker**
@@ -231,7 +236,10 @@
 
 ### User Interface Enhancements:
 - **Equipment in inventory**
-- **Search overlays for bz and ah**
+- **Search Overlay**
+    - Auction House
+    - Bazaar
+    - Museum
 - **Bazaar Quick Quantities**
 - **Slot Text:**
     - *Attribute level*
@@ -278,10 +286,10 @@
     - *Estimated Item Value*
     - *Skyblock ID*
     - *Bazaar Reorder Helper*
-- **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
+- **Quick Navigation:** Fully customizable (Item selector) fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
-  - Crafting
-  - Forge
+    - Crafting
+    - Forge
 - **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
 - **New Year Cakes Helper**
 - **Fancy Crafting Table**
@@ -292,6 +300,8 @@
 - **CTRL/CMD + F to search inventory**
 - **legacy attribute background**
 - **Sack Message Prices**
+- **Bazaar order tracker**
+- **Builder's wand preview**
 
 ### Barn Features:
 - **Barn Solver:**
@@ -302,18 +312,19 @@
 ### Chat Features:
 - **Custom Chat Rules**
 - **Autocomplete**
-    - *Warp command*
+    - *`/warp` command*
     - *Sack Item*
-    - *Viewstash*
-    - *Join Instance, Join Dungeon, Join Kuudra*
+    - *`/viewstash` command*
+    - *`/joininstance, /joindungeon, /joinkuudra` commands*
     - *RNG Meter*
+    - *`/call` command*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*
     - *Aspect of the End (AOTE)*
     - *Implosion*
     - *Molten Wave*
-    - *`/show command`*
+    - *`/show` command*
     - *Teleport Pad Messages*
     - *Sky Mall*
     - *Lottery*
@@ -328,7 +339,7 @@
     - Hide other rods
     - Ingame fishing hook timer display
 - **Mythological Ritual Helper**
-    - Estimated Diana burrow pos
+    - Estimates Diana griffin burrow positions
 - **Chocolate factory Helper**
 - **Jerry timer**
 - **Wardrobe helper based on hotbar keybinds**
@@ -337,20 +348,24 @@
 - **Math teacher helper**
 - **Raffle task highlighter**
 - **Disable All Command**
+- **Abiphone Call Prompts**
+    - Adds clickable messages in chat to quickly call Trevor the Trapper, Maddox, and Queen Mismyla
 
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
-  - Crafting
-  - Forge
-  - Skyblock Info
-  - Collapsible Entries
+    - Crafting
+    - Forge
+    - NPC Shop Recipes
+    - Skyblock Info
+    - Collapsible Entries
 - **Item Protection**
-  - config option to toggle item protection chat notifications
+    - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
-- **Wiki Lookup:** Press F4 to open the wiki page about the held item or garden visitors.
+- **Wiki Lookup:** Press F4 to open the wiki page about a hovered item, pet, garden visitor, or calendar event.
 - **OptiFabric Compatibility**
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
+- **True Quiver Count**
 - **Chest Value**
 - **Add useful tips in chat**
 - **Suppress badlion packet warnings**
@@ -362,5 +377,6 @@
 - **Resource pack compatibility**
 - **Shortcuts**
     - Command Shortcuts
-    - Keybind Shortcuts
+    - Keybind/Keybind Combo Shortcuts
 - **Config Backups**
+- **Iris shader support**

@@ -6,10 +6,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 
 public interface Resettable extends ClientPlayConnectionEvents.Join {
-    void reset();
+	void reset();
 
-    @Override
-    default void onPlayReady(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client) {
-        reset();
-    }
+	@Override
+	default void onPlayReady(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client) {
+		reset();
+	}
 }

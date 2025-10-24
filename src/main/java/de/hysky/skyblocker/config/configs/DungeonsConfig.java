@@ -156,6 +156,10 @@ public class DungeonsConfig {
 		public boolean solveSimonSays = true;
 
 		public boolean solveLightsOn = true;
+
+		public boolean solveArrowAlign = true;
+
+		public boolean solveTargetPractice = true;
 	}
 
 	public static class Goldor {

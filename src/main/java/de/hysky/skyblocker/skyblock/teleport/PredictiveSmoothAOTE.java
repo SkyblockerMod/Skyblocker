@@ -1,13 +1,16 @@
-package de.hysky.skyblocker.skyblock;
+package de.hysky.skyblocker.skyblock.teleport;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.*;
@@ -23,6 +26,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -37,8 +41,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SmoothAOTE {
-
+public class PredictiveSmoothAOTE {
+	public static final Identifier SMOOTH_AOTE_BEFORE_PHASE = Identifier.of(SkyblockerMod.NAMESPACE, "smooth_aote");
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
@@ -56,8 +60,9 @@ public class SmoothAOTE {
 
 	@Init
 	public static void init() {
-		UseItemCallback.EVENT.register(SmoothAOTE::onItemInteract);
-		UseBlockCallback.EVENT.register(SmoothAOTE::onBlockInteract);
+		UseItemCallback.EVENT.register(SMOOTH_AOTE_BEFORE_PHASE, PredictiveSmoothAOTE::onItemInteract);
+		UseItemCallback.EVENT.addPhaseOrdering(SMOOTH_AOTE_BEFORE_PHASE, Event.DEFAULT_PHASE); // run this event first to check mana before it gets changed by the tracker
+		UseBlockCallback.EVENT.register(PredictiveSmoothAOTE::onBlockInteract);
 	}
 
 	/**
@@ -160,8 +165,9 @@ public class SmoothAOTE {
 		if (CLIENT.player == null || CLIENT.world == null) {
 			return;
 		}
-		//get return item
-		ItemStack stack = CLIENT.player.getStackInHand(hand);
+
+		// make sure the predictive algorithm is selected
+		if (!SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.predictive) return;
 
 		//make sure it's not disabled
 		if (teleportDisabled) {
@@ -183,66 +189,17 @@ public class SmoothAOTE {
 		String itemId = heldItem.getSkyblockId();
 		NbtCompound customData = ItemUtils.getCustomData(heldItem);
 
-		int distance;
-		switch (itemId) {
-			case "ASPECT_OF_THE_LEECH_1" -> {
-				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWeirdTransmission) {
-					distance = 3;
-					break;
-				}
-				return;
-
-			}
-			case "ASPECT_OF_THE_LEECH_2" -> {
-				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWeirdTransmission) {
-					distance = 4;
-					break;
-				}
-				return;
-			}
-			case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
-				if (CLIENT.options.sneakKey.isPressed() && customData.getInt("ethermerge", 0) == 1) {
-					if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
-						distance = extractTunedCustomData(customData, 57);
-						break;
-					}
-				} else if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableInstantTransmission) {
-					distance = extractTunedCustomData(customData, 8);
-					break;
-				}
-				return;
-			}
-			case "ETHERWARP_CONDUIT" -> {
-				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
-					distance = extractTunedCustomData(customData, 57);
-					break;
-				}
-				return;
-			}
-			case "SINSEEKER_SCYTHE" -> {
-				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableSinrecallTransmission) {
-					distance = extractTunedCustomData(customData, 4);
-					break;
-				}
-				return;
-			}
-			case "NECRON_BLADE", "ASTRAEA", "HYPERION", "SCYLLA", "VALKYRIE" -> {
-				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWitherImpact) {
-					distance = 10;
-					break;
-				}
-				return;
-			}
-			default -> {
-				return;
-			}
+		int distance = getItemDistance(itemId, customData);
+		if (distance == -1) {
+			return;
 		}
+
 		//make sure the player has enough mana to do the teleport
 		Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
 		if (manaNeeded != null && manaNeeded.matches()) {
 			int manaCost = Integer.parseInt(manaNeeded.group(1));
-			int predictedMana = StatusBarTracker.getMana().value() - teleportsAhead * manaCost;
-			if (predictedMana < manaCost) { // todo the players mana can lag behind as it is updated server side. client side mana calculations would help with this
+			int predictedMana = StatusBarTracker.getMana().value();
+			if (predictedMana < manaCost) {
 				return;
 			}
 		}
@@ -250,7 +207,7 @@ public class SmoothAOTE {
 		//work out start pos of warp and set start time. if there is an active warp going on make the end of that the start of the next one
 		if (teleportsAhead == 0 || startPos == null || teleportVector == null) {
 			//start of teleport sequence
-			startPos = CLIENT.player.getPos().add(0, 1.62, 0); // the eye poss should not be affected by crouching
+			startPos = CLIENT.player.getPos().add(0, getEyeHeight(), 0); // the eye poss should not be affected by crouching
 			cameraStartPos = CLIENT.player.getEyePos();
 			lastTeleportTime = System.currentTimeMillis();
 			// update the ping used for the teleport
@@ -287,12 +244,88 @@ public class SmoothAOTE {
 			return;
 		}
 
-		//compensate for hypixel round to center of block (to x.5 y.62 z.5)
+		//compensate for hypixel round to center of block (to x.5 y.(eye height - 1), z.5)
 		Vec3d predictedEnd = startPos.add(teleportVector);
-		Vec3d offsetVec = new Vec3d(predictedEnd.x - roundToCenter(predictedEnd.x), predictedEnd.y - (Math.ceil(predictedEnd.y) + 0.62), predictedEnd.z - roundToCenter(predictedEnd.z));
+		Vec3d offsetVec = new Vec3d(predictedEnd.x - roundToCenter(predictedEnd.x), predictedEnd.y - (Math.ceil(predictedEnd.y) + getEyeHeight() - 1), predictedEnd.z - roundToCenter(predictedEnd.z));
 		teleportVector = teleportVector.subtract(offsetVec);
 		//add 1 to teleports ahead
 		teleportsAhead += 1;
+	}
+
+	/**
+	 * Get players eye height from the servers point of view based on it's minecraft version
+	 *
+	 * @return offset from players pos to their eyes
+	 */
+	protected static float getEyeHeight() {
+		if (CLIENT.player == null || !CLIENT.player.isSneaking()) return 1.62f;
+		//sneaking height is different depending on server
+		return Utils.getLocation().isModern() ? 1.27f : 1.54f;
+	}
+
+	/**
+	 * work out if the player is holding a teleporting item that is enabled and if so how far the item will take them
+	 *
+	 * @param itemId     id of item to check
+	 * @param customData custom data of item to check
+	 * @return distance the item teleports or -1 if not valid
+	 */
+	protected static int getItemDistance(String itemId, NbtCompound customData) {
+		int distance;
+		switch (itemId) {
+			case "ASPECT_OF_THE_LEECH_1" -> {
+				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWeirdTransmission) {
+					distance = 3;
+					break;
+				}
+				return -1;
+
+			}
+			case "ASPECT_OF_THE_LEECH_2" -> {
+				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWeirdTransmission) {
+					distance = 4;
+					break;
+				}
+				return -1;
+			}
+			case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
+				if (CLIENT.options.sneakKey.isPressed() && customData.getInt("ethermerge", 0) == 1) {
+					if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
+						distance = extractTunedCustomData(customData, 57);
+						break;
+					}
+				} else if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableInstantTransmission) {
+					distance = extractTunedCustomData(customData, 8);
+					break;
+				}
+				return -1;
+			}
+			case "ETHERWARP_CONDUIT" -> {
+				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
+					distance = extractTunedCustomData(customData, 57);
+					break;
+				}
+				return -1;
+			}
+			case "SINSEEKER_SCYTHE" -> {
+				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableSinrecallTransmission) {
+					distance = extractTunedCustomData(customData, 4);
+					break;
+				}
+				return -1;
+			}
+			case "NECRON_BLADE", "ASTRAEA", "HYPERION", "SCYLLA", "VALKYRIE" -> {
+				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWitherImpact) {
+					distance = 10;
+					break;
+				}
+				return -1;
+			}
+			default -> {
+				return -1;
+			}
+		}
+		return distance;
 	}
 
 	/**
@@ -310,7 +343,7 @@ public class SmoothAOTE {
 		Vec3d endPos = startPos.add(look.multiply(maxDistance));
 
 		// First: Raycast for blocks (to check obstructions)
-		World world = player.getEntityWorld();
+		World world = player.getWorld();
 		RaycastContext context = new RaycastContext(startPos, endPos, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player);
 		double blockHitDistance = world.raycast(context).getPos().distanceTo(startPos);
 

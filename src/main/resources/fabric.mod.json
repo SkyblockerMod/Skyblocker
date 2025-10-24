@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "Skyblocker",
   "description": "Hypixel Skyblock Mod",
-  "authors": ["LifeIsAParadox/wohlhabend", "kevinthegreat1", "AzureAaron", "viciscat", "Emirlol", "olim88"],
+  "authors": ["LifeIsAParadox/wohlhabend", "kevinthegreat1", "AzureAaron", "viciscat", "Emirlol", "olim88", "Alex33856"],
   "contributors": ["xMrVizzy", "d3dx9", "ExternalTime", "Zailer43", "TacoMonkey", "KonaeAkira", "Fix3dll", "null2264",
     "HyperSoop", "edgarogh", "TheColdPot", "Julienraptor01", "ADON15c", "catandA", "msg-programs", "lantice3720",
     "Futuremappermydud", "koloiyolo", "Grayray75", "alexiayaa", "KhafraDev", "btwonion", "Kaluub",
@@ -53,7 +53,6 @@
     "java": ">=21"
   },
   "conflicts": {
-    "iris": "*"
   },
   "breaks": {
     "forcecloseworldloadingscreen": "<=2.2.0",

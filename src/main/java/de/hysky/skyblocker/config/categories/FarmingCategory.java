@@ -13,13 +13,12 @@ import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class FarmingCategory {
 
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
-				.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/farming"))
+				.id(SkyblockerMod.id("config/farming"))
 				.name(Text.translatable("skyblocker.config.farming"))
 
 				//Garden

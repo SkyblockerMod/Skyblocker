@@ -10,14 +10,14 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -63,14 +64,14 @@ public class GoldorWaypointsManager {
 
 	@Init
 	public static void init() {
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(GoldorWaypointsManager::render);
+        WorldRenderExtractionCallback.EVENT.register(GoldorWaypointsManager::extractRendering);
         ClientLifecycleEvents.CLIENT_STARTED.register(GoldorWaypointsManager::load);
         ClientReceiveMessageEvents.ALLOW_GAME.register(GoldorWaypointsManager::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
     }
 
     private static void load(MinecraftClient client) {
-        CompletableFuture<Void> terminals = loadWaypoints(client, Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/goldorwaypoints.json"));
+        CompletableFuture<Void> terminals = loadWaypoints(client, SkyblockerMod.id("dungeons/goldorwaypoints.json"));
 
         terminals.whenComplete((_result, _throwable) -> loaded = true);
     }
@@ -184,19 +185,19 @@ public class GoldorWaypointsManager {
         return true;
     }
 
-    private static void renderWaypoints(WorldRenderContext context, ObjectArrayList<GoldorWaypoint> waypoints) {
+    private static void extractRenderingForWaypoints(PrimitiveCollector collector, ObjectArrayList<GoldorWaypoint> waypoints) {
         for (GoldorWaypoint waypoint : waypoints) {
             if (waypoint.phase == currentPhase && waypoint.shouldRender()) {
-                waypoint.render(context);
+                waypoint.extractRendering(collector);
             }
         }
     }
 
-    private static void render(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         if (active) {
-            renderWaypoints(context, TERMINALS);
-            renderWaypoints(context, DEVICES);
-            renderWaypoints(context, LEVERS);
+        	extractRenderingForWaypoints(collector, TERMINALS);
+        	extractRenderingForWaypoints(collector, DEVICES);
+        	extractRenderingForWaypoints(collector, LEVERS);
         }
     }
 
@@ -236,7 +237,7 @@ public class GoldorWaypointsManager {
 
             @Override
             public String asString() {
-                return name().toLowerCase();
+                return name().toLowerCase(Locale.ENGLISH);
             }
         }
     }

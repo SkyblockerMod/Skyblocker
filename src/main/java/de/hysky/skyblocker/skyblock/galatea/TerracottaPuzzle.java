@@ -8,9 +8,8 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -39,7 +38,7 @@ public class TerracottaPuzzle {
 
 	@Init
 	public static void init() {
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(TerracottaPuzzle::render);
+		WorldRenderExtractionCallback.EVENT.register(TerracottaPuzzle::extractRendering);
 	}
 
 	/**
@@ -69,7 +68,7 @@ public class TerracottaPuzzle {
 		return solutions;
 	}
 
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().foraging.galatea.solveForestTemplePuzzle || !Utils.isInGalatea() || Utils.getArea() != Area.FOREST_TEMPLE || CLIENT.world == null) return;
 
 		List<Direction> solutions = solve();
@@ -116,7 +115,7 @@ public class TerracottaPuzzle {
 
 			//If the block needs to be rotated
 			if (clockwiseRotations != 0) {
-				RenderHelper.renderText(context, Text.literal(String.valueOf(rotationsNeeded)).formatted(Formatting.DARK_BLUE), Vec3d.ofCenter(pos).add(0, 1, 0), false);
+				collector.submitText(Text.literal(String.valueOf(rotationsNeeded)).formatted(Formatting.DARK_BLUE), Vec3d.ofCenter(pos).add(0, 1, 0), false);
 			}
 		}
 	}

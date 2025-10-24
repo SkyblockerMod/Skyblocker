@@ -149,7 +149,7 @@ public class ItemSelectionScreen extends AbstractPopupScreen {
 			super(0, 0, 20, 20, Text.literal(stack.getName().getString()));
 			item = new ItemStack(stack.getItem());
 			item.copy(DataComponentTypes.PROFILE, stack);
-			String itemId = ItemUtils.getItemId(stack);
+			String itemId = stack.getSkyblockId();
 			NbtCompound customData = new NbtCompound();
 			customData.putString(ItemUtils.ID, itemId);
 			item.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(customData));

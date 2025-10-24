@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.end.EndHudWidget;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
@@ -14,13 +15,12 @@ import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class OtherLocationsCategory {
 
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
-				.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/otherlocations"))
+				.id(SkyblockerMod.id("config/otherlocations"))
 				.name(Text.translatable("skyblocker.config.otherLocations"))
 
 				//Barn
@@ -113,6 +113,14 @@ public class OtherLocationsCategory {
 										newValue -> config.otherLocations.end.enableEnderNodeHelper = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Waypoint.Type>createBuilder()
+								.name(Text.translatable("skyblocker.config.otherLocations.end.enderNodeWaypointType"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"))
+								.binding(defaults.otherLocations.end.enderNodeWaypointType,
+										() -> config.otherLocations.end.enderNodeWaypointType,
+										newValue -> config.otherLocations.end.enderNodeWaypointType = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.otherLocations.end.hudEnabled"))
 								.binding(defaults.otherLocations.end.hudEnabled,
@@ -122,6 +130,7 @@ public class OtherLocationsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.otherLocations.end.zealotKillsEnabled"))
+								.description(Text.translatable("skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip"))
 								.binding(defaults.otherLocations.end.zealotKillsEnabled,
 										() -> config.otherLocations.end.zealotKillsEnabled,
 										newValue -> {

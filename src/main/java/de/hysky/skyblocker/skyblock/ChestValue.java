@@ -6,6 +6,8 @@ import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
+import de.hysky.skyblocker.skyblock.hunting.Attribute;
+import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -40,6 +42,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -107,7 +110,7 @@ public class ChestValue {
 				String skyblockApiId = stack.getSkyblockApiId();
 
 				//Regular item price
-				if (!skyblockApiId.isEmpty()) {
+				if (!skyblockApiId.isEmpty() && !(name.contains("Essence") || name.contains("Shard"))) {
 					DoubleBooleanPair priceData = ItemUtils.getItemPrice(skyblockApiId);
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
@@ -126,7 +129,7 @@ public class ChestValue {
 						String type = matcher.group("type");
 						int amount = Integer.parseInt(matcher.group("amount"));
 
-						DoubleBooleanPair priceData = ItemUtils.getItemPrice(("ESSENCE_" + type).toUpperCase());
+						DoubleBooleanPair priceData = ItemUtils.getItemPrice(("ESSENCE_" + type).toUpperCase(Locale.ENGLISH));
 
 						if (!priceData.rightBoolean()) hasIncompleteData = true;
 
@@ -143,20 +146,14 @@ public class ChestValue {
 
 					if (matcher.matches()) {
 						//I do not believe it is possible to get more than 1 in a single chest but in the interest of
-						//future-proofing we will handle it anyways
+						//future-proofing we will handle it anyway
 						int shards = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
-						String shardApiId = switch (name) {
-							case String s when s.startsWith("Wither") -> "SHARD_WITHER";
-							case String s when s.startsWith("Apex Dragon") -> "SHARD_APEX_DRAGON";
-							case String s when s.startsWith("Power Dragon") -> "SHARD_POWER_DRAGON";
-							default -> "";
-						};
-
-						if (shardApiId.isEmpty()) {
+						Attribute attribute = Attributes.getAttributeFromItemName(stack);
+						if (attribute == null) {
 							LOGGER.warn("[Skyblocker Profit Calculator] Encountered unknown shard {}", name);
 							continue;
 						}
-
+						String shardApiId = attribute.apiId();
 						DoubleBooleanPair priceData = ItemUtils.getItemPrice(shardApiId);
 
 						if (!priceData.rightBoolean()) hasIncompleteData = true;

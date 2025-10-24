@@ -17,12 +17,11 @@ import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class HelperCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
-				.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/helpers"))
+				.id(SkyblockerMod.id("config/helpers"))
 				.name(Text.translatable("skyblocker.config.helpers"))
 
 				//Ungrouped Options
@@ -71,6 +70,14 @@ public class HelperCategory {
 						.binding(defaults.helpers.enableCopyUnderbidPrice,
 								() -> config.helpers.enableCopyUnderbidPrice,
 								newValue -> config.helpers.enableCopyUnderbidPrice = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				// Builder's Wand and Ruler Preview
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.enableBuildersWandPreview"))
+						.binding(defaults.helpers.enableBuildersWandPreview,
+								() -> config.helpers.enableBuildersWandPreview,
+								newValue -> config.helpers.enableBuildersWandPreview = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				//Mythological Ritual
@@ -366,6 +373,14 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.bazaar.enableOrderTracker"))
+								.description(Text.translatable("skyblocker.config.helpers.bazaar.enableOrderTracker.@Tooltip"))
+								.binding(defaults.helpers.bazaar.enableOrderTracker,
+										() -> config.helpers.bazaar.enableOrderTracker,
+										newValue -> config.helpers.bazaar.enableOrderTracker = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup"))
 								.description(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip"))
 								.binding(defaults.helpers.itemPrice.enableItemPriceLookup,
@@ -382,6 +397,19 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(ConfigUtils.createShortcutToKeybindsScreen())
+						.build())
+				// Great Spook Event
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.greatSpook"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.greatSpook.enableMathTeacherHelper"))
+								.description(Text.translatable("skyblocker.config.helpers.greatSpook.enableMathTeacherHelper.@Tooltip"))
+								.binding(defaults.helpers.greatSpookEvent.enableMathTeacherHelper,
+										() -> config.helpers.greatSpookEvent.enableMathTeacherHelper,
+										newValue -> config.helpers.greatSpookEvent.enableMathTeacherHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 				.build();
 	}

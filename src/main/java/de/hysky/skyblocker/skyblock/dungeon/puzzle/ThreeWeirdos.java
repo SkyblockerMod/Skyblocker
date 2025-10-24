@@ -5,8 +5,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
@@ -78,9 +78,9 @@ public class ThreeWeirdos extends DungeonPuzzle {
     public void tick(MinecraftClient client) {}
 
     @Override
-    public void render(WorldRenderContext context) {
+    public void extractRendering(PrimitiveCollector collector) {
         if (shouldSolve() && boundingBox != null) {
-            RenderHelper.renderFilled(context, boundingBox, GREEN_COLOR_COMPONENTS, 0.5f, false);
+            collector.submitFilledBox(boundingBox, GREEN_COLOR_COMPONENTS, 0.5f, false);
         }
     }
 

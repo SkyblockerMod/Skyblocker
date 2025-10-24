@@ -13,12 +13,12 @@ import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.render.Renderable;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -110,7 +110,7 @@ public class Room implements Tickable, Renderable {
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
         shape = getShape(segmentsX, segmentsY);
-        roomsData = DungeonManager.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(), Collections.emptyMap());
+        roomsData = DungeonManager.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(Locale.ENGLISH), Collections.emptyMap());
         possibleRooms = getPossibleRooms(segmentsX, segmentsY);
     }
 
@@ -517,19 +517,19 @@ public class Room implements Tickable, Renderable {
 	}
 
     /**
-     * Calls {@link SecretWaypoint#render(WorldRenderContext)} on {@link #secretWaypoints all secret waypoints} and renders a highlight around the wither or blood door, if it exists.
+     * Calls {@link SecretWaypoint#extractRendering(PrimitiveCollector)} on {@link #secretWaypoints all secret waypoints} and renders a highlight around the wither or blood door, if it exists.
      */
     @Override
-    public void render(WorldRenderContext context) {
+    public void extractRendering(PrimitiveCollector collector) {
         for (Renderable renderable : renderables) {
-            renderable.render(context);
+            renderable.extractRendering(collector);
         }
 
         synchronized (this) {
             if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
                 for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
                     if (secretWaypoint.shouldRender()) {
-                        secretWaypoint.render(context);
+                        secretWaypoint.extractRendering(collector);
                     }
                 }
             }
@@ -571,7 +571,7 @@ public class Room implements Tickable, Renderable {
     protected void onUseBlock(World world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         if ((state.isOf(Blocks.CHEST) || state.isOf(Blocks.TRAPPED_CHEST)) && lastChestSecretTime + 1000 < System.currentTimeMillis() || state.isOf(Blocks.PLAYER_HEAD) || state.isOf(Blocks.PLAYER_WALL_HEAD)) {
-            secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
+            secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).filter(SecretWaypoint::isEnabled).findAny()
                     .ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
             if (state.isOf(Blocks.CHEST) || state.isOf(Blocks.TRAPPED_CHEST)) {
                 lastChestSecret = pos;

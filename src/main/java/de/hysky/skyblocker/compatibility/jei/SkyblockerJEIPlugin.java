@@ -35,7 +35,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
     @Override
     @NotNull
     public Identifier getPluginUid() {
-        return Identifier.of(SkyblockerMod.NAMESPACE, "skyblock");
+        return SkyblockerMod.id("skyblock");
     }
 
     @Override

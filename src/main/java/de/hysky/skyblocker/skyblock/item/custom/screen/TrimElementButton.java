@@ -133,6 +133,7 @@ public abstract sealed class TrimElementButton extends PressableWidget permits T
 			HudHelper.drawEquipment(context, EQUIPMENT_RENDERER, layerType, equippableComponent.assetId().orElse(EquipmentAssetKeys.IRON), model, stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), rotation, 14, offset);
 		}
 
+		@SuppressWarnings("incomplete-switch")
 		private static float setVisibleAndGetOffset(ArmorEntityModel<?> bipedModel, EquipmentSlot slot) {
 			bipedModel.setVisible(false);
 			switch (slot) {

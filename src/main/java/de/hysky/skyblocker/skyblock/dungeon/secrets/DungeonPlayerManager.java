@@ -105,7 +105,12 @@ public class DungeonPlayerManager {
 		Matcher matcher = PLAYER_GHOST_PATTERN.matcher(text.getString());
 		if (!matcher.find()) return true;
 
-		getPlayer(matcher.group("name")).ifPresentOrElse(DungeonPlayer::ghost, () -> DungeonManager.LOGGER.error("[Skyblocker Dungeon Player Manager] Received ghost message for player '{}' but player was not found in the player list: {}", matcher.group("name"), Arrays.toString(players)));
+		String name = matcher.group("name");
+		if (name.equals("You")) {
+			assert MinecraftClient.getInstance().player != null;
+			name = MinecraftClient.getInstance().player.getName().getString();
+		}
+		getPlayer(name).ifPresentOrElse(DungeonPlayer::ghost, () -> DungeonManager.LOGGER.error("[Skyblocker Dungeon Player Manager] Received ghost message for player '{}' but player was not found in the player list: {}", matcher.group("name"), Arrays.toString(players)));
 
 		return true;
 	}

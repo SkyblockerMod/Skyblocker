@@ -123,7 +123,7 @@ public class ARGBTextInput extends ClickableWidget {
 		int textX = getX() + (drawBackground ? 3 : 0);
 		int textY = getY() + (getHeight() - textRenderer.fontHeight) / 2;
 		if (drawBackground) {
-			context.fill(getX(), getY(), getRight(), getBottom(), isFocused() ? Colors.WHITE: Colors.GRAY);
+			context.fill(getX(), getY(), getRight(), getBottom(), isFocused() ? Colors.WHITE : Colors.GRAY);
 			context.fill(getX() + 1, getY() + 1, getRight() - 1, getBottom() - 1, Colors.BLACK);
 		}
 

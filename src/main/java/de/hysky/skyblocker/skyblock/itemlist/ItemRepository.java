@@ -4,19 +4,18 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
-import io.github.moulberry.repo.data.NEUCraftingRecipe;
-import io.github.moulberry.repo.data.NEUForgeRecipe;
-import io.github.moulberry.repo.data.NEUItem;
-import io.github.moulberry.repo.data.NEURecipe;
+import io.github.moulberry.repo.data.*;
 import io.github.moulberry.repo.util.NEUId;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
 import net.minecraft.recipe.display.CuttingRecipeDisplay;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,9 +84,9 @@ public class ItemRepository {
 		recipes.clear();
 
 		NEURepoManager.forEachItem(ItemRepository::loadItem);
-		items.sort(Comparator.<ItemStack, String>comparing(stack -> ItemUtils.getItemId(stack).replaceAll(".\\d+$", ""))
-				.thenComparingInt(stack -> ItemUtils.getItemId(stack).length())
-				.thenComparing(ItemUtils::getItemId)
+		items.sort(Comparator.<ItemStack, String>comparing(stack -> stack.getSkyblockId().replaceAll(".\\d+$", ""))
+				.thenComparingInt(stack -> stack.getSkyblockId().length())
+				.thenComparing(ItemStack::getSkyblockId)
 		);
 		itemsImported = true;
 
@@ -115,7 +114,7 @@ public class ItemRepository {
 			ItemStack stack = ItemStackBuilder.fromNEUItem(item);
 			StackOverlays.applyOverlay(item, stack);
 
-			if (stack.isOf(Items.ENCHANTED_BOOK) && ItemUtils.getItemId(stack).contains(";")) {
+			if (stack.isOf(Items.ENCHANTED_BOOK) && stack.getSkyblockId().contains(";")) {
 				ItemUtils.getCustomData(stack).putString("id", "ENCHANTED_BOOK");
 			}
 
@@ -179,15 +178,21 @@ public class ItemRepository {
 	}
 
 	/**
-	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link ItemUtils#getNeuId(ItemStack) ItemTooltip#getNeuName(String, String)}
+	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName()}.
 	 */
 	@Nullable
 	public static ItemStack getItemStack(String neuId) {
 		return itemsImported ? itemsMap.get(neuId) : null;
 	}
 
+	@Contract("_, !null -> !null")
+	public static ItemStack getItemStack(String neuId, ItemStack defaultStack) {
+		ItemStack stack = getItemStack(neuId);
+		return stack != null ? stack : defaultStack;
+	}
+
 	/**
-	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link ItemUtils#getNeuId(ItemStack) ItemTooltip#getNeuName(String, String)}
+	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName()}.
 	 */
 	public static Supplier<ItemStack> getItemStackSupplier(String neuId) {
 		return () -> itemsMap.get(neuId);
@@ -209,6 +214,7 @@ public class ItemRepository {
 		return switch (neuRecipe) {
 			case NEUCraftingRecipe craftingRecipe -> new SkyblockCraftingRecipe(craftingRecipe);
 			case NEUForgeRecipe forgeRecipe -> new SkyblockForgeRecipe(forgeRecipe);
+			case NEUNpcShopRecipe shopRecipe -> new SkyblockNpcShopRecipe(shopRecipe);
 			case null, default -> null;
 		};
 	}
