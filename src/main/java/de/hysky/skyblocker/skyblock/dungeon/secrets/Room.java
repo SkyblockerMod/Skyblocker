@@ -59,13 +59,14 @@ public class Room implements Tickable, Renderable {
     final Set<Vector2ic> segments;
     /**
      * Used to allow rooms to have their secrets unmarked after the map detects the green checkmark.
-     *
      * This should not be used for rendering as it would break the above case and having the prince waypoints show until a prince is killed.
      */
-    protected boolean greenChecked = false;
+    public boolean greenChecked = false;
+
+	public boolean whiteChecked = false;
 
     /**
-     * The shape of the room. See {@link #getShape(IntSortedSet, IntSortedSet)}.
+     * The shape of the room. See {@link #determineShape(IntSortedSet, IntSortedSet)}.
      */
     @NotNull
     private final Shape shape;
@@ -109,7 +110,7 @@ public class Room implements Tickable, Renderable {
         segments = Set.of(physicalPositions);
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
-        shape = getShape(segmentsX, segmentsY);
+        shape = determineShape(segmentsX, segmentsY);
         roomsData = DungeonManager.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(Locale.ENGLISH), Collections.emptyMap());
         possibleRooms = getPossibleRooms(segmentsX, segmentsY);
     }
@@ -118,6 +119,20 @@ public class Room implements Tickable, Renderable {
     public Type getType() {
         return type;
     }
+
+	@NotNull
+	public Set<Vector2ic> getSegments() {
+		return segments;
+	}
+
+	@NotNull
+	public Shape getShape() {
+		return shape;
+	}
+
+	public Vector2ic getPhysicalCornerPos() {
+		return physicalCornerPos;
+	}
 
     public boolean isMatched() {
         return matchState == MatchState.DOUBLE_CHECKING || matchState == MatchState.MATCHED;
@@ -143,7 +158,7 @@ public class Room implements Tickable, Renderable {
     }
 
     @NotNull
-    private Shape getShape(IntSortedSet segmentsX, IntSortedSet segmentsY) {
+    private Shape determineShape(IntSortedSet segmentsX, IntSortedSet segmentsY) {
         return switch (type) {
             case PUZZLE -> Shape.PUZZLE;
             case TRAP -> Shape.TRAP;
@@ -677,7 +692,7 @@ public class Room implements Tickable, Renderable {
         }
     }
 
-    protected enum Shape {
+    public enum Shape {
         ONE_BY_ONE("1x1"),
         ONE_BY_TWO("1x2"),
         ONE_BY_THREE("1x3"),
