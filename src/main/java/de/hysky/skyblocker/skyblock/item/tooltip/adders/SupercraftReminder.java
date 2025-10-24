@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
@@ -23,7 +22,7 @@ public class SupercraftReminder extends SimpleTooltipAdder {
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		if (focusedSlot == null || focusedSlot.id != SUPERCRAFT_SLOT || !stack.isOf(Items.GOLDEN_PICKAXE)) return;
-		String uuid = ItemUtils.getItemUuid(focusedSlot.inventory.getStack(RECIPE_RESULT_SLOT));
+		String uuid = focusedSlot.inventory.getStack(RECIPE_RESULT_SLOT).getUuid();
 		if (!uuid.isEmpty()) return; //Items with UUID can't be stacked, and therefore the shift-click feature doesn't matter
 		int index = lines.size() - 1;
 		if (lines.get(lines.size() - 2).getString().equals("Recipe not unlocked!")) index--; //Place it right below the "Right-Click to set amount" line

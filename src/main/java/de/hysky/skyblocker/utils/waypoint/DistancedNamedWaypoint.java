@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.waypoint;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -23,12 +23,12 @@ public class DistancedNamedWaypoint extends NamedWaypoint {
 	}
 
 	@Override
-	public void render(WorldRenderContext context) {
-		super.render(context);
+	public void extractRendering(PrimitiveCollector collector) {
+		super.extractRendering(collector);
 		if (shouldRenderDistance()) {
-			double distance = context.camera().getPos().distanceTo(centerPos);
+			double distance = RenderHelper.getCamera().getPos().distanceTo(centerPos);
 			float scale = Math.max((float) distance / 10, 1);
-			RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), centerPos.add(0, 1, 0), scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
+			collector.submitText(Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), centerPos.add(0, 1, 0), scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
 		}
 	}
 }

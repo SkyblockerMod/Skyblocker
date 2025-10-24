@@ -21,13 +21,13 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.GiantEntity;
@@ -57,14 +57,14 @@ public class KuudraWaypoints {
 
 	@Init
 	public static void init() {
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(KuudraWaypoints::render);
+		WorldRenderExtractionCallback.EVENT.register(KuudraWaypoints::extractRendering);
 		ClientLifecycleEvents.CLIENT_STARTED.register(KuudraWaypoints::load);
 		Scheduler.INSTANCE.scheduleCyclic(KuudraWaypoints::tick, 20);
 	}
 
 	private static void load(MinecraftClient client) {
-		CompletableFuture<Void> safeSpots = loadWaypoints(client, Identifier.of(SkyblockerMod.NAMESPACE, "crimson/kuudra/safe_spot_waypoints.json"), SAFE_SPOT_WAYPOINTS, SAFE_SPOT_COLOR);
-		CompletableFuture<Void> pearls = loadWaypoints(client, Identifier.of(SkyblockerMod.NAMESPACE, "crimson/kuudra/pearl_waypoints.json"), PEARL_WAYPOINTS, PEARL_COLOR);
+		CompletableFuture<Void> safeSpots = loadWaypoints(client, SkyblockerMod.id("crimson/kuudra/safe_spot_waypoints.json"), SAFE_SPOT_WAYPOINTS, SAFE_SPOT_COLOR);
+		CompletableFuture<Void> pearls = loadWaypoints(client, SkyblockerMod.id("crimson/kuudra/pearl_waypoints.json"), PEARL_WAYPOINTS, PEARL_COLOR);
 
 		CompletableFuture.allOf(safeSpots, pearls).whenComplete((_result, _throwable) -> loaded = true);
 	}
@@ -134,38 +134,38 @@ public class KuudraWaypoints {
 		}
 	}
 
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		CrimsonIsleConfig.Kuudra config = SkyblockerConfigManager.get().crimsonIsle.kuudra;
 
 		if (Utils.isInKuudra() && loaded) {
 			if (config.supplyWaypoints) {
 				for (Waypoint waypoint : supplyWaypoints) {
-					waypoint.render(context);
+					waypoint.extractRendering(collector);
 				}
 			}
 
 			if (config.ballistaBuildWaypoints) {
 				for (Waypoint waypoint : ballistaBuildWaypoints) {
-					waypoint.render(context);
+					waypoint.extractRendering(collector);
 				}
 			}
 
 			if (config.fuelWaypoints) {
 				for (Waypoint waypoint : fuelWaypoints) {
-					waypoint.render(context);
+					waypoint.extractRendering(collector);
 				}
 			}
 
 			if (config.safeSpotWaypoints) {
 				for (Waypoint waypoint : SAFE_SPOT_WAYPOINTS) {
-					waypoint.render(context);
+					waypoint.extractRendering(collector);
 				}
 			}
 
 			//TODO maybe have "dynamic" waypoints that draw a line to the actual spot
 			if (config.pearlWaypoints) {
 				for (Waypoint waypoint : PEARL_WAYPOINTS) {
-					waypoint.render(context);
+					waypoint.extractRendering(collector);
 				}
 			}
 		}

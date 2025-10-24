@@ -19,17 +19,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 
 @RegisterWidget
 public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	// Doing this will allow these axes to be affected by SkyBlock resource packs.
-	private static final Supplier<ItemStack> SWEET_AXE = ItemRepository.getItemStackSupplier("SWEET_AXE");
-	private static final Supplier<ItemStack> TREECAPITATOR_AXE = ItemRepository.getItemStackSupplier("TREECAPITATOR_AXE");
-	private static final Supplier<ItemStack> FIGSTONE_AXE = ItemRepository.getItemStackSupplier("FIGSTONE_AXE");
 	private static final Map<String, ItemStack> LOG_TO_ITEM = Map.of(
 			"Fig", new ItemStack(Items.STRIPPED_SPRUCE_LOG),
 			"Mangrove", new ItemStack(Items.MANGROVE_LOG),
@@ -64,9 +58,9 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
 			SweepDetailsListener.active = false;
 			ItemStack axeIcon = switch (Utils.getLocation()) {
-				case HUB -> Optional.ofNullable(SWEET_AXE.get()).orElse(new ItemStack(Items.IRON_AXE));
-				case THE_PARK -> Optional.ofNullable(TREECAPITATOR_AXE.get()).orElse(new ItemStack(Items.GOLDEN_AXE));
-				case GALATEA -> Optional.ofNullable(FIGSTONE_AXE.get()).orElse(new ItemStack(Items.STONE_AXE));
+				case HUB -> ItemRepository.getItemStack("SWEET_AXE", new ItemStack(Items.IRON_AXE));
+				case THE_PARK -> ItemRepository.getItemStack("TREECAPITATOR_AXE", new ItemStack(Items.GOLDEN_AXE));
+				case GALATEA -> ItemRepository.getItemStack("FIGSTONE_AXE", new ItemStack(Items.STONE_AXE));
 				default -> RED_CONCRETE;
 			};
 			addComponent(Components.iconTextComponent(axeIcon, Text.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));

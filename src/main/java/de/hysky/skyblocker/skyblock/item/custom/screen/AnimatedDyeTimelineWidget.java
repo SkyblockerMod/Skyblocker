@@ -27,14 +27,14 @@ import java.util.List;
 
 public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closeable {
 
-	private static final Identifier GRADIENT_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "generated/dye_gradient");
+	private static final Identifier GRADIENT_TEXTURE = SkyblockerMod.id("generated/dye_gradient");
 
 	private static final int HORIZONTAL_MARGIN = 3;
 	private static final int VERTICAL_MARGIN = 1;
 
-	private final NativeImageBackedTexture gradientTexture;
-	private final int textureWidth;
-	private final int textureHeight;
+	private NativeImageBackedTexture gradientTexture;
+	private int textureWidth;
+	private int textureHeight;
 	private final FrameCallback frameCallback;
 
 	private String uuid = "";
@@ -44,12 +44,31 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	public AnimatedDyeTimelineWidget(int x, int y, int width, int height, FrameCallback frameCallback) {
 		super(x, y, width, height, Text.literal("Animated Dye Timeline"));
+		createImage(width, height);
+		this.frameCallback = frameCallback;
+	}
+
+	private void createImage(int width, int height) {
 		gradientTexture = new NativeImageBackedTexture("TimelineGradient", width - HORIZONTAL_MARGIN * 2, height - VERTICAL_MARGIN * 2, true);
 		assert gradientTexture.getImage() != null;
 		textureWidth = gradientTexture.getImage().getWidth();
 		textureHeight = gradientTexture.getImage().getHeight();
 		MinecraftClient.getInstance().getTextureManager().registerTexture(GRADIENT_TEXTURE, gradientTexture);
-		this.frameCallback = frameCallback;
+	}
+
+	/**
+	 * Called when the screen has been displayed again after a popup
+	 */
+	public void recreateImage() {
+		createImage(width, height);
+		createGradientTexture();
+	}
+
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		createImage(width, height);
+		createGradientTexture();
 	}
 
 	@Override
@@ -114,7 +133,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 			}
 		}
 		double v = (System.currentTimeMillis() - l) / 1000.d;
-		CustomizeArmorScreen.LOGGER.debug("Time taken to generate gradient texture: {}s", v);
+		CustomizeScreen.LOGGER.debug("Time taken to generate gradient texture: {}s", v);
 		gradientTexture.upload();
 	}
 
@@ -142,7 +161,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	public void setColor(int argb) {
 		if (focusedFrame == null) {
-			CustomizeArmorScreen.LOGGER.warn("Tried to set color when no frame was focused");
+			CustomizeScreen.LOGGER.warn("Tried to set color when no frame was focused");
 			return;
 		}
 		focusedFrame.color = argb;
@@ -171,7 +190,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		private final boolean draggable;
 
 		private KeyframeWidget(int color, float time, boolean draggable) {
-			super(0, AnimatedDyeTimelineWidget.this.getY(), 7, AnimatedDyeTimelineWidget.this.getHeight(), Text.literal("Keyframe"));
+			super(0, 0, 7, AnimatedDyeTimelineWidget.this.getHeight(), Text.literal("Keyframe"));
 			this.draggable = draggable;
 			this.color = color;
 			this.time = time;
@@ -187,6 +206,11 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		public int getX() {
 			AnimatedDyeTimelineWidget parent = AnimatedDyeTimelineWidget.this;
 			return (int) (parent.getX() + HORIZONTAL_MARGIN + time * (parent.getWidth() - HORIZONTAL_MARGIN * 2 - 1)) - 3;
+		}
+
+		@Override
+		public int getY() {
+			return AnimatedDyeTimelineWidget.this.getY();
 		}
 
 		private boolean dragging = false;
@@ -246,7 +270,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 	@Override
 	protected double getDeltaYPerScroll() { return 0; }
 	@Override
-	public void close() { gradientTexture.close(); }
+	public void close() { MinecraftClient.getInstance().getTextureManager().destroyTexture(GRADIENT_TEXTURE); }
 
 	public interface FrameCallback {
 		void onFrameSelected(int color, float time);

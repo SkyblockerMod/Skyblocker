@@ -17,6 +17,9 @@ import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
+import java.util.Locale;
+
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -47,7 +50,7 @@ public class InventorySearch {
 		if (handledScreen == openedHandledScreen) return;
 		openedHandledScreen = handledScreen;
 		TextFieldWidget textFieldWidget = getTextFieldWidget(handledScreen);
-		Screens.getButtons(handledScreen).add(new TextWidget(0, 5, handledScreen.width, 10, Text.literal("Search Inventory"), Screens.getTextRenderer(handledScreen)));
+		Screens.getButtons(handledScreen).add(new TextWidget(0, 5, handledScreen.width, 10, Text.literal("Search Inventory"), handledScreen.getTextRenderer()));
 		Screens.getButtons(handledScreen).addFirst(textFieldWidget);
 		Screens.getButtons(handledScreen).removeIf(button -> button instanceof SearchTextWidget); // remove search text
 		handledScreen.setFocused(textFieldWidget);
@@ -71,12 +74,12 @@ public class InventorySearch {
 
 	public static boolean slotMatches(Slot slot) {
 		return slotToMatch.computeIfAbsent(slot.id, i -> slot.hasStack() &&
-				(slot.getStack().getName().getString().toLowerCase().contains(search) || ItemUtils.getLoreLineIf(slot.getStack(), s -> s.toLowerCase().contains(search)) != null));
+				(slot.getStack().getName().getString().toLowerCase(Locale.ENGLISH).contains(search) || ItemUtils.getLoreLineIf(slot.getStack(), s -> s.toLowerCase(Locale.ENGLISH).contains(search)) != null));
 	}
 
 	private static void onSearchTyped(String text) {
 		slotToMatch.clear();
-		search = text.toLowerCase();
+		search = text.toLowerCase(Locale.ENGLISH);
 	}
 
 	private static void onScreenClosed(Screen screen) {
@@ -99,7 +102,7 @@ public class InventorySearch {
 		private boolean hoveredState = false;
 
 		private SearchTextWidget(HandledScreen<?> handledScreen) {
-			super(Text.translatable("skyblocker.inventorySearch.clickHereToSearch"), Screens.getTextRenderer(handledScreen));
+			super(Text.translatable("skyblocker.inventorySearch.clickHereToSearch"), handledScreen.getTextRenderer());
 			setPosition((handledScreen.width - this.getWidth()) / 2, 15);
 			underlinedText = getMessage().copy().formatted(Formatting.UNDERLINE);
 			normalText = getMessage().copy().formatted(Formatting.GRAY);
@@ -126,7 +129,7 @@ public class InventorySearch {
 
 	public static class SearchTextFieldWidget extends TextFieldWidget {
 		public SearchTextFieldWidget(HandledScreen<?> handledScreen) {
-			super(Screens.getTextRenderer(handledScreen), 120, 20, Text.literal("Search Inventory"));
+			super(handledScreen.getTextRenderer(), 120, 20, Text.literal("Search Inventory"));
 		}
 
 		@Override

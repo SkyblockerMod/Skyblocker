@@ -56,7 +56,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
             .xmap(itemStacks -> itemStacks.toArray(ItemStack[]::new), List::of).fieldOf("items").codec();
 
     private static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("container/slot");
-    private static final Identifier EMPTY_SLOT = Identifier.of(SkyblockerMod.NAMESPACE, "equipment/empty_icon");
+    private static final Identifier EMPTY_SLOT = SkyblockerMod.id("equipment/empty_icon");
     private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
 
     private final Slot[] equipmentSlots = new Slot[4];
@@ -119,9 +119,9 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     public SkyblockInventoryScreen(PlayerEntity player) {
         super(player);
 		if (ResourcePackCompatibility.options.renameInventoryScreen().orElse(false)) {
-			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenEquipmentQuickNavSkyblocker": "InventoryScreenEquipmentSkyblocker"));
+			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenEquipmentQuickNavSkyblocker" : "InventoryScreenEquipmentSkyblocker"));
 		}
-	    SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
+	    SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift : equipment);
 	    for (int i = 0; i < 4; i++) {
 		    equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
 	    }

@@ -22,7 +22,7 @@ import java.util.Set;
 @RegisterWidget
 public class CrystalsHudWidget extends HudWidget {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	protected static final Identifier MAP_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png");
+	protected static final Identifier MAP_TEXTURE = SkyblockerMod.id("textures/gui/crystals_map.png");
 	private static final Identifier MAP_ICON = Identifier.ofVanilla("textures/map/decorations/player.png");
 	private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Unknown");
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.CRYSTAL_HOLLOWS);
@@ -118,7 +118,7 @@ public class CrystalsHudWidget extends HudWidget {
 				Vector2ic renderPos = transformLocation(waypoint.centerPos.getX(), waypoint.centerPos.getZ());
 				int locationSize = SkyblockerConfigManager.get().mining.crystalsHud.locationSize;
 
-				if (SMALL_LOCATIONS.contains(category.getName())) {//if small location half the location size
+				if (SMALL_LOCATIONS.contains(category.getName())) { //if small location half the location size
 					locationSize /= 2;
 				}
 

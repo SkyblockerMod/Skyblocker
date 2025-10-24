@@ -9,11 +9,11 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -66,7 +67,7 @@ public class TheEnd {
         });
 
         ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
-            String lowerCase = Utils.getIslandArea().toLowerCase();
+            String lowerCase = Utils.getIslandArea().toLowerCase(Locale.ENGLISH);
             if (Utils.isInTheEnd() || lowerCase.contains("the end") || lowerCase.contains("dragon's nest")) {
                 ChunkPos pos = chunk.getPos();
                 //
@@ -86,7 +87,7 @@ public class TheEnd {
 
         ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
             if (!Utils.isInTheEnd() || overlay) return true;
-            String lowerCase = message.getString().toLowerCase();
+            String lowerCase = message.getString().toLowerCase(Locale.ENGLISH);
             if (lowerCase.contains("tremor")) {
                 if (stage == 0) checkAllProtectorLocations();
                 else stage += 1;
@@ -99,7 +100,7 @@ public class TheEnd {
             return true;
         });
 
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(TheEnd::renderWaypoint);
+        WorldRenderExtractionCallback.EVENT.register(TheEnd::extractRendering);
 		PROFILES_STATS.init();
     }
 
@@ -150,26 +151,26 @@ public class TheEnd {
     }
 
     public static boolean isZealot(EndermanEntity enderman) {
-        if (enderman.getName().getString().toLowerCase().contains("zealot")) return true; // Future-proof. If they someday decide to actually rename the entities
+        if (enderman.getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot")) return true; // Future-proof. If they someday decide to actually rename the entities
         assert MinecraftClient.getInstance().world != null;
         List<ArmorStandEntity> entities = MinecraftClient.getInstance().world.getEntitiesByClass(
                 ArmorStandEntity.class,
                 enderman.getDimensions(null).getBoxAt(enderman.getPos()).expand(1),
-                armorStandEntity -> armorStandEntity.getName().getString().toLowerCase().contains("zealot"));
+                armorStandEntity -> armorStandEntity.getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot"));
         if (entities.isEmpty()) {
             return false;
         }
-        return entities.getFirst().getName().getString().toLowerCase().contains("zealot");
+        return entities.getFirst().getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot");
     }
 
     public static boolean isSpecialZealot(EndermanEntity enderman) {
         return isZealot(enderman) && enderman.getCarriedBlock() != null && enderman.getCarriedBlock().isOf(Blocks.END_PORTAL_FRAME);
     }
 
-	private static void renderWaypoint(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
         if (!SkyblockerConfigManager.get().otherLocations.end.waypoint) return;
         if (currentProtectorLocation == null || stage != 5) return;
-        currentProtectorLocation.waypoint().render(context);
+        currentProtectorLocation.waypoint().extractRendering(collector);
     }
 
 	public record EndStats(int totalZealotKills, int zealotsSinceLastEye, int eyes) {

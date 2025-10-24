@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 public class DungeonHeaderWidget {
     private LevelFinder.LevelInfo classLevel;
@@ -18,7 +19,7 @@ public class DungeonHeaderWidget {
 
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
     private static final DecimalFormat DF = new DecimalFormat("#.##");
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/dungeons_header.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/dungeons_header.png");
 
     public DungeonHeaderWidget(JsonObject playerProfile, String[] classes) {
         try {
@@ -28,7 +29,7 @@ public class DungeonHeaderWidget {
             float avg = 0;
             JsonObject CLASS_DATA = playerProfile.getAsJsonObject("dungeons").getAsJsonObject("player_classes");
             for (String element : classes) {
-                avg += LevelFinder.getLevelInfo("Catacombs", CLASS_DATA.getAsJsonObject(element.toLowerCase()).get("experience").getAsLong()).level;
+                avg += LevelFinder.getLevelInfo("Catacombs", CLASS_DATA.getAsJsonObject(element.toLowerCase(Locale.ENGLISH)).get("experience").getAsLong()).level;
             }
             classAvg = avg/classes.length;
         }  catch (Exception ignored) {

@@ -2,7 +2,7 @@ package de.hysky.skyblocker.utils.waypoint;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -75,14 +75,14 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 	}
 
 	@Override
-	public void render(WorldRenderContext context) {
-		super.render(context);
+	public void extractRendering(PrimitiveCollector collector) {
+		super.extractRendering(collector);
 		if (relativeIndex == RelativeIndex.NEXT && shouldRender()) {
-			RenderHelper.renderLineFromCursor(context, centerPos, getRenderColorComponents(), 1f, DEFAULT_LINE_WIDTH);
+			collector.submitLineFromCursor(centerPos, getRenderColorComponents(), 1f, DEFAULT_LINE_WIDTH);
 		}
 		if (shouldRenderName()) {
-			float scale = Math.max((float) context.camera().getPos().distanceTo(centerPos) / 10, 1);
-			RenderHelper.renderText(context, Text.of(String.valueOf(index + 1)), centerPos.add(0, 1, 0), scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
+			float scale = Math.max((float) RenderHelper.getCamera().getPos().distanceTo(centerPos) / 10, 1);
+			collector.submitText(Text.of(String.valueOf(index + 1)), centerPos.add(0, 1, 0), scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
 		}
 	}
 

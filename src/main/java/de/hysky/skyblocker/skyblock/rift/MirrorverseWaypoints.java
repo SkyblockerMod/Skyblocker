@@ -7,8 +7,8 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 public class MirrorverseWaypoints {
 	private static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
 	private static final Supplier<Waypoint.Type> WAYPOINT_TYPE = () -> Waypoint.Type.HIGHLIGHT;
-	private static final Identifier WAYPOINTS_JSON = Identifier.of(SkyblockerMod.NAMESPACE, "rift/mirrorverse_waypoints.json");
+	private static final Identifier WAYPOINTS_JSON = SkyblockerMod.id("rift/mirrorverse_waypoints.json");
 	private static Waypoint[] LAVA_PATH_WAYPOINTS;
 	private static Waypoint[] UPSIDE_DOWN_WAYPOINTS;
 	private static Waypoint[] TURBULATOR_WAYPOINTS;
@@ -63,19 +63,19 @@ public class MirrorverseWaypoints {
 		return waypoints;
 	}
 
-	protected static void render(WorldRenderContext wrc) {
+	protected static void extractRendering(PrimitiveCollector collector) {
 		//I would also check for the mirrorverse location but the scoreboard stuff is not performant at all...
 		if (Utils.isInTheRift() && SkyblockerConfigManager.get().otherLocations.rift.mirrorverseWaypoints && waypointsLoaded.isDone()) {
 			for (Waypoint waypoint : LAVA_PATH_WAYPOINTS) {
-				waypoint.render(wrc);
+				waypoint.extractRendering(collector);
 			}
 
 			for (Waypoint waypoint : UPSIDE_DOWN_WAYPOINTS) {
-				waypoint.render(wrc);
+				waypoint.extractRendering(collector);
 			}
 
 			for (Waypoint waypoint : TURBULATOR_WAYPOINTS) {
-				waypoint.render(wrc);
+				waypoint.extractRendering(collector);
 			}
 		}
 	}

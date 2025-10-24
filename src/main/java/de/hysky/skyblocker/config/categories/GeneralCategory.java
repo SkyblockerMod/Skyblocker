@@ -20,13 +20,12 @@ import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 public class GeneralCategory {
 
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
-        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/general"))
+        		.id(SkyblockerMod.id("config/general"))
                 .name(Text.translatable("skyblocker.config.general"))
 
                 //Skyblocker Screen
@@ -438,13 +437,6 @@ public class GeneralCategory {
 								.binding(defaults.general.hitbox.oldCactusHitbox,
 										() -> config.general.hitbox.oldCactusHitbox,
 										newValue -> config.general.hitbox.oldCactusHitbox = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.general.hitbox.oldFarmlandHitbox"))
-								.binding(defaults.general.hitbox.oldFarmlandHitbox,
-										() -> config.general.hitbox.oldFarmlandHitbox,
-										newValue -> config.general.hitbox.oldFarmlandHitbox = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()

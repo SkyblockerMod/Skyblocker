@@ -6,12 +6,11 @@ import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.text.Text;
@@ -23,11 +22,11 @@ public class BeaconHighlighter {
 
     /**
      * Initializes the beacon highlighting system.
-     * {@link BeaconHighlighter#render(WorldRenderContext)} is called after translucent rendering.
+     * {@link BeaconHighlighter#extractRendering(PrimitiveCollector)} is called to extract the beacon highlight for rendering.
      */
     @Init
     public static void init() {
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(BeaconHighlighter::render);
+        WorldRenderExtractionCallback.EVENT.register(BeaconHighlighter::extractRendering);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
         ClientReceiveMessageEvents.ALLOW_GAME.register(BeaconHighlighter::onMessage);
         WorldEvents.BLOCK_STATE_UPDATE.register(BeaconHighlighter::onBlockStateUpdate);
@@ -60,13 +59,11 @@ public class BeaconHighlighter {
     /**
      * Renders the beacon glow around it. It is rendered in a red color with 50% opacity, and
      * is visible through walls.
-     *
-     * @param context An instance of WorldRenderContext for the RenderHelper to use
      */
-    private static void render(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons && SlayerManager.isInSlayerType(SlayerType.VOIDGLOOM)) {
             for (BlockPos pos : beaconPositions) {
-                RenderHelper.renderFilled(context, pos, RED_COLOR_COMPONENTS, 0.5f, true);
+                collector.submitFilledBox(pos, RED_COLOR_COMPONENTS, 0.5f, true);
             }
         }
     }

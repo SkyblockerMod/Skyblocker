@@ -44,6 +44,17 @@
             <property name="tokens" value="AT,INC,DEC,UNARY_MINUS,UNARY_PLUS,BNOT,LNOT,DOT,ARRAY_DECLARATOR,INDEX_OP"/>
         </module>
         <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround">
+            <!-- Allow PLUS, MINUS, STAR, DIV as they may be more readable without spaces in some cases -->
+            <property name="tokens" value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV_ASSIGN,DO_WHILE,EQUAL,GE,GT,LAMBDA,LAND,LCURLY,LE,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_RETURN,LITERAL_SWITCH,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE,LOR,LT,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS_ASSIGN,QUESTION,RCURLY,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR_ASSIGN,LITERAL_ASSERT,TYPE_EXTENSION_AND"/>
+            <property name="allowEmptyCatches" value="true"/>
+            <property name="allowEmptyConstructors" value="true"/>
+            <property name="allowEmptyLambdas" value="true"/>
+            <property name="allowEmptyLoops" value="true"/>
+            <property name="allowEmptyMethods" value="true"/>
+            <property name="allowEmptySwitchBlockStatements" value="true"/>
+            <property name="allowEmptyTypes" value="true"/>
+        </module>
         <module name="GenericWhitespace"/>
 
         <module name="ArrayTypeStyle"/>
@@ -136,6 +147,13 @@
                 ]
             "/>
             <message key="matchxpath.match" value="Inject local capture is not allowed, use @Local instead"/>
+        </module>
+
+        <!-- Prevent String#toLowerCase/toUpperCase without a given Locale to prevent localization issues -->
+        <!-- Not specifying a locale is error prone as it can easily lead to silent breakages with some locales! -->
+        <module name = "MatchXpath">
+            <property name="query" value="//METHOD_CALL[./DOT/IDENT[@text='toLowerCase' or @text='toUpperCase']]/ELIST[count(./*) = 0]"/>
+            <message key="matchxpath.match" value="String#toLowerCase/toUpperCase calls must specify a locale, English recommended"/>
         </module>
     </module>
 </module>
