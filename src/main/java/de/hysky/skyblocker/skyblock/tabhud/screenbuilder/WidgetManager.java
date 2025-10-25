@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -149,15 +150,19 @@ public class WidgetManager {
 
 	public static void loadConfig() {
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-			config = Config.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow().getFirst();
+			config = Config.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getPartialOrThrow().getFirst();
 			for (Object2ObjectMap.Entry<String, HudWidget> entry : WIDGET_INSTANCES.object2ObjectEntrySet()) {
 				String key = entry.getKey();
 				JsonObject jsonObject = config.widgetOptions.get(key);
 				if (jsonObject == null) continue;
 				HudWidget widget = entry.getValue();
-				setWidgetOptions(widget, jsonObject);
-			}
-		} catch (Exception e) {
+                try {
+                    setWidgetOptions(widget, jsonObject);
+                } catch (Exception e) {
+					LOGGER.error("Failed to load config for {}", widget.getId(), e);
+                }
+            }
+		} catch (IOException e) {
 			LOGGER.error("Failed to load config", e);
 			// TODO translatable
 			SystemToast.add(MinecraftClient.getInstance().getToastManager(), new SystemToast.Type(), Text.literal("Error reading Skyblocker HUD Config"), Text.literal("Check your logs!"));
@@ -191,6 +196,7 @@ public class WidgetManager {
 				return currentMap;
 			});
 		}
+		config.widgetOptions().forEach(widgetOptions::putIfAbsent);
 		Config output = new Config(widgetOptions, perScreenConfig);
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
 			SkyblockerMod.GSON.toJson(Config.CODEC.encodeStart(JsonOps.INSTANCE, output).getOrThrow(), writer);
@@ -218,7 +224,10 @@ public class WidgetManager {
 		if (object != null) {
 			setWidgetOptions(widget, object);
 		}
-		if (Utils.isOnSkyblock()) currentBuilder.updateWidgetsList();
+		if (Utils.isOnSkyblock()) {
+			currentBuilder.updateWidgetsList();
+			currentBuilder.updateTabWidgetsList();
+		}
 	}
 
 	public static void setWidgetOptions(HudWidget widget, JsonObject object) {
