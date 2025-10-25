@@ -1513,5 +1513,6 @@
     "skyblocker.config.dungeons.devices.solveTargetPractice": "Target Practice助手",
     "skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip": "以紅色突顯目標。",
     "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker": "強制屍體利潤消息使用英文",
-    "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip": "此選項適用於非英語用戶，以減少分享利潤訊息時的語言障礙。如果遊戲語言設定為英語，此選項將無任何影響。"
+    "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip": "此選項適用於非英語用戶，以減少分享利潤訊息時的語言障礙。如果遊戲語言設定為英語，此選項將無任何影響。",
+    "skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip": "僅近戰擊殺能被統計！\n\n擊殺數量可以透過查看Bestiary的Zealot頁面更新。"
 }
