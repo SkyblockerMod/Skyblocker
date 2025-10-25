@@ -54,7 +54,7 @@ public class FixBazaarGraphs extends SimpleContainerSolver {
 
 		List<Text> fixedLore = new ArrayList<>();
 		lore.stream().map(this::fixLine).forEach(fixedLore::add);
-		fixedLore.add(Constants.PREFIX.get().append(Text.literal("Fixed graph!")).styled(style -> style.withItalic(false).withColor(Formatting.WHITE)));
+		fixedLore.add(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.bazaar.fixBazaarGraphs.loreMessage")).styled(style -> style.withItalic(false).withColor(Formatting.WHITE)));
 
 		stack.set(DataComponentTypes.LORE, new LoreComponent(fixedLore));
 	}
@@ -67,7 +67,7 @@ public class FixBazaarGraphs extends SimpleContainerSolver {
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().helpers.bazaar.fixBazaarCharts;
+		return SkyblockerConfigManager.get().helpers.bazaar.fixBazaarGraphs;
 	}
 
 	private static class BazaarChartVisitor implements StringVisitable.Visitor<List<Text>> {

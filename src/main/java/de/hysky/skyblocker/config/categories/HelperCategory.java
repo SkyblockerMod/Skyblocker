@@ -381,10 +381,10 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.bazaar.fixBazaarCharts"))
-								.binding(defaults.helpers.bazaar.fixBazaarCharts,
-										() -> config.helpers.bazaar.fixBazaarCharts,
-										newValue -> config.helpers.bazaar.fixBazaarCharts = newValue)
+								.name(Text.translatable("skyblocker.config.helpers.bazaar.fixBazaarGraphs"))
+								.binding(defaults.helpers.bazaar.fixBazaarGraphs,
+										() -> config.helpers.bazaar.fixBazaarGraphs,
+										newValue -> config.helpers.bazaar.fixBazaarGraphs = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()

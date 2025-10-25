@@ -143,7 +143,7 @@ public class HelperConfig {
 
 		public boolean enableOrderTracker = true;
 
-		public boolean fixBazaarCharts = true;
+		public boolean fixBazaarGraphs = true;
 	}
 
 	public static class ItemPrice {
