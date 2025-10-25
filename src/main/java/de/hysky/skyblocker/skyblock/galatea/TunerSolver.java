@@ -158,11 +158,11 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	 * multiple times.
 	 */
 	@Override
-	public boolean onClickSlot(int slotId, ItemStack stack, int screenId, int button) {
-		if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) return false;
-		if (!isInMenu) return false;
+	public SlotClickResult onClickSlot(int slotId, ItemStack stack, int screenId, int button) {
+		if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) return SlotClickResult.ALLOW;
+		if (!isInMenu) return SlotClickResult.ALLOW;
 
-		if (button != 0 && button != 1) return false;
+		if (button != 0 && button != 1) return SlotClickResult.ALLOW;
 
 		int delta = button == 0 ? -1 : 1;
 
@@ -173,7 +173,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 		} else if (pitchSolved && slotId == 50) {
 			pitchClicks = updateClicks(pitchClicks, PITCH_CYCLE.length, delta);
 		}
-		return false;
+		return SlotClickResult.ALLOW;
 	}
 
 	/**

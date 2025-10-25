@@ -53,10 +53,10 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 	}
 
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
+	public SlotClickResult onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		//Some random glass pane was clicked or something
 		//Block clicks for this because these slots are replaced with air items
-		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return shouldBlockIncorrectClicks();
+		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return blockOrClick();
 
 		ItemState state = trackedItemStates.get(slot);
 		String prefix = groups[0];
@@ -72,10 +72,10 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 			trackedItemStates.put(slot, state.click());
 			lastKnownScreenId = screenId;
 		} else {
-			return shouldBlockIncorrectClicks();
+			return blockOrClick();
 		}
 
-		return false;
+		return allow();
 	}
 
 	@Override

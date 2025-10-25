@@ -262,6 +262,8 @@
 
   "skyblocker.config.dungeons.terminals": "Terminal Solvers (F7/M7)",
   "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Block Incorrect Clicks",
+  "skyblocker.config.dungeons.terminals.middleClick": "Middle Clicks",
+  "skyblocker.config.dungeons.terminals.middleClick.@Tooltip": "Turns left clicks into middle clicks.",
   "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Colored",
   "skyblocker.config.dungeons.terminals.solveOrder": "Solve Click In Order",
   "skyblocker.config.dungeons.terminals.solveStartsWith": "Solve Starts With",

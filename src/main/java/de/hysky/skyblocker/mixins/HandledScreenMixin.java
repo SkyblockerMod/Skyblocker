@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -306,7 +307,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 * @implNote This runs before {@link ScreenHandler#onSlotClick(int, int, SlotActionType, net.minecraft.entity.player.PlayerEntity)}
 	 */
 	@Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"), cancellable = true)
-	private void skyblocker$onSlotClick(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
+	private void skyblocker$onSlotClick(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci, @Local(argsOnly = true) LocalRef<SlotActionType> action) {
 		if (!Utils.isOnSkyblock()) return;
 
 		// Item Protection
@@ -387,9 +388,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 
 		if (currentSolver != null) {
-			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack, button);
-
-			if (disallowed) ci.cancel();
+            switch (ContainerSolverManager.onSlotClick(slotId, stack, button)) {
+				case CANCEL -> ci.cancel();
+				case ALLOW_MIDDLE_CLICK -> {
+					if (button == 0 && handler.getCursorStack().isEmpty()) action.set(SlotActionType.CLONE);
+				}
+            }
 		}
 	}
 

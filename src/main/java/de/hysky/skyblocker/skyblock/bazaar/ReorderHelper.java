@@ -35,7 +35,7 @@ public class ReorderHelper extends SimpleContainerSolver implements TooltipAdder
 	}
 
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
+	public SlotClickResult onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		//   V This part is so that it short-circuits if not necessary
 		if ((slot == 11 || slot == 13) && stack.isOf(Items.GREEN_TERRACOTTA) && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL)) {
 			Matcher matcher;
@@ -44,10 +44,10 @@ public class ReorderHelper extends SimpleContainerSolver implements TooltipAdder
 			else matcher = ItemUtils.getLoreLineIfContainsMatch(stack, BUY_PATTERN);
 			if (matcher != null) {
 				MinecraftClient.getInstance().keyboard.setClipboard(matcher.group(1).replace(",", ""));
-				return false;
+				return SlotClickResult.ALLOW;
 			}
 		}
-		return false;
+		return SlotClickResult.ALLOW;
 	}
 
 	@Override

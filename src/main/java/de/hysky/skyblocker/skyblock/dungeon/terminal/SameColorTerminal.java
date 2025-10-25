@@ -96,23 +96,23 @@ public final class SameColorTerminal extends SimpleContainerSolver implements Te
 	}
 
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
+	public SlotClickResult onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		if (clickMap.containsKey(slot)) {
 			int clicks = clickMap.get(slot);
 
 			if (clicks == 0) {
-				return shouldBlockIncorrectClicks();
+				return blockOrClick();
 			} else {
 				boolean positive = Integer.signum(clicks) == 1;
 				//Require that positive moves use left click, and negative moves use right click
 				boolean usingCorrectButton = (positive && button == GLFW.GLFW_MOUSE_BUTTON_LEFT) || (!positive && button == GLFW.GLFW_MOUSE_BUTTON_RIGHT);
 
 				if (!usingCorrectButton) {
-					return shouldBlockIncorrectClicks();
+					return blockOrClick();
 				}
 			}
 		}
-		return false;
+		return allow();
 	}
 
 	@Override

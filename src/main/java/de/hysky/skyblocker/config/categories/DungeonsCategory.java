@@ -439,6 +439,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.terminals.blockIncorrectClicks = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.terminals.middleClick"))
+								.description(Text.translatable("skyblocker.config.dungeons.terminals.middleClick.@Tooltip"))
+								.binding(defaults.dungeons.terminals.middleClick,
+										() -> config.dungeons.terminals.middleClick,
+										newValue -> config.dungeons.terminals.middleClick = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				// Devices (F7/M7)

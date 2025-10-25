@@ -97,7 +97,7 @@ public final class SuperpairsSolver extends ExperimentSolver {
 	}
 
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
+	public SlotClickResult onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		if (getState() == State.SHOW) {
 			this.superpairsPrevClickedSlot = slot;
 			this.superpairsCurrentSlot = ItemStack.EMPTY;
