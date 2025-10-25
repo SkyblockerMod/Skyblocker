@@ -277,7 +277,7 @@ public class UIAndVisualsCategory {
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
 								.prompt(Text.translatable("text.skyblocker.open"))
 								.action(screen -> {
-									if (Utils.isOnSkyblock()) {
+									if (Utils.isOnSkyblock() && config.uiAndVisuals.tabHud.tabHudEnabled) {
 										MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
 									} else {
 										MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, WidgetManager.ScreenLayer.MAIN_TAB, screen));
