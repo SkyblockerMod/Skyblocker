@@ -1514,5 +1514,22 @@
     "skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip": "以紅色突顯目標。",
     "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker": "強制屍體利潤消息使用英文",
     "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip": "此選項適用於非英語用戶，以減少分享利潤訊息時的語言障礙。如果遊戲語言設定為英語，此選項將無任何影響。",
-    "skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip": "僅近戰擊殺能被統計！\n\n擊殺數量可以透過查看Bestiary的Zealot頁面更新。"
+    "skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip": "僅近戰擊殺能被統計！\n\n擊殺數量可以透過查看Bestiary的Zealot頁面更新。",
+    "skyblocker.config.foraging.galatea": "伽拉忒亞",
+    "skyblocker.dungeons.splits.maxor": "麥克索",
+    "skyblocker.exotic.exotic": "無法獲得的有價值的物品",
+    "skyblocker.dungeons.splits.sadan": "撒旦",
+    "skyblocker.dungeons.splits.terracottas": "陶偶兵",
+    "skyblocker.dungeons.splits.livid": "利維德",
+    "skyblocker.dungeons.splits.goldor": "高爾多",
+    "skyblocker.dungeons.splits.necron": "死靈",
+    "skyblocker.dungeons.splits.scarf": "史卡夫",
+    "skyblocker.dungeons.splits.bonzo": "小丑",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError": "函數 '%s' 的輸入 '%s' 無效",
+    "skyblocker.dungeons.splits.storm": "風暴",
+    "skyblocker.dungeons.splits.transformedProfessor": "變異教授",
+    "skyblocker.dungeons.splits.thorn": "索恩",
+    "skyblocker.dungeons.splits.bonzoSike": "騙人的小丑",
+    "skyblocker.exotic.spook": "幽影",
+    "skyblocker.dungeons.splits.professor": "教授"
 }
