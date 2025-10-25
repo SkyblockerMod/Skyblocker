@@ -1509,5 +1509,6 @@
     "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker": "强制尸体利润消息使用英文",
     "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip": "此选项适用于非英语用户，以减小分享利润消息时的语言障碍。如果游戏语言设置为英语，该选项将无任何影响。",
     "skyblocker.config.dungeons.devices.solveTargetPractice": "Target Practice助手",
-    "skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip": "以红色高亮目标。"
+    "skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip": "以红色高亮目标。",
+    "skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip": "仅近战击杀能被统计！\n\n击杀数量可以通过查看Bestiary的Zealot页面更新。"
 }
