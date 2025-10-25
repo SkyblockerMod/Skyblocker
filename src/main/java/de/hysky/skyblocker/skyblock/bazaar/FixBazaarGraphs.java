@@ -82,11 +82,9 @@ public class FixBazaarGraphs extends SimpleContainerSolver {
 
 			switch (asString.charAt(0)) {
 				case '│': { // U+2502
-					asString = asString.replace("│", "│ ");
 					isValid = true;
 				}
 				case '+': {
-					if (asString.length() == 1) asString = asString.replace("+", "+ ");
 					color = Formatting.WHITE;
 					break;
 				}
@@ -95,7 +93,7 @@ public class FixBazaarGraphs extends SimpleContainerSolver {
 					break;
 				}
 				case '·': { // U+B7
-					asString = asString.replace("·", "· ");
+					asString = asString.replace("·", " ·");
 					break;
 				}
 				default: {
