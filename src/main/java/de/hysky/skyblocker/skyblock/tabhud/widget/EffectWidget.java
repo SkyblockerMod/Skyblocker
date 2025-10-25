@@ -44,6 +44,7 @@ public class EffectWidget extends TabHudWidget {
 	@Override
 	protected void updateTabWidgetAbsent() {
 		if (!effectsFromFooter) super.updateTabWidgetAbsent();
+		else fetchFromFooter();
 	}
 
 	private void fetchFromWidget(List<Text> lines) {
