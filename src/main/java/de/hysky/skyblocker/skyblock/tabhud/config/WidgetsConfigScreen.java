@@ -405,6 +405,19 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	@Override
 	public void removeWidget(@NotNull HudWidget widget) {
 		builder.removeWidget(widget);
+		PositionRule deleted = widget.getPositionRule();
+		for (HudWidget hudWidget : builder.getWidgets()) {
+			PositionRule rule = hudWidget.getPositionRule();
+			if (rule.parent().equals(widget.getId())) {
+				hudWidget.setPositionRule(new PositionRule(
+						deleted.parent(),
+						deleted.parentPoint(),
+						rule.thisPoint(),
+						deleted.relativeX() + rule.relativeX(),
+						deleted.relativeY() + rule.relativeY()
+						));
+			}
+		}
 		if (selectedWidget == widget) {
 			sidePanelWidget.close();
 			selectedWidget = null;
