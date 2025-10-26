@@ -340,6 +340,14 @@ public class MiningCategory {
 										newValue -> config.mining.glacite.enableCorpseProfitTracker = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker"))
+								.description(Text.translatable("skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip"))
+								.binding(defaults.mining.glacite.forceEnglishCorpseProfitTracker,
+										() -> config.mining.glacite.forceEnglishCorpseProfitTracker,
+										newValue -> config.mining.glacite.forceEnglishCorpseProfitTracker = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .build())
                 .build();
     }

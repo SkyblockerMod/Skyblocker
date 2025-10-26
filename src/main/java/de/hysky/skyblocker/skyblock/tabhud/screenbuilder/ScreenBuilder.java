@@ -17,6 +17,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.profiler.Profilers;
 import org.jetbrains.annotations.NotNull;
@@ -89,7 +90,7 @@ public class ScreenBuilder {
 			for (WidgetOption<?> option : options) {
 				widgetConfig.add(option.getId(), option.toJson());
 			}
-			newConfig.put(widget.getId(), new WidgetConfig(Optional.empty(),  widgetConfig));
+			newConfig.put(widget.getId(), new WidgetConfig(Optional.empty(), widgetConfig));
 		}
 		if (parent != null) {
 			for (String s : parent.getFullConfig(false).widgetConfigs.keySet()) {
@@ -311,10 +312,7 @@ public class ScreenBuilder {
 
 		@Override
 		public String toString() {
-			return switch (this) {
-				case TOP -> "Top";
-				case CENTERED -> "Centered";
-			};
+			return I18n.translate("skyblocker.config.uiAndVisuals.tabHud.defaultPosition." + name());
 		}
 	}
 }
