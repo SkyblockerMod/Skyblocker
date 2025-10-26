@@ -43,7 +43,7 @@ public class SalvageHelper extends SimpleContainerSolver implements ContainerAnd
 	}
 
 	private boolean wasDonatedToMuseum(ItemStack stack) {
-		if (!SkyblockerConfigManager.get().dungeons.onlyHighlightUndonatedItems) return true;
+		if (!SkyblockerConfigManager.get().dungeons.onlyHighlightDonatedItems) return true;
 
 		String itemId = stack.getSkyblockId();
 		return MuseumItemCache.hasItemInMuseum(itemId);

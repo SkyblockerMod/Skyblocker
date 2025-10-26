@@ -13,7 +13,7 @@ public class DungeonsConfig {
 
 	public boolean salvageHelper = true;
 
-	public boolean onlyHighlightUndonatedItems = false;
+	public boolean onlyHighlightDonatedItems = false;
 
 	public boolean sellableItemsHighlighter = true;
 
