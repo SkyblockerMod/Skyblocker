@@ -449,7 +449,6 @@
     "skyblocker.config.crimsonIsle": "Crimson Isle",
     "skyblocker.config.dungeons.professor": "The Professor (F3/M3)",
     "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter": "Sea creature trackerを有効にする",
-    "skyblocker.config.farming.visitorHelper": "",
     "skyblocker.config.farming.general.farmingXPPerHour": "Farming XP/時間: %s",
     "skyblocker.config.farming.general.noData": "データなし",
     "skyblocker.config.foraging": "Foraging",
