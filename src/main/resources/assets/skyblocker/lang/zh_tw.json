@@ -310,7 +310,7 @@
     "text.skyblocker.open": "打開",
     "skyblocker.dungeons.secrets.markSecretFound": "§r將秘密 #%s 標記為已找到。",
     "skyblocker.config.dungeons.dungeonScore": "地下城分數",
-    "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage": "地下城分數%s訊息",
+    "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage": "地下城%s分訊息",
     "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip": "當在地下城達到%s分時，在聊天欄內發送訊息。 字串「[score]」將替換為地下城分數（%s）。",
     "skyblocker.quiverWarning.50Left": "你的箭袋裡只剩50支箭了！",
     "skyblocker.config.dungeons.secretWaypoints.enableFairySoulWaypoints": "啟用仙女之魂路徑點",
