@@ -260,7 +260,7 @@
     "skyblocker.config.dungeons.livid.enableSolidColor": "発光と境界線を同じ色にする",
     "skyblocker.config.dungeons.livid.enableLividColorBoundingBox.@Tooltip": "F5/M5にて正しいLividに境界線を適用する。",
     "skyblocker.config.dungeons.livid.enableLividColorBoundingBox": "Lividの色境界線を有効にする",
-    "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreMessage": "ダンジョンでスコアのメッセージを有効にする",
+    "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreMessage": "ダンジョンで%sスコアのメッセージを有効にする",
     "skyblocker.config.dungeons.dungeonChestProfit.neutralThreshold": "中性のしきい値",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound": "ダンジョンで%sスコアの音を有効にする",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip": "ダンジョンでスコアが%sに達した時に音を鳴らす。",
@@ -269,7 +269,7 @@
     "skyblocker.config.dungeons.puzzle": "謎解きの解決",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage.@Tooltip": "スコアのしきい値に達した時に見つけたcryptsが5つ未満の場合、チャットにメッセージを送信します。",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreMessage.@Tooltip": "ダンジョンでスコアが%sに達した時、チャットにメッセージを送る。",
-    "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreTitle": "ダンジョンでスコアのタイトルを有効にする",
+    "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreTitle": "ダンジョンで%sスコアのタイトルを有効にする",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreTitle.@Tooltip": "ダンジョンでスコアが%sに達するとタイトルを表示する。",
     "skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip": "Soulweaver Glovesを使用することで出現するHaunted Skullsを隠す。",
     "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Lividカラーの代わりに赤色が表示されます",
@@ -279,7 +279,7 @@
     "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage": "ダンジョンスコア %s メッセージ",
     "skyblocker.config.dungeons.livid.enableLividColorText": "Lividの色テキストを有効にする",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip": "cryptsの数が5以上になる前に閾値に達した場合にチャットで送信されるメッセージ。\"[crypts]\"の文字列はcryptsの数に置き換えられます。",
-    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "デフォルトの270は、300以上のスコアで続行した場合のS+周回を想定したもので、通常はF5-F7やM5-M7が該当します。 \nもしS周回（270スコアで続行）を行うのであれば、これを250以下に下げることを検討してください。",
+    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "デフォルトの250は、S/S+（スコア270以上/300以上）でドアを入る場合を想定しています。\nS+ランの場合、スコア250でメッセージを送信するのは少し早すぎるかもしれません。\nS+ランのみ（スコア300以上で入る）の場合は、この値を増やすことを検討してください。",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage": "ダンジョンのCryptsメッセージ",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold": "ダンジョンのCryptsメッセージ しきい値",
     "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip": "ダンジョンのスコアが %s に達したときにチャットに送られるメッセージ。\"[score]\"の文字列はダンジョンのスコア (%s) に置き換えられます。",
@@ -666,5 +666,10 @@
     "skyblocker.museum.hud.filter.weapons": "武器",
     "skyblocker.config.hunting.lassoHud.now": "今だ！",
     "skyblocker.config.hunting.lassoHud.wait": "待って",
-    "skyblocker.config.slayer.endermanSlayer.highlightNukekubiHeads": "抜け首ハイライト"
+    "skyblocker.config.slayer.endermanSlayer.highlightNukekubiHeads": "抜け首ハイライト",
+    "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay": "Spirit Leapオーバーレイを有効にする",
+    "skyblocker.config.dungeons.princeMessage.sendPrinceMessage": "Princeメッセージを有効にする",
+    "skyblocker.config.farming.garden.farmingHud.type": "価格のソース",
+    "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage": "Leapメッセージを有効にする",
+    "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage": "Leapメッセージ"
 }
