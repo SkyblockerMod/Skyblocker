@@ -122,7 +122,7 @@ public class Shortcuts {
 		commands.put("/ce", "/call elizabeth");
 		commands.put("/co", "/call odger");
 		commands.put("/ck", "/call kat");
-		commands.put("/cs", "/call maddox");//call slayer
+		commands.put("/cs", "/call maddox"); //call slayer
 
 		// Social
 		commandArgs.put("/fr", "/friend");
@@ -130,7 +130,7 @@ public class Shortcuts {
 		commandArgs.put("/pj", "/party join");
 		commandArgs.put("/pa", "/party accept");
 		commandArgs.put("/pc", "/party chat");
-		commandArgs.put("/ptr", "/party transfer");//pt is for playtime
+		commandArgs.put("/ptr", "/party transfer"); //pt is for playtime
 		commands.put("/pd", "/party disband");
 		commands.put("/pl", "/party leave");
 		commands.put("/pll", "/party list");
@@ -151,7 +151,7 @@ public class Shortcuts {
 		commands.put("/wcs", "/warp castle");
 		commands.put("/wd", "/warp deep");
 		commands.put("/wda", "/warp da");
-		commands.put("/wdd", "/warp drag");//wdr is for watchdog report
+		commands.put("/wdd", "/warp drag"); //wdr is for watchdog report
 		commands.put("/wde", "/warp desert");
 		commands.put("/wdt", "/warp dragontail");
 		commands.put("/we", "/warp end");
