@@ -1471,6 +1471,9 @@
   "skyblocker.waypoints.chat.display": "Click to display waypoint at x: %s y: %s z: %s",
   "skyblocker.waypoints.chat.displayed": "Displayed temporary waypoint at x: %s y: %s z: %s %s",
   "skyblocker.waypoints.config": "Waypoints Config",
+  "skyblocker.waypoints.groupType": "Group Type",
+  "skyblocker.waypoints.groupType.ordered": "Ordered",
+  "skyblocker.waypoints.groupType.normal": "Normal",
   "skyblocker.waypoints.newGroup": "New Waypoint Group",
   "skyblocker.waypoints.new": "New Waypoint",
   "skyblocker.waypoints.share": "Import/Export",
@@ -1499,6 +1502,8 @@
   "skyblocker.waypoints.exportErrorText": "Failed to export waypoints. See logs for details.",
   "skyblocker.waypoints.deleteQuestion": "Are you sure you want to remove this waypoint?",
   "skyblocker.waypoints.deleteWarning": "Waypoint '%s' will be lost forever! (A long time!)",
+  "skyblocker.waypoints.throughWalls": "Show Through Walls",
+  "skyblocker.waypoints.waypointType": "Waypoint Type",
 
   "skyblocker.nightVision.success": "Changed the strength of night vision to %s.",
 
