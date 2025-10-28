@@ -20,7 +20,7 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 	RelativeIndex relativeIndex;
 
 	public OrderedNamedWaypoint(NamedWaypoint namedWaypoint) {
-		this(namedWaypoint.pos, namedWaypoint.name, namedWaypoint.typeSupplier, namedWaypoint.colorComponents, namedWaypoint.alpha, namedWaypoint.isEnabled());
+		this(namedWaypoint.pos, namedWaypoint.name, namedWaypoint.typeSupplier, namedWaypoint.colorComponents, namedWaypoint.alpha, namedWaypoint.isEnabled(), namedWaypoint.throughWalls);
 	}
 
 	public OrderedNamedWaypoint(BlockPos pos, String name, float[] colorComponents) {
@@ -28,7 +28,11 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 	}
 
 	public OrderedNamedWaypoint(BlockPos pos, Text name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean shouldRender) {
-		super(pos, name, typeSupplier, colorComponents, alpha, shouldRender);
+		this(pos, name, typeSupplier, colorComponents, alpha, shouldRender, true);
+	}
+
+	public OrderedNamedWaypoint(BlockPos pos, Text name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean shouldRender, boolean throughWalls) {
+		super(pos, name, typeSupplier, colorComponents, alpha, shouldRender, throughWalls);
 	}
 
 	@Override
@@ -38,22 +42,32 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 
 	@Override
 	public OrderedNamedWaypoint withX(int x) {
-		return new OrderedNamedWaypoint(new BlockPos(x, pos.getY(), pos.getZ()), name, typeSupplier, colorComponents, alpha, isEnabled());
+		return new OrderedNamedWaypoint(new BlockPos(x, pos.getY(), pos.getZ()), name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
 	}
 
 	@Override
 	public OrderedNamedWaypoint withY(int y) {
-		return new OrderedNamedWaypoint(new BlockPos(pos.getX(), y, pos.getZ()), name, typeSupplier, colorComponents, alpha, isEnabled());
+		return new OrderedNamedWaypoint(new BlockPos(pos.getX(), y, pos.getZ()), name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
 	}
 
 	@Override
 	public OrderedNamedWaypoint withZ(int z) {
-		return new OrderedNamedWaypoint(new BlockPos(pos.getX(), pos.getY(), z), name, typeSupplier, colorComponents, alpha, isEnabled());
+		return new OrderedNamedWaypoint(new BlockPos(pos.getX(), pos.getY(), z), name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
 	}
 
 	@Override
 	public OrderedNamedWaypoint withColor(float[] colorComponents, float alpha) {
-		return new OrderedNamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled());
+		return new OrderedNamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
+	}
+
+	@Override
+	public OrderedNamedWaypoint withThroughWalls(boolean throughWalls) {
+		return new OrderedNamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
+	}
+
+	@Override
+	public OrderedNamedWaypoint withTypeSupplier(Supplier<Type> typeSupplier) {
+		return new OrderedNamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
 	}
 
 	@Override
@@ -82,7 +96,7 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 		UIAndVisualsConfig.Waypoints waypoints = SkyblockerConfigManager.get().uiAndVisuals.waypoints;
 		if (waypoints.renderLine && relativeIndex == RelativeIndex.NEXT && shouldRender()) {
 			float[] components = waypoints.lineColor.getComponents(FLOAT_ARRAY);
-			collector.submitLineFromCursor(centerPos, components, components[3], DEFAULT_LINE_WIDTH);
+			collector.submitLineFromCursor(centerPos, components, components[3], waypoints.lineWidth);
 		}
 		if (shouldRenderName()) {
 			float scale = Math.max((float) RenderHelper.getCamera().getPos().distanceTo(centerPos) / 10, 1);

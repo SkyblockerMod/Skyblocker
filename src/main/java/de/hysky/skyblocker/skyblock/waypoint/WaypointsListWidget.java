@@ -7,7 +7,9 @@ import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
+import de.hysky.skyblocker.utils.render.gui.CyclingIconButtonWidget;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.IntConsumer;
@@ -21,8 +23,10 @@ import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -223,7 +227,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		private final SimplePositioningWidget layout = new SimplePositioningWidget(getRowWidth(), itemHeight);
 
 		public WaypointGroupEntry() {
-			this(new WaypointGroup("New Group", island, new ArrayList<>()), false);
+			this(new WaypointGroup("New Group", island), false);
 		}
 
 		public WaypointGroupEntry(WaypointGroup initialGroup, boolean collapsed) {
@@ -255,8 +259,33 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			nameField.setChangedListener(this::updateName);
 			leftLayout.add(nameField);
 
-			CheckboxWidget ordered = CheckboxWidget.builder(Text.literal("Ordered"), client.textRenderer).checked(group.ordered()).callback((checkbox, checked) -> updateOrdered(checked)).build();
-			leftLayout.add(ordered);
+			CyclingIconButtonWidget<Boolean> orderedWidget = leftLayout.add(new CyclingIconButtonWidget<>(
+					20,
+					20,
+					group.ordered(),
+					new Boolean[]{Boolean.FALSE, Boolean.TRUE},
+					b -> new CyclingIconButtonWidget.Icon(SkyblockerMod.id("waypoints_screen/ordered_" + (b ? "enabled" : "disabled")), 16, 16),
+					b -> Tooltip.of(ScreenTexts.composeGenericOptionText(Text.translatable("skyblocker.waypoints.groupType"), Text.translatable(b ? "skyblocker.waypoints.groupType.ordered" : "skyblocker.waypoints.groupType.normal").formatted(Formatting.YELLOW))),
+					this::updateOrdered
+			));
+			CyclingIconButtonWidget<Boolean> throughWallsWidget = leftLayout.add(new CyclingIconButtonWidget<>(
+					20,
+					20,
+					group.renderThroughWalls(),
+					new Boolean[]{Boolean.FALSE, Boolean.TRUE},
+					b -> new CyclingIconButtonWidget.Icon(SkyblockerMod.id("waypoints_screen/through_walls_" + (b ? "enabled" : "disabled")), 15, 16),
+					b -> Tooltip.of(ScreenTexts.composeGenericOptionText(Text.translatable("skyblocker.waypoints.throughWalls"), (b ? ScreenTexts.YES : ScreenTexts.NO).copy().formatted(Formatting.YELLOW))),
+					this::updateRenderThroughWalls
+			));
+			CyclingIconButtonWidget<Waypoint.Type> waypointTypeWidget = leftLayout.add(new CyclingIconButtonWidget<>(
+					20,
+					20,
+					group.waypointType(),
+					Waypoint.Type.values(),
+					t -> new CyclingIconButtonWidget.Icon(SkyblockerMod.id("waypoints_screen/waypoint_type_" + t.asString()), 12, 15),
+					t -> Tooltip.of(ScreenTexts.composeGenericOptionText(Text.translatable("skyblocker.waypoints.waypointType"), Text.literal(t.toString()).formatted(Formatting.YELLOW))),
+					this::updateWaypointType
+			));
 
 			ButtonWidget buttonNewWaypoint = ButtonWidget.builder(Text.translatable("skyblocker.waypoints.new"), ignored -> {
 				WaypointEntry waypointEntry = new WaypointEntry(this);
@@ -291,7 +320,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			rightLayout.add(buttonDelete);
 
 			layout.refreshPositions();
-			children = List.of(enabled, nameField, ordered, buttonNewWaypoint, buttonDelete, collapseWaypoint);
+			children = List.of(enabled, nameField, orderedWidget, throughWallsWidget, waypointTypeWidget, buttonNewWaypoint, buttonDelete, collapseWaypoint);
 		}
 
 		@Override
@@ -319,6 +348,22 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		private void updateOrdered(boolean ordered) {
 			int index = waypoints.indexOf(group);
 			group = group.withOrdered(ordered);
+			if (index >= 0) {
+				waypoints.set(index, group);
+			}
+		}
+
+		private void updateRenderThroughWalls(boolean renderThroughWalls) {
+			int index = waypoints.indexOf(group);
+			group = group.withRenderThroughWalls(renderThroughWalls);
+			if (index >= 0) {
+				waypoints.set(index, group);
+			}
+		}
+
+		private void updateWaypointType(Waypoint.Type waypointType) {
+			int index = waypoints.indexOf(group);
+			group = group.withWaypointType(waypointType);
 			if (index >= 0) {
 				waypoints.set(index, group);
 			}
@@ -364,13 +409,11 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			layout.add(leftLayout, Positioner::alignLeft);
 			leftLayout.add(EmptyWidget.ofWidth(6));
 
-			buttonUp = ButtonWidget.builder(Text.of("↑"), button -> {
-				this.shiftWaypointIndex(-1);
-			}).size(11, 11).build();
+			buttonUp = ButtonWidget.builder(Text.of("↑"), button -> this.shiftWaypointIndex(-1))
+					.size(11, 11).build();
 			leftLayout.add(buttonUp);
-			buttonDown = ButtonWidget.builder(Text.of("↓"), button -> {
-				this.shiftWaypointIndex(1);
-			}).size(11, 11).build();
+			buttonDown = ButtonWidget.builder(Text.of("↓"), button -> this.shiftWaypointIndex(1))
+					.size(11, 11).build();
 			leftLayout.add(buttonDown);
 			enabled = CheckboxWidget.builder(Text.literal(""), client.textRenderer).checked(screen.isEnabled(waypoint)).callback((checkbox, checked) -> screen.enabledChanged(waypoint, checked)).build();
 			leftLayout.add(enabled, p -> p.marginLeft(4));
