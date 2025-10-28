@@ -50,9 +50,9 @@ public class EggFinder {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Egg Finder");
 	private static final Pattern EGG_FOUND_PATTERN = Pattern.compile("^(?:HOPPITY'S HUNT You found a Chocolate|You have already collected this Chocolate) (Breakfast|Lunch|Dinner|Brunch|Déjeuner|Supper) Egg");
 	private static final Set<Location> LOCATIONS = Set.of(
-			Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.DEEP_CAVERNS, Location.DUNGEON_HUB, Location.DWARVEN_MINES,
-			Location.GOLD_MINE, Location.HUB, Location.THE_END, Location.THE_FARMING_ISLAND, Location.THE_PARK, Location.SPIDERS_DEN,
-			Location.BACKWATER_BAYOU, Location.GALATEA // These two are not mentioned on the Official wiki, but are on the Fandom wiki.
+			Location.BACKWATER_BAYOU, Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.DEEP_CAVERNS,
+			Location.DUNGEON_HUB, Location.DWARVEN_MINES, Location.GALATEA, Location.GOLD_MINE, Location.HUB,
+			Location.THE_END, Location.THE_FARMING_ISLAND, Location.THE_PARK, Location.SPIDERS_DEN
 	);
 
 	private static boolean isSpring = SkyblockTime.skyblockSeason.get() == SkyblockTime.Season.SPRING;
@@ -72,6 +72,7 @@ public class EggFinder {
 			for (EggType type : EggType.entries) {
 				if (hour == type.resetHour && isOdd == type.oddDay) {
 					type.collected = false;
+					type.prevEgg = type.egg;
 					type.egg = null;
 				}
 			}
@@ -105,9 +106,7 @@ public class EggFinder {
 
 			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("clearWaypoints")
 					.executes(context -> {
-						for (EggType type : EggType.entries) {
-							type.egg = null;
-						}
+						clearEggs();
 						return Command.SINGLE_SUCCESS;
 					}))));
 		});
@@ -122,6 +121,7 @@ public class EggFinder {
 	private static void clearEggs() {
 		for (EggType type : EggType.entries) {
 			type.egg = null;
+			type.prevEgg = null;
 		}
 	}
 
@@ -149,7 +149,6 @@ public class EggFinder {
 
 	private static void extractRendering(PrimitiveCollector collector) {
 		if (!isSpring || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
-		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		for (EggType type : EggType.entries) {
 			Egg egg = type.egg;
 			if (egg != null) egg.extractRendering(collector);
@@ -182,9 +181,13 @@ public class EggFinder {
 
 			if (entities.size() != 1) return true;
 			eggType.egg = new Egg(entities.getFirst().getBlockPos().up(2), eggType);
-			WsMessageHandler.sendLocationMessage(Service.EGG_WAYPOINTS, new EggWaypointMessage(eggType, eggType.egg.pos));
 			eggType.egg.setFound();
 			eggType.sendEggMessage();
+			if (eggType.egg.equals(eggType.prevEgg)) {
+				LOGGER.info("[Skyblocker Egg Finder] Not sharing this egg to the WebSocket - matches previous location");
+				return true;
+			}
+			WsMessageHandler.sendLocationMessage(Service.EGG_WAYPOINTS, new EggWaypointMessage(eggType, eggType.egg.pos));
 		} catch (IllegalArgumentException e) {
 			LOGGER.error("[Skyblocker Egg Finder] Failed to process an egg!", e);
 		}
@@ -217,6 +220,7 @@ public class EggFinder {
 
 		boolean collected = false;
 		private @Nullable Egg egg = null;
+		private @Nullable Egg prevEgg = null;
 
 		EggType(String name, int color, int resetHour, String texture, Boolean oddDay) {
 			this.name = name;
