@@ -63,29 +63,124 @@ public class Shortcuts {
 
 		// Skyblock
 		commands.put("/s", "/skyblock");
-		commands.put("/i", "/is");
-		commands.put("/h", "/hub");
-		commands.put("/ga", "/warp garden");
+		commands.put("/a", "/ah");
+		commands.put("/b", "/bz");
+		commands.put("/at", "/attributemenu");
+		commands.put("/ct", "/centauri");
+		commands.put("/eff", "/effects");
+		commands.put("/qu", "/quiver");
+
+		// Skyblocker
+		commands.put("/sc", "/skyblocker config");
+		commands.put("/scu", "/skyblocker custom");
+		commands.put("/sp", "/skyblocker sharePosition");
+		commands.put("/sds", "/skyblocker dungeons secrets markAsMissing all");
+		commandArgs.put("/sw", "/skyblocker crystalWaypoints share");
 
 		// Dungeon
 		commands.put("/d", "/warp dungeon_hub");
+		commands.put("/f0", "/joininstance CATACOMBS_ENTRANCE");
+		commands.put("/f1", "/joininstance CATACOMBS_FLOOR_ONE");
+		commands.put("/f2", "/joininstance CATACOMBS_FLOOR_TWO");
+		commands.put("/f3", "/joininstance CATACOMBS_FLOOR_THREE");
+		commands.put("/f4", "/joininstance CATACOMBS_FLOOR_FOUR");
+		commands.put("/f5", "/joininstance CATACOMBS_FLOOR_FIVE");
+		commands.put("/f6", "/joininstance CATACOMBS_FLOOR_SIX");
+		commands.put("/f7", "/joininstance CATACOMBS_FLOOR_SEVEN");
+		commands.put("/m1", "/joininstance MASTER_CATACOMBS_FLOOR_ONE");
+		commands.put("/m2", "/joininstance MASTER_CATACOMBS_FLOOR_TWO");
+		commands.put("/m3", "/joininstance MASTER_CATACOMBS_FLOOR_THREE");
+		commands.put("/m4", "/joininstance MASTER_CATACOMBS_FLOOR_FOUR");
+		commands.put("/m5", "/joininstance MASTER_CATACOMBS_FLOOR_FIVE");
+		commands.put("/m6", "/joininstance MASTER_CATACOMBS_FLOOR_SIX");
+		commands.put("/m7", "/joininstance MASTER_CATACOMBS_FLOOR_SEVEN");
 
 		// Chat channels
 		commands.put("/ca", "/chat all");
+		commands.put("/cc", "/chat coop");
 		commands.put("/cp", "/chat party");
 		commands.put("/cg", "/chat guild");
-		commands.put("/co", "/chat officer");
+		commands.put("/cof", "/chat officer");
+
+		// Kuudra
+		commands.put("/k1", "/joininstance KUUDRA_NORMAL");
+		commands.put("/k2", "/joininstance KUUDRA_HOT");
+		commands.put("/k3", "/joininstance KUUDRA_BURNING");
+		commands.put("/k4", "/joininstance KUUDRA_FIERY");
+		commands.put("/k5", "/joininstance KUUDRA_INFERNAL");
 
 		// Message
 		commandArgs.put("/m", "/msg");
 
-		// Party
-		commandArgs.put("/pa", "/p accept");
-		commands.put("/pd", "/p disband");
+		// Misc
+		commands.put("/e", "/gfs ender_pearl 16");
 
-		// Visit
+		// NPC Calls
+		commandArgs.put("/c", "/call");
+		commands.put("/cm", "/call max");
+		commands.put("/cf", "/call fred");
+		commands.put("/ce", "/call elizabeth");
+		commands.put("/co", "/call odger");
+		commands.put("/ck", "/call kat");
+		commands.put("/cs", "/call maddox");//call slayer
+
+		// Social
+		commandArgs.put("/fr", "/friend");
+		commandArgs.put("/p", "/party");
+		commandArgs.put("/pj", "/party join");
+		commandArgs.put("/pa", "/party accept");
+		commandArgs.put("/pc", "/party chat");
+		commandArgs.put("/ptr", "/party transfer");//pt is for playtime
+		commands.put("/pd", "/party disband");
+		commands.put("/pl", "/party leave");
+		commands.put("/pll", "/party list");
+		commands.put("/pw", "/party warp");
+		commands.put("/rp", "/reparty");
 		commandArgs.put("/v", "/visit");
 		commands.put("/vp", "/visit portalhub");
+
+		// Warp
+		commands.put("/i", "/is");
+		commands.put("/h", "/hub");
+		commands.put("/wa", "/warp arachne");
+		commands.put("/wb", "/warp barn");
+		commands.put("/wba", "/warp bayou");
+		commands.put("/wc", "/warp camp");
+		commands.put("/wca", "/warp carnival");
+		commands.put("/wcr", "/warp crypt");
+		commands.put("/wcs", "/warp castle");
+		commands.put("/wd", "/warp deep");
+		commands.put("/wda", "/warp da");
+		commands.put("/wdd", "/warp drag");//wdr is for watchdog report
+		commands.put("/wde", "/warp desert");
+		commands.put("/wdt", "/warp dragontail");
+		commands.put("/we", "/warp end");
+		commands.put("/wf", "/warp forge");
+		commands.put("/wg", "/warp garden");
+		commands.put("/wga", "/warp galatea");
+		commands.put("/wgg", "/warp gold");
+		commands.put("/whc", "/warp howling_cave");
+		commands.put("/wj", "/warp jerry");
+		commands.put("/wju", "/warp jungle");
+		commands.put("/wk", "/warp kuudra");
+		commands.put("/wm", "/warp mines");
+		commands.put("/wmu", "/warp museum");
+		commands.put("/wmw", "/warp murkwater");
+		commands.put("/wn", "/warp nether");
+		commands.put("/wnu", "/warp nucleus");
+		commands.put("/wp", "/warp park");
+		commands.put("/wr", "/warp the_rift");
+		commands.put("/ws", "/warp spider");
+		commands.put("/wsc", "/warp scarleton");
+		commands.put("/wsm", "/warp smold");
+		commands.put("/wss", "/warp top");
+		commands.put("/wst", "/warp stonks");
+		commands.put("/wt", "/warp trap");
+		commands.put("/wta", "/warp taylor");
+		commands.put("/wto", "/warp tomb");
+		commands.put("/wv", "/warp void");
+		commands.put("/ww", "/warp wizard");
+		commands.put("/wws", "/warp wasteland");
 
 		return new ShortcutsRecord(commands, commandArgs, new Object2ObjectOpenHashMap<>());
 	}
