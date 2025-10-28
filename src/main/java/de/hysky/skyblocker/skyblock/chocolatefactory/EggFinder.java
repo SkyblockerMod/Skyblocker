@@ -157,7 +157,7 @@ public class EggFinder {
 
 	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Text text, boolean overlay) {
-		if (!isSpring || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return true;
+		if (overlay || !isSpring || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return true;
 		Matcher matcher = EGG_FOUND_PATTERN.matcher(text.getString());
 		if (!matcher.find()) return true;
 
