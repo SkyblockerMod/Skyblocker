@@ -1,6 +1,9 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
+import com.mojang.brigadier.Command;
 import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.preview.PreviewTab;
@@ -11,7 +14,10 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tab.TabManager;
@@ -80,6 +86,25 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	private WidgetsListTab widgetsListTab;
 
 	private boolean switchingToPopup = false;
+
+	/**
+	 * Register the /skyblocker hud command, which will open /widgets if on Skyblock and Fancy Tab Hud is enabled.
+	 * Otherwise, it'll open the widgets config screen.
+	 */
+	@Init
+	public static void initCommands() {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("hud").executes((ctx) -> {
+				if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
+					MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
+				} else {
+					Location currentLocation = Utils.isOnSkyblock() ? Utils.getLocation() : Location.HUB;
+					MessageScheduler.queueOpenScreen(new WidgetsConfigurationScreen(currentLocation, WidgetManager.ScreenLayer.MAIN_TAB, null));
+				}
+				return Command.SINGLE_SUCCESS;
+			})));
+		});
+	}
 
 	/**
 	 * Creates the screen to configure, putting the handler at null will hide the first tab. Putting it to null is used in the config
