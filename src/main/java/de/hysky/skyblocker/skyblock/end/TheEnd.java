@@ -43,11 +43,7 @@ public class TheEnd {
 	private static final Pattern END_STONE_PROTECTOR_RISES = Pattern.compile("^The ground begins to shake as an End Stone Protector rises from below!$");
 	private static final Pattern END_STONE_PROTECTOR_FIGHT_STARTS = Pattern.compile("^BEWARE - An End Stone Protector has risen!$");
 	private static final Pattern SPECIAL_ZEALOT_SPAWNED = Pattern.compile("^A special Zealot has spawned nearby!$");
-
-	public static Set<UUID> hitZealots = new HashSet<>();
-	public static ProfiledData<EndStats> PROFILES_STATS = new ProfiledData<>(FILE, EndStats.CODEC);
-
-	public static List<ProtectorLocation> protectorLocations = List.of(
+	private static final List<ProtectorLocation> protectorLocations = List.of(
 			new ProtectorLocation(-649, -219, Text.translatable("skyblocker.end.hud.protectorLocations.left")),
 			new ProtectorLocation(-644, -269, Text.translatable("skyblocker.end.hud.protectorLocations.front")),
 			new ProtectorLocation(-689, -273, Text.translatable("skyblocker.end.hud.protectorLocations.center")),
@@ -55,6 +51,9 @@ public class TheEnd {
 			new ProtectorLocation(-639, -328, Text.translatable("skyblocker.end.hud.protectorLocations.rightFront")),
 			new ProtectorLocation(-678, -332, Text.translatable("skyblocker.end.hud.protectorLocations.rightBack"))
 	);
+
+	public static Set<UUID> hitZealots = new HashSet<>();
+	public static ProfiledData<EndStats> PROFILES_STATS = new ProfiledData<>(FILE, EndStats.CODEC);
 
 	public static ProtectorLocation currentProtectorLocation = null;
 	public static int stage = 0;
