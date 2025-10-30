@@ -193,6 +193,7 @@ public class PreviewTab implements Tab {
 		restorePositioning.setPosition(10, tabArea.getBottom() - 25);
 
 		forEachChild(clickableWidget -> clickableWidget.visible = parent.isPreviewVisible() || parent.noHandler);
+		locationDropdownOpened(locationDropdown.isOpen());
 	}
 
 	private void updatePlayerListFromPreview() {
@@ -265,6 +266,7 @@ public class PreviewTab implements Tab {
 	void onHudWidgetSelected(@Nullable HudWidget hudWidget) {
 		widgetOptions.clearWidgets();
 		if (hudWidget == null) return;
+		if (locationDropdown.isOpen()) locationDropdown.mouseClicked(locationDropdown.getX(), locationDropdown.getY(), 0);
 		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
 		PositionRule positionRule = screenBuilder.getPositionRule(hudWidget.getInternalID());
 		int width = widgetOptions.getWidth() - 6;
@@ -384,6 +386,17 @@ public class PreviewTab implements Tab {
 
 	public WidgetManager.ScreenLayer getCurrentScreenLayer() {
 		return currentScreenLayer;
+	}
+
+	/**
+	 * Hide Layer Buttons when the location dropdown is opened.
+	 */
+	public void locationDropdownOpened(boolean isOpen) {
+		onHudWidgetSelected(null);
+		previewWidget.selectedWidget = null;
+		for (ButtonWidget layerButton : layerButtons) {
+			layerButton.visible = !isOpen;
+		}
 	}
 
 	private static class WidgetOptionsScrollable extends ScrollableWidget {

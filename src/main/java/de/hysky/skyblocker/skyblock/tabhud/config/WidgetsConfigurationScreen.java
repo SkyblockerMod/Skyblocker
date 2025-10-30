@@ -289,6 +289,8 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		return new DropdownWidget<>(client, 0, 0, 50, 50, locations, location -> {
 			setCurrentLocation(location);
 			onLocationChanged.accept(location);
-		}, locations.contains(currentLocation) ? currentLocation : Location.HUB);
+		},
+				locations.contains(currentLocation) ? currentLocation : Location.HUB,
+				(isOpen) -> previewTab.locationDropdownOpened(isOpen));
 	}
 }
