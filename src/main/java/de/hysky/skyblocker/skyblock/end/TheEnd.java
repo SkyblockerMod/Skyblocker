@@ -12,6 +12,7 @@ import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -31,7 +32,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -43,7 +47,7 @@ public class TheEnd {
 	private static final Pattern END_STONE_PROTECTOR_RISES = Pattern.compile("^The ground begins to shake as an End Stone Protector rises from below!$");
 	private static final Pattern END_STONE_PROTECTOR_FIGHT_STARTS = Pattern.compile("^BEWARE - An End Stone Protector has risen!$");
 	private static final Pattern SPECIAL_ZEALOT_SPAWNED = Pattern.compile("^A special Zealot has spawned nearby!$");
-	private static final List<ProtectorLocation> protectorLocations = List.of(
+	private static final List<ProtectorLocation> PROTECTOR_LOCATIONS = List.of(
 			new ProtectorLocation(-649, -219, Text.translatable("skyblocker.end.hud.protectorLocations.left")),
 			new ProtectorLocation(-644, -269, Text.translatable("skyblocker.end.hud.protectorLocations.front")),
 			new ProtectorLocation(-689, -273, Text.translatable("skyblocker.end.hud.protectorLocations.center")),
@@ -51,9 +55,8 @@ public class TheEnd {
 			new ProtectorLocation(-639, -328, Text.translatable("skyblocker.end.hud.protectorLocations.rightFront")),
 			new ProtectorLocation(-678, -332, Text.translatable("skyblocker.end.hud.protectorLocations.rightBack"))
 	);
-
-	public static Set<UUID> hitZealots = new HashSet<>();
-	public static ProfiledData<EndStats> PROFILES_STATS = new ProfiledData<>(FILE, EndStats.CODEC);
+	private static final Set<UUID> HIT_ZEALOTS = new ObjectOpenHashSet<>();
+	public static final ProfiledData<EndStats> PROFILES_STATS = new ProfiledData<>(FILE, EndStats.CODEC);
 
 	public static ProtectorLocation currentProtectorLocation = null;
 	public static int stage = 0;
@@ -62,7 +65,7 @@ public class TheEnd {
 	public static void init() {
 		AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
 			if (entity instanceof EndermanEntity enderman && isZealot(enderman)) {
-				hitZealots.add(enderman.getUuid());
+				HIT_ZEALOTS.add(enderman.getUuid());
 			}
 			return ActionResult.PASS;
 		});
@@ -73,7 +76,7 @@ public class TheEnd {
 				ChunkPos pos = chunk.getPos();
 				//
 				Box box = new Box(pos.getStartX(), 0, pos.getStartZ(), pos.getEndX() + 1, 1, pos.getEndZ() + 1);
-				for (ProtectorLocation protectorLocation : protectorLocations) {
+				for (ProtectorLocation protectorLocation : PROTECTOR_LOCATIONS) {
 					if (box.contains(protectorLocation.x(), 0.5, protectorLocation.z())) {
 						// MinecraftClient.getInstance().player.sendMessage(Text.literal("Checking: ").append(protectorLocation.name));//MinecraftClient.getInstance().player.sendMessage(Text.literal(pos.getStartX() + " " + pos.getStartZ() + " " + pos.getEndX() + " " + pos.getEndZ()));
 						if (isProtectorHere(world, protectorLocation)) break;
@@ -81,10 +84,15 @@ public class TheEnd {
 				}
 			}
 		});
+
 		// Fix for when you join skyblock, and you are directly in the end
 		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> EndHudWidget.getInstance().update());
+
 		// Reset when changing island
-		SkyblockEvents.LOCATION_CHANGE.register(location -> resetLocation());
+		SkyblockEvents.LOCATION_CHANGE.register(location -> {
+			resetLocation();
+			HIT_ZEALOTS.clear();
+		});
 
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 			if (!Utils.isInTheEnd() || overlay) return true;
@@ -116,7 +124,7 @@ public class TheEnd {
 	private static void checkAllProtectorLocations() {
 		ClientWorld world = MinecraftClient.getInstance().world;
 		if (world == null) return;
-		for (ProtectorLocation protectorLocation : protectorLocations) {
+		for (ProtectorLocation protectorLocation : PROTECTOR_LOCATIONS) {
 			if (!world.isChunkLoaded(protectorLocation.x() >> 4, protectorLocation.z() >> 4)) continue;
 			if (isProtectorHere(world, protectorLocation)) break;
 		}
@@ -148,10 +156,10 @@ public class TheEnd {
 
 	public static void onEntityDeath(Entity entity) {
 		if (!(entity instanceof EndermanEntity enderman) || !isZealot(enderman)) return;
-		if (hitZealots.contains(enderman.getUuid())) {
+		if (HIT_ZEALOTS.contains(enderman.getUuid())) {
 			EndStats stats = PROFILES_STATS.computeIfAbsent(EndStats.EMPTY);
 			PROFILES_STATS.put(new EndStats(stats.totalZealotKills() + 1, stats.zealotsSinceLastEye() + 1, stats.eyes()));
-			hitZealots.remove(enderman.getUuid());
+			HIT_ZEALOTS.remove(enderman.getUuid());
 			EndHudWidget.getInstance().update();
 		}
 	}
