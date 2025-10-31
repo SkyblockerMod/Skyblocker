@@ -184,7 +184,6 @@ public class DungeonManager {
 		return rooms.values().stream();
 	}
 
-	@SuppressWarnings("unused")
 	public static JsonObject getRoomMetadata(String room) {
 		JsonElement value = roomsJson.get(room);
 		return value != null ? value.getAsJsonObject() : null;

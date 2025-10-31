@@ -52,7 +52,9 @@ public class DungeonMapLabels {
 			Vec3d labelPos = getPosForLabel(room, mapRoomSize, textRenderer.fontHeight);
 			if (labelPos == null) return;
 			Vector2dc mapPos = DungeonMapUtils.getMapPosFromPhysical(entrancePos, mapEntrancePos, mapRoomSize, labelPos);
-			String roomName = DungeonManager.getRoomMetadata(room.getName()).name();
+			RoomInfo roomInfo = DungeonManager.getRoomMetadata(room.getName());
+			if (roomInfo == null) return;
+			String roomName = roomInfo.name();
 
 			int color = Colors.GRAY;
 			if (room.greenChecked) {
