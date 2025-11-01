@@ -42,12 +42,8 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
     final int secretIndex;
     final Category category;
 
-    SecretWaypoint(int secretIndex, JsonObject waypoint, String name, BlockPos pos) {
-        this(secretIndex, Category.get(waypoint), name, pos);
-    }
-
     SecretWaypoint(int secretIndex, Category category, String name, BlockPos pos) {
-        this(secretIndex, category, Text.of(name), pos);
+        this(secretIndex, category == null ? Category.DEFAULT : category, Text.of(name), pos);
     }
 
     SecretWaypoint(int secretIndex, Category category, Text name, BlockPos pos) {

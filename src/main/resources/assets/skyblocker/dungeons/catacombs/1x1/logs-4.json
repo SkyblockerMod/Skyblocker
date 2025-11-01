@@ -1,0 +1,56 @@
+{
+  "info": {
+    "name": "Logs"
+  },
+  "secrets": [
+    {
+      "secretName": "1/2 - Lever",
+      "category": "lever",
+      "x": 25,
+      "y": 84,
+      "z": 28
+    },
+    {
+      "secretName": "1 - Chest (click both sides)",
+      "category": "chest",
+      "x": 1,
+      "y": 70,
+      "z": 24
+    },
+    {
+      "secretName": "2 - Chest (click both sides)",
+      "category": "chest",
+      "x": 1,
+      "y": 70,
+      "z": 23
+    },
+    {
+      "secretName": "3/4 - Entrance",
+      "category": "entrance",
+      "x": 3,
+      "y": 79,
+      "z": 19
+    },
+    {
+      "secretName": "3/4 - Stonk",
+      "category": "stonk",
+      "x": 11,
+      "y": 78,
+      "z": 23
+    },
+    {
+      "secretName": "3 - Chest (click both sides)",
+      "category": "chest",
+      "x": 9,
+      "y": 78,
+      "z": 23
+    },
+    {
+      "secretName": "4 - Chest (click both sides)",
+      "category": "chest",
+      "x": 9,
+      "y": 78,
+      "z": 24
+    }
+  ]
+}

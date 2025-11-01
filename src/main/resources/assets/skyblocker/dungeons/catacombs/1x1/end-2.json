@@ -1,0 +1,42 @@
+{
+  "info": {
+    "name": "End"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 6,
+      "y": 63,
+      "z": 18
+    },
+    {
+      "secretName": "1 - Wither Essence",
+      "category": "wither",
+      "x": 6,
+      "y": 63,
+      "z": 2
+    },
+    {
+      "secretName": "2 - Lever",
+      "category": "lever",
+      "x": 7,
+      "y": 84,
+      "z": 5
+    },
+    {
+      "secretName": "2 - Stonk",
+      "category": "stonk",
+      "x": 15,
+      "y": 70,
+      "z": 10
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 15,
+      "y": 69,
+      "z": 6
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "info": {
+    "name": "Cages"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Lever",
+      "category": "lever",
+      "x": 6,
+      "y": 85,
+      "z": 2
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 7,
+      "y": 58,
+      "z": 11
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 28,
+      "y": 98,
+      "z": 5
+    }
+  ]
+}
