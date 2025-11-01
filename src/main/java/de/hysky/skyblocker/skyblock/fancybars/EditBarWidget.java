@@ -125,7 +125,7 @@ public class EditBarWidget extends ContainerWidget {
 	public boolean mouseClicked(Click click, boolean doubled) {
 		if (!visible) return false;
 		if (!isHovered()) visible = false;
-		return super.mouseClicked(new Click(click.x() - getX(), click.y() - getY(), click.buttonInfo()), doubled); // TODO (1.21.9): Double check this works as intended
+		return super.mouseClicked(new Click(click.x() - getX(), click.y() - getY(), click.buttonInfo()), doubled);
 	}
 
 	public void setStatusBar(StatusBar statusBar) {
