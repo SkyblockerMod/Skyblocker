@@ -4,9 +4,11 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import de.hysky.skyblocker.injected.CustomGlowState;
 import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(OrderedRenderCommandQueueImpl.ItemCommand.class)
 public class ItemCommandMixin implements CustomGlowState {
+	@Unique
 	private boolean hasCustomGlow = false;
 
 	@Override

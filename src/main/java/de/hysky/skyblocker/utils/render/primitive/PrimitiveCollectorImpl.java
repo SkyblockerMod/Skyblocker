@@ -123,7 +123,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		state.type = BlockEntityType.BEACON;
 		state.lightmapCoordinates = LightmapTextureManager.MAX_LIGHT_COORDINATE;
 		state.crumblingOverlay = null;
-		state.beamRotationDegrees = CLIENT.world != null? Math.floorMod(CLIENT.world.getTime(), 40) + CLIENT.getRenderTickCounter().getTickProgress(true) : 0f;
+		state.beamRotationDegrees = CLIENT.world != null ? Math.floorMod(CLIENT.world.getTime(), 40) + CLIENT.getRenderTickCounter().getTickProgress(true) : 0f;
 		state.beamSegments.add(new BeaconBlockEntityRenderState.BeamSegment(colour, MAX_OVERWORLD_BUILD_HEIGHT));
 		state.beamScale = CLIENT.player != null && CLIENT.player.isUsingSpyglass() ? 1.0F : Math.max(1.0F, length / 96.0F);
 
