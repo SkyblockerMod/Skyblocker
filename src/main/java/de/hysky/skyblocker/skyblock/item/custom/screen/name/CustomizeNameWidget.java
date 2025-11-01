@@ -89,7 +89,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 				client.setScreen(ColorPopup.createGradient(parent, this::createGradient))
 		).size(48, 16).build(), 3, 17, 1, 3));
 		builder.add(grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.translatable("skyblocker.customItemNames.screen.howToRemove").formatted(Formatting.ITALIC, Formatting.GRAY), textRenderer)/*.alignLeft()*/, 4, 0, 1, 20, Positioner.create().marginTop(2)));
-		builder.add(previewWidget = grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.empty(), textRenderer)/*.alignCenter()*/, 5, 0, 1, 20, Positioner.create().marginY(2)));
+		builder.add(previewWidget = grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.empty(), textRenderer).setMaxWidth(20 * 16, TextWidget.TextOverflow.SCROLLING), 5, 0, 1, 20, Positioner.create().marginY(2).alignHorizontalCenter()));
 		widgets = builder.build();
 		grid.refreshPositions();
 		grid.setPosition(getX() + PADDING, getY() + PADDING);
@@ -197,6 +197,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 			else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(Formatting.WHITE)));
 		}
 		previewWidget.setMessage(text);
+		grid.refreshPositions();
 
 		// called before init
 		if (textField != null) textField.updateMePrettyPlease = true;

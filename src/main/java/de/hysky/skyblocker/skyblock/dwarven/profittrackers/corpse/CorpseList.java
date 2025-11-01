@@ -102,26 +102,6 @@ public class CorpseList extends ElementListWidget<CorpseList.AbstractEntry> {
 		return 500;
 	}
 
-	/*@Override
-	public int getRowTop(int index) {
-		return this.getY() - (int) this.getScrollY() + index * this.itemHeight + this.headerHeight;
-	}
-
-	@Override
-	protected void renderList(DrawContext context, int mouseX, int mouseY, float delta) {
-		int i = this.getRowLeft();
-		int j = this.getRowWidth();
-		int l = this.getEntryCount();
-
-		for (int m = 0; m < l; m++) {
-			int n = this.getRowTop(m);
-			int o = this.getRowBottom(m);
-			if (o >= this.getY() && n <= this.getBottom()) {
-				this.renderEntry(context, mouseX, mouseY, delta, m, i, n, j, this.itemHeight);
-			}
-		}
-	}*/
-
 	public abstract static class AbstractEntry extends ElementListWidget.Entry<AbstractEntry> {
 		protected List<ClickableWidget> children;
 
@@ -151,7 +131,7 @@ public class CorpseList extends ElementListWidget<CorpseList.AbstractEntry> {
 		private boolean drawBorder = true;
 
 		public SingleEntry(Text text) {
-			children = List.of(new TextWidget(text, MinecraftClient.getInstance().textRenderer)/*.alignCenter()*/);
+			children = List.of(new TextWidget(text, MinecraftClient.getInstance().textRenderer));
 		}
 
 		public SingleEntry(Text text, boolean drawBorder) {
@@ -180,8 +160,8 @@ public class CorpseList extends ElementListWidget<CorpseList.AbstractEntry> {
 
 		// For the items
 		public MultiEntry(Text itemName, int amount, double pricePerUnit) {
-			this.itemName = new TextWidget(itemName, MinecraftClient.getInstance().textRenderer)/*.alignLeft()*/;
-			this.amount = new TextWidget(Text.literal("x" + amount).formatted(Formatting.AQUA), MinecraftClient.getInstance().textRenderer)/*.alignCenter()*/;
+			this.itemName = new TextWidget(itemName, MinecraftClient.getInstance().textRenderer);
+			this.amount = new TextWidget(Text.literal("x" + amount).formatted(Formatting.AQUA), MinecraftClient.getInstance().textRenderer);
 			this.totalPrice = new TextWidget(Text.literal(NumberFormat.getInstance().format(amount * pricePerUnit) + " Coins").formatted(Formatting.GOLD), MinecraftClient.getInstance().textRenderer);
 			this.pricePerUnit = new TextWidget(Text.literal(NumberFormat.getInstance().format(pricePerUnit) + " each").formatted(Formatting.GRAY), MinecraftClient.getInstance().textRenderer);
 			children = List.of(this.itemName, this.amount, this.totalPrice, this.pricePerUnit);
@@ -189,14 +169,14 @@ public class CorpseList extends ElementListWidget<CorpseList.AbstractEntry> {
 
 		// For the items
 		public MultiEntry(Text itemName, int amount) {
-			this.itemName = new TextWidget(itemName, MinecraftClient.getInstance().textRenderer)/*.alignLeft()*/;
-			this.amount = new TextWidget(Text.literal("x" + amount).formatted(Formatting.AQUA), MinecraftClient.getInstance().textRenderer)/*.alignCenter()*/;
+			this.itemName = new TextWidget(itemName, MinecraftClient.getInstance().textRenderer);
+			this.amount = new TextWidget(Text.literal("x" + amount).formatted(Formatting.AQUA), MinecraftClient.getInstance().textRenderer);
 			children = List.of(this.itemName, this.amount);
 		}
 
 		// For the total profit line
 		public MultiEntry(double profit) {
-			this.itemName = new TextWidget(Text.literal("Total Profit").formatted(Formatting.BOLD, Formatting.GOLD), MinecraftClient.getInstance().textRenderer)/*.alignLeft()*/;
+			this.itemName = new TextWidget(Text.literal("Total Profit").formatted(Formatting.BOLD, Formatting.GOLD), MinecraftClient.getInstance().textRenderer);
 			this.totalPrice = new TextWidget(Text.literal(NumberFormat.getInstance().format(profit) + " Coins").formatted(profit > 0 ? Formatting.GREEN : Formatting.RED), MinecraftClient.getInstance().textRenderer);
 			children = List.of(this.itemName, this.totalPrice);
 		}
@@ -204,8 +184,8 @@ public class CorpseList extends ElementListWidget<CorpseList.AbstractEntry> {
 		// For the keys
 		public MultiEntry(double keyPrice, boolean isKey) { // The extra boolean is just to prevent constructor overloading conflicts
 			if (!isKey) throw new IllegalArgumentException("This constructor is only for key entries");
-			this.itemName = new TextWidget(Text.literal("Key Price").formatted(Formatting.RED, Formatting.BOLD), MinecraftClient.getInstance().textRenderer)/*.alignLeft()*/;
-			this.amount = new TextWidget(Text.literal("x1").formatted(Formatting.AQUA), MinecraftClient.getInstance().textRenderer)/*.alignCenter()*/;
+			this.itemName = new TextWidget(Text.literal("Key Price").formatted(Formatting.RED, Formatting.BOLD), MinecraftClient.getInstance().textRenderer);
+			this.amount = new TextWidget(Text.literal("x1").formatted(Formatting.AQUA), MinecraftClient.getInstance().textRenderer);
 			this.totalPrice = new TextWidget(Text.literal("-" + NumberFormat.getInstance().format(keyPrice) + " Coins").formatted(Formatting.RED), MinecraftClient.getInstance().textRenderer);
 			children = List.of(this.itemName, this.amount, this.totalPrice);
 		}
@@ -228,30 +208,30 @@ public class CorpseList extends ElementListWidget<CorpseList.AbstractEntry> {
 			if (itemName != null) {
 				itemName.setX(x + INNER_MARGIN);
 				itemName.setY(entryY);
-				itemName.setWidth(entryWidth / 3 - 2 * INNER_MARGIN);
+				itemName.setMaxWidth(entryWidth / 3 - 2 * INNER_MARGIN, TextWidget.TextOverflow.SCROLLING);
 				itemName.render(context, mouseX, mouseY, deltaTicks);
 			}
 
 			if (amount != null) {
-				amount.setX(x + entryWidth / 3 + INNER_MARGIN);
-				amount.setY(entryY);
-				amount.setWidth(entryWidth / 6 - 2 * INNER_MARGIN);
+				position(amount, x + entryWidth / 3 + INNER_MARGIN, entryWidth / 6 - 2 * INNER_MARGIN, entryY);
 				amount.render(context, mouseX, mouseY, deltaTicks);
 			}
 
 			if (totalPrice != null) {
-				totalPrice.setX(x + entryWidth / 2 + INNER_MARGIN);
-				totalPrice.setY(entryY);
-				totalPrice.setWidth(entryWidth / 4 - 2 * INNER_MARGIN);
+				position(totalPrice, x + entryWidth / 2 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, entryY);
 				totalPrice.render(context, mouseX, mouseY, deltaTicks);
 			}
 
 			if (pricePerUnit != null) {
-				pricePerUnit.setX(x + 3 * entryWidth / 4 + INNER_MARGIN);
-				pricePerUnit.setY(entryY);
-				pricePerUnit.setWidth(entryWidth / 4 - 2 * INNER_MARGIN);
+				position(pricePerUnit, x + 3 * entryWidth / 4 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, entryY);
 				pricePerUnit.render(context, mouseX, mouseY, deltaTicks);
 			}
+		}
+
+		private static void position(TextWidget widget, int start, int width, int y) {
+			widget.setMaxWidth(width, TextWidget.TextOverflow.SCROLLING);
+			widget.setX(start + (width - widget.getWidth()) / 2);
+			widget.setY(y);
 		}
 	}
 }

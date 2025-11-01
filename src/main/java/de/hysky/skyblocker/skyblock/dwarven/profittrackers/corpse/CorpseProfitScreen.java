@@ -4,10 +4,7 @@ import it.unimi.dsi.fastutil.doubles.DoubleBooleanImmutablePair;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.client.gui.widget.SimplePositioningWidget;
-import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -57,7 +54,7 @@ public class CorpseProfitScreen extends Screen {
 				totalProfit.rightBoolean() ? Text.empty() : Text.literal("skyblocker.corpseTracker.incompletePriceData").formatted(Formatting.RED)
 		).formatted(Formatting.GOLD, Formatting.BOLD);
 
-		adder.add(new TextWidget(ButtonWidget.DEFAULT_WIDTH * 2 + 10, ENTRY_HEIGHT, totalProfitText, client.textRenderer)/*.alignCenter()*/, 2);
+		adder.add(new TextWidget(ButtonWidget.DEFAULT_WIDTH * 2 + 10, ENTRY_HEIGHT, totalProfitText, client.textRenderer).setMaxWidth(ButtonWidget.DEFAULT_WIDTH * 2 + 10, TextWidget.TextOverflow.SCROLLING), 2, gridWidget.copyPositioner().alignHorizontalCenter());
 
 		Text buttonText = summaryView ? Text.translatable("skyblocker.corpseTracker.historyView") : Text.translatable("skyblocker.corpseTracker.summaryView");
 		adder.add(ButtonWidget.builder(buttonText, this::changeView).build());

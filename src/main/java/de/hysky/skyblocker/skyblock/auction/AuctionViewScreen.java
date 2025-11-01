@@ -77,15 +77,14 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         super.init();
 		verticalLayout = DirectionalLayoutWidget.vertical();
         verticalLayout.spacing(2).getMainPositioner().alignHorizontalCenter();
-        priceTextWidget = new TextWidget(isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid"), textRenderer)/*.alignCenter()*/;
+        priceTextWidget = new TextWidget(isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid"), textRenderer).setMaxWidth(backgroundWidth - 10, TextWidget.TextOverflow.SCROLLING);
         verticalLayout.add(priceTextWidget);
 
-        priceWidget = new TextWidget(Text.literal("?"), textRenderer)/*.alignCenter()*/;
-        priceWidget.setWidth(textRenderer.getWidth(clickToEditBidText));
+        priceWidget = new TextWidget(Text.literal("?"), textRenderer).setMaxWidth(backgroundWidth - 10, TextWidget.TextOverflow.SCROLLING);
         priceWidget.active = true;
         verticalLayout.add(priceWidget);
 
-        infoTextWidget = new TextWidget(Text.literal("Can't Afford"), textRenderer)/*.alignCenter()*/;
+        infoTextWidget = new TextWidget(Text.literal("Can't Afford"), textRenderer).setMaxWidth(backgroundWidth - 10, TextWidget.TextOverflow.SCROLLING);
         verticalLayout.add(infoTextWidget);
 
         buyButton = ButtonWidget.builder(isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.buy") : Text.translatable("skyblocker.fancyAuctionHouse.bid"), button -> {
@@ -133,7 +132,6 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
                 buyButton.setWidth(textRenderer.getWidth(buyButton.getMessage()) + 4);
 
                 priceTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.auctionEnded"));
-                priceTextWidget.setWidth(textRenderer.getWidth(priceTextWidget.getMessage()));
             }
             case CANCELLABLE_AUCTION -> {
                 buyButton.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.cancelAuction").setStyle(Style.EMPTY.withColor(Formatting.RED)));
@@ -149,7 +147,6 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
                 infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.yourAuction"));
             }
         }
-        infoTextWidget.setWidth(textRenderer.getWidth(infoTextWidget.getMessage()));
         updateLayout();
     }
 
@@ -268,7 +265,6 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
                 if (split.length < 2) continue;
                 if (buyState != BuyState.CANT_AFFORD && !isBinAuction) {
                     infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.youPay", split[1].trim()));
-                    infoTextWidget.setWidth(textRenderer.getWidth(infoTextWidget.getMessage()));
                 }
 
             } else if (lowerCase.contains("top bid:")) { // Shows up when an auction ended and you lost
@@ -291,8 +287,6 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         else this.minBid = priceString;
         priceText = Text.literal(priceString).setStyle(Style.EMPTY.withFormatting(Formatting.BOLD).withColor(Formatting.GOLD));
         priceWidget.setMessage(priceText);
-        int width = textRenderer.getWidth(priceText);
-        if (width > priceWidget.getWidth()) priceWidget.setWidth(width);
         priceParsed = true;
         updateLayout();
     }

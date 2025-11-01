@@ -327,34 +327,9 @@ public class ChestValue {
 	}
 
 	private static class ChestValueTextWidget extends TextWidget {
-		private static final boolean shadow = false;
-
 		private ChestValueTextWidget(int width, int height, Text message, TextRenderer textRenderer) {
-			super(width, height, message, textRenderer);
-			//alignLeft();
-		}
-
-		@Override
-		public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			draw(context, getTextRenderer(), getMessage(), getX(), getRight());
-		}
-
-		// Yoinked from ClickableWidget
-		protected void draw(DrawContext context, TextRenderer textRenderer, Text text, int startX, int endX) {
-			int i = textRenderer.getWidth(text);
-			int k = endX - startX;
-			if (i > k) {
-				int l = i - k;
-				double d = Util.getMeasuringTimeMs() / 600.0;
-				double e = Math.max(l * 0.5, 3.0);
-				double f = Math.sin((Math.PI / 2) * Math.cos((Math.PI * 2) * d / e)) / 2.0 + 0.5;
-				double g = MathHelper.lerp(f, 0.0, l);
-				context.enableScissor(startX, getY(), endX, getY() + textRenderer.fontHeight);
-				context.drawText(textRenderer, text, startX - (int) g, getY(), Colors.WHITE, shadow);
-				context.disableScissor();
-			} else {
-				context.drawText(textRenderer, text, startX, getY(), Colors.WHITE, shadow);
-			}
+			super(width, height, message.copy().fillStyle(Style.EMPTY.withShadowColor(0)), textRenderer);
+			setMaxWidth(getWidth(), TextOverflow.SCROLLING);
 		}
 	}
 

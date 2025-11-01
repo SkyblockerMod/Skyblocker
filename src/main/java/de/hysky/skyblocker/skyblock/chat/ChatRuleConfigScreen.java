@@ -91,7 +91,8 @@ public class ChatRuleConfigScreen extends Screen {
 		this.height = client.getWindow().getScaledHeight();
 
 		// Title
-		titleWidget = new TextWidget(0, 16, this.width, client.textRenderer.fontHeight, getTitle(), client.textRenderer)/*.alignCenter()*/;
+		titleWidget = new TextWidget(getTitle(), client.textRenderer);
+		titleWidget.setPosition((width - titleWidget.getWidth()) / 2, 16);
 
 		// Start centered
 		IntIntPair rootPos = getRootPos();
@@ -334,7 +335,7 @@ public class ChatRuleConfigScreen extends Screen {
 		IntIntMutablePair currentPos = IntIntMutablePair.of(0, 0); // Offset from root pos, add them up and we get the actual position
 		assert client != null;
 		// Title
-		titleWidget.setWidth(this.width);
+		titleWidget.setX((width - titleWidget.getWidth()) / 2);
 		// Row 1
 		setWidgetPosition(nameLabel, rootPos, currentPos, Y_OFFSET);
 		nextColumn(currentPos, client.textRenderer.getWidth(nameLabel.getMessage()));
