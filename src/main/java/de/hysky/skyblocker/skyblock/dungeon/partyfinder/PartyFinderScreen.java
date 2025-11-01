@@ -138,7 +138,7 @@ public class PartyFinderScreen extends Screen {
 		super.init();
 		int topRowButtonsHeight = 20;
 
-		// Entry list widget, pretty much every position is based on this guy since it centers automagically
+		// AbstractEntry list widget, pretty much every position is based on this guy since it centers automagically
 		int widget_height = (int) (this.height * 0.8);
 		int entryListTopY = Math.max(43, (int) (height * 0.1));
 		this.partyEntryListWidget = new PartyEntryListWidget(client, width, widget_height, entryListTopY, 68);
