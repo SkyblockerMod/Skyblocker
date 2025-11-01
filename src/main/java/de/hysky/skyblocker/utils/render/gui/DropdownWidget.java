@@ -98,6 +98,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 	public void setX(int x) {
 		super.setX(x);
 		dropdownList.setX(getX() + 1);
+		dropdownList.refreshScroll(); // update entry list positions
 	}
 
 	@Override
@@ -115,7 +116,6 @@ public class DropdownWidget<T> extends ContainerWidget {
 	@Override
 	public void setHeight(int height) {
 		super.setHeight(height);
-		dropdownList.setHeight(height - HEADER_HEIGHT);
 	}
 
 	@Override
