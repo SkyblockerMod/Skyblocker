@@ -6,7 +6,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 
@@ -46,13 +45,12 @@ public class ModernUICompatibility {
 	// text engine changes require game reboot so it's good enough to check only once
 	private static final boolean IS_TEXT_ENGINE_ENABLED = isTextEngineEnabled();
 
-	public static boolean drawOutlinedText(DrawContext context, Text text, int x, int y, int color, int outlineColor) {
+	public static boolean drawOutlinedText(DrawContext context, OrderedText text, OrderedText outlineText, int x, int y, int color, int outlineColor) {
 		if (!IS_TEXT_ENGINE_ENABLED) return false;
 
 		final float offset = 0.5f; // default value of ModernTextRenderer.sOutlineOffset
 
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		OrderedText outlineText = Text.literal(text.getString()).asOrderedText(); // make a copy with no styles
 		Matrix3x2fStack pose = context.getMatrices();
 
 		// https://github.com/BloCamLimb/ModernUI-MC/blob/3.12.0.4/common/src/main/java/icyllis/modernui/mc/text/mixin/MixinContextualBar.java
@@ -89,7 +87,7 @@ public class ModernUICompatibility {
 		context.drawText(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 
-		context.drawText(textRenderer, text.asOrderedText(), x, y, color, false);
+		context.drawText(textRenderer, text, x, y, color, false);
 		return true;
 	}
 }

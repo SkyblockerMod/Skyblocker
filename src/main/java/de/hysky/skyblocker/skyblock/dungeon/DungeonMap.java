@@ -97,6 +97,8 @@ public class DungeonMap {
 		context.getMatrices().scale(scale, scale);
 		context.drawMap(MAP_RENDER_STATE);
 
+		DungeonMapLabels.renderRoomNames(context);
+
 		UUID hoveredHead = null;
 		if (fancy) hoveredHead = renderPlayerHeads(context, client.world, state, mouseX / scale, mouseY / scale, enlarge);
 		context.getMatrices().popMatrix();
