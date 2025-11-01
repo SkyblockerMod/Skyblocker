@@ -237,7 +237,13 @@ public class PreviewWidget extends ClickableWidget {
 			return true;
 		}
 		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
-		if (pickParent && selectedWidget != null && !selectedWidget.equals(hoveredWidget)) {
+		if (pickParent && selectedWidget != null) {
+			if (selectedWidget.equals(hoveredWidget)) {
+				// Restore the button text, but don't do anything.
+				tab.onHudWidgetSelected(selectedWidget);
+				return true;
+			}
+
 			PositionRule oldRule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
 			if (oldRule == null) oldRule = PositionRule.DEFAULT;
 
