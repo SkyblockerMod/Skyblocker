@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -29,7 +28,8 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
     private float animationProgress = 0f;
 
     public OptionDropdownWidget(PartyFinderScreen screen, Text name, @Nullable Option selectedOption, int x, int y, int width, int maxHeight, int slotId) {
-        super(screen.getClient(), width, CLOSED_HEIGHT, y, 15, 25);
+    	super(screen.getClient(), width, 0, y, 0); // TODO fix
+        //super(screen.getClient(), width, CLOSED_HEIGHT, y, 15, 25);
 		this.maxHeight = maxHeight;
         this.screen = screen;
         this.slotId = slotId;
@@ -88,7 +88,7 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
 		);
     }
 
-    @Override
+    /*@Override
     protected void renderHeader(DrawContext context, int x, int y) {
         context.drawText(MinecraftClient.getInstance().textRenderer, name, x, y + 1, 0xFFD0D0D0, false);
         int offset = 10;
@@ -121,7 +121,7 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
         context.fill(getX() + 1, getY() + headerHeight + 1, getX() + getWidth() - 2, getY() + openedListHeight + headerHeight - 1, Colors.BLACK);
 
         super.renderWidget(context, mouseX, mouseY, delta);
-    }
+    }*/
 
     @Override
     protected void drawHeaderAndFooterSeparators(DrawContext context) {
@@ -171,18 +171,18 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
         }
 
         @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
             Matrix3x2fStack matrices = context.getMatrices();
             matrices.pushMatrix();
-            int iconY = y + 1;
-            matrices.translate(x, iconY);
+            int iconY = this.getY() + 1;
+            matrices.translate(this.getX(), iconY);
             matrices.scale(0.8f, 0.8f);
-            matrices.translate(-x, -iconY);
-            context.drawItem(icon, x, iconY);
+            matrices.translate(-this.getX(), -iconY);
+            context.drawItem(icon, this.getX(), iconY);
             matrices.popMatrix();
 
-            if (PartyFinderScreen.DEBUG) context.drawText(client.textRenderer, String.valueOf(optionSlotId), x + 8, y, Colors.RED, true);
-            context.drawText(client.textRenderer, Text.literal(message).fillStyle(Style.EMPTY.withUnderline(hovered)), x + 14, y + 3, Colors.WHITE, false);
+            if (PartyFinderScreen.DEBUG) context.drawText(client.textRenderer, String.valueOf(optionSlotId), this.getX() + 8, this.getY(), Colors.RED, true);
+            context.drawText(client.textRenderer, Text.literal(message).fillStyle(Style.EMPTY.withUnderline(hovered)), this.getX() + 14, this.getY() + 3, Colors.WHITE, false);
         }
 
         @Override

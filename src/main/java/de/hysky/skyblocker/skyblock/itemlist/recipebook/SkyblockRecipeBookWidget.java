@@ -254,7 +254,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	 * No-op.
 	 */
 	@Override
-	protected boolean isValid(Slot slot) {
+	protected boolean isCraftingSlot(Slot slot) {
 		return false;
 	}
 

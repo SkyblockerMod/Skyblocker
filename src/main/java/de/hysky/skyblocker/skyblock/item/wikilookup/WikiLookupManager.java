@@ -10,6 +10,8 @@ import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
+
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -43,14 +45,14 @@ public final class WikiLookupManager {
 				"key.wikiLookup.official",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_F4,
-				"key.categories.skyblocker"
+				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 
 		fandomWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.wikiLookup.fandom",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_F1,
-				"key.categories.skyblocker"
+				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 	}
 

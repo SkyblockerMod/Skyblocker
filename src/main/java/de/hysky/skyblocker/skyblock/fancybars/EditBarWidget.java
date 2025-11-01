@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
 import de.hysky.skyblocker.utils.EnumUtils;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -274,7 +275,7 @@ public class EditBarWidget extends ContainerWidget {
 			}
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : Colors.GRAY, true);
-			context.drawBorder(getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
+			HudHelper.drawBorder(context, getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
 			if (current && active) context.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, Colors.WHITE);
 		}
 
@@ -320,7 +321,7 @@ public class EditBarWidget extends ContainerWidget {
 			}
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : Colors.GRAY, true);
-			context.drawBorder(getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
+			HudHelper.drawBorder(context, getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
 			context.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, active ? current : Colors.GRAY);
 		}
 

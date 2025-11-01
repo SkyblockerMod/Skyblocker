@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.shortcut;
 
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.input.AbstractInput;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
@@ -36,11 +37,11 @@ public class KeybindWidget extends ButtonWidget {
 	}
 
 	@Override
-	public void onPress() {
+	public void onPress(AbstractInput input) {
 		editing = true;
 		keyBinding.clearBoundKeys();
 		updateListener.run();
-		super.onPress();
+		super.onPress(input);
 	}
 
 	/**

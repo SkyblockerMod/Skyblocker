@@ -14,6 +14,8 @@ import net.minecraft.text.Text;
 import java.util.List;
 import java.util.function.Consumer;
 
+import de.hysky.skyblocker.utils.render.HudHelper;
+
 public class DropdownWidget<T> extends ContainerWidget {
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 	public static final int ENTRY_HEIGHT = 15;
@@ -53,7 +55,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 		dropdownList.visible = open;
 		dropdownList.render(context, mouseX, mouseY, delta);
 		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, 0xFF << 24);
-		context.drawBorder(getX(), getY(), getWidth(), HEADER_HEIGHT + 1, -1);
+		HudHelper.drawBorder(context, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, -1);
 		drawScrollableText(context, client.textRenderer, Text.literal(
 						selected.toString()),
 				getX() + 2,
@@ -164,7 +166,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 
 
 		@Override
-		protected void drawScrollbar(DrawContext context) {
+		protected void drawScrollbar(DrawContext context, int mouseX, int mouseY) {
 			if (this.overflows()) {
 				int i = this.getScrollbarX();
 				int j = this.getScrollbarThumbHeight();
@@ -213,7 +215,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 		@Override
 		protected void drawMenuListBackground(DrawContext context) {
 			context.fill(getX(), getY(), getRight(), getBottom(), 0xFF << 24);
-			context.drawBorder(getX(), getY(), getWidth(), getHeight(), -1);
+			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), -1);
 		}
 
 		@Override
@@ -241,11 +243,11 @@ public class DropdownWidget<T> extends ContainerWidget {
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// drawScrollableText does some weird stuff with the y value, so we put startY = y and endY = y + 11 which makes the text render on the same line as the tick mark below (y + 2).
-			drawScrollableText(context, client.textRenderer, Text.literal(entry.toString()).fillStyle(Style.EMPTY.withUnderline(hovered)), x + 10, y, x + entryWidth, y + 11, -1);
+			drawScrollableText(context, client.textRenderer, Text.literal(entry.toString()).fillStyle(Style.EMPTY.withUnderline(hovered)), this.getX() + 10, this.getY(), this.getX() + this.getWidth(), this.getY() + 11, -1);
 			if (selected == this.entry) {
-				context.drawTextWithShadow(client.textRenderer, "✔", x + 1, y + 2, 0xFFFFFFFF);
+				context.drawTextWithShadow(client.textRenderer, "✔", this.getX() + 1, this.getY() + 2, 0xFFFFFFFF);
 			}
 		}
 

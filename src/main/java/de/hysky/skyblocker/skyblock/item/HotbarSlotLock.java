@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -17,7 +18,7 @@ public class HotbarSlotLock {
         hotbarSlotLock = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.hotbarSlotLock",
                 GLFW.GLFW_KEY_H,
-                "key.categories.skyblocker"
+                SkyblockerMod.KEYBINDING_CATEGORY
         ));
     }
 

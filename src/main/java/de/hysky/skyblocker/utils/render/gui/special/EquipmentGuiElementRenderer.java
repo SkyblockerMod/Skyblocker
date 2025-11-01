@@ -5,22 +5,25 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
+import net.minecraft.client.render.command.RenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 
-public class EquipmentGuiElementRenderer extends InstancedGuiElementRenderer<EquipmentGuiElementRenderState> {
+public class EquipmentGuiElementRenderer<S> extends InstancedGuiElementRenderer<EquipmentGuiElementRenderState<S>> {
 
 	public EquipmentGuiElementRenderer(VertexConsumerProvider.Immediate vertexConsumers) {
 		super(vertexConsumers);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Class<EquipmentGuiElementRenderState> getElementClass() {
+	public Class getElementClass() {
 		return EquipmentGuiElementRenderState.class;
 	}
 
 	@Override
-	protected void render(EquipmentGuiElementRenderState state, MatrixStack matrices) {
+	protected void render(EquipmentGuiElementRenderState<S> state, MatrixStack matrices) {
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		matrices.push();
@@ -29,16 +32,21 @@ public class EquipmentGuiElementRenderer extends InstancedGuiElementRenderer<Equ
 		matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(state.rotation()));
 
 		client.gameRenderer.getDiffuseLighting().setShaderLights(DiffuseLighting.Type.ENTITY_IN_UI);
+		RenderDispatcher renderDispatcher = MinecraftClient.getInstance().gameRenderer.getEntityRenderDispatcher();
+		OrderedRenderCommandQueueImpl orderedRenderCommandQueueImpl = renderDispatcher.getQueue();
 		state.equipmentRenderer().render(
 				state.layerType(),
 				state.assetKey(),
 				state.model(),
+				state.state(),
 				state.stack(),
 				matrices,
-				this.vertexConsumers,
-				LightmapTextureManager.MAX_LIGHT_COORDINATE
+				orderedRenderCommandQueueImpl,
+				LightmapTextureManager.MAX_LIGHT_COORDINATE,
+				0
 		);
 
+		renderDispatcher.render();
 		matrices.pop();
 	}
 

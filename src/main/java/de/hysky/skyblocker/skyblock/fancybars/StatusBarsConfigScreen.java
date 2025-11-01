@@ -324,9 +324,9 @@ public class StatusBarsConfigScreen extends Screen {
 		return false;
 	}
 
-	private void onBarClick(StatusBar statusBar, int button, int mouseX, int mouseY) {
-		if (button == 0) {
-			cursorOffset = new ScreenPos(statusBar.getX() - mouseX, statusBar.getY() - mouseY);
+	private void onBarClick(StatusBar statusBar, Click click) {
+		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+			cursorOffset = new ScreenPos((int) (statusBar.getX() - click.x()), (int) (statusBar.getY() - click.y()));
 			cursorBar = statusBar;
 			cursorBar.inMouse = true;
 			cursorBar.enabled = true;
@@ -336,9 +336,9 @@ public class StatusBarsConfigScreen extends Screen {
 			FancyStatusBars.updatePositions(true);
 			cursorBar.setX(width + 5); // send it to limbo lol
 			updateScreenRects();
-		} else if (button == 1) {
-			int x = Math.min(mouseX - 1, width - editBarWidget.getWidth());
-			int y = Math.min(mouseY - 1, height - editBarWidget.getHeight());
+		} else if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+			int x = (int) Math.min(click.x() - 1, width - editBarWidget.getWidth());
+			int y = (int) Math.min(click.y() - 1, height - editBarWidget.getHeight());
 			editBarWidget.visible = true;
 			editBarWidget.setStatusBar(statusBar);
 			editBarWidget.setX(x);

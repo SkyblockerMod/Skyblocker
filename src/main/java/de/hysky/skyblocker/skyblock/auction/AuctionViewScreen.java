@@ -77,15 +77,15 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         super.init();
 		verticalLayout = DirectionalLayoutWidget.vertical();
         verticalLayout.spacing(2).getMainPositioner().alignHorizontalCenter();
-        priceTextWidget = new TextWidget(isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid"), textRenderer).alignCenter();
+        priceTextWidget = new TextWidget(isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid"), textRenderer)/*.alignCenter()*/;
         verticalLayout.add(priceTextWidget);
 
-        priceWidget = new TextWidget(Text.literal("?"), textRenderer).alignCenter();
+        priceWidget = new TextWidget(Text.literal("?"), textRenderer)/*.alignCenter()*/;
         priceWidget.setWidth(textRenderer.getWidth(clickToEditBidText));
         priceWidget.active = true;
         verticalLayout.add(priceWidget);
 
-        infoTextWidget = new TextWidget(Text.literal("Can't Afford"), textRenderer).alignCenter();
+        infoTextWidget = new TextWidget(Text.literal("Can't Afford"), textRenderer)/*.alignCenter()*/;
         verticalLayout.add(infoTextWidget);
 
         buyButton = ButtonWidget.builder(isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.buy") : Text.translatable("skyblocker.fancyAuctionHouse.bid"), button -> {

@@ -310,9 +310,9 @@ public class ChestValue {
 
 	@NotNull
 	private static ScreenType determineScreenType(String rawTitleString) {
-		if (StringUtils.containsIgnoreCase(rawTitleString, "sack")) return ScreenType.SACK;
+		if ("sack".contains(rawTitleString.toLowerCase(Locale.ENGLISH))) return ScreenType.SACK;
 		if (MINION_PATTERN.matcher(rawTitleString.trim()).find()) return ScreenType.MINION;
-		if (StringUtils.equalsIgnoreCase(rawTitleString, "View Stash")) return ScreenType.STASH;
+		if ("View Stash".equalsIgnoreCase(rawTitleString)) return ScreenType.STASH;
 		return ScreenType.OTHER;
 	}
 
@@ -331,7 +331,7 @@ public class ChestValue {
 
 		private ChestValueTextWidget(int width, int height, Text message, TextRenderer textRenderer) {
 			super(width, height, message, textRenderer);
-			alignLeft();
+			//alignLeft();
 		}
 
 		@Override

@@ -12,6 +12,7 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.ItemButtonWidget;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.ints.*;
@@ -145,6 +146,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 		});
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void save(String profileId) {
 		try {
 			Files.createDirectories(FOLDER);
@@ -269,7 +271,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 
 			boolean infested = infectedPlots.contains(i);
 			if (infested && (timeMillis & 512) != 0) {
-				context.drawBorder(slotX + 1, slotY + 1, 16, 16, Colors.RED);
+				HudHelper.drawBorder(context, slotX + 1, slotY + 1, 16, 16, Colors.RED);
 			}
 
 			// tooltip

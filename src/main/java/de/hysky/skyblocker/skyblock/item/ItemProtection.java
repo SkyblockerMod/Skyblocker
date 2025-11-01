@@ -40,7 +40,7 @@ public class ItemProtection {
 		itemProtection = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.itemProtection",
 				GLFW.GLFW_KEY_V,
-				"key.categories.skyblocker"
+				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 		ClientCommandRegistrationCallback.EVENT.register(ItemProtection::registerCommand);
 		UseEntityCallback.EVENT.register(ItemProtection::onEntityInteract);

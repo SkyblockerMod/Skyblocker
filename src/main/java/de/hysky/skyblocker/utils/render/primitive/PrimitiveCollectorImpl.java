@@ -2,13 +2,10 @@ package de.hysky.skyblocker.utils.render.primitive;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.state.BeaconBeamRenderState;
 import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
-import de.hysky.skyblocker.utils.render.state.CameraRenderState;
 import de.hysky.skyblocker.utils.render.state.CursorLineRenderState;
 import de.hysky.skyblocker.utils.render.state.CylinderRenderState;
 import de.hysky.skyblocker.utils.render.state.FilledBoxRenderState;
@@ -21,8 +18,15 @@ import de.hysky.skyblocker.utils.render.state.SphereRenderState;
 import de.hysky.skyblocker.utils.render.state.TextRenderState;
 import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.Frustum;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.block.entity.state.BeaconBlockEntityRenderState;
+import net.minecraft.client.render.state.CameraRenderState;
+import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -34,9 +38,10 @@ import net.minecraft.util.math.Vec3d;
 
 public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	protected static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
+	private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
+	private final WorldRenderState worldState;
+	private final Frustum frustum;
 	private List<FilledBoxRenderState> filledBoxStates = null;
-	private List<BeaconBeamRenderState> beaconBeamStates = null;
 	private List<OutlinedBoxRenderState> outlinedBoxStates = null;
 	private List<LinesRenderState> linesStates = null;
 	private List<CursorLineRenderState> cursorLineStates = null;
@@ -50,7 +55,10 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private List<OutlinedCircleRenderState> outlinedCircleStates = null;
 	private boolean frozen = false;
 
-	public PrimitiveCollectorImpl() {}
+	public PrimitiveCollectorImpl(WorldRenderState worldState, Frustum frustum) {
+		this.worldState = worldState;
+		this.frustum = frustum;
+	}
 
 	@Override
 	public void submitFilledBoxWithBeaconBeam(BlockPos pos, float[] colourComponents, float alpha, boolean throughWalls) {
@@ -77,7 +85,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		ensureNotFrozen();
 
 		// Ensure the box is in view
-		if (!FrustumUtils.isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
+		if (!FrustumUtils.isVisible(this.frustum, minX, minY, minZ, maxX, maxY, maxZ)) {
 			return;
 		}
 
@@ -103,25 +111,23 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		ensureNotFrozen();
 
 		// Ensure the beacon is in view
-		if (!FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, MAX_OVERWORLD_BUILD_HEIGHT, pos.getZ() + 1)) {
+		if (!FrustumUtils.isVisible(this.frustum, pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, MAX_OVERWORLD_BUILD_HEIGHT, pos.getZ() + 1)) {
 			return;
 		}
 
-		if (this.beaconBeamStates == null) {
-			this.beaconBeamStates = new ArrayList<>();
-		}
-
+		int colour = ColorHelper.fromFloats(1f, colourComponents[0], colourComponents[1], colourComponents[2]);
 		float length = (float) RenderHelper.getCamera().getPos().subtract(pos.toCenterPos()).horizontalLength();
-		float scale = CLIENT.player != null && CLIENT.player.isUsingSpyglass() ? 1.0f : Math.max(1.0f, length / 96.0f);
-
-		BeaconBeamRenderState state = new BeaconBeamRenderState();
+		BeaconBlockEntityRenderState state = new BeaconBlockEntityRenderState();
 		state.pos = pos;
-		state.colour = ColorHelper.fromFloats(1f, colourComponents[0], colourComponents[1], colourComponents[2]);
-		state.scale = scale;
-		state.tickProgress = RenderHelper.getTickCounter().getTickProgress(true);
-		state.worldTime = Objects.requireNonNull(CLIENT.world).getTime();
+		state.blockState = Blocks.BEACON.getDefaultState();
+		state.type = BlockEntityType.BEACON;
+		state.lightmapCoordinates = LightmapTextureManager.MAX_LIGHT_COORDINATE;
+		state.crumblingOverlay = null;
+		state.beamRotationDegrees = CLIENT.world != null? Math.floorMod(CLIENT.world.getTime(), 40) + CLIENT.getRenderTickCounter().getTickProgress(true) : 0f;
+		state.beamSegments.add(new BeaconBlockEntityRenderState.BeamSegment(colour, MAX_OVERWORLD_BUILD_HEIGHT));
+		state.beamScale = CLIENT.player != null && CLIENT.player.isUsingSpyglass() ? 1.0F : Math.max(1.0F, length / 96.0F);
 
-		this.beaconBeamStates.add(state);
+		this.worldState.blockEntityRenderStates.add(state);
 	}
 
 	@Override
@@ -143,7 +149,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		ensureNotFrozen();
 
 		// Ensure the box is in view
-		if (!FrustumUtils.isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
+		if (!FrustumUtils.isVisible(this.frustum, minX, minY, minZ, maxX, maxY, maxZ)) {
 			return;
 		}
 
@@ -245,7 +251,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	public void submitBlockHologram(BlockPos pos, BlockState state) {
 		ensureNotFrozen();
 
-		if (!FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
+		if (!FrustumUtils.isVisible(this.frustum, pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
 			return;
 		}
 
@@ -388,12 +394,6 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		if (this.filledBoxStates != null) {
 			for (FilledBoxRenderState state : this.filledBoxStates) {
 				FilledBoxRenderer.INSTANCE.submitPrimitives(state, cameraState);
-			}
-		}
-
-		if (this.beaconBeamStates != null) {
-			for (BeaconBeamRenderState state : this.beaconBeamStates) {
-				BeaconBeamRenderer.INSTANCE.submitPrimitives(state, cameraState);
 			}
 		}
 

@@ -5,6 +5,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.OkLabColor;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
@@ -201,7 +202,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 			context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color);
-			context.drawBorder(getX(), getY(), getWidth(), getHeight(), isFocused() ? -1 : Colors.GRAY);
+			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), isFocused() ? -1 : Colors.GRAY);
 		}
 
 		@Override
@@ -267,12 +268,21 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+
 	@Override
-	protected int getContentsHeightWithPadding() { return getHeight(); }
+	protected int getContentsHeightWithPadding() {
+		return getHeight();
+	}
+
 	@Override
-	protected double getDeltaYPerScroll() { return 0; }
+	protected double getDeltaYPerScroll() {
+		return 0;
+	}
+
 	@Override
-	public void close() { MinecraftClient.getInstance().getTextureManager().destroyTexture(GRADIENT_TEXTURE); }
+	public void close() {
+		MinecraftClient.getInstance().getTextureManager().destroyTexture(GRADIENT_TEXTURE);
+	}
 
 	public interface FrameCallback {
 		void onFrameSelected(int color, float time);

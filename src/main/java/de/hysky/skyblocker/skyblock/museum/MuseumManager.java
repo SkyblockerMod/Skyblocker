@@ -289,7 +289,7 @@ public class MuseumManager extends ClickableWidget {
 		if (hoveredDonationButton != null) {
 			ItemStack hoveredStack = hoveredDonationButton.getDisplayStack();
 			if (hoveredStack == null) return false;
-			if (WikiLookupManager.handleWikiLookup(Either.right(hoveredStack), CLIENT.player, keyCode, scanCode)) return true;
+			if (WikiLookupManager.handleWikiLookup(Either.right(hoveredStack), CLIENT.player, input)) return true;
 			if (ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(input)) {
 				ItemPrice.itemPriceLookup(CLIENT.player, hoveredStack);
 				return true;

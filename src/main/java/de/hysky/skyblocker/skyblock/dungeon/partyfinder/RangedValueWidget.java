@@ -249,7 +249,7 @@ public class RangedValueWidget extends ContainerWidget {
 
         @Override
         public boolean keyPressed(KeyInput input) {
-            if (!this.isNarratable() || !this.isFocused()) return false;
+            if (!this.isFocused()) return false;
             if (input.key() == GLFW.GLFW_KEY_ENTER && isGood) {
                 sendPacket();
                 return true;

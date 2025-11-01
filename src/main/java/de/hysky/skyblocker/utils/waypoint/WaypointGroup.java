@@ -135,7 +135,7 @@ public class WaypointGroup {
         if (ordered && !waypoints.isEmpty()) {
             for (int i = 0; i < waypoints.size(); i++) {
                 NamedWaypoint waypoint = waypoints.get(i);
-                if (waypoint.pos.isWithinDistance(MinecraftClient.getInstance().player.getPos(), WAYPOINT_ACTIVATION_RADIUS)) {
+                if (waypoint.pos.isWithinDistance(MinecraftClient.getInstance().player.getEntityPos(), WAYPOINT_ACTIVATION_RADIUS)) {
                     currentIndex = i;
                 }
             }

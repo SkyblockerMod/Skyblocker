@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
 import com.demonwav.mcdev.annotations.Translatable;
-import de.hysky.skyblocker.debug.Debug;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
@@ -110,14 +109,14 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 	 * <p>
 	 * Used to show the box around the selected entry in debug mode.
 	 */
-	@Override
+	/*@Override
 	protected boolean isSelectedEntry(int index) {
 		return Debug.debugEnabled() ? Objects.equals(getSelectedOrNull(), children().get(index)) : super.isSelectedEntry(index);
-	}
+	}*/
 
 	@Override
-	protected boolean removeEntry(AbstractShortcutEntry entry) {
-		return super.removeEntry(entry);
+	protected void removeEntry(AbstractShortcutEntry entry) {
+		super.removeEntry(entry);
 	}
 
 	protected boolean hasChanges() {
@@ -187,9 +186,9 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			context.drawCenteredTextWithShadow(client.textRenderer, targetName, width / 2 - 85, y + 5, Colors.WHITE);
-			context.drawCenteredTextWithShadow(client.textRenderer, replacementName, width / 2 + 85, y + 5, Colors.WHITE);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			context.drawCenteredTextWithShadow(client.textRenderer, targetName, this.getWidth() / 2 - 85, this.getY() + 5, Colors.WHITE);
+			context.drawCenteredTextWithShadow(client.textRenderer, replacementName, this.getWidth() / 2 + 85, this.getY() + 5, Colors.WHITE);
 			if (tooltip != null && isMouseOver(mouseX, mouseY)) {
 				context.drawTooltip(tooltip, mouseX, mouseY);
 			}
@@ -232,8 +231,8 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			context.drawCenteredTextWithShadow(client.textRenderer, text, width / 2, y + 5, Colors.WHITE);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			context.drawCenteredTextWithShadow(client.textRenderer, text, this.getWidth() / 2, this.getY() + 5, Colors.WHITE);
 		}
 	}
 
@@ -255,10 +254,10 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		protected abstract void save();
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			replacement.setY(y);
-			replacement.render(context, mouseX, mouseY, tickDelta);
-			context.drawCenteredTextWithShadow(client.textRenderer, "→", width / 2, y + 5, Colors.WHITE);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			replacement.setY(this.getY());
+			replacement.render(context, mouseX, mouseY, deltaTicks);
+			context.drawCenteredTextWithShadow(client.textRenderer, "→", this.getWidth() / 2, this.getY() + 5, Colors.WHITE);
 		}
 
 		@Override
@@ -315,10 +314,10 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
-			target.setY(y);
-			target.render(context, mouseX, mouseY, tickDelta);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			super.render(context, mouseX, mouseY, hovered, deltaTicks);
+			target.setY(this.getY());
+			target.render(context, mouseX, mouseY, deltaTicks);
 		}
 
 		@Override
@@ -388,15 +387,15 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		}
 
 		/**
-		 * Modified from {@link net.minecraft.client.gui.screen.option.ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float) ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float)}.
+		 * Modified from {@link net.minecraft.client.gui.screen.option.ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, boolean, float) ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float)}.
 		 */
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
-			keybindButton.setY(y);
-			keybindButton.render(context, mouseX, mouseY, tickDelta);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			super.render(context, mouseX, mouseY, hovered, deltaTicks);
+			keybindButton.setY(this.getY());
+			keybindButton.render(context, mouseX, mouseY, deltaTicks);
 			if (duplicate) {
-				context.fill(keybindButton.getX() - 6, y, keybindButton.getX() - 3, y + entryHeight, 0xFFFF0000);
+				context.fill(keybindButton.getX() - 6, this.getY(), keybindButton.getX() - 3, this.getY() + this.getHeight(), 0xFFFF0000);
 			}
 		}
 
@@ -422,7 +421,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 							text.append(", ");
 						}
 						duplicate = true;
-						text.append(Text.translatable(otherKeyBinding.getTranslationKey()));
+						text.append(Text.translatable(otherKeyBinding.getBoundKeyTranslationKey()));
 					}
 				}
 				// Check for conflicts with other keybind shortcuts

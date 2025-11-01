@@ -8,15 +8,20 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.*;
 import de.hysky.skyblocker.utils.OkLabColor;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.input.AbstractInput;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
@@ -83,8 +88,8 @@ public class CustomizeNameWidget extends ContainerWidget {
 		builder.add(grid.add(ButtonWidget.builder(Text.translatable("skyblocker.customItemNames.screen.gradientColor"), b ->
 				client.setScreen(ColorPopup.createGradient(parent, this::createGradient))
 		).size(48, 16).build(), 3, 17, 1, 3));
-		builder.add(grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.translatable("skyblocker.customItemNames.screen.howToRemove").formatted(Formatting.ITALIC, Formatting.GRAY), textRenderer).alignLeft(), 4, 0, 1, 20, Positioner.create().marginTop(2)));
-		builder.add(previewWidget = grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.empty(), textRenderer).alignCenter(), 5, 0, 1, 20, Positioner.create().marginY(2)));
+		builder.add(grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.translatable("skyblocker.customItemNames.screen.howToRemove").formatted(Formatting.ITALIC, Formatting.GRAY), textRenderer)/*.alignLeft()*/, 4, 0, 1, 20, Positioner.create().marginTop(2)));
+		builder.add(previewWidget = grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.empty(), textRenderer)/*.alignCenter()*/, 5, 0, 1, 20, Positioner.create().marginY(2)));
 		widgets = builder.build();
 		grid.refreshPositions();
 		grid.setPosition(getX() + PADDING, getY() + PADDING);
@@ -203,10 +208,10 @@ public class CustomizeNameWidget extends ContainerWidget {
 	}
 
 	@Override
-	public boolean charTyped(char chr, int modifiers) {
-		if (super.charTyped(chr, modifiers) || textField.isFocused()) return true;
+	public boolean charTyped(CharInput input) {
+		if (super.charTyped(input) || textField.isFocused()) return true;
 		setFocused(textField);
-		return textField.charTyped(chr, modifiers);
+		return textField.charTyped(input);
 	}
 
 	/**
@@ -329,7 +334,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onPress() {
+		public void onPress(AbstractInput input) {
 			setEnabled(!enabled);
 			switch (format) {
 				case BOLD -> setStyle(Style.EMPTY.withBold(enabled));
@@ -364,7 +369,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onPress() {
+		public void onPress(AbstractInput input) {
 			setStyle(Style.EMPTY.withColor(color));
 		}
 
@@ -406,7 +411,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 			}
 
 			context.fill(getX(), getY(), getRight(), getBottom(), Colors.BLACK);
-			context.drawBorder(getX(), getY(), getWidth(), getHeight(), isFocused() ? Colors.WHITE : Colors.GRAY);
+			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), isFocused() ? Colors.WHITE : Colors.GRAY);
 			int textX = getTextX();
 			int textY = getY() + (getHeight() - textRenderer.fontHeight) / 2;
 
@@ -419,32 +424,32 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		public boolean keyPressed(KeyInput input) {
 			boolean captured = true;
-			switch (keyCode) {
-				case GLFW.GLFW_KEY_LEFT -> moveCursor(true, Screen.hasShiftDown(), Screen.hasControlDown());
-				case GLFW.GLFW_KEY_RIGHT -> moveCursor(false, Screen.hasShiftDown(), Screen.hasControlDown());
-				case GLFW.GLFW_KEY_BACKSPACE -> erase(true, Screen.hasControlDown());
-				case GLFW.GLFW_KEY_DELETE -> erase(false, Screen.hasControlDown());
+			switch (input.key()) {
+				case GLFW.GLFW_KEY_LEFT -> moveCursor(true, input.hasShift(), input.hasCtrl());
+				case GLFW.GLFW_KEY_RIGHT -> moveCursor(false, input.hasShift(), input.hasCtrl());
+				case GLFW.GLFW_KEY_BACKSPACE -> erase(true, input.hasCtrl());
+				case GLFW.GLFW_KEY_DELETE -> erase(false, input.hasCtrl());
 				default -> captured = false;
 			}
 			if (captured) return true;
 			assert client != null;
-			if (Screen.isSelectAll(keyCode)) {
+			if (input.isSelectAll()) {
 				selectionStart = 0;
 				selectionEnd = textString.length();
 				updateStyleButtons();
 				captured = true;
-			} else if (Screen.isCopy(keyCode)) {
+			} else if (input.isCopy()) {
 				client.keyboard.setClipboard(text.getString().substring(selectionStart, selectionEnd));
 				captured = true;
-			} else if (Screen.isPaste(keyCode)) {
+			} else if (input.isPaste()) {
 				String clipboard = client.keyboard.getClipboard();
 				if (!clipboard.isEmpty()) {
 					insertText(clipboard);
 				}
 				captured = true;
-			} else if (Screen.isCut(keyCode)) {
+			} else if (input.isCut()) {
 				client.keyboard.setClipboard(text.getString().substring(selectionStart, selectionEnd));
 				insertText("");
 				captured = true;
@@ -453,11 +458,11 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public boolean charTyped(char chr, int modifiers) {
+		public boolean charTyped(CharInput input) {
 			if (!active) {
 				return false;
-			} else if (StringHelper.isValidChar(chr)) {
-				insertText(Character.toString(chr));
+			} else if (input.isValidChar()) {
+				insertText(input.asString());
 				return true;
 			} else {
 				return false;
@@ -465,16 +470,16 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) mouseX - getTextX());
+		public void onClick(Click click, boolean doubled) {
+			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) click.x() - getTextX());
 			text.visit(getClickedPositionVisitor, Style.EMPTY);
 			selectionStart = selectionEnd = getClickedPositionVisitor.getPosition() < 0 ? textString.length() : getClickedPositionVisitor.getPosition();
 			updateStyleButtons();
 		}
 
 		@Override
-		protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) mouseX - getTextX());
+		protected void onDrag(Click click, double offsetX, double offsetY) {
+			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) click.x() - getTextX());
 			text.visit(getClickedPositionVisitor, Style.EMPTY);
 			selectionStart = getClickedPositionVisitor.getPosition() < 0 ? textString.length() : getClickedPositionVisitor.getPosition();
 			updateStyleButtons();

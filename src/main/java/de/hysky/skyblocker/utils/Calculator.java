@@ -39,7 +39,7 @@ public class Calculator {
 
 	public enum Operator implements StringIdentifiable {
 		ADD("+"), SUB("-"), MULT("*"), DIV("/"), MOD("%"), POW("^", true);
-		private static final java.util.function.Function<String, Operator> OPERATOR_MAP = StringIdentifiable.createMapper(Operator.values(), java.util.function.Function.identity());
+		private static final java.util.function.Function<String, Operator> OPERATOR_MAP = StringIdentifiable.createMapper(Operator.values(), op -> op.op);
 		private final String op;
 		private final boolean rightAssociative;
 
@@ -120,7 +120,7 @@ public class Calculator {
 		CEIL("ceil", Math::ceil),
 		ROUND("round", Math::round);
 
-		private static final java.util.function.Function<String, Function> FUNCTION_MAP = StringIdentifiable.createMapper(Function.values(), java.util.function.Function.identity());
+		private static final java.util.function.Function<String, Function> FUNCTION_MAP = StringIdentifiable.createMapper(Function.values(), func -> func.name);
 		private final String name;
 		private final CalculatorFunction function;
 

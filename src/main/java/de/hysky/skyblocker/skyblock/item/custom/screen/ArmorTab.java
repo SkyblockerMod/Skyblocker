@@ -6,6 +6,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.ScreenRect;
@@ -200,9 +201,9 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			double localX = mouseX - getX() - 2;
-			double localY = mouseY - getY() - 2;
+		public void onClick(Click click, boolean doubled) {
+			double localX = click.x() - getX() - 2;
+			double localY = click.y() - getY() - 2;
 			if (localY < 0 || localY >= 20) return;
 			int i = (int) (localX / 20);
 			if (i < 0 || i >= armor.length || !selectable[i]) return;

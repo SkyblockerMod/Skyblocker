@@ -90,11 +90,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 		if (slotId < containerSlots && stack.isOf(Items.PLAYER_HEAD) && stack.contains(DataComponentTypes.PROFILE)) {
 			ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
-
-			//All heads in the leap menu have the id property set
-			if (profile.uuid().isEmpty()) return;
-
-			UUID uuid = profile.uuid().get();
+			UUID uuid = profile.getGameProfile().id();
 			//We take the name from the item because the name from the profile component can leave out _ characters for some reason?
 			String name = stack.getName().getString();
 			DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(name);
@@ -178,7 +174,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 			LeapOverlay.this.hovered = DungeonMap.render(context, getX(), getY(), CONFIG.get().scale, true, mouseX - getX(), mouseY - getY(), hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
-			context.drawBorder(getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), Colors.WHITE);
+			HudHelper.drawBorder(context, getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), Colors.WHITE);
 		}
 
 		@Override

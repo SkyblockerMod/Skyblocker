@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.utils.waypoint;
 
 import de.hysky.skyblocker.utils.Tickable;
-import de.hysky.skyblocker.utils.render.FrustumUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -42,7 +41,7 @@ public class SeenWaypoint extends Waypoint implements Tickable {
 
 	@Override
 	public void tick(MinecraftClient client) {
-		if (!seen && isEnabled() && client.world != null && client.player != null && FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1) && client.world.getChunkAsView(pos.getX() >> 4, pos.getZ() >> 4) != null) {
+		if (!seen && isEnabled() && client.world != null && client.player != null /*&& FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1) */&& client.world.getChunkAsView(pos.getX() >> 4, pos.getZ() >> 4) != null) {
 			BlockHitResult blockHitResult = client.world.raycast(new RaycastContext(client.player.getEyePos(), Vec3d.ofCenter(pos), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, client.player));
 			if (blockHitResult.getType() == HitResult.Type.MISS || blockHitResult.getBlockPos().equals(pos)) {
 				seen = true;

@@ -13,11 +13,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.registry.RegistryKey;
 
-public record EquipmentGuiElementRenderState(
+public record EquipmentGuiElementRenderState<S>(
 		EquipmentRenderer equipmentRenderer,
 		EquipmentModel.LayerType layerType,
 		RegistryKey<EquipmentAsset> assetKey,
-		Model model,
+		Model<S> model,
+		S state,
 		ItemStack stack,
 		int x1,
 		int y1,
@@ -33,7 +34,8 @@ public record EquipmentGuiElementRenderState(
 			EquipmentRenderer equipmentRenderer,
 			EquipmentModel.LayerType layerType,
 			RegistryKey<EquipmentAsset> assetKey,
-			Model model,
+			Model<S> model,
+			S state,
 			ItemStack stack,
 			int x1,
 			int y1,
@@ -44,11 +46,11 @@ public record EquipmentGuiElementRenderState(
 			float offset,
 			@Nullable ScreenRect scissorArea
 			) {
-		this(equipmentRenderer, layerType, assetKey, model, stack, x1, y1, x2, y2, rotation, scale, offset, scissorArea, SpecialGuiElementRenderState.createBounds(x1, y1, x2, y2, scissorArea));
+		this(equipmentRenderer, layerType, assetKey, model, state, stack, x1, y1, x2, y2, rotation, scale, offset, scissorArea, SpecialGuiElementRenderState.createBounds(x1, y1, x2, y2, scissorArea));
 	}
 
 	@Override
-	public EquipmentGuiElementRenderer newRenderer(Immediate vertexConsumers) {
-		return new EquipmentGuiElementRenderer(vertexConsumers);
+	public EquipmentGuiElementRenderer<S> newRenderer(Immediate vertexConsumers) {
+		return new EquipmentGuiElementRenderer<>(vertexConsumers);
 	}
 }

@@ -9,9 +9,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
 import net.minecraft.client.gui.screen.ReconfiguringScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
 import net.minecraft.client.util.InputUtil;
 
 @Mixin(Screen.class)
@@ -23,7 +23,7 @@ public class ScreenMixin {
 	private void skyblocker$hideCursor(CallbackInfo ci) {
 		Object instance = this;
 
-		if ((instance instanceof DownloadingTerrainScreen || instance instanceof ReconfiguringScreen) && Utils.isOnHypixel()) {
+		if ((instance instanceof LevelLoadingScreen || instance instanceof ReconfiguringScreen) && Utils.isOnHypixel()) {
 			//Prevents the mouse from being movable while we cancel the rendering of the screen
 			InputUtil.setCursorParameters(this.client.getWindow(), GLFW.GLFW_CURSOR_DISABLED, this.client.mouse.getX(), this.client.mouse.getY());
 		}

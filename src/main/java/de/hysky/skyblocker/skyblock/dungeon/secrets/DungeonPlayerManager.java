@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import com.mojang.authlib.minecraft.MinecraftSessionService;
 import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.DungeonEvents;
@@ -11,7 +10,6 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.GameProfileResolver;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

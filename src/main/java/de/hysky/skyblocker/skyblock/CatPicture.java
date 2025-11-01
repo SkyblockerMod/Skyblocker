@@ -2,12 +2,10 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+/*import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
@@ -18,25 +16,24 @@ import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BlockStateManagers;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.MatrixStack;*/
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.RotationAxis;
+//import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
-import org.joml.Matrix4f;
+//import org.joml.Matrix4f;
 
 public class CatPicture {
-
 	private static final Vec3d RENDER_POSITION = new Vec3d(6, 72, -92);
 	private static final Box CULLING_BOX = new Box(RENDER_POSITION.x, RENDER_POSITION.y, RENDER_POSITION.z, RENDER_POSITION.x + 1, RENDER_POSITION.y + 1, RENDER_POSITION.z + 1/16d);
 	private static final Identifier TEXTURE = SkyblockerMod.id("textures/cat.png");
 
 	@Init
 	public static void init() {
-		WorldRenderEvents.AFTER_ENTITIES.register(CatPicture::render);
+		//WorldRenderEvents.AFTER_ENTITIES.register(CatPicture::render);
 	}
 
-	private static void render(WorldRenderContext context) {
+	/*private static void render(WorldRenderContext context) {
 		if (!SkyblockerConfigManager.get().misc.cat ||
 				Utils.getLocation() != Location.HUB ||
 				!FrustumUtils.isVisible(CULLING_BOX)
@@ -74,5 +71,5 @@ public class CatPicture {
 		cat.vertex(matrix4f, 1, 0.0F, z).color(-1).texture(1.0F, 0.0F).light(15);
 		cat.vertex(matrix4f, 0.0F, 0.0F, z).color(-1).texture(0.0F, 0.0F).light(15);
 		matrixStack.pop();
-	}
+	}*/
 }

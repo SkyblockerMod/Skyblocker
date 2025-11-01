@@ -88,7 +88,7 @@ public class CrystalsChestHighlighter {
 
 		if (waitingForChest > 0 && newState.isOf(Blocks.CHEST)) {
 			//make sure it is not too far from the player (more than 10 blocks away)
-			if (immutable.getSquaredDistance(CLIENT.player.getPos()) > 100) {
+			if (immutable.getSquaredDistance(CLIENT.player.getEntityPos()) > 100) {
 				return;
 			}
 			activeChests.add(immutable);

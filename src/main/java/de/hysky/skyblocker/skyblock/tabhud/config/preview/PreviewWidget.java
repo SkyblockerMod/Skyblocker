@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
@@ -64,7 +65,7 @@ public class PreviewWidget extends ClickableWidget {
 		scaledScreenHeight = tab.parent.height / scale;
 
 		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
-		context.drawBorder(getX() - 1, getY() - 1, getWidth() + 2, getHeight() + 2, -1);
+		HudHelper.drawBorder(context, getX() - 1, getY() - 1, getWidth() + 2, getHeight() + 2, -1);
 		context.enableScissor(getX(), getY(), getRight(), getBottom());
 		Matrix3x2fStack matrices = context.getMatrices();
 		matrices.pushMatrix();
@@ -87,7 +88,8 @@ public class PreviewWidget extends ClickableWidget {
 
 		// HOVERED
 		if (hoveredWidget != null && !hoveredWidget.equals(selectedWidget)) {
-			context.drawBorder(
+			HudHelper.drawBorder(
+					context,
 					hoveredWidget.getX() - 1,
 					hoveredWidget.getY() - 1,
 					hoveredWidget.getWidth() + 2,
@@ -98,7 +100,8 @@ public class PreviewWidget extends ClickableWidget {
 		// SELECTED
 		if (selectedWidget != null) {
 			//noinspection DataFlowIssue
-			context.drawBorder(
+			HudHelper.drawBorder(
+					context,
 					selectedWidget.getX() - 1,
 					selectedWidget.getY() - 1,
 					selectedWidget.getWidth() + 2,

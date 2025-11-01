@@ -14,7 +14,9 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
+import de.hysky.skyblocker.utils.render.gui.NoopInput;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
@@ -144,7 +146,7 @@ public class PreviewTab implements Tab {
 
 	public void goToLayer(WidgetManager.ScreenLayer layer) {
 		if (layer == WidgetManager.ScreenLayer.DEFAULT) layer = WidgetManager.ScreenLayer.HUD;
-		layerButtons[layer.ordinal()].onPress();
+		layerButtons[layer.ordinal()].onPress(NoopInput.INSTANCE);
 	}
 
 	@Override
@@ -325,7 +327,7 @@ public class PreviewTab implements Tab {
 				button.setMessage(Text.literal("Layer: " + newRule.screenLayer().toString()));
 				updateWidgets();
 				if (newLayer != WidgetManager.ScreenLayer.DEFAULT) {
-					layerButtons[newLayer.ordinal()].onPress();
+					layerButtons[newLayer.ordinal()].onPress(NoopInput.INSTANCE);
 				}
 
 			}).width(width).build());
@@ -468,7 +470,7 @@ public class PreviewTab implements Tab {
 			int y = 5; // 30 / 6
 			int h = 20;
 
-			context.drawBorder(x, y + 1, w, h, Colors.WHITE);
+			HudHelper.drawBorder(context, x, y + 1, w, h, Colors.WHITE);
 			for (int i = 0; i < 3; i++) {
 				for (int j = 0; j < 3; j++) {
 					int squareX = x + (i * getWidth()) / 3;

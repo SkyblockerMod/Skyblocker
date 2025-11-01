@@ -91,7 +91,7 @@ public class ChatRuleConfigScreen extends Screen {
 		this.height = client.getWindow().getScaledHeight();
 
 		// Title
-		titleWidget = new TextWidget(0, 16, this.width, client.textRenderer.fontHeight, getTitle(), client.textRenderer).alignCenter();
+		titleWidget = new TextWidget(0, 16, this.width, client.textRenderer.fontHeight, getTitle(), client.textRenderer)/*.alignCenter()*/;
 
 		// Start centered
 		IntIntPair rootPos = getRootPos();

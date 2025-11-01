@@ -24,8 +24,8 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 	static final WidgetsListEntry SEPARATOR = new WidgetsListEntry() {
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of("- Skyblocker Widgets -"), x + entryWidth / 2, y + (entryHeight - 9) / 2, Colors.WHITE);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of("- Skyblocker Widgets -"), this.getX() + this.getWidth() / 2, this.getY() + (this.getHeight() - 9) / 2, Colors.WHITE);
 		}
 
 		@Override
@@ -79,9 +79,9 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 	}
 
 	@Override
-	protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, int index, int x, int y, int entryWidth, int entryHeight) {
-		super.renderEntry(context, mouseX, mouseY, delta, index, x, y, entryWidth, entryHeight);
-		if (index == editingPosition) {
+	protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, WidgetsListEntry entry) {
+		super.renderEntry(context, mouseX, mouseY, delta, entry);
+		if (this.children().indexOf(entry) == editingPosition) {
 			boolean rightXGood = mouseX >= x + entryWidth && mouseX < x + entryWidth + 15;
 			boolean leftXGood = mouseX >= x - 16 && mouseX < x - 1;
 			boolean isOnUp = mouseY >= y && mouseY < y + entryHeight / 2;
@@ -96,7 +96,7 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 33, y, 32, 32);
 			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 33, y, 32, 32);
 		}
-		if (Objects.equals(getHoveredEntry(), getEntry(index))) {
+		if (Objects.equals(getHoveredEntry(), entry)) {
 			this.x = x;
 			this.y = y;
 			this.entryWidth = entryWidth;

@@ -101,9 +101,8 @@ public final class ItemUtils {
 	 * @return The {@link DataComponentTypes#CUSTOM_DATA custom data} of the itemstack,
 	 *         or an empty {@link NbtCompound} if the itemstack is missing a custom data component
 	 */
-	@SuppressWarnings("deprecation")
 	public static @NotNull NbtCompound getCustomData(@NotNull ComponentHolder stack) {
-		return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
+		return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
 	}
 
 	/**
@@ -461,7 +460,7 @@ public final class ItemUtils {
 		ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
 		if (profile == null) return "";
 
-		return profile.properties().get("textures").stream()
+		return profile.getGameProfile().properties().get("textures").stream()
 				.map(Property::value)
 				.findFirst()
 				.orElse("");
@@ -480,15 +479,14 @@ public final class ItemUtils {
 	}
 
 	public static @NotNull ItemStack createSkull(String textureBase64) {
-		GameProfile profile = new GameProfile(java.util.UUID.randomUUID(), "a");
-		profile.getProperties().put("textures", new Property("textures", textureBase64));
+		GameProfile profile = new GameProfile(java.util.UUID.randomUUID(), "a", propertyMapWithTexture(textureBase64));
 		return createSkull(profile);
 	}
 
 	public static @NotNull ItemStack createSkull(GameProfile profile) {
 		try {
 			ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-			stack.set(DataComponentTypes.PROFILE, new ProfileComponent(profile));
+			stack.set(DataComponentTypes.PROFILE, ProfileComponent.ofStatic(profile));
 			return stack;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

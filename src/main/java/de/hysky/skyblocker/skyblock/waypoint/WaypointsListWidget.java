@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.waypoint;
 import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
+import de.hysky.skyblocker.utils.render.gui.NoopInput;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
@@ -93,7 +94,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             if (entry instanceof WaypointGroupEntry groupEntry && groupEntry.enabled.isChecked() != groupEntry.shouldBeChecked()) {
                 ((CheckboxWidgetAccessor) groupEntry.enabled).setChecked(!groupEntry.enabled.isChecked());
             } else if (entry instanceof WaypointEntry waypointEntry && waypointEntry.enabled.isChecked() != screen.isEnabled(waypointEntry.waypoint)) {
-                waypointEntry.enabled.onPress();
+                waypointEntry.enabled.onPress(NoopInput.INSTANCE);
             }
         }
     }
@@ -195,7 +196,11 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         }
 
         @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+        	int x = this.getX();
+        	int y = this.getY();
+        	int entryWidth = this.getWidth();
+        	int entryHeight = this.getHeight();
 			collapseWaypoint.setPosition(x, y + (entryHeight - collapseWaypoint.getHeight()) / 2);
 			enabled.setPosition(x + 16, y + 1);
             nameField.setPosition(enabled.getRight() + 5, y);
@@ -203,7 +208,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             buttonNewWaypoint.setPosition(x + entryWidth - 115, y);
             buttonDelete.setPosition(x + entryWidth - 38, y);
             for (ClickableWidget child : children) {
-                child.render(context, mouseX, mouseY, tickDelta);
+                child.render(context, mouseX, mouseY, deltaTicks);
             }
         }
     }
@@ -343,7 +348,12 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         }
 
         @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+        	int x = this.getX();
+        	int y = this.getY();
+        	int entryWidth = this.getWidth();
+        	int entryHeight = this.getHeight();
+
             context.drawTextWithShadow(client.textRenderer, "X:", width / 2 - 48, y + 6, 0xFF_FFFFFF);
             context.drawTextWithShadow(client.textRenderer, "Y:", width / 2 - 11, y + 6, 0xFF_FFFFFF);
             context.drawTextWithShadow(client.textRenderer, "Z:", width / 2 + 26, y + 6, 0xFF_FFFFFF);
@@ -358,7 +368,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             colorField.setPosition(x + entryWidth - 99, y);
             buttonDelete.setPosition(x + entryWidth - 38, y);
             for (ClickableWidget child : children) {
-                child.render(context, mouseX, mouseY, tickDelta);
+                child.render(context, mouseX, mouseY, deltaTicks);
             }
         }
     }

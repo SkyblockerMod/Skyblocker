@@ -116,7 +116,7 @@ public class GoldorWaypointsManager {
         if (client.world == null) return;
 
 		// Get the position of the player with the given name
-        Optional<Vec3d> posOptional = client.world.getPlayers().stream().filter(player -> player.getGameProfile().name().equals(playerName)).findAny().map(Entity::getPos);
+        Optional<Vec3d> posOptional = client.world.getPlayers().stream().filter(player -> player.getGameProfile().name().equals(playerName)).findAny().map(Entity::getEntityPos);
 
 		// Find the nearest waypoint to the player and hide it
 		posOptional.flatMap(pos -> waypoints.stream().filter(GoldorWaypoint::shouldRender).min(Comparator.comparingDouble(waypoint -> waypoint.centerPos.squaredDistanceTo(pos)))).ifPresent(Waypoint::setFound);

@@ -351,7 +351,6 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 	@FunctionalInterface
 	public interface OnClick {
-
 		void onClick(StatusBar statusBar, Click click);
 	}
 

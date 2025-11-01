@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.auction.widgets.RarityWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.SortWidget;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import net.minecraft.client.MinecraftClient;
@@ -27,6 +28,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Atlases;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
@@ -51,8 +53,8 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     private static final Identifier up_arrow_tex = SkyblockerMod.id("up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
     private static final Identifier down_arrow_tex = SkyblockerMod.id("down_arrow_even");
-    public static final Supplier<Sprite> UP_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(up_arrow_tex);
-    public static final Supplier<Sprite> DOWN_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(down_arrow_tex);
+    public static final Supplier<Sprite> UP_ARROW = () -> MinecraftClient.getInstance().getAtlasManager().getAtlasTexture(Atlases.GUI).getSprite(up_arrow_tex);
+    public static final Supplier<Sprite> DOWN_ARROW = () -> MinecraftClient.getInstance().getAtlasManager().getAtlasTexture(Atlases.GUI).getSprite(down_arrow_tex);
 
 
     // SLOTS
@@ -177,7 +179,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     @Override
     protected void drawSlot(DrawContext context, Slot slot) {
         if (SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN && slot.hasStack() && isSlotHighlighted.getOrDefault(slot.id, false)) {
-            context.drawBorder(slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
+            HudHelper.drawBorder(context, slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
         }
         super.drawSlot(context, slot);
     }

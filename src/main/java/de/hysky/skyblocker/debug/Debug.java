@@ -24,7 +24,6 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -73,8 +72,8 @@ public class Debug {
 	public static void init() {
 		if (!debugEnabled()) return;
 		SnapshotDebug.init();
-		KeyBinding dumpNearbyEntitiesKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, "key.categories.skyblocker"));
-		KeyBinding dumpHoveredItemKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, "key.categories.skyblocker"));
+		KeyBinding dumpNearbyEntitiesKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
+		KeyBinding dumpHoveredItemKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				literal(SkyblockerMod.NAMESPACE).then(literal("debug")
 						.then(dumpPlayersCommand())

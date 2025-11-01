@@ -196,7 +196,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 			widget.setY(widget.getY() + scrollY);
 		}
 
-		drawScrollbar(context);
+		drawScrollbar(context, mouseX, mouseY);
 		context.disableScissor();
 	}
 

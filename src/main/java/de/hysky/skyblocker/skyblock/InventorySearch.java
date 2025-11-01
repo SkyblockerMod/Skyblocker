@@ -38,8 +38,8 @@ public class InventorySearch {
 
 			if (inventorySearchConfig.clickableText) Screens.getButtons(handledScreen).add(new SearchTextWidget(handledScreen));
 
-			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((screen1, key, scancode, modifiers) -> {
-				if (key == (inventorySearchConfig.ctrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && (modifiers & (GLFW.GLFW_MOD_CONTROL | GLFW.GLFW_MOD_SUPER)) != 0) {
+			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((screen1, input) -> {
+				if (input.key() == (inventorySearchConfig.ctrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && input.hasCtrl()) {
 					InventorySearch.showSearchBar(handledScreen);
 					return false;
 				}
@@ -138,7 +138,7 @@ public class InventorySearch {
 		public boolean keyPressed(KeyInput input) {
 			// Makes the widget catch all key presses (except escape) to fix closing the inventory when pressing E
 			// also check that the widget is focused and active
-			return super.keyPressed(input) || (input.key() != GLFW.GLFW_KEY_ESCAPE && this.isNarratable() && this.isFocused());
+			return super.keyPressed(input) || (input.key() != GLFW.GLFW_KEY_ESCAPE && this.isFocused());
 		}
 
 		// Unfocus when clicking outside
