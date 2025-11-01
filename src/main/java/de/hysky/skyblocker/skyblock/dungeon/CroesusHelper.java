@@ -29,7 +29,7 @@ public class CroesusHelper extends SimpleContainerSolver {
             if (stack != null && stack.contains(DataComponentTypes.LORE)) {
                 if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Opened Chest:")) != null) {
                     highlights.add(ColorHighlight.gray(entry.getIntKey()));
-                } else if (ItemUtils.getLoreLineIf(stack, s -> s.contains("No more Chests to open!")) != null) {
+                } else if (ItemUtils.getLoreLineIf(stack, s -> s.contains("No more chests to open!")) != null) {
                     highlights.add(ColorHighlight.red(entry.getIntKey()));
                 }
             }
