@@ -444,11 +444,12 @@ public class PreviewTab implements Tab {
 
 		@Override
 		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+			boolean bl = checkScrollbarDragged(mouseX, mouseY, button);
 			for (ClickableWidget widget : widgets) {
 				if (isNotVisible(widget.getY(), widget.getBottom(), widget.getHeight())) continue;
 				if (widget.mouseClicked(mouseX, mouseY, button)) return true;
 			}
-			return super.mouseClicked(mouseX, mouseY, button);
+			return super.mouseClicked(mouseX, mouseY, button) || bl;
 		}
 
 		@Override
