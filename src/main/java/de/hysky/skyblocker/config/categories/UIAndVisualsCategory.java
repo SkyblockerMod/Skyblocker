@@ -276,9 +276,11 @@ public class UIAndVisualsCategory {
                                 .build())
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
+								// .tags(Text.literal("gui")) // TODO: uncomment when we start using the next Dandelion version
 								.prompt(Text.translatable("text.skyblocker.open"))
 								.action(screen -> {
-									if (Utils.isOnSkyblock()) {
+									if (Utils.isOnSkyblock() && config.uiAndVisuals.tabHud.tabHudEnabled) {
 										MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
 									} else {
 										MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, WidgetManager.ScreenLayer.MAIN_TAB, screen));
