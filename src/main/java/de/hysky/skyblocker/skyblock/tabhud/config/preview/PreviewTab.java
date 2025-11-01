@@ -400,7 +400,6 @@ public class PreviewTab implements Tab {
 	}
 
 	private static class WidgetOptionsScrollable extends ScrollableWidget {
-
 		private final List<ClickableWidget> widgets = new ArrayList<>();
 		private int height = 0;
 
@@ -418,29 +417,36 @@ public class PreviewTab implements Tab {
 			return 6;
 		}
 
-		protected boolean isNotVisible(int i, int j) {
-			return !((double) j - this.getScrollY() >= (double) this.getY()) || !((double) i - this.getScrollY() <= (double) (this.getY() + this.height));
+		/**
+		 * A widget is not visible if it is half above the top of the frame, or half below.
+		 * @param i Y of the widget
+		 * @param j Bottom of the widget
+		 * @param h Height of the widget
+		 */
+		protected boolean isNotVisible(int i, int j, int h) {
+			return !((double) j - ((double) h / 2) >= (double) this.getY()) || // Bottom of this widget is out of view, above the frame
+					!((double) i + ((double) h / 2) <= (double) (this.getBottom())); // Top of this widget is out of view, below the frame
 		}
 
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+			this.drawScrollbar(context);
 			height = 0;
 			for (ClickableWidget widget : widgets) {
 				widget.setX(getX() + 1);
-				widget.setY(getY() + 1 + height);
+				widget.setY((int) (getY() + 1 + height - getScrollY()));
 
 				height += widget.getHeight() + 1;
-				if (isNotVisible(widget.getY(), widget.getBottom())) continue;
-				widget.render(context, mouseX, mouseY + (int) getScrollY(), delta);
-
+				if (isNotVisible(widget.getY(), widget.getBottom(), widget.getHeight())) continue;
+				widget.render(context, mouseX, mouseY, delta);
 			}
 		}
 
 		@Override
 		public boolean mouseClicked(double mouseX, double mouseY, int button) {
 			for (ClickableWidget widget : widgets) {
-				if (isNotVisible(widget.getY(), widget.getBottom())) continue;
-				if (widget.mouseClicked(mouseX, mouseY + getScrollY(), button)) return true;
+				if (isNotVisible(widget.getY(), widget.getBottom(), widget.getHeight())) continue;
+				if (widget.mouseClicked(mouseX, mouseY, button)) return true;
 			}
 			return super.mouseClicked(mouseX, mouseY, button);
 		}
