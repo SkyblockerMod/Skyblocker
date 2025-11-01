@@ -160,7 +160,7 @@ public class WaypointGroup {
     }
 
     public void tick() {
-        if (!ordered || waypoints.isEmpty()) return;
+        if (MinecraftClient.getInstance().player == null || !ordered || waypoints.isEmpty()) return;
         for (int i = 0; i < waypoints.size(); i++) {
             NamedWaypoint waypoint = waypoints.get(i);
             boolean notBackwards = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowGoingBackwards || i > currentIndex;

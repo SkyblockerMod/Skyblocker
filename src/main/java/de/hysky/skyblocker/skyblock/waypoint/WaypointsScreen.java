@@ -27,6 +27,7 @@ public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
 		}).build());
 		layout.addFooter(gridWidget);
 		layout.setFooterHeight(64);
+		layout.addHeader(ButtonWidget.builder(Text.literal("Other Options"), b -> client.setScreen(new WaypointsOptionScreen(this))).build(), p -> p.alignLeft().marginLeft(10));
 		updateButtons();
         super.lateInit();
     }

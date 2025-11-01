@@ -61,6 +61,7 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
      */
     protected final void lateInit() {
 		layout.forEachChild(this::addDrawableChild);
+		// Not using layout due to dynamic height.
     	islandWidget = addDrawableChild(new DropdownWidget<>(client, width - 160, 8, 150, height - 8, Arrays.asList(Location.values()), this::islandChanged, island));
 		addDrawable(popupContainer);
 		refreshWidgetPositions();

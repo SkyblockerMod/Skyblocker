@@ -17,7 +17,7 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 	private static final float[] FLOAT_ARRAY = new float[4];
 
 	int index;
-	RelativeIndex relativeIndex;
+	RelativeIndex relativeIndex = RelativeIndex.NONE;
 
 	public OrderedNamedWaypoint(NamedWaypoint namedWaypoint) {
 		this(namedWaypoint.pos, namedWaypoint.name, namedWaypoint.typeSupplier, namedWaypoint.colorComponents, namedWaypoint.alpha, namedWaypoint.isEnabled(), namedWaypoint.throughWalls);
