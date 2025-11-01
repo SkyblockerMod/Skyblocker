@@ -38,10 +38,10 @@ import org.slf4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class WidgetManager {
@@ -109,9 +109,9 @@ public class WidgetManager {
 		matrices.popMatrix();
 	}
 
-	private static ScreenBuilder currentBuilder = getScreenBuilder(Location.UNKNOWN, ScreenLayer.HUD);
-	private static Location currentLocation = Location.UNKNOWN;
-	private static ScreenLayer currentLayer = ScreenLayer.HUD;
+	private static ScreenBuilder currentBuilder = new ScreenBuilder(new ScreenBuilder.ScreenConfig(), null); // placeholder
+	private static Location currentLocation;
+	private static ScreenLayer currentLayer;
 
 	/**
 	 * Top level render method.
@@ -150,7 +150,12 @@ public class WidgetManager {
 
 	public static void loadConfig() {
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-			config = Config.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getPartialOrThrow().getFirst();
+			AtomicReference<String> error = new AtomicReference<>();
+			config = Config.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseReader(reader)).resultOrPartial(error::set).orElseThrow().getFirst();
+			if (error.get() != null) { // separate it to not run when the config fully cannot load
+				LOGGER.error("Failed to load part of the config", new Exception(error.get()));
+				showErrorToast();
+			}
 			for (Object2ObjectMap.Entry<String, HudWidget> entry : WIDGET_INSTANCES.object2ObjectEntrySet()) {
 				String key = entry.getKey();
 				JsonObject jsonObject = config.widgetOptions.get(key);
@@ -162,11 +167,15 @@ public class WidgetManager {
 					LOGGER.error("Failed to load config for {}", widget.getId(), e);
                 }
             }
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("Failed to load config", e);
-			// TODO translatable
-			SystemToast.add(MinecraftClient.getInstance().getToastManager(), new SystemToast.Type(), Text.literal("Error reading Skyblocker HUD Config"), Text.literal("Check your logs!"));
+			showErrorToast();
 		}
+	}
+
+	private static void showErrorToast() {
+		// TODO translatable
+		SystemToast.add(MinecraftClient.getInstance().getToastManager(), new SystemToast.Type(), Text.literal("Error reading Skyblocker HUD Config"), Text.literal("Check your logs!"));
 	}
 
 	public static void saveConfig() {

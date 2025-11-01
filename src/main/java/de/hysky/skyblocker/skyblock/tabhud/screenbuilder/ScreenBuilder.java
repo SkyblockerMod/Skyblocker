@@ -261,7 +261,7 @@ public class ScreenBuilder {
 		).apply(instance, WidgetConfig::new));
 
 		public WidgetConfig getInherited() {
-			return new WidgetConfig(Optional.of(Boolean.TRUE), config);
+			return new WidgetConfig(Optional.of(Boolean.TRUE), config.deepCopy());
 		}
 	}
 
