@@ -83,9 +83,9 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
         @Override
         public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleName"), this.getWidth() / 2 - 125, this.getY() + 5, 0xFFFFFFFF);
-            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleEnabled"), this.getWidth() / 2, this.getY() + 5, 0xFFFFFFFF);
-            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.modify"), this.getWidth() / 2 + 100, this.getY() + 5, 0xFFFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleName"), ChatRulesConfigListWidget.this.getWidth() / 2 - 125, this.getY() + 5, 0xFFFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleEnabled"), ChatRulesConfigListWidget.this.getWidth() / 2, this.getY() + 5, 0xFFFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.modify"), ChatRulesConfigListWidget.this.getWidth() / 2 + 100, this.getY() + 5, 0xFFFFFFFF);
         }
     }
 
