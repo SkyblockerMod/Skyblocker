@@ -4,13 +4,11 @@ import com.google.common.collect.Multimap;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +28,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
     @Override
     protected void init() {
         super.init();
-        GridWidget gridWidget = new GridWidget();
-        gridWidget.getMainPositioner().marginX(5).marginY(2);
+        GridWidget gridWidget = new GridWidget().setColumnSpacing(5).setRowSpacing(2);
         GridWidget.Adder adder = gridWidget.createAdder(3);
 		// First row
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.importWaypointsSkyblocker"), buttonImport -> {
@@ -122,21 +119,14 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 			}
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importWaypointsSnoopy.tooltip"))).build());
         adder.add(ButtonWidget.builder(ScreenTexts.DONE, buttonBack -> close()).build());
-        gridWidget.refreshPositions();
-        SimplePositioningWidget.setPos(gridWidget, 0, this.height - 76, this.width, 64);
-        gridWidget.forEachChild(this::addDrawableChild);
+		layout.addFooter(gridWidget);
+		layout.setFooterHeight(76);
         super.lateInit();
     }
 
 	private void showErrorToast() {
 		SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.importError"), Text.translatable("skyblocker.waypoints.importErrorText"));
 	}
-
-	@Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 16, Colors.WHITE);
-    }
 
     @Override
     protected boolean isEnabled(NamedWaypoint waypoint) {
