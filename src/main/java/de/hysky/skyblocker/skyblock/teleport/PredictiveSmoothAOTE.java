@@ -238,7 +238,7 @@ public class PredictiveSmoothAOTE {
 		}
 
 		//find target location depending on how far the item they are using takes them
-		teleportVector = raycast(distance, look, startPos);
+		teleportVector = raycast(distance, look, startPos, false);
 		if (teleportVector == null) {
 			startPos = null;
 			return;
@@ -419,12 +419,12 @@ public class PredictiveSmoothAOTE {
 	}
 
 	/**
-	 * Custom raycast for teleporting checks for blocks for each 1 block forward in teleport. (very similar to hypixels method)
+	 * Custom raycast for teleporting checks for blocks for each 1 block forward in teleport. (very similar to Hypixel's method)
 	 *
 	 * @param distance maximum distance
 	 * @return teleport vector
 	 */
-	protected static Vec3d raycast(int distance, Vec3d direction, Vec3d startPos) {
+	protected static Vec3d raycast(int distance, Vec3d direction, Vec3d startPos, boolean isEtherwarp) {
 		if (CLIENT.world == null || direction == null || startPos == null) {
 			return null;
 		}
@@ -445,10 +445,11 @@ public class PredictiveSmoothAOTE {
 
 			//check if there is a block at the check location
 			if (!canTeleportThrough(checkPos)) {
-				if (offset == 0) {
+				if (!isEtherwarp && offset == 0) {
 					// no teleport can happen
 					return null;
 				}
+				if (isEtherwarp) return direction.multiply(offset - 1).add(direction);
 				return direction.multiply(offset - 1);
 			}
 
