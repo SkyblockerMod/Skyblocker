@@ -30,6 +30,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ScrollableWidget;
 import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScoreHolder;
@@ -269,7 +270,7 @@ public class PreviewTab implements Tab {
 	void onHudWidgetSelected(@Nullable HudWidget hudWidget) {
 		widgetOptions.clearWidgets();
 		if (hudWidget == null) return;
-		if (locationDropdown.isOpen()) locationDropdown.mouseClicked(locationDropdown.getX(), locationDropdown.getY(), 0);
+		if (locationDropdown.isOpen()) locationDropdown.mouseClicked(new Click(locationDropdown.getX(), locationDropdown.getY(), new MouseInput(0, 0)), false);
 		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
 		PositionRule positionRule = screenBuilder.getPositionRule(hudWidget.getInternalID());
 		int width = widgetOptions.getWidth() - 6;
