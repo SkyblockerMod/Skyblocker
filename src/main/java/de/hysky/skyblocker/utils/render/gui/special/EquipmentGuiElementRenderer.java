@@ -16,7 +16,7 @@ public class EquipmentGuiElementRenderer<S> extends InstancedGuiElementRenderer<
 		super(vertexConsumers);
 	}
 
-	@SuppressWarnings({ "rawtypes" })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Class getElementClass() {
 		return EquipmentGuiElementRenderState.class;
