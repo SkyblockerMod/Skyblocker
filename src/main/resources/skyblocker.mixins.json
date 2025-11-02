@@ -28,7 +28,6 @@
     "GameRendererMixin",
     "GenericContainerScreenHandlerMixin",
     "GlCommandEncoderMixin",
-    "GuiRendererMixin",
     "HandledScreenMixin",
     "HandledScreenProviderMixin",
     "HeldItemRendererMixin",

@@ -1,19 +1,26 @@
 package de.hysky.skyblocker.utils.render.gui.special;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
+import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
 import net.minecraft.client.render.command.RenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 
-public class EquipmentGuiElementRenderer<S> extends InstancedGuiElementRenderer<EquipmentGuiElementRenderState<S>> {
+public class EquipmentGuiElementRenderer<S> extends SpecialGuiElementRenderer<EquipmentGuiElementRenderState<S>> {
 
-	public EquipmentGuiElementRenderer(VertexConsumerProvider.Immediate vertexConsumers) {
-		super(vertexConsumers);
+	private EquipmentGuiElementRenderer(SpecialGuiElementRegistry.Context context) {
+		super(context.vertexConsumers());
+	}
+
+	@Init
+	public static void init() {
+		SpecialGuiElementRegistry.register(EquipmentGuiElementRenderer::new);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

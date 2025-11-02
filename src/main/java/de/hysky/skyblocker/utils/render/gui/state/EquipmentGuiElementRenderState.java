@@ -2,11 +2,9 @@ package de.hysky.skyblocker.utils.render.gui.state;
 
 import org.jetbrains.annotations.Nullable;
 
-import de.hysky.skyblocker.utils.render.gui.special.EquipmentGuiElementRenderer;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
 import net.minecraft.item.ItemStack;
@@ -29,7 +27,7 @@ public record EquipmentGuiElementRenderState<S>(
 		float offset,
 		@Nullable ScreenRect scissorArea,
 		@Nullable ScreenRect bounds
-		) implements InstancedGuiElementRenderState {
+		) implements SpecialGuiElementRenderState {
 	public EquipmentGuiElementRenderState(
 			EquipmentRenderer equipmentRenderer,
 			EquipmentModel.LayerType layerType,
@@ -47,10 +45,5 @@ public record EquipmentGuiElementRenderState<S>(
 			@Nullable ScreenRect scissorArea
 			) {
 		this(equipmentRenderer, layerType, assetKey, model, state, stack, x1, y1, x2, y2, rotation, scale, offset, scissorArea, SpecialGuiElementRenderState.createBounds(x1, y1, x2, y2, scissorArea));
-	}
-
-	@Override
-	public EquipmentGuiElementRenderer<S> newRenderer(Immediate vertexConsumers) {
-		return new EquipmentGuiElementRenderer<>(vertexConsumers);
 	}
 }
