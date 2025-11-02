@@ -964,7 +964,7 @@
     "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "导出路径点到剪贴板（Skyblocker格式）",
     "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto.@Tooltip": "将Fairy Grotto的位置分享到WebSocket。",
     "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto": "分享Fairy Grotto",
-    "skyblocker.config.uiAndVisuals.tabHud.configScreen": "打开设置界面",
+    "skyblocker.config.uiAndVisuals.tabHud.configScreen": "打开小部件设置界面",
     "skyblocker.config.uiAndVisuals.nightVisionStrength": "夜视强度",
     "skyblocker.nightVision.success": "将夜视强度更改为%s。",
     "skyblocker.config.general.itemProtection.protectValuableConsumables": "保护贵重消耗品",
@@ -1511,5 +1511,6 @@
     "skyblocker.config.uiAndVisuals.slotText.powerStonesGuide.@Tooltip": "在Power Stones指南中显示你是否已经学会了相应的力量。",
     "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.CENTERED": "居中",
     "skyblocker.config.uiAndVisuals.tabHud.style.SIMPLE": "简约",
-    "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.TOP": "上方"
+    "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.TOP": "上方",
+    "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "使用该界面来移动Tab和HUD小部件。\n使用“/skyblocker hud”可以直接打开该界面！"
 }
