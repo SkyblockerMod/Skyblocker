@@ -90,9 +90,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	 */
 	@Inject(method = "inventoryTick", at = @At("TAIL"))
 	private void skyblocker$updateDamage(CallbackInfo ci) {
-		if (!skyblocker$shouldProcess()) {
-			return;
-		}
 		skyblocker$getAndCacheDurability();
 	}
 
@@ -128,6 +125,10 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@Unique
 	private void skyblocker$getAndCacheDurability() {
+		if (!skyblocker$shouldProcess()) {
+			durabilityBarFill = -1;
+			return;
+		}
 		// Calculate the durability
 		IntIntPair durability = ItemUtils.getDurability((ItemStack) (Object) this);
 		// Return if calculating the durability failed
