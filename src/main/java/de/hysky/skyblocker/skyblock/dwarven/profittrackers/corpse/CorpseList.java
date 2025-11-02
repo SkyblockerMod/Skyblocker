@@ -80,6 +80,7 @@ public class CorpseList extends ElementListWidget<CorpseList.AbstractEntry> {
 			case CITRINE_CRYSTAL -> Text.literal("Citrine Crystal").formatted(Formatting.DARK_RED);
 			case RUBY_CRYSTAL -> Text.literal("Ruby Crystal").formatted(Formatting.RED);
 			case JASPER_CRYSTAL -> Text.literal("Jasper Crystal").formatted(Formatting.LIGHT_PURPLE);
+			case ENCHANTMENT_ICE_COLD_1 -> Text.literal("Enchanted Book (Ice Cold I)").formatted(Formatting.WHITE);
 			default -> {
 				ItemStack itemStack = ItemRepository.getItemStack(itemId);
 				if (itemStack == null) {

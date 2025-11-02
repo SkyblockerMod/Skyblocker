@@ -19,17 +19,19 @@ public class DropdownWidget<T> extends ContainerWidget {
 	private static final int HEADER_HEIGHT = ENTRY_HEIGHT + 4;
 	protected final List<T> entries;
 	protected final Consumer<T> selectCallback;
+	protected final Consumer<Boolean> openedCallback;
 	private final DropdownList dropdownList;
 	protected T prevSelected;
 	protected T selected;
 	protected boolean open;
 	private int maxHeight;
 
-	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
+	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
 		super(x, y, width, HEADER_HEIGHT, Text.empty());
 		this.maxHeight = maxHeight;
 		this.entries = entries;
 		this.selectCallback = selectCallback;
+		this.openedCallback = openedCallback;
 		this.selected = selected;
 		dropdownList = new DropdownList(minecraftClient, x + 1, y + HEADER_HEIGHT, width - 2, maxHeight - HEADER_HEIGHT);
 		for (T element : entries) {
@@ -73,6 +75,11 @@ public class DropdownWidget<T> extends ContainerWidget {
 		} else {
 			setHeight(HEADER_HEIGHT);
 		}
+		this.openedCallback.accept(open);
+	}
+
+	public boolean isOpen() {
+		return this.open;
 	}
 
 	protected void select(T entry) {
