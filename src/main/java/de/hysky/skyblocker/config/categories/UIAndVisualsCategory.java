@@ -277,7 +277,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
-								// .tags(Text.literal("gui")) // TODO: uncomment when we start using the next Dandelion version
+								.tags(Text.literal("gui"))
 								.prompt(Text.translatable("text.skyblocker.open"))
 								.action(screen -> {
 									if (Utils.isOnSkyblock() && config.uiAndVisuals.tabHud.tabHudEnabled) {
