@@ -15,7 +15,7 @@ import org.lwjgl.glfw.GLFW;
  */
 public class AbstractPopupScreen extends Screen {
     private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("popup/background");
-    private final Screen backgroundScreen;
+    public final Screen backgroundScreen;
 
     protected AbstractPopupScreen(Text title, Screen backgroundScreen) {
         super(title);

@@ -116,6 +116,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
             for (int i = 0; i < categoryTabWidgets.size(); i++) {
                 CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(i);
                 categoryTabWidget.setPosition(x - 30, y + 3 + i * 28);
+				addSelectableChild(categoryTabWidget);
 
             }
     }
