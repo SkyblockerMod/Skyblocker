@@ -920,7 +920,7 @@
     "skyblocker.waypoints.ordered.import.skyblocker.success": "成功從Skyblocker Ordered Waypoints格式匯入路徑點！",
     "skyblocker.waypoints.exportWaypointsSkyblocker": "匯出路徑點（Skyblocker格式）",
     "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "匯出路徑點到剪貼簿（Skyblocker格式）",
-    "skyblocker.config.uiAndVisuals.tabHud.configScreen": "打開設定介面",
+    "skyblocker.config.uiAndVisuals.tabHud.configScreen": "打開小部件設定介面",
     "skyblocker.config.general.itemProtection.protectValuableConsumables": "保護貴重消耗品",
     "skyblocker.waypoints.importWaypointsSkyblocker": "匯入路徑點（Skyblocker格式）",
     "skyblocker.config.otherLocations.end.muteEndermanSounds": "消除終界使者音效",
@@ -1511,5 +1511,6 @@
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError": "函數「%2$s」的輸入「%1$s」無效",
     "skyblocker.config.uiAndVisuals.tabHud.style.SIMPLE": "簡約",
     "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.CENTERED": "居中",
-    "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.TOP": "上方"
+    "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.TOP": "上方",
+    "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "使用該介面來移動Tab和HUD小部件。\n使用「/skyblocker hud」可以直接打開該介面！"
 }
