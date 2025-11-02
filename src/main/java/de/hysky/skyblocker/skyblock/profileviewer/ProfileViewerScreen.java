@@ -176,7 +176,7 @@ public class ProfileViewerScreen extends Screen {
 
                     @Override
                     public boolean isModelPartVisible(PlayerModelPart modelPart) {
-                        return !(modelPart.getName().equals(PlayerModelPart.CAPE.getName()));
+                        return !(modelPart.equals(PlayerModelPart.CAPE));
                     }
 
                     @Override
