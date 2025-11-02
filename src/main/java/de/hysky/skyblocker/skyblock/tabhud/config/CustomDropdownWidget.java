@@ -12,47 +12,47 @@ import java.util.List;
 import java.util.function.Consumer;
 
 class CustomDropdownWidget<T> extends DropdownWidget<T> {
-    private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");
+	private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");
 
-    CustomDropdownWidget(int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
-        super(client, x, y, width, maxHeight, 12, entries, selectCallback, selected);
-        headerHeight = 15;
-    }
+	CustomDropdownWidget(int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
+		super(client, x, y, width, maxHeight, 12, entries, selectCallback, selected, opened -> {});
+		headerHeight = 15;
+	}
 
 
-    @Override
-    protected void renderHeader(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-        int y = getY() - 1;
-        int y2 = y + headerHeight;
-        TopBarWidget.drawButtonBorder(context, getX(), y, y2);
-        TopBarWidget.drawButtonBorder(context, getRight(), y, y2);
+	@Override
+	protected void renderHeader(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		int y = getY() - 1;
+		int y2 = y + headerHeight;
+		TopBarWidget.drawButtonBorder(context, getX(), y, y2);
+		TopBarWidget.drawButtonBorder(context, getRight(), y, y2);
 
-        if (isHovered() && mouseY < y2) {
-            context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(100, 0));
-        } else {
-            context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(50, 0));
-        }
-        drawScrollableText(context, client.textRenderer, formatter.apply(selected),
-                getX() + 2,
-                getY() + 2,
-                getRight() - 2,
-                getY() + headerHeight - 2,
-                -1);
-    }
+		if (isHovered() && mouseY < y2) {
+			context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(100, 0));
+		} else {
+			context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(50, 0));
+		}
+		drawScrollableText(context, client.textRenderer, formatter.apply(selected),
+				getX() + 2,
+				getY() + 2,
+				getRight() - 2,
+				getY() + headerHeight - 2,
+				-1);
+	}
 
-    @Override
-    protected void drawMenuListBackground(DrawContext context, int listX, int listY, int listWidth, int listHeight) {
-        context.enableScissor(listX, listY - 1, listX + listWidth, listY + listHeight + 2);
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, listX, listY - 3, listWidth, listHeight + 5);
-        context.disableScissor();
-    }
+	@Override
+	protected void drawMenuListBackground(DrawContext context, int listX, int listY, int listWidth, int listHeight) {
+		context.enableScissor(listX, listY - 1, listX + listWidth, listY + listHeight + 2);
+		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, listX, listY - 3, listWidth, listHeight + 5);
+		context.disableScissor();
+	}
 
-    @Override
-    protected void renderEntry(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, T entry) {
-        if (index != 0) {
-            context.drawHorizontalLine(x, x + entryWidth, y, ColorHelper.withAlpha(15, 0));
-        }
-        drawScrollableText(context, client.textRenderer, formatter.apply(entry).copy().fillStyle(Style.EMPTY.withUnderline(hovered)), x, y, x + entryWidth, y + 11, -1);
+	@Override
+	protected void renderEntry(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, T entry) {
+		if (index != 0) {
+			context.drawHorizontalLine(x, x + entryWidth, y, ColorHelper.withAlpha(15, 0));
+		}
+		drawScrollableText(context, client.textRenderer, formatter.apply(entry).copy().fillStyle(Style.EMPTY.withUnderline(hovered)), x, y, x + entryWidth, y + 11, -1);
 
-    }
+	}
 }

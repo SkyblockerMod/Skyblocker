@@ -143,14 +143,15 @@ public class Calculator {
 		}
 	}
 
-	private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([sekmbt]?)");
+	private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([sekmbtq]?)");
 	private static final Object2LongMap<String> MAGNITUDE_VALUES = Object2LongMaps.unmodifiable(new Object2LongOpenHashMap<>(Map.of(
 			"s", 64L,
 			"e", 160L,
 			"k", 1_000L,
 			"m", 1_000_000L,
 			"b", 1_000_000_000L,
-			"t", 1_000_000_000_000L
+			"t", 1_000_000_000_000L,
+			"q", 1_000_000_000_000_000L
 	)));
 
 	private static List<AbstractToken<?>> lex(String input) throws CalculatorException {

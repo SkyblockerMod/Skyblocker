@@ -20,6 +20,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 	protected int headerHeight;
 	protected final List<T> entries;
 	protected final Consumer<T> selectCallback;
+	protected final Consumer<Boolean> openedCallback;
 	private final DropdownList dropdownList;
 	protected T prevSelected;
 	protected T selected;
@@ -28,13 +29,14 @@ public class DropdownWidget<T> extends ContainerWidget {
 	protected Function<T, Text> formatter = t -> Text.literal(t.toString());
 
 
-	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, int entryHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
+	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, int entryHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
 		super(x, y, width, 0, Text.empty());
 		this.entryHeight = entryHeight;
 		this.headerHeight = entryHeight + 4;
 		this.maxHeight = maxHeight;
 		this.entries = entries;
 		this.selectCallback = selectCallback;
+		this.openedCallback = openedCallback;
 		this.selected = selected;
 		dropdownList = new DropdownList(minecraftClient, x + 1, y + headerHeight, width - 2, maxHeight - headerHeight);
 		for (T element : entries) {
@@ -47,8 +49,8 @@ public class DropdownWidget<T> extends ContainerWidget {
 		this.formatter = formatter;
 	}
 
-	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
-		this(minecraftClient, x, y, width, maxHeight, 15, entries, selectCallback, selected);
+	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
+		this(minecraftClient, x, y, width, maxHeight, 15, entries, selectCallback, selected, openedCallback);
 	}
 
 	public void setMaxHeight(int maxHeight) {
@@ -103,6 +105,11 @@ public class DropdownWidget<T> extends ContainerWidget {
 		} else {
 			setHeight(headerHeight);
 		}
+		this.openedCallback.accept(open);
+	}
+
+	public boolean isOpen() {
+		return this.open;
 	}
 
 	protected void select(T entry) {

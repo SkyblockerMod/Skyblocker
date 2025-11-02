@@ -263,6 +263,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
+								// .tags(Text.literal("gui")) // TODO: uncomment when we start using the next Dandelion version
 								.prompt(Text.translatable("text.skyblocker.open"))
 								.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigScreen()))
 								.build())
