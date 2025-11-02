@@ -14,29 +14,41 @@ import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager.DUNGEO
 @SuppressWarnings("UnstableApiUsage")
 public class RoomDataTest implements FabricClientGameTest {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static boolean isValid = true;
 
 	@Override
 	public void runTest(ClientGameTestContext clientGameTestContext) {
 		clientGameTestContext.waitFor((client) -> DungeonManager.isRoomsLoaded());
-		clientGameTestContext.runOnClient(client -> {
-			int roomCount = checkRooms();
-			if (!isValid) throw new AssertionError(".skeleton and .room files do not match!");
-			checkIfLoadedCorrectly(roomCount);
-		});
+		clientGameTestContext.runOnClient(this::testMain);
 	}
 
-	public int checkRooms() {
-		MinecraftClient client = MinecraftClient.getInstance();
+	public void testMain(MinecraftClient client) {
 		List<String> skeletonFiles = getRoomFilesByType(client, ".skeleton");
 		List<String> roomFiles = getRoomFilesByType(client, ".json");
-
 		LOGGER.info("Found {} .skeleton files and {} .json files!", skeletonFiles.size(), roomFiles.size());
 
+		boolean isValid = checkRooms(skeletonFiles, roomFiles);
+		if (!isValid) throw new AssertionError("One or more rooms have an issue!");
+
+		int roomCount = skeletonFiles.size();
+		checkIfLoadedCorrectly(roomCount);
+	}
+
+	public boolean checkRooms(List<String> skeletonFiles, List<String> roomFiles) {
+		boolean isValid = true;
 		for (String roomName : skeletonFiles) {
 			if (!roomFiles.contains(roomName)) {
 				isValid = false;
 				LOGGER.error("{} is missing a .json file!", roomName);
+			}
+
+			if (DungeonManager.getRoomMetadata(roomName) == null) {
+				isValid = false;
+				LOGGER.error("{} is missing room metadata!", roomName);
+			}
+
+			if (DungeonManager.getRoomWaypoints(roomName) == null) {
+				isValid = false;
+				LOGGER.error("{} is missing waypoints!", roomName);
 			}
 		}
 
@@ -46,8 +58,7 @@ public class RoomDataTest implements FabricClientGameTest {
 				LOGGER.error("{} is mising a .skeleton file!", roomName);
 			}
 		}
-
-		return roomFiles.size();
+		return isValid;
 	}
 
 	public void checkIfLoadedCorrectly(int expected) {

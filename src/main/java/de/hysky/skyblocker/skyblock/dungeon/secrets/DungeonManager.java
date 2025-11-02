@@ -178,7 +178,6 @@ public class DungeonManager {
 		return rooms.values().stream();
 	}
 
-	@SuppressWarnings("unused")
 	public static RoomInfo getRoomMetadata(String room) {
 		return roomInfo.get(room);
 	}
