@@ -30,10 +30,12 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.OtherClientPlayerEntity;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.command.CommandSource;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
+import net.minecraft.entity.player.SkinTextures;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -166,11 +168,11 @@ public class ProfileViewerScreen extends Screen {
     		MinecraftClient.getInstance().getPlayerSkinCache().getFuture(ProfileComponent.ofDynamic(uuid)).thenAccept(entry -> {
                 this.playerName = entry.get().getProfile().name();
                 entity = new OtherClientPlayerEntity(MinecraftClient.getInstance().world, entry.get().getProfile()) {
-                    /*@Override
-                    public SkinTextures getSkinTextures() {
+                    @Override
+                    public SkinTextures getSkin() {
                         PlayerListEntry playerListEntry = new PlayerListEntry(entry.get().getProfile(), false);
                         return playerListEntry.getSkinTextures();
-                    }*/
+                    }
 
                     @Override
                     public boolean isModelPartVisible(PlayerModelPart modelPart) {
