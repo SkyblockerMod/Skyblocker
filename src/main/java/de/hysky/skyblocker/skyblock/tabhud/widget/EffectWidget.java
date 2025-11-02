@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.BooleanOption;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
@@ -32,7 +33,7 @@ public class EffectWidget extends TabHudWidget {
 	public EffectWidget() {
 		super(HYPIXEL_WIDGET_NAME, TITLE, Formatting.DARK_PURPLE.getColorValue());
 		PlayerListManager.registerFooterListener(() -> {
-			if (effectsFromFooter && PlayerListManager.getListWidget(HYPIXEL_WIDGET_NAME) == null) fetchFromFooter();
+			if (effectsFromFooter && WidgetManager.isInCurrentScreen(this) && PlayerListManager.getListWidget(HYPIXEL_WIDGET_NAME) == null) updateContent();
 		});
 	}
 

@@ -70,10 +70,16 @@ public class ScreenBuilder {
 	public void addWidget(@NotNull HudWidget widget) {
 		Objects.requireNonNull(widget);
 		widgets.add(widget);
+		updateRenderedWidgets();
 	}
 
 	public void removeWidget(@NotNull HudWidget widget) {
 		widgets.remove(widget);
+		updateRenderedWidgets();
+	}
+
+	public boolean isInScreenBuilder(HudWidget widget) {
+		return renderedWidgets.contains(widget);
 	}
 
 	/**
@@ -83,7 +89,7 @@ public class ScreenBuilder {
 		Map<String, WidgetConfig> newConfig = new Object2ObjectOpenHashMap<>(widgets.size());
 		Set<String> widgetIds = widgets.stream().map(HudWidget::getId).collect(Collectors.toCollection(ObjectOpenHashSet::new));
 		for (HudWidget widget : widgets) {
-			if (widget.isInherited()) continue; // don't want to save inherited stuff
+			if (widget.renderingInformation.inherited) continue; // don't want to save inherited stuff
 			JsonObject widgetConfig = new JsonObject();
 			List<WidgetOption<?>> options = new ArrayList<>();
 			widget.getPerScreenOptions(options);
@@ -113,7 +119,7 @@ public class ScreenBuilder {
 			if (inherited.isPresent() && !inherited.get()) continue;
 			HudWidget widget = WidgetManager.getWidgetOrPlaceholder(entry.getKey());
 			JsonObject object = entry.getValue().config();
-			widget.setInherited(inherited.orElse(false));
+			widget.renderingInformation.inherited = inherited.orElse(false);
 			List<WidgetOption<?>> options = new ArrayList<>();
 			widget.getPerScreenOptions(options);
 			for (WidgetOption<?> option : options) {
@@ -161,7 +167,7 @@ public class ScreenBuilder {
 		Profilers.get().pop();
 	}
 
-	public void updateRenderedWidgets() {
+	private void updateRenderedWidgets() {
 		renderedWidgets.clear();
 		renderedWidgets.addAll(widgets);
 		renderedWidgets.addAll(tabWidgets);
@@ -174,7 +180,7 @@ public class ScreenBuilder {
 		hash = hash * 31 + Integer.hashCode(screenHeight);
 		for (HudWidget widget : renderedWidgets) {
 			boolean shouldRender = widget.shouldRender() || renderConfig;
-			widget.setVisible(shouldRender);
+			widget.renderingInformation.visible = shouldRender;
 			hash = hash * 31 + Boolean.hashCode(shouldRender);
 			hash = hash * 31 + Integer.hashCode(widget.getScaledWidth());
 			hash = hash * 31 + Integer.hashCode(widget.getScaledHeight());
@@ -184,7 +190,7 @@ public class ScreenBuilder {
 			updatePositions(screenWidth, screenHeight);
 		}
 		for (HudWidget widget : renderedWidgets) {
-			if (!widget.shouldRender() && !renderConfig) continue;
+			if (!widget.renderingInformation.visible && !renderConfig) continue;
 			if (renderConfig) widget.renderConfig(context);
 			else widget.render(context);
 		}
@@ -208,9 +214,9 @@ public class ScreenBuilder {
 
 	public static void updatePositions(Collection<HudWidget> widgets, int screenWidth, int screenHeight) {
 		Profilers.get().push("skyblocker:updatePositions");
-		widgets.forEach(w -> w.setPositioned(false));
+		widgets.forEach(w -> w.renderingInformation.positioned = false);
 		for (HudWidget widget : widgets) {
-			if (!widget.isPositioned()) WidgetPositioner.applyRuleToWidget(widget, screenWidth, screenHeight);
+			if (!widget.renderingInformation.positioned) WidgetPositioner.applyRuleToWidget(widget, screenWidth, screenHeight);
 		}
 		Profilers.get().pop();
 	}

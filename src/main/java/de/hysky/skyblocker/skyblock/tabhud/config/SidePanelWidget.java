@@ -101,12 +101,12 @@ class SidePanelWidget extends ContainerWidget {
 
 		// Per screen options
 		MultilineTextWidget textWidget = null;
-		if (hudWidget.isInherited()) {
+		if (hudWidget.renderingInformation.inherited) {
 			// TODO add a goto location button
 			textWidget = new MultilineTextWidget(Text.literal("This widget is from a parent screen, edit it there or create a copy."), client.textRenderer);
 			add(textWidget);
 			add(ButtonWidget.builder(Text.literal("Create Copy"), b -> { // TODO translatable
-				hudWidget.setInherited(false);
+				hudWidget.renderingInformation.inherited = false;
 				open(hudWidget, config, rightSide, x);
 			}).build());
 		} else {

@@ -24,7 +24,7 @@ public abstract class WidgetPositioner {
 	public abstract Vector2i finalizePositioning();
 
 	public static void applyRuleToWidget(HudWidget widget, int screenWidth, int screenHeight) {
-		widget.setPositioned(true);
+		widget.renderingInformation.positioned = true;
 		PositionRule rule = widget.getPositionRule();
 		if (rule == null) return;
 
@@ -37,10 +37,10 @@ public abstract class WidgetPositioner {
 		} else {
 			HudWidget parentWidget = WidgetManager.WIDGET_INSTANCES.get(rule.parent());
 			if (parentWidget == null) return;
-			if (!parentWidget.isPositioned()) applyRuleToWidget(parentWidget, screenWidth, screenHeight);
+			if (!parentWidget.renderingInformation.positioned) applyRuleToWidget(parentWidget, screenWidth, screenHeight);
 
 			// size 0 part 2
-			if (parentWidget.isVisible()) {
+			if (parentWidget.renderingInformation.visible) {
 				startX = parentWidget.getX() + (int) (rule.parentPoint().horizontalPoint().getPercentage() * parentWidget.getScaledWidth());
 				startY = parentWidget.getY() + (int) (rule.parentPoint().verticalPoint().getPercentage() * parentWidget.getScaledHeight());
 			} else {
@@ -51,7 +51,7 @@ public abstract class WidgetPositioner {
 		}
 
 		// Effectively make the widget size 0
-		if (widget.isVisible()) {
+		if (widget.renderingInformation.visible) {
 			widget.setX(startX + rule.relativeX() - (int) (rule.thisPoint().horizontalPoint().getPercentage() * widget.getScaledWidth()));
 			widget.setY(startY + rule.relativeY() - (int) (rule.thisPoint().verticalPoint().getPercentage() * widget.getScaledHeight()));
 		} else {

@@ -23,13 +23,7 @@ public abstract class HudWidget implements Widget {
 	private float scale = 1.0f;
 	private PositionRule positionRule;
 	private final Information information;
-
-	private boolean positioned = false;
-	private boolean visible = false;
-	/**
-	 * Used for the config screen.
-	 */
-	private boolean inherited = false;
+	public final RenderingInformation renderingInformation = new RenderingInformation();
 
 	protected int w = 0, h = 0;
 	protected int x = 0, y = 0;
@@ -45,7 +39,7 @@ public abstract class HudWidget implements Widget {
 	/**
 	 * Renders the widget (duh)
 	 *
-	 * @apiNote The matrix stack is already translated. So the top left corner of the widget is (0,0)
+	 * @implNote The matrix stack is already translated. So the top left corner of the widget is (0,0)
 	 */
 	protected abstract void renderWidget(DrawContext context, float delta);
 
@@ -180,32 +174,17 @@ public abstract class HudWidget implements Widget {
 
 	}
 
-	public final boolean isPositioned() {
-		return positioned;
-	}
-
-	public final void setPositioned(boolean positioned) {
-		this.positioned = positioned;
-	}
-
-	public final boolean isVisible() {
-		return visible;
-	}
-
-	public final void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
-	public final boolean isInherited() {
-		return inherited;
-	}
-
-	public final void setInherited(boolean inherited) {
-		this.inherited = inherited;
-	}
-
 	public final boolean isMouseOver(double mouseX, double mouseY) {
 		return mouseX >= getX() && mouseX <= getX() + getScaledWidth() && mouseY >= getY() && mouseY < getY() + getScaledHeight();
+	}
+
+	/**
+	 * Information used internally to render the screen.
+	 */
+	public static class RenderingInformation {
+		public boolean visible;
+		public boolean positioned;
+		public boolean inherited;
 	}
 
 	@Override

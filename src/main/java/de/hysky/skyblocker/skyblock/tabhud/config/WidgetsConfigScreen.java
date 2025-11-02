@@ -107,7 +107,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 
 	private void addWidget(HudWidget widget) {
 		builder.addWidget(widget);
-		widget.setInherited(false);
+		widget.renderingInformation.inherited = false;
 		widget.setPositionRule(
 				new PositionRule(
 						"screen",
@@ -117,7 +117,6 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 						(int) (client.mouse.getScaledY(client.getWindow()) / TabHud.getScaleFactor())
 				)
 		);
-		builder.updateRenderedWidgets();
 	}
 
 	@Override
@@ -422,7 +421,6 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 			sidePanelWidget.close();
 			selectedWidget = null;
 		}
-		builder.updateRenderedWidgets();
 	}
 
 	private void updateBuilderPositions() {

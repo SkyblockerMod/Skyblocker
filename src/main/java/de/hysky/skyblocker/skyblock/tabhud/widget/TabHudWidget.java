@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
@@ -42,7 +43,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 
 	protected void registerAutoUpdate() {
 		PlayerListManager.registerTabListener(() -> {
-			if (isVisible()) update();
+			if (WidgetManager.isInCurrentScreen(this)) update();
 		});
 	}
 

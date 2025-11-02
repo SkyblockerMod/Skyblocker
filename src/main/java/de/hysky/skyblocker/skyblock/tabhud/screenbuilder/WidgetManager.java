@@ -144,6 +144,13 @@ public class WidgetManager {
 		currentBuilder.render(context, w, h, false);
 	}
 
+	/**
+	 * @return true if the widget is enabled in the current screen.
+	 */
+	public static boolean isInCurrentScreen(HudWidget widget) {
+		return currentBuilder.isInScreenBuilder(widget);
+	}
+
 	private static void onPlayerListChange() {
 		currentBuilder.updateTabWidgetsList();
 	}
@@ -239,7 +246,7 @@ public class WidgetManager {
 		}
 	}
 
-	public static void setWidgetOptions(HudWidget widget, JsonObject object) {
+	private static void setWidgetOptions(HudWidget widget, JsonObject object) {
 		List<WidgetOption<?>> options = new ArrayList<>();
 		widget.getOptions(options);
 		for (WidgetOption<?> option : options) {

@@ -119,7 +119,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	/**
 	 * @return true if this should be updated before rendering.
-	 * @implNote Will not,update if {@link HudWidget#shouldRender()} is false.
+	 * @implNote Will not update if {@link HudWidget#shouldRender()} is false.
 	 */
 	public boolean shouldUpdateBeforeRendering() {
 		return false;
