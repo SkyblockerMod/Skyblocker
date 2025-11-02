@@ -70,17 +70,8 @@ public class CustomizeNameWidget extends ContainerWidget {
 				new FormattingButton("S", Formatting.STRIKETHROUGH, Style::isStrikethrough),
 				new FormattingButton("|||", Formatting.OBFUSCATED, Style::isObfuscated),
 		};
-		for (int i = 0; i < formattingButtons.length; i++) {
-			FormattingButton button = formattingButtons[i];
-			builder.add(grid.add(button, 0, i));
-		}
 
-		int i = 0;
-		for (Formatting formatting : Formatting.values()) {
-			if (formatting.isColor()) {
-				builder.add(grid.add(new ColorButton(formatting), 2, i++));
-			}
-		}
+		addFormattingButtons(builder);
 
 		builder.add(grid.add(ButtonWidget.builder(Text.translatable("skyblocker.customItemNames.screen.customColor"), b ->
 				client.setScreen(ColorPopup.create(parent, color -> setStyle(Style.EMPTY.withColor(color))))
@@ -95,6 +86,21 @@ public class CustomizeNameWidget extends ContainerWidget {
 		grid.setPosition(getX() + PADDING, getY() + PADDING);
 		setDimensions(grid.getWidth() + PADDING * 2, grid.getHeight() + PADDING * 2);
 		selectionStart = selectionEnd = textString.length();
+	}
+
+	// Makes it easier for Aaron Mod to add a chroma colour button
+	private void addFormattingButtons(ImmutableList.Builder<ClickableWidget> builder) {
+		for (int i = 0; i < formattingButtons.length; i++) {
+			FormattingButton button = formattingButtons[i];
+			builder.add(grid.add(button, 0, i));
+		}
+
+		int colorButtonIndex = 0;
+		for (Formatting formatting : Formatting.values()) {
+			if (formatting.isColor()) {
+				builder.add(grid.add(new ColorButton(formatting), 2, colorButtonIndex++));
+			}
+		}
 	}
 
 	@Override
