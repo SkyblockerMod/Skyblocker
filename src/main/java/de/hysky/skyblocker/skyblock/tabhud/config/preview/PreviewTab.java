@@ -423,6 +423,7 @@ public class PreviewTab implements Tab {
 
 		/**
 		 * A widget is not visible if it is half above the top of the frame, or half below.
+		 *
 		 * @param i Y of the widget
 		 * @param j Bottom of the widget
 		 * @param h Height of the widget
@@ -448,11 +449,12 @@ public class PreviewTab implements Tab {
 
 		@Override
 		public boolean mouseClicked(Click click, boolean doubled) {
+			boolean bl = checkScrollbarDragged(click);
 			for (ClickableWidget widget : widgets) {
 				if (isNotVisible(widget.getY(), widget.getBottom(), widget.getHeight())) continue;
 				if (widget.mouseClicked(click, doubled)) return true;
 			}
-			return super.mouseClicked(click, doubled);
+			return super.mouseClicked(click, doubled) || bl;
 		}
 
 		@Override

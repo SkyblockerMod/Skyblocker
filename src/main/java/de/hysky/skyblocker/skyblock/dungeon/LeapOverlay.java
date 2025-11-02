@@ -274,7 +274,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		private void clickSlot() {
 			CLIENT.interactionManager.clickSlot(this.syncId(), this.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, CLIENT.player);
 			if (CONFIG.get().enableLeapMessage) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + CONFIG.get().leapMessage.replaceAll("\\[name]", this.name), false);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + CONFIG.get().leapMessage.replaceAll("\\[name]", this.name), true);
 			}
 		}
 	}

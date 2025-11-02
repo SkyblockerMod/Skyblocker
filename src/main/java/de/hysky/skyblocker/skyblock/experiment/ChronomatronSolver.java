@@ -47,6 +47,13 @@ public final class ChronomatronSolver extends ExperimentSolver implements Screen
 	 */
 	private int chronomatronCurrentOrdinal;
 
+	/**
+	 * Whether the board is a single row or two rows.
+	 * The first 3 Chronomatron levels are a single row.
+	 * The remaining 2 are two rows.
+	 */
+	private boolean isSingleRow;
+
 	public ChronomatronSolver() {
 		super("^Chronomatron \\(\\w+\\)$");
 	}
@@ -60,9 +67,12 @@ public final class ChronomatronSolver extends ExperimentSolver implements Screen
 	protected void tick(GenericContainerScreen screen) {
 	}
 
+	/**
+	 * Only process the changes for items in the center row (one or two rows, depending on the Chronomatron level), and for the instruction/clock item
+	 */
 	@Override
 	public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
-		if (slotId < 10 || slotId > 42 && slotId != 49) return;
+		if (slotId < 17 || slotId > (isSingleRow ? 25 : 34) && slotId != 49) return;
 		switch (getState()) {
 			case REMEMBER -> {
 				if (slotId == 49) break;
@@ -148,6 +158,8 @@ public final class ChronomatronSolver extends ExperimentSolver implements Screen
 		super.start(screen);
 		this.screen = screen;
 		screen.getScreenHandler().addListener(this);
+		String title = screen.getTitle().getString();
+		isSingleRow = title.endsWith("(High)") || title.endsWith("(Grand)") || title.endsWith("(Supreme)");
 	}
 
 	@Override
