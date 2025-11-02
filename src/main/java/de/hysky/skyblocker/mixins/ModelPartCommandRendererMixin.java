@@ -16,6 +16,6 @@ public class ModelPartCommandRendererMixin {
 
 	@ModifyVariable(method = "render", at = @At("LOAD"), argsOnly = true)
 	private OutlineVertexConsumerProvider skyblocker$useCustomGlowConsumers(OutlineVertexConsumerProvider original, @Local OrderedRenderCommandQueueImpl.ModelPartCommand command) {
-		return command.hasCustomGlow() ? GlowRenderer.getInstance().getGlowVertexConsumers() : original;
+		return command.skyblocker$hasCustomGlow() ? GlowRenderer.getInstance().getGlowVertexConsumers() : original;
 	}
 }

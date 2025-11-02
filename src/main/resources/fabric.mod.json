@@ -78,7 +78,10 @@
       ],
       "net/minecraft/class_11661\u0024class_11789": [
         "de/hysky/skyblocker/injected/CustomGlowState"
-      ]
+      ],
+	  "net/minecraft/class_11661\u0024class_11670": [
+		"de/hysky/skyblocker/injected/CustomGlowState"
+	  ]
     }
   }
 }

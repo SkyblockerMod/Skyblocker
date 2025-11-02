@@ -2,11 +2,11 @@ package de.hysky.skyblocker.injected;
 
 public interface CustomGlowState {
 
-	default void markCustomGlow() {
+	default void skyblocker$markCustomGlow() {
 		throw new UnsupportedOperationException("Implemented via Mixin");
 	}
 
-	default boolean hasCustomGlow() {
+	default boolean skyblocker$hasCustomGlow() {
 		throw new UnsupportedOperationException("Implemented via Mixin");
 	}
 }

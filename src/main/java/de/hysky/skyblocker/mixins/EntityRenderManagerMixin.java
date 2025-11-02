@@ -27,7 +27,7 @@ public class EntityRenderManagerMixin implements EntityRenderMarker {
 
 	@Override
 	@Nullable
-	public EntityRenderState getEntityStateBeingRendered() {
+	public EntityRenderState skyblocker$getEntityStateBeingRendered() {
 		return this.currentStateBeingRendered;
 	}
 
@@ -36,7 +36,7 @@ public class EntityRenderManagerMixin implements EntityRenderMarker {
 		this.currentStateBeingRendered = state;
 	}
 
-	@Inject(method = "render", at = @At("TAIL"))
+	@Inject(method = "render", at = @At("RETURN"))
 	private void skyblocker$clearEntityStateBeingRendered(CallbackInfo ci) {
 		this.currentStateBeingRendered = null;
 	}

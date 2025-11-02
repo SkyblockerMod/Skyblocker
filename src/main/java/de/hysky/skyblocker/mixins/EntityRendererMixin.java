@@ -41,8 +41,12 @@ public class EntityRendererMixin {
 		boolean allowGlow = allowGlowInLivid && state.hasOutline() || customGlow;
 
 		if (allowGlow && customGlow) {
+			// Only apply custom flag if it doesn't have vanilla glow (so we can change Hypixel's glow colours without changing the glow's visibility)
+			if (!entity.isGlowing()) {
+				state.setData(MobGlow.ENTITY_HAS_CUSTOM_GLOW, true);
+			}
+
 			state.outlineColor = MobGlow.getMobGlowOrDefault(entity, MobGlow.NO_GLOW);
-			state.setData(MobGlow.ENTITY_HAS_CUSTOM_GLOW, true);
 		} else if (!allowGlow) {
 			state.outlineColor = EntityRenderState.NO_OUTLINE;
 		}
