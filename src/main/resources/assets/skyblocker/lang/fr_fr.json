@@ -1183,7 +1183,7 @@
     "skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip": "Affiche les objets non données avec leur prix et plus.\n\nAssurez vous d'activer l'API du musée pour que cela fonctionne !",
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "Pour : la Lame de Nécron, Hyperion, Astraea, Scylla et Valkyrie.",
     "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Comportement de positionnement par défaut",
-    "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Ouvrir l'Écran de Configuration",
+    "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Ouvrir l'Écran de Configuration des Widgets",
     "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag": "Ajout Maximal de Lag (ms)",
     "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "Prédictif :\nCombien de temps l'animation peut prendre du retard par rapport au jeu, en millisecondes. (Si cette valeur est définie sur 0, le lissage n'aura aucun retard, mais des saccades sont susceptibles de se produire. Augmentez cette valeur si vous constatez des clignotements.)\n\nPrédictif désactivé :\nDurée de l'animation",
     "skyblocker.customItemNames.screen.customColor": "Personnaliser",
@@ -1534,5 +1534,7 @@
     "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "Affiche le nombre de rotations restantes pour chaque flèche.",
     "skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints.@Tooltip": "Analyse les coordonnées envoyées dans le chat et propose d'ajouter un marqueur temporaire à l'emplacement.",
     "skyblocker.customization.armor.cycleBack": "Retourner",
-    "skyblocker.customization.nothingCustomizable": "Rien n'est personnalisable."
+    "skyblocker.customization.nothingCustomizable": "Rien n'est personnalisable.",
+    "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "Utilisez cette commande pour déplacer les widgets Tab et HUD.\nUtilisez `/skyblocker hud` pour y accéder plus rapidement !",
+    "skyblocker.config.dungeons.salvageHelper.onlyDonated": "Assistant de Recyclage - Surligner Seulement les Objets Donnés"
 }
