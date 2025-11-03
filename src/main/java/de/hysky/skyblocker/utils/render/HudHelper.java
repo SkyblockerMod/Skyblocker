@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils.render;
 
 import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import de.hysky.skyblocker.compatibility.ModernUICompatibility;
+import de.hysky.skyblocker.utils.render.gui.state.CustomShapeGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.OutlinedTextGuiElementRenderState;
@@ -22,10 +23,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import org.joml.Matrix3x2f;
+import org.joml.Vector2f;
 
 import java.awt.*;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 public class HudHelper {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
