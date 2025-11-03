@@ -466,13 +466,6 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.waypoints.allowGoingBackwards = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.enableWaypoints"))
-								.binding(defaults.uiAndVisuals.waypoints.enableWaypoints,
-										() -> config.uiAndVisuals.waypoints.enableWaypoints,
-										newValue -> config.uiAndVisuals.waypoints.enableWaypoints = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.waypoints.config"))
                                 .prompt(Text.translatable("text.skyblocker.open"))

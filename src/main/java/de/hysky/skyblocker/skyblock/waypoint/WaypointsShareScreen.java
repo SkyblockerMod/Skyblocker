@@ -28,9 +28,22 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
     @Override
     protected void init() {
         super.init();
-        GridWidget gridWidget = new GridWidget().setColumnSpacing(5).setRowSpacing(2);
-        GridWidget.Adder adder = gridWidget.createAdder(3);
+		int rowSpacing = 2;
+        GridWidget gridWidget = new GridWidget().setColumnSpacing(5).setRowSpacing(rowSpacing);
+        GridWidget.Adder adder = gridWidget.createAdder(2);
 		// First row
+		adder.add(CheckboxWidget.builder(Text.translatable("skyblocker.waypoints.importOptions.overrideLocation"), textRenderer)
+				.maxWidth(ButtonWidget.DEFAULT_WIDTH)
+				.callback((checkbox, checked) -> overrideLocation = checked)
+				.tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importOptions.overrideLocation.tooltip")))
+				.build());
+		adder.add(CheckboxWidget.builder(Text.translatable("skyblocker.waypoints.importOptions.sortWaypoints"), textRenderer)
+				.maxWidth(ButtonWidget.DEFAULT_WIDTH)
+				.callback((checkbox, checked) -> sortWaypoints = checked)
+				.tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importOptions.sortWaypoints.tooltip")))
+				.build());
+		// Second Row
+
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.importWaypointsSkyblocker"), buttonImport -> {
             try {
                 List<WaypointGroup> waypointGroups = Waypoints.fromSkyblocker(client.keyboard.getClipboard(), island);
@@ -61,12 +74,8 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
                 SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.exportError"), Text.translatable("skyblocker.waypoints.exportErrorText"));
             }
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.exportWaypointsSkyblocker.tooltip"))).build());
-		adder.add(CheckboxWidget.builder(Text.translatable("skyblocker.waypoints.importOptions.overrideLocation"), textRenderer)
-				.maxWidth(ButtonWidget.DEFAULT_WIDTH)
-				.callback((checkbox, checked) -> overrideLocation = checked)
-				.tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importOptions.overrideLocation.tooltip")))
-				.build());
-		// Second row
+
+		// Third row
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.importWaypointsSkytils"), buttonImport -> {
             try {
                 List<WaypointGroup> waypointGroups = Waypoints.fromSkytils(client.keyboard.getClipboard(), island);
@@ -97,13 +106,8 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
                 SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.exportError"), Text.translatable("skyblocker.waypoints.exportErrorText"));
             }
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.exportWaypointsSkytils.tooltip"))).build());
-		adder.add(CheckboxWidget.builder(Text.translatable("skyblocker.waypoints.importOptions.sortWaypoints"), textRenderer)
-				.maxWidth(ButtonWidget.DEFAULT_WIDTH)
-				.callback((checkbox, checked) -> sortWaypoints = checked)
-				.tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importOptions.sortWaypoints.tooltip")))
-				.build());
 
-		// Third row
+		// Fourth row
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.importWaypointsSnoopy"), buttonImport -> {
             try {
                 WaypointGroup waypointGroup = Waypoints.fromColeweightJson(client.keyboard.getClipboard(), island);
@@ -120,7 +124,8 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importWaypointsSnoopy.tooltip"))).build());
         adder.add(ButtonWidget.builder(ScreenTexts.DONE, buttonBack -> close()).build());
 		layout.addFooter(gridWidget);
-		layout.setFooterHeight(76);
+		int rows = 4;
+		layout.setFooterHeight(20 * rows + rowSpacing * (rows - 1) + 8);
         super.lateInit();
     }
 

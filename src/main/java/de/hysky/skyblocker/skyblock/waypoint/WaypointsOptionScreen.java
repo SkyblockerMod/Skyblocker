@@ -57,6 +57,7 @@ public class WaypointsOptionScreen extends Screen {
 				.step(0.5)
 				.build()
 		);
+		adder.add(new TextWidget(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.lineColor"), textRenderer), 2, Positioner.create().alignHorizontalCenter().marginTop(4));
 		DirectionalLayoutWidget colorLayout = DirectionalLayoutWidget.horizontal();
 		adder.add(colorLayout, 2, Positioner.create().alignHorizontalCenter());
 		ColorPickerWidget colorPickerWidget = colorLayout.add(new ColorPickerWidget(0, 0, 200, 100, true));

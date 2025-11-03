@@ -25,7 +25,7 @@ public class WaypointGroup {
             NamedWaypoint.CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints),
             Codec.BOOL.lenientOptionalFieldOf("ordered", false).forGetter(WaypointGroup::ordered),
             Codec.BOOL.lenientOptionalFieldOf("render_through_walls", true).forGetter(WaypointGroup::renderThroughWalls),
-            Waypoint.Type.CODEC.lenientOptionalFieldOf("render_through_walls", DEFAULT_TYPE).forGetter(WaypointGroup::waypointType)
+            Waypoint.Type.CODEC.lenientOptionalFieldOf("waypoint_type", DEFAULT_TYPE).forGetter(WaypointGroup::waypointType)
     ).apply(instance, WaypointGroup::new));
     public static final Codec<WaypointGroup> SKYTILS_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
