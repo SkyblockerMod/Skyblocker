@@ -25,6 +25,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.block.entity.state.BeaconBlockEntityRenderState;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.text.OrderedText;
@@ -41,6 +42,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
 	private final WorldRenderState worldState;
 	private final Frustum frustum;
+	private List<VanillaSubmittable<?>> vanillaSubmittables = null;
 	private List<FilledBoxRenderState> filledBoxStates = null;
 	private List<OutlinedBoxRenderState> outlinedBoxStates = null;
 	private List<LinesRenderState> linesStates = null;
@@ -58,6 +60,17 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	public PrimitiveCollectorImpl(WorldRenderState worldState, Frustum frustum) {
 		this.worldState = worldState;
 		this.frustum = frustum;
+	}
+
+	@Override
+	public <S> void submitVanilla(S state, VanillaRenderer<S> renderer) {
+		ensureNotFrozen();
+
+		if (this.vanillaSubmittables == null) {
+			this.vanillaSubmittables = new ArrayList<>();
+		}
+
+		this.vanillaSubmittables.add(new VanillaSubmittable<>(state, renderer));
 	}
 
 	@Override
@@ -386,6 +399,19 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public void dispatchVanillaSubmittables(WorldRenderState worldState, OrderedRenderCommandQueue commandQueue) {
+		if (!this.frozen) {
+			throw new IllegalStateException("Cannot dispatch vanilla submittables until the collection phase has ended!");
+		}
+
+		if (this.vanillaSubmittables != null) {
+			for (VanillaSubmittable<?> submittable : this.vanillaSubmittables) {
+				((VanillaRenderer<Object>) submittable.renderer).submitVanilla(submittable.state(), worldState, commandQueue);
+			}
+		}
+	}
+
 	public void dispatchPrimitivesToRenderers(CameraRenderState cameraState) {
 		if (!this.frozen) {
 			throw new IllegalStateException("Cannot dispatch primitives until the collection phase has ended!");
@@ -463,4 +489,6 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			}
 		}
 	}
+
+	private record VanillaSubmittable<S>(S state, VanillaRenderer<S> renderer) {}
 }

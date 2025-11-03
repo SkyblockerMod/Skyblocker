@@ -16,6 +16,7 @@ import de.hysky.skyblocker.utils.render.GlowRenderer;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.state.WorldRenderState;
 
@@ -24,6 +25,9 @@ public class WorldRendererMixin {
 	@Shadow
 	@Final
 	private WorldRenderState worldRenderState;
+	@Shadow
+	@Final
+	private OrderedRenderCommandQueueImpl entityRenderCommandQueue;
 
 	@Inject(method = "fillEntityRenderStates", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/state/WorldRenderState;hasOutline:Z", opcode = Opcodes.PUTFIELD))
 	private void skyblocker$markIfCustomGlowUsedThisFrame(CallbackInfo ci, @Local EntityRenderState entityRenderState) {
@@ -50,6 +54,11 @@ public class WorldRendererMixin {
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldBorderRendering;updateRenderState(Lnet/minecraft/world/border/WorldBorder;Lnet/minecraft/util/math/Vec3d;DLnet/minecraft/client/render/state/WorldBorderRenderState;)V", shift = At.Shift.AFTER))
 	private void skyblocker$extractWorldRendering(CallbackInfo ci, @Local Frustum frustum) {
 		RenderHelper.startExtraction(this.worldRenderState, frustum);
+	}
+
+	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/command/RenderDispatcher;render()V"))
+	private void skyblocker$beforeCommandQueueExecuted(CallbackInfo ci) {
+		RenderHelper.submitVanillaSubmittables(this.worldRenderState, this.entityRenderCommandQueue);
 	}
 
 	@Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=translucent", shift = At.Shift.AFTER))

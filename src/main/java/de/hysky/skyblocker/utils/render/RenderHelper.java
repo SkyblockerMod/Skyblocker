@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveRenderer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.texture.TextureSetup;
 import net.minecraft.client.world.ClientWorld;
@@ -40,6 +41,13 @@ public class RenderHelper {
 
 		WorldRenderExtractionCallback.EVENT.invoker().onExtract(collector);
 		collector.endCollection();
+		profiler.pop();
+	}
+
+	public static void submitVanillaSubmittables(WorldRenderState worldState, OrderedRenderCommandQueue commandQueue) {
+		Profiler profiler = Profilers.get();
+		profiler.push("skyblockerSubmitVanillaSubmittables");
+		collector.dispatchVanillaSubmittables(worldState, commandQueue);
 		profiler.pop();
 	}
 
