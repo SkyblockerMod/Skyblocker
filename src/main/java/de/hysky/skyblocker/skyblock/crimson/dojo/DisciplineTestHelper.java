@@ -15,10 +15,10 @@ public class DisciplineTestHelper {
      * Stores what sword is needed for the name of a zombie
      */
     private static final Map<String, String> SWORD_TO_NAME_LOOKUP = Map.of(
-            "WOOD_SWORD", "Wood",
-            "IRON_SWORD", "Iron",
-            "GOLD_SWORD", "Gold",
-            "DIAMOND_SWORD", "Diamond"
+            "WOOD_SWORD", "༕ Wood",
+            "IRON_SWORD", "༕ Iron",
+            "GOLD_SWORD", "༕ Gold",
+            "DIAMOND_SWORD", "༕ Diamond"
     );
 
     /**
