@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.render;
 import com.mojang.blaze3d.platform.InputConstants;
 import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import de.hysky.skyblocker.compatibility.ModernUICompatibility;
+import de.hysky.skyblocker.utils.render.gui.state.CustomShapeGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.OutlinedTextGuiElementRenderState;
@@ -31,6 +32,7 @@ import org.lwjgl.glfw.GLFW;
 import java.awt.Color;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 public class HudHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
