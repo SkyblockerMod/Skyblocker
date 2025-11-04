@@ -33,6 +33,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -50,6 +51,7 @@ import java.util.regex.Pattern;
 public class ChestValue {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChestValue.class);
 	private static final Set<String> DUNGEON_CHESTS = Set.of("Wood Chest", "Gold Chest", "Diamond Chest", "Emerald Chest", "Obsidian Chest", "Bedrock Chest");
+	private static final Pattern DUNGEON_CHEST_COIN_COST_PATTERN = Pattern.compile("^([0-9,]+) Coins$");
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>\\d+)");
 	private static final Pattern SHARD_PATTERN = Pattern.compile("[A-Za-z ]+ Shard x(?<amount>\\d+)");
 	private static final Pattern MINION_PATTERN = Pattern.compile("Minion (I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII)$");
@@ -165,14 +167,13 @@ public class ChestValue {
 					}
 				}
 
-				//Determine the cost of the chest
+				// Determine the cost of the chest: If not found (wood chest), or if the chest was already opened - it will be 0
 				if (name.contains("Open Reward Chest")) {
-					String foundString = searchLoreFor(stack, "Coins");
-
-					//Incase we're searching the free chest
-					if (!StringUtils.isBlank(foundString)) {
-						profit -= Integer.parseInt(foundString.replaceAll("\\D", ""));
-					}
+					Matcher matcher = ItemUtils.getLoreLineIfContainsMatch(stack, DUNGEON_CHEST_COIN_COST_PATTERN);
+					if (matcher == null) continue;
+					String foundString = matcher.group(1).replaceAll("\\D", "");
+					if (!NumberUtils.isCreatable(foundString)) continue;
+					profit -= Integer.parseInt(foundString);
 
 					continue;
 				}
