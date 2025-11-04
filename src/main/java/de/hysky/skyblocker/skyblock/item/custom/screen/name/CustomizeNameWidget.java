@@ -15,6 +15,7 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -425,9 +426,15 @@ public class CustomizeNameWidget extends ContainerWidget {
 			if (renderStart != renderEnd) {
 				context.fill(textX + renderStart, textY, textX + renderEnd, textY + textRenderer.fontHeight, Colors.BLUE);
 			}
-			if (isFocused()) context.drawVerticalLine(textX + (selectionStart < selectionEnd ? renderStart : renderEnd) - 1, textY - 1, textY + textRenderer.fontHeight, Colors.WHITE);
+			if (this.isFocused()) {
+				context.drawVerticalLine(textX + (selectionStart < selectionEnd ? renderStart : renderEnd) - 1, textY - 1, textY + textRenderer.fontHeight, Colors.WHITE);
+			}
 
 			context.drawText(textRenderer, text, textX, textY, -1, false);
+
+			if (this.isHovered()) {
+				context.setCursor(StandardCursors.IBEAM);
+			}
 		}
 
 		@Override

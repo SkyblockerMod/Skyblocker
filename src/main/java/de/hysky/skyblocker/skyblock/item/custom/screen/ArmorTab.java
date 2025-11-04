@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tab.GridScreenTab;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -198,6 +199,10 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 				}
 			}
 			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HOTBAR_SELECTION_TEXTURE, getX() + selectedSlot * 20, getY(), 24, 24);
+
+			if (this.isHovered()) {
+				context.setCursor(this.isInteractable() ? StandardCursors.POINTING_HAND : StandardCursors.NOT_ALLOWED);
+			}
 		}
 
 		@Override

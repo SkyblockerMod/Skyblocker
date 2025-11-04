@@ -13,6 +13,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.navigation.GuiNavigation;
 import net.minecraft.client.gui.navigation.GuiNavigationPath;
 import net.minecraft.client.gui.screen.PopupScreen;
@@ -183,6 +184,10 @@ public class QuickNavButton extends ClickableWidget {
 		// Render the button icon
 		int yOffset = this.index < 7 ? 1 : -1;
 		context.drawItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
+
+		if (this.isHovered()) {
+			context.setCursor(StandardCursors.POINTING_HAND);
+		}
 	}
 
 	@Override
