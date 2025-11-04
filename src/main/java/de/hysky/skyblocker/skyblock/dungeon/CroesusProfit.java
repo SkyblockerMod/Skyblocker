@@ -15,6 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,8 +103,10 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 				continue;
 			} else if (lineString.isEmpty()) {
 				processingContents = false;
-			} else if (!processingContents && lineString.contains("Coins")) {
-				chestPrice = Integer.parseInt(lineString.replace(",", "").replaceAll("\\D", ""));
+			} else if (!processingContents && lineString.endsWith("Coins")) {
+				String chestCost = lineString.replace(",", "").replaceAll("\\D", "");
+				if (!NumberUtils.isCreatable(chestCost)) continue;
+				chestPrice = Integer.parseInt(chestCost);
 			}
 
 			if (processingContents) {
