@@ -167,7 +167,7 @@ public class ChestValue {
 					}
 				}
 
-				// Determine the cost of the chest: If not found (wood chest), or if the chest was already opened - it will be 0
+				// Determine the cost of the chest: If not found (wood chest or already opened chest), it will be 0
 				if (name.contains("Open Reward Chest")) {
 					Matcher matcher = ItemUtils.getLoreLineIfContainsMatch(stack, DUNGEON_CHEST_COIN_COST_PATTERN);
 					if (matcher == null) continue;
