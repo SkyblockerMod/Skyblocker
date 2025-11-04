@@ -49,7 +49,7 @@ public class ShortcutsConfigScreen extends Screen {
 		buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), button -> {
 			if (client != null && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry<?> shortcutEntry) {
 				scrollAmount = shortcutsConfigListWidget.getScrollY();
-				client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.stringifiedTranslatable("skyblocker.shortcuts.deleteWarning", shortcutEntry), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
+				client.setScreen(new ConfirmScreen(confirmedAction -> deleteEntry(confirmedAction, shortcutEntry), Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.stringifiedTranslatable("skyblocker.shortcuts.deleteWarning", shortcutEntry), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
 			}
 		}).build();
 		adder.add(buttonDelete);
@@ -67,9 +67,9 @@ public class ShortcutsConfigScreen extends Screen {
 		updateButtons();
 	}
 
-	private void deleteEntry(boolean confirmedAction) {
+	private void deleteEntry(boolean confirmedAction, ShortcutsConfigListWidget.AbstractShortcutEntry entry) {
 		if (client != null) {
-			if (confirmedAction && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry<?> shortcutEntry) {
+			if (confirmedAction && entry instanceof ShortcutsConfigListWidget.ShortcutEntry<?> shortcutEntry) {
 				shortcutsConfigListWidget.removeEntry(shortcutEntry);
 			}
 			client.setScreen(this); // Re-inits the screen and keeps the old instance of ShortcutsConfigListWidget

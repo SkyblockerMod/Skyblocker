@@ -84,7 +84,13 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 	}
 
 	protected void addShortcutAfterSelected() {
-		getCategory().ifPresent(category -> children().add(children().indexOf(getSelectedOrNull()) + 1, category.entrySupplier.get()));
+		getCategory().ifPresent(category -> {
+			ArrayList<AbstractShortcutEntry> newEntries = new ArrayList<>(children());
+			ShortcutEntry<?> newEntry = category.entrySupplier.get();
+			newEntries.add(children().indexOf(getSelectedOrNull()) + 1, newEntry);
+			replaceEntries(newEntries);
+			setSelected(newEntry);
+		});
 	}
 
 	protected void updatePositions() {
@@ -187,8 +193,8 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 
 		@Override
 		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			context.drawCenteredTextWithShadow(client.textRenderer, targetName, this.getWidth() / 2 - 85, this.getY() + 5, Colors.WHITE);
-			context.drawCenteredTextWithShadow(client.textRenderer, replacementName, this.getWidth() / 2 + 85, this.getY() + 5, Colors.WHITE);
+			context.drawCenteredTextWithShadow(client.textRenderer, targetName, getContentMiddleX() - 85, getY() + 5, Colors.WHITE);
+			context.drawCenteredTextWithShadow(client.textRenderer, replacementName, getContentMiddleX() + 85, getY() + 5, Colors.WHITE);
 			if (tooltip != null && isMouseOver(mouseX, mouseY)) {
 				context.drawTooltip(tooltip, mouseX, mouseY);
 			}
