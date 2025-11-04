@@ -25,9 +25,10 @@ import java.util.regex.Pattern;
 public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder {
 	public static CroesusProfit INSTANCE = new CroesusProfit();
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>\\d+)");
+	private static final Pattern CHEST_PATTERN = Pattern.compile("^(?:Wood|Gold|Diamond|Emerald|Obsidian|Bedrock)$");
 
 	public CroesusProfit() {
-		super(".*The Catacombs - Flo.*");
+		super("(Master )?Catacombs - Flo.*");
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 		for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
 			ItemStack stack = entry.getValue();
-			if (stack.getName().getString().contains("Chest")) {
+			if (CHEST_PATTERN.matcher(stack.getName().getString()).matches()) {
 				double value = getChestValue(stack);
 				if (value <= 0) continue;
 
@@ -101,7 +102,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 				continue;
 			} else if (lineString.isEmpty()) {
 				processingContents = false;
-			} else if (lineString.contains("Coins") && !processingContents) {
+			} else if (!processingContents && lineString.contains("Coins")) {
 				chestPrice = Integer.parseInt(lineString.replace(",", "").replaceAll("\\D", ""));
 			}
 
