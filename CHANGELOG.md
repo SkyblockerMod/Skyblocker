@@ -63,8 +63,8 @@
 ## New Contributors
 * @rafern made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1780
 
-**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.8.0...v5.9.0
----
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.8.0...v5.9.0-beta.1
+___
 # Release 5.8.0
 
 ## Highlight
