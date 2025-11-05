@@ -44,15 +44,18 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class MythologicalRitual {
-    private static final Pattern GRIFFIN_BURROW_DUG = Pattern.compile("(?<message>You dug out a Griffin Burrow!|You finished the Griffin burrow chain!) \\((?<index>\\d)/4\\)");
+    private static final Pattern GRIFFIN_BURROW_DUG = Pattern.compile("(?<message>You dug out a Griffin Burrow!|You finished the Griffin burrow chain!) \\((?<index>\\d)/(?<length>\\d+)\\)");
     private static final float[] ORANGE_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.ORANGE);
     private static final float[] RED_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
+	private static final Set<String> SPADES = Set.of("ANCESTRAL_SPADE", "ARCHAIC_SPADE", "DEIFIC_SPADE");
+
     private static long lastEchoTime;
     private static final Map<BlockPos, GriffinBurrow> griffinBurrows = new HashMap<>();
     @Nullable
@@ -244,7 +247,7 @@ public class MythologicalRitual {
 
     public static ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
-        if (isActive() && stack.getSkyblockId().equals("ANCESTRAL_SPADE")) {
+        if (isActive() && SPADES.contains(stack.getSkyblockId())) {
             lastEchoTime = System.currentTimeMillis();
         }
         return ActionResult.PASS;
