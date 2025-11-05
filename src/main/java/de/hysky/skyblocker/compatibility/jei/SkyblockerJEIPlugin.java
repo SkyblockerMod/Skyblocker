@@ -25,7 +25,6 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.fabric.events.JeiLifecycleEvents;
 import mezz.jei.library.ingredients.subtypes.SubtypeInterpreters;
 import mezz.jei.library.load.registration.SubtypeRegistration;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.math.Rect2i;
@@ -34,15 +33,12 @@ import net.minecraft.util.Identifier;
 
 @JeiPlugin
 public class SkyblockerJEIPlugin implements IModPlugin {
-	private static final boolean JEI_LOADED = FabricLoader.getInstance().isModLoaded("jei");
 	private SkyblockCraftingRecipeCategory skyblockCraftingRecipeCategory;
 	private SkyblockForgeRecipeCategory skyblockForgeRecipeCategory;
 	private SkyblockNpcShopRecipeCategory skyblockNpcShopRecipeCategory;
 
 	public static void trickJEIIntoLoadingRecipes() {
-		if (JEI_LOADED) {
-			JeiLifecycleEvents.AFTER_RECIPE_SYNC.invoker().run();
-		}
+		JeiLifecycleEvents.AFTER_RECIPE_SYNC.invoker().run();
 	}
 
 	@Override
