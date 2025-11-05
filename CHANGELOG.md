@@ -1,4 +1,4 @@
-# Release 5.9.0
+# Release 5.9.0 (Beta #1)
 
 ## Highlight
 * Add Arrow Align Device Solver
@@ -64,7 +64,7 @@
 * @rafern made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1780
 
 **Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.8.0...v5.9.0
-
+---
 # Release 5.8.0
 
 ## Highlight
