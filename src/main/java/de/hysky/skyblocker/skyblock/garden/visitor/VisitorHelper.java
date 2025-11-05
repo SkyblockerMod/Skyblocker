@@ -14,13 +14,14 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import me.shedaniel.math.Rectangle;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenPos;
+import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -78,10 +79,10 @@ public class VisitorHelper extends ClickableWidget {
 		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getIslandArea().contains("Bazaar"));
 	}
 
-	public static List<Rectangle> getExclusionZones() {
+	public static List<ScreenRect> getExclusionZones() {
 		if (activeVisitors.isEmpty()) return List.of();
 
-		return List.of(new Rectangle(xOffset, yOffset, exclusionZoneWidth, exclusionZoneHeight));
+		return List.of(new ScreenRect(new ScreenPos(xOffset, yOffset), exclusionZoneWidth, exclusionZoneHeight));
 	}
 
 	/**
