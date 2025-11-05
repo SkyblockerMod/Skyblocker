@@ -1,3 +1,70 @@
+# Release 5.9.0
+
+## Highlight
+* Add Arrow Align Device Solver
+* Add Target Practice Device Solver
+* Add more customization
+    * Item model can now be changed
+    * Animated skull textures
+    * Improved customization screen
+* Add an option to always show corpse profit text in English
+* Add support for Galatea Sea Creatures
+* Add Quadrillion to Sign Calculator
+* Add a way to update Zealot kills from the Bestiary
+* Add an option to only highlight donated items in Salvage Helper
+* Improve Smooth AOTE/Teleport Overlay when sneaking
+* Fix lever highlight size on Lights On Device Solver
+* Fix Caxton text not rendering properly sometimes
+* Fix Enchanted Book Names in Search Overlay
+* Fix Ice Fill Solver lag
+* Fix Sign Calculator showing on the Bestiary search sign
+* Fix some items not being detected for Corpse Profit
+* Fix found fairy souls being reset when fairy souls are moved
+* Fix various issues with the Widget Configuration Screen
+* Fix Vampire Slayer XP being incorrect
+* Fix Chronomatron solver when using Firmament
+* Fix End Hud "Kills Since Last Eye" not being reset sometimes
+* Fix Dungeon Score messages showing in Sent Chat History
+* Fix block break progress resetting with Custom Durability Bar
+* Fix zombie names for Dojo Discipline Test helper
+* Fix Mythological Ritual Waypoints not resetting
+* Fix Croesus Profit & Chest Value
+
+## What's Changed
+* F7 Arrow Align Solver by @layou233 in https://github.com/SkyblockerMod/Skyblocker/pull/1754
+* Add checkstyle whitespace around by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1761
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1756
+* Customization screen shenanigans by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1655
+* Caxton compat the sequel by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1766
+* Fix Enchanted Book Names in Search Overlay  by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1767
+* Fix ice fill solver by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1768
+* Exclude Sign Calculator from Bestiary Search by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1770
+* Improve smooth AOTE/ overlay when sneeking by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1769
+* Various mining related fixes by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/1724
+* Add Galatea Sea Creature by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1775
+* Fix unknown found fairy soul locations resetting other found fairy souls by @rafern in https://github.com/SkyblockerMod/Skyblocker/pull/1780
+* Update Zealot Kills from Bestiary by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1771
+* Tab HUD Config Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1786
+* Add Q to Calculator.java by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1779
+* Fix vampire slayer xp per tier by @7azeemm in https://github.com/SkyblockerMod/Skyblocker/pull/1794
+* Widget Configuration Screen Fixes/Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1797
+* Salvage Helper - Add Option to Only Highlight Donated Items by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1791
+* Fix Chronomatron Solver by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1796
+* End Stats Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1799
+* Don't Put Dungeon Messages in Sent Chat History by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1801
+* Fix Scrolling in Widgets Config Screen by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1804
+* avoid changing the item's data for custom durability bar by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1798
+* fix dojo bug by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1805
+* Very Minor Mythological Ritual Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1788
+* Fix Croesus Helper / Profit by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1778
+* Fix potential crash in Croesus Profit by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1806
+* Fix Dungeon Chest Value by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1808
+
+## New Contributors
+* @rafern made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1780
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.8.0...v5.9.0
+
 # Release 5.8.0
 
 ## Highlight
