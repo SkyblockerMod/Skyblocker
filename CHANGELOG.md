@@ -1,11 +1,14 @@
 # Release 5.9.0 (Beta #1)
 
 ## Highlight
+* Fix Croesus Profit & Chest Value
+* Fix Mythological Ritual Waypoints
 * Add Arrow Align Device Solver
 * Add Target Practice Device Solver
 * Add more customization
-    * Item model can now be changed
-    * Animated skull textures
+    * Item Model & Armor Model can now be changed
+    * Animated Player Head textures
+    * Enchantment Glint Override
     * Improved customization screen
 * Add an option to always show corpse profit text in English
 * Add support for Galatea Sea Creatures
@@ -13,8 +16,8 @@
 * Add a way to update Zealot kills from the Bestiary
 * Add an option to only highlight donated items in Salvage Helper
 * Improve Smooth AOTE/Teleport Overlay when sneaking
-* Fix lever highlight size on Lights On Device Solver
-* Fix Caxton text not rendering properly sometimes
+* Improve lever highlight size on Lights On Device Solver
+* Fix text in the world not rendering properly with Caxton
 * Fix Enchanted Book Names in Search Overlay
 * Fix Ice Fill Solver lag
 * Fix Sign Calculator showing on the Bestiary search sign
@@ -26,9 +29,7 @@
 * Fix End Hud "Kills Since Last Eye" not being reset sometimes
 * Fix Dungeon Score messages showing in Sent Chat History
 * Fix block break progress resetting with Custom Durability Bar
-* Fix zombie names for Dojo Discipline Test helper
-* Fix Mythological Ritual Waypoints not resetting
-* Fix Croesus Profit & Chest Value
+* Fix Zombie names for Dojo Discipline Test helper
 
 ## What's Changed
 * F7 Arrow Align Solver by @layou233 in https://github.com/SkyblockerMod/Skyblocker/pull/1754
