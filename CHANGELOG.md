@@ -22,7 +22,7 @@
 * Fix Ice Fill Solver lag
 * Fix Sign Calculator showing on the Bestiary search sign
 * Fix some items not being detected for Corpse Profit
-* Fix found fairy souls being reset when fairy souls are moved
+* Fix found Fairy Souls being reset when Fairy Souls are moved
 * Fix various issues with the Widget Configuration Screen
 * Fix Vampire Slayer XP being incorrect
 * Fix Chronomatron solver when using Firmament
