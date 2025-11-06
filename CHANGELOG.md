@@ -30,6 +30,7 @@
 * Fix Dungeon Score messages showing in Sent Chat History
 * Fix block break progress resetting with Custom Durability Bar
 * Fix Zombie names for Dojo Discipline Test helper
+* Fix Hud Widgets getting stuck off-screen
 
 ## What's Changed
 * F7 Arrow Align Solver by @layou233 in https://github.com/SkyblockerMod/Skyblocker/pull/1754
@@ -60,6 +61,7 @@
 * Fix Croesus Helper / Profit by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1778
 * Fix potential crash in Croesus Profit by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1806
 * Fix Dungeon Chest Value by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1808
+* quick widget fixes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1812
 
 ## New Contributors
 * @rafern made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1780
