@@ -267,19 +267,9 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	@Override
 	public void tick() {
 		super.tick();
-		if (noHandler) return;
-		if (slotThirteenBacklog != null && widgetsListTab != null) {
-			widgetsListTab.hopper(ItemUtils.getLore(slotThirteenBacklog));
-			slotThirteenBacklog = null;
-		}
-		assert this.client != null;
-		assert this.client.player != null;
-		if (!this.client.player.isAlive() || this.client.player.isRemoved()) {
-			this.client.player.closeHandledScreen();
-		}
-		if (tabManager.getCurrentTab() == previewTab && !isDragging()) {
+		if (tabManager.getCurrentTab() instanceof PreviewTab tab && !isDragging()) {
 			ScreenBuilder builder = WidgetManager.getScreenBuilder(currentLocation);
-			List<HudWidget> widgets = builder.getHudWidgets(previewTab.getCurrentScreenLayer());
+			List<HudWidget> widgets = builder.getHudWidgets(tab.getCurrentScreenLayer());
 			boolean needReposition = false;
 			float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
 			int padding = 2;
@@ -299,6 +289,16 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 				}
 			}
 			if (needReposition) previewTab.updateWidgets();
+		}
+		if (noHandler) return;
+		if (slotThirteenBacklog != null && widgetsListTab != null) {
+			widgetsListTab.hopper(ItemUtils.getLore(slotThirteenBacklog));
+			slotThirteenBacklog = null;
+		}
+		assert this.client != null;
+		assert this.client.player != null;
+		if (!this.client.player.isAlive() || this.client.player.isRemoved()) {
+			this.client.player.closeHandledScreen();
 		}
 	}
 
