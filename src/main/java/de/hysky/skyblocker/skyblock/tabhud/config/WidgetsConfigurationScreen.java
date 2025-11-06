@@ -277,7 +277,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		if (!this.client.player.isAlive() || this.client.player.isRemoved()) {
 			this.client.player.closeHandledScreen();
 		}
-		if (tabManager.getCurrentTab() == previewTab) {
+		if (tabManager.getCurrentTab() == previewTab && !isDragging()) {
 			ScreenBuilder builder = WidgetManager.getScreenBuilder(currentLocation);
 			List<HudWidget> widgets = builder.getHudWidgets(previewTab.getCurrentScreenLayer());
 			boolean needReposition = false;
@@ -285,9 +285,17 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 			int padding = 2;
 			ScreenRect screenRect = new ScreenRect(padding, padding, (int) (width / scale) - padding * 2, (int) (height / scale) - padding * 2);
 			for (HudWidget widget : widgets) {
-				if (!widget.getNavigationFocus().intersects(screenRect) && builder.getPositionRule(widget.getInternalID()) != null) {
+				PositionRule rule = builder.getPositionRule(widget.getInternalID());
+				if (rule != null && !widget.getNavigationFocus().intersects(screenRect)) {
 					needReposition = true;
-					builder.setPositionRule(widget.getInternalID(), PositionRule.DEFAULT);
+					builder.setPositionRule(widget.getInternalID(), new PositionRule(
+							"screen",
+							PositionRule.Point.DEFAULT,
+							PositionRule.Point.DEFAULT,
+							5,
+							5,
+							rule.screenLayer()
+					));
 				}
 			}
 			if (needReposition) previewTab.updateWidgets();
