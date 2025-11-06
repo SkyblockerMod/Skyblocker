@@ -30,7 +30,7 @@ public class RenderHelper {
 	public static void init() {
 		WorldRenderEvents.END_EXTRACTION.register(RenderHelper::startExtraction);
 		WorldRenderEvents.BEFORE_ENTITIES.register(RenderHelper::submitVanillaSubmittables);
-		WorldRenderEvents.BEFORE_TRANSLUCENT.register(RenderHelper::executeDraws);
+		WorldRenderEvents.END_MAIN.register(RenderHelper::executeDraws);
 	}
 
 	private static void startExtraction(WorldExtractionContext context) {
