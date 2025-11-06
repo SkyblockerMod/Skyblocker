@@ -288,7 +288,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 					));
 				}
 			}
-			if (needReposition) previewTab.updateWidgets();
+			if (needReposition) tab.updateWidgets();
 		}
 		if (noHandler) return;
 		if (slotThirteenBacklog != null && widgetsListTab != null) {
