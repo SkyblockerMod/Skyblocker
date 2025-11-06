@@ -23,7 +23,7 @@ public final class CursorLineRenderer implements PrimitiveRenderer<CursorLineRen
 
 		// Start drawing the line from a point slightly in front of the camera
 		Vec3d point = state.point;
-		Vec3d cameraPoint = cameraState.pos.add(Vec3d.fromPolar(cameraState.getDataOrDefault(CAMERA_PITCH, 1f), cameraState.getDataOrDefault(CAMERA_YAW, 1f)));
+		Vec3d cameraPoint = cameraState.pos.add(new Vec3d(cameraState.orientation.transform(new Vector3f(0, 0, -1))));
 		Vector3f normal = point.toVector3f().sub((float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z).normalize();
 
 		buffer.vertex(positionMatrix, (float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z)

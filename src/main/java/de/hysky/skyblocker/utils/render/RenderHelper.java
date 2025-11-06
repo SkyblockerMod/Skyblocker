@@ -5,12 +5,13 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveRenderer;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.state.WorldRenderState;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.texture.TextureSetup;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
@@ -27,35 +28,32 @@ public class RenderHelper {
 
 	@Init
 	public static void init() {
-		//WorldRenderEvents.AFTER_SETUP.register(RenderHelper::startFrame);
-		//WorldRenderEvents.AFTER_TRANSLUCENT.register(RenderHelper::executeDraws);
+		WorldRenderEvents.END_EXTRACTION.register(RenderHelper::startExtraction);
+		WorldRenderEvents.BEFORE_ENTITIES.register(RenderHelper::submitVanillaSubmittables);
+		WorldRenderEvents.BEFORE_TRANSLUCENT.register(RenderHelper::executeDraws);
 	}
 
-	public static void startExtraction(WorldRenderState worldState, Frustum frustum) {
+	private static void startExtraction(WorldExtractionContext context) {
 		Profiler profiler = Profilers.get();
 		profiler.push("skyblockerPrimitiveCollection");
-
-		worldState.cameraRenderState.setData(PrimitiveRenderer.CAMERA_YAW, CLIENT.gameRenderer.getCamera().getYaw());
-		worldState.cameraRenderState.setData(PrimitiveRenderer.CAMERA_PITCH, CLIENT.gameRenderer.getCamera().getPitch());
-		collector = new PrimitiveCollectorImpl(worldState, frustum);
-
+		collector = new PrimitiveCollectorImpl(context.worldState(), context.frustum());
 		WorldRenderExtractionCallback.EVENT.invoker().onExtract(collector);
 		collector.endCollection();
 		profiler.pop();
 	}
 
-	public static void submitVanillaSubmittables(WorldRenderState worldState, OrderedRenderCommandQueue commandQueue) {
+	private static void submitVanillaSubmittables(WorldRenderContext context) {
 		Profiler profiler = Profilers.get();
 		profiler.push("skyblockerSubmitVanillaSubmittables");
-		collector.dispatchVanillaSubmittables(worldState, commandQueue);
+		collector.dispatchVanillaSubmittables(context.worldState(), context.commandQueue());
 		profiler.pop();
 	}
 
-	public static void executeDraws(WorldRenderState worldState) {
+	private static void executeDraws(WorldRenderContext context) {
 		Profiler profiler = Profilers.get();
 
 		profiler.push("skyblockerSubmitPrimitives");
-		collector.dispatchPrimitivesToRenderers(worldState.cameraRenderState);
+		collector.dispatchPrimitivesToRenderers(context.worldState().cameraRenderState);
 		collector = null;
 		profiler.pop();
 

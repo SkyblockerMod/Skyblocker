@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.render.state.CameraRenderState;
 
 /**
@@ -8,8 +7,5 @@ import net.minecraft.client.render.state.CameraRenderState;
  * of this interface must be stateless.
  */
 public interface PrimitiveRenderer<S> {
-	RenderStateDataKey<Float> CAMERA_YAW = RenderStateDataKey.create(() -> "Skyblocker camera yaw");
-	RenderStateDataKey<Float> CAMERA_PITCH = RenderStateDataKey.create(() -> "Skyblocker camera pitch");
-
 	void submitPrimitives(S state, CameraRenderState cameraState);
 }
