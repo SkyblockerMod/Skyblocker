@@ -7,8 +7,9 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.preview.PreviewTab;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.*;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.*;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -264,32 +265,35 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		}
 	}
 
+	private void getBackOnTheScreenYouScallywagsAngryEmoji() {
+		if (isDragging() || !(tabManager.getCurrentTab() instanceof PreviewTab tab)) return;
+		ScreenBuilder builder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
+		List<HudWidget> widgets = builder.getHudWidgets(tab.getCurrentScreenLayer());
+		boolean needReposition = false;
+		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
+		int padding = 2;
+		ScreenRect screenRect = new ScreenRect(padding, padding, (int) (width / scale) - padding * 2, (int) (height / scale) - padding * 2);
+		for (HudWidget widget : widgets) {
+			PositionRule rule = builder.getPositionRule(widget.getInternalID());
+			if (rule != null && !widget.getNavigationFocus().intersects(screenRect)) {
+				needReposition = true;
+				builder.setPositionRule(widget.getInternalID(), new PositionRule(
+						"screen",
+						PositionRule.Point.DEFAULT,
+						PositionRule.Point.DEFAULT,
+						5,
+						5,
+						rule.screenLayer()
+				));
+			}
+		}
+		if (needReposition) tab.updateWidgets();
+	}
+
 	@Override
 	public void tick() {
 		super.tick();
-		if (tabManager.getCurrentTab() instanceof PreviewTab tab && !isDragging()) {
-			ScreenBuilder builder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
-			List<HudWidget> widgets = builder.getHudWidgets(tab.getCurrentScreenLayer());
-			boolean needReposition = false;
-			float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
-			int padding = 2;
-			ScreenRect screenRect = new ScreenRect(padding, padding, (int) (width / scale) - padding * 2, (int) (height / scale) - padding * 2);
-			for (HudWidget widget : widgets) {
-				PositionRule rule = builder.getPositionRule(widget.getInternalID());
-				if (rule != null && !widget.getNavigationFocus().intersects(screenRect)) {
-					needReposition = true;
-					builder.setPositionRule(widget.getInternalID(), new PositionRule(
-							"screen",
-							PositionRule.Point.DEFAULT,
-							PositionRule.Point.DEFAULT,
-							5,
-							5,
-							rule.screenLayer()
-					));
-				}
-			}
-			if (needReposition) tab.updateWidgets();
-		}
+		getBackOnTheScreenYouScallywagsAngryEmoji();
 		if (noHandler) return;
 		if (slotThirteenBacklog != null && widgetsListTab != null) {
 			widgetsListTab.hopper(ItemUtils.getLore(slotThirteenBacklog));
