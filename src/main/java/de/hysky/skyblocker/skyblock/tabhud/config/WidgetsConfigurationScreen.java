@@ -268,7 +268,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	public void tick() {
 		super.tick();
 		if (tabManager.getCurrentTab() instanceof PreviewTab tab && !isDragging()) {
-			ScreenBuilder builder = WidgetManager.getScreenBuilder(currentLocation);
+			ScreenBuilder builder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
 			List<HudWidget> widgets = builder.getHudWidgets(tab.getCurrentScreenLayer());
 			boolean needReposition = false;
 			float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
