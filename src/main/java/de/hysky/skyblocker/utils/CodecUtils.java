@@ -82,4 +82,8 @@ public final class CodecUtils {
 	public static <T> MapCodec<T> mutableOptional(MapCodec<T> codec, Function<? super T, ? extends T> mutableFactory) {
 		return codec.xmap(mutableFactory, Function.identity());
 	}
+
+	public static <T> MapCodec<T> optionalToNullable(MapCodec<Optional<T>> codec) {
+		return codec.xmap(op -> op.orElse(null), Optional::ofNullable);
+	}
 }

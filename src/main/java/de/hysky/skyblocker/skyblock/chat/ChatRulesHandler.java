@@ -14,10 +14,18 @@ import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.toast.Toast;
+import net.minecraft.client.toast.ToastManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
 
@@ -52,8 +60,8 @@ public class ChatRulesHandler {
 	@VisibleForTesting
 	static List<ChatRule> getDefaultChatRules() {
 		return new ArrayList<>(List.of(
-				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, false, false, "", null),
-				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, false, true, "&1Ability", SoundEvents.ENTITY_ARROW_HIT_PLAYER)
+				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, null, null, null, null, null),
+				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, null, null, SoundEvents.ENTITY_ARROW_HIT_PLAYER)
 		));
 	}
 
@@ -71,26 +79,24 @@ public class ChatRulesHandler {
 			if (!match.matches()) continue;
 
 			// Get a replacement message
-			Text newMessage;
-			if (!rule.getReplaceMessage().isBlank()) {
-				newMessage = formatText(match.insertCaptureGroups(rule.getReplaceMessage()));
-			} else {
-				newMessage = message;
+			boolean sendOriginal = !rule.getHideMessage();
+			if (sendOriginal && rule.getChatMessage() != null) {
+				sendOriginal = false;
+				Utils.sendMessageToBypassEvents(formatText(match.insertCaptureGroups(rule.getChatMessage())));
 			}
 
-			if (rule.getShowAnnouncement()) {
-				TitleContainer.addTitle(new Title(newMessage.copy()), SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength);
+			if (rule.getAnnouncementMessage() != null) {
+				TitleContainer.addTitle(new Title(formatText(match.insertCaptureGroups(rule.getAnnouncementMessage()))), SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength);
 			}
 
 			// Show in action bar
-			if (rule.getShowActionBar() && CLIENT.player != null) {
-				CLIENT.player.sendMessage(newMessage, true);
+			if (rule.getActionBarMessage() != null && CLIENT.player != null) {
+				CLIENT.player.sendMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())), true);
 			}
 
-			// Show replacement message in chat
-			// Bypass MessageHandler#onGameMessage to avoid activating chat rules again
-			if (!rule.getHideMessage() && CLIENT.player != null) {
-				Utils.sendMessageToBypassEvents(newMessage);
+			if (rule.getToastMessage() != null) {
+				ChatRule.ToastMessage toastMessage = rule.getToastMessage();
+				CLIENT.getToastManager().add(new ChatRulesToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon));
 			}
 
 			// Play sound
@@ -99,7 +105,7 @@ public class ChatRulesHandler {
 			}
 
 			// Do not send the original message
-			return false;
+			if (!sendOriginal) return false;
 		}
 		return true;
 	}
@@ -122,4 +128,51 @@ public class ChatRulesHandler {
 	public static void saveChatRules() {
 		if (chatRuleList.getData() != null) chatRuleList.save();
 	}
-}
+
+	private static class ChatRulesToast implements Toast {
+		private static final Identifier TEXTURE = SkyblockerMod.id("notification.png");
+
+		private final long displayDuration;
+		private final ItemStack icon;
+		private final List<OrderedText> lines;
+		private final int width;
+		private Visibility visibility = Visibility.SHOW;
+
+		private ChatRulesToast(Text message, long displayDuration, ItemStack icon) {
+			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+			this.lines = textRenderer.wrapLines(message, 200);
+			this.displayDuration = displayDuration;
+			this.icon = icon;
+			this.width = Math.max(200, lines.stream().mapToInt(textRenderer::getWidth).max().orElse(200)) + 30;
+		}
+
+		@Override
+		public Visibility getVisibility() {
+			return visibility;
+		}
+
+		@Override
+		public void update(ToastManager manager, long time) {
+			if (time > displayDuration) visibility = Visibility.HIDE;
+		}
+
+		@Override
+		public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, getWidth(), getHeight());
+			context.drawItemWithoutEntity(icon, 4, 4);
+			for (int i = 0; i < lines.size(); i++) {
+				context.drawText(textRenderer, lines.get(i), 4, 8 + i * 12, -1, false);
+			}
+		}
+
+		@Override
+		public int getHeight() {
+			return 8 + 4 + Math.max(lines.size(), 1) * 12;
+		}
+
+		@Override
+		public int getWidth() {
+			return width;
+		}
+	}
+ }

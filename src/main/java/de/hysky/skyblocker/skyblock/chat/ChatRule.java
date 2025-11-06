@@ -3,11 +3,9 @@ package de.hysky.skyblocker.skyblock.chat;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.utils.CollectionUtils;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.*;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -37,16 +35,17 @@ public class ChatRule {
 	private static final Codec<ChatRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("name").forGetter(ChatRule::getName),
 			Codec.BOOL.fieldOf("enabled").forGetter(ChatRule::getEnabled),
-			Codec.BOOL.fieldOf("isPartialMatch").forGetter(ChatRule::getPartialMatch),
-			Codec.BOOL.fieldOf("isRegex").forGetter(ChatRule::getRegex),
-			Codec.BOOL.fieldOf("isIgnoreCase").forGetter(ChatRule::getIgnoreCase),
+			Codec.BOOL.fieldOf("partial_match").forGetter(ChatRule::getPartialMatch),
+			Codec.BOOL.fieldOf("regex").forGetter(ChatRule::getRegex),
+			Codec.BOOL.fieldOf("ignore_case").forGetter(ChatRule::getIgnoreCase),
 			Codec.STRING.fieldOf("filter").forGetter(ChatRule::getFilter),
-			LOCATION_FIXING_CODEC.fieldOf("validLocations").forGetter(ChatRule::getValidLocations),
-			Codec.BOOL.fieldOf("hideMessage").forGetter(ChatRule::getHideMessage),
-			Codec.BOOL.fieldOf("showActionBar").forGetter(ChatRule::getShowActionBar),
-			Codec.BOOL.fieldOf("showAnnouncement").forGetter(ChatRule::getShowAnnouncement),
-			Codec.STRING.optionalFieldOf("replaceMessage").forGetter(ChatRule::getReplaceMessageOpt),
-			SoundEvent.CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOpt)
+			LOCATION_FIXING_CODEC.fieldOf("locations").forGetter(ChatRule::getValidLocations),
+			Codec.BOOL.fieldOf("hide_original_message").forGetter(ChatRule::getHideMessage),
+			CodecUtils.optionalToNullable(Codec.STRING.optionalFieldOf("chat_message")).forGetter(ChatRule::getChatMessage),
+			CodecUtils.optionalToNullable(Codec.STRING.optionalFieldOf("actionbar_message")).forGetter(ChatRule::getActionBarMessage),
+			CodecUtils.optionalToNullable(Codec.STRING.optionalFieldOf("announcement_message")).forGetter(ChatRule::getAnnouncementMessage),
+			CodecUtils.optionalToNullable(ToastMessage.CODEC.optionalFieldOf("toast_message")).forGetter(ChatRule::getToastMessage),
+			CodecUtils.optionalToNullable(SoundEvent.CODEC.optionalFieldOf("custom_sound")).forGetter(ChatRule::getCustomSound)
 	).apply(instance, ChatRule::new));
 
 	public static final Codec<List<ChatRule>> LIST_CODEC = CODEC.listOf();
@@ -64,9 +63,10 @@ public class ChatRule {
 
 	// Outputs
 	private boolean hideMessage;
-	private boolean showActionBar;
-	private boolean showAnnouncement;
-	private String replaceMessage;
+	private @Nullable String chatMessage;
+	private @Nullable String actionBarMessage;
+	private @Nullable String announcementMessage;
+	private @Nullable ToastMessage toastMessage;
 	private SoundEvent customSound;
 
 	/**
@@ -83,13 +83,14 @@ public class ChatRule {
 		this.validLocations = EnumSet.noneOf(Location.class);
 
 		this.hideMessage = true;
-		this.showActionBar = false;
-		this.showAnnouncement = false;
-		this.replaceMessage = null;
+		this.chatMessage = null;
+		this.actionBarMessage = null;
+		this.announcementMessage = null;
+		this.toastMessage = null;
 		this.customSound = null;
 	}
 
-	public ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, boolean showActionBar, boolean showAnnouncement, @Nullable String replaceMessage, @Nullable SoundEvent customSound) {
+	ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, @Nullable String chatMessage, @Nullable String actionBarMessage, @Nullable String announcementMessage, @Nullable ToastMessage toastMessage, SoundEvent customSound) {
 		this.name = name;
 		this.enabled = enabled;
 		this.isPartialMatch = isPartialMatch;
@@ -98,14 +99,11 @@ public class ChatRule {
 		this.filter = filter;
 		this.validLocations = validLocations;
 		this.hideMessage = hideMessage;
-		this.showActionBar = showActionBar;
-		this.showAnnouncement = showAnnouncement;
-		this.replaceMessage = replaceMessage;
+		this.chatMessage = chatMessage;
+		this.actionBarMessage = actionBarMessage;
+		this.announcementMessage = announcementMessage;
+		this.toastMessage = toastMessage;
 		this.customSound = customSound;
-	}
-
-	private ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, boolean showActionBar, boolean showAnnouncement, Optional<String> replaceMessage, Optional<SoundEvent> customSound) {
-		this(name, enabled, isPartialMatch, isRegex, isIgnoreCase, filter, validLocations, hideMessage, showActionBar, showAnnouncement, replaceMessage.orElse(null), customSound.orElse(null));
 	}
 
 	protected String getName() {
@@ -167,40 +165,43 @@ public class ChatRule {
 		this.hideMessage = hideMessage;
 	}
 
-	protected boolean getShowActionBar() {
-		return showActionBar;
+	@Nullable String getActionBarMessage() {
+		return actionBarMessage;
 	}
 
-	protected void setShowActionBar(boolean showActionBar) {
-		this.showActionBar = showActionBar;
+	void setActionBarMessage(@Nullable String actionBarMessage) {
+		if (actionBarMessage != null && actionBarMessage.isBlank()) actionBarMessage = null;
+		this.actionBarMessage = actionBarMessage;
 	}
 
-	protected boolean getShowAnnouncement() {
-		return showAnnouncement;
+	@Nullable String getChatMessage() {
+		return chatMessage;
 	}
 
-	protected void setShowAnnouncement(boolean showAnnouncement) {
-		this.showAnnouncement = showAnnouncement;
+	void setChatMessage(@Nullable String chatMessage) {
+		if (chatMessage != null && chatMessage.isBlank()) chatMessage = null;
+		this.chatMessage = chatMessage;
 	}
 
-	protected String getReplaceMessage() {
-		return replaceMessage;
+	@Nullable String getAnnouncementMessage() {
+		return announcementMessage;
 	}
 
-	private Optional<String> getReplaceMessageOpt() {
-		return Optional.ofNullable(replaceMessage);
+	void setAnnouncementMessage(@Nullable String announcementMessage) {
+		if (announcementMessage != null && announcementMessage.isBlank()) announcementMessage = null;
+		this.announcementMessage = announcementMessage;
 	}
 
-	protected void setReplaceMessage(String replaceMessage) {
-		this.replaceMessage = replaceMessage;
+	@Nullable ToastMessage getToastMessage() {
+		return toastMessage;
+	}
+
+	void setToastMessage(@Nullable ToastMessage toastMessage) {
+		this.toastMessage = toastMessage;
 	}
 
 	protected SoundEvent getCustomSound() {
 		return customSound;
-	}
-
-	private Optional<SoundEvent> getCustomSoundOpt() {
-		return Optional.ofNullable(customSound);
 	}
 
 	protected void setCustomSound(SoundEvent customSound) {
@@ -290,16 +291,15 @@ public class ChatRule {
 				.collect(CollectionUtils.enumSetCollector(Location.class));
 	}
 
-	// Allow value equality checks for ChatRule objects
 	@Override
-	public boolean equals(Object o) {
+	public final boolean equals(Object o) {
 		if (!(o instanceof ChatRule chatRule)) return false;
-		return Objects.equals(getName(), chatRule.getName()) && getEnabled() == chatRule.getEnabled() && getPartialMatch() == chatRule.getPartialMatch() && getRegex() == chatRule.getRegex() && getIgnoreCase() == chatRule.getIgnoreCase() && Objects.equals(getFilter(), chatRule.getFilter()) && Objects.equals(getValidLocations(), chatRule.getValidLocations()) && getHideMessage() == chatRule.getHideMessage() && getShowActionBar() == chatRule.getShowActionBar() && getShowAnnouncement() == chatRule.getShowAnnouncement() && Objects.equals(getReplaceMessage(), chatRule.getReplaceMessage()) && Objects.equals(getCustomSound(), chatRule.getCustomSound());
+		return getEnabled() == chatRule.getEnabled() && getPartialMatch() == chatRule.getPartialMatch() && getRegex() == chatRule.getRegex() && getIgnoreCase() == chatRule.getIgnoreCase() && getHideMessage() == chatRule.getHideMessage() && getName().equals(chatRule.getName()) && getFilter().equals(chatRule.getFilter()) && getValidLocations().equals(chatRule.getValidLocations()) && Objects.equals(getChatMessage(), chatRule.getChatMessage()) && Objects.equals(getActionBarMessage(), chatRule.getActionBarMessage()) && Objects.equals(getAnnouncementMessage(), chatRule.getAnnouncementMessage()) && Objects.equals(getToastMessage(), chatRule.getToastMessage()) && Objects.equals(getCustomSound(), chatRule.getCustomSound());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getName(), getEnabled(), getPartialMatch(), getRegex(), getIgnoreCase(), getFilter(), getValidLocations(), getHideMessage(), getShowActionBar(), getShowAnnouncement(), getReplaceMessage(), getCustomSound());
+		return Objects.hash(getName(), getEnabled(), getPartialMatch(), getRegex(), getIgnoreCase(), getFilter(), getValidLocations(), getHideMessage(), getChatMessage(), getActionBarMessage(), getActionBarMessage(), getAnnouncementMessage(), getToastMessage(), getCustomSound());
 	}
 
 	protected record Match(boolean matches, Optional<Matcher> matcher) {
@@ -320,6 +320,25 @@ public class ChatRule {
 			StringBuilder sb = new StringBuilder();
 			matcher.get().appendReplacement(sb, replaceMessage);
 			return sb.substring(matcher.get().start());
+		}
+	}
+
+	static class ToastMessage {
+
+		static final Codec<ToastMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				ItemStack.OPTIONAL_CODEC.optionalFieldOf("icon", ItemStack.EMPTY).forGetter(o -> o.icon),
+				Codec.STRING.fieldOf("message").forGetter(o -> o.message),
+				Codec.LONG.fieldOf("display_duration").forGetter(o -> o.displayDuration)
+		).apply(instance, ToastMessage::new));
+
+		ItemStack icon;
+		String message;
+		long displayDuration;
+
+		ToastMessage(ItemStack icon, String message, long displayDuration) {
+			this.message = message;
+			this.icon = icon;
+			this.displayDuration = displayDuration;
 		}
 	}
 }
