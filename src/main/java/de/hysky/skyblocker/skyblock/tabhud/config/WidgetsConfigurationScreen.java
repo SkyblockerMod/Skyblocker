@@ -7,7 +7,8 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.preview.PreviewTab;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.*;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.*;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -275,6 +276,21 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		assert this.client.player != null;
 		if (!this.client.player.isAlive() || this.client.player.isRemoved()) {
 			this.client.player.closeHandledScreen();
+		}
+		if (tabManager.getCurrentTab() == previewTab) {
+			ScreenBuilder builder = WidgetManager.getScreenBuilder(currentLocation);
+			List<HudWidget> widgets = builder.getHudWidgets(previewTab.getCurrentScreenLayer());
+			boolean needReposition = false;
+			float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
+			int padding = 2;
+			ScreenRect screenRect = new ScreenRect(padding, padding, (int) (width / scale) - padding * 2, (int) (height / scale) - padding * 2);
+			for (HudWidget widget : widgets) {
+				if (!widget.getNavigationFocus().intersects(screenRect) && builder.getPositionRule(widget.getInternalID()) != null) {
+					needReposition = true;
+					builder.setPositionRule(widget.getInternalID(), PositionRule.DEFAULT);
+				}
+			}
+			if (needReposition) previewTab.updateWidgets();
 		}
 	}
 
