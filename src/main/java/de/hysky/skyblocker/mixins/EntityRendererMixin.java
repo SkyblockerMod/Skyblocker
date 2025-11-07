@@ -43,7 +43,7 @@ public class EntityRendererMixin {
 			if (!entity.isGlowing()) {
 				state.setData(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR, ColorHelper.fullAlpha(MobGlow.getMobGlow(entity)));
 			} else {
-				state.outlineColor = MobGlow.getMobGlow(entity);
+				state.outlineColor = ColorHelper.fullAlpha(MobGlow.getMobGlow(entity));
 			}
 		} else if (!allowGlow) {
 			state.outlineColor = EntityRenderState.NO_OUTLINE;
