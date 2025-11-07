@@ -75,6 +75,7 @@ jobs:
         env:
           CHANGELOG: ${{ steps.read_changelog.outputs.changelog }}
           CHANGELOG_HIGHLIGHT: ${{ steps.read_changelog.outputs.changelog_highlight }}
+          REF_NAME: ${{ github.ref_name }}
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}

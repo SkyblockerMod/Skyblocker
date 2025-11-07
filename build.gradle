@@ -349,7 +349,7 @@ publishMods {
 	version = "v${project.version}"
 	displayName = "Skyblocker ${mod_version} for ${minecraft_version}"
 	modLoaders.add("fabric")
-	type = STABLE
+	type = project.version.contains("alpha") ? ALPHA : project.version.contains("beta") ? BETA : STABLE
 
 	github {
 		accessToken = System.getenv("GITHUB_TOKEN")
