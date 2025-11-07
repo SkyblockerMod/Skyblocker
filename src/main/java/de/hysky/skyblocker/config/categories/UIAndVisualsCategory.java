@@ -254,7 +254,7 @@ public class UIAndVisualsCategory {
                                 .binding(defaults.uiAndVisuals.titleContainer.titleContainerScale,
                                         () -> config.uiAndVisuals.titleContainer.titleContainerScale,
                                         newValue -> config.uiAndVisuals.titleContainer.titleContainerScale = newValue)
-                                .controller(FloatController.createBuilder().range(30f, 140f).build())
+                                .controller(FloatController.createBuilder().range(TitleContainerConfigScreen.MIN_TITLE_SCALE, TitleContainerConfigScreen.MAX_TITLE_SCALE).build())
                                 .build())
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.titleContainer.config"))
