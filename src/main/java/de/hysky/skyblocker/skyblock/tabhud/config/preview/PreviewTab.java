@@ -252,7 +252,7 @@ public class PreviewTab implements Tab {
 		}).toList());
 	}
 
-	void updateWidgets() {
+	public void updateWidgets() {
 		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
 		updatePlayerListFromPreview();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
