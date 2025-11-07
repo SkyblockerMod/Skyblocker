@@ -96,11 +96,13 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 				updateWidgetDimensions();
 			}
 			case GLFW.GLFW_KEY_EQUAL -> {
-				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.titleContainerScale += 10;
+				UIAndVisualsConfig.TitleContainer conf = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
+				conf.titleContainerScale = Math.min(140, conf.titleContainerScale + 10);
 				updateWidgetDimensions();
 			}
 			case GLFW.GLFW_KEY_MINUS -> {
-				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.titleContainerScale -= 10;
+				UIAndVisualsConfig.TitleContainer conf = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
+				conf.titleContainerScale = Math.max(30, conf.titleContainerScale - 10);
 				updateWidgetDimensions();
 			}
 		}

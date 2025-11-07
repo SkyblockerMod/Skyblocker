@@ -253,6 +253,7 @@ public class UIAndVisualsCategory {
                                 .binding(defaults.uiAndVisuals.titleContainer.titleContainerScale,
                                         () -> config.uiAndVisuals.titleContainer.titleContainerScale,
                                         newValue -> config.uiAndVisuals.titleContainer.titleContainerScale = newValue)
+								// If this range is changed, update it in TitleContainerConfigScreen too!
                                 .controller(FloatController.createBuilder().range(30f, 140f).build())
                                 .build())
                         .option(ButtonOption.createBuilder()
