@@ -2,11 +2,11 @@ plugins {
 	// Building
 	id 'fabric-loom' version "${loom_version}"
 	id "de.hysky.skyblocker.annotation-processor"
-	id "com.diffplug.spotless" version "7.2.1"
+	id "com.diffplug.spotless" version "${spotless_version}"
 	id "checkstyle"
 	// Publishing
 	id 'maven-publish'
-	id "me.modmuss50.mod-publish-plugin" version "0.8.1"
+	id "me.modmuss50.mod-publish-plugin" version "${mod_publish_plugin_version}"
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -324,7 +324,7 @@ spotless {
 }
 
 checkstyle {
-	toolVersion = "10.20.2"
+	toolVersion = "${checkstyle_version}"
 	configFile = rootProject.file("checkstyle.xml")
 }
 
