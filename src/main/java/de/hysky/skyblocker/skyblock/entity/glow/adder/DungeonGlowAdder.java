@@ -43,7 +43,7 @@ public class DungeonGlowAdder extends MobGlowAdder {
 			case PlayerEntity p when entity.getId() == LividColor.getCorrectLividId() && LividColor.shouldGlow(name) -> LividColor.getGlowColor(name);
 
 			// Bats
-			case BatEntity b when b.getHealth() <= 0 && SkyblockerConfigManager.get().dungeons.starredMobGlow -> STARRED_COLOUR;
+			case BatEntity b when SkyblockerConfigManager.get().dungeons.starredMobGlow -> STARRED_COLOUR;
 
 			// Fel Heads
 			case ArmorStandEntity as when SkyblockerConfigManager.get().dungeons.starredMobGlow && as.isMarker() && as.hasStackEquipped(EquipmentSlot.HEAD) && ItemUtils.getHeadTexture(as.getEquippedStack(EquipmentSlot.HEAD)).equals(HeadTextures.FEL) -> ENDERMAN_EYE_COLOUR;

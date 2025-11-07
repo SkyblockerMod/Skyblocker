@@ -28,8 +28,8 @@ public class BatchingRenderCommandQueueMixin {
 	private void skyblocker$markCustomGlow(@Coerce Object commandList, RenderLayer layer, @Coerce CustomGlowState command, Operation<Void> operation) {
 		EntityRenderState entityStateBeingRendered = MinecraftClient.getInstance().getEntityRenderDispatcher().skyblocker$getEntityStateBeingRendered();
 
-		if (entityStateBeingRendered != null && entityStateBeingRendered.getDataOrDefault(MobGlow.ENTITY_HAS_CUSTOM_GLOW, false)) {
-			command.skyblocker$markCustomGlow();
+		if (entityStateBeingRendered != null && entityStateBeingRendered.getDataOrDefault(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR, MobGlow.NO_GLOW) != MobGlow.NO_GLOW) {
+			command.skyblocker$setCustomGlowColour(entityStateBeingRendered.getData(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR));
 		}
 
 		operation.call(commandList, layer, command);
@@ -39,8 +39,8 @@ public class BatchingRenderCommandQueueMixin {
 	private Object skyblocker$markCustomGlow(Object command) {
 		EntityRenderState entityStateBeingRendered = MinecraftClient.getInstance().getEntityRenderDispatcher().skyblocker$getEntityStateBeingRendered();
 
-		if (entityStateBeingRendered != null && entityStateBeingRendered.getDataOrDefault(MobGlow.ENTITY_HAS_CUSTOM_GLOW, false)) {
-			((OrderedRenderCommandQueueImpl.ItemCommand) command).skyblocker$markCustomGlow();
+		if (entityStateBeingRendered != null && entityStateBeingRendered.getDataOrDefault(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR, MobGlow.NO_GLOW) != MobGlow.NO_GLOW) {
+			((OrderedRenderCommandQueueImpl.ItemCommand) command).skyblocker$setCustomGlowColour(entityStateBeingRendered.getData(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR));
 		}
 
 		return command;

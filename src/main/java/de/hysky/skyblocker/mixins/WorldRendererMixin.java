@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.mixins;
 
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -9,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
@@ -23,11 +23,15 @@ public class WorldRendererMixin {
 	@Final
 	private WorldRenderState worldRenderState;
 
-	@Inject(method = "fillEntityRenderStates", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/state/WorldRenderState;hasOutline:Z", opcode = Opcodes.PUTFIELD))
-	private void skyblocker$markIfCustomGlowUsedThisFrame(CallbackInfo ci, @Local EntityRenderState entityRenderState) {
-		if (entityRenderState.getDataOrDefault(MobGlow.ENTITY_HAS_CUSTOM_GLOW, false)) {
+	@ModifyExpressionValue(method = "fillEntityRenderStates", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/state/EntityRenderState;hasOutline()Z"))
+	private boolean skyblocker$markCustomGlowUsedThisFrame(boolean hasVanillaGlow, @Local EntityRenderState entityRenderState) {
+		boolean hasCustomGlow = entityRenderState.getDataOrDefault(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR, MobGlow.NO_GLOW) != MobGlow.NO_GLOW;
+
+		if (hasCustomGlow) {
 			this.worldRenderState.setData(MobGlow.FRAME_USES_CUSTOM_GLOW, true);
 		}
+
+		return hasVanillaGlow || hasCustomGlow;
 	}
 
 	@Inject(method = "method_62214",

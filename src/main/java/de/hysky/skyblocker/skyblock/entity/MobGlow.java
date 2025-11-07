@@ -17,9 +17,9 @@ import java.util.*;
 public class MobGlow {
 	public static final int NO_GLOW = EntityRenderState.NO_OUTLINE;
 	/**
-	 * Attached to {@code EntityRenderState}s to indicate that they have the custom glow applied.
+	 * Attached to {@code EntityRenderState}s to apply the custom glow colour.
 	 */
-	public static final RenderStateDataKey<Boolean> ENTITY_HAS_CUSTOM_GLOW = RenderStateDataKey.create(() -> "Skyblocker entity has custom glow");
+	public static final RenderStateDataKey<Integer> ENTITY_CUSTOM_GLOW_COLOUR = RenderStateDataKey.create(() -> "Skyblocker custom glow colour");
 	/**
 	 * Attached to {@code WorldRenderState}s to indicate that the custom glow is being used this frame.
 	 */

@@ -4,7 +4,6 @@
   "plugin": "de.hysky.skyblocker.compatibility.MixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-	"ArmorStandEntityRendererMixin",
 	"BatchingRenderCommandQueueMixin",
     "BatEntityMixin",
     "BossBarHudMixin",
