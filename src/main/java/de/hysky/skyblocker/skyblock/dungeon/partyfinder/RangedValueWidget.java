@@ -13,7 +13,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Text;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 import java.util.Objects;
@@ -237,7 +236,7 @@ public class RangedValueWidget extends ContainerWidget {
         CLOSED,
         OPEN,
         MODIFYING_MIN,
-        MODIFYING_MAX;
+        MODIFYING_MAX
     }
 
     protected class ModifiedTextFieldWidget extends TextFieldWidget {
@@ -250,7 +249,7 @@ public class RangedValueWidget extends ContainerWidget {
         @Override
         public boolean keyPressed(KeyInput input) {
             if (!this.isFocused()) return false;
-            if (input.key() == GLFW.GLFW_KEY_ENTER && isGood) {
+            if (input.isEnter() && isGood) {
                 sendPacket();
                 return true;
             }

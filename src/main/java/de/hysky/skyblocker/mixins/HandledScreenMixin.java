@@ -170,7 +170,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@Inject(at = @At("HEAD"), method = "keyPressed")
 	public void skyblocker$keyPressed(KeyInput input, CallbackInfoReturnable<Boolean> cir) {
-		if (this.client != null && this.client.player != null && this.focusedSlot != null && input.key() != 256 && !this.client.options.inventoryKey.matchesKey(input) && Utils.isOnSkyblock()) {
+		if (this.client != null && this.client.player != null && this.focusedSlot != null && !input.isEscape() && !this.client.options.inventoryKey.matchesKey(input) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 
 			// Wiki lookup

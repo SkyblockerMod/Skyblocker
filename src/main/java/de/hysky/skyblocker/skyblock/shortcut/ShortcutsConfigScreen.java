@@ -9,7 +9,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -99,7 +98,7 @@ public class ShortcutsConfigScreen extends Screen {
 	@Override
 	public boolean keyPressed(KeyInput input) {
 		// Process ESC before super to prevent closing the screen if we were editing a keybind
-		if (input.key() == InputUtil.GLFW_KEY_ESCAPE && shortcutsConfigListWidget.stopEditing()) {
+		if (input.isEscape() && shortcutsConfigListWidget.stopEditing()) {
 			shortcutsConfigListWidget.updateKeybinds();
 			return true;
 		}

@@ -9,7 +9,6 @@ import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * A more bare-bones version of Vanilla's Popup Screen. Meant to be extended.
@@ -83,7 +82,7 @@ public class AbstractPopupScreen extends Screen {
         @Override
         public boolean keyPressed(KeyInput input) {
             if (!super.keyPressed(input)) {
-                if (input.key() == GLFW.GLFW_KEY_ENTER || input.key() == GLFW.GLFW_KEY_KP_ENTER) {
+                if (input.isEnter()) {
                     onEnter.run();
                     return true;
                 }

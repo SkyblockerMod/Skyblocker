@@ -35,7 +35,6 @@ import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 
 import org.joml.Matrix3x2fStack;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -316,11 +315,11 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     @Override
     public boolean keyPressed(KeyInput input) {
-        if (input.key() == GLFW.GLFW_KEY_UP && prevPageVisible) {
+        if (input.isUp() && prevPageVisible) {
             clickSlot(PREV_PAGE_BUTTON);
             return true;
         }
-        if (input.key() == GLFW.GLFW_KEY_DOWN && nextPageVisible) {
+        if (input.isDown() && nextPageVisible) {
             clickSlot(NEXT_PAGE_BUTTON);
             return true;
         }

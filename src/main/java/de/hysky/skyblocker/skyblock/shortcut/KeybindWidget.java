@@ -63,7 +63,7 @@ public class KeybindWidget extends ButtonWidget {
 	@Override
 	public boolean keyPressed(KeyInput input) {
 		if (editing) {
-			if (input.key() == InputUtil.GLFW_KEY_ESCAPE) {
+			if (input.isEscape()) {
 				// This should never happen because ESC is handled in ShortcutsConfigScreen#keyPressed
 				keyBinding.addBoundKey(InputUtil.UNKNOWN_KEY);
 			} else {

@@ -12,7 +12,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Final;
@@ -71,7 +70,7 @@ public abstract class SignEditScreenMixin extends Screen {
 	private void skyblocker$keyPressed(KeyInput input, CallbackInfoReturnable<Boolean> cir) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.closeSignsWithEnter
 				&& Utils.isOnSkyblock() && isInputSign()
-				&& (input.key() == InputUtil.GLFW_KEY_ENTER || input.key() == InputUtil.GLFW_KEY_KP_ENTER)) this.close();
+				&& (input.isEnter())) this.close();
 	}
 
     @Inject(method = "finishEditing", at = @At("HEAD"))

@@ -25,7 +25,6 @@ import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.joml.Matrix3x2fStack;
-import org.lwjgl.glfw.GLFW;
 
 import java.time.Duration;
 import java.util.List;
@@ -64,7 +63,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 
 	@Override
 	public boolean keyPressed(KeyInput input) {
-		if (input.key() == GLFW.GLFW_KEY_ESCAPE) {
+		if (input.isEscape()) {
 			clickSlot(BACK_BUTTON_SLOT);
 			return true;
 		}

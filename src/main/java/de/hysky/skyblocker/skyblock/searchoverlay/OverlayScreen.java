@@ -16,7 +16,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.lwjgl.glfw.GLFW;
 
 import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 
@@ -291,11 +290,11 @@ public class OverlayScreen extends Screen {
      */
     @Override
     public boolean keyPressed(KeyInput input) {
-        if (input.key() == GLFW.GLFW_KEY_ENTER && searchField.isActive()) {
+        if (input.isEnter() && searchField.isActive()) {
             close();
             return true;
         }
-		if (input.key() == GLFW.GLFW_KEY_ESCAPE) {
+		if (input.isEscape()) {
 			SearchOverManager.search = "";
 			close();
 			return true;
