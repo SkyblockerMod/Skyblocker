@@ -263,7 +263,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			replacement.setY(this.getY());
 			replacement.render(context, mouseX, mouseY, deltaTicks);
-			context.drawCenteredTextWithShadow(client.textRenderer, "→", this.getWidth() / 2, this.getY() + 5, Colors.WHITE);
+			context.drawCenteredTextWithShadow(client.textRenderer, "→", this.getX() + this.getWidth() / 2, this.getY() + 5, Colors.WHITE);
 		}
 
 		@Override
