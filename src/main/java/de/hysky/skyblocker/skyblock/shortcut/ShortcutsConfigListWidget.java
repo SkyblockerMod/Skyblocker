@@ -401,7 +401,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 			keybindButton.setY(this.getY());
 			keybindButton.render(context, mouseX, mouseY, deltaTicks);
 			if (duplicate) {
-				context.fill(keybindButton.getX() - 6, this.getY(), keybindButton.getX() - 3, this.getY() + this.getHeight(), 0xFFFF0000);
+				context.fill(keybindButton.getX() - 6, this.getY(), keybindButton.getX() - 3, this.getY() + this.getHeight(), Colors.YELLOW);
 			}
 		}
 
