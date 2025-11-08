@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
 import com.demonwav.mcdev.annotations.Translatable;
+import de.hysky.skyblocker.debug.Debug;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
@@ -111,14 +112,12 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 	}
 
 	/**
-	 * Returns true if the client is in debug mode and the entry at the given index is selected.
-	 * <p>
 	 * Used to show the box around the selected entry in debug mode.
 	 */
-	/*@Override
-	protected boolean isSelectedEntry(int index) {
-		return Debug.debugEnabled() ? Objects.equals(getSelectedOrNull(), children().get(index)) : super.isSelectedEntry(index);
-	}*/
+	@Override
+	protected boolean isEntrySelectionAllowed() {
+		return Debug.debugEnabled();
+	}
 
 	@Override
 	protected void removeEntry(AbstractShortcutEntry entry) {
