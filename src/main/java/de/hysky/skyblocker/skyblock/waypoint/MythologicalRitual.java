@@ -253,9 +253,11 @@ public class MythologicalRitual {
         return ActionResult.PASS;
     }
 
-    public static boolean onChatMessage(Text message, boolean overlay) {
+    @SuppressWarnings("SameReturnValue")
+	public static boolean onChatMessage(Text message, boolean overlay) {
         if (isActive() && GRIFFIN_BURROW_DUG.matcher(message.getString()).matches()) {
             previousBurrow.confirmed = TriState.FALSE;
+			if (lastDugBurrowPos == null) return true;
             previousBurrow = griffinBurrows.get(lastDugBurrowPos);
             previousBurrow.confirmed = TriState.DEFAULT;
         }
