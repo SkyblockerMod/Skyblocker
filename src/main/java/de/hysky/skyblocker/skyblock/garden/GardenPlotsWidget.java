@@ -7,7 +7,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.injected.RecipeBookHolder;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Location;
@@ -125,7 +124,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 						((HandledScreenAccessor) inventoryScreen).getY());
 				Screens.getButtons(inventoryScreen).add(widget);
 
-				((RecipeBookHolder) inventoryScreen).registerRecipeBookToggleCallback(() -> widget.setPosition(
+				inventoryScreen.registerRecipeBookToggleCallback(() -> widget.setPosition(
 						((HandledScreenAccessor) inventoryScreen).getX() + ((HandledScreenAccessor) inventoryScreen).getBackgroundWidth() + 4,
 						((HandledScreenAccessor) inventoryScreen).getY()
 				));

@@ -5,7 +5,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
-import de.hysky.skyblocker.injected.RecipeBookHolder;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
@@ -67,7 +66,7 @@ public class CustomizeScreen extends Screen {
 						((HandledScreenAccessor) inventoryScreen).getY() + 10
 				);
 				Screens.getButtons(inventoryScreen).add(button);
-				((RecipeBookHolder) inventoryScreen).registerRecipeBookToggleCallback(() -> button.setPosition(
+				inventoryScreen.registerRecipeBookToggleCallback(() -> button.setPosition(
 						((HandledScreenAccessor) inventoryScreen).getX() + 63,
 						((HandledScreenAccessor) inventoryScreen).getY() + 10
 				));

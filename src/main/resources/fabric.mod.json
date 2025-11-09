@@ -70,6 +70,9 @@
       "net/minecraft/class_1799": [
         "de/hysky/skyblocker/injected/SkyblockerStack"
       ],
+	  "net/minecraft/class_490": [
+		"de/hysky/skyblocker/injected/RecipeBookHolder"
+	  ],
       "net/minecraft/class_898": [
         "de/hysky/skyblocker/injected/EntityRenderMarker"
       ],
