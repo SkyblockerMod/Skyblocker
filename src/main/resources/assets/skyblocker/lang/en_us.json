@@ -1480,6 +1480,8 @@
   "skyblocker.waypoints.chat.display": "Click to display waypoint at x: %s y: %s z: %s",
   "skyblocker.waypoints.chat.displayed": "Displayed temporary waypoint at x: %s y: %s z: %s %s",
   "skyblocker.waypoints.config": "Waypoints Config",
+  "skyblocker.waypoints.otherOptions": "Other Options",
+  "skyblocker.waypoints.waypointsOptions": "Waypoints Options",
   "skyblocker.waypoints.groupType": "Group Type",
   "skyblocker.waypoints.groupType.ordered": "Ordered",
   "skyblocker.waypoints.groupType.normal": "Normal",

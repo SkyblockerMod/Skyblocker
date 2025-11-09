@@ -22,7 +22,7 @@ public class WaypointsOptionScreen extends Screen {
 	private final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
 
 	protected WaypointsOptionScreen(@NotNull Screen parent) {
-		super(Text.literal("Waypoints Options"));
+		super(Text.translatable("skyblocker.waypoints.waypointsOptions"));
 		this.parent = parent;
 	}
 
