@@ -1536,5 +1536,6 @@
     "skyblocker.customization.armor.cycleBack": "Retourner",
     "skyblocker.customization.nothingCustomizable": "Rien n'est personnalisable.",
     "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "Utilisez cette commande pour déplacer les widgets Tab et HUD.\nUtilisez `/skyblocker hud` pour y accéder plus rapidement !",
-    "skyblocker.config.dungeons.salvageHelper.onlyDonated": "Assistant de Recyclage - Surligner Seulement les Objets Donnés"
+    "skyblocker.config.dungeons.salvageHelper.onlyDonated": "Assistant de Recyclage - Surligner Seulement les Objets Donnés",
+    "skyblocker.config.mining.enableDrillFuel.@Tooltip": "Affiche le carburant restant avec la barre de durabilité.\nAffiche les blocs restants pour la Pickonimbus."
 }
