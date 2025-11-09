@@ -73,12 +73,13 @@ public class AttributesDebug {
 					String shardName = sourceMatcher.group("shardName");
 					String id = sourceMatcher.group("id");
 					String apiIdGuess = "SHARD_" + shardName.replace(' ', '_').toUpperCase(Locale.ENGLISH);
+					String neuIdGuess = "ATTRIBUTE_SHARD" + name.replace(' ', '_').toUpperCase(Locale.ENGLISH) + ";1";
 					boolean hasDataForId = TooltipInfoType.BAZAAR.getData().containsKey(apiIdGuess);
 
-					//Most attributes follow the format above but some have different ids so this is to catch those ones
+					//Most attributes follow the format above but some have different ids so this is to catch those
 					if (!hasDataForId) LOGGER.warn("[Skyblocker Attributes Debug] No data found for shard. Shard Name: {}", shardName);
 
-					Attribute attribute = new Attribute(name, shardName, id, apiIdGuess);
+					Attribute attribute = new Attribute(name, shardName, id, apiIdGuess, neuIdGuess);
 					DUMPED_ATTRIBUTES.add(attribute);
 				} else {
 					LOGGER.warn("[Skyblocker Attributes Debug] Failed to match shard! Name: {}", name);
