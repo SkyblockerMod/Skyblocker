@@ -128,7 +128,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
         PEARL("pearl", secretWaypoints -> secretWaypoints.enablePearlWaypoints, 57, 117, 125),
         PRINCE("prince", secretWaypoints -> secretWaypoints.enablePrinceWaypoints, 133, 21, 13),
         DEFAULT("default", secretWaypoints -> secretWaypoints.enableDefaultWaypoints, 190, 255, 252);
-        private static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
+        public static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
         private final String name;
         private final Predicate<DungeonsConfig.SecretWaypoints> enabledPredicate;
         private final float[] colorComponents;

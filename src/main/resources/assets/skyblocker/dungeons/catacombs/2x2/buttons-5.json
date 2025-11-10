@@ -89,7 +89,7 @@
     },
     {
       "secretName": "5 - Button Puzzle",
-      "category": "puzzle",
+      "category": "default",
       "x": 16,
       "y": 81,
       "z": 50

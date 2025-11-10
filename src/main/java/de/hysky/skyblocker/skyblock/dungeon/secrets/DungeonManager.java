@@ -24,6 +24,9 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.zip.InflaterInputStream;
 
+import com.google.gson.JsonParser;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -185,10 +188,12 @@ public class DungeonManager {
 		return rooms.values().stream();
 	}
 
+	@Nullable
 	public static RoomInfo getRoomMetadata(String room) {
 		return roomInfo.get(room);
 	}
 
+	@Nullable
 	public static List<RoomWaypoint> getRoomWaypoints(String room) {
 		return roomWaypoints.get(room);
 	}
@@ -352,12 +357,10 @@ public class DungeonManager {
 			String room = path[3].substring(0, path[3].length() - ".json".length());
 			dungeonFutures.add(CompletableFuture.runAsync(() -> {
 				try (BufferedReader roomJsonReader = CLIENT.getResourceManager().openAsReader(resourceEntry.getKey())) {
-					RoomData roomData = SkyblockerMod.GSON.fromJson(roomJsonReader, RoomData.class);
+					RoomData roomData = RoomData.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(roomJsonReader)).getOrThrow();
 					if (roomData == null) throw new RuntimeException("Invalid JSON!");
-					assert roomData.secrets != null;
-					roomWaypoints.put(room, roomData.secrets);
-					assert roomData.info != null;
-					roomInfo.put(room, roomData.info);
+					if (roomData.secrets != null) roomWaypoints.put(room, roomData.secrets);
+					if (roomData.info != null) roomInfo.put(room, roomData.info);
 				} catch (Exception ex) {
 					throw new RuntimeException(ex);
 				}
@@ -728,6 +731,7 @@ public class DungeonManager {
 	 * <p>Used to detect when all secrets in a room are found and detect when a wither or blood door is unlocked.
 	 * To process key obtained messages, this method checks if door highlight is enabled and if the message matches a key obtained message.
 	 */
+	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Text text, boolean overlay) {
 		if (!shouldProcess()) {
 			return true;
@@ -844,6 +848,7 @@ public class DungeonManager {
 	 */
 	@Nullable
 	private static MapState getMapState(MinecraftClient client) {
+		if (client.player == null) return null;
 		return FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().getMainStacks().get(8)), client.world);
 	}
 
@@ -969,9 +974,28 @@ public class DungeonManager {
 		return roomInfo.size();
 	}
 
-	public record RoomInfo(String name) {}
+	public record RoomInfo(String name) {
+		public static final Codec<RoomInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.STRING.fieldOf("name").forGetter(RoomInfo::name)
+		).apply(instance, RoomInfo::new));
+	}
 
-	public record RoomWaypoint(String secretName, SecretWaypoint.Category category, int x, int y, int z) {}
+	public record RoomWaypoint(String secretName, SecretWaypoint.Category category, int x, int y, int z) {
+		private static final Codec<RoomWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.STRING.fieldOf("secretName").forGetter(RoomWaypoint::secretName),
+				SecretWaypoint.Category.CODEC.fieldOf("category").forGetter(RoomWaypoint::category),
+				// todo: should I replace this with blockpos codec?
+				Codec.INT.fieldOf("x").forGetter(RoomWaypoint::x),
+				Codec.INT.fieldOf("y").forGetter(RoomWaypoint::y),
+				Codec.INT.fieldOf("z").forGetter(RoomWaypoint::z)
+		).apply(instance, RoomWaypoint::new));
+		public static final Codec<List<RoomWaypoint>> LIST_CODEC = CODEC.listOf();
+	}
 
-	public record RoomData(RoomInfo info, List<RoomWaypoint> secrets) {}
+	public record RoomData(RoomInfo info, List<RoomWaypoint> secrets) {
+		public static final Codec<RoomData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				RoomInfo.CODEC.fieldOf("info").forGetter(RoomData::info),
+				RoomWaypoint.LIST_CODEC.fieldOf("secrets").forGetter(RoomData::secrets)
+		).apply(instance, RoomData::new));
+	}
 }
