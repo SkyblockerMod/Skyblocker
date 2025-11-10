@@ -4,6 +4,7 @@ import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.client.MinecraftClient;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 
 import java.io.BufferedReader;
 import java.util.List;
+import java.util.Set;
 
 import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager.DUNGEONS_PATH;
 
@@ -37,8 +39,8 @@ public class RoomDataTest implements FabricClientGameTest {
 		if (!checkRoomJson(client))
 			throw new AssertionError("There are invalid room .json files!");
 
-		int roomCount = skeletonFiles.size();
-		checkIfLoadedCorrectly(roomCount);
+		checkForDuplicateNames(skeletonFiles);
+		checkIfLoadedCorrectly(skeletonFiles.size());
 	}
 
 	/**
@@ -72,12 +74,22 @@ public class RoomDataTest implements FabricClientGameTest {
 				DungeonManager.RoomData.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
 			} catch (Exception ex) {
 				String[] parts = filePath.getPath().split("/");
-				String roomName = parts[2] + "-" + parts[3];
-				LOGGER.error("Failed to load room: {}", roomName, ex);
+				LOGGER.error("Failed to load room: dungeon={}, shape={} room={}", parts[1], parts[2], parts[3], ex);
 				isValid = false;
 			}
 		}
 		return isValid;
+	}
+
+	/**
+	 * Ensures there are no rooms with duplicate names
+	 */
+	public void checkForDuplicateNames(List<String> skeletonFiles) {
+		Set<String> temp = new ObjectOpenHashSet<>();
+		for (String name : skeletonFiles) {
+			if (!temp.add(name))
+				throw new AssertionError("Duplicate room name (id): %s".formatted(name));
+		}
 	}
 
 	public void checkIfLoadedCorrectly(int expected) {
