@@ -1513,5 +1513,6 @@
     "skyblocker.config.uiAndVisuals.tabHud.style.SIMPLE": "简约",
     "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.TOP": "上方",
     "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "使用该界面来移动Tab和HUD小部件。\n使用“/skyblocker hud”可以直接打开该界面！",
-    "skyblocker.config.dungeons.salvageHelper.onlyDonated": "分解助手 - 仅高亮已捐赠物品"
+    "skyblocker.config.dungeons.salvageHelper.onlyDonated": "分解助手 - 仅高亮已捐赠物品",
+    "skyblocker.config.mining.enableDrillFuel.@Tooltip": "使用耐久条显示钻头所剩燃料\n显示Pickonimbus所剩方块采掘数"
 }
