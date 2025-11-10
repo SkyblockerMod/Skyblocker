@@ -64,7 +64,7 @@ public class RoomDataTest implements FabricClientGameTest {
 	public void checkIfLoadedCorrectly(int expected) {
 		int count = DungeonManager.getLoadedRoomCount();
 		if (count != expected) {
-			throw new AssertionError(String.format("Expected %s rooms but only %s was loaded", expected, count));
+			throw new AssertionError(String.format("Expected %s room(s) but only %s room(s) loaded", expected, count));
 		}
 	}
 
