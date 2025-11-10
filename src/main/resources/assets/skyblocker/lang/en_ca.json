@@ -106,5 +106,6 @@
     "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "Highlights Shellwise in orange by default, with the option to choose a different colour.",
     "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "Shellwise highlight colour picker",
     "skyblocker.customization.armor.modelOverride": "Armour Model Override",
-    "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.CENTERED": "Centred"
+    "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.CENTERED": "Centred",
+    "skyblocker.config.uiAndVisuals.waypoints.lineColor": "Line Colour"
 }
