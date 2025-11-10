@@ -825,6 +825,7 @@
   "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Sets the color of the highlight for the unbreakable carpets.",
 
   "skyblocker.config.mining.enableDrillFuel": "Enable Drill Fuel",
+  "skyblocker.config.mining.enableDrillFuel.@Tooltip": "Shows remaining fuel with the durability bar.\nShows the remaining blocks for Pickonimbus.",
 
   "skyblocker.config.mining.commissionHighlight": "Highlights Completed Commissions",
 
