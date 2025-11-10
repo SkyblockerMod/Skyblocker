@@ -38,7 +38,7 @@
     "skyblocker.config.misc.richPresence.customMessage": "自訂訊息",
     "skyblocker.config.mining.dwarvenMines.solveFetchur": "解開Fetchur的謎題",
     "skyblocker.config.chat.filter.chatFilterResult.ACTION_BAR": "移至動作欄",
-    "skyblocker.config.chat.filter.chatFilterResult.PASS": "關閉",
+    "skyblocker.config.chat.filter.chatFilterResult.PASS": "已停用",
     "skyblocker.config.chat.filter.chatFilterResult.FILTER": "啟用",
     "skyblocker.config.chat.filter.hideMana.@Tooltip": "與花俏的屬性條一起使用能得到更好體驗",
     "skyblocker.config.general.itemTooltip.avg.@Tooltip": "你可以選擇查看多少天的平均價格",
