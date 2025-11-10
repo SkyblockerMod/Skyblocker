@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.MinecraftClient;
@@ -19,11 +20,11 @@ import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipAppender;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,7 +37,7 @@ import java.util.function.Consumer;
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack {
 	@Unique
-	private int maxDamage;
+	private float durabilityBarFill = -1;
 
 	@Unique
 	private String skyblockId;
@@ -55,12 +56,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@Unique
 	private SkyblockItemRarity skyblockRarity;
-
-	@Shadow
-	public abstract int getDamage();
-
-	@Shadow
-	public abstract void setDamage(int damage);
 
 	@ModifyReturnValue(method = "getName", at = @At("RETURN"))
 	private Text skyblocker$customItemNames(Text original) {
@@ -95,46 +90,32 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	 */
 	@Inject(method = "inventoryTick", at = @At("TAIL"))
 	private void skyblocker$updateDamage(CallbackInfo ci) {
-		if (!skyblocker$shouldProcess()) {
-			return;
-		}
 		skyblocker$getAndCacheDurability();
 	}
 
-	@ModifyReturnValue(method = "getDamage", at = @At("RETURN"))
-	private int skyblocker$handleDamage(int original) {
-		// If the durability is already calculated, the original value should be the damage
-		if (!skyblocker$shouldProcess() || maxDamage != 0) {
-			return original;
-		}
-		return skyblocker$getAndCacheDurability() ? getDamage() : original;
+	@ModifyReturnValue(method = "isItemBarVisible", at = @At("RETURN"))
+	private boolean modifyItemBarVisible(boolean original) {
+		return original || durabilityBarFill >= 0f;
 	}
 
-	@ModifyReturnValue(method = "getMaxDamage", at = @At("RETURN"))
-	private int skyblocker$handleMaxDamage(int original) {
-		if (!skyblocker$shouldProcess()) {
-			return original;
-		}
-		// If the max damage is already calculated, return it
-		if (maxDamage != 0) {
-			return maxDamage;
-		}
-		return skyblocker$getAndCacheDurability() ? maxDamage : original;
+	@ModifyReturnValue(method = "getItemBarStep", at = @At("RETURN"))
+	private int modifyItemBarStep(int original) {
+		return durabilityBarFill >= 0 ? (int) (durabilityBarFill * 13) : original;
+	}
+
+	@ModifyReturnValue(method = "getItemBarColor", at = @At("RETURN"))
+	private int modifyItemBarColor(int original) {
+		return durabilityBarFill >= 0 ? OkLabColor.interpolate(Colors.RED, Colors.GREEN, durabilityBarFill) : original;
+	}
+
+	@Inject(method = "<init>(Lnet/minecraft/item/ItemConvertible;ILnet/minecraft/component/MergedComponentMap;)V", at = @At("TAIL"))
+	private void onInit(CallbackInfo ci) {
+		skyblocker$getAndCacheDurability();
 	}
 
 	@Inject(method = "set", at = @At("TAIL"))
 	private <T> void skyblocker$resetUuid(ComponentType<T> type, @Nullable T value, CallbackInfoReturnable<T> cir) {
 		if (type == DataComponentTypes.CUSTOM_DATA) uuid = null;
-	}
-
-	@ModifyReturnValue(method = "isDamageable", at = @At("RETURN"))
-	private boolean skyblocker$handleDamageable(boolean original) {
-		return skyblocker$shouldProcess() || original;
-	}
-
-	@ModifyReturnValue(method = "isDamaged", at = @At("RETURN"))
-	private boolean skyblocker$handleDamaged(boolean original) {
-		return skyblocker$shouldProcess() || original;
 	}
 
 	@Unique
@@ -143,17 +124,20 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	}
 
 	@Unique
-	private boolean skyblocker$getAndCacheDurability() {
+	private void skyblocker$getAndCacheDurability() {
+		if (!skyblocker$shouldProcess()) {
+			durabilityBarFill = -1;
+			return;
+		}
 		// Calculate the durability
 		IntIntPair durability = ItemUtils.getDurability((ItemStack) (Object) this);
 		// Return if calculating the durability failed
 		if (durability == null) {
-			return false;
+			durabilityBarFill = -1;
+			return;
 		}
 		// Saves the calculated durability
-		maxDamage = durability.rightInt();
-		setDamage(durability.rightInt() - durability.leftInt());
-		return true;
+		durabilityBarFill = (float) durability.firstInt() / durability.secondInt();
 	}
 
 	@SuppressWarnings("deprecation")

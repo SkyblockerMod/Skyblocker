@@ -41,13 +41,13 @@ public class PlayerWidget extends ClickableWidget {
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
 
 		float size = 64f;
-		Vector3f translation = new Vector3f(0.0625f, player.getHeight() / 1.5f + 0.0625f, 0);
+		Vector3f translation = new Vector3f(0, player.getHeight() / 2f + 0.0625f, 0);
 		Quaternionf rotation = new Quaternionf().rotationXYZ(-xRotation * MathHelper.RADIANS_PER_DEGREE, -yRotation * MathHelper.RADIANS_PER_DEGREE, FLIP_ROTATION);
 
 		InventoryScreen.drawEntity(
 				context,
-				0,
-				0,
+				getX(),
+				getY(),
 				this.getRight(),
 				this.getBottom(),
 				size,

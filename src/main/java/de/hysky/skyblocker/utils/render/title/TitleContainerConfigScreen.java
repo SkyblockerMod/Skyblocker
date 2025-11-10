@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Set;
 
 public class TitleContainerConfigScreen extends HudConfigScreen {
+	public static final float MIN_TITLE_SCALE = 30f;
+	public static final float MAX_TITLE_SCALE = 140f;
 	// ImmutableSet preserves insertion order
 	private static final Set<Title> EXAMPLES = ImmutableSet.of(
 			new Title(Text.literal("Test1").formatted(Formatting.RED)),
@@ -96,11 +98,13 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 				updateWidgetDimensions();
 			}
 			case GLFW.GLFW_KEY_EQUAL -> {
-				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.titleContainerScale += 10;
+				UIAndVisualsConfig.TitleContainer conf = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
+				conf.titleContainerScale = Math.min(MAX_TITLE_SCALE, conf.titleContainerScale + 10);
 				updateWidgetDimensions();
 			}
 			case GLFW.GLFW_KEY_MINUS -> {
-				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.titleContainerScale -= 10;
+				UIAndVisualsConfig.TitleContainer conf = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
+				conf.titleContainerScale = Math.max(MIN_TITLE_SCALE, conf.titleContainerScale - 10);
 				updateWidgetDimensions();
 			}
 		}

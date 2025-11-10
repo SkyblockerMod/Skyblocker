@@ -6,7 +6,7 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
-import de.hysky.skyblocker.skyblock.TeleportOverlay;
+import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
@@ -253,7 +253,7 @@ public class UIAndVisualsCategory {
                                 .binding(defaults.uiAndVisuals.titleContainer.titleContainerScale,
                                         () -> config.uiAndVisuals.titleContainer.titleContainerScale,
                                         newValue -> config.uiAndVisuals.titleContainer.titleContainerScale = newValue)
-                                .controller(FloatController.createBuilder().range(30f, 140f).build())
+                                .controller(FloatController.createBuilder().range(TitleContainerConfigScreen.MIN_TITLE_SCALE, TitleContainerConfigScreen.MAX_TITLE_SCALE).build())
                                 .build())
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.titleContainer.config"))
@@ -275,9 +275,11 @@ public class UIAndVisualsCategory {
                                 .build())
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
+								// .tags(Text.literal("gui")) // TODO: uncomment when we start using the next Dandelion version
 								.prompt(Text.translatable("text.skyblocker.open"))
 								.action(screen -> {
-									if (Utils.isOnSkyblock()) {
+									if (Utils.isOnSkyblock() && config.uiAndVisuals.tabHud.tabHudEnabled) {
 										MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
 									} else {
 										MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, WidgetManager.ScreenLayer.MAIN_TAB, screen));
@@ -431,6 +433,14 @@ public class UIAndVisualsCategory {
                                 .prompt(Text.translatable("text.skyblocker.open"))
                                 .action(screen -> MinecraftClient.getInstance().setScreen(new WaypointsScreen(screen)))
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                        		.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints"))
+                        		.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints.@Tooltip"))
+                        		.binding(defaults.uiAndVisuals.waypoints.enableChatWaypoints,
+                        				() -> config.uiAndVisuals.waypoints.enableChatWaypoints,
+                        				newValue -> config.uiAndVisuals.waypoints.enableChatWaypoints = newValue)
+                        		.controller(ConfigUtils.createBooleanController())
+                        		.build())
                         .build())
 
                 //Teleport Overlays
@@ -503,6 +513,14 @@ public class UIAndVisualsCategory {
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE"))
                         .description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip"))
                         .collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.predictive"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip"))
+								.binding(defaults.uiAndVisuals.smoothAOTE.predictive,
+										() -> config.uiAndVisuals.smoothAOTE.predictive,
+										newValue -> config.uiAndVisuals.smoothAOTE.predictive = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission"))
                                 .description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip"))

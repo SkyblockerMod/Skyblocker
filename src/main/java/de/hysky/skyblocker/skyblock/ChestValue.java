@@ -6,6 +6,8 @@ import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
+import de.hysky.skyblocker.skyblock.hunting.Attribute;
+import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -31,6 +33,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -48,6 +51,7 @@ import java.util.regex.Pattern;
 public class ChestValue {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChestValue.class);
 	private static final Set<String> DUNGEON_CHESTS = Set.of("Wood Chest", "Gold Chest", "Diamond Chest", "Emerald Chest", "Obsidian Chest", "Bedrock Chest");
+	private static final Pattern DUNGEON_CHEST_COIN_COST_PATTERN = Pattern.compile("^([0-9,]+) Coins$");
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>\\d+)");
 	private static final Pattern SHARD_PATTERN = Pattern.compile("[A-Za-z ]+ Shard x(?<amount>\\d+)");
 	private static final Pattern MINION_PATTERN = Pattern.compile("Minion (I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII)$");
@@ -108,7 +112,7 @@ public class ChestValue {
 				String skyblockApiId = stack.getSkyblockApiId();
 
 				//Regular item price
-				if (!skyblockApiId.isEmpty() && !name.contains("Essence")) {
+				if (!skyblockApiId.isEmpty() && !(name.contains("Essence") || name.contains("Shard"))) {
 					DoubleBooleanPair priceData = ItemUtils.getItemPrice(skyblockApiId);
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
@@ -144,20 +148,14 @@ public class ChestValue {
 
 					if (matcher.matches()) {
 						//I do not believe it is possible to get more than 1 in a single chest but in the interest of
-						//future-proofing we will handle it anyways
+						//future-proofing we will handle it anyway
 						int shards = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
-						String shardApiId = switch (name) {
-							case String s when s.startsWith("Wither") -> "SHARD_WITHER";
-							case String s when s.startsWith("Apex Dragon") -> "SHARD_APEX_DRAGON";
-							case String s when s.startsWith("Power Dragon") -> "SHARD_POWER_DRAGON";
-							default -> "";
-						};
-
-						if (shardApiId.isEmpty()) {
+						Attribute attribute = Attributes.getAttributeFromItemName(stack);
+						if (attribute == null) {
 							LOGGER.warn("[Skyblocker Profit Calculator] Encountered unknown shard {}", name);
 							continue;
 						}
-
+						String shardApiId = attribute.apiId();
 						DoubleBooleanPair priceData = ItemUtils.getItemPrice(shardApiId);
 
 						if (!priceData.rightBoolean()) hasIncompleteData = true;
@@ -169,14 +167,13 @@ public class ChestValue {
 					}
 				}
 
-				//Determine the cost of the chest
+				// Determine the cost of the chest: If not found (wood chest or already opened chest), it will be 0
 				if (name.contains("Open Reward Chest")) {
-					String foundString = searchLoreFor(stack, "Coins");
-
-					//Incase we're searching the free chest
-					if (!StringUtils.isBlank(foundString)) {
-						profit -= Integer.parseInt(foundString.replaceAll("\\D", ""));
-					}
+					Matcher matcher = ItemUtils.getLoreLineIfContainsMatch(stack, DUNGEON_CHEST_COIN_COST_PATTERN);
+					if (matcher == null) continue;
+					String foundString = matcher.group(1).replaceAll("\\D", "");
+					if (!NumberUtils.isCreatable(foundString)) continue;
+					profit -= Integer.parseInt(foundString);
 
 					continue;
 				}

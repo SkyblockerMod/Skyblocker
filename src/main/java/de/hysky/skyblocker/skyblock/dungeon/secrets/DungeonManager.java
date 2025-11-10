@@ -23,7 +23,8 @@ import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteMaps;
@@ -34,8 +35,6 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -263,7 +262,7 @@ public class DungeonManager {
 		});
 		ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 5);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonManager::render);
+		WorldRenderExtractionCallback.EVENT.register(DungeonManager::extractRendering);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonManager::onChatMessage);
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
@@ -696,22 +695,22 @@ public class DungeonManager {
 	}
 
 	/**
-	 * Renders the secret waypoints in {@link #currentRoom} if {@link #shouldProcess()} and {@link #currentRoom} is not null.
+	 * Extracts the rendering for secret waypoints in {@link #currentRoom} if {@link #shouldProcess()} and {@link #currentRoom} is not null.
 	 */
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (shouldProcess() && currentRoom != null) {
-			currentRoom.render(context);
+			currentRoom.extractRendering(collector);
 		}
 
 		if (bloodRushDoorBox != null && !bloodOpened && SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight) {
 			float[] colorComponents = hasKey ? GREEN_COLOR_COMPONENTS : RED_COLOR_COMPONENTS;
 			switch (SkyblockerConfigManager.get().dungeons.doorHighlight.doorHighlightType) {
-				case HIGHLIGHT -> RenderHelper.renderFilled(context, bloodRushDoorBox, colorComponents, 0.5f, true);
+				case HIGHLIGHT -> collector.submitFilledBox(bloodRushDoorBox, colorComponents, 0.5f, true);
 				case OUTLINED_HIGHLIGHT -> {
-					RenderHelper.renderFilled(context, bloodRushDoorBox, colorComponents, 0.5f, true);
-					RenderHelper.renderOutline(context, bloodRushDoorBox, colorComponents, 5, true);
+					collector.submitFilledBox(bloodRushDoorBox, colorComponents, 0.5f, true);
+					collector.submitOutlinedBox(bloodRushDoorBox, colorComponents, 5, true);
 				}
-				case OUTLINE -> RenderHelper.renderOutline(context, bloodRushDoorBox, colorComponents, 5, true);
+				case OUTLINE -> collector.submitOutlinedBox(bloodRushDoorBox, colorComponents, 5, true);
 			}
 		}
 	}

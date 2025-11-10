@@ -51,6 +51,13 @@ public class DungeonsCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.salvageHelper.onlyDonated"))
+						.binding(defaults.dungeons.onlyHighlightDonatedItems,
+								() -> config.dungeons.onlyHighlightDonatedItems,
+								newValue -> config.dungeons.onlyHighlightDonatedItems = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+                .option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter"))
 						.description(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip"))
 						.binding(defaults.dungeons.sellableItemsHighlighter,
@@ -459,6 +466,22 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.devices.solveLightsOn,
 										() -> config.dungeons.devices.solveLightsOn,
 										newValue -> config.dungeons.devices.solveLightsOn = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.devices.solveArrowAlign"))
+								.description(Text.translatable("skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip"))
+								.binding(defaults.dungeons.devices.solveArrowAlign,
+										() -> config.dungeons.devices.solveArrowAlign,
+										newValue -> config.dungeons.devices.solveArrowAlign = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.devices.solveTargetPractice"))
+								.description(Text.translatable("skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip"))
+								.binding(defaults.dungeons.devices.solveTargetPractice,
+										() -> config.dungeons.devices.solveTargetPractice,
+										newValue -> config.dungeons.devices.solveTargetPractice = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

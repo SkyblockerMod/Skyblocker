@@ -50,7 +50,7 @@ public class InventorySearch {
 		if (handledScreen == openedHandledScreen) return;
 		openedHandledScreen = handledScreen;
 		TextFieldWidget textFieldWidget = getTextFieldWidget(handledScreen);
-		Screens.getButtons(handledScreen).add(new TextWidget(0, 5, handledScreen.width, 10, Text.literal("Search Inventory"), Screens.getTextRenderer(handledScreen)));
+		Screens.getButtons(handledScreen).add(new TextWidget(0, 5, handledScreen.width, 10, Text.literal("Search Inventory"), handledScreen.getTextRenderer()));
 		Screens.getButtons(handledScreen).addFirst(textFieldWidget);
 		Screens.getButtons(handledScreen).removeIf(button -> button instanceof SearchTextWidget); // remove search text
 		handledScreen.setFocused(textFieldWidget);
@@ -102,7 +102,7 @@ public class InventorySearch {
 		private boolean hoveredState = false;
 
 		private SearchTextWidget(HandledScreen<?> handledScreen) {
-			super(Text.translatable("skyblocker.inventorySearch.clickHereToSearch"), Screens.getTextRenderer(handledScreen));
+			super(Text.translatable("skyblocker.inventorySearch.clickHereToSearch"), handledScreen.getTextRenderer());
 			setPosition((handledScreen.width - this.getWidth()) / 2, 15);
 			underlinedText = getMessage().copy().formatted(Formatting.UNDERLINE);
 			normalText = getMessage().copy().formatted(Formatting.GRAY);
@@ -129,7 +129,7 @@ public class InventorySearch {
 
 	public static class SearchTextFieldWidget extends TextFieldWidget {
 		public SearchTextFieldWidget(HandledScreen<?> handledScreen) {
-			super(Screens.getTextRenderer(handledScreen), 120, 20, Text.literal("Search Inventory"));
+			super(handledScreen.getTextRenderer(), 120, 20, Text.literal("Search Inventory"));
 		}
 
 		@Override

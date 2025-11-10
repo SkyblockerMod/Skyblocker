@@ -44,7 +44,7 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
      * This should be called at the end of the implementation's init to ensure that these elements render last.
      */
     protected final void lateInit() {
-    	islandWidget = addDrawableChild(new DropdownWidget<>(client, width - 160, 8, 150, height - 8, Arrays.asList(Location.values()), this::islandChanged, island));
+    	islandWidget = addDrawableChild(new DropdownWidget<>(client, width - 160, 8, 150, height - 8, Arrays.asList(Location.values()), this::islandChanged, island, (isOpen) -> {}));
     }
 
     @Override

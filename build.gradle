@@ -328,13 +328,36 @@ checkstyle {
 	configFile = rootProject.file("checkstyle.xml")
 }
 
+def truncateChangelog = { String text, int limit ->
+	if (!text) return ''
+	def lines = text.readLines()
+	def sb = new StringBuilder()
+	for (line in lines) {
+		def toAdd = (sb.length() == 0 ? "" : "\n") + line
+		if (sb.length() + toAdd.length() > limit) {
+			sb.append("\nand more!")
+			break
+		}
+		sb.append(toAdd)
+	}
+	return sb.toString()
+}
+
 publishMods {
 	file = remapJar.archiveFile
-	changelog = System.getenv('CHANGELOG')
+	changelog = System.getenv('CHANGELOG_HIGHLIGHT')
 	version = "v${project.version}"
 	displayName = "Skyblocker ${mod_version} for ${minecraft_version}"
 	modLoaders.add("fabric")
-	type = STABLE
+	type = project.version.contains("alpha") ? ALPHA : project.version.contains("beta") ? BETA : STABLE
+
+	github {
+		accessToken = System.getenv("GITHUB_TOKEN")
+		repository = "SkyblockerMod/Skyblocker"
+		commitish = System.getenv("REF_NAME")
+		tagName = publishMods.version
+		changelog = System.getenv("CHANGELOG")
+	}
 
 	modrinth {
 		accessToken = System.getenv("MODRINTH_TOKEN")
@@ -360,7 +383,11 @@ publishMods {
 	discord {
 		webhookUrl = System.getenv("DISCORD_WEBHOOK")
 		username = "Changelog"
-		content = changelog.map { "<@&1134565945482948638>\n## Skyblocker v${mod_version} for ${minecraft_version}\n" + it }
+		content = changelog.map {
+			def header = "<@&1134565945482948638>\n## Skyblocker v${mod_version} for ${minecraft_version}\n"
+			def truncatedChangelog = truncateChangelog(it, 1850)
+			header + truncatedChangelog
+		}
 	}
 }
 
