@@ -1514,5 +1514,20 @@
     "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.TOP": "上方",
     "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "使用該介面來移動Tab和HUD小部件。\n使用「/skyblocker hud」可以直接打開該介面！",
     "skyblocker.config.dungeons.salvageHelper.onlyDonated": "分解助手 - 僅突顯已捐贈物品",
-    "skyblocker.config.mining.enableDrillFuel.@Tooltip": "使用耐久條顯示鑽頭剩餘燃料。\n顯示Pickonimbus剩餘方塊採掘數。"
+    "skyblocker.config.mining.enableDrillFuel.@Tooltip": "使用耐久條顯示鑽頭剩餘燃料。\n顯示Pickonimbus剩餘方塊採掘數。",
+    "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints": "允許跳過路徑點",
+    "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip": "允許跳過有序路徑點組中的路徑點。",
+    "skyblocker.config.uiAndVisuals.waypoints.renderLine": "渲染線條",
+    "skyblocker.config.uiAndVisuals.waypoints.lineColor": "線條顏色",
+    "skyblocker.config.uiAndVisuals.waypoints.lineWidth": "線條寬度",
+    "skyblocker.waypoints.otherOptions": "其他選項",
+    "skyblocker.waypoints.groupType": "組類型",
+    "skyblocker.waypoints.groupType.ordered": "有序",
+    "skyblocker.waypoints.groupType.normal": "普通",
+    "skyblocker.waypoints.waypointType": "路徑點類型",
+    "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards": "允許倒序",
+    "skyblocker.waypoints.waypointsOptions": "路徑點選項",
+    "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip": "允許以相反順序使用路徑點組。",
+    "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "渲染一條從準星到下一個路徑點的線（僅限有序組）",
+    "skyblocker.waypoints.throughWalls": "隔牆顯示"
 }
