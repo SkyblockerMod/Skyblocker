@@ -157,7 +157,7 @@ public class WaypointsTest {
             new OrderedNamedWaypoint(new BlockPos(790, 133, 800), "142", new float[]{0, 1, 0}),
             new OrderedNamedWaypoint(new BlockPos(806, 131, 803), "143", new float[]{0, 1, 0}),
             new OrderedNamedWaypoint(new BlockPos(803, 131, 809), "144", new float[]{0, 1, 0})
-    ), true);
+    ), true, true, WaypointGroup.DEFAULT_TYPE);
 	private static final WaypointGroup RIFT_PARKOUR_WAYPOINTS = new WaypointGroup("flower", Location.THE_RIFT, List.of(
 			new OrderedNamedWaypoint(new BlockPos(46, 169, 44), "", new float[]{0, 1, 0}),
 			new OrderedNamedWaypoint(new BlockPos(46, 170, 47), "", new float[]{0, 1, 0}),
@@ -192,7 +192,7 @@ public class WaypointsTest {
 			new OrderedNamedWaypoint(new BlockPos(34, 123, 147), "", new float[]{0, 1, 0}),
 			new OrderedNamedWaypoint(new BlockPos(34, 97, 166), "", new float[]{0, 1, 0}),
 			new OrderedNamedWaypoint(new BlockPos(35, 97, 166), "", new float[]{0, 1, 0})
-	), true);
+	), true, true, WaypointGroup.DEFAULT_TYPE);
 	static final WaypointGroup DARK_MONOLITHS_WAYPOINTS = new WaypointGroup("Monolith", Location.DWARVEN_MINES, List.of(
 			new OrderedNamedWaypoint(new BlockPos(-16, 236, -93), "", new float[]{0, 1, 0}),
 			new OrderedNamedWaypoint(new BlockPos(49, 202, -162), "", new float[]{0, 1, 0}),
@@ -208,7 +208,7 @@ public class WaypointsTest {
 			new OrderedNamedWaypoint(new BlockPos(-94, 201, -30), "", new float[]{0, 1, 0}),
 			new OrderedNamedWaypoint(new BlockPos(-91, 221, -53), "", new float[]{0, 1, 0}),
 			new OrderedNamedWaypoint(new BlockPos(-65, 206, -65), "", new float[]{0, 1, 0})
-	), true);
+	), true, true, WaypointGroup.DEFAULT_TYPE);
 
     @BeforeAll
     public static void setup() {
@@ -400,7 +400,7 @@ public class WaypointsTest {
                 new OrderedNamedWaypoint(new BlockPos(79, 80, 73), "32", new float[]{0, 1, 0}),
                 new OrderedNamedWaypoint(new BlockPos(91, 76, 38), "37", new float[]{0, 1, 0}),
                 new OrderedNamedWaypoint(new BlockPos(98, 78, 75), "45", new float[]{0, 1, 0})
-        ), true);
+        ), true, true, WaypointGroup.DEFAULT_TYPE);
 
         Assertions.assertEquals(expectedWaypointGroup, waypointGroup);
     }
@@ -451,7 +451,7 @@ public class WaypointsTest {
                 new OrderedNamedWaypoint(new BlockPos(-185, 17, -164), "31", new float[]{0, 1, 0}),
                 new OrderedNamedWaypoint(new BlockPos(-194, 9, -181), "32", new float[]{0, 1, 0}),
                 new OrderedNamedWaypoint(new BlockPos(-193, 6, -196), "33", new float[]{0, 1, 0})
-        ), true);
+        ), true, true, WaypointGroup.DEFAULT_TYPE);
 
         Assertions.assertEquals(expectedWaypointGroup, waypointGroup);
     }
@@ -486,7 +486,7 @@ public class WaypointsTest {
     @Test
     void testToSkyblocker() {
         String waypointGroupsSkyblocker = Waypoints.toSkyblocker(List.of(SAPPHIRE_WAYPOINTS));
-        String expectedWaypointGroupsSkyblocker = "[Skyblocker-Waypoint-Data-V1]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";
+        String expectedWaypointGroupsSkyblocker = "[Skyblocker-Waypoint-Data-V1]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";
 
         Assertions.assertEquals(expectedWaypointGroupsSkyblocker, waypointGroupsSkyblocker);
     }

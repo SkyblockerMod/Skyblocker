@@ -428,6 +428,44 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.waypoints.waypointType = newValue)
                                 .controller(ConfigUtils.createEnumController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"))
+								.binding(defaults.uiAndVisuals.waypoints.renderLine,
+										() -> config.uiAndVisuals.waypoints.renderLine,
+										newValue -> config.uiAndVisuals.waypoints.renderLine = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.lineColor"))
+								.binding(defaults.uiAndVisuals.waypoints.lineColor,
+										() -> config.uiAndVisuals.waypoints.lineColor,
+										newValue -> config.uiAndVisuals.waypoints.lineColor = newValue)
+								.controller(ConfigUtils.createColourController(true))
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.lineWidth"))
+								.binding(defaults.uiAndVisuals.waypoints.lineWidth,
+										() -> config.uiAndVisuals.waypoints.lineWidth,
+										newValue -> config.uiAndVisuals.waypoints.lineWidth = newValue)
+								.controller(FloatController.createBuilder().range(1f, 15f).slider(0.5f).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip"))
+								.binding(defaults.uiAndVisuals.waypoints.allowSkippingWaypoints,
+										() -> config.uiAndVisuals.waypoints.allowSkippingWaypoints,
+										newValue -> config.uiAndVisuals.waypoints.allowSkippingWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip"))
+								.binding(defaults.uiAndVisuals.waypoints.allowGoingBackwards,
+										() -> config.uiAndVisuals.waypoints.allowGoingBackwards,
+										newValue -> config.uiAndVisuals.waypoints.allowGoingBackwards = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.waypoints.config"))
                                 .prompt(Text.translatable("text.skyblocker.open"))

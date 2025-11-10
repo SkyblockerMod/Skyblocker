@@ -4,13 +4,11 @@ import com.google.common.collect.Multimap;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,10 +28,22 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
     @Override
     protected void init() {
         super.init();
-        GridWidget gridWidget = new GridWidget();
-        gridWidget.getMainPositioner().marginX(5).marginY(2);
-        GridWidget.Adder adder = gridWidget.createAdder(3);
+		int rowSpacing = 2;
+        GridWidget gridWidget = new GridWidget().setColumnSpacing(5).setRowSpacing(rowSpacing);
+        GridWidget.Adder adder = gridWidget.createAdder(2);
 		// First row
+		adder.add(CheckboxWidget.builder(Text.translatable("skyblocker.waypoints.importOptions.overrideLocation"), textRenderer)
+				.maxWidth(ButtonWidget.DEFAULT_WIDTH)
+				.callback((checkbox, checked) -> overrideLocation = checked)
+				.tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importOptions.overrideLocation.tooltip")))
+				.build());
+		adder.add(CheckboxWidget.builder(Text.translatable("skyblocker.waypoints.importOptions.sortWaypoints"), textRenderer)
+				.maxWidth(ButtonWidget.DEFAULT_WIDTH)
+				.callback((checkbox, checked) -> sortWaypoints = checked)
+				.tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importOptions.sortWaypoints.tooltip")))
+				.build());
+		// Second Row
+
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.importWaypointsSkyblocker"), buttonImport -> {
             try {
                 List<WaypointGroup> waypointGroups = Waypoints.fromSkyblocker(client.keyboard.getClipboard(), island);
@@ -64,12 +74,8 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
                 SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.exportError"), Text.translatable("skyblocker.waypoints.exportErrorText"));
             }
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.exportWaypointsSkyblocker.tooltip"))).build());
-		adder.add(CheckboxWidget.builder(Text.translatable("skyblocker.waypoints.importOptions.overrideLocation"), textRenderer)
-				.maxWidth(ButtonWidget.DEFAULT_WIDTH)
-				.callback((checkbox, checked) -> overrideLocation = checked)
-				.tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importOptions.overrideLocation.tooltip")))
-				.build());
-		// Second row
+
+		// Third row
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.importWaypointsSkytils"), buttonImport -> {
             try {
                 List<WaypointGroup> waypointGroups = Waypoints.fromSkytils(client.keyboard.getClipboard(), island);
@@ -100,13 +106,8 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
                 SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.exportError"), Text.translatable("skyblocker.waypoints.exportErrorText"));
             }
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.exportWaypointsSkytils.tooltip"))).build());
-		adder.add(CheckboxWidget.builder(Text.translatable("skyblocker.waypoints.importOptions.sortWaypoints"), textRenderer)
-				.maxWidth(ButtonWidget.DEFAULT_WIDTH)
-				.callback((checkbox, checked) -> sortWaypoints = checked)
-				.tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importOptions.sortWaypoints.tooltip")))
-				.build());
 
-		// Third row
+		// Fourth row
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.importWaypointsSnoopy"), buttonImport -> {
             try {
                 WaypointGroup waypointGroup = Waypoints.fromColeweightJson(client.keyboard.getClipboard(), island);
@@ -122,21 +123,15 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 			}
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importWaypointsSnoopy.tooltip"))).build());
         adder.add(ButtonWidget.builder(ScreenTexts.DONE, buttonBack -> close()).build());
-        gridWidget.refreshPositions();
-        SimplePositioningWidget.setPos(gridWidget, 0, this.height - 76, this.width, 64);
-        gridWidget.forEachChild(this::addDrawableChild);
+		layout.addFooter(gridWidget);
+		int rows = 4;
+		layout.setFooterHeight(20 * rows + rowSpacing * (rows - 1) + 8);
         super.lateInit();
     }
 
 	private void showErrorToast() {
 		SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.importError"), Text.translatable("skyblocker.waypoints.importErrorText"));
 	}
-
-	@Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 16, Colors.WHITE);
-    }
 
     @Override
     protected boolean isEnabled(NamedWaypoint waypoint) {
