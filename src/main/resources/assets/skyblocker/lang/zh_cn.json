@@ -1514,5 +1514,20 @@
     "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.TOP": "上方",
     "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "使用该界面来移动Tab和HUD小部件。\n使用“/skyblocker hud”可以直接打开该界面！",
     "skyblocker.config.dungeons.salvageHelper.onlyDonated": "分解助手 - 仅高亮已捐赠物品",
-    "skyblocker.config.mining.enableDrillFuel.@Tooltip": "使用耐久条显示钻头剩余燃料。\n显示Pickonimbus剩余方块采掘数。"
+    "skyblocker.config.mining.enableDrillFuel.@Tooltip": "使用耐久条显示钻头剩余燃料。\n显示Pickonimbus剩余方块采掘数。",
+    "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip": "允许以相反顺序使用路径点组。",
+    "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip": "允许跳过有序路径点组中的路径点。",
+    "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints": "允许跳过路径点",
+    "skyblocker.config.uiAndVisuals.waypoints.lineColor": "线条颜色",
+    "skyblocker.config.uiAndVisuals.waypoints.lineWidth": "线条宽度",
+    "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "渲染一条从准星到下一个路径点的线（仅限有序组）",
+    "skyblocker.waypoints.otherOptions": "其它选项",
+    "skyblocker.waypoints.waypointsOptions": "路径点选项",
+    "skyblocker.waypoints.groupType": "组类型",
+    "skyblocker.waypoints.groupType.ordered": "有序",
+    "skyblocker.waypoints.groupType.normal": "普通",
+    "skyblocker.waypoints.waypointType": "路径点类型",
+    "skyblocker.config.uiAndVisuals.waypoints.renderLine": "渲染线条",
+    "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards": "允许倒序",
+    "skyblocker.waypoints.throughWalls": "隔墙显示"
 }
