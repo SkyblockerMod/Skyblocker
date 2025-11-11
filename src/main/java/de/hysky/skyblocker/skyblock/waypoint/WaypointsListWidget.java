@@ -88,14 +88,9 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		WaypointGroupEntry groupEntry = new WaypointGroupEntry();
 		Optional<WaypointGroupEntry> selectedGroupEntryOptional = getGroup();
 		int index = waypoints.size();
-		int entryIndex;
 		if (selectedGroupEntryOptional.isPresent()) {
 			WaypointGroupEntry selectedGroupEntry = selectedGroupEntryOptional.get();
 			index = waypoints.indexOf(selectedGroupEntry.group) + 1;
-			entryIndex = children().indexOf(selectedGroupEntry) + 1;
-			while (entryIndex < children().size() && !(children().get(entryIndex) instanceof WaypointGroupEntry)) {
-				entryIndex++;
-			}
 		}
 		waypoints.add(index, groupEntry.group);
 		this.updateEntries();
