@@ -75,8 +75,7 @@ public class SkyblockerWebSocket {
 	private static void sendInternal(String message) {
 		MESSAGE_SEND_QUEUE.submit(() -> {
 			try {
-				// TODO: Remove
-				/*if (Debug.debugEnabled() && Debug.webSocketDebug())*/ LOGGER.info("[Skyblocker WebSocket] Sending Message: {}", message);
+				if (Debug.debugEnabled() && Debug.webSocketDebug()) LOGGER.info("[Skyblocker WebSocket] Sending Message: {}", message);
 
 				socket.sendText(message, true).join();
 			} catch (Exception e) {
@@ -132,8 +131,7 @@ public class SkyblockerWebSocket {
 		private void handleWholeMessage(List<CharSequence> parts) {
 			String message = String.join("", parts);
 
-			// TODO: Remove
-			/*if (Debug.debugEnabled() && Debug.webSocketDebug())*/ LOGGER.info("[Skyblocker WebSocket] Received Message: {}", message);
+			if (Debug.debugEnabled() && Debug.webSocketDebug()) LOGGER.info("[Skyblocker WebSocket] Received Message: {}", message);
 
 			WsMessageHandler.handleMessage(message);
 		}
