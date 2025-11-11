@@ -88,7 +88,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		WaypointGroupEntry groupEntry = new WaypointGroupEntry();
 		Optional<WaypointGroupEntry> selectedGroupEntryOptional = getGroup();
 		int index = waypoints.size();
-		int entryIndex = children().size();
+		int entryIndex;
 		if (selectedGroupEntryOptional.isPresent()) {
 			WaypointGroupEntry selectedGroupEntry = selectedGroupEntryOptional.get();
 			index = waypoints.indexOf(selectedGroupEntry.group) + 1;
@@ -98,7 +98,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			}
 		}
 		waypoints.add(index, groupEntry.group);
-		children().add(entryIndex, groupEntry);
+		this.updateEntries();
 	}
 
 	@Override
@@ -192,7 +192,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		if (insertPosition != null) {
 			WaypointEntry entry = new WaypointEntry(insertPosition.groupEntry);
 			insertPosition.groupEntry.group.waypoints().add(insertPosition.position, entry.waypoint);
-			children().add(insertPosition.position + children().indexOf(insertPosition.groupEntry) + 1, entry);
+			updateEntries();
 		}
 		return super.mouseClicked(click, doubled);
 	}
@@ -296,17 +296,8 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
 			ButtonWidget buttonNewWaypoint = ButtonWidget.builder(Text.translatable("skyblocker.waypoints.new"), ignored -> {
 				WaypointEntry waypointEntry = new WaypointEntry(this);
-				int entryIndex;
-				if (getSelectedOrNull() instanceof WaypointEntry selectedWaypointEntry && selectedWaypointEntry.groupEntry == this) {
-					entryIndex = WaypointsListWidget.this.children().indexOf(selectedWaypointEntry) + 1;
-				} else {
-					entryIndex = WaypointsListWidget.this.children().indexOf(this) + 1;
-					while (entryIndex < WaypointsListWidget.this.children().size() && !(WaypointsListWidget.this.children().get(entryIndex) instanceof WaypointGroupEntry)) {
-						entryIndex++;
-					}
-				}
 				group.waypoints().add(waypointEntry.waypoint);
-				WaypointsListWidget.this.children().add(entryIndex, waypointEntry);
+				WaypointsListWidget.this.updateEntries();
 				if (collapsed) {
 					collapsedGroups.remove(group);
 					updateEntries();
@@ -316,12 +307,8 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
 			Text deleteText = Text.translatable("selectServer.deleteButton");
 			ButtonWidget buttonDelete = TextIconButtonWidget.builder(deleteText, ignored -> {
-				int entryIndex = WaypointsListWidget.this.children().indexOf(this) + 1;
-				while (entryIndex < WaypointsListWidget.this.children().size() && !(WaypointsListWidget.this.children().get(entryIndex) instanceof WaypointGroupEntry)) {
-					WaypointsListWidget.this.children().remove(entryIndex);
-				}
-				WaypointsListWidget.this.children().remove(this);
 				waypoints.remove(group);
+				updateEntries();
 			}, true).dimension(20, 20).texture(DELETE_ICON, ICON_WIDTH, ICON_HEIGHT).build();
 			buttonDelete.setTooltip(Tooltip.of(deleteText));
 			rightLayout.add(buttonDelete);
@@ -462,7 +449,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			Text deleteText = Text.translatable("selectServer.deleteButton");
 			ButtonWidget buttonDelete = TextIconButtonWidget.builder(deleteText, button -> {
 				groupEntry.group.waypoints().remove(waypoint);
-				WaypointsListWidget.this.children().remove(this);
+				WaypointsListWidget.this.updateEntries();
 			}, true).dimension(20, 20).texture(DELETE_ICON, ICON_WIDTH, ICON_HEIGHT).build();
 			buttonDelete.setTooltip(Tooltip.of(deleteText));
 			layout.add(buttonDelete, Positioner::alignRight);
