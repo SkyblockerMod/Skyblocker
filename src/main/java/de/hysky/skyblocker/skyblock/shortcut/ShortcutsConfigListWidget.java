@@ -139,6 +139,12 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 
 	public abstract static class AbstractShortcutEntry extends ElementListWidget.Entry<AbstractShortcutEntry> {
 		protected void updatePositions() {}
+
+		@Override
+		public boolean mouseClicked(Click click, boolean doubled) {
+			super.mouseClicked(click, doubled);
+			return true;
+		}
 	}
 
 	protected class ShortcutCategoryEntry<T> extends AbstractShortcutEntry {
@@ -194,14 +200,6 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 			if (tooltip != null && isMouseOver(mouseX, mouseY)) {
 				context.drawTooltip(tooltip, mouseX, mouseY);
 			}
-		}
-
-		/**
-		 * Returns true so that category entries can be focused and selected, so that we can add shortcut entries after them.
-		 */
-		@Override
-		public boolean mouseClicked(Click click, boolean doubled) {
-			return true;
 		}
 	}
 
