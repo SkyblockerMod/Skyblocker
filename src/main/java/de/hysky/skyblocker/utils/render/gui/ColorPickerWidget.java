@@ -3,8 +3,10 @@ package de.hysky.skyblocker.utils.render.gui;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
@@ -81,8 +83,8 @@ public class ColorPickerWidget extends ClickableWidget {
 	}
 
 	@Override
-	public void onRelease(double mouseX, double mouseY) {
-		super.onRelease(mouseX, mouseY);
+	public void onRelease(Click click) {
+		super.onRelease(click);
 		if ((draggingH || draggingSV || draggingA) && onColorChange != null) {
 			onColorChange.onColorChange(argbColor | alphaMask, true);
 		}
@@ -134,37 +136,37 @@ public class ColorPickerWidget extends ClickableWidget {
 	}
 
 	@Override
-	public void onClick(double mouseX, double mouseY) {
-		super.onClick(mouseX, mouseY);
-		int i = (int) mouseX;
-		int j = (int) mouseY;
+	public void onClick(Click click, boolean doubled) {
+		super.onClick(click, doubled);
+		int i = (int) click.x();
+		int j = (int) click.y();
 		if (hRect.contains(i, j)) {
 			draggingH = true;
-			onDrag(mouseX, mouseY, 0, 0);
+			onDrag(click, 0, 0);
 		}
 		if (svRect.contains(i, j)) {
 			draggingSV = true;
-			onDrag(mouseX, mouseY, 0, 0);
+			onDrag(click, 0, 0);
 		}
 		if (hasAlpha && aRect.contains(i, j)) {
 			draggingA = true;
-			onDrag(mouseX, mouseY, 0, 0);
+			onDrag(click, 0, 0);
 		}
 	}
 
 	@Override
-	protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-		super.onDrag(mouseX, mouseY, deltaX, deltaY);
+	protected void onDrag(Click click, double deltaX, double deltaY) {
+		super.onDrag(click, deltaX, deltaY);
 		if (draggingH) {
-			hThumbX = Math.clamp(mouseX - hRect.getLeft(), 0, hRect.width() - 1);
+			hThumbX = Math.clamp(click.x() - hRect.getLeft(), 0, hRect.width() - 1);
 			svColor = Color.HSBtoRGB((float) (hThumbX / (hRect.width() - 1)), 1, 1);
 		}
 		if (draggingSV) {
-			svThumbX = Math.clamp(mouseX - svRect.getLeft(), 0, svRect.width() - 1);
-			svThumbY = Math.clamp(mouseY - svRect.getTop(), 0, svRect.height() - 1);
+			svThumbX = Math.clamp(click.x() - svRect.getLeft(), 0, svRect.width() - 1);
+			svThumbY = Math.clamp(click.y() - svRect.getTop(), 0, svRect.height() - 1);
 		}
 		if (draggingA) {
-			aThumbX = Math.clamp(mouseX - aRect.getLeft(), 0, aRect.width() - 1);
+			aThumbX = Math.clamp(click.x() - aRect.getLeft(), 0, aRect.width() - 1);
 		}
 		if (draggingH || draggingSV || draggingA) {
 			float alpha = hasAlpha ? (float) aThumbX / (aRect.width() - 1) : 1f;
@@ -218,6 +220,21 @@ public class ColorPickerWidget extends ClickableWidget {
 		// Preview
 		context.fill(getX(), getY(), svRect.getLeft() - 2, svRect.getBottom() + 1, color);
 		context.fill(getX() + 1, getY() + 1, svRect.getLeft() - 3, svRect.getBottom(), argbColor);
+
+		// Cursor changes (functions similar to Vanilla's slider widgets)
+		if (this.isHovered()) {
+			// Apply hand cursor to indicate that the element can be interacted with
+			if (this.svRect.contains(mouseX, mouseY) || this.hRect.contains(mouseX, mouseY) || this.aRect.contains(mouseX, mouseY)) {
+				context.setCursor(StandardCursors.POINTING_HAND);
+			}
+
+			// Apply crosshair or resize east/west to indicate the element is being interacted with
+			if (this.draggingSV) {
+				context.setCursor(StandardCursors.CROSSHAIR);
+			} else if (this.draggingH || this.draggingA) {
+				context.setCursor(StandardCursors.RESIZE_EW);
+			}
+		}
 	}
 
 	private void drawThumb(DrawContext context, ScreenRect rect, int thumbX) {

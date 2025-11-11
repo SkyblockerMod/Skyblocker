@@ -6,6 +6,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.PressableWidget;
+import net.minecraft.client.input.AbstractInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.ArrayUtils;
@@ -14,7 +15,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class CyclingIconButtonWidget<T> extends PressableWidget {
-
     private final Function<T, Icon> valueToIcon;
     private final boolean showText;
     private int index;
@@ -45,7 +45,7 @@ public class CyclingIconButtonWidget<T> extends PressableWidget {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(AbstractInput input) {
         index = (index + 1) % values.length;
         T newValue = values[index];
         callback.accept(newValue);

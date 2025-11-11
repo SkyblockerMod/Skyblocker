@@ -30,6 +30,7 @@ import net.azureaaron.dandelion.systems.controllers.ColourController;
 import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.input.SystemKeycodes;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -227,7 +228,7 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils.createEnumController())
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(MinecraftClient.IS_SYSTEM_MAC ? Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.cmdK") : Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.ctrlK"))
+                                .name(SystemKeycodes.IS_MAC_OS ? Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.cmdK") : Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.ctrlK"))
                                 .binding(defaults.uiAndVisuals.inventorySearch.ctrlK,
                                         () -> config.uiAndVisuals.inventorySearch.ctrlK,
                                         newValue -> config.uiAndVisuals.inventorySearch.ctrlK = newValue)
@@ -276,7 +277,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
-								// .tags(Text.literal("gui")) // TODO: uncomment when we start using the next Dandelion version
+								.tags(Text.literal("gui"))
 								.prompt(Text.translatable("text.skyblocker.open"))
 								.action(screen -> {
 									if (Utils.isOnSkyblock() && config.uiAndVisuals.tabHud.tabHudEnabled) {

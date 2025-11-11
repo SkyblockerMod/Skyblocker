@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.utils.Formatters;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectFunction;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.screen.ScreenTexts;
@@ -60,8 +61,8 @@ public class RangedSliderWidget extends SliderWidget {
 	}
 
 	@Override
-	public void onRelease(double mouseX, double mouseY) {
-		super.onRelease(mouseX, mouseY);
+	public void onRelease(Click click) {
+		super.onRelease(click);
 		this.value = valueToProgress(getValue());
 	}
 

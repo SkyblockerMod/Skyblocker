@@ -4,11 +4,14 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.cursor.Cursor;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -90,11 +93,11 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 	}
 
 	@Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (islandWidget.mouseClicked(mouseX, mouseY, button)) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        if (islandWidget.mouseClicked(click, doubled)) {
             return true;
         }
-        boolean mouseClicked = super.mouseClicked(mouseX, mouseY, button);
+        boolean mouseClicked = super.mouseClicked(click, doubled);
         updateButtons();
         return mouseClicked;
     }
@@ -199,8 +202,13 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+			// Set the cursor to default to prevent widgets from below taking over the shape when they cannot be interacted with
+			if (this.isHovered()) {
+				context.setCursor(Cursor.DEFAULT);
+			}
+
 			context.fill(getX(), getY(), getRight(), getBottom(), ColorHelper.withAlpha(0.6f, 0));
-			context.drawBorder(getX(), getY(), getWidth(), getHeight(), Colors.WHITE);
+			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), Colors.WHITE);
 			for (ClickableWidget child : children) {
 				child.render(context, mouseX, mouseY, deltaTicks);
 			}

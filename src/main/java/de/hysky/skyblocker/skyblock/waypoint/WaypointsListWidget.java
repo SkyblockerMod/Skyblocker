@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import de.hysky.skyblocker.utils.render.gui.CyclingIconButtonWidget;
+import de.hysky.skyblocker.utils.render.gui.NoopInput;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
@@ -16,13 +17,16 @@ import it.unimi.dsi.fastutil.ints.IntConsumer;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.input.AbstractInput;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -84,17 +88,12 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		WaypointGroupEntry groupEntry = new WaypointGroupEntry();
 		Optional<WaypointGroupEntry> selectedGroupEntryOptional = getGroup();
 		int index = waypoints.size();
-		int entryIndex = children().size();
 		if (selectedGroupEntryOptional.isPresent()) {
 			WaypointGroupEntry selectedGroupEntry = selectedGroupEntryOptional.get();
 			index = waypoints.indexOf(selectedGroupEntry.group) + 1;
-			entryIndex = children().indexOf(selectedGroupEntry) + 1;
-			while (entryIndex < children().size() && !(children().get(entryIndex) instanceof WaypointGroupEntry)) {
-				entryIndex++;
-			}
 		}
 		waypoints.add(index, groupEntry.group);
-		children().add(entryIndex, groupEntry);
+		this.updateEntries();
 	}
 
 	@Override
@@ -177,17 +176,20 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		boolean hovering = isMouseOver(mouseX, mouseY) && Math.abs(mouseY - insertButtonY) <= 6 && mX < 16 && mX >= -8;
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, hovering ? INSERT_HIGHLIGHTED_TEXTURE : INSERT_TEXTURE, getRowLeft(), insertButtonY - 5, 48, 11);
 		if (Debug.debugEnabled()) context.drawText(client.textRenderer, String.valueOf(position), getX(), getY(), -1, true);
-		if (hovering) insertPosition = new InsertPosition(groupEntry, position);
+		if (hovering) {
+			insertPosition = new InsertPosition(groupEntry, position);
+			context.setCursor(StandardCursors.POINTING_HAND);
+		}
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		if (insertPosition != null) {
 			WaypointEntry entry = new WaypointEntry(insertPosition.groupEntry);
 			insertPosition.groupEntry.group.waypoints().add(insertPosition.position, entry.waypoint);
-			children().add(insertPosition.position + children().indexOf(insertPosition.groupEntry) + 1, entry);
+			updateEntries();
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	void updateEntries() {
@@ -208,7 +210,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			if (entry instanceof WaypointGroupEntry groupEntry && groupEntry.enabled.isChecked() != groupEntry.shouldBeChecked()) {
 				((CheckboxWidgetAccessor) groupEntry.enabled).setChecked(!groupEntry.enabled.isChecked());
 			} else if (entry instanceof WaypointEntry waypointEntry && waypointEntry.enabled.isChecked() != screen.isEnabled(waypointEntry.waypoint)) {
-				waypointEntry.enabled.onPress();
+				waypointEntry.enabled.onPress(NoopInput.INSTANCE);
 			}
 		}
 	}
@@ -289,17 +291,8 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
 			ButtonWidget buttonNewWaypoint = ButtonWidget.builder(Text.translatable("skyblocker.waypoints.new"), ignored -> {
 				WaypointEntry waypointEntry = new WaypointEntry(this);
-				int entryIndex;
-				if (getSelectedOrNull() instanceof WaypointEntry selectedWaypointEntry && selectedWaypointEntry.groupEntry == this) {
-					entryIndex = WaypointsListWidget.this.children().indexOf(selectedWaypointEntry) + 1;
-				} else {
-					entryIndex = WaypointsListWidget.this.children().indexOf(this) + 1;
-					while (entryIndex < WaypointsListWidget.this.children().size() && !(WaypointsListWidget.this.children().get(entryIndex) instanceof WaypointGroupEntry)) {
-						entryIndex++;
-					}
-				}
 				group.waypoints().add(waypointEntry.waypoint);
-				WaypointsListWidget.this.children().add(entryIndex, waypointEntry);
+				WaypointsListWidget.this.updateEntries();
 				if (collapsed) {
 					collapsedGroups.remove(group);
 					updateEntries();
@@ -309,12 +302,8 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
 			Text deleteText = Text.translatable("selectServer.deleteButton");
 			ButtonWidget buttonDelete = TextIconButtonWidget.builder(deleteText, ignored -> {
-				int entryIndex = WaypointsListWidget.this.children().indexOf(this) + 1;
-				while (entryIndex < WaypointsListWidget.this.children().size() && !(WaypointsListWidget.this.children().get(entryIndex) instanceof WaypointGroupEntry)) {
-					WaypointsListWidget.this.children().remove(entryIndex);
-				}
-				WaypointsListWidget.this.children().remove(this);
 				waypoints.remove(group);
+				updateEntries();
 			}, true).dimension(20, 20).texture(DELETE_ICON, ICON_WIDTH, ICON_HEIGHT).build();
 			buttonDelete.setTooltip(Tooltip.of(deleteText));
 			rightLayout.add(buttonDelete);
@@ -370,10 +359,10 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			layout.setPosition(x, y);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			layout.setPosition(this.getX(), this.getY());
 			for (ClickableWidget child : children) {
-				child.render(context, mouseX, mouseY, tickDelta);
+				child.render(context, mouseX, mouseY, deltaTicks);
 			}
 		}
 	}
@@ -455,7 +444,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			Text deleteText = Text.translatable("selectServer.deleteButton");
 			ButtonWidget buttonDelete = TextIconButtonWidget.builder(deleteText, button -> {
 				groupEntry.group.waypoints().remove(waypoint);
-				WaypointsListWidget.this.children().remove(this);
+				WaypointsListWidget.this.updateEntries();
 			}, true).dimension(20, 20).texture(DELETE_ICON, ICON_WIDTH, ICON_HEIGHT).build();
 			buttonDelete.setTooltip(Tooltip.of(deleteText));
 			layout.add(buttonDelete, Positioner::alignRight);
@@ -545,13 +534,13 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			layout.setPosition(x, y);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			layout.setPosition(this.getX(), this.getY());
 			boolean showButtons = hovered && mouseY >= buttonUp.getY() - 1 && mouseY <= buttonUp.getBottom();
 			buttonUp.visible = showButtons;
 			buttonDown.visible = showButtons;
 			for (ClickableWidget child : children) {
-				child.render(context, mouseX, mouseY, tickDelta);
+				child.render(context, mouseX, mouseY, deltaTicks);
 			}
 		}
 	}
@@ -568,7 +557,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		}
 
 		@Override
-		public void onPress() {
+		public void onPress(AbstractInput input) {
 			ColorPickerWidget widget = new ColorPickerWidget(0, 0, 200, 110, true);
 			widget.setOnColorChange((color, mouseRelease) -> {
 				textInput.setARGBColor(color);
@@ -584,6 +573,10 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			int padding = 1;
 			context.fill(getX() + padding, getY() + padding, getRight() - padding, getBottom() - padding, isHovered() ? Colors.WHITE : Colors.BLACK);
 			context.fill(getX() + padding + 1, getY() + padding + 1, getRight() - padding - 1, getBottom() - padding - 1, this.color);
+
+			if (this.isHovered()) {
+				context.setCursor(StandardCursors.POINTING_HAND);
+			}
 		}
 
 		@Override

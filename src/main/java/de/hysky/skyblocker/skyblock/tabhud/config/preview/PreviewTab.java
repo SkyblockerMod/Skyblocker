@@ -14,9 +14,12 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
+import de.hysky.skyblocker.utils.render.gui.NoopInput;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.ScreenRect;
@@ -27,6 +30,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ScrollableWidget;
 import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScoreHolder;
@@ -143,7 +147,7 @@ public class PreviewTab implements Tab {
 
 	public void goToLayer(WidgetManager.ScreenLayer layer) {
 		if (layer == WidgetManager.ScreenLayer.DEFAULT) layer = WidgetManager.ScreenLayer.HUD;
-		layerButtons[layer.ordinal()].onPress();
+		layerButtons[layer.ordinal()].onPress(NoopInput.INSTANCE);
 	}
 
 	@Override
@@ -266,7 +270,7 @@ public class PreviewTab implements Tab {
 	void onHudWidgetSelected(@Nullable HudWidget hudWidget) {
 		widgetOptions.clearWidgets();
 		if (hudWidget == null) return;
-		if (locationDropdown.isOpen()) locationDropdown.mouseClicked(locationDropdown.getX(), locationDropdown.getY(), 0);
+		if (locationDropdown.isOpen()) locationDropdown.mouseClicked(new Click(locationDropdown.getX(), locationDropdown.getY(), new MouseInput(0, 0)), false);
 		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
 		PositionRule positionRule = screenBuilder.getPositionRule(hudWidget.getInternalID());
 		int width = widgetOptions.getWidth() - 6;
@@ -326,7 +330,7 @@ public class PreviewTab implements Tab {
 				button.setMessage(Text.literal("Layer: " + newRule.screenLayer().toString()));
 				updateWidgets();
 				if (newLayer != WidgetManager.ScreenLayer.DEFAULT) {
-					layerButtons[newLayer.ordinal()].onPress();
+					layerButtons[newLayer.ordinal()].onPress(NoopInput.INSTANCE);
 				}
 
 			}).width(width).build());
@@ -419,6 +423,7 @@ public class PreviewTab implements Tab {
 
 		/**
 		 * A widget is not visible if it is half above the top of the frame, or half below.
+		 *
 		 * @param i Y of the widget
 		 * @param j Bottom of the widget
 		 * @param h Height of the widget
@@ -430,7 +435,7 @@ public class PreviewTab implements Tab {
 
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			this.drawScrollbar(context);
+			this.drawScrollbar(context, mouseX, mouseY);
 			height = 0;
 			for (ClickableWidget widget : widgets) {
 				widget.setX(getX() + 1);
@@ -443,13 +448,13 @@ public class PreviewTab implements Tab {
 		}
 
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
-			boolean bl = checkScrollbarDragged(mouseX, mouseY, button);
+		public boolean mouseClicked(Click click, boolean doubled) {
+			boolean bl = checkScrollbarDragged(click);
 			for (ClickableWidget widget : widgets) {
 				if (isNotVisible(widget.getY(), widget.getBottom(), widget.getHeight())) continue;
-				if (widget.mouseClicked(mouseX, mouseY, button)) return true;
+				if (widget.mouseClicked(click, doubled)) return true;
 			}
-			return super.mouseClicked(mouseX, mouseY, button) || bl;
+			return super.mouseClicked(click, doubled) || bl;
 		}
 
 		@Override
@@ -486,7 +491,7 @@ public class PreviewTab implements Tab {
 			int y = 5; // 30 / 6
 			int h = 20;
 
-			context.drawBorder(x, y + 1, w, h, Colors.WHITE);
+			HudHelper.drawBorder(context, x, y + 1, w, h, Colors.WHITE);
 			for (int i = 0; i < 3; i++) {
 				for (int j = 0; j < 3; j++) {
 					int squareX = x + (i * getWidth()) / 3;
@@ -519,7 +524,7 @@ public class PreviewTab implements Tab {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			HudWidget affectedWidget = previewWidget.selectedWidget;
 			if (hoveredPoint != null && affectedWidget != null) {
 				ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());

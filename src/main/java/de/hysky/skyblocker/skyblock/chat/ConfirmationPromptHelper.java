@@ -46,11 +46,11 @@ public class ConfirmationPromptHelper {
 		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
 			//Don't check for the command being present in case the user opens the chat before the prompt is sent
 			if (Utils.isOnSkyblock() && screen instanceof ChatScreen && SkyblockerConfigManager.get().chat.confirmationPromptHelper) {
-				ScreenMouseEvents.beforeMouseClick(screen).register((_screen1, mouseX, mouseY, button) -> {
+				ScreenMouseEvents.beforeMouseClick(screen).register((_screen1, click) -> {
 					if (hasCommand()) {
 						MinecraftClient client = MinecraftClient.getInstance();
 						if (client.currentScreen instanceof ChatScreen) {	// Ignore clicks on other interactive elements
-								Style style = client.inGameHud.getChatHud().getTextStyleAt(mouseX, mouseY);
+								Style style = client.inGameHud.getChatHud().getTextStyleAt(click.x(), click.y());
 								if (style != null && style.getClickEvent() != null) {	// clicking on some prompts invalidates first prompt but not in all cases, so I decided not to nullify command
 									return;
 								}

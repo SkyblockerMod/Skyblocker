@@ -25,6 +25,11 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         this.screen = screen;
         this.hasChanged = false;
 
+        updateEntries();
+    }
+
+    public void updateEntries() {
+        clearEntries();
         //add labels
         addEntry(new ChatRuleLabelsEntry());
         //add entry fall all existing rules
@@ -48,13 +53,13 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         int newIndex = Math.max(children().indexOf(getSelectedOrNull()), 0);
 
         ChatRulesHandler.chatRuleList.getData().add(newIndex, new ChatRule());
-        children().add(newIndex + 1, new ChatRuleConfigEntry(newIndex));
+        updateEntries();
     }
 
 	@Override
-    protected boolean removeEntry(AbstractChatRuleEntry entry) {
+    protected void removeEntry(AbstractChatRuleEntry entry) {
         hasChanged = true;
-        return super.removeEntry(entry);
+        super.removeEntry(entry);
     }
 
     protected void saveRules() {
@@ -82,10 +87,10 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         }
 
         @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleName"), width / 2 - 125, y + 5, 0xFFFFFFFF);
-            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleEnabled"), width / 2, y + 5, 0xFFFFFFFF);
-            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.modify"), width / 2 + 100, y + 5, 0xFFFFFFFF);
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleName"), ChatRulesConfigListWidget.this.getWidth() / 2 - 125, this.getY() + 5, 0xFFFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleEnabled"), ChatRulesConfigListWidget.this.getWidth() / 2, this.getY() + 5, 0xFFFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.modify"), ChatRulesConfigListWidget.this.getWidth() / 2 + 100, this.getY() + 5, 0xFFFFFFFF);
         }
     }
 
@@ -141,6 +146,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
                 return Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.false").withColor(Color.RED.getRGB());
             }
         }
+
         private void toggleEnabled() {
             hasChanged = true;
             chatRule.setEnabled(!chatRule.getEnabled());
@@ -178,16 +184,16 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         }
 
         @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) { //todo get strings form en_us.json
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) { //todo get strings form en_us.json
             //widgets
-            enabledButton.setY(y);
-            enabledButton.render(context, mouseX, mouseY, tickDelta);
-            openConfigButton.setY(y);
-            openConfigButton.render(context, mouseX, mouseY, tickDelta);
-            deleteButton.setY(y);
-            deleteButton.render(context, mouseX, mouseY, tickDelta);
+            enabledButton.setY(this.getY());
+            enabledButton.render(context, mouseX, mouseY, deltaTicks);
+            openConfigButton.setY(this.getY());
+            openConfigButton.render(context, mouseX, mouseY, deltaTicks);
+            deleteButton.setY(this.getY());
+            deleteButton.render(context, mouseX, mouseY, deltaTicks);
             //text
-            context.drawCenteredTextWithShadow(client.textRenderer, chatRule.getName(), nameX, y + 5, 0xFFFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, chatRule.getName(), nameX, this.getY() + 5, 0xFFFFFFFF);
         }
 
         public boolean isChange() {

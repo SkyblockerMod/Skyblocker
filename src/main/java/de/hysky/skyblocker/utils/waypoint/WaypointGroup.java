@@ -165,7 +165,7 @@ public class WaypointGroup {
             NamedWaypoint waypoint = waypoints.get(i);
             boolean notBackwards = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowGoingBackwards || i > currentIndex;
             boolean notSkipping = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowSkippingWaypoints || i == (currentIndex + 1) % waypoints.size() || i == (currentIndex - 1 + waypoints.size()) % waypoints.size();
-            if (notBackwards && notSkipping && waypoint.pos.isWithinDistance(MinecraftClient.getInstance().player.getPos(), WAYPOINT_ACTIVATION_RADIUS)) {
+            if (notBackwards && notSkipping && waypoint.pos.isWithinDistance(MinecraftClient.getInstance().player.getEntityPos(), WAYPOINT_ACTIVATION_RADIUS)) {
                 currentIndex = i;
             }
         }

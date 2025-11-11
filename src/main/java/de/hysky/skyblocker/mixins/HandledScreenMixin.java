@@ -27,14 +27,17 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.container.StackDisplayModifier;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipData;
@@ -166,33 +169,33 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	}
 
 	@Inject(at = @At("HEAD"), method = "keyPressed")
-	public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-		if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
+	public void skyblocker$keyPressed(KeyInput input, CallbackInfoReturnable<Boolean> cir) {
+		if (this.client != null && this.client.player != null && this.focusedSlot != null && !input.isEscape() && !this.client.options.inventoryKey.matchesKey(input) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 
 			// Wiki lookup
-			WikiLookupManager.handleWikiLookup(this.getTitle().getString(), Either.left(this.focusedSlot), this.client.player, keyCode, scanCode);
+			WikiLookupManager.handleWikiLookup(this.getTitle().getString(), Either.left(this.focusedSlot), this.client.player, input);
 
 			//item protection
-			if (ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
+			if (ItemProtection.itemProtection.matchesKey(input)) {
 				ItemProtection.handleKeyPressed(this.focusedSlot.getStack());
 			}
 			//Item Price Lookup
-			if (config.helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
+			if (config.helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(input)) {
 				ItemPrice.itemPriceLookup(client.player, this.focusedSlot);
 			}
 		}
 	}
 
-	@ModifyExpressionValue(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDI)Z"))
-	public boolean skyblocker$passThroughSearchFieldUnfocusedClicks(boolean superClicked, double mouseX, double mouseY, int button) {
+	@ModifyExpressionValue(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(Lnet/minecraft/client/gui/Click;Z)Z"))
+	public boolean skyblocker$passThroughSearchFieldUnfocusedClicks(boolean superClicked, Click click, boolean doubled) {
 		//Handle Search Field clicks - as of 1.21.4 the game will only send clicks to the selected element rather than trying to send one to each and stopping when the first returns true (if any).
 		if (!superClicked) {
 			Optional<ClickableWidget> searchField = Screens.getButtons(this).stream()
 					.filter(InventorySearch.SearchTextFieldWidget.class::isInstance)
 					.findFirst();
 
-			if (searchField.isPresent() && searchField.get().mouseClicked(mouseX, mouseY, button)) {
+			if (searchField.isPresent() && searchField.get().mouseClicked(click, doubled)) {
 				return true;
 			}
 		}
@@ -265,7 +268,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 
 		// Backpack Preview
-		boolean shiftDown = SkyblockerConfigManager.get().uiAndVisuals.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
+		boolean shiftDown = SkyblockerConfigManager.get().uiAndVisuals.backpackPreviewWithoutShift ^ HudHelper.hasShiftDown();
 		if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(context, this, focusedSlot.getIndex(), x, y)) {
 			return;
 		}

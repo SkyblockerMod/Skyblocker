@@ -203,7 +203,7 @@ public class SlayerManager {
 	 * Gets nearby armor stands with custom names. Used to find other armor stands showing a different line of text above a slayer boss.
 	 */
 	public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {
-		return entity.getWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.1F, expandY, 0.1F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
+		return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.1F, expandY, 0.1F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
 	}
 
 	/**
@@ -216,7 +216,7 @@ public class SlayerManager {
 	 */
 	public static <T extends Entity> T findClosestMobEntity(EntityType<T> entityType, ArmorStandEntity armorStand) {
 		if (entityType == null) return null;
-		List<T> mobEntities = armorStand.getWorld().getEntitiesByType(entityType, armorStand.getBoundingBox().expand(0, 1.5f, 0), SlayerManager::isValidSlayerMob);
+		List<T> mobEntities = armorStand.getEntityWorld().getEntitiesByType(entityType, armorStand.getBoundingBox().expand(0, 1.5f, 0), SlayerManager::isValidSlayerMob);
 		mobEntities.sort(Comparator.comparingDouble(armorStand::squaredDistanceTo));
 
 		return switch (mobEntities.size()) {

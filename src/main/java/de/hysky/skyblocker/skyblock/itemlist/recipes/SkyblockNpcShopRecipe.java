@@ -12,9 +12,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class SkyblockNpcShopRecipe implements SkyblockRecipe {
-	public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_npc_shop");
+	public static final Identifier ID = SkyblockerMod.id("skyblock_npc_shop");
 	private static final int SLOT_SIZE = 18;
 	private static final int ARROW_LENGTH = 24;
 	private static final int ARROW_PADDING = 3;
@@ -119,11 +120,11 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 
 	@Override
 	public Identifier getCategoryIdentifier() {
-		return IDENTIFIER;
+		return ID;
 	}
 
 	@Override
 	public Identifier getRecipeIdentifier() {
-		return Identifier.of("skyblock", output.getSkyblockId());
+		return Identifier.of("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
 	}
 }
