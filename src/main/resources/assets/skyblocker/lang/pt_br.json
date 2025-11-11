@@ -40,7 +40,6 @@
     "skyblocker.itemTooltip.nullMessage": "§cA Informação do preço do item no tooltip irá se renovar no máximo 60 segundos. Caso contrário, cheque \"latest.log\"",
     "skyblocker.config.misc.richPresence.info.LOCATION": "LOCALIZAÇÃO",
     "skyblocker.config.quickNav": "Navegação Rápida",
-    "key.categories.skyblocker": "Skyblocker",
     "skyblocker.config.helpers.fishing": "Assistente de Pesca",
     "skyblocker.config.helpers.fishing.enableFishingHelper": "Ativar Assistente de Pesca",
     "skyblocker.config.helpers.fairySouls": "Assistente de Alma das Fadas",

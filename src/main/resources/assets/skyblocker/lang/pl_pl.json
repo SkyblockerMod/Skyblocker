@@ -64,7 +64,6 @@
     "skyblocker.config.dungeons.livid.enableLividColorGlow.@Tooltip": "Stosuje efekt rozświetlenia do właściwego Livid w F5/M5",
     "skyblocker.config.dungeons.livid.enableLividColorText": "Włącz żywy kolor tekstu",
     "skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip": "Wyślij ożywiony kolor na czacie podczas walki z ożywionym bossem.",
-    "key.categories.skyblocker": "Skyblocker",
     "key.skyblocker.defaultTgl": "Przywróć zakładkę HUD do pierwotnej pozycji",
     "text.skyblocker.website": "Strona internetowa",
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Próg ostrzegawczy o zatruciu strzałą",
