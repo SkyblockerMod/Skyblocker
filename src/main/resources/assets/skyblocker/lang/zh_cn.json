@@ -1530,5 +1530,6 @@
     "skyblocker.config.uiAndVisuals.waypoints.renderLine": "渲染线条",
     "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards": "允许倒序",
     "skyblocker.waypoints.throughWalls": "隔墙显示",
-    "skyblocker.dungeons.splits.bloodOpen": "血房开启"
+    "skyblocker.dungeons.splits.bloodOpen": "Blood Room开启",
+    "skyblocker.dungeons.splits.witherKing": "凋灵王"
 }
