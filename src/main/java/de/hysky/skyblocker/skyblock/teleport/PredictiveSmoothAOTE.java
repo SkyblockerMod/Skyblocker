@@ -42,7 +42,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PredictiveSmoothAOTE {
-	public static final Identifier SMOOTH_AOTE_BEFORE_PHASE = Identifier.of(SkyblockerMod.NAMESPACE, "smooth_aote");
+	public static final Identifier SMOOTH_AOTE_BEFORE_PHASE = SkyblockerMod.id("smooth_aote");
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
