@@ -423,7 +423,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 							text.append(", ");
 						}
 						duplicate = true;
-						text.append(Text.translatable(otherKeyBinding.getBoundKeyTranslationKey()));
+						text.append(Text.translatable(otherKeyBinding.getId()));
 					}
 				}
 				// Check for conflicts with other keybind shortcuts
