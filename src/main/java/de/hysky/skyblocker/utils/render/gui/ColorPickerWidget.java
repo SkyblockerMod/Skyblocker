@@ -221,12 +221,18 @@ public class ColorPickerWidget extends ClickableWidget {
 		context.fill(getX(), getY(), svRect.getLeft() - 2, svRect.getBottom() + 1, color);
 		context.fill(getX() + 1, getY() + 1, svRect.getLeft() - 3, svRect.getBottom(), argbColor);
 
-		// Cursor changes
+		// Cursor changes (functions similar to Vanilla's slider widgets)
 		if (this.isHovered()) {
-			if (this.draggingH || this.draggingA) {
-				context.setCursor(StandardCursors.RESIZE_EW);
-			} else if (this.draggingSV) {
+			// Apply hand cursor to indicate that the element can be interacted with
+			if (this.svRect.contains(mouseX, mouseY) || this.hRect.contains(mouseX, mouseY) || this.aRect.contains(mouseX, mouseY)) {
+				context.setCursor(StandardCursors.POINTING_HAND);
+			}
+
+			// Apply crosshair or resize east/west to indicate the element is being interacted with
+			if (this.draggingSV) {
 				context.setCursor(StandardCursors.CROSSHAIR);
+			} else if (this.draggingH || this.draggingA) {
+				context.setCursor(StandardCursors.RESIZE_EW);
 			}
 		}
 	}
