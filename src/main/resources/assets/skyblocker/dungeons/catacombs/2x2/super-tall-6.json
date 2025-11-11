@@ -1,0 +1,126 @@
+{
+  "info": {
+    "name": "Super Tall"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 11,
+      "y": 73,
+      "z": 5
+    },
+    {
+      "secretName": "1 - Bat",
+      "category": "bat",
+      "x": 4,
+      "y": 72,
+      "z": 3
+    },
+    {
+      "secretName": "2 - Lever",
+      "category": "lever",
+      "x": 50,
+      "y": 77,
+      "z": 46
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 58,
+      "y": 92,
+      "z": 55
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 31,
+      "y": 102,
+      "z": 52
+    },
+    {
+      "secretName": "3 - Lever",
+      "category": "lever",
+      "x": 9,
+      "y": 98,
+      "z": 24
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 47,
+      "y": 112,
+      "z": 18
+    },
+    {
+      "secretName": "3 - Bat",
+      "category": "bat",
+      "x": 50,
+      "y": 111,
+      "z": 8
+    },
+    {
+      "secretName": "4/5/6 - Entrance 1 ",
+      "category": "entrance",
+      "x": 13,
+      "y": 131,
+      "z": 16
+    },
+    {
+      "secretName": "4/5/6 - Lever",
+      "category": "lever",
+      "x": 12,
+      "y": 131,
+      "z": 7
+    },
+    {
+      "secretName": "4/5/6 - Entrance 2 (after Lever)",
+      "category": "entrance",
+      "x": 56,
+      "y": 113,
+      "z": 16
+    },
+    {
+      "secretName": "4/5/6 - Entrance 3",
+      "category": "entrance",
+      "x": 31,
+      "y": 142,
+      "z": 39
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 36,
+      "y": 142,
+      "z": 51
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 31,
+      "y": 142,
+      "z": 56
+    },
+    {
+      "secretName": "6 - Chest",
+      "category": "chest",
+      "x": 26,
+      "y": 142,
+      "z": 51
+    },
+    {
+      "secretName": "Fairy Soul",
+      "category": "fairysoul",
+      "x": 43,
+      "y": 118,
+      "z": 42
+    },
+    {
+      "secretName": "Prince",
+      "category": "prince",
+      "x": 50,
+      "y": 142,
+      "z": 47
+    }
+  ]
+}
