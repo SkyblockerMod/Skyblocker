@@ -431,7 +431,7 @@ public class UIAndVisualsCategory {
                                 .build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"))
-								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip"))
 								.binding(defaults.uiAndVisuals.waypoints.renderLine,
 										() -> config.uiAndVisuals.waypoints.renderLine,
 										newValue -> config.uiAndVisuals.waypoints.renderLine = newValue)
