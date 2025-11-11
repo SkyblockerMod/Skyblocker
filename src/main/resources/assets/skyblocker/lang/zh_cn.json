@@ -1529,5 +1529,6 @@
     "skyblocker.waypoints.waypointType": "路径点类型",
     "skyblocker.config.uiAndVisuals.waypoints.renderLine": "渲染线条",
     "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards": "允许倒序",
-    "skyblocker.waypoints.throughWalls": "隔墙显示"
+    "skyblocker.waypoints.throughWalls": "隔墙显示",
+    "skyblocker.dungeons.splits.bloodOpen": "血房开启"
 }
