@@ -1531,5 +1531,6 @@
     "skyblocker.waypoints.throughWalls": "隔墙显示",
     "skyblocker.dungeons.splits.bloodOpen": "Blood Room开启",
     "skyblocker.dungeons.splits.witherKing": "凋灵王",
-    "skyblocker.dungeons.splits.bloodClear": "Blood Room清空"
+    "skyblocker.dungeons.splits.bloodClear": "Blood Room清空",
+    "key.category.skyblocker.main": "Skyblocker"
 }
