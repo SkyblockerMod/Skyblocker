@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfigListWidget.AbstractShortcutEntry> {
+	private static final int TEXT_FIELD_PADDING = 2;
 	private final ShortcutsConfigScreen screen;
 
 	/**
@@ -60,7 +61,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 
 	@Override
 	public int getRowWidth() {
-		return super.getRowWidth() + 100;
+		return super.getRowWidth() + 100 + 2 * TEXT_FIELD_PADDING;
 	}
 
 	@Override
@@ -137,6 +138,12 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 
 	public abstract static class AbstractShortcutEntry extends ElementListWidget.Entry<AbstractShortcutEntry> {
 		protected void updatePositions() {}
+
+		@Override
+		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+			super.mouseClicked(mouseX, mouseY, button);
+			return true;
+		}
 	}
 
 	protected class ShortcutCategoryEntry<T> extends AbstractShortcutEntry {
@@ -192,14 +199,6 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 			if (tooltip != null && isMouseOver(mouseX, mouseY)) {
 				context.drawTooltip(tooltip, mouseX, mouseY);
 			}
-		}
-
-		/**
-		 * Returns true so that category entries can be focused and selected, so that we can add shortcut entries after them.
-		 */
-		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
-			return true;
 		}
 	}
 
