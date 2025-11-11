@@ -5,6 +5,7 @@ import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -114,7 +115,7 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			if (selectable) {
 				callback.accept(item);
 				close();

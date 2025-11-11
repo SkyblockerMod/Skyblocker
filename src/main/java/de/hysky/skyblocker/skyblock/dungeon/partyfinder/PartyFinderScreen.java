@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -137,7 +138,7 @@ public class PartyFinderScreen extends Screen {
 		super.init();
 		int topRowButtonsHeight = 20;
 
-		// Entry list widget, pretty much every position is based on this guy since it centers automagically
+		// AbstractEntry list widget, pretty much every position is based on this guy since it centers automagically
 		int widget_height = (int) (this.height * 0.8);
 		int entryListTopY = Math.max(43, (int) (height * 0.1));
 		this.partyEntryListWidget = new PartyEntryListWidget(client, width, widget_height, entryListTopY, 68);
@@ -485,11 +486,11 @@ public class PartyFinderScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		if (settingsContainer != null && settingsContainer.hasOpenOption()) {
-			return settingsContainer.mouseClicked(mouseX, mouseY, button);
+			return settingsContainer.mouseClicked(click, doubled);
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	public void clickAndWaitForServer(int slotID) {

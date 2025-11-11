@@ -32,11 +32,11 @@ public record HorizontalGradientGuiElementRenderState(
 		}
 
 	@Override
-	public void setupVertices(VertexConsumer vertices, float depth) {
-		vertices.vertex(this.matrix(), this.startX(), this.startY(), depth).color(this.colorStart());
-		vertices.vertex(this.matrix(), this.startX(), this.endY(), depth).color(this.colorStart());
-		vertices.vertex(this.matrix(), this.endX(), this.endY(), depth).color(this.colorEnd());
-		vertices.vertex(this.matrix(), this.endX(), this.startY(), depth).color(this.colorEnd());
+	public void setupVertices(VertexConsumer vertices) {
+		vertices.vertex(this.matrix(), this.startX(), this.startY()).color(this.colorStart());
+		vertices.vertex(this.matrix(), this.startX(), this.endY()).color(this.colorStart());
+		vertices.vertex(this.matrix(), this.endX(), this.endY()).color(this.colorEnd());
+		vertices.vertex(this.matrix(), this.endX(), this.startY()).color(this.colorEnd());
 	}
 
 	@Nullable

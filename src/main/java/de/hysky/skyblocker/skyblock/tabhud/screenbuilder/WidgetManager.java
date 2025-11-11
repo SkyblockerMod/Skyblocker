@@ -69,8 +69,6 @@ public class WidgetManager {
 				DungeonPlayerWidget widget = new DungeonPlayerWidget(i);
 				addWidgetInstance(widget);
 			}
-
-			fillDefaultConfig();
 			loadConfig();
 
 		});
@@ -136,6 +134,7 @@ public class WidgetManager {
 			}
 		} catch (NoSuchFileException e) {
 			LOGGER.warn("[Skyblocker] No hud widget config file found, using defaults");
+			fillDefaultConfig();
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to load hud widgets config", e);
 		}

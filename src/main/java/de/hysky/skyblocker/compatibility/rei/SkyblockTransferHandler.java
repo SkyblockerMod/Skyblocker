@@ -26,7 +26,7 @@ public class SkyblockTransferHandler implements TransferHandler {
 	public ApplicabilityResult checkApplicable(Context context) {
 		// Only work on our displays
 		CategoryIdentifier<?> identifier = context.getDisplay().getCategoryIdentifier();
-		if (identifier != CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER) && identifier != CategoryIdentifier.of(SkyblockInfoCategory.IDENTIFIER))
+		if (identifier != CategoryIdentifier.of(SkyblockCraftingRecipe.ID) && identifier != CategoryIdentifier.of(SkyblockInfoCategory.IDENTIFIER))
 			return ApplicabilityResult.createNotApplicable();
 
 		EntryIngredient ingredient = context.getDisplay().getOutputEntries().getFirst();

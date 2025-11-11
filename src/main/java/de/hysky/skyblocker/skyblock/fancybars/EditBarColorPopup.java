@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -93,7 +94,7 @@ public class EditBarColorPopup extends AbstractPopupScreen {
 
         @Override
         protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-            context.drawBorder(getX(), getY(), 15, 15, validColor ? -1 : 0xFFDD0000);
+            HudHelper.drawBorder(context, getX(), getY(), 15, 15, validColor ? -1 : 0xFFDD0000);
             context.fill(getX() + 1, getY() + 1, getX() + 14, getY() + 14, color);
             textFieldWidget.renderWidget(context, mouseX, mouseY, delta);
         }

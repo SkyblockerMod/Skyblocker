@@ -39,11 +39,11 @@ public class DefaultSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		renderIconAndText(context, y, x, entryHeight);
-		rightClick.setPosition(x + entryWidth - 40, y + (entryHeight - 12) / 2);
-		rightClick.render(context, mouseX, mouseY, tickDelta);
-		leftClick.setPosition(x + entryWidth - 80, y + (entryHeight - 12) / 2);
-		leftClick.render(context, mouseX, mouseY, tickDelta);
+	public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		renderIconAndText(context, this.getY(), this.getX(), this.getHeight());
+		rightClick.setPosition(this.getX() + this.getWidth() - 40, this.getY() + (this.getHeight() - 12) / 2);
+		rightClick.render(context, mouseX, mouseY, deltaTicks);
+		leftClick.setPosition(this.getX() + this.getWidth() - 80, this.getY() + (this.getHeight() - 12) / 2);
+		leftClick.render(context, mouseX, mouseY, deltaTicks);
 	}
 }

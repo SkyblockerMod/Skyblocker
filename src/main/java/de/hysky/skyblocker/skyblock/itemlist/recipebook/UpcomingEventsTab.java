@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.HoveredTooltipPositioner;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -79,7 +80,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		if (this.hovered != null && this.hovered.getWarpCommand() != null) {
 			MessageScheduler.INSTANCE.sendMessageAfterCooldown(hovered.getWarpCommand(), true);
 

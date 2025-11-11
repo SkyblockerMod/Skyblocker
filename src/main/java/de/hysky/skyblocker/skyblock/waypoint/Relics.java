@@ -161,8 +161,8 @@ public class Relics {
         }
         relics.values().stream()
                 .filter(Waypoint::shouldRender)
-                .min(Comparator.comparingDouble(relic -> relic.pos.getSquaredDistance(player.getPos())))
-                .filter(relic -> relic.pos.getSquaredDistance(player.getPos()) <= 16)
+                .min(Comparator.comparingDouble(relic -> relic.pos.getSquaredDistance(player.getEntityPos())))
+                .filter(relic -> relic.pos.getSquaredDistance(player.getEntityPos()) <= 16)
                 .ifPresent(Waypoint::setFound);
     }
 

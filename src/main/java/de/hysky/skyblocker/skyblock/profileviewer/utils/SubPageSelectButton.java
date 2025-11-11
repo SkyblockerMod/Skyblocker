@@ -4,7 +4,9 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -40,6 +42,10 @@ public class SubPageSelectButton extends ClickableWidget {
             LoreComponent lore = ICON.get(DataComponentTypes.LORE);
             if (lore != null) context.drawTooltip(MinecraftClient.getInstance().textRenderer, lore.lines(), mouseX, mouseY + 10);
         }
+
+        if (this.isHovered()) {
+        	context.setCursor(StandardCursors.POINTING_HAND);
+        }
     }
 
     @Override
@@ -55,7 +61,7 @@ public class SubPageSelectButton extends ClickableWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(Click click, boolean doubled) {
         page.onNavButtonClick(this);
     }
 

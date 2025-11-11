@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -14,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.google.gson.JsonParser;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
@@ -112,14 +112,14 @@ public class CustomAnimatedHelmetTextures {
 			UUID uuid = UUID.fromString(split[0]);
 			PropertyMap propertyMap = ItemUtils.propertyMapWithTexture(split[1]);
 
-			return new ProfileComponent(Optional.of("custom"), Optional.of(uuid), propertyMap);
+			return ProfileComponent.ofStatic(new GameProfile(uuid, "custom", propertyMap));
 		}
 
 		/**
 		 * Not really necessary but ensures compliance with Codec's contracts.
 		 */
 		private static String toString(ProfileComponent profile) {
-			return profile.uuid().map(UUID::toString).orElse(UUID.randomUUID().toString()) + ":" + profile.properties().get("textures").iterator().next().value();
+			return profile.getGameProfile().id() + ":" + profile.getGameProfile().properties().get("textures").iterator().next().value();
 		}
 
 		/**

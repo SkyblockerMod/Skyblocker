@@ -28,6 +28,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.scoreboard.*;
@@ -344,10 +345,10 @@ public class Utils {
             TEXT_SCOREBOARD.clear();
             STRING_SCOREBOARD.clear();
 
-            ClientPlayerEntity player = client.player;
-            if (player == null) return;
+            ClientWorld world = client.world;
+            if (world == null) return;
 
-            Scoreboard scoreboard = player.getScoreboard();
+            Scoreboard scoreboard = world.getScoreboard();
             ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
             ObjectArrayList<Text> textLines = new ObjectArrayList<>();
             ObjectArrayList<String> stringLines = new ObjectArrayList<>();

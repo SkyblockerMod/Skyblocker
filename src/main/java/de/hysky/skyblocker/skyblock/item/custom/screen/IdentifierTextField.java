@@ -2,10 +2,7 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +18,7 @@ class IdentifierTextField extends TextFieldWidget {
 	IdentifierTextField(int width, int height, Consumer<@Nullable Identifier> callback) {
 		super(MinecraftClient.getInstance().textRenderer, width, height, Text.empty());
 		super.setChangedListener(this::onChanged);
-		setRenderTextProvider((s, integer) -> OrderedText.styledForwardsVisitedString(s, valid ? Style.EMPTY : Style.EMPTY.withFormatting(Formatting.RED)));
+		//setRenderTextProvider((s, integer) -> OrderedText.styledForwardsVisitedString(s, valid ? Style.EMPTY : Style.EMPTY.withFormatting(Formatting.RED)));
 		this.callback = callback;
 	}
 

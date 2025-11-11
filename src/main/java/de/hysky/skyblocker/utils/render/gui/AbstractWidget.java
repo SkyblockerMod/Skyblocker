@@ -79,6 +79,6 @@ public abstract class AbstractWidget implements Widget, Element, Drawable {
 
 	@Override
 	public ScreenRect getNavigationFocus() {
-		return Element.super.getNavigationFocus();
+		return Widget.super.getNavigationFocus();
 	}
 }
