@@ -25,6 +25,11 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         this.screen = screen;
         this.hasChanged = false;
 
+        updateEntries();
+    }
+
+    public void updateEntries() {
+        clearEntries();
         //add labels
         addEntry(new ChatRuleLabelsEntry());
         //add entry fall all existing rules
@@ -48,7 +53,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         int newIndex = Math.max(children().indexOf(getSelectedOrNull()), 0);
 
         ChatRulesHandler.chatRuleList.getData().add(newIndex, new ChatRule());
-        children().add(newIndex + 1, new ChatRuleConfigEntry(newIndex));
+        updateEntries();
     }
 
 	@Override
@@ -141,6 +146,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
                 return Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.false").withColor(Color.RED.getRGB());
             }
         }
+
         private void toggleEnabled() {
             hasChanged = true;
             chatRule.setEnabled(!chatRule.getEnabled());
