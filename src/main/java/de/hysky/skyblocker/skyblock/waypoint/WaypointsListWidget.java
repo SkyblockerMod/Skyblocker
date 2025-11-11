@@ -21,6 +21,7 @@ import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -180,7 +181,10 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		boolean hovering = isMouseOver(mouseX, mouseY) && Math.abs(mouseY - insertButtonY) <= 6 && mX < 16 && mX >= -8;
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, hovering ? INSERT_HIGHLIGHTED_TEXTURE : INSERT_TEXTURE, getRowLeft(), insertButtonY - 5, 48, 11);
 		if (Debug.debugEnabled()) context.drawText(client.textRenderer, String.valueOf(position), getX(), getY(), -1, true);
-		if (hovering) insertPosition = new InsertPosition(groupEntry, position);
+		if (hovering) {
+			insertPosition = new InsertPosition(groupEntry, position);
+			context.setCursor(StandardCursors.POINTING_HAND);
+		}
 	}
 
 	@Override
@@ -587,6 +591,10 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			int padding = 1;
 			context.fill(getX() + padding, getY() + padding, getRight() - padding, getBottom() - padding, isHovered() ? Colors.WHITE : Colors.BLACK);
 			context.fill(getX() + padding + 1, getY() + padding + 1, getRight() - padding - 1, getBottom() - padding - 1, this.color);
+
+			if (this.isHovered()) {
+				context.setCursor(StandardCursors.POINTING_HAND);
+			}
 		}
 
 		@Override

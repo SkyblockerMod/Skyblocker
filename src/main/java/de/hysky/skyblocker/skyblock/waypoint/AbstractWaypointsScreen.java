@@ -11,6 +11,7 @@ import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.cursor.Cursor;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -201,6 +202,11 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+			// Set the cursor to default to prevent widgets from below taking over the shape when they cannot be interacted with
+			if (this.isHovered()) {
+				context.setCursor(Cursor.DEFAULT);
+			}
+
 			context.fill(getX(), getY(), getRight(), getBottom(), ColorHelper.withAlpha(0.6f, 0));
 			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), Colors.WHITE);
 			for (ClickableWidget child : children) {

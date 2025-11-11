@@ -5,6 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.input.CharInput;
@@ -157,6 +158,10 @@ public class ARGBTextInput extends ClickableWidget {
 				Colors.WHITE,
 				true
 		);
+
+		if (this.isHovered()) {
+			context.setCursor(StandardCursors.IBEAM);
+		}
 	}
 
 	@Override

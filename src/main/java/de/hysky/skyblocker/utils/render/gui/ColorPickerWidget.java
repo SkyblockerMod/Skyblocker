@@ -6,6 +6,7 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
@@ -219,6 +220,15 @@ public class ColorPickerWidget extends ClickableWidget {
 		// Preview
 		context.fill(getX(), getY(), svRect.getLeft() - 2, svRect.getBottom() + 1, color);
 		context.fill(getX() + 1, getY() + 1, svRect.getLeft() - 3, svRect.getBottom(), argbColor);
+
+		// Cursor changes
+		if (this.isHovered()) {
+			if (this.draggingH || this.draggingA) {
+				context.setCursor(StandardCursors.RESIZE_EW);
+			} else if (this.draggingSV) {
+				context.setCursor(StandardCursors.CROSSHAIR);
+			}
+		}
 	}
 
 	private void drawThumb(DrawContext context, ScreenRect rect, int thumbX) {
