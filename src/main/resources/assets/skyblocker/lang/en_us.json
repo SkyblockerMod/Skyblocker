@@ -1271,7 +1271,7 @@
   "skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints.@Tooltip": "Parses coordinates sent in the chat and sends a prompt which allows you to add a temporary waypoint to the location.",
   "skyblocker.config.uiAndVisuals.waypoints.enableWaypoints": "Enable Waypoints",
   "skyblocker.config.uiAndVisuals.waypoints.renderLine": "Render Line",
-  "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "Renders a line going from your cursor to the next waypoint (Ordered groups only)",
+  "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "Renders a line going from your cursor to the next waypoint (Ordered groups only).",
   "skyblocker.config.uiAndVisuals.waypoints.lineColor": "Line Color",
   "skyblocker.config.uiAndVisuals.waypoints.lineWidth": "Line Width",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType": "Waypoint Type",
