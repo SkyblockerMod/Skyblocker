@@ -989,7 +989,6 @@ public class DungeonManager {
 		private static final Codec<RoomWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("secretName").forGetter(RoomWaypoint::secretName),
 				SecretWaypoint.Category.CODEC.fieldOf("category").forGetter(RoomWaypoint::category),
-				// todo: should I replace this with blockpos codec?
 				Codec.INT.fieldOf("x").forGetter(RoomWaypoint::x),
 				Codec.INT.fieldOf("y").forGetter(RoomWaypoint::y),
 				Codec.INT.fieldOf("z").forGetter(RoomWaypoint::z)
