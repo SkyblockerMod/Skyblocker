@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
@@ -155,7 +156,7 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		public boolean mouseClicked(Click click, boolean doubled) {
 			listWidget.setSelected(this);
 			return true;
 		}
@@ -171,14 +172,14 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			if (this.equals(listWidget.getSelectedOrNull())) {
 				int textWidth = textRenderer.getWidth(path.getFileName().toString()) + 8;
-				int highlightRight = x + Math.min(textWidth, entryWidth - 5);
-				context.fill(x, y, highlightRight, y + entryHeight, 0x80FFFFFF);
+				int highlightRight = this.getX() + Math.min(textWidth, this.getWidth() - 5);
+				context.fill(this.getX(), this.getY(), highlightRight, this.getY() + this.getHeight(), 0x80FFFFFF);
 			}
 
-			context.drawText(textRenderer, path.getFileName().toString(), x + 4, y + 7, 0xFFFFFFFF, false);
+			context.drawText(textRenderer, path.getFileName().toString(), this.getX() + 4, this.getY() + 7, 0xFFFFFFFF, false);
 		}
 	}
 
@@ -270,8 +271,8 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		protected void drawScrollbar(DrawContext context) {
-			super.drawScrollbar(context);
+		protected void drawScrollbar(DrawContext context, int mouseX, int mouseY) {
+			super.drawScrollbar(context, mouseX, mouseY);
 			if (overflows()) {
 				int scrollBarX = getScrollbarX();
 				int listWidgetY = getY();
@@ -281,7 +282,7 @@ public class ConfigBackupScreen extends Screen {
 					StringEntry entry = children().get(i);
 					if (entry.path != null && changedPaths.contains(entry.path)) {
 						// similar calculation to getRowTop
-						int entryY = 4 + i * itemHeight + headerHeight;
+						int entryY = entry.getY();
 						// height - scrollbarThumbHeight - 2 because we draw a two pixel high indicator.
 						// scrollbarThumbHeight thumb height calculations so the changed line is in view when the indicator is in the middle of the scrollbar thumb.
 						int barY = entryY * (height - scrollbarThumbHeight - 2) / (totalHeight - itemHeight) + listWidgetY + scrollbarThumbHeight / 2;
@@ -312,12 +313,12 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			int color = 0xFFFFFFFF;
 			if (path != null && changedPaths.contains(path)) {
 				color = 0xFFFFFF55;
 			}
-			context.drawText(textRenderer, text, x + 2, y + 2, color, false);
+			context.drawText(textRenderer, text, this.getX() + 2, this.getY() + 2, color, false);
 		}
 	}
 }

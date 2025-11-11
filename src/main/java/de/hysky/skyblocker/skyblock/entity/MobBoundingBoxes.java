@@ -7,7 +7,6 @@ import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.glow.adder.DungeonGlowAdder;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -29,9 +28,7 @@ public class MobBoundingBoxes {
 	}
 
 	public static boolean shouldDrawMobBoundingBox(Entity entity) {
-		Box box = entity.getBoundingBox();
-
-		if (Utils.isInDungeons() && FrustumUtils.isVisible(box) && !entity.isInvisible()) {
+		if (Utils.isInDungeons() && !entity.isInvisible()) {
 			String name = entity.getName().getString();
 
 			return switch (entity) {

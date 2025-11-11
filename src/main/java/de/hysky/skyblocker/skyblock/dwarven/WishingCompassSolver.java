@@ -379,7 +379,7 @@ public class WishingCompassSolver {
             return;
         }
         //get where eye pos independent of if player is crouching
-        Vec3d playerPos = CLIENT.player.getPos().add(0, 1.62, 0);
+        Vec3d playerPos = CLIENT.player.getEntityPos().add(0, 1.62, 0);
 
         if (newState == SolverStates.PROCESSING_FIRST_USE) {
             currentState = SolverStates.PROCESSING_FIRST_USE;

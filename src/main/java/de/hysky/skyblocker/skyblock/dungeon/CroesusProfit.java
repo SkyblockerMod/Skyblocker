@@ -15,6 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,9 +26,10 @@ import java.util.regex.Pattern;
 public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder {
 	public static CroesusProfit INSTANCE = new CroesusProfit();
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>\\d+)");
+	private static final Pattern CHEST_PATTERN = Pattern.compile("^(?:Wood|Gold|Diamond|Emerald|Obsidian|Bedrock)$");
 
 	public CroesusProfit() {
-		super(".*The Catacombs - Flo.*");
+		super("(Master )?Catacombs - Flo.*");
 	}
 
 	@Override
@@ -44,7 +46,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 		for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
 			ItemStack stack = entry.getValue();
-			if (stack.getName().getString().contains("Chest")) {
+			if (CHEST_PATTERN.matcher(stack.getName().getString()).matches()) {
 				double value = getChestValue(stack);
 				if (value <= 0) continue;
 
@@ -101,8 +103,10 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 				continue;
 			} else if (lineString.isEmpty()) {
 				processingContents = false;
-			} else if (lineString.contains("Coins") && !processingContents) {
-				chestPrice = Integer.parseInt(lineString.replace(",", "").replaceAll("\\D", ""));
+			} else if (!processingContents && lineString.endsWith("Coins")) {
+				String chestCost = lineString.replace(",", "").replaceAll("\\D", "");
+				if (!NumberUtils.isCreatable(chestCost)) continue;
+				chestPrice = Integer.parseInt(chestCost);
 			}
 
 			if (processingContents) {

@@ -17,7 +17,6 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -28,11 +27,9 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -50,6 +47,7 @@ import java.util.regex.Pattern;
 public class ChestValue {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChestValue.class);
 	private static final Set<String> DUNGEON_CHESTS = Set.of("Wood Chest", "Gold Chest", "Diamond Chest", "Emerald Chest", "Obsidian Chest", "Bedrock Chest");
+	private static final Pattern DUNGEON_CHEST_COIN_COST_PATTERN = Pattern.compile("^([0-9,]+) Coins$");
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>\\d+)");
 	private static final Pattern SHARD_PATTERN = Pattern.compile("[A-Za-z ]+ Shard x(?<amount>\\d+)");
 	private static final Pattern MINION_PATTERN = Pattern.compile("Minion (I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII)$");
@@ -165,14 +163,13 @@ public class ChestValue {
 					}
 				}
 
-				//Determine the cost of the chest
+				// Determine the cost of the chest: If not found (wood chest or already opened chest), it will be 0
 				if (name.contains("Open Reward Chest")) {
-					String foundString = searchLoreFor(stack, "Coins");
-
-					//Incase we're searching the free chest
-					if (!StringUtils.isBlank(foundString)) {
-						profit -= Integer.parseInt(foundString.replaceAll("\\D", ""));
-					}
+					Matcher matcher = ItemUtils.getLoreLineIfContainsMatch(stack, DUNGEON_CHEST_COIN_COST_PATTERN);
+					if (matcher == null) continue;
+					String foundString = matcher.group(1).replaceAll("\\D", "");
+					if (!NumberUtils.isCreatable(foundString)) continue;
+					profit -= Integer.parseInt(foundString);
 
 					continue;
 				}
@@ -310,9 +307,9 @@ public class ChestValue {
 
 	@NotNull
 	private static ScreenType determineScreenType(String rawTitleString) {
-		if (StringUtils.containsIgnoreCase(rawTitleString, "sack")) return ScreenType.SACK;
+		if ("sack".contains(rawTitleString.toLowerCase(Locale.ENGLISH))) return ScreenType.SACK;
 		if (MINION_PATTERN.matcher(rawTitleString.trim()).find()) return ScreenType.MINION;
-		if (StringUtils.equalsIgnoreCase(rawTitleString, "View Stash")) return ScreenType.STASH;
+		if ("View Stash".equalsIgnoreCase(rawTitleString)) return ScreenType.STASH;
 		return ScreenType.OTHER;
 	}
 
@@ -327,34 +324,9 @@ public class ChestValue {
 	}
 
 	private static class ChestValueTextWidget extends TextWidget {
-		private static final boolean shadow = false;
-
 		private ChestValueTextWidget(int width, int height, Text message, TextRenderer textRenderer) {
-			super(width, height, message, textRenderer);
-			alignLeft();
-		}
-
-		@Override
-		public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			draw(context, getTextRenderer(), getMessage(), getX(), getRight());
-		}
-
-		// Yoinked from ClickableWidget
-		protected void draw(DrawContext context, TextRenderer textRenderer, Text text, int startX, int endX) {
-			int i = textRenderer.getWidth(text);
-			int k = endX - startX;
-			if (i > k) {
-				int l = i - k;
-				double d = Util.getMeasuringTimeMs() / 600.0;
-				double e = Math.max(l * 0.5, 3.0);
-				double f = Math.sin((Math.PI / 2) * Math.cos((Math.PI * 2) * d / e)) / 2.0 + 0.5;
-				double g = MathHelper.lerp(f, 0.0, l);
-				context.enableScissor(startX, getY(), endX, getY() + textRenderer.fontHeight);
-				context.drawText(textRenderer, text, startX - (int) g, getY(), Colors.WHITE, shadow);
-				context.disableScissor();
-			} else {
-				context.drawText(textRenderer, text, startX, getY(), Colors.WHITE, shadow);
-			}
+			super(width, height, message.copy().fillStyle(Style.EMPTY.withShadowColor(0)), textRenderer);
+			setMaxWidth(getWidth(), TextOverflow.SCROLLING);
 		}
 	}
 

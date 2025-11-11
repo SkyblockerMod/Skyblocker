@@ -72,7 +72,7 @@ public class FishingHookDisplayHelper {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (client.player == null || client.player.fishHook == null) return;
 		// Check the distance between the armor stand and the player's fishing hook
-		double distance = armorStand.getPos().distanceTo(client.player.fishHook.getPos());
+		double distance = armorStand.getEntityPos().distanceTo(client.player.fishHook.getEntityPos());
 		if (distance > 0.1) return; // Checks for a minimum distance of 0.1 blocks
 
 		Matcher matcher = pattern.matcher(armorStand.getName().getString());

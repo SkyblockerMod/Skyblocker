@@ -40,7 +40,7 @@ public class ItemProtection {
 		itemProtection = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.itemProtection",
 				GLFW.GLFW_KEY_V,
-				"key.categories.skyblocker"
+				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 		ClientCommandRegistrationCallback.EVENT.register(ItemProtection::registerCommand);
 		UseEntityCallback.EVENT.register(ItemProtection::onEntityInteract);
@@ -133,7 +133,7 @@ public class ItemProtection {
 	}
 
 	private static ActionResult onEntityInteract(PlayerEntity playerEntity, World world, Hand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
-		if (!Utils.isOnSkyblock() || !world.isClient) return ActionResult.PASS;
+		if (!Utils.isOnSkyblock() || !world.isClient()) return ActionResult.PASS;
 
 		Location location = Utils.getLocation();
 		if (!(location == Location.PRIVATE_ISLAND || location == Location.GARDEN)) {

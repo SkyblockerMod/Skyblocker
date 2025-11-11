@@ -33,6 +33,7 @@ public class MiningCategory {
                 //Uncategorized Options
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.mining.enableDrillFuel"))
+						.description(Text.translatable("skyblocker.config.mining.enableDrillFuel.@Tooltip"))
                         .binding(defaults.mining.enableDrillFuel,
                                 () -> config.mining.enableDrillFuel,
                                 newValue -> config.mining.enableDrillFuel = newValue)

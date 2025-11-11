@@ -12,7 +12,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.client.gui.screen.Screen;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -31,7 +31,7 @@ public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 		if (attribute != null && TooltipInfoType.BAZAAR.hasOrNullWarning(attribute.apiId())) {
 			int count = ItemUtils.getItemCountInHuntingBox(stack).orElse(1);
 			BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(attribute.apiId());
-			boolean holdingShift = Screen.hasShiftDown();
+			boolean holdingShift = HudHelper.hasShiftDown();
 			String shardText = count > 1 ? "Shards" : "Shard";
 
 			lines.add(Text.literal(shardText + " Sell Price: ")

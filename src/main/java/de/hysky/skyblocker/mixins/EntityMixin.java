@@ -11,8 +11,6 @@ import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,12 +34,6 @@ public abstract class EntityMixin {
 	public abstract EntityType<?> getType();
 
 	@Shadow
-	public abstract BlockPos getBlockPos();
-
-	@Shadow
-	public abstract Vec3d getPos();
-
-	@Shadow
 	public abstract @Nullable Entity getVehicle();
 
 	@Shadow
@@ -52,7 +44,7 @@ public abstract class EntityMixin {
 		return isSpectator || (isInvisible() && Utils.isOnHypixel() && Debug.debugEnabled() && SkyblockerConfigManager.get().debug.showInvisibleArmorStands && type.equals(EntityType.ARMOR_STAND));
 	}
 
-	@ModifyReturnValue(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("RETURN"))
+	@ModifyReturnValue(method = "startRiding(Lnet/minecraft/entity/Entity;ZZ)Z", at = @At("RETURN"))
 	private boolean modifyStartRidingReturnValue(boolean originalReturnValue, Entity entity, boolean force) {
 		if (originalReturnValue) {
 			if (SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer

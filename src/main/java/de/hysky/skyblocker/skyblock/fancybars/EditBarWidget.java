@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
 import de.hysky.skyblocker.utils.EnumUtils;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
@@ -120,10 +122,10 @@ public class EditBarWidget extends ContainerWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		if (!visible) return false;
 		if (!isHovered()) visible = false;
-		return super.mouseClicked(mouseX - getX(), mouseY - getY(), button);
+		return super.mouseClicked(new Click(click.x() - getX(), click.y() - getY(), click.buttonInfo()), doubled);
 	}
 
 	public void setStatusBar(StatusBar statusBar) {
@@ -195,8 +197,8 @@ public class EditBarWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			super.onClick(mouseX, mouseY);
+		public void onClick(Click click, boolean doubled) {
+			super.onClick(click, doubled);
 			EditBarWidget.this.visible = false;
 			if (runnable != null) runnable.run();
 		}
@@ -233,10 +235,10 @@ public class EditBarWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			current = EnumUtils.cycle(current);
 			if (onChange != null) onChange.accept(current);
-			super.onClick(mouseX, mouseY);
+			super.onClick(click, doubled);
 		}
 
 		@Override
@@ -273,15 +275,15 @@ public class EditBarWidget extends ContainerWidget {
 			}
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : Colors.GRAY, true);
-			context.drawBorder(getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
+			HudHelper.drawBorder(context, getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
 			if (current && active) context.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, Colors.WHITE);
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			current = !current;
 			if (onChange != null) onChange.accept(current);
-			super.onClick(mouseX, mouseY);
+			super.onClick(click, doubled);
 		}
 
 		@Override
@@ -319,13 +321,13 @@ public class EditBarWidget extends ContainerWidget {
 			}
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : Colors.GRAY, true);
-			context.drawBorder(getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
+			HudHelper.drawBorder(context, getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
 			context.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, active ? current : Colors.GRAY);
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			super.onClick(mouseX, mouseY);
+		public void onClick(Click click, boolean doubled) {
+			super.onClick(click, doubled);
 			MinecraftClient.getInstance().setScreen(new EditBarColorPopup(Text.literal("Edit ").append(getMessage()), parent, this::set));
 		}
 

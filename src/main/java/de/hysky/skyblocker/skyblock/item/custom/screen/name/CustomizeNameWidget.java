@@ -8,15 +8,21 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.*;
 import de.hysky.skyblocker.utils.OkLabColor;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.input.AbstractInput;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
@@ -65,17 +71,8 @@ public class CustomizeNameWidget extends ContainerWidget {
 				new FormattingButton("S", Formatting.STRIKETHROUGH, Style::isStrikethrough),
 				new FormattingButton("|||", Formatting.OBFUSCATED, Style::isObfuscated),
 		};
-		for (int i = 0; i < formattingButtons.length; i++) {
-			FormattingButton button = formattingButtons[i];
-			builder.add(grid.add(button, 0, i));
-		}
 
-		int i = 0;
-		for (Formatting formatting : Formatting.values()) {
-			if (formatting.isColor()) {
-				builder.add(grid.add(new ColorButton(formatting), 2, i++));
-			}
-		}
+		addFormattingButtons(builder);
 
 		builder.add(grid.add(ButtonWidget.builder(Text.translatable("skyblocker.customItemNames.screen.customColor"), b ->
 				client.setScreen(ColorPopup.create(parent, color -> setStyle(Style.EMPTY.withColor(color))))
@@ -83,13 +80,28 @@ public class CustomizeNameWidget extends ContainerWidget {
 		builder.add(grid.add(ButtonWidget.builder(Text.translatable("skyblocker.customItemNames.screen.gradientColor"), b ->
 				client.setScreen(ColorPopup.createGradient(parent, this::createGradient))
 		).size(48, 16).build(), 3, 17, 1, 3));
-		builder.add(grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.translatable("skyblocker.customItemNames.screen.howToRemove").formatted(Formatting.ITALIC, Formatting.GRAY), textRenderer).alignLeft(), 4, 0, 1, 20, Positioner.create().marginTop(2)));
-		builder.add(previewWidget = grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.empty(), textRenderer).alignCenter(), 5, 0, 1, 20, Positioner.create().marginY(2)));
+		builder.add(grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.translatable("skyblocker.customItemNames.screen.howToRemove").formatted(Formatting.ITALIC, Formatting.GRAY), textRenderer)/*.alignLeft()*/, 4, 0, 1, 20, Positioner.create().marginTop(2)));
+		builder.add(previewWidget = grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.empty(), textRenderer).setMaxWidth(20 * 16, TextWidget.TextOverflow.SCROLLING), 5, 0, 1, 20, Positioner.create().marginY(2).alignHorizontalCenter()));
 		widgets = builder.build();
 		grid.refreshPositions();
 		grid.setPosition(getX() + PADDING, getY() + PADDING);
 		setDimensions(grid.getWidth() + PADDING * 2, grid.getHeight() + PADDING * 2);
 		selectionStart = selectionEnd = textString.length();
+	}
+
+	// Makes it easier for Aaron Mod to add a chroma colour button
+	private void addFormattingButtons(ImmutableList.Builder<ClickableWidget> builder) {
+		for (int i = 0; i < formattingButtons.length; i++) {
+			FormattingButton button = formattingButtons[i];
+			builder.add(grid.add(button, 0, i));
+		}
+
+		int colorButtonIndex = 0;
+		for (Formatting formatting : Formatting.values()) {
+			if (formatting.isColor()) {
+				builder.add(grid.add(new ColorButton(formatting), 2, colorButtonIndex++));
+			}
+		}
 	}
 
 	@Override
@@ -192,6 +204,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 			else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(Formatting.WHITE)));
 		}
 		previewWidget.setMessage(text);
+		grid.refreshPositions();
 
 		// called before init
 		if (textField != null) textField.updateMePrettyPlease = true;
@@ -203,10 +216,10 @@ public class CustomizeNameWidget extends ContainerWidget {
 	}
 
 	@Override
-	public boolean charTyped(char chr, int modifiers) {
-		if (super.charTyped(chr, modifiers) || textField.isFocused()) return true;
+	public boolean charTyped(CharInput input) {
+		if (super.charTyped(input) || textField.isFocused()) return true;
 		setFocused(textField);
-		return textField.charTyped(chr, modifiers);
+		return textField.charTyped(input);
 	}
 
 	/**
@@ -329,7 +342,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onPress() {
+		public void onPress(AbstractInput input) {
 			setEnabled(!enabled);
 			switch (format) {
 				case BOLD -> setStyle(Style.EMPTY.withBold(enabled));
@@ -364,7 +377,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onPress() {
+		public void onPress(AbstractInput input) {
 			setStyle(Style.EMPTY.withColor(color));
 		}
 
@@ -406,45 +419,51 @@ public class CustomizeNameWidget extends ContainerWidget {
 			}
 
 			context.fill(getX(), getY(), getRight(), getBottom(), Colors.BLACK);
-			context.drawBorder(getX(), getY(), getWidth(), getHeight(), isFocused() ? Colors.WHITE : Colors.GRAY);
+			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), isFocused() ? Colors.WHITE : Colors.GRAY);
 			int textX = getTextX();
 			int textY = getY() + (getHeight() - textRenderer.fontHeight) / 2;
 
 			if (renderStart != renderEnd) {
 				context.fill(textX + renderStart, textY, textX + renderEnd, textY + textRenderer.fontHeight, Colors.BLUE);
 			}
-			if (isFocused()) context.drawVerticalLine(textX + (selectionStart < selectionEnd ? renderStart : renderEnd) - 1, textY - 1, textY + textRenderer.fontHeight, Colors.WHITE);
+			if (this.isFocused()) {
+				context.drawVerticalLine(textX + (selectionStart < selectionEnd ? renderStart : renderEnd) - 1, textY - 1, textY + textRenderer.fontHeight, Colors.WHITE);
+			}
 
 			context.drawText(textRenderer, text, textX, textY, -1, false);
+
+			if (this.isHovered()) {
+				context.setCursor(StandardCursors.IBEAM);
+			}
 		}
 
 		@Override
-		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		public boolean keyPressed(KeyInput input) {
 			boolean captured = true;
-			switch (keyCode) {
-				case GLFW.GLFW_KEY_LEFT -> moveCursor(true, Screen.hasShiftDown(), Screen.hasControlDown());
-				case GLFW.GLFW_KEY_RIGHT -> moveCursor(false, Screen.hasShiftDown(), Screen.hasControlDown());
-				case GLFW.GLFW_KEY_BACKSPACE -> erase(true, Screen.hasControlDown());
-				case GLFW.GLFW_KEY_DELETE -> erase(false, Screen.hasControlDown());
+			switch (input.key()) {
+				case GLFW.GLFW_KEY_LEFT -> moveCursor(true, input.hasShift(), input.hasCtrl());
+				case GLFW.GLFW_KEY_RIGHT -> moveCursor(false, input.hasShift(), input.hasCtrl());
+				case GLFW.GLFW_KEY_BACKSPACE -> erase(true, input.hasCtrl());
+				case GLFW.GLFW_KEY_DELETE -> erase(false, input.hasCtrl());
 				default -> captured = false;
 			}
 			if (captured) return true;
 			assert client != null;
-			if (Screen.isSelectAll(keyCode)) {
+			if (input.isSelectAll()) {
 				selectionStart = 0;
 				selectionEnd = textString.length();
 				updateStyleButtons();
 				captured = true;
-			} else if (Screen.isCopy(keyCode)) {
+			} else if (input.isCopy()) {
 				client.keyboard.setClipboard(text.getString().substring(selectionStart, selectionEnd));
 				captured = true;
-			} else if (Screen.isPaste(keyCode)) {
+			} else if (input.isPaste()) {
 				String clipboard = client.keyboard.getClipboard();
 				if (!clipboard.isEmpty()) {
 					insertText(clipboard);
 				}
 				captured = true;
-			} else if (Screen.isCut(keyCode)) {
+			} else if (input.isCut()) {
 				client.keyboard.setClipboard(text.getString().substring(selectionStart, selectionEnd));
 				insertText("");
 				captured = true;
@@ -453,11 +472,11 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public boolean charTyped(char chr, int modifiers) {
+		public boolean charTyped(CharInput input) {
 			if (!active) {
 				return false;
-			} else if (StringHelper.isValidChar(chr)) {
-				insertText(Character.toString(chr));
+			} else if (input.isValidChar()) {
+				insertText(input.asString());
 				return true;
 			} else {
 				return false;
@@ -465,16 +484,16 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) mouseX - getTextX());
+		public void onClick(Click click, boolean doubled) {
+			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) click.x() - getTextX());
 			text.visit(getClickedPositionVisitor, Style.EMPTY);
 			selectionStart = selectionEnd = getClickedPositionVisitor.getPosition() < 0 ? textString.length() : getClickedPositionVisitor.getPosition();
 			updateStyleButtons();
 		}
 
 		@Override
-		protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) mouseX - getTextX());
+		protected void onDrag(Click click, double offsetX, double offsetY) {
+			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) click.x() - getTextX());
 			text.visit(getClickedPositionVisitor, Style.EMPTY);
 			selectionStart = getClickedPositionVisitor.getPosition() < 0 ? textString.length() : getClickedPositionVisitor.getPosition();
 			updateStyleButtons();

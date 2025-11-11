@@ -9,6 +9,7 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
 import org.joml.Matrix4fStack;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.system.MemoryUtil;
 
@@ -314,7 +315,7 @@ public class Renderer {
 
 	private static GpuBufferSlice setupDynamicTransforms(float lineWidth, boolean translucent) {
 		return RenderSystem.getDynamicUniforms()
-				.write(RenderSystem.getModelViewMatrix(), translucent ? COLOR_MODULATOR_TRANSLUCENT : COLOR_MODULATOR, RenderSystem.getModelOffset(), RenderSystem.getTextureMatrix(), lineWidth);
+				.write(RenderSystem.getModelViewMatrix(), translucent ? COLOR_MODULATOR_TRANSLUCENT : COLOR_MODULATOR, new Vector3f(), RenderSystem.getTextureMatrix(), lineWidth);
 	}
 
 	private static GpuTextureView getMainColorTexture() {

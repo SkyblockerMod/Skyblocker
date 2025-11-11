@@ -5,10 +5,10 @@ import org.joml.Vector3f;
 
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
-import de.hysky.skyblocker.utils.render.state.CameraRenderState;
 import de.hysky.skyblocker.utils.render.state.LinesRenderState;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.util.math.Vec3d;
 
 public final class LinesRenderer implements PrimitiveRenderer<LinesRenderState> {

@@ -29,7 +29,6 @@ public class LegacyItemStackFixer {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	//Static import things to avoid class name conflicts
-	@SuppressWarnings("deprecation")
 	public static ItemStack fixLegacyStack(NbtCompound nbt) {
 		RegistryOps<NbtElement> ops = Utils.getRegistryWrapperLookup().getOps(NbtOps.INSTANCE);
 		Dynamic<NbtElement> fixed = getFixer().update(TypeReferences.LEGACY_ITEM_STACK, new Dynamic<>(ops, nbt), getFirstVersion(), getLatestVersion());
@@ -57,7 +56,7 @@ public class LegacyItemStackFixer {
 
 		//Remap Custom Data
 		if (stack.contains(DataComponentTypes.CUSTOM_DATA)) {
-			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(stack.get(DataComponentTypes.CUSTOM_DATA).getNbt().getCompoundOrEmpty("ExtraAttributes")));
+			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(stack.get(DataComponentTypes.CUSTOM_DATA).copyNbt().getCompoundOrEmpty("ExtraAttributes")));
 		}
 
 		//Hide Attributes & Vanilla Enchantments
