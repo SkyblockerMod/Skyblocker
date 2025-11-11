@@ -40,10 +40,10 @@ public class WidgetEntry extends WidgetsListEntry {
 	}
 
 	@Override
-	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		int textY = y + (entryHeight - 9) / 2;
-		enableButton.setPosition(x + entryWidth - 110, y + (entryHeight - 12) / 2);
-		enableButton.render(context, mouseX, mouseY, tickDelta);
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, widget.getDisplayName(), x + 2, textY, Colors.WHITE);
+	public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		int textY = this.getY() + (this.getHeight() - 9) / 2;
+		enableButton.setPosition(this.getX() + this.getWidth() - 110, this.getY() + (this.getHeight() - 12) / 2);
+		enableButton.render(context, mouseX, mouseY, deltaTicks);
+		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, widget.getDisplayName(), this.getX() + 2, textY, Colors.WHITE);
 	}
 }

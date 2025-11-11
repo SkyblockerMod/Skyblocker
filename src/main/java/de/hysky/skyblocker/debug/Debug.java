@@ -24,7 +24,6 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -73,8 +72,8 @@ public class Debug {
 	public static void init() {
 		if (!debugEnabled()) return;
 		SnapshotDebug.init();
-		KeyBinding dumpNearbyEntitiesKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, "key.categories.skyblocker"));
-		KeyBinding dumpHoveredItemKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, "key.categories.skyblocker"));
+		KeyBinding dumpNearbyEntitiesKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
+		KeyBinding dumpHoveredItemKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				literal(SkyblockerMod.NAMESPACE).then(literal("debug")
 						.then(dumpPlayersCommand())
@@ -109,10 +108,10 @@ public class Debug {
 		});
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (!(screen instanceof HandledScreen<?> handledScreen)) return;
-			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifier) -> {
+			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, keyInput) -> {
 				Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
-				if (dumpHoveredItemKey.matchesKey(key, scancode) && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
-					if (!Screen.hasShiftDown()) {
+				if (dumpHoveredItemKey.matchesKey(keyInput) && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
+					if (!keyInput.hasShift()) {
 						client.player.sendMessage(Constants.PREFIX.get().append("Hovered Item: ").append(SkyblockerConfigManager.get().debug.dumpFormat.format(focusedSlot.getStack())), false);
 					} else {
 						client.player.sendMessage(Constants.PREFIX.get().append("Held Item NW Calcs: ").append(Text.literal(SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getStack()).calculations()).getOrThrow()))), false);

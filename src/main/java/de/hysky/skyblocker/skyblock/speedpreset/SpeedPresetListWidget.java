@@ -77,12 +77,12 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 		protected void updatePosition() {}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			this.children().forEach(child -> {
 				if (child instanceof Widget widget)
-					widget.setY(y);
+					widget.setY(this.getY());
 				if (child instanceof Drawable drawable)
-					drawable.render(context, mouseX, mouseY, tickDelta);
+					drawable.render(context, mouseX, mouseY, deltaTicks);
 			});
 		}
 	}
@@ -90,11 +90,11 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 	public class TitleEntry extends AbstractEntry {
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// The line height is 25, the height of a single character is always 9.
 			// 25 - 9 = 16, 16 / 2 = 8, therefore the Y-offset should be 8.
-			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.general.speedPresets.config.title"), width / 2 - 50, y + 8, Colors.WHITE);
-			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.general.speedPresets.config.speed"), width / 2 + 50, y + 8, Colors.WHITE);
+			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.general.speedPresets.config.title"), width / 2 - 50, this.getY() + 8, Colors.WHITE);
+			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.general.speedPresets.config.speed"), width / 2 + 50, this.getY() + 8, Colors.WHITE);
 		}
 
 		@Override

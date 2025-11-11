@@ -567,9 +567,9 @@ public class DungeonManager {
 		Room room = null;
 		int[] roomData;
 		if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.PUZZLE.shape).get(roomName)) != null) {
-			room = DebugRoom.ofSinglePossibleRoom(Room.Type.PUZZLE, DungeonMapUtils.getPhysicalRoomPos(player.getPos()), roomName, roomData, direction);
+			room = DebugRoom.ofSinglePossibleRoom(Room.Type.PUZZLE, DungeonMapUtils.getPhysicalRoomPos(player.getEntityPos()), roomName, roomData, direction);
 		} else if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.TRAP.shape).get(roomName)) != null) {
-			room = DebugRoom.ofSinglePossibleRoom(Room.Type.TRAP, DungeonMapUtils.getPhysicalRoomPos(player.getPos()), roomName, roomData, direction);
+			room = DebugRoom.ofSinglePossibleRoom(Room.Type.TRAP, DungeonMapUtils.getPhysicalRoomPos(player.getEntityPos()), roomName, roomData, direction);
 		} else if ((roomData = ROOMS_DATA.get("catacombs").values().stream().map(Map::entrySet).flatMap(Collection::stream).filter(entry -> entry.getKey().equals(roomName)).findAny().map(Map.Entry::getValue).orElse(null)) != null) {
 			room = DebugRoom.ofSinglePossibleRoom(Room.Type.ROOM, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, DungeonMapUtils.getMapRoomPos(map, mapEntrancePos, mapRoomSize), mapRoomSize, Room.Type.ROOM.color)), roomName, roomData, direction);
 		}
@@ -587,7 +587,7 @@ public class DungeonManager {
 			if (entity instanceof ArmorStandEntity armorStand) {
 				Text name = armorStand.getCustomName();
 				if (name != null && name.getString().contains("Mort")) {
-					return armorStand.getPos();
+					return armorStand.getEntityPos();
 				}
 			}
 		}
@@ -651,12 +651,12 @@ public class DungeonManager {
 			}
 			mapEntrancePos = mapEntrancePosAndSize.left();
 			mapRoomSize = mapEntrancePosAndSize.rightInt();
-			LOGGER.info("[Skyblocker Dungeon Secrets] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, CLIENT.player.getPos(), physicalEntrancePos);
+			LOGGER.info("[Skyblocker Dungeon Secrets] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, CLIENT.player.getEntityPos(), physicalEntrancePos);
 		}
 
 		getBloodRushDoorPos(map);
 
-		Vector2ic physicalPos = DungeonMapUtils.getPhysicalRoomPos(CLIENT.player.getPos());
+		Vector2ic physicalPos = DungeonMapUtils.getPhysicalRoomPos(CLIENT.player.getEntityPos());
 		Vector2ic mapPos = DungeonMapUtils.getMapPosFromPhysical(physicalEntrancePos, mapEntrancePos, mapRoomSize, physicalPos);
 		Room room = rooms.get(physicalPos);
 		if (room == null) {
@@ -792,7 +792,7 @@ public class DungeonManager {
 	 */
 	@SuppressWarnings("JavadocReference")
 	public static void onItemPickup(ItemEntity itemEntity) {
-		Room room = getRoomAtPhysical(itemEntity.getPos());
+		Room room = getRoomAtPhysical(itemEntity.getEntityPos());
 		if (isRoomMatched(room)) {
 			room.onItemPickup(itemEntity);
 		}
@@ -804,7 +804,7 @@ public class DungeonManager {
 	 */
 	@SuppressWarnings("JavadocReference")
 	public static void onBatRemoved(AmbientEntity bat) {
-		Room room = getRoomAtPhysical(bat.getPos());
+		Room room = getRoomAtPhysical(bat.getEntityPos());
 		if (isRoomMatched(room)) {
 			room.onBatRemoved(bat);
 		}

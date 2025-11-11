@@ -3,7 +3,7 @@
   "argument.color.hex.invalidString": "Hex integer must be exactly 6 characters long, found %s characters.",
   "argument.color.hex.invalidChar": "Invalid character for hex integer: %s. Valid characters: [0-9a-fA-F]",
 
-  "key.categories.skyblocker": "Skyblocker",
+  "key.category.skyblocker.main": "Skyblocker",
   "key.hotbarSlotLock": "Slot Lock (Hotbar)",
   "key.skyblocker.defaultTgl": "Switch tab HUD to default view",
   "key.skyblocker.toggleA": "Show tab HUD secondary view",
@@ -825,6 +825,7 @@
   "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Sets the color of the highlight for the unbreakable carpets.",
 
   "skyblocker.config.mining.enableDrillFuel": "Enable Drill Fuel",
+  "skyblocker.config.mining.enableDrillFuel.@Tooltip": "Shows remaining fuel with the durability bar.\nShows the remaining blocks for Pickonimbus.",
 
   "skyblocker.config.mining.commissionHighlight": "Highlights Completed Commissions",
 
@@ -1262,9 +1263,17 @@
   "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "Shows the actual amount of arrows in your quiver instead of being capped at 64.",
 
   "skyblocker.config.uiAndVisuals.waypoints": "Waypoints",
+  "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards": "Allow Going Backwards",
+  "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip": "Allow going backwards in ordered waypoint groups.",
+  "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints": "Allow Skipping Waypoints",
+  "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip": "Allow skipping waypoints in ordered waypoint groups.",
   "skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints": "Enable Chat Waypoints",
   "skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints.@Tooltip": "Parses coordinates sent in the chat and sends a prompt which allows you to add a temporary waypoint to the location.",
   "skyblocker.config.uiAndVisuals.waypoints.enableWaypoints": "Enable Waypoints",
+  "skyblocker.config.uiAndVisuals.waypoints.renderLine": "Render Line",
+  "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "Renders a line going from your cursor to the next waypoint (Ordered groups only)",
+  "skyblocker.config.uiAndVisuals.waypoints.lineColor": "Line Color",
+  "skyblocker.config.uiAndVisuals.waypoints.lineWidth": "Line Width",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType": "Waypoint Type",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "Waypoint: Displays a highlight and a beacon beam.\n\nOutlined Waypoint: Displays both a waypoint and an outline.\n\nHighlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote": "\n\n\nThis option does not apply to all waypoints. Some waypoints such as secret waypoints have their own waypoint type option.",
@@ -1473,6 +1482,11 @@
   "skyblocker.waypoints.chat.display": "Click to display waypoint at x: %s y: %s z: %s",
   "skyblocker.waypoints.chat.displayed": "Displayed temporary waypoint at x: %s y: %s z: %s %s",
   "skyblocker.waypoints.config": "Waypoints Config",
+  "skyblocker.waypoints.otherOptions": "Other Options",
+  "skyblocker.waypoints.waypointsOptions": "Waypoints Options",
+  "skyblocker.waypoints.groupType": "Group Type",
+  "skyblocker.waypoints.groupType.ordered": "Ordered",
+  "skyblocker.waypoints.groupType.normal": "Normal",
   "skyblocker.waypoints.newGroup": "New Waypoint Group",
   "skyblocker.waypoints.new": "New Waypoint",
   "skyblocker.waypoints.share": "Import/Export",
@@ -1501,6 +1515,8 @@
   "skyblocker.waypoints.exportErrorText": "Failed to export waypoints. See logs for details.",
   "skyblocker.waypoints.deleteQuestion": "Are you sure you want to remove this waypoint?",
   "skyblocker.waypoints.deleteWarning": "Waypoint '%s' will be lost forever! (A long time!)",
+  "skyblocker.waypoints.throughWalls": "Show Through Walls",
+  "skyblocker.waypoints.waypointType": "Waypoint Type",
 
   "skyblocker.nightVision.success": "Changed the strength of night vision to %s.",
 

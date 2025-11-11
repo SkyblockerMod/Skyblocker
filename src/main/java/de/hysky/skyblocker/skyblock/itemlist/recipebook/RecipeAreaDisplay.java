@@ -1,7 +1,9 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.input.KeyInput;
 
 /**
  * Interface representing the methods needed to interact with the "display" part of a tab in the Skyblock recipe book.
@@ -13,9 +15,9 @@ public interface RecipeAreaDisplay {
 
 	void drawTooltip(DrawContext context, int x, int y);
 
-	boolean mouseClicked(double mouseX, double mouseY, int button);
+	boolean mouseClicked(Click click, boolean doubled);
 
-	default boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
+	default boolean keyPressed(double mouseX, double mouseY, KeyInput keyInput) {
 		return false;
 	}
 

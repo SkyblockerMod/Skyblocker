@@ -5,9 +5,9 @@ import org.joml.Vector3f;
 
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
-import de.hysky.skyblocker.utils.render.state.CameraRenderState;
 import de.hysky.skyblocker.utils.render.state.CursorLineRenderState;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.util.math.Vec3d;
 
 public final class CursorLineRenderer implements PrimitiveRenderer<CursorLineRenderState> {
@@ -23,7 +23,7 @@ public final class CursorLineRenderer implements PrimitiveRenderer<CursorLineRen
 
 		// Start drawing the line from a point slightly in front of the camera
 		Vec3d point = state.point;
-		Vec3d cameraPoint = cameraState.pos.add(Vec3d.fromPolar(cameraState.pitch, cameraState.yaw));
+		Vec3d cameraPoint = cameraState.pos.add(new Vec3d(cameraState.orientation.transform(new Vector3f(0, 0, -1))));
 		Vector3f normal = point.toVector3f().sub((float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z).normalize();
 
 		buffer.vertex(positionMatrix, (float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z)

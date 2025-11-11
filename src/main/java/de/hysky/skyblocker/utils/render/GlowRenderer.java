@@ -28,7 +28,7 @@ public class GlowRenderer implements AutoCloseable {
 
 	private GlowRenderer() {
 		this.client = MinecraftClient.getInstance();
-		this.glowOutlineVertexConsumers = Util.make(new OutlineVertexConsumerProvider(this.client.getBufferBuilders().getEntityVertexConsumers()), outlineVertexConsumers -> {
+		this.glowOutlineVertexConsumers = Util.make(new OutlineVertexConsumerProvider(), outlineVertexConsumers -> {
 			((OutlineVertexConsumerProviderAccessor) outlineVertexConsumers).setPlainDrawer(new GlowVertexConsumerProvider(new BufferAllocator(RenderLayer.DEFAULT_BUFFER_SIZE)));
 		});
 	}

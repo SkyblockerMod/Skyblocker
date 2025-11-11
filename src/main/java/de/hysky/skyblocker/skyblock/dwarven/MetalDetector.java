@@ -114,7 +114,7 @@ public class MetalDetector {
         }
         //find new values
         double distance = Double.parseDouble(treasureDistanceMature.group(2));
-        Vec3d playerPos = CLIENT.player.getPos();
+        Vec3d playerPos = CLIENT.player.getEntityPos();
         int previousPossibleBlockCount = possibleBlocks.size();
 
         //send message when starting looking about how to use mod

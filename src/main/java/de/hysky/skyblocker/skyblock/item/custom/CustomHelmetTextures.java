@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.custom;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -15,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -65,9 +65,9 @@ public class CustomHelmetTextures {
 
 	public static ProfileComponent getProfile(String texture) {
 		return PROFILE_CACHE.computeIfAbsent(texture, (String t) ->
-				new ProfileComponent(Optional.of("custom"),
-						Optional.of(UUID.nameUUIDFromBytes(t.getBytes(StandardCharsets.UTF_8))),
-						ItemUtils.propertyMapWithTexture(t)));
+				ProfileComponent.ofStatic(new GameProfile(UUID.nameUUIDFromBytes(t.getBytes(StandardCharsets.UTF_8)),
+						"custom",
+						ItemUtils.propertyMapWithTexture(t))));
 	}
 
 	public record NamedTexture(String name, String texture, String internalName) {}

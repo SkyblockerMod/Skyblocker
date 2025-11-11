@@ -18,6 +18,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.util.Identifier;
 
 import java.nio.file.Path;
@@ -34,24 +35,7 @@ public class SkyblockerMod implements ClientModInitializer {
     public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(NAMESPACE);
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final Gson GSON_COMPACT = new GsonBuilder().create();
-    private static SkyblockerMod INSTANCE;
-
-    /**
-     * Do not instantiate this class. Use {@link #getInstance()} instead.
-     */
-    @Deprecated
-    public SkyblockerMod() {
-        INSTANCE = this;
-    }
-
-    /**
-     * @deprecated This method is no longer used anywhere, this class no longer has any instance fields, and this is
-     * highly error-prone when used by code that is being tested (due to an instance likely being unavailable).
-     */
-    @Deprecated(since = "5.8.0", forRemoval = true)
-    public static SkyblockerMod getInstance() {
-        return INSTANCE;
-    }
+    public static final KeyBinding.Category KEYBINDING_CATEGORY = KeyBinding.Category.create(id("main"));
 
 	public static Identifier id(String path) {
 		return Identifier.of(NAMESPACE, path);

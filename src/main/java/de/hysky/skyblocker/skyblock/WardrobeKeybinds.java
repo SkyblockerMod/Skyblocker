@@ -33,11 +33,11 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (!(screen instanceof HandledScreen<?> handledScreen) || !INSTANCE.test(handledScreen) || !INSTANCE.isEnabled() || client.interactionManager == null) return;
-			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((ignored, keyCode, scanCode, modifiers) ->
-					allowInput(client, handledScreen, keybinding -> keybinding.matchesKey(keyCode, scanCode))
+			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((ignored, keyInput) ->
+					allowInput(client, handledScreen, keybinding -> keybinding.matchesKey(keyInput))
 			);
-			ScreenMouseEvents.allowMouseClick(handledScreen).register((ignored, mouseX, mouseY, button) ->
-					allowInput(client, handledScreen, keybinding -> keybinding.matchesMouse(button))
+			ScreenMouseEvents.allowMouseClick(handledScreen).register((ignored, click) ->
+					allowInput(client, handledScreen, keybinding -> keybinding.matchesMouse(click))
 			);
 		});
 	}

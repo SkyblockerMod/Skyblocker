@@ -7,6 +7,7 @@ import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import de.hysky.skyblocker.utils.render.gui.SearchableGridWidget;
 import it.unimi.dsi.fastutil.Pair;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -167,8 +168,8 @@ public class ItemSelectionScreen extends AbstractPopupScreen {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			super.onClick(mouseX, mouseY);
+		public void onClick(Click click, boolean doubled) {
+			super.onClick(click, doubled);
 			setSelectedItem(this);
 		}
 
