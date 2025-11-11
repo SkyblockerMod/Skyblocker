@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.Map;
@@ -24,12 +21,13 @@ public class DisciplineTestHelper {
     /**
      * Stores a color related to the color of the sword: wood = brown, iron = silver, gold = gold, diamond = cyan
      */
-    private static final Object2IntMap<String> SWORD_TO_COLOR_LOOKUP = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(Map.of(
-            "WOOD_SWORD", 0xa52a2a,
-            "IRON_SWORD", 0xc0c0c0,
-            "GOLD_SWORD", 0xffd700,
-            "DIAMOND_SWORD", 0x00ffff
-    )));
+    // JDK immutable maps have special optimizations so the boxing is trivial
+    public static final Map<String, Integer> SWORD_TO_COLOR_LOOKUP = Map.of(
+            "WOOD_SWORD", 0xA52A2A,
+            "IRON_SWORD", 0xC0C0C0,
+            "GOLD_SWORD", 0xFFD700,
+            "DIAMOND_SWORD", 0x00FFFF
+    );
 
     /**
      * Works out if a zombie should glow based on its name and the currently held item by the player

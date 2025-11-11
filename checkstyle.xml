@@ -66,6 +66,9 @@
         <module name="StringLiteralEquality"/>
         <module name="EqualsHashCode"/>
 
+        <module name="HexLiteralCase"/>
+        <module name="UpperEll"/>
+
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>
 

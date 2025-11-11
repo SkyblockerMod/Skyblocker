@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.TableComponent;
 import net.minecraft.text.MutableText;
+import net.minecraft.util.Colors;
 
 import java.util.List;
 
@@ -28,11 +29,11 @@ public abstract class TableWidget extends ComponentBasedWidget {
 	}
 
 	protected TableWidget(MutableText title, int colorValue, String internalId, int columns, boolean drawLines) {
-		this(title, colorValue, internalId, columns, 0xffffffff, drawLines);
+		this(title, colorValue, internalId, columns, Colors.WHITE, drawLines);
 	}
 
 	protected TableWidget(MutableText title, int colorValue, String internalId, int columns) {
-		this(title, colorValue, internalId, columns, 0xffffffff, true);
+		this(title, colorValue, internalId, columns, Colors.WHITE, true);
 	}
 
 	/**

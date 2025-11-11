@@ -178,12 +178,12 @@ public class DojoManager {
      */
     public static int getColor() {
         if (!Utils.isInCrimson() || !inArena) {
-            return 0xf57738;
+            return 0xF57738;
         }
         return switch (currentChallenge) {
             case FORCE -> ForceTestHelper.getColor();
             case DISCIPLINE -> DisciplineTestHelper.getColor();
-            default -> 0xf57738;
+            default -> 0xF57738;
         };
     }
 

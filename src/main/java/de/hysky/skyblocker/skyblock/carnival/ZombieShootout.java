@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.carnival;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.crimson.dojo.DisciplineTestHelper;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -58,12 +59,11 @@ public class ZombieShootout {
 		if (!zombie.getEquippedStack(EquipmentSlot.CHEST).isEmpty()) {
 			Item item = zombie.getEquippedStack(EquipmentSlot.CHEST).getItem();
 
-			//Uses the same colors as the dojo stuff
 			return switch (item) {
-				case Item i when i == Items.DIAMOND_CHESTPLATE -> 0x00ffff;
-				case Item i when i == Items.GOLDEN_CHESTPLATE -> 0xffd700;
-				case Item i when i == Items.IRON_CHESTPLATE -> 0xc0c0c0;
-				case Item i when i == Items.LEATHER_CHESTPLATE -> 0xa52a2a;
+				case Item i when i == Items.DIAMOND_CHESTPLATE -> DisciplineTestHelper.SWORD_TO_COLOR_LOOKUP.get("DIAMOND_SWORD");
+				case Item i when i == Items.GOLDEN_CHESTPLATE -> DisciplineTestHelper.SWORD_TO_COLOR_LOOKUP.get("GOLD_SWORD");
+				case Item i when i == Items.IRON_CHESTPLATE -> DisciplineTestHelper.SWORD_TO_COLOR_LOOKUP.get("IRON_SWORD");
+				case Item i when i == Items.LEATHER_CHESTPLATE -> DisciplineTestHelper.SWORD_TO_COLOR_LOOKUP.get("WOOD_SWORD");
 
 				default -> MobGlow.NO_GLOW;
 			};

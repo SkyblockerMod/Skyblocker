@@ -22,11 +22,11 @@ import net.minecraft.util.DyeColor;
 
 public class DungeonGlowAdder extends MobGlowAdder {
 	public static final DungeonGlowAdder INSTANCE = new DungeonGlowAdder();
-	protected static final int STARRED_COLOUR = 0xf57738;
-	private static final int LOST_ADVENTURER_COLOUR = 0xfee15c;
-	private static final int SHADOW_ASSASSIN_COLOUR = 0x5b2cb2;
-	private static final int ANGRY_ARCHAEOLOGIST_COLOUR = 0x57c2f7;
-	private static final int ENDERMAN_EYE_COLOUR = 0xcc00fa;
+	protected static final int STARRED_COLOUR = 0xF57738;
+	private static final int LOST_ADVENTURER_COLOUR = 0xFEE15C;
+	private static final int SHADOW_ASSASSIN_COLOUR = 0x5B2CB2;
+	private static final int ANGRY_ARCHAEOLOGIST_COLOUR = 0x57C2F7;
+	private static final int ENDERMAN_EYE_COLOUR = 0xCC00FA;
 
 	@Init
 	public static void init() {}
