@@ -1,6 +1,5 @@
 {
     "argument.color.hex.invalidString": "Giá trị Hex phải đúng 6 ký tự, tìm thấy %s ký tự.",
-    "key.categories.skyblocker": "Skyblocker",
     "key.hotbarSlotLock": "Khóa slot (thanh hotbar)",
     "key.skyblocker.toggleA": "Hiển thị HUD tab thứ hai",
     "argument.color.rgb.incomplete": "Chưa hoàn tất (cần 3 giá trị màu RGB).",

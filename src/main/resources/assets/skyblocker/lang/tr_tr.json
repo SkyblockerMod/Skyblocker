@@ -46,7 +46,6 @@
     "skyblocker.config.general": "Genel",
     "skyblocker.config.uiAndVisuals.bars": "Can, Mana, Savunma ve XP Barları",
     "skyblocker.config.uiAndVisuals.bars.enableBars": "Barları Etkinleştir",
-    "key.categories.skyblocker": "Skyblocker",
     "skyblocker.updateRepository.error": "§cYerel depo güncellenemedi. Dosyaları manuel olarak silip oyunu tekrar başlatın.",
     "skyblocker.config.helpers.fishing": "Balık Tutma Yardımcısı",
     "skyblocker.config.helpers.fishing.enableFishingHelper": "Balık tutma yardımcısını aktifleştir",

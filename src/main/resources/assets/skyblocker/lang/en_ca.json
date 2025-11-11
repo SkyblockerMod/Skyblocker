@@ -77,7 +77,6 @@
     "skyblocker.customization.titleSecret": "Pimp Your Armour",
     "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "Display the skyblock fishing hook timer on the screen.\n\nOn crosshair: in the centre of screen\n\nIn HUD: in the fishing HUD",
     "skyblocker.config.dungeons.terminals.solveSameColor": "Solve Change All to Same Colour",
-    "key.categories.skyblocker": "Skyblocker",
     "text.skyblocker.confirm": "Confirm",
     "text.skyblocker.undo": "Undo",
     "text.skyblocker.config": "Open Config...",
