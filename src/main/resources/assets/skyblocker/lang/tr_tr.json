@@ -52,7 +52,7 @@
     "skyblocker.config.helpers.fishing.enableFishingHelper": "Balık tutma yardımcısını aktifleştir",
     "skyblocker.config.chat": "Mesajlar",
     "skyblocker.config.chat.filter.hideImplosion": "Implosion mesajını filtrele",
-    "key.skyblocker.toggleA": "Tab HUD'unda ikinci ekranını aç",
+    "key.skyblocker.toggleA": "Tab HUD'unda ikinci ekranını görüntüle",
     "skyblocker.config.helpers.mythologicalRitual": "Mitolojik Ayin Yardımcısı",
     "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "Mitolojik Ayin Yardımcısını Etkinleştir",
     "skyblocker.config.helpers.fairySouls.highlightFoundSouls": "Bulunmuş peri ruhlarını göster",
@@ -196,5 +196,12 @@
     "skyblocker.config.debug": "Hata",
     "skyblocker.events.tab.startsIn": "Başlayacak %s",
     "skyblocker.quickNav.confirm": "Tekrar tıkla ve onayla.",
-    "emi.category.skyblocker.skyblock_npc_shop": "Npc Marketler (Skyblock)"
+    "emi.category.skyblocker.skyblock_npc_shop": "Npc Marketler (Skyblock)",
+    "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight": "Kapı Vurgulayıcısını Etkinleştir",
+    "skyblocker.config.dungeons.goldorWaypoints.waypointType": "Görev yol noktası türü",
+    "skyblocker.config.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "Kapatmanızı **Önermeyiz** eğer unutkan biriyseniz.",
+    "skyblocker.config.dungeons.devices.solveArrowAlign": "Ok Hizasını Ayarlar",
+    "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "Her ok için dönüş noktalarını göster.",
+    "skyblocker.config.dungeons.devices.solveTargetPractice": "Hedef Alıştırmasını Çöz",
+    "skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip": "Kırmızı renkteki hedeflere isabet edenler."
 }
