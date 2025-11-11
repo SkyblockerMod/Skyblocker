@@ -42,12 +42,8 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
     final int secretIndex;
     final Category category;
 
-    SecretWaypoint(int secretIndex, JsonObject waypoint, String name, BlockPos pos) {
-        this(secretIndex, Category.get(waypoint), name, pos);
-    }
-
     SecretWaypoint(int secretIndex, Category category, String name, BlockPos pos) {
-        this(secretIndex, category, Text.of(name), pos);
+        this(secretIndex, category == null ? Category.DEFAULT : category, Text.of(name), pos);
     }
 
     SecretWaypoint(int secretIndex, Category category, Text name, BlockPos pos) {
@@ -132,7 +128,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
         PEARL("pearl", secretWaypoints -> secretWaypoints.enablePearlWaypoints, 57, 117, 125),
         PRINCE("prince", secretWaypoints -> secretWaypoints.enablePrinceWaypoints, 133, 21, 13),
         DEFAULT("default", secretWaypoints -> secretWaypoints.enableDefaultWaypoints, 190, 255, 252);
-        private static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
+        public static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
         private final String name;
         private final Predicate<DungeonsConfig.SecretWaypoints> enabledPredicate;
         private final float[] colorComponents;
