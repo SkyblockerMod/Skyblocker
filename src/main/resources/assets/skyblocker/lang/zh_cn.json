@@ -1519,7 +1519,7 @@
     "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints": "允许跳过路径点",
     "skyblocker.config.uiAndVisuals.waypoints.lineColor": "线条颜色",
     "skyblocker.config.uiAndVisuals.waypoints.lineWidth": "线条宽度",
-    "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "渲染一条从准星到下一个路径点的线（仅限有序组）",
+    "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "渲染一条从准星到下一个路径点的线（仅限有序组）。",
     "skyblocker.waypoints.otherOptions": "其它选项",
     "skyblocker.waypoints.waypointsOptions": "路径点选项",
     "skyblocker.waypoints.groupType": "组类型",
