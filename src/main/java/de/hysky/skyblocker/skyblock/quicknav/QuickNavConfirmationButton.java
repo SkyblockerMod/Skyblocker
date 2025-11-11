@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.quicknav;
 
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.sound.PositionedSoundInstance;
@@ -46,13 +47,13 @@ public class QuickNavConfirmationButton extends QuickNavButton {
 	}
 
 	@Override
-	public void onClick(double mouseX, double mouseY) {
+	public void onClick(Click click, boolean doubled) {
 		if (!isDoubleClick()) {
 			lastClicked = System.currentTimeMillis();
 			return;
 		}
 
-		super.onClick(mouseX, mouseY);
+		super.onClick(click, doubled);
 	}
 
 	private boolean isDoubleClick() {

@@ -13,7 +13,8 @@ public class OldLever {
     protected static final VoxelShape EAST_SHAPE = Block.createCuboidShape(0.0D, 3.0D, 5.0D, 6.0D, 13.0D, 11.0D);
     protected static final VoxelShape WEST_SHAPE = Block.createCuboidShape(10.0D, 3.0D, 5.0D, 16.0D, 13.0D, 11.0D);
 
-    public static VoxelShape getShape(BlockFace face, Direction direction) {
+    @SuppressWarnings("incomplete-switch")
+	public static VoxelShape getShape(BlockFace face, Direction direction) {
         if (!SkyblockerConfigManager.get().general.hitbox.oldLeverHitbox)
             return null;
 

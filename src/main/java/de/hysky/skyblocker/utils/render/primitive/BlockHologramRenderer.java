@@ -6,7 +6,6 @@ import de.hysky.skyblocker.utils.render.MatrixHelper;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
-import de.hysky.skyblocker.utils.render.state.CameraRenderState;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
@@ -14,6 +13,7 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.BlockStateModel;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 
 public final class BlockHologramRenderer implements PrimitiveRenderer<BlockHologramRenderState> {

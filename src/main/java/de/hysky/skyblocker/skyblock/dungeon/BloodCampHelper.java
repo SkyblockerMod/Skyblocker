@@ -139,7 +139,7 @@ public class BloodCampHelper {
 		WATCHERS.removeIf(watcher -> !watcher.isAlive());
 		for (ZombieEntity watcher : WATCHERS) {
 			if (!watcher.isAlive()) continue;
-			var stands = watcher.getWorld().getEntitiesByClass(
+			var stands = watcher.getEntityWorld().getEntitiesByClass(
 					ArmorStandEntity.class,
 					watcher.getBoundingBox().expand(2),
 					stand -> stand.hasStackEquipped(EquipmentSlot.HEAD) && !MOBS.containsKey(stand)
@@ -154,7 +154,7 @@ public class BloodCampHelper {
 
 		MOBS.entrySet().removeIf(e -> !e.getKey().isAlive());
 		for (TrackedMob mob : MOBS.values()) {
-			mob.update(mob.entity.getPos(), now);
+			mob.update(mob.entity.getEntityPos(), now);
 		}
 	}
 
@@ -163,7 +163,7 @@ public class BloodCampHelper {
 		for (TrackedMob mob : MOBS.values()) {
 			if (mob.predictedPos != null) {
 				collector.submitOutlinedBox(mob.entity.getBoundingBox().offset(0f, 2f, 0f), LINE_COLOR, 2, true);
-				collector.submitLinesFromPoints(new Vec3d[]{mob.entity.getPos().add(0f, 2f, 0f), mob.predictedPos.add(0f, 2f, 0f)}, LINE_COLOR, 0.5f, 2f, true);
+				collector.submitLinesFromPoints(new Vec3d[]{mob.entity.getEntityPos().add(0f, 2f, 0f), mob.predictedPos.add(0f, 2f, 0f)}, LINE_COLOR, 0.5f, 2f, true);
 				Box box = new Box(mob.predictedPos.x - 0.5, mob.predictedPos.y + 2, mob.predictedPos.z - 0.5,
 						mob.predictedPos.x + 0.5, mob.predictedPos.y + 4, mob.predictedPos.z + 0.5);
 				collector.submitOutlinedBox(box, BOX_COLOR, 5, true);
@@ -192,7 +192,7 @@ public class BloodCampHelper {
 
 		TrackedMob(ArmorStandEntity entity) {
 			this.entity = entity;
-			this.startPos = entity.getPos();
+			this.startPos = entity.getEntityPos();
 			this.lastPos = this.startPos;
 			this.lastTime = System.currentTimeMillis();
 		}

@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.end;
 
-import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
@@ -17,7 +16,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 
-import java.util.Optional;
 import java.util.Set;
 
 @RegisterWidget
@@ -27,7 +25,7 @@ public class EndHudWidget extends ComponentBasedWidget {
 
 	private static EndHudWidget instance = null;
 
-	private static final ItemStack ENDERMAN_HEAD = Util.make(new ItemStack(Items.PLAYER_HEAD), stack -> stack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap())));
+	private static final ItemStack ENDERMAN_HEAD = Util.make(new ItemStack(Items.PLAYER_HEAD), stack -> stack.set(DataComponentTypes.PROFILE, ProfileComponent.ofDynamic("MHF_Enderman")));
 	private static final ItemStack POPPY = Util.make(new ItemStack(Items.POPPY), stack -> stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true));
 
 	public EndHudWidget() {

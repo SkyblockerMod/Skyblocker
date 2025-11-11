@@ -42,7 +42,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PredictiveSmoothAOTE {
-	public static final Identifier SMOOTH_AOTE_BEFORE_PHASE = Identifier.of(SkyblockerMod.NAMESPACE, "smooth_aote");
+	public static final Identifier SMOOTH_AOTE_BEFORE_PHASE = SkyblockerMod.id("smooth_aote");
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
@@ -207,7 +207,7 @@ public class PredictiveSmoothAOTE {
 		//work out start pos of warp and set start time. if there is an active warp going on make the end of that the start of the next one
 		if (teleportsAhead == 0 || startPos == null || teleportVector == null) {
 			//start of teleport sequence
-			startPos = CLIENT.player.getPos().add(0, getEyeHeight(), 0); // the eye poss should not be affected by crouching
+			startPos = CLIENT.player.getEntityPos().add(0, getEyeHeight(), 0); // the eye poss should not be affected by crouching
 			cameraStartPos = CLIENT.player.getEyePos();
 			lastTeleportTime = System.currentTimeMillis();
 			// update the ping used for the teleport
@@ -343,7 +343,7 @@ public class PredictiveSmoothAOTE {
 		Vec3d endPos = startPos.add(look.multiply(maxDistance));
 
 		// First: Raycast for blocks (to check obstructions)
-		World world = player.getWorld();
+		World world = player.getEntityWorld();
 		RaycastContext context = new RaycastContext(startPos, endPos, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player);
 		double blockHitDistance = world.raycast(context).getPos().distanceTo(startPos);
 

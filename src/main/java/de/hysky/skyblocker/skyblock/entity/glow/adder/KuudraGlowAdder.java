@@ -11,7 +11,7 @@ import net.minecraft.entity.mob.MagmaCubeEntity;
 public class KuudraGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")
 	private static final KuudraGlowAdder INSTANCE = new KuudraGlowAdder();
-	private static final int KUUDRA_COLOUR = 0xf7510f;
+	private static final int KUUDRA_COLOUR = 0xF7510F;
 
 	@Init
 	public static void init() {}

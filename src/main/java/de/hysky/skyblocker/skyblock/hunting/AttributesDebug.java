@@ -40,10 +40,10 @@ public class AttributesDebug {
 	//@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
-				if (key == GLFW.GLFW_KEY_G) {
+			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, input) -> {
+				if (input.key() == GLFW.GLFW_KEY_G) {
 					dumpAttributes();
-				} else if (key == GLFW.GLFW_KEY_J) {
+				} else if (input.key() == GLFW.GLFW_KEY_J) {
 					exportAttributes();
 				}
 			});

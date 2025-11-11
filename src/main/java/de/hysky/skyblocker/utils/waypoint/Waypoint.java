@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.waypoint;
 
+import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.resource.language.I18n;
@@ -101,6 +102,14 @@ public class Waypoint implements Renderable {
      * Subclasses should override this method to return a new instance of the subclass with the specified color components and alpha.
      */
     public Waypoint withColor(float[] colorComponents, float alpha) {
+        return new Waypoint(pos, typeSupplier, colorComponents, alpha, lineWidth, throughWalls, enabled);
+    }
+
+    public Waypoint withThroughWalls(boolean throughWalls) {
+        return new Waypoint(pos, typeSupplier, colorComponents, alpha, lineWidth, throughWalls, enabled);
+    }
+
+    public Waypoint withTypeSupplier(Supplier<Type> typeSupplier) {
         return new Waypoint(pos, typeSupplier, colorComponents, alpha, lineWidth, throughWalls, enabled);
     }
     // endregion
@@ -229,6 +238,8 @@ public class Waypoint implements Renderable {
         HIGHLIGHT,
         OUTLINED_HIGHLIGHT,
         OUTLINE;
+
+        public static final Codec<Type> CODEC = StringIdentifiable.createCodec(Type::values);
 
         @Override
         public String asString() {

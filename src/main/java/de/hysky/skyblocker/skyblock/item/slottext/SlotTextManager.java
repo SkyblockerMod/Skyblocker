@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.WardrobeKeybinds;
@@ -69,7 +70,7 @@ public class SlotTextManager {
 			new BestiaryLevelAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
-	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.skyblocker"));
+	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));
 	private static boolean keyHeld = false;
 
 	private SlotTextManager() {
@@ -82,14 +83,14 @@ public class SlotTextManager {
 				onScreenChange(screen);
 				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 			}
-			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
-				if (keyBinding.matchesKey(key, scancode)) {
+			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, input) -> {
+				if (keyBinding.matchesKey(input)) {
 					SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled = !SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled;
 					keyHeld = true;
 				}
 			});
-			ScreenKeyboardEvents.afterKeyRelease(screen).register((screen1, key, scancode, modifiers) -> {
-				if (keyBinding.matchesKey(key, scancode)) {
+			ScreenKeyboardEvents.afterKeyRelease(screen).register((screen1, input) -> {
+				if (keyBinding.matchesKey(input)) {
 					keyHeld = false;
 				}
 			});
