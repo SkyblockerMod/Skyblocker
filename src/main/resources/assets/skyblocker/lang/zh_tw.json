@@ -1527,6 +1527,9 @@
     "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards": "允許倒序",
     "skyblocker.waypoints.waypointsOptions": "路徑點選項",
     "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip": "允許以相反順序使用路徑點組。",
-    "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "渲染一條從準星到下一個路徑點的線（僅限有序組）",
-    "skyblocker.waypoints.throughWalls": "隔牆顯示"
+    "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "渲染一條從準星到下一個路徑點的線（僅限有序組）。",
+    "skyblocker.waypoints.throughWalls": "隔牆顯示",
+    "skyblocker.dungeons.splits.bloodOpen": "Blood Room開啟",
+    "skyblocker.dungeons.splits.bloodClear": "Blood Room清空",
+    "key.category.skyblocker.main": "Skyblocker"
 }
