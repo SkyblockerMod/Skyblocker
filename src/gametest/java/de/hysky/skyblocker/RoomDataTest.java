@@ -58,7 +58,7 @@ public class RoomDataTest implements FabricClientGameTest {
 		for (String roomName : roomFiles) {
 			if (!skeletonFiles.contains(roomName)) {
 				isValid = false;
-				LOGGER.error("{} is mising a .skeleton file!", roomName);
+				LOGGER.error("{} is missing a .skeleton file!", roomName);
 			}
 		}
 		return isValid;
@@ -74,7 +74,7 @@ public class RoomDataTest implements FabricClientGameTest {
 				DungeonManager.RoomData.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
 			} catch (Exception ex) {
 				String[] parts = filePath.getPath().split("/");
-				LOGGER.error("Failed to load room: dungeon={}, shape={} room={}", parts[1], parts[2], parts[3], ex);
+				LOGGER.error("Failed to load room: dungeon={}, shape={}, room={}", parts[1], parts[2], parts[3], ex);
 				isValid = false;
 			}
 		}
