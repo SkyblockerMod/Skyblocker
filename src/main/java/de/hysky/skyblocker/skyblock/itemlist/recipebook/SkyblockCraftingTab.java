@@ -2,7 +2,9 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.MathHelper;
@@ -38,22 +40,22 @@ record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, 
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		if (ItemRepository.filesImported()) {
-			if (results.mouseClicked(mouseX, mouseY, button)) {
+			if (results.mouseClicked(click, doubled)) {
 				return true;
 			} else {
 				if (recipeBook.searchField != null) {
-					boolean magnifyingGlassClicked = recipeBook.searchFieldRect != null && recipeBook.searchFieldRect.contains(MathHelper.floor(mouseX), MathHelper.floor(mouseY));
+					boolean magnifyingGlassClicked = recipeBook.searchFieldRect != null && recipeBook.searchFieldRect.contains(MathHelper.floor(click.x()), MathHelper.floor(click.y()));
 
-					if (magnifyingGlassClicked || recipeBook.searchField.mouseClicked(mouseX, mouseY, button)) {
+					if (magnifyingGlassClicked || recipeBook.searchField.mouseClicked(click, doubled)) {
 						results.closeRecipeView();
 						recipeBook.searchField.setFocused(true);
 
 						return true;
 					}
 					recipeBook.searchField.setFocused(false);
-					return recipeBook.filterOption.mouseClicked(mouseX, mouseY, button);
+					return recipeBook.filterOption.mouseClicked(click, doubled);
 				}
 			}
 		}
@@ -62,8 +64,8 @@ record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, 
 	}
 
 	@Override
-	public boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
-		return ItemRepository.filesImported() ? this.results.keyPressed(mouseX, mouseY, keyCode, scanCode, modifiers) : false;
+	public boolean keyPressed(double mouseX, double mouseY, KeyInput input) {
+		return ItemRepository.filesImported() && this.results.keyPressed(mouseX, mouseY, input);
 	}
 
 	@Override

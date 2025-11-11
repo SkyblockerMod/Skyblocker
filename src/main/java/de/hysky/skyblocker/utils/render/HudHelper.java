@@ -5,7 +5,6 @@ import de.hysky.skyblocker.compatibility.ModernUICompatibility;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.OutlinedTextGuiElementRenderState;
-import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -13,8 +12,12 @@ import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
+import net.minecraft.client.texture.PlayerSkinCache;
 import net.minecraft.client.texture.TextureSetup;
 import net.minecraft.client.util.DefaultSkinHelper;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.entity.player.SkinTextures;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.registry.RegistryKey;
@@ -23,6 +26,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import org.joml.Matrix3x2f;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.Optional;
@@ -43,16 +47,28 @@ public class HudHelper {
 		context.state.addSimpleElement(new HorizontalGradientGuiElementRenderState(RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), (int) startX, (int) startY, (int) endX, (int) endY, colorStart, colorEnd, context.scissorStack.peekLast()));
 	}
 
+	// FIXME replace with stroked rectangles?
+	public static void drawBorder(DrawContext context, int x, int y, int width, int height, int color) {
+		context.fill(x, y, x + width, y + 1, color);
+		context.fill(x, y + height - 1, x + width, y + height, color);
+		context.fill(x, y + 1, x + 1, y + height - 1, color);
+		context.fill(x + width - 1, y + 1, x + width, y + height - 1, color);
+	}
+
 	/**
 	 * Draws a player head without blocking or a default head if profile is not available immediately.
 	 * This fetches the profile so it will be available for future calls to this method.
 	 */
 	public static void drawPlayerHead(DrawContext context, int x, int y, int size, UUID uuid) {
-		PlayerSkinDrawer.draw(context, SkullBlockEntity.fetchProfileByUuid(uuid).getNow(Optional.empty()).map(CLIENT.getSkinProvider()::getSkinTextures).orElseGet(() -> DefaultSkinHelper.getSkinTextures(uuid)), x, y, size);
+		SkinTextures texture = CLIENT.getPlayerSkinCache().getFuture(ProfileComponent.ofDynamic(uuid))
+				.getNow(Optional.empty())
+				.map(PlayerSkinCache.Entry::getTextures)
+				.orElseGet(() -> DefaultSkinHelper.getSkinTextures(uuid));
+		PlayerSkinDrawer.draw(context, texture, x, y, size);
 	}
 
-	public static void drawEquipment(DrawContext context, EquipmentRenderer equipmentRenderer, EquipmentModel.LayerType layerType, RegistryKey<EquipmentAsset> assetKey, Model model, ItemStack stack, int x1, int y1, int x2, int y2, float rotation, float scale, float offset) {
-		EquipmentGuiElementRenderState renderState = new EquipmentGuiElementRenderState(equipmentRenderer, layerType, assetKey, model, stack, x1, y1, x2, y2, rotation, scale, offset, context.scissorStack.peekLast());
+	public static <S> void drawEquipment(DrawContext context, EquipmentRenderer equipmentRenderer, EquipmentModel.LayerType layerType, RegistryKey<EquipmentAsset> assetKey, Model<S> model, S state, ItemStack stack, int x1, int y1, int x2, int y2, float rotation, float scale, float offset) {
+		EquipmentGuiElementRenderState<S> renderState = new EquipmentGuiElementRenderState<>(equipmentRenderer, layerType, assetKey, model, state, stack, x1, y1, x2, y2, rotation, scale, offset, context.scissorStack.peekLast());
 
 		context.state.addSpecialElement(renderState);
 	}
@@ -76,5 +92,10 @@ public class HudHelper {
 
 	public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
 		return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+	}
+
+	// Temp fix for this?
+	public static boolean hasShiftDown() {
+		return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
 	}
 }

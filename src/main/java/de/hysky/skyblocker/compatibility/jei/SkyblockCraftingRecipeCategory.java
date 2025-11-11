@@ -1,41 +1,16 @@
 package de.hysky.skyblocker.compatibility.jei;
 
-import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
-import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.library.plugins.vanilla.crafting.CraftingRecipeCategory;
-import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.recipe.RecipeEntry;
+import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 
-public class SkyblockCraftingRecipeCategory extends CraftingRecipeCategory {
-    @SuppressWarnings({"unchecked", "RedundantCast", "rawtypes"})
-    private static final RecipeType<RecipeEntry<CraftingRecipe>> SKYBLOCK_RECIPE = new RecipeType<>(SkyblockerMod.id("skyblock"), (Class<? extends RecipeEntry<CraftingRecipe>>) (Class) RecipeEntry.class);
-    private final Text title = Text.translatable("emi.category.skyblocker.skyblock_crafting");
-    private final IDrawable icon;
+public final class SkyblockCraftingRecipeCategory extends AbstractSkyblockRecipeCategory<SkyblockCraftingRecipe> {
+	private static final IRecipeType<SkyblockCraftingRecipe> RECIPE_TYPE = IRecipeType.create(SkyblockCraftingRecipe.ID, SkyblockCraftingRecipe.class);
+	private static final Text TITLE = Text.translatable("emi.category.skyblocker.skyblock_crafting");
 
-    public SkyblockCraftingRecipeCategory(IGuiHelper guiHelper) {
-        super(guiHelper);
-        icon = guiHelper.createDrawableItemStack(ItemUtils.getSkyblockerStack());
-    }
-
-    @Override
-    @NotNull
-    public RecipeType<RecipeEntry<CraftingRecipe>> getRecipeType() {
-        return SKYBLOCK_RECIPE;
-    }
-
-    @NotNull
-    @Override
-    public Text getTitle() {
-        return title;
-    }
-
-    @Override
-    public IDrawable getIcon() {
-        return icon;
-    }
+	protected SkyblockCraftingRecipeCategory(IGuiHelper guiHelper) {
+		super(guiHelper, RECIPE_TYPE, TITLE, ItemUtils.getSkyblockerStack());
+	}
 }

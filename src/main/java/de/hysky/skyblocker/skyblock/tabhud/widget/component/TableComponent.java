@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.gui.DrawContext;
 
 /**
@@ -77,7 +78,7 @@ public class TableComponent extends Component {
 			int col = rowBorders[y];
 			if (col != 0) {
 				// shift slightly so the border does not clash with the widget outline
-				context.drawBorder(xpos, ypos + yOff, this.width + PAD_S, rowHeights[y], col);
+				HudHelper.drawBorder(context, xpos, ypos + yOff, this.width + PAD_S, rowHeights[y], col);
 			}
 			yOff += rowHeights[y];
 		}

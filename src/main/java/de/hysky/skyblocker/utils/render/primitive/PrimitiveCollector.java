@@ -9,6 +9,8 @@ import net.minecraft.util.math.Vec3d;
 
 public interface PrimitiveCollector {
 
+	<S> void submitVanilla(S state, VanillaRenderer<S> renderer);
+
 	void submitFilledBoxWithBeaconBeam(BlockPos pos, float[] colourComponents, float alpha, boolean throughWalls);
 
 	void submitFilledBox(BlockPos pos, float[] colourComponents, float alpha, boolean throughWalls);

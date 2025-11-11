@@ -29,3 +29,7 @@ extendable class net/minecraft/client/gui/render/state/TextGuiElementRenderState
 accessible class net/minecraft/client/font/TextRenderer$Drawer
 accessible field net/minecraft/client/font/TextRenderer$Drawer x F
 accessible field net/minecraft/client/font/TextRenderer$Drawer y F
+
+# Custom Screens
+# Gets rid of a compiler error for Eclipse (I guess its more strict)
+accessible class net/minecraft/client/gui/widget/EntryListWidget$Entry

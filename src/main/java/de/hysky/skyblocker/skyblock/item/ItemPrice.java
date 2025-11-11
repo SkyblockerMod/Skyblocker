@@ -31,7 +31,7 @@ public class ItemPrice {
     public static final KeyBinding ITEM_PRICE_LOOKUP = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.itemPriceLookup",
             GLFW.GLFW_KEY_F6,
-            "key.categories.skyblocker"
+            SkyblockerMod.KEYBINDING_CATEGORY
     ));
 
 	/**

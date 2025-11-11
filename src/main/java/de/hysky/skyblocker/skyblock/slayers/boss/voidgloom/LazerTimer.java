@@ -51,7 +51,7 @@ public class LazerTimer {
 				Text renderText = Text.literal("Lazer: ").formatted(Formatting.WHITE)
 						.append(Text.literal(timeText).formatted(Formatting.GREEN).formatted(Formatting.BOLD));
 
-				collector.submitText(renderText, boss.getPos().add(0, 2, 0), true);
+				collector.submitText(renderText, boss.getEntityPos().add(0, 2, 0), true);
 			}
 		}
 	}

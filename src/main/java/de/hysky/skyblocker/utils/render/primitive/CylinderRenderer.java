@@ -4,9 +4,9 @@ import org.joml.Matrix4f;
 
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
-import de.hysky.skyblocker.utils.render.state.CameraRenderState;
 import de.hysky.skyblocker.utils.render.state.CylinderRenderState;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.state.CameraRenderState;
 
 public final class CylinderRenderer implements PrimitiveRenderer<CylinderRenderState> {
 	protected static final CylinderRenderer INSTANCE = new CylinderRenderer();

@@ -8,12 +8,16 @@ import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
@@ -190,7 +194,7 @@ public class HeadSelectionWidget extends ContainerWidget {
 			}
 			b.setY(originalY);
 		}
-		drawScrollbar(context);
+		drawScrollbar(context, mouseX, mouseY);
 		context.disableScissor();
 
 		if (hovered != null && !hovered.name.isEmpty()) {
@@ -199,42 +203,42 @@ public class HeadSelectionWidget extends ContainerWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (searchField.mouseClicked(mouseX, mouseY, button)) {
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (searchField.mouseClicked(click, doubled)) {
 			setFocused(searchField);
 			return true;
 		}
 
-		double adjustedMouseY = mouseY + getScrollY();
+		double adjustedMouseY = click.y() + getScrollY();
 		if (overflows()) {
 			int scrollbarX = getScrollbarX();
 			// Default scrollbar width is 6 pixels
-			if (mouseX >= scrollbarX && mouseX < scrollbarX + 6) {
+			if (click.x() >= scrollbarX && click.x() < scrollbarX + 6) {
 				int thumbY = getScrollbarThumbY();
 				int thumbHeight = getScrollbarThumbHeight();
-				if (mouseY >= thumbY && mouseY < thumbY + thumbHeight) {
-					adjustedMouseY = mouseY;
+				if (click.y() >= thumbY && click.y() < thumbY + thumbHeight) {
+					adjustedMouseY = click.y();
 				}
 			}
 		}
 
-		return super.mouseClicked(mouseX, adjustedMouseY, button);
+		return super.mouseClicked(new Click(click.x(), adjustedMouseY, click.buttonInfo()), doubled);
 	}
 
 	@Override
-	public boolean charTyped(char chr, int modifiers) {
-		if (searchField.isFocused() && searchField.charTyped(chr, modifiers)) {
+	public boolean charTyped(CharInput input) {
+		if (searchField.isFocused() && searchField.charTyped(input)) {
 			return true;
 		}
-		return super.charTyped(chr, modifiers);
+		return super.charTyped(input);
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (searchField.isFocused() && searchField.keyPressed(keyCode, scanCode, modifiers)) {
+	public boolean keyPressed(KeyInput input) {
+		if (searchField.isFocused() && searchField.keyPressed(input)) {
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(input);
 	}
 
 	@Override
@@ -324,13 +328,14 @@ public class HeadSelectionWidget extends ContainerWidget {
 			if (this.selected) {
 				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
 			}
-			if (isHovered()) {
+			if (this.isHovered()) {
 				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
+				context.setCursor(StandardCursors.POINTING_HAND);
 			}
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			this.onPress.accept(this);
 		}
 

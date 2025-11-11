@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class SkyblockCraftingRecipe implements SkyblockRecipe {
-
-    public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_crafting");
+    public static final Identifier ID = SkyblockerMod.id("skyblock_crafting");
 
     private final Text craftText;
     private final List<ItemStack> grid = new ArrayList<>(9);
@@ -72,7 +71,7 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
 
     @Override
     public Identifier getCategoryIdentifier() {
-        return SkyblockCraftingRecipe.IDENTIFIER;
+        return SkyblockCraftingRecipe.ID;
     }
 
     @Override

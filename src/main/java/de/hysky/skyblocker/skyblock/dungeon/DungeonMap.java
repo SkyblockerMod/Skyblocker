@@ -160,7 +160,7 @@ public class DungeonMap {
 				hovered = player.uuid();
 			}
 			HudHelper.drawPlayerHead(context, -4, -4, 8, player.uuid());
-			context.drawBorder(-5, -5, 10, 10, dungeonPlayer.dungeonClass().color());
+			HudHelper.drawBorder(context, -5, -5, 10, 10, dungeonPlayer.dungeonClass().color());
 			context.fill(-1, -7, 1, -5, dungeonPlayer.dungeonClass().color());
 			context.getMatrices().popMatrix();
 		}
@@ -183,7 +183,7 @@ public class DungeonMap {
 		public static PlayerRenderState of(@NotNull World world, @NotNull DungeonPlayerManager.DungeonPlayer dungeonPlayer, @NotNull MapDecoration mapDecoration) {
 			// Use the player entity if it exists, since it gives the most accurate position and rotation
 			PlayerEntity playerEntity = world.getPlayerByUuid(dungeonPlayer.uuid());
-			Vector2dc mapPos = playerEntity != null ? DungeonMapUtils.getMapPosFromPhysical(DungeonManager.getPhysicalEntrancePos(), DungeonManager.getMapEntrancePos(), DungeonManager.getMapRoomSize(), playerEntity.getPos()) : new Vector2d(mapDecoration.x() / 2d + 64, mapDecoration.z() / 2d + 64);
+			Vector2dc mapPos = playerEntity != null ? DungeonMapUtils.getMapPosFromPhysical(DungeonManager.getPhysicalEntrancePos(), DungeonManager.getMapEntrancePos(), DungeonManager.getMapRoomSize(), playerEntity.getEntityPos()) : new Vector2d(mapDecoration.x() / 2d + 64, mapDecoration.z() / 2d + 64);
 			float deg = playerEntity != null ? playerEntity.getYaw() : mapDecoration.rotation() * 360 / 16.0F;
 
 			return new PlayerRenderState(dungeonPlayer.uuid(), dungeonPlayer.name(), mapPos, deg);

@@ -25,7 +25,7 @@ public class LookingClientPosArgument implements ClientPosArgument {
 	@Override
 	public Vec3d toAbsolutePos(FabricClientCommandSource source) {
 		Vec2f vec2f = source.getRotation();
-		Vec3d vec3d = source.getPlayer().getPos();
+		Vec3d vec3d = source.getPlayer().getEntityPos();
 		float f = MathHelper.cos((vec2f.y + 90.0F) * (float) (Math.PI / 180.0));
 		float g = MathHelper.sin((vec2f.y + 90.0F) * (float) (Math.PI / 180.0));
 		float h = MathHelper.cos(-vec2f.x * (float) (Math.PI / 180.0));
