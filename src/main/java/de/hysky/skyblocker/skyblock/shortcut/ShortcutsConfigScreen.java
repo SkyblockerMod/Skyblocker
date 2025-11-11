@@ -37,6 +37,7 @@ public class ShortcutsConfigScreen extends Screen {
 		if (initialized) {
 			shortcutsConfigListWidget.setDimensions(width, height - 96);
 			shortcutsConfigListWidget.updatePositions();
+			shortcutsConfigListWidget.refreshScroll();
 		} else {
 			shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height - 96, 32);
 			initialized = true;
