@@ -64,6 +64,17 @@ public class ForagingCategory {
 										})
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount"))
+								.description(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip"))
+								.binding(defaults.foraging.galatea.seaLumiesMinimumCount,
+										() -> config.foraging.galatea.seaLumiesMinimumCount,
+										newValue -> {
+											config.foraging.galatea.seaLumiesMinimumCount = newValue;
+											SeaLumiesHighlighter.INSTANCE.configCallback();
+										})
+								.controller(IntegerController.createBuilder().range(1, 4).slider(1).build())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress"))
 								.description(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip"))
@@ -76,17 +87,6 @@ public class ForagingCategory {
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakHud"))
 								.prompt(Text.translatable("text.skyblocker.open"))
 								.action((screen) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, TreeBreakProgressHud.getInstance().getInternalID(), screen)))
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount"))
-								.description(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip"))
-								.binding(defaults.foraging.galatea.seaLumiesMinimumCount,
-										() -> config.foraging.galatea.seaLumiesMinimumCount,
-										newValue -> {
-											config.foraging.galatea.seaLumiesMinimumCount = newValue;
-											SeaLumiesHighlighter.INSTANCE.configCallback();
-										})
-								.controller(IntegerController.createBuilder().range(1, 4).slider(1).build())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))
