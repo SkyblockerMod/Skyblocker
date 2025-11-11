@@ -12,6 +12,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
 import java.util.List;
+import java.util.Locale;
 
 public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	private final ButtonWidget editButton;
@@ -34,7 +35,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 		enableButton = ButtonWidget.builder(state.equals(State.ENABLED) ? ENABLED_TEXT : DISABLED_TEXT, button -> this.parent.clickAndWaitForServer(this.slotId, 0))
 				.size(64, 12)
 				.build();
-		alwaysEnabled = ItemUtils.getLoreLineIf(icon, s -> s.toLowerCase().contains("always enable")) != null;
+		alwaysEnabled = ItemUtils.getLoreLineIf(icon, s -> s.toLowerCase(Locale.ENGLISH).contains("always enable")) != null;
 
 	}
 
@@ -53,21 +54,21 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		int textY = y + (entryHeight - 9) / 2;
+	public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		int textY = this.getY() + (this.getHeight() - 9) / 2;
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		renderIconAndText(context, y, x, entryHeight);
+		renderIconAndText(context, this.getY(), this.getX(), this.getHeight());
 		if (state != State.LOCKED) {
 
-			editButton.setPosition(x + entryWidth - 40, y + (entryHeight - 12) / 2);
-			editButton.render(context, mouseX, mouseY, tickDelta);
+			editButton.setPosition(this.getX() + this.getWidth() - 40, this.getY() + (this.getHeight() - 12) / 2);
+			editButton.render(context, mouseX, mouseY, deltaTicks);
 
 			if (!alwaysEnabled) {
-				enableButton.setPosition(x + entryWidth - 110, y + (entryHeight - 12) / 2);
-				enableButton.render(context, mouseX, mouseY, tickDelta);
+				enableButton.setPosition(this.getX() + this.getWidth() - 110, this.getY() + (this.getHeight() - 12) / 2);
+				enableButton.render(context, mouseX, mouseY, deltaTicks);
 			}
 		} else {
-			context.drawText(textRenderer, "LOCKED", x + entryWidth - 50, textY, Colors.RED, true);
+			context.drawText(textRenderer, "LOCKED", this.getX() + this.getWidth() - 50, textY, Colors.RED, true);
 		}
 	}
 

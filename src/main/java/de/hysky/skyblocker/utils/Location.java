@@ -16,7 +16,7 @@ public enum Location implements StringIdentifiable {
 	GARDEN("garden"),
 	HUB("hub"),
 	THE_FARMING_ISLAND("farming_1"),
-	THE_PARK("foraging_1"),
+	THE_PARK("foraging_1", true),
 	SPIDERS_DEN("combat_1", "Spider's Den"),
 	BLAZING_FORTRESS("combat_2"),
 	THE_END("combat_3"),
@@ -39,7 +39,7 @@ public enum Location implements StringIdentifiable {
 	/**
 	 * <p>Goodbye 1.8 hello 1.21 (and foraging 50 for all)!</p>
 	 */
-	GALATEA("foraging_2"),
+	GALATEA("foraging_2", true),
 	/**
 	 * Unknown Skyblock location
 	 */
@@ -61,12 +61,18 @@ public enum Location implements StringIdentifiable {
 	private final String friendlyName;
 
 	/**
-	 * @param id location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
+	 * if the location is based on a modern server (not 1.8.9)
+	 */
+	private final boolean modern;
+
+	/**
+	 * @param id           location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
 	 * @param friendlyName friendly name from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
 	 */
 	Location(@NotNull String id, @NotNull String friendlyName) {
 		this.id = id;
 		this.friendlyName = friendlyName;
+		this.modern = false;
 	}
 
 	/**
@@ -77,6 +83,19 @@ public enum Location implements StringIdentifiable {
 	Location(@NotNull String id) {
 		this.id = id;
 		this.friendlyName = WordUtils.capitalizeFully(name().replace('_', ' '));
+		this.modern = false;
+	}
+
+	/**
+	 * Alternative constructor to have the option of setting the location to modern.
+	 *
+	 * @param id     location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
+	 * @param modern the location is 1.21+ server
+	 */
+	Location(@NotNull String id, boolean modern) {
+		this.id = id;
+		this.friendlyName = WordUtils.capitalizeFully(name().replace('_', ' '));
+		this.modern = modern;
 	}
 
 	/**
@@ -85,6 +104,10 @@ public enum Location implements StringIdentifiable {
 	@NotNull
 	public String id() {
 		return this.id;
+	}
+
+	public boolean isModern() {
+		return this.modern;
 	}
 
 	@Override
@@ -99,9 +122,9 @@ public enum Location implements StringIdentifiable {
 	@NotNull
 	public static Location from(String id) {
 		return Arrays.stream(Location.values())
-					 .filter(loc -> loc.id.equals(id))
-					 .findFirst()
-					 .orElse(UNKNOWN);
+				.filter(loc -> loc.id.equals(id))
+				.findFirst()
+				.orElse(UNKNOWN);
 	}
 
 	/**
@@ -111,9 +134,9 @@ public enum Location implements StringIdentifiable {
 	@NotNull
 	public static Location fromFriendlyName(String friendlyName) {
 		return Arrays.stream(Location.values())
-					 .filter(loc -> loc.friendlyName.equalsIgnoreCase(friendlyName))
-					 .findFirst()
-					 .orElse(UNKNOWN);
+				.filter(loc -> loc.friendlyName.equalsIgnoreCase(friendlyName))
+				.findFirst()
+				.orElse(UNKNOWN);
 	}
 
 	@Override

@@ -10,13 +10,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 import java.util.List;
+import java.util.Locale;
 
 public class BooleanSlotEntry extends WidgetsListSlotEntry {
 	private final ButtonWidget enableButton;
 
 	public BooleanSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
-		boolean enabled = !ItemUtils.getLore(icon).getLast().getString().toLowerCase().contains("enable");
+		boolean enabled = !ItemUtils.getLore(icon).getLast().getString().toLowerCase(Locale.ENGLISH).contains("enable");
 		enableButton = ButtonWidget.builder(enabled ? ENABLED_TEXT : DISABLED_TEXT, button -> this.parent.clickAndWaitForServer(this.slotId, 0))
 				.size(64, 12)
 				.build();
@@ -37,9 +38,9 @@ public class BooleanSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		renderIconAndText(context, y, x, entryHeight);
-		enableButton.setPosition(x + entryWidth - 70, y + (entryHeight - 12) / 2);
-		enableButton.render(context, mouseX, mouseY, tickDelta);
+	public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		renderIconAndText(context, this.getY(), this.getX(), this.getHeight());
+		enableButton.setPosition(this.getX() + this.getWidth() - 70, this.getY() + (this.getHeight() - 12) / 2);
+		enableButton.render(context, mouseX, mouseY, deltaTicks);
 	}
 }

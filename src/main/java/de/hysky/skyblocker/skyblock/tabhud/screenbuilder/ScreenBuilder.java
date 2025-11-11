@@ -11,6 +11,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.resource.language.I18n;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -220,6 +221,11 @@ public class ScreenBuilder {
 
 		public WidgetPositioner getNewPositioner(int screenWidth, int screenHeight) {
 			return function.apply(screenWidth, screenHeight);
+		}
+
+		@Override
+		public String toString() {
+			return I18n.translate("skyblocker.config.uiAndVisuals.tabHud.defaultPosition." + name());
 		}
 	}
 

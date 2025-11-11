@@ -8,7 +8,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
@@ -29,9 +28,9 @@ public class ItemTooltip {
 	private static volatile boolean sentNullWarning = false;
 
 	/**
-	 * @deprecated Use {@link ItemUtils#getNeuId(ItemStack)} instead
+	 * @deprecated Use {@link ItemStack#getNeuName()} instead
 	 */
-	@Deprecated(since = "1.22.0")
+	@Deprecated(since = "1.22.0", forRemoval = true)
 	public static String getNeuName(String id, String apiId) {
 		LOGGER.error("[Skyblocker Item Tooltip] ItemTooltip.getNeuName is deprecated and will not work. Use ItemStack#getNeuName instead.");
 		return "";

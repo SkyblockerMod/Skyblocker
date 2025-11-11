@@ -3,9 +3,8 @@ package de.hysky.skyblocker.skyblock.carnival;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -39,17 +38,17 @@ public class ZombieShootout {
 
 	@Init
 	public static void init() {
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(ZombieShootout::render);
+		WorldRenderExtractionCallback.EVENT.register(ZombieShootout::extractRendering);
 	}
 
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (isInZombieShootout() && CLIENT.world != null) {
 			for (BlockPos pos : LAMPS) {
 				BlockState state = CLIENT.world.getBlockState(pos);
 				Block block = state.getBlock();
 
 				if (block.equals(Blocks.REDSTONE_LAMP) && state.contains(Properties.LIT) && state.get(Properties.LIT)) {
-					RenderHelper.renderOutline(context, pos, RED, 5f, false);
+					collector.submitOutlinedBox(pos, RED, 5f, false);
 				}
 			}
 		}

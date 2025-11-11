@@ -7,15 +7,16 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ChronomatronSolver extends ExperimentSolver {
+public final class ChronomatronSolver extends ExperimentSolver implements ScreenHandlerListener {
 	public static final Object2ObjectMap<Item, Item> TERRACOTTA_TO_GLASS = Object2ObjectMaps.unmodifiable(
 			new Object2ObjectArrayMap<>(
 					new Item[]{
@@ -26,6 +27,8 @@ public final class ChronomatronSolver extends ExperimentSolver {
 					}
 			)
 	);
+
+	private GenericContainerScreen screen;
 
 	/**
 	 * The list of items to remember, in order.
@@ -44,6 +47,13 @@ public final class ChronomatronSolver extends ExperimentSolver {
 	 */
 	private int chronomatronCurrentOrdinal;
 
+	/**
+	 * Whether the board is a single row or two rows.
+	 * The first 3 Chronomatron levels are a single row.
+	 * The remaining 2 are two rows.
+	 */
+	private boolean isSingleRow;
+
 	public ChronomatronSolver() {
 		super("^Chronomatron \\(\\w+\\)$");
 	}
@@ -53,42 +63,46 @@ public final class ChronomatronSolver extends ExperimentSolver {
 		return experimentsConfig.enableChronomatronSolver;
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	@Override
 	protected void tick(GenericContainerScreen screen) {
+	}
+
+	/**
+	 * Only process the changes for items in the center row (one or two rows, depending on the Chronomatron level), and for the instruction/clock item
+	 */
+	@Override
+	public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
+		if (slotId < 17 || slotId > (isSingleRow ? 25 : 34) && slotId != 49) return;
 		switch (getState()) {
 			case REMEMBER -> {
-				Inventory inventory = screen.getScreenHandler().getInventory();
+				if (slotId == 49) break;
 				// Only try to look for items with enchantment glint if there is no item being currently shown.
 				if (chronomatronCurrentSlot == 0) {
-					for (int index = 10; index < 43; index++) {
-						if (inventory.getStack(index).hasGlint()) {
-							// If the list of items is smaller than the index of the current item shown, add the item to the list and set the state to wait.
-							if (chronomatronSlots.size() <= chronomatronChainLengthCount) {
-								chronomatronSlots.add(TERRACOTTA_TO_GLASS.get(inventory.getStack(index).getItem()));
-								setState(State.WAIT);
-							} else {
-								// If the item is already in the list, increment the current item shown index.
-								chronomatronChainLengthCount++;
-							}
-							// Remember the slot shown to detect when the experiment finishes showing the current item.
-							chronomatronCurrentSlot = index;
-							return;
+					if (stack.hasGlint()) {
+						// If the list of items is smaller than the index of the current item shown, add the item to the list and set the state to wait.
+						if (chronomatronSlots.size() <= chronomatronChainLengthCount) {
+							chronomatronSlots.add(TERRACOTTA_TO_GLASS.get(stack.getItem()));
+							setState(State.WAIT);
+						} else {
+							// If the item is already in the list, increment the current item shown index.
+							chronomatronChainLengthCount++;
 						}
+						// Remember the slot shown to detect when the experiment finishes showing the current item.
+						chronomatronCurrentSlot = slotId;
 					}
 					// If the current item shown no longer has enchantment glint, the experiment finished showing the current item.
-				} else if (!inventory.getStack(chronomatronCurrentSlot).hasGlint()) {
+				} else if (chronomatronCurrentSlot == slotId && !stack.hasGlint()) {
 					chronomatronCurrentSlot = 0;
 				}
 			}
 			case WAIT -> {
-				if (screen.getScreenHandler().getInventory().getStack(49).getName().getString().startsWith("Timer: ")) {
+				if (slotId == 49 && stack.getName().getString().startsWith("Timer: ")) {
 					setState(State.SHOW);
 				}
 			}
 			case END -> {
-				String name = screen.getScreenHandler().getInventory().getStack(49).getName().getString();
-				if (!name.startsWith("Timer: ")) {
+				String name = stack.getName().getString();
+				if (slotId == 49 && !name.startsWith("Timer: ")) {
 					// Get ready for another round if the instructions say to remember the pattern.
 					if (name.equals("Remember the pattern!")) {
 						chronomatronChainLengthCount = 0;
@@ -140,11 +154,24 @@ public final class ChronomatronSolver extends ExperimentSolver {
 	}
 
 	@Override
+	public void start(GenericContainerScreen screen) {
+		super.start(screen);
+		this.screen = screen;
+		screen.getScreenHandler().addListener(this);
+		String title = screen.getTitle().getString();
+		isSingleRow = title.endsWith("(High)") || title.endsWith("(Grand)") || title.endsWith("(Supreme)");
+	}
+
+	@Override
 	public void reset() {
 		chronomatronSlots.clear();
 		chronomatronChainLengthCount = 0;
 		chronomatronCurrentSlot = 0;
 		chronomatronCurrentOrdinal = 0;
+		if (screen != null) screen.getScreenHandler().removeListener(this);
 		super.reset();
 	}
+
+	@Override
+	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {}
 }

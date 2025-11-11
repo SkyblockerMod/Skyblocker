@@ -28,6 +28,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.scoreboard.*;
@@ -40,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.OptionalInt;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -299,7 +301,7 @@ public class Utils {
     }
 
     private static boolean isConnectedToHypixel(MinecraftClient client) {
-        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
+        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase(Locale.ENGLISH) : "";
         String serverBrand = (client.player != null && client.player.networkHandler != null && client.player.networkHandler.getBrand() != null) ? client.player.networkHandler.getBrand() : "";
 
         return (!serverAddress.isEmpty() && serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS)) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
@@ -343,10 +345,10 @@ public class Utils {
             TEXT_SCOREBOARD.clear();
             STRING_SCOREBOARD.clear();
 
-            ClientPlayerEntity player = client.player;
-            if (player == null) return;
+            ClientWorld world = client.world;
+            if (world == null) return;
 
-            Scoreboard scoreboard = player.getScoreboard();
+            Scoreboard scoreboard = world.getScoreboard();
             ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
             ObjectArrayList<Text> textLines = new ObjectArrayList<>();
             ObjectArrayList<String> stringLines = new ObjectArrayList<>();

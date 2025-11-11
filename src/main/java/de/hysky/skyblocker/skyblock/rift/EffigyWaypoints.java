@@ -3,8 +3,7 @@ package de.hysky.skyblocker.skyblock.rift;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.DyeColor;
@@ -56,15 +55,15 @@ public class EffigyWaypoints {
         }
     }
 
-    protected static void render(WorldRenderContext context) {
+    protected static void extractRendering(PrimitiveCollector collector) {
         if (SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints && Utils.getIslandArea().contains("Stillgore Château")) {
             for (BlockPos effigy : UNBROKEN_EFFIGIES) {
                 if (SkyblockerConfigManager.get().slayers.vampireSlayer.compactEffigyWaypoints) {
-                    RenderHelper.renderFilledWithBeaconBeam(context, effigy.down(6), RED, 0.5F, true);
+                	collector.submitFilledBoxWithBeaconBeam(effigy.down(6), RED, 0.5F, true);
                 } else {
-                    RenderHelper.renderFilledWithBeaconBeam(context, effigy, RED, 0.5F, true);
+                	collector.submitFilledBoxWithBeaconBeam(effigy, RED, 0.5F, true);
                     for (int i = 1; i < 6; i++) {
-                        RenderHelper.renderFilled(context, effigy.down(i), RED, 0.5F - (0.075F * i), true);
+                    	collector.submitFilledBox(effigy.down(i), RED, 0.5F - (0.075F * i), true);
                     }
                 }
             }

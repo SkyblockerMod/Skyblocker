@@ -10,9 +10,10 @@ import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SkillsPage implements ProfileViewerPage {
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
     private static final String[] SKILLS = {"Combat", "Mining", "Farming", "Foraging", "Fishing", "Enchanting", "Alchemy", "Taming", "Carpentry", "Catacombs", "Runecraft", "Social"};
     private static final int ROW_GAP = 28;
 
@@ -29,7 +30,7 @@ public class SkillsPage implements ProfileViewerPage {
         try {
             this.skills = this.PLAYER_PROFILE.getAsJsonObject("player_data").getAsJsonObject("experience");
             for (String skill : SKILLS) {
-                skillWidgets.add(new SkillWidget(skill, getSkillXP("SKILL_" + skill.toUpperCase()), getSkillCap(skill)));
+                skillWidgets.add(new SkillWidget(skill, getSkillXP("SKILL_" + skill.toUpperCase(Locale.ENGLISH)), getSkillCap(skill)));
             }
         } catch (Exception e) {
             ProfileViewerScreen.LOGGER.error("[Skyblocker Profile Viewer] Error creating widgets.", e);

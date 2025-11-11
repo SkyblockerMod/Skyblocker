@@ -4,16 +4,17 @@ import com.google.common.collect.Streams;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.museum.Donation;
 import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.util.NEUId;
@@ -36,8 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -48,7 +47,6 @@ public class SearchOverManager {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Search Overlay");
 
-	private static final Pattern BAZAAR_ENCHANTMENT_PATTERN = Pattern.compile("Enchantment (\\D*) (\\d+)");
 	private static final String PET_NAME_START = "[Lvl {LVL}] ";
 
 	private static @Nullable SignBlockEntity sign = null;
@@ -91,6 +89,12 @@ public class SearchOverManager {
 					.executes(context -> startCommand(false, StringArgumentType.getString(context, "item"))
 					)));
 		}
+
+		if (!Debug.debugEnabled()) return;
+		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("debug")).then(literal("reloadSearchOverManager")).executes(ctx -> {
+			SearchOverManager.loadItems();
+			return Command.SINGLE_SUCCESS;
+		}));
 	}
 
 	private static int startCommand(boolean isAuction, String itemName) {
@@ -121,28 +125,20 @@ public class SearchOverManager {
 			for (Map.Entry<String, BazaarProduct> entry : products.entrySet()) {
 				BazaarProduct product = entry.getValue();
 				String id = product.id();
-				String name = product.name();
+
 				int sellVolume = product.sellVolume();
 				if (sellVolume == 0)
 					continue; //do not add items that do not sell e.g. they are not actual in the bazaar
 
 				// Format Enchantments
-				Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(name);
-				if (matcher.matches() && ItemRepository.getBazaarStocks().containsKey(id)) {
-					name = matcher.group(1);
-					if (!name.contains("Ultimate Wise") && !name.contains("Ultimate Jerry")) {
-						name = name.replace("Ultimate ", "");
-					}
+				if (id.startsWith("ENCHANTMENT_") && ItemRepository.getBazaarStocks().containsKey(id)) {
+					String neuId = ItemRepository.getBazaarStocks().get(id);
+					NEUItem neuItem = NEURepoManager.getItemByNeuId(neuId);
+					if (neuItem == null) continue;
 
-					// Fix Turbo-Cane / other turbo books
-					if (name.startsWith("Turbo ")) {
-						name = name.replace("Turbo ", "Turbo-");
-					}
-
-					String level = matcher.group(2);
-					name += " " + RomanNumerals.decimalToRoman(Integer.parseInt(level));
+					String name = Formatting.strip(neuItem.getLore().getFirst());
 					bazaarItems.add(name);
-					namesToNeuId.put(name, ItemRepository.getBazaarStocks().get(id));
+					namesToNeuId.put(name, neuId);
 					continue;
 				}
 
@@ -154,7 +150,7 @@ public class SearchOverManager {
 				//look up id for name
 				NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
 				if (neuItem != null) {
-					name = Formatting.strip(neuItem.getDisplayName());
+					String name = Formatting.strip(neuItem.getDisplayName());
 					bazaarItems.add(name);
 					namesToNeuId.put(name, id);
 				}
@@ -179,11 +175,11 @@ public class SearchOverManager {
 					//add names that are pets to the list of pets to work with the lvl 100 button
 					if (name != null && name.startsWith(PET_NAME_START)) {
 						name = name.replace(PET_NAME_START, "");
-						auctionPets.add(name.toLowerCase());
+						auctionPets.add(name.toLowerCase(Locale.ENGLISH));
 					}
 					//if it has essence cost add to starable items
 					if (name != null && essenceCosts.contains(neuItem.getSkyblockItemId())) {
-						starableItems.add(name.toLowerCase());
+						starableItems.add(name.toLowerCase(Locale.ENGLISH));
 					}
 					auctionItems.add(name);
 					namesToNeuId.put(name, id);
@@ -267,7 +263,7 @@ public class SearchOverManager {
 	}
 
 	protected static String[] updateSuggestions(Set<String> items, int totalSuggestions) {
-		return items.stream().sorted(Comparator.comparing(SearchOverManager::shouldFrontLoad, Comparator.reverseOrder())).filter(item -> item.toLowerCase().contains(search.toLowerCase())).limit(totalSuggestions).toArray(String[]::new);
+		return items.stream().sorted(Comparator.comparing(SearchOverManager::shouldFrontLoad, Comparator.reverseOrder())).filter(item -> item.toLowerCase(Locale.ENGLISH).contains(search.toLowerCase(Locale.ENGLISH))).limit(totalSuggestions).toArray(String[]::new);
 	}
 
 	/**
@@ -280,7 +276,7 @@ public class SearchOverManager {
 		if (location != SearchLocation.AUCTION) return false;
 
 		//do nothing to non pets
-		if (!auctionPets.contains(name.toLowerCase())) {
+		if (!auctionPets.contains(name.toLowerCase(Locale.ENGLISH))) {
 			return false;
 		}
 		//only front load pets when there is enough of the pet typed, so it does not spoil searching for other items
@@ -295,7 +291,7 @@ public class SearchOverManager {
 	protected static String getSuggestion(int index) {
 		if (suggestionsArray.length > index && suggestionsArray[index] != null) {
 			return suggestionsArray[index];
-		} else {//there are no suggestions yet
+		} else { //there are no suggestions yet
 			return "";
 		}
 	}
@@ -406,7 +402,7 @@ public class SearchOverManager {
 			addExtras();
 		}
 		// Fix Bazaar bug - Search doesn't work if input from sign contains "null" (blocks null ovoid, etc.)
-		if (location == SearchLocation.BAZAAR && !isCommand && search.toLowerCase().contains("null")) {
+		if (location == SearchLocation.BAZAAR && !isCommand && search.toLowerCase(Locale.ENGLISH).contains("null")) {
 			search = "\"%s\"".formatted(search);
 		}
 		//push
@@ -423,7 +419,7 @@ public class SearchOverManager {
 	private static void addExtras() {
 		// pet level
 		if (maxPetLevel) {
-			if (auctionPets.contains(search.toLowerCase())) {
+			if (auctionPets.contains(search.toLowerCase(Locale.ENGLISH))) {
 				if (search.equalsIgnoreCase("golden dragon") || search.equalsIgnoreCase("jade dragon")) {
 					search = "[Lvl 200] " + search;
 				} else {
@@ -432,7 +428,7 @@ public class SearchOverManager {
 			}
 		} else {
 			// still filter for only pets
-			if (auctionPets.contains(search.toLowerCase())) {
+			if (auctionPets.contains(search.toLowerCase(Locale.ENGLISH))) {
 				// add bracket so only get pets
 				search = "] " + search;
 			}
@@ -440,7 +436,7 @@ public class SearchOverManager {
 
 		// dungeon stars
 		// check if it's a dungeon item and if so add correct stars
-		if (dungeonStars > 0 && starableItems.contains(search.toLowerCase())) {
+		if (dungeonStars > 0 && starableItems.contains(search.toLowerCase(Locale.ENGLISH))) {
 			StringBuilder starString = new StringBuilder(" ");
 			//add stars up to 5
 			starString.append("✪".repeat(Math.max(0, Math.min(dungeonStars, 5))));

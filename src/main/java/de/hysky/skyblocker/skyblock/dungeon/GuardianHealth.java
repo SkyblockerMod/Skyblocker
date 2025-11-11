@@ -4,10 +4,10 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -30,10 +30,10 @@ public class GuardianHealth {
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(GuardianHealth::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> GuardianHealth.reset());
-        WorldRenderEvents.AFTER_ENTITIES.register(GuardianHealth::onWorldRender);
+        WorldRenderExtractionCallback.EVENT.register(GuardianHealth::extractRendering);
     }
 
-    private static void onWorldRender(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         if (!SkyblockerConfigManager.get().dungeons.theProfessor.floor3GuardianHealthDisplay) return;
 
         MinecraftClient client = MinecraftClient.getInstance();
@@ -63,12 +63,11 @@ public class GuardianHealth {
                     String health = matcher.group(2);
                     String quantity = matcher.group(3);
 
-                    double distance = context.camera().getPos().distanceTo(guardian.getPos());
+                    double distance = RenderHelper.getCamera().getPos().distanceTo(guardian.getLerpedPos(RenderHelper.getTickCounter().getTickProgress(false)));
 
-                    RenderHelper.renderText(
-                            context,
+                    collector.submitText(
                             Text.literal(health + quantity).formatted(Formatting.GREEN),
-                            guardian.getPos(),
+                            guardian.getLerpedPos(RenderHelper.getTickCounter().getTickProgress(false)),
                             (float) (1 + (distance / 10)),
                             true);
                 }

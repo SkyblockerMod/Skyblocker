@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
@@ -42,7 +43,7 @@ public class ConfigBackupScreen extends Screen {
 		int listHeight = height - 64; // reserve space for title and buttons
 
 		if (listWidget == null) {
-			listWidget = new BackupListWidget(client, listWidth, listHeight, 32, 24);
+			listWidget = new BackupListWidget(client, listWidth, listHeight, 32, 25);
 		} else {
 			listWidget.setDimensions(listWidth, listHeight);
 			listWidget.updateEntries();
@@ -70,8 +71,9 @@ public class ConfigBackupScreen extends Screen {
 						} catch (IOException e) {
 							LOGGER.error("[Skyblocker] Failed to restore backup {}", selected.getFileName().toString(), e);
 							client.getToastManager().add(new SystemToast(SystemToast.Type.PERIODIC_NOTIFICATION,
-									Text.translatable("skyblocker.config.backup.restore.error"),
-									Text.literal("Failed to restore backup")));
+									Text.translatable("skyblocker.config.general.backup.restore.error"),
+									null
+							));
 							return;
 						}
 						if (parent != null) {
@@ -154,30 +156,30 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		public boolean mouseClicked(Click click, boolean doubled) {
 			listWidget.setSelected(this);
 			return true;
 		}
 
 		@Override
 		public List<Element> children() {
-			return List.of();
+			return Collections.emptyList(); // Using List.of() will throw NPE on key navigation because it doesn't allow nulls
 		}
 
 		@Override
 		public List<Selectable> selectableChildren() {
-			return List.of();
+			return Collections.emptyList(); // Using List.of() will throw NPE on key navigation because it doesn't allow nulls
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			if (this.equals(listWidget.getSelectedOrNull())) {
 				int textWidth = textRenderer.getWidth(path.getFileName().toString()) + 8;
-				int highlightRight = x + Math.min(textWidth, entryWidth - 5);
-				context.fill(x, y, highlightRight, y + entryHeight, 0x80FFFFFF);
+				int highlightRight = this.getX() + Math.min(textWidth, this.getWidth() - 5);
+				context.fill(this.getX(), this.getY(), highlightRight, this.getY() + this.getHeight(), 0x80FFFFFF);
 			}
 
-			context.drawText(textRenderer, path.getFileName().toString(), x + 4, y + 7, 0xFFFFFFFF, false);
+			context.drawText(textRenderer, path.getFileName().toString(), this.getX() + 4, this.getY() + 7, 0xFFFFFFFF, false);
 		}
 	}
 
@@ -204,7 +206,7 @@ public class ConfigBackupScreen extends Screen {
 					addEntry(new StringEntry(l.text, l.path));
 				}
 			} catch (IOException e) {
-				// ignore
+				LOGGER.error("[Skyblocker] Error reading backup file for diff display", e);
 			}
 		}
 
@@ -238,8 +240,7 @@ public class ConfigBackupScreen extends Screen {
 			}
 		}
 
-		private record JsonLine(String text, @Nullable String path) {
-		}
+		private record JsonLine(String text, @Nullable String path) {}
 
 		private void formatJson(String key, JsonElement element, String path, int indent, boolean last, List<JsonLine> out) {
 			String ind = "  ".repeat(indent);
@@ -268,6 +269,28 @@ public class ConfigBackupScreen extends Screen {
 				out.add(new JsonLine(line + (last ? "" : ","), newPath));
 			}
 		}
+
+		@Override
+		protected void drawScrollbar(DrawContext context, int mouseX, int mouseY) {
+			super.drawScrollbar(context, mouseX, mouseY);
+			if (overflows()) {
+				int scrollBarX = getScrollbarX();
+				int listWidgetY = getY();
+				int totalHeight = height + getMaxScrollY();
+				int scrollbarThumbHeight = getScrollbarThumbHeight();
+				for (int i = 0; i < children().size(); i++) {
+					StringEntry entry = children().get(i);
+					if (entry.path != null && changedPaths.contains(entry.path)) {
+						// similar calculation to getRowTop
+						int entryY = entry.getY();
+						// height - scrollbarThumbHeight - 2 because we draw a two pixel high indicator.
+						// scrollbarThumbHeight thumb height calculations so the changed line is in view when the indicator is in the middle of the scrollbar thumb.
+						int barY = entryY * (height - scrollbarThumbHeight - 2) / (totalHeight - itemHeight) + listWidgetY + scrollbarThumbHeight / 2;
+						context.fill(scrollBarX, barY, scrollBarX + 6, barY + 2, 0xFFFFFF55);
+					}
+				}
+			}
+		}
 	}
 
 	private class StringEntry extends ElementListWidget.Entry<StringEntry> {
@@ -290,12 +313,12 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			int color = 0xFFFFFFFF;
 			if (path != null && changedPaths.contains(path)) {
 				color = 0xFFFFFF55;
 			}
-			context.drawText(textRenderer, text, x + 2, y + 2, color, false);
+			context.drawText(textRenderer, text, this.getX() + 2, this.getY() + 2, color, false);
 		}
 	}
 }

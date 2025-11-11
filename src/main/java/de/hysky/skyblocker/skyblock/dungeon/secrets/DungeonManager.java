@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
@@ -57,7 +58,8 @@ import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteMaps;
@@ -68,8 +70,6 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -272,7 +272,7 @@ public class DungeonManager {
 		});
 		ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 5);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonManager::render);
+		WorldRenderExtractionCallback.EVENT.register(DungeonManager::extractRendering);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonManager::onChatMessage);
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
@@ -346,7 +346,7 @@ public class DungeonManager {
 			}));
 		}
 		dungeonFutures.add(CompletableFuture.runAsync(() -> {
-			try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/secretlocations.json"))) {
+			try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(SkyblockerMod.id("dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(SkyblockerMod.id("dungeons/secretlocations.json"))) {
 				loadJson(roomsReader, roomsJson);
 				loadJson(waypointsReader, waypointsJson);
 				LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon secret waypoints json");
@@ -400,7 +400,7 @@ public class DungeonManager {
 	 * @param map    the map to load into
 	 */
 	private static void loadJson(BufferedReader reader, Map<String, JsonElement> map) {
-		SkyblockerMod.GSON.fromJson(reader, JsonObject.class).asMap().forEach((room, jsonElement) -> map.put(room.toLowerCase().replaceAll(" ", "-"), jsonElement));
+		SkyblockerMod.GSON.fromJson(reader, JsonObject.class).asMap().forEach((room, jsonElement) -> map.put(room.toLowerCase(Locale.ENGLISH).replaceAll(" ", "-"), jsonElement));
 	}
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, Integer> markSecretsCommand(boolean found) {
@@ -561,9 +561,9 @@ public class DungeonManager {
 		Room room = null;
 		int[] roomData;
 		if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.PUZZLE.shape).get(roomName)) != null) {
-			room = DebugRoom.ofSinglePossibleRoom(Room.Type.PUZZLE, DungeonMapUtils.getPhysicalRoomPos(player.getPos()), roomName, roomData, direction);
+			room = DebugRoom.ofSinglePossibleRoom(Room.Type.PUZZLE, DungeonMapUtils.getPhysicalRoomPos(player.getEntityPos()), roomName, roomData, direction);
 		} else if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.TRAP.shape).get(roomName)) != null) {
-			room = DebugRoom.ofSinglePossibleRoom(Room.Type.TRAP, DungeonMapUtils.getPhysicalRoomPos(player.getPos()), roomName, roomData, direction);
+			room = DebugRoom.ofSinglePossibleRoom(Room.Type.TRAP, DungeonMapUtils.getPhysicalRoomPos(player.getEntityPos()), roomName, roomData, direction);
 		} else if ((roomData = ROOMS_DATA.get("catacombs").values().stream().map(Map::entrySet).flatMap(Collection::stream).filter(entry -> entry.getKey().equals(roomName)).findAny().map(Map.Entry::getValue).orElse(null)) != null) {
 			room = DebugRoom.ofSinglePossibleRoom(Room.Type.ROOM, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, DungeonMapUtils.getMapRoomPos(map, mapEntrancePos, mapRoomSize), mapRoomSize, Room.Type.ROOM.color)), roomName, roomData, direction);
 		}
@@ -582,7 +582,7 @@ public class DungeonManager {
 			if (entity instanceof ArmorStandEntity armorStand) {
 				Text name = armorStand.getCustomName();
 				if (name != null && name.getString().contains("Mort")) {
-					return armorStand.getPos();
+					return armorStand.getEntityPos();
 				}
 			}
 		}
@@ -647,12 +647,12 @@ public class DungeonManager {
 			}
 			mapEntrancePos = mapEntrancePosAndSize.left();
 			mapRoomSize = mapEntrancePosAndSize.rightInt();
-			LOGGER.info("[Skyblocker Dungeon Secrets] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, client.player.getPos(), physicalEntrancePos);
+			LOGGER.info("[Skyblocker Dungeon Secrets] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, client.player.getEntityPos(), physicalEntrancePos);
 		}
 
 		getBloodRushDoorPos(map);
 
-		Vector2ic physicalPos = DungeonMapUtils.getPhysicalRoomPos(client.player.getPos());
+		Vector2ic physicalPos = DungeonMapUtils.getPhysicalRoomPos(client.player.getEntityPos());
 		Vector2ic mapPos = DungeonMapUtils.getMapPosFromPhysical(physicalEntrancePos, mapEntrancePos, mapRoomSize, physicalPos);
 		Room room = rooms.get(physicalPos);
 		if (room == null) {
@@ -702,22 +702,22 @@ public class DungeonManager {
 	}
 
 	/**
-	 * Renders the secret waypoints in {@link #currentRoom} if {@link #shouldProcess()} and {@link #currentRoom} is not null.
+	 * Extracts the rendering for secret waypoints in {@link #currentRoom} if {@link #shouldProcess()} and {@link #currentRoom} is not null.
 	 */
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (shouldProcess() && currentRoom != null) {
-			currentRoom.render(context);
+			currentRoom.extractRendering(collector);
 		}
 
 		if (bloodRushDoorBox != null && !bloodOpened && SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight) {
 			float[] colorComponents = hasKey ? GREEN_COLOR_COMPONENTS : RED_COLOR_COMPONENTS;
 			switch (SkyblockerConfigManager.get().dungeons.doorHighlight.doorHighlightType) {
-				case HIGHLIGHT -> RenderHelper.renderFilled(context, bloodRushDoorBox, colorComponents, 0.5f, true);
+				case HIGHLIGHT -> collector.submitFilledBox(bloodRushDoorBox, colorComponents, 0.5f, true);
 				case OUTLINED_HIGHLIGHT -> {
-					RenderHelper.renderFilled(context, bloodRushDoorBox, colorComponents, 0.5f, true);
-					RenderHelper.renderOutline(context, bloodRushDoorBox, colorComponents, 5, true);
+					collector.submitFilledBox(bloodRushDoorBox, colorComponents, 0.5f, true);
+					collector.submitOutlinedBox(bloodRushDoorBox, colorComponents, 5, true);
 				}
-				case OUTLINE -> RenderHelper.renderOutline(context, bloodRushDoorBox, colorComponents, 5, true);
+				case OUTLINE -> collector.submitOutlinedBox(bloodRushDoorBox, colorComponents, 5, true);
 			}
 		}
 	}
@@ -787,7 +787,7 @@ public class DungeonManager {
 	 */
 	@SuppressWarnings("JavadocReference")
 	public static void onItemPickup(ItemEntity itemEntity) {
-		Room room = getRoomAtPhysical(itemEntity.getPos());
+		Room room = getRoomAtPhysical(itemEntity.getEntityPos());
 		if (isRoomMatched(room)) {
 			room.onItemPickup(itemEntity);
 		}
@@ -799,7 +799,7 @@ public class DungeonManager {
 	 */
 	@SuppressWarnings("JavadocReference")
 	public static void onBatRemoved(AmbientEntity bat) {
-		Room room = getRoomAtPhysical(bat.getPos());
+		Room room = getRoomAtPhysical(bat.getEntityPos());
 		if (isRoomMatched(room)) {
 			room.onBatRemoved(bat);
 		}

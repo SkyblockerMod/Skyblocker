@@ -19,6 +19,8 @@ public class HelperConfig {
 
 	public boolean enableCopyUnderbidPrice = false;
 
+	public boolean enableBuildersWandPreview = true;
+
 	public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
 	public Jerry jerry = new Jerry();
@@ -36,6 +38,8 @@ public class HelperConfig {
 	public Bazaar bazaar = new Bazaar();
 
 	public ItemPrice itemPrice = new ItemPrice();
+
+	public GreatSpookEvent greatSpookEvent = new GreatSpookEvent();
 
 	public static class MythologicalRitual {
 		public boolean enableMythologicalRitualHelper = true;
@@ -136,11 +140,17 @@ public class HelperConfig {
 		public boolean enableBazaarHelper = true;
 
 		public boolean enableReorderHelper = true;
+
+		public boolean enableOrderTracker = true;
 	}
 
 	public static class ItemPrice {
 		public boolean enableItemPriceLookup = true;
 
 		public boolean enableItemPriceRefresh = true;
+	}
+
+	public static class GreatSpookEvent {
+		public boolean enableMathTeacherHelper = true;
 	}
 }

@@ -24,7 +24,6 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -32,10 +31,11 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.util.SkinTextures;
 import net.minecraft.command.CommandSource;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
+import net.minecraft.entity.player.SkinTextures;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -52,7 +52,7 @@ public class ProfileViewerScreen extends Screen {
     public static final Logger LOGGER = LoggerFactory.getLogger(ProfileViewerScreen.class);
     private static final Text TITLE = Text.of("Skyblocker Profile Viewer");
     private static final String HYPIXEL_COLLECTIONS = "https://api.hypixel.net/v2/resources/skyblock/collections";
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/base_plate.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/base_plate.png");
     private static final int GUI_WIDTH = 322;
     private static final int GUI_HEIGHT = 180;
     private static Map<String, String[]> COLLECTIONS;
@@ -165,18 +165,18 @@ public class ProfileViewerScreen extends Screen {
     		UUID uuid = UndashedUuid.fromStringLenient(stringifiedUuid);
 
     		//The fetch by name method can sometimes fail in weird cases and return a fake offline player
-    		SkullBlockEntity.fetchProfileByUuid(uuid).thenAccept(profile -> {
-                this.playerName = profile.get().getName();
-                entity = new OtherClientPlayerEntity(MinecraftClient.getInstance().world, profile.get()) {
+    		MinecraftClient.getInstance().getPlayerSkinCache().getFuture(ProfileComponent.ofDynamic(uuid)).thenAccept(entry -> {
+                this.playerName = entry.get().getProfile().name();
+                entity = new OtherClientPlayerEntity(MinecraftClient.getInstance().world, entry.get().getProfile()) {
                     @Override
-                    public SkinTextures getSkinTextures() {
-                        PlayerListEntry playerListEntry = new PlayerListEntry(profile.get(), false);
+                    public SkinTextures getSkin() {
+                        PlayerListEntry playerListEntry = new PlayerListEntry(entry.get().getProfile(), false);
                         return playerListEntry.getSkinTextures();
                     }
 
                     @Override
-                    public boolean isPartVisible(PlayerModelPart modelPart) {
-                        return !(modelPart.getName().equals(PlayerModelPart.CAPE.getName()));
+                    public boolean isModelPartVisible(PlayerModelPart modelPart) {
+                        return !(modelPart.equals(PlayerModelPart.CAPE));
                     }
 
                     @Override

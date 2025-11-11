@@ -5,20 +5,17 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
 import de.hysky.skyblocker.skyblock.dwarven.profittrackers.AbstractProfitTracker;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -31,9 +28,9 @@ import org.jetbrains.annotations.UnmodifiableView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.NumberFormat;
 import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +48,10 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	public static final String CITRINE_CRYSTAL = "CITRINE_CRYSTAL";
 	public static final String RUBY_CRYSTAL = "RUBY_CRYSTAL";
 	public static final String JASPER_CRYSTAL = "JASPER_CRYSTAL";
+	public static final String ENCHANTMENT_ICE_COLD_1 = "ENCHANTMENT_ICE_COLD_1";	// fix for item repo
 	public static final @Unmodifiable List<String> PRICELESS_ITEMS = List.of(GLACITE_POWDER, OPAL_CRYSTAL, ONYX_CRYSTAL, AQUAMARINE_CRYSTAL, PERIDOT_CRYSTAL, CITRINE_CRYSTAL, RUBY_CRYSTAL, JASPER_CRYSTAL);
+	// English translation for that forceEnglishCorpseProfitTracker option
+	public static final String CORPSE_PROFIT_MESSAGE = "Corpse Profit: %s";
 
 	public static final CorpseProfitTracker INSTANCE = new CorpseProfitTracker();
 
@@ -69,7 +69,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 
 	@Init
 	public static void init() {
-		ChatEvents.RECEIVE_STRING.register(INSTANCE::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(INSTANCE::onChatMessage);
 
 		INSTANCE.allRewards.init();
 
@@ -122,39 +122,55 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		return SkyblockerConfigManager.get().mining.glacite.enableCorpseProfitTracker;
 	}
 
-	private void onChatMessage(String message) {
-		if (Utils.getLocation() != Location.GLACITE_MINESHAFT || !INSTANCE.isEnabled()) return;
+	@SuppressWarnings("SameReturnValue")
+	private boolean onChatMessage(Text text, boolean overlay) {
+		if (Utils.getLocation() != Location.GLACITE_MINESHAFT || !INSTANCE.isEnabled() || overlay) return true;
+		String message = text.getString();
+
 		// Reward messages end with a separator like so
 		if (insideRewardMessage && message.equals("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")) {
 			if (lastCorpseLoot == null) {
 				LOGGER.error("Received a reward message end without a corresponding start. Report this!");
-				return;
+				return true;
 			}
 			currentProfileRewards.add(lastCorpseLoot);
 			if (!lastCorpseLoot.isPriceDataComplete()) {
 				MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
 						Constants.PREFIX.get().append(Text.translatable("skyblocker.corpseTracker.somethingWentWrong").formatted(Formatting.GOLD))
 				);
-			} else {
-				MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
-						Constants.PREFIX.get()
-										.append(Text.translatable("skyblocker.corpseTracker.corpseProfit", Text.literal(NumberFormat.getInstance().format(Math.round(lastCorpseLoot.profit()))).formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED)))
-										.styled(style ->
-														style.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
-															 .withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
-										)
-				);
+			} else {	// if forceEnglishCorpseProfitTracker is FALSE - use normal translation
+				if (!SkyblockerConfigManager.get().mining.glacite.forceEnglishCorpseProfitTracker) {
+					MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
+							Constants.PREFIX.get()
+									.append(Text.translatable("skyblocker.corpseTracker.corpseProfit", Text.literal(Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit()))
+											.formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED)))
+									.styled(style ->
+											style.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
+													.withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
+									)
+					);
+				} else {	// else, if forceEnglishCorpseProfitTracker is TRUE - force English translation
+					MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
+							Constants.PREFIX.get()
+									.append(Text.literal(String.format(CORPSE_PROFIT_MESSAGE, Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit())))
+											.formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED))
+									.styled(style ->
+											style.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
+													.withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
+									)
+					);
+				}
 			}
 			lastCorpseLoot = null;
 			insideRewardMessage = false;
-			return;
+			return true;
 		}
 		Matcher matcher = CORPSE_PATTERN.matcher(message);
 		if (!insideRewardMessage && matcher.matches()) {
 			String corpse = matcher.group(1);
 			CorpseType type;
 			try {
-				type = CorpseType.valueOf(corpse.toUpperCase()); // toUpperCase is not strictly necessary here, but it's good practice
+				type = CorpseType.valueOf(corpse.toUpperCase(Locale.ENGLISH)); // toUpperCase is not strictly necessary here, but it's good practice
 				lastCorpseLoot = new CorpseLoot(
 						type,
 						new ObjectArrayList<>(),
@@ -162,7 +178,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 				);
 			} catch (IllegalArgumentException e) {
 				LOGGER.error("Unknown corpse type `{}` for message: `{}`. Report this!", corpse, message);
-				return;
+				return true;
 			}
 
 			try {
@@ -172,15 +188,16 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 				lastCorpseLoot.markPriceDataIncomplete();
 			}
 			insideRewardMessage = true;
-			return;
+			return true;
 		}
 
-		if (!insideRewardMessage || lastCorpseLoot == null || !matcher.usePattern(REWARD_PATTERN).matches()) return;
+		if (!insideRewardMessage || lastCorpseLoot == null || !matcher.usePattern(REWARD_PATTERN).matches()) return true;
 
 		String itemName = matcher.group(1);
 		int amount = NumberUtils.toInt(matcher.group(2).replace(",", ""), 1);
-		if (matcher.usePattern(HOTM_XP_PATTERN).matches()) return; // Ignore HOTM XP messages.
+		if (matcher.usePattern(HOTM_XP_PATTERN).matches()) return true; // Ignore HOTM XP messages.
 		lastCorpseLoot.addLoot(itemName, amount);
+		return true;
 	}
 
 	private void recalculateAll() {
@@ -260,9 +277,10 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		NAME2ID_MAP.put("Tungsten Key", "TUNGSTEN_KEY");
 		NAME2ID_MAP.put("Glacite Jewel", "GLACITE_JEWEL");
 		NAME2ID_MAP.put("Suspicious Scrap", "SUSPICIOUS_SCRAP");
-		NAME2ID_MAP.put("Ice Cold I", "ENCHANTMENT_ICE_COLD_1");
+		NAME2ID_MAP.put("Enchanted Book (Ice Cold I)", "ENCHANTMENT_ICE_COLD_1");
 		NAME2ID_MAP.put("Dwarven O's Metallic Minis", "DWARVEN_OS_METALLIC_MINIS");
 		NAME2ID_MAP.put("Shattered Locket", "SHATTERED_PENDANT");
+		NAME2ID_MAP.put("Frozen Scute", "FROZEN_SCUTE");
 
 		NAME2ID_MAP.put("Frostbitten Dye", "DYE_FROSTBITTEN");
 

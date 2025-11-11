@@ -17,8 +17,8 @@ import java.text.DecimalFormat;
 import java.util.Map;
 
 public class DungeonMiscStatsWidgets {
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
-    private static final Identifier RUN_ICON = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/run_icon.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
+    private static final Identifier RUN_ICON = SkyblockerMod.id("textures/gui/profile_viewer/run_icon.png");
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
     private static final DecimalFormat DF = new DecimalFormat("#.##");
     private static final String[] DUNGEONS = {"catacombs", "master_catacombs"};

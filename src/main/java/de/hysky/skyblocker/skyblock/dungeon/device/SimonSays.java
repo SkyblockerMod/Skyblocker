@@ -8,13 +8,13 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -48,7 +48,7 @@ public class SimonSays {
 	public static void init() {
 		UseBlockCallback.EVENT.register(SimonSays::onBlockInteract);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(SimonSays::render);
+		WorldRenderExtractionCallback.EVENT.register(SimonSays::extractRendering);
 		WorldEvents.BLOCK_STATE_UPDATE.register(SimonSays::onBlockUpdate);
 	}
 
@@ -90,7 +90,7 @@ public class SimonSays {
 		}
 	}
 
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (shouldProcess()) {
 			int buttonsRendered = 0;
 
@@ -108,8 +108,8 @@ public class SimonSays {
 					if (outline != null) {
 						float[] colour = buttonsRendered == 0 ? GREEN : YELLOW;
 
-						RenderHelper.renderFilled(context, outline, colour, 0.5f, true);
-						RenderHelper.renderOutline(context, outline, colour, 5f, true);
+						collector.submitFilledBox(outline, colour, 0.5f, true);
+						collector.submitOutlinedBox(outline, colour, 5f, true);
 
 						if (++buttonsRendered == 2) return;
 					}

@@ -27,8 +27,8 @@ public class SkillWidget {
     private final String SKILL_NAME;
     private final LevelFinder.LevelInfo SKILL_LEVEL;
 
-    private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
-    private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
+    private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+    private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
     private final ItemStack stack;
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
@@ -99,7 +99,7 @@ public class SkillWidget {
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 12, 75, 6);
         HudHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 12, (int) (75 * SKILL_LEVEL.fill), 6, fillColor);
 
-        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 10 && mouseY < y + 19){
+        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 10 && mouseY < y + 19) {
             List<Text> tooltipText = new ArrayList<>();
             tooltipText.add(Text.literal(this.SKILL_NAME).formatted(Formatting.GREEN));
             tooltipText.add(Text.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.SKILL_LEVEL.xp)).formatted(Formatting.GOLD));

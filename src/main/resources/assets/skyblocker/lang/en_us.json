@@ -3,7 +3,7 @@
   "argument.color.hex.invalidString": "Hex integer must be exactly 6 characters long, found %s characters.",
   "argument.color.hex.invalidChar": "Invalid character for hex integer: %s. Valid characters: [0-9a-fA-F]",
 
-  "key.categories.skyblocker": "Skyblocker",
+  "key.category.skyblocker.main": "Skyblocker",
   "key.hotbarSlotLock": "Slot Lock (Hotbar)",
   "key.skyblocker.defaultTgl": "Switch tab HUD to default view",
   "key.skyblocker.toggleA": "Show tab HUD secondary view",
@@ -87,10 +87,14 @@
   "skyblocker.config.dungeons.goldorWaypoints.waypointType": "Task waypoint type",
 
   "skyblocker.config.dungeons.devices": "Device Solvers (F7/M7)",
+  "skyblocker.config.dungeons.devices.solveArrowAlign": "Solve Arrow Align",
+  "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "Displays the number of rotations remaining for each arrow.",
   "skyblocker.config.dungeons.devices.solveLightsOn": "Solve Lights On",
-  "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Highlights the correct levers to click in red",
+  "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Highlights the correct levers to click in red.",
   "skyblocker.config.dungeons.devices.solveSimonSays": "Solve Simon Says",
   "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Highlights the correct button to click in green, and highlights the next one in yellow.",
+  "skyblocker.config.dungeons.devices.solveTargetPractice": "Solve Target Practice",
+  "skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip": "Highlights hit targets in red.",
 
   "skyblocker.config.dungeons.doorHighlight": "Door Highlight",
   "skyblocker.config.dungeons.doorHighlight.doorHighlightType": "Door Highlight Type",
@@ -123,7 +127,7 @@
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage": "Dungeon Crypts Message",
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip": "Message which will be sent in the chat when reaching threshold score before getting 5+ crypts. The string \"[crypts]\" will be replaced with the amount of crypts.",
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold": "Dungeon Crypts Message Threshold",
-  "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Default 270 is intended for S+ runs when you enter at 300+ score - which is usually F5-F7 and M5-M7. \nIf you are running S runs (enter at 270 score) then you should consider lowering this to 250 or less, otherwise it will be useless.",
+  "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "The default value of 250 is intended for S/S+ runs when you enter at 270+/300+ score.\nFor S+ runs, sending a message at 250 might be a bit early.\nIf you are running S+ runs only (entering at 300+ score), you should consider increasing this value.",
   "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage": "Dungeon Score %s Message",
   "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip": "Message which will be sent in the chat when reaching %s score in dungeons. The string \"[score]\" will be replaced with the dungeon score (%s).",
   "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage": "Enable Dungeon Crypts Message",
@@ -210,6 +214,7 @@
 
   "skyblocker.config.dungeons.salvageHelper": "Salvage Helper",
   "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Highlights items picked up in dungeons that can be salvaged.",
+  "skyblocker.config.dungeons.salvageHelper.onlyDonated": "Salvage Helper - Only Highlight Donated Items",
 
   "skyblocker.config.dungeons.sellableItemsHighlighter": "Sellable Items Highlighter",
   "skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip": "Highlights items picked up in Dungeons that can be sold to NPC.",
@@ -346,7 +351,6 @@
 
   "skyblocker.config.general.hitbox": "Hitboxes",
   "skyblocker.config.general.hitbox.oldCactusHitbox": "Enable 1.8 cactus hitbox",
-  "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
   "skyblocker.config.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",
   "skyblocker.config.general.hitbox.oldMushroomHitbox": "Enable 1.8 mushroom hitbox",
 
@@ -458,6 +462,7 @@
   "skyblocker.config.general.backup.manage": "Manage Backups...",
   "skyblocker.config.general.backup.title": "Config Backups",
   "skyblocker.config.general.backup.restore": "Restore",
+  "skyblocker.config.general.backup.restore.error": "Failed to restore backup",
   "skyblocker.config.general.backup.confirm.title": "Restore Backup",
   "skyblocker.config.general.backup.confirm.text": "Restore backup %s? This will overwrite your current config.",
 
@@ -477,8 +482,11 @@
   "skyblocker.config.helpers.bazaar": "Bazaar",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",
+  "skyblocker.config.helpers.bazaar.enableOrderTracker": "Enable Bazaar Order Tracker",
+  "skyblocker.config.helpers.bazaar.enableOrderTracker.@Tooltip": "Tracks your order in the list of orders for an item.",
   "skyblocker.config.helpers.bazaar.enableReorderHelper": "Enable Reorder Helper",
   "skyblocker.config.helpers.bazaar.enableReorderHelper.@Tooltip": "Hold CTRL when cancelling an unfilled buy/sell order to copy the unfilled amount to the clipboard.",
+  "skyblocker.config.helpers.bazaar.orderTrackerTooltip": "You have %sx in %s order(s)",
 
   "skyblocker.config.helpers.carnival": "Chivalrous Carnival",
   "skyblocker.config.helpers.carnival.catchAFishHelper": "Catch a Fish Helper",
@@ -514,6 +522,8 @@
 
   "skyblocker.config.helpers.enableCopyUnderbidPrice": "Enable Copy Underbid Price",
   "skyblocker.config.helpers.enableCopyUnderbidPrice.@Tooltip": "Copies the lowest BIN price minus one coin to your clipboard when opening the Create BIN Auction screen.",
+
+  "skyblocker.config.helpers.enableBuildersWandPreview": "Enable Builder's Wand and Builder's Ruler Preview",
 
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
@@ -562,6 +572,10 @@
   "skyblocker.config.helpers.fishing.fishingHookDisplay.HUD": "In HUD",
   "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "Display the skyblock fishing hook timer on the screen.\n\nOn crosshair: in the center of screen\n\nIn HUD: in the fishing HUD",
 
+  "skyblocker.config.helpers.greatSpook": "Great Spook Event",
+  "skyblocker.config.helpers.greatSpook.enableMathTeacherHelper": "Enable Math Teacher Helper",
+  "skyblocker.config.helpers.greatSpook.enableMathTeacherHelper.@Tooltip": "Automatically solves the Math Teacher's questions.",
+
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Enable Item Price Lookup",
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Searches the Bazaar and Auction House for the current hovered item with the F6 key.",
   "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Failed to find item in the Bazaar and Auction House",
@@ -596,6 +610,14 @@
   "skyblocker.config.hunting.huntingMobs.colorPicker.Hideonleaf": "Hideonleaf highlight color picker",
   "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "Shellwise highlight color picker",
   "skyblocker.config.hunting.huntingMobs.colorPicker.Coralot": "Coralot highlight color picker",
+
+  "skyblocker.config.hunting.lassoHud": "Lasso Hud",
+  "skyblocker.config.hunting.lassoHud.enabled": "Enabled",
+  "skyblocker.config.hunting.lassoHud.enabled.@Tooltip": "Shows lasso countdown in the hud.",
+  "skyblocker.config.hunting.lassoHud.hud.screen": "Lasso HUD config...",
+  "skyblocker.config.hunting.lassoHud.reel": "Reel",
+  "skyblocker.config.hunting.lassoHud.now": "NOW!!",
+  "skyblocker.config.hunting.lassoHud.wait": "Wait",
 
   "skyblocker.config.chat": "Chat",
 
@@ -650,9 +672,6 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "Zombie",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "True",
   "skyblocker.config.chat.chatRules.invalidRegex": "Your chat rule '%s' has an invalid regex pattern and has been disabled!",
-
-  "skyblocker.config.chat.waypoints.display": "Click to display waypoint at x: %s y: %s z: %s",
-  "skyblocker.config.chat.waypoints.displayed": "Displayed temporary waypoint at x: %s y: %s z: %s %s",
 
   "skyblocker.config.chat.confirmationPromptHelper": "Chat Confirmation Prompt Helper",
   "skyblocker.config.chat.confirmationPromptHelper.@Tooltip": "Upon receiving a yes or no prompt in chat, you can click anywhere on the screen within 60 seconds to accept the prompt.\n\nAn example of this is Trevor the Trapper's tasks.",
@@ -806,6 +825,7 @@
   "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Sets the color of the highlight for the unbreakable carpets.",
 
   "skyblocker.config.mining.enableDrillFuel": "Enable Drill Fuel",
+  "skyblocker.config.mining.enableDrillFuel.@Tooltip": "Shows remaining fuel with the durability bar.\nShows the remaining blocks for Pickonimbus.",
 
   "skyblocker.config.mining.commissionHighlight": "Highlights Completed Commissions",
 
@@ -820,6 +840,8 @@
   "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Sends a message in party chat with the location of the found corpse when you find one.",
   "skyblocker.config.mining.glacite.enableCorpseProfitTracker": "Enable Corpse Profit Tracker",
   "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": "Tracks the profit and the loot you get from corpses. Shows the profit in chat when looting a corpse, and has a command to see your history of corpse loot in /skyblocker rewardTrackers corpse list.",
+  "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker": "Force English message for Corpse Profit message",
+  "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip": "This option exists for non-English translations of this mod to remove language barriers when sharing profits. It does nothing if your game language is set to English.",
   "skyblocker.config.mining.glacite.fossilSolver": "Fossil Solver",
   "skyblocker.config.mining.glacite.fossilSolver.@Tooltip": "Helps find fossils in the Fossil Excavator",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound": "No fossil found",
@@ -855,6 +877,7 @@
 
   "skyblocker.config.otherLocations.end": "The End",
   "skyblocker.config.otherLocations.end.enableEnderNodeHelper": "Enable Ender Node Helper",
+  "skyblocker.config.otherLocations.end.enderNodeWaypointType": "Ender Node Waypoint Type",
   "skyblocker.config.otherLocations.end.hudEnabled": "HUD Enabled",
   "skyblocker.config.otherLocations.end.muteEndermanSounds": "Mute Enderman Sounds",
   "skyblocker.config.otherLocations.end.protectorLocationEnable": "Show Protector Location",
@@ -863,6 +886,7 @@
   "skyblocker.config.otherLocations.end.screen": "End HUD Config...",
   "skyblocker.config.otherLocations.end.waypoint": "End Protector Waypoint",
   "skyblocker.config.otherLocations.end.zealotKillsEnabled": "Show Zealot Kills Information",
+  "skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip": "Only counts melee kills!\n\nKills can be updated by going to the Zealot page in the Bestiary.",
 
   "skyblocker.config.otherLocations.rift": "The Rift",
   "skyblocker.config.otherLocations.rift.blobbercystGlow": "Blobbercyst Glow",
@@ -888,6 +912,7 @@
   "skyblocker.config.quickNav.button.item.count": "Item Count",
   "skyblocker.config.quickNav.button.item.itemName": "Item",
   "skyblocker.config.quickNav.button.render": "Render",
+  "skyblocker.config.quickNav.button.doubleClick": "Require Double Click",
   "skyblocker.config.quickNav.button.tooltip": "Tooltip",
   "skyblocker.config.quickNav.button.tooltip.@Tooltip": "Tooltip shown when hovering your mouse over the button.\n\nYou can use text json format.\nPutting nothing will make the tooltip not render.",
   "skyblocker.config.quickNav.button.uiTitle": "UI Title",
@@ -1064,15 +1089,17 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip": "Close the current open sign screen with the enter key",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
   "skyblocker.config.uiAndVisuals.inputCalculator.badNotationError": "Equation is not in RPN",
-  "skyblocker.config.uiAndVisuals.inputCalculator.divisionByZeroError": "Cannot divide by 0",
+  "skyblocker.config.uiAndVisuals.inputCalculator.divisionByZeroError": "Cannot divide %s by 0",
+  "skyblocker.config.uiAndVisuals.inputCalculator.moduloByZeroError": "Cannot modulo %s by 0",
   "skyblocker.config.uiAndVisuals.inputCalculator.duplicateOperatorError": "Unexpected duplicate operator",
-  "skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError": "Invalid operator",
-  "skyblocker.config.uiAndVisuals.inputCalculator.invalidCharacterError": "Invalid character",
-  "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError": "Invalid number",
-  "skyblocker.config.uiAndVisuals.inputCalculator.invalidMagnitudeError": "Invalid magnitude",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError": "Invalid operator '%s'",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidCharacterError": "Invalid character '%s'",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError": "Invalid number '%s'",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidMagnitudeError": "Invalid magnitude '%s'",
   "skyblocker.config.uiAndVisuals.inputCalculator.unbalancedParenthesisError": "Unbalanced left parenthesis",
   "skyblocker.config.uiAndVisuals.inputCalculator.emptyEquationError": "Equation is empty",
   "skyblocker.config.uiAndVisuals.inputCalculator.missingValueError": "Missing value around operator",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError": "Invalid input %s for function '%s'",
 
   "skyblocker.config.uiAndVisuals.inventorySearch": "Inventory Search",
   "skyblocker.config.uiAndVisuals.inventorySearch.ctrlK": "Use CTRL + K for inventory search instead of CTRL + F",
@@ -1167,6 +1194,8 @@
 
   "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
   "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "Smooths out teleporting with right click teleport abilities.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.predictive": "Predictive Algorithm",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Predict where the teleport will end. This will mean there can be no added lag however it is sometimes wrong and can glitch out.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission": "Enable Ether Transmission",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip": "For: Etherwarp Conduit and Ether Merged.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission": "Enable Instant Transmission",
@@ -1178,12 +1207,13 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact": "Enable Wither Impact",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "For: Necron's Blade, Hyperion, Astraea, Scylla, and Valkyrie.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag": "Maximum Added Lag (ms)",
-  "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "How long the animation is allowed to get behind the game in milliseconds. (If set to 0, smoothing will not have any lag, but stuttering will likely occur. Increase this value if you're experiencing flashing.)",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "Predictive:\nHow long the animation is allowed to get behind the game in milliseconds. (If set to 0, smoothing will not have any lag, but stuttering will likely occur. Increase this value if you're experiencing flashing.)\n\nPredictive disabled:\nduration of animation",
 
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy HUD and TAB",
   "skyblocker.config.uiAndVisuals.tabHud.compactWidgets": "Compact Widgets",
   "skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip": "Display widgets in a compact form.",
-  "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Open Config Screen",
+  "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Open Widget Config Screen",
+  "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "Use this to move Tab and HUD widgets.\nUse `/skyblocker hud` to get here quicker!",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Default Positioning Behavior",
   "skyblocker.config.uiAndVisuals.tabHud.displayIcons": "Display Icons",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground": "Enable HUD Background",
@@ -1192,12 +1222,15 @@
   "skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip": "If on, will fetch current effects from the tab footer if the Hypixel Effects Widget is disabled.",
   "skyblocker.config.uiAndVisuals.tabHud.nameSorting": "Player Name Sorting Method",
   "skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip": "Alphabetical sorting sorts names alphabetically while Default has no particular order.",
+  "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.CENTERED": "Centered",
+  "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.TOP": "Top",
   "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault": "Show Vanilla Tab by Default",
   "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault.@Tooltip": "If on, will show the vanilla tab by default. Press the toggle key to show fancy tab HUD.",
   "skyblocker.config.uiAndVisuals.tabHud.style": "Style for fancy HUD and TAB",
   "skyblocker.config.uiAndVisuals.tabHud.style.MINIMAL": "Minimal",
   "skyblocker.config.uiAndVisuals.tabHud.style.CLASSIC": "Classic",
   "skyblocker.config.uiAndVisuals.tabHud.style.FANCY": "Fancy",
+  "skyblocker.config.uiAndVisuals.tabHud.style.SIMPLE": "Simple",
   "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]": "Minimal: Shows minimal information in simple boxes.\n",
   "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]": "Simple: Shows essential information in normal boxes.\n",
   "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]": "Classic: Shows information with decorations in normal boxes.\n",
@@ -1226,8 +1259,21 @@
   "skyblocker.config.uiAndVisuals.titleContainer.direction.VERTICAL": "Vertical",
   "skyblocker.config.uiAndVisuals.titleContainer.titleContainerScale": "Title Container Scale",
 
+  "skyblocker.config.uiAndVisuals.trueQuiverCount": "Show True Quiver Count",
+  "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "Shows the actual amount of arrows in your quiver instead of being capped at 64.",
+
   "skyblocker.config.uiAndVisuals.waypoints": "Waypoints",
+  "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards": "Allow Going Backwards",
+  "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip": "Allow going backwards in ordered waypoint groups.",
+  "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints": "Allow Skipping Waypoints",
+  "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip": "Allow skipping waypoints in ordered waypoint groups.",
+  "skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints": "Enable Chat Waypoints",
+  "skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints.@Tooltip": "Parses coordinates sent in the chat and sends a prompt which allows you to add a temporary waypoint to the location.",
   "skyblocker.config.uiAndVisuals.waypoints.enableWaypoints": "Enable Waypoints",
+  "skyblocker.config.uiAndVisuals.waypoints.renderLine": "Render Line",
+  "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "Renders a line going from your cursor to the next waypoint (Ordered groups only)",
+  "skyblocker.config.uiAndVisuals.waypoints.lineColor": "Line Color",
+  "skyblocker.config.uiAndVisuals.waypoints.lineWidth": "Line Width",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType": "Waypoint Type",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "Waypoint: Displays a highlight and a beacon beam.\n\nOutlined Waypoint: Displays both a waypoint and an outline.\n\nHighlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote": "\n\n\nThis option does not apply to all waypoints. Some waypoints such as secret waypoints have their own waypoint type option.",
@@ -1307,6 +1353,7 @@
   "skyblocker.museum.resyncSuccess": "Successfully resynced your museum item donations!",
   "skyblocker.museum.resyncFailure": "Failed to resync your museum item donations!",
 
+  "skyblocker.dungeons.croesusHelper.chestValue": "Chest Value: %s",
   "skyblocker.dungeons.secrets.physicalEntranceNotFound": "§cDungeon Entrance Room coordinates not found. Please go back to the green Entrance Room.",
   "skyblocker.dungeons.secrets.markSecretFound": "§rMarked secret #%s as found.",
   "skyblocker.dungeons.secrets.markSecretMissing": "§rMarked secret #%s as missing.",
@@ -1432,7 +1479,14 @@
   "skyblocker.slayer.slainTime": "Slayer has been killed in %s!",
   "skyblocker.slayer.callMaddox.message": "Click here to call Maddox the Slayer!",
 
+  "skyblocker.waypoints.chat.display": "Click to display waypoint at x: %s y: %s z: %s",
+  "skyblocker.waypoints.chat.displayed": "Displayed temporary waypoint at x: %s y: %s z: %s %s",
   "skyblocker.waypoints.config": "Waypoints Config",
+  "skyblocker.waypoints.otherOptions": "Other Options",
+  "skyblocker.waypoints.waypointsOptions": "Waypoints Options",
+  "skyblocker.waypoints.groupType": "Group Type",
+  "skyblocker.waypoints.groupType.ordered": "Ordered",
+  "skyblocker.waypoints.groupType.normal": "Normal",
   "skyblocker.waypoints.newGroup": "New Waypoint Group",
   "skyblocker.waypoints.new": "New Waypoint",
   "skyblocker.waypoints.share": "Import/Export",
@@ -1461,6 +1515,8 @@
   "skyblocker.waypoints.exportErrorText": "Failed to export waypoints. See logs for details.",
   "skyblocker.waypoints.deleteQuestion": "Are you sure you want to remove this waypoint?",
   "skyblocker.waypoints.deleteWarning": "Waypoint '%s' will be lost forever! (A long time!)",
+  "skyblocker.waypoints.throughWalls": "Show Through Walls",
+  "skyblocker.waypoints.waypointType": "Waypoint Type",
 
   "skyblocker.nightVision.success": "Changed the strength of night vision to %s.",
 
@@ -1665,16 +1721,23 @@
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
 
-  "skyblocker.armorCustomization.animated": "Animated",
-  "skyblocker.armorCustomization.cannotCustomizeColor": "Cannot customize this piece's color :(",
-  "skyblocker.armorCustomization.cycleBack": "Cycle Back",
-  "skyblocker.armorCustomization.resetColor": "Reset color",
-  "skyblocker.armorCustomization.delay": "Delay: %s",
-  "skyblocker.armorCustomization.delayTooltip": "The animation will be delayed by this amount in seconds.",
-  "skyblocker.armorCustomization.duration": "Duration: %s",
-  "skyblocker.armorCustomization.durationTooltip": "The duration of the animation in seconds.",
-  "skyblocker.armorCustomization.title": "Customize Your Armor",
-  "skyblocker.armorCustomization.titleSecret": "Pimp Your Armor",
+  "skyblocker.customization.title": "Customize Your Gear",
+  "skyblocker.customization.titleSecret": "Pimp Your Gear",
+  "skyblocker.customization.nothingCustomizable": "Nothing customizable.",
+  "skyblocker.customization.armor.animated": "Animated",
+  "skyblocker.customization.armor.cannotCustomizeColor": "Cannot customize this piece's color :(",
+  "skyblocker.customization.armor.cycleBack": "Cycle Back",
+  "skyblocker.customization.armor.resetColor": "Reset color",
+  "skyblocker.customization.armor.delay": "Delay: %s",
+  "skyblocker.customization.armor.delayTooltip": "The animation will be delayed by this amount in seconds.",
+  "skyblocker.customization.armor.duration": "Duration: %s",
+  "skyblocker.customization.armor.durationTooltip": "The duration of the animation in seconds.",
+  "skyblocker.customization.armor.modelOverride": "Armor Model Override",
+  "skyblocker.customization.armor.modelOverride.tooltip": "Asset ID as seen in the equippable component.\n'leather', 'diamond', etc, or a custom one.",
+  "skyblocker.customization.item.glint": "Glint: %s",
+  "skyblocker.customization.item.glint.default": "Default",
+  "skyblocker.customization.item.modelOverride": "Item Model Override",
+  "skyblocker.customization.item.cannotCustomize": "Cannot be customized",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
@@ -1688,8 +1751,11 @@
   "skyblocker.galatea.hud.sweepDetails.stylePenalty": "Tree Style Penalty (%s)",
   "skyblocker.galatea.hud.sweepDetails.correctStyle": "Style: %s",
 
+  "skyblocker.quickNav.confirm": "Click again to confirm.",
+
   "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
   "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)",
+  "emi.category.skyblocker.skyblock_npc_shop": "NPC Shops (Skyblock)",
   "emi.category.skyblocker.skyblock_info": "Skyblock Info",
 
   "skyblocker.rei.skyblockInfo.failedToFind": "Unable to find!",

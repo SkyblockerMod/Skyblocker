@@ -1,13 +1,14 @@
 package de.hysky.skyblocker.utils.waypoint;
 
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.utils.render.Renderable;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -103,13 +104,21 @@ public class Waypoint implements Renderable {
     public Waypoint withColor(float[] colorComponents, float alpha) {
         return new Waypoint(pos, typeSupplier, colorComponents, alpha, lineWidth, throughWalls, enabled);
     }
+
+    public Waypoint withThroughWalls(boolean throughWalls) {
+        return new Waypoint(pos, typeSupplier, colorComponents, alpha, lineWidth, throughWalls, enabled);
+    }
+
+    public Waypoint withTypeSupplier(Supplier<Type> typeSupplier) {
+        return new Waypoint(pos, typeSupplier, colorComponents, alpha, lineWidth, throughWalls, enabled);
+    }
     // endregion
 
     // region Getters and Setters
     /**
      * Whether the waypoint should be rendered.
      * <p>
-     * Checked in {@link #render(WorldRenderContext)} before rendering.
+     * Checked in {@link #extractRendering(PrimitiveCollector)} before rendering.
      * <p>
      * Override this method for custom behavior.
      */
@@ -193,22 +202,22 @@ public class Waypoint implements Renderable {
      * Override this method for custom behavior.
      */
     @Override
-    public void render(WorldRenderContext context) {
+    public void extractRendering(PrimitiveCollector collector) {
         if (!shouldRender()) return;
         final float[] colorComponents = getRenderColorComponents();
         final boolean throughWalls = shouldRenderThroughWalls();
         switch (getRenderType()) {
-            case WAYPOINT -> RenderHelper.renderFilledWithBeaconBeam(context, pos, colorComponents, alpha, throughWalls);
+            case WAYPOINT -> collector.submitFilledBoxWithBeaconBeam(pos, colorComponents, alpha, throughWalls);
             case OUTLINED_WAYPOINT -> {
-                RenderHelper.renderFilledWithBeaconBeam(context, pos, colorComponents, alpha, throughWalls);
-                RenderHelper.renderOutline(context, pos, colorComponents, lineWidth, throughWalls);
+            	collector.submitFilledBoxWithBeaconBeam(pos, colorComponents, alpha, throughWalls);
+            	collector.submitOutlinedBox(pos, colorComponents, lineWidth, throughWalls);
             }
-            case HIGHLIGHT -> RenderHelper.renderFilled(context, pos, colorComponents, alpha, throughWalls);
+            case HIGHLIGHT -> collector.submitFilledBox(pos, colorComponents, alpha, throughWalls);
             case OUTLINED_HIGHLIGHT -> {
-                RenderHelper.renderFilled(context, pos, colorComponents, alpha, throughWalls);
-                RenderHelper.renderOutline(context, pos, colorComponents, lineWidth, throughWalls);
+            	collector.submitFilledBox(pos, colorComponents, alpha, throughWalls);
+                collector.submitOutlinedBox(pos, colorComponents, lineWidth, throughWalls);
             }
-            case OUTLINE -> RenderHelper.renderOutline(context, pos, colorComponents, lineWidth, throughWalls);
+            case OUTLINE -> collector.submitOutlinedBox(pos, colorComponents, lineWidth, throughWalls);
         }
     }
     // endregion
@@ -230,9 +239,11 @@ public class Waypoint implements Renderable {
         OUTLINED_HIGHLIGHT,
         OUTLINE;
 
+        public static final Codec<Type> CODEC = StringIdentifiable.createCodec(Type::values);
+
         @Override
         public String asString() {
-            return name().toLowerCase();
+            return name().toLowerCase(Locale.ENGLISH);
         }
 
         @Override

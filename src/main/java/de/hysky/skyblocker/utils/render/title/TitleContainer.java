@@ -22,7 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class TitleContainer {
-	private static final Identifier TITLE_CONTAINER = Identifier.of(SkyblockerMod.NAMESPACE, "title_container");
+	private static final Identifier TITLE_CONTAINER = SkyblockerMod.id("title_container");
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	/**
 	 * The set of titles which will be rendered.

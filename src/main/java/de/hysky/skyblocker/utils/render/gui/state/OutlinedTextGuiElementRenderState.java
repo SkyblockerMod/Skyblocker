@@ -4,8 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
 
 import de.hysky.skyblocker.mixins.accessors.TextRendererAccessor;
-import net.minecraft.client.font.FontStorage;
-import net.minecraft.client.font.Glyph;
+import net.minecraft.client.font.BakedGlyph;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.font.TextRenderer.GlyphDrawable;
 import net.minecraft.client.font.TextRenderer.GlyphDrawer;
@@ -49,12 +48,11 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 					int l = j;
 					this.orderedText.accept((index, style, codePoint) -> {
 						boolean bl = style.isBold();
-						FontStorage fontStorage = accessor.invokeGetFontStorage(style.getFont());
-						Glyph glyph = fontStorage.getGlyph(codePoint, accessor.getValidateAdvance());
-						drawer.x = fs[0] + k * glyph.getShadowOffset();
-						drawer.y = this.y + l * glyph.getShadowOffset();
-						fs[0] += glyph.getAdvance(bl);
-						return drawer.accept(index, style.withColor(this.outlineColor), codePoint);
+						BakedGlyph bakedGlyph = accessor.invokeGetGlyph(codePoint, style);
+						drawer.x = fs[0] + k * bakedGlyph.getMetrics().getShadowOffset();
+						drawer.y = y + l * bakedGlyph.getMetrics().getShadowOffset();
+						fs[0] += bakedGlyph.getMetrics().getAdvance(bl);
+						return drawer.accept(index, style.withColor(this.outlineColor), bakedGlyph);
 					});
 				}
 			}

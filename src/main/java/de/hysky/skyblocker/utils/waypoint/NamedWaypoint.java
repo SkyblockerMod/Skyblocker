@@ -9,8 +9,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import net.minecraft.util.math.BlockPos;
@@ -63,7 +63,7 @@ public class NamedWaypoint extends Waypoint {
     public final Vec3d centerPos;
 
     public NamedWaypoint(NamedWaypoint namedWaypoint) {
-        this(namedWaypoint.pos, namedWaypoint.name, namedWaypoint.typeSupplier, namedWaypoint.colorComponents, namedWaypoint.alpha, namedWaypoint.isEnabled());
+        this(namedWaypoint.pos, namedWaypoint.name, namedWaypoint.typeSupplier, namedWaypoint.colorComponents, namedWaypoint.alpha, namedWaypoint.isEnabled(), namedWaypoint.throughWalls);
     }
 
     public NamedWaypoint(BlockPos pos, String name, float[] colorComponents) {
@@ -91,7 +91,11 @@ public class NamedWaypoint extends Waypoint {
     }
 
     public NamedWaypoint(BlockPos pos, Text name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean enabled) {
-        super(pos, typeSupplier, colorComponents, alpha, DEFAULT_LINE_WIDTH, true, enabled);
+        this(pos, name, typeSupplier, colorComponents, alpha,  enabled, true);
+    }
+
+    public NamedWaypoint(BlockPos pos, Text name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean enabled, boolean throughWalls) {
+        super(pos, typeSupplier, colorComponents, alpha, DEFAULT_LINE_WIDTH, throughWalls, enabled);
         this.name = name;
         this.centerPos = pos.toCenterPos();
     }
@@ -113,27 +117,37 @@ public class NamedWaypoint extends Waypoint {
      * Returns a copy of this waypoint. Note that this differs from {@link #NamedWaypoint(NamedWaypoint) the copy constructor} in that this should be overridden by subclasses and return a new instance of the runtime type.
      */
     public NamedWaypoint copy() {
-        return new NamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled());
+        return new NamedWaypoint(this);
     }
 
     @Override
     public NamedWaypoint withX(int x) {
-        return new NamedWaypoint(new BlockPos(x, pos.getY(), pos.getZ()), name, typeSupplier, colorComponents, alpha, isEnabled());
+        return new NamedWaypoint(new BlockPos(x, pos.getY(), pos.getZ()), name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
     }
 
     @Override
     public NamedWaypoint withY(int y) {
-        return new NamedWaypoint(pos.withY(y), name, typeSupplier, colorComponents, alpha, isEnabled());
+        return new NamedWaypoint(pos.withY(y), name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
     }
 
     @Override
     public NamedWaypoint withZ(int z) {
-        return new NamedWaypoint(new BlockPos(pos.getX(), pos.getY(), z), name, typeSupplier, colorComponents, alpha, isEnabled());
+        return new NamedWaypoint(new BlockPos(pos.getX(), pos.getY(), z), name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
     }
 
     @Override
     public NamedWaypoint withColor(float[] colorComponents, float alpha) {
-        return new NamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled());
+        return new NamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
+    }
+
+    @Override
+    public NamedWaypoint withThroughWalls(boolean throughWalls) {
+        return new NamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
+    }
+
+    @Override
+    public NamedWaypoint withTypeSupplier(Supplier<Type> typeSupplier) {
+        return new NamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
     }
 
     public Text getName() {
@@ -149,11 +163,11 @@ public class NamedWaypoint extends Waypoint {
     }
 
     @Override
-    public void render(WorldRenderContext context) {
-        super.render(context);
+    public void extractRendering(PrimitiveCollector collector) {
+        super.extractRendering(collector);
         if (shouldRenderName()) {
-            float scale = Math.max((float) context.camera().getPos().distanceTo(centerPos) / 10, 1);
-            RenderHelper.renderText(context, name, centerPos.add(0, 1, 0), scale, true);
+            float scale = Math.max((float) RenderHelper.getCamera().getPos().distanceTo(centerPos) / 10, 1);
+            collector.submitText(name, centerPos.add(0, 1, 0), scale, true);
         }
     }
 

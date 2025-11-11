@@ -4,9 +4,8 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -110,7 +109,7 @@ public class CreeperBeams extends DungeonPuzzle {
         // (sanity) check:
         // if the creeper isn't above a sea lantern, it's not the target.
         for (CreeperEntity ce : creepers) {
-            Vec3d creeperPos = ce.getPos();
+            Vec3d creeperPos = ce.getEntityPos();
             BlockPos potentialBase = BlockPos.ofFloored(creeperPos.x, BASE_Y, creeperPos.z);
             if (isTarget(world, potentialBase)) {
                 return potentialBase;
@@ -177,7 +176,7 @@ public class CreeperBeams extends DungeonPuzzle {
     }
 
     @Override
-    public void render(WorldRenderContext wrc) {
+    public void extractRendering(PrimitiveCollector collector) {
 
         // don't render if solved or disabled
         if (!shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.creeperSolver) {
@@ -186,7 +185,7 @@ public class CreeperBeams extends DungeonPuzzle {
 
         // lines.size() is always <= 4 so no issues OOB issues with the colors here.
         for (int i = 0; i < beams.size(); i++) {
-            beams.get(i).render(wrc, COLORS[i]);
+            beams.get(i).extractRendering(collector, COLORS[i]);
         }
     }
 
@@ -236,15 +235,15 @@ public class CreeperBeams extends DungeonPuzzle {
         }
 
         // render either in a color if not created or faintly green if created
-        private void render(WorldRenderContext wrc, float[] color) {
+        private void extractRendering(PrimitiveCollector collector, float[] color) {
             if (toDo) {
-                RenderHelper.renderOutline(wrc, outlineOne, color, 3, false);
-                RenderHelper.renderOutline(wrc, outlineTwo, color, 3, false);
-                RenderHelper.renderLinesFromPoints(wrc, line, color, 1, 2, false);
+            	collector.submitOutlinedBox(outlineOne, color, 3, false);
+            	collector.submitOutlinedBox(outlineTwo, color, 3, false);
+            	collector.submitLinesFromPoints(line, color, 1, 2, false);
             } else {
-                RenderHelper.renderOutline(wrc, outlineOne, GREEN_COLOR_COMPONENTS, 1, false);
-                RenderHelper.renderOutline(wrc, outlineTwo, GREEN_COLOR_COMPONENTS, 1, false);
-                RenderHelper.renderLinesFromPoints(wrc, line, GREEN_COLOR_COMPONENTS, 0.75f, 1, false);
+            	collector.submitOutlinedBox(outlineOne, GREEN_COLOR_COMPONENTS, 1, false);
+                collector.submitOutlinedBox(outlineTwo, GREEN_COLOR_COMPONENTS, 1, false);
+                collector.submitLinesFromPoints(line, GREEN_COLOR_COMPONENTS, 0.75f, 1, false);
             }
         }
     }
