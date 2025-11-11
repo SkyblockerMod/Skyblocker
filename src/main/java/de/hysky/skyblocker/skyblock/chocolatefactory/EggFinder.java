@@ -175,7 +175,7 @@ public class EggFinder {
 			MinecraftClient client = MinecraftClient.getInstance();
 			if (client.player == null || client.world == null) return true;
 			List<ArmorStandEntity> entities = client.world.getEntitiesByClass(ArmorStandEntity.class,
-					Box.of(client.player.getPos(), 4f, 4f, 4f),
+					Box.of(client.player.getEntityPos(), 4f, 4f, 4f),
 					(entity) -> EggFinder.checkIfEgg(entity, eggType)
 			);
 
