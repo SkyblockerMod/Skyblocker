@@ -78,7 +78,7 @@ public class ColorPopup extends AbstractPopupScreen {
 		addDrawableChild(argb);
 
 		argb.setOnChange(color -> {
-			colorPicker.setRGBColor(color);
+			colorPicker.setARGBColor(color);
 			currentColor.first(color);
 		});
 		colorPicker.setOnColorChange((color, mouseRelease) -> {
@@ -101,7 +101,7 @@ public class ColorPopup extends AbstractPopupScreen {
 		addDrawableChild(argbEnd);
 
 		argbStart.setOnChange(color -> {
-			colorPickerStart.setRGBColor(color);
+			colorPickerStart.setARGBColor(color);
 			currentColor.first(color);
 		});
 		colorPickerStart.setOnColorChange((color, mouseRelease) -> {
@@ -109,7 +109,7 @@ public class ColorPopup extends AbstractPopupScreen {
 			currentColor.first(color);
 		});
 		argbEnd.setOnChange(color -> {
-			colorPickerEnd.setRGBColor(color);
+			colorPickerEnd.setARGBColor(color);
 			currentColor.second(color);
 		});
 		colorPickerEnd.setOnColorChange((color, mouseRelease) -> {

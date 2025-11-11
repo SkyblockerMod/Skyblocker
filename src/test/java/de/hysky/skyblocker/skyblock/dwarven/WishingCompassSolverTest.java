@@ -29,7 +29,7 @@ public class WishingCompassSolverTest {
         Vec3d startPosTwo = new Vec3d(0, 0, 100);
         Vec3d directionOne = new Vec3d(-1, -1, 0);
         Vec3d directionTwo = new Vec3d(0, 1, -1);
-        Assertions.assertTrue(Objects.requireNonNull(WishingCompassSolver.solve(startPosOne, startPosTwo, directionOne, directionTwo)).distanceTo(new Vec3d(0, 100, 0))<0.1);
+        Assertions.assertTrue(Objects.requireNonNull(WishingCompassSolver.solve(startPosOne, startPosTwo, directionOne, directionTwo)).distanceTo(new Vec3d(0, 100, 0)) < 0.1);
     }
 
     @Test

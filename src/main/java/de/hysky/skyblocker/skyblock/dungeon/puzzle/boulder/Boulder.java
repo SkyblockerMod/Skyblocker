@@ -112,7 +112,7 @@ public class Boulder extends DungeonPuzzle {
                         break;
                     }
                 }
-                if (button == null){
+                if (button == null) {
                     // If no button is found along the path the puzzle is solved; reset the puzzle
                     reset();
                 }

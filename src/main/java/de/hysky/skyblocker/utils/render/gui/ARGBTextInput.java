@@ -3,10 +3,13 @@ package de.hysky.skyblocker.utils.render.gui;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -121,7 +124,7 @@ public class ARGBTextInput extends ClickableWidget {
 		int textX = getX() + (drawBackground ? 3 : 0);
 		int textY = getY() + (getHeight() - textRenderer.fontHeight) / 2;
 		if (drawBackground) {
-			context.fill(getX(), getY(), getRight(), getBottom(), isFocused() ? Colors.WHITE: Colors.GRAY);
+			context.fill(getX(), getY(), getRight(), getBottom(), isFocused() ? Colors.WHITE : Colors.GRAY);
 			context.fill(getX() + 1, getY() + 1, getRight() - 1, getBottom() - 1, Colors.BLACK);
 		}
 
@@ -155,15 +158,19 @@ public class ARGBTextInput extends ClickableWidget {
 				Colors.WHITE,
 				true
 		);
+
+		if (this.isHovered()) {
+			context.setCursor(StandardCursors.IBEAM);
+		}
 	}
 
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(KeyInput keyInput) {
 		if (!isFocused()) return false;
-		boolean bl = switch (keyCode) {
+		boolean bl = switch (keyInput.key()) {
 			case GLFW.GLFW_KEY_DELETE -> {
 				StringBuilder builder = new StringBuilder(input);
 				builder.setCharAt(index, '0');
@@ -191,10 +198,10 @@ public class ARGBTextInput extends ClickableWidget {
 			callOnChange();
 			return true;
 		} else {
-			if (Screen.isCopy(keyCode)) {
+			if (keyInput.isCopy()) {
 				MinecraftClient.getInstance().keyboard.setClipboard(input);
 				return true;
-			} else if (Screen.isPaste(keyCode)) {
+			} else if (keyInput.isPaste()) {
 				String clipboard = MinecraftClient.getInstance().keyboard.getClipboard();
 				if (clipboard.startsWith("#")) clipboard = clipboard.substring(1);
 				String s = clipboard.substring(0, Math.min(hasAlpha ? 8 : 6, clipboard.length()));
@@ -206,20 +213,20 @@ public class ARGBTextInput extends ClickableWidget {
 
 			}
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(keyInput);
 	}
 
 	@Override
-	public boolean charTyped(char chr, int modifiers) {
+	public boolean charTyped(CharInput input) {
 		if (!isFocused()) return false;
-		if (HEXADECIMAL_CHARS.indexOf(chr) >= 0) {
-			input = new	StringBuilder(input).replace(index, index+1, String.valueOf(chr).toUpperCase(Locale.ENGLISH)).toString();
+		if (HEXADECIMAL_CHARS.contains(input.asString())) {
+			this.input = new StringBuilder(this.input).replace(index, index+1, input.asString().toUpperCase(Locale.ENGLISH)).toString();
 			index = Math.min(length - 1, index + 1);
 			callOnChange();
 			return true;
 		}
 
-		return super.charTyped(chr, modifiers);
+		return super.charTyped(input);
 	}
 
 	protected void callOnChange() {
@@ -229,15 +236,15 @@ public class ARGBTextInput extends ClickableWidget {
 	}
 
 	@Override
-	public void onClick(double mouseX, double mouseY) {
-		super.onClick(mouseX, mouseY);
-		index = findClickedChar((int) mouseX);
+	public void onClick(Click click, boolean doubled) {
+		super.onClick(click, doubled);
+		index = findClickedChar((int) click.x());
 	}
 
 	@Override
-	protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-		super.onDrag(mouseX, mouseY, deltaX, deltaY);
-		index = findClickedChar((int) mouseX);
+	protected void onDrag(Click click, double deltaX, double deltaY) {
+		super.onDrag(click, deltaX, deltaY);
+		index = findClickedChar((int) click.x());
 	}
 
 	@Override

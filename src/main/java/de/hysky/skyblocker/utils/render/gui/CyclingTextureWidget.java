@@ -2,7 +2,9 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.utils.EnumUtils;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
@@ -51,7 +53,7 @@ public class CyclingTextureWidget<T extends Enum<T> & Supplier<Identifier>> exte
 	}
 
 	@Override
-	public void onClick(double mouseX, double mouseY) {
+	public void onClick(Click click, boolean doubled) {
 		this.current = EnumUtils.cycle(current);
 		this.setTooltip(tooltipSupplier.apply(getCurrent()));
 		this.onCycle.accept(getCurrent());
@@ -59,11 +61,15 @@ public class CyclingTextureWidget<T extends Enum<T> & Supplier<Identifier>> exte
 
 	@Override
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		var button = BUTTON.get(this.active, this.isFocused());
+		var button = BUTTON.get(this.active, this.isSelected());
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, button, this.getX(),
 				this.getY(), width, height);
 		context.drawTexture(RenderPipelines.GUI_TEXTURED, getCurrent().get(),
 				this.getX(), this.getY(), 0, 0, width, height, width, height);
+
+		if (this.isHovered()) {
+			context.setCursor(StandardCursors.POINTING_HAND);
+		}
 	}
 
 	@Override

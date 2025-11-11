@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.jei.JEICompatibility;
+import de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
@@ -69,7 +71,13 @@ public class ItemRepository {
 
 		SynchronizeRecipesS2CPacket packet = new SynchronizeRecipesS2CPacket(Map.of(), CuttingRecipeDisplay.Grouping.empty());
 		try {
-			client.execute(() -> client.getNetworkHandler().onSynchronizeRecipes(packet));
+			client.execute(() -> {
+				client.getNetworkHandler().onSynchronizeRecipes(packet);
+
+				if (JEICompatibility.JEI_LOADED) {
+					SkyblockerJEIPlugin.trickJEIIntoLoadingRecipes();
+				}
+			});
 		} catch (Exception e) {
 			LOGGER.info("[Skyblocker Item Repo] recipe sync error", e);
 		}

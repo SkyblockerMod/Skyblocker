@@ -23,7 +23,7 @@ public class PlayerComponent extends Component {
 
 	public PlayerComponent(PlayerListEntry ple, @Nullable Text name) {
 		this.name = name == null ? ple.getDisplayName() : name;
-		this.tex = ple.getSkinTextures().texture();
+		this.tex = ple.getSkinTextures().body().texturePath();
 
 		this.width = SKIN_ICO_DIM + PAD_S + txtRend.getWidth(this.name);
 		this.height = txtRend.fontHeight;

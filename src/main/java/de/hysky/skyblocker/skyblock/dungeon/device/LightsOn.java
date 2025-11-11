@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.block.BlockState;
@@ -15,6 +16,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 
 public class LightsOn {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -26,6 +28,10 @@ public class LightsOn {
 	private static final BlockPos BOTTOM_RIGHT = new BlockPos(58, 133, 142);
 	private static final BlockPos[] LEVERS = { TOP_LEFT, TOP_RIGHT, MIDDLE_TOP, MIDDLE_BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT };
 	private static final float[] RED = ColorUtils.getFloatComponents(DyeColor.RED);
+	/**
+	 * Higher than typical to ensure it stands out from redstone lamps that are off.
+	 */
+	private static final float ALPHA = 0.75f;
 
 	@Init
 	public static void init() {
@@ -33,15 +39,24 @@ public class LightsOn {
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (SkyblockerConfigManager.get().dungeons.devices.solveLightsOn && Utils.isInDungeons() && DungeonManager.isInBoss() && DungeonManager.getBoss() == DungeonBoss.MAXOR) {
-			for (BlockPos lever : LEVERS) {
-				ClientWorld world = CLIENT.world;
-				BlockState state = world.getBlockState(lever);
+		if (!shouldProcess()) return;
 
-				if (state.getBlock().equals(Blocks.LEVER) && state.contains(Properties.POWERED) && !state.get(Properties.POWERED)) {
-					collector.submitFilledBox(lever, RED, 0.5f, false);
+		for (BlockPos lever : LEVERS) {
+			ClientWorld world = CLIENT.world;
+			BlockState state = world.getBlockState(lever);
+
+			if (state.getBlock().equals(Blocks.LEVER) && state.contains(Properties.POWERED) && !state.get(Properties.POWERED)) {
+				Box box = RenderHelper.getBlockBoundingBox(world, state, lever);
+
+				if (box != null) {
+					collector.submitFilledBox(box, RED, ALPHA, false);
 				}
 			}
 		}
+	}
+
+	private static boolean shouldProcess() {
+		return SkyblockerConfigManager.get().dungeons.devices.solveLightsOn && Utils.isInDungeons() && DungeonManager.isInBoss()
+				&& DungeonManager.getBoss() == DungeonBoss.MAXOR;
 	}
 }
