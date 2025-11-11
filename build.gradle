@@ -388,6 +388,7 @@ publishMods {
 			def truncatedChangelog = truncateChangelog(it, 1850)
 			header + truncatedChangelog
 		}
+		setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
 	}
 }
 
