@@ -21,7 +21,7 @@ public class TableComponent extends Component {
 
 	public TableComponent(int w, int h, int col, boolean drawLines) {
 		comps = new Component[w][h];
-		this.color = drawLines && col != 0 ? 0xff000000 | col : 0;
+		this.color = drawLines && col != 0 ? 0xFF000000 | col : 0;
 		this.drawLines = drawLines && col != 0;
 		cols = w;
 		rows = h;
@@ -59,7 +59,7 @@ public class TableComponent extends Component {
 	public void setRowBorder(int row, int borderColor) {
 		if (row >= 0 && row < rowBorders.length) {
 			boolean hadBorder = rowBorders[row] != 0;
-			rowBorders[row] = borderColor == 0 ? 0 : 0xff000000 | borderColor;
+			rowBorders[row] = borderColor == 0 ? 0 : 0xFF000000 | borderColor;
 			boolean hasBorder = rowBorders[row] != 0;
 
 			if (hasBorder && !hadBorder) {

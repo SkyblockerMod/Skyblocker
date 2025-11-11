@@ -80,9 +80,9 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
         @Override
         public int getColor() {
             if (isTitanium) {
-                return 0xd8d6d8;
+                return 0xD8D6D8;
             }
-            return 0x45bde0;
+            return 0x45BDE0;
         }
     }
 
@@ -118,15 +118,15 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
 
         @Override
         public int getColor() {
-            return 0xffffff;
+            return 0xFFFFFF;
         }
     }
 
     enum GlaciteCategory implements Category {
-        AQUAMARINE("Aquamarine", 0x334cb1, new BlockPos[]{new BlockPos(20, 136, 370), new BlockPos(-14, 132, 386), new BlockPos(6, 137, 411), new BlockPos(50, 117, 302)}),
+        AQUAMARINE("Aquamarine", 0x334CB1, new BlockPos[]{new BlockPos(20, 136, 370), new BlockPos(-14, 132, 386), new BlockPos(6, 137, 411), new BlockPos(50, 117, 302)}),
         ONYX("Onyx", 0x191919, new BlockPos[]{new BlockPos(4, 127, 307), new BlockPos(-3, 139, 434), new BlockPos(77, 118, 411), new BlockPos(-68, 130, 404)}),
-        PERIDOT("Peridot", 0x667f33, new BlockPos[]{new BlockPos(66, 144, 284), new BlockPos(94, 154, 284), new BlockPos(-62, 147, 303), new BlockPos(-77, 119, 283), new BlockPos(87, 122, 394), new BlockPos(-73, 122, 456)}),
-        CITRINE("Citrine", 0x664c33, new BlockPos[]{new BlockPos(-86, 143, 261), new BlockPos(74, 150, 327), new BlockPos(63, 137, 343), new BlockPos(38, 119, 386), new BlockPos(55, 150, 400), new BlockPos(-45, 127, 415), new BlockPos(-60, 144, 424), new BlockPos(-54, 132, 410)}),
+        PERIDOT("Peridot", 0x667F33, new BlockPos[]{new BlockPos(66, 144, 284), new BlockPos(94, 154, 284), new BlockPos(-62, 147, 303), new BlockPos(-77, 119, 283), new BlockPos(87, 122, 394), new BlockPos(-73, 122, 456)}),
+        CITRINE("Citrine", 0x664C33, new BlockPos[]{new BlockPos(-86, 143, 261), new BlockPos(74, 150, 327), new BlockPos(63, 137, 343), new BlockPos(38, 119, 386), new BlockPos(55, 150, 400), new BlockPos(-45, 127, 415), new BlockPos(-60, 144, 424), new BlockPos(-54, 132, 410)}),
         CAMPFIRE("Base Camp", 0x983333, new BlockPos[]{new BlockPos(-7, 126, 229)});
 
         private final String name;

@@ -1,0 +1,98 @@
+{
+  "info": {
+    "name": "Market"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance Ladder",
+      "category": "entrance",
+      "x": 32,
+      "y": 65,
+      "z": 34
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 32,
+      "y": 61,
+      "z": 48
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 40,
+      "y": 81,
+      "z": 52
+    },
+    {
+      "secretName": "2 - AOTV",
+      "category": "aotv",
+      "x": 45,
+      "y": 78,
+      "z": 47
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 46,
+      "y": 79,
+      "z": 48
+    },
+    {
+      "secretName": "3/4 - Entrance Superboom",
+      "category": "entrance",
+      "x": 6,
+      "y": 67,
+      "z": 52
+    },
+    {
+      "secretName": "3 - Bat",
+      "category": "bat",
+      "x": 8,
+      "y": 60,
+      "z": 51
+    },
+    {
+      "secretName": "4 - Wither Essence",
+      "category": "wither",
+      "x": 7,
+      "y": 59,
+      "z": 44
+    },
+    {
+      "secretName": "5 - Entrance",
+      "category": "entrance",
+      "x": 6,
+      "y": 85,
+      "z": 41
+    },
+    {
+      "secretName": "5 - Pearl",
+      "category": "pearl",
+      "x": 15,
+      "y": 84,
+      "z": 56
+    },
+    {
+      "secretName": "5 - Stonk",
+      "category": "stonk",
+      "x": 18,
+      "y": 87,
+      "z": 52
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 16,
+      "y": 86,
+      "z": 56
+    },
+    {
+      "secretName": "Prince",
+      "category": "prince",
+      "x": 6,
+      "y": 70,
+      "z": 7
+    }
+  ]
+}

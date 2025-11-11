@@ -1,0 +1,21 @@
+{
+  "info": {
+    "name": "Tomioka"
+  },
+  "secrets": [
+    {
+      "secretName": "Fairy Soul - Entrance",
+      "category": "entrance",
+      "x": 12,
+      "y": 71,
+      "z": 5
+    },
+    {
+      "secretName": "Fairy Soul",
+      "category": "fairysoul",
+      "x": 24,
+      "y": 69,
+      "z": 3
+    }
+  ]
+}

@@ -143,7 +143,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 				craftText = textRenderer.trimToWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS_STRING;
 			}
 
-			context.drawTextWithShadow(textRenderer, craftText, x + 11, y + 31, 0xffffffff);
+			context.drawTextWithShadow(textRenderer, craftText, x + 11, y + 31, Colors.WHITE);
 		}
 
 		//Render the resulting item's name
@@ -153,16 +153,16 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			StringVisitable trimmed = StringVisitable.concat(textRenderer.trimToWidth(itemName, MAX_TEXT_WIDTH), ScreenTexts.ELLIPSIS);
 			OrderedText ordered = Language.getInstance().reorder(trimmed);
 
-			context.drawTextWithShadow(textRenderer, ordered, x + 11, y + 43, 0xffffffff);
+			context.drawTextWithShadow(textRenderer, ordered, x + 11, y + 43, Colors.WHITE);
 
 			//Set the resulting item's name as hovered text if we're hovering over it since the text got truncated
 			if (isMouseHoveringText(x + 11, y + 43, mouseX, mouseY)) this.hoveredText = itemName;
 		} else {
-			context.drawTextWithShadow(textRenderer, itemName, x + 11, y + 43, 0xffffffff);
+			context.drawTextWithShadow(textRenderer, itemName, x + 11, y + 43, Colors.WHITE);
 		}
 
 		//Draw the arrow that points to the recipe's result
-		context.drawTextWithShadow(textRenderer, "▶", x + 96, y + 90, 0xaaffffff);
+		context.drawTextWithShadow(textRenderer, "▶", x + 96, y + 90, 0xAAFFFFFF);
 		if (this.hoveredText == null && mouseX >= x + 86 && mouseY >= y + 81 && mouseX < x + 86 + 25 && mouseY < y + 81 + 25 && recipe instanceof SkyblockForgeRecipe forgeRecipe) {
 			this.hoveredText = Text.of(forgeRecipe.getDurationString());
 		}

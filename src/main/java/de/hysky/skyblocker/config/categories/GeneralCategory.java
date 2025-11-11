@@ -7,6 +7,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.backup.ConfigBackupScreen;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.AccessoryTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
@@ -19,7 +20,6 @@ import net.azureaaron.dandelion.systems.OptionListener.UpdateType;
 import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 public class GeneralCategory {
 
@@ -268,15 +268,15 @@ public class GeneralCategory {
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.itemTooltip.enableAccessoriesHelper"))
                                 .description(Text.translatable("skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]"),
-                                        Text.literal("\n\n✔ Collected").formatted(Formatting.GREEN),
+                                        Text.literal("\n\n✔ Collected").withColor(AccessoryTooltip.COLLECTED_COLOUR),
                                         Text.translatable("skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[1]"),
-                                        Text.literal("\n✦ Upgrade").withColor(0x218bff),
+                                        Text.literal("\n✦ Upgrade").withColor(AccessoryTooltip.UPGRADE_COLOUR),
                                         Text.translatable("skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[2]"),
-                                        Text.literal("\n↑ Upgradable").withColor(0xf8d048),
+                                        Text.literal("\n↑ Upgradable").withColor(AccessoryTooltip.UPGRADABLE_COLOUR),
                                         Text.translatable("skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[3]"),
-                                        Text.literal("\n↓ Downgrade").formatted(Formatting.GRAY),
+                                        Text.literal("\n↓ Downgrade").withColor(AccessoryTooltip.DOWNGRADE_COLOUR),
                                         Text.translatable("skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[4]"),
-                                        Text.literal("\n✖ Missing").formatted(Formatting.RED),
+                                        Text.literal("\n✖ Missing").withColor(AccessoryTooltip.MISSING_COLOUR),
                                         Text.translatable("skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[5]"))
                                 .binding(defaults.general.itemTooltip.enableAccessoriesHelper,
                                         () -> config.general.itemTooltip.enableAccessoriesHelper,

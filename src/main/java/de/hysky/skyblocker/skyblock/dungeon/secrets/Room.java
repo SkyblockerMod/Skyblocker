@@ -2,9 +2,6 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
@@ -462,15 +459,14 @@ public class Room implements Tickable, Renderable {
     @SuppressWarnings("JavadocReference")
     private void roomMatched() {
         secretWaypoints = HashBasedTable.create();
-        JsonArray secretWaypointsJson = DungeonManager.getRoomWaypoints(name);
-        if (secretWaypointsJson != null) {
-            for (JsonElement waypointElement : secretWaypointsJson) {
-                JsonObject waypoint = waypointElement.getAsJsonObject();
-                String secretName = waypoint.get("secretName").getAsString();
+        List<DungeonManager.RoomWaypoint> roomWaypoints = DungeonManager.getRoomWaypoints(name);
+        if (roomWaypoints != null) {
+            for (DungeonManager.RoomWaypoint waypoint : roomWaypoints) {
+                String secretName = waypoint.secretName();
                 Matcher secretIndexMatcher = SECRET_INDEX.matcher(secretName);
                 int secretIndex = secretIndexMatcher.find() ? Integer.parseInt(secretIndexMatcher.group(1)) : 0;
                 BlockPos pos = DungeonMapUtils.relativeToActual(direction, physicalCornerPos, waypoint);
-                secretWaypoints.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint, secretName, pos));
+                secretWaypoints.put(secretIndex, pos, new SecretWaypoint(secretIndex, waypoint.category(), secretName, pos));
             }
         }
         DungeonManager.getCustomWaypoints(name).values().forEach(this::addCustomWaypoint);
