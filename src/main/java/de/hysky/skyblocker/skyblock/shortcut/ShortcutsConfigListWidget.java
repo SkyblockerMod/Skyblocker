@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
 import com.demonwav.mcdev.annotations.Translatable;
-import de.hysky.skyblocker.debug.Debug;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
@@ -111,12 +110,9 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		return children().stream().filter(KeybindShortcutEntry.class::isInstance).map(KeybindShortcutEntry.class::cast).anyMatch(KeybindShortcutEntry::stopEditing);
 	}
 
-	/**
-	 * Used to show the box around the selected entry in debug mode.
-	 */
 	@Override
 	protected boolean isEntrySelectionAllowed() {
-		return Debug.debugEnabled();
+		return true;
 	}
 
 	@Override
