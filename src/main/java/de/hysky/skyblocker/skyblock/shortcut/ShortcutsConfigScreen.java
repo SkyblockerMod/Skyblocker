@@ -38,7 +38,7 @@ public class ShortcutsConfigScreen extends Screen {
 			shortcutsConfigListWidget.setDimensions(width, height - 96);
 			shortcutsConfigListWidget.updatePositions();
 		} else {
-			shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height - 96, 32, 24);
+			shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height - 96, 32);
 			initialized = true;
 		}
 		addDrawableChild(shortcutsConfigListWidget);
