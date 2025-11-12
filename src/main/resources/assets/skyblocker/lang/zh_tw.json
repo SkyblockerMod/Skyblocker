@@ -1526,5 +1526,16 @@
     "skyblocker.waypoints.throughWalls": "隔牆顯示",
     "skyblocker.dungeons.splits.bloodOpen": "Blood Room開啟",
     "skyblocker.dungeons.splits.bloodClear": "Blood Room清空",
-    "key.category.skyblocker.main": "Skyblocker"
+    "key.category.skyblocker.main": "Skyblocker",
+    "skyblocker.config.helpers.hoppitysHunt.enableEggFinder": "啟用來自WebSocket的彩蛋路徑點",
+    "skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages": "發送找到彩蛋訊息",
+    "skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages.@Tooltip": "當從Skyblocker WebSocket收到新的彩蛋位置時發送訊息。",
+    "skyblocker.config.helpers.hoppitysHunt.waypointType": "彩蛋路徑點類型",
+    "skyblocker.config.helpers.hoppitysHunt.showThroughWalls": "隔牆顯示",
+    "skyblocker.config.helpers.hoppitysHunt.showThroughWalls.@Tooltip": "是否隔牆顯示彩蛋路徑點。",
+    "skyblocker.helpers.hoppitysHunt.unableToShareEgg": "無法分享此彩蛋。",
+    "skyblocker.helpers.hoppitysHunt.chocolateEgg": "Chocolate %s Egg",
+    "skyblocker.helpers.hoppitysHunt.newEggDiscovered": "在%2$s找到了%1$s！",
+    "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "點擊將彩蛋位置分享到聊天欄！",
+    "skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip": "突出顯示Hoppity's Hunt期間的彩蛋。\n新發現的彩蛋會在啟用此功能的玩家之間自動共享。"
 }
