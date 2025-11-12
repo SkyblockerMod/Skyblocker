@@ -1527,5 +1527,16 @@
     "skyblocker.dungeons.splits.bloodOpen": "Blood Room开启",
     "skyblocker.dungeons.splits.witherKing": "凋灵王",
     "skyblocker.dungeons.splits.bloodClear": "Blood Room清空",
-    "key.category.skyblocker.main": "Skyblocker"
+    "key.category.skyblocker.main": "Skyblocker",
+    "skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages": "发送找到彩蛋消息",
+    "skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages.@Tooltip": "当从Skyblocker WebSocket收到新的彩蛋位置时发送消息。",
+    "skyblocker.config.helpers.hoppitysHunt.waypointType": "彩蛋路径点类型",
+    "skyblocker.config.helpers.hoppitysHunt.showThroughWalls": "隔墙显示",
+    "skyblocker.config.helpers.hoppitysHunt.showThroughWalls.@Tooltip": "是否隔墙显示彩蛋路径点。",
+    "skyblocker.helpers.hoppitysHunt.newEggDiscovered": "在%2$s找到了%1$s！",
+    "skyblocker.helpers.hoppitysHunt.chocolateEgg": "Chocolate %s Egg",
+    "skyblocker.helpers.hoppitysHunt.unableToShareEgg": "无法分享此彩蛋。",
+    "skyblocker.config.helpers.hoppitysHunt.enableEggFinder": "启用来自WebSocket的彩蛋路径点",
+    "skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip": "高亮显示Hoppity's Hunt期间的彩蛋。\n新发现的彩蛋会在启用此功能的玩家之间自动共享。",
+    "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "点击将彩蛋位置分享到聊天栏！"
 }
