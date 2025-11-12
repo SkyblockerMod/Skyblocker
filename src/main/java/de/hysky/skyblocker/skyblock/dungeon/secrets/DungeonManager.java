@@ -685,7 +685,7 @@ public class DungeonManager {
 	private static void updateAllRoomCheckmarks() {
 		if (!Utils.isInDungeons() || isInBoss() || CLIENT.player == null || CLIENT.world == null) return;
 		MapState map = getMapState(CLIENT);
-		if (map == null) return;
+		if (map == null || mapEntrancePos == null) return;
 		DungeonManager.getRoomsStream().filter(Room::isMatched).forEach(room -> updateRoomCheckmark(room, map));
 	}
 
