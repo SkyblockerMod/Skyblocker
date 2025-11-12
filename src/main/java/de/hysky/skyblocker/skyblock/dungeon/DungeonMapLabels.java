@@ -2,13 +2,14 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -16,6 +17,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2dc;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
@@ -30,14 +32,19 @@ public class DungeonMapLabels {
 
 	@Init
 	public static void init() {
-		ClientTickEvents.END_CLIENT_TICK.register((client) -> updateRoomNames());
+		Scheduler.INSTANCE.scheduleCyclic(() -> updateRoomNames(null), 20);
+		DungeonEvents.ROOM_MATCHED.register(DungeonMapLabels::onRoomMatched);
 	}
 
 	private static boolean shouldProcess() {
 		return Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss() && SkyblockerConfigManager.get().dungeons.dungeonMap.showRoomLabels;
 	}
 
-	private static void updateRoomNames() {
+	private static void onRoomMatched(Room room) {
+		updateRoomNames(room);
+	}
+
+	private static void updateRoomNames(@Nullable Room newRoom) {
 		if (!shouldProcess()) return;
 
 		Vector2ic entrancePos = DungeonManager.getPhysicalEntrancePos();
@@ -46,28 +53,35 @@ public class DungeonMapLabels {
 		int mapRoomSize = DungeonManager.getMapRoomSize();
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
+		if (newRoom != null) {
+			addRoomLabel(newRoom, entrancePos, mapEntrancePos, mapRoomSize, textRenderer);
+			return;
+		}
+
 		LABELS.clear();
-		DungeonManager.getRoomsStream().filter(Room::isMatched).forEach(room -> {
-			if (LABELS.containsKey(room.getName())) return;
-			Vec3d labelPos = getPosForLabel(room, mapRoomSize, textRenderer.fontHeight);
-			if (labelPos == null) return;
-			Vector2dc mapPos = DungeonMapUtils.getMapPosFromPhysical(entrancePos, mapEntrancePos, mapRoomSize, labelPos);
-			DungeonManager.RoomInfo roomInfo = DungeonManager.getRoomMetadata(room.getName());
-			if (roomInfo == null) return;
-			String roomName = roomInfo.name();
-
-			int color = Colors.GRAY;
-			if (room.greenChecked) {
-				color = Colors.GREEN;
-			} else if (room.whiteChecked) {
-				color = Colors.WHITE;
-			}
-
-			Text text = Text.literal(roomName);
-			LABELS.put(room.getName(), new RoomLabel(text, (int) mapPos.x(), (int) mapPos.y(), getMaxWidth(room, mapRoomSize), color));
-		});
+		DungeonManager.getRoomsStream().filter(Room::isMatched).forEach(room ->
+				addRoomLabel(room, entrancePos, mapEntrancePos, mapRoomSize, textRenderer));
 	}
 
+	private static void addRoomLabel(Room room, Vector2ic entrancePos, Vector2ic mapEntrancePos, int mapRoomSize, TextRenderer textRenderer) {
+		if (LABELS.containsKey(room.getName())) return;
+		Vec3d labelPos = getPosForLabel(room, mapRoomSize, textRenderer.fontHeight);
+		if (labelPos == null) return;
+		Vector2dc mapPos = DungeonMapUtils.getMapPosFromPhysical(entrancePos, mapEntrancePos, mapRoomSize, labelPos);
+		DungeonManager.RoomInfo roomInfo = DungeonManager.getRoomMetadata(room.getName());
+		if (roomInfo == null) return;
+		String roomName = roomInfo.name();
+
+		int color = Colors.GRAY;
+		if (room.greenChecked) {
+			color = Colors.GREEN;
+		} else if (room.whiteChecked) {
+			color = Colors.WHITE;
+		}
+
+		Text text = Text.literal(roomName);
+		LABELS.put(room.getName(), new RoomLabel(text, (int) mapPos.x(), (int) mapPos.y(), getMaxWidth(room, mapRoomSize), color));
+	}
 
 	protected static void renderRoomNames(DrawContext context) {
 		if (!SkyblockerConfigManager.get().dungeons.dungeonMap.showRoomLabels) return;
