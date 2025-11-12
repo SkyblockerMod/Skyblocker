@@ -19,9 +19,11 @@ import org.joml.Vector2ic;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -35,10 +37,15 @@ public class DungeonMapLabels {
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(() -> updateRoomNames(null), 20);
 		DungeonEvents.ROOM_MATCHED.register(DungeonMapLabels::onRoomMatched);
+		SkyblockEvents.LOCATION_CHANGE.register(DungeonMapLabels::clearLabels);
 	}
 
 	private static boolean shouldProcess() {
 		return Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss() && SkyblockerConfigManager.get().dungeons.dungeonMap.showRoomLabels;
+	}
+
+	private static void clearLabels(Location _ignored) {
+		if (!LABELS.isEmpty()) LABELS.clear();
 	}
 
 	private static void onRoomMatched(Room room) {
