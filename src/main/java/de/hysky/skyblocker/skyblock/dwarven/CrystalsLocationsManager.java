@@ -383,7 +383,7 @@ public class CrystalsLocationsManager {
 
     private static void onLocationChange(Location newLocation) {
         if (newLocation == Location.CRYSTAL_HOLLOWS) {
-            WsStateManager.subscribe(Service.CRYSTAL_WAYPOINTS, Optional.of(CrystalsWaypointSubscribeMessage.create(CLIENT.world)));
+            WsStateManager.subscribeServer(Service.CRYSTAL_WAYPOINTS, Optional.of(CrystalsWaypointSubscribeMessage.create(CLIENT.world)));
         }
     }
 
@@ -416,7 +416,7 @@ public class CrystalsLocationsManager {
         if (waypointsSent2Socket.contains(category)) return;
         if (category == MiningLocationLabel.CrystalHollowsLocationsCategory.FAIRY_GROTTO && !SkyblockerConfigManager.get().mining.crystalsWaypoints.shareFairyGrotto) return;
 
-        WsMessageHandler.sendMessage(Service.CRYSTAL_WAYPOINTS, new CrystalsWaypointMessage(category, CLIENT.player.getBlockPos()));
+        WsMessageHandler.sendServerMessage(Service.CRYSTAL_WAYPOINTS, new CrystalsWaypointMessage(category, CLIENT.player.getBlockPos()));
         waypointsSent2Socket.add(category);
     }
 }
