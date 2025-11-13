@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -19,11 +20,9 @@ import org.joml.Vector2ic;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
-import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -35,16 +34,16 @@ public class DungeonMapLabels {
 
 	@Init
 	public static void init() {
-		Scheduler.INSTANCE.scheduleCyclic(() -> updateRoomNames(null), 20);
+		ClientPlayConnectionEvents.JOIN.register((_n, _p, _c) -> DungeonMapLabels.clearLabels());
 		DungeonEvents.ROOM_MATCHED.register(DungeonMapLabels::onRoomMatched);
-		SkyblockEvents.LOCATION_CHANGE.register(DungeonMapLabels::clearLabels);
+		Scheduler.INSTANCE.scheduleCyclic(() -> updateRoomNames(null), 20);
 	}
 
 	private static boolean shouldProcess() {
 		return Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss() && SkyblockerConfigManager.get().dungeons.dungeonMap.showRoomLabels;
 	}
 
-	private static void clearLabels(Location _ignored) {
+	private static void clearLabels() {
 		if (!LABELS.isEmpty()) LABELS.clear();
 	}
 
@@ -80,7 +79,7 @@ public class DungeonMapLabels {
 		if (roomInfo == null) return;
 		String roomName = roomInfo.name();
 
-		final int color = switch (room) {
+		int color = switch (room) {
 			case Room r when r.greenChecked -> Colors.GREEN;
 			case Room r when r.whiteChecked -> Colors.WHITE;
 			default -> Colors.GRAY;
@@ -188,5 +187,5 @@ public class DungeonMapLabels {
 		}
 	}
 
-	record RoomLabel(List<OrderedText> textLines, int x, int y, int color) {}
+	private record RoomLabel(List<OrderedText> textLines, int x, int y, int color) {}
 }
