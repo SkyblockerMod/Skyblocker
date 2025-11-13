@@ -123,11 +123,11 @@ public class DungeonMapLabels {
 
 		Vector2i result = null;
 		switch (room.getShape()) {
-			case TRAP, PUZZLE, ONE_BY_ONE:
+			case TRAP, PUZZLE, ONE_BY_ONE -> {
 				result = new Vector2i(segmentsX[0] + mapRoomSize - 2, (int) (segmentsY[0] + mapRoomSize - ((double) fontHeight / 2) + 1));
 				if (mapRoomSize == 18) result.x -= 2;
-				break;
-			case L_SHAPE:
+			}
+			case L_SHAPE -> {
 				int medX;
 				int medY = segmentsY[1] + mapRoomSize - 2;
 
@@ -138,8 +138,8 @@ public class DungeonMapLabels {
 				}
 
 				result = new Vector2i(medX, medY);
-				break;
-			case TWO_BY_TWO, ONE_BY_TWO, ONE_BY_THREE, ONE_BY_FOUR:
+			}
+			case TWO_BY_TWO, ONE_BY_TWO, ONE_BY_THREE, ONE_BY_FOUR -> {
 				int avgX = (segmentsX[0] + segmentsX[segmentsX.length - 1] + mapRoomSize) / 2;
 				if (room.getDirection() == Room.Direction.SE || room.getDirection() == Room.Direction.SW) {
 					avgX += mapRoomSize / 2;
@@ -149,7 +149,7 @@ public class DungeonMapLabels {
 				int avgY = (segmentsY[0] + segmentsY[segmentsY.length - 1] + mapRoomSize) / 2 + mapRoomSize / 3 + 2;
 
 				result = new Vector2i(avgX, avgY);
-				break;
+			}
 		}
 
 		result.sub(0, fontHeight / 2, result);
