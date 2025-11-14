@@ -22,7 +22,7 @@ import net.minecraft.util.Colors;
 public class DropdownWidget<T> extends ContainerWidget {
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 	public static final int ENTRY_HEIGHT = 15;
-	private static final int HEADER_HEIGHT = ENTRY_HEIGHT + 4;
+	public static final int HEADER_HEIGHT = ENTRY_HEIGHT + 4;
 	protected final List<T> entries;
 	protected final Consumer<T> selectCallback;
 	protected final Consumer<Boolean> openedCallback;

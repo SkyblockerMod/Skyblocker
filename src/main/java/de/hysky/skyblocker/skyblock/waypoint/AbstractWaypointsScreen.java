@@ -88,7 +88,7 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 		waypointsListWidget.position(width, layout);
 		waypointsListWidget.updateEntries();
 		islandWidget.setX(width - islandWidget.getWidth() - 10);
-		SimplePositioningWidget.setPos(0, layout.getHeaderHeight(), islandWidget.getHeight(), islandWidget::setY, 0.5f);
+		SimplePositioningWidget.setPos(0, layout.getHeaderHeight(), DropdownWidget.HEADER_HEIGHT, islandWidget::setY, 0.5f);
 		islandWidget.setMaxHeight(Math.max(height - islandWidget.getY() - 8, 20));
 	}
 
