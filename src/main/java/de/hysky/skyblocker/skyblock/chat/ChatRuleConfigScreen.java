@@ -81,15 +81,10 @@ public class ChatRuleConfigScreen extends Screen {
 
 		// Name
 		contentAdder.add(new MultilineTextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.name"), textRenderer), alignedLeft).setMaxWidth(getWidth(1)).setCentered(false);
-		TextFieldWidget nameWidget = contentAdder.add(new TextFieldWidget(textRenderer, getWidth(1), 20, Text.empty()), 1);
+		TextFieldWidget nameWidget = contentAdder.add(new TextFieldWidget(textRenderer, getWidth(2), 20, Text.empty()), 2);
 		nameWidget.setText(chatRule.getName());
 		nameWidget.setChangedListener(chatRule::setName);
 		nameWidget.setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.name.@Tooltip")));
-		contentAdder.add(ButtonWidget.builder(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
-						widget -> client.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
-				.tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip")))
-				.width(getWidth(1))
-				.build());
 
 
 		// Filter
@@ -102,18 +97,25 @@ public class ChatRuleConfigScreen extends Screen {
 		filterInput.setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter.@Tooltip")));
 
 		// Filter settings
-		contentAdder.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
+		DirectionalLayoutWidget filtersRow1 = contentAdder.add(DirectionalLayoutWidget.horizontal().spacing(GRID_SPACING), 3);
+		filtersRow1.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
 				.initially(chatRule.getRegex())
 				.tooltip(b -> Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
-				.build(0, 0, getWidth(1), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (button, value) -> chatRule.setRegex(value)));
-		contentAdder.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
+				.build(0, 0, getWidth(1.5f), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (button, value) -> chatRule.setRegex(value)));
+		filtersRow1.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
 				.initially(chatRule.getIgnoreCase())
 				.tooltip(b -> Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
-				.build(0, 0, getWidth(1), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (button, value) -> chatRule.setIgnoreCase(value)));
-		contentAdder.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
+				.build(0, 0, getWidth(1.5f), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (button, value) -> chatRule.setIgnoreCase(value)));
+		DirectionalLayoutWidget filtersRow2 = contentAdder.add(DirectionalLayoutWidget.horizontal().spacing(GRID_SPACING), 3);
+		filtersRow2.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
 				.initially(chatRule.getPartialMatch())
 				.tooltip(b -> Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
-				.build(0, 0, getWidth(1), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (button, value) -> chatRule.setPartialMatch(value)));
+				.build(0, 0, getWidth(1.5f), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (button, value) -> chatRule.setPartialMatch(value)));
+		filtersRow2.add(ButtonWidget.builder(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
+						widget -> client.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
+				.tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip")))
+				.width(getWidth(1.5f))
+				.build());
 
 		// ==== Outputs
 		contentAdder.add(new TextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.outputs").formatted(Formatting.BOLD, Formatting.UNDERLINE), textRenderer), 3, content.copyPositioner().marginTop(4));
