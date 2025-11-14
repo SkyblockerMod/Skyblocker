@@ -5,16 +5,19 @@ import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
+import java.awt.*;
 import java.util.List;
 import java.util.function.Consumer;
 
 import de.hysky.skyblocker.utils.render.HudHelper;
+import net.minecraft.util.Colors;
 
 public class DropdownWidget<T> extends ContainerWidget {
 	private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -58,13 +61,14 @@ public class DropdownWidget<T> extends ContainerWidget {
 		dropdownList.render(context, mouseX, mouseY, delta);
 		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, 0xFF << 24);
 		HudHelper.drawBorder(context, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, -1);
-		drawScrollableText(context, client.textRenderer, Text.literal(
-						selected.toString()),
+		context.drawText(client.textRenderer, ">", getX() + 2, getY() + 6, Colors.ALTERNATE_WHITE, true);
+		drawScrollableText(context, client.textRenderer, Text.literal(selected.toString()),
 				getX() + 2,
 				getY() + 2,
 				getRight() - 2,
 				getY() + HEADER_HEIGHT - 2,
 				-1);
+		if (isMouseOver(mouseX, mouseY)) context.setCursor(StandardCursors.POINTING_HAND);
 	}
 
 	@Override
