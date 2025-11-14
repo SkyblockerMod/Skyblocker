@@ -80,7 +80,7 @@ public class ChatRuleConfigScreen extends Screen {
 		GridWidget.Adder contentAdder = content.createAdder(3);
 
 		// Name
-		contentAdder.add(new TextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.name"), textRenderer), 3);
+		contentAdder.add(new TextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.name").formatted(Formatting.BOLD, Formatting.UNDERLINE), textRenderer), 3);
 		TextFieldWidget nameWidget = contentAdder.add(new TextFieldWidget(textRenderer, getWidth(3), 20, Text.empty()), 3);
 		nameWidget.setText(chatRule.getName());
 		nameWidget.setChangedListener(chatRule::setName);
