@@ -40,15 +40,15 @@ public class ChatRuleConfigScreen extends Screen {
 	private static final Text NO_TEXT = ScreenTexts.NO.copy().formatted(Formatting.RED);
 
 	private final Map<SoundEvent, Text> soundNames = Util.make(new Object2ObjectOpenHashMap<>(), map -> {
-		map.put(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling"));
-		map.put(SoundEvents.AMBIENT_CAVE.value(), Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.cave"));
-		map.put(SoundEvents.ENTITY_ZOMBIE_AMBIENT, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie"));
-		map.put(SoundEvents.ENTITY_PLAYER_ATTACK_CRIT, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.crit"));
-		map.put(SoundEvents.ENTITY_ARROW_HIT_PLAYER, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.arrowHit"));
-		map.put(SoundEvents.BLOCK_AMETHYST_BLOCK_HIT, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.amethyst"));
-		map.put(SoundEvents.BLOCK_ANVIL_LAND, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.anvil"));
-		map.put(null, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.none"));
-		map.defaultReturnValue(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.custom"));
+		map.put(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling").formatted(Formatting.YELLOW));
+		map.put(SoundEvents.AMBIENT_CAVE.value(), Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.cave").formatted(Formatting.YELLOW));
+		map.put(SoundEvents.ENTITY_ZOMBIE_AMBIENT, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie").formatted(Formatting.YELLOW));
+		map.put(SoundEvents.ENTITY_PLAYER_ATTACK_CRIT, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.crit").formatted(Formatting.YELLOW));
+		map.put(SoundEvents.ENTITY_ARROW_HIT_PLAYER, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.arrowHit").formatted(Formatting.YELLOW));
+		map.put(SoundEvents.BLOCK_AMETHYST_BLOCK_HIT, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.amethyst").formatted(Formatting.YELLOW));
+		map.put(SoundEvents.BLOCK_ANVIL_LAND, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.anvil").formatted(Formatting.YELLOW));
+		map.put(null, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.none").formatted(Formatting.RED));
+		map.defaultReturnValue(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.custom").formatted(Formatting.YELLOW));
 	});
 
 	private final int chatRuleIndex;
