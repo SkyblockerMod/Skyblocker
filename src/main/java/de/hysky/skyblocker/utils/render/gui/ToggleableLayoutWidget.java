@@ -7,19 +7,19 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 public class ToggleableLayoutWidget implements LayoutWidget {
-	private final LayoutWidget layout;
+	private final Widget widget;
 	private final BooleanSupplier isEnabled;
 
 	private boolean enabled;
 
-	public ToggleableLayoutWidget(LayoutWidget layout, BooleanSupplier isEnabled) {
-		this.layout = layout;
+	public ToggleableLayoutWidget(Widget widget, BooleanSupplier isEnabled) {
+		this.widget = widget;
 		this.isEnabled = isEnabled;
 	}
 
 	@Override
 	public void forEachElement(Consumer<Widget> consumer) {
-		if (enabled) consumer.accept(layout);
+		if (enabled) consumer.accept(widget);
 	}
 
 	@Override
@@ -30,31 +30,31 @@ public class ToggleableLayoutWidget implements LayoutWidget {
 
 	@Override
 	public void setX(int x) {
-		layout.setX(x);
+		widget.setX(x);
 	}
 
 	@Override
 	public void setY(int y) {
-		layout.setY(y);
+		widget.setY(y);
 	}
 
 	@Override
 	public int getX() {
-		return layout.getX();
+		return widget.getX();
 	}
 
 	@Override
 	public int getY() {
-		return layout.getY();
+		return widget.getY();
 	}
 
 	@Override
 	public int getWidth() {
-		return enabled ? layout.getWidth() : 0;
+		return enabled ? widget.getWidth() : 0;
 	}
 
 	@Override
 	public int getHeight() {
-		return enabled ? layout.getHeight() : 0;
+		return enabled ? widget.getHeight() : 0;
 	}
 }

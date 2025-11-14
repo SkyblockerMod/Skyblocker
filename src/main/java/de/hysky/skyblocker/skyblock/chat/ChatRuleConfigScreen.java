@@ -26,7 +26,6 @@ import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +33,8 @@ import java.util.Optional;
 import java.util.function.*;
 
 public class ChatRuleConfigScreen extends Screen {
+	private static final int COLUMN_WIDTH = 105;
+	private static final int GRID_SPACING = 2;
 	private static final ItemStack INVALID_ITEM = new ItemStack(Items.BARRIER);
 	private static final Text YES_TEXT = ScreenTexts.YES.copy().formatted(Formatting.GREEN);
 	private static final Text NO_TEXT = ScreenTexts.NO.copy().formatted(Formatting.RED);
@@ -58,7 +59,7 @@ public class ChatRuleConfigScreen extends Screen {
 	private final Screen parent;
 
 	private final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
-	private DirectionalLayoutWidget content;
+	private GridWidget content;
 
 	public ChatRuleConfigScreen(Screen parent, int chatRuleIndex) {
 		super(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"));
@@ -73,20 +74,27 @@ public class ChatRuleConfigScreen extends Screen {
 		layout.addFooter(ButtonWidget.builder(ScreenTexts.DONE, b -> close()).build());
 		layout.addBody(new ContentContainer());
 
-		content = DirectionalLayoutWidget.vertical().spacing(2);
+		content = new GridWidget().setSpacing(GRID_SPACING);
+		content.getMainPositioner().alignVerticalCenter().alignHorizontalCenter();
+		Positioner alignedLeft = content.copyPositioner().alignLeft();
+		GridWidget.Adder contentAdder = content.createAdder(3);
 
 		// Name
-		DirectionalLayoutWidget nameLayout = content.add(DirectionalLayoutWidget.horizontal().spacing(4), p -> p.marginBottom(4));
-		nameLayout.getMainPositioner().alignVerticalCenter();
-		nameLayout.add(new TextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.name"), textRenderer));
-		TextFieldWidget nameWidget = nameLayout.add(new TextFieldWidget(textRenderer, 150, 20, Text.empty()));
+		contentAdder.add(new MultilineTextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.name"), textRenderer), alignedLeft).setMaxWidth(getWidth(1)).setCentered(false);
+		TextFieldWidget nameWidget = contentAdder.add(new TextFieldWidget(textRenderer, getWidth(1), 20, Text.empty()), 1);
 		nameWidget.setText(chatRule.getName());
 		nameWidget.setChangedListener(chatRule::setName);
 		nameWidget.setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.name.@Tooltip")));
+		contentAdder.add(ButtonWidget.builder(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
+						widget -> client.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
+				.tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip")))
+				.width(getWidth(1))
+				.build());
+
 
 		// Filter
-		content.add(new TextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter").formatted(Formatting.BOLD, Formatting.UNDERLINE), textRenderer), Positioner::alignHorizontalCenter);
-		TextFieldWidget filterInput = content.add(new TextFieldWidget(textRenderer, 300, 20, Text.empty()), Positioner::alignHorizontalCenter);
+		contentAdder.add(new TextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter").formatted(Formatting.BOLD, Formatting.UNDERLINE), textRenderer), 3);
+		TextFieldWidget filterInput = contentAdder.add(new TextFieldWidget(textRenderer, getWidth(3), 20, Text.empty()), 3);
 		filterInput.setMaxLength(1024);
 		filterInput.setText(chatRule.getFilter());
 		filterInput.setChangedListener(chatRule::setFilter);
@@ -94,73 +102,87 @@ public class ChatRuleConfigScreen extends Screen {
 		filterInput.setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter.@Tooltip")));
 
 		// Filter settings
-		DirectionalLayoutWidget filterButtonsLayout = content.add(DirectionalLayoutWidget.horizontal().spacing(2), Positioner::alignHorizontalCenter);
-		int buttonWidth = 98;
-		filterButtonsLayout.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
+		contentAdder.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
 				.initially(chatRule.getRegex())
 				.tooltip(b -> Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
-				.build(0, 0, buttonWidth, 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (button, value) -> chatRule.setRegex(value)));
-		filterButtonsLayout.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
+				.build(0, 0, getWidth(1), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (button, value) -> chatRule.setRegex(value)));
+		contentAdder.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
 				.initially(chatRule.getIgnoreCase())
 				.tooltip(b -> Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
-				.build(0, 0, buttonWidth, 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (button, value) -> chatRule.setIgnoreCase(value)));
-		filterButtonsLayout.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
+				.build(0, 0, getWidth(1), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (button, value) -> chatRule.setIgnoreCase(value)));
+		contentAdder.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
 				.initially(chatRule.getPartialMatch())
 				.tooltip(b -> Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
-				.build(0, 0, buttonWidth, 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (button, value) -> chatRule.setPartialMatch(value)));
+				.build(0, 0, getWidth(1), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (button, value) -> chatRule.setPartialMatch(value)));
 
 		// ==== Outputs
-		content.add(new TextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.outputs").formatted(Formatting.BOLD, Formatting.UNDERLINE), textRenderer), p -> p.alignHorizontalCenter().marginTop(4));
-		content.add(new MultilineTextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.formatting"), textRenderer).setMaxWidth(200), Positioner::alignHorizontalCenter);
+		contentAdder.add(new TextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.outputs").formatted(Formatting.BOLD, Formatting.UNDERLINE), textRenderer), 3, content.copyPositioner().marginTop(4));
+		contentAdder.add(new MultilineTextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.formatting"), textRenderer).setMaxWidth(getWidth(2)), 3).setCentered(true);
 
-		DirectionalLayoutWidget outputButtonsLayout = content.add(DirectionalLayoutWidget.horizontal().spacing(2), Positioner::alignHorizontalCenter);
+		DirectionalLayoutWidget buttons = contentAdder.add(DirectionalLayoutWidget.horizontal().spacing(GRID_SPACING), 3);
 
-		// Chat message
-		TextFieldWidget chatMessageInput = new TextFieldWidget(textRenderer, 200, 20, Text.empty());
-		chatMessageInput.setMaxLength(1024);
-		chatMessageInput.active = !chatRule.getHideMessage();
-		outputButtonsLayout.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
+		buttons.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
 				.initially(chatRule.getHideMessage())
 				.tooltip(b -> Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip")))
-				.build(0, 0, buttonWidth, 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"), (button, value) -> {
+				.build(0, 0, getWidth(1.5f), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"), (button, value) -> {
 					chatRule.setHideMessage(value);
-					chatMessageInput.active = !value;
+					recreateLayout();
 				}));
-		GridWidget gridWidget = new GridWidget();
-		gridWidget.getMainPositioner().alignVerticalCenter();
-		GridWidget.Adder messagesLayout = content.add(gridWidget, Positioner::alignHorizontalCenter).setSpacing(4).createAdder(2);
 
-		messagesLayout.add(new TextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage"), textRenderer));
+		// Sound
+		// In case the user has a sound not in the list added to the config. We abuse the fact that we can have alternative values.
+		// Add the user sound to the displayedValues, if they click it will switch to one in the list, and it will not appear again.
+		List<Optional<SoundEvent>> availableValues = new ArrayList<>(soundNames.keySet().stream().map(Optional::ofNullable).toList());
+		List<Optional<SoundEvent>> displayedValues;
+		if (soundNames.containsKey(chatRule.getCustomSound())) displayedValues = availableValues;
+		else {
+			displayedValues = new ArrayList<>(availableValues);
+			displayedValues.add(Optional.ofNullable(chatRule.getCustomSound()));
+		}
+		// using an optional since it doesn't allow null values.
+		buttons.add(CyclingButtonWidget.<Optional<SoundEvent>>builder(opt -> soundNames.get(opt.orElse(null)))
+				.values(() -> true, displayedValues, availableValues)
+				.initially(Optional.ofNullable(chatRule.getCustomSound()))
+				.build(0, 0, getWidth(1.5f), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds"), (button, value) -> {
+					chatRule.setCustomSound(value.orElse(null));
+					value.ifPresent(soundEvent -> client.getSoundManager().play(PositionedSoundInstance.master(soundEvent, 1.0F)));
+				})
+		);
+
+		// Chat message
+		TextFieldWidget chatMessageInput = new TextFieldWidget(textRenderer, getWidth(2), 20, Text.empty());
+		chatMessageInput.setMaxLength(1024);
+		contentAdder.add(new ToggleableLayoutWidget(new MultilineTextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage"), textRenderer).setMaxWidth(getWidth(1)).setCentered(false), () -> !chatRule.getHideMessage()), alignedLeft);
 		chatMessageInput.addFormatter(createRenderTextProvider(chatMessageInput::getText));
 		chatMessageInput.setText(chatRule.getChatMessage() != null ? chatRule.getChatMessage() : "");
 		chatMessageInput.setChangedListener(chatRule::setChatMessage);
 		chatMessageInput.setPlaceholder(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage.@Placeholder").formatted(Formatting.GRAY, Formatting.ITALIC));
-		messagesLayout.add(chatMessageInput);
+		contentAdder.add(new ToggleableLayoutWidget(chatMessageInput, () -> !chatRule.getHideMessage()), 2);
 
 		// Action Bar
-		messagesLayout.add(new TextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar"), textRenderer));
-		TextFieldWidget actionBarMessageInput = new TextFieldWidget(textRenderer, 200, 20, Text.empty());
+		contentAdder.add(new MultilineTextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar"), textRenderer), alignedLeft).setMaxWidth(getWidth(1)).setCentered(false);
+		TextFieldWidget actionBarMessageInput = new TextFieldWidget(textRenderer, getWidth(2), 20, Text.empty());
 		actionBarMessageInput.setMaxLength(1024);
 		actionBarMessageInput.addFormatter(createRenderTextProvider(actionBarMessageInput::getText));
 		actionBarMessageInput.setText(chatRule.getActionBarMessage() != null ? chatRule.getActionBarMessage() : "");
 		actionBarMessageInput.setChangedListener(chatRule::setActionBarMessage);
 		actionBarMessageInput.setPlaceholder(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.outputField.@Placeholder").formatted(Formatting.GRAY, Formatting.ITALIC));
-		messagesLayout.add(actionBarMessageInput);
+		contentAdder.add(actionBarMessageInput, 2);
 
 		// Announcement
-		messagesLayout.add(new TextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.announcement"), textRenderer));
-		TextFieldWidget announcementMessageInput = new TextFieldWidget(textRenderer, 200, 20, Text.empty());
+		contentAdder.add(new MultilineTextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.announcement"), textRenderer), alignedLeft).setMaxWidth(getWidth(1)).setCentered(false);
+		TextFieldWidget announcementMessageInput = new TextFieldWidget(textRenderer, getWidth(2), 20, Text.empty());
 		announcementMessageInput.setMaxLength(1024);
 		announcementMessageInput.addFormatter(createRenderTextProvider(announcementMessageInput::getText));
 		announcementMessageInput.setText(chatRule.getAnnouncementMessage() != null ? chatRule.getAnnouncementMessage() : "");
 		announcementMessageInput.setChangedListener(chatRule::setAnnouncementMessage);
 		announcementMessageInput.setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.announcement.@Tooltip")));
 		announcementMessageInput.setPlaceholder(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.outputField.@Placeholder").formatted(Formatting.GRAY, Formatting.ITALIC));
-		messagesLayout.add(announcementMessageInput);
+		contentAdder.add(announcementMessageInput, 2);
 
 		// Toast
-		messagesLayout.add(new TextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast"), textRenderer));
-		TextFieldWidget toastMessageInput = new TextFieldWidget(textRenderer, 200, 20, Text.empty());
+		contentAdder.add(new MultilineTextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast"), textRenderer), alignedLeft).setMaxWidth(getWidth(1)).setCentered(false);
+		TextFieldWidget toastMessageInput = new TextFieldWidget(textRenderer, getWidth(2), 20, Text.empty());
 		toastMessageInput.setMaxLength(1024);
 		toastMessageInput.addFormatter(createRenderTextProvider(toastMessageInput::getText));
 		toastMessageInput.setText(chatRule.getToastMessage() != null ? chatRule.getToastMessage().message : "");
@@ -175,14 +197,14 @@ public class ChatRuleConfigScreen extends Screen {
 			recreateLayout();
 		});
 		toastMessageInput.setPlaceholder(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.outputField.@Placeholder").formatted(Formatting.GRAY, Formatting.ITALIC));
-		messagesLayout.add(toastMessageInput);
+		contentAdder.add(toastMessageInput, 2);
 
-		DirectionalLayoutWidget toastSettings = DirectionalLayoutWidget.horizontal().spacing(2);
-		toastSettings.getMainPositioner().alignVerticalCenter();
-		content.add(new ToggleableLayoutWidget(toastSettings, () -> chatRule.getToastMessage() != null), p -> p.alignHorizontalCenter().marginBottom(4));
+		// Have to do something a little more custom due to the preview.
+		SimplePositioningWidget textAndIcon = contentAdder.add(new SimplePositioningWidget(getWidth(1), 0));
 
-		ToastIconPreview preview = toastSettings.add(new ToastIconPreview());
-		TextFieldWidget itemInput = toastSettings.add(new TextFieldWidget(textRenderer, 150, 20, Text.empty()));
+		ToastIconPreview preview = textAndIcon.add(new ToastIconPreview(), Positioner::alignRight);
+		textAndIcon.add(new MultilineTextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon"), textRenderer), Positioner::alignLeft).setMaxWidth(getWidth(1) - preview.getWidth()).setCentered(false);
+		TextFieldWidget itemInput = contentAdder.add(new TextFieldWidget(textRenderer, getWidth(1), 20, Text.empty()));
 		itemInput.setChangedListener(itemData -> {
 			ItemStack stack = ItemStackComponentizationFixer.fromItemString(itemData, 1);
 			if (stack.isEmpty()) stack = INVALID_ITEM;
@@ -193,37 +215,18 @@ public class ChatRuleConfigScreen extends Screen {
 		});
 		preview.input = itemInput;
 		itemInput.setText(chatRule.getToastMessage() != null ? getItemString(chatRule.getToastMessage().icon) : "minecraft:painting");
-		toastSettings.add(RangedSliderWidget.builder()
+		contentAdder.add(RangedSliderWidget.builder()
 						.minMax(1, 10)
 						.step(0.1)
+						.width(getWidth(1))
 						.defaultValue(chatRule.getToastMessage() != null ? chatRule.getToastMessage().displayDuration / 1000d : 5000d)
-						.optionFormatter(Text.literal("Display Duration"), d -> Text.literal(Formatters.FLOAT_NUMBERS.format(d) + 's'))
+						.optionFormatter(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration"), d -> Text.literal(Formatters.FLOAT_NUMBERS.format(d) + 's'))
 						.callback(d -> {
 							if (chatRule.getToastMessage() == null) return;
 							chatRule.getToastMessage().displayDuration = (long) (d * 1000);
 						})
 				.build()
-		);
-
-		// Sound
-		// In case the user has a sound not in the list added to the config. We abuse the fact that we can have alternative values.
-		// Add the user sound to the displayedValues, if they click it will switch to one in the list, and it will not appear again.
-		List<Optional<SoundEvent>> availableValues = new ArrayList<>(soundNames.keySet().stream().map(Optional::ofNullable).toList());
-		List<Optional<SoundEvent>> displayedValues;
-		if (soundNames.containsKey(chatRule.getCustomSound())) displayedValues = availableValues;
-		else {
-			displayedValues = new ArrayList<>(availableValues);
-			displayedValues.add(Optional.ofNullable(chatRule.getCustomSound()));
-		}
-		// using an optional since it doesn't allow null values.
-		outputButtonsLayout.add(CyclingButtonWidget.<Optional<SoundEvent>>builder(opt -> soundNames.get(opt.orElse(null)))
-						.values(() -> true, displayedValues, availableValues)
-						.initially(Optional.ofNullable(chatRule.getCustomSound()))
-						.build(0, 0, buttonWidth, 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds"), (button, value) -> {
-							chatRule.setCustomSound(value.orElse(null));
-							value.ifPresent(soundEvent -> client.getSoundManager().play(PositionedSoundInstance.master(soundEvent, 1.0F)));
-						})
-				);
+		).setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration.@Tooltip")));
 		recreateLayout();
 	}
 
@@ -252,6 +255,10 @@ public class ChatRuleConfigScreen extends Screen {
 			}
 			return true;
 		};
+	}
+
+	private static int getWidth(float occupiedColumns) {
+		return (int) (COLUMN_WIDTH * occupiedColumns + GRID_SPACING * (occupiedColumns - 1));
 	}
 
 	private void recreateLayout() {
