@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.utils.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -35,18 +36,20 @@ public class ChatRule {
 	private static final Codec<ChatRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("name").forGetter(ChatRule::getName),
 			Codec.BOOL.fieldOf("enabled").forGetter(ChatRule::getEnabled),
-			Codec.BOOL.fieldOf("partial_match").forGetter(ChatRule::getPartialMatch),
+			Codec.BOOL.fieldOf("partialMatch").forGetter(ChatRule::getPartialMatch),
 			Codec.BOOL.fieldOf("regex").forGetter(ChatRule::getRegex),
-			Codec.BOOL.fieldOf("ignore_case").forGetter(ChatRule::getIgnoreCase),
+			Codec.BOOL.fieldOf("ignoreCase").forGetter(ChatRule::getIgnoreCase),
 			Codec.STRING.fieldOf("filter").forGetter(ChatRule::getFilter),
 			LOCATION_FIXING_CODEC.fieldOf("locations").forGetter(ChatRule::getValidLocations),
-			Codec.BOOL.fieldOf("hide_original_message").forGetter(ChatRule::getHideMessage),
-			CodecUtils.optionalToNullable(Codec.STRING.optionalFieldOf("chat_message")).forGetter(ChatRule::getChatMessage),
-			CodecUtils.optionalToNullable(Codec.STRING.optionalFieldOf("actionbar_message")).forGetter(ChatRule::getActionBarMessage),
-			CodecUtils.optionalToNullable(Codec.STRING.optionalFieldOf("announcement_message")).forGetter(ChatRule::getAnnouncementMessage),
-			CodecUtils.optionalToNullable(ToastMessage.CODEC.optionalFieldOf("toast_message")).forGetter(ChatRule::getToastMessage),
-			CodecUtils.optionalToNullable(SoundEvent.CODEC.optionalFieldOf("custom_sound")).forGetter(ChatRule::getCustomSound)
-	).apply(instance, ChatRule::new));
+			Codec.BOOL.fieldOf("hideOriginalMessage").forGetter(ChatRule::getHideMessage),
+			Codec.STRING.optionalFieldOf("chatMessage").forGetter(ChatRule::getChatMessageOptional),
+			Codec.STRING.optionalFieldOf("actionbarMessage").forGetter(ChatRule::getActionBarMessageOptional),
+			Codec.STRING.optionalFieldOf("announcementMessage").forGetter(ChatRule::getAnnouncementMessageOptional),
+			ToastMessage.CODEC.optionalFieldOf("toastMessage").forGetter(ChatRule::getToastMessageOptional),
+			SoundEvent.CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOptional)
+	).apply(instance, (s, aBoolean, aBoolean2, aBoolean3, aBoolean4, s2, locations, aBoolean5, s3, s4, s5, toastMessage1, soundEvent) ->
+			new ChatRule(s, aBoolean, aBoolean2, aBoolean3, aBoolean4, s2, locations, aBoolean5, s3.orElse(null), s4.orElse(null), s5.orElse(null), toastMessage1.orElse(null), soundEvent.orElse(null))
+	));
 
 	public static final Codec<List<ChatRule>> LIST_CODEC = CODEC.listOf();
 
@@ -67,7 +70,7 @@ public class ChatRule {
 	private @Nullable String actionBarMessage;
 	private @Nullable String announcementMessage;
 	private @Nullable ToastMessage toastMessage;
-	private SoundEvent customSound;
+	private @Nullable SoundEvent customSound;
 
 	/**
 	 * Creates a chat rule with default options.
@@ -90,7 +93,7 @@ public class ChatRule {
 		this.customSound = null;
 	}
 
-	ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, @Nullable String chatMessage, @Nullable String actionBarMessage, @Nullable String announcementMessage, @Nullable ToastMessage toastMessage, SoundEvent customSound) {
+	ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, @Nullable String chatMessage, @Nullable String actionBarMessage, @Nullable String announcementMessage, @Nullable ToastMessage toastMessage, @Nullable SoundEvent customSound) {
 		this.name = name;
 		this.enabled = enabled;
 		this.isPartialMatch = isPartialMatch;
@@ -169,6 +172,10 @@ public class ChatRule {
 		return actionBarMessage;
 	}
 
+	private Optional<String> getActionBarMessageOptional() {
+		return Optional.ofNullable(getActionBarMessage());
+	}
+
 	void setActionBarMessage(@Nullable String actionBarMessage) {
 		if (actionBarMessage != null && actionBarMessage.isBlank()) actionBarMessage = null;
 		this.actionBarMessage = actionBarMessage;
@@ -176,6 +183,10 @@ public class ChatRule {
 
 	@Nullable String getChatMessage() {
 		return chatMessage;
+	}
+
+	private Optional<String> getChatMessageOptional() {
+		return Optional.ofNullable(getChatMessage());
 	}
 
 	void setChatMessage(@Nullable String chatMessage) {
@@ -187,6 +198,10 @@ public class ChatRule {
 		return announcementMessage;
 	}
 
+	private Optional<String> getAnnouncementMessageOptional() {
+		return Optional.ofNullable(getAnnouncementMessage());
+	}
+
 	void setAnnouncementMessage(@Nullable String announcementMessage) {
 		if (announcementMessage != null && announcementMessage.isBlank()) announcementMessage = null;
 		this.announcementMessage = announcementMessage;
@@ -196,15 +211,23 @@ public class ChatRule {
 		return toastMessage;
 	}
 
+	private Optional<ToastMessage> getToastMessageOptional() {
+		return Optional.ofNullable(getToastMessage());
+	}
+
 	void setToastMessage(@Nullable ToastMessage toastMessage) {
 		this.toastMessage = toastMessage;
 	}
 
-	protected SoundEvent getCustomSound() {
+	protected @Nullable SoundEvent getCustomSound() {
 		return customSound;
 	}
 
-	protected void setCustomSound(SoundEvent customSound) {
+	private Optional<SoundEvent> getCustomSoundOptional() {
+		return Optional.ofNullable(getCustomSound());
+	}
+
+	protected void setCustomSound(@Nullable SoundEvent customSound) {
 		this.customSound = customSound;
 	}
 
@@ -339,6 +362,10 @@ public class ChatRule {
 			this.message = message;
 			this.icon = icon;
 			this.displayDuration = displayDuration;
+		}
+
+		ToastMessage() {
+			this(new ItemStack(Items.PAINTING), "", 1000);
 		}
 	}
 }

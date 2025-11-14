@@ -130,7 +130,7 @@ public class ChatRulesHandler {
 	}
 
 	private static class ChatRulesToast implements Toast {
-		private static final Identifier TEXTURE = SkyblockerMod.id("notification.png");
+		private static final Identifier TEXTURE = SkyblockerMod.id("notification");
 
 		private final long displayDuration;
 		private final ItemStack icon;
@@ -143,7 +143,10 @@ public class ChatRulesHandler {
 			this.lines = textRenderer.wrapLines(message, 200);
 			this.displayDuration = displayDuration;
 			this.icon = icon;
-			this.width = Math.max(200, lines.stream().mapToInt(textRenderer::getWidth).max().orElse(200)) + 30;
+			this.width = lines.stream().mapToInt(textRenderer::getWidth).max().orElse(200) + 30;
+			for (OrderedText line : lines) {
+				System.out.println(textRenderer.getWidth(line));
+			}
 		}
 
 		@Override
@@ -161,7 +164,7 @@ public class ChatRulesHandler {
 			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, getWidth(), getHeight());
 			context.drawItemWithoutEntity(icon, 4, 4);
 			for (int i = 0; i < lines.size(); i++) {
-				context.drawText(textRenderer, lines.get(i), 4, 8 + i * 12, -1, false);
+				context.drawText(textRenderer, lines.get(i), 4 + 16 + 4, 8 + i * 12, -1, false);
 			}
 		}
 

@@ -4,7 +4,8 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
-import de.hysky.skyblocker.config.screens.quicknav.ItemSelectionScreen;
+import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
@@ -71,7 +72,11 @@ public class QuickNavigationCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem"))
 						.description(Text.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip"))
-						.action(screen -> MinecraftClient.getInstance().setScreen(new ItemSelectionScreen(screen, button.itemData)))
+						.action(screen -> MinecraftClient.getInstance().setScreen(new ItemSelectionPopup(screen, item -> {
+							if (item == null) return;
+							button.itemData.item = item.getItem();
+							button.itemData.components = ItemStackComponentizationFixer.componentsAsString(item);
+						})))
 						.prompt(Text.translatable("text.skyblocker.open"))
 						.build())
                 .option(Option.<Item>createBuilder()

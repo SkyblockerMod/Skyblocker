@@ -19,7 +19,7 @@ public class ToggleableLayoutWidget implements LayoutWidget {
 
 	@Override
 	public void forEachElement(Consumer<Widget> consumer) {
-		if (enabled) layout.forEachElement(consumer);
+		if (enabled) consumer.accept(layout);
 	}
 
 	@Override
