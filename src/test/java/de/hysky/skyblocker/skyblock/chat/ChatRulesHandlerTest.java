@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.chat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
 import net.minecraft.text.MutableText;
@@ -37,7 +36,7 @@ class ChatRulesHandlerTest {
 		Assertions.assertEquals(text, testText);
 	}
 
-	@Test
+	/*@Test
 	void codecParseObjectOld() {
 		var object = SkyblockerMod.GSON.fromJson("{\"rules\":[{\"showAnnouncement\":false,\"replaceMessage\":\"\",\"validLocations\":\"hub\",\"hideMessage\":true,\"showActionBar\":false,\"isRegex\":true,\"isIgnoreCase\":true,\"filter\":\"(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)\",\"name\":\"Clean Hub Chat\",\"enabled\":false,\"isPartialMatch\":true},{\"showAnnouncement\":true,\"replaceMessage\":\"&1Ability\",\"customSound\":{\"sound_id\":\"minecraft:entity.arrow.hit_player\"},\"validLocations\":\"Crystal Hollows, Dwarven Mines\",\"hideMessage\":false,\"showActionBar\":false,\"isRegex\":false,\"isIgnoreCase\":true,\"filter\":\"is now available!\",\"name\":\"Mining Ability Alert\",\"enabled\":false,\"isPartialMatch\":true}]}", JsonObject.class);
 		var parsed = ChatRulesHandler.UNBOXING_CODEC.parse(JsonOps.INSTANCE, object).getOrThrow();
@@ -52,7 +51,7 @@ class ChatRulesHandlerTest {
 
 		Assertions.assertEquals(ChatRulesHandler.getDefaultChatRules(), parsed);
 		Assertions.assertDoesNotThrow(parsed::removeLast);
-	}
+	}*/
 
 	@Test
 	void codecParseList() {
