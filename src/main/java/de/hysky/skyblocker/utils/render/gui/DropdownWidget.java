@@ -59,15 +59,10 @@ public class DropdownWidget<T> extends ContainerWidget {
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 		dropdownList.visible = open;
 		dropdownList.render(context, mouseX, mouseY, delta);
-		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, 0xFF << 24);
-		HudHelper.drawBorder(context, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, -1);
+		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, Colors.BLACK);
+		HudHelper.drawBorder(context, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, Colors.WHITE);
 		context.drawText(client.textRenderer, ">", getX() + 4, getY() + 6, Colors.ALTERNATE_WHITE, true);
-		drawScrollableText(context, client.textRenderer, Text.literal(selected.toString()),
-				getX() + 2,
-				getY() + 2,
-				getRight() - 2,
-				getY() + HEADER_HEIGHT - 2,
-				-1);
+		context.drawText(client.textRenderer, selected.toString(), getX() + 12, getY() + 6, Colors.WHITE, true);
 		if (isMouseOver(mouseX, mouseY)) context.setCursor(StandardCursors.POINTING_HAND);
 	}
 
