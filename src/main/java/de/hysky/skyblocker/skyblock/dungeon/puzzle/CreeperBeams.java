@@ -109,7 +109,7 @@ public class CreeperBeams extends DungeonPuzzle {
         // (sanity) check:
         // if the creeper isn't above a sea lantern, it's not the target.
         for (CreeperEntity ce : creepers) {
-            Vec3d creeperPos = ce.getPos();
+            Vec3d creeperPos = ce.getEntityPos();
             BlockPos potentialBase = BlockPos.ofFloored(creeperPos.x, BASE_Y, creeperPos.z);
             if (isTarget(world, potentialBase)) {
                 return potentialBase;

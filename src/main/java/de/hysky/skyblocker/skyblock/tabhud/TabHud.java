@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -18,12 +19,12 @@ public class TabHud {
 				new KeyBinding("key.skyblocker.toggleA",
 						InputUtil.Type.KEYSYM,
 						GLFW.GLFW_KEY_Z,
-						"key.categories.skyblocker"));
+						SkyblockerMod.KEYBINDING_CATEGORY));
 		defaultTgl = KeyBindingHelper.registerKeyBinding(
 				new KeyBinding("key.skyblocker.defaultTgl",
 						InputUtil.Type.KEYSYM,
 						GLFW.GLFW_KEY_M,
-						"key.categories.skyblocker"));
+						SkyblockerMod.KEYBINDING_CATEGORY));
 	}
 
 	public static boolean shouldRenderVanilla() {

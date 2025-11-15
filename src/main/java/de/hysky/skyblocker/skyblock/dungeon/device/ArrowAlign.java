@@ -47,7 +47,7 @@ public class ArrowAlign {
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (shouldProcess() && MinecraftClient.getInstance().player.getPos().squaredDistanceTo(FRAMES_AREA.getCenter()) < 64) {
+		if (shouldProcess() && MinecraftClient.getInstance().player.getEntityPos().squaredDistanceTo(FRAMES_AREA.getCenter()) < 64) {
 			if (currentSolution == null && !noSolution) {
 				findSolution();
 			}
@@ -59,7 +59,7 @@ public class ArrowAlign {
 					if (expect >= 0) {
 						int remaining = (expect + 8 - now) % 8;
 						if (remaining > 0) {
-							collector.submitText(Text.literal(String.valueOf(remaining)).withColor(ColorUtils.interpolate(0xFF00FF00, 0xFFFF0000, remaining / 7d)), frameEntity.getPos().add(0.3, 0, 0), false);
+							collector.submitText(Text.literal(String.valueOf(remaining)).withColor(ColorUtils.interpolate(0xFF00FF00, 0xFFFF0000, remaining / 7d)), frameEntity.getEntityPos().add(0.3, 0, 0), false);
 						}
 					}
 				}

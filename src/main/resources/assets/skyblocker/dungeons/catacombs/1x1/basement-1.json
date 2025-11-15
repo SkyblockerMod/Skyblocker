@@ -1,0 +1,21 @@
+{
+  "info": {
+    "name": "Basement"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 11,
+      "y": 68,
+      "z": 19
+    },
+    {
+      "secretName": "1 - Wither Essence",
+      "category": "wither",
+      "x": 5,
+      "y": 66,
+      "z": 25
+    }
+  ]
+}

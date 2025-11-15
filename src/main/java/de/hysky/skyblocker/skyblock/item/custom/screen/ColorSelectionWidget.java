@@ -4,7 +4,7 @@ import com.demonwav.mcdev.annotations.Translatable;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
-import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
+import de.hysky.skyblocker.mixins.accessors.EntityRenderManagerAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
@@ -13,11 +13,13 @@ import it.unimi.dsi.fastutil.floats.FloatConsumer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
@@ -187,7 +189,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	}
 
 	private void onTextInputColorChanged(int argb) {
-		colorPicker.setRGBColor(argb);
+		colorPicker.setARGBColor(argb);
 		if (animated) timelineWidget.setColor(argb);
 		else SkyblockerConfigManager.get().general.customDyeColors.put(currentItem.getUuid(), ColorHelper.fullAlpha(argb));
 	}
@@ -199,7 +201,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 	private void onTimelineFrameSelected(int color, float time) {
 		argbTextInput.setARGBColor(color);
-		colorPicker.setRGBColor(color);
+		colorPicker.setARGBColor(color);
 	}
 
 	private void onRemoveCustomColor(ButtonWidget button) {
@@ -213,7 +215,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 		int color = DyedColorComponent.getColor(currentItem, -1);
 		argbTextInput.setARGBColor(color);
-		colorPicker.setRGBColor(color);
+		colorPicker.setARGBColor(color);
 	}
 
 	private void onAnimatedCheckbox(CheckboxWidget checkbox, boolean checked) {
@@ -233,7 +235,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 			((CheckboxWidgetAccessor) cycleBackCheckbox).setChecked(true);
 		} else {
 			int color = SkyblockerConfigManager.get().general.customDyeColors.getOrDefault(itemUuid, DyedColorComponent.getColor(currentItem, -1));
-			colorPicker.setRGBColor(color);
+			colorPicker.setARGBColor(color);
 			argbTextInput.setARGBColor(color);
 			SkyblockerConfigManager.get().general.customAnimatedDyes.remove(itemUuid);
 		}
@@ -292,8 +294,8 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (!super.mouseClicked(mouseX, mouseY, button)) {
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (!super.mouseClicked(click, doubled)) {
 			setFocused(null);
 			return false;
 		}
@@ -321,7 +323,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		}
 		if (key == null) customizable = false;
 		else {
-			EquipmentModel model = ((EntityRenderDispatcherAccessor) MinecraftClient.getInstance().getEntityRenderDispatcher()).getEquipmentModelLoader().get(key);
+			EquipmentModel model = ((EntityRenderManagerAccessor) MinecraftClient.getInstance().getEntityRenderDispatcher()).getEquipmentModelLoader().get(key);
 			customizable = Stream.of(EquipmentModel.LayerType.HUMANOID, EquipmentModel.LayerType.HUMANOID_LEGGINGS, EquipmentModel.LayerType.WINGS)
 					.flatMap(l -> model.getLayers(l).stream())
 					.anyMatch(layer -> layer.dyeable().isPresent());
@@ -343,12 +345,12 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 			animated = false;
 			int color = SkyblockerConfigManager.get().general.customDyeColors.getInt(itemUuid);
 			argbTextInput.setARGBColor(color);
-			colorPicker.setRGBColor(color);
+			colorPicker.setARGBColor(color);
 		} else {
 			animated = false;
 			int color = DyedColorComponent.getColor(currentItem, -1);
 			argbTextInput.setARGBColor(color);
-			colorPicker.setRGBColor(color);
+			colorPicker.setARGBColor(color);
 		}
 		changeVisibilities();
 		((CheckboxWidgetAccessor) animatedCheckbox).setChecked(animated);
@@ -393,14 +395,14 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			super.onClick(mouseX, mouseY);
+		public void onClick(Click click, boolean doubled) {
+			super.onClick(click, doubled);
 			clicked = true;
 		}
 
 		@Override
-		public void onRelease(double mouseX, double mouseY) {
-			super.onRelease(mouseX, mouseY);
+		public void onRelease(Click click) {
+			super.onRelease(click);
 			if (clicked) {
 				onValueChanged.accept(trueValue());
 				clicked = false;
@@ -408,8 +410,8 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		}
 
 		@Override
-		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-			if (super.keyPressed(keyCode, scanCode, modifiers)) {
+		public boolean keyPressed(KeyInput input) {
+			if (super.keyPressed(input)) {
 				onValueChanged.accept(trueValue());
 				return true;
 			}

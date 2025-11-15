@@ -157,8 +157,8 @@ public class EnigmaSouls {
 
 		SOUL_WAYPOINTS.values().stream()
 				.filter(Waypoint::shouldRender)
-				.min(Comparator.comparingDouble(soul -> soul.pos.getSquaredDistance(player.getPos())))
-				.filter(soul -> soul.pos.getSquaredDistance(player.getPos()) <= 16)
+				.min(Comparator.comparingDouble(soul -> soul.pos.getSquaredDistance(player.getEntityPos())))
+				.filter(soul -> soul.pos.getSquaredDistance(player.getEntityPos()) <= 16)
 				.ifPresent(Waypoint::setFound);
 	}
 

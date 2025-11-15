@@ -61,11 +61,11 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 	private boolean isOwnTree(ArmorStandEntity tree) {
 		if (CLIENT.player == null) return false;
 		if (tree == null) return false;
-		Vec3d treePos = tree.getPos();
+		Vec3d treePos = tree.getEntityPos();
 
 		List<ArmorStandEntity> groupedArmorStands = ARMOR_STANDS.values().stream()
 				.filter(e -> {
-					Vec3d pos = e.getPos();
+					Vec3d pos = e.getEntityPos();
 					return Math.abs(pos.x - treePos.x) < 0.1 &&
 							Math.abs(pos.y - treePos.y) < 2 &&
 							Math.abs(pos.z - treePos.z) < 0.1;

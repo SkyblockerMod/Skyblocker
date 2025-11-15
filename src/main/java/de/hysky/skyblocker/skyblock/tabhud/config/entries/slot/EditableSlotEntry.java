@@ -40,15 +40,15 @@ public class EditableSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		int textY = y + (entryHeight - 9) / 2;
+	public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		int textY = this.getY() + (this.getHeight() - 9) / 2;
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		renderIconAndText(context, y, x, entryHeight);
+		renderIconAndText(context, this.getY(), this.getX(), this.getHeight());
 		if (locked) {
-			context.drawText(textRenderer, "LOCKED", x + entryWidth - 50, textY, Colors.RED, true);
+			context.drawText(textRenderer, "LOCKED", this.getX() + this.getWidth() - 50, textY, Colors.RED, true);
 		} else {
-			editButton.setPosition(x + entryWidth - 40, y + (entryHeight - 12) / 2);
-			editButton.render(context, mouseX, mouseY, tickDelta);
+			editButton.setPosition(this.getX() + this.getWidth() - 40, this.getY() + (this.getHeight() - 12) / 2);
+			editButton.render(context, mouseX, mouseY, deltaTicks);
 		}
 	}
 }

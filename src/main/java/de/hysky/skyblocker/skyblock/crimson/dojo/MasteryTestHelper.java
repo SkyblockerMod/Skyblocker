@@ -38,7 +38,7 @@ public class MasteryTestHelper {
             blockOrder.add(pos);
             //add lifetime of a block to the time to get time when block expires
             // work out how long it will take between the player firing and arrow hitting the block and to subtract from time
-            long travelTime = (long) (CLIENT.player.getPos().distanceTo(pos.toCenterPos()) * 1000 / 60); //an arrow speed is about 60 blocks a second from a full draw
+            long travelTime = (long) (CLIENT.player.getEntityPos().distanceTo(pos.toCenterPos()) * 1000 / 60); //an arrow speed is about 60 blocks a second from a full draw
             endTimes.put(pos, System.currentTimeMillis() + BLOCK_LIFE_TIME - DojoManager.ping - travelTime);
         }
         if (state.isAir()) {

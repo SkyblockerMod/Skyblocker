@@ -60,16 +60,16 @@ public class DungeonSplitsWidget extends TableWidget {
 	 * Colors used for split names in rainbow order.
 	 */
 	private static final int[] SPLIT_COLORS = {
-			0xfd5858,
-			0xfdab58,
-			0xfdfd58,
-			0xabfd58,
-			0x58fd58,
-			0x58fdab,
-			0x58abfd,
-			0x5858fd,
-			0xab58fd,
-			0xfd58fd
+			0xFD5858,
+			0xFDAB58,
+			0xFDFD58,
+			0xABFD58,
+			0x58FD58,
+			0x58FDAB,
+			0x58ABFD,
+			0x5858FD,
+			0xAB58FD,
+			0xFD58FD
 	};
 
 	private static final Map<String, List<Split>> FLOOR_SPLITS = new HashMap<>();

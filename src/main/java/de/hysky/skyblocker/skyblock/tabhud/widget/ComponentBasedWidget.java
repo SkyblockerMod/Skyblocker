@@ -40,7 +40,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	public static final int BORDER_SZE_S = 4;
 	public static final int BORDER_SZE_W = 4;
 	public static final int BORDER_SZE_E = 4;
-	public static final int DEFAULT_COL_BG_BOX = 0xc00c0c0c;
+	public static final int DEFAULT_COL_BG_BOX = 0xC00C0C0C;
 	// More transparent background for minimal style
 	public static final int MINIMAL_COL_BG_BOX = 0x64000000;
 
@@ -64,7 +64,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		super(information);
 		Objects.requireNonNull(color);
 		this.title = title;
-		this.color = 0xff000000 | color;
+		this.color = 0xFF000000 | color;
 	}
 
 	public ComponentBasedWidget(Text title, Integer color, String id) {

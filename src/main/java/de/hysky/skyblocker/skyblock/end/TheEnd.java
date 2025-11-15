@@ -174,7 +174,7 @@ public class TheEnd {
 		assert MinecraftClient.getInstance().world != null;
 		List<ArmorStandEntity> entities = MinecraftClient.getInstance().world.getEntitiesByClass(
 				ArmorStandEntity.class,
-				enderman.getDimensions(null).getBoxAt(enderman.getPos()).expand(1),
+				enderman.getDimensions(null).getBoxAt(enderman.getEntityPos()).expand(1),
 				armorStandEntity -> armorStandEntity.getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot"));
 		if (entities.isEmpty()) {
 			return false;

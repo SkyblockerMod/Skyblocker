@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "Buttons"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 16,
+      "y": 68,
+      "z": 31
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 53,
+      "y": 55,
+      "z": 31
+    },
+    {
+      "secretName": "2 - Superboom",
+      "category": "superboom",
+      "x": 56,
+      "y": 70,
+      "z": 52
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 57,
+      "y": 69,
+      "z": 60
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 56,
+      "y": 72,
+      "z": 21
+    },
+    {
+      "secretName": "3 - Lever behind Crypt",
+      "category": "lever",
+      "x": 42,
+      "y": 81,
+      "z": 57
+    },
+    {
+      "secretName": "3 - Stonk",
+      "category": "stonk",
+      "x": 41,
+      "y": 81,
+      "z": 57
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 56,
+      "y": 81,
+      "z": 2
+    },
+    {
+      "secretName": "4 - Lever behind Lava",
+      "category": "lever",
+      "x": 58,
+      "y": 70,
+      "z": 36
+    },
+    {
+      "secretName": "4 - Entrance",
+      "category": "entrance",
+      "x": 29,
+      "y": 74,
+      "z": 18
+    },
+    {
+      "secretName": "4 - Stonk",
+      "category": "stonk",
+      "x": 29,
+      "y": 74,
+      "z": 14
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 31,
+      "y": 73,
+      "z": 13
+    },
+    {
+      "secretName": "5 - Button Puzzle",
+      "category": "default",
+      "x": 16,
+      "y": 81,
+      "z": 50
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 2,
+      "y": 81,
+      "z": 50
+    },
+    {
+      "secretName": "3 - AOTV",
+      "category": "aotv",
+      "x": 57,
+      "y": 79,
+      "z": 34
+    }
+  ]
+}

@@ -24,6 +24,7 @@ import net.azureaaron.dandelion.systems.controllers.ColourController;
 import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.input.SystemKeycodes;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -221,7 +222,7 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils.createEnumController())
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(MinecraftClient.IS_SYSTEM_MAC ? Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.cmdK") : Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.ctrlK"))
+                                .name(SystemKeycodes.IS_MAC_OS ? Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.cmdK") : Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.ctrlK"))
                                 .binding(defaults.uiAndVisuals.inventorySearch.ctrlK,
                                         () -> config.uiAndVisuals.inventorySearch.ctrlK,
                                         newValue -> config.uiAndVisuals.inventorySearch.ctrlK = newValue)
@@ -247,7 +248,7 @@ public class UIAndVisualsCategory {
                                 .binding(defaults.uiAndVisuals.titleContainer.titleContainerScale,
                                         () -> config.uiAndVisuals.titleContainer.titleContainerScale,
                                         newValue -> config.uiAndVisuals.titleContainer.titleContainerScale = newValue)
-                                .controller(FloatController.createBuilder().range(30f, 140f).build())
+                                .controller(FloatController.createBuilder().range(TitleContainerConfigScreen.MIN_TITLE_SCALE, TitleContainerConfigScreen.MAX_TITLE_SCALE).build())
                                 .build())
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.titleContainer.config"))
@@ -263,7 +264,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
-								// .tags(Text.literal("gui")) // TODO: uncomment when we start using the next Dandelion version
+								.tags(Text.literal("gui"))
 								.prompt(Text.translatable("text.skyblocker.open"))
 								.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigScreen()))
 								.build())
@@ -393,6 +394,44 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.waypoints.waypointType = newValue)
                                 .controller(ConfigUtils.createEnumController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip"))
+								.binding(defaults.uiAndVisuals.waypoints.renderLine,
+										() -> config.uiAndVisuals.waypoints.renderLine,
+										newValue -> config.uiAndVisuals.waypoints.renderLine = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.lineColor"))
+								.binding(defaults.uiAndVisuals.waypoints.lineColor,
+										() -> config.uiAndVisuals.waypoints.lineColor,
+										newValue -> config.uiAndVisuals.waypoints.lineColor = newValue)
+								.controller(ConfigUtils.createColourController(true))
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.lineWidth"))
+								.binding(defaults.uiAndVisuals.waypoints.lineWidth,
+										() -> config.uiAndVisuals.waypoints.lineWidth,
+										newValue -> config.uiAndVisuals.waypoints.lineWidth = newValue)
+								.controller(FloatController.createBuilder().range(1f, 15f).slider(0.5f).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip"))
+								.binding(defaults.uiAndVisuals.waypoints.allowSkippingWaypoints,
+										() -> config.uiAndVisuals.waypoints.allowSkippingWaypoints,
+										newValue -> config.uiAndVisuals.waypoints.allowSkippingWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip"))
+								.binding(defaults.uiAndVisuals.waypoints.allowGoingBackwards,
+										() -> config.uiAndVisuals.waypoints.allowGoingBackwards,
+										newValue -> config.uiAndVisuals.waypoints.allowGoingBackwards = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.waypoints.config"))
                                 .prompt(Text.translatable("text.skyblocker.open"))

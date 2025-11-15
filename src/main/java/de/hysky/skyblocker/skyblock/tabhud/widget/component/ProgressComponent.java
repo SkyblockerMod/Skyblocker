@@ -20,7 +20,7 @@ class ProgressComponent extends Component {
 	private static final int BAR_WIDTH = 100;
 	private static final int BAR_HEIGHT = txtRend.fontHeight + 3;
 	private static final int ICO_OFFS = 4;
-	private static final int COL_BG_BAR = 0xf0101010;
+	private static final int COL_BG_BAR = 0xF0101010;
 
 	private final ItemStack ico;
 	private final Text desc, bar;
@@ -39,13 +39,13 @@ class ProgressComponent extends Component {
 			this.desc = Text.literal("No data").formatted(Formatting.GRAY);
 			this.bar = Text.literal("---").formatted(Formatting.GRAY);
 			this.pcnt = 100f;
-			this.color = 0xff000000 | Formatting.DARK_GRAY.getColorValue();
+			this.color = 0xFF000000 | Formatting.DARK_GRAY.getColorValue();
 		} else {
 			this.ico = showIcons ? (ico == null ? Ico.BARRIER : ico) : null;
 			this.desc = description;
 			this.bar = bar;
 			this.pcnt = Math.clamp(percent, 0f, 100f);
-			this.color = 0xff000000 | color;
+			this.color = 0xFF000000 | color;
 		}
 
 		this.barW = BAR_WIDTH;

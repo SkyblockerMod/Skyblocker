@@ -38,9 +38,9 @@ public class BooleanSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		renderIconAndText(context, y, x, entryHeight);
-		enableButton.setPosition(x + entryWidth - 70, y + (entryHeight - 12) / 2);
-		enableButton.render(context, mouseX, mouseY, tickDelta);
+	public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		renderIconAndText(context, this.getY(), this.getX(), this.getHeight());
+		enableButton.setPosition(this.getX() + this.getWidth() - 70, this.getY() + (this.getHeight() - 12) / 2);
+		enableButton.render(context, mouseX, mouseY, deltaTicks);
 	}
 }

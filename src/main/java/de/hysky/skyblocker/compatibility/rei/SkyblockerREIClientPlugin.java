@@ -15,7 +15,6 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.museum.MuseumManager;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import me.shedaniel.math.Rectangle;
@@ -51,13 +50,13 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 	public void registerCategories(CategoryRegistry categoryRegistry) {
 		if (!Utils.isOnSkyblock()) return;
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
-		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER), EntryStacks.of(Items.CRAFTING_TABLE));
-		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
-		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockNpcShopRecipe.IDENTIFIER), EntryStacks.of(Items.GOLD_NUGGET));
+		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.ID), EntryStacks.of(Items.CRAFTING_TABLE));
+		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.ID), EntryStacks.of(Items.ANVIL));
+		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockNpcShopRecipe.ID), EntryStacks.of(Items.GOLD_NUGGET));
 
-		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
-		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_forge"), ItemUtils.getSkyblockerForgeStack(), 84));
-		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockNpcShopRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_npc_shop"), Items.GOLD_NUGGET.getDefaultStack(), 73));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.ID, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.ID, Text.translatable("emi.category.skyblocker.skyblock_forge"), ItemUtils.getSkyblockerForgeStack(), 84));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockNpcShopRecipe.ID, Text.translatable("emi.category.skyblocker.skyblock_npc_shop"), Items.GOLD_NUGGET.getDefaultStack(), 73));
 		categoryRegistry.add(new SkyblockInfoCategory());
 	}
 
@@ -125,14 +124,16 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 		});
 
 		zones.register(InventoryScreen.class, screen -> {
-			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return List.of();
+			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.isInGarden()) return List.of();
 			HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
 			return List.of(new Rectangle(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
 		});
 
 		zones.register(Screen.class, screen -> {
 			if (!VisitorHelper.shouldRender()) return List.of();
-			return VisitorHelper.getExclusionZones();
+			return VisitorHelper.getExclusionZones().stream()
+					.map(rect -> new Rectangle(rect.position().x(), rect.position().y(), rect.width(), rect.height()))
+					.toList();
 		});
 	}
 

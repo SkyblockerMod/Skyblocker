@@ -264,10 +264,10 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (!isMouseOver(mouseX, mouseY)) return false;
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (!isMouseOver(click.x(), click.y())) return false;
 		if (onClick != null) {
-			onClick.onClick(this, button, (int) mouseX, (int) mouseY);
+			onClick.onClick(this, click);
 		}
 		return true;
 	}
@@ -351,8 +351,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 	@FunctionalInterface
 	public interface OnClick {
-
-		void onClick(StatusBar statusBar, int button, int mouseX, int mouseY);
+		void onClick(StatusBar statusBar, Click click);
 	}
 
 	public void loadFromJson(JsonObject object) {

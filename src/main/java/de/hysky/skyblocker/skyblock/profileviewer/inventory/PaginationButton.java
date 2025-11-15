@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -19,11 +20,11 @@ public class PaginationButton extends ClickableWidget {
         this.screen = screen;
         this.isNextButton = isNextButton;
         if (isNextButton) {
-            TEXTURE = Identifier.of("minecraft", "textures/gui/sprites/recipe_book/page_forward.png");
-            HIGHLIGHT = Identifier.of("minecraft", "textures/gui/sprites/recipe_book/page_forward_highlighted.png");
+            TEXTURE = Identifier.ofVanilla("textures/gui/sprites/recipe_book/page_forward.png");
+            HIGHLIGHT = Identifier.ofVanilla("textures/gui/sprites/recipe_book/page_forward_highlighted.png");
         } else {
-            TEXTURE = Identifier.of("minecraft", "textures/gui/sprites/recipe_book/page_backward.png");
-            HIGHLIGHT = Identifier.of("minecraft", "textures/gui/sprites/recipe_book/page_backward_highlighted.png");
+            TEXTURE = Identifier.ofVanilla("textures/gui/sprites/recipe_book/page_backward.png");
+            HIGHLIGHT = Identifier.ofVanilla("textures/gui/sprites/recipe_book/page_backward_highlighted.png");
         }
     }
 
@@ -34,7 +35,7 @@ public class PaginationButton extends ClickableWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(Click click, boolean doubled) {
         if (isNextButton) {
             screen.nextPage();
         } else {

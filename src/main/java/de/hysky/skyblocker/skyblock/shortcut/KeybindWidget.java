@@ -1,6 +1,9 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.input.AbstractInput;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 
@@ -34,41 +37,41 @@ public class KeybindWidget extends ButtonWidget {
 	}
 
 	@Override
-	public void onPress() {
+	public void onPress(AbstractInput input) {
 		editing = true;
 		keyBinding.clearBoundKeys();
 		updateListener.run();
-		super.onPress();
+		super.onPress(input);
 	}
 
 	/**
-	 * Modified from {@link net.minecraft.client.gui.screen.option.KeybindsScreen#mouseClicked(double, double, int) KeybindsScreen#mouseClicked(double, double, int)}.
+	 * Modified from {@link net.minecraft.client.gui.screen.option.KeybindsScreen#mouseClicked(Click, boolean) KeybindsScreen#mouseClicked(Click, boolean)}.
 	 */
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		if (editing) {
-			keyBinding.addBoundKey(InputUtil.Type.MOUSE.createFromCode(button));
+			keyBinding.addBoundKey(InputUtil.Type.MOUSE.createFromCode(click.button()));
 			updateListener.run();
 			return true;
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	/**
-	 * Modified from {@link net.minecraft.client.gui.screen.option.KeybindsScreen#keyPressed(int, int, int) KeybindsScreen#keyPressed(int, int, int)}.
+	 * Modified from {@link net.minecraft.client.gui.screen.option.KeybindsScreen#keyPressed(KeyInput) KeybindsScreen#keyPressed(KeyInput)}.
 	 */
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(KeyInput input) {
 		if (editing) {
-			if (keyCode == InputUtil.GLFW_KEY_ESCAPE) {
+			if (input.isEscape()) {
 				// This should never happen because ESC is handled in ShortcutsConfigScreen#keyPressed
 				keyBinding.addBoundKey(InputUtil.UNKNOWN_KEY);
 			} else {
-				keyBinding.addBoundKey(InputUtil.fromKeyCode(keyCode, scanCode));
+				keyBinding.addBoundKey(InputUtil.fromKeyCode(input));
 			}
 			updateListener.run();
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(input);
 	}
 }

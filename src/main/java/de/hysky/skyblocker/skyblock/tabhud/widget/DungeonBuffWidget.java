@@ -71,10 +71,10 @@ public class DungeonBuffWidget extends TabHudWidget {
 		if (blessing.contains("Life")) return Formatting.LIGHT_PURPLE.getColorValue();
 		if (blessing.contains("Power")) return Formatting.RED.getColorValue();
 		if (blessing.contains("Stone")) return Formatting.GREEN.getColorValue();
-		if (blessing.contains("Time")) return 0xafb8c1;
+		if (blessing.contains("Time")) return 0xAFB8C1;
 		if (blessing.contains("Wisdom")) return Formatting.AQUA.getColorValue();
 
-		return 0xffffff;
+		return 0xFFFFFF;
 	}
 
 }

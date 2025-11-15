@@ -39,6 +39,7 @@ public class FishingHelper {
 
 	public static void start(PlayerEntity player) {
 		startTime = System.currentTimeMillis();
+		@SuppressWarnings("unused")
 		float yawRad = player.getYaw() * 0.017453292F;
 	}
 
@@ -57,7 +58,7 @@ public class FishingHelper {
 			ClientPlayerEntity player = MinecraftClient.getInstance().player;
 			if (player != null && player.fishHook != null) {
 				String name = armorStand.getCustomName().getString();
-				if (name.equals("!!!") && player.fishHook.getBoundingBox().expand(4D).contains(armorStand.getPos())) {
+				if (name.equals("!!!") && player.fishHook.getBoundingBox().expand(4D).contains(armorStand.getEntityPos())) {
 					if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper) {
 						TitleContainer.addTitleAndPlaySound(title, 10);
 					}

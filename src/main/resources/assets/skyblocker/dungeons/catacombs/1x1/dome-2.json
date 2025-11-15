@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "Dome"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Bat",
+      "category": "bat",
+      "x": 26,
+      "y": 70,
+      "z": 23
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 24,
+      "y": 73,
+      "z": 10
+    },
+    {
+      "secretName": "2 - Lever",
+      "category": "lever",
+      "x": 24,
+      "y": 75,
+      "z": 21
+    },
+    {
+      "secretName": "2 - AOTV",
+      "category": "aotv",
+      "x": 25,
+      "y": 76,
+      "z": 22
+    },
+    {
+      "secretName": "2 - Stonk",
+      "category": "stonk",
+      "x": 23,
+      "y": 78,
+      "z": 25
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 26,
+      "y": 78,
+      "z": 27
+    }
+  ]
+}

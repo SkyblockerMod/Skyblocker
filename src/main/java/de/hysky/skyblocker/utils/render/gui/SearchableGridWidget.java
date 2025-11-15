@@ -132,7 +132,7 @@ public abstract class SearchableGridWidget extends ContainerWidget {
 			for (ClickableWidget widget : filteredWidgets) {
 				if (isVisible(widget)) widget.render(context, mouseX, mouseY, deltaTicks);
 			}
-			drawScrollbar(context);
+			drawScrollbar(context, mouseX, mouseY);
 			context.disableScissor();
 		}
 

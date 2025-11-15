@@ -5,6 +5,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEn
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Text;
@@ -59,9 +60,9 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 	}
 
 	@Override
-	protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, int index, int x, int y, int entryWidth, int entryHeight) {
-		super.renderEntry(context, mouseX, mouseY, delta, index, x, y, entryWidth, entryHeight);
-		if (index == editingPosition) {
+	protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, WidgetsListEntry entry) {
+		super.renderEntry(context, mouseX, mouseY, delta, entry);
+		if (this.children().indexOf(entry) == editingPosition) {
 			boolean rightXGood = mouseX >= x + entryWidth && mouseX < x + entryWidth + 15;
 			boolean leftXGood = mouseX >= x - 16 && mouseX < x - 1;
 			boolean isOnUp = mouseY >= y && mouseY < y + entryHeight / 2;
@@ -76,7 +77,7 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 33, y, 32, 32);
 			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 33, y, 32, 32);
 		}
-		if (Objects.equals(getHoveredEntry(), getEntry(index))) {
+		if (Objects.equals(getHoveredEntry(), entry)) {
 			this.x = x;
 			this.y = y;
 			this.entryWidth = entryWidth;
@@ -99,8 +100,8 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (editingPosition == -1) return super.mouseClicked(mouseX, mouseY, button);
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (editingPosition == -1) return super.mouseClicked(click, doubled);
 		if (rightUpArrowHovered) {
 			parent.shiftClickAndWaitForServer(13, 1);
 			return true;
@@ -115,6 +116,6 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 		if (leftDownArrowHovered) {
 			parent.clickAndWaitForServer(13, 0);
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 }

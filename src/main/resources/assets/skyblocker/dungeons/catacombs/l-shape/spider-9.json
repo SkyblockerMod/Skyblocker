@@ -1,0 +1,126 @@
+{
+  "info": {
+    "name": "Spider"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance Vines",
+      "category": "entrance",
+      "x": 19,
+      "y": 51,
+      "z": 5
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 28,
+      "y": 50,
+      "z": 4
+    },
+    {
+      "secretName": "2 - Entrance Vines",
+      "category": "entrance",
+      "x": 7,
+      "y": 48,
+      "z": 40
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 22,
+      "y": 28,
+      "z": 40
+    },
+    {
+      "secretName": "3/4 - Entrance Vines",
+      "category": "entrance",
+      "x": 57,
+      "y": 85,
+      "z": 43
+    },
+    {
+      "secretName": "3/4 - AOTV",
+      "category": "aotv",
+      "x": 49,
+      "y": 83,
+      "z": 36
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 49,
+      "y": 84,
+      "z": 36
+    },
+    {
+      "secretName": "4 - Bat",
+      "category": "bat",
+      "x": 54,
+      "y": 85,
+      "z": 34
+    },
+    {
+      "secretName": "5 - Superboom",
+      "category": "superboom",
+      "x": 27,
+      "y": 84,
+      "z": 55
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 10,
+      "y": 83,
+      "z": 56
+    },
+    {
+      "secretName": "6/7/8 - Entrance",
+      "category": "entrance",
+      "x": 14,
+      "y": 94,
+      "z": 36
+    },
+    {
+      "secretName": "6 - Chest",
+      "category": "chest",
+      "x": 15,
+      "y": 92,
+      "z": 31
+    },
+    {
+      "secretName": "7/8 - Entrance",
+      "category": "entrance",
+      "x": 20,
+      "y": 97,
+      "z": 31
+    },
+    {
+      "secretName": "7 - Item",
+      "category": "item",
+      "x": 26,
+      "y": 92,
+      "z": 34
+    },
+    {
+      "secretName": "8 - Lever",
+      "category": "lever",
+      "x": 27,
+      "y": 93,
+      "z": 32
+    },
+    {
+      "secretName": "8 - Chest",
+      "category": "chest",
+      "x": 27,
+      "y": 84,
+      "z": 32
+    },
+    {
+      "secretName": "9 - Item",
+      "category": "item",
+      "x": 27,
+      "y": 91,
+      "z": 39
+    }
+  ]
+}
