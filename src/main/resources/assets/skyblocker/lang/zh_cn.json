@@ -1538,5 +1538,6 @@
     "skyblocker.helpers.hoppitysHunt.unableToShareEgg": "无法分享此彩蛋。",
     "skyblocker.config.helpers.hoppitysHunt.enableEggFinder": "启用来自WebSocket的彩蛋路径点",
     "skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip": "高亮显示Hoppity's Hunt期间的彩蛋。\n新发现的彩蛋会在启用此功能的玩家之间自动共享。",
-    "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "点击将彩蛋位置分享到聊天栏！"
+    "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "点击将彩蛋位置分享到聊天栏！",
+    "skyblocker.config.dungeons.map.showRoomLabels": "显示房间名称"
 }
