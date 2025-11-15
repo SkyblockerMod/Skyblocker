@@ -275,6 +275,7 @@ public class DungeonManager {
 		});
 		ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 5);
+		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::updateAllRoomCheckmarks, 20);
 		WorldRenderExtractionCallback.EVENT.register(DungeonManager::extractRendering);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonManager::onChatMessage);
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
@@ -674,14 +675,31 @@ public class DungeonManager {
 			currentRoom = room;
 		}
 
-		//Calculate the checkmark colour and mark all secrets as found if the checkmark is green
-		//We also wait for it being matched to ensure that we don't try to mark the room as completed if secret waypoints haven't yet loaded (since the room is still matching)
-		if (currentRoom.getType() != Room.Type.ENTRANCE && currentRoom.isMatched() && !currentRoom.greenChecked && getRoomCheckmarkColour(CLIENT, map, currentRoom) == DungeonMapUtils.GREEN_COLOR) {
-			currentRoom.markAllSecrets(true);
-			currentRoom.greenChecked = true;
+		if (currentRoom.isMatched() && (!currentRoom.greenChecked || !currentRoom.whiteChecked)) {
+			updateRoomCheckmark(currentRoom, map);
 		}
 
 		currentRoom.tick(CLIENT);
+	}
+
+	private static void updateAllRoomCheckmarks() {
+		if (!Utils.isInDungeons() || isInBoss() || CLIENT.player == null || CLIENT.world == null) return;
+		MapState map = getMapState(CLIENT);
+		if (map == null || mapEntrancePos == null) return;
+		DungeonManager.getRoomsStream().filter(Room::isMatched).forEach(room -> updateRoomCheckmark(room, map));
+	}
+
+	// Calculate the checkmark colour and mark all secrets as found if the checkmark is green
+	// We also wait for it being matched to ensure that we don't try to mark the room as completed if secret waypoints haven't yet loaded (since the room is still matching)
+	private static void updateRoomCheckmark(Room room, MapState map) {
+		if (room.getType() == Room.Type.ENTRANCE || room.greenChecked && room.whiteChecked) return;
+		if (!room.greenChecked && getRoomCheckmarkColour(CLIENT, map, room) == DungeonMapUtils.GREEN_COLOR) {
+			room.greenChecked = true;
+			room.whiteChecked = true;
+			room.markAllSecrets(true);
+		} else if (!room.whiteChecked && getRoomCheckmarkColour(CLIENT, map, room) == DungeonMapUtils.WHITE_COLOR) {
+			room.whiteChecked = true;
+		}
 	}
 
 	/**
@@ -984,7 +1002,6 @@ public class DungeonManager {
 		private static final Codec<RoomWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("secretName").forGetter(RoomWaypoint::secretName),
 				SecretWaypoint.Category.CODEC.fieldOf("category").forGetter(RoomWaypoint::category),
-				// todo: should I replace this with blockpos codec?
 				Codec.INT.fieldOf("x").forGetter(RoomWaypoint::x),
 				Codec.INT.fieldOf("y").forGetter(RoomWaypoint::y),
 				Codec.INT.fieldOf("z").forGetter(RoomWaypoint::z)

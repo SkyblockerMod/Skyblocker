@@ -70,6 +70,8 @@ public class DungeonsConfig {
 
 		public boolean showSelfHead = true;
 
+		public boolean showRoomLabels = true;
+
 		public float mapScaling = 1f;
 
 		public int mapX = 2;
