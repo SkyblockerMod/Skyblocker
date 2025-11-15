@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.museum;
 
 import com.google.common.collect.Lists;
+import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
@@ -27,12 +28,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MuseumManager extends ClickableWidget {
+public class MuseumManager extends ClickableWidget implements HoveredItemStackProvider {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final TextRenderer TEXT_RENDERER = CLIENT.textRenderer;
 	private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/recipe_book.png");
@@ -300,4 +302,10 @@ public class MuseumManager extends ClickableWidget {
 
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+
+	@Override
+	public @Nullable ItemStack getFocusedItem() {
+		if (hoveredDonationButton == null) return null;
+		return hoveredDonationButton.getDisplayStack();
+	}
 }
