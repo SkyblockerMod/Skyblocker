@@ -37,7 +37,21 @@ public abstract class AbstractCustomHypixelGUI<T extends ScreenHandler> extends 
         handler.addListener(this);
     }
 
-    @Override
+	protected void refreshListener() {
+		handler.removeListener(this);
+		handler.addListener(this);
+	}
+
+	@Override
+	protected void refreshWidgetPositions() {
+		super.refreshWidgetPositions();
+		refreshListener();
+		for (int i = 0; i < handler.getStacks().size(); i++) {
+			onSlotChange(handler, i, handler.getStacks().get(i));
+		}
+	}
+
+	@Override
     public void removed() {
         super.removed();
         handler.removeListener(this);

@@ -6,6 +6,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.PopupBackgroundAccessor;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -104,13 +105,17 @@ public class QuickNavButton extends ClickableWidget {
 
 	private void updateCoordinates() {
 		Screen screen = MinecraftClient.getInstance().currentScreen;
-		while (screen instanceof PopupScreen) {
-			if (!(screen instanceof PopupBackgroundAccessor popup)) {
-				throw new IllegalStateException(
-						"Current PopupScreen does not support AccessorPopupBackground"
-				);
+		while (screen instanceof PopupScreen || screen instanceof AbstractPopupScreen) {
+			if (screen instanceof PopupScreen) {
+				if (!(screen instanceof PopupBackgroundAccessor popup)) {
+					throw new IllegalStateException(
+							"Current PopupScreen does not support AccessorPopupBackground"
+					);
+				}
+				screen = popup.getUnderlyingScreen();
+			} else if (screen instanceof AbstractPopupScreen abstractPopupScreen) {
+				screen = abstractPopupScreen.backgroundScreen;
 			}
-			screen = popup.getUnderlyingScreen();
 		}
 		if (screen instanceof HandledScreen<?> handledScreen) {
 			var accessibleScreen = (HandledScreenAccessor) handledScreen;
