@@ -42,11 +42,11 @@ public class ChatRulesHandler {
 	@VisibleForTesting
 	static final Codec<List<ChatRule>> UNBOXING_CODEC = ConfigDataFixer.createDataFixingCodec(ConfigDataFixer.CHAT_RULES_TYPE, CodecUtils.mutableOptional(ChatRule.LIST_CODEC.fieldOf("rules"), ArrayList::new).codec());
 
-	protected static final JsonData<List<ChatRule>> chatRuleList = new JsonData<>(CHAT_RULE_FILE, UNBOXING_CODEC, getDefaultChatRules());
+	protected static final JsonData<List<ChatRule>> CHAT_RULE_LIST = new JsonData<>(CHAT_RULE_FILE, UNBOXING_CODEC, getDefaultChatRules());
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> chatRuleList.init());
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> CHAT_RULE_LIST.init());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
 	}
 
@@ -59,12 +59,12 @@ public class ChatRulesHandler {
 	}
 
 	/**
-	 * Checks each rule in {@link ChatRulesHandler#chatRuleList} to see if they are a match for the message and if so change outputs based on the options set in the {@link ChatRule}.
+	 * Checks each rule in {@link ChatRulesHandler#CHAT_RULE_LIST} to see if they are a match for the message and if so change outputs based on the options set in the {@link ChatRule}.
 	 */
 	private static boolean checkMessage(Text message, boolean overlay) {
 		if (overlay || !Utils.isOnSkyblock()) return true;
-		List<ChatRule> rules = chatRuleList.getData();
-		if (!chatRuleList.isLoaded() || rules.isEmpty()) return true;
+		List<ChatRule> rules = CHAT_RULE_LIST.getData();
+		if (!CHAT_RULE_LIST.isLoaded() || rules.isEmpty()) return true;
 		String plain = Formatting.strip(message.getString());
 
 		for (ChatRule rule : rules) {
@@ -119,7 +119,7 @@ public class ChatRulesHandler {
 	}
 
 	public static void saveChatRules() {
-		if (chatRuleList.getData() != null) chatRuleList.save();
+		if (CHAT_RULE_LIST.getData() != null) CHAT_RULE_LIST.save();
 	}
 
 	private static class ChatRulesToast implements Toast {

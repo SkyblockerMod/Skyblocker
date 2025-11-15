@@ -64,7 +64,7 @@ public class ChatRuleConfigScreen extends Screen {
 	public ChatRuleConfigScreen(Screen parent, int chatRuleIndex) {
 		super(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"));
 		this.chatRuleIndex = chatRuleIndex;
-		this.chatRule = ChatRulesHandler.chatRuleList.getData().get(chatRuleIndex);
+		this.chatRule = ChatRulesHandler.CHAT_RULE_LIST.getData().get(chatRuleIndex);
 		this.parent = parent;
 	}
 
@@ -286,7 +286,7 @@ public class ChatRuleConfigScreen extends Screen {
 	}
 
 	private void save() {
-		ChatRulesHandler.chatRuleList.getData().set(chatRuleIndex, chatRule);
+		ChatRulesHandler.CHAT_RULE_LIST.getData().set(chatRuleIndex, chatRule);
 	}
 
 	private class ToastIconPreview extends ClickableWidget {
