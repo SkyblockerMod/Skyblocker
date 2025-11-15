@@ -11,6 +11,6 @@ public abstract class ConfigDataFix extends DataFix {
     }
 
     protected <T> Dynamic<T> fixVersion(Dynamic<T> dynamic) {
-        return dynamic.set("version", dynamic.createInt(DataFixUtils.getVersion(getVersionKey())));
+        return dynamic.set(ConfigDataFixer.VERSION_KEY, dynamic.createInt(DataFixUtils.getVersion(getVersionKey())));
     }
 }

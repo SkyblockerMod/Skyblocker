@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.chat;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.utils.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -33,6 +35,8 @@ public class ChatRule {
 			Either::left
 	);
 
+	private static final UnaryOperator<Optional<String>> REMOVE_BLANK = opt -> opt.flatMap(s -> s.isBlank() ? Optional.empty() : Optional.of(s));
+
 	private static final Codec<ChatRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("name").forGetter(ChatRule::getName),
 			Codec.BOOL.fieldOf("enabled").forGetter(ChatRule::getEnabled),
@@ -42,9 +46,9 @@ public class ChatRule {
 			Codec.STRING.fieldOf("filter").forGetter(ChatRule::getFilter),
 			LOCATION_FIXING_CODEC.fieldOf("locations").forGetter(ChatRule::getValidLocations),
 			Codec.BOOL.fieldOf("hideOriginalMessage").forGetter(ChatRule::getHideMessage),
-			Codec.STRING.optionalFieldOf("chatMessage").forGetter(ChatRule::getChatMessageOptional),
-			Codec.STRING.optionalFieldOf("actionbarMessage").forGetter(ChatRule::getActionBarMessageOptional),
-			Codec.STRING.optionalFieldOf("announcementMessage").forGetter(ChatRule::getAnnouncementMessageOptional),
+			Codec.STRING.optionalFieldOf("chatMessage").xmap(REMOVE_BLANK, REMOVE_BLANK).forGetter(ChatRule::getChatMessageOptional),
+			Codec.STRING.optionalFieldOf("actionbarMessage").xmap(REMOVE_BLANK, REMOVE_BLANK).forGetter(ChatRule::getActionBarMessageOptional),
+			Codec.STRING.optionalFieldOf("announcementMessage").xmap(REMOVE_BLANK, REMOVE_BLANK).forGetter(ChatRule::getAnnouncementMessageOptional),
 			ToastMessage.CODEC.optionalFieldOf("toastMessage").forGetter(ChatRule::getToastMessageOptional),
 			SoundEvent.CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOptional)
 	).apply(instance, (s, aBoolean, aBoolean2, aBoolean3, aBoolean4, s2, locations, aBoolean5, s3, s4, s5, toastMessage1, soundEvent) ->
@@ -367,5 +371,13 @@ public class ChatRule {
 		ToastMessage() {
 			this(new ItemStack(Items.PAINTING), "", 1000);
 		}
+
+		@Override
+		@GenToString
+		public native String toString();
 	}
+
+	@Override
+	@GenToString
+	public native String toString();
 }

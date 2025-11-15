@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.TextTransformer;
 import de.hysky.skyblocker.utils.Utils;
@@ -33,21 +34,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 
 public class ChatRulesHandler {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chat_rules.json");
-	private static final Codec<Map<String, List<ChatRule>>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, ChatRule.LIST_CODEC);
-	/**
-	 * This codec can parse two JSON formats: a list of chat rules OR an object with a "rules" property containing a list of chat rules,
-	 * and encodes in one JSON format: an object with a "rules" property containing a list of chat rules.
-	 */
+
 	@VisibleForTesting
-	static final Codec<List<ChatRule>> UNBOXING_CODEC = Codec.either(ChatRule.LIST_CODEC, MAP_CODEC).xmap(
-			either -> either.map(ArrayList::new, map -> new ArrayList<>(map.getOrDefault("rules", getDefaultChatRules()))),
-			value -> Either.right(Map.of("rules", value))
-	);
+	static final Codec<List<ChatRule>> UNBOXING_CODEC = ConfigDataFixer.createDataFixingCodec(ConfigDataFixer.CHAT_RULES_TYPE, CodecUtils.mutableOptional(ChatRule.LIST_CODEC.fieldOf("rules"), ArrayList::new).codec());
 
 	protected static final JsonData<List<ChatRule>> chatRuleList = new JsonData<>(CHAT_RULE_FILE, UNBOXING_CODEC, getDefaultChatRules());
 
