@@ -1537,5 +1537,6 @@
     "skyblocker.helpers.hoppitysHunt.chocolateEgg": "Chocolate %s Egg",
     "skyblocker.helpers.hoppitysHunt.newEggDiscovered": "在%2$s找到了%1$s！",
     "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "點擊將彩蛋位置分享到聊天欄！",
-    "skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip": "突出顯示Hoppity's Hunt期間的彩蛋。\n新發現的彩蛋會在啟用此功能的玩家之間自動共享。"
+    "skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip": "突出顯示Hoppity's Hunt期間的彩蛋。\n新發現的彩蛋會在啟用此功能的玩家之間自動共享。",
+    "skyblocker.config.dungeons.map.showRoomLabels": "顯示房間名稱"
 }
