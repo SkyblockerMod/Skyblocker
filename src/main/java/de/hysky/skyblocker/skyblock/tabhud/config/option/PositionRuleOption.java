@@ -7,7 +7,9 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.ScreenPos;
@@ -128,6 +130,7 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 			for (ClickableWidget widget : widgets) {
 				widget.setWidth(width);
 			}
+			coordsDisplay.setMaxWidth(width, TextWidget.TextOverflow.SCROLLING);
 			layout.refreshPositions();
 			setHeight(layout.getHeight());
 		}
@@ -172,9 +175,15 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 			coordsDisplay.setMessage(Text.literal("x: " + valueGetter.get().relativeX() + ", y: " + valueGetter.get().relativeY()));
+			layout.refreshPositions();
 			for (ClickableWidget widget : widgets) {
 				widget.render(context, mouseX, mouseY, deltaTicks);
 			}
+		}
+
+		@Override
+		public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+			return false;
 		}
 
 		@Override
@@ -204,7 +213,7 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 			int y = 5; // 30 / 6
 			int h = 20;
 
-			context.drawBorder(x, y + 1, w, h, Colors.WHITE);
+			HudHelper.drawBorder(context, x, y + 1, w, h, Colors.WHITE);
 			PositionRule rule = valueGetter.get();
 			for (int i = 0; i < 3; i++) {
 				for (int j = 0; j < 3; j++) {
@@ -230,7 +239,7 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			HudWidget editedWidget = widgetConfig.getEditedWidget();
 			if (hoveredPoint != null) {
 				PositionRule oldRule = valueGetter.get();

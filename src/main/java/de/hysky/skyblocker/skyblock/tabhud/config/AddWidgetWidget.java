@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.EntryListWidget;
@@ -58,9 +59,9 @@ public class AddWidgetWidget extends EntryListWidget<AddWidgetWidget.Entry> {
 	protected void drawHeaderAndFooterSeparators(DrawContext context) {}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		if (!visible) return false;
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	public void openWith(List<HudWidget> widgets) {
@@ -68,6 +69,11 @@ public class AddWidgetWidget extends EntryListWidget<AddWidgetWidget.Entry> {
 		replaceEntries(widgets.stream().sorted(Comparator.comparing(w -> w.getInformation().displayName().getString())).map(Entry::new).toList());
 		setHeight(Math.min(widgets.size(), MAX_ENTRIES) * itemHeight);
 		setWidth(widgets.stream().mapToInt(entry -> client.textRenderer.getWidth(entry.getInformation().displayName())).max().orElse(100) + 3);
+	}
+
+	@Override
+	public void setX(int x) {
+		super.setX(x);
 	}
 
 	@Override
@@ -81,7 +87,7 @@ public class AddWidgetWidget extends EntryListWidget<AddWidgetWidget.Entry> {
 	}
 
 	@Override
-	protected void drawScrollbar(DrawContext context) {
+	protected void drawScrollbar(DrawContext context, int mouseX, int mouseY) {
 		if (this.overflows()) {
 			int x = this.getScrollbarX();
 			int y = this.getScrollbarThumbY();
@@ -104,20 +110,16 @@ public class AddWidgetWidget extends EntryListWidget<AddWidgetWidget.Entry> {
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickProgress) {
-			context.drawText(client.textRenderer, hudWidget.getInformation().displayName(), x, y + 1, -1, false);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float tickProgress) {
+			if (hovered) {
+				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), ColorHelper.getWhite(0.1f));
+			}
+			context.drawText(client.textRenderer, hudWidget.getInformation().displayName(), getX(), getY() + 1, -1, false);
 			//ClickableWidget.drawScrollableText(context, client.textRenderer, hudWidget.getInformation().displayName(), x, y, x + entryWidth, y + entryHeight, Colors.WHITE);
 		}
 
 		@Override
-		public void drawBorder(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickProgress) {
-			if (hovered) {
-				context.fill(x, y, x + entryWidth, y + entryHeight, ColorHelper.getWhite(0.1f));
-			}
-		}
-
-		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		public boolean mouseClicked(Click click, boolean doubled) {
 			widgetConsumer.accept(hudWidget);
 			visible = false;
 			return true;

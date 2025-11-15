@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetConfig;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
@@ -135,14 +136,14 @@ public class FloatOption implements WidgetOption<Float> {
 		}
 
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
-			if (active && visible && button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && isMouseOver(mouseX, mouseY)) {
+		public boolean mouseClicked(Click click, boolean doubled) {
+			if (active && visible && click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && isMouseOver(click.x(), click.y())) {
 				value = toProgress(defaultValue);
 				applyValue();
 				updateMessage();
 				return true;
 			}
-			return super.mouseClicked(mouseX, mouseY, button);
+			return super.mouseClicked(click, doubled);
 		}
 	}
 }

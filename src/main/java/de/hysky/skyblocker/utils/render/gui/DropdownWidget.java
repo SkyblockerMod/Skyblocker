@@ -41,11 +41,20 @@ public class DropdownWidget<T> extends ContainerWidget {
 		this.selectCallback = selectCallback;
 		this.openedCallback = openedCallback;
 		this.selected = selected;
-		dropdownList = new DropdownList(minecraftClient, x + 1, y + headerHeight, width - 2, maxHeight - headerHeight);
+		dropdownList = createDropdown(minecraftClient);
+		dropdownList.setDimensionsAndPosition(width - 2, maxHeight - headerHeight, x + 1, y + headerHeight);
 		for (T element : entries) {
-			dropdownList.addEntry(new Entry(element));
+			dropdownList.addEntry(createEntry(element));
 		}
 		setHeight(headerHeight);
+	}
+
+	protected DropdownList createDropdown(MinecraftClient client) {
+		return new DropdownList(client);
+	}
+
+	protected Entry createEntry(T element) {
+		return new Entry(element);
 	}
 
 	public void setFormatter(Function<T, Text> formatter) {
@@ -82,19 +91,6 @@ public class DropdownWidget<T> extends ContainerWidget {
 				getRight() - 2,
 				getY() + headerHeight - 2,
 				-1);
-	}
-
-	protected void renderEntry(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, T entry) {
-		// drawScrollableText does some weird stuff with the y value, so we put startY = y and endY = y + 11 which makes the text render on the same line as the tick mark below (y + 2).
-		drawScrollableText(context, client.textRenderer, formatter.apply(entry).copy().fillStyle(Style.EMPTY.withUnderline(hovered)), x + 10, y, x + entryWidth, y + 11, -1);
-		if (selected == entry) {
-			context.drawTextWithShadow(client.textRenderer, "✔", x + 1, y + 2, 0xFFFFFFFF);
-		}
-	}
-
-	protected void drawMenuListBackground(DrawContext context, int listX, int listY, int listWidth, int listHeight) {
-		context.fill(listX, listY, listX + listWidth, listY + listHeight, 0xFF << 24);
-		HudHelper.drawBorder(context, listX, listY, listX + listWidth, listY + listHeight, -1);
 	}
 
 	@Override
@@ -178,11 +174,10 @@ public class DropdownWidget<T> extends ContainerWidget {
 		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
-	private class DropdownList extends ElementListWidget<Entry> {
+	protected class DropdownList extends ElementListWidget<Entry> {
 
-		private DropdownList(MinecraftClient minecraftClient, int x, int y, int width, int height) {
-			super(minecraftClient, width, height, y, entryHeight);
-			setX(x);
+		protected DropdownList(MinecraftClient minecraftClient) {
+			super(minecraftClient, 0, 0, 0, entryHeight);
 		}
 
 		@Override
@@ -252,7 +247,8 @@ public class DropdownWidget<T> extends ContainerWidget {
 
 		@Override
 		protected void drawMenuListBackground(DrawContext context) {
-			DropdownWidget.this.drawMenuListBackground(context, getX(), getY(), getWidth(), getHeight());
+			context.fill(getX(), getY(), getRight(), getBottom(), 0xFF << 24);
+			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), -1);
 		}
 
 		@Override
@@ -261,11 +257,10 @@ public class DropdownWidget<T> extends ContainerWidget {
 		}
 	}
 
-	private class Entry extends ElementListWidget.Entry<Entry> {
+	protected class Entry extends ElementListWidget.Entry<Entry> {
+		protected final T entry;
 
-		private final T entry;
-
-		private Entry(T element) {
+		protected Entry(T element) {
 			this.entry = element;
 		}
 
@@ -281,7 +276,11 @@ public class DropdownWidget<T> extends ContainerWidget {
 
 		@Override
 		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			renderEntry(context, index, getY(), getX(), getWidth(), getHeight(), mouseX, mouseY, hovered, deltaTicks, entry);
+			// drawScrollableText does some weird stuff with the y value, so we put startY = y and endY = y + 11 which makes the text render on the same line as the tick mark below (y + 2).
+			drawScrollableText(context, client.textRenderer, Text.literal(entry.toString()).fillStyle(Style.EMPTY.withUnderline(hovered)), this.getX() + 10, this.getY(), this.getX() + this.getWidth(), this.getY() + 11, -1);
+			if (selected == this.entry) {
+				context.drawTextWithShadow(client.textRenderer, "✔", this.getX() + 1, this.getY() + 2, 0xFFFFFFFF);
+			}
 		}
 
 		@Override

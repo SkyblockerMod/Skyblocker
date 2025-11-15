@@ -10,15 +10,18 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPosition
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.navigation.NavigationAxis;
 import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.ColorHelper;
@@ -157,11 +160,11 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		Matrix3x2f scaleMatrix = new Matrix3x2f().scale(scale);
 		if (hoveredWidget != null) {
 			ScreenRect rect = hoveredWidget.getNavigationFocus().transform(scaleMatrix);
-			context.drawBorder(rect.getLeft() - 1, rect.getTop() - 1, rect.width() + 2, rect.height() + 2, Colors.YELLOW);
+			HudHelper.drawBorder(context, rect.getLeft() - 1, rect.getTop() - 1, rect.width() + 2, rect.height() + 2, Colors.YELLOW);
 		}
 		if (selectedWidget != null) {
 			ScreenRect rect = selectedWidget.getNavigationFocus().transform(scaleMatrix);
-			context.drawBorder(rect.getLeft() - 1, rect.getTop() - 1, rect.width() + 2, rect.height() + 2, Colors.GREEN);
+			HudHelper.drawBorder(context, rect.getLeft() - 1, rect.getTop() - 1, rect.width() + 2, rect.height() + 2, Colors.GREEN);
 		}
 		topBarWidget.visible = selectedWidget == null || selectedWidget.getY() >= 16;
 
@@ -172,8 +175,10 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-		if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true;
+	public boolean mouseDragged(Click click, double deltaX, double deltaY) {
+		if (super.mouseDragged(click, deltaX, deltaY)) return true;
+		double mouseX = click.x();
+		double mouseY = click.y();
 		if (selectedWidget != null && dragRelative != null) {
 			PositionRule oldRule = selectedWidget.getPositionRule();
 			mouseX /= TabHud.getScaleFactor();
@@ -239,7 +244,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 					}
 				}
 			}
-			ScreenPos startPosition =  WidgetPositioner.getStartPosition(newParent, getScreenWidth(), getScreenHeight(), parentPoint);
+			ScreenPos startPosition = WidgetPositioner.getStartPosition(newParent, getScreenWidth(), getScreenHeight(), parentPoint);
 			PositionRule newRule = new PositionRule(
 					newParent,
 					parentPoint,
@@ -271,8 +276,10 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (super.mouseClicked(mouseX, mouseY, button)) return true;
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (super.mouseClicked(click, doubled)) return true;
+		double mouseX = click.x();
+		double mouseY = click.y();
 		if (selectWidgetPrompt != null) {
 			if (hoveredWidget != null && !selectWidgetPrompt.allowItself() && hoveredWidget.equals(selectedWidget)) return true;
 			selectWidgetPrompt.callback().accept(hoveredWidget);
@@ -283,13 +290,14 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		if (hoveredWidget == null) {
 			if (sidePanelWidget.isOpen()) sidePanelWidget.close();
 			selectedWidget = null;
-			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+			if (click.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 				List<HudWidget> availableWidgets = new ArrayList<>(WidgetManager.getWidgetsAvailableIn(currentLocation));
 				availableWidgets.removeAll(builder.getWidgets()); // remove already present widgets
 				addWidgetWidget.openWith(availableWidgets);
 				addWidgetWidget.setX(Math.clamp((int) mouseX, 5, width - addWidgetWidget.getWidth() - 5));
 				addWidgetWidget.setY(Math.clamp((int) mouseY, 5, height - addWidgetWidget.getHeight() - 5));
-			} else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && currentScreenLayer != WidgetManager.ScreenLayer.HUD) {
+				addWidgetWidget.refreshScroll(); // refreshes the positions of the entries
+			} else if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && currentScreenLayer != WidgetManager.ScreenLayer.HUD) {
 				client.setScreen(new ScreenConfigPopup(this, builder, true));
 			}
 			return true;
@@ -300,36 +308,35 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		mouseX /= TabHud.getScaleFactor();
 		mouseY /= TabHud.getScaleFactor();
 		dragRelative = new ScreenPos((int) (mouseX - selectedWidget.getX()), (int) (mouseY - selectedWidget.getY()));
-		if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && (!sidePanelWidget.isOpen() || !selectedWidget.equals(sidePanelWidget.getHudWidget()))) {
+		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && (!sidePanelWidget.isOpen() || !selectedWidget.equals(sidePanelWidget.getHudWidget()))) {
 			openSidePanel();
-		} else if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && sidePanelWidget.isOpen() && !selectedWidget.equals(sidePanelWidget.getHudWidget())) {
+		} else if (click.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT && sidePanelWidget.isOpen() && !selectedWidget.equals(sidePanelWidget.getHudWidget())) {
 			openSidePanel();
 		}
 		return true;
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(Click click) {
 		dragRelative = null;
 		if (openPanelAfterDragging) {
 			openPanelAfterDragging = false;
 			openSidePanel();
 		}
-		return super.mouseReleased(mouseX, mouseY, button);
+		return super.mouseReleased(click);
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(KeyInput keyInput) {
 		if (selectedWidget != null && selectedWidget == hoveredWidget) {
 			boolean move = true;
 			int x = 0, y = 0;
-			switch (keyCode) {
-				case GLFW.GLFW_KEY_LEFT -> x = -1;
-				case GLFW.GLFW_KEY_RIGHT -> x = 1;
-				case GLFW.GLFW_KEY_UP -> y = -1;
-				case GLFW.GLFW_KEY_DOWN -> y = 1;
-				default -> move = false;
-			}
+			if (keyInput.isLeft()) x = -1;
+			else if (keyInput.isRight()) x = 1;
+			else if (keyInput.isUp()) y = -1;
+			else if (keyInput.isDown()) y = 1;
+			else move = false;
+
 			if (move) {
 				PositionRule oldRule = selectedWidget.getPositionRule();
 				PositionRule newRule = new PositionRule(
@@ -343,12 +350,12 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 				updateBuilderPositions();
 				return true;
 			}
-			if (keyCode == GLFW.GLFW_KEY_DELETE) {
+			if (keyInput.key() == GLFW.GLFW_KEY_DELETE) {
 				removeWidget(selectedWidget);
 				return true;
 			}
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(keyInput);
 	}
 
 	private void openSidePanel() {
@@ -414,7 +421,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 						rule.thisPoint(),
 						deleted.relativeX() + rule.relativeX(),
 						deleted.relativeY() + rule.relativeY()
-						));
+				));
 			}
 		}
 		if (selectedWidget == widget) {

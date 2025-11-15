@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
+import de.hysky.skyblocker.utils.render.HudHelper;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
+import net.minecraft.client.input.AbstractInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
@@ -55,7 +57,7 @@ class ToggleButtonWidget extends PressableWidget {
 		}
 		drawScrollableText(context, textRenderer, getMessage(), startX, getY(), endX, getBottom(), color);
 		int squareY = getY() + (getHeight() - 9) / 2;
-		context.drawBorder(squareX, squareY, 9, 9, color);
+		HudHelper.drawBorder(context, squareX, squareY, 9, 9, color);
 		if (state) context.fill(squareX + 2, squareY + 2, squareX + 7, squareY + 7, color);
 	}
 
@@ -68,7 +70,7 @@ class ToggleButtonWidget extends PressableWidget {
 	}
 
 	@Override
-	public void onPress() {
+	public void onPress(AbstractInput input) {
 		state = !state;
 		onPress.accept(state);
 	}

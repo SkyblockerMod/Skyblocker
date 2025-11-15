@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.ColorHelper;
@@ -26,5 +27,8 @@ class StyledButtonWidget extends ButtonWidget {
 		}
 		int i = ColorHelper.withAlpha(this.alpha, this.active ? -1 : -6250336);
 		this.drawMessage(context, client.textRenderer, i);
+		if (this.isHovered()) {
+			context.setCursor(this.isInteractable() ? StandardCursors.POINTING_HAND : StandardCursors.NOT_ALLOWED);
+		}
 	}
 }

@@ -53,7 +53,7 @@ class SidePanelWidget extends ContainerWidget {
 
 	@Override
 	protected double getDeltaYPerScroll() {
-		return 0;
+		return 5;
 	}
 
 	private boolean isNotVisible(int top, int bottom) {
@@ -79,7 +79,7 @@ class SidePanelWidget extends ContainerWidget {
 			clickableWidget.render(context, mouseX, mouseY, deltaTicks);
 		}
 		context.disableScissor();
-		this.drawScrollbar(context);
+		this.drawScrollbar(context, mouseX, mouseY);
 	}
 
 	public void open() {
@@ -94,8 +94,14 @@ class SidePanelWidget extends ContainerWidget {
 	public void open(HudWidget hudWidget, WidgetConfig config, boolean rightSide, int x) {
 		this.hudWidget = hudWidget;
 		layout = DirectionalLayoutWidget.vertical().spacing(5);
+		layout.getMainPositioner().alignHorizontalCenter();
 		optionWidgets.clear();
-		add(new TextWidget(0, 15, hudWidget.getInformation().displayName().copy().formatted(Formatting.UNDERLINE), client.textRenderer));
+		add(new TextWidget(0, 15, hudWidget.getInformation().displayName().copy().formatted(Formatting.UNDERLINE), client.textRenderer) {
+			@Override
+			public void setWidth(int width) {
+				setMaxWidth(width, TextOverflow.SCROLLING);
+			}
+		});
 		add(ButtonWidget.builder(Text.literal("Remove"), b -> config.removeWidget(hudWidget)).build()); // TODO translatable
 		layout.add(EmptyWidget.ofHeight(10));
 
@@ -185,6 +191,11 @@ class SidePanelWidget extends ContainerWidget {
 		layout.refreshPositions();
 	}
 
+	@Override
+	public void setHeight(int height) {
+		super.setHeight(height - TOP_MARGIN);
+	}
+
 	public @Nullable HudWidget getHudWidget() {
 		return hudWidget;
 	}
@@ -200,5 +211,6 @@ class SidePanelWidget extends ContainerWidget {
 		return rightSide ? super.getScrollbarX() : 0;
 	}
 
-	@Override protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	@Override
+	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 }

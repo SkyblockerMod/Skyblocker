@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Style;
@@ -13,10 +14,12 @@ import java.util.function.Consumer;
 
 class CustomDropdownWidget<T> extends DropdownWidget<T> {
 	private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");
+	private final T firstEntry;
 
 	CustomDropdownWidget(int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
 		super(client, x, y, width, maxHeight, 12, entries, selectCallback, selected, opened -> {});
 		headerHeight = 15;
+		firstEntry = entries.getFirst();
 	}
 
 
@@ -41,18 +44,40 @@ class CustomDropdownWidget<T> extends DropdownWidget<T> {
 	}
 
 	@Override
-	protected void drawMenuListBackground(DrawContext context, int listX, int listY, int listWidth, int listHeight) {
-		context.enableScissor(listX, listY - 1, listX + listWidth, listY + listHeight + 2);
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, listX, listY - 3, listWidth, listHeight + 5);
-		context.disableScissor();
+	protected DropdownWidget<T>.DropdownList createDropdown(MinecraftClient client) {
+		return new CustomDropdownList(client);
 	}
 
 	@Override
-	protected void renderEntry(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta, T entry) {
-		if (index != 0) {
-			context.drawHorizontalLine(x, x + entryWidth, y, ColorHelper.withAlpha(15, 0));
-		}
-		drawScrollableText(context, client.textRenderer, formatter.apply(entry).copy().fillStyle(Style.EMPTY.withUnderline(hovered)), x, y, x + entryWidth, y + 11, -1);
+	protected DropdownWidget<T>.Entry createEntry(T element) {
+		return new CustomEntry(element);
+	}
 
+	class CustomDropdownList extends DropdownList {
+		protected CustomDropdownList(MinecraftClient minecraftClient) {
+			super(minecraftClient);
+		}
+
+		@Override
+		protected void drawMenuListBackground(DrawContext context) {
+			context.enableScissor(this.getX(), this.getY() - 1, this.getRight(), this.getBottom() + 2);
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX(), this.getY() - 3, this.getWidth(), this.getHeight() + 5);
+			context.disableScissor();
+		}
+	}
+
+	class CustomEntry extends Entry {
+		protected CustomEntry(T element) {
+			super(element);
+		}
+
+		@Override
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			if (entry != firstEntry) {
+				context.drawHorizontalLine(this.getX(), this.getX() + this.getWidth(), this.getY(), ColorHelper.withAlpha(15, 0));
+			}
+			drawScrollableText(context, client.textRenderer, formatter.apply(entry).copy().fillStyle(Style.EMPTY.withUnderline(hovered)), this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + 11, -1);
+
+		}
 	}
 }

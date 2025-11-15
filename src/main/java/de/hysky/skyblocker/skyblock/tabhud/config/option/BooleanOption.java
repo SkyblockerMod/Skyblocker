@@ -6,6 +6,8 @@ import de.hysky.skyblocker.skyblock.tabhud.config.WidgetConfig;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.PressableWidget;
+import net.minecraft.client.input.AbstractInput;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
@@ -65,9 +67,7 @@ public class BooleanOption implements WidgetOption<Boolean> {
 	}
 
 	private class Button extends PressableWidget {
-
 		private final WidgetConfig config;
-		private int button;
 
 		private Button(WidgetConfig config, Text text) {
 			super(0, 0, 0, 20, text);
@@ -75,8 +75,8 @@ public class BooleanOption implements WidgetOption<Boolean> {
 		}
 
 		@Override
-		public void onPress() {
-			valueSetter.accept(button == 1 ? defaultValue : !valueGetter.get());
+		public void onPress(AbstractInput input) {
+			valueSetter.accept(input.getKeycode() == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? defaultValue : !valueGetter.get());
 			setMessage(createName());
 			config.notifyWidget();
 		}
@@ -87,9 +87,8 @@ public class BooleanOption implements WidgetOption<Boolean> {
 		}
 
 		@Override
-		protected boolean isValidClickButton(int button) {
-			this.button = button;
-			return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || GLFW.GLFW_MOUSE_BUTTON_RIGHT == button;
+		protected boolean isValidClickButton(MouseInput input) {
+			return input.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT || GLFW.GLFW_MOUSE_BUTTON_RIGHT == input.button();
 		}
 	}
 }
