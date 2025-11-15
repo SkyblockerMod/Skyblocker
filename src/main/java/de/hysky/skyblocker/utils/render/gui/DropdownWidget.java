@@ -13,13 +13,14 @@ import net.minecraft.text.Text;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import de.hysky.skyblocker.utils.render.HudHelper;
 
 public class DropdownWidget<T> extends ContainerWidget {
-	private static final MinecraftClient client = MinecraftClient.getInstance();
-	public static final int ENTRY_HEIGHT = 15;
-	private static final int HEADER_HEIGHT = ENTRY_HEIGHT + 4;
+	protected static final MinecraftClient client = MinecraftClient.getInstance();
+	public final int entryHeight;
+	protected int headerHeight;
 	protected final List<T> entries;
 	protected final Consumer<T> selectCallback;
 	protected final Consumer<Boolean> openedCallback;
@@ -28,18 +29,40 @@ public class DropdownWidget<T> extends ContainerWidget {
 	protected T selected;
 	protected boolean open;
 	private int maxHeight;
+	protected Function<T, Text> formatter = t -> Text.literal(t.toString());
 
-	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
-		super(x, y, width, HEADER_HEIGHT, Text.empty());
+
+	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, int entryHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
+		super(x, y, width, 0, Text.empty());
+		this.entryHeight = entryHeight;
+		this.headerHeight = entryHeight + 4;
 		this.maxHeight = maxHeight;
 		this.entries = entries;
 		this.selectCallback = selectCallback;
 		this.openedCallback = openedCallback;
 		this.selected = selected;
-		dropdownList = new DropdownList(minecraftClient, x + 1, y + HEADER_HEIGHT, width - 2, maxHeight - HEADER_HEIGHT);
+		dropdownList = createDropdown(minecraftClient);
+		dropdownList.setDimensionsAndPosition(width - 2, maxHeight - headerHeight, x + 1, y + headerHeight);
 		for (T element : entries) {
-			dropdownList.addEntry(new Entry(element));
+			dropdownList.addEntry(createEntry(element));
 		}
+		setHeight(headerHeight);
+	}
+
+	protected DropdownList createDropdown(MinecraftClient client) {
+		return new DropdownList(client);
+	}
+
+	protected Entry createEntry(T element) {
+		return new Entry(element);
+	}
+
+	public void setFormatter(Function<T, Text> formatter) {
+		this.formatter = formatter;
+	}
+
+	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
+		this(minecraftClient, x, y, width, maxHeight, 15, entries, selectCallback, selected, openedCallback);
 	}
 
 	public void setMaxHeight(int maxHeight) {
@@ -56,14 +79,17 @@ public class DropdownWidget<T> extends ContainerWidget {
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 		dropdownList.visible = open;
 		dropdownList.render(context, mouseX, mouseY, delta);
-		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, 0xFF << 24);
-		HudHelper.drawBorder(context, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, -1);
-		drawScrollableText(context, client.textRenderer, Text.literal(
-						selected.toString()),
+		renderHeader(context, mouseX, mouseY, delta);
+	}
+
+	protected void renderHeader(DrawContext context, int mouseX, int mouseY, float delta) {
+		context.fill(getX(), getY(), getRight(), getY() + headerHeight + 1, 0xFF << 24);
+		HudHelper.drawBorder(context, getX(), getY(), getWidth(), headerHeight + 1, -1);
+		drawScrollableText(context, client.textRenderer, formatter.apply(selected),
 				getX() + 2,
 				getY() + 2,
 				getRight() - 2,
-				getY() + HEADER_HEIGHT - 2,
+				getY() + headerHeight - 2,
 				-1);
 	}
 
@@ -74,9 +100,9 @@ public class DropdownWidget<T> extends ContainerWidget {
 		this.open = open;
 		if (this.open) {
 			setHeight(maxHeight);
-			dropdownList.setHeight(Math.min(entries.size() * ENTRY_HEIGHT + 4, maxHeight - HEADER_HEIGHT));
+			dropdownList.setHeight(Math.min(entries.size() * entryHeight + 4, maxHeight - headerHeight));
 		} else {
-			setHeight(HEADER_HEIGHT);
+			setHeight(headerHeight);
 		}
 		this.openedCallback.accept(open);
 	}
@@ -104,7 +130,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 	@Override
 	public void setY(int y) {
 		super.setY(y);
-		dropdownList.setY(getY() + HEADER_HEIGHT);
+		dropdownList.setY(getY() + headerHeight);
 	}
 
 	@Override
@@ -116,12 +142,13 @@ public class DropdownWidget<T> extends ContainerWidget {
 	@Override
 	public void setHeight(int height) {
 		super.setHeight(height);
+		dropdownList.setHeight(height - headerHeight);
 	}
 
 	@Override
 	public boolean mouseClicked(Click click, boolean doubled) {
 		if (!visible) return false;
-		if (getX() <= click.x() && click.x() < getX() + getWidth() && getY() <= click.y() && click.y() < getY() + HEADER_HEIGHT) {
+		if (getX() <= click.x() && click.x() < getX() + getWidth() && getY() <= click.y() && click.y() < getY() + headerHeight) {
 			setOpen(!open);
 			playDownSound(client.getSoundManager());
 			return true;
@@ -147,11 +174,10 @@ public class DropdownWidget<T> extends ContainerWidget {
 		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
-	private class DropdownList extends ElementListWidget<Entry> {
+	protected class DropdownList extends ElementListWidget<Entry> {
 
-		private DropdownList(MinecraftClient minecraftClient, int x, int y, int width, int height) {
-			super(minecraftClient, width, height, y, ENTRY_HEIGHT);
-			setX(x);
+		protected DropdownList(MinecraftClient minecraftClient) {
+			super(minecraftClient, 0, 0, 0, entryHeight);
 		}
 
 		@Override
@@ -231,11 +257,10 @@ public class DropdownWidget<T> extends ContainerWidget {
 		}
 	}
 
-	private class Entry extends ElementListWidget.Entry<Entry> {
+	protected class Entry extends ElementListWidget.Entry<Entry> {
+		protected final T entry;
 
-		private final T entry;
-
-		private Entry(T element) {
+		protected Entry(T element) {
 			this.entry = element;
 		}
 
