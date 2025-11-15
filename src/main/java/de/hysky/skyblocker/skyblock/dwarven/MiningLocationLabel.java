@@ -92,7 +92,7 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
         RAMPARTS_QUARRY(new BlockPos(-72, 153, -10)),
         UPPER_MINES(new BlockPos(-132, 174, -50)),
         ROYAL_MINES(new BlockPos(171, 150, 31)),
-        DWARVEN_VILLAGE(new BlockPos(-37, 200, -92)),
+        DWARVEN_VILLAGE(new BlockPos(-37, 200, -131)),
         DWARVEN_MINES(new BlockPos(89, 198, -92));
 
         private final BlockPos location;
