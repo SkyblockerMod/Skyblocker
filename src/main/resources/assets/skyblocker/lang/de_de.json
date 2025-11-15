@@ -1,10 +1,9 @@
 {
-    "key.categories.skyblocker": "Skyblocker",
     "key.hotbarSlotLock": "Slot Sperre (Hotbar)",
     "skyblocker.config.title": "Skyblocker-%s",
     "skyblocker.config.general": "Allgemein",
     "skyblocker.config.uiAndVisuals.bars": "Balken für Gesundheit, Mana, Verteidigung, Geschwindigkeit & XP",
-    "skyblocker.config.uiAndVisuals.tabHud": "Schöneres HUD und TAB",
+    "skyblocker.config.uiAndVisuals.tabHud": "Stilvolles HUD und TAB",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled": "Schöneres Tab-HUD aktivieren",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudScale": "Skalierungsfaktor für schöneres Tab-HUD",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip": "Wert in %, relativ zur Skalierung des Vanilla-GUIs",
@@ -384,5 +383,8 @@
     "skyblocker.config.dungeons.livid.customColor": "Benutzerdefinierte lebhafte Farbe",
     "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "Aktiviert ein Widget, das Ihre schnellsten Zeiten in jedem Dungeon-Abschnitt anzeigt.",
     "skyblocker.config.dungeons.highlightDoorKeys": "Türschlüssel hervorheben",
-    "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Markiert die Schlüssel „Wither Door“ und „Blood Door“ auf dem Boden in Cyan."
+    "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Markiert die Schlüssel „Wither Door“ und „Blood Door“ auf dem Boden in Cyan.",
+    "skyblocker.config.uiAndVisuals.tabHud.compactWidgets": "Kompakte Widgets",
+    "skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip": "Widgets in kompakter Form anzeigen.",
+    "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Widget Einstellungsfenster öffnen"
 }

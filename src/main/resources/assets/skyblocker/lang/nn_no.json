@@ -2,7 +2,6 @@
     "key.hotbarSlotLock": "Slotslås (Hotbar)",
     "skyblocker.config.title": "Skyblocker Innstillinger",
     "skyblocker.config.general": "Generelt",
-    "key.categories.skyblocker": "SkyBlocker",
     "skyblocker.config.uiAndVisuals.bars": "Liv, mana, forsvar og XP-bar",
     "skyblocker.config.uiAndVisuals.bars.enableBars": "Aktiver bar",
     "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "Crimson Isleにいる時、バニラのネザーバイオームのように霧がプレイヤーの近くにできるのを防ぎます。",

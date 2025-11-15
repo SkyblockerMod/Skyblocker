@@ -1,5 +1,4 @@
 {
-    "key.categories.skyblocker": "Skyblocker",
     "text.skyblocker.source": "Вихідний код",
     "text.skyblocker.website": "Вебсайт",
     "text.skyblocker.translate": "Перекласти",
@@ -131,9 +130,6 @@
     "skyblocker.config.helpers.carnival.catchAFishHelper": "Помічник Catch a Fish",
     "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder": "Увімкнути нагадування Time Tower",
     "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip": "Відправляє повідомлення в чат, коли Time Tower деактивується.",
-    "skyblocker.config.helpers.chocolateFactory.enableEggFinder.@Tooltip": "Підсвічує яйця з Hoppity's Hunt.",
-    "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages.@Tooltip": "Відправляє повідомлення в чат, коли яйце знайдено на поточному острові.",
-    "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages": "Відправляти повідомлення про знайдене яйце",
     "skyblocker.config.helpers.enableNewYearCakesHelper": "Увімкнути помічник New Year Cakes",
     "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Підсвічує торти, які ви маєте, зеленим, а ті, які не маєте — червоним.\n\nЩоб це працювало, необхідно хоча б раз відкрити Cake Bag.",
     "skyblocker.config.helpers.enableDateCalculator": "Увімкнути калькулятор дат",
