@@ -1,11 +1,16 @@
 package de.hysky.skyblocker.config;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.backup.ConfigBackupManager;
 import de.hysky.skyblocker.config.categories.*;
+import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.utils.datafixer.JsonHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.azureaaron.dandelion.systems.ConfigManager;
 import net.azureaaron.dandelion.systems.DandelionConfigScreen;
@@ -21,16 +26,22 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.lang.StackWalker.Option;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.function.Consumers;
+import org.slf4j.Logger;
 
 public class SkyblockerConfigManager {
-	public static final int CONFIG_VERSION = 4;
-	private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("skyblocker.json");
+	public static final int CONFIG_VERSION = 6;
+	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
+	private static final Path CONFIG_FILE = CONFIG_DIR.resolve("skyblocker.json");
 	private static final ConfigManager<SkyblockerConfig> CONFIG_MANAGER = ConfigManager.create(SkyblockerConfig.class, CONFIG_FILE, UnaryOperator.identity());
 
 	public static SkyblockerConfig get() {
@@ -45,6 +56,7 @@ public class SkyblockerConfigManager {
 		if (StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE).getCallerClass() != SkyblockerMod.class) {
 			throw new RuntimeException("Skyblocker: Called config init from an illegal place!");
 		}
+		dataFix(CONFIG_FILE, CONFIG_DIR.resolve("skyblocker.json.old"));
 
 		CONFIG_MANAGER.load();
 		ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
@@ -118,5 +130,44 @@ public class SkyblockerConfigManager {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> optionsLiteral(String name) {
 		// Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
 		return ClientCommandManager.literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)));
+	}
+
+	public static void dataFix(Path configDir, Path backupDir) {
+		//User is new - has no config file (or maybe config folder)
+		if (!Files.exists(CONFIG_DIR) || !Files.exists(configDir)) return;
+
+		//Should never be null if the file exists unless its malformed JSON or something in which case well it gets reset
+		JsonObject oldConfig = loadConfig(configDir);
+		if (oldConfig == null || JsonHelper.getInt(oldConfig, "version").orElse(1) == CONFIG_VERSION) return;
+
+		JsonObject newConfig = ConfigDataFixer.apply(ConfigDataFixer.CONFIG_TYPE, oldConfig);
+
+		//Write the updated file
+        if (!writeConfig(configDir, newConfig)) {
+			LOGGER.error(LogUtils.FATAL_MARKER, "[Skyblocker Config Data Fixer] Failed to fix up config file!");
+			writeConfig(backupDir, oldConfig);
+		}
+	}
+
+	private static JsonObject loadConfig(Path path) {
+		try (BufferedReader reader = Files.newBufferedReader(path)) {
+			return JsonParser.parseReader(reader).getAsJsonObject();
+		} catch (Throwable t) {
+			LOGGER.error("[Skyblocker Config Data Fixer] Failed to load config file!", t);
+		}
+
+		return null;
+	}
+
+	private static boolean writeConfig(Path path, JsonObject config) {
+		try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+			SkyblockerMod.GSON.toJson(config, writer);
+
+			return true;
+		} catch (Throwable t) {
+			LOGGER.error("[Skyblocker Config Data Fixer] Failed to save config file at {}!", path, t);
+		}
+
+		return false;
 	}
 }
