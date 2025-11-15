@@ -54,7 +54,7 @@ public class ChatRulesHandler {
 	static List<ChatRule> getDefaultChatRules() {
 		return new ArrayList<>(List.of(
 				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, null, null, null, null, null),
-				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, null, null, SoundEvents.ENTITY_ARROW_HIT_PLAYER)
+				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, "&1Ability", null, SoundEvents.ENTITY_ARROW_HIT_PLAYER)
 		));
 	}
 
