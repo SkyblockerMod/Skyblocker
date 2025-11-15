@@ -61,7 +61,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 		dropdownList.render(context, mouseX, mouseY, delta);
 		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, 0xFF << 24);
 		HudHelper.drawBorder(context, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, -1);
-		context.drawText(client.textRenderer, ">", getX() + 2, getY() + 6, Colors.ALTERNATE_WHITE, true);
+		context.drawText(client.textRenderer, ">", getX() + 4, getY() + 6, Colors.ALTERNATE_WHITE, true);
 		drawScrollableText(context, client.textRenderer, Text.literal(selected.toString()),
 				getX() + 2,
 				getY() + 2,
