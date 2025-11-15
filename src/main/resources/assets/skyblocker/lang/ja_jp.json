@@ -677,5 +677,15 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen": "チャットルールの設定…",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.locations": "適用場所：",
     "skyblocker.config.chat.chatRules.screen.ruleEnabled": "ルール有効",
-    "skyblocker.config.hunting.lassoHud.enabled": "有効"
+    "skyblocker.config.hunting.lassoHud.enabled": "有効",
+    "skyblocker.config.dungeons.map.showRoomLabels": "部屋名を表示する",
+    "skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages.@Tooltip": "SkyblockerのWebSocketから新しいEggの位置を受信した際に、メッセージを送信します。",
+    "skyblocker.config.general.backup.restore.error": "バックアップの復元に失敗しました",
+    "skyblocker.config.general.backup": "設定のバックアップ",
+    "skyblocker.config.general.backup.manage": "バックアップを管理する...",
+    "skyblocker.config.general.backup.title": "設定のバックアップ",
+    "skyblocker.config.general.backup.confirm.title": "バックアップの復元",
+    "skyblocker.config.general.backup.confirm.text": "バックアップ%sを復元しますか？これにより現在の設定が上書きされます。",
+    "skyblocker.config.helpers.hoppitysHunt.enableEggFinder": "WebSocketのEggウェイポイントを有効にする",
+    "skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages": "Egg発見メッセージを送信する"
 }
