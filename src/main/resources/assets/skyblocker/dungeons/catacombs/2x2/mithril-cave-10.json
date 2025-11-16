@@ -1,0 +1,175 @@
+{
+  "info": {
+    "name": "Mines"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 32,
+      "y": 99,
+      "z": 47
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 31,
+      "y": 99,
+      "z": 58
+    },
+    {
+      "secretName": "2 - Lever",
+      "category": "lever",
+      "x": 34,
+      "y": 79,
+      "z": 59
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 56,
+      "y": 78,
+      "z": 58
+    },
+    {
+      "secretName": "3/4 - Entrance",
+      "category": "entrance",
+      "x": 24,
+      "y": 100,
+      "z": 8
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 9,
+      "y": 108,
+      "z": 17
+    },
+    {
+      "secretName": "4 - Superboom",
+      "category": "superboom",
+      "x": 13,
+      "y": 111,
+      "z": 21
+    },
+    {
+      "secretName": "4 - Crypt",
+      "category": "superboom",
+      "x": 9,
+      "y": 111,
+      "z": 29
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 9,
+      "y": 109,
+      "z": 30
+    },
+    {
+      "secretName": "5 - AOTV",
+      "category": "aotv",
+      "x": 52,
+      "y": 78,
+      "z": 9
+    },
+    {
+      "secretName": "5 - Crypt",
+      "category": "superboom",
+      "x": 52,
+      "y": 81,
+      "z": 9
+    },
+    {
+      "secretName": "5 - Lever",
+      "category": "lever",
+      "x": 52,
+      "y": 79,
+      "z": 9
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 41,
+      "y": 80,
+      "z": 12
+    },
+    {
+      "secretName": "6 - Superboom",
+      "category": "superboom",
+      "x": 6,
+      "y": 90,
+      "z": 57
+    },
+    {
+      "secretName": "6 - Item",
+      "category": "item",
+      "x": 2,
+      "y": 89,
+      "z": 57
+    },
+    {
+      "secretName": "7 - Entrance",
+      "category": "entrance",
+      "x": 10,
+      "y": 71,
+      "z": 8
+    },
+    {
+      "secretName": "7 - Crypt",
+      "category": "superboom",
+      "x": 14,
+      "y": 82,
+      "z": 4
+    },
+    {
+      "secretName": "7 - Lever",
+      "category": "lever",
+      "x": 14,
+      "y": 80,
+      "z": 3
+    },
+    {
+      "secretName": "7 - Chest",
+      "category": "chest",
+      "x": 9,
+      "y": 82,
+      "z": 21
+    },
+    {
+      "secretName": "7 - Stonk",
+      "category": "stonk",
+      "x": 9,
+      "y": 82,
+      "z": 20
+    },
+    {
+      "secretName": "8 - Chest",
+      "category": "chest",
+      "x": 60,
+      "y": 43,
+      "z": 50
+    },
+    {
+      "secretName": "9 - Item",
+      "category": "item",
+      "x": 53,
+      "y": 48,
+      "z": 8
+    },
+    {
+      "secretName": "10 - Entrance",
+      "category": "entrance",
+      "x": 6,
+      "y": 56,
+      "z": 50
+    },
+    {
+      "secretName": "10 - Item",
+      "category": "item",
+      "x": 4,
+      "y": 54,
+      "z": 56
+    }
+  ]
+}

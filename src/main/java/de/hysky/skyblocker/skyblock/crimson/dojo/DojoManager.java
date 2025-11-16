@@ -144,7 +144,8 @@ public class DojoManager {
         DojoManager.ping = ping;
     }
 
-    private static void update() {
+    @SuppressWarnings("incomplete-switch")
+	private static void update() {
         if (!Utils.isInCrimson() || !inArena) {
             return;
         }
@@ -178,12 +179,12 @@ public class DojoManager {
      */
     public static int getColor() {
         if (!Utils.isInCrimson() || !inArena) {
-            return 0xf57738;
+            return 0xF57738;
         }
         return switch (currentChallenge) {
             case FORCE -> ForceTestHelper.getColor();
             case DISCIPLINE -> DisciplineTestHelper.getColor();
-            default -> 0xf57738;
+            default -> 0xF57738;
         };
     }
 
@@ -193,7 +194,8 @@ public class DojoManager {
      * @param pos   the location of the updated block
      * @param newState the state of the new block
      */
-    private static void onBlockUpdate(BlockPos pos, BlockState oldStatem, BlockState newState) {
+    @SuppressWarnings("incomplete-switch")
+	private static void onBlockUpdate(BlockPos pos, BlockState oldStatem, BlockState newState) {
         if (!Utils.isInCrimson() || !inArena) {
             return;
         }
@@ -203,7 +205,8 @@ public class DojoManager {
         }
     }
 
-    private static void onEntitySpawn(Entity entity, ClientWorld clientWorld) {
+    @SuppressWarnings("incomplete-switch")
+	private static void onEntitySpawn(Entity entity, ClientWorld clientWorld) {
         if (!Utils.isInCrimson() || !inArena || CLIENT == null || CLIENT.player == null) {
             return;
         }
@@ -218,7 +221,8 @@ public class DojoManager {
         }
     }
 
-    private static void onEntityDespawn(Entity entity, ClientWorld clientWorld) {
+    @SuppressWarnings("incomplete-switch")
+	private static void onEntityDespawn(Entity entity, ClientWorld clientWorld) {
         if (!Utils.isInCrimson() || !inArena) {
             return;
         }
@@ -247,7 +251,8 @@ public class DojoManager {
         }
     }
 
-    private static void extractRendering(PrimitiveCollector collector) {
+    @SuppressWarnings("incomplete-switch")
+	private static void extractRendering(PrimitiveCollector collector) {
         if (!Utils.isInCrimson() || !inArena) {
             return;
         }

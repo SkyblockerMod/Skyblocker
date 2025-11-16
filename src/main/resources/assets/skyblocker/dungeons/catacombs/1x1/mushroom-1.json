@@ -1,0 +1,21 @@
+{
+  "info": {
+    "name": "Mushroom"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Mushroom (right click)",
+      "category": "lever",
+      "x": 20,
+      "y": 69,
+      "z": 21
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 16,
+      "y": 80,
+      "z": 17
+    }
+  ]
+}

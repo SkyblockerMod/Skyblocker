@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "Lava Skulls"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 5,
+      "y": 71,
+      "z": 26
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 3,
+      "y": 69,
+      "z": 28
+    },
+    {
+      "secretName": "2/3 - Entrance",
+      "category": "entrance",
+      "x": 23,
+      "y": 73,
+      "z": 15
+    },
+    {
+      "secretName": "2/3 - Entrance",
+      "category": "entrance",
+      "x": 7,
+      "y": 73,
+      "z": 15
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 15,
+      "y": 80,
+      "z": 27
+    },
+    {
+      "secretName": "3 - Bat",
+      "category": "bat",
+      "x": 13,
+      "y": 89,
+      "z": 4
+    }
+  ]
+}

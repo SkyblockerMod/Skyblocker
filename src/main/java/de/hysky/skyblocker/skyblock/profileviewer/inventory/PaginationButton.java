@@ -20,11 +20,11 @@ public class PaginationButton extends ClickableWidget {
         this.screen = screen;
         this.isNextButton = isNextButton;
         if (isNextButton) {
-            TEXTURE = Identifier.of("minecraft", "textures/gui/sprites/recipe_book/page_forward.png");
-            HIGHLIGHT = Identifier.of("minecraft", "textures/gui/sprites/recipe_book/page_forward_highlighted.png");
+            TEXTURE = Identifier.ofVanilla("textures/gui/sprites/recipe_book/page_forward.png");
+            HIGHLIGHT = Identifier.ofVanilla("textures/gui/sprites/recipe_book/page_forward_highlighted.png");
         } else {
-            TEXTURE = Identifier.of("minecraft", "textures/gui/sprites/recipe_book/page_backward.png");
-            HIGHLIGHT = Identifier.of("minecraft", "textures/gui/sprites/recipe_book/page_backward_highlighted.png");
+            TEXTURE = Identifier.ofVanilla("textures/gui/sprites/recipe_book/page_backward.png");
+            HIGHLIGHT = Identifier.ofVanilla("textures/gui/sprites/recipe_book/page_backward_highlighted.png");
         }
     }
 
