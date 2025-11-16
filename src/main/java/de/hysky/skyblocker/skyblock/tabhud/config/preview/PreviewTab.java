@@ -192,8 +192,7 @@ public class PreviewTab implements Tab {
 		int optionsY = startY + layerButtons.length * 15 + 5;
 		widgetOptions.setPosition(tabArea.width() - widgetOptions.getWidth() - 5, optionsY);
 		widgetOptions.setHeight(tabArea.height() - optionsY - 5);
-		textWidget.setWidth(tabArea.width());
-		textWidget.setPosition(0, tabArea.getBottom() - 9);
+		textWidget.setPosition((tabArea.width() - textWidget.getWidth()) / 2, tabArea.getBottom() - 9);
 		restorePositioning.setPosition(10, tabArea.getBottom() - 25);
 
 		forEachChild(clickableWidget -> clickableWidget.visible = mode == Mode.DUNGEON || parent.isPreviewVisible() || parent.noHandler);
