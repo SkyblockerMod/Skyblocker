@@ -91,7 +91,8 @@ public class TeleportOverlay {
 		if (raycast != null) {
 			BlockPos target = BlockPos.ofFloored(startPos.add(raycast));
 			if (isEtherwarp) {
-				if (!client.world.getBlockState(target.up()).isAir()) target = target.up();
+				if (!client.world.getBlockState(target.up()).isAir()) return;
+				if (!client.world.getBlockState(target.up(2)).isAir()) return;
 			} else {
 				target = target.down();
 			}

@@ -454,7 +454,7 @@ public class PredictiveSmoothAOTE {
 			}
 
 			//check if the block at head height is free
-			if (!canTeleportThrough(checkPos.up())) {
+			if (!canTeleportThrough(checkPos.up()) && !isEtherwarp) {
 				if (offset == 0) {
 					//cancel the check if starting height is too low
 					Vec3d justAhead = startPos.add(direction.multiply(0.2));
@@ -492,7 +492,7 @@ public class PredictiveSmoothAOTE {
 
 	/**
 	 * Checks to see if a block is in the allowed list to teleport though
-	 * Air, non-colision blocks, carpets, pots, 3 or less snow layers
+	 * Air, non-collidable blocks, carpets, pots, 3 or less snow layers
 	 *
 	 * @param blockPos block location
 	 * @return if a block location can be teleported though
