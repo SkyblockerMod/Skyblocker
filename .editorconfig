@@ -23,6 +23,7 @@ ij_java_keep_simple_methods_in_one_line = true
 [*.{json,properties}]
 indent_style = space
 indent_size = 2
+insert_final_newline = false
 
 [.editorconfig]
 indent_style = space
