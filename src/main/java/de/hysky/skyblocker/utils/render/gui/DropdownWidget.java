@@ -12,7 +12,6 @@ import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
-import java.awt.*;
 import java.util.List;
 import java.util.function.Consumer;
 

@@ -109,6 +109,7 @@ public class FancyStatusBars {
 	 * @param counts   the counts for each bar position (LAYER1, LAYER2, RIGHT)
 	 * @param position the position to load
 	 */
+	@SuppressWarnings("incomplete-switch")
 	private static void initBarPosition(StatusBar bar, int[] counts, UIAndVisualsConfig.LegacyBarPosition position) {
 		switch (position) {
 			case RIGHT:

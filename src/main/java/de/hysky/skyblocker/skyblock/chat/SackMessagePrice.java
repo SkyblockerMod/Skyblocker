@@ -17,7 +17,7 @@ import net.minecraft.text.PlainTextContent.Literal;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -159,7 +159,7 @@ public class SackMessagePrice {
 		for (Text sibling : text.getSiblings()) {
 			if (sibling.getStyle().getHoverEvent() instanceof ShowText(Text hoverText)
 					&& hoverText.getContent() instanceof Literal(String rootContent) // Only match the root content since we only need the root content.
-					&& StringUtils.startsWithAny(rootContent, "Added items:", "Removed items:")) {
+					&& Strings.CI.startsWithAny(rootContent, "Added items:", "Removed items:")) {
 				listList.add(hoverText.getSiblings());
 			}
 		}

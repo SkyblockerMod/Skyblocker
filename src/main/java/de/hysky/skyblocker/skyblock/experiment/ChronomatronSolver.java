@@ -70,6 +70,7 @@ public final class ChronomatronSolver extends ExperimentSolver implements Screen
 	/**
 	 * Only process the changes for items in the center row (one or two rows, depending on the Chronomatron level), and for the instruction/clock item
 	 */
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
 		if (slotId < 17 || slotId > (isSingleRow ? 25 : 34) && slotId != 49) return;
