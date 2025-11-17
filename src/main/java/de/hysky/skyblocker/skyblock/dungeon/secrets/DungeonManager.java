@@ -319,6 +319,12 @@ public class DungeonManager {
 						}
 						return Command.SINGLE_SUCCESS;
 					}))
+					.then(literal("clearRooms").executes(context -> {
+						// Sometimes, you just need to start again from a clean slate.
+						rooms.clear();
+						context.getSource().sendFeedback(Constants.PREFIX.get().append("Cleared all rooms!"));
+						return Command.SINGLE_SUCCESS;
+					}))
 			))));
 		}
 		ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
@@ -567,10 +573,13 @@ public class DungeonManager {
 	private static Room newDebugRoom(String roomName, Room.Direction direction, PlayerEntity player, MapState map) {
 		Room room = null;
 		int[] roomData;
+		// we will clean this up one day (no we won't)
 		if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.PUZZLE.shape).get(roomName)) != null) {
 			room = DebugRoom.ofSinglePossibleRoom(Room.Type.PUZZLE, DungeonMapUtils.getPhysicalRoomPos(player.getPos()), roomName, roomData, direction);
 		} else if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.TRAP.shape).get(roomName)) != null) {
 			room = DebugRoom.ofSinglePossibleRoom(Room.Type.TRAP, DungeonMapUtils.getPhysicalRoomPos(player.getPos()), roomName, roomData, direction);
+		} else if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.MINIBOSS.shape).get(roomName)) != null) {
+			room = DebugRoom.ofSinglePossibleRoom(Room.Type.MINIBOSS, DungeonMapUtils.getPhysicalRoomPos(player.getEntityPos()), roomName, roomData, direction);
 		} else if ((roomData = ROOMS_DATA.get("catacombs").values().stream().map(Map::entrySet).flatMap(Collection::stream).filter(entry -> entry.getKey().equals(roomName)).findAny().map(Map.Entry::getValue).orElse(null)) != null) {
 			room = DebugRoom.ofSinglePossibleRoom(Room.Type.ROOM, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, DungeonMapUtils.getMapRoomPos(map, mapEntrancePos, mapRoomSize), mapRoomSize, Room.Type.ROOM.color)), roomName, roomData, direction);
 		}

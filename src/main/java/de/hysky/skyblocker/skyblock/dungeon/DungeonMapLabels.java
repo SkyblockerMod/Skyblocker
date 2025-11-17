@@ -112,7 +112,7 @@ public class DungeonMapLabels {
 	 */
 	private static Vec3d getPosForLabel(Room room, int mapRoomSize, int fontHeight) {
 		switch (room.getType()) {
-			case BLOOD, MINIBOSS, FAIRY:
+			case BLOOD, FAIRY:
 				return null;
 		}
 
@@ -123,7 +123,7 @@ public class DungeonMapLabels {
 
 		Vector2i result = null;
 		switch (room.getShape()) {
-			case TRAP, PUZZLE, ONE_BY_ONE -> {
+			case TRAP, PUZZLE, MINIBOSS, ONE_BY_ONE -> {
 				result = new Vector2i(segmentsX[0] + mapRoomSize - 2, (int) (segmentsY[0] + mapRoomSize - ((double) fontHeight / 2) + 1));
 				if (mapRoomSize == 18) result.x -= 2;
 			}
@@ -167,7 +167,7 @@ public class DungeonMapLabels {
 				if (mapRoomSize == 16) yield mapRoomSize + 2; // minor nudging so most names can fit on one line
 				else yield mapRoomSize;
 			}
-			case TRAP, PUZZLE -> mapRoomSize;
+			case TRAP, PUZZLE, MINIBOSS -> mapRoomSize;
 			case ONE_BY_TWO, ONE_BY_THREE, ONE_BY_FOUR -> {
 				if (room.getDirection() == Room.Direction.NE) yield mapRoomSize;
 				yield mapRoomSize * 3;
