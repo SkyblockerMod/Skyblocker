@@ -169,7 +169,7 @@
   "skyblocker.config.dungeons.livid.lividColorText": "Livid Color Chat Message",
   "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Text for the chat message, the string \"[color]\" will be replaced with the livid color.",
 
-  "skyblocker.config.dungeons.map": "Map",
+  "skyblocker.config.dungeons.map": "Dungeon Map",
   "skyblocker.config.dungeons.map.enableMap": "Enable Map",
   "skyblocker.config.dungeons.map.fancyMap": "Fancy Dungeon Map",
   "skyblocker.config.dungeons.map.showSelfHead": "Show Self Head",
