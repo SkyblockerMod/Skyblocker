@@ -49,7 +49,7 @@ public class SkyblockerConfigManager {
 		}
 
 		CONFIG_MANAGER.load();
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(configLiteral())));
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(configLiteral("config")).then(configLiteral("options"))));
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (get().uiAndVisuals.showConfigButton && screen instanceof GenericContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
 				Screens.getButtons(screen).add(ButtonWidget
@@ -121,8 +121,8 @@ public class SkyblockerConfigManager {
 	 *
 	 * @return the command builder
 	 */
-	private static LiteralArgumentBuilder<FabricClientCommandSource> configLiteral() {
-		return literal("config").executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
+	private static LiteralArgumentBuilder<FabricClientCommandSource> configLiteral(String name) {
+		return literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
 				.then(argument("option", StringArgumentType.greedyString()).executes((ctx) -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("option", String.class)))));
 	}
 }
