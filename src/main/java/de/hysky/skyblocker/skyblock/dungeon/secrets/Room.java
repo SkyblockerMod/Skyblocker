@@ -87,8 +87,8 @@ public class Room implements Tickable, Renderable {
     /**
      * Represents the matching state of the room with the following possible values:
      * <li>{@link MatchState#MATCHING} means that the room has not been checked, is being processed, or does not {@link Type#needsScanning() need to be processed}.</li>
-     * <li>{@link MatchState#DOUBLE_CHECKING} means that the room has a unique match and is being double checked.</li>
-     * <li>{@link MatchState#MATCHED} means that the room has a unique match ans has been double checked.</li>
+     * <li>{@link MatchState#DOUBLE_CHECKING} means that the room has a unique match and is being double-checked.</li>
+     * <li>{@link MatchState#MATCHED} means that the room has a unique match and has been double-checked.</li>
      * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
      */
     protected MatchState matchState = MatchState.MATCHING;
@@ -159,6 +159,7 @@ public class Room implements Tickable, Renderable {
         return switch (type) {
             case PUZZLE -> Shape.PUZZLE;
             case TRAP -> Shape.TRAP;
+			case MINIBOSS -> Shape.MINIBOSS;
             default -> switch (segments.size()) {
                 case 1 -> Shape.ONE_BY_ONE;
                 case 2 -> Shape.ONE_BY_TWO;
@@ -181,7 +182,7 @@ public class Room implements Tickable, Renderable {
     @NotNull
     private Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
         return switch (shape) {
-            case ONE_BY_ONE, TWO_BY_TWO, PUZZLE, TRAP -> Direction.values();
+			case ONE_BY_ONE, TWO_BY_TWO, PUZZLE, TRAP, MINIBOSS -> Direction.values();
             case ONE_BY_TWO, ONE_BY_THREE, ONE_BY_FOUR -> {
                 if (segmentsX.size() > 1 && segmentsY.size() == 1) {
                     yield new Direction[]{Direction.NW, Direction.SE};
@@ -682,7 +683,7 @@ public class Room implements Tickable, Renderable {
          */
         private boolean needsScanning() {
             return switch (this) {
-                case ROOM, PUZZLE, TRAP -> true;
+				case ROOM, PUZZLE, TRAP, MINIBOSS -> true;
                 default -> false;
             };
         }
@@ -696,7 +697,8 @@ public class Room implements Tickable, Renderable {
         L_SHAPE("L-shape"),
         TWO_BY_TWO("2x2"),
         PUZZLE("puzzle"),
-        TRAP("trap");
+        TRAP("trap"),
+		MINIBOSS("miniboss");
         final String shape;
 
         Shape(String shape) {
