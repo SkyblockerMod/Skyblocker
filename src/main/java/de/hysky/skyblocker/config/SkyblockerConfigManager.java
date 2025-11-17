@@ -21,6 +21,7 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.function.Consumers;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.StackWalker.Option;
 import java.nio.file.Path;
@@ -79,7 +80,7 @@ public class SkyblockerConfigManager {
 		return createGUI(parent, "");
 	}
 
-	public static Screen createGUI(Screen parent, String search) {
+	public static Screen createGUI(@Nullable Screen parent, String search) {
 		return DandelionConfigScreen.create(CONFIG_MANAGER, (defaults, config, builder) -> builder
 				.title(Text.translatable("skyblocker.config.title", SkyblockerMod.VERSION))
 				.category(GeneralCategory.create(defaults, config))
