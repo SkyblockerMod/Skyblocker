@@ -159,7 +159,7 @@ public class SackMessagePrice {
 		for (Text sibling : text.getSiblings()) {
 			if (sibling.getStyle().getHoverEvent() instanceof ShowText(Text hoverText)
 					&& hoverText.getContent() instanceof Literal(String rootContent) // Only match the root content since we only need the root content.
-					&& Strings.CI.startsWithAny(rootContent, "Added items:", "Removed items:")) {
+					&& Strings.CS.startsWithAny(rootContent, "Added items:", "Removed items:")) {
 				listList.add(hoverText.getSiblings());
 			}
 		}
