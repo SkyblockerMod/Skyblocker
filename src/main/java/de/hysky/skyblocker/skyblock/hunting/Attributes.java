@@ -40,7 +40,13 @@ public class Attributes {
 		if (!stack.contains(DataComponentTypes.CUSTOM_NAME)) return null;
 		String name = stack.get(DataComponentTypes.CUSTOM_NAME).getString();
 
+		return getAttributeFromItemName(name);
+	}
+
+	@Nullable
+	public static Attribute getAttributeFromItemName(String name) {
 		// Shards outside the hunting box now have "Shard" in their item name.
+		// Dungeon chests also have x<number> after the "Shard" and this strips that too
 		int index = name.indexOf("Shard");
 		if (index > -1) name = name.substring(0, index - 1);
 

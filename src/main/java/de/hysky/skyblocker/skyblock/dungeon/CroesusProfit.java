@@ -1,9 +1,13 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.ChestValue;
+import de.hysky.skyblocker.skyblock.hunting.Attribute;
+import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
@@ -24,11 +28,12 @@ import java.util.regex.Pattern;
 
 public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder {
 	public static final CroesusProfit INSTANCE = new CroesusProfit();
-	private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>\\d+)");
-	private static final Pattern CHEST_PATTERN = Pattern.compile("^(?:Wood|Gold|Diamond|Emerald|Obsidian|Bedrock)$");
+	/** Dungeon chests do not have the word "Chest" in their name unlike their Kuudra counterparts, for some reason... */
+	private static final Pattern DUNGEON_CHEST_PATTERN = Pattern.compile("^(?:Wood|Gold|Diamond|Emerald|Obsidian|Bedrock)$");
+	private static final Pattern KUUDRA_CHEST_PATTERN = Pattern.compile("^(?:Free|Paid) Chest$");
 
-	public CroesusProfit() {
-		super("(Master )?Catacombs - Flo.*");
+	private CroesusProfit() {
+		super("(?:(?:Master )?Catacombs - Flo.*)|(?:Kuudra - .*)");
 	}
 
 	@Override
@@ -41,11 +46,14 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		List<ColorHighlight> highlights = new ArrayList<>();
 		ItemStack bestChest = null, secondBestChest = null;
 		double bestValue = 0, secondBestValue = 0;    // If negative value of chest - it is out of the question
-		double dungeonKeyPriceData = getItemPrice("DUNGEON_CHEST_KEY") * 2; // lesser ones are not worth the hassle
+		// Only suggest buying a second dungeon chest if you get double the key's value back so that its worth it (less is pointless)
+		double dungeonKeyPriceData = getItemPrice("DUNGEON_CHEST_KEY") * 2;
 
 		for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
 			ItemStack stack = entry.getValue();
-			if (CHEST_PATTERN.matcher(stack.getName().getString()).matches()) {
+			String name = stack.getName().getString();
+
+			if (DUNGEON_CHEST_PATTERN.matcher(name).matches()) {
 				double value = getChestValue(stack);
 				if (value <= 0) continue;
 
@@ -57,6 +65,14 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 				} else if (value > secondBestValue) {
 					secondBestChest = stack;
 					secondBestValue = value;
+				}
+			} else if (KUUDRA_CHEST_PATTERN.matcher(name).matches()) {
+				double value = getChestValue(stack);
+				if (value <= 0) continue;
+
+				if (value > bestValue) {
+					bestChest = stack;
+					bestValue = value;
 				}
 			}
 		}
@@ -97,27 +113,103 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		boolean processingContents = false;
 		for (Text line : ItemUtils.getLore(chest)) {
 			String lineString = line.getString();
-			if (lineString.contains("Contents")) {
-				processingContents = true;
-				continue;
-			} else if (lineString.isEmpty()) {
-				processingContents = false;
-			} else if (!processingContents && lineString.endsWith("Coins")) {
-				String chestCost = lineString.replace(",", "").replaceAll("\\D", "");
-				if (!NumberUtils.isCreatable(chestCost)) continue;
-				chestPrice = Integer.parseInt(chestCost);
+
+			switch (lineString) {
+				case String s when s.contains("Contents") -> {
+					processingContents = true;
+					continue;
+				}
+
+				case String s when s.isEmpty() -> {
+					processingContents = false;
+				}
+
+				case String s when s.endsWith("Coins") -> {
+					// This check is in a separate block because Java does not allow us to put it into the when statement
+					// mean effectively final restrictions!!!
+					if (!processingContents) {
+						String chestCost = lineString.replace(",", "").replaceAll("\\D", "");
+						if (!NumberUtils.isCreatable(chestCost)) continue;
+						chestPrice = Integer.parseInt(chestCost);
+					}
+				}
+
+				case String s when s.endsWith("Kuudra Key") -> {
+					if (!processingContents) {
+						// Remove any whitespace from the line with the key name
+						String trimmed = lineString.trim();
+
+						chestPrice = (int) ChestValue.computeKuudraKeyPrice(trimmed).leftDouble();
+					}
+				}
+
+				default -> {}
 			}
 
 			if (processingContents) {
-				if (lineString.contains("Essence") && SkyblockerConfigManager.get().dungeons.dungeonChestProfit.includeEssence) {
-					Matcher matcher = ESSENCE_PATTERN.matcher(lineString);
-					if (matcher.matches()) {    // add to chest value result of multiplying price of essence on it's amount
-						chestValue += getItemPrice(("ESSENCE_" + matcher.group("type")).toUpperCase(Locale.ENGLISH)) * Integer.parseInt(matcher.group("amount"));
+				switch (lineString) {
+					case String s when s.contains("Essence") && SkyblockerConfigManager.get().dungeons.dungeonChestProfit.includeEssence -> {
+						Matcher matcher = ChestValue.ESSENCE_PATTERN.matcher(lineString);
+
+						// Add to chest value result of multiplying price of essence on it's amount
+						if (matcher.matches()) {
+							String type = matcher.group("type").toUpperCase(Locale.ENGLISH);
+							int amount = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
+
+							// Apply Kuudra Pet bonus
+							if (type.equals("CRIMSON")) {
+								amount *= ChestValue.computeCrimsonEssenceMultiplier();
+							}
+
+							chestValue += getItemPrice("ESSENCE_" + type) * amount;
+						}
 					}
-				} else if (lineString.equals("Spirit") && line.getStyle().getColor() == TextColor.fromFormatting(Formatting.DARK_PURPLE)) {    // TODO: make code like this to detect recombed gear (it can drop with 1% chance, according to wiki, tho I never saw any?)
-					chestValue += getItemPrice("Spirit Epic");
-				} else {
-					chestValue += getItemPrice(lineString);
+
+					case String s when s.contains("Shard") -> {
+						Matcher matcher = ChestValue.SHARD_PATTERN.matcher(lineString);
+
+						if (matcher.matches()) {
+							int shards = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
+							Attribute attribute = Attributes.getAttributeFromItemName(lineString);
+
+							if (attribute == null) continue;
+
+							chestValue += getItemPrice(attribute.apiId()) * shards;
+						}
+					}
+
+					case String s when s.contains("Kuudra Teeth") -> {
+						Matcher matcher = ChestValue.KUUDRA_TEETH_PATTERN.matcher(lineString);
+
+						if (matcher.matches()) {
+							int amount = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
+
+							chestValue += getItemPrice("KUUDRA_TEETH") * amount;
+						}
+					}
+
+					case String s when s.contains("Heavy Pearl") -> {
+						Matcher matcher = ChestValue.HEAVY_PEARL_PATTERN.matcher(lineString);
+
+						if (matcher.matches()) {
+							int amount = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
+
+							chestValue += getItemPrice("HEAVY_PEARL") * amount;
+						}
+					}
+
+					// TODO: Make code like this to detect recombed gear (it can drop with 1% chance, according to wiki, tho I never saw any?)
+					case String s when s.equals("Spirit") && line.getStyle().getColor() == TextColor.fromFormatting(Formatting.DARK_PURPLE) -> {
+						chestValue += getItemPrice("Spirit Epic");
+					}
+
+					default -> {
+						// Strip stars from the name since calculating that from here is difficult + it won't make much of a material difference
+						// in terms of actually selling the item (for both Dungeons and Kuudra) .
+						String adjusted = lineString.replace("✪", "").trim();
+
+						chestValue += getItemPrice(adjusted);
+					}
 				}
 			}
 		}
@@ -125,13 +217,16 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		return chestValue - chestPrice;
 	}
 
-
 	/**
 	 * @param itemName The item's display name or API Id
-	 *                 The API id is used for Essences and the Dungeon Chest Key.
+	 *                 The API id is used for Essences, Shards, Kuudra Teeth, Heavy Pearls, and the Dungeon Chest Key.
 	 */
 	private double getItemPrice(String itemName) {
-		return ItemUtils.getItemPrice(DUNGEON_DROPS_NAME_TO_API_ID.getOrDefault(itemName, itemName)).leftDouble();
+		String dungeonApiId = DUNGEON_DROPS_NAME_TO_API_ID.get(itemName);
+		String kuudraApiId = KUUDRA_DROPS_NAME_TO_API_ID.get(itemName);
+		String apiIdToUse = dungeonApiId != null ? dungeonApiId : kuudraApiId != null ? kuudraApiId : itemName;
+
+		return ItemUtils.getItemPrice(apiIdToUse).leftDouble();
 	}
 
 	// I did a thing :(
@@ -271,5 +366,80 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		Map.entry("Wither Shard", "SHARD_WITHER"),
 		Map.entry("Apex Dragon Shard", "SHARD_APEX_DRAGON"),
 		Map.entry("Power Dragon Shard", "SHARD_POWER_DRAGON")
-	);
+		);
+
+	// The precedent has been set...
+	private static final Map<String, String> KUUDRA_DROPS_NAME_TO_API_ID = Map.ofEntries(
+			// Armour
+			Map.entry("Crimson Helmet", "CRIMSON_HELMET"),
+			Map.entry("Crimson Chestplate", "CRIMSON_CHESTPLATE"),
+			Map.entry("Crimson Leggings", "CRIMSON_LEGGINGS"),
+			Map.entry("Crimson Boots", "CRIMSON_BOOTS"),
+
+			Map.entry("Aurora Helmet", "AURORA_HELMET"),
+			Map.entry("Aurora Chestplate", "AURORA_CHESTPLATE"),
+			Map.entry("Aurora Leggings", "AURORA_LEGGINGS"),
+			Map.entry("Aurora Boots", "AURORA_BOOTS"),
+
+			Map.entry("Terror Helmet", "TERROR_HELMET"),
+			Map.entry("Terror Chestplate", "TERROR_CHESTPLATE"),
+			Map.entry("Terror Leggings", "TERROR_LEGGINGS"),
+			Map.entry("Terror Boots", "TERROR_BOOTS"),
+
+			Map.entry("Hollow Helmet", "HOLLOW_HELMET"),
+			Map.entry("Hollow Chestplate", "HOLLOW_CHESTPLATE"),
+			Map.entry("Hollow Leggings", "HOLLOW_LEGGINGS"),
+			Map.entry("Hollow Boots", "HOLLOW_BOOTS"),
+
+			Map.entry("Fervor Helmet", "FERVOR_HELMET"),
+			Map.entry("Fervor Chestplate", "FERVOR_CHESTPLATE"),
+			Map.entry("Fervor Leggings", "FERVOR_LEGGINGS"),
+			Map.entry("Fervor Boots", "FERVOR_BOOTS"),
+
+			// Equipment
+			Map.entry("Molten Necklace", "MOLTEN_NECKLACE"),
+			Map.entry("Molten Cloak", "MOLTEN_CLOAK"),
+			Map.entry("Molten Belt", "MOLTEN_BELT"),
+			Map.entry("Molten Bracelet", "MOLTEN_BRACELET"),
+
+			// Weapons
+			Map.entry("Aurora Staff", "RUNIC_STAFF"),
+			Map.entry("Hollow Wand", "HOLLOW_WAND"),
+			Map.entry("Tormentor", "TORMENTOR"),
+			Map.entry("Hellstorm Wand", "HELLSTORM_STAFF"),
+			Map.entry("Enrager", "ENRAGER"),
+
+			// Enchanted Books
+			Map.entry("Enchanted Book (Fatal Tempo I)", "ENCHANTMENT_ULTIMATE_FATAL_TEMPO_1"),
+			Map.entry("Enchanted Book (Inferno I)", "ENCHANTMENT_ULTIMATE_INFERNO_1"),
+			Map.entry("Enchanted Book (Strong Mana I)", "ENCHANTMENT_STRONG_MANA_1"),
+			Map.entry("Enchanted Book (Strong Mana II)", "ENCHANTMENT_STRONG_MANA_2"),
+			Map.entry("Enchanted Book (Strong Mana III)", "ENCHANTMENT_STRONG_MANA_3"),
+			Map.entry("Enchanted Book (Strong Mana IV)", "ENCHANTMENT_STRONG_MANA_4"),
+			Map.entry("Enchanted Book (Strong Mana V)", "ENCHANTMENT_STRONG_MANA_5"),
+			Map.entry("Enchanted Book (Ferocious Mana I)", "ENCHANTMENT_FEROCIOUS_MANA_1"),
+			Map.entry("Enchanted Book (Ferocious Mana II)", "ENCHANTMENT_FEROCIOUS_MANA_2"),
+			Map.entry("Enchanted Book (Ferocious Mana III)", "ENCHANTMENT_FEROCIOUS_MANA_3"),
+			Map.entry("Enchanted Book (Ferocious Mana IV)", "ENCHANTMENT_FEROCIOUS_MANA_4"),
+			Map.entry("Enchanted Book (Ferocious Mana V)", "ENCHANTMENT_FEROCIOUS_MANA_5"),
+			Map.entry("Enchanted Book (Hardened Mana I)", "ENCHANTMENT_HARDENED_MANA_1"),
+			Map.entry("Enchanted Book (Hardened Mana II)", "ENCHANTMENT_HARDENED_MANA_2"),
+			Map.entry("Enchanted Book (Hardened Mana III)", "ENCHANTMENT_HARDENED_MANA_3"),
+			Map.entry("Enchanted Book (Hardened Mana IV)", "ENCHANTMENT_HARDENED_MANA_4"),
+			Map.entry("Enchanted Book (Hardened Mana V)", "ENCHANTMENT_HARDENED_MANA_5"),
+			Map.entry("Enchanted Book (Mana Vampire I)", "ENCHANTMENT_MANA_VAMPIRE_1"),
+			Map.entry("Enchanted Book (Mana Vampire II)", "ENCHANTMENT_MANA_VAMPIRE_2"),
+			Map.entry("Enchanted Book (Mana Vampire III)", "ENCHANTMENT_MANA_VAMPIRE_3"),
+			Map.entry("Enchanted Book (Mana Vampire IV)", "ENCHANTMENT_MANA_VAMPIRE_4"),
+			Map.entry("Enchanted Book (Mana Vampire V)", "ENCHANTMENT_MANA_VAMPIRE_5"),
+
+			// Misc
+			Map.entry("Dusty Travel Scroll to the Kuudra Skull", "NETHER_FORTRESS_BOSS_TRAVEL_SCROLL"),
+			Map.entry("Mandraa", "MANDRAA"),
+			Map.entry("Kuudra Mandible", "KUUDRA_MANDIBLE"),
+			Map.entry("Burning Kuudra Core", "BURNING_KUUDRA_CORE"),
+			Map.entry("Wheel of Fate", "WHEEL_OF_FATE"),
+			Map.entry("Ananke Feather", "ANANKE_FEATHER"),
+			Map.entry("Tentacle Dye", "TENTACLE_DYE")
+			);
 }

@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CroesusHelper extends SimpleContainerSolver {
-    public CroesusHelper() {
-        super("^Croesus$");
+	public static final CroesusHelper INSTANCE = new CroesusHelper();
+
+    private CroesusHelper() {
+        super("^Croesus|Vesuvius$");
     }
 
     @Override

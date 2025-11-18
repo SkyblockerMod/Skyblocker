@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.util.StringIdentifiable;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -370,6 +371,8 @@ public class Calculator {
 	}
 
 	public static class CalculatorException extends Exception {
+		@Serial
+		private static final long serialVersionUID = -4480904461688998159L;
 		public final Object[] args;
 
 		public CalculatorException(@Translatable String message, Object... args) {

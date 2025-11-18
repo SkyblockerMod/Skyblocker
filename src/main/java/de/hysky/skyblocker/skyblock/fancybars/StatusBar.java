@@ -115,6 +115,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		if (enabled) renderText(context);
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public void renderBar(DrawContext context) {
 		if (renderWidth <= 0) return;
 		int transparency = transparency(-1);

@@ -163,6 +163,13 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.dungeonMap.showSelfHead = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.map.showRoomLabels"))
+								.binding(defaults.dungeons.dungeonMap.showRoomLabels,
+										() -> config.dungeons.dungeonMap.showRoomLabels,
+										newValue -> config.dungeons.dungeonMap.showRoomLabels = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.map.mapScaling"))
 								.binding(defaults.dungeons.dungeonMap.mapScaling,
