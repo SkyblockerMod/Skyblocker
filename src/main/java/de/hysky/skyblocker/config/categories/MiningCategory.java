@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.MiningConfig;
@@ -348,6 +349,7 @@ public class MiningCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker"))
 								.description(Text.translatable("skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.binding(defaults.mining.glacite.forceEnglishCorpseProfitTracker,
 										() -> config.mining.glacite.forceEnglishCorpseProfitTracker,
 										newValue -> config.mining.glacite.forceEnglishCorpseProfitTracker = newValue)
