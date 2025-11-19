@@ -6,6 +6,8 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigScreen;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
@@ -27,6 +29,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.SystemKeycodes;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.*;
 import java.util.Comparator;
@@ -264,7 +267,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
-								.tags(Text.literal("gui"))
+								.tags(ArrayUtils.add(WidgetManager.WIDGET_INSTANCES.values().stream().map(HudWidget::getInformation).map(HudWidget.Information::displayName).toArray(Text[]::new), Text.literal("gui")))
 								.prompt(Text.translatable("text.skyblocker.open"))
 								.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigScreen()))
 								.build())
