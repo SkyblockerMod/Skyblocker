@@ -349,7 +349,7 @@ public class MiningCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker"))
 								.description(Text.translatable("skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip"))
-								.tags(CommonTags.ADDED_IN_LATEST)
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.binding(defaults.mining.glacite.forceEnglishCorpseProfitTracker,
 										() -> config.mining.glacite.forceEnglishCorpseProfitTracker,
 										newValue -> config.mining.glacite.forceEnglishCorpseProfitTracker = newValue)

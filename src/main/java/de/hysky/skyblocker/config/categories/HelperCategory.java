@@ -314,7 +314,7 @@ public class HelperCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt.enableEggFinder"))
 								.description(Text.translatable("skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip"))
-								.tags(CommonTags.ADDED_IN_LATEST)
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.binding(defaults.helpers.chocolateFactory.enableEggFinder,
 										() -> config.helpers.chocolateFactory.enableEggFinder,
 										newValue -> config.helpers.chocolateFactory.enableEggFinder = newValue)
@@ -323,7 +323,7 @@ public class HelperCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages"))
 								.description(Text.translatable("skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages.@Tooltip"))
-								.tags(CommonTags.ADDED_IN_LATEST)
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.binding(defaults.helpers.chocolateFactory.sendEggFoundMessages,
 										() -> config.helpers.chocolateFactory.sendEggFoundMessages,
 										newValue -> config.helpers.chocolateFactory.sendEggFoundMessages = newValue)
@@ -332,7 +332,7 @@ public class HelperCategory {
 						.option(Option.<Waypoint.Type>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt.waypointType"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"))
-								.tags(CommonTags.ADDED_IN_LATEST)
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.binding(defaults.helpers.chocolateFactory.waypointType,
 										() -> config.helpers.chocolateFactory.waypointType,
 										newValue -> config.helpers.chocolateFactory.waypointType = newValue)
@@ -341,7 +341,7 @@ public class HelperCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt.showThroughWalls"))
 								.description(Text.translatable("skyblocker.config.helpers.hoppitysHunt.showThroughWalls.@Tooltip"))
-								.tags(CommonTags.ADDED_IN_LATEST)
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.binding(defaults.helpers.chocolateFactory.showThroughWalls,
 										() -> config.helpers.chocolateFactory.showThroughWalls,
 										newValue -> config.helpers.chocolateFactory.showThroughWalls = newValue)

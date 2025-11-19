@@ -433,7 +433,7 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip"))
-								.tags(CommonTags.ADDED_IN_LATEST)
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.binding(defaults.uiAndVisuals.waypoints.renderLine,
 										() -> config.uiAndVisuals.waypoints.renderLine,
 										newValue -> config.uiAndVisuals.waypoints.renderLine = newValue)
@@ -441,7 +441,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.lineColor"))
-								.tags(CommonTags.ADDED_IN_LATEST)
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.binding(defaults.uiAndVisuals.waypoints.lineColor,
 										() -> config.uiAndVisuals.waypoints.lineColor,
 										newValue -> config.uiAndVisuals.waypoints.lineColor = newValue)
@@ -449,7 +449,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.lineWidth"))
-								.tags(CommonTags.ADDED_IN_LATEST)
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.binding(defaults.uiAndVisuals.waypoints.lineWidth,
 										() -> config.uiAndVisuals.waypoints.lineWidth,
 										newValue -> config.uiAndVisuals.waypoints.lineWidth = newValue)
@@ -458,7 +458,7 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip"))
-								.tags(CommonTags.ADDED_IN_LATEST)
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.binding(defaults.uiAndVisuals.waypoints.allowSkippingWaypoints,
 										() -> config.uiAndVisuals.waypoints.allowSkippingWaypoints,
 										newValue -> config.uiAndVisuals.waypoints.allowSkippingWaypoints = newValue)
@@ -467,7 +467,7 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip"))
-								.tags(CommonTags.ADDED_IN_LATEST)
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.binding(defaults.uiAndVisuals.waypoints.allowGoingBackwards,
 										() -> config.uiAndVisuals.waypoints.allowGoingBackwards,
 										newValue -> config.uiAndVisuals.waypoints.allowGoingBackwards = newValue)
