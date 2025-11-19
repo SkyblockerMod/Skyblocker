@@ -67,17 +67,17 @@ public class WidgetsListTab implements Tab {
 		widgetsElementList = new WidgetsElementList(this, client, 0, 0, 0);
 		this.client = client;
 		this.handler = handler;
-		back = ButtonWidget.builder(Text.literal("Back"), button -> clickAndWaitForServer(48, 0))
+		back = ButtonWidget.builder(Text.translatable("gui.back"), button -> clickAndWaitForServer(48, 0))
 				.size(64, 15)
 				.build();
 		thirdColumnButton = ButtonWidget.builder(Text.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))
 				.size(120, 15)
 				.build();
 		thirdColumnButton.setTooltip(Tooltip.of(Text.literal("It is recommended to have this enabled, to have more info be displayed!")));
-		previousPage = ButtonWidget.builder(Text.literal("Previous Page"), button -> clickAndWaitForServer(45, 0))
+		previousPage = ButtonWidget.builder(Text.translatable("book.page_button.previous"), button -> clickAndWaitForServer(45, 0))
 				.size(100, 15)
 				.build();
-		nextPage = ButtonWidget.builder(Text.literal("Next Page"), button -> clickAndWaitForServer(53, 0))
+		nextPage = ButtonWidget.builder(Text.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
 				.size(100, 15)
 				.build();
 		if (handler == null) {
