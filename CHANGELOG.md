@@ -1,4 +1,5 @@
 # Release 5.9.0
+Easily configure the new options in-game by typing `/skyblocker config v5.9.0`!
 
 ## Highlight
 * Update to 1.21.10
@@ -9,7 +10,8 @@
 * Add support for new attribute shards by using the NEU Repo
 * Add a description for the Drill Fuel config option
 * Add a command to quickly search the config (MoulConfig only)
-  * /skyblocker config \<search text\>
+  * /skyblocker config (search text)
+* Add REI support for the Museum Overlay
 * Add Arrow Align Device Solver
 * Add Target Practice Device Solver
 * Add more customization
@@ -96,6 +98,9 @@
 * Hopefully Fix Dungeons Loading Issue by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1837
 * Dungeon Preview Tab Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1834
 * Undo StringUtils Removals by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1839
+* Add REI Focused Stack Provider by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1594
+* Fix Widget Reordering on 1.21.10 by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1840
+* Add a Config Search Tag for New Features by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1843
 
 ## New Contributors
 * @rafern made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1780
