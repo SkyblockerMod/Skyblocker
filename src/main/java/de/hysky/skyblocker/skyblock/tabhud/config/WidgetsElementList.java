@@ -53,7 +53,7 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 
 	@Override
 	public @Nullable WidgetsListEntry getSelectedOrNull() {
-		if (this.children().size() <= editingPosition) return null;
+		if (editingPosition < 0 || editingPosition >= this.children().size()) return null;
 		return this.children().get(editingPosition);
 	}
 
@@ -140,9 +140,11 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 		}
 		if (leftUpArrowHovered) {
 			parent.clickAndWaitForServer(13, 1);
+			return true;
 		}
 		if (leftDownArrowHovered) {
 			parent.clickAndWaitForServer(13, 0);
+			return true;
 		}
 		return super.mouseClicked(click, doubled);
 	}
