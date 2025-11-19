@@ -227,6 +227,7 @@ public class SearchOverManager {
 	 *
 	 * @param newValue new search value
 	 */
+	@SuppressWarnings("incomplete-switch")
 	protected static void updateSearch(String newValue) {
 		search = newValue;
 		//update the suggestion values
@@ -378,6 +379,7 @@ public class SearchOverManager {
 	/**
 	 * Add the current search value to the start of the history list and truncate to the max history value and save this to the config
 	 */
+	@SuppressWarnings("incomplete-switch")
 	private static void saveHistory() {
 		//save to history
 		UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;

@@ -5,6 +5,7 @@ import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
@@ -16,11 +17,14 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import de.hysky.skyblocker.utils.render.HudHelper;
+import net.minecraft.util.Colors;
 
 public class DropdownWidget<T> extends ContainerWidget {
-	protected static final MinecraftClient client = MinecraftClient.getInstance();
-	public final int entryHeight;
-	protected int headerHeight;
+	private static final MinecraftClient client = MinecraftClient.getInstance();
+    public final int entryHeight;
+    protected int headerHeight;
+    public static final int DEFAULT_ENTRY_HEIGHT = 15;
+	private static final int DEFAULT_HEADER_HEIGHT = ENTRY_HEIGHT + 4;
 	protected final List<T> entries;
 	protected final Consumer<T> selectCallback;
 	protected final Consumer<Boolean> openedCallback;
@@ -34,8 +38,8 @@ public class DropdownWidget<T> extends ContainerWidget {
 
 	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, int entryHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
 		super(x, y, width, 0, Text.empty());
-		this.entryHeight = entryHeight;
-		this.headerHeight = entryHeight + 4;
+		this.entryHeight = DEFAULT_ENTRY_HEIGHT;
+		this.headerHeight = DEFAULT_HEADER_HEIGHT;
 		this.maxHeight = maxHeight;
 		this.entries = entries;
 		this.selectCallback = selectCallback;
@@ -80,17 +84,14 @@ public class DropdownWidget<T> extends ContainerWidget {
 		dropdownList.visible = open;
 		dropdownList.render(context, mouseX, mouseY, delta);
 		renderHeader(context, mouseX, mouseY, delta);
+        if (isMouseOver(mouseX, mouseY)) context.setCursor(StandardCursors.POINTING_HAND);
 	}
 
 	protected void renderHeader(DrawContext context, int mouseX, int mouseY, float delta) {
-		context.fill(getX(), getY(), getRight(), getY() + headerHeight + 1, 0xFF << 24);
-		HudHelper.drawBorder(context, getX(), getY(), getWidth(), headerHeight + 1, -1);
-		drawScrollableText(context, client.textRenderer, formatter.apply(selected),
-				getX() + 2,
-				getY() + 2,
-				getRight() - 2,
-				getY() + headerHeight - 2,
-				-1);
+		context.fill(getX(), getY(), getRight(), getY() + headerHeight + 1, Colors.BLACK);
+		HudHelper.drawBorder(context, getX(), getY(), getWidth(), headerHeight + 1, Colors.WHITE);
+        context.drawText(client.textRenderer, ">", getX() + 4, getY() + 6, Colors.ALTERNATE_WHITE, true);
+        context.drawText(client.textRenderer, selected.toString(), getX() + 12, getY() + 6, Colors.WHITE, true);
 	}
 
 	@Override

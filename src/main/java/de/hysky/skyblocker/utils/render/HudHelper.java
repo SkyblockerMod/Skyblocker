@@ -21,6 +21,7 @@ import net.minecraft.entity.player.SkinTextures;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
@@ -73,10 +74,19 @@ public class HudHelper {
 	}
 
 	public static void drawOutlinedText(DrawContext context, Text text, int x, int y, int color, int outlineColor) {
-		if (CaxtonCompatibility.drawOutlinedText(context, text.asOrderedText(), x, y, color, outlineColor)) return;
-		if (ModernUICompatibility.drawOutlinedText(context, text, x, y, color, outlineColor)) return;
+		OrderedText orderedText = text.asOrderedText();
+		drawOutlinedText(context, orderedText, ModernUICompatibility.MODERNUI_ENABLED ? Text.literal(text.getString()).asOrderedText() : orderedText, x, y, color, outlineColor);
+	}
 
-		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text.asOrderedText(), new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, context.scissorStack.peekLast());
+	public static void drawOutlinedText(DrawContext context, OrderedText text, int x, int y, int color, int outlineColor) {
+		drawOutlinedText(context, text, text, x, y, color, outlineColor);
+	}
+
+	private static void drawOutlinedText(DrawContext context, OrderedText text, OrderedText outlineText, int x, int y, int color, int outlineColor) {
+		if (CaxtonCompatibility.drawOutlinedText(context, text, x, y, color, outlineColor)) return;
+		if (ModernUICompatibility.drawOutlinedText(context, text, outlineText, x, y, color, outlineColor)) return;
+
+		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text, new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, context.scissorStack.peekLast());
 		context.state.addText(renderState);
 	}
 

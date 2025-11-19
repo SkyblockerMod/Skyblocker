@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.crimson.kuudra;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.CrimsonIsleConfig;
-import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra.KuudraPhase;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;

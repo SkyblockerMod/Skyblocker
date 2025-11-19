@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -147,11 +148,15 @@ public class DungeonManager {
 	 * All access to this map must check {@link #isRoomsLoaded()} to prevent concurrent modification.
 	 */
 	@SuppressWarnings("JavadocReference")
-	protected static final HashMap<String, Map<String, Map<String, int[]>>> ROOMS_DATA = new HashMap<>();
-	@NotNull
+	protected static final Map<String, Map<String, Map<String, int[]>>> ROOMS_DATA = new ConcurrentHashMap<>();
+	private static final Map<String, RoomInfo> ROOMS_INFO = new ConcurrentHashMap<>();
+	private static final Map<String, List<RoomWaypoint>> ROOMS_WAYPOINTS = new ConcurrentHashMap<>();
+
+	/**
+	 * Rooms in the current dungeon map.
+	 */
 	private static final Map<Vector2ic, Room> rooms = new HashMap<>();
-	private static final Map<String, RoomInfo> roomInfo = new HashMap<>();
-	private static final Map<String, List<RoomWaypoint>> roomWaypoints = new HashMap<>();
+
 	/**
 	 * The map of dungeon room names to custom waypoints relative to the room.
 	 */
@@ -190,12 +195,12 @@ public class DungeonManager {
 
 	@Nullable
 	public static RoomInfo getRoomMetadata(String room) {
-		return roomInfo.get(room);
+		return ROOMS_INFO.get(room);
 	}
 
 	@Nullable
 	public static List<RoomWaypoint> getRoomWaypoints(String room) {
-		return roomWaypoints.get(room);
+		return ROOMS_WAYPOINTS.get(room);
 	}
 
 	/**
@@ -275,6 +280,7 @@ public class DungeonManager {
 		});
 		ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 5);
+		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::updateAllRoomCheckmarks, 20);
 		WorldRenderExtractionCallback.EVENT.register(DungeonManager::extractRendering);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonManager::onChatMessage);
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
@@ -318,6 +324,12 @@ public class DungeonManager {
 						}
 						return Command.SINGLE_SUCCESS;
 					}))
+					.then(literal("clearRooms").executes(context -> {
+						// Sometimes, you just need to start again from a clean slate.
+						rooms.clear();
+						context.getSource().sendFeedback(Constants.PREFIX.get().append("Cleared all rooms!"));
+						return Command.SINGLE_SUCCESS;
+					}))
 			))));
 		}
 		ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
@@ -335,13 +347,11 @@ public class DungeonManager {
 			String dungeon = path[1];
 			String roomShape = path[2];
 			String room = path[3].substring(0, path[3].length() - ".skeleton".length());
-			ROOMS_DATA.computeIfAbsent(dungeon, dungeonKey -> new HashMap<>());
-			ROOMS_DATA.get(dungeon).computeIfAbsent(roomShape, roomShapeKey -> new HashMap<>());
+			ROOMS_DATA.computeIfAbsent(dungeon, dungeonKey -> new ConcurrentHashMap<>());
+			ROOMS_DATA.get(dungeon).computeIfAbsent(roomShape, roomShapeKey -> new ConcurrentHashMap<>());
 			dungeonFutures.add(CompletableFuture.supplyAsync(() -> readRoom(resourceEntry.getValue())).thenAcceptAsync(blocks -> {
 				Map<String, int[]> roomsMap = ROOMS_DATA.get(dungeon).get(roomShape);
-				synchronized (roomsMap) {
-					roomsMap.put(room, blocks);
-				}
+				roomsMap.put(room, blocks);
 				LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon room skeleton - dungeon={}, shape={}, room={}", dungeon, roomShape, room);
 			}).exceptionally(e -> {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon room skeleton - dungeon={}, shape={}, room={}", dungeon, roomShape, room, e);
@@ -358,9 +368,8 @@ public class DungeonManager {
 			dungeonFutures.add(CompletableFuture.runAsync(() -> {
 				try (BufferedReader roomJsonReader = CLIENT.getResourceManager().openAsReader(resourceEntry.getKey())) {
 					RoomData roomData = RoomData.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(roomJsonReader)).getOrThrow();
-					if (roomData == null) throw new RuntimeException("Invalid JSON!");
-					if (roomData.secrets != null) roomWaypoints.put(room, roomData.secrets);
-					if (roomData.info != null) roomInfo.put(room, roomData.info);
+					ROOMS_WAYPOINTS.put(room, roomData.secrets);
+					ROOMS_INFO.put(room, roomData.info);
 				} catch (Exception ex) {
 					throw new RuntimeException(ex);
 				}
@@ -566,10 +575,13 @@ public class DungeonManager {
 	private static Room newDebugRoom(String roomName, Room.Direction direction, PlayerEntity player, MapState map) {
 		Room room = null;
 		int[] roomData;
+		// we will clean this up one day (no we won't)
 		if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.PUZZLE.shape).get(roomName)) != null) {
 			room = DebugRoom.ofSinglePossibleRoom(Room.Type.PUZZLE, DungeonMapUtils.getPhysicalRoomPos(player.getEntityPos()), roomName, roomData, direction);
 		} else if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.TRAP.shape).get(roomName)) != null) {
 			room = DebugRoom.ofSinglePossibleRoom(Room.Type.TRAP, DungeonMapUtils.getPhysicalRoomPos(player.getEntityPos()), roomName, roomData, direction);
+		} else if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.MINIBOSS.shape).get(roomName)) != null) {
+			room = DebugRoom.ofSinglePossibleRoom(Room.Type.MINIBOSS, DungeonMapUtils.getPhysicalRoomPos(player.getEntityPos()), roomName, roomData, direction);
 		} else if ((roomData = ROOMS_DATA.get("catacombs").values().stream().map(Map::entrySet).flatMap(Collection::stream).filter(entry -> entry.getKey().equals(roomName)).findAny().map(Map.Entry::getValue).orElse(null)) != null) {
 			room = DebugRoom.ofSinglePossibleRoom(Room.Type.ROOM, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, DungeonMapUtils.getMapRoomPos(map, mapEntrancePos, mapRoomSize), mapRoomSize, Room.Type.ROOM.color)), roomName, roomData, direction);
 		}
@@ -674,14 +686,31 @@ public class DungeonManager {
 			currentRoom = room;
 		}
 
-		//Calculate the checkmark colour and mark all secrets as found if the checkmark is green
-		//We also wait for it being matched to ensure that we don't try to mark the room as completed if secret waypoints haven't yet loaded (since the room is still matching)
-		if (currentRoom.getType() != Room.Type.ENTRANCE && currentRoom.isMatched() && !currentRoom.greenChecked && getRoomCheckmarkColour(CLIENT, map, currentRoom) == DungeonMapUtils.GREEN_COLOR) {
-			currentRoom.markAllSecrets(true);
-			currentRoom.greenChecked = true;
+		if (currentRoom.isMatched() && (!currentRoom.greenChecked || !currentRoom.whiteChecked)) {
+			updateRoomCheckmark(currentRoom, map);
 		}
 
 		currentRoom.tick(CLIENT);
+	}
+
+	private static void updateAllRoomCheckmarks() {
+		if (!Utils.isInDungeons() || isInBoss() || CLIENT.player == null || CLIENT.world == null) return;
+		MapState map = getMapState(CLIENT);
+		if (map == null || mapEntrancePos == null) return;
+		DungeonManager.getRoomsStream().filter(Room::isMatched).forEach(room -> updateRoomCheckmark(room, map));
+	}
+
+	// Calculate the checkmark colour and mark all secrets as found if the checkmark is green
+	// We also wait for it being matched to ensure that we don't try to mark the room as completed if secret waypoints haven't yet loaded (since the room is still matching)
+	private static void updateRoomCheckmark(Room room, MapState map) {
+		if (room.getType() == Room.Type.ENTRANCE || room.greenChecked && room.whiteChecked) return;
+		if (!room.greenChecked && getRoomCheckmarkColour(CLIENT, map, room) == DungeonMapUtils.GREEN_COLOR) {
+			room.greenChecked = true;
+			room.whiteChecked = true;
+			room.markAllSecrets(true);
+		} else if (!room.whiteChecked && getRoomCheckmarkColour(CLIENT, map, room) == DungeonMapUtils.WHITE_COLOR) {
+			room.whiteChecked = true;
+		}
 	}
 
 	/**
@@ -971,7 +1000,7 @@ public class DungeonManager {
 
 	@VisibleForTesting
 	public static int getLoadedRoomCount() {
-		return roomInfo.size();
+		return ROOMS_INFO.size();
 	}
 
 	public record RoomInfo(String name) {
@@ -984,7 +1013,6 @@ public class DungeonManager {
 		private static final Codec<RoomWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("secretName").forGetter(RoomWaypoint::secretName),
 				SecretWaypoint.Category.CODEC.fieldOf("category").forGetter(RoomWaypoint::category),
-				// todo: should I replace this with blockpos codec?
 				Codec.INT.fieldOf("x").forGetter(RoomWaypoint::x),
 				Codec.INT.fieldOf("y").forGetter(RoomWaypoint::y),
 				Codec.INT.fieldOf("z").forGetter(RoomWaypoint::z)
