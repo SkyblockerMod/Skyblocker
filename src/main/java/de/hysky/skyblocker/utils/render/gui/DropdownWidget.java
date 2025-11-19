@@ -20,11 +20,9 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.util.Colors;
 
 public class DropdownWidget<T> extends ContainerWidget {
-	private static final MinecraftClient client = MinecraftClient.getInstance();
     public final int entryHeight;
-    protected int headerHeight;
-    public static final int DEFAULT_ENTRY_HEIGHT = 15;
-	private static final int DEFAULT_HEADER_HEIGHT = ENTRY_HEIGHT + 4;
+	protected int headerHeight;
+	protected final MinecraftClient client;
 	protected final List<T> entries;
 	protected final Consumer<T> selectCallback;
 	protected final Consumer<Boolean> openedCallback;
@@ -38,14 +36,15 @@ public class DropdownWidget<T> extends ContainerWidget {
 
 	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, int entryHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
 		super(x, y, width, 0, Text.empty());
-		this.entryHeight = DEFAULT_ENTRY_HEIGHT;
-		this.headerHeight = DEFAULT_HEADER_HEIGHT;
+		this.client = minecraftClient;
+		this.entryHeight = entryHeight;
+		this.headerHeight = entryHeight + 4;
 		this.maxHeight = maxHeight;
 		this.entries = entries;
 		this.selectCallback = selectCallback;
 		this.openedCallback = openedCallback;
 		this.selected = selected;
-		dropdownList = createDropdown(minecraftClient);
+		dropdownList = createDropdown();
 		dropdownList.setDimensionsAndPosition(width - 2, maxHeight - headerHeight, x + 1, y + headerHeight);
 		for (T element : entries) {
 			dropdownList.addEntry(createEntry(element));
@@ -53,7 +52,11 @@ public class DropdownWidget<T> extends ContainerWidget {
 		setHeight(headerHeight);
 	}
 
-	protected DropdownList createDropdown(MinecraftClient client) {
+	public int getHeaderHeight() {
+		return headerHeight;
+	}
+
+	protected DropdownList createDropdown() {
 		return new DropdownList(client);
 	}
 

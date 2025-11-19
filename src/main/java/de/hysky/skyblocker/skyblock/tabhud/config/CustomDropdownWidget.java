@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Style;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 
@@ -17,7 +18,7 @@ class CustomDropdownWidget<T> extends DropdownWidget<T> {
 	private final T firstEntry;
 
 	CustomDropdownWidget(int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
-		super(client, x, y, width, maxHeight, 12, entries, selectCallback, selected, opened -> {});
+		super(MinecraftClient.getInstance(), x, y, width, maxHeight, 12, entries, selectCallback, selected, opened -> {});
 		headerHeight = 15;
 		firstEntry = entries.getFirst();
 	}
@@ -35,8 +36,10 @@ class CustomDropdownWidget<T> extends DropdownWidget<T> {
 		} else {
 			context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(50, 0));
 		}
+		context.drawText(client.textRenderer, ">", getX() + 4, getY() + (headerHeight - client.textRenderer.fontHeight) / 2 + 1, Colors.ALTERNATE_WHITE, true); // +1 on the y coordinate cuz drawScrollableText does so too
 		drawScrollableText(context, client.textRenderer, formatter.apply(selected),
-				getX() + 2,
+				getX() + getWidth() / 2,
+				getX() + 4 + 6,
 				getY() + 2,
 				getRight() - 2,
 				getY() + headerHeight - 2,
@@ -44,7 +47,7 @@ class CustomDropdownWidget<T> extends DropdownWidget<T> {
 	}
 
 	@Override
-	protected DropdownWidget<T>.DropdownList createDropdown(MinecraftClient client) {
+	protected DropdownWidget<T>.DropdownList createDropdown() {
 		return new CustomDropdownList(client);
 	}
 
