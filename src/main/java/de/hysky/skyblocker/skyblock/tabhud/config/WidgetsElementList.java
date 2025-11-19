@@ -75,7 +75,7 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 				if (!children().isEmpty()) addEntry(SEPARATOR);
 				parent.getCustomWidgetEntries().forEach(this::addEntry);
 			}
-			setScrollY(getScrollY());
+			refreshScroll();
 		}
 		super.renderWidget(context, mouseX, mouseY, delta);
 		WidgetsListEntry hoveredEntry = getHoveredEntry();
