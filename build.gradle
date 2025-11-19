@@ -146,6 +146,7 @@ dependencies {
 		//Using Mojmap breaks runClient, so uncomment only for snapshots when temp mappings are needed
 		//officialMojangMappings()
 		mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
+		mappings file("skyblocker-override.tiny")
 	}
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
@@ -241,6 +242,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 21
+	options.compilerArgs << "-Xmaxerrs" << "1000"
 }
 
 java {
