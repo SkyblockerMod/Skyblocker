@@ -12,6 +12,9 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.JsonData;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
@@ -48,6 +51,12 @@ public class ChatRulesHandler {
 	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> CHAT_RULE_LIST.init());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
+				dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
+						.then(ClientCommandManager.literal("chatRules")
+								.executes(
+										Scheduler.queueOpenScreenCommand(() -> new ChatRulesConfigScreen(null)))
+        )));
 	}
 
 	@VisibleForTesting
