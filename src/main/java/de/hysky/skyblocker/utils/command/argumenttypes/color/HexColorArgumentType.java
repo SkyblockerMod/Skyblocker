@@ -7,7 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.Text;
-import org.apache.commons.lang3.Strings;
+import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("RedundantCast")
 public final class HexColorArgumentType implements ArgumentType<Integer> {
@@ -17,7 +17,7 @@ public final class HexColorArgumentType implements ArgumentType<Integer> {
 	@Override
 	public Integer parse(StringReader reader) throws CommandSyntaxException {
 		String input = reader.readString();
-		if (Strings.CI.startsWith(input, "0x")) input = input.substring(2);
+		if (StringUtils.startsWithIgnoreCase(input, "0x")) input = input.substring(2);
 //		else if (input.startsWith("#")) input = input.substring(1); // This doesn't work because minecraft has the # prefix reserved for tags, so inputs with that prefix never reach this reader
 
 		if (input.length() != 6) throw WRONG_INPUT_WIDTH.create(input);
