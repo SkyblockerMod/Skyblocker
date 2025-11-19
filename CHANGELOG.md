@@ -10,49 +10,13 @@
 * Add a description for the Drill Fuel config option
 * Add a command to quickly search the config (MoulConfig only)
   * /skyblocker config \<search text\>
-* Fix Title Resizing Issues in the Title Container Config Screen
-* Fix Mythological Ritual Network Protocol Error Disconnect
-* Fix shards in Croesus Profit
-* Fix the location for Emissary Eliza in the Dwarven Mines
-* Fix Mangrove Equipment name in Museum Search Overlay
-* Fix dropdown widgets not being prominent enough
-* Fix Dungeons Preview Tab not working when in Dungeons
-
-## What's Changed
-* Limit Title Size in Title Container Config Screen by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1813
-* Fix Mythological Ritual NPE by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1816
-* Switch to NEU Repo for Attribute Shards by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1818
-* Add a description for Drill Fuel config option by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1814
-* Fix Mythological Ritual Helper Again by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1820
-* waypoints screen improvements by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1684
-* 1.21.9/1.21.10 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1815
-* Split Dungeon Secrets by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1661
-* Hoppity Waypoints over WS by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1719
-* New Location For Eliza Emissary by @jadencodes in https://github.com/SkyblockerMod/Skyblocker/pull/1824
-* Show Room Names on the Dungeon Map by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1782
-* Add Config Search Command by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1785
-* Fix Mangrove Equipment Showing as Mangrove Armor by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1831
-* Add Matching for Mini Boss Rooms by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1833
-* Make Dropdown Widget More Obvious by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1828
-* Hopefully Fix Dungeons Loading Issue by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1837
-* Dungeon Preview Tab Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1834
-* Undo StringUtils Removals by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1839
-
-
-**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.9.0-beta.1+1.21.8...v5.9.0+1.21.10
-___
-# Release 5.9.0 (Beta #1)
-
-## Highlight
-* Fix Croesus Profit & Chest Value
-* Fix Mythological Ritual Waypoints
 * Add Arrow Align Device Solver
 * Add Target Practice Device Solver
 * Add more customization
-    * Item Model & Armor Model can now be changed
-    * Animated Player Head textures
-    * Enchantment Glint Override
-    * Improved customization screen
+  * Item Model & Armor Model can now be changed
+  * Animated Player Head textures
+  * Enchantment Glint Override
+  * Improved customization screen
 * Add an option to always show corpse profit text in English
 * Add support for Galatea Sea Creatures
 * Add Quadrillion to Sign Calculator
@@ -74,6 +38,15 @@ ___
 * Fix block break progress resetting with Custom Durability Bar
 * Fix Zombie names for Dojo Discipline Test helper
 * Fix Hud Widgets getting stuck off-screen
+* Fix Title Resizing Issues in the Title Container Config Screen
+* Fix Mythological Ritual Network Protocol Error Disconnect
+* Fix shards in Croesus Profit
+* Fix the location for Emissary Eliza in the Dwarven Mines
+* Fix Mangrove Equipment name in Museum Search Overlay
+* Fix dropdown widgets not being prominent enough
+* Fix Dungeons Preview Tab not working when in Dungeons
+* Fix Croesus Profit & Chest Value
+* Fix Mythological Ritual Waypoints
 
 ## What's Changed
 * F7 Arrow Align Solver by @layou233 in https://github.com/SkyblockerMod/Skyblocker/pull/1754
@@ -105,11 +78,29 @@ ___
 * Fix potential crash in Croesus Profit by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1806
 * Fix Dungeon Chest Value by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1808
 * quick widget fixes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1812
+* Limit Title Size in Title Container Config Screen by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1813
+* Fix Mythological Ritual NPE by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1816
+* Switch to NEU Repo for Attribute Shards by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1818
+* Add a description for Drill Fuel config option by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1814
+* Fix Mythological Ritual Helper Again by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1820
+* waypoints screen improvements by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1684
+* 1.21.9/1.21.10 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1815
+* Split Dungeon Secrets by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1661
+* Hoppity Waypoints over WS by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1719
+* New Location For Eliza Emissary by @jadencodes in https://github.com/SkyblockerMod/Skyblocker/pull/1824
+* Show Room Names on the Dungeon Map by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1782
+* Add Config Search Command by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1785
+* Fix Mangrove Equipment Showing as Mangrove Armor by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1831
+* Add Matching for Mini Boss Rooms by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1833
+* Make Dropdown Widget More Obvious by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1828
+* Hopefully Fix Dungeons Loading Issue by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1837
+* Dungeon Preview Tab Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1834
+* Undo StringUtils Removals by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1839
 
 ## New Contributors
 * @rafern made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1780
 
-**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.8.0...v5.9.0-beta.1+1.21.8
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.8.0...v5.9.0+1.21.10
 ___
 # Release 5.8.0
 
