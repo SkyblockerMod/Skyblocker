@@ -201,6 +201,7 @@ public class WidgetsListTab implements Tab {
 		back.setPosition(16, tabArea.getTop() + 4);
 		widgetsElementList.setY(tabArea.getTop());
 		widgetsElementList.setDimensions(tabArea.width(), tabArea.height() - 20);
+		widgetsElementList.refreshScroll();
 		previousPage.setPosition(widgetsElementList.getRowLeft(), widgetsElementList.getBottom() + 4);
 		nextPage.setPosition(widgetsElementList.getScrollbarX() - 100, widgetsElementList.getBottom() + 4);
 		thirdColumnButton.setPosition(widgetsElementList.getScrollbarX() + 5, widgetsElementList.getBottom() + 4);
