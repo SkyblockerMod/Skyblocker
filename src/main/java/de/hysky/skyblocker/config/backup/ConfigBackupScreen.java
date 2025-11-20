@@ -8,6 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
@@ -154,6 +155,7 @@ public class ConfigBackupScreen extends Screen {
 		@Override
 		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			context.drawCenteredTextWithShadow(textRenderer, path.getFileName().toString(), this.getContentMiddleX(), this.getY() + 7, 0xFFFFFFFF);
+			if (isMouseOver(mouseX, mouseY)) context.setCursor(StandardCursors.POINTING_HAND);
 		}
 
 		@Override
