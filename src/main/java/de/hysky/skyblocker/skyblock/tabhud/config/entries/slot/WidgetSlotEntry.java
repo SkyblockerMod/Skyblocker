@@ -36,15 +36,18 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 				.size(64, 12)
 				.build();
 		alwaysEnabled = ItemUtils.getLoreLineIf(icon, s -> s.toLowerCase(Locale.ENGLISH).contains("always enable")) != null;
-
 	}
-
 
 	@Override
 	public void renderTooltip(DrawContext context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
 		if (mouseX >= x && mouseX <= x + entryWidth - 110 && mouseY >= y && mouseY <= y + entryHeight) {
 			List<Text> lore = ItemUtils.getLore(icon);
-			context.drawTooltip(MinecraftClient.getInstance().textRenderer, state == State.LOCKED ? lore : lore.subList(0, Math.max(lore.size() - 3, 0)), mouseX, mouseY);
+			if (alwaysEnabled) {
+				lore = lore.subList(0, Math.max(lore.size() - 2, 0));
+			} else if (state != State.LOCKED) {
+				lore = lore.subList(0, Math.max(lore.size() - 3, 0));
+			}
+			context.drawTooltip(MinecraftClient.getInstance().textRenderer, lore, mouseX, mouseY);
 		}
 	}
 

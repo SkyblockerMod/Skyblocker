@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
@@ -52,6 +53,7 @@ public class DungeonsCategory {
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.dungeons.salvageHelper.onlyDonated"))
+						.tags(CommonTags.ADDED_IN_5_9_0)
 						.binding(defaults.dungeons.onlyHighlightDonatedItems,
 								() -> config.dungeons.onlyHighlightDonatedItems,
 								newValue -> config.dungeons.onlyHighlightDonatedItems = newValue)
@@ -165,6 +167,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.map.showRoomLabels"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.binding(defaults.dungeons.dungeonMap.showRoomLabels,
 										() -> config.dungeons.dungeonMap.showRoomLabels,
 										newValue -> config.dungeons.dungeonMap.showRoomLabels = newValue)
@@ -477,6 +480,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.devices.solveArrowAlign"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.description(Text.translatable("skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip"))
 								.binding(defaults.dungeons.devices.solveArrowAlign,
 										() -> config.dungeons.devices.solveArrowAlign,
@@ -485,6 +489,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.devices.solveTargetPractice"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.description(Text.translatable("skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip"))
 								.binding(defaults.dungeons.devices.solveTargetPractice,
 										() -> config.dungeons.devices.solveTargetPractice,

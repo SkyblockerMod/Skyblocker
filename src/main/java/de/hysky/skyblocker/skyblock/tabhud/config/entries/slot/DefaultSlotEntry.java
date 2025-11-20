@@ -29,7 +29,7 @@ public class DefaultSlotEntry extends WidgetsListSlotEntry {
 	public void renderTooltip(DrawContext context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
 		if (mouseX >= x && mouseX <= x + entryWidth - 80 && mouseY >= y && mouseY <= y + entryHeight) {
 			List<Text> lore = ItemUtils.getLore(icon);
-			context.drawTooltip(MinecraftClient.getInstance().textRenderer, lore, mouseX, mouseY);
+			context.drawTooltip(MinecraftClient.getInstance().textRenderer, lore.subList(0, Math.max(lore.size() - 2, 0)), mouseX, mouseY);
 		}
 	}
 
