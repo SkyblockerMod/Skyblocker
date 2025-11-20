@@ -270,12 +270,14 @@
   "skyblocker.config.dungeons.terminals.solveSameColor": "Solve Change All to Same Color",
 
   "skyblocker.config.dungeons.terminalHud": "Terminal HUD",
-  "skyblocker.config.dungeons.terminalHud.enableTerminalIcons": "Show Terminal Icons",
-  "skyblocker.config.dungeons.terminalHud.enableTerminalIcons.@Tooltips": "Adds an item for the type (Terminal/Device/Lever)",
+  "skyblocker.config.dungeons.terminalHud.enabled": "Enable",
+  "skyblocker.config.dungeons.terminalHud.showTerminalIcons": "Show Terminal Icons",
+  "skyblocker.config.dungeons.terminalHud.showTerminalIcons.@Tooltip": "Adds an item for the type (Terminal/Device/Lever)",
   "skyblocker.config.dungeons.terminalHud.showTerminalStatus": "Whether to show terminal status",
   "skyblocker.config.dungeons.terminalHud.determineInProgressStatus": "Enable 'In Progress' Status",
   "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "Checks if there is a player near the terminal - does not guarantee it is being completed.",
   "skyblocker.config.dungeons.terminalHud.showCompletedTerminals": "Show Completed Terminals",
+  "skyblocker.config.dungeons.terminalHud.includeGate": "Include Gate",
 
   "skyblocker.config.farming": "Farming",
 

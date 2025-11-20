@@ -520,45 +520,47 @@ public class DungeonsCategory {
 
 				// F7/M7 Terminal Hud
 				.group(OptionGroup.createBuilder()
-						.name(Text.literal("Terminal HUD"))
+						.name(Text.translatable("skyblocker.config.dungeons.terminalHud"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.literal("Enable Terminal HUD Widget"))
+								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.enabled"))
 								.binding(defaults.dungeons.terminalHud.enableTerminalHud,
 										() -> config.dungeons.terminalHud.enableTerminalHud,
 										newValue -> config.dungeons.terminalHud.enableTerminalHud = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.literal("Enable Terminal Icons"))
+								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.showTerminalIcons"))
+								.description(Text.translatable("skyblocker.config.dungeons.terminalHud.showTerminalIcons.@Tooltip"))
 								.binding(defaults.dungeons.terminalHud.showTerminalIcons,
 										() -> config.dungeons.terminalHud.showTerminalIcons,
 										newValue -> config.dungeons.terminalHud.showTerminalIcons = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.literal("Show Terminal Status"))
+								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.showTerminalStatus"))
 								.binding(defaults.dungeons.terminalHud.showTerminalStatus,
 										() -> config.dungeons.terminalHud.showTerminalStatus,
 										newValue -> config.dungeons.terminalHud.showTerminalStatus = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.literal("Enable 'In Progress' Status"))
+								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.determineInProgressStatus"))
+								.description(Text.translatable("skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip"))
 								.binding(defaults.dungeons.terminalHud.determineInProgressStatus,
 										() -> config.dungeons.terminalHud.determineInProgressStatus,
 										newValue -> config.dungeons.terminalHud.determineInProgressStatus = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.literal("Show Completed Terminals"))
+								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.showCompletedTerminals"))
 								.binding(defaults.dungeons.terminalHud.showCompletedTerminals,
 										() -> config.dungeons.terminalHud.showCompletedTerminals,
 										newValue -> config.dungeons.terminalHud.showCompletedTerminals = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.literal("Include Gate"))
+								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.includeGate"))
 								.binding(defaults.dungeons.terminalHud.includeGate,
 										() -> config.dungeons.terminalHud.includeGate,
 										newValue -> config.dungeons.terminalHud.includeGate = newValue)
