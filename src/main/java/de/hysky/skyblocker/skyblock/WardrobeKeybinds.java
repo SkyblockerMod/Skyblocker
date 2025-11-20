@@ -26,7 +26,7 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 	public static final WardrobeKeybinds INSTANCE = new WardrobeKeybinds();
 
 	public WardrobeKeybinds() {
-		super("Wardrobe \\([12]/2\\)");
+		super("Wardrobe \\([123]/3\\)");
 	}
 
 	@Init
