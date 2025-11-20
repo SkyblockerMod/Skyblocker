@@ -51,6 +51,8 @@ public class DungeonsConfig {
 
 	public Goldor goldor = new Goldor();
 
+	public TerminalHud terminalHud = new TerminalHud();
+
 	public SecretWaypoints secretWaypoints = new SecretWaypoints();
 
 	public MimicMessage mimicMessage = new MimicMessage();
@@ -171,6 +173,21 @@ public class DungeonsConfig {
 
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 	}
+
+	public static class TerminalHud {
+		public boolean enableTerminalHud = false;
+
+		public boolean showTerminalIcons = true;
+
+		public boolean showTerminalStatus = true;
+
+		public boolean determineInProgressStatus = true;
+
+		public boolean showCompletedTerminals = false;
+
+		public boolean includeGate = true;
+	}
+
 
 	public static class SecretWaypoints {
 		@Deprecated

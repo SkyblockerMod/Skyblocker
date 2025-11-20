@@ -518,6 +518,54 @@ public class DungeonsCategory {
 								.build())
 						.build())
 
+				// F7/M7 Terminal Hud
+				.group(OptionGroup.createBuilder()
+						.name(Text.literal("Terminal HUD"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.literal("Enable Terminal HUD Widget"))
+								.binding(defaults.dungeons.terminalHud.enableTerminalHud,
+										() -> config.dungeons.terminalHud.enableTerminalHud,
+										newValue -> config.dungeons.terminalHud.enableTerminalHud = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.literal("Enable Terminal Icons"))
+								.binding(defaults.dungeons.terminalHud.showTerminalIcons,
+										() -> config.dungeons.terminalHud.showTerminalIcons,
+										newValue -> config.dungeons.terminalHud.showTerminalIcons = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.literal("Show Terminal Status"))
+								.binding(defaults.dungeons.terminalHud.showTerminalStatus,
+										() -> config.dungeons.terminalHud.showTerminalStatus,
+										newValue -> config.dungeons.terminalHud.showTerminalStatus = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.literal("Enable 'In Progress' Status"))
+								.binding(defaults.dungeons.terminalHud.determineInProgressStatus,
+										() -> config.dungeons.terminalHud.determineInProgressStatus,
+										newValue -> config.dungeons.terminalHud.determineInProgressStatus = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.literal("Show Completed Terminals"))
+								.binding(defaults.dungeons.terminalHud.showCompletedTerminals,
+										() -> config.dungeons.terminalHud.showCompletedTerminals,
+										newValue -> config.dungeons.terminalHud.showCompletedTerminals = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.literal("Include Gate"))
+								.binding(defaults.dungeons.terminalHud.includeGate,
+										() -> config.dungeons.terminalHud.includeGate,
+										newValue -> config.dungeons.terminalHud.includeGate = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
 				// Dungeon Secret Waypoints
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints"))
