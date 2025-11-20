@@ -104,6 +104,7 @@ Easily configure the new options in-game by typing `/skyblocker config v5.9.0`!
 * Add REI Focused Stack Provider by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1594
 * Fix Widget Reordering on 1.21.10 by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1840
 * Add a Config Search Tag for New Features by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1843
+* Config Backup Screen Fixes for 1.21.10 by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1845
 
 ## New Contributors
 * @rafern made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1780
