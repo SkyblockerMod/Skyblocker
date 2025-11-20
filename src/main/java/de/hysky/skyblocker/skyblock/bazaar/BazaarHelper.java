@@ -19,9 +19,9 @@ import java.util.regex.Pattern;
 
 public class BazaarHelper extends SimpleSlotTextAdder {
 	private static final Pattern FILLED_PATTERN = Pattern.compile("Filled: \\S+ \\(?([\\d.]+)%\\)?!?");
-	private static final int RED = 0xe60b1e;
-	private static final int YELLOW = 0xe6ba0b;
-	private static final int GREEN = 0x1ee60b;
+	private static final int RED = 0xE60B1E;
+	private static final int YELLOW = 0xE6BA0B;
+	private static final int GREEN = 0x1EE60B;
 
 	public BazaarHelper() {
 		super("(?:Co-op|Your) Bazaar Orders");

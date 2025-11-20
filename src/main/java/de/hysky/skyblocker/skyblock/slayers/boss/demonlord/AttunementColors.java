@@ -16,7 +16,7 @@ public class AttunementColors {
      * Fetches highlight colour based on the Inferno Demonlord, or its demons', Hellion Shield Attunement
      */
     public static int getColor(LivingEntity e) {
-        if (!SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights) return 0xf57738;
+        if (!SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights) return 0xF57738;
 		for (Entity entity : SlayerManager.getEntityArmorStands(e, 2.5f)) {
             Matcher matcher = COLOR_PATTERN.matcher(entity.getDisplayName().getString());
             if (matcher.find()) {

@@ -104,9 +104,9 @@ public class LividColor {
         colorString = colorString.substring(0, colorString.length() - 5).toUpperCase(Locale.ENGLISH);
         Text message = Text.literal(CONFIG.get().lividColorText.replaceAll("\\[color]", colorString)).formatted(LividColor.color);
         if (CONFIG.get().enableLividColorText) {
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().append(message).getString(), false);
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().append(message).getString(), true);
         }
-		if (CONFIG.get().enableLividColorTitle){
+		if (CONFIG.get().enableLividColorTitle) {
             client.inGameHud.setDefaultTitleFade();
             client.inGameHud.setTitle(message);
         }

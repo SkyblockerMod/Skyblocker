@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
+import de.hysky.skyblocker.mixins.accessors.EntityRenderManagerAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.HudHelper;
@@ -10,12 +10,14 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.render.TexturedRenderLayers;
+import net.minecraft.client.input.AbstractInput;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
-import net.minecraft.client.render.entity.model.ArmorEntityModel;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.render.entity.model.EquipmentModelData;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.component.type.NbtComponent;
@@ -32,6 +34,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
+import net.minecraft.util.Atlases;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -70,16 +73,12 @@ public abstract sealed class TrimElementButton extends PressableWidget permits T
 	abstract void draw(DrawContext context);
 
 	public static final class Pattern extends TrimElementButton {
-
 		private static final int DEFAULT_ROTATION = 15;
-
-		private static ArmorEntityModel<BipedEntityRenderState> OUTER_MODEL = null;
-		private static ArmorEntityModel<BipedEntityRenderState> INNER_MODEL = null;
-		private static EquipmentRenderer EQUIPMENT_RENDERER = null;
+		private static EquipmentModelData<? extends BipedEntityModel<?>> equipmentModelData = null;
+		private static EquipmentRenderer equipmentRenderer = null;
 
 		private final ArmorTrim trim;
 		private EquippableComponent equippableComponent;
-
 		private float rotation = DEFAULT_ROTATION;
 
 		public Pattern(@Nullable Identifier element, @Nullable ArmorTrimPattern pattern, Consumer<TrimElementButton> onPress) {
@@ -88,13 +87,13 @@ public abstract sealed class TrimElementButton extends PressableWidget permits T
 				trim = null;
 				return;
 			}
-			if (OUTER_MODEL == null) {
-				OUTER_MODEL = new ArmorEntityModel<>(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
-				INNER_MODEL = new ArmorEntityModel<>(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_INNER_ARMOR));
-				EQUIPMENT_RENDERER = new EquipmentRenderer(
-						((EntityRenderDispatcherAccessor) MinecraftClient.getInstance().getEntityRenderDispatcher()).getEquipmentModelLoader(),
-						MinecraftClient.getInstance().getBlockRenderManager().getModels().getModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE));
+			if (equipmentModelData == null) {
+				equipmentModelData = EquipmentModelData.mapToEntityModel(EntityModelLayers.PLAYER_EQUIPMENT, MinecraftClient.getInstance().getLoadedEntityModels(), modelPart -> new PlayerEntityModel(modelPart, false));
+				equipmentRenderer = new EquipmentRenderer(
+						((EntityRenderManagerAccessor) MinecraftClient.getInstance().getEntityRenderDispatcher()).getEquipmentModelLoader(),
+						MinecraftClient.getInstance().getAtlasManager().getAtlasTexture(Atlases.ARMOR_TRIMS));
 			}
+
 			trim = new ArmorTrim(
 					Utils.getRegistryWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL).getOrThrow(ArmorTrimMaterials.QUARTZ),
 					RegistryEntry.of(pattern));
@@ -126,14 +125,17 @@ public abstract sealed class TrimElementButton extends PressableWidget permits T
 			} else rotation = DEFAULT_ROTATION;
 
 			EquipmentSlot slot = equippableComponent.slot();
-			ArmorEntityModel<BipedEntityRenderState> model = slot == EquipmentSlot.LEGS ? INNER_MODEL : OUTER_MODEL;
+			@SuppressWarnings("unchecked")
+			BipedEntityModel<PlayerEntityRenderState> model = (BipedEntityModel<PlayerEntityRenderState>) equipmentModelData.getModelData(slot);
+			PlayerEntityRenderState state = new PlayerEntityRenderState();
 			EquipmentModel.LayerType layerType = slot == EquipmentSlot.LEGS ? EquipmentModel.LayerType.HUMANOID_LEGGINGS : EquipmentModel.LayerType.HUMANOID;
 			float offset = setVisibleAndGetOffset(model, slot);
 
-			HudHelper.drawEquipment(context, EQUIPMENT_RENDERER, layerType, equippableComponent.assetId().orElse(EquipmentAssetKeys.IRON), model, stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), rotation, 14, offset);
+			HudHelper.drawEquipment(context, equipmentRenderer, layerType, equippableComponent.assetId().orElse(EquipmentAssetKeys.IRON), model, state, stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), rotation, 14, offset);
 		}
 
-		private static float setVisibleAndGetOffset(ArmorEntityModel<?> bipedModel, EquipmentSlot slot) {
+		@SuppressWarnings("incomplete-switch")
+		private static float setVisibleAndGetOffset(BipedEntityModel<?> bipedModel, EquipmentSlot slot) {
 			bipedModel.setVisible(false);
 			switch (slot) {
 				case HEAD:
@@ -182,7 +184,7 @@ public abstract sealed class TrimElementButton extends PressableWidget permits T
 	}
 
 	@Override
-	public void onPress() {
+	public void onPress(AbstractInput input) {
 		onPress.accept(this);
 	}
 

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import de.hysky.skyblocker.utils.render.gui.SideTabButtonWidget;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.Item.TooltipContext;
 import net.minecraft.item.ItemStack;
@@ -34,9 +35,9 @@ public class CategoryTabWidget extends SideTabButtonWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(Click click, boolean doubled) {
         if (isToggled() || slotId == -1) return;
-        super.onClick(mouseX, mouseY);
+        super.onClick(click, doubled);
         slotClick.click(slotId);
     }
 }

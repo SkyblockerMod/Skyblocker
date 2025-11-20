@@ -19,8 +19,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class SkyblockForgeRecipe implements SkyblockRecipe {
-
-    public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_forge");
+    public static final Identifier ID = SkyblockerMod.id("skyblock_forge");
 
     private final List<ItemStack> inputs;
     private final ItemStack output;
@@ -92,7 +91,7 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 
     @Override
     public Identifier getCategoryIdentifier() {
-        return IDENTIFIER;
+        return ID;
     }
 
     public Identifier getRecipeIdentifier() {

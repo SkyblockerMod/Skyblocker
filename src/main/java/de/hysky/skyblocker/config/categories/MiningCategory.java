@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.MiningConfig;
@@ -33,6 +34,7 @@ public class MiningCategory {
                 //Uncategorized Options
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.mining.enableDrillFuel"))
+						.description(Text.translatable("skyblocker.config.mining.enableDrillFuel.@Tooltip"))
                         .binding(defaults.mining.enableDrillFuel,
                                 () -> config.mining.enableDrillFuel,
                                 newValue -> config.mining.enableDrillFuel = newValue)
@@ -342,6 +344,15 @@ public class MiningCategory {
 								.binding(defaults.mining.glacite.enableCorpseProfitTracker,
 										() -> config.mining.glacite.enableCorpseProfitTracker,
 										newValue -> config.mining.glacite.enableCorpseProfitTracker = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker"))
+								.description(Text.translatable("skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
+								.binding(defaults.mining.glacite.forceEnglishCorpseProfitTracker,
+										() -> config.mining.glacite.forceEnglishCorpseProfitTracker,
+										newValue -> config.mining.glacite.forceEnglishCorpseProfitTracker = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
                         .build())

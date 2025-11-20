@@ -17,7 +17,7 @@ public enum SlayerType implements StringIdentifiable {
 	TARANTULA("tarantula", EntityType.SPIDER, "Tarantula Broodfather", new ItemStack(Items.STRING), new int[]{5, 25, 100, 500, 1500}, new int[]{5, 25, 200, 1000, 5000, 20000, 100000, 400000, 1000000}, List.of("Tarantula Vermin", "Tarantula Beast", "Mutant Tarantula")),
 	SVEN("sven", EntityType.WOLF, "Sven Packmaster", new ItemStack(Items.MUTTON), new int[]{5, 25, 100, 500, 1500}, new int[]{10, 30, 250, 1500, 5000, 20000, 100000, 400000, 1000000}, List.of("Pack Enforcer", "Sven Follower", "Sven Alpha")),
 	VOIDGLOOM("voidgloom", EntityType.ENDERMAN, "Voidgloom Seraph", new ItemStack(Items.ENDER_PEARL), new int[]{5, 25, 100, 500, 1500}, new int[]{10, 30, 250, 1500, 5000, 20000, 100000, 400000, 1000000}, List.of("Voidling Devotee", "Voidling Radical", "Voidcrazed Maniac")),
-	VAMPIRE("vampire", EntityType.PLAYER, "Riftstalker Bloodfiend", new ItemStack(Items.REDSTONE), new int[]{5, 25, 100, 500, 1500}, new int[]{20, 75, 240, 840, 2400}, List.of()),
+	VAMPIRE("vampire", EntityType.PLAYER, "Riftstalker Bloodfiend", new ItemStack(Items.REDSTONE), new int[]{10, 25, 60, 120, 150}, new int[]{20, 75, 240, 840, 2400}, List.of()),
 	DEMONLORD("demonlord", EntityType.BLAZE, "Inferno Demonlord", new ItemStack(Items.BLAZE_POWDER), new int[]{5, 25, 100, 500, 1500}, new int[]{10, 30, 250, 1500, 5000, 20000, 100000, 400000, 1000000}, List.of("Flare Demon", "Kindleheart Demon", "Burningsoul Demon")),
 	UNKNOWN("unknown", null, "Unknown", new ItemStack(Items.BARRIER), new int[]{}, new int[]{}, List.of());
 

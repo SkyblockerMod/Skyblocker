@@ -11,7 +11,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Final;
@@ -67,10 +67,10 @@ public abstract class SignEditScreenMixin extends Screen {
     }
 
 	@Inject(method = "keyPressed", at = @At("HEAD"))
-	private void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+	private void skyblocker$keyPressed(KeyInput input, CallbackInfoReturnable<Boolean> cir) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.closeSignsWithEnter
 				&& Utils.isOnSkyblock() && isInputSign()
-				&& (keyCode == InputUtil.GLFW_KEY_ENTER || keyCode == InputUtil.GLFW_KEY_KP_ENTER)) this.close();
+				&& (input.isEnter())) this.close();
 	}
 
     @Inject(method = "finishEditing", at = @At("HEAD"))
@@ -120,8 +120,17 @@ public abstract class SignEditScreenMixin extends Screen {
 		return messages[2].endsWith("your") || messages[2].endsWith("query");
 	}
 
+	/**
+	 * Used to exclude search signs with {@link SignEditScreenMixin#ALT_INPUT_SIGN_MARKER}
+	 * <br> Works for the /bestiary sign
+	 */
+	@Unique
+	private boolean isAltInputSearchSign() {
+		return messages[2].endsWith("your");
+	}
+
 	@Unique
 	private boolean isInputSign() {
-		return messages[1].equals(INPUT_SIGN_MARKER) && !isInputSearchSign() || messages[1].equals(ALT_INPUT_SIGN_MARKER) || messages[1].equals(BAZAAR_FLIP_MARKER);
+		return messages[1].equals(INPUT_SIGN_MARKER) && !isInputSearchSign() || messages[1].equals(ALT_INPUT_SIGN_MARKER) && !isAltInputSearchSign() || messages[1].equals(BAZAAR_FLIP_MARKER);
 	}
 }

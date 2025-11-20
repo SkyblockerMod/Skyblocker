@@ -81,7 +81,12 @@ public class FairySouls {
                     for (Map.Entry<String, JsonElement> foundFairiesForLocationJson : foundFairiesForProfileJson.getValue().getAsJsonObject().asMap().entrySet()) {
                         Map<BlockPos, ProfileAwareWaypoint> fairiesForLocation = fairySouls.get(foundFairiesForLocationJson.getKey());
                         for (JsonElement foundFairy : foundFairiesForLocationJson.getValue().getAsJsonArray().asList()) {
-                            fairiesForLocation.get(PosUtils.parsePosString(foundFairy.getAsString())).setFound(foundFairiesForProfileJson.getKey());
+							ProfileAwareWaypoint waypoint = fairiesForLocation.get(PosUtils.parsePosString(foundFairy.getAsString()));
+							if (waypoint == null) {
+								LOGGER.warn("[Skyblocker] Ignored found fairy soul at {}", foundFairy.getAsString());
+							} else {
+								waypoint.setFound(foundFairiesForProfileJson.getKey());
+							}
                         }
                     }
                 }
@@ -181,8 +186,8 @@ public class FairySouls {
 
         fairiesOnCurrentIsland.values().stream()
                 .filter(Waypoint::shouldRender)
-                .min(Comparator.comparingDouble(fairySoul -> fairySoul.pos.getSquaredDistance(player.getPos())))
-                .filter(fairySoul -> fairySoul.pos.getSquaredDistance(player.getPos()) <= 16)
+                .min(Comparator.comparingDouble(fairySoul -> fairySoul.pos.getSquaredDistance(player.getEntityPos())))
+                .filter(fairySoul -> fairySoul.pos.getSquaredDistance(player.getEntityPos()) <= 16)
                 .ifPresent(Waypoint::setFound);
     }
 

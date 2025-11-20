@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CroesusHelper extends SimpleContainerSolver {
-    public CroesusHelper() {
-        super("^Croesus$");
+	public static final CroesusHelper INSTANCE = new CroesusHelper();
+
+    private CroesusHelper() {
+        super("^Croesus|Vesuvius$");
     }
 
     @Override
@@ -29,7 +31,7 @@ public class CroesusHelper extends SimpleContainerSolver {
             if (stack != null && stack.contains(DataComponentTypes.LORE)) {
                 if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Opened Chest:")) != null) {
                     highlights.add(ColorHighlight.gray(entry.getIntKey()));
-                } else if (ItemUtils.getLoreLineIf(stack, s -> s.contains("No more Chests to open!")) != null) {
+                } else if (ItemUtils.getLoreLineIf(stack, s -> s.contains("No more chests to open!")) != null) {
                     highlights.add(ColorHighlight.red(entry.getIntKey()));
                 }
             }

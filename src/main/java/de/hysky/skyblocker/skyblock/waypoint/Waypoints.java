@@ -42,6 +42,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
@@ -70,6 +71,7 @@ public class Waypoints {
         WorldRenderExtractionCallback.EVENT.register(Waypoints::extractRendering);
         ClientCommandRegistrationCallback.EVENT.register(Waypoints::registerCommands);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		Scheduler.INSTANCE.scheduleCyclic(Waypoints::tick, 1);
     }
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess access) {
@@ -156,7 +158,7 @@ public class Waypoints {
     public static String toSkyblocker(List<WaypointGroup> waypointGroups) {
         String waypointsJson = SkyblockerMod.GSON.toJson(CODEC.encodeStart(JsonOps.INSTANCE, waypointGroups).resultOrPartial(LOGGER::error).orElseThrow());
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try (GZIPOutputStream gzip = new GZIPOutputStream(output)){
+        try (GZIPOutputStream gzip = new GZIPOutputStream(output)) {
             gzip.write(waypointsJson.getBytes());
         } catch (IOException e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while serializing Skyblocker waypoint data", e);
@@ -260,21 +262,26 @@ public class Waypoints {
         return waypoints.values().stream().map(WaypointGroup::deepCopy).collect(Multimaps.toMultimap(WaypointGroup::island, Function.identity(), () -> MultimapBuilder.enumKeys(Location.class).arrayListValues().build()));
     }
 
+	private static void forEachGroup(Consumer<WaypointGroup> consumer) {
+		for (WaypointGroup group : getWaypointGroup(Utils.getLocation())) {
+			if (group != null) consumer.accept(group);
+		}
+		if (Utils.getLocationRaw().isEmpty()) return;
+		for (WaypointGroup group : getWaypointGroup(Location.UNKNOWN)) {
+			if (group != null) consumer.accept(group);
+		}
+	}
+
     private static void extractRendering(PrimitiveCollector collector) {
         if (SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
-            for (WaypointGroup group : getWaypointGroup(Utils.getLocation())) {
-                if (group != null) {
-                    group.extractRendering(collector);
-                }
-            }
-            if (Utils.getLocationRaw().isEmpty()) return;
-            for (WaypointGroup group : getWaypointGroup(Location.UNKNOWN)) {
-                if (group != null) {
-                    group.extractRendering(collector);
-                }
-            }
+            forEachGroup(group -> group.extractRendering(collector));
         }
     }
+
+	private static void tick() {
+		if (!SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) return;
+		forEachGroup(WaypointGroup::tick);
+	}
 
 	private static void reset() {
 		waypoints.values().forEach(WaypointGroup::resetCurrentIndex);

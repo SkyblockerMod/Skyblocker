@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.util.StringIdentifiable;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,7 +40,7 @@ public class Calculator {
 
 	public enum Operator implements StringIdentifiable {
 		ADD("+"), SUB("-"), MULT("*"), DIV("/"), MOD("%"), POW("^", true);
-		private static final java.util.function.Function<String, Operator> OPERATOR_MAP = StringIdentifiable.createMapper(Operator.values(), java.util.function.Function.identity());
+		private static final java.util.function.Function<String, Operator> OPERATOR_MAP = StringIdentifiable.createMapper(Operator.values(), op -> op.op);
 		private final String op;
 		private final boolean rightAssociative;
 
@@ -120,7 +121,7 @@ public class Calculator {
 		CEIL("ceil", Math::ceil),
 		ROUND("round", Math::round);
 
-		private static final java.util.function.Function<String, Function> FUNCTION_MAP = StringIdentifiable.createMapper(Function.values(), java.util.function.Function.identity());
+		private static final java.util.function.Function<String, Function> FUNCTION_MAP = StringIdentifiable.createMapper(Function.values(), func -> func.name);
 		private final String name;
 		private final CalculatorFunction function;
 
@@ -143,14 +144,15 @@ public class Calculator {
 		}
 	}
 
-	private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([sekmbt]?)");
+	private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([sekmbtq]?)");
 	private static final Object2LongMap<String> MAGNITUDE_VALUES = Object2LongMaps.unmodifiable(new Object2LongOpenHashMap<>(Map.of(
 			"s", 64L,
 			"e", 160L,
 			"k", 1_000L,
 			"m", 1_000_000L,
 			"b", 1_000_000_000L,
-			"t", 1_000_000_000_000L
+			"t", 1_000_000_000_000L,
+			"q", 1_000_000_000_000_000L
 	)));
 
 	private static List<AbstractToken<?>> lex(String input) throws CalculatorException {
@@ -189,7 +191,7 @@ public class Calculator {
 
 				case '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' -> {
 					Matcher numberMatcher = NUMBER_PATTERN.matcher(input.substring(i));
-					if (!numberMatcher.find()) {//invalid value to lex
+					if (!numberMatcher.find()) { //invalid value to lex
 						throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidCharacterError", input.substring(i));
 					}
 					int end = numberMatcher.end();
@@ -369,6 +371,8 @@ public class Calculator {
 	}
 
 	public static class CalculatorException extends Exception {
+		@Serial
+		private static final long serialVersionUID = -4480904461688998159L;
 		public final Object[] args;
 
 		public CalculatorException(@Translatable String message, Object... args) {

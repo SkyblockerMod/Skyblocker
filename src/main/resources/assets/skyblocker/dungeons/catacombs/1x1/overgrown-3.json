@@ -1,0 +1,63 @@
+{
+  "info": {
+    "name": "Overgrown"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 5,
+      "y": 70,
+      "z": 10
+    },
+    {
+      "secretName": "1 - Item",
+      "category": "item",
+      "x": 5,
+      "y": 70,
+      "z": 1
+    },
+    {
+      "secretName": "2 - Lever",
+      "category": "lever",
+      "x": 27,
+      "y": 81,
+      "z": 15
+    },
+    {
+      "secretName": "2 - Stonk",
+      "category": "stonk",
+      "x": 7,
+      "y": 80,
+      "z": 15
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 6,
+      "y": 80,
+      "z": 24
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 6,
+      "y": 79,
+      "z": 15
+    },
+    {
+      "secretName": "2 - Stonk",
+      "category": "stonk",
+      "x": 7,
+      "y": 80,
+      "z": 15
+    },
+    {
+      "secretName": "3 - Wither Essence",
+      "category": "wither",
+      "x": 5,
+      "y": 87,
+      "z": 19
+    }
+  ]
+}

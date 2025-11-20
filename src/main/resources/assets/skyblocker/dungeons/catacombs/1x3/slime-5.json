@@ -1,0 +1,70 @@
+{
+  "info": {
+    "name": "Slime"
+  },
+  "secrets": [
+    {
+      "secretName": "1/2 - Superboom",
+      "category": "superboom",
+      "x": 88,
+      "y": 71,
+      "z": 22
+    },
+    {
+      "secretName": "1 - Wither Essence",
+      "category": "wither",
+      "x": 74,
+      "y": 86,
+      "z": 15
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 91,
+      "y": 86,
+      "z": 20
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 71,
+      "y": 53,
+      "z": 18
+    },
+    {
+      "secretName": "3 - Bat",
+      "category": "bat",
+      "x": 80,
+      "y": 52,
+      "z": 16
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 65,
+      "y": 87,
+      "z": 16
+    },
+    {
+      "secretName": "5 - Entrance",
+      "category": "entrance",
+      "x": 12,
+      "y": 70,
+      "z": 15
+    },
+    {
+      "secretName": "5 - Entrance",
+      "category": "entrance",
+      "x": 20,
+      "y": 59,
+      "z": 12
+    },
+    {
+      "secretName": "5 - Item",
+      "category": "item",
+      "x": 4,
+      "y": 57,
+      "z": 15
+    }
+  ]
+}

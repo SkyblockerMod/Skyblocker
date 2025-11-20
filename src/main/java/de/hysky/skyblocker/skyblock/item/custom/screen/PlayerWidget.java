@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -30,10 +31,10 @@ public class PlayerWidget extends ClickableWidget {
 	}
 
 	@Override
-	protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-		super.onDrag(mouseX, mouseY, deltaX, deltaY);
-		this.xRotation = MathHelper.clamp(this.xRotation - (float) deltaY * 2.5F, -50.0F, 50.0F);
-		this.yRotation += (float) deltaX * 2.5F;
+	protected void onDrag(Click click, double offsetX, double offsetY) {
+		super.onDrag(click, offsetX, offsetY);
+		this.xRotation = MathHelper.clamp(this.xRotation - (float) offsetY * 2.5F, -50.0F, 50.0F);
+		this.yRotation += (float) offsetX * 2.5F;
 	}
 
 	@Override
@@ -41,13 +42,13 @@ public class PlayerWidget extends ClickableWidget {
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
 
 		float size = 64f;
-		Vector3f translation = new Vector3f(0.0625f, player.getHeight() / 1.5f + 0.0625f, 0);
+		Vector3f translation = new Vector3f(0, player.getHeight() / 2f + 0.0625f, 0);
 		Quaternionf rotation = new Quaternionf().rotationXYZ(-xRotation * MathHelper.RADIANS_PER_DEGREE, -yRotation * MathHelper.RADIANS_PER_DEGREE, FLIP_ROTATION);
 
 		InventoryScreen.drawEntity(
 				context,
-				0,
-				0,
+				getX(),
+				getY(),
 				this.getRight(),
 				this.getBottom(),
 				size,

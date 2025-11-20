@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "Dueces"
+  },
+  "secrets": [
+    {
+      "secretName": "1/2 - Superboom",
+      "category": "superboom",
+      "x": 17,
+      "y": 70,
+      "z": 2
+    },
+    {
+      "secretName": "1 - Item",
+      "category": "item",
+      "x": 9,
+      "y": 70,
+      "z": 5
+    },
+    {
+      "secretName": "2 - Bat",
+      "category": "bat",
+      "x": 13,
+      "y": 71,
+      "z": 9
+    },
+    {
+      "secretName": "3 - Stonk",
+      "category": "stonk",
+      "x": 2,
+      "y": 77,
+      "z": 15
+    },
+    {
+      "secretName": "3 - Superboom (not the chest in front)",
+      "category": "superboom",
+      "x": 11,
+      "y": 80,
+      "z": 15
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 2,
+      "y": 78,
+      "z": 15
+    }
+  ]
+}
