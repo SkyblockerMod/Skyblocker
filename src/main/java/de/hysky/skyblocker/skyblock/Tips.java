@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class Tips {
+	private static final String modVersion = SkyblockerMod.VERSION.split("\\+")[0];
     private static int currentTipIndex = 0;
     private static final List<Supplier<Text>> TIPS = new ArrayList<>(List.of(
             getTipFactory("skyblocker.tips.customItemNames", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker custom renameItem"),
@@ -54,7 +55,7 @@ public class Tips {
             getTipFactory("skyblocker.tips.slotText"),
             getTipFactory("skyblocker.tips.profileViewer", ClickEvent.Action.SUGGEST_COMMAND, "/pv"),
             getTipFactory("skyblocker.tips.configSearch", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config"),
-			getTipFactory("skyblocker.tips.configureNewFeatures", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config v" + SkyblockerMod.VERSION, SkyblockerMod.VERSION),
+			getTipFactory("skyblocker.tips.configureNewFeatures", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config v" + modVersion, modVersion),
             getTipFactory("skyblocker.tips.compactDamage", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config"),
             getTipFactory("skyblocker.tips.skyblockerScreen", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker"),
             getTipFactory("skyblocker.tips.tipsClick", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker tips next"),
