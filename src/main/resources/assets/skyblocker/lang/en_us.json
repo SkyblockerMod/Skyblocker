@@ -1613,7 +1613,7 @@
   "skyblocker.tips.slotText": "Slot text shows you the attribute shard info, catacombs level, collection level, enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, skill level, skyblock level in the slot.",
   "skyblocker.tips.profileViewer": "You can view other players' profiles with /pv.",
   "skyblocker.tips.configSearch": "You can search the entire config using the search bar in the config screen.",
-  "skyblocker.tips.configureNewFeatures": "Configure new features from this update with /skyblocker config v%s.",
+  "skyblocker.tips.configureNewFeatures": "Configure the new features from this update with /skyblocker config v%s.",
   "skyblocker.tips.compactDamage": "Customize your damage value with Compact Damage in the config.",
   "skyblocker.tips.skyblockerScreen": "You can access the Skyblocker screen to open the config or checkout helpful links for the mod with /skyblocker.",
   "skyblocker.tips.tipsClick": "Click on a tip chat message to run its suggestion!",
