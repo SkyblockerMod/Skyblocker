@@ -92,6 +92,8 @@
 - **Low arrow poison warning**
 - **Kuudra glow**
 - **Kuudra danger warning**
+- **Croesus/Vesuvius Helper**
+- **Chest Profit Calculator**
 
 ### Crimson Isles:
 - **Dojo helper**

@@ -7,11 +7,6 @@ Easily configure the new options in-game by typing `/skyblocker config v5.9.0`!
 * Add Hoppity's Hunt Egg Waypoint Sharing
   * Egg locations are now shared between players with this feature enabled
 * Add Room Name Labels on the Dungeon Map
-* Add support for new attribute shards by using the NEU Repo
-* Add a description for the Drill Fuel config option
-* Add a command to quickly search the config (MoulConfig only)
-  * /skyblocker config (search text)
-* Add REI support for the Museum Overlay
 * Add Arrow Align Device Solver
 * Add Target Practice Device Solver
 * Add more customization
@@ -19,11 +14,19 @@ Easily configure the new options in-game by typing `/skyblocker config v5.9.0`!
   * Animated Player Head textures
   * Enchantment Glint Override
   * Improved customization screen
+* Add Kuudra Chest Profit Calculator
+* Add JEI Support
+* Add Cursor Changing on Screens to match 1.21.10 Vanilla
 * Add an option to always show corpse profit text in English
 * Add support for Galatea Sea Creatures
 * Add Quadrillion to Sign Calculator
 * Add a way to update Zealot kills from the Bestiary
 * Add an option to only highlight donated items in Salvage Helper
+* Add support for new attribute shards by using the NEU Repo
+* Add a description for the Drill Fuel config option
+* Add a command to quickly search the config (MoulConfig only)
+  * /skyblocker config (search text)
+* Add REI support for the Museum Overlay
 * Improve Smooth AOTE/Teleport Overlay when sneaking
 * Improve lever highlight size on Lights On Device Solver
 * Fix text in the world not rendering properly with Caxton
