@@ -47,18 +47,20 @@ public class ConfigBackupScreen extends Screen {
 		if (listWidget == null) {
 			listWidget = new BackupListWidget(client, listWidth, listHeight, 32, 25);
 			listWidget.updateEntries();
+		} else {
+			listWidget.setDimensions(listWidth, listHeight);
 		}
 		listWidget.setX(4);
-		listWidget.setDimensions(listWidth, listHeight);
 		listWidget.refreshScroll();
 		addDrawableChild(listWidget);
 
 		if (detailsWidget == null) {
 			detailsWidget = new SettingsListWidget(client, detailsWidth, listHeight, 32, 10);
 			detailsWidget.updateEntries(listWidget.getSelectedPath());
+		} else {
+			detailsWidget.setDimensions(detailsWidth, listHeight);
 		}
 		detailsWidget.setX(listWidth + 8);
-		detailsWidget.setDimensions(detailsWidth, listHeight);
 		detailsWidget.refreshScroll();
 		addDrawableChild(detailsWidget);
 
