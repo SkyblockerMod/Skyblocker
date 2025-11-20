@@ -254,11 +254,10 @@ public class ConfigBackupScreen extends Screen {
 					StringEntry entry = children().get(i);
 					if (entry.path != null && changedPaths.contains(entry.path)) {
 						// similar calculation to getRowTop
-						int entryY = entry.getY();
+						int entryY = 4 + i * itemHeight + getY();
 						// height - scrollbarThumbHeight - 2 because we draw a two pixel high indicator.
 						// scrollbarThumbHeight thumb height calculations so the changed line is in view when the indicator is in the middle of the scrollbar thumb.
 						int barY = entryY * (height - scrollbarThumbHeight - 2) / (totalHeight - itemHeight) + listWidgetY + scrollbarThumbHeight / 2;
-						if (barY < getY()) continue;
 						context.fill(scrollBarX, barY, scrollBarX + 6, barY + 2, 0xFFFFFF55);
 					}
 				}
