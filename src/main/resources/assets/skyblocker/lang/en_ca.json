@@ -77,7 +77,6 @@
     "skyblocker.customization.titleSecret": "Pimp Your Armour",
     "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "Display the skyblock fishing hook timer on the screen.\n\nOn crosshair: in the centre of screen\n\nIn HUD: in the fishing HUD",
     "skyblocker.config.dungeons.terminals.solveSameColor": "Solve Change All to Same Colour",
-    "key.categories.skyblocker": "Skyblocker",
     "text.skyblocker.confirm": "Confirm",
     "text.skyblocker.undo": "Undo",
     "text.skyblocker.config": "Open Config...",
@@ -105,5 +104,7 @@
     "skyblocker.config.hunting.huntingMobs.colorPicker.Hideonleaf": "Hideonleaf highlight colour picker",
     "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "Highlights Shellwise in orange by default, with the option to choose a different colour.",
     "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "Shellwise highlight colour picker",
-    "skyblocker.customization.armor.modelOverride": "Armour Model Override"
+    "skyblocker.customization.armor.modelOverride": "Armour Model Override",
+    "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.CENTERED": "Centred",
+    "skyblocker.config.uiAndVisuals.waypoints.lineColor": "Line Colour"
 }
