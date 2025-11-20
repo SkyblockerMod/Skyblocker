@@ -1537,7 +1537,7 @@
     "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints": "Autoriser le Contournement des Marqueurs",
     "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip": "Autoriser le contournement de marqueurs dans les groupes de marqueurs ordonnés.",
     "skyblocker.config.uiAndVisuals.waypoints.renderLine": "Ligne d'Orientation",
-    "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "Trace une ligne partant de votre curseur jusqu'au prochain marqueur (Groupes ordonnés uniquement)",
+    "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "Trace une ligne partant de votre curseur jusqu'au prochain marqueur (Groupes ordonnés uniquement).",
     "skyblocker.config.uiAndVisuals.waypoints.lineColor": "Couleur de la Ligne",
     "skyblocker.config.uiAndVisuals.waypoints.lineWidth": "Largeur de la Ligne",
     "skyblocker.waypoints.otherOptions": "Autres Paramètres",
@@ -1546,5 +1546,15 @@
     "skyblocker.waypoints.groupType.ordered": "Ordonné",
     "skyblocker.waypoints.groupType.normal": "Normal",
     "skyblocker.waypoints.throughWalls": "Afficher à Travers les Murs",
-    "skyblocker.waypoints.waypointType": "Type de Marqueur"
+    "skyblocker.waypoints.waypointType": "Type de Marqueur",
+    "key.category.skyblocker.main": "Skyblocker",
+    "skyblocker.config.helpers.hoppitysHunt": "Hoppity's Hunt",
+    "skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip": "Surligne les Oeufs en Chocolat pendant la Hoppity's Hunt.\nLes oeufs nouvellement découverts sont automatiquement partagés entre les joueurs qui ont activé cette fonctionnalité.",
+    "skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages": "Envoyer les Messages des Oeufs Trouvés",
+    "skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages.@Tooltip": "Envoie un message lorsqu'un nouvel emplacement d'oeuf est reçu depuis le WebSocket Skyblocker.",
+    "skyblocker.config.helpers.hoppitysHunt.enableEggFinder": "Activer les Marqueurs des Oeufs par WebSocket",
+    "skyblocker.config.helpers.hoppitysHunt.waypointType": "Type de Marqueur d'Oeuf",
+    "skyblocker.config.helpers.hoppitysHunt.showThroughWalls": "Afficher à Travers les Murs",
+    "skyblocker.config.helpers.hoppitysHunt.showThroughWalls.@Tooltip": "Afficher ou non les Marqueurs des Oeufs en Chocolat à travers les murs.",
+    "skyblocker.config.dungeons.map.showRoomLabels": "Afficher les Noms des Salles"
 }
