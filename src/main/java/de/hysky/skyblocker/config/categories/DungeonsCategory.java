@@ -18,7 +18,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class DungeonsCategory {
 
@@ -59,7 +59,7 @@ public class DungeonsCategory {
 								newValue -> config.dungeons.onlyHighlightDonatedItems = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-                .option(Option.<Boolean>createBuilder()
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter"))
 						.description(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip"))
 						.binding(defaults.dungeons.sellableItemsHighlighter,
@@ -552,6 +552,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enableEntranceWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorEntranceWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorEntranceWaypoints,
+										() -> config.dungeons.secretWaypoints.colorEntranceWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorEntranceWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
+
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints"))
 								.binding(defaults.dungeons.secretWaypoints.enableSuperboomWaypoints,
@@ -559,6 +567,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enableSuperboomWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorSuperboomWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorSuperboomWaypoints,
+										() -> config.dungeons.secretWaypoints.colorSuperboomWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorSuperboomWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
+
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableChestWaypoints"))
 								.binding(defaults.dungeons.secretWaypoints.enableChestWaypoints,
@@ -566,6 +582,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enableChestWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorChestWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorChestWaypoints,
+										() -> config.dungeons.secretWaypoints.colorChestWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorChestWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
+
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableItemWaypoints"))
 								.binding(defaults.dungeons.secretWaypoints.enableItemWaypoints,
@@ -573,6 +597,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enableItemWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorItemWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorItemWaypoints,
+										() -> config.dungeons.secretWaypoints.colorItemWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorItemWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
+
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableBatWaypoints"))
 								.binding(defaults.dungeons.secretWaypoints.enableBatWaypoints,
@@ -580,6 +612,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enableBatWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorBatWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorBatWaypoints,
+										() -> config.dungeons.secretWaypoints.colorBatWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorBatWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
+
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableWitherWaypoints"))
 								.binding(defaults.dungeons.secretWaypoints.enableWitherWaypoints,
@@ -587,6 +627,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enableWitherWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorWitherWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorWitherWaypoints,
+										() -> config.dungeons.secretWaypoints.colorWitherWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorWitherWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
+
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableLeverWaypoints"))
 								.binding(defaults.dungeons.secretWaypoints.enableLeverWaypoints,
@@ -594,6 +642,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enableLeverWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorLeverWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorLeverWaypoints,
+										() -> config.dungeons.secretWaypoints.colorLeverWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorLeverWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
+
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableFairySoulWaypoints"))
 								.binding(defaults.dungeons.secretWaypoints.enableFairySoulWaypoints,
@@ -601,6 +657,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enableFairySoulWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorFairySoulWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorFairySoulWaypoints,
+										() -> config.dungeons.secretWaypoints.colorFairySoulWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorFairySoulWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
+
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints"))
 								.binding(defaults.dungeons.secretWaypoints.enableStonkWaypoints,
@@ -608,6 +672,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enableStonkWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorStonkWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorStonkWaypoints,
+										() -> config.dungeons.secretWaypoints.colorStonkWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorStonkWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
+
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableAotvWaypoints"))
 								.binding(defaults.dungeons.secretWaypoints.enableAotvWaypoints,
@@ -615,6 +687,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enableAotvWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorAotvWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorAotvWaypoints,
+										() -> config.dungeons.secretWaypoints.colorAotvWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorAotvWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
+
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints"))
 								.description(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip"))
@@ -623,6 +703,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enablePearlWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorPearlWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorPearlWaypoints,
+										() -> config.dungeons.secretWaypoints.colorPearlWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorPearlWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
+
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints"))
 								.description(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints.@Tooltip"))
@@ -631,6 +719,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enablePrinceWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorPrinceWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorPrinceWaypoints,
+										() -> config.dungeons.secretWaypoints.colorPrinceWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorPrinceWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
+
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableDefaultWaypoints"))
 								.description(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableDefaultWaypoints.@Tooltip"))
@@ -638,6 +734,13 @@ public class DungeonsCategory {
 										() -> config.dungeons.secretWaypoints.enableDefaultWaypoints,
 										newValue -> config.dungeons.secretWaypoints.enableDefaultWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.colorDefaultWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.colorDefaultWaypoints,
+										() -> config.dungeons.secretWaypoints.colorDefaultWaypoints,
+										newValue -> config.dungeons.secretWaypoints.colorDefaultWaypoints = newValue)
+								.controller(ConfigUtils.createColourController(false))
 								.build())
 						.build())
 
