@@ -1242,7 +1242,7 @@
   "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]": "Simple: Shows essential information in normal boxes.\n",
   "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]": "Classic: Shows information with decorations in normal boxes.\n",
   "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[3]": "Fancy: Shows information formatted in custom components with decorations in normal boxes.\n",
-  "skyblocker.config.uiAndVisuals.tabHud.tabHudScale": "Scale factor of fancy tab HUD",
+  "skyblocker.config.uiAndVisuals.tabHud.tabHudScale": "Global scale factor of the HUD",
   "skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip": "Value in %, relative to your vanilla GUI scale",
 
   "skyblocker.config.uiAndVisuals.teleportOverlay": "Teleport Overlay",

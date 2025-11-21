@@ -30,16 +30,29 @@ class TopBarWidget extends ContainerWidget {
 	private final Layout layout;
 	private final List<ClickableWidget> widgets;
 
+	// TODO translatable :)
 	TopBarWidget(int width, WidgetsConfigScreen parent) {
 		super(0, 0, width, HEIGHT, Text.literal("hi"));
 
 		layout = new Layout();
 
-		StyledButtonWidget helpButton = new StyledButtonWidget(60, HEIGHT, Text.literal("Help"), button -> parent.openPopup(screen -> new PopupScreen.Builder(screen, Text.literal("Help"))
-				.message(Text.literal("Use right click to add widgets and edit their options.\nYou can delete a widget by pressing the delete key.\n\nWidgets are per island. To have a widget show up everywhere select \"Everywhere\" in the island dropdown (there's only 2 dropdowns you should be able to find it). Widget options apply to every location with a few exceptions."))
+		DirectionalLayoutWidget leftButtons = DirectionalLayoutWidget.horizontal();
+		StyledButtonWidget optionsButton = new StyledButtonWidget(60, HEIGHT, Text.literal("Options"), button -> parent.openPopup(GlobalOptionsScreen::new));
+		optionsButton.setTooltip(Tooltip.of(Text.literal("Global options that affect everywhere.")));
+		StyledButtonWidget helpButton = new StyledButtonWidget(60, HEIGHT, Text.literal("(?) Help"), button -> parent.openPopup(screen -> new PopupScreen.Builder(screen, Text.literal("Help"))
+				.message(Text.literal("""
+						Use right click to add widgets and edit their options.
+						You can delete a widget by pressing the delete key.
+
+						Widgets are per island. To have a widget show up everywhere select "Everywhere" in the island dropdown (there's only 2 dropdowns you should be able to find it). Widget options apply to every location with a few exceptions.
+
+						You can hold SHIFT to snap to other widgets.
+						"""))
 				.button(ScreenTexts.OK, PopupScreen::close)
 				.build()));
-		layout.add(helpButton);
+		leftButtons.add(optionsButton);
+		leftButtons.add(helpButton);
+		layout.add(leftButtons);
 
 		List<Location> locations = Lists.newArrayList(Location.values());
 		// move UNKNOWN to be first
@@ -54,19 +67,19 @@ class TopBarWidget extends ContainerWidget {
 		dropdownsLayout.add(screenLayerDropdown);
 		layout.add(dropdownsLayout);
 
-		ToggleButtonWidget snappingToggle = new ToggleButtonWidget(80, HEIGHT, Text.literal("Snapping"), b -> parent.snapping = b);
+		/*ToggleButtonWidget snappingToggle = new ToggleButtonWidget(80, HEIGHT, Text.literal("Snapping"), b -> parent.snapping = b);
 		snappingToggle.setState(true);
-		snappingToggle.setTooltip(Tooltip.of(Text.literal("Automatically snap widgets to other widgets")));
+		snappingToggle.setTooltip(Tooltip.of(Text.literal("Automatically snap widgets to other widgets")));*/
 		ToggleButtonWidget autoAnchorToggle = new ToggleButtonWidget(100, HEIGHT, Text.literal("Auto Screen Anchor"), b -> parent.autoAnchor = b);
 		autoAnchorToggle.setState(true);
 		autoAnchorToggle.setTooltip(Tooltip.of(Text.literal("Automatically change the anchor of the widget based on the position")));
 
-		DirectionalLayoutWidget togglesLayout = DirectionalLayoutWidget.horizontal();
-		togglesLayout.add(snappingToggle);
-		togglesLayout.add(autoAnchorToggle);
-		layout.add(togglesLayout);
+		DirectionalLayoutWidget rightButtons = DirectionalLayoutWidget.horizontal();
+		//rightButtons.add(snappingToggle);
+		rightButtons.add(autoAnchorToggle);
+		layout.add(rightButtons);
 
-		widgets = List.of(helpButton, locationDropdown, screenLayerDropdown, snappingToggle, autoAnchorToggle);
+		widgets = List.of(optionsButton, helpButton, locationDropdown, screenLayerDropdown, autoAnchorToggle);
 		layout.refreshPositions();
 	}
 

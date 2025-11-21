@@ -195,7 +195,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 			String newParent = oldRule.parent();
 			OptionalInt relativeX = OptionalInt.empty();
 			OptionalInt relativeY = OptionalInt.empty();
-			if (snapping) {
+			if (client.isShiftPressed()) {
 				final NavigationDirection[] directions = NavigationDirection.values();
 
 				ScreenRect selectedRect = new ScreenRect((int) mouseX - dragRelative.x(), (int) mouseY - dragRelative.y(), selectedWidget.getScaledWidth(), selectedWidget.getScaledHeight());
