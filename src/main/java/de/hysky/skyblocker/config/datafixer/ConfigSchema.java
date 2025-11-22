@@ -15,6 +15,7 @@ public class ConfigSchema extends Schema {
     @Override
     public void registerTypes(Schema schema, Map<String, Supplier<TypeTemplate>> entityTypes, Map<String, Supplier<TypeTemplate>> blockEntityTypes) {
         schema.registerType(true, ConfigDataFixer.CONFIG_TYPE, DSL::remainder);
+        schema.registerType(true, ConfigDataFixer.CHAT_RULES_TYPE, DSL::remainder);
     }
 
     @Override

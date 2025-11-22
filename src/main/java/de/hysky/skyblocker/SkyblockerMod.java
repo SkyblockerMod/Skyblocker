@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.ConfigNullFieldsFix;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -49,7 +48,6 @@ public class SkyblockerMod implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
-        ConfigDataFixer.apply();
         SkyblockerConfigManager.init();
         ConfigNullFieldsFix.init(); //DO NOT INIT ANY CLASS THAT USES CONFIG FIELDS BEFORE THIS!
         ConfigBackupManager.init();
