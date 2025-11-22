@@ -68,4 +68,11 @@ public class LevelRendererMixin implements EntityRenderMarker {
 	private void skyblocker$drawGlowVertexConsumers(CallbackInfo ci) {
 		GlowRenderer.getInstance().getGlowVertexConsumers().endOutlineBatch();
 	}
+
+	@Redirect(method = "fillBlockBreakingProgressRenderState", at = @At(value = "NEW", target = "(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/util/math/BlockPos;I)Lnet/minecraft/client/render/state/BreakingBlockRenderState;"))
+	private BreakingBlockRenderState skyblocker$addBlockBreakingProgressRenderState(ClientWorld world, BlockPos entityBlockPos, int breakProgress) {
+		//todo check setting
+		int pingModifiedProgress = BlockBreakPrediction.getBlockBreakPrediction(entityBlockPos, breakProgress);
+		return new BreakingBlockRenderState(world, entityBlockPos, pingModifiedProgress);
+	}
 }
