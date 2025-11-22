@@ -273,7 +273,7 @@ spotless {
 		target 'src/**/lang/en_us.json'
 		targetExclude 'src/**/generated/**'
 
-		gson()/*.sortByKeys()*/.indentWithSpaces(2) // TODO: turn on `sortByKeys` in the future
+		gson().sortByKeys().indentWithSpaces(2)
 		// Note: a stem is a part of a key between dots, e.g. "skyblocker.config.chat" has three stems: "skyblocker", "config", and "chat".
 		replaceRegex \
 				"Separate different first stems",
