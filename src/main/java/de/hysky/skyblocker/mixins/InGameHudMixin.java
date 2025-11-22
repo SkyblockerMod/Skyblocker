@@ -59,8 +59,6 @@ public abstract class InGameHudMixin {
     private static final Pattern DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
 
     @Unique
-    private final FancyStatusBars statusBars = new FancyStatusBars();
-    @Unique
     final VanillaStyleManaBar vanillaStyleManaBar = new VanillaStyleManaBar();
 
     @Shadow
