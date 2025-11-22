@@ -154,6 +154,8 @@ public class DungeonsConfig {
 		public boolean solveStartsWith = true;
 
 		public boolean blockIncorrectClicks = false;
+
+		public boolean middleClick = false;
 	}
 
 	public static class Devices {
