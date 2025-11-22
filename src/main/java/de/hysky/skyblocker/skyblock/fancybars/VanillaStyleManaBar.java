@@ -65,7 +65,7 @@ public class VanillaStyleManaBar {
 			}
 			// If already blinking, keep blinkEndTick%6 the same to maintain current blink animation frame
 			if (blinkEndTick >= ticks) {
-				blinkEndTick = (ticks + 20)/6*6 + (blinkEndTick)%6;
+				blinkEndTick = (ticks + 20) / 6 * 6 + blinkEndTick % 6;
 			} else {
 				blinkEndTick = ticks + 20;
 			}
@@ -95,13 +95,13 @@ public class VanillaStyleManaBar {
 			int column = i % 10;
 
 			boolean manaNotch = i < manaNotches;
-			boolean manaNotchIsHalf = manaNotch && manaNotches-1 == i && manaHalfNotches%2 == 1;
+			boolean manaNotchIsHalf = manaNotch && manaNotches - 1 == i && manaHalfNotches % 2 == 1;
 			boolean manaBlinkNotch = i < manaBlinkNotches;
-			boolean manaBlinkNotchIsHalf = manaBlinkNotch && manaBlinkNotches-1 == i && manaBlinkHalfNotches%2 == 1;
+			boolean manaBlinkNotchIsHalf = manaBlinkNotch && manaBlinkNotches - 1 == i && manaBlinkHalfNotches % 2 == 1;
 			boolean overflowNotch = i < overflowNotches;
-			boolean overflowNotchIsHalf = overflowNotch && overflowNotches-1 == i && overflowHalfNotches%2 == 1;
+			boolean overflowNotchIsHalf = overflowNotch && overflowNotches - 1 == i && overflowHalfNotches % 2 == 1;
 			boolean overflowBlinkNotch = i < overflowBlinkNotches;
-			boolean overflowBlinkNotchIsHalf = overflowBlinkNotch && overflowBlinkNotches-1 == i && overflowBlinkHalfNotches%2 == 1;
+			boolean overflowBlinkNotchIsHalf = overflowBlinkNotch && overflowBlinkNotches - 1 == i && overflowBlinkHalfNotches % 2 == 1;
 
 			drawNotch(context, top, right, column, row, NotchType.CONTAINER, false, blinking);
 			if (manaNotches > 0) { // There is normal mana left, display normal mana

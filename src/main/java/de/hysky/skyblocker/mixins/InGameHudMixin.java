@@ -216,7 +216,7 @@ public abstract class InGameHudMixin {
         if (Utils.isOnSkyblock() && vanillaStyleManaBar.render(context, top, right, ticks)) ci.cancel();
     }
 
-	@Inject(method= "renderMountHealth", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)
 	private void skyblocker$renderManaOverMouthHealth(DrawContext context, CallbackInfo ci) {
 		// Values copied from InGameHud.renderMountHealth
 		int right = context.getScaledWindowWidth() / 2 + 91;
