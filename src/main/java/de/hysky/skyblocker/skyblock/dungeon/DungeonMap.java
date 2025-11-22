@@ -1,21 +1,19 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.mixins.accessors.MapStateAccessor;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.MapRenderState;
@@ -29,7 +27,6 @@ import net.minecraft.item.Items;
 import net.minecraft.item.map.MapDecoration;
 import net.minecraft.item.map.MapDecorationTypes;
 import net.minecraft.item.map.MapState;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,33 +41,20 @@ import java.util.UUID;
 
 public class DungeonMap {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonMap.class);
-	private static final Identifier DUNGEON_MAP = SkyblockerMod.id("dungeon_map");
 	private static final MapIdComponent DEFAULT_MAP_ID_COMPONENT = new MapIdComponent(1024);
 	private static final MapRenderState MAP_RENDER_STATE = new MapRenderState();
 	private static MapIdComponent cachedMapIdComponent = null;
 
 	@Init
 	public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.STATUS_EFFECTS, DUNGEON_MAP, (context, tickCounter) -> render(context));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
 				.then(ClientCommandManager.literal("hud")
 						.then(ClientCommandManager.literal("dungeon")
-								.executes(Scheduler.queueOpenScreenCommand(DungeonMapConfigScreen::new))
+								.executes(Scheduler.queueOpenScreenCommand(new WidgetsConfigurationScreen(Location.DUNGEON, WidgetManager.ScreenLayer.HUD, null)))
 						)
 				)
 		));
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
-	}
-
-	private static boolean shouldProcess() {
-		return Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss();
-	}
-
-	private static void render(DrawContext context) {
-		DungeonsConfig.DungeonMap dungeonMap = SkyblockerConfigManager.get().dungeons.dungeonMap;
-		if (shouldProcess() && dungeonMap.enableMap) {
-			render(context, dungeonMap.mapX, dungeonMap.mapY, dungeonMap.mapScaling, dungeonMap.fancyMap);
-		}
 	}
 
 	public static void render(DrawContext context, int x, int y, float scale, boolean fancy) {
