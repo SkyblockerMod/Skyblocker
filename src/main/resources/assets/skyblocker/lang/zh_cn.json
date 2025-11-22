@@ -903,7 +903,7 @@
     "skyblocker.config.eventNotifications.notificationSound.sound.DING": "叮",
     "skyblocker.tips.slotText": "槽位文本会将属性碎片信息，地牢等级，收集等级，附魔书等级，仆从等级，宠物等级，药水等级，犰狳蛋走过的格数，农业鞋速度限制，技能等级，skyblock等级显示在槽位里面。",
     "skyblocker.debug.toggledShowingInvisibleArmorStands": "已切换为%s显示隐形的盔甲架。",
-    "skyblocker.tips.configSearch": "你可以通过配置界面右下角的搜索框来搜索所有的配置。",
+    "skyblocker.tips.configSearch": "你可以通过配置界面的搜索框来搜索所有的配置。",
     "skyblocker.config.slayer.highlightBosses.@Tooltip[3]": "\n此选项是“烈焰人猎手协调高亮”的依赖项。",
     "skyblocker.waypoints.ordered.import.skyblocker.fail": "无法从Skyblocker Ordered Waypoints格式导入路径点。请务必将路径点信息复制到你的剪贴板！",
     "skyblocker.bars.config.explanation": "欢迎来到状态条配置界面！\n\n更改位置：将状态条拖到锚点（白色正方形）、现有的状态条或任何位置上。\n编辑属性：右键点击状态条。\n调节大小：将鼠标悬浮在两个状态条中间（光标会变化）。\n\n离开时，所有配置都会被保存。",
@@ -1539,5 +1539,6 @@
     "skyblocker.config.helpers.hoppitysHunt.enableEggFinder": "启用来自WebSocket的彩蛋路径点",
     "skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip": "高亮显示Hoppity's Hunt期间的彩蛋。\n新发现的彩蛋会在启用此功能的玩家之间自动共享。",
     "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "点击将彩蛋位置分享到聊天栏！",
-    "skyblocker.config.dungeons.map.showRoomLabels": "显示房间名称"
+    "skyblocker.config.dungeons.map.showRoomLabels": "显示房间名称",
+    "skyblocker.tips.configureNewFeatures": "使用 /skyblocker config v%s 即可配置此次更新的新功能。"
 }

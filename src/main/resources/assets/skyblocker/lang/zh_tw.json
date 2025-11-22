@@ -966,7 +966,7 @@
     "skyblocker.config.uiAndVisuals.slotText.skyblockLevel": "Skyblock等級",
     "skyblocker.slayer.hud.bossesNeeded": "距升級所需Boss數量",
     "skyblocker.tips.orderedWaypoints": "你可以使用/skyblocker waypoints ordered 導入（包括來自Coleweight）、新增、移除、切換已有的路徑點。從Coleweight導入時必須使用導入路徑點（Soopy）。務必確保在正確的島嶼上導入路徑點。",
-    "skyblocker.tips.configSearch": "你可以透過配置介面右下角的搜尋框來搜尋所有的配置。",
+    "skyblocker.tips.configSearch": "你可以透過配置介面的搜尋框來搜尋所有的配置。",
     "text.skyblocker.reset": "重置",
     "text.skyblocker.undo": "撤銷",
     "skyblocker.config.farming.garden.closeScreenOnPlotClick": "傳送到地塊後關閉物品欄",
@@ -1538,5 +1538,6 @@
     "skyblocker.helpers.hoppitysHunt.newEggDiscovered": "在%2$s找到了%1$s！",
     "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "點擊將彩蛋位置分享到聊天欄！",
     "skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip": "突出顯示Hoppity's Hunt期間的彩蛋。\n新發現的彩蛋會在啟用此功能的玩家之間自動共享。",
-    "skyblocker.config.dungeons.map.showRoomLabels": "顯示房間名稱"
+    "skyblocker.config.dungeons.map.showRoomLabels": "顯示房間名稱",
+    "skyblocker.tips.configureNewFeatures": "使用 /skyblocker config v%s 即可配置此次更新的新功能。"
 }
