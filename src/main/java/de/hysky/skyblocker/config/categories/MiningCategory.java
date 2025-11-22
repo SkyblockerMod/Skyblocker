@@ -6,12 +6,8 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.config.screens.powdertracker.PowderFilterConfigScreen;
-import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
 import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
 import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
-import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
@@ -70,7 +66,7 @@ public class MiningCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
 						.prompt(Text.translatable("text.skyblocker.open"))
-						.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, CommsWidget.ID, screen)))
+						.action(screen -> {})
 						.build())
 
                 //Dwarven Mines
@@ -179,7 +175,7 @@ public class MiningCategory {
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.crystalsHud.screen"))
                                 .prompt(Text.translatable("text.skyblocker.open"))
-                                .action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.CRYSTAL_HOLLOWS, CrystalsHudWidget.getInstance().getInternalID(), screen)))
+                                .action(screen -> {})
                                 .build())
                         .option(Option.<Float>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.crystalsHud.mapScaling"))

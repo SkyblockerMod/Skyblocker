@@ -13,7 +13,7 @@ import java.util.function.Supplier;
  * Abstract base class for a component that may be added to a Widget.
  */
 public abstract class Component {
-	public final Supplier<Integer> ICO_DIM = () -> SkyblockerConfigManager.get().uiAndVisuals.tabHud.compactWidgets ? 12 : 16;
+	public final Supplier<Integer> ICO_DIM = () -> SkyblockerConfigManager.get().uiAndVisuals.hud.compactWidgets ? 12 : 16;
 	public static final int PAD_S = 2;
 	public static final int PAD_L = 2;
 
