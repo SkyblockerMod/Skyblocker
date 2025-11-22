@@ -21,8 +21,10 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
@@ -47,7 +49,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
     }
 
     SecretWaypoint(int secretIndex, Category category, Text name, BlockPos pos) {
-        super(pos, name, TYPE_SUPPLIER, category.colorComponents);
+        super(pos, name, TYPE_SUPPLIER, new float[]{1, 1, 1});
         this.secretIndex = secretIndex;
         this.category = category;
     }
@@ -68,6 +70,11 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 
         return super.shouldRender() && category.isEnabled();
     }
+
+	@Override
+	public float[] getRenderColorComponents() {
+		return category.getColorComponents(colorComponents);
+	}
 
     boolean needsInteraction() {
         return category.needsInteraction();
@@ -115,32 +122,33 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
     }
 
     enum Category implements StringIdentifiable {
-        ENTRANCE("entrance", secretWaypoints -> secretWaypoints.enableEntranceWaypoints, 0, 255, 0),
-        SUPERBOOM("superboom", secretWaypoints -> secretWaypoints.enableSuperboomWaypoints, 255, 0, 0),
-        CHEST("chest", secretWaypoints -> secretWaypoints.enableChestWaypoints, 2, 213, 250),
-        ITEM("item", secretWaypoints -> secretWaypoints.enableItemWaypoints, 2, 64, 250),
-        BAT("bat", secretWaypoints -> secretWaypoints.enableBatWaypoints, 142, 66, 0),
-        WITHER("wither", secretWaypoints -> secretWaypoints.enableWitherWaypoints, 30, 30, 30),
-        LEVER("lever", secretWaypoints -> secretWaypoints.enableLeverWaypoints, 250, 217, 2),
-        FAIRYSOUL("fairysoul", secretWaypoints -> secretWaypoints.enableFairySoulWaypoints, 255, 85, 255),
-        STONK("stonk", secretWaypoints -> secretWaypoints.enableStonkWaypoints, 146, 52, 235),
-        AOTV("aotv", secretWaypoints -> secretWaypoints.enableAotvWaypoints, 252, 98, 3),
-        PEARL("pearl", secretWaypoints -> secretWaypoints.enablePearlWaypoints, 57, 117, 125),
-        PRINCE("prince", secretWaypoints -> secretWaypoints.enablePrinceWaypoints, 133, 21, 13),
-        DEFAULT("default", secretWaypoints -> secretWaypoints.enableDefaultWaypoints, 190, 255, 252);
+        ENTRANCE("entrance", secretWaypoints -> secretWaypoints.enableEntranceWaypoints, secretWaypoints -> secretWaypoints.colorEntranceWaypoints),
+        SUPERBOOM("superboom", secretWaypoints -> secretWaypoints.enableSuperboomWaypoints, secretWaypoints -> secretWaypoints.colorSuperboomWaypoints),
+        CHEST("chest", secretWaypoints -> secretWaypoints.enableChestWaypoints, secretWaypoints -> secretWaypoints.colorChestWaypoints),
+        ITEM("item", secretWaypoints -> secretWaypoints.enableItemWaypoints, secretWaypoints -> secretWaypoints.colorItemWaypoints),
+        BAT("bat", secretWaypoints -> secretWaypoints.enableBatWaypoints, secretWaypoints -> secretWaypoints.colorBatWaypoints),
+        WITHER("wither", secretWaypoints -> secretWaypoints.enableWitherWaypoints, secretWaypoints -> secretWaypoints.colorWitherWaypoints),
+        LEVER("lever", secretWaypoints -> secretWaypoints.enableLeverWaypoints, secretWaypoints -> secretWaypoints.colorLeverWaypoints),
+        FAIRYSOUL("fairysoul", secretWaypoints -> secretWaypoints.enableFairySoulWaypoints, secretWaypoints -> secretWaypoints.colorFairySoulWaypoints),
+        STONK("stonk", secretWaypoints -> secretWaypoints.enableStonkWaypoints, secretWaypoints -> secretWaypoints.colorStonkWaypoints),
+        AOTV("aotv", secretWaypoints -> secretWaypoints.enableAotvWaypoints, secretWaypoints -> secretWaypoints.colorAotvWaypoints),
+        PEARL("pearl", secretWaypoints -> secretWaypoints.enablePearlWaypoints, secretWaypoints -> secretWaypoints.colorPearlWaypoints),
+        PRINCE("prince", secretWaypoints -> secretWaypoints.enablePrinceWaypoints, secretWaypoints -> secretWaypoints.colorPrinceWaypoints),
+        DEFAULT("default", secretWaypoints -> secretWaypoints.enableDefaultWaypoints, secretWaypoints -> secretWaypoints.colorDefaultWaypoints);
         public static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
         private final String name;
         private final Predicate<DungeonsConfig.SecretWaypoints> enabledPredicate;
-        private final float[] colorComponents;
+        private final Function<DungeonsConfig.SecretWaypoints, Color> colorFunction;
 
-        Category(String name, Predicate<DungeonsConfig.SecretWaypoints> enabledPredicate, int... intColorComponents) {
+        Category(String name, Predicate<DungeonsConfig.SecretWaypoints> enabledPredicate, Function<DungeonsConfig.SecretWaypoints, Color> colorFunction) {
             this.name = name;
             this.enabledPredicate = enabledPredicate;
-            colorComponents = new float[intColorComponents.length];
-            for (int i = 0; i < intColorComponents.length; i++) {
-                colorComponents[i] = intColorComponents[i] / 255F;
-            }
+            this.colorFunction = colorFunction;
         }
+
+		private float[] getColorComponents(float[] compArray) {
+			return colorFunction.apply(SkyblockerConfigManager.get().dungeons.secretWaypoints).getRGBColorComponents(compArray);
+		}
 
         static Category get(JsonObject waypointJson) {
             return CODEC.parse(JsonOps.INSTANCE, waypointJson.get("category")).resultOrPartial(LOGGER::error).orElse(Category.DEFAULT);
