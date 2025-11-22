@@ -163,14 +163,14 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		back = ButtonWidget.builder(Text.literal("Back"), button -> clickAndWaitForServer(48, 0))
 				.size(64, 15)
 				.build();
-		thirdColumnButton = ButtonWidget.builder(Text.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))
+		thirdColumnButton = ButtonWidget.builder(Text.translatable("gui.back"), button -> clickAndWaitForServer(50, 0))
 				.size(120, 15)
 				.build();
 		thirdColumnButton.setTooltip(Tooltip.of(Text.literal("It is recommended to have this enabled, to have more info be displayed!")));
-		previousPage = ButtonWidget.builder(Text.literal("Previous Page"), button -> clickAndWaitForServer(45, 0))
+		previousPage = ButtonWidget.builder(Text.translatable("book.page_button.previous"), button -> clickAndWaitForServer(45, 0))
 				.size(100, 15)
 				.build();
-		nextPage = ButtonWidget.builder(Text.literal("Next Page"), button -> clickAndWaitForServer(53, 0))
+		nextPage = ButtonWidget.builder(Text.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
 				.size(100, 15)
 				.build();
 		addSelectableChild(back); // element list was blocking the clicks for some reason
@@ -188,6 +188,7 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		back.setPosition(16, 4);
 		widgetsElementList.setY(0);
 		widgetsElementList.setDimensions(width, height - 20);
+		widgetsElementList.refreshScroll();
 		previousPage.setPosition(widgetsElementList.getRowLeft(), widgetsElementList.getBottom() + 4);
 		nextPage.setPosition(widgetsElementList.getScrollbarX() - 100, widgetsElementList.getBottom() + 4);
 		thirdColumnButton.setPosition(widgetsElementList.getScrollbarX() + 5, widgetsElementList.getBottom() + 4);

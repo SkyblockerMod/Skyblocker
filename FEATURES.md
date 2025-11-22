@@ -4,6 +4,7 @@
 - **Fancy Minimap & Score**
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
+    - Room Name Labels
 - **Starred Mob Glow**
 - **Croesus Helper:**
     - Highlight not opened chests
@@ -91,6 +92,8 @@
 - **Low arrow poison warning**
 - **Kuudra glow**
 - **Kuudra danger warning**
+- **Croesus/Vesuvius Helper**
+- **Chest Profit Calculator**
 
 ### Crimson Isles:
 - **Dojo helper**
@@ -347,7 +350,8 @@
     - In-game fishing hook timer display
 - **Mythological Ritual Helper**
     - Estimates Diana griffin burrow positions
-- **Chocolate factory Helper**
+- **Chocolate Factory Helper**
+- **Hoppity's Hunt Helper**
 - **Jerry timer**
 - **Wardrobe helper based on hotbar keybinds**
 - **Carnival Helpers**
