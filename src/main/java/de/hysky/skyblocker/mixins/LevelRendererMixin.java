@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.mixins;
 
+import de.hysky.skyblocker.skyblock.dwarven.BlockBreakPrediction;
+import net.minecraft.client.render.state.BreakingBlockRenderState;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -47,5 +49,12 @@ public class LevelRendererMixin {
 	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V"))
 	private void skyblocker$drawGlowVertexConsumers(CallbackInfo ci) {
 		GlowRenderer.getInstance().getGlowVertexConsumers().endOutlineBatch();
+	}
+
+	@Redirect(method = "fillBlockBreakingProgressRenderState", at = @At(value = "NEW", target = "(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/util/math/BlockPos;I)Lnet/minecraft/client/render/state/BreakingBlockRenderState;"))
+	private BreakingBlockRenderState skyblocker$addBlockBreakingProgressRenderState(ClientWorld world, BlockPos entityBlockPos, int breakProgress) {
+		//todo check setting
+		int pingModifiedProgress = BlockBreakPrediction.getBlockBreakPrediction(entityBlockPos, breakProgress);
+		return new BreakingBlockRenderState(world, entityBlockPos, pingModifiedProgress);
 	}
 }
