@@ -21,18 +21,18 @@ import java.util.zip.DeflaterOutputStream;
  * A .skeleton file is a sorted int[] where each integer is (X << 24) | (Y << 16) | (Z << 8) | blockType
  */
 public class StructureToSkeleton {
-	private static final Logger LOGGER = LoggerFactory.getLogger("RoomSkeletonCreator");
+	private static final Logger LOGGER = LoggerFactory.getLogger("StructureToSkeleton");
 
 	/**
 	 * Argument #1: the path to the structure .nbt file
-	 * Argument #2: the y-offset of the .structure block
+	 * Argument #2: optional - the y-offset of the .structure block, 0 if not provided.
 	 * If successful, the .skeleton file will be stored next to the structure .nbt file.
 	 */
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1) throw new RuntimeException("Insufficient arguments provided!");
 		if (args.length > 2) throw new RuntimeException("Too many arguments provided!");
 
-		convertToSkeleton(args[0], Integer.parseInt(args[1]));
+		convertToSkeleton(args[0], args.length == 2 ? Integer.parseInt(args[1]) : 0);
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class StructureToSkeleton {
 	 * Manually parses through NBT because StructureTemplate is harder to use...
 	 *
 	 * @param yOffset The Y-height of the lowest block in the structure template.
-	 *              NOTE: The lowest block can be air depending on how it is saved!!
+	 *                NOTE: The lowest block can be air depending on how it is saved!!
 	 */
 	private static List<SkeletonBlock> getStructureBlocks(String structureFilePath, int yOffset) throws IOException {
 		List<SkeletonBlock> blockData = new ArrayList<>();

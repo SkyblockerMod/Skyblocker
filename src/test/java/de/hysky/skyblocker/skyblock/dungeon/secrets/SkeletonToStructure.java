@@ -18,15 +18,14 @@ import java.util.zip.InflaterInputStream;
  */
 @SuppressWarnings("JavadocReference")
 public class SkeletonToStructure {
-	private static final Logger LOGGER = LoggerFactory.getLogger("RoomSkeletonCreator");
+	private static final Logger LOGGER = LoggerFactory.getLogger("SkeletonToStructure");
 
 	/**
 	 * Argument #1: the path to the .skeleton file.
 	 * If successful, the structure .nbt file will be stored next to the .skeleton file.
 	 */
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		if (args.length > 1) throw new RuntimeException("Only one argument should be provided!");
-		if (args.length < 1) throw new RuntimeException("One argument must be provided!");
+		if (args.length != 1) throw new RuntimeException("One argument must be provided!");
 
 		convertToStructure(args[0]);
 	}
