@@ -12,13 +12,12 @@ import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class ChatCategory {
 
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
-        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/chat"))
+        		.id(SkyblockerMod.id("config/chat"))
                 .name(Text.translatable("skyblocker.config.chat"))
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.chat.skyblockXpMessages"))

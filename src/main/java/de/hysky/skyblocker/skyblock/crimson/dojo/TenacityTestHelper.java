@@ -1,8 +1,7 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -24,22 +23,22 @@ public class TenacityTestHelper {
         particleOffsets.clear();
     }
 
-    protected static void render(WorldRenderContext context) {
+    protected static void extractRendering(PrimitiveCollector collector) {
         for (ArmorStandEntity fireball : fireBallsWithStartPos.keySet()) {
             Vec3d lineStart = fireBallsWithStartPos.get(fireball).add(particleOffsets.getOrDefault(fireball, Vec3d.ZERO));
-            Vec3d fireballPos = fireball.getPos().add(particleOffsets.getOrDefault(fireball, Vec3d.ZERO));
+            Vec3d fireballPos = fireball.getEntityPos().add(particleOffsets.getOrDefault(fireball, Vec3d.ZERO));
 
             Vec3d distance = fireballPos.subtract(lineStart);
             if (distance.length() > 0.02) { //if big enough gap try from start calculate and show trajectory
                 distance = distance.multiply(100);
                 Vec3d lineEnd = lineStart.add(distance);
 
-                RenderHelper.renderLinesFromPoints(context, new Vec3d[]{lineStart, lineEnd}, new float[]{1f, 0f, 0f}, 1, 3, false);
+                collector.submitLinesFromPoints(new Vec3d[]{lineStart, lineEnd}, new float[]{1f, 0f, 0f}, 1, 3, false);
 
                 //get highlighted block
                 HitResult hitResult = raycast(lineStart, lineEnd, fireball);
                 if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK && hitResult instanceof BlockHitResult blockHitResult) {
-                    RenderHelper.renderFilled(context, blockHitResult.getBlockPos(), new float[]{1f, 0f, 0f}, 0.5f, false);
+                    collector.submitFilledBox(blockHitResult.getBlockPos(), new float[]{1f, 0f, 0f}, 0.5f, false);
                 }
             }
         }
@@ -59,7 +58,7 @@ public class TenacityTestHelper {
      */
     protected static void onEntitySpawn(Entity entity) {
         if (entity instanceof ArmorStandEntity armorStand) {
-            fireBallsWithStartPos.put(armorStand, armorStand.getPos());
+            fireBallsWithStartPos.put(armorStand, armorStand.getEntityPos());
         }
     }
 
@@ -83,7 +82,7 @@ public class TenacityTestHelper {
         ArmorStandEntity neareastFireball = null;
         double clostestDistance = 50;
         for (ArmorStandEntity fireball : fireBallsWithStartPos.keySet()) {
-            double distance = fireball.getPos().distanceTo(particlePos);
+            double distance = fireball.getEntityPos().distanceTo(particlePos);
             if (distance < clostestDistance) {
                 neareastFireball = fireball;
                 clostestDistance = distance;
@@ -93,7 +92,7 @@ public class TenacityTestHelper {
             return;
         }
         //adjust fireball offset with particle pos
-        Vec3d delta = particlePos.subtract(neareastFireball.getPos());
+        Vec3d delta = particlePos.subtract(neareastFireball.getEntityPos());
         //update values
         particleOffsets.put(neareastFireball, delta);
     }

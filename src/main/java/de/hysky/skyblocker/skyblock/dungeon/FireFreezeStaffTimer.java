@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -16,7 +17,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 public class FireFreezeStaffTimer {
-	private static final Identifier FIRE_FREEZE_STAFF_TIMER = Identifier.of("skyblocker", "fire_freeze_staff_timer");
+	private static final Identifier FIRE_FREEZE_STAFF_TIMER = SkyblockerMod.id("fire_freeze_staff_timer");
     private static long fireFreezeTimer;
 
     @Init

@@ -52,11 +52,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 			Map.entry("PUMPKIN_DICER_3", "PUMPKIN"),
 			Map.entry("COCO_CHOPPER", "INK_SACK:3"),
 			Map.entry("BASIC_GARDENING_HOE", ""),
-			Map.entry("ADVANCED_GARDENING_HOE", ""),
-
-			//Tools popularly used for farming that weren't intended to be
-			Map.entry("DAEDALUS_AXE", "RED_MUSHROOM"),
-			Map.entry("STARRED_DAEDALUS_AXE", "RED_MUSHROOM")
+			Map.entry("ADVANCED_GARDENING_HOE", "")
 	);
 	private static FarmingHudWidget instance = null;
 
@@ -86,7 +82,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		}
 		ItemStack farmingToolStack = client.player.getMainHandStack();
 		if (farmingToolStack == null) return;
-		String itemId = ItemUtils.getItemId(farmingToolStack);
+		String itemId = farmingToolStack.getSkyblockId();
 		String cropItemId = FARMING_TOOLS.getOrDefault(itemId, "");
 		ItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
 

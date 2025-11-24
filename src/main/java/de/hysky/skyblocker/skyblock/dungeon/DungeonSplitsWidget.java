@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -15,6 +14,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import net.minecraft.client.MinecraftClient;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import com.mojang.serialization.Codec;
@@ -63,16 +63,16 @@ public class DungeonSplitsWidget extends TableWidget {
 	 * Colors used for split names in rainbow order.
 	 */
 	private static final int[] SPLIT_COLORS = {
-			0xfd5858,
-			0xfdab58,
-			0xfdfd58,
-			0xabfd58,
-			0x58fd58,
-			0x58fdab,
-			0x58abfd,
-			0x5858fd,
-			0xab58fd,
-			0xfd58fd
+			0xFD5858,
+			0xFDAB58,
+			0xFDFD58,
+			0xABFD58,
+			0x58FD58,
+			0x58FDAB,
+			0x58ABFD,
+			0x5858FD,
+			0xAB58FD,
+			0xFD58FD
 	};
 
 	private static final Map<String, List<Split>> FLOOR_SPLITS = new HashMap<>();
@@ -194,7 +194,7 @@ public class DungeonSplitsWidget extends TableWidget {
 		BEST_SPLITS.init();
 
 		DungeonEvents.DUNGEON_LOADED.register(this::onDungeonLoaded);
-		ChatEvents.RECEIVE_STRING.register(this::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(this::onChatMessage);
 		SkyblockEvents.LOCATION_CHANGE.register(this::onLocationChange);
 	}
 
@@ -226,9 +226,10 @@ public class DungeonSplitsWidget extends TableWidget {
 		}
 	}
 
-	private void onChatMessage(String message) {
-		if (!Utils.isInDungeons()) return;
-		String stripped = Formatting.strip(message);
+	@SuppressWarnings("SameReturnValue")
+	private boolean onChatMessage(Text text, boolean overlay) {
+		if (!Utils.isInDungeons() || overlay) return true;
+		String stripped = Formatting.strip(text.getString());
 
 		if (!running && DUNGEON_START.matcher(stripped).matches()) {
 			startTime = System.currentTimeMillis();
@@ -238,10 +239,10 @@ public class DungeonSplitsWidget extends TableWidget {
 			for (Split split : splits) {
 				split.reset();
 			}
-			return;
+			return true;
 		}
 
-		if (!running) return;
+		if (!running) return true;
 
 		for (int i = 0; i < splits.size(); i++) {
 			Split split = splits.get(i);
@@ -256,7 +257,7 @@ public class DungeonSplitsWidget extends TableWidget {
 				if (i == splits.size() - 1) {
 					stopTimer(true);
 				}
-				return;
+				return true;
 			}
 		}
 
@@ -272,6 +273,7 @@ public class DungeonSplitsWidget extends TableWidget {
 				stopTimer(false);
 			}
 		}
+		return true;
 	}
 
 	private void updateFloor() {

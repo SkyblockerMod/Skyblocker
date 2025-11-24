@@ -5,7 +5,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -38,20 +37,20 @@ public class CustomArmorDyeColors {
 
 		if (Utils.isOnSkyblock() && heldItem != null) {
 			if (heldItem.isIn(ItemTags.DYEABLE)) {
-				String itemUuid = ItemUtils.getItemUuid(heldItem);
+				String itemUuid = heldItem.getUuid();
 
 				if (!itemUuid.isEmpty()) {
 					Object2IntOpenHashMap<String> customDyeColors = SkyblockerConfigManager.get().general.customDyeColors;
 
 					if (color == Integer.MIN_VALUE) {
 						if (customDyeColors.containsKey(itemUuid)) {
-							SkyblockerConfigManager.update(config-> config.general.customDyeColors.removeInt(itemUuid));
+							SkyblockerConfigManager.update(config -> config.general.customDyeColors.removeInt(itemUuid));
 							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.removed")));
 						} else {
 							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.neverHad")));
 						}
 					} else {
-						SkyblockerConfigManager.update(config-> config.general.customDyeColors.put(itemUuid, color));
+						SkyblockerConfigManager.update(config -> config.general.customDyeColors.put(itemUuid, color));
 						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.added")));
 					}
 				} else {

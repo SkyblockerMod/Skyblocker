@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "Melon"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 51,
+      "y": 71,
+      "z": 60
+    },
+    {
+      "secretName": "1 - Chest (break Melons)",
+      "category": "chest",
+      "x": 59,
+      "y": 69,
+      "z": 58
+    },
+    {
+      "secretName": "2/3 - Superboom",
+      "category": "superboom",
+      "x": 3,
+      "y": 70,
+      "z": 41
+    },
+    {
+      "secretName": "2 - Bat",
+      "category": "bat",
+      "x": 8,
+      "y": 72,
+      "z": 28
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 15,
+      "y": 69,
+      "z": 35
+    },
+    {
+      "secretName": "4 - Entrance",
+      "category": "entrance",
+      "x": 26,
+      "y": 80,
+      "z": 11
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 26,
+      "y": 79,
+      "z": 1
+    },
+    {
+      "secretName": "5 - Entrance",
+      "category": "entrance",
+      "x": 10,
+      "y": 83,
+      "z": 4
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 5,
+      "y": 82,
+      "z": 4
+    },
+    {
+      "secretName": "6 - Entrance Vines",
+      "category": "entrance",
+      "x": 32,
+      "y": 81,
+      "z": 50
+    },
+    {
+      "secretName": "6 - Chest",
+      "category": "chest",
+      "x": 33,
+      "y": 80,
+      "z": 53
+    },
+    {
+      "secretName": "6 - Stonk",
+      "category": "stonk",
+      "x": 33,
+      "y": 80,
+      "z": 54
+    },
+    {
+      "secretName": "7 - Entrance",
+      "category": "entrance",
+      "x": 44,
+      "y": 86,
+      "z": 61
+    },
+    {
+      "secretName": "7 - AOTV",
+      "category": "aotv",
+      "x": 39,
+      "y": 84,
+      "z": 58
+    },
+    {
+      "secretName": "7 - Chest",
+      "category": "chest",
+      "x": 41,
+      "y": 85,
+      "z": 56
+    }
+  ]
+}

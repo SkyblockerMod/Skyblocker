@@ -6,10 +6,10 @@ import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -62,10 +62,10 @@ public class LividColor {
 	@Init
 	public static void init() {
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> LividColor.reset());
-		WorldRenderEvents.AFTER_ENTITIES.register(LividColor::update);
+		WorldRenderExtractionCallback.EVENT.register(LividColor::update);
 	}
 
-	private static void update(WorldRenderContext context) {
+	private static void update(PrimitiveCollector collector) {
 		DungeonsConfig.Livid config = SkyblockerConfigManager.get().dungeons.livid;
 		if (!(config.enableLividColorText || config.enableLividColorTitle || config.enableLividColorGlow || config.enableLividColorBoundingBox)) return;
 
@@ -104,9 +104,9 @@ public class LividColor {
         colorString = colorString.substring(0, colorString.length() - 5).toUpperCase(Locale.ENGLISH);
         Text message = Text.literal(CONFIG.get().lividColorText.replaceAll("\\[color]", colorString)).formatted(LividColor.color);
         if (CONFIG.get().enableLividColorText) {
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().append(message).getString(), false);
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().append(message).getString(), true);
         }
-		if (CONFIG.get().enableLividColorTitle){
+		if (CONFIG.get().enableLividColorTitle) {
             client.inGameHud.setDefaultTitleFade();
             client.inGameHud.setTitle(message);
         }

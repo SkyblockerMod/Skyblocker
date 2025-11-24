@@ -26,19 +26,19 @@ public class SlayerWidget {
     private final LevelFinder.LevelInfo slayerLevel;
     private JsonObject slayerData = null;
 
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
-    private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
-    private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
+    private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+    private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
     private final Identifier item;
     private final ItemStack drop;
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
     private static final Map<String, Identifier> HEAD_ICON = Map.ofEntries(
-            Map.entry("Zombie", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/zombie.png")),
-            Map.entry("Spider", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/spider.png")),
-            Map.entry("Wolf", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/wolf.png")),
-            Map.entry("Enderman", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/enderman.png")),
-            Map.entry("Vampire", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/vampire.png")),
-            Map.entry("Blaze", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/blaze.png"))
+            Map.entry("Zombie", SkyblockerMod.id("textures/gui/profile_viewer/zombie.png")),
+            Map.entry("Spider", SkyblockerMod.id("textures/gui/profile_viewer/spider.png")),
+            Map.entry("Wolf", SkyblockerMod.id("textures/gui/profile_viewer/wolf.png")),
+            Map.entry("Enderman", SkyblockerMod.id("textures/gui/profile_viewer/enderman.png")),
+            Map.entry("Vampire", SkyblockerMod.id("textures/gui/profile_viewer/vampire.png")),
+            Map.entry("Blaze", SkyblockerMod.id("textures/gui/profile_viewer/blaze.png"))
     );
 
     private static final Map<String, ItemStack> DROP_ICON = Map.ofEntries(
@@ -75,7 +75,7 @@ public class SlayerWidget {
         Color fillColor = slayerLevel.fill == 1 ? Color.MAGENTA : Color.green;
         HudHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * slayerLevel.fill), 6, fillColor);
 
-        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22){
+        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22) {
             List<Text> tooltipText = new ArrayList<>();
             tooltipText.add(Text.literal(this.slayerName).formatted(Formatting.GREEN));
             tooltipText.add(Text.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.slayerLevel.xp)).formatted(Formatting.GOLD));

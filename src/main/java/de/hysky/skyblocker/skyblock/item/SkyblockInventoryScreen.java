@@ -10,6 +10,7 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
+import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -18,8 +19,10 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -30,6 +33,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +51,7 @@ import java.util.function.Supplier;
  * <p>Opened here {@link de.hysky.skyblocker.mixins.MinecraftClientMixin#skyblocker$skyblockInventoryScreen MinecraftClientMixin#skyblocker$skyblockInventoryScreen}</p>
  * <p>Book button is moved here {@link de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker$moveButton InventoryScreenMixin#skyblocker$moveButton}</p>
  */
-public class SkyblockInventoryScreen extends InventoryScreen {
+public class SkyblockInventoryScreen extends InventoryScreen implements HoveredItemStackProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger("Equipment");
     private static final Supplier<ItemStack[]> EMPTY_EQUIPMENT = () -> new ItemStack[]{ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
     public static final ItemStack[] equipment = EMPTY_EQUIPMENT.get();
@@ -56,10 +60,11 @@ public class SkyblockInventoryScreen extends InventoryScreen {
             .xmap(itemStacks -> itemStacks.toArray(ItemStack[]::new), List::of).fieldOf("items").codec();
 
     private static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("container/slot");
-    private static final Identifier EMPTY_SLOT = Identifier.of(SkyblockerMod.NAMESPACE, "equipment/empty_icon");
+    private static final Identifier EMPTY_SLOT = SkyblockerMod.id("equipment/empty_icon");
     private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
 
     private final Slot[] equipmentSlots = new Slot[4];
+	private ItemStack hoveredItem;
 
     private static void save(String profileId) {
         try {
@@ -119,23 +124,23 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     public SkyblockInventoryScreen(PlayerEntity player) {
         super(player);
 		if (ResourcePackCompatibility.options.renameInventoryScreen().orElse(false)) {
-			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenEquipmentQuickNavSkyblocker": "InventoryScreenEquipmentSkyblocker"));
+			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenEquipmentQuickNavSkyblocker" : "InventoryScreenEquipmentSkyblocker"));
 		}
-	    SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
+	    SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift : equipment);
 	    for (int i = 0; i < 4; i++) {
 		    equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
 	    }
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
         for (Slot equipmentSlot : equipmentSlots) {
-            if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) {
+            if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, click.x(), click.y())) {
                 MessageScheduler.INSTANCE.sendMessageAfterCooldown("/equipment", true);
                 return true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     /**
@@ -160,11 +165,15 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     @Override
     protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
         super.drawMouseoverTooltip(context, x, y);
+
+		hoveredItem = null;
         if (!handler.getCursorStack().isEmpty()) return;
+
         for (Slot equipmentSlot : equipmentSlots) {
             if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, x, y) && equipmentSlot.hasStack()) {
                 ItemStack itemStack = equipmentSlot.getStack();
                 context.drawTooltip(this.textRenderer, this.getTooltipFromItem(itemStack), itemStack.getTooltipData(), x, y);
+				hoveredItem = itemStack;
             }
         }
     }
@@ -196,7 +205,12 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     }
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public @Nullable ItemStack getFocusedItem() {
+		return hoveredItem;
+	}
+
+	@Override
+	public boolean keyPressed(KeyInput input) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (client.isWindowFocused()) {
 			var mouse = client.mouse;
@@ -206,13 +220,13 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
 			for (Slot equipmentSlot : equipmentSlots) {
 				if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) {
-					if (WikiLookupManager.handleWikiLookup(Either.left(equipmentSlot), client.player, keyCode, scanCode)) {
+					if (WikiLookupManager.handleWikiLookup(Either.left(equipmentSlot), client.player, input)) {
 						return true;
 					}
 				}
 			}
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(input);
 	}
 
     private static class EquipmentSlot extends Slot {

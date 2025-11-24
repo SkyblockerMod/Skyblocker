@@ -9,14 +9,17 @@ import de.hysky.skyblocker.skyblock.auction.widgets.RarityWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.SortWidget;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -25,13 +28,13 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Atlases;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 
 import org.joml.Matrix3x2fStack;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,13 +47,13 @@ import java.util.function.Supplier;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/browser/background.png");
     private static final Identifier SCROLLER_TEXTURE = Identifier.ofVanilla("container/creative_inventory/scroller");
 
-    private static final Identifier up_arrow_tex = Identifier.of(SkyblockerMod.NAMESPACE, "up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
-    private static final Identifier down_arrow_tex = Identifier.of(SkyblockerMod.NAMESPACE, "down_arrow_even");
-    public static final Supplier<Sprite> UP_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(up_arrow_tex);
-    public static final Supplier<Sprite> DOWN_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(down_arrow_tex);
+    private static final Identifier up_arrow_tex = SkyblockerMod.id("up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
+    private static final Identifier down_arrow_tex = SkyblockerMod.id("down_arrow_even");
+    public static final Supplier<Sprite> UP_ARROW = () -> MinecraftClient.getInstance().getAtlasManager().getAtlasTexture(Atlases.GUI).getSprite(up_arrow_tex);
+    public static final Supplier<Sprite> DOWN_ARROW = () -> MinecraftClient.getInstance().getAtlasManager().getAtlasTexture(Atlases.GUI).getSprite(down_arrow_tex);
 
 
     // SLOTS
@@ -175,7 +178,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     @Override
     protected void drawSlot(DrawContext context, Slot slot) {
         if (SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN && slot.hasStack() && isSlotHighlighted.getOrDefault(slot.id, false)) {
-            context.drawBorder(slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
+            HudHelper.drawBorder(context, slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
         }
         super.drawSlot(context, slot);
     }
@@ -187,22 +190,22 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (isWaitingForServer) return super.mouseClicked(mouseX, mouseY, button);
-        if (onScrollbarTop((int) mouseX, (int) mouseY) && prevPageVisible) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        if (isWaitingForServer) return super.mouseClicked(click, doubled);
+        if (onScrollbarTop((int) click.x(), (int) click.y()) && prevPageVisible) {
             clickSlot(PREV_PAGE_BUTTON);
             return true;
         }
-        if (onScrollbarBottom((int) mouseX, (int) mouseY) && nextPageVisible) {
+        if (onScrollbarBottom((int) click.x(), (int) click.y()) && nextPageVisible) {
             clickSlot(NEXT_PAGE_BUTTON);
             return true;
         }
 
-        if (onSearchField((int) mouseX, (int) mouseY)) {
+        if (onSearchField((int) click.x(), (int) click.y())) {
             clickSlot(SEARCH_BUTTON_SLOT);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     private boolean onScrollbarTop(int mouseX, int mouseY) {
@@ -311,16 +314,16 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_UP && prevPageVisible) {
+    public boolean keyPressed(KeyInput input) {
+        if (input.isUp() && prevPageVisible) {
             clickSlot(PREV_PAGE_BUTTON);
             return true;
         }
-        if (keyCode == GLFW.GLFW_KEY_DOWN && nextPageVisible) {
+        if (input.isDown() && nextPageVisible) {
             clickSlot(NEXT_PAGE_BUTTON);
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(input);
     }
 
     private static int getOrdinal(List<Text> tooltip) {
@@ -355,7 +358,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     }
 
     @Override
-    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button) {
+    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
         return mouseX < (double) left - 32 || mouseY < (double) top || mouseX >= (double) (left + this.backgroundWidth) || mouseY >= (double) (top + this.backgroundHeight);
     }
 

@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -20,8 +21,8 @@ import org.joml.Matrix3x2fStack;
 
 public class RarityWidget extends ClickableWidget {
 
-    private static final Identifier HOVER_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/rarity_widget/hover.png");
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/rarity_widget/background.png");
+    private static final Identifier HOVER_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/hover.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/background.png");
     private final SlotClickHandler onClick;
     private int slotId = -1;
 
@@ -89,11 +90,11 @@ public class RarityWidget extends ClickableWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(Click click, boolean doubled) {
         if (slotId == -1) return;
-        if (isOnLeftArrow(mouseX)) {
+        if (isOnLeftArrow(click.x())) {
             onClick.click(slotId, 1);
-        } else if (isOnRightArrow(mouseX)) {
+        } else if (isOnRightArrow(click.x())) {
             onClick.click(slotId, 0);
         }
     }

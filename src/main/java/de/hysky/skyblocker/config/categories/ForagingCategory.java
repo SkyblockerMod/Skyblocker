@@ -16,7 +16,6 @@ import net.azureaaron.dandelion.systems.controllers.ColourController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 import java.awt.*;
 
@@ -24,7 +23,7 @@ public class ForagingCategory {
 
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
-				.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/foraging"))
+				.id(SkyblockerMod.id("config/foraging"))
 				.name(Text.translatable("skyblocker.config.foraging"))
 
 				//Galatea
@@ -65,6 +64,17 @@ public class ForagingCategory {
 										})
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount"))
+								.description(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip"))
+								.binding(defaults.foraging.galatea.seaLumiesMinimumCount,
+										() -> config.foraging.galatea.seaLumiesMinimumCount,
+										newValue -> {
+											config.foraging.galatea.seaLumiesMinimumCount = newValue;
+											SeaLumiesHighlighter.INSTANCE.configCallback();
+										})
+								.controller(IntegerController.createBuilder().range(1, 4).slider(1).build())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress"))
 								.description(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip"))
@@ -77,17 +87,6 @@ public class ForagingCategory {
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakHud"))
 								.prompt(Text.translatable("text.skyblocker.open"))
 								.action((screen) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, TreeBreakProgressHud.getInstance().getInternalID(), screen)))
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount"))
-								.description(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip"))
-								.binding(defaults.foraging.galatea.seaLumiesMinimumCount,
-										() -> config.foraging.galatea.seaLumiesMinimumCount,
-										newValue -> {
-											config.foraging.galatea.seaLumiesMinimumCount = newValue;
-											SeaLumiesHighlighter.INSTANCE.configCallback();
-										})
-								.controller(IntegerController.createBuilder().range(1, 4).slider(1).build())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))

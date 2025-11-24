@@ -43,7 +43,9 @@ public class UIAndVisualsConfig {
 
 	public boolean showConfigButton = false;
 
-	public ChestValue chestValue = new ChestValue();
+	public boolean trueQuiverCount = true;
+
+    public ChestValue chestValue = new ChestValue();
 
 	public ItemCooldown itemCooldown = new ItemCooldown();
 
@@ -305,6 +307,18 @@ public class UIAndVisualsConfig {
 		public boolean enableWaypoints = true;
 
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+
+		public boolean renderLine = true;
+
+		public Color lineColor = new Color(0, 255, 0, 255);
+
+		public float lineWidth = 5f;
+
+		public boolean allowSkippingWaypoints = true;
+
+		public boolean allowGoingBackwards = true;
+
+		public boolean enableChatWaypoints = true;
 	}
 
 	public static class TeleportOverlay {
@@ -326,6 +340,8 @@ public class UIAndVisualsConfig {
 	}
 
 	public static class SmoothAOTE {
+		public boolean predictive = false;
+
 		public boolean enableWeirdTransmission = false;
 
 		public boolean enableInstantTransmission = false;

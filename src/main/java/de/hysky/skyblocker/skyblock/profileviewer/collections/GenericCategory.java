@@ -35,7 +35,7 @@ public class GenericCategory implements ProfileViewerPage {
     private final String category;
     private final LinkedList<ItemStack> collections = new LinkedList<>();
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-    private static final Identifier BUTTON_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/button_icon_toggled.png");
+    private static final Identifier BUTTON_TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled.png");
     private static final int COLUMN_GAP = 26;
     private static final int ROW_GAP = 34;
     private static final int COLUMNS = 7;

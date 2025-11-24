@@ -1,11 +1,7 @@
 package de.hysky.skyblocker.skyblock.crimson.kuudra;
 
-import java.util.function.Supplier;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.CrimsonIsleConfig;
-import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra.KuudraPhase;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
@@ -15,6 +11,8 @@ import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
+import java.util.function.Supplier;
 
 public class ArrowPoisonWarning {
 	private static final Supplier<CrimsonIsleConfig.Kuudra> CONFIG = () -> SkyblockerConfigManager.get().crimsonIsle.kuudra;
@@ -35,7 +33,7 @@ public class ArrowPoisonWarning {
 
 				for (int i = 0; i < inventory.size(); ++i) {
 					ItemStack stack = inventory.getStack(i);
-					String itemId = ItemUtils.getItemId(stack);
+					String itemId = stack.getSkyblockId();
 
 					if (itemId.equals("TOXIC_ARROW_POISON")) {
 						hasToxicArrowPoison = true;

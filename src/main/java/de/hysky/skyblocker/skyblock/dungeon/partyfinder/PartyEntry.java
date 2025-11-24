@@ -1,16 +1,13 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.SkyblockerMod;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.PlayerSkinDrawer;
-import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.component.DataComponentTypes;
@@ -29,7 +26,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,8 +33,8 @@ import java.util.regex.Pattern;
 import org.joml.Matrix3x2fStack;
 
 public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
-    private static final Identifier PARTY_CARD_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
-    private static final Identifier PARTY_CARD_TEXTURE_HOVER = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card_hover.png");
+    private static final Identifier PARTY_CARD_TEXTURE = SkyblockerMod.id("textures/gui/party_card.png");
+    private static final Identifier PARTY_CARD_TEXTURE_HOVER = SkyblockerMod.id("textures/gui/party_card_hover.png");
 	private static final Map<String, ProfileComponent> SKULL_CACHE = new Object2ObjectOpenHashMap<>();
 	private static final Pattern NUMBERS_PATTERN = Pattern.compile("\\d+$");
 
@@ -50,7 +46,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     String floor = "???";
     String dungeon = "???";
     String note = "";
-    PropertyMap floorSkullProperties = new PropertyMap();
+    PropertyMap floorSkullProperties = PropertyMap.EMPTY;
     Identifier partyLeaderSkin = DefaultSkinHelper.getTexture();
     Player[] partyMembers = new Player[4];
 
@@ -65,7 +61,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     Text lockReason = Text.empty();
 
 
-    public PartyEntry(List<Text> tooltips, PartyFinderScreen screen, int slotID) {
+    public PartyEntry(Text title, List<Text> tooltips, PartyFinderScreen screen, int slotID) {
         this.screen = screen;
         this.slotID = slotID;
 
@@ -74,7 +70,6 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         //System.out.println(tooltips);
 
         MinecraftClient client = MinecraftClient.getInstance();
-        Text title = tooltips.getFirst();
         String partyHost = title.getString().split("'s")[0];
 
         int membersIndex = -1;
@@ -100,13 +95,13 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 if (PartyFinderScreen.floorIconsMaster == null || PartyFinderScreen.floorIconsNormal == null) continue;
                 if (dungeon.contains("Master Mode")) {
                     try {
-                        floorSkullProperties = PartyFinderScreen.floorIconsMaster.getOrDefault(floor.toLowerCase(Locale.ENGLISH), new PropertyMap());
+                        floorSkullProperties = PartyFinderScreen.floorIconsMaster.getOrDefault(floor.toLowerCase(Locale.ENGLISH), PropertyMap.EMPTY);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 } else {
                     try {
-                    	floorSkullProperties = PartyFinderScreen.floorIconsNormal.getOrDefault(floor.toLowerCase(Locale.ENGLISH), new PropertyMap());
+                    	floorSkullProperties = PartyFinderScreen.floorIconsNormal.getOrDefault(floor.toLowerCase(Locale.ENGLISH), PropertyMap.EMPTY);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -157,8 +152,8 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 if (matcher.find()) classLevel = Integer.parseInt(matcher.group(1));
                 Player player = new Player(playerName, className, classLevel);
 
-                SkullBlockEntity.fetchProfileByName(playerNameTrim).thenAccept(
-                        gameProfile -> gameProfile.ifPresent(profile -> player.skinTexture = (client.getSkinProvider().getSkinTextures(profile).texture())));
+                client.getPlayerSkinCache().getFuture(ProfileComponent.ofDynamic(playerNameTrim)).thenAccept(
+                        gameProfile -> gameProfile.ifPresent(entry -> player.skinTexture = entry.getTextures().body().texturePath()));
 
                 if (playerNameTrim.equals(partyHost)) {
                     partyLeader = player;
@@ -182,8 +177,8 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             partyLeader = new Player(Text.literal("Error"), "Error", -1);
         }
 
-        SkullBlockEntity.fetchProfileByName(partyLeader.name.getString()).thenAccept(
-                gameProfile -> gameProfile.ifPresent(profile -> partyLeaderSkin = client.getSkinProvider().getSkinTextures(profile).texture()));
+        client.getPlayerSkinCache().getFuture(ProfileComponent.ofDynamic(partyLeader.name.getString())).thenAccept(
+                gameProfile -> gameProfile.ifPresent(entry -> partyLeaderSkin = entry.getTextures().body().texturePath()));
     }
 
     @Override
@@ -197,7 +192,11 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     }
 
     @Override
-    public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+    public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+    	int x = this.getX();
+    	int y = this.getY();
+    	int entryWidth = this.getWidth();
+    	int entryHeight = this.getHeight();
         Matrix3x2fStack matrices = context.getMatrices();
         matrices.pushMatrix();
         matrices.translate(x, y);
@@ -240,7 +239,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             }
         }
         ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-        stack.set(DataComponentTypes.PROFILE, SKULL_CACHE.computeIfAbsent("SkyblockerCustomPFSkull" + dungeon + floor, name -> new ProfileComponent(Optional.of(name), Optional.of(UUID.randomUUID()), floorSkullProperties)));
+        stack.set(DataComponentTypes.PROFILE, SKULL_CACHE.computeIfAbsent("SkyblockerCustomPFSkull" + dungeon + floor, name -> ProfileComponent.ofStatic(new GameProfile(UUID.randomUUID(), name, floorSkullProperties))));
         context.drawItem(stack, 317, 3);
 
         int textWidth = textRenderer.getWidth(floor);
@@ -268,16 +267,16 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
         //System.out.println("To be clicked" + slotID);
         if (slotID == -1) {
             PartyFinderScreen.LOGGER.error("[Skyblocker] Slot ID is null for " + partyLeader.name.getString() + "'s party");
         }
-        if (button == 0 && !screen.isWaitingForServer() && slotID != -1) {
+        if (click.button() == 0 && !screen.isWaitingForServer() && slotID != -1) {
             screen.clickAndWaitForServer(slotID);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     public static class Player {
@@ -301,18 +300,18 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     public static class NoParties extends PartyEntry {
 
         public NoParties() {
-            super(List.of(), null, -1);
+            super(Text.empty(), List.of(), null, -1);
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        public boolean mouseClicked(Click click, boolean doubled) {
             return false;
         }
 
         @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-            context.drawCenteredTextWithShadow(textRenderer, Text.translatable("skyblocker.partyFinder.noParties"), x + entryWidth / 2, y + entryHeight / 2 - textRenderer.fontHeight / 2, Colors.WHITE);
+            context.drawCenteredTextWithShadow(textRenderer, Text.translatable("skyblocker.partyFinder.noParties"), this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2 - textRenderer.fontHeight / 2, Colors.WHITE);
         }
     }
 
@@ -320,17 +319,17 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         public static final Text DE_LIST_TEXT = Text.translatable("skyblocker.partyFinder.deList");
         public static final Text YOUR_PARTY_TEXT = Text.translatable("skyblocker.partyFinder.yourParty");
 
-        public YourParty(List<Text> tooltips, PartyFinderScreen screen, int deListSlotId) {
-            super(tooltips, screen, deListSlotId);
+        public YourParty(Text title, List<Text> tooltips, PartyFinderScreen screen, int deListSlotId) {
+            super(title, tooltips, screen, deListSlotId);
         }
 
         @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+            super.render(context, mouseX, mouseY, hovered, deltaTicks);
 
             Matrix3x2fStack matrices = context.getMatrices();
             matrices.pushMatrix();
-            matrices.translate(x, y);
+            matrices.translate(this.getX(), this.getY());
 
             hovered = hovered & slotID != -1;
 

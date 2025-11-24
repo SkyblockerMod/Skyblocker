@@ -6,18 +6,16 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -46,15 +44,18 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class MythologicalRitual {
-    private static final Pattern GRIFFIN_BURROW_DUG = Pattern.compile("(?<message>You dug out a Griffin Burrow!|You finished the Griffin burrow chain!) \\((?<index>\\d)/4\\)");
+    private static final Pattern GRIFFIN_BURROW_DUG = Pattern.compile("(?<message>You dug out a Griffin Burrow!|You finished the Griffin burrow chain!) \\((?<index>\\d+)/(?<length>\\d+)\\)");
     private static final float[] ORANGE_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.ORANGE);
     private static final float[] RED_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
+	private static final Set<String> SPADES = Set.of("ANCESTRAL_SPADE", "ARCHAIC_SPADE", "DEIFIC_SPADE");
+
     private static long lastEchoTime;
     private static final Map<BlockPos, GriffinBurrow> griffinBurrows = new HashMap<>();
     @Nullable
@@ -63,7 +64,7 @@ public class MythologicalRitual {
 
     @Init
     public static void init() {
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(MythologicalRitual::render);
+        WorldRenderExtractionCallback.EVENT.register(MythologicalRitual::extractRendering);
         AttackBlockCallback.EVENT.register(MythologicalRitual::onAttackBlock);
         UseBlockCallback.EVENT.register(MythologicalRitual::onUseBlock);
         UseItemCallback.EVENT.register(MythologicalRitual::onUseItem);
@@ -207,21 +208,21 @@ public class MythologicalRitual {
         }
     }
 
-    public static void render(WorldRenderContext context) {
+    public static void extractRendering(PrimitiveCollector collector) {
         if (isActive()) {
             for (GriffinBurrow burrow : griffinBurrows.values()) {
                 if (burrow.shouldRender()) {
-                    burrow.render(context);
+                    burrow.extractRendering(collector);
                 }
                 if (burrow.confirmed != TriState.FALSE) {
                     if (burrow.nextBurrowLine != null) {
-                        RenderHelper.renderLinesFromPoints(context, burrow.nextBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
+                        collector.submitLinesFromPoints(burrow.nextBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
                     }
                     if (burrow.echoBurrowLine != null) {
-                        RenderHelper.renderLinesFromPoints(context, burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
+                    	collector.submitLinesFromPoints(burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
                     }
                     if (burrow.nextBurrowEstimatedPos != null && burrow.confirmed == TriState.DEFAULT) {
-                        RenderHelper.renderFilledWithBeaconBeam(context, burrow.nextBurrowEstimatedPos, RED_COLOR_COMPONENTS, 0.5f, true);
+                    	collector.submitFilledBoxWithBeaconBeam(burrow.nextBurrowEstimatedPos, RED_COLOR_COMPONENTS, 0.5f, true);
                     }
                 }
             }
@@ -246,15 +247,17 @@ public class MythologicalRitual {
 
     public static ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
-        if (isActive() && ItemUtils.getItemId(stack).equals("ANCESTRAL_SPADE")) {
+        if (isActive() && SPADES.contains(stack.getSkyblockId())) {
             lastEchoTime = System.currentTimeMillis();
         }
         return ActionResult.PASS;
     }
 
-    public static boolean onChatMessage(Text message, boolean overlay) {
+    @SuppressWarnings("SameReturnValue")
+	public static boolean onChatMessage(Text message, boolean overlay) {
         if (isActive() && GRIFFIN_BURROW_DUG.matcher(message.getString()).matches()) {
             previousBurrow.confirmed = TriState.FALSE;
+			if (lastDugBurrowPos == null) return true;
             previousBurrow = griffinBurrows.get(lastDugBurrowPos);
             previousBurrow.confirmed = TriState.DEFAULT;
         }

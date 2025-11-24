@@ -8,7 +8,7 @@
  \
 [![Discord](https://img.shields.io/discord/879732108745125969?logo=discord&labelColor=cecece&color=7289DA&label=)](https://discord.com/invite/aNNJHQykck)
 
-Hypixel Skyblock Mod for Minecraft 1.21.8
+Hypixel Skyblock Mod for Minecraft 1.21.10
 
 Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/installation) or use our [Modpack](https://modrinth.com/modpack/skyblocker-modpack)
 ## Features
@@ -22,6 +22,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Fancy Minimap & Score**
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
+    - Room Name Labels
 - **Starred Mob Glow**
 - **Croesus Helper:**
     - Highlight not opened chests
@@ -36,10 +37,13 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Silverfish*
     - *Ice Fill*
     - *Boulder*
-    - *Simon Says*
-    - *Lights On*
     - *Teleport Maze*
-    - Terminal (F7/M7):
+    - Devices (F7/M7):
+        - *Simon Says*
+        - *Lights On*
+        - *Arrow Align*
+        - *Target Practice*
+    - Terminals (F7/M7):
         - *Order*
         - *Coloured Items*
         - *Item Name*
@@ -52,13 +56,16 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **F3/M3 Guardian Health Display**
 - **F5/M5 Livid Color Highlight**
 - **F7/M7 Terminal/Device Waypoints/Highlight**
-- **Reparty:** Type /rp to reparty and enable auto-rejoin.
-- **AOTV & Pearl Secret Waypoints**
+- **Reparty:** Auto-rejoin and `/rp` command.
+- **Secret Waypoints**
+    - AOTV / Ender Pearl
+    - Dungeonbreaker / Stonk
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
 - **Salvage Helper**
+    - Donated to Museum Only option
 - **Sellable Dungeon Item Highlighter**
-- **Resourcepack recoloring textures in dungeons**
+- **Resource Pack recoloring textures in dungeons**
 - **Score title and sound**
 - **Mimic & Prince Messages**
 - **Prevent teammates glow during Livid**
@@ -72,17 +79,22 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Dungeon Splits Widget**
 - **Door Key Highlighter**
 
-### Foraging Features:
-- **Waypoints to forest nodes**
+### Hunting Features:
+- **Forest Node Highlighter**
 - **Lushlilac and Sea Lumies Highlighters**
-- **Forest temple puzzle solver**
-- **Hunting box helper**
-- **Hunting Mobs features**
-  - Silence Phantoms
-  - Highlight Hideonleaves
+- **Forest Temple puzzle solver**
+- **Hunting Box Helper**
 - **Hunting Box Shard Prices**
+- **Various Mob Features**
+    - Phantom Silencer
+    - Hideonleaf Highlighter
+    - Carolat Highlighter
+    - Shellwise Highlighter
+- **Lasso HUD**
+
+### Foraging Features:
 - **Sweep Overlay**
-  - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
+    - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
 - **Moonglade Beacon Tuner Helper**
 - **Tree Break Progress HUD**
 - **Sweep Details HUD**
@@ -98,6 +110,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Low arrow poison warning**
 - **Kuudra glow**
 - **Kuudra danger warning**
+- **Croesus/Vesuvius Helper**
+- **Chest Profit Calculator**
 
 ### Crimson Isles:
 - **Dojo helper**
@@ -188,7 +202,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Laser phase Timer
 - **Blaze Slayer:**
     - Attunement highlighting
-    - Fire Pillar Countdown Notifiications
+    - Fire Pillar Countdown Notifications
 - **General:**
     - Bossbars
     - Slayer HUD
@@ -222,7 +236,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Compact damage**
 - **Waypoints for commissions in dwarven mines and glacite tunnels**
 - **Fancy Tab HUD:** Fully configurable, allowing individual widgets to be freely placed on the main screen.
-- **1.8 Hitbox for Lever, Farmland and mushroom**
+- **1.8 Hitbox for Levers, Mushrooms, and Cacti**
 - **Hide Status Effect Overlay**
 - **Personal Compactor/Deletor Preview**
 - **Hide Fake Players in Social Interactions Screen**
@@ -233,11 +247,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Configure night vision strength**
 - **End HUD Widget:**
     - Zealots:
-        - *Since last eye*
-        - *Total zealots kills*
-        - *Avg kills per eye*
+        - *Kills Since Last Eye*
+        - *Total Zealots Kills*
+        - *Avg Kills per Eye*
     - Endstone Protector:
-        - *stage*
+        - *Stage*
         - *Location*
 - **Ender Nodes Helper**
 - **Powder mining tracker**
@@ -249,7 +263,10 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 
 ### User Interface Enhancements:
 - **Equipment in inventory**
-- **Search overlays for bz and ah**
+- **Search Overlay**
+    - Auction House
+    - Bazaar
+    - Museum
 - **Bazaar Quick Quantities**
 - **Slot Text:**
     - *Attribute level*
@@ -296,11 +313,12 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Estimated Item Value*
     - *Skyblock ID*
     - *Bazaar Reorder Helper*
-- **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
+- **Quick Navigation:** Fully customizable fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
+    - Item Selector
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
-  - Crafting
-  - Forge
-- **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
+    - Crafting
+    - Forge
+- **Backpack Preview:** After clicking your backpack or ender chest once, you can hover over it and hold Shift to preview its contents.
 - **New Year Cakes Helper**
 - **Fancy Crafting Table**
 - **Info Screen**
@@ -310,6 +328,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **CTRL/CMD + F to search inventory**
 - **legacy attribute background**
 - **Sack Message Prices**
+- **Bazaar order tracker**
+- **Builder's wand preview**
 
 ### Barn Features:
 - **Barn Solver:**
@@ -320,18 +340,19 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 ### Chat Features:
 - **Custom Chat Rules**
 - **Autocomplete**
-    - *Warp command*
+    - *`/warp` command*
     - *Sack Item*
-    - *Viewstash*
-    - *Join Instance, Join Dungeon, Join Kuudra*
+    - *`/viewstash` command*
+    - *`/joininstance, /joindungeon, /joinkuudra` commands*
     - *RNG Meter*
+    - *`/call` command*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*
     - *Aspect of the End (AOTE)*
     - *Implosion*
     - *Molten Wave*
-    - *`/show command`*
+    - *`/show` command*
     - *Teleport Pad Messages*
     - *Sky Mall*
     - *Lottery*
@@ -344,10 +365,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Helper (Includes sound notifications)
     - Fishing rod timer (change color after 20 seconds)
     - Hide other rods
-    - Ingame fishing hook timer display
+    - In-game fishing hook timer display
 - **Mythological Ritual Helper**
-    - Estimated Diana burrow pos
-- **Chocolate factory Helper**
+    - Estimates Diana griffin burrow positions
+- **Chocolate Factory Helper**
+- **Hoppity's Hunt Helper**
 - **Jerry timer**
 - **Wardrobe helper based on hotbar keybinds**
 - **Carnival Helpers**
@@ -355,20 +377,24 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Math teacher helper**
 - **Raffle task highlighter**
 - **Disable All Command**
+- **Abiphone Call Prompts**
+    - Adds clickable messages in chat to quickly call Trevor the Trapper, Maddox, and Queen Mismyla
 
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
-  - Crafting
-  - Forge
-  - Skyblock Info
-  - Collapsible Entries
+    - Crafting
+    - Forge
+    - NPC Shop Recipes
+    - Skyblock Info
+    - Collapsible Entries
 - **Item Protection**
-  - config option to toggle item protection chat notifications
+    - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
-- **Wiki Lookup:** Press F4 to open the wiki page about the held item or garden visitors.
+- **Wiki Lookup:** Press F4 to open the wiki page about a hovered item, pet, garden visitor, or calendar event.
 - **OptiFabric Compatibility**
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
+- **True Quiver Count**
 - **Chest Value**
 - **Add useful tips in chat**
 - **Suppress badlion packet warnings**
@@ -380,8 +406,9 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Resource pack compatibility**
 - **Shortcuts**
     - Command Shortcuts
-    - Keybind Shortcuts
+    - Keybind/Keybind Combo Shortcuts
 - **Config Backups**
+- **Iris shader support**
 
 
 </details>
@@ -392,9 +419,9 @@ ___
 
 |            command             |                                       option                                       | comment                                                                                                                                                                                                                                                                                   |
 |:------------------------------:|:----------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|          /skyblocker           |                                                                                    | opens info screen                                                                                                                                                                                                                                                                         |
-|       /skyblocker config       |                                                                                    | open config menu (modMenu not needed)                                                                                                                                                                                                                                                     |
-|      /skyblocker options       |                                                                                    | open config menu (modMenu not needed)                                                                                                                                                                                                                                                     |
+|          /skyblocker           |                                                                                    | open info screen                                                                                                                                                                                                                                                                         |
+|       /skyblocker config       |                                                                                    | open config menu (Mod Menu not needed)                                                                                                                                                                                                                                                    |
+|      /skyblocker options       |                                                                                    | open config menu (Mod Menu not needed)                                                                                                                                                                                                                                                    |
 |        /skyblocker hud         |                       dwarven / dungeonmap / titleContainer                        | move dwarven, dungeonmap or titleContainer                                                                                                                                                                                                                                                |
 |     /skyblocker shortcuts      |                                                                                    | add/edit shortcuts                                                                                                                                                                                                                                                                        |
 |       /skyblocker custom       |                         renameItem /  armorTrim / dyeColor                         | Item and Armour customisation                                                                                                                                                                                                                                                             |
@@ -892,6 +919,66 @@ information.
     contionability
    </a>
   </td>
+  <td align="center" width="150">
+   <a href="https://github.com/617excelle">
+    <img alt="617excelle" src="https://github.com/617excelle.png" width="100"/>
+    <br/>
+    617excelle
+   </a>
+  </td>
+  <td align="center" width="150">
+   <a href="https://github.com/layou233">
+    <img alt="layou233" src="https://github.com/layou233.png" width="100"/>
+    <br/>
+    layou233
+   </a>
+  </td>
+  <td align="center" width="150">
+   <a href="https://github.com/Bloxigus">
+    <img alt="Bloxigus" src="https://github.com/Bloxigus.png" width="100"/>
+    <br/>
+    Bloxigus
+   </a>
+  </td>
+ </tr>
+ <tr>
+  <td align="center" width="150">
+   <a href="https://github.com/MisterCheezeCake">
+    <img alt="MisterCheezeCake" src="https://github.com/MisterCheezeCake.png" width="100"/>
+    <br/>
+    MisterCheezeCake
+   </a>
+  </td>
+  <td align="center" width="150">
+   <a href="https://github.com/DaysSky">
+    <img alt="DaysSky" src="https://github.com/DaysSky.png" width="100"/>
+    <br/>
+    DaysSky
+   </a>
+  </td>
+  <td align="center" width="150">
+   <a href="https://github.com/SteveKunG">
+    <img alt="SteveKunG" src="https://github.com/SteveKunG.png" width="100"/>
+    <br/>
+    SteveKunG
+   </a>
+  </td>
+  <td align="center" width="150">
+   <a href="https://github.com/CapinolDev">
+    <img alt="CapinolDev" src="https://github.com/CapinolDev.png" width="100"/>
+    <br/>
+    CapinolDev
+   </a>
+  </td>
+ </tr>
+ <tr>
+  <td align="center" width="150">
+   <a href="https://github.com/MicrocontrollersDev">
+    <img alt="MicrocontrollersDev" src="https://github.com/MicrocontrollersDev.png" width="100"/>
+    <br/>
+    MicrocontrollersDev
+   </a>
+  </td>
  </tr>
 </table>
 
@@ -902,26 +989,27 @@ information.
 
 We thank all our translators for their valuable support!
 
-| Language              | Translator                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-|-----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| German                | [LifeIsAParadox](https://github.com/LifeIsAParadox), [msg-programs](https://github.com/msg-programs), [Chris579](https://github.com/Chris579), [Superjamp](https://github.com/Superjamp), [Vanja](https://github.com/Vanja), [IHaveNoWLAN](https://github.com/IHaveNoWLAN), [callmespa-dev](https://github.com/callmespa-dev), [jonnytheagent](https://github.com/jonnytheagent), [YESSIR9153](https://github.com/YESSIR9153), [itzmxritz](https://github.com/itzmxritz)                                                                                                                                           |
-| Indonesian            | [null2264](https://github.com/null2264)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| Russian               | [HyperSoop](https://github.com/HyperSoop), [CrimsonIsle](https://github.com/CrimsonIsle), [Ghost-3](https://github.com/Ghost-3), [wilson-wtf](https://github.com/wilson-wtf), [R2kip](https://github.com/R2kip), [Kolobok125040](https://github.com/Kolobok125040), [BLACKUM](https://github.com/BLACKUM), [CheckMeJava](https://github.com/CheckMeJava), [TheMychenik](https://github.com/TheMychenik), [LacticWhale](https://github.com/LacticWhale), [iMekky](https://github.com/iMekky), [anysad](https://github.com/anysad), [Vanja](https://github.com/Vanja), [Fiarr4ikDev](https://github.com/Fiarr4ikDev) |
-| French                | [edgarogh](https://github.com/edgarogh), [Julienraptor01](https://github.com/Julienraptor01), [viciscat](https://github.com/viciscat), [Kiverty](https://github.com/Kiverty), [maDU59](https://github.com/maDU59), [Kaelig2102](https://github.com/Kaelig2102), [SimplSurro](https://github.com/SimplSurro), [Siroz555](https://github.com/Siroz555), [TheGallium](https://github.com/TheGallium), [mattheov](https://github.com/mattheov), [Curzeed](https://github.com/Curzeed)                                                                                                                                  |
-| Japanese              | [hirochisan](https://github.com/hirochisan), [AC19970](https://github.com/AC19970), [WhyHina](https://github.com/WhyHina), [tdnpgm](https://github.com/tdnpgm), [aoipop0117](https://github.com/aoipop0117), [tokumeika](https://github.com/tokumeika)                                                                                                                                                                                                                                                                                                                                                             |
-| Chinese (Traditional) | [catandA](https://github.com/catandA), [AC19970](https://github.com/AC19970)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | 
-| Chinese (Simplified)  | [catandA](https://github.com/catandA), [PumpkinXD](https://github.com/PumpkinXD), [user123321111](https://github.com/user123321111), [sunnytia](https://github.com/sunnytia), [AC19970](https://github.com/AC19970), [x-yingcan-x](https://github.com/x-yingcan-x), [xyx986](https://github.com/xyx986), [Typogalaxy](https://github.com/Typogalaxy), [SimplSurro](https://github.com/SimplSurro), [layou233](https://github.com/layou233), [Launium](https://github.com/Launium), [HenryXiaoYang](https://github.com/HenryXiaoYang)                                                                               |
-| Korean                | [lantice3720](https://github.com/lantice3720), [lanthanide](https://github.com/lanthanide), [DaysSky](https://github.com/DaysSky)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| Spanish               | [IngeSebastian](https://github.com/IngeSebastian), [NickdaWizIsDev](https://github.com/NickdaWizIsDev), [Teyxos](https://github.com/Teyxos), [Dopjs](https://github.com/Dopjs), [urdaknows](https://github.com/urdaknows), [Fjrtyy](https://github.com/Fjrtyy)                                                                                                                                                                                                                                                                                                                                                     |
-| Norwegian Bokmål      | [KdGaming0](https://github.com/KdGaming0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| Norwegian Nynorsk     | [KdGaming0](https://github.com/KdGaming0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| Turkish               | [Fix3dll](https://github.com/Fix3dll), [Emirlol](https://github.com/Emirlol), [MrBiscuit921](https://github.com/MrBiscuit921), [pillibebek-32](https://github.com/pillibebek-32)                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| Canadian English      | [AzureAaron](https://github.com/AzureAaron), [CoffeeThe2nd](https://github.com/CoffeeThe2nd)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| Portuguese (Brazil)   | [OhRetro](https://github.com/OhRetro), [AurinVPK](https://github.com/AurinVPK), [yFelipeMC](https://github.com/yFelipeMC), [Owensaug](https://github.com/Owensaug), [withet-pt](https://github.com/withet-pt), [xEsc000](https://github.com/xEsc000), [giovaniohira](https://github.com/giovaniohira)                                                                                                                                                                                                                                                                                                              |
-| Dutch                 | [mitch030504](https://github.com/mitch030504), [Westsi](https://github.com/Westsi)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Italian               | [Vricken](https://github.com/Vricken), [Bloo02](https://github.com/Bloo02)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| Polish                | [danehcan](https://github.com/danehcan)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| Vietnamese            | [ThanhZ](https://github.com/ThanhZ), [HuydinhVN](https://github.com/HuydinhVN)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| Danish                | [NugzZ3D](https://github.com/NugzZ3D)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| Swedish               | [Ski11](https://github.com/Ski11)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| Hungarian             | [Toastie](https://github.com/Toastie), [min-bal](https://github.com/min-bal)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Language                         | Translator                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|----------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| German                           | [LifeIsAParadox](https://github.com/LifeIsAParadox), [msg-programs](https://github.com/msg-programs), [Chris579](https://github.com/Chris579), [Superjamp](https://github.com/Superjamp), [Vanja](https://github.com/Vanja), [IHaveNoWLAN](https://github.com/IHaveNoWLAN), [callmespa-dev](https://github.com/callmespa-dev), [jonnytheagent](https://github.com/jonnytheagent), [YESSIR9153](https://github.com/YESSIR9153), [itzmxritz](https://github.com/itzmxritz), [Donsaurus](https://github.com/Donsaurus), [MindOfTyler](https://github.com/MindOfTyler), [lukaseds](https://github.com/lukaseds)                                                                                                                                         |
+| Indonesian                       | [null2264](https://github.com/null2264)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Russian                          | [HyperSoop](https://github.com/HyperSoop), [CrimsonIsle](https://github.com/CrimsonIsle), [Ghost-3](https://github.com/Ghost-3), [wilson-wtf](https://github.com/wilson-wtf), [R2kip](https://github.com/R2kip), [Kolobok125040](https://github.com/Kolobok125040), [BLACKUM](https://github.com/BLACKUM), [CheckMeJava](https://github.com/CheckMeJava), [TheMychenik](https://github.com/TheMychenik), [LacticWhale](https://github.com/LacticWhale), [iMekky](https://github.com/iMekky), [anysad](https://github.com/anysad), [Vanja](https://github.com/Vanja), [Fiarr4ikDev](https://github.com/Fiarr4ikDev), [admiral1941](https://github.com/admiral1941), [xilka1](https://github.com/xilka1), [KXNVRA-dot](https://github.com/KXNVRA-dot) |
+| French                           | [edgarogh](https://github.com/edgarogh), [Julienraptor01](https://github.com/Julienraptor01), [viciscat](https://github.com/viciscat), [Kiverty](https://github.com/Kiverty), [maDU59](https://github.com/maDU59), [Kaelig2102](https://github.com/Kaelig2102), [SimplSurro](https://github.com/SimplSurro), [Siroz555](https://github.com/Siroz555), [TheGallium](https://github.com/TheGallium), [mattheov](https://github.com/mattheov), [Curzeed](https://github.com/Curzeed), [HugoTLS](https://github.com/HugoTLS), [xnossisx](https://github.com/xnossisx), [Tjiba](https://github.com/Tjiba), [rycip](https://github.com/rycip), [Fyelne](https://github.com/Fyelne)                                                                        |
+| Japanese                         | [hirochisan](https://github.com/hirochisan), [AC19970](https://github.com/AC19970), [WhyHina](https://github.com/WhyHina), [tdnpgm](https://github.com/tdnpgm), [aoipop0117](https://github.com/aoipop0117), [tokumeika](https://github.com/tokumeika)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Chinese (Traditional Han script) | [catandA](https://github.com/catandA), [AC19970](https://github.com/AC19970), [4wl](https://github.com/4wl), [BAMFADD](https://github.com/BAMFADD)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | 
+| Chinese (Simplified Han script)  | [catandA](https://github.com/catandA), [PumpkinXD](https://github.com/PumpkinXD), [user123321111](https://github.com/user123321111), [sunnytia](https://github.com/sunnytia), [AC19970](https://github.com/AC19970), [x-yingcan-x](https://github.com/x-yingcan-x), [xyx986](https://github.com/xyx986), [Typogalaxy](https://github.com/Typogalaxy), [SimplSurro](https://github.com/SimplSurro), [layou233](https://github.com/layou233), [Launium](https://github.com/Launium), [HenryXiaoYang](https://github.com/HenryXiaoYang), [IasthaiXY](https://github.com/IasthaiXY), [0linZ0](https://github.com/0linZ0), [XYZ7577](https://github.com/XYZ7577)                                                                                         |
+| Korean                           | [lantice3720](https://github.com/lantice3720), [lanthanide](https://github.com/lanthanide), [DaysSky](https://github.com/DaysSky)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Spanish                          | [IngeSebastian](https://github.com/IngeSebastian), [NickdaWizIsDev](https://github.com/NickdaWizIsDev), [Teyxos](https://github.com/Teyxos), [Dopjs](https://github.com/Dopjs), [urdaknows](https://github.com/urdaknows), [Fjrtyy](https://github.com/Fjrtyy), [AndresMohamed](https://github.com/AndresMohamed), [MentaPay](https://github.com/MentaPay), [Alex33856](https://github.com/Alex33856)                                                                                                                                                                                                                                                                                                                                               |
+| Norwegian Bokmål                 | [KdGaming0](https://github.com/KdGaming0), [SyzeeTheGooner](https://github.com/SyzeeTheGooner)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Norwegian Nynorsk                | [KdGaming0](https://github.com/KdGaming0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Turkish                          | [Fix3dll](https://github.com/Fix3dll), [Emirlol](https://github.com/Emirlol), [MrBiscuit921](https://github.com/MrBiscuit921), [pillibebek-32](https://github.com/pillibebek-32)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Canadian English                 | [AzureAaron](https://github.com/AzureAaron), [CoffeeThe2nd](https://github.com/CoffeeThe2nd)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Portuguese (Brazil)              | [OhRetro](https://github.com/OhRetro), [AurinVPK](https://github.com/AurinVPK), [yFelipeMC](https://github.com/yFelipeMC), [Owensaug](https://github.com/Owensaug), [withet-pt](https://github.com/withet-pt), [xEsc000](https://github.com/xEsc000), [giovaniohira](https://github.com/giovaniohira), [GabrielSetta](https://github.com/GabrielSetta), [ebrenotron](https://github.com/ebrenotron), [jan](https://github.com/jan), [xerosooo](https://github.com/xerosooo)                                                                                                                                                                                                                                                                         |
+| Dutch                            | [mitch030504](https://github.com/mitch030504), [Westsi](https://github.com/Westsi)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Italian                          | [Vricken](https://github.com/Vricken), [Bloo02](https://github.com/Bloo02)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Polish                           | [danehcan](https://github.com/danehcan)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Vietnamese                       | [ThanhZ](https://github.com/thqnhz), [HuydinhVN](https://github.com/HuydinhVN)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Danish                           | [NugzZ3D](https://github.com/NugzZ3D)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Swedish                          | [Ski11](https://github.com/Ski11)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Hungarian                        | [Toastie](https://github.com/Toastie), [min-bal](https://github.com/min-bal), [gtutheg](https://github.com/gtutheg)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Ukrainian                        | [IvanPetriv](https://github.com/IvanPetriv), [admiral1941](https://github.com/admiral1941)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |

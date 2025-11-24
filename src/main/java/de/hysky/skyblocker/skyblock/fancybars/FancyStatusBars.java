@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.lwjgl.glfw.GLFW;
@@ -33,8 +34,6 @@ import java.util.concurrent.CompletableFuture;
 public class FancyStatusBars {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("status_bars.json");
 	private static final Logger LOGGER = LoggerFactory.getLogger(FancyStatusBars.class);
-
-	private final MinecraftClient client = MinecraftClient.getInstance();
 
 	public static BarPositioner barPositioner = new BarPositioner();
 	public static Map<StatusBarType, StatusBar> statusBars = new EnumMap<>(StatusBarType.class);
@@ -110,6 +109,7 @@ public class FancyStatusBars {
 	 * @param counts   the counts for each bar position (LAYER1, LAYER2, RIGHT)
 	 * @param position the position to load
 	 */
+	@SuppressWarnings("incomplete-switch")
 	private static void initBarPosition(StatusBar bar, int[] counts, UIAndVisualsConfig.LegacyBarPosition position) {
 		switch (position) {
 			case RIGHT:
@@ -307,15 +307,18 @@ public class FancyStatusBars {
 		return SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift();
 	}
 
-	public boolean render(DrawContext context, int scaledWidth, int scaledHeight) {
-		var player = client.player;
-		if (!isEnabled() || player == null)
-			return false;
+	public static boolean render(DrawContext context, MinecraftClient client) {
+		ClientPlayerEntity player = client.player;
+		if (!isEnabled() || player == null) return false;
 
 		Collection<StatusBar> barCollection = statusBars.values();
 		for (StatusBar statusBar : barCollection) {
 			if (!statusBar.enabled || !statusBar.visible) continue;
-			statusBar.render(context, -1, -1, client.getRenderTickCounter().getDynamicDeltaTicks());
+			statusBar.renderBar(context);
+		}
+		for (StatusBar statusBar : barCollection) {
+			if (!statusBar.enabled || !statusBar.visible) continue;
+			statusBar.renderText(context);
 		}
 
 		StatusBarTracker.Resource health = StatusBarTracker.getHealth();

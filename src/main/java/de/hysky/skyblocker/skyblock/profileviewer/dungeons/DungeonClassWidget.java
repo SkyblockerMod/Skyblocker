@@ -29,10 +29,10 @@ public class DungeonClassWidget {
     private final ItemStack stack;
     private boolean active = false;
 
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
-    private static final Identifier ACTIVE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
-    private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
-    private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
+    private static final Identifier ACTIVE_TEXTURE = SkyblockerMod.id("textures/gui/item_protection.png");
+    private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+    private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
     private static final Map<String, ItemStack> CLASS_ICON = Map.ofEntries(
@@ -65,7 +65,7 @@ public class DungeonClassWidget {
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
         HudHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * classLevel.fill), 6, fillColor);
 
-        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22){
+        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22) {
             List<Text> tooltipText = new ArrayList<>();
             tooltipText.add(Text.literal(this.className).formatted(Formatting.GREEN));
             tooltipText.add(Text.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.classLevel.xp)).formatted(Formatting.GOLD));

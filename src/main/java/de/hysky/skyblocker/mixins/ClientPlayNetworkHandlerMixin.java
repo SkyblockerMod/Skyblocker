@@ -12,8 +12,7 @@ import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.HealthBars;
-import de.hysky.skyblocker.skyblock.SmoothAOTE;
-import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
+import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.TeleportMaze;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -23,9 +22,11 @@ import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
 import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
 import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
+import de.hysky.skyblocker.skyblock.hunting.LassoHud;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAOTE;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
@@ -72,12 +73,12 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
-		EggFinder.checkIfEgg(armorStandEntity);
 		CorpseFinder.checkIfCorpse(armorStandEntity);
 		HealthBars.healthBar(armorStandEntity);
 		SeaCreatureTracker.onEntitySpawn(armorStandEntity);
 		FishingHelper.checkIfFishWasCaught(armorStandEntity);
 		TreeBreakProgressHud.onEntityUpdate(armorStandEntity);
+		LassoHud.onEntityUpdate(armorStandEntity);
 		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
 			CompactDamage.compactDamage(armorStandEntity);
 		} catch (Exception e) {
@@ -88,15 +89,21 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		FishingHookDisplayHelper.onArmorStandSpawn(armorStandEntity);
 	}
 
-	@Inject(method = "onPlayerPositionLook", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
+	@Inject(method = "onEntityAttach", at = @At("TAIL"))
+	private void skyblocker$onEntityAttach(EntityAttachS2CPacket packet, CallbackInfo ci) {
+		LassoHud.onEntityAttach(packet);
+	}
+
+	@Inject(method = "onPlayerPositionLook", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/network/PacketApplyBatcher;)V", shift = At.Shift.AFTER))
 	private void skyblocker$beforeTeleport(PlayerPositionLookS2CPacket packet, CallbackInfo ci, @Share("playerBeforeTeleportBlockPos") LocalRef<BlockPos> beforeTeleport) {
 		beforeTeleport.set(client.player.getBlockPos().toImmutable());
+		ResponsiveSmoothAOTE.playerGoingToTeleport();
 	}
 
 	@Inject(method = "onPlayerPositionLook", at = @At(value = "RETURN"))
 	private void skyblocker$onTeleport(PlayerPositionLookS2CPacket packet, CallbackInfo ci, @Share("playerBeforeTeleportBlockPos") LocalRef<BlockPos> beforeTeleport) {
 		//player has been teleported by the server, tell the smooth AOTE this
-		SmoothAOTE.playerTeleported();
+		PredictiveSmoothAOTE.playerTeleported();
 
 		TeleportMaze.INSTANCE.onTeleport(client, beforeTeleport.get(), client.player.getBlockPos().toImmutable());
 	}
@@ -122,7 +129,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 
 	@Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
 	private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
-		EggFinder.checkIfEgg(entity);
 		CorpseFinder.checkIfCorpse(entity);
 	}
 
@@ -136,7 +142,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		return !Utils.isOnHypixel();
 	}
 
-	@Inject(method = "onPlaySound", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
+	@Inject(method = "onPlaySound", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/network/PacketApplyBatcher;)V", shift = At.Shift.AFTER))
 	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
 		PlaySoundEvents.FROM_SERVER.invoker().onPlaySoundFromServer(packet);
 	}
@@ -166,7 +172,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		//make the f3+3 screen always send ping packets even when closed
 		//this is needed to make smooth AOTE work so check if its enabled
 		UIAndVisualsConfig.SmoothAOTE options = SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE;
-		if (Utils.isOnSkyblock() && !SmoothAOTE.teleportDisabled && (options.enableWeirdTransmission || options.enableEtherTransmission || options.enableInstantTransmission || options.enableSinrecallTransmission || options.enableWitherImpact)) {
+		if (Utils.isOnSkyblock() && options.predictive && !PredictiveSmoothAOTE.teleportDisabled && (options.enableWeirdTransmission || options.enableEtherTransmission || options.enableInstantTransmission || options.enableSinrecallTransmission || options.enableWitherImpact)) {
 			return true;
 		}
 		return original;

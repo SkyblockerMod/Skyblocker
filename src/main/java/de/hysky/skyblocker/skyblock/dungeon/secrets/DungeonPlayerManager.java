@@ -61,7 +61,7 @@ public class DungeonPlayerManager {
 	 * @implNote If a player is currently a ghost, this will return {@link DungeonClass#UNKNOWN}.
 	 */
 	public static DungeonClass getClassFromPlayer(PlayerEntity player) {
-		return getClassFromPlayer(player.getGameProfile().getName());
+		return getClassFromPlayer(player.getGameProfile().name());
 	}
 
 	/**
@@ -103,7 +103,12 @@ public class DungeonPlayerManager {
 		Matcher matcher = PLAYER_GHOST_PATTERN.matcher(text.getString());
 		if (!matcher.find()) return true;
 
-		getPlayer(matcher.group("name")).ifPresentOrElse(DungeonPlayer::ghost, () -> DungeonManager.LOGGER.error("[Skyblocker Dungeon Player Manager] Received ghost message for player '{}' but player was not found in the player list: {}", matcher.group("name"), Arrays.toString(players)));
+		String name = matcher.group("name");
+		if (name.equals("You")) {
+			assert MinecraftClient.getInstance().player != null;
+			name = MinecraftClient.getInstance().player.getName().getString();
+		}
+		getPlayer(name).ifPresentOrElse(DungeonPlayer::ghost, () -> DungeonManager.LOGGER.error("[Skyblocker Dungeon Player Manager] Received ghost message for player '{}' but player was not found in the player list: {}", matcher.group("name"), Arrays.toString(players)));
 
 		return true;
 	}
@@ -126,7 +131,7 @@ public class DungeonPlayerManager {
 			update(dungeonClass);
 
 			// Pre-fetches game profiles for rendering skins in the leap overlay and fancy dungeon map.
-			CompletableFuture.runAsync(() -> MinecraftClient.getInstance().getSessionService().fetchProfile(uuid, false));
+			CompletableFuture.runAsync(() -> MinecraftClient.getInstance().getApiServices().sessionService().fetchProfile(uuid, false));
 		}
 
 		private static @Nullable UUID findPlayerUuid(@NotNull String name) {
@@ -134,7 +139,7 @@ public class DungeonPlayerManager {
 			return StreamSupport.stream(MinecraftClient.getInstance().world.getEntities().spliterator(), false)
 					.filter(PlayerEntity.class::isInstance)
 					.map(PlayerEntity.class::cast)
-					.filter(player -> player.getGameProfile().getName().equals(name))
+					.filter(player -> player.getGameProfile().name().equals(name))
 					.findAny()
 					.map(PlayerEntity::getUuid)
 					.orElse(null);

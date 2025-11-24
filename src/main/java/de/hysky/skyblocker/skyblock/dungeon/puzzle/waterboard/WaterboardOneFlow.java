@@ -14,13 +14,12 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -101,7 +100,7 @@ Time starts when the water lever is turned on and stops when the last door opens
 public class WaterboardOneFlow extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WaterboardOneFlow.class);
 	public static final WaterboardOneFlow INSTANCE = new WaterboardOneFlow();
-	private static final Identifier WATER_TIMES = Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/watertimes.json");
+	private static final Identifier WATER_TIMES = SkyblockerMod.id("dungeons/watertimes.json");
 	private static final Text WAIT_TEXT = Text.literal("WAIT").formatted(Formatting.RED, Formatting.BOLD);
 	private static final Text CLICK_TEXT = Text.literal("CLICK").formatted(Formatting.GREEN, Formatting.BOLD);
 	private static JsonObject SOLUTIONS;
@@ -425,15 +424,15 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	}
 
     @Override
-    public void render(WorldRenderContext context) {
+    public void extractRendering(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow ||
 				world == null || room == null || player == null) return;
 
 		try {
 			for (Mark mark : marks) {
 				float[] components = ColorUtils.getFloatComponents(mark.reached ? DyeColor.LIME : DyeColor.WHITE);
-				RenderHelper.renderFilled(context, mark.pos, components, 0.5f, true);
-				RenderHelper.renderText(context, Text.of(String.format("Mark %d", mark.index)),
+				collector.submitFilledBox(mark.pos, components, 0.5f, true);
+				collector.submitText(Text.of(String.format("Mark %d", mark.index)),
 						mark.pos.toCenterPos().offset(Direction.UP, 0.2), true);
 			}
 
@@ -449,25 +448,24 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				LeverType nextNextLever = sortedTimes.size() < 2 ? null : sortedTimes.get(1).left();
 
 				if (nextLever != null) {
-					RenderHelper.renderLineFromCursor(context,
-							room.relativeToActual(nextLever.leverPos).toCenterPos(),
-							ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 2f);
+					collector.submitLineFromCursor(room.relativeToActual(nextLever.leverPos).toCenterPos(),
+							ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 4f);
 					if (nextNextLever != null) {
-						RenderHelper.renderLinesFromPoints(context, new Vec3d[]{
+						collector.submitLinesFromPoints(new Vec3d[]{
 								room.relativeToActual(nextLever.leverPos).toCenterPos(),
 								room.relativeToActual(nextNextLever.leverPos).toCenterPos()
-						}, ColorUtils.getFloatComponents(DyeColor.WHITE), 0.5f, 1f, true);
+						}, ColorUtils.getFloatComponents(DyeColor.WHITE), 1f, 2f, true);
 					}
 				}
 
-				renderLeverText(context, nextLever);
+				extractLeverText(collector, nextLever);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waterboard] Error while rendering one flow", e);
 		}
 	}
 
-	private void renderLeverText(WorldRenderContext context, LeverType nextLever) {
+	private void extractLeverText(PrimitiveCollector collector, LeverType nextLever) {
 		for (Map.Entry<LeverType, DoubleList> leverData : solution.entrySet()) {
 			LeverType lever = leverData.getKey();
 			for (int i = 0; i < leverData.getValue().size(); i++) {
@@ -485,7 +483,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 					text = Text.literal(String.format("%.2f", timeToShow)).formatted(Formatting.YELLOW);
 				}
 
-				RenderHelper.renderText(context, text,
+				collector.submitText(text,
 						room.relativeToActual(lever.leverPos).toCenterPos()
 								.offset(Direction.UP, 0.5 * (i + 1)), true);
 			}

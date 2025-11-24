@@ -15,6 +15,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
@@ -22,8 +24,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.command.CommandRegistryAccess;
@@ -42,6 +42,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
@@ -67,9 +68,10 @@ public class Waypoints {
     public static void init() {
         loadWaypoints();
         ClientLifecycleEvents.CLIENT_STOPPING.register(Waypoints::saveWaypoints);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(Waypoints::render);
+        WorldRenderExtractionCallback.EVENT.register(Waypoints::extractRendering);
         ClientCommandRegistrationCallback.EVENT.register(Waypoints::registerCommands);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		Scheduler.INSTANCE.scheduleCyclic(Waypoints::tick, 1);
     }
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess access) {
@@ -156,7 +158,7 @@ public class Waypoints {
     public static String toSkyblocker(List<WaypointGroup> waypointGroups) {
         String waypointsJson = SkyblockerMod.GSON.toJson(CODEC.encodeStart(JsonOps.INSTANCE, waypointGroups).resultOrPartial(LOGGER::error).orElseThrow());
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try (GZIPOutputStream gzip = new GZIPOutputStream(output)){
+        try (GZIPOutputStream gzip = new GZIPOutputStream(output)) {
             gzip.write(waypointsJson.getBytes());
         } catch (IOException e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while serializing Skyblocker waypoint data", e);
@@ -260,21 +262,26 @@ public class Waypoints {
         return waypoints.values().stream().map(WaypointGroup::deepCopy).collect(Multimaps.toMultimap(WaypointGroup::island, Function.identity(), () -> MultimapBuilder.enumKeys(Location.class).arrayListValues().build()));
     }
 
-    private static void render(WorldRenderContext context) {
+	private static void forEachGroup(Consumer<WaypointGroup> consumer) {
+		for (WaypointGroup group : getWaypointGroup(Utils.getLocation())) {
+			if (group != null) consumer.accept(group);
+		}
+		if (Utils.getLocationRaw().isEmpty()) return;
+		for (WaypointGroup group : getWaypointGroup(Location.UNKNOWN)) {
+			if (group != null) consumer.accept(group);
+		}
+	}
+
+    private static void extractRendering(PrimitiveCollector collector) {
         if (SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
-            for (WaypointGroup group : getWaypointGroup(Utils.getLocation())) {
-                if (group != null) {
-                    group.render(context);
-                }
-            }
-            if (Utils.getLocationRaw().isEmpty()) return;
-            for (WaypointGroup group : getWaypointGroup(Location.UNKNOWN)) {
-                if (group != null) {
-                    group.render(context);
-                }
-            }
+            forEachGroup(group -> group.extractRendering(collector));
         }
     }
+
+	private static void tick() {
+		if (!SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) return;
+		forEachGroup(WaypointGroup::tick);
+	}
 
 	private static void reset() {
 		waypoints.values().forEach(WaypointGroup::resetCurrentIndex);

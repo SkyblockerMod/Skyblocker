@@ -8,12 +8,11 @@ import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class DebugCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
-				.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/debug"))
+				.id(SkyblockerMod.id("config/debug"))
 				.name(Text.translatable("skyblocker.config.debug"))
 				.option(Option.<Integer>createBuilder()
 						.name(Text.translatable("skyblocker.config.debug.dumpRange"))

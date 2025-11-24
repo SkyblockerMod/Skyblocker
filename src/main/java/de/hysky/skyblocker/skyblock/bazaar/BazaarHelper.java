@@ -19,9 +19,9 @@ import java.util.regex.Pattern;
 
 public class BazaarHelper extends SimpleSlotTextAdder {
 	private static final Pattern FILLED_PATTERN = Pattern.compile("Filled: \\S+ \\(?([\\d.]+)%\\)?!?");
-	private static final int RED = 0xe60b1e;
-	private static final int YELLOW = 0xe6ba0b;
-	private static final int GREEN = 0x1ee60b;
+	private static final int RED = 0xE60B1E;
+	private static final int YELLOW = 0xE6BA0B;
+	private static final int GREEN = 0x1EE60B;
 
 	public BazaarHelper() {
 		super("(?:Co-op|Your) Bazaar Orders");
@@ -30,6 +30,15 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 	@Override
 	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().helpers.bazaar.enableBazaarHelper;
+	}
+
+	@Override
+	public boolean test(@NotNull String title) {
+		if (super.test(title)) {
+			BazaarOrderTracker.INSTANCE.clearOrders();
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -45,6 +54,8 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 
 		ItemStack item = slot.getStack();
 		if (item.isEmpty()) return List.of(); //We've skipped all invalid slots, so we can just check if it's not air here.
+
+		BazaarOrderTracker.INSTANCE.processOrder(item, slotId);
 
 		Matcher matcher = ItemUtils.getLoreLineIfMatch(item, FILLED_PATTERN);
 		if (matcher != null) {

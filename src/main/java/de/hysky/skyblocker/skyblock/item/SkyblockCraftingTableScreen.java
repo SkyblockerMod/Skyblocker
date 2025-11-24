@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookWidget;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -22,12 +23,12 @@ import java.time.Duration;
 public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingTableScreenHandler> {
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/crafting_table.png");
     protected static final ButtonTextures MORE_CRAFTS_TEXTURES = new ButtonTextures(
-            Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/more_button"),
-            Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/more_button_disabled"),
-            Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/more_button_highlighted")
+            SkyblockerMod.id("quick_craft/more_button"),
+            SkyblockerMod.id("quick_craft/more_button_disabled"),
+            SkyblockerMod.id("quick_craft/more_button_highlighted")
     );
 
-    protected static final Identifier QUICK_CRAFT = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/sprites/quick_craft/quick_craft_overlay.png");
+    protected static final Identifier QUICK_CRAFT = SkyblockerMod.id("textures/gui/sprites/quick_craft/quick_craft_overlay.png");
     private final SkyblockRecipeBookWidget recipeBook = new SkyblockRecipeBookWidget(handler);
     private boolean narrow;
     private TexturedButtonWidget moreCraftsButton;
@@ -106,21 +107,21 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.recipeBook.mouseClicked(mouseX, mouseY, button)) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        if (this.recipeBook.mouseClicked(click, doubled)) {
             this.setFocused(this.recipeBook);
             return true;
         }
         if (this.narrow && this.recipeBook.isOpen()) {
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     @Override
-    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button) {
+    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
         boolean bl = mouseX < (double) left || mouseY < (double) top || mouseX >= (double) (left + this.backgroundWidth) || mouseY >= (double) (top + this.backgroundHeight);
-        return this.recipeBook.isClickOutsideBounds(mouseX, mouseY, this.x, this.y, this.backgroundWidth, this.backgroundHeight, button) && bl;
+        return this.recipeBook.isClickOutsideBounds(mouseX, mouseY, this.x, this.y, this.backgroundWidth, this.backgroundHeight) && bl;
     }
 
     @Override

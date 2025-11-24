@@ -1,10 +1,19 @@
 package de.hysky.skyblocker.utils;
 
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
+import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class CalculatorTest {
+	@BeforeAll
+	public static void setup() {
+		SharedConstants.createGameVersion();
+		Bootstrap.initialize();
+	}
+
 	@Test
 	void testShorthands() {
 		assertCalculation(1000, "1k");
@@ -32,6 +41,30 @@ public class CalculatorTest {
 	}
 
 	@Test
+	void testFunctions() {
+		assertCalculation(2, "sqrt(4)");
+		assertCalculation(2, "log(100)");
+		assertCalculation(4, "lg(16)");
+		assertCalculation(3, "ln(20.0855369231876677409285296545817178969879078385541501443789342296988458780)");
+		assertCalculation(120, "factorial(5)");
+		assertCalculation(0, "sin(0)");
+		assertCalculation(1, "cos(0)");
+		assertCalculation(0, "tan(0)");
+		assertCalculation(1, "abs(1)");
+		assertCalculation(1, "floor(1.9)");
+		assertCalculation(2, "ceil(1.1)");
+		assertCalculation(3, "round(2.5)");
+	}
+
+	@Test
+	void testCalculations() {
+		assertCalculation(30, "5(2*sqrt(36)+3log(1))/2");
+		assertCalculation(262144, "4^3^2");
+		assertCalculation(3.0001220703125, "3+4*2/(1-5)^2^3");
+		assertCalculation(-23635.272727272727, "(5 + 2 * sqrt(36) - 3 * lg(2))^2 - (4 * (0-sqrt(16))^2^3) / (3 + 256 / 2 * lg(65536) / 2^2^3)");
+	}
+
+	@Test
 	void testImplicitMultiplication() {
 		assertCalculation(20, "5(2 + 2)");
 	}
@@ -48,10 +81,10 @@ public class CalculatorTest {
 	}
 
 	private void assertCalculation(double expected, String input) {
-		Assertions.assertEquals(expected, Calculator.calculate(input));
+		Assertions.assertDoesNotThrow(() -> Assertions.assertEquals(expected, Calculator.calculate(input)));
 	}
 
 	private void assertThrows(String input) {
-		Assertions.assertThrows(UnsupportedOperationException.class, () -> Calculator.calculate(input));
+		Assertions.assertThrows(Calculator.CalculatorException.class, () -> Calculator.calculate(input));
 	}
 }

@@ -4,14 +4,15 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
 
 import java.awt.*;
 
@@ -20,7 +21,7 @@ public class SubPageSelectButton extends ClickableWidget {
     private final int index;
     private boolean toggled;
 
-    private static final ButtonTextures TEXTURES = new ButtonTextures(Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/button_icon_toggled.png"), Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/button_icon.png"), Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/button_icon_toggled_highlighted.png"), Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/button_icon_highlighted.png"));
+    private static final ButtonTextures TEXTURES = new ButtonTextures(SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled_highlighted.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon_highlighted.png"));
     private final ItemStack ICON;
 
     public SubPageSelectButton(ProfileViewerPage page, int x, int y, int index, ItemStack item) {
@@ -41,11 +42,15 @@ public class SubPageSelectButton extends ClickableWidget {
             LoreComponent lore = ICON.get(DataComponentTypes.LORE);
             if (lore != null) context.drawTooltip(MinecraftClient.getInstance().textRenderer, lore.lines(), mouseX, mouseY + 10);
         }
+
+        if (this.isHovered()) {
+        	context.setCursor(StandardCursors.POINTING_HAND);
+        }
     }
 
     @Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
-        return this.active && this.visible &&(mouseX > getX() + 1 && mouseX < getX() + 19 && mouseY > getY() + 1 && mouseY < getY() + 19);
+        return this.active && this.visible && (mouseX > getX() + 1 && mouseX < getX() + 19 && mouseY > getY() + 1 && mouseY < getY() + 19);
     }
 
     @Override
@@ -56,7 +61,7 @@ public class SubPageSelectButton extends ClickableWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(Click click, boolean doubled) {
         page.onNavButtonClick(this);
     }
 

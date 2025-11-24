@@ -44,6 +44,17 @@
             <property name="tokens" value="AT,INC,DEC,UNARY_MINUS,UNARY_PLUS,BNOT,LNOT,DOT,ARRAY_DECLARATOR,INDEX_OP"/>
         </module>
         <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround">
+            <!-- Allow PLUS, MINUS, STAR, DIV as they may be more readable without spaces in some cases -->
+            <property name="tokens" value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV_ASSIGN,DO_WHILE,EQUAL,GE,GT,LAMBDA,LAND,LCURLY,LE,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_RETURN,LITERAL_SWITCH,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE,LOR,LT,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS_ASSIGN,QUESTION,RCURLY,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR_ASSIGN,LITERAL_ASSERT,TYPE_EXTENSION_AND"/>
+            <property name="allowEmptyCatches" value="true"/>
+            <property name="allowEmptyConstructors" value="true"/>
+            <property name="allowEmptyLambdas" value="true"/>
+            <property name="allowEmptyLoops" value="true"/>
+            <property name="allowEmptyMethods" value="true"/>
+            <property name="allowEmptySwitchBlockStatements" value="true"/>
+            <property name="allowEmptyTypes" value="true"/>
+        </module>
         <module name="GenericWhitespace"/>
 
         <module name="ArrayTypeStyle"/>
@@ -54,6 +65,9 @@
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
         <module name="EqualsHashCode"/>
+
+        <module name="HexLiteralCase"/>
+        <module name="UpperEll"/>
 
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>
@@ -104,6 +118,7 @@
                             or @text='Inject'
                             or @text='ModifyArg'
                             or @text='ModifyExpressionValue'
+                            or @text='ModifyReceiver'
                             or @text='ModifyReturnValue'
                             or @text='ModifyVariable'
                             or @text='Override'

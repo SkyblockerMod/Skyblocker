@@ -3,7 +3,6 @@
     "text.skyblocker.undo": "Visszavonás",
     "text.skyblocker.dead": "Halott",
     "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "A Crimson Isle-on megakadályozza a ködöt a játékoshoz közeli megjelenéstől, ahogyan a vanilla nether biomokban.",
-    "key.categories.skyblocker": "Skyblocker",
     "key.wikiLookup.fandom": "Keresés a Fandom Wiki-n (Angol)",
     "key.skyblocker.slottext": "Rekesz Szöveg",
     "key.skyblocker.debug.dumpNearbyEntities": "Közeli Entitások Mentése",
@@ -266,7 +265,18 @@
     "skyblocker.containerValue.stashValue.@Tooltip": "A stashben levő tárgyak értékének kiszámítása.",
     "skyblocker.config.general.acceptReparty": "Reparty automata elfogadása",
     "skyblocker.config.general.hitbox": "Hitboxok",
-    "skyblocker.config.general.hitbox.oldFarmlandHitbox": "1.8 farmland hitbox bekapcsolása",
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle": "Tárgy Háttér Overlay Stílus",
-    "skyblocker.config.general.itemInfoDisplay": "Tárgy Infó Kimutató"
+    "skyblocker.config.general.itemInfoDisplay": "Tárgy Infó Kimutató",
+    "skyblocker.config.dungeons.princeMessage": "Herceg üzenete",
+    "skyblocker.config.dungeons.princeMessage.sendPrinceMessage": "Herceg üzenete engedélyezése",
+    "skyblocker.config.dungeons.princeMessage.sendPrinceMessage.@Tooltip": "Üzenetet küld a chaten egy herceg megölése után, hogy más játékosok pontszámítási modjait használhassák.",
+    "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "Engedélyez egy widgetet, amely megjeleníti a leggyorsabb időidet a dungeon különböző szakaszaiban.",
+    "skyblocker.config.dungeons.dungeonSplits": "Dungeon részidő kijelző",
+    "skyblocker.config.dungeons.sellableItemsHighlighter": "Eladható tételek kiemelője",
+    "skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip": "Kiemeli a kazamatákban felszedett tárgyakat, amelyek eladhatók NPC-knek.",
+    "skyblocker.config.title.settings": "Beállítások",
+    "skyblocker.config.dungeons.map.fancyMap": "Gyönyörű Dungeon Térkép",
+    "skyblocker.config.dungeons.map.showSelfHead": "Mutasa a saját fejedet",
+    "skyblocker.config.dungeons.highlightDoorKeys": "Ajtó kulcs kiemelve",
+    "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Kiemeli a földön a Wither Ajtó és a Blood Ajtó kulcsait ciánkék színben."
 }

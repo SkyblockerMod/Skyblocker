@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.museum;
 
 import com.google.common.collect.Lists;
+import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
@@ -11,6 +12,7 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -19,17 +21,20 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MuseumManager extends ClickableWidget {
+public class MuseumManager extends ClickableWidget implements HoveredItemStackProvider {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final TextRenderer TEXT_RENDERER = CLIENT.textRenderer;
 	private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/recipe_book.png");
@@ -243,21 +248,21 @@ public class MuseumManager extends ClickableWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (this.searchField.mouseClicked(mouseX, mouseY, button)) {
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (this.searchField.mouseClicked(click, doubled)) {
 			this.searchField.setFocused(true);
 			return true;
-		} else if (this.nextPageButton.mouseClicked(mouseX, mouseY, button)) {
+		} else if (this.nextPageButton.mouseClicked(click, doubled)) {
 			currentPage++;
 			updateButtons();
 			return true;
-		} else if (this.prevPageButton.mouseClicked(mouseX, mouseY, button)) {
+		} else if (this.prevPageButton.mouseClicked(click, doubled)) {
 			currentPage--;
 			updateButtons();
 			return true;
-		} else if (this.filterButton.mouseClicked(mouseX, mouseY, button)) {
+		} else if (this.filterButton.mouseClicked(click, doubled)) {
 			return true;
-		} else if (this.sortButton.mouseClicked(mouseX, mouseY, button)) {
+		} else if (this.sortButton.mouseClicked(click, doubled)) {
 			return true;
 		}
 
@@ -267,8 +272,8 @@ public class MuseumManager extends ClickableWidget {
 	}
 
 	@Override
-	public boolean charTyped(char chr, int modifiers) {
-		if (this.searchField.charTyped(chr, modifiers)) {
+	public boolean charTyped(CharInput input) {
+		if (this.searchField.charTyped(input)) {
 			updateSearchResults(true);
 			return true;
 		}
@@ -276,9 +281,9 @@ public class MuseumManager extends ClickableWidget {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if ((this.searchField.isActive() && CLIENT.options.inventoryKey.matchesKey(keyCode, scanCode))
-				|| this.searchField.keyPressed(keyCode, scanCode, modifiers)) {
+	public boolean keyPressed(KeyInput input) {
+		if ((this.searchField.isActive() && CLIENT.options.inventoryKey.matchesKey(input))
+				|| this.searchField.keyPressed(input)) {
 			updateSearchResults(true);
 			return true;
 		}
@@ -286,8 +291,8 @@ public class MuseumManager extends ClickableWidget {
 		if (hoveredDonationButton != null) {
 			ItemStack hoveredStack = hoveredDonationButton.getDisplayStack();
 			if (hoveredStack == null) return false;
-			if (WikiLookupManager.handleWikiLookup(Either.right(hoveredStack), CLIENT.player, keyCode, scanCode)) return true;
-			if (ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
+			if (WikiLookupManager.handleWikiLookup(Either.right(hoveredStack), CLIENT.player, input)) return true;
+			if (ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(input)) {
 				ItemPrice.itemPriceLookup(CLIENT.player, hoveredStack);
 				return true;
 			}
@@ -297,4 +302,10 @@ public class MuseumManager extends ClickableWidget {
 
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+
+	@Override
+	public @Nullable ItemStack getFocusedItem() {
+		if (hoveredDonationButton == null) return null;
+		return hoveredDonationButton.getDisplayStack();
+	}
 }
