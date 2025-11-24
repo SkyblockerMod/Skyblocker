@@ -360,6 +360,16 @@
   "skyblocker.config.dungeons.starredMobGlow": "Starred Mob Glow",
   "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.",
 
+  "skyblocker.config.dungeons.terminalHud": "Terminal HUD",
+  "skyblocker.config.dungeons.terminalHud.determineInProgressStatus": "Enable 'In Progress' Status",
+  "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "Checks if there is a player near the terminal - does not guarantee it is being completed.",
+  "skyblocker.config.dungeons.terminalHud.enabled": "Enable",
+  "skyblocker.config.dungeons.terminalHud.includeGate": "Include Gate",
+  "skyblocker.config.dungeons.terminalHud.showCompletedTerminals": "Show Completed Terminals",
+  "skyblocker.config.dungeons.terminalHud.showTerminalIcons": "Show Terminal Icons",
+  "skyblocker.config.dungeons.terminalHud.showTerminalIcons.@Tooltip": "Adds an item for the type (Terminal/Device/Lever)",
+  "skyblocker.config.dungeons.terminalHud.showTerminalStatus": "Whether to show terminal status",
+
   "skyblocker.config.dungeons.terminals": "Terminal Solvers (F7/M7)",
   "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Block Incorrect Clicks",
   "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Colored",
@@ -383,16 +393,6 @@
   "skyblocker.config.eventNotifications.notificationSound.sound.GOAT": "Goat",
   "skyblocker.config.eventNotifications.notificationSound.sound.NONE": "None",
   "skyblocker.config.eventNotifications.notificationSound.sound.PLING": "Pling",
-
-  "skyblocker.config.dungeons.terminalHud": "Terminal HUD",
-  "skyblocker.config.dungeons.terminalHud.enabled": "Enable",
-  "skyblocker.config.dungeons.terminalHud.showTerminalIcons": "Show Terminal Icons",
-  "skyblocker.config.dungeons.terminalHud.showTerminalIcons.@Tooltip": "Adds an item for the type (Terminal/Device/Lever)",
-  "skyblocker.config.dungeons.terminalHud.showTerminalStatus": "Whether to show terminal status",
-  "skyblocker.config.dungeons.terminalHud.determineInProgressStatus": "Enable 'In Progress' Status",
-  "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "Checks if there is a player near the terminal - does not guarantee it is being completed.",
-  "skyblocker.config.dungeons.terminalHud.showCompletedTerminals": "Show Completed Terminals",
-  "skyblocker.config.dungeons.terminalHud.includeGate": "Include Gate",
 
   "skyblocker.config.farming": "Farming",
 
