@@ -38,7 +38,7 @@ public class StructureToSkeleton {
 	/**
 	 * Combines the 3 steps of the process outlined below.
 	 */
-	private static void convertToSkeleton(String structureTemplatePath, int baseY) throws IOException {
+	static void convertToSkeleton(String structureTemplatePath, int baseY) throws IOException {
 		Path outputPath = Path.of(structureTemplatePath + ".skeleton");
 		if (outputPath.toFile().exists()) throw new RuntimeException("Output file already exists! - %s".formatted(outputPath));
 
@@ -58,7 +58,7 @@ public class StructureToSkeleton {
 	 * @param yOffset The Y-height of the lowest block in the structure template.
 	 *                NOTE: The lowest block can be air depending on how it is saved!!
 	 */
-	private static List<SkeletonBlock> getStructureBlocks(String structureFilePath, int yOffset) throws IOException {
+	static List<SkeletonBlock> getStructureBlocks(String structureFilePath, int yOffset) throws IOException {
 		List<SkeletonBlock> blockData = new ArrayList<>();
 		NbtCompound nbtData = NbtIo.readCompressed(Path.of(structureFilePath), NbtSizeTracker.ofUnlimitedBytes());
 		if (!nbtData.contains("palette") || !nbtData.contains("blocks")) throw new RuntimeException("Invalid structure NBT");
@@ -89,7 +89,7 @@ public class StructureToSkeleton {
 	 * The block number is the following 4 bytes: blockX, blockY, blockZ, blockType
 	 * We then sort and append all into an array.
 	 */
-	private static int[] createBlockArray(List<SkeletonBlock> blockData) {
+	static int[] createBlockArray(List<SkeletonBlock> blockData) {
 		int initialSize = blockData.size();
 		List<Integer> blockNums = blockData.stream()
 				.map(block -> (block.x() << 24 | block.y() << 16 | block.z() << 8 | block.blockType()))
@@ -107,7 +107,7 @@ public class StructureToSkeleton {
 	/**
 	 * Step #3: Write to a file using ObjectOutputStream.
 	 */
-	private static void writeSkeletonFile(Path path, int[] blocks) throws IOException {
+	static void writeSkeletonFile(Path path, int[] blocks) throws IOException {
 		try (ObjectOutputStream outputStream = new ObjectOutputStream(new DeflaterOutputStream(Files.newOutputStream(path)))) {
 			outputStream.writeObject(blocks);
 		}

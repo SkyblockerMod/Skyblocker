@@ -30,7 +30,7 @@ public class SkeletonToStructure {
 		convertToStructure(args[0]);
 	}
 
-	private static void convertToStructure(String inputPath) throws IOException, ClassNotFoundException {
+	static void convertToStructure(String inputPath) throws IOException, ClassNotFoundException {
 		Path outputPath = Path.of(inputPath + ".nbt");
 		if (outputPath.toFile().exists()) throw new RuntimeException("Output file already exists! - %s".formatted(outputPath));
 
@@ -43,7 +43,7 @@ public class SkeletonToStructure {
 	/**
 	 * Opposite of {@link StructureToSkeleton#writeSkeletonFile(Path, int[])}
 	 */
-	private static int[] readSkeletonFile(Path path) throws IOException, ClassNotFoundException {
+	static int[] readSkeletonFile(Path path) throws IOException, ClassNotFoundException {
 		try (ObjectInputStream inputStream = new ObjectInputStream(new InflaterInputStream(Files.newInputStream(path)))) {
 			return (int[]) inputStream.readObject();
 		}
@@ -52,7 +52,7 @@ public class SkeletonToStructure {
 	/**
 	 * Opposite of {@link StructureToSkeleton#createBlockArray(List)}
 	 */
-	private static List<SkeletonBlock> createBlockList(int[] blocks) {
+	static List<SkeletonBlock> createBlockList(int[] blocks) {
 		List<SkeletonBlock> blockData = new ArrayList<>(blocks.length);
 		for (int blockNum : blocks) {
 			blockData.add(new SkeletonBlock(
@@ -69,7 +69,7 @@ public class SkeletonToStructure {
 	 * Manually creates a structure .nbt file from the skeleton blocks.
 	 * A structure template is an NbtCompound of "size", "palette", and "blocks"
 	 */
-	private static void writeStructureFile(List<SkeletonBlock> blockData, Path outputPath) throws IOException {
+	static void writeStructureFile(List<SkeletonBlock> blockData, Path outputPath) throws IOException {
 		NbtCompound structureFile = new NbtCompound();
 
 		// Structure Size
@@ -108,7 +108,7 @@ public class SkeletonToStructure {
 	 * Calculates the room size by finding the smallest and largest X, Y, and Z coordinates.
 	 * Generally, it's always going to be one of a few possibilities depending on room size...
 	 */
-	private static NbtList getSize(List<SkeletonBlock> blockData) {
+	static NbtList getSize(List<SkeletonBlock> blockData) {
 		// Min and Max are initially set to first block and last blocks respectively
 		int minX = blockData.getFirst().x();
 		int minY = 0; // Intentionally set to 0 so that it can be pasted in at the correct height.
