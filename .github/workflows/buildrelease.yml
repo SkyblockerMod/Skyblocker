@@ -73,6 +73,7 @@ jobs:
       - name: Publish using mod-publish-plugin
         run: ./gradlew build publishMods
         env:
+          BUILD_SOURCES_JAR: true
           CHANGELOG: ${{ steps.read_changelog.outputs.changelog }}
           CHANGELOG_HIGHLIGHT: ${{ steps.read_changelog.outputs.changelog_highlight }}
           REF_NAME: ${{ github.ref_name }}
