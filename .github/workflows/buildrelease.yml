@@ -71,7 +71,7 @@ jobs:
           } >> $GITHUB_OUTPUT
 
       - name: Publish using mod-publish-plugin
-        run: ./gradlew build publishMods
+        run: ./gradlew build publishMods publish
         env:
           BUILD_SOURCES_JAR: true
           CHANGELOG: ${{ steps.read_changelog.outputs.changelog }}
