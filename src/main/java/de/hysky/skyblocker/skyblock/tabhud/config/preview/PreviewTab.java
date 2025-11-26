@@ -192,7 +192,7 @@ public class PreviewTab implements Tab {
 		textWidget.setPosition(0, tabArea.getBottom() - 9);
 		restorePositioning.setPosition(10, tabArea.getBottom() - 25);
 
-		forEachChild(clickableWidget -> clickableWidget.visible = parent.isPreviewVisible() || parent.noHandler);
+		forEachChild(clickableWidget -> clickableWidget.visible = mode == Mode.DUNGEON || parent.isPreviewVisible() || parent.noHandler);
 		locationDropdownOpened(locationDropdown.isOpen());
 	}
 
