@@ -81,6 +81,7 @@ public class DungeonScore {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonScore::tick, 20);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 		DungeonEvents.DUNGEON_STARTED.register(DungeonScore::onDungeonStart);
+		DungeonEvents.DUNGEON_ENDED.register(DungeonScore::reset);
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 			if (overlay || !Utils.isInDungeons()) return true;
 			String str = message.getString();
