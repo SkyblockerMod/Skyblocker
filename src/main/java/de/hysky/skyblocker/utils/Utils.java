@@ -110,8 +110,6 @@ public class Utils {
     @NotNull
     public static double purse = 0;
 
-	private static boolean firstProfileUpdate = true;
-
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
      */
@@ -570,9 +568,6 @@ public class Utils {
 
                 if (!prevProfileId.equals(profileId)) {
                     SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
-                } else if (firstProfileUpdate) {
-					SkyblockEvents.PROFILE_INIT.invoker().onSkyblockProfileInit(profileId);
-	                firstProfileUpdate = false;
                 }
             } else if (Formatting.strip(message).startsWith(PROFILE_ID_SUGGEST_PREFIX)) {
             	int suggestions = profileSuggestionMessages;
