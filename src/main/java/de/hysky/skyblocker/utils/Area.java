@@ -10,6 +10,10 @@ public enum Area {
 	CHATEAU("Stillgore Château"),
 	FOREST("Forest"),
 	FOREST_TEMPLE("Forest Temple"),
+	DWARVEN_BASE_CAMP("Dwarven Base Camp"),
+	GLACITE_TUNNELS("Glacite Tunnels"),
+	GLACITE_MINESHAFTS("Glacite Mineshafts"),
+	GLACITE_LAKE("Glacite Lake"),
 	UNKNOWN("Unknown");
 
 	private final String name;

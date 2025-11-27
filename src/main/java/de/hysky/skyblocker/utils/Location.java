@@ -35,7 +35,7 @@ public enum Location implements StringIdentifiable {
 	/**
 	 * The freezing cold Glacite Mineshafts! *brr... so cold... :(*
 	 */
-	GLACITE_MINESHAFT("mineshaft"),
+	GLACITE_MINESHAFTS("mineshaft"),
 	/**
 	 * <p>Goodbye 1.8 hello 1.21 (and foraging 50 for all)!</p>
 	 */

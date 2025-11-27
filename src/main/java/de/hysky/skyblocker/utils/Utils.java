@@ -135,7 +135,7 @@ public class Utils {
     }
 
     public static boolean isInDwarvenMines() {
-        return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFT;
+        return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFTS;
     }
 
     public static boolean isInTheRift() {
@@ -307,6 +307,10 @@ public class Utils {
         return (!serverAddress.isEmpty() && serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS)) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
     }
 
+	/**
+	 * @deprecated use type safe {@link #getArea()}.
+	 */
+	@Deprecated
     public static String getIslandArea() {
         try {
             for (String sidebarLine : STRING_SCOREBOARD) {

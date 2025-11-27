@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
@@ -88,9 +89,9 @@ public class CommissionLabels {
 
 		MiningConfig.CommissionWaypointMode currentMode = SkyblockerConfigManager.get().mining.commissionWaypoints.mode;
 		activeWaypoints.clear();
-		String location = Utils.getIslandArea().substring(2);
+		Area area = Utils.getArea();
 		//find commission locations in glacite
-		if (location.equals("Dwarven Base Camp") || location.equals("Glacite Tunnels") || location.equals("Glacite Mineshafts") || location.equals("Glacite Lake")) {
+		if (area.equals(Area.DWARVEN_BASE_CAMP) || area.equals(Area.GLACITE_TUNNELS) || area.equals(Area.GLACITE_MINESHAFTS) || area.equals(Area.GLACITE_LAKE)) {
 			if (currentMode != MiningConfig.CommissionWaypointMode.BOTH && currentMode != MiningConfig.CommissionWaypointMode.GLACITE) {
 				return;
 			}
