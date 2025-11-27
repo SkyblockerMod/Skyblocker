@@ -443,8 +443,8 @@ public class Utils {
 
     private static void onPacket(HypixelS2CPacket packet) {
         switch (packet) {
-            case HelloS2CPacket(var packetEnvironment) -> {
-                environment = packetEnvironment;
+            case HelloS2CPacket(var serverEnvironment) -> {
+                environment = serverEnvironment;
 
                 //Request the player's rank information
                 HypixelNetworking.sendPlayerInfoC2SPacket(1);
