@@ -682,8 +682,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<DungeonsConfig.DoorHighlight.Type>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType"))
-								.description(Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip"),
-										Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote"))
+								.description(Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip"))
 								.binding(defaults.dungeons.doorHighlight.doorHighlightType,
 										() -> config.dungeons.doorHighlight.doorHighlightType,
 										newValue -> config.dungeons.doorHighlight.doorHighlightType = newValue)
