@@ -4,7 +4,7 @@
   "plugin": "de.hysky.skyblocker.compatibility.MixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-	"BatchingRenderCommandQueueMixin",
+    "BatchingRenderCommandQueueMixin",
     "BatEntityMixin",
     "BossBarHudMixin",
     "CactusBlockMixin",
@@ -20,12 +20,13 @@
     "DyedColorComponentMixin",
     "EntityMixin",
     "EntityRendererMixin",
-	"EntityRenderManagerMixin",
+    "EntityRenderManagerMixin",
     "EquipmentRendererMixin",
     "FishingBobberEntityMixin",
     "FogRendererMixin",
     "GameRendererMixin",
     "GenericContainerScreenHandlerMixin",
+    "GenericContainerScreenMixin",
     "GlCommandEncoderMixin",
     "HandledScreenMixin",
     "HandledScreenProviderMixin",
@@ -33,15 +34,15 @@
     "InGameHudMixin",
     "InGameOverlayRendererMixin",
     "InventoryScreenMixin",
-	"ItemCommandRendererMixin",
+    "ItemCommandRendererMixin",
     "ItemStackMixin",
     "KeyBindingMixin",
-	"LevelLoadingScreenMixin",
+    "LevelLoadingScreenMixin",
     "LeverBlockMixin",
     "MapRendererMixin",
     "MinecraftClientMixin",
-	"ModelCommandRendererMixin",
-	"ModelPartCommandRendererMixin",
+    "ModelCommandRendererMixin",
+    "ModelPartCommandRendererMixin",
     "MouseMixin",
     "MushroomPlantBlockMixin",
     "PingMeasurerMixin",
@@ -49,7 +50,7 @@
     "PlayerListHudMixin",
     "PlayerSkinProviderMixin",
     "PlayerSkinTextureDownloaderMixin",
-	"RenderCommandMixin",
+    "RenderCommandMixin",
     "RenderFishMixin",
     "RenderPipelineMixin",
     "ScoreboardMixin",
@@ -85,5 +86,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "mixinextras": {
+    "minVersion": "0.5.0"
   }
 }

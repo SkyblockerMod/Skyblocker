@@ -1,10 +1,12 @@
-package de.hysky.skyblocker.skyblock.item.tooltip;
+package de.hysky.skyblocker.skyblock.accessories;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import it.unimi.dsi.fastutil.Pair;
@@ -13,6 +15,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -43,7 +46,7 @@ public class AccessoriesHelper {
 	@Init
 	public static void init() {
 		COLLECTED_ACCESSORIES.init();
-		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
 			if (Utils.isOnSkyblock() && TooltipInfoType.ACCESSORIES.isTooltipEnabled() && !Utils.getProfileId().isEmpty() && screen instanceof GenericContainerScreen genericContainerScreen) {
 				Matcher matcher = ACCESSORY_BAG_TITLE.matcher(genericContainerScreen.getTitle().getString());
 
@@ -54,6 +57,36 @@ public class AccessoriesHelper {
 
 						collectAccessories(handler.slots.subList(0, handler.getRows() * 9), page);
 					});
+					final AccessoryHelperWidget widget = new AccessoryHelperWidget();
+					widget.setY((screen.height - widget.getHeight()) / 2);
+					Screens.getButtons(screen).add(widget);
+					final int previousX = ((HandledScreenAccessor) screen).getX();
+					final int offset = Math.max(180 - previousX, 0);
+					AccessoryHelperWidget.TabButton tabButton = new AccessoryHelperWidget.TabButton(button -> {
+						boolean toggled = button.isToggled();
+						widget.visible = toggled;
+						int x = toggled ? previousX + offset : previousX;
+						((HandledScreenAccessor) screen).setX(x);
+						widget.setX(x - widget.getWidth() - 2);
+						button.setX((toggled ? widget.getX() : x) - button.getWidth() + 5);
+						button.setY((toggled ? widget.getY() : ((HandledScreenAccessor) screen).getY()) + 8);
+						if (toggled) {
+							List<Pair<AccessoryReport, Accessory>> list = ACCESSORY_DATA.entrySet().stream()
+									.map(entry -> {
+										Pair<AccessoryReport, String> pair = calculateReport4Accessory(entry.getKey());
+										return Pair.of(pair.left(), entry.getValue());
+									})
+									.filter(p -> p.left() == AccessoryReport.MISSING || p.left() == AccessoryReport.IS_GREATER_TIER)
+									.filter(p -> ItemRepository.getItemStack(p.right().id()) != null) // Remove admin items
+									.toList();
+							widget.setAccessories(
+									list.stream().filter(p -> p.left() == AccessoryReport.MISSING).map(Pair::right).toList(),
+									list.stream().filter(p -> p.left() == AccessoryReport.IS_GREATER_TIER).map(Pair::right).toList()
+									);
+						}
+					});
+					Screens.getButtons(screen).add(tabButton);
+					tabButton.setToggled(false);
 				}
 			}
 		});
