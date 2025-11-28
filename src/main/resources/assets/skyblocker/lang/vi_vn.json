@@ -1,6 +1,5 @@
 {
     "argument.color.hex.invalidString": "Giá trị Hex phải đúng 6 ký tự, tìm thấy %s ký tự.",
-    "key.categories.skyblocker": "Skyblocker",
     "key.hotbarSlotLock": "Khóa slot (thanh hotbar)",
     "key.skyblocker.toggleA": "Hiển thị HUD tab thứ hai",
     "argument.color.rgb.incomplete": "Chưa hoàn tất (cần 3 giá trị màu RGB).",
@@ -394,7 +393,6 @@
     "skyblocker.config.dungeons.highlightDoorKeys": "Highlight Chìa khóa Cửa",
     "skyblocker.config.dungeons.professor": "The Professor (F3/M3)",
     "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder": "Bật Nhắc nhở Time Tower",
-    "skyblocker.config.helpers.chocolateFactory.enableEggFinder.@Tooltip": "Highlight trứng từ Lễ hội Săn trứng Hoppity.",
     "skyblocker.config.general.itemTooltip.enableExoticTooltip": "Bật Thông Tin Vật Phẩm Kỳ Lạ",
     "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Highlight chìa khóa Cửa Wither và Cửa Máu trên mặt đất bằng màu xanh lục lam.",
     "skyblocker.config.dungeons.livid.customColor": "Tùy Chỉnh Màu Livid",
@@ -412,7 +410,6 @@
     "skyblocker.config.foraging": "Foraging",
     "skyblocker.config.general.specialEffects.rareDungeonDropEffects.@Tooltip": "Thêm hiệu ứng đặc biệt khi nhặt được vật phẩm dungeon hiếm!",
     "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Bật Trợ giúp Xưởng Chocolate",
-    "skyblocker.config.helpers.chocolateFactory.enableEggFinder": "Bật Tìm Trứng",
     "skyblocker.config.general.shortcuts.enableShortcuts": "Bật Lối tắt",
     "skyblocker.config.crimsonIsle": "Crimson Isle",
     "skyblocker.config.dungeons": "Dungeons",

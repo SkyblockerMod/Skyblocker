@@ -1,6 +1,5 @@
 {
     "argument.color.hex.invalidChar": "Ugyldigt tegn for hex-koden: %s. Gyldige tegn: [0-9a-fA-F]",
-    "key.categories.skyblocker": "Skyblocker",
     "key.skyblocker.defaultTgl": "Skift fane-HUD til standard visning",
     "key.skyblocker.toggleA": "Vis fane-HUD i sekundær visning",
     "key.skyblocker.debug.dumpNearbyEntities": "Udskriv nærliggende enheder",

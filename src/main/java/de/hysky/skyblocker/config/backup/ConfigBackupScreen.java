@@ -5,14 +5,16 @@ import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
+import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
@@ -27,6 +29,7 @@ import java.util.*;
 
 public class ConfigBackupScreen extends Screen {
 	private static final Logger LOGGER = LogUtils.getLogger();
+
 	private final Screen parent;
 	private BackupListWidget listWidget;
 	private SettingsListWidget detailsWidget;
@@ -44,22 +47,24 @@ public class ConfigBackupScreen extends Screen {
 
 		if (listWidget == null) {
 			listWidget = new BackupListWidget(client, listWidth, listHeight, 32, 25);
+			listWidget.updateEntries();
 		} else {
 			listWidget.setDimensions(listWidth, listHeight);
-			listWidget.updateEntries();
 		}
 		listWidget.setX(4);
+		listWidget.refreshScroll();
+		addDrawableChild(listWidget);
 
 		if (detailsWidget == null) {
 			detailsWidget = new SettingsListWidget(client, detailsWidth, listHeight, 32, 10);
+			detailsWidget.updateEntries(listWidget.getSelectedPath());
 		} else {
 			detailsWidget.setDimensions(detailsWidth, listHeight);
 		}
 		detailsWidget.setX(listWidth + 8);
-		detailsWidget.updateEntries(listWidget.getSelectedPath());
-
-		addDrawableChild(listWidget);
+		detailsWidget.refreshScroll();
 		addDrawableChild(detailsWidget);
+
 		ButtonWidget restoreBtn = ButtonWidget.builder(Text.translatable("skyblocker.config.general.backup.restore"), b -> {
 			Path selected = listWidget.getSelectedPath();
 			if (selected != null) {
@@ -90,8 +95,13 @@ public class ConfigBackupScreen extends Screen {
 			}
 		}).size(90, 20).position(width / 2 - 95, height - 28).build();
 		addDrawableChild(restoreBtn);
+
 		ButtonWidget done = ButtonWidget.builder(ScreenTexts.DONE, b -> close()).size(90, 20).position(width / 2 + 5, height - 28).build();
 		addDrawableChild(done);
+
+		TextWidget titleWidget = new TextWidget(title, textRenderer);
+		titleWidget.setPosition((width - textRenderer.getWidth(title)) / 2, 12);
+		addDrawableChild(titleWidget);
 	}
 
 	@Override
@@ -100,15 +110,7 @@ public class ConfigBackupScreen extends Screen {
 		client.setScreen(parent);
 	}
 
-	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
-		listWidget.render(context, mouseX, mouseY, delta);
-		detailsWidget.render(context, mouseX, mouseY, delta);
-		context.drawCenteredTextWithShadow(textRenderer, title, width / 2, 12, 0xFFFFFFFF);
-	}
-
-	private class BackupListWidget extends ElementListWidget<BackupEntry> {
+	private class BackupListWidget extends AlwaysSelectedEntryListWidget<BackupEntry> {
 		BackupListWidget(MinecraftClient client, int width, int height, int y, int itemHeight) {
 			super(client, width, height, y, itemHeight);
 			updateEntries();
@@ -138,17 +140,12 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public int getRowWidth() {
-			return super.getRowWidth();
-		}
-
-		@Override
 		protected int getScrollbarX() {
 			return getX() + getWidth() - 6;
 		}
 	}
 
-	private class BackupEntry extends ElementListWidget.Entry<BackupEntry> {
+	private class BackupEntry extends AlwaysSelectedEntryListWidget.Entry<BackupEntry> {
 		private final Path path;
 
 		BackupEntry(Path path) {
@@ -156,30 +153,14 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public boolean mouseClicked(Click click, boolean doubled) {
-			listWidget.setSelected(this);
-			return true;
-		}
-
-		@Override
-		public List<Element> children() {
-			return Collections.emptyList(); // Using List.of() will throw NPE on key navigation because it doesn't allow nulls
-		}
-
-		@Override
-		public List<Selectable> selectableChildren() {
-			return Collections.emptyList(); // Using List.of() will throw NPE on key navigation because it doesn't allow nulls
-		}
-
-		@Override
 		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			if (this.equals(listWidget.getSelectedOrNull())) {
-				int textWidth = textRenderer.getWidth(path.getFileName().toString()) + 8;
-				int highlightRight = this.getX() + Math.min(textWidth, this.getWidth() - 5);
-				context.fill(this.getX(), this.getY(), highlightRight, this.getY() + this.getHeight(), 0x80FFFFFF);
-			}
+			context.drawCenteredTextWithShadow(textRenderer, path.getFileName().toString(), this.getContentMiddleX(), this.getY() + 7, 0xFFFFFFFF);
+			if (isMouseOver(mouseX, mouseY)) context.setCursor(StandardCursors.POINTING_HAND);
+		}
 
-			context.drawText(textRenderer, path.getFileName().toString(), this.getX() + 4, this.getY() + 7, 0xFFFFFFFF, false);
+		@Override
+		public Text getNarration() {
+			return Text.empty();
 		}
 	}
 
@@ -212,12 +193,7 @@ public class ConfigBackupScreen extends Screen {
 
 		@Override
 		public int getRowWidth() {
-			return getWidth() - 10;
-		}
-
-		@Override
-		protected int getScrollbarX() {
-			return getX() + getWidth() - 6;
+			return getWidth() - 8 - 20;
 		}
 
 		private void findDiffs(String pathPrefix, JsonElement backup, JsonElement current, Set<String> diffs) {
@@ -282,7 +258,7 @@ public class ConfigBackupScreen extends Screen {
 					StringEntry entry = children().get(i);
 					if (entry.path != null && changedPaths.contains(entry.path)) {
 						// similar calculation to getRowTop
-						int entryY = entry.getY();
+						int entryY = 4 + i * itemHeight + getY();
 						// height - scrollbarThumbHeight - 2 because we draw a two pixel high indicator.
 						// scrollbarThumbHeight thumb height calculations so the changed line is in view when the indicator is in the middle of the scrollbar thumb.
 						int barY = entryY * (height - scrollbarThumbHeight - 2) / (totalHeight - itemHeight) + listWidgetY + scrollbarThumbHeight / 2;
