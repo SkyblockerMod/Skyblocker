@@ -436,7 +436,6 @@
     "skyblocker.config.uiAndVisuals.searchOverlay.keepPreviousSearches.@Tooltip": "開啟介面時保留已有的搜尋記錄。",
     "skyblocker.config.uiAndVisuals.searchOverlay.historyLength": "保存的搜尋歷史長度",
     "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "透過這些路徑點，你可以透過同時使用末影珍珠和AOTV實現穿牆。",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\n注意：若使此功能生效，必須啟用地下城秘密路徑點。",
     "skyblocker.config.dungeons.dungeonScore.scoreScaling": "分數縮放",
     "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator": "啟用利潤計算器",
     "skyblocker.config.dungeons.croesusHelper": "Croesus助手",

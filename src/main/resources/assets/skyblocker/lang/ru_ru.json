@@ -168,7 +168,6 @@
     "skyblocker.config.dungeons.secretWaypoints.enableItemWaypoints": "Включить метки предметов",
     "skyblocker.config.dungeons.secretWaypoints.enableBatWaypoints": "Включить метки летучих мышей",
     "skyblocker.config.farming.garden.dicerTitlePrevent": "Включить предотвращение показа надписи на экране при использовании дайсера",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nПримечание: Чтобы это работало, надо включить метки секретов в данже.",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreMessage": "Включить оповещение при %s очках в данже",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound": "Включить звуковое оповещение о достижении %s очков",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip": "Проигрывает звук при получении %s очков в данже.",
