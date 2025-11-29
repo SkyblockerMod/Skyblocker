@@ -114,14 +114,9 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 		)); // @formatter:on
 
 		SkyblockEvents.PROFILE_CHANGE.register(INSTANCE::onProfileChange);
-		SkyblockEvents.PROFILE_INIT.register(INSTANCE::onProfileInit);
 	}
 
 	private void onProfileChange(String prevProfileId, String newProfileId) {
-		onProfileInit(newProfileId);
-	}
-
-	private void onProfileInit(String profileId) {
 		if (!isEnabled()) return;
 		currentProfileRewards = allRewards.computeIfAbsent(Object2IntArrayMap::new);
 		recalculateAll();
