@@ -106,12 +106,16 @@ import net.minecraft.world.World;
 public class DungeonManager {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonManager.class);
+
 	@VisibleForTesting
 	public static final String DUNGEONS_PATH = "dungeons";
 	private static Path CUSTOM_WAYPOINTS_DIR;
+
 	private static final Pattern KEY_FOUND = Pattern.compile("^RIGHT CLICK on (?:the BLOOD DOOR|a WITHER door) to open it. This key can only be used to open 1 door!$");
 	private static final Pattern WITHER_DOOR_OPENED = Pattern.compile("^\\w+ opened a WITHER door!$");
 	private static final String BLOOD_DOOR_OPENED = "The BLOOD DOOR has been opened!";
+	private static final Pattern TEAM_SCORE_PATTERN = Pattern.compile(" +Team Score: [0-9]+ \\([A-z+]+\\)");
+
 	protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
 	protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
 	/**
@@ -184,6 +188,7 @@ public class DungeonManager {
 	private static Box bloodRushDoorBox;
 	private static boolean bloodOpened;
 	private static boolean hasKey;
+	private static boolean runEnded;
 
 	public static boolean isRoomsLoaded() {
 		return roomsLoaded != null && roomsLoaded.isDone();
@@ -632,7 +637,7 @@ public class DungeonManager {
 	 */
 	@SuppressWarnings({"JavadocReference", "incomplete-switch"})
 	private static void update() {
-		if (!Utils.isInDungeons() || isInBoss()) {
+		if (!Utils.isInDungeons() || isInBoss() || runEnded) {
 			return;
 		}
 		if (CLIENT.player == null || CLIENT.world == null) {
@@ -762,10 +767,7 @@ public class DungeonManager {
 	 */
 	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Text text, boolean overlay) {
-		if (!shouldProcess()) {
-			return true;
-		}
-
+		if (!shouldProcess()) return true;
 		String message = text.getString();
 
 		if (isCurrentRoomMatched()) {
@@ -791,7 +793,14 @@ public class DungeonManager {
 			DungeonEvents.DUNGEON_STARTED.invoker().onDungeonStarted();
 		}
 
-		var newBoss = DungeonBoss.fromMessage(message);
+		if (TEAM_SCORE_PATTERN.matcher(message).matches()) {
+			DungeonEvents.DUNGEON_ENDED.invoker().onDungeonEnded();
+			reset();
+			// If the run ends during the clear, mark the run as ended so we don't spam the logs with finding Mort's armor stand.
+			runEnded = true;
+		}
+
+		DungeonBoss newBoss = DungeonBoss.fromMessage(message);
 		if (!isInBoss() && newBoss.isInBoss()) {
 			reset();
 			boss = newBoss;
@@ -930,6 +939,7 @@ public class DungeonManager {
 		bloodRushDoorBox = null;
 		bloodOpened = false;
 		hasKey = false;
+		runEnded = false;
 	}
 
 	/**

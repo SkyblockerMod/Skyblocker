@@ -35,6 +35,7 @@ public class DungeonMapLabels {
 	@Init
 	public static void init() {
 		ClientPlayConnectionEvents.JOIN.register((_n, _p, _c) -> DungeonMapLabels.clearLabels());
+		DungeonEvents.DUNGEON_ENDED.register(DungeonMapLabels::clearLabels);
 		DungeonEvents.ROOM_MATCHED.register(DungeonMapLabels::onRoomMatched);
 		Scheduler.INSTANCE.scheduleCyclic(() -> updateRoomNames(null), 20);
 	}
