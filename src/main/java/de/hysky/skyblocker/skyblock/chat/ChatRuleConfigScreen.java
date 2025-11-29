@@ -201,12 +201,18 @@ public class ChatRuleConfigScreen extends Screen {
 		toastMessageInput.setPlaceholder(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.outputField.@Placeholder").formatted(Formatting.GRAY, Formatting.ITALIC));
 		contentAdder.add(toastMessageInput, 2);
 
+		BooleanSupplier toastOptionsPredicate = () -> chatRule.getToastMessage() != null;
+		// Label + preview
 		// Have to do something a little more custom due to the preview.
-		SimplePositioningWidget textAndIcon = contentAdder.add(new SimplePositioningWidget(getWidth(1), 0));
+		SimplePositioningWidget textAndIcon = new SimplePositioningWidget(getWidth(1), 0);
+		contentAdder.add(new ToggleableLayoutWidget(textAndIcon, toastOptionsPredicate));
 
 		ToastIconPreview preview = textAndIcon.add(new ToastIconPreview(), Positioner::alignRight);
 		textAndIcon.add(new MultilineTextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon"), textRenderer), Positioner::alignLeft).setMaxWidth(getWidth(1) - preview.getWidth()).setCentered(false);
-		TextFieldWidget itemInput = contentAdder.add(new TextFieldWidget(textRenderer, getWidth(1), 20, Text.empty()));
+
+		// Item input
+		TextFieldWidget itemInput = new TextFieldWidget(textRenderer, getWidth(1), 20, Text.empty());
+		contentAdder.add(new ToggleableLayoutWidget(itemInput, toastOptionsPredicate));
 		itemInput.setChangedListener(itemData -> {
 			ItemStack stack = ItemStackComponentizationFixer.fromItemString(itemData, 1);
 			if (stack.isEmpty()) stack = INVALID_ITEM;
@@ -217,18 +223,21 @@ public class ChatRuleConfigScreen extends Screen {
 		});
 		preview.input = itemInput;
 		itemInput.setText(chatRule.getToastMessage() != null ? getItemString(chatRule.getToastMessage().icon) : "minecraft:painting");
-		contentAdder.add(RangedSliderWidget.builder()
-						.minMax(1, 10)
-						.step(0.1)
-						.width(getWidth(1))
-						.defaultValue(chatRule.getToastMessage() != null ? chatRule.getToastMessage().displayDuration / 1000d : 5000d)
-						.optionFormatter(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration"), d -> Text.literal(Formatters.FLOAT_NUMBERS.format(d) + 's'))
-						.callback(d -> {
-							if (chatRule.getToastMessage() == null) return;
-							chatRule.getToastMessage().displayDuration = (long) (d * 1000);
-						})
-				.build()
-		).setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration.@Tooltip")));
+
+		// Duration slider
+		RangedSliderWidget sliderWidget = RangedSliderWidget.builder()
+				.minMax(1, 10)
+				.step(0.1)
+				.width(getWidth(1))
+				.defaultValue(chatRule.getToastMessage() != null ? chatRule.getToastMessage().displayDuration / 1000d : 5000d)
+				.optionFormatter(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration"), d -> Text.literal(Formatters.FLOAT_NUMBERS.format(d) + 's'))
+				.callback(d -> {
+					if (chatRule.getToastMessage() == null) return;
+					chatRule.getToastMessage().displayDuration = (long) (d * 1000);
+				})
+				.build();
+		contentAdder.add(new ToggleableLayoutWidget(sliderWidget, toastOptionsPredicate));
+		sliderWidget.setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration.@Tooltip")));
 		recreateLayout();
 	}
 
