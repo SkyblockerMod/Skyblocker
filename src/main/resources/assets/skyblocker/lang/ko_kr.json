@@ -150,7 +150,6 @@
     "key.wikiLookup.fandom": "팬덤(비공식) 위키 검색",
     "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "팀원들의 발광 색을 랭크 대신 클래스로 바꿉니다.",
     "skyblocker.config.dungeons.goldorWaypoints.waypointType": "태스크 웨이포인트 종류",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\n던전 시크릿 웨이포인트가 활성화되어야 합니다.",
     "skyblocker.config.dungeons.dungeonChestProfit.includeEssence": "에센스 포함",
     "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage": "던전 스코어 %s 메시지",
     "skyblocker.config.dungeons.devices.solveLightsOn": "2번쨰 디바이스 솔버",

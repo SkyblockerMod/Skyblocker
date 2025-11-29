@@ -298,7 +298,6 @@
     "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "Quando estiver na Ilha Carmesim, evita que a névoa apareça mais perto do jogador, como acontece nos biomas vanilla do nether.",
     "skyblocker.config.dungeons.doorHighlight": "Destaque de Porta",
     "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight": "Ativar Destaque de Porta",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nNota: Waypoints de Segredos da Dungeon deve estar habilitado para isso funcionar.",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip": "Destaque: Apenas mostra um destaque.\n\nContorno + Destaque: Mostra tanto um destaque e um contorno.\n\nContorno: Apenas mostra um contorno.",
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "Sem Aviso de Flecha Venenosa",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType": "Tipo de Destaque de Porta",

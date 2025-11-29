@@ -213,7 +213,6 @@
     "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "Crimson Isleにいる時、バニラのネザーバイオームのように霧がプレイヤーに近くにできるのを防ぐ。",
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "インベントリ内のToxic Arrow Poisonの量が設定されたしきい値を下回ると、警告が表示されます。\n\n16 が絶対最小値です。\nプリファイアによるスムーズなDPSフェーズには 32 が必要です。",
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Croesus NPCで最も利益の高いダンジョンチェストをハイライトします。\n\n\n最も利益の高いチェストは緑色でハイライトされます。\nダンジョンキーを使用する価値のあるチェストがある場合は、黄色でハイライトされます。",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\n注意：機能させるには、「ダンジョンのシークレットの位置を表示」を有効にする必要があります。",
     "argument.color.rgb.incomplete": "値が不足しています (3つの色値が必要です)。",
     "argument.color.hex.invalidString": "16進数値は正確に6桁必要ですが、%s桁入力されました。",
     "argument.color.hex.invalidChar": "無効な16進数の文字: %s。有効な文字: [0-9a-fA-F]",
