@@ -207,6 +207,32 @@ public class DungeonsConfig {
 		public boolean enablePrinceWaypoints = true;
 
 		public boolean enableDefaultWaypoints = true;
+
+		public Color colorEntranceWaypoints = new Color(0, 255, 0);
+
+		public Color colorSuperboomWaypoints = new Color(255, 0, 0);
+
+		public Color colorChestWaypoints = new Color(2, 213, 250);
+
+		public Color colorItemWaypoints = new Color(2, 64, 250);
+
+		public Color colorBatWaypoints = new Color(142, 66, 0);
+
+		public Color colorWitherWaypoints = new Color(30, 30, 30);
+
+		public Color colorLeverWaypoints = new Color(250, 217, 2);
+
+		public Color colorFairySoulWaypoints = new Color(255, 85, 255);
+
+		public Color colorStonkWaypoints = new Color(146, 52, 235);
+
+		public Color colorAotvWaypoints = new Color(252, 98, 3);
+
+		public Color colorPearlWaypoints = new Color(57, 117, 125);
+
+		public Color colorPrinceWaypoints = new Color(133, 21, 13);
+
+		public Color colorDefaultWaypoints = new Color(190, 255, 252);
 	}
 
 	public static class MimicMessage {
