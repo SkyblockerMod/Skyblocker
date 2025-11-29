@@ -304,7 +304,6 @@
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Marque les coffres avec le meilleur profit au PNJ Croesus.\n\n\nLe meilleur coffre sera marqué en vert.\nS'il y a un coffre valant l'utilisation d'une dungeon key, il sera marqué en jaune.",
     "skyblocker.config.dungeons.allowDroppingProtectedItems": "Activation des Jets d'Objets Protégés et/ou dans un Emplacement Verrouillé",
     "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Marque en vert les boutons corrects à cliquer, et marque le prochain en jaune.",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nNote : Les Marqueurs de Secret de Donjon doivent être activés pour que cela fonctionne.",
     "skyblocker.bars.config.speed": "Vitesse",
     "skyblocker.config.slayer.bossbar.@Tooltip": "Affiche une barre de boss pour votre boss de slayer actif",
     "skyblocker.config.slayer.bossbar": "Barre de Boss de Slayer",

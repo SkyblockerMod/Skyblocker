@@ -171,7 +171,6 @@
     "skyblocker.config.uiAndVisuals.chestValue.enableChestValue": "启用箱子价值计算器",
     "skyblocker.config.general.specialEffects.rareDungeonDropEffects": "稀有地牢掉落效果",
     "skyblocker.config.general.specialEffects": "特效",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\n注意：若使此功能生效，必须启用地牢秘密路径点。",
     "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.@Tooltip": "在状态栏显示地牢的分数。",
     "skyblocker.config.general.itemTooltip.dungeonQuality": "地牢物品品质",
     "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "启用鬼镐路径点",

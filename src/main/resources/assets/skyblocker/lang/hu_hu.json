@@ -87,7 +87,6 @@
     "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Helyjelölők engedélyezése terminálokhoz/eszközökhöz/karokhoz Goldor alatt",
     "skyblocker.config.dungeons.goldorWaypoints.waypointType": "Feladatok Helyjelölés típusa",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINE": "Körvonal",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nMegjegyzés: Dungeon Titkok Helyjelölés be kell legyen kapcsolva ennek a működéséhez.",
     "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight": "Ajtó Megjelölés Engedélyezése",
     "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight.@Tooltip": "Megjelöli a wither és véres ajtókat pirossal ha zártak, és zölddel, ha feloldottak.",
     "skyblocker.config.dungeons.dungeonChestProfit": "Dungeon Ládák Profitszámláló",
