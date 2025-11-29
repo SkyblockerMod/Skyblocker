@@ -344,8 +344,12 @@ public class ChatRule {
 
 		protected String insertCaptureGroups(String replaceMessage) {
 			if (!matches || matcher.isEmpty()) return replaceMessage;
-			// This resets the matcher every time which kinda sucks :/
-			return matcher.get().replaceFirst(replaceMessage).substring(matcher.get().start());
+			StringBuilder sb = new StringBuilder();
+			Matcher m = matcher.get();
+			m.reset();
+			if (!m.find()) return replaceMessage; // shouldn't happen but you never know
+			m.appendReplacement(sb, replaceMessage);
+			return sb.substring(m.start());
 		}
 	}
 
