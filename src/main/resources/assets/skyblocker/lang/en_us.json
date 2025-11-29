@@ -196,7 +196,6 @@
   "skyblocker.config.dungeons.doorHighlight": "Door Highlight",
   "skyblocker.config.dungeons.doorHighlight.doorHighlightType": "Door Highlight Type",
   "skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip": "Highlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
-  "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nNote: Dungeon Secret Waypoints must be enabled for this to work.",
   "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.HIGHLIGHT": "Highlight",
   "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINE": "Outline",
   "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINED_HIGHLIGHT": "Outlined Highlight",
