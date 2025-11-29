@@ -26,7 +26,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
-
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 
@@ -196,6 +195,24 @@ public class WidgetManager {
 						5,
 						0,
 						WidgetManager.ScreenLayer.HUD)
+		);
+		screenBuilder.setPositionRule(
+				"dungeon_map",
+				new PositionRule(
+						"screen",
+						PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT,
+						SkyblockerConfigManager.get().dungeons.dungeonMap.mapX, SkyblockerConfigManager.get().dungeons.dungeonMap.mapY,
+						WidgetManager.ScreenLayer.HUD
+				)
+		);
+		screenBuilder.setPositionRule(
+				"dungeon_score",
+				new PositionRule(
+						"screen",
+						PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT,
+						SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX, SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY,
+						WidgetManager.ScreenLayer.HUD
+				)
 		);
 	}
 
