@@ -263,6 +263,7 @@ test {
 spotless {
 	java {
 		removeUnusedImports()
+		importOrder('java', 'javax', '', 'de.hysky')
 		//indentWithTabs() // TODO: turn on when more files are converted to tabs
 		trimTrailingWhitespace()
 		endWithNewline()
