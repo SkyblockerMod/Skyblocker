@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeResultButton;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
@@ -97,27 +98,27 @@ class AccessoryHelperWidget extends ContainerWidget {
 		displayedAccessories = accessories.stream()
 				.filter(predicate)
 				.sorted(Comparator.comparingDouble(info -> {
-					OptionalDouble priceOpt = getPrice(info.accessory());
-					if (priceOpt.isEmpty()) return Double.MAX_VALUE;
-					double price = priceOpt.getAsDouble();
-					if (info.highestOwned().isPresent()) {
-						OptionalDouble ownedPrice = getPrice(info.highestOwned().get());
-						price -= ownedPrice.orElse(0);
-					}
-					ItemStack stack = ItemRepository.getItemStack(info.accessory().id());
-					if (stack == null) return Double.MAX_VALUE;
-					int mp = switch (stack.getSkyblockRarity()) {
-						case COMMON, SPECIAL -> 3;
-						case UNCOMMON, VERY_SPECIAL -> 5;
-						case RARE -> 8;
-						case EPIC -> 12;
-						case LEGENDARY -> 13;
-						case MYTHIC -> 22;
-						default -> 1;
-					};
-					return price / mp;
-				})
-		).toList();
+							OptionalDouble priceOpt = getPrice(info.accessory());
+							if (priceOpt.isEmpty()) return Double.MAX_VALUE;
+							double price = priceOpt.getAsDouble();
+							if (info.highestOwned().isPresent()) {
+								OptionalDouble ownedPrice = getPrice(info.highestOwned().get());
+								price -= ownedPrice.orElse(0);
+							}
+							ItemStack stack = ItemRepository.getItemStack(info.accessory().id());
+							if (stack == null) return Double.MAX_VALUE;
+							int mp = switch (stack.getSkyblockRarity()) {
+								case COMMON, SPECIAL -> 3;
+								case UNCOMMON, VERY_SPECIAL -> 5;
+								case RARE -> 8;
+								case EPIC -> 12;
+								case LEGENDARY -> 13;
+								case MYTHIC -> 22;
+								default -> 1;
+							};
+							return price / mp;
+						})
+				).toList();
 	}
 
 	/**
@@ -175,9 +176,12 @@ class AccessoryHelperWidget extends ContainerWidget {
 	@Override
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight());
+		String prevHighlighted = AccessoriesContainerSolver.INSTANCE.highlightedAccessory;
+		AccessoriesContainerSolver.INSTANCE.highlightedAccessory = null;
 		for (ClickableWidget widget : widgets) {
 			widget.render(context, mouseX, mouseY, deltaTicks);
 		}
+		if (!Objects.equals(prevHighlighted, AccessoriesContainerSolver.INSTANCE.highlightedAccessory)) ContainerSolverManager.markHighlightsDirty();
 	}
 
 	@Override
@@ -220,7 +224,7 @@ class AccessoryHelperWidget extends ContainerWidget {
 
 	private static class ResultButton extends SkyblockRecipeResultButton {
 		private AccessoryInfo accessory;
-		private @Nullable Text afterSelling;
+		private @Nullable List<Text> afterSelling;
 
 		private void setAccessory(AccessoryInfo info) {
 			this.accessory = info;
@@ -228,19 +232,22 @@ class AccessoryHelperWidget extends ContainerWidget {
 			afterSelling = null;
 			if (stack == null) return;
 			afterSelling = accessory.highestOwned()
-				.map(Accessory::id)
-				.map(ItemRepository::getItemStack)
-				.flatMap(accStack -> {
-					OptionalDouble priceOpt = getPrice(info.accessory());
-					if (priceOpt.isEmpty()) return Optional.empty();
-					DoubleBooleanPair price = ItemUtils.getItemPrice(accStack);
-					if (!price.rightBoolean()) return Optional.empty();
-					return Optional.of(Text.empty()
-							.append(ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1))
-							.append(" after selling ")
-							.append(accStack.getName()));
-				})
-				.orElse(null);
+					.map(Accessory::id)
+					.map(ItemRepository::getItemStack)
+					.flatMap(accStack -> {
+						OptionalDouble priceOpt = getPrice(info.accessory());
+						if (priceOpt.isEmpty()) return Optional.empty();
+						DoubleBooleanPair price = ItemUtils.getItemPrice(accStack);
+						if (!price.rightBoolean()) return Optional.empty();
+						return Optional.of(List.of(
+								Text.empty(),
+								Text.empty()
+										.append(ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1))
+										.append(" after selling:"),
+								accStack.getName()
+								));
+					})
+					.orElse(null);
 			setDisplayStack(stack);
 		}
 
@@ -249,10 +256,11 @@ class AccessoryHelperWidget extends ContainerWidget {
 			super.renderWidget(context, mouseX, mouseY, delta);
 			ItemStack stack = getDisplayStack();
 			if (isHovered() && stack != null) {
+				accessory.highestOwned().ifPresent(owned -> AccessoriesContainerSolver.INSTANCE.highlightedAccessory = owned.id());
 				MinecraftClient client = MinecraftClient.getInstance();
 				List<Text> tooltip = new ArrayList<>(Screen.getTooltipFromItem(client, stack));
 				if (afterSelling != null) {
-					tooltip.add(afterSelling);
+					tooltip.addAll(afterSelling);
 				}
 				context.drawTooltip(client.textRenderer, tooltip, stack.getTooltipData(), mouseX, mouseY, stack.get(DataComponentTypes.TOOLTIP_STYLE));
 			}
