@@ -22,10 +22,7 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.regex.Matcher;
@@ -71,18 +68,15 @@ public class AccessoriesHelper {
 						button.setX((toggled ? widget.getX() : x) - button.getWidth() + 5);
 						button.setY((toggled ? widget.getY() : ((HandledScreenAccessor) screen).getY()) + 8);
 						if (toggled) {
-							List<Pair<AccessoryReport, Accessory>> list = ACCESSORY_DATA.entrySet().stream()
-									.map(entry -> {
-										Pair<AccessoryReport, String> pair = calculateReport4Accessory(entry.getKey());
-										return Pair.of(pair.left(), entry.getValue());
-									})
-									.filter(p -> p.left() == AccessoryReport.MISSING || p.left() == AccessoryReport.IS_GREATER_TIER)
-									.filter(p -> ItemRepository.getItemStack(p.right().id()) != null) // Remove admin items
-									.toList();
-							widget.setAccessories(
-									list.stream().filter(p -> p.left() == AccessoryReport.MISSING).map(Pair::right).toList(),
-									list.stream().filter(p -> p.left() == AccessoryReport.IS_GREATER_TIER).map(Pair::right).toList()
-									);
+							final Set<Accessory> collectedAccessories = getCollectedAccessories();
+							widget.setAccessories(ACCESSORY_DATA.values().stream()
+									.filter(accessory -> ItemRepository.getItemStack(accessory.id()) != null) // Remove admin items
+									.map(accessory -> {
+										if (accessory.family().isPresent())
+											return new AccessoryHelperWidget.AccessoryInfo(accessory, calculateFamilyReport(accessory, collectedAccessories).highestCollectedInFamily());
+										else
+											return new AccessoryHelperWidget.AccessoryInfo(accessory, collectedAccessories.contains(accessory) ? Optional.of(accessory) : Optional.empty());
+									}).collect(Collectors.toSet()));
 						}
 					});
 					Screens.getButtons(screen).add(tabButton);
@@ -114,11 +108,7 @@ public class AccessoriesHelper {
 		//Ignore rift-only accessories
 		if (accessory.origin().orElse("").equals("RIFT")) return Pair.of(AccessoryReport.INELIGIBLE, null);
 
-		Set<Accessory> collectedAccessories = COLLECTED_ACCESSORIES.computeIfAbsent(ProfileAccessoryData::createDefault).pages().values().stream()
-				.flatMap(ObjectOpenHashSet::stream)
-				.filter(ACCESSORY_DATA::containsKey)
-				.map(ACCESSORY_DATA::get)
-				.collect(Collectors.toSet());
+		Set<Accessory> collectedAccessories = getCollectedAccessories();
 
 		// If the accessory doesn't belong to a family
 		if (accessory.family().isEmpty()) {
@@ -126,29 +116,13 @@ public class AccessoriesHelper {
 			return collectedAccessories.contains(accessory) ? Pair.of(AccessoryReport.HAS_HIGHEST_TIER, null) : Pair.of(AccessoryReport.MISSING, "");
 		}
 
-		Predicate<Accessory> HAS_SAME_FAMILY = accessory::hasSameFamily;
-		Set<Accessory> collectedAccessoriesInTheSameFamily = collectedAccessories.stream()
-				.filter(HAS_FAMILY)
-				.filter(HAS_SAME_FAMILY)
-				.collect(Collectors.toSet());
-
-		Set<Accessory> accessoriesInTheSameFamily = ACCESSORY_DATA.values().stream()
-				.filter(HAS_FAMILY)
-				.filter(HAS_SAME_FAMILY)
-				.collect(Collectors.toSet());
-
-		int highestTierInFamily = accessoriesInTheSameFamily.stream()
-				.mapToInt(ACCESSORY_TIER)
-				.max()
-				.orElse(0);
+		FamilyReport report = calculateFamilyReport(accessory, collectedAccessories);
+		int highestTierInFamily = report.highestInFamily().tier();
 
 		//If the player hasn't collected any accessory in same family
-		if (collectedAccessoriesInTheSameFamily.isEmpty()) return Pair.of(AccessoryReport.MISSING, String.format("(%d/%d)", accessory.tier(), highestTierInFamily));
+		if (report.highestCollectedInFamily().isEmpty()) return Pair.of(AccessoryReport.MISSING, String.format("(%d/%d)", accessory.tier(), highestTierInFamily));
 
-		int highestTierCollectedInFamily = collectedAccessoriesInTheSameFamily.stream()
-				.mapToInt(ACCESSORY_TIER)
-				.max()
-				.getAsInt();
+		int highestTierCollectedInFamily = report.highestCollectedInFamily().get().tier();
 
 		//If this accessory is the highest tier, and the player has the highest tier accessory in this family
 		//This accounts for multiple accessories with the highest tier
@@ -164,6 +138,30 @@ public class AccessoriesHelper {
 		if (accessory.tier() < highestTierInFamily) return Pair.of(AccessoryReport.HAS_GREATER_TIER, String.format("(%d/%d)", highestTierCollectedInFamily, highestTierInFamily));
 
 		return Pair.of(AccessoryReport.MISSING, String.format("(%d/%d)", accessory.tier(), highestTierInFamily));
+	}
+
+	private static Set<Accessory> getCollectedAccessories() {
+		return COLLECTED_ACCESSORIES.computeIfAbsent(ProfileAccessoryData::createDefault).pages().values().stream()
+				.flatMap(ObjectOpenHashSet::stream)
+				.filter(ACCESSORY_DATA::containsKey)
+				.map(ACCESSORY_DATA::get)
+				.collect(Collectors.toSet());
+	}
+
+	public static FamilyReport calculateFamilyReport(Accessory accessory, Set<Accessory> collectedAccessories) {
+		if (accessory.family().isEmpty()) throw new IllegalArgumentException("accessory family cannot be empty");
+		Predicate<Accessory> hasSameFamily = accessory::hasSameFamily;
+		return new FamilyReport(
+				ACCESSORY_DATA.values().stream()
+						.filter(HAS_FAMILY)
+						.filter(hasSameFamily)
+						.max(Comparator.comparingInt(ACCESSORY_TIER))
+						.orElse(accessory),
+				collectedAccessories.stream()
+						.filter(HAS_FAMILY)
+						.filter(hasSameFamily)
+						.max(Comparator.comparingInt(ACCESSORY_TIER))
+		);
 	}
 
 	public static void refreshData(Map<String, Accessory> data) {
@@ -202,6 +200,8 @@ public class AccessoriesHelper {
 			return other.family().equals(this.family);
 		}
 	}
+
+	public record FamilyReport(Accessory highestInFamily, Optional<Accessory> highestCollectedInFamily) {}
 
 	public enum AccessoryReport {
 		HAS_HIGHEST_TIER, //You've collected the highest tier - Collected

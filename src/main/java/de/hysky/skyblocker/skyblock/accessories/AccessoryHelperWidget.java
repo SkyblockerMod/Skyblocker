@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.accessories;
 
 import com.google.common.collect.ImmutableList;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper.Accessory;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeResultButton;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -13,20 +15,21 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.ButtonTextures;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
+import java.util.function.Predicate;
 
 class AccessoryHelperWidget extends ContainerWidget {
 	private static final Identifier TEXTURE = SkyblockerMod.id("background");
@@ -40,9 +43,8 @@ class AccessoryHelperWidget extends ContainerWidget {
 	private final ArrowButton nextPageButton = new ArrowButton(true);
 	private Filter filter = Filter.MISSING;
 
-	private List<AccessoriesHelper.Accessory> missingAccessories = List.of();
-	private List<AccessoriesHelper.Accessory> upgradableAccessories = List.of();
-	private List<AccessoriesHelper.Accessory> accessories = List.of();
+	private List<AccessoryInfo> accessories = List.of();
+	private List<AccessoryInfo> displayedAccessories = List.of();
 
 	private int page;
 
@@ -77,26 +79,33 @@ class AccessoryHelperWidget extends ContainerWidget {
 		updatePageSwitcher();
 	}
 
-	void setAccessories(List<AccessoriesHelper.Accessory> missingAccessories, List<AccessoriesHelper.Accessory> upgradableAccessories) {
-		this.missingAccessories = missingAccessories;
-		this.upgradableAccessories = upgradableAccessories;
+	void setAccessories(Collection<AccessoryInfo> accessories) {
+		this.accessories = accessories.stream()
+				.filter(info -> info.accessory().tier() > info.highestOwned().map(Accessory::tier).orElse(-1))
+				.toList();
 		setFilter(filter);
 		changePage(0); // Updates items
 	}
 
 	private void setFilter(Filter filter) {
 		this.filter = filter;
-		accessories = Stream.concat(
-				filter == Filter.UPGRADES ? Stream.empty() : missingAccessories.stream(),
-				filter == Filter.MISSING ? Stream.empty() : upgradableAccessories.stream()
-		).sorted(Comparator.comparingDouble(acc -> {
-					ItemStack stack = ItemRepository.getItemStack(acc.id());
+		Predicate<AccessoryInfo> predicate = switch (this.filter) {
+			case ALL -> info -> true;
+			case MISSING -> info -> info.highestOwned().isEmpty();
+			case UPGRADES -> info -> info.highestOwned().isPresent() && info.accessory().tier() > info.highestOwned().get().tier();
+		};
+		displayedAccessories = accessories.stream()
+				.filter(predicate)
+				.sorted(Comparator.comparingDouble(info -> {
+					OptionalDouble priceOpt = getPrice(info.accessory());
+					if (priceOpt.isEmpty()) return Double.MAX_VALUE;
+					double price = priceOpt.getAsDouble();
+					if (info.highestOwned().isPresent()) {
+						OptionalDouble ownedPrice = getPrice(info.highestOwned().get());
+						price -= ownedPrice.orElse(0);
+					}
+					ItemStack stack = ItemRepository.getItemStack(info.accessory().id());
 					if (stack == null) return Double.MAX_VALUE;
-					DoubleBooleanPair optionalPrice = ItemUtils.getItemPrice(stack);
-					double price;
-					if (optionalPrice.rightBoolean()) price = optionalPrice.firstDouble();
-					else price = ItemUtils.getCraftCost(stack.getSkyblockApiId());
-					if (price <= 0) return Double.MAX_VALUE;
 					int mp = switch (stack.getSkyblockRarity()) {
 						case COMMON, SPECIAL -> 3;
 						case UNCOMMON, VERY_SPECIAL -> 5;
@@ -111,18 +120,32 @@ class AccessoryHelperWidget extends ContainerWidget {
 		).toList();
 	}
 
+	/**
+	 * Checks bazaar, lbin and craft cost.
+	 */
+	private static OptionalDouble getPrice(Accessory acc) {
+		ItemStack stack = ItemRepository.getItemStack(acc.id());
+		if (stack == null) return OptionalDouble.empty();
+		DoubleBooleanPair optionalPrice = ItemUtils.getItemPrice(stack);
+		double price;
+		if (optionalPrice.rightBoolean()) price = optionalPrice.firstDouble();
+		else price = ItemUtils.getCraftCost(stack.getSkyblockApiId());
+		if (price <= 0) return OptionalDouble.empty();
+		return OptionalDouble.of(price);
+	}
+
 	private void changePage(int offset) {
 		page = Math.clamp(page + offset, 0, getPageCount());
 		updatePageSwitcher();
 		for (int i = 0; i < BUTTON_COUNT; i++) {
 			int j = i + page * BUTTON_COUNT;
-			if (j < accessories.size()) buttons.get(i).setAccessory(accessories.get(j));
+			if (j < displayedAccessories.size()) buttons.get(i).setAccessory(displayedAccessories.get(j));
 			else buttons.get(i).clearDisplayStack();
 		}
 	}
 
 	private int getPageCount() {
-		return accessories.size() / BUTTON_COUNT + 1;
+		return displayedAccessories.size() / BUTTON_COUNT + 1;
 	}
 
 	private void updatePageSwitcher() {
@@ -196,12 +219,28 @@ class AccessoryHelperWidget extends ContainerWidget {
 	}
 
 	private static class ResultButton extends SkyblockRecipeResultButton {
-		private AccessoriesHelper.Accessory accessory;
+		private AccessoryInfo accessory;
+		private @Nullable Text afterSelling;
 
-		private void setAccessory(AccessoriesHelper.Accessory accessory) {
-			this.accessory = accessory;
-			ItemStack stack = ItemRepository.getItemStack(accessory.id());
+		private void setAccessory(AccessoryInfo info) {
+			this.accessory = info;
+			ItemStack stack = ItemRepository.getItemStack(info.accessory().id());
+			afterSelling = null;
 			if (stack == null) return;
+			OptionalDouble priceOpt = getPrice(info.accessory);
+			if (priceOpt.isPresent() && accessory.highestOwned().isPresent()) {
+				Accessory acc = accessory.highestOwned().get();
+				ItemStack accStack = ItemRepository.getItemStack(acc.id());
+				if (accStack != null) {
+					DoubleBooleanPair price = ItemUtils.getItemPrice(accStack);
+					if (price.rightBoolean()) {
+						afterSelling = Text.empty()
+								.append(ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1))
+								.append(" after selling ")
+								.append(accStack.getName());
+					}
+				}
+			}
 			setDisplayStack(stack);
 		}
 
@@ -209,7 +248,14 @@ class AccessoryHelperWidget extends ContainerWidget {
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 			super.renderWidget(context, mouseX, mouseY, delta);
 			ItemStack stack = getDisplayStack();
-			if (isHovered() && stack != null) context.drawItemTooltip(MinecraftClient.getInstance().textRenderer, stack, mouseX, mouseY);
+			if (isHovered() && stack != null) {
+				MinecraftClient client = MinecraftClient.getInstance();
+				List<Text> tooltip = new ArrayList<>(Screen.getTooltipFromItem(client, stack));
+				if (afterSelling != null) {
+					tooltip.add(afterSelling);
+				}
+				context.drawTooltip(client.textRenderer, tooltip, stack.getTooltipData(), mouseX, mouseY, stack.get(DataComponentTypes.TOOLTIP_STYLE));
+			}
 		}
 
 		@Override
@@ -262,6 +308,8 @@ class AccessoryHelperWidget extends ContainerWidget {
 			onToggled.accept(this);
 		}
 	}
+
+	record AccessoryInfo(Accessory accessory, Optional<Accessory> highestOwned) {}
 
 	private enum Filter {
 		ALL,
