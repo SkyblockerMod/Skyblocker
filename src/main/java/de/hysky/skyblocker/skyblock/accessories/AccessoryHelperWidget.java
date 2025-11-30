@@ -227,20 +227,20 @@ class AccessoryHelperWidget extends ContainerWidget {
 			ItemStack stack = ItemRepository.getItemStack(info.accessory().id());
 			afterSelling = null;
 			if (stack == null) return;
-			OptionalDouble priceOpt = getPrice(info.accessory);
-			if (priceOpt.isPresent() && accessory.highestOwned().isPresent()) {
-				Accessory acc = accessory.highestOwned().get();
-				ItemStack accStack = ItemRepository.getItemStack(acc.id());
-				if (accStack != null) {
+			afterSelling = accessory.highestOwned()
+				.map(Accessory::id)
+				.map(ItemRepository::getItemStack)
+				.flatMap(accStack -> {
+					OptionalDouble priceOpt = getPrice(info.accessory());
+					if (priceOpt.isEmpty()) return Optional.empty();
 					DoubleBooleanPair price = ItemUtils.getItemPrice(accStack);
-					if (price.rightBoolean()) {
-						afterSelling = Text.empty()
-								.append(ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1))
-								.append(" after selling ")
-								.append(accStack.getName());
-					}
-				}
-			}
+					if (!price.rightBoolean()) return Optional.empty();
+					return Optional.of(Text.empty()
+							.append(ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1))
+							.append(" after selling ")
+							.append(accStack.getName()));
+				})
+				.orElse(null);
 			setDisplayStack(stack);
 		}
 
