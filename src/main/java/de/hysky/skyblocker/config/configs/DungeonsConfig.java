@@ -177,15 +177,17 @@ public class DungeonsConfig {
 	public static class TerminalHud {
 		public boolean enableTerminalHud = false;
 
-		public boolean showTerminalIcons = true;
-
 		public boolean showTerminalStatus = true;
 
-		public boolean determineInProgressStatus = true;
+		public boolean showPlayerAtTerminal = true;
 
-		public boolean showCompletedTerminals = false;
+		public boolean showTerminals = true;
 
-		public boolean includeGate = true;
+		public boolean showDevice = true;
+
+		public boolean showLevers = true;
+
+		public boolean showGate = true;
 	}
 
 

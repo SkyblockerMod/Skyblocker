@@ -229,6 +229,10 @@ public class GoldorWaypointsManager {
 		return gateDestroyed;
 	}
 
+	public static short getCurrentPhase() {
+		return currentPhase;
+	}
+
 	public static List<GoldorWaypoint> getPhaseWaypoints() {
 		return ACTIVE_PHASE_WAYPOINTS;
 	}

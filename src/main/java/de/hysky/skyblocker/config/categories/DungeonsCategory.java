@@ -530,15 +530,8 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.showTerminalIcons"))
-								.description(Text.translatable("skyblocker.config.dungeons.terminalHud.showTerminalIcons.@Tooltip"))
-								.binding(defaults.dungeons.terminalHud.showTerminalIcons,
-										() -> config.dungeons.terminalHud.showTerminalIcons,
-										newValue -> config.dungeons.terminalHud.showTerminalIcons = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.showTerminalStatus"))
+								.description(Text.translatable("skyblocker.config.dungeons.terminalHud.showTerminalStatus.@Tooltip"))
 								.binding(defaults.dungeons.terminalHud.showTerminalStatus,
 										() -> config.dungeons.terminalHud.showTerminalStatus,
 										newValue -> config.dungeons.terminalHud.showTerminalStatus = newValue)
@@ -547,23 +540,37 @@ public class DungeonsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.determineInProgressStatus"))
 								.description(Text.translatable("skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip"))
-								.binding(defaults.dungeons.terminalHud.determineInProgressStatus,
-										() -> config.dungeons.terminalHud.determineInProgressStatus,
-										newValue -> config.dungeons.terminalHud.determineInProgressStatus = newValue)
+								.binding(defaults.dungeons.terminalHud.showPlayerAtTerminal,
+										() -> config.dungeons.terminalHud.showPlayerAtTerminal,
+										newValue -> config.dungeons.terminalHud.showPlayerAtTerminal = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.showCompletedTerminals"))
-								.binding(defaults.dungeons.terminalHud.showCompletedTerminals,
-										() -> config.dungeons.terminalHud.showCompletedTerminals,
-										newValue -> config.dungeons.terminalHud.showCompletedTerminals = newValue)
+								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.showTerminals"))
+								.binding(defaults.dungeons.terminalHud.showTerminals,
+										() -> config.dungeons.terminalHud.showTerminals,
+										newValue -> config.dungeons.terminalHud.showTerminals = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.includeGate"))
-								.binding(defaults.dungeons.terminalHud.includeGate,
-										() -> config.dungeons.terminalHud.includeGate,
-										newValue -> config.dungeons.terminalHud.includeGate = newValue)
+								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.showDevice"))
+								.binding(defaults.dungeons.terminalHud.showDevice,
+										() -> config.dungeons.terminalHud.showDevice,
+										newValue -> config.dungeons.terminalHud.showDevice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.showLevers"))
+								.binding(defaults.dungeons.terminalHud.showLevers,
+										() -> config.dungeons.terminalHud.showLevers,
+										newValue -> config.dungeons.terminalHud.showLevers = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.terminalHud.showGate"))
+								.binding(defaults.dungeons.terminalHud.showGate,
+										() -> config.dungeons.terminalHud.showGate,
+										newValue -> config.dungeons.terminalHud.showGate = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
