@@ -364,7 +364,6 @@
   "skyblocker.config.dungeons.terminalHud.determineInProgressStatus": "Enable 'In Progress' Status",
   "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "Shows the username of the player closest to the task",
   "skyblocker.config.dungeons.terminalHud.enabled": "Enable",
-  "skyblocker.config.dungeons.terminalHud.hudName": "Goldor Tasks",
   "skyblocker.config.dungeons.terminalHud.showCompletedTerminals": "Show Completed Terminals",
   "skyblocker.config.dungeons.terminalHud.showDevice": "Show Device",
   "skyblocker.config.dungeons.terminalHud.showGate": "Show Gate",
@@ -1446,6 +1445,9 @@
   "skyblocker.dungeons.splits.thorn": "Thorn",
   "skyblocker.dungeons.splits.transformedProfessor": "Transformed Professor",
   "skyblocker.dungeons.splits.witherKing": "Wither King",
+  "skyblocker.dungeons.terminalHud.completeStatus": "Complete",
+  "skyblocker.dungeons.terminalHud.destroyedStatus": "DESTROYED",
+  "skyblocker.dungeons.terminalHud.incompleteStatus": "Incomplete",
 
   "skyblocker.dwarvenMines.metalDetectorHelper.foundCenter": "Found the center of mines, now working faster",
   "skyblocker.dwarvenMines.metalDetectorHelper.foundTreasureMessage": "Found treasure",

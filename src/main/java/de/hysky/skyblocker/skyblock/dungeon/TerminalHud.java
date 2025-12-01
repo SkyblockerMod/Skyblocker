@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.FunUtils;
@@ -72,19 +73,43 @@ public class TerminalHud extends ComponentBasedWidget {
 					return Text.literal(playerName.substring(0, Math.min(12, playerName.length()))).formatted(Formatting.YELLOW);
 				}
 			}
-			return Text.literal("Incomplete").formatted(Formatting.RED);
+			return Text.translatable("skyblocker.dungeons.terminalHud.incompleteStatus").formatted(Formatting.RED);
 		} else {
-			return Text.literal("Complete").formatted(Formatting.GREEN);
+			return Text.translatable("skyblocker.dungeons.terminalHud.completeStatus").formatted(Formatting.GREEN);
 		}
 	}
 
 	public void updateFromScheduler() {
+		if (CLIENT.currentScreen instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) update();
 		if (!GoldorWaypointsManager.isActive() || !shouldRender(Utils.getLocation())) return;
 		update();
 	}
 
 	@Override
 	public void updateContent() {
+		if (CLIENT.currentScreen instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) {
+			Text status = Text.empty();
+			if (CONFIG.get().showTerminalStatus) {
+				status = Text.literal(" ").append(Text.translatable("skyblocker.dungeons.terminalHud.incompleteStatus").formatted(Formatting.RED));
+			}
+			if (CONFIG.get().showTerminals) {
+				for (int i = 0; i < 5; i++) {
+					addComponent(new PlainTextComponent(Text.literal("Terminal #" + (i + 1)).append(status)));
+				}
+			}
+			if (CONFIG.get().showDevice) {
+				addComponent(new PlainTextComponent(Text.literal("Device").append(status)));
+			}
+			if (CONFIG.get().showLevers) {
+				addComponent(new PlainTextComponent(Text.literal("Lever").append(status)));
+				addComponent(new PlainTextComponent(Text.literal("Lever").append(status)));
+			}
+			if (CONFIG.get().showGate) {
+				addComponent(new PlainTextComponent(Text.literal("Gate").append(status)));
+			}
+			return;
+		}
+
 		List<GoldorWaypointsManager.GoldorWaypoint> waypoints = GoldorWaypointsManager.getPhaseWaypoints();
 		if (waypoints.isEmpty()) return;
 		for (var waypoint : waypoints) {
@@ -111,9 +136,9 @@ public class TerminalHud extends ComponentBasedWidget {
 
 			if (CONFIG.get().showTerminalStatus) {
 				if (GoldorWaypointsManager.isGateDestroyed()) {
-					displayText.append(" ").append(Text.literal("DESTROYED").formatted(Formatting.GREEN));
+					displayText.append(" ").append(Text.translatable("skyblocker.dungeons.terminalHud.destroyedStatus").formatted(Formatting.GREEN));
 				} else {
-					displayText.append(" ").append(Text.literal("Incomplete").formatted(Formatting.RED));
+					displayText.append(" ").append(Text.translatable("skyblocker.dungeons.terminalHud.incompleteStatus").formatted(Formatting.RED));
 				}
 			}
 
@@ -123,6 +148,6 @@ public class TerminalHud extends ComponentBasedWidget {
 
 	@Override
 	public Text getDisplayName() {
-		return Text.translatable("skyblocker.config.dungeons.terminalHud.hudName");
+		return Text.literal("Goldor Tasks");
 	}
 }
