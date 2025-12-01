@@ -3,6 +3,7 @@ package de.hysky.skyblocker;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.Tips;
+import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -18,8 +19,6 @@ import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
-
-import java.time.LocalDate;
 
 public class SkyblockerScreen extends Screen {
 	private static final int SPACING = 8;
@@ -38,9 +37,7 @@ public class SkyblockerScreen extends Screen {
 	private MultilineTextWidget tip;
 
 	static {
-		LocalDate date = LocalDate.now();
-
-		if (date.getMonthValue() == 4 && date.getDayOfMonth() == 1) {
+		if (FunUtils.shouldEnableFun()) {
 			TITLE = Text.literal("Skibidiblocker " + SkyblockerMod.VERSION);
 			ICON = SkyblockerMod.id("icons.png");
 		} else {

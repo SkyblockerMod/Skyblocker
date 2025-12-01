@@ -31,7 +31,8 @@ public class TerminalHud extends ComponentBasedWidget {
 	public static TerminalHud INSTANCE;
 
 	public TerminalHud() {
-		super(Text.literal("Terminals"), Colors.RED, "terminal_hud");
+		super(FunUtils.shouldEnableFun() ? Text.literal("P3 Guide") : Text.literal("Goldor Tasks"),
+				Colors.RED, "terminal_hud");
 		INSTANCE = this;
 		Scheduler.INSTANCE.scheduleCyclic(this::updateFromScheduler, 50);
 	}
