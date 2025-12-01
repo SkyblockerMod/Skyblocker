@@ -115,9 +115,9 @@ public class TerminalHud extends ComponentBasedWidget {
 		for (var waypoint : waypoints) {
 			if (!waypoint.isEnabled() && !CONFIG.get().showTerminalStatus) continue;
 			switch (waypoint.kind) {
-				case TERMINAL -> {if (!CONFIG.get().showTerminals) continue;}
-				case DEVICE -> {if (!CONFIG.get().showDevice) continue;}
-				case LEVER -> {if (!CONFIG.get().showGate) continue;}
+				case TERMINAL -> { if (!CONFIG.get().showTerminals) continue; }
+				case DEVICE -> { if (!CONFIG.get().showDevice) continue; }
+				case LEVER -> { if (!CONFIG.get().showGate) continue; }
 			}
 
 			Text displayText;
