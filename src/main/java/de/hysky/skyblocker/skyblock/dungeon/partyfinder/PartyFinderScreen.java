@@ -94,6 +94,7 @@ public class PartyFinderScreen extends Screen {
 	private int createPartyButtonSlotId = -1;
 
 	private boolean dirty = false;
+	private boolean resetScroll = false;
 	private long dirtiedTime;
 
 	public void markDirty() {
@@ -151,6 +152,7 @@ public class PartyFinderScreen extends Screen {
 		refreshButton = ButtonWidget.builder(Text.literal("⟳").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), (a) -> {
 					if (refreshSlotId != -1) {
 						clickAndWaitForServer(refreshSlotId);
+						resetScroll = true;
 					}
 				})
 				.position(searchField.getX() + searchField.getWidth() + 12 * 2, searchField.getY())
@@ -161,6 +163,7 @@ public class PartyFinderScreen extends Screen {
 		previousPageButton = ButtonWidget.builder(Text.literal("←"), (a) -> {
 					if (prevPageSlotId != -1) {
 						clickAndWaitForServer(prevPageSlotId);
+						resetScroll = true;
 					}
 				})
 				.position(searchField.getX() + searchField.getWidth(), searchField.getY())
@@ -169,6 +172,7 @@ public class PartyFinderScreen extends Screen {
 		nextPageButton = ButtonWidget.builder(Text.literal("→"), (a) -> {
 					if (nextPageSlotId != -1) {
 						clickAndWaitForServer(nextPageSlotId);
+						resetScroll = true;
 					}
 				})
 				.position(searchField.getX() + searchField.getWidth() + 12, searchField.getY())
@@ -446,6 +450,11 @@ public class PartyFinderScreen extends Screen {
 			parties.add(new PartyEntry.YourParty(title, ItemUtils.getLore(yourPartyStack), this, deListSlotId));
 		}
 		this.partyEntryListWidget.setEntries(parties);
+
+		if (resetScroll) {
+			resetScroll = false;
+			partyEntryListWidget.setScrollY(0);
+		}
 	}
 
 	private boolean aborted = false;
