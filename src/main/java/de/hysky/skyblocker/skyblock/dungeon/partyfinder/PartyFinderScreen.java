@@ -262,6 +262,7 @@ public class PartyFinderScreen extends Screen {
 				for (int i = 0; i < handler.slots.size(); i++) {
 					context.drawItem(handler.slots.get(i).getStack(), (i % 9) * 16, (i / 9) * 16);
 				}
+				context.drawText(textRenderer, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), Colors.WHITE, true);
 			}
 		}
 		if (isWaitingForServer()) {
@@ -411,8 +412,6 @@ public class PartyFinderScreen extends Screen {
 				createPartyButton.active = true;
 			} else if (slot.getStack().isOf(Items.NETHER_STAR)) {
 				settingsButtonSlotId = slot.id;
-				if (DEBUG)
-					settingsButton.setMessage(settingsButton.getMessage().copy().append(Text.of(" " + settingsButtonSlotId)));
 			} else if (slot.getStack().isOf(Items.BOOKSHELF)) {
 				deListSlotId = slot.id;
 			} else if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
