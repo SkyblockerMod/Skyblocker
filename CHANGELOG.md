@@ -1,3 +1,22 @@
+# Release 5.9.1 (Beta 1)
+
+## Highlight
+* Add support for Aura's 50% slayer exp buff
+* Add support for player minister perks
+* Update default Quick Navigation Wardrobe UI Title
+* Fix abbreviation for Corruption enchant
+
+## What's Changed
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1848
+* Sort English localization file by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1757
+* Update Wardrobe Menu Regex In Quick Nav Config by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1863
+* Add DUNGEON_ENDED event by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1865
+* Improve Waypoint Type Descriptions by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1867
+* Adjust abbreviation for Corruption enchantment by @lunaynx in https://github.com/SkyblockerMod/Skyblocker/pull/1871
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.9.0+1.21.10...v5.9.1-beta.1+1.21.10
+___
+
 # Release 5.9.0
 
 ## Highlight
