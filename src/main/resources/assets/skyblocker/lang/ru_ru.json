@@ -120,7 +120,7 @@
     "skyblocker.config.general.shortcuts": "Сокращения",
     "skyblocker.config.general.shortcuts.enableShortcuts": "Включить сокращения",
     "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "Работает где угодно, даже на ваниле! Сокращения можно редактировать при помощи \"/skyblocker shortcuts\". Хотя бы одна из опций должна быть включена, чтобы это работало.",
-    "key.skyblocker.toggleA": "Переключение на второй TAB-худ",
+    "key.skyblocker.toggleA": "Показать второй режим меню TAB",
     "skyblocker.config.general.shortcuts.enableCommandShortcuts.@Tooltip": "Сокращения для команд, состоящих только из одного слова. Редактируйте сокращения с помощью команды \"/skyblocker shortcuts\". Сокращения должны быть включены, чтобы это вступило в силу.",
     "skyblocker.config.general.quiverWarning": "Предупреждение о нехватке стрел",
     "skyblocker.config.general.quiverWarning.enableQuiverWarning": "Включить предупреждение о нехватке стрел",
