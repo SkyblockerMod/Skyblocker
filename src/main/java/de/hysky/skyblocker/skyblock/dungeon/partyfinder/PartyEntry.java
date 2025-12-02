@@ -114,7 +114,11 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 lockReason = text;
             } else if (lowerCase.contains("note:")) {
                 String[] split = tooltipText.split(":", 2);
-				note = split[1].trim();
+				if (split.length == 2) {
+					note = split[1].trim();
+				} else {
+					note = "???";
+				}
             }
         }
 
