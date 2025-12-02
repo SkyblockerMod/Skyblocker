@@ -16,7 +16,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
 import java.awt.*;
-import java.util.Collections;
 import java.util.List;
 
 public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
@@ -153,9 +152,9 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
 			ButtonWidget openConfigButton = layout.add(ButtonWidget.builder(Text.translatable("skyblocker.config.chat.chatRules.screen.editRule"), a -> client.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex))).size(50, 20).tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.editRule.@Tooltip"))).build());
 
-			ButtonWidget deleteButton = layout.add(ButtonWidget.builder(Text.translatable("selectServer.delete"), a -> {
-				client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.config.chat.chatRules.screen.deleteQuestion"), Text.translatable("skyblocker.config.chat.chatRules.screen.deleteWarning", chatRule.getName()), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
-			}).size(50, 20).build());
+			ButtonWidget deleteButton = layout.add(ButtonWidget.builder(Text.translatable("selectServer.delete"), a ->
+				client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.config.chat.chatRules.screen.deleteQuestion"), Text.translatable("skyblocker.config.chat.chatRules.screen.deleteWarning", chatRule.getName()), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL))
+			).size(50, 20).build());
 
 			children = List.of(enabledButton, openConfigButton, deleteButton);
 		}
@@ -204,7 +203,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
 		@Override
 		public List<? extends Selectable> selectableChildren() {
-			return Collections.emptyList();
+			return List.of();
 		}
 	}
 }
