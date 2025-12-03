@@ -73,7 +73,6 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 
 		INSTANCE.allRewards.init();
 
-		SkyblockEvents.PROFILE_INIT.register(INSTANCE::onProfileInit);
 		SkyblockEvents.PROFILE_CHANGE.register(INSTANCE::onProfileChange);
 
 		// @formatter:off // Don't you hate it when your format style for chained method calls makes a chain like this incredibly ugly?
@@ -109,10 +108,6 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	}
 
 	private void onProfileChange(String prevProfileId, String newProfileId) {
-		onProfileInit(newProfileId);
-	}
-
-	private void onProfileInit(String profileId) {
 		if (!isEnabled()) return;
 		currentProfileRewards = allRewards.computeIfAbsent(ObjectArrayList::new);
 		recalculateAll();
