@@ -117,20 +117,20 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 
 		int filterWidth = layout.getWidth() - 2;
 
-		mainLayout.add(CyclingButtonWidget.onOffBuilder(Text.translatable("skyblocker.accessory_helper.highestTierOnly"), Text.translatable("skyblocker.accessory_helper.allTiers"))
-				.initially(showHighestTierOnly)
-				.omitKeyText()
-				.build(0, 0, filterWidth, 16, ScreenTexts.EMPTY, (button, value) -> {
-					showHighestTierOnly = value;
-					updataFilter();
-					changePage(0);
-				})
-		);
 		mainLayout.add(CyclingButtonWidget.<Filter>builder(f -> Text.translatable(f.toString()))
 				.values(Filter.values())
 				.initially(filter)
 				.build(0, 0, filterWidth, 16, Text.translatable("skyblocker.accessory_helper.filter"), (b, v) -> {
 					filter = v;
+					updataFilter();
+					changePage(0);
+				})
+		);
+		mainLayout.add(CyclingButtonWidget.onOffBuilder(Text.translatable("skyblocker.accessory_helper.highestTierOnly"), Text.translatable("skyblocker.accessory_helper.allTiers"))
+				.initially(showHighestTierOnly)
+				.omitKeyText()
+				.build(0, 0, filterWidth, 16, ScreenTexts.EMPTY, (button, value) -> {
+					showHighestTierOnly = value;
 					updataFilter();
 					changePage(0);
 				})
@@ -309,9 +309,9 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 						DoubleBooleanPair price = ItemUtils.getItemPrice(accStack);
 						if (!price.rightBoolean()) return Optional.empty();
 						return Optional.of(List.of(
-								Text.empty(),
 								Text.translatable("skyblocker.accessory_helper.afterSelling", ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1)),
-								accStack.getName()
+								accStack.getName(),
+								Text.empty()
 								));
 					})
 					.orElse(null);
