@@ -407,10 +407,9 @@ public final class ItemUtils {
 	 */
 	@Nullable
 	public static String getLoreLineIf(ItemStack stack, Predicate<String> predicate) {
-		for (Text line : getLore(stack)) {
-			String string = line.getString();
-			if (predicate.test(string)) {
-				return string;
+		for (String line : stack.skyblocker$getLoreString()) {
+			if (predicate.test(line)) {
+				return line;
 			}
 		}
 
@@ -423,15 +422,15 @@ public final class ItemUtils {
 	 */
 	@Nullable
 	public static Matcher getLoreLineIfMatch(ItemStack stack, Pattern pattern) {
-		return TextUtils.matchInList(getLore(stack), pattern);
+		return RegexListUtils.matchInList(stack.skyblocker$getLoreString(), pattern);
 	}
 
 	/**
 	 * Gets the first lines of the lore that matches each pattern, using {@link Matcher#matches()}.
-	 * @see TextUtils#matchInList(List, Pattern...)
+	 * @see RegexListUtils#matchInList(List, Pattern...)
 	 */
 	public static List<Matcher> getLoreLineIfMatch(ItemStack stack, Pattern... patterns) {
-		return TextUtils.matchInList(getLore(stack), patterns);
+		return RegexListUtils.matchInList(stack.skyblocker$getLoreString(), patterns);
 	}
 
 	/**
@@ -442,9 +441,13 @@ public final class ItemUtils {
 	 */
 	@Nullable
 	public static Matcher getLoreLineIfContainsMatch(ItemStack stack, Pattern pattern) {
-		return TextUtils.findInList(getLore(stack), pattern);
+		return RegexListUtils.findInList(stack.skyblocker$getLoreString(), pattern);
 	}
 
+	/**
+	 * @deprecated Consider using {@link ItemStack#skyblocker$getLoreString()} which caches text to string conversions.
+	 */
+	@Deprecated
 	public static @NotNull List<Text> getLore(ItemStack stack) {
 		return stack.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT).styledLines();
 	}
@@ -538,28 +541,28 @@ public final class ItemUtils {
 	 * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
 	 */
 	@NotNull
-	public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines) {
+	public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<String> lines) {
 		return getItemCountInSack(itemStack, lines, false);
 	}
 
 	/**
-	 * Finds the number of items stored in a sack from a list of texts.
+	 * Finds the number of items stored in a sack from a list of strings.
 	 *
-	 * @param itemStack The item stack this list of texts belong to. This is used for logging purposes.
-	 * @param lines     A list of text lines that represent the tooltip of the item stack.
+	 * @param itemStack The item stack this list of strings belong to. This is used for logging purposes.
+	 * @param lines     A list of string lines that represent the tooltip of the item stack.
 	 * @param isLore    Whether the lines are from the item's lore or not. This is useful to figure out which line to look at, as lore and tooltip lines are different due to the first line being the item's name.
 	 * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
 	 */
 	@NotNull
-	public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines, boolean isLore) {
+	public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<String> lines, boolean isLore) {
 		// Gemstones sack is a special case, it has a different 2nd line.
-		if (lines.size() < 2 || !StringUtils.endsWithAny(lines.get(isLore ? 0 : 1).getString(), "Sack", "Gemstones")) {
+		if (lines.size() < 2 || !StringUtils.endsWithAny(lines.get(isLore ? 0 : 1), "Sack", "Gemstones")) {
 			return OptionalInt.empty();
 		}
 
 		// Use the proper item amount in the Gemstones Sack when sorting by Rough/Flawed/Fine
 		if (itemStack.getName().getString().endsWith("Gemstone")) {
-			Matcher matcher = TextUtils.matchInList(lines, GEMSTONES_SACK_AMOUNT_PATTERN);
+			Matcher matcher = RegexListUtils.matchInList(lines, GEMSTONES_SACK_AMOUNT_PATTERN);
 			if (matcher != null) {
 				return RegexUtils.parseOptionalIntFromMatcher(matcher, 1);
 			}
@@ -567,7 +570,7 @@ public final class ItemUtils {
 
 		// Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
 		// Which equals: `Stored: 0/20k`
-		Matcher matcher = TextUtils.matchInList(lines, STORED_PATTERN);
+		Matcher matcher = RegexListUtils.matchInList(lines, STORED_PATTERN);
 		if (matcher != null) {
 			return RegexUtils.parseOptionalIntFromMatcher(matcher, 1);
 		}
