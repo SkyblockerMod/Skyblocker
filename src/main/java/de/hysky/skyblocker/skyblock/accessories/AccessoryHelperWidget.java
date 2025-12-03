@@ -55,6 +55,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 	private static Filter filter = Filter.MISSING;
 	private static int page;
 	private static boolean open;
+	private static boolean showHighestTierOnly;
 
 	static void attachToScreen(GenericContainerScreen screen) {
 		final AccessoryHelperWidget widget = new AccessoryHelperWidget();
@@ -62,7 +63,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 		Screens.getButtons(screen).add(widget);
 		final int previousX = ((HandledScreenAccessor) screen).getX();
 		final int offset = Math.max(180 - previousX, 0);
-		AccessoryHelperWidget.TabButton tabButton = new AccessoryHelperWidget.TabButton(button -> {
+		TabButton tabButton = new TabButton(button -> {
 			boolean toggled = button.isToggled();
 			widget.visible = open = toggled;
 			int x = toggled ? previousX + offset : previousX;
@@ -75,15 +76,17 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 				widget.setAccessories(AccessoriesHelper.ACCESSORY_DATA.values().stream()
 						.filter(accessory -> ItemRepository.getItemStack(accessory.id()) != null) // Remove admin items
 						.map(accessory -> {
-							if (accessory.family().isPresent())
-								return new AccessoryHelperWidget.AccessoryInfo(accessory, AccessoriesHelper.calculateFamilyReport(accessory, collectedAccessories).highestCollectedInFamily());
-							else
-								return new AccessoryHelperWidget.AccessoryInfo(accessory, collectedAccessories.contains(accessory) ? Optional.of(accessory) : Optional.empty());
+							if (accessory.family().isPresent()) {
+								AccessoriesHelper.FamilyReport report = AccessoriesHelper.calculateFamilyReport(accessory, collectedAccessories);
+								return new AccessoryInfo(accessory, report.highestCollectedInFamily(), report.highestInFamily());
+							} else
+								return new AccessoryInfo(accessory, collectedAccessories.contains(accessory) ? Optional.of(accessory) : Optional.empty(), accessory);
 						}).collect(Collectors.toSet()));
 			} else {
 				// Reset when you close the helper
 				filter = Filter.MISSING;
 				page = 0;
+				showHighestTierOnly = false;
 			}
 		});
 		Screens.getButtons(screen).add(tabButton);
@@ -91,7 +94,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 	}
 
 	AccessoryHelperWidget() {
-		super(0, 0, 147, 166, ScreenTexts.EMPTY);
+		super(0, 0, 147, 182, ScreenTexts.EMPTY);
 		this.layout = new SimplePositioningWidget(getWidth() - BORDER_SIZE * 2, getHeight() - BORDER_SIZE * 2);
 		DirectionalLayoutWidget mainLayout = layout.add(DirectionalLayoutWidget.vertical());
 		mainLayout.getMainPositioner().alignHorizontalCenter();
@@ -107,13 +110,26 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 		pageSwitcher.add(prevPageButton);
 		pageSwitcher.add(new SimplePositioningWidget(30, 0)).add(pageText);
 		pageSwitcher.add(nextPageButton);
+
+		int filterWidth = layout.getWidth() - 2;
+
+		mainLayout.add(CyclingButtonWidget.onOffBuilder(Text.literal("Show highest tier only"), Text.literal("Show all tiers"))
+				.initially(showHighestTierOnly)
+				.omitKeyText()
+				.build(0, 0, filterWidth, 16, ScreenTexts.EMPTY, (button, value) -> {
+					showHighestTierOnly = value;
+					updataFilter();
+					changePage(0);
+				})
+		);
 		mainLayout.add(CyclingButtonWidget.<Filter>builder(f -> Text.translatable(f.toString()))
 				.values(Filter.values())
 				.initially(filter)
-				.build(0, 0, 80, 16, Text.literal("Filter"), (b, v) -> {
-					setFilter(v);
+				.build(0, 0, filterWidth, 16, Text.literal("Filter"), (b, v) -> {
+					filter = v;
+					updataFilter();
 					changePage(0);
-				}), Positioner::alignRight
+				})
 		);
 		mainLayout.forEachChild(builder::add);
 		widgets = builder.build();
@@ -125,12 +141,11 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 		this.accessories = accessories.stream()
 				.filter(info -> info.accessory().tier() > info.highestOwned().map(Accessory::tier).orElse(-1))
 				.toList();
-		setFilter(filter); // Update items
+		updataFilter(); // Update items
 		changePage(0); // Updates display
 	}
 
-	private void setFilter(Filter newFilter) {
-		filter = newFilter;
+	private void updataFilter() {
 		Predicate<AccessoryInfo> predicate = switch (filter) {
 			case ALL -> info -> true;
 			case MISSING -> info -> info.highestOwned().isEmpty();
@@ -138,6 +153,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 		};
 		displayedAccessories = accessories.stream()
 				.filter(predicate)
+				.filter(info -> !showHighestTierOnly || info.accessory().tier() >= info.highestInFamily().tier())
 				.sorted(Comparator.comparingDouble(info -> {
 							OptionalDouble priceOpt = getPrice(info.accessory());
 							if (priceOpt.isEmpty()) return Double.MAX_VALUE;
@@ -368,7 +384,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 		}
 	}
 
-	private record AccessoryInfo(Accessory accessory, Optional<Accessory> highestOwned) {}
+	private record AccessoryInfo(Accessory accessory, Optional<Accessory> highestOwned, Accessory highestInFamily) {}
 
 	private enum Filter {
 		ALL,
