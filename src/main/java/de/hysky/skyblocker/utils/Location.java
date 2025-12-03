@@ -12,7 +12,7 @@ import java.util.EnumSet;
  */
 public enum Location implements StringIdentifiable {
 	PRIVATE_ISLAND("dynamic", "Private Island"),
-	GARDEN("garden", "The Garden"),
+	GARDEN("garden", "Garden"),
 	HUB("hub", "Hub"),
 	THE_FARMING_ISLAND("farming_1", "The Farming Islands"),
 	THE_PARK("foraging_1", "The Park", true),
