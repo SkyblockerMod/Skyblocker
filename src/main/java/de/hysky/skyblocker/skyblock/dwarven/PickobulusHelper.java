@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -76,6 +77,10 @@ public class PickobulusHelper {
 		return errorMessage;
 	}
 
+	public static int getTotalBlocks() {
+		return breakBlocks.size();
+	}
+
 	public static int[] getDrops() {
 		return drops;
 	}
@@ -89,23 +94,27 @@ public class PickobulusHelper {
 	private static void update() {
 		if (!SkyblockerConfigManager.get().mining.enablePickobulusHelper) return;
 
+		errorMessage = null;
+		breakBlocks.clear();
+		Arrays.fill(drops, 0);
+
 		if (client.player == null || client.world == null) {
 			errorMessage = Text.literal("Can't find player or world?").formatted(Formatting.RED);
 			return;
 		}
 
-		// todo check if pickaxe has pickobulus ability
+		if (ItemUtils.getLoreLineIf(client.player.getMainHandStack(), s -> s.contains("Ability: Pickobulus")) == null) {
+			errorMessage = Text.literal("Not holding a tool with pickobulus").formatted(Formatting.RED);
+			return;
+		}
 
 		Vec3d start = client.player.getEyePos().add(0, 0.53625, 0); // Magic number according to https://youtu.be/5hdDrr6jk4E
-		BlockHitResult blockHitResult = client.world.raycast(new RaycastContext(start, start.add(client.player.getRotationVecClient()), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, client.player));
+		BlockHitResult blockHitResult = client.world.raycast(new RaycastContext(start, start.add(client.player.getRotationVecClient().multiply(20)), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, client.player));
 		if (blockHitResult.getType() != HitResult.Type.BLOCK) {
 			errorMessage = Text.literal("Not looking at a block").formatted(Formatting.RED);
 			return;
 		}
 
-		errorMessage = null;
-		breakBlocks.clear();
-		Arrays.fill(drops, 0);
 		calculatePickobulus(blockHitResult.getBlockPos());
 	}
 
@@ -125,6 +134,7 @@ public class PickobulusHelper {
 		for (int i = 1; i < 7; i++) {
 			for (int j = 1; j < 7; j++) {
 				for (int k = 1; k < 7; k++) {
+					if (blocks[i][j][k].isAir() || blocks[i][j][k].isOf(Blocks.BEDROCK)) continue;
 					boolean exposed = blocks[i - 1][j][k].isAir()
 									  || blocks[i + 1][j][k].isAir()
 									  || blocks[i][j - 1][k].isAir()
@@ -273,7 +283,7 @@ public class PickobulusHelper {
 
 	private static void extractRendering(PrimitiveCollector collector) {
 		for (BlockPos breakPos : breakBlocks) {
-			collector.submitOutlinedBox(breakPos, LIGHT_BLUE, 0.5f, true);
+			collector.submitOutlinedBox(breakPos, LIGHT_BLUE, 2f, true);
 		}
 	}
 

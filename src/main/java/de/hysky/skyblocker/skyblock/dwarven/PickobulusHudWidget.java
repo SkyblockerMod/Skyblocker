@@ -41,6 +41,8 @@ public class PickobulusHudWidget extends ComponentBasedWidget {
 			return;
 		}
 
+		addComponent(new PlainTextComponent(Text.literal("Total Blocks: " + PickobulusHelper.getTotalBlocks())));
+
 		int[] drops = PickobulusHelper.getDrops();
 		for (PickobulusHelper.MiningDrop drop : PickobulusHelper.MiningDrop.values()) {
 			int count = drops[drop.ordinal()];
