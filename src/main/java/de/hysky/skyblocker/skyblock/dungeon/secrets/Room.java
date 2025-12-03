@@ -590,7 +590,7 @@ public class Room implements Tickable, Renderable {
 		} else if (state.isOf(Blocks.PLAYER_HEAD) || state.isOf(Blocks.PLAYER_WALL_HEAD)) {
 			secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).filter(SecretWaypoint::isEnabled).findAny()
 					.ifPresent(secretWaypoint -> {
-						if (secretWaypoint.category == SecretWaypoint.Category.REDSTONE_SKULL) {
+						if (secretWaypoint.category == SecretWaypoint.Category.REDSTONE_KEY) {
 							DungeonManager.LOGGER.info("[Skyblocker Dungeon Secrets] Detected {} interaction, hiding secret #{} waypoint {}", secretWaypoint.category, secretWaypoint.secretIndex, secretWaypoint.name);
 							secretWaypoint.setFound();
 							return;

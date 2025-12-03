@@ -335,7 +335,7 @@
   "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "Enable Stonk Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "Enable Superboom Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableWitherWaypoints": "Enable Wither Essence Waypoints",
-  "skyblocker.config.dungeons.secretWaypoints.enableRedstoneSkullWaypoints": "Enable Redstone Skull Waypoints",
+  "skyblocker.config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints": "Enable Redstone Key Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.showSecretText": "Show Secret Text",
   "skyblocker.config.dungeons.secretWaypoints.waypointType": "Waypoint Type",
 

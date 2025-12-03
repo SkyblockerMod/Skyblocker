@@ -26,14 +26,14 @@
     },
     {
       "secretName": "2/3 - Redstone Skull (right click)",
-      "category": "skull",
+      "category": "key",
       "x": 26,
       "y": 71,
       "z": 26
     },
     {
       "secretName": "2/3 - Place Skull",
-      "category": "skull",
+      "category": "key",
       "x": 4,
       "y": 73,
       "z": 24

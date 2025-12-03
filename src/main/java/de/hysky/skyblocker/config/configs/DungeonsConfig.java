@@ -194,7 +194,7 @@ public class DungeonsConfig {
 
 		public boolean enableWitherWaypoints = true;
 
-		public boolean enableRedstoneSkullWaypoints = true;
+		public boolean enableRedstoneKeyWaypoints = true;
 
 		public boolean enableLeverWaypoints = true;
 
