@@ -27,6 +27,7 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenTexts;
@@ -116,7 +117,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 
 		int filterWidth = layout.getWidth() - 2;
 
-		mainLayout.add(CyclingButtonWidget.onOffBuilder(Text.literal("Show highest tier only"), Text.literal("Show all tiers"))
+		mainLayout.add(CyclingButtonWidget.onOffBuilder(Text.translatable("skyblocker.accessory_helper.highestTierOnly"), Text.translatable("skyblocker.accessory_helper.allTiers"))
 				.initially(showHighestTierOnly)
 				.omitKeyText()
 				.build(0, 0, filterWidth, 16, ScreenTexts.EMPTY, (button, value) -> {
@@ -128,7 +129,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 		mainLayout.add(CyclingButtonWidget.<Filter>builder(f -> Text.translatable(f.toString()))
 				.values(Filter.values())
 				.initially(filter)
-				.build(0, 0, filterWidth, 16, Text.literal("Filter"), (b, v) -> {
+				.build(0, 0, filterWidth, 16, Text.translatable("skyblocker.accessory_helper.filter"), (b, v) -> {
 					filter = v;
 					updataFilter();
 					changePage(0);
@@ -289,8 +290,8 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 
 	private static class ResultButton extends SkyblockRecipeResultButton implements HoveredItemStackProvider {
 		private final Text smoothLine = LineSmoothener.createSmoothLine();
-		private final Text wikiLine = Text.literal("Click to open on the wiki!").formatted(Formatting.YELLOW);
-		private final Text fandomLine = Text.literal("(Hold shift for fandom)").formatted(Formatting.GRAY, Formatting.ITALIC);
+		private final Text wikiLine = Text.translatable("skyblocker.accessory_helper.openWiki").formatted(Formatting.YELLOW);
+		private final Text fandomLine = Text.translatable("skyblocker.accessory_helper.fandom").formatted(Formatting.GRAY, Formatting.ITALIC);
 		private AccessoryInfo accessory;
 		private @Nullable List<Text> afterSelling;
 
@@ -309,9 +310,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 						if (!price.rightBoolean()) return Optional.empty();
 						return Optional.of(List.of(
 								Text.empty(),
-								Text.empty()
-										.append(ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1))
-										.append(" after selling:"),
+								Text.translatable("skyblocker.accessory_helper.afterSelling", ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1)),
 								accStack.getName()
 								));
 					})
@@ -340,8 +339,10 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 
 		@Override
 		public void onClick(Click click, boolean doubled) {
-			if (getDisplayStack() != null)
-				WikiLookupManager.openWiki(getDisplayStack(), MinecraftClient.getInstance().player, !MinecraftClient.getInstance().isShiftPressed());
+			ClientPlayerEntity player = MinecraftClient.getInstance().player;
+			if (getDisplayStack() != null && player != null) {
+				WikiLookupManager.openWiki(getDisplayStack(), player, !MinecraftClient.getInstance().isShiftPressed());
+			}
 		}
 
 		@Override
@@ -405,6 +406,11 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 	private enum Filter {
 		ALL,
 		MISSING,
-		UPGRADES
+		UPGRADES;
+
+		@Override
+		public String toString() {
+			return "skyblocker.accessory_helper.filter." + name();
+		}
 	}
 }

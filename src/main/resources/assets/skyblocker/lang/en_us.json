@@ -20,6 +20,16 @@
   "key.wikiLookup.fandom": "Fandom Wiki Lookup",
   "key.wikiLookup.official": "Hypixel Wiki Lookup",
 
+  "skyblocker.accessory_helper.afterSelling": "%s after selling:",
+  "skyblocker.accessory_helper.allTiers": "Show all tiers",
+  "skyblocker.accessory_helper.fandom": "(Hold shift for fandom)",
+  "skyblocker.accessory_helper.filter": "Filter",
+  "skyblocker.accessory_helper.filter.ALL": "All",
+  "skyblocker.accessory_helper.filter.MISSING": "Missing",
+  "skyblocker.accessory_helper.filter.UPGRADES": "Upgrades",
+  "skyblocker.accessory_helper.highestTierOnly": "Show highest tier only",
+  "skyblocker.accessory_helper.openWiki": "Click to open on the wiki!",
+
   "skyblocker.api.cache.HIT": "This data was cached!\nIt's %s seconds old.",
   "skyblocker.api.cache.MISS": "This data wasn't cached!",
   "skyblocker.api.token.authFailure": "Failed to refresh your Skyblocker API token, some features may not work temporarily!",
