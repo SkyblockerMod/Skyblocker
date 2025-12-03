@@ -343,7 +343,7 @@
     "skyblocker.config.chat.filter.hideDicer": "隐藏Dicer信息",
     "skyblocker.config.chat.chatRules.screen.new": "新聊天规则",
     "skyblocker.config.chat.chatRules.screen.ruleName": "规则名称",
-    "skyblocker.config.chat.chatRules.screen.ruleEnabled": "规则已启用",
+    "skyblocker.config.chat.chatRules.screen.ruleEnabled": "已启用",
     "skyblocker.end.hud.protectorLocations.left": "左",
     "skyblocker.config.chat.chatRules.screen.editRule": "编辑",
     "skyblocker.config.chat.chatRules.screen.editRule.@Tooltip": "打开规则配置。",
