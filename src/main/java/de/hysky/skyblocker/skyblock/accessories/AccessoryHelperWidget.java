@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeResultButton;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
+import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
@@ -32,7 +33,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-class AccessoryHelperWidget extends ContainerWidget {
+class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackProvider {
 	private static final Identifier TEXTURE = SkyblockerMod.id("background");
 	private static final int BORDER_SIZE = 8;
 	private static final int BUTTON_COUNT = 20;
@@ -197,6 +198,11 @@ class AccessoryHelperWidget extends ContainerWidget {
 		return 0;
 	}
 
+	@Override
+	public @Nullable ItemStack getFocusedItem() {
+		return buttons.stream().map(ResultButton::getFocusedItem).filter(Objects::nonNull).findFirst().orElse(null);
+	}
+
 	private class ArrowButton extends ClickableWidget {
 		private final boolean next;
 		private final ButtonTextures textures;
@@ -222,7 +228,7 @@ class AccessoryHelperWidget extends ContainerWidget {
 		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 	}
 
-	private static class ResultButton extends SkyblockRecipeResultButton {
+	private static class ResultButton extends SkyblockRecipeResultButton implements HoveredItemStackProvider {
 		private AccessoryInfo accessory;
 		private @Nullable List<Text> afterSelling;
 
@@ -269,6 +275,11 @@ class AccessoryHelperWidget extends ContainerWidget {
 		@Override
 		protected void clearDisplayStack() {
 			super.clearDisplayStack();
+		}
+
+		@Override
+		public @Nullable ItemStack getFocusedItem() {
+			return isHovered() ? getDisplayStack() : null;
 		}
 	}
 
