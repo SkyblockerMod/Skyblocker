@@ -4,9 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import it.unimi.dsi.fastutil.Pair;
@@ -15,7 +13,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -38,7 +35,7 @@ public class AccessoriesHelper {
 	private static final Predicate<Accessory> HAS_FAMILY = Accessory::hasFamily;
 	private static final ToIntFunction<Accessory> ACCESSORY_TIER = Accessory::tier;
 
-	private static Map<String, Accessory> ACCESSORY_DATA = new Object2ObjectOpenHashMap<>();
+	public static Map<String, Accessory> ACCESSORY_DATA = new Object2ObjectOpenHashMap<>();
 
 	@Init
 	public static void init() {
@@ -54,33 +51,7 @@ public class AccessoriesHelper {
 
 						collectAccessories(handler.slots.subList(0, handler.getRows() * 9), page);
 					});
-					final AccessoryHelperWidget widget = new AccessoryHelperWidget();
-					widget.setY((screen.height - widget.getHeight()) / 2);
-					Screens.getButtons(screen).add(widget);
-					final int previousX = ((HandledScreenAccessor) screen).getX();
-					final int offset = Math.max(180 - previousX, 0);
-					AccessoryHelperWidget.TabButton tabButton = new AccessoryHelperWidget.TabButton(button -> {
-						boolean toggled = button.isToggled();
-						widget.visible = toggled;
-						int x = toggled ? previousX + offset : previousX;
-						((HandledScreenAccessor) screen).setX(x);
-						widget.setX(x - widget.getWidth() - 2);
-						button.setX((toggled ? widget.getX() : x) - button.getWidth() + 5);
-						button.setY((toggled ? widget.getY() : ((HandledScreenAccessor) screen).getY()) + 8);
-						if (toggled) {
-							final Set<Accessory> collectedAccessories = getCollectedAccessories();
-							widget.setAccessories(ACCESSORY_DATA.values().stream()
-									.filter(accessory -> ItemRepository.getItemStack(accessory.id()) != null) // Remove admin items
-									.map(accessory -> {
-										if (accessory.family().isPresent())
-											return new AccessoryHelperWidget.AccessoryInfo(accessory, calculateFamilyReport(accessory, collectedAccessories).highestCollectedInFamily());
-										else
-											return new AccessoryHelperWidget.AccessoryInfo(accessory, collectedAccessories.contains(accessory) ? Optional.of(accessory) : Optional.empty());
-									}).collect(Collectors.toSet()));
-						}
-					});
-					Screens.getButtons(screen).add(tabButton);
-					tabButton.setToggled(false);
+					AccessoryHelperWidget.attachToScreen(genericContainerScreen);
 				}
 			}
 		});
@@ -140,14 +111,6 @@ public class AccessoriesHelper {
 		return Pair.of(AccessoryReport.MISSING, String.format("(%d/%d)", accessory.tier(), highestTierInFamily));
 	}
 
-	private static Set<Accessory> getCollectedAccessories() {
-		return COLLECTED_ACCESSORIES.computeIfAbsent(ProfileAccessoryData::createDefault).pages().values().stream()
-				.flatMap(ObjectOpenHashSet::stream)
-				.filter(ACCESSORY_DATA::containsKey)
-				.map(ACCESSORY_DATA::get)
-				.collect(Collectors.toSet());
-	}
-
 	public static FamilyReport calculateFamilyReport(Accessory accessory, Set<Accessory> collectedAccessories) {
 		if (accessory.family().isEmpty()) throw new IllegalArgumentException("accessory family cannot be empty");
 		Predicate<Accessory> hasSameFamily = accessory::hasSameFamily;
@@ -162,6 +125,14 @@ public class AccessoriesHelper {
 						.filter(hasSameFamily)
 						.max(Comparator.comparingInt(ACCESSORY_TIER))
 		);
+	}
+
+	public static Set<Accessory> getCollectedAccessories() {
+		return COLLECTED_ACCESSORIES.computeIfAbsent(ProfileAccessoryData::createDefault).pages().values().stream()
+				.flatMap(ObjectOpenHashSet::stream)
+				.filter(ACCESSORY_DATA::containsKey)
+				.map(ACCESSORY_DATA::get)
+				.collect(Collectors.toSet());
 	}
 
 	public static void refreshData(Map<String, Accessory> data) {

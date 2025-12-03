@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.accessories;
 
 import com.google.common.collect.ImmutableList;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper.Accessory;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -10,6 +11,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
@@ -18,6 +20,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget;
@@ -32,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackProvider {
 	private static final Identifier TEXTURE = SkyblockerMod.id("background");
@@ -43,12 +47,48 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 	private final TextWidget pageText = new TextWidget(ScreenTexts.EMPTY, MinecraftClient.getInstance().textRenderer).setMaxWidth(30, TextWidget.TextOverflow.SCROLLING);
 	private final ArrowButton prevPageButton = new ArrowButton(false);
 	private final ArrowButton nextPageButton = new ArrowButton(true);
-	private Filter filter = Filter.MISSING;
 
 	private List<AccessoryInfo> accessories = List.of();
 	private List<AccessoryInfo> displayedAccessories = List.of();
 
-	private int page;
+	// Things that should persist when you close the accessory bag
+	private static Filter filter = Filter.MISSING;
+	private static int page;
+	private static boolean open;
+
+	static void attachToScreen(GenericContainerScreen screen) {
+		final AccessoryHelperWidget widget = new AccessoryHelperWidget();
+		widget.setY((screen.height - widget.getHeight()) / 2);
+		Screens.getButtons(screen).add(widget);
+		final int previousX = ((HandledScreenAccessor) screen).getX();
+		final int offset = Math.max(180 - previousX, 0);
+		AccessoryHelperWidget.TabButton tabButton = new AccessoryHelperWidget.TabButton(button -> {
+			boolean toggled = button.isToggled();
+			widget.visible = open = toggled;
+			int x = toggled ? previousX + offset : previousX;
+			((HandledScreenAccessor) screen).setX(x);
+			widget.setX(x - widget.getWidth() - 2);
+			button.setX((toggled ? widget.getX() : x) - button.getWidth() + 5);
+			button.setY((toggled ? widget.getY() : ((HandledScreenAccessor) screen).getY()) + 8);
+			if (toggled) {
+				final Set<Accessory> collectedAccessories = AccessoriesHelper.getCollectedAccessories();
+				widget.setAccessories(AccessoriesHelper.ACCESSORY_DATA.values().stream()
+						.filter(accessory -> ItemRepository.getItemStack(accessory.id()) != null) // Remove admin items
+						.map(accessory -> {
+							if (accessory.family().isPresent())
+								return new AccessoryHelperWidget.AccessoryInfo(accessory, AccessoriesHelper.calculateFamilyReport(accessory, collectedAccessories).highestCollectedInFamily());
+							else
+								return new AccessoryHelperWidget.AccessoryInfo(accessory, collectedAccessories.contains(accessory) ? Optional.of(accessory) : Optional.empty());
+						}).collect(Collectors.toSet()));
+			} else {
+				// Reset when you close the helper
+				filter = Filter.MISSING;
+				page = 0;
+			}
+		});
+		Screens.getButtons(screen).add(tabButton);
+		tabButton.setToggled(open);
+	}
 
 	AccessoryHelperWidget() {
 		super(0, 0, 147, 166, ScreenTexts.EMPTY);
@@ -85,13 +125,13 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 		this.accessories = accessories.stream()
 				.filter(info -> info.accessory().tier() > info.highestOwned().map(Accessory::tier).orElse(-1))
 				.toList();
-		setFilter(filter);
-		changePage(0); // Updates items
+		setFilter(filter); // Update items
+		changePage(0); // Updates display
 	}
 
-	private void setFilter(Filter filter) {
-		this.filter = filter;
-		Predicate<AccessoryInfo> predicate = switch (this.filter) {
+	private void setFilter(Filter newFilter) {
+		filter = newFilter;
+		Predicate<AccessoryInfo> predicate = switch (filter) {
 			case ALL -> info -> true;
 			case MISSING -> info -> info.highestOwned().isEmpty();
 			case UPGRADES -> info -> info.highestOwned().isPresent() && info.accessory().tier() > info.highestOwned().get().tier();
@@ -283,7 +323,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 		}
 	}
 
-	static class TabButton extends ToggleButtonWidget {
+	private static class TabButton extends ToggleButtonWidget {
 		private final Consumer<TabButton> onToggled;
 
 		TabButton(Consumer<TabButton> onToggled) {
@@ -328,7 +368,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 		}
 	}
 
-	record AccessoryInfo(Accessory accessory, Optional<Accessory> highestOwned) {}
+	private record AccessoryInfo(Accessory accessory, Optional<Accessory> highestOwned) {}
 
 	private enum Filter {
 		ALL,
