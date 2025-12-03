@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.accessories;
 
 import com.google.common.collect.ImmutableList;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper.Accessory;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
@@ -62,6 +63,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 	private static boolean showHighestTierOnly;
 
 	static void attachToScreen(GenericContainerScreen screen) {
+		if (!SkyblockerConfigManager.get().helpers.enableAccessoryHelper) return;
 		final AccessoryHelperWidget widget = new AccessoryHelperWidget();
 		widget.setY((screen.height - widget.getHeight()) / 2);
 		Screens.getButtons(screen).add(widget);

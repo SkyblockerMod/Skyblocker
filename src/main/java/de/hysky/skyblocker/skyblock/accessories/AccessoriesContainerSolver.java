@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.accessories;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -31,6 +32,6 @@ public class AccessoriesContainerSolver extends SimpleContainerSolver {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return SkyblockerConfigManager.get().helpers.enableAccessoryHelper;
 	}
 }

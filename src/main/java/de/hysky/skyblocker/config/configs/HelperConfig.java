@@ -21,6 +21,8 @@ public class HelperConfig {
 
 	public boolean enableBuildersWandPreview = true;
 
+	public boolean enableAccessoryHelper = true;
+
 	public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
 	public Jerry jerry = new Jerry();
