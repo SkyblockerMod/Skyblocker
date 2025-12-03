@@ -5,6 +5,8 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper.Accessory;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeResultButton;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -29,6 +31,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
@@ -285,6 +288,9 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 	}
 
 	private static class ResultButton extends SkyblockRecipeResultButton implements HoveredItemStackProvider {
+		private final Text smoothLine = LineSmoothener.createSmoothLine();
+		private final Text wikiLine = Text.literal("Click to open on the wiki!").formatted(Formatting.YELLOW);
+		private final Text fandomLine = Text.literal("(Hold shift for fandom)").formatted(Formatting.GRAY, Formatting.ITALIC);
 		private AccessoryInfo accessory;
 		private @Nullable List<Text> afterSelling;
 
@@ -321,11 +327,21 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 				accessory.highestOwned().ifPresent(owned -> AccessoriesContainerSolver.INSTANCE.highlightedAccessory = owned.id());
 				MinecraftClient client = MinecraftClient.getInstance();
 				List<Text> tooltip = new ArrayList<>(Screen.getTooltipFromItem(client, stack));
+				tooltip.add(smoothLine);
 				if (afterSelling != null) {
 					tooltip.addAll(afterSelling);
 				}
+				tooltip.add(wikiLine);
+				tooltip.add(fandomLine);
 				context.drawTooltip(client.textRenderer, tooltip, stack.getTooltipData(), mouseX, mouseY, stack.get(DataComponentTypes.TOOLTIP_STYLE));
+				context.setCursor(StandardCursors.POINTING_HAND);
 			}
+		}
+
+		@Override
+		public void onClick(Click click, boolean doubled) {
+			if (getDisplayStack() != null)
+				WikiLookupManager.openWiki(getDisplayStack(), MinecraftClient.getInstance().player, !MinecraftClient.getInstance().isShiftPressed());
 		}
 
 		@Override
