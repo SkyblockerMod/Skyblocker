@@ -63,17 +63,17 @@ public class ItemTickList<T> extends ElementListWidget<ItemTickList.ItemTickEntr
 		for (T item : allItems) {
 			ItemTickEntry entry = new ItemTickEntry(
 					CheckboxWidget.builder(Text.of(item.toString()), client.textRenderer)
-					              .checked(whitelist == filters.contains(item))
-					              .callback((checkbox1, checked) -> {
-									  if (whitelist) {
-										  if (checked) filters.add(item);
-										  else filters.remove(item);
-									  } else {
-										  if (checked) filters.remove(item);
-										  else filters.add(item);
-									  }
-					              })
-					              .build()
+								.checked(whitelist == filters.contains(item))
+								.callback((checkbox1, checked) -> {
+									if (whitelist) {
+										if (checked) filters.add(item);
+										else filters.remove(item);
+									} else {
+										if (checked) filters.remove(item);
+										else filters.add(item);
+									}
+								})
+								.build()
 			);
 			addEntry(entry);
 		}

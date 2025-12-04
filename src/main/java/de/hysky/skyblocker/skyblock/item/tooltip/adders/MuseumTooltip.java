@@ -35,16 +35,16 @@ public class MuseumTooltip extends SimpleTooltipAdder {
 			//Special case the special category so that it doesn't always display not donated
 			if (itemCategory.equals("Special")) {
 				lines.add(Text.literal(String.format(format, "Museum: (" + itemCategory + ")"))
-				              .formatted(Formatting.LIGHT_PURPLE));
+							.formatted(Formatting.LIGHT_PURPLE));
 			} else {
 				boolean isInMuseum = MuseumItemCache.hasItemInMuseum(internalID);
 
 				Formatting donatedIndicatorFormatting = isInMuseum ? Formatting.GREEN : Formatting.RED;
 
 				lines.add(Text.literal(String.format(format, "Museum (" + itemCategory + "):"))
-				              .formatted(Formatting.LIGHT_PURPLE)
-				              .append(Text.literal(isInMuseum ? "✔" : "✖").formatted(donatedIndicatorFormatting, Formatting.BOLD))
-				              .append(Text.literal(isInMuseum ? " Donated" : " Not Donated").formatted(donatedIndicatorFormatting)));
+							.formatted(Formatting.LIGHT_PURPLE)
+							.append(Text.literal(isInMuseum ? "✔" : "✖").formatted(donatedIndicatorFormatting, Formatting.BOLD))
+							.append(Text.literal(isInMuseum ? " Donated" : " Not Donated").formatted(donatedIndicatorFormatting)));
 			}
 		}
 	}

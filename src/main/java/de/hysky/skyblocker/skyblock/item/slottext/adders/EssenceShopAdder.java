@@ -16,9 +16,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EssenceShopAdder extends SimpleSlotTextAdder {
-    private static final Pattern ESSENCELEVEL = Pattern.compile("^[\\w ]+ (?<level>[IVXLCDM]+)$");
-    private static final Pattern UNLOCKED = Pattern.compile("UNLOCKED");
-    private static final Pattern ESSENCE = Pattern.compile("Your \\w+ Essence: (?<essence>[\\d,]+)");
+	private static final Pattern ESSENCELEVEL = Pattern.compile("^[\\w ]+ (?<level>[IVXLCDM]+)$");
+	private static final Pattern UNLOCKED = Pattern.compile("UNLOCKED");
+	private static final Pattern ESSENCE = Pattern.compile("Your \\w+ Essence: (?<essence>[\\d,]+)");
 
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
 			"essence_shop",
@@ -26,28 +26,28 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
 			"skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip"
 	);
 
-    public EssenceShopAdder() {
-        super(".*Essence Shop", CONFIG_INFORMATION);
-    }
+	public EssenceShopAdder() {
+		super(".*Essence Shop", CONFIG_INFORMATION);
+	}
 
-    @Override
-    public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	@Override
+	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
 		if (slotId > 53) return List.of();
-        Matcher essenceLevelMatcher = ESSENCELEVEL.matcher(stack.getName().getString());
-        Matcher essenceAmountMatcher = ItemUtils.getLoreLineIfMatch(stack, ESSENCE);
+		Matcher essenceLevelMatcher = ESSENCELEVEL.matcher(stack.getName().getString());
+		Matcher essenceAmountMatcher = ItemUtils.getLoreLineIfMatch(stack, ESSENCE);
 
-        if (essenceLevelMatcher.matches()) {
-            int level = RomanNumerals.romanToDecimal(essenceLevelMatcher.group("level"));
-            Matcher unlockedMatcher = ItemUtils.getLoreLineIfMatch(stack, UNLOCKED);
-            if (unlockedMatcher == null) {
-                level -= 1;
-            }
-            return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
-        }
-        if (essenceAmountMatcher == null) return List.of();
-        String essenceAmount = essenceAmountMatcher.group("essence").replace(",", "");
-        if (!essenceAmount.matches("-?\\d+")) return List.of();
+		if (essenceLevelMatcher.matches()) {
+			int level = RomanNumerals.romanToDecimal(essenceLevelMatcher.group("level"));
+			Matcher unlockedMatcher = ItemUtils.getLoreLineIfMatch(stack, UNLOCKED);
+			if (unlockedMatcher == null) {
+				level -= 1;
+			}
+			return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
+		}
+		if (essenceAmountMatcher == null) return List.of();
+		String essenceAmount = essenceAmountMatcher.group("essence").replace(",", "");
+		if (!essenceAmount.matches("-?\\d+")) return List.of();
 
-        return SlotText.bottomRightList(Text.literal(Formatters.SHORT_FLOAT_NUMBERS.format(Integer.parseInt(essenceAmount))).withColor(SlotText.CREAM));
-    }
+		return SlotText.bottomRightList(Text.literal(Formatters.SHORT_FLOAT_NUMBERS.format(Integer.parseInt(essenceAmount))).withColor(SlotText.CREAM));
+	}
 }

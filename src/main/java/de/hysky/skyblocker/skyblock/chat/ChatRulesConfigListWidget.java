@@ -149,14 +149,14 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 			children = List.of(enabledButton, openConfigButton, deleteButton);
 		}
 
-        private Text enabledButtonText() {
-            if (chatRule.getEnabled()) {
-                return Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.true").withColor(Color.GREEN.getRGB());
-            } else {
-                return Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.false").withColor(Color.RED.getRGB());
-            }
-        }
-        private void toggleEnabled(ButtonWidget button) {
+		private Text enabledButtonText() {
+			if (chatRule.getEnabled()) {
+				return Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.true").withColor(Color.GREEN.getRGB());
+			} else {
+				return Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.false").withColor(Color.RED.getRGB());
+			}
+		}
+		private void toggleEnabled(ButtonWidget button) {
 			hasChanged = true;
 			chatRule.setEnabled(!chatRule.getEnabled());
 			button.setMessage(enabledButtonText());

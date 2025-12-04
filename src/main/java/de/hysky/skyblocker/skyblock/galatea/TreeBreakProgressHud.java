@@ -30,8 +30,8 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 	private static Int2ObjectMap<ArmorStandEntity> armorstands = new Int2ObjectOpenHashMap<ArmorStandEntity>();
 
 	static {
-            ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> armorstands.remove(entity.getId()));
-    }
+			ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> armorstands.remove(entity.getId()));
+	}
 	public TreeBreakProgressHud() {
 		super(Text.literal("Tree Break Progress").formatted(Formatting.GREEN, Formatting.BOLD), Formatting.GREEN.getColorValue(), "hud_treeprogress");
 		instance = this;
@@ -41,7 +41,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 
 	public static void onEntityUpdate(ArmorStandEntity entity) {
 		if (entity.getCustomName() != null) {
-    		armorstands.put(entity.getId(), entity);
+			armorstands.put(entity.getId(), entity);
 		}
 	}
 	@Override
@@ -78,13 +78,13 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 	private ArmorStandEntity getClosestTree() {
 		if (CLIENT.player == null) return null;
 		return armorstands.values().stream()
-        	.filter(entity -> {
+			.filter(entity -> {
 				Text name = entity.getCustomName();
 				if (name == null) return false;
 				return name.getString().contains("FIG TREE") || name.getString().contains("MANGROVE TREE");
 			})
 			.min(Comparator.comparingDouble(e -> e.squaredDistanceTo(CLIENT.player)))
-        	.orElse(null);
+			.orElse(null);
 	}
 
 	private boolean isOwnTree(ArmorStandEntity tree) {
@@ -93,19 +93,19 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 		Vec3d treePos = tree.getPos();
 
 		List<ArmorStandEntity> groupedArmorStands = armorstands.values().stream()
-        .filter(e -> {
-            Vec3d pos = e.getPos();
-            return Math.abs(pos.x - treePos.x) < 0.1 &&
-                   Math.abs(pos.y - treePos.y) < 2 &&
-                   Math.abs(pos.z - treePos.z) < 0.1;
-        })
+		.filter(e -> {
+			Vec3d pos = e.getPos();
+			return Math.abs(pos.x - treePos.x) < 0.1 &&
+				Math.abs(pos.y - treePos.y) < 2 &&
+				Math.abs(pos.z - treePos.z) < 0.1;
+		})
 		.toList();
 		String playerName = CLIENT.player.getName().getString();
 
 		return groupedArmorStands.stream().anyMatch(armorStand -> {
-        	String name = armorStand.getName().getString();
-        	return name.contains(playerName) || name.contains(" players");
-    	});
+			String name = armorStand.getName().getString();
+			return name.contains(playerName) || name.contains(" players");
+		});
 	}
 
 	@Override
