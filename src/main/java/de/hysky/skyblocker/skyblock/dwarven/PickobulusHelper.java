@@ -29,6 +29,36 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class PickobulusHelper {
+	private static final Set<Block> CONVERT_INTO_BEDROCK_BLOCKS = Set.of(
+			Blocks.STONE,
+			Blocks.COBBLESTONE,
+			Blocks.POLISHED_DIORITE,
+			Blocks.PRISMARINE,
+			Blocks.PRISMARINE_BRICKS,
+			Blocks.DARK_PRISMARINE,
+			Blocks.CYAN_TERRACOTTA,
+			Blocks.LIGHT_BLUE_WOOL,
+			Blocks.GRAY_WOOL,
+			Blocks.LAPIS_BLOCK,
+			Blocks.GOLD_BLOCK,
+			Blocks.IRON_BLOCK,
+			Blocks.DIAMOND_BLOCK,
+			Blocks.EMERALD_BLOCK,
+			Blocks.REDSTONE_BLOCK,
+			Blocks.COAL_BLOCK,
+			Blocks.GOLD_ORE,
+			Blocks.IRON_ORE,
+			Blocks.COAL_ORE,
+			Blocks.LAPIS_ORE,
+			Blocks.REDSTONE_ORE,
+			Blocks.DIAMOND_ORE,
+			Blocks.EMERALD_ORE,
+			Blocks.NETHER_QUARTZ_ORE,
+			Blocks.NETHERRACK,
+			Blocks.GLOWSTONE,
+			Blocks.OBSIDIAN,
+			Blocks.END_STONE
+	);
 	private static final Set<Block> STAINED_GLASS_BLOCKS = Set.of(
 			Blocks.WHITE_STAINED_GLASS,
 			Blocks.ORANGE_STAINED_GLASS,
@@ -162,35 +192,7 @@ public class PickobulusHelper {
 	}
 
 	private static void handleConvertIntoBedrock(BlockPos pos, BlockState state, int i, int j, int k) {
-		if (state.isOf(Blocks.STONE)
-			|| state.isOf(Blocks.COBBLESTONE)
-			|| state.isOf(Blocks.POLISHED_DIORITE)
-			|| state.isOf(Blocks.PRISMARINE)
-			|| state.isOf(Blocks.PRISMARINE_BRICKS)
-			|| state.isOf(Blocks.DARK_PRISMARINE)
-			|| state.isOf(Blocks.CYAN_TERRACOTTA)
-			|| state.isOf(Blocks.LIGHT_BLUE_WOOL)
-			|| state.isOf(Blocks.GRAY_WOOL)
-			|| state.isOf(Blocks.LAPIS_BLOCK)
-			|| state.isOf(Blocks.GOLD_BLOCK)
-			|| state.isOf(Blocks.IRON_BLOCK)
-			|| state.isOf(Blocks.DIAMOND_BLOCK)
-			|| state.isOf(Blocks.EMERALD_BLOCK)
-			|| state.isOf(Blocks.REDSTONE_BLOCK)
-			|| state.isOf(Blocks.COAL_BLOCK)
-			|| state.isOf(Blocks.GOLD_ORE)
-			|| state.isOf(Blocks.IRON_ORE)
-			|| state.isOf(Blocks.COAL_ORE)
-			|| state.isOf(Blocks.LAPIS_ORE)
-			|| state.isOf(Blocks.REDSTONE_ORE)
-			|| state.isOf(Blocks.DIAMOND_ORE)
-			|| state.isOf(Blocks.EMERALD_ORE)
-			|| state.isOf(Blocks.NETHER_QUARTZ_ORE)
-			|| state.isOf(Blocks.NETHERRACK)
-			|| state.isOf(Blocks.GLOWSTONE)
-			|| state.isOf(Blocks.OBSIDIAN)
-			|| state.isOf(Blocks.END_STONE)
-			|| STAINED_GLASS_BLOCKS.contains(state.getBlock())) {
+		if (CONVERT_INTO_BEDROCK_BLOCKS.contains(state.getBlock()) || STAINED_GLASS_BLOCKS.contains(state.getBlock())) {
 			breakBlocks.add(pos.add(i - 4, j - 4, k - 4));
 		}
 	}
