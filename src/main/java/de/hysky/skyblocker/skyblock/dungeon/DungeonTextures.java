@@ -6,12 +6,12 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 
 public class DungeonTextures {
-    @Init
-    public static void init() {
-        ResourceManagerHelper.registerBuiltinResourcePack(
-                SkyblockerMod.id("recolored_dungeon_items"),
-                SkyblockerMod.SKYBLOCKER_MOD,
-                ResourcePackActivationType.NORMAL
-        );
-    }
+	@Init
+	public static void init() {
+		ResourceManagerHelper.registerBuiltinResourcePack(
+				SkyblockerMod.id("recolored_dungeon_items"),
+				SkyblockerMod.SKYBLOCKER_MOD,
+				ResourcePackActivationType.NORMAL
+		);
+	}
 }
