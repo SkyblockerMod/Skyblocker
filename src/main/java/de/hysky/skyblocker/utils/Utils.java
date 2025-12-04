@@ -107,10 +107,7 @@ public class Utils {
     private static String locationRaw = "";
     @NotNull
     private static String map = "";
-    @NotNull
     public static double purse = 0;
-
-	private static boolean firstProfileUpdate = true;
 
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
@@ -235,7 +232,7 @@ public class Utils {
     }
 
     /**
-     * @return the location raw parsed from the the Mod API.
+     * @return the raw location from the Mod API.
      */
     @NotNull
     public static String getLocationRaw() {
@@ -450,20 +447,20 @@ public class Utils {
 
     private static void onPacket(HypixelS2CPacket packet) {
         switch (packet) {
-            case HelloS2CPacket(var environment) -> {
-                Utils.environment = environment;
+            case HelloS2CPacket(var serverEnvironment) -> {
+                environment = serverEnvironment;
 
                 //Request the player's rank information
                 HypixelNetworking.sendPlayerInfoC2SPacket(1);
             }
 
-            case LocationUpdateS2CPacket(var serverName, var serverType, var _lobbyName, var mode, var map) -> {
+            case LocationUpdateS2CPacket(var serverName, var serverType, var _lobbyName, var mode, var mapName) -> {
                 Utils.server = serverName;
                 String previousServerType = Utils.gameType;
                 Utils.gameType = serverType.orElse("");
                 Utils.locationRaw = mode.orElse("");
                 Utils.location = Location.from(locationRaw);
-                Utils.map = map.orElse("");
+                Utils.map = mapName.orElse("");
 
                 SkyblockEvents.LOCATION_CHANGE.invoker().onSkyblockLocationChange(location);
 
@@ -574,9 +571,6 @@ public class Utils {
 
                 if (!prevProfileId.equals(profileId)) {
                     SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
-                } else if (firstProfileUpdate) {
-					SkyblockEvents.PROFILE_INIT.invoker().onSkyblockProfileInit(profileId);
-	                firstProfileUpdate = false;
                 }
             } else if (Formatting.strip(message).startsWith(PROFILE_ID_SUGGEST_PREFIX)) {
             	int suggestions = profileSuggestionMessages;
