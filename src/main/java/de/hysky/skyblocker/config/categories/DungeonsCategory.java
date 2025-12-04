@@ -5,7 +5,10 @@ import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapWidget;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
@@ -177,13 +180,16 @@ public class DungeonsCategory {
 								.name(Text.translatable("skyblocker.config.dungeons.map.mapScaling"))
 								.binding(defaults.dungeons.dungeonMap.mapScaling,
 										() -> config.dungeons.dungeonMap.mapScaling,
-										newValue -> config.dungeons.dungeonMap.mapScaling = newValue)
+										newValue -> {
+											config.dungeons.dungeonMap.mapScaling = newValue;
+											DungeonMapWidget.INSTANCE.update();
+										})
 								.controller(FloatController.createBuilder().build())
 								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.map.mapScreen"))
 								.prompt(Text.translatable("text.skyblocker.open"))
-								.action(screen -> MinecraftClient.getInstance().setScreen(new DungeonMapConfigScreen(screen)))
+								.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.DUNGEON, WidgetManager.ScreenLayer.HUD, screen)))
 								.build())
 						.build())
 
@@ -795,11 +801,7 @@ public class DungeonsCategory {
 								.name(Text.translatable("skyblocker.config.dungeons.dungeonScore.scoreScaling"))
 								.binding(defaults.dungeons.dungeonScore.scoreScaling,
 										() -> config.dungeons.dungeonScore.scoreScaling,
-										newValue -> {
-											config.dungeons.dungeonScore.scoreX = config.dungeons.dungeonScore.scoreX + (int) ((config.dungeons.dungeonScore.scoreScaling - newValue) * 38.0);
-											config.dungeons.dungeonScore.scoreY = config.dungeons.dungeonScore.scoreY + (int) ((config.dungeons.dungeonScore.scoreScaling - newValue) * MinecraftClient.getInstance().textRenderer.fontHeight / 2.0);
-											config.dungeons.dungeonScore.scoreScaling = newValue;
-										})
+										newValue -> config.dungeons.dungeonScore.scoreScaling = newValue)
 								.controller(FloatController.createBuilder().build())
 								.build())
 						.build())

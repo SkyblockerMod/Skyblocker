@@ -1,47 +1,89 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import org.joml.Matrix3x2fStack;
-
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import org.joml.Matrix3x2fStack;
 
-public class DungeonScoreHUD {
-	private static final Identifier DUNGEON_SCORE = SkyblockerMod.id("dungeon_score");
+import java.util.Set;
 
-	private DungeonScoreHUD() {
-	}
-
-	@Init
-	public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.OVERLAY_MESSAGE, DUNGEON_SCORE, (context, tickCounter) -> render(context));
-	}
-
+@RegisterWidget
+public class DungeonScoreHUD extends HudWidget {
+	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.DUNGEON);
 	//This is 4+5 wide, needed to offset the extra width from bold numbers (3×1 wide) in S+ and the "+" (6 wide) so that it doesn't go off the screen if the score is S+ and the hud element is at the right edge of the screen
 	private static final Text extraSpace = Text.literal(" ").append(Text.literal(" ").formatted(Formatting.BOLD));
 
-	private static void render(DrawContext context) {
-		if (Utils.isInDungeons() && DungeonScore.isDungeonStarted() && SkyblockerConfigManager.get().dungeons.dungeonScore.enableScoreHUD) {
-			int x = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX;
-			int y = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY;
-			render(context, x, y);
+	private static Text scoreText = getFormattedScoreText();
+	private static float previousScale = -1f;
+
+	public DungeonScoreHUD() {
+		super("dungeon_score");
+		Scheduler.INSTANCE.scheduleCyclic(this::updateFromScheduler, 5);
+	}
+
+	@Override
+	public Set<Location> availableLocations() {
+		return AVAILABLE_LOCATIONS;
+	}
+
+	@Override
+	public void setEnabledIn(Location location, boolean enabled) {
+		if (!AVAILABLE_LOCATIONS.contains(location)) return;
+		SkyblockerConfigManager.get().dungeons.dungeonScore.enableScoreHUD = enabled;
+	}
+
+	@Override
+	public boolean isEnabledIn(Location location) {
+		if (!AVAILABLE_LOCATIONS.contains(location)) return false;
+		return SkyblockerConfigManager.get().dungeons.dungeonScore.enableScoreHUD;
+	}
+
+	private void updateFromScheduler() {
+		if (!shouldRender(Utils.getLocation())) return;
+		update();
+	}
+
+	@Override
+	public void update() {
+		scoreText = getFormattedScoreText();
+		// Update widget size
+		float scale = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling;
+		if (scale != previousScale) {
+			previousScale = scale;
+			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+			setDimensions((int) (textRenderer.getWidth(scoreText) * scale), (int) (textRenderer.fontHeight * scale));
 		}
+	}
+
+	@Override
+	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen) {
+			if (previousScale == -1) update();
+		} else if (!DungeonScore.isDungeonStarted()) return;
+		render(context, x, y);
+	}
+
+	@Override
+	public Text getDisplayName() {
+		return Text.translatable("skyblocker.config.dungeons.dungeonScore");
 	}
 
 	public static void render(DrawContext context, int x, int y) {
 		float scale = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling;
 		Matrix3x2fStack matrixStack = context.getMatrices();
 		matrixStack.pushMatrix();
+		matrixStack.translate(x, y);
 		matrixStack.scale(scale, scale);
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, getFormattedScoreText(), (int) (x / scale), (int) (y / scale), 0xFFFFFFFF);
+		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, scoreText, 0, 0, 0xFFFFFFFF);
 		matrixStack.popMatrix();
 	}
 
