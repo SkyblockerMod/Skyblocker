@@ -101,7 +101,7 @@ public class Shortcuts {
 		// Skyblocker commands
 		commandArgs.put("/pv", "/skyblocker pv");
 
-		return new ShortcutsRecord(commands, commandArgs, new Object2ObjectOpenHashMap<>());
+		return new ShortcutsRecord(commands, commandArgs, new Object2ObjectOpenHashMap<>(), VERSION);
 	}
 
 	@SuppressWarnings("unused")
