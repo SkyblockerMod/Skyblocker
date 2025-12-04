@@ -49,8 +49,8 @@ public class SkyblockerMod implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientTickEvents.END_CLIENT_TICK.register(this::tick);
 		SkyblockerConfigManager.init();
-        ConfigNullFieldsFix.init(); //DO NOT INIT ANY CLASS THAT USES CONFIG FIELDS BEFORE THIS!
-        ConfigBackupManager.init();
+		ConfigNullFieldsFix.init(); //DO NOT INIT ANY CLASS THAT USES CONFIG FIELDS BEFORE THIS!
+		ConfigBackupManager.init();
 
 		init();
 		Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);

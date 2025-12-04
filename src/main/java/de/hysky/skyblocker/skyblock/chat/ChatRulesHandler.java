@@ -56,7 +56,7 @@ public class ChatRulesHandler {
 						.then(ClientCommandManager.literal("chatRules")
 								.executes(
 										Scheduler.queueOpenScreenCommand(() -> new ChatRulesConfigScreen(null)))
-        )));
+		)));
 	}
 
 	@VisibleForTesting
@@ -180,4 +180,4 @@ public class ChatRulesHandler {
 			return width;
 		}
 	}
- }
+}

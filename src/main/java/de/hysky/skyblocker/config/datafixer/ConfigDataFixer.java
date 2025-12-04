@@ -37,7 +37,7 @@ public class ConfigDataFixer {
 	}
 
 	public static JsonObject apply(DSL.TypeReference type, JsonObject oldConfig, int newVersion) {
-        return apply(type, new Dynamic<>(JsonOps.INSTANCE, oldConfig), newVersion).getValue().getAsJsonObject();
+		return apply(type, new Dynamic<>(JsonOps.INSTANCE, oldConfig), newVersion).getValue().getAsJsonObject();
 	}
 
 	private static DataFixer build() {

@@ -193,7 +193,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
 		@Override
 		public boolean hasChanged() {
-			return chatRule.getEnabled() != ChatRulesHandler.chatRuleList.getData().get(chatRuleIndex).getEnabled();
+			return chatRule.getEnabled() != ChatRulesHandler.CHAT_RULE_LIST.getData().get(chatRuleIndex).getEnabled();
 		}
 
 		@Override

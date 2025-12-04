@@ -150,7 +150,7 @@ public class SkyblockerConfigManager {
 		JsonObject newConfig = ConfigDataFixer.apply(ConfigDataFixer.CONFIG_TYPE, oldConfig);
 
 		//Write the updated file
-        if (!writeConfig(configDir, newConfig)) {
+		if (!writeConfig(configDir, newConfig)) {
 			LOGGER.error(LogUtils.FATAL_MARKER, "[Skyblocker Config Data Fixer] Failed to fix up config file!");
 			writeConfig(backupDir, oldConfig);
 		}
