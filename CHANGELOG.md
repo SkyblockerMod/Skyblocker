@@ -1,3 +1,29 @@
+# Release 5.9.1
+
+## Highlight
+* Add support for Aura's 50% slayer exp buff
+* Add support for Refraction's EZPZ perk
+* Update default Quick Navigation Wardrobe UI Title
+* Update abbreviation for Corruption enchant
+* Fix party notes being cut off sometimes in Fancy Party Finder
+* Fix selection not working on Chat Rules config screen
+
+## What's Changed
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1848
+* Sort English localization file by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1757
+* Update Wardrobe Menu Regex In Quick Nav Config by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1863
+* Add DUNGEON_ENDED event by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1865
+* Improve Waypoint Type Descriptions by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1867
+* Adjust abbreviation for Corruption enchantment by @lunaynx in https://github.com/SkyblockerMod/Skyblocker/pull/1871
+* More Fancy Party Finder Fixes  by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1879
+* Remove PROFILE_INIT event by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1866
+* Minor Chat Rules Screen Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1868
+* Add Aura's Slayer EXP Buff by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1877
+* Add Friendly Names to All Locations by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1892
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.9.0+1.21.10...v5.9.1+1.21.10
+___
+
 # Release 5.9.0
 
 ## Highlight
