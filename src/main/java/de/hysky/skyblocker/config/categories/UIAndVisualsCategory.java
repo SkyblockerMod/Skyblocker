@@ -35,7 +35,7 @@ import net.minecraft.client.input.SystemKeycodes;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;

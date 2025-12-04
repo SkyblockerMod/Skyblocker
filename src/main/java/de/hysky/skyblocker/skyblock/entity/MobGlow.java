@@ -1,5 +1,8 @@
 package de.hysky.skyblocker.skyblock.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hysky.skyblocker.annotations.Init;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -11,8 +14,6 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-
-import java.util.*;
 
 public class MobGlow {
 	public static final int NO_GLOW = EntityRenderState.NO_OUTLINE;

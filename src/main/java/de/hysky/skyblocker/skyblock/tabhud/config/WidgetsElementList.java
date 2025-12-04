@@ -12,9 +12,13 @@ import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
 
 public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 	static final Identifier MOVE_UP_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("transferable_list/move_up_highlighted");

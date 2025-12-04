@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import java.awt.Color;
+
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
@@ -7,8 +9,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
-
-import java.awt.*;
 
 public class MiningLocationLabel extends DistancedNamedWaypoint {
 	private final Category category;

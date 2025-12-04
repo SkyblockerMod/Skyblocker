@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
+import java.awt.Color;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
@@ -21,8 +23,6 @@ import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-
-import java.awt.*;
 
 public class MiningCategory {
 

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
+import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.LeverType;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.ColorUtils;
@@ -23,7 +24,12 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.*;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MAX_X;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MAX_Y;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MIN_X;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MIN_Y;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_Z;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.WATER_ENTRANCE_POSITION;
 
 public class WaterboardPreviewer extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WaterboardPreviewer.class);
