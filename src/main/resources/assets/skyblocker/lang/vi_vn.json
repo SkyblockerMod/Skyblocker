@@ -68,7 +68,6 @@
     "key.skyblocker.debug.dumpHoveredItem": "Xuất vật phẩm đang được đè lên",
     "text.skyblocker.reset": "Reset",
     "text.skyblocker.undo": "Hoàn tác",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nGhi chú: Đánh dấu Địa điểm Bí mật cần được bật để tính năng này hoạt động.",
     "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight": "Bật Highlight Cửa",
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Highlight các rương với lợi nhuận tốt nhất trong menu NPC Croesus.\n\n\nRương tốt nhất sẽ được highlight màu xanh.\nNếu có rương nào đáng được mở khóa bằng khóa dungeon, nó sẽ được highlight màu vàng.",
     "skyblocker.config.debug.dumpRange.@Tooltip": "Bán kính theo số ô xung quanh người chơi để xuất các entity bên trong.",
