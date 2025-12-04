@@ -41,10 +41,12 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 	/**
 	 * Called when the slot is clicked.
 	 *
-	 * @return {@code true} if the click should be canceled, {@code false} otherwise. Defaults to {@code false} if not overridden.
+	 * @return {@link SlotClickResult#CANCEL} if the click should be blocked.<br>
+	 * {@link SlotClickResult#ALLOW} if it shouldn't.<br>
+	 * {@link SlotClickResult#ALLOW_MIDDLE_CLICK} if the left click should be turned into a middle click (ignored if {@code button} isn't {@code 0}).
 	 */
-	default boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
-		return false;
+	default SlotClickResult onClickSlot(int slot, ItemStack stack, int screenId, int button) {
+		return SlotClickResult.ALLOW;
 	}
 
 	static void trimEdges(Int2ObjectMap<ItemStack> slots, int rows) {
@@ -56,5 +58,11 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 			slots.remove(i);
 			slots.remove((rows - 1) * 9 + i);
 		}
+	}
+
+	enum SlotClickResult {
+		CANCEL,
+		ALLOW,
+		ALLOW_MIDDLE_CLICK
 	}
 }
