@@ -40,7 +40,7 @@ public class ConfigDataFixer {
 		JsonObject newConfig = apply(oldConfig);
 
 		//Write the updated file
-        if (!writeConfig(configDir, newConfig)) {
+		if (!writeConfig(configDir, newConfig)) {
 			LOGGER.error(LogUtils.FATAL_MARKER, "[Skyblocker Config Data Fixer] Failed to fix up config file!");
 			writeConfig(backupDir, oldConfig);
 		}
@@ -51,7 +51,7 @@ public class ConfigDataFixer {
 	}
 
 	public static JsonObject apply(JsonObject oldConfig, int newVersion) {
-        long start = System.currentTimeMillis();
+		long start = System.currentTimeMillis();
 
 		JsonObject newConfig = build().update(CONFIG_TYPE, new Dynamic<>(JsonOps.INSTANCE, oldConfig), JsonHelper.getInt(oldConfig, "version").orElse(1), newVersion).getValue().getAsJsonObject();
 

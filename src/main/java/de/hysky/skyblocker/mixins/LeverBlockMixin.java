@@ -15,15 +15,15 @@ import com.llamalad7.mixinextras.sugar.Local;
 
 @Mixin(LeverBlock.class)
 public abstract class LeverBlockMixin extends WallMountedBlock {
-    protected LeverBlockMixin(Settings settings) {
-        super(settings);
-    }
+	protected LeverBlockMixin(Settings settings) {
+		super(settings);
+	}
 
-    @Inject(method = "getOutlineShape", at = @At("HEAD"), cancellable = true)
-    public void skyblocker$onGetOutlineShape(CallbackInfoReturnable<VoxelShape> cir, @Local(argsOnly = true) BlockState state) {
-        if (Utils.isOnSkyblock()) {
-            VoxelShape shape = OldLever.getShape(state.get(FACE), state.get(FACING));
-            if (shape != null) cir.setReturnValue(shape);
-        }
-    }
+	@Inject(method = "getOutlineShape", at = @At("HEAD"), cancellable = true)
+	public void skyblocker$onGetOutlineShape(CallbackInfoReturnable<VoxelShape> cir, @Local(argsOnly = true) BlockState state) {
+		if (Utils.isOnSkyblock()) {
+			VoxelShape shape = OldLever.getShape(state.get(FACE), state.get(FACING));
+			if (shape != null) cir.setReturnValue(shape);
+		}
+	}
 }

@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Window.class)
 public class WindowMixin {
-    @Inject(method = "setScaleFactor", at = @At("TAIL"))
-    public void skyblocker$onScaleFactorChange(CallbackInfo ci) {
-        FancyStatusBars.updatePositions(false);
-    }
+	@Inject(method = "setScaleFactor", at = @At("TAIL"))
+	public void skyblocker$onScaleFactorChange(CallbackInfo ci) {
+		FancyStatusBars.updatePositions(false);
+	}
 }

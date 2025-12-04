@@ -9,18 +9,18 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Formatting;
 
 public class StakeIndicator {
-    private static final Title title = new Title("skyblocker.rift.stakeNow", Formatting.RED);
+	private static final Title title = new Title("skyblocker.rift.stakeNow", Formatting.RED);
 
 	public static void updateStake() {
 		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableSteakStakeIndicator || !SlayerManager.isInSlayerType(SlayerType.VAMPIRE)) {
-            TitleContainer.removeTitle(title);
-            return;
-        }
+			TitleContainer.removeTitle(title);
+			return;
+		}
 		Entity slayerEntity = SlayerManager.getSlayerBossArmorStand();
-        if (slayerEntity != null && slayerEntity.getDisplayName().toString().contains("҉")) {
-            TitleContainer.addTitleAndPlaySound(title);
-        } else {
-            TitleContainer.removeTitle(title);
-        }
-    }
+		if (slayerEntity != null && slayerEntity.getDisplayName().toString().contains("҉")) {
+			TitleContainer.addTitleAndPlaySound(title);
+		} else {
+			TitleContainer.removeTitle(title);
+		}
+	}
 }
