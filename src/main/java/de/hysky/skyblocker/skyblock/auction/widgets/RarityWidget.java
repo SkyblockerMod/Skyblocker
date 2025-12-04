@@ -21,81 +21,81 @@ import org.joml.Matrix3x2fStack;
 
 public class RarityWidget extends ClickableWidget {
 
-    private static final Identifier HOVER_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/hover.png");
-    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/background.png");
-    private final SlotClickHandler onClick;
-    private int slotId = -1;
+	private static final Identifier HOVER_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/hover.png");
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/background.png");
+	private final SlotClickHandler onClick;
+	private int slotId = -1;
 
-    public RarityWidget(int x, int y, SlotClickHandler onClick) {
-        super(x, y, 48, 11, Text.literal("rarity selector thing, hi mom"));
-        this.onClick = onClick;
-    }
+	public RarityWidget(int x, int y, SlotClickHandler onClick) {
+		super(x, y, 48, 11, Text.literal("rarity selector thing, hi mom"));
+		this.onClick = onClick;
+	}
 
-    @Override
-    protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        Matrix3x2fStack matrices = context.getMatrices();
-        matrices.pushMatrix();
-        matrices.translate(getX(), getY());
-        boolean onLeftArrow = isOnLeftArrow(mouseX);
-        boolean onRightArrow = isOnRightArrow(mouseX);
-        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 0, 0, 48, 11, 48, 11);
-        if (onLeftArrow) context.drawTexture(RenderPipelines.GUI_TEXTURED, HOVER_TEXTURE, 0, 0, 0, 0, 6, 11, 6, 11);
-        if (onRightArrow) context.drawTexture(RenderPipelines.GUI_TEXTURED, HOVER_TEXTURE, 42, 0, 0, 0, 6, 11, 6, 11);
+	@Override
+	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+		Matrix3x2fStack matrices = context.getMatrices();
+		matrices.pushMatrix();
+		matrices.translate(getX(), getY());
+		boolean onLeftArrow = isOnLeftArrow(mouseX);
+		boolean onRightArrow = isOnRightArrow(mouseX);
+		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 0, 0, 48, 11, 48, 11);
+		if (onLeftArrow) context.drawTexture(RenderPipelines.GUI_TEXTURED, HOVER_TEXTURE, 0, 0, 0, 0, 6, 11, 6, 11);
+		if (onRightArrow) context.drawTexture(RenderPipelines.GUI_TEXTURED, HOVER_TEXTURE, 42, 0, 0, 0, 6, 11, 6, 11);
 
-        // Text
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        int textWidth = textRenderer.getWidth(current);
-        if (textWidth > 34) {
-            float scale = 34f / textWidth;
-            matrices.pushMatrix();
-            matrices.translate(0f, 5.5f);
-            matrices.scale(scale, scale);
-            context.drawCenteredTextWithShadow(textRenderer, current, (int) (24 / scale), -textRenderer.fontHeight / 2, color);
-            matrices.popMatrix();
-        } else {
-            context.drawCenteredTextWithShadow(textRenderer, current, 24, 2, color);
-        }
+		// Text
+		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		int textWidth = textRenderer.getWidth(current);
+		if (textWidth > 34) {
+			float scale = 34f / textWidth;
+			matrices.pushMatrix();
+			matrices.translate(0f, 5.5f);
+			matrices.scale(scale, scale);
+			context.drawCenteredTextWithShadow(textRenderer, current, (int) (24 / scale), -textRenderer.fontHeight / 2, color);
+			matrices.popMatrix();
+		} else {
+			context.drawCenteredTextWithShadow(textRenderer, current, 24, 2, color);
+		}
 
-        matrices.popMatrix();
-        if (!onLeftArrow && !onRightArrow && isHovered()) context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
+		matrices.popMatrix();
+		if (!onLeftArrow && !onRightArrow && isHovered()) context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
 
-    }
+	}
 
-    private boolean isOnRightArrow(double mouseX) {
-        return isHovered() && mouseX - getX() > 40;
-    }
+	private boolean isOnRightArrow(double mouseX) {
+		return isHovered() && mouseX - getX() > 40;
+	}
 
-    private boolean isOnLeftArrow(double mouseX) {
-        return isHovered() && mouseX - getX() < 7;
-    }
+	private boolean isOnLeftArrow(double mouseX) {
+		return isHovered() && mouseX - getX() < 7;
+	}
 
-    @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+	@Override
+	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 
-    }
+	}
 
-    public void setSlotId(int slotId) {
-        this.slotId = slotId;
-    }
+	public void setSlotId(int slotId) {
+		this.slotId = slotId;
+	}
 
-    private List<Text> tooltip = List.of();
-    private String current = "?";
-    private int color = 0xFFEAEAEA;
+	private List<Text> tooltip = List.of();
+	private String current = "?";
+	private int color = 0xFFEAEAEA;
 
-    public void setText(List<Text> tooltip, String current) {
-        this.tooltip = tooltip;
-        this.current = current;
+	public void setText(List<Text> tooltip, String current) {
+		this.tooltip = tooltip;
+		this.current = current;
 		//noinspection DataFlowIssue
 		this.color = SkyblockItemRarity.containsName(current.toUpperCase(Locale.ENGLISH)).map(r -> r.color).orElse(Formatting.GRAY.getColorValue()) | 0xFF000000;
-    }
+	}
 
-    @Override
-    public void onClick(Click click, boolean doubled) {
-        if (slotId == -1) return;
-        if (isOnLeftArrow(click.x())) {
-            onClick.click(slotId, 1);
-        } else if (isOnRightArrow(click.x())) {
-            onClick.click(slotId, 0);
-        }
-    }
+	@Override
+	public void onClick(Click click, boolean doubled) {
+		if (slotId == -1) return;
+		if (isOnLeftArrow(click.x())) {
+			onClick.click(slotId, 1);
+		} else if (isOnRightArrow(click.x())) {
+			onClick.click(slotId, 0);
+		}
+	}
 }

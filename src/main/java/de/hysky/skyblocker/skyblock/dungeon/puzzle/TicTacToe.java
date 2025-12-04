@@ -34,8 +34,8 @@ public class TicTacToe extends DungeonPuzzle {
 	}
 
 	@Init
-    public static void init() {
-    }
+	public static void init() {
+	}
 
 	@Override
 	public void tick(MinecraftClient client) {

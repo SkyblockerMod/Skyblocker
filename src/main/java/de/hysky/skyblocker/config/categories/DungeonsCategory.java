@@ -59,7 +59,7 @@ public class DungeonsCategory {
 								newValue -> config.dungeons.onlyHighlightDonatedItems = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-                .option(Option.<Boolean>createBuilder()
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter"))
 						.description(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip"))
 						.binding(defaults.dungeons.sellableItemsHighlighter,
@@ -588,8 +588,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Type>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType"))
-								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"),
-										Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"))
 								.binding(defaults.dungeons.secretWaypoints.waypointType,
 										() -> config.dungeons.secretWaypoints.waypointType,
 										newValue -> config.dungeons.secretWaypoints.waypointType = newValue)
@@ -740,8 +739,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<DungeonsConfig.DoorHighlight.Type>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType"))
-								.description(Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip"),
-										Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote"))
+								.description(Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip"))
 								.binding(defaults.dungeons.doorHighlight.doorHighlightType,
 										() -> config.dungeons.doorHighlight.doorHighlightType,
 										newValue -> config.dungeons.doorHighlight.doorHighlightType = newValue)

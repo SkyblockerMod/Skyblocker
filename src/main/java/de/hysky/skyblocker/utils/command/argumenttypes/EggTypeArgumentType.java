@@ -25,8 +25,8 @@ public final class EggTypeArgumentType implements ArgumentType<EggFinder.EggType
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
 		return context.getSource() instanceof CommandSource
-		       ? CommandSource.suggestMatching(EggFinder.EggType.entries.stream().map(EggFinder.EggType::name).map(String::toLowerCase), builder)
-		       : Suggestions.empty();
+			? CommandSource.suggestMatching(EggFinder.EggType.entries.stream().map(EggFinder.EggType::name).map(String::toLowerCase), builder)
+			: Suggestions.empty();
 	}
 
 	@Override

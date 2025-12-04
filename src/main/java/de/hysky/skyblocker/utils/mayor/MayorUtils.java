@@ -3,6 +3,10 @@ package de.hysky.skyblocker.utils.mayor;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
@@ -13,14 +17,17 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public class MayorUtils {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MayorUtils.class);
 	private static Mayor mayor = Mayor.EMPTY;
 	private static Minister minister = Minister.EMPTY;
+	private static List<PerkOverride> mayorPerkOverrides = List.of();
 	private static boolean mayorTickScheduled = false;
 	private static int mayorTickRetryAttempts = 0;
-	private static final Logger LOGGER = LoggerFactory.getLogger(MayorUtils.class);
 
 	private MayorUtils() {}
 
@@ -34,12 +41,27 @@ public class MayorUtils {
 		return minister;
 	}
 
+	/**
+	 * Returns the perks that are currently active from the mayor, minister, and any overrides.
+	 */
+	public static List<String> getActivePerks() {
+		Stream<String> mayorPerks = mayor.perks().stream()
+				.map(Perk::name);
+		Stream<String> ministerPerk = Stream.of(minister.perk().name());
+		Stream<String> overriddenMayorPerks = mayorPerkOverrides.stream()
+				.filter(PerkOverride::isActive)
+				.map(PerkOverride::perk);
+
+		return Stream.concat(Stream.concat(mayorPerks, ministerPerk), overriddenMayorPerks).toList();
+	}
+
 	@Init
 	public static void init() {
 		SkyblockEvents.JOIN.register(() -> {
 			if (!mayorTickScheduled) {
 				tickMayorCache();
 				scheduleMayorTick();
+				loadMayorPerkOverrides();
 				mayorTickScheduled = true;
 			}
 		});
@@ -52,6 +74,7 @@ public class MayorUtils {
 		Scheduler.INSTANCE.schedule(MayorUtils::tickMayorCache, (int) (millisUntilNextMayorChange / 50) + 5 * 60 * 20); // 5 extra minutes to allow the cache to expire. This is a simpler than checking age and subtracting from max age and rescheduling again.
 	}
 
+	// TODO make this use Codecs
 	private static void tickMayorCache() {
 		CompletableFuture.supplyAsync(() -> {
 			try (Http.ApiResponse response = Http.sendCacheableGetRequest("https://api.hypixel.net/v2/resources/skyblock/election", null)) { //Authentication is not required for this endpoint
@@ -81,11 +104,11 @@ public class MayorUtils {
 					mayor = new Mayor(result.get("key").getAsString(),
 							result.get("name").getAsString(),
 							result.getAsJsonArray("perks")
-							      .asList()
-							      .stream()
-							      .map(JsonElement::getAsJsonObject)
-							      .map(object -> new Perk(object.get("name").getAsString(), object.get("description").getAsString()))
-							      .toList());
+								.asList()
+								.stream()
+								.map(JsonElement::getAsJsonObject)
+								.map(object -> new Perk(object.get("name").getAsString(), object.get("description").getAsString()))
+								.toList());
 				} catch (Exception e) {
 					LOGGER.warn("[Skyblocker] Failed to parse mayor status from the API response.", e);
 					mayor = Mayor.EMPTY;
@@ -111,5 +134,36 @@ public class MayorUtils {
 				scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
 			}
 		});
+	}
+
+	private static void loadMayorPerkOverrides() {
+		CompletableFuture.runAsync(() -> {
+			try {
+				String response = Http.sendGetRequest("https://hysky.de/api/mayorperkoverrides");
+				mayorPerkOverrides = PerkOverride.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
+
+				LOGGER.info("[Skyblocker] Loaded {} mayor perk overrides.", mayorPerkOverrides.size());
+			} catch (Exception e) {
+				LOGGER.error("[Skyblocker] Failed to load mayor perk overrides.", e);
+			}
+		});
+	}
+
+	private record PerkOverride(String perk, long from, long to) {
+		private static final Codec<PerkOverride> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.STRING.fieldOf("perk").forGetter(PerkOverride::perk),
+				Codec.LONG.fieldOf("from").forGetter(PerkOverride::from),
+				Codec.LONG.fieldOf("to").forGetter(PerkOverride::to)
+				).apply(instance, PerkOverride::new));
+		private static final Codec<List<PerkOverride>> LIST_CODEC = CODEC.listOf();
+
+		/**
+		 * Whether this override is applicable.
+		 */
+		public boolean isActive() {
+			long now = System.currentTimeMillis();
+
+			return now >= this.from && now <= this.to;
+		}
 	}
 }

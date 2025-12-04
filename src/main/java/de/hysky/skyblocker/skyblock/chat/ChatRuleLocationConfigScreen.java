@@ -51,11 +51,11 @@ public class ChatRuleLocationConfigScreen extends Screen {
 			itemTickList.clearAndInit();
 		}).build());
 		adder.add(ButtonWidget.builder(ScreenTexts.DONE, button -> {
-			                      saveFilters();
-			                      close();
-		                      })
-		                      .width((ButtonWidget.DEFAULT_WIDTH * 2) + 10)
-		                      .build(), 2);
+								saveFilters();
+								close();
+							})
+							.width((ButtonWidget.DEFAULT_WIDTH * 2) + 10)
+							.build(), 2);
 		gridWidget.refreshPositions();
 		SimplePositioningWidget.setPos(gridWidget, 0, this.height - 64, this.width, 64);
 		gridWidget.forEachChild(this::addDrawableChild);

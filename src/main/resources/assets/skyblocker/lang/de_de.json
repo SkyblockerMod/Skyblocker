@@ -154,7 +154,6 @@
     "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "Mit diesen Wegpunkten wirfst du eine Perle in Richtung des Blocks und nutzt gleichzeitig AOTV nach oben.",
     "skyblocker.config.dungeons.spiritLeapOverlay": "Spirit Leap Overlay",
     "skyblocker.config.dungeons.starredMobBoundingBoxes": "Mobs mit Sternen umranden",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nHinweis: Dungeon Secret Wegpunkte muss hierfür aktiviert sein.",
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Hebt die Truhen mit dem meisten Profit beim NPC Croesus hervor.\n\n\nDie beste Truhe wird grün hervorgehoben.\nWenn es eine Truhe gibt, für die es sich lohnt, einen Dungeon Key zu verwenden, wird sie gelb hervorgehoben.",
     "skyblocker.config.dungeons.dungeonChestProfit.neutralColor": "Farbe falls neutral",
     "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip": "Nachricht, die im Chat gesendet wird, wenn in Dungeons ein Score von %s erreicht wird. Die Zeichenfolge „[score]“ wird durch den Dungeon-Score (%s) ersetzt.",

@@ -142,19 +142,19 @@ public class IceFill extends DungeonPuzzle {
 			}
 		}
 
-        Vector2ic[] newPosArray = {pos.add(1, 0, new Vector2i()), pos.add(-1, 0, new Vector2i()), pos.add(0, 1, new Vector2i()), pos.add(0, -1, new Vector2i())};
-        for (Vector2ic newPos : newPosArray) {
-            if (newPos.x() >= 0 && newPos.x() < iceFillBoard.length && newPos.y() >= 0 && newPos.y() < iceFillBoard[0].length && !iceFillBoard[newPos.x()][newPos.y()] && !visited[newPos.x()][newPos.y()]) {
-                path.add(newPos);
-                visited[newPos.x()][newPos.y()] = true;
-                List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
-                if (newPath != null) {
-                    return newPath;
-                }
-                path.removeLast();
-                visited[newPos.x()][newPos.y()] = false;
-            }
-        }
+		Vector2ic[] newPosArray = {pos.add(1, 0, new Vector2i()), pos.add(-1, 0, new Vector2i()), pos.add(0, 1, new Vector2i()), pos.add(0, -1, new Vector2i())};
+		for (Vector2ic newPos : newPosArray) {
+			if (newPos.x() >= 0 && newPos.x() < iceFillBoard.length && newPos.y() >= 0 && newPos.y() < iceFillBoard[0].length && !iceFillBoard[newPos.x()][newPos.y()] && !visited[newPos.x()][newPos.y()]) {
+				path.add(newPos);
+				visited[newPos.x()][newPos.y()] = true;
+				List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
+				if (newPath != null) {
+					return newPath;
+				}
+				path.removeLast();
+				visited[newPos.x()][newPos.y()] = false;
+			}
+		}
 
 		return null;
 	}

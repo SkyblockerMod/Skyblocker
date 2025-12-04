@@ -10,15 +10,15 @@ import net.minecraft.text.Text;
 public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
 
 	public WaypointsScreen(Screen parent) {
-        super(Text.translatable("skyblocker.waypoints.config"), parent, Waypoints.waypointsDeepCopy());
-    }
+		super(Text.translatable("skyblocker.waypoints.config"), parent, Waypoints.waypointsDeepCopy());
+	}
 
-    @Override
-    protected void init() {
-        super.init();
-        GridWidget gridWidget = new GridWidget().setColumnSpacing(5).setRowSpacing(2);
-        GridWidget.Adder adder = gridWidget.createAdder(2);
-        adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.share"), buttonShare -> client.setScreen(new WaypointsShareScreen(this, waypoints))).build());
+	@Override
+	protected void init() {
+		super.init();
+		GridWidget gridWidget = new GridWidget().setColumnSpacing(5).setRowSpacing(2);
+		GridWidget.Adder adder = gridWidget.createAdder(2);
+		adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.share"), buttonShare -> client.setScreen(new WaypointsShareScreen(this, waypoints))).build());
 		adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.newGroup"), buttonNew -> waypointsListWidget.addWaypointGroupAfterSelected()).build());
 		adder.add(ButtonWidget.builder(ScreenTexts.CANCEL, button -> close()).build());
 		adder.add(ButtonWidget.builder(ScreenTexts.DONE, button -> {
@@ -29,26 +29,26 @@ public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
 		layout.setFooterHeight(64);
 		layout.addHeader(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.otherOptions"), b -> client.setScreen(new WaypointsOptionScreen(this))).build(), p -> p.alignLeft().marginLeft(10));
 		updateButtons();
-        super.lateInit();
-    }
+		super.lateInit();
+	}
 
-    private void saveWaypoints() {
-        Waypoints.clearAndPutAllWaypoints(waypoints);
-        Waypoints.saveWaypoints(client);
-    }
+	private void saveWaypoints() {
+		Waypoints.clearAndPutAllWaypoints(waypoints);
+		Waypoints.saveWaypoints(client);
+	}
 
-    @Override
-    public void close() {
-        assert client != null;
-        if (!Waypoints.areWaypointsEqual(waypoints)) {
-            client.setScreen(new ConfirmScreen(confirmedAction -> client.setScreen(confirmedAction ? parent : this),
-                    Text.translatable("text.skyblocker.quit_config"),
-                    Text.translatable("text.skyblocker.quit_config_sure"),
-                    Text.translatable("text.skyblocker.quit_discard"),
-                    ScreenTexts.CANCEL
-            ));
-        } else {
-            client.setScreen(parent);
-        }
-    }
+	@Override
+	public void close() {
+		assert client != null;
+		if (!Waypoints.areWaypointsEqual(waypoints)) {
+			client.setScreen(new ConfirmScreen(confirmedAction -> client.setScreen(confirmedAction ? parent : this),
+					Text.translatable("text.skyblocker.quit_config"),
+					Text.translatable("text.skyblocker.quit_config_sure"),
+					Text.translatable("text.skyblocker.quit_discard"),
+					ScreenTexts.CANCEL
+			));
+		} else {
+			client.setScreen(parent);
+		}
+	}
 }

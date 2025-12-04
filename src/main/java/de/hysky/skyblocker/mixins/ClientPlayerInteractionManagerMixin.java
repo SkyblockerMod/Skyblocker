@@ -24,7 +24,7 @@ public class ClientPlayerInteractionManagerMixin {
 			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;")
 	)
 	public void swingOnAbility(Hand hand, PlayerEntity playerEntity, MutableObject<?> mutableObject,
-							   int sequence, CallbackInfoReturnable<Packet<?>> cir, @Local(ordinal = 0) ItemStack itemStack) {
+							int sequence, CallbackInfoReturnable<Packet<?>> cir, @Local(ordinal = 0) ItemStack itemStack) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.swingOnAbilities
 				&& SwingAnimation.hasAbility(itemStack)) {
 			swingHandWithoutPackets(playerEntity, hand);
