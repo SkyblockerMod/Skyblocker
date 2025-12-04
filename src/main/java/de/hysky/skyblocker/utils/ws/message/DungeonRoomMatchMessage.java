@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record DungeonRoomMatchMessage(String type, UUID uuid, Room.Type roomType, Room.Shape shape, Room.Direction direction,
-									  String room, List<Vector2ic> pos) implements Message<DungeonRoomMatchMessage> {
+									String room, List<Vector2ic> pos) implements Message<DungeonRoomMatchMessage> {
 	private static final Codec<Vector2ic> VECTOR2I_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.INT.fieldOf("x").forGetter(Vector2ic::x),
 			Codec.INT.fieldOf("y").forGetter(Vector2ic::y)

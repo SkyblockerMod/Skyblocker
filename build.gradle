@@ -263,7 +263,7 @@ test {
 spotless {
 	java {
 		removeUnusedImports()
-		//indentWithTabs() // TODO: turn on when more files are converted to tabs
+		leadingSpacesToTabs()
 		trimTrailingWhitespace()
 		endWithNewline()
 		lineEndings = com.diffplug.spotless.LineEnding.UNIX

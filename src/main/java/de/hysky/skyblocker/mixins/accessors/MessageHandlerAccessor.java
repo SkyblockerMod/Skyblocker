@@ -9,6 +9,6 @@ import java.time.Instant;
 
 @Mixin(MessageHandler.class)
 public interface MessageHandlerAccessor {
-    @Invoker
-    void invokeAddToChatLog(Text message, Instant timestamp);
+	@Invoker
+	void invokeAddToChatLog(Text message, Instant timestamp);
 }

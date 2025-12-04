@@ -168,7 +168,7 @@ public class DungeonScore {
 		setCurrentFloor();
 		dungeonStarted = true;
 		puzzleCount = getPuzzleCount();
-		isMayorPaul = MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("EZPZ")) || MayorUtils.getMinister().perk().name().equals("EZPZ");
+		isMayorPaul = MayorUtils.getActivePerks().contains("EZPZ");
 		startingTime = System.currentTimeMillis();
 		floorRequirement = FloorRequirement.valueOf(currentFloor);
 		floorHasMimics = MIMIC_FLOORS_PATTERN.matcher(currentFloor).matches();
