@@ -10,23 +10,23 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ArmorTrimIdSerializationTest {
-    private final Gson gson = new Gson();
+	private final Gson gson = new Gson();
 
-    @Test
-    void serialize() {
-        ArmorTrimId armorTrimId = new ArmorTrimId(Identifier.ofVanilla("material_id"), Identifier.ofVanilla("pattern_id"));
-        JsonElement json = ArmorTrimId.CODEC.encodeStart(JsonOps.INSTANCE, armorTrimId).getOrThrow();
-        String expectedJson = "{\"material\":\"minecraft:material_id\",\"pattern\":\"minecraft:pattern_id\"}";
+	@Test
+	void serialize() {
+		ArmorTrimId armorTrimId = new ArmorTrimId(Identifier.ofVanilla("material_id"), Identifier.ofVanilla("pattern_id"));
+		JsonElement json = ArmorTrimId.CODEC.encodeStart(JsonOps.INSTANCE, armorTrimId).getOrThrow();
+		String expectedJson = "{\"material\":\"minecraft:material_id\",\"pattern\":\"minecraft:pattern_id\"}";
 
-        Assertions.assertEquals(expectedJson, json.toString());
-    }
+		Assertions.assertEquals(expectedJson, json.toString());
+	}
 
-    @Test
-    void deserialize() {
-        String json = "{\"material\":\"minecraft:material_id\",\"pattern\":\"minecraft:pattern_id\"}";
-        ArmorTrimId armorTrimId = ArmorTrimId.CODEC.parse(JsonOps.INSTANCE, gson.fromJson(json, JsonElement.class)).getOrThrow();
-        ArmorTrimId expectedArmorTrimId = new ArmorTrimId(Identifier.ofVanilla("material_id"), Identifier.ofVanilla("pattern_id"));
+	@Test
+	void deserialize() {
+		String json = "{\"material\":\"minecraft:material_id\",\"pattern\":\"minecraft:pattern_id\"}";
+		ArmorTrimId armorTrimId = ArmorTrimId.CODEC.parse(JsonOps.INSTANCE, gson.fromJson(json, JsonElement.class)).getOrThrow();
+		ArmorTrimId expectedArmorTrimId = new ArmorTrimId(Identifier.ofVanilla("material_id"), Identifier.ofVanilla("pattern_id"));
 
-        Assertions.assertEquals(expectedArmorTrimId, armorTrimId);
-    }
+		Assertions.assertEquals(expectedArmorTrimId, armorTrimId);
+	}
 }

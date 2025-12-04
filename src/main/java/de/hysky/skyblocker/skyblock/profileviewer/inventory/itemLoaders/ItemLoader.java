@@ -21,55 +21,55 @@ import java.util.*;
 
 public class ItemLoader {
 
-    public List<ItemStack> loadItems(JsonObject data) {
-        NbtList containerContent = decompress(data);
-        List<ItemStack> itemList = new ArrayList<>();
+	public List<ItemStack> loadItems(JsonObject data) {
+		NbtList containerContent = decompress(data);
+		List<ItemStack> itemList = new ArrayList<>();
 
-        for (int i = 0; i < containerContent.size(); i++) {
-            NbtCompound nbt = containerContent.getCompoundOrEmpty(i);
-            if (nbt.getInt("id", 0) == 0) {
-                itemList.add(ItemStack.EMPTY);
-                continue;
-            }
+		for (int i = 0; i < containerContent.size(); i++) {
+			NbtCompound nbt = containerContent.getCompoundOrEmpty(i);
+			if (nbt.getInt("id", 0) == 0) {
+				itemList.add(ItemStack.EMPTY);
+				continue;
+			}
 
-            ItemStack stack = LegacyItemStackFixer.fixLegacyStack(nbt);
+			ItemStack stack = LegacyItemStackFixer.fixLegacyStack(nbt);
 
-            if (stack.isEmpty()) {
-            	ItemStack fallback = Ico.BARRIER.copy();
+			if (stack.isEmpty()) {
+				ItemStack fallback = Ico.BARRIER.copy();
 
-            	fallback.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Error: " + nbt.getCompoundOrEmpty("tag").getCompoundOrEmpty("ExtraAttributes").getString("id")));
-                itemList.add(fallback);
+				fallback.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Error: " + nbt.getCompoundOrEmpty("tag").getCompoundOrEmpty("ExtraAttributes").getString("id")));
+				itemList.add(fallback);
 
-                continue;
-            }
+				continue;
+			}
 
-            String itemId = stack.getSkyblockId();
-            NbtCompound customData = ItemUtils.getCustomData(stack);
+			String itemId = stack.getSkyblockId();
+			NbtCompound customData = ItemUtils.getCustomData(stack);
 
-            if (itemId.equals("PET")) {
-                PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo", ""))).getOrThrow();
-                Pet pet = new Pet(petInfo);
-                itemList.add(pet.getIcon());
-                continue;
-            }
+			if (itemId.equals("PET")) {
+				PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo", ""))).getOrThrow();
+				Pet pet = new Pet(petInfo);
+				itemList.add(pet.getIcon());
+				continue;
+			}
 
-            // Attach an override for Aaron's Mod so that these ItemStacks will work with the mod's features even when not in Skyblock
-            if (stack.contains(DataComponentTypes.CUSTOM_DATA)) {
-                customData.put("aaron-mod", Util.make(new NbtCompound(), comp -> comp.putBoolean("alwaysDisplaySkyblockInfo", true)));
-            }
+			// Attach an override for Aaron's Mod so that these ItemStacks will work with the mod's features even when not in Skyblock
+			if (stack.contains(DataComponentTypes.CUSTOM_DATA)) {
+				customData.put("aaron-mod", Util.make(new NbtCompound(), comp -> comp.putBoolean("alwaysDisplaySkyblockInfo", true)));
+			}
 
-            itemList.add(stack);
-        }
+			itemList.add(stack);
+		}
 
-        return itemList;
-    }
+		return itemList;
+	}
 
-    private static NbtList decompress(JsonObject data) {
-        try {
-            return NbtIo.readCompressed(new ByteArrayInputStream(Base64.getDecoder().decode(data.get("data").getAsString())), NbtSizeTracker.ofUnlimitedBytes()).getListOrEmpty("i");
-        } catch (Exception e) {
-            ProfileViewerScreen.LOGGER.error("[Skyblocker Profile Viewer] Failed to decompress item data", e);
-        }
-        return null;
-    }
+	private static NbtList decompress(JsonObject data) {
+		try {
+			return NbtIo.readCompressed(new ByteArrayInputStream(Base64.getDecoder().decode(data.get("data").getAsString())), NbtSizeTracker.ofUnlimitedBytes()).getListOrEmpty("i");
+		} catch (Exception e) {
+			ProfileViewerScreen.LOGGER.error("[Skyblocker Profile Viewer] Failed to decompress item data", e);
+		}
+		return null;
+	}
 }

@@ -12,26 +12,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommissionHighlight extends SimpleContainerSolver {
-    public CommissionHighlight() {
-        super("^Commissions$");
-    }
+	public CommissionHighlight() {
+		super("^Commissions$");
+	}
 
-    @Override
-    public boolean isEnabled() {
-        return SkyblockerConfigManager.get().mining.commissionHighlight;
-    }
+	@Override
+	public boolean isEnabled() {
+		return SkyblockerConfigManager.get().mining.commissionHighlight;
+	}
 
-    @Override
-    public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
-        List<ColorHighlight> highlights = new ArrayList<>();
-        for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
-            ItemStack stack = entry.getValue();
-            if (stack != null && stack.contains(DataComponentTypes.LORE)) {
-                if (ItemUtils.getLoreLineIf(stack, s -> s.contains("COMPLETED")) != null) {
-                    highlights.add(ColorHighlight.green(entry.getIntKey()));
-                }
-            }
-        }
-        return highlights;
-    }
+	@Override
+	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
+		List<ColorHighlight> highlights = new ArrayList<>();
+		for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
+			ItemStack stack = entry.getValue();
+			if (stack != null && stack.contains(DataComponentTypes.LORE)) {
+				if (ItemUtils.getLoreLineIf(stack, s -> s.contains("COMPLETED")) != null) {
+					highlights.add(ColorHighlight.green(entry.getIntKey()));
+				}
+			}
+		}
+		return highlights;
+	}
 }
