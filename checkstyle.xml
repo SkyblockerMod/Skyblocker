@@ -24,6 +24,7 @@
         </module>
 
         <!-- Ensure all imports are ship shape -->
+        <module name="AvoidStarImport"/>
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
@@ -76,11 +77,10 @@
         <module name="MissingOverride"/>
 
         <!-- Enforce tabs -->
-        <!-- TODO: enforce tabs in the future -->
-        <!--<module name="RegexpSinglelineJava">-->
-            <!--<property name="format" value="^\t* ([^*]|\*[^ /])"/>-->
-            <!--<property name="message" value="non-tab indentation"/>-->
-        <!--</module>-->
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="^\t* ([^*]|\*[^ /])"/>
+            <property name="message" value="non-tab indentation"/>
+        </module>
 
         <module name="OuterTypeFilename"/>
         <module name="PackageDeclaration"/>

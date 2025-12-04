@@ -19,8 +19,8 @@ public class SellableItemsHighlighter extends SimpleContainerSolver implements C
 	);
 
 	private static final Set<String> POTION_ITEM_NAMES = Set.of(
-            "Healing VIII Splash Potion" // todo: check if need to also add without roman numeral
-    );
+			"Healing VIII Splash Potion" // todo: check if need to also add without roman numeral
+	);
 
 	public SellableItemsHighlighter() {
 		super("^(Ophelia|Booster Cookie)$");

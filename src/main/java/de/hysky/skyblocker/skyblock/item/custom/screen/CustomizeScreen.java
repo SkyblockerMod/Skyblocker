@@ -210,14 +210,14 @@ public class CustomizeScreen extends Screen {
 	}
 
 	private record PreviousConfig(Optional<CustomArmorTrims.ArmorTrimId> armorTrimId,
-								  OptionalInt color,
-								  Optional<CustomArmorAnimatedDyes.AnimatedDye> animatedDye,
-								  Optional<String> helmetTexture,
-								  Optional<Text> itemName,
-								  Optional<Boolean> glint,
-								  Optional<Identifier> itemModel,
-								  Optional<Identifier> armorModel
-								  ) {}
+								OptionalInt color,
+								Optional<CustomArmorAnimatedDyes.AnimatedDye> animatedDye,
+								Optional<String> helmetTexture,
+								Optional<Text> itemName,
+								Optional<Boolean> glint,
+								Optional<Identifier> itemModel,
+								Optional<Identifier> armorModel
+								) {}
 
 	private static class CustomizeButton extends ClickableWidget {
 		// thanks to @yuflow

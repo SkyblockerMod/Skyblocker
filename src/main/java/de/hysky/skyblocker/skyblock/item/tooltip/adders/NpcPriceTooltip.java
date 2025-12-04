@@ -37,7 +37,7 @@ public class NpcPriceTooltip extends SimpleTooltipAdder {
 		int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
 		lines.add(Text.literal(String.format("%-21s", "NPC Sell Price:"))
-					  .formatted(Formatting.YELLOW)
-					  .append(ItemTooltip.getCoinsMessage(price, count)));
+					.formatted(Formatting.YELLOW)
+					.append(ItemTooltip.getCoinsMessage(price, count)));
 	}
 }

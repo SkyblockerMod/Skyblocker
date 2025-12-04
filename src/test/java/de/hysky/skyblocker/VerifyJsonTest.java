@@ -1,12 +1,17 @@
 package de.hysky.skyblocker;
 
-import com.google.gson.*;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard;
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.io.InputStreamReader;
 

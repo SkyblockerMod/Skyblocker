@@ -31,216 +31,216 @@ import java.util.regex.Pattern;
 import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.numLetterFormat;
 
 public class Pet {
-    private static final Pattern statsMatcher = Pattern.compile("\\{[A-Za-z_]+}");
-    private static final Pattern numberMatcher = Pattern.compile("\\{\\d+}");
+	private static final Pattern statsMatcher = Pattern.compile("\\{[A-Za-z_]+}");
+	private static final Pattern numberMatcher = Pattern.compile("\\{\\d+}");
 
-    private final String name;
-    private final double xp;
-    private final SkyblockItemRarity tier;
-    private final Optional<String> heldItem;
-    private final Optional<String> skin;
-    private final Optional<ProfileComponent> skinTexture;
-    private final int level;
-    private final double perecentageToLevel;
-    private final long levelXP;
-    private final long nextLevelXP;
-    private final ItemStack icon;
+	private final String name;
+	private final double xp;
+	private final SkyblockItemRarity tier;
+	private final Optional<String> heldItem;
+	private final Optional<String> skin;
+	private final Optional<ProfileComponent> skinTexture;
+	private final int level;
+	private final double perecentageToLevel;
+	private final long levelXP;
+	private final long nextLevelXP;
+	private final ItemStack icon;
 
-    public Pet(PetInfo petData) {
-        LevelFinder.LevelInfo info = LevelFinder.getLevelInfo(petData.type().equals("GOLDEN_DRAGON") ? "PET_GREG" : "PET_" + petData.tier(), (long) petData.exp());
-        this.name = petData.type();
-        this.xp = petData.exp();
-        this.heldItem = petData.item();
-        this.skin = petData.skin();
-        this.skinTexture = calculateSkinTexture();
-        this.tier = petData.tier();
-        this.level = info.level;
-        this.perecentageToLevel = info.fill;
-        this.levelXP = info.levelXP;
-        this.nextLevelXP = info.nextLevelXP;
-        this.icon = createIcon();
-    }
+	public Pet(PetInfo petData) {
+		LevelFinder.LevelInfo info = LevelFinder.getLevelInfo(petData.type().equals("GOLDEN_DRAGON") ? "PET_GREG" : "PET_" + petData.tier(), (long) petData.exp());
+		this.name = petData.type();
+		this.xp = petData.exp();
+		this.heldItem = petData.item();
+		this.skin = petData.skin();
+		this.skinTexture = calculateSkinTexture();
+		this.tier = petData.tier();
+		this.level = info.level;
+		this.perecentageToLevel = info.fill;
+		this.levelXP = info.levelXP;
+		this.nextLevelXP = info.nextLevelXP;
+		this.icon = createIcon();
+	}
 
-    private String getName() {
-        return name;
-    }
+	private String getName() {
+		return name;
+	}
 
-    public long getXP() {
-        return (long) xp;
-    }
+	public long getXP() {
+		return (long) xp;
+	}
 
-    public SkyblockItemRarity getRarity() {
-        return tier;
-    }
+	public SkyblockItemRarity getRarity() {
+		return tier;
+	}
 
-    public int getTier() {
-        return tier.ordinal();
-    }
+	public int getTier() {
+		return tier.ordinal();
+	}
 
-    private Optional<ProfileComponent> calculateSkinTexture() {
-        if (this.skin.isPresent()) {
-            ItemStack item = ItemRepository.getItemStack("PET_SKIN_" + this.skin.get());
+	private Optional<ProfileComponent> calculateSkinTexture() {
+		if (this.skin.isPresent()) {
+			ItemStack item = ItemRepository.getItemStack("PET_SKIN_" + this.skin.get());
 
-            if (item == null || item.isEmpty()) return Optional.empty();
+			if (item == null || item.isEmpty()) return Optional.empty();
 
-            ProfileComponent profile = item.get(DataComponentTypes.PROFILE);
+			ProfileComponent profile = item.get(DataComponentTypes.PROFILE);
 
-            return profile != null ? Optional.of(profile) : Optional.empty();
-        }
-        return Optional.empty();
-    }
+			return profile != null ? Optional.of(profile) : Optional.empty();
+		}
+		return Optional.empty();
+	}
 
-    public int getLevel() { return level; }
-    public ItemStack getIcon() { return icon; }
-
-
-    private ItemStack createIcon() {
-        if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return Ico.BARRIER;
-
-        String targetItemId = this.getName() + ";" + (this.getTier() + (heldItem.isPresent() && heldItem.get().equals("PET_ITEM_TIER_BOOST") ? 1 : 0));
-        NEUItem item = NEURepoManager.getItemByNeuId(targetItemId);
-
-        // For cases life RIFT_FERRET Where it can be tier boosted into a pet that otherwise can't exist
-        if (item == null && heldItem.isPresent() && heldItem.get().equals("PET_ITEM_TIER_BOOST")) {
-            item = NEURepoManager.getItemByNeuId(getName() + ";" + getTier());
-        }
-
-        return item == null ? Ico.BARRIER : fromNEUItem(item, this.heldItem.map(ItemRepository::getItemStack).orElse(null));
-    }
-
-    /**
-     * Converts NEU item data into an ItemStack.
-     * <p> This method converts NEU item data into a Pet by using the placeholder
-     * information from NEU-REPO and injecting the player's calculated pet stats into the lore and transforming
-     * the NBT Data into modern DataComponentTypes before returning the final ItemStack.
-     *
-     * @param item The NEUItem representing the pet.
-     * @param heldItem The ItemStack of the pet's held item, if any.
-     * @return The ItemStack representing the pet with all its properties set.
-     */
-    private ItemStack fromNEUItem(NEUItem item, ItemStack heldItem) {
-        if (item == null) return getErrorStack();
-
-        ItemStack petStack = ItemRepository.getItemStack(item.getSkyblockItemId());
-
-        if (petStack == null || petStack.isEmpty()) return getErrorStack();
-
-        // Copy to avoid mutating the original stack
-        petStack = petStack.copy();
-
-        List<Text> formattedLore = !(name.equals("GOLDEN_DRAGON") && level < 101) ?  processLore(item.getLore(), heldItem) : buildGoldenDragonEggLore(item.getLore());
-
-        // Calculate and display XP for level
-        Style style = Style.EMPTY.withItalic(false);
-        if (level != 100 && level != 200) {
-            String progress = "Progress to Level " + this.level + ": §e" + fixDecimals(this.perecentageToLevel * 100, true) + "%";
-            formattedLore.add(formattedLore.size() - 1, Text.literal(progress).setStyle(style).formatted(Formatting.GRAY));
-            String string = "§2§m ".repeat((int) Math.round(perecentageToLevel * 30)) + "§f§m ".repeat(30 - (int) Math.round(perecentageToLevel * 30));
-            formattedLore.add(formattedLore.size() - 1, Text.literal(string + "§r§e " + numLetterFormat(levelXP) + "§6/§e" + numLetterFormat(nextLevelXP)).setStyle(style));
-            formattedLore.add(formattedLore.size() - 1, Text.empty());
-        } else {
-            formattedLore.add(formattedLore.size() - 1, Text.literal("MAX LEVEL").setStyle(style).formatted(Formatting.AQUA, Formatting.BOLD));
-            formattedLore.add(formattedLore.size() - 1, Text.literal("▸ " + Formatters.INTEGER_NUMBERS.format((long) xp) + " XP").setStyle(style).formatted(Formatting.DARK_GRAY));
-            formattedLore.add(formattedLore.size() - 1, Text.empty());
-        }
-
-        // Skin Head Texture
-        if (skinTexture.isPresent() && skin.isPresent()) {
-            NEUItem skinItem = NEURepoManager.getItemByNeuId("PET_SKIN_" + skin.get());
-            if (skinItem != null) formattedLore.set(0, Text.of(formattedLore.getFirst().getString() + ", " + Formatting.strip(skinItem.getDisplayName())));
-            petStack.set(DataComponentTypes.PROFILE, skinTexture.get());
-        }
-
-        if ((boosted())) formattedLore.set(formattedLore.size() - 1, Text.literal(getRarity().next().toString()).setStyle(style).formatted(Formatting.BOLD, getRarity().next().formatting));
-
-        // Update the lore and name
-        petStack.set(DataComponentTypes.LORE, new LoreComponent(formattedLore));
-        String displayName = Formatting.strip(item.getDisplayName()).replace("[Lvl {LVL}]", "§7[Lvl " + this.level + "]§r");
-        petStack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(displayName).setStyle(style).formatted((boosted() ? getRarity().next() : getRarity()).formatting));
-        return petStack;
-    }
-
-    /**
-     * Iterates through a Pet's lore injecting interpolated stat numbers based on pet level
-     *
-     * @param lore the raw lore data stored in NEU Repo
-     * @param heldItem the pet's held item, if any
-     * @return Formatted lore with injected stats inserted into the tooltip
-     */
-    private List<Text> processLore(List<String> lore, ItemStack heldItem) {
-        Map<String, Map<Rarity, PetNumbers>> petNums = NEURepoManager.getConstants().getPetNumbers();
-        Rarity rarity = Rarity.values()[getTier()];
-        PetNumbers data = petNums.get(getName()).get(rarity);
-        List<Text> formattedLore = new ArrayList<>();
-
-        for (String line : lore) {
-            if (line.contains("Right-click to add this") || line.contains("pet menu!")) continue;
-
-            String formattedLine = line;
-
-            Matcher stats = statsMatcher.matcher(formattedLine);
-            Matcher other = numberMatcher.matcher(formattedLine);
-
-            while (stats.find()) {
-                String placeholder = stats.group();
-                String statKey = placeholder.substring(1, placeholder.length() - 1);
-                String statValue = String.valueOf(fixDecimals(data.interpolatedStatsAtLevel(this.level).getStatNumbers().get(statKey), true));
-                formattedLine = formattedLine.replace(placeholder, statValue);
-            }
-
-            while (other.find()) {
-                String placeholder = other.group();
-                int numberKey = Integer.parseInt(placeholder.substring(1, placeholder.length() - 1));
-                String statValue = String.valueOf(fixDecimals(data.interpolatedStatsAtLevel(this.level).getOtherNumbers().get(numberKey), false));
-                formattedLine = formattedLine.replace(placeholder, statValue);
-            }
-
-            formattedLore.add(Text.of(formattedLine));
-        }
+	public int getLevel() { return level; }
+	public ItemStack getIcon() { return icon; }
 
 
-        if (heldItem != null) {
-            formattedLore.set(formattedLore.size() - 2, Text.of("§r§6Held Item: " + heldItem.getName().getString()));
-            formattedLore.add(formattedLore.size() - 1, Text.empty());
-        }
+	private ItemStack createIcon() {
+		if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return Ico.BARRIER;
 
-        return formattedLore;
-    }
+		String targetItemId = this.getName() + ";" + (this.getTier() + (heldItem.isPresent() && heldItem.get().equals("PET_ITEM_TIER_BOOST") ? 1 : 0));
+		NEUItem item = NEURepoManager.getItemByNeuId(targetItemId);
 
-    /**
-     * NEU Repo doesn't distinguish between the Egg and the hatched GoldenDragon pet so hardcoded lore :eues:
-     * @param lore the existing lore
-     * @return Fully formatted GoldenDragonEgg Lore
-     */
-    private List<Text> buildGoldenDragonEggLore(List<String> lore) {
-        List<Text> formattedLore = new ArrayList<>();
-        Style style = Style.EMPTY.withItalic(false);
+		// For cases life RIFT_FERRET Where it can be tier boosted into a pet that otherwise can't exist
+		if (item == null && heldItem.isPresent() && heldItem.get().equals("PET_ITEM_TIER_BOOST")) {
+			item = NEURepoManager.getItemByNeuId(getName() + ";" + getTier());
+		}
 
-        formattedLore.add(Text.of(lore.getFirst()));
-        formattedLore.add(Text.empty());
-        formattedLore.add(Text.literal("Perks:").setStyle(style).formatted(Formatting.GRAY));
-        formattedLore.add(Text.literal("???").setStyle(style).formatted(Formatting.RED, Formatting.BOLD));
-        formattedLore.add(Text.empty());
-        formattedLore.add(Text.literal("Hatches at level §b100").setStyle(style).formatted(Formatting.GRAY));
-        formattedLore.add(Text.empty());
-        formattedLore.add(Text.of(lore.getLast()));
+		return item == null ? Ico.BARRIER : fromNEUItem(item, this.heldItem.map(ItemRepository::getItemStack).orElse(null));
+	}
 
-        return formattedLore;
-    }
+	/**
+	 * Converts NEU item data into an ItemStack.
+	 * <p> This method converts NEU item data into a Pet by using the placeholder
+	 * information from NEU-REPO and injecting the player's calculated pet stats into the lore and transforming
+	 * the NBT Data into modern DataComponentTypes before returning the final ItemStack.
+	 *
+	 * @param item The NEUItem representing the pet.
+	 * @param heldItem The ItemStack of the pet's held item, if any.
+	 * @return The ItemStack representing the pet with all its properties set.
+	 */
+	private ItemStack fromNEUItem(NEUItem item, ItemStack heldItem) {
+		if (item == null) return getErrorStack();
 
-    private String fixDecimals(double num, boolean truncate) {
-        if (num % 1 == 0) return String.valueOf((int) (num));
-        BigDecimal roundedNum = new BigDecimal(num).setScale(truncate ? 1 : 3, RoundingMode.HALF_UP);
-        return roundedNum.stripTrailingZeros().toPlainString();
-    }
+		ItemStack petStack = ItemRepository.getItemStack(item.getSkyblockItemId());
 
-    private boolean boosted() {
-        return this.heldItem.isPresent() && this.heldItem.get().equals("PET_ITEM_TIER_BOOST");
-    }
+		if (petStack == null || petStack.isEmpty()) return getErrorStack();
 
-    private ItemStack getErrorStack() {
-        ItemStack errIcon = new ItemStack(Items.BARRIER);
-        errIcon.set(DataComponentTypes.CUSTOM_NAME, Text.of(this.getName()));
-        return errIcon;
-    }
+		// Copy to avoid mutating the original stack
+		petStack = petStack.copy();
+
+		List<Text> formattedLore = !(name.equals("GOLDEN_DRAGON") && level < 101) ?  processLore(item.getLore(), heldItem) : buildGoldenDragonEggLore(item.getLore());
+
+		// Calculate and display XP for level
+		Style style = Style.EMPTY.withItalic(false);
+		if (level != 100 && level != 200) {
+			String progress = "Progress to Level " + this.level + ": §e" + fixDecimals(this.perecentageToLevel * 100, true) + "%";
+			formattedLore.add(formattedLore.size() - 1, Text.literal(progress).setStyle(style).formatted(Formatting.GRAY));
+			String string = "§2§m ".repeat((int) Math.round(perecentageToLevel * 30)) + "§f§m ".repeat(30 - (int) Math.round(perecentageToLevel * 30));
+			formattedLore.add(formattedLore.size() - 1, Text.literal(string + "§r§e " + numLetterFormat(levelXP) + "§6/§e" + numLetterFormat(nextLevelXP)).setStyle(style));
+			formattedLore.add(formattedLore.size() - 1, Text.empty());
+		} else {
+			formattedLore.add(formattedLore.size() - 1, Text.literal("MAX LEVEL").setStyle(style).formatted(Formatting.AQUA, Formatting.BOLD));
+			formattedLore.add(formattedLore.size() - 1, Text.literal("▸ " + Formatters.INTEGER_NUMBERS.format((long) xp) + " XP").setStyle(style).formatted(Formatting.DARK_GRAY));
+			formattedLore.add(formattedLore.size() - 1, Text.empty());
+		}
+
+		// Skin Head Texture
+		if (skinTexture.isPresent() && skin.isPresent()) {
+			NEUItem skinItem = NEURepoManager.getItemByNeuId("PET_SKIN_" + skin.get());
+			if (skinItem != null) formattedLore.set(0, Text.of(formattedLore.getFirst().getString() + ", " + Formatting.strip(skinItem.getDisplayName())));
+			petStack.set(DataComponentTypes.PROFILE, skinTexture.get());
+		}
+
+		if ((boosted())) formattedLore.set(formattedLore.size() - 1, Text.literal(getRarity().next().toString()).setStyle(style).formatted(Formatting.BOLD, getRarity().next().formatting));
+
+		// Update the lore and name
+		petStack.set(DataComponentTypes.LORE, new LoreComponent(formattedLore));
+		String displayName = Formatting.strip(item.getDisplayName()).replace("[Lvl {LVL}]", "§7[Lvl " + this.level + "]§r");
+		petStack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(displayName).setStyle(style).formatted((boosted() ? getRarity().next() : getRarity()).formatting));
+		return petStack;
+	}
+
+	/**
+	 * Iterates through a Pet's lore injecting interpolated stat numbers based on pet level
+	 *
+	 * @param lore the raw lore data stored in NEU Repo
+	 * @param heldItem the pet's held item, if any
+	 * @return Formatted lore with injected stats inserted into the tooltip
+	 */
+	private List<Text> processLore(List<String> lore, ItemStack heldItem) {
+		Map<String, Map<Rarity, PetNumbers>> petNums = NEURepoManager.getConstants().getPetNumbers();
+		Rarity rarity = Rarity.values()[getTier()];
+		PetNumbers data = petNums.get(getName()).get(rarity);
+		List<Text> formattedLore = new ArrayList<>();
+
+		for (String line : lore) {
+			if (line.contains("Right-click to add this") || line.contains("pet menu!")) continue;
+
+			String formattedLine = line;
+
+			Matcher stats = statsMatcher.matcher(formattedLine);
+			Matcher other = numberMatcher.matcher(formattedLine);
+
+			while (stats.find()) {
+				String placeholder = stats.group();
+				String statKey = placeholder.substring(1, placeholder.length() - 1);
+				String statValue = String.valueOf(fixDecimals(data.interpolatedStatsAtLevel(this.level).getStatNumbers().get(statKey), true));
+				formattedLine = formattedLine.replace(placeholder, statValue);
+			}
+
+			while (other.find()) {
+				String placeholder = other.group();
+				int numberKey = Integer.parseInt(placeholder.substring(1, placeholder.length() - 1));
+				String statValue = String.valueOf(fixDecimals(data.interpolatedStatsAtLevel(this.level).getOtherNumbers().get(numberKey), false));
+				formattedLine = formattedLine.replace(placeholder, statValue);
+			}
+
+			formattedLore.add(Text.of(formattedLine));
+		}
+
+
+		if (heldItem != null) {
+			formattedLore.set(formattedLore.size() - 2, Text.of("§r§6Held Item: " + heldItem.getName().getString()));
+			formattedLore.add(formattedLore.size() - 1, Text.empty());
+		}
+
+		return formattedLore;
+	}
+
+	/**
+	 * NEU Repo doesn't distinguish between the Egg and the hatched GoldenDragon pet so hardcoded lore :eues:
+	 * @param lore the existing lore
+	 * @return Fully formatted GoldenDragonEgg Lore
+	 */
+	private List<Text> buildGoldenDragonEggLore(List<String> lore) {
+		List<Text> formattedLore = new ArrayList<>();
+		Style style = Style.EMPTY.withItalic(false);
+
+		formattedLore.add(Text.of(lore.getFirst()));
+		formattedLore.add(Text.empty());
+		formattedLore.add(Text.literal("Perks:").setStyle(style).formatted(Formatting.GRAY));
+		formattedLore.add(Text.literal("???").setStyle(style).formatted(Formatting.RED, Formatting.BOLD));
+		formattedLore.add(Text.empty());
+		formattedLore.add(Text.literal("Hatches at level §b100").setStyle(style).formatted(Formatting.GRAY));
+		formattedLore.add(Text.empty());
+		formattedLore.add(Text.of(lore.getLast()));
+
+		return formattedLore;
+	}
+
+	private String fixDecimals(double num, boolean truncate) {
+		if (num % 1 == 0) return String.valueOf((int) (num));
+		BigDecimal roundedNum = new BigDecimal(num).setScale(truncate ? 1 : 3, RoundingMode.HALF_UP);
+		return roundedNum.stripTrailingZeros().toPlainString();
+	}
+
+	private boolean boosted() {
+		return this.heldItem.isPresent() && this.heldItem.get().equals("PET_ITEM_TIER_BOOST");
+	}
+
+	private ItemStack getErrorStack() {
+		ItemStack errIcon = new ItemStack(Items.BARRIER);
+		errIcon.set(DataComponentTypes.CUSTOM_NAME, Text.of(this.getName()));
+		return errIcon;
+	}
 }

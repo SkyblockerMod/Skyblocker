@@ -2,9 +2,10 @@ package de.hysky.skyblocker.skyblock.fancybars;
 
 import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
-import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
+
+import org.jetbrains.annotations.Nullable;
 
 public enum StatusBarType implements StringIdentifiable {
 	HEALTH("health", BarPositioner.BarAnchor.HOTBAR_TOP, 0, new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)}, true, true, new Color(255, 85, 85), Text.translatable("skyblocker.bars.config.health")),

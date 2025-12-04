@@ -10,19 +10,19 @@ import net.minecraft.text.Text;
 import java.util.regex.Matcher;
 
 public class MimicFilter extends ChatPatternListener {
-    public MimicFilter() {
-        super(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + SkyblockerConfigManager.get().dungeons.mimicMessage.mimicMessage + "\\E)$");
-    }
+	public MimicFilter() {
+		super(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + SkyblockerConfigManager.get().dungeons.mimicMessage.mimicMessage + "\\E)$");
+	}
 
-    @Override
-    public ChatFilterResult state() {
-        return SkyblockerConfigManager.get().chat.hideMimicKill;
-    }
+	@Override
+	public ChatFilterResult state() {
+		return SkyblockerConfigManager.get().chat.hideMimicKill;
+	}
 
-    @Override
-    protected boolean onMatch(Text message, Matcher matcher) {
-        if (!Utils.isInDungeons() || !DungeonScore.isDungeonStarted() || !DungeonScore.isMimicOnCurrentFloor()) return false;
-        DungeonScore.onMimicKill(); //Only called when the message is cancelled | sent to action bar, complementing DungeonScore#checkMessageForMimic
-        return true;
-    }
+	@Override
+	protected boolean onMatch(Text message, Matcher matcher) {
+		if (!Utils.isInDungeons() || !DungeonScore.isDungeonStarted() || !DungeonScore.isMimicOnCurrentFloor()) return false;
+		DungeonScore.onMimicKill(); //Only called when the message is cancelled | sent to action bar, complementing DungeonScore#checkMessageForMimic
+		return true;
+	}
 }
