@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.chat;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -63,7 +62,7 @@ public class ChatRulesHandler {
 	static List<ChatRule> getDefaultChatRules() {
 		return new ArrayList<>(List.of(
 				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, null, null, null, null, null),
-				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, "&1Ability", null, SoundEvents.ENTITY_ARROW_HIT_PLAYER)
+				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, new ChatRule.AnnouncementMessage("&1Ability", 3000), null, SoundEvents.ENTITY_ARROW_HIT_PLAYER)
 		));
 	}
 
@@ -88,7 +87,8 @@ public class ChatRulesHandler {
 			}
 
 			if (rule.getAnnouncementMessage() != null) {
-				TitleContainer.addTitle(new Title(formatText(match.insertCaptureGroups(rule.getAnnouncementMessage()))), SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength);
+				ChatRule.AnnouncementMessage announcementMessage = rule.getAnnouncementMessage();
+				TitleContainer.addTitle(new Title(formatText(match.insertCaptureGroups(announcementMessage.message))), (int) (announcementMessage.displayDuration / 50)); // One tick is 50ms
 			}
 
 			// Show in action bar

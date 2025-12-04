@@ -52,8 +52,8 @@
   "skyblocker.config.chat": "Chat",
 
   "skyblocker.config.chat.chatRules": "Custom Chat Rules",
-  "skyblocker.config.chat.chatRules.announcementLength": "Announcement Display Time",
-  "skyblocker.config.chat.chatRules.announcementLength.@Tooltip": "The amount of time the announcement will show for in ticks.",
+  "skyblocker.config.chat.chatRules.announcementLength": "Default Announcement Display Time",
+  "skyblocker.config.chat.chatRules.announcementLength.@Tooltip": "The amount of time the announcement will show for in ticks by default. This can be changed per rule.",
   "skyblocker.config.chat.chatRules.invalidRegex": "Your chat rule '%s' has an invalid regex pattern and has been disabled!",
   "skyblocker.config.chat.chatRules.screen": "Chat Rules Config...",
   "skyblocker.config.chat.chatRules.screen.deleteQuestion": "Are you sure you want to remove this rule?",
@@ -67,6 +67,7 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen": "Chat Rule Config",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar": "Action Bar:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.announcement": "Announcement:",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.announcement.duration": "Announcement Duration",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.announcement.@Tooltip": "Show the message in the Title Container. It's position and scale can be changed in the UI & Visuals category of the mod settings.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage": "Replace Message With:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage.@Placeholder": "Leave empty for original message.",

@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.annotations.GenToString;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -48,7 +49,7 @@ public class ChatRule {
 			Codec.BOOL.fieldOf("hideOriginalMessage").forGetter(ChatRule::getHideMessage),
 			Codec.STRING.optionalFieldOf("chatMessage").xmap(REMOVE_BLANK, REMOVE_BLANK).forGetter(ChatRule::getChatMessageOptional),
 			Codec.STRING.optionalFieldOf("actionbarMessage").xmap(REMOVE_BLANK, REMOVE_BLANK).forGetter(ChatRule::getActionBarMessageOptional),
-			Codec.STRING.optionalFieldOf("announcementMessage").xmap(REMOVE_BLANK, REMOVE_BLANK).forGetter(ChatRule::getAnnouncementMessageOptional),
+			AnnouncementMessage.CODEC.optionalFieldOf("announcementMessage").forGetter(ChatRule::getAnnouncementMessageOptional),
 			ToastMessage.CODEC.optionalFieldOf("toastMessage").forGetter(ChatRule::getToastMessageOptional),
 			SoundEvent.CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOptional)
 	).apply(instance, (s, aBoolean, aBoolean2, aBoolean3, aBoolean4, s2, locations, aBoolean5, s3, s4, s5, toastMessage1, soundEvent) ->
@@ -72,7 +73,7 @@ public class ChatRule {
 	private boolean hideMessage;
 	private @Nullable String chatMessage;
 	private @Nullable String actionBarMessage;
-	private @Nullable String announcementMessage;
+	private @Nullable AnnouncementMessage announcementMessage;
 	private @Nullable ToastMessage toastMessage;
 	private @Nullable SoundEvent customSound;
 
@@ -97,7 +98,7 @@ public class ChatRule {
 		this.customSound = null;
 	}
 
-	ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, @Nullable String chatMessage, @Nullable String actionBarMessage, @Nullable String announcementMessage, @Nullable ToastMessage toastMessage, @Nullable SoundEvent customSound) {
+	ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, @Nullable String chatMessage, @Nullable String actionBarMessage, @Nullable AnnouncementMessage announcementMessage, @Nullable ToastMessage toastMessage, @Nullable SoundEvent customSound) {
 		this.name = name;
 		this.enabled = enabled;
 		this.isPartialMatch = isPartialMatch;
@@ -198,16 +199,15 @@ public class ChatRule {
 		this.chatMessage = chatMessage;
 	}
 
-	@Nullable String getAnnouncementMessage() {
+	@Nullable AnnouncementMessage getAnnouncementMessage() {
 		return announcementMessage;
 	}
 
-	private Optional<String> getAnnouncementMessageOptional() {
+	private Optional<AnnouncementMessage> getAnnouncementMessageOptional() {
 		return Optional.ofNullable(getAnnouncementMessage());
 	}
 
-	void setAnnouncementMessage(@Nullable String announcementMessage) {
-		if (announcementMessage != null && announcementMessage.isBlank()) announcementMessage = null;
+	void setAnnouncementMessage(@Nullable AnnouncementMessage announcementMessage) {
 		this.announcementMessage = announcementMessage;
 	}
 
@@ -354,11 +354,10 @@ public class ChatRule {
 	}
 
 	static class ToastMessage {
-
 		static final Codec<ToastMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				ItemStack.OPTIONAL_CODEC.optionalFieldOf("icon", ItemStack.EMPTY).forGetter(o -> o.icon),
 				Codec.STRING.fieldOf("message").forGetter(o -> o.message),
-				Codec.LONG.fieldOf("display_duration").forGetter(o -> o.displayDuration)
+				Codec.LONG.fieldOf("displayDuration").forGetter(o -> o.displayDuration)
 		).apply(instance, ToastMessage::new));
 
 		ItemStack icon;
@@ -373,6 +372,29 @@ public class ChatRule {
 
 		ToastMessage() {
 			this(new ItemStack(Items.PAINTING), "", 1000);
+		}
+
+		@Override
+		@GenToString
+		public native String toString();
+	}
+
+	static class AnnouncementMessage {
+		static final Codec<AnnouncementMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.STRING.fieldOf("message").forGetter(o -> o.message),
+				Codec.LONG.fieldOf("displayDuration").forGetter(o -> o.displayDuration)
+		).apply(instance, AnnouncementMessage::new));
+
+		String message;
+		long displayDuration;
+
+		AnnouncementMessage(String message, long displayDuration) {
+			this.message = message;
+			this.displayDuration = displayDuration;
+		}
+
+		AnnouncementMessage() {
+			this("", SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength * 50L);
 		}
 
 		@Override

@@ -4,7 +4,9 @@ import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -37,7 +39,9 @@ public class ConfigFix5ChatRulesSeparateOutputs extends ConfigDataFix {
 				))
 				.remove("showActionBar")
 				.setFieldIfPresent("announcementMessage", rule.get("showAnnouncement").result().flatMap(dynamic1 ->
-					dynamic1.asBoolean(false) ? rule.get("replaceMessage").result() : Optional.empty()
+					dynamic1.asBoolean(false) ? rule.get("replaceMessage").result().map(message -> dynamic1.createMap(
+							Map.of(dynamic1.createString("message"), message, dynamic1.createString("displayDuration"), dynamic1.createLong(SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength * 50L))
+					)) : Optional.empty()
 				))
 				.remove("showAnnouncement")
 		)));
