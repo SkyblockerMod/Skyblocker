@@ -4,13 +4,12 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
 import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
-import net.azureaaron.dandelion.systems.ButtonOption;
-import net.azureaaron.dandelion.systems.ConfigCategory;
-import net.azureaaron.dandelion.systems.Option;
-import net.azureaaron.dandelion.systems.OptionGroup;
+import net.azureaaron.dandelion.platform.ConfigType;
+import net.azureaaron.dandelion.systems.*;
 import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.azureaaron.dandelion.systems.controllers.StringController;
@@ -636,6 +635,47 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.secretWaypoints.enableDefaultWaypoints,
 										() -> config.dungeons.secretWaypoints.enableDefaultWaypoints,
 										newValue -> config.dungeons.secretWaypoints.enableDefaultWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.secretSync"))
+						.collapsed(true)
+						// TODO: Add description when labels work properly on MoulConfig
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.syncRoomMatch"))
+								.binding(defaults.dungeons.secretSync.syncRoomMatch,
+										() -> config.dungeons.secretSync.syncRoomMatch,
+										newValue -> config.dungeons.secretSync.syncRoomMatch = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.syncRoomSecretCount"))
+								.binding(defaults.dungeons.secretSync.syncRoomSecretCount,
+										() -> config.dungeons.secretSync.syncRoomSecretCount,
+										newValue -> config.dungeons.secretSync.syncRoomSecretCount = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.syncScoreMessages"))
+								.binding(defaults.dungeons.secretSync.syncScoreMessages,
+										() -> config.dungeons.secretSync.syncScoreMessages,
+										newValue -> config.dungeons.secretSync.syncScoreMessages = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.syncFoundWaypoints"))
+								.binding(defaults.dungeons.secretSync.syncFoundWaypoints,
+										() -> config.dungeons.secretSync.syncFoundWaypoints,
+										newValue -> config.dungeons.secretSync.syncFoundWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.hideReceivedWaypoints"))
+								.binding(defaults.dungeons.secretSync.hideReceivedWaypoints,
+										() -> config.dungeons.secretSync.hideReceivedWaypoints,
+										newValue -> config.dungeons.secretSync.hideReceivedWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

@@ -237,7 +237,7 @@
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD": "Enable Score HUD",
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.@Tooltip": "Displays the dungeon score in the HUD.",
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nNote: This only works correctly if death messages are enabled in your Skyblock settings. If you want to hide death messages, use this mod's Hide Player Death Messages setting instead to allow further processing of death messages.",
-  "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Score Scaling",
+  "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Score HUD Scaling",
 
   "skyblocker.config.dungeons.dungeonSplits": "Dungeon Splits Widget",
   "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "Enables a widget that shows your fastest times in each dungeon section.",
@@ -316,6 +316,13 @@
   "skyblocker.config.dungeons.salvageHelper": "Salvage Helper",
   "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Highlights items picked up in dungeons that can be salvaged.",
   "skyblocker.config.dungeons.salvageHelper.onlyDonated": "Salvage Helper - Only Highlight Donated Items",
+
+  "skyblocker.config.dungeons.secretSync": "Secret Sync",
+  "skyblocker.config.dungeons.secretSync.hideReceivedWaypoints": "Hide Received Secret Waypoints",
+  "skyblocker.config.dungeons.secretSync.syncFoundWaypoints": "Sync Found Secret Waypoints",
+  "skyblocker.config.dungeons.secretSync.syncRoomMatch": "Sync Rooms Found",
+  "skyblocker.config.dungeons.secretSync.syncRoomSecretCount": "Sync Room Secret Count",
+  "skyblocker.config.dungeons.secretSync.syncScoreMessages": "Sync Mimic/Prince Killed",
 
   "skyblocker.config.dungeons.secretWaypoints": "Dungeon Secret Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableAotvWaypoints": "Enable AOTV Waypoints",

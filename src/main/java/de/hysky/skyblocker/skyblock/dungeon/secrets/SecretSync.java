@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.utils.ws.Service;
@@ -18,10 +20,12 @@ import org.slf4j.Logger;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class SecretSync {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final Supplier<DungeonsConfig.SecretSync> CONFIG = () -> SkyblockerConfigManager.get().dungeons.secretSync;
 
 	@Init
 	public static void init() {
@@ -43,14 +47,14 @@ public class SecretSync {
 	}
 
 	public static void syncRoomMatch(Room room) {
-		if (CLIENT.player == null || room.fromWebsocket) return;
+		if (CLIENT.player == null || room.fromWebsocket || !CONFIG.get().syncRoomMatch) return;
 		List<Vector2ic> segments = room.getSegments().stream().toList();
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
 				new DungeonRoomMatchMessage(CLIENT.player.getUuid(), room.getType(), room.getShape(), room.getDirection(), room.getName(), segments));
 	}
 
 	public static void handleRoomMatch(DungeonRoomMatchMessage msg) {
-		if (!checkUUID(msg.uuid())) return;
+		if (!CONFIG.get().syncRoomMatch || !checkUUID(msg.uuid())) return;
 		if (DungeonManager.getRoomsStream().count() > 36 || msg.pos().size() > 4) return;
 		if (DungeonManager.getRoomMetadata(msg.room()) == null) {
 			LOGGER.error("[Skyblocker Dungeons Secret Sync] Received an invalid room over the websocket, msg: {}", msg);
@@ -74,17 +78,14 @@ public class SecretSync {
 		LOGGER.info("[Skyblocker Dungeon Secret Sync] Added room {}", msg.room());
 	}
 
-	/**
-	 * Syncs the secret count, processed immediately.
-	 */
 	public static void syncSecretCount(Room room, boolean fromWS) {
-		if (CLIENT.player == null || fromWS) return;
+		if (CLIENT.player == null || fromWS || !CONFIG.get().syncRoomSecretCount) return;
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
 				new DungeonRoomSecretCountMessage(CLIENT.player.getUuid(), room.getName(), room.getFoundSecretCount()));
 	}
 
 	public static void handleSecretCountUpdate(DungeonRoomSecretCountMessage msg) {
-		if (!checkUUID(msg.uuid())) return;
+		if (!CONFIG.get().syncRoomSecretCount || !checkUUID(msg.uuid())) return;
 		Room room = getRoomByName(msg.roomName());
 		if (room == null || room.secretsFound >= msg.secretCount() || msg.secretCount() > room.getSecretCount()) return;
 
@@ -94,13 +95,13 @@ public class SecretSync {
 	}
 
 	public static void syncSecretFound(Room room, SecretWaypoint waypoint) {
-		if (CLIENT.player == null) return;
+		if (CLIENT.player == null || !CONFIG.get().syncFoundWaypoints) return;
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
 				new DungeonRoomHideWaypointMessage(CLIENT.player.getUuid(), room.getName(), waypoint.hashCode()));
 	}
 
 	public static void handleHideWaypoint(DungeonRoomHideWaypointMessage msg) {
-		if (!checkUUID(msg.uuid())) return;
+		if (!checkUUID(msg.uuid()) || !CONFIG.get().hideReceivedWaypoints) return;
 		Room room = getRoomByName(msg.roomName());
 		if (room == null) return;
 		int secretIndex = room.getIndexByWaypointHash(msg.waypointHash());
@@ -110,25 +111,25 @@ public class SecretSync {
 	}
 
 	public static void syncMimicKilled() {
-		if (CLIENT.player == null) return;
+		if (CLIENT.player == null || !CONFIG.get().syncScoreMessages) return;
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
 				new DungeonMimicKilledMessage(CLIENT.player.getUuid()));
 	}
 
 	public static void handleMimicKilled(DungeonMimicKilledMessage msg) {
-		if (!checkUUID(msg.uuid())) return;
+		if (!checkUUID(msg.uuid()) || !CONFIG.get().syncScoreMessages) return;
 		DungeonScore.onMimicKill();
 		LOGGER.info("[Skyblocker Dungeon Secret Sync] Mimic killed!");
 	}
 
 	public static void syncPrinceKilled() {
-		if (CLIENT.player == null) return;
+		if (CLIENT.player == null || !CONFIG.get().syncScoreMessages) return;
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
 				new DungeonPrinceKilledMessage(CLIENT.player.getUuid()));
 	}
 
 	public static void handlePrinceKilled(DungeonPrinceKilledMessage msg) {
-		if (!checkUUID(msg.uuid())) return;
+		if (!checkUUID(msg.uuid()) || !CONFIG.get().syncScoreMessages) return;
 		DungeonScore.onPrinceKill(false);
 		LOGGER.info("[Skyblocker Dungeon Secret Sync] Prince killed!");
 	}

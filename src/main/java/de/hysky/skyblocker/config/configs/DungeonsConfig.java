@@ -53,6 +53,8 @@ public class DungeonsConfig {
 
 	public SecretWaypoints secretWaypoints = new SecretWaypoints();
 
+	public SecretSync secretSync = new SecretSync();
+
 	public MimicMessage mimicMessage = new MimicMessage();
 
 	public PrinceMessage princeMessage = new PrinceMessage();
@@ -207,6 +209,18 @@ public class DungeonsConfig {
 		public boolean enablePrinceWaypoints = true;
 
 		public boolean enableDefaultWaypoints = true;
+	}
+
+	public static class SecretSync {
+		public boolean syncRoomMatch = true;
+
+		public boolean syncRoomSecretCount = true;
+
+		public boolean syncScoreMessages = true;
+
+		public boolean syncFoundWaypoints = true;
+
+		public boolean hideReceivedWaypoints = true;
 	}
 
 	public static class MimicMessage {
