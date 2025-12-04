@@ -134,7 +134,8 @@ public class PickobulusHelper {
 		for (int i = 1; i < 7; i++) {
 			for (int j = 1; j < 7; j++) {
 				for (int k = 1; k < 7; k++) {
-					if (blocks[i][j][k].isAir() || blocks[i][j][k].isOf(Blocks.BEDROCK)) continue;
+					BlockState state = blocks[i][j][k];
+					if (state.isAir() || state.isOf(Blocks.BEDROCK)) continue;
 					boolean exposed = blocks[i - 1][j][k].isAir()
 									  || blocks[i + 1][j][k].isAir()
 									  || blocks[i][j - 1][k].isAir()
@@ -143,12 +144,12 @@ public class PickobulusHelper {
 									  || blocks[i][j][k + 1].isAir();
 					if (!exposed) continue;
 
-					if (Utils.getArea().equals(Area.GLACITE_TUNNELS)) handleGlaciteTunnels(pos, i, j, k);
+					if (Utils.getArea().equals(Area.GLACITE_TUNNELS)) handleGlaciteTunnels(pos, state, i, j, k);
 					else switch (Utils.getLocation()) {
 						case PRIVATE_ISLAND -> handleBreakable(pos, i, j, k);
-						case GOLD_MINE, DEEP_CAVERNS, DWARVEN_MINES -> handleConvertIntoBedrock(pos, i, j, k);
-						case CRYSTAL_HOLLOWS -> handleCrystalHollows(pos, i, j, k);
-						case GLACITE_MINESHAFTS -> handleGlaciteMineshafts(pos, i, j, k);
+						case GOLD_MINE, DEEP_CAVERNS, DWARVEN_MINES -> handleConvertIntoBedrock(pos, state, i, j, k);
+						case CRYSTAL_HOLLOWS -> handleCrystalHollows(pos, state, i, j, k);
+						case GLACITE_MINESHAFTS -> handleGlaciteMineshafts(pos, state, i, j, k);
 					}
 				}
 			}
@@ -160,112 +161,112 @@ public class PickobulusHelper {
 		breakBlocks.add(pos.add(i - 4, j - 4, k - 4));
 	}
 
-	private static void handleConvertIntoBedrock(BlockPos pos, int i, int j, int k) {
-		if (blocks[i][j][k].isOf(Blocks.STONE)
-			|| blocks[i][j][k].isOf(Blocks.COBBLESTONE)
-			|| blocks[i][j][k].isOf(Blocks.POLISHED_DIORITE)
-			|| blocks[i][j][k].isOf(Blocks.PRISMARINE)
-			|| blocks[i][j][k].isOf(Blocks.PRISMARINE_BRICKS)
-			|| blocks[i][j][k].isOf(Blocks.DARK_PRISMARINE)
-			|| blocks[i][j][k].isOf(Blocks.CYAN_TERRACOTTA)
-			|| blocks[i][j][k].isOf(Blocks.LIGHT_BLUE_WOOL)
-			|| blocks[i][j][k].isOf(Blocks.GRAY_WOOL)
-			|| blocks[i][j][k].isOf(Blocks.LAPIS_BLOCK)
-			|| blocks[i][j][k].isOf(Blocks.GOLD_BLOCK)
-			|| blocks[i][j][k].isOf(Blocks.IRON_BLOCK)
-			|| blocks[i][j][k].isOf(Blocks.DIAMOND_BLOCK)
-			|| blocks[i][j][k].isOf(Blocks.EMERALD_BLOCK)
-			|| blocks[i][j][k].isOf(Blocks.REDSTONE_BLOCK)
-			|| blocks[i][j][k].isOf(Blocks.COAL_BLOCK)
-			|| blocks[i][j][k].isOf(Blocks.GOLD_ORE)
-			|| blocks[i][j][k].isOf(Blocks.IRON_ORE)
-			|| blocks[i][j][k].isOf(Blocks.COAL_ORE)
-			|| blocks[i][j][k].isOf(Blocks.LAPIS_ORE)
-			|| blocks[i][j][k].isOf(Blocks.REDSTONE_ORE)
-			|| blocks[i][j][k].isOf(Blocks.DIAMOND_ORE)
-			|| blocks[i][j][k].isOf(Blocks.EMERALD_ORE)
-			|| blocks[i][j][k].isOf(Blocks.NETHER_QUARTZ_ORE)
-			|| blocks[i][j][k].isOf(Blocks.NETHERRACK)
-			|| blocks[i][j][k].isOf(Blocks.GLOWSTONE)
-			|| blocks[i][j][k].isOf(Blocks.OBSIDIAN)
-			|| blocks[i][j][k].isOf(Blocks.END_STONE)
-			|| STAINED_GLASS_BLOCKS.contains(blocks[i][j][k].getBlock())) {
+	private static void handleConvertIntoBedrock(BlockPos pos, BlockState state, int i, int j, int k) {
+		if (state.isOf(Blocks.STONE)
+			|| state.isOf(Blocks.COBBLESTONE)
+			|| state.isOf(Blocks.POLISHED_DIORITE)
+			|| state.isOf(Blocks.PRISMARINE)
+			|| state.isOf(Blocks.PRISMARINE_BRICKS)
+			|| state.isOf(Blocks.DARK_PRISMARINE)
+			|| state.isOf(Blocks.CYAN_TERRACOTTA)
+			|| state.isOf(Blocks.LIGHT_BLUE_WOOL)
+			|| state.isOf(Blocks.GRAY_WOOL)
+			|| state.isOf(Blocks.LAPIS_BLOCK)
+			|| state.isOf(Blocks.GOLD_BLOCK)
+			|| state.isOf(Blocks.IRON_BLOCK)
+			|| state.isOf(Blocks.DIAMOND_BLOCK)
+			|| state.isOf(Blocks.EMERALD_BLOCK)
+			|| state.isOf(Blocks.REDSTONE_BLOCK)
+			|| state.isOf(Blocks.COAL_BLOCK)
+			|| state.isOf(Blocks.GOLD_ORE)
+			|| state.isOf(Blocks.IRON_ORE)
+			|| state.isOf(Blocks.COAL_ORE)
+			|| state.isOf(Blocks.LAPIS_ORE)
+			|| state.isOf(Blocks.REDSTONE_ORE)
+			|| state.isOf(Blocks.DIAMOND_ORE)
+			|| state.isOf(Blocks.EMERALD_ORE)
+			|| state.isOf(Blocks.NETHER_QUARTZ_ORE)
+			|| state.isOf(Blocks.NETHERRACK)
+			|| state.isOf(Blocks.GLOWSTONE)
+			|| state.isOf(Blocks.OBSIDIAN)
+			|| state.isOf(Blocks.END_STONE)
+			|| STAINED_GLASS_BLOCKS.contains(state.getBlock())) {
 			breakBlocks.add(pos.add(i - 4, j - 4, k - 4));
 		}
 	}
 
-	private static void handleCrystalHollows(BlockPos pos, int i, int j, int k) {
-		if (STAINED_GLASS_BLOCKS.contains(blocks[i][j][k].getBlock())) {
+	private static void handleCrystalHollows(BlockPos pos, BlockState state, int i, int j, int k) {
+		if (STAINED_GLASS_BLOCKS.contains(state.getBlock())) {
 			drops[MiningDrop.GEMSTONES.ordinal()]++;
-		} else if (blocks[i][j][k].isOf(Blocks.PRISMARINE)) {
+		} else if (state.isOf(Blocks.PRISMARINE)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (blocks[i][j][k].isOf(Blocks.PRISMARINE_BRICKS)) {
+		} else if (state.isOf(Blocks.PRISMARINE_BRICKS)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (blocks[i][j][k].isOf(Blocks.DARK_PRISMARINE)) {
+		} else if (state.isOf(Blocks.DARK_PRISMARINE)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (blocks[i][j][k].isOf(Blocks.LIGHT_BLUE_WOOL)) {
+		} else if (state.isOf(Blocks.LIGHT_BLUE_WOOL)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 5;
-		} else if (blocks[i][j][k].isOf(Blocks.GRAY_WOOL)) {
+		} else if (state.isOf(Blocks.GRAY_WOOL)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()]++;
-		} else if (blocks[i][j][k].isOf(Blocks.CYAN_TERRACOTTA)) {
+		} else if (state.isOf(Blocks.CYAN_TERRACOTTA)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()]++;
 		}
 		handleBreakable(pos, i, j, k);
 	}
 
-	private static void handleGlaciteTunnels(BlockPos pos, int i, int j, int k) {
-		if (blocks[i][j][k].isOf(Blocks.PACKED_ICE)) {
+	private static void handleGlaciteTunnels(BlockPos pos, BlockState state, int i, int j, int k) {
+		if (state.isOf(Blocks.PACKED_ICE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.ICE.ordinal()]++;
 			blocks[i][j][k] = Blocks.AIR.getDefaultState();
-		} else if (STAINED_GLASS_BLOCKS.contains(blocks[i][j][k].getBlock())) {
+		} else if (STAINED_GLASS_BLOCKS.contains(state.getBlock())) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.GEMSTONES.ordinal()]++;
 			blocks[i][j][k] = Blocks.AIR.getDefaultState();
-		} else if (blocks[i][j][k].isOf(Blocks.POLISHED_DIORITE)) {
+		} else if (state.isOf(Blocks.POLISHED_DIORITE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 4;
 			drops[MiningDrop.TITANIUM.ordinal()]++;
-		} else if (blocks[i][j][k].isOf(Blocks.INFESTED_STONE)) {
+		} else if (state.isOf(Blocks.INFESTED_STONE)) {
 			drops[MiningDrop.HARDSTONE.ordinal()]++;
-		} else if (blocks[i][j][k].isOf(Blocks.LIGHT_GRAY_CARPET)) {
+		} else if (state.isOf(Blocks.LIGHT_GRAY_CARPET)) {
 			drops[MiningDrop.HARDSTONE.ordinal()]++;
-		} else if (blocks[i][j][k].isOf(Blocks.PRISMARINE)) {
+		} else if (state.isOf(Blocks.PRISMARINE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (blocks[i][j][k].isOf(Blocks.PRISMARINE_BRICKS)) {
+		} else if (state.isOf(Blocks.PRISMARINE_BRICKS)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (blocks[i][j][k].isOf(Blocks.DARK_PRISMARINE)) {
+		} else if (state.isOf(Blocks.DARK_PRISMARINE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (blocks[i][j][k].isOf(Blocks.LIGHT_BLUE_WOOL)) {
+		} else if (state.isOf(Blocks.LIGHT_BLUE_WOOL)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 5;
-		} else if (blocks[i][j][k].isOf(Blocks.GRAY_WOOL)) {
+		} else if (state.isOf(Blocks.GRAY_WOOL)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()]++;
-		} else if (blocks[i][j][k].isOf(Blocks.CYAN_TERRACOTTA)) {
+		} else if (state.isOf(Blocks.CYAN_TERRACOTTA)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()]++;
-		} else if (blocks[i][j][k].isOf(Blocks.BROWN_TERRACOTTA)) {
+		} else if (state.isOf(Blocks.BROWN_TERRACOTTA)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.UMBER.ordinal()]++;
-		} else if (blocks[i][j][k].isOf(Blocks.TERRACOTTA)) {
+		} else if (state.isOf(Blocks.TERRACOTTA)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.UMBER.ordinal()]++;
-		} else if (blocks[i][j][k].isOf(Blocks.RED_SANDSTONE_SLAB)) {
+		} else if (state.isOf(Blocks.RED_SANDSTONE_SLAB)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.UMBER.ordinal()]++;
-		} else if (blocks[i][j][k].isOf(Blocks.INFESTED_COBBLESTONE)) {
+		} else if (state.isOf(Blocks.INFESTED_COBBLESTONE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.TUNGSTEN.ordinal()]++;
-		} else if (blocks[i][j][k].isOf(Blocks.CLAY)) {
+		} else if (state.isOf(Blocks.CLAY)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.TUNGSTEN.ordinal()]++;
 		} else {
@@ -274,8 +275,8 @@ public class PickobulusHelper {
 		breakBlocks.add(pos.add(i - 4, j - 4, k - 4));
 	}
 
-	private static void handleGlaciteMineshafts(BlockPos pos, int i, int j, int k) {
-		if (blocks[i][j][k].isOf(Blocks.STONE)) {
+	private static void handleGlaciteMineshafts(BlockPos pos, BlockState state, int i, int j, int k) {
+		if (state.isOf(Blocks.STONE)) {
 			drops[MiningDrop.HARDSTONE.ordinal()]++;
 		}
 		handleBreakable(pos, i, j, k);
