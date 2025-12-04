@@ -24,7 +24,13 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -77,15 +83,15 @@ public class PlayerListManager {
 		// check is needed, else game crashes on server leave
 		if (networkHandler != null) {
 			playerList = networkHandler.getPlayerList()
-			                           .stream()
-			                           .sorted(PlayerListHudAccessor.getOrdering())
-			                           .toList();
+									.stream()
+									.sorted(PlayerListHudAccessor.getOrdering())
+									.toList();
 			playerStringList = playerList.stream()
-			                             .map(PlayerListEntry::getDisplayName)
-			                             .filter(Objects::nonNull)
-			                             .map(Text::getString)
-			                             .map(String::strip)
-			                             .toList();
+										.map(PlayerListEntry::getDisplayName)
+										.filter(Objects::nonNull)
+										.map(Text::getString)
+										.map(String::strip)
+										.toList();
 		}
 
 		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {

@@ -14,9 +14,9 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class ViewstashAutocomplete {
 	public static LiteralCommandNode<FabricClientCommandSource> getCommandNode() {
 		return literal("viewstash")
-				       .requires(fabricClientCommandSource -> Utils.isOnSkyblock())
-				       .then(argument("stash", StringArgumentType.word())
-						             .suggests((context, builder) -> CommandSource.suggestMatching(Stream.of("material", "item"), builder))
-				       ).build();
+					.requires(fabricClientCommandSource -> Utils.isOnSkyblock())
+					.then(argument("stash", StringArgumentType.word())
+									.suggests((context, builder) -> CommandSource.suggestMatching(Stream.of("material", "item"), builder))
+					).build();
 	}
 }

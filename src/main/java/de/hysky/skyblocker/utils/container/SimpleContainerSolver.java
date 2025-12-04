@@ -10,29 +10,29 @@ import java.util.regex.Pattern;
  * like terminal solvers or experiment solvers and add it to {@link ContainerSolverManager#solvers}.
  */
 public abstract class SimpleContainerSolver extends RegexContainerMatcher implements ContainerSolver {
-    /**
-     * Utility constructor that will compile the given string into a pattern.
-     *
-     * @see #SimpleContainerSolver(Pattern)
-     */
-    protected SimpleContainerSolver(@NotNull @Language("RegExp") String titlePattern) {
-        super(titlePattern);
-    }
+	/**
+	 * Utility constructor that will compile the given string into a pattern.
+	 *
+	 * @see #SimpleContainerSolver(Pattern)
+	 */
+	protected SimpleContainerSolver(@NotNull @Language("RegExp") String titlePattern) {
+		super(titlePattern);
+	}
 
-    /**
-     * Creates a ContainerSolver that will be applied to screens with titles that match the given pattern.
-     *
-     * @param titlePattern The pattern to match the screen title against.
-     */
-    protected SimpleContainerSolver(@NotNull Pattern titlePattern) {
-        super(titlePattern);
-    }
+	/**
+	 * Creates a ContainerSolver that will be applied to screens with titles that match the given pattern.
+	 *
+	 * @param titlePattern The pattern to match the screen title against.
+	 */
+	protected SimpleContainerSolver(@NotNull Pattern titlePattern) {
+		super(titlePattern);
+	}
 
-    // A container solver that applies to every screen doesn't make sense,
-    // so we don't provide a constructor for that and force getTitlePattern to be @NotNull
-    @Override
-    public @NotNull Pattern getTitlePattern() {
-	    assert super.getTitlePattern() != null;
-	    return super.getTitlePattern();
-    }
+	// A container solver that applies to every screen doesn't make sense,
+	// so we don't provide a constructor for that and force getTitlePattern to be @NotNull
+	@Override
+	public @NotNull Pattern getTitlePattern() {
+		assert super.getTitlePattern() != null;
+		return super.getTitlePattern();
+	}
 }

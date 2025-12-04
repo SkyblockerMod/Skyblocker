@@ -27,15 +27,15 @@ public class BazaarPriceTooltip extends SimpleTooltipAdder {
 
 			BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(skyblockApiId);
 			lines.add(Text.literal(String.format("%-18s", "Bazaar Buy Price:"))
-						  .formatted(Formatting.GOLD)
-						  .append(product.buyPrice().isEmpty()
-								  ? Text.literal("No data").formatted(Formatting.RED)
-								  : ItemTooltip.getCoinsMessage(product.buyPrice().getAsDouble(), count)));
+						.formatted(Formatting.GOLD)
+						.append(product.buyPrice().isEmpty()
+								? Text.literal("No data").formatted(Formatting.RED)
+								: ItemTooltip.getCoinsMessage(product.buyPrice().getAsDouble(), count)));
 			lines.add(Text.literal(String.format("%-19s", "Bazaar Sell Price:"))
-						  .formatted(Formatting.GOLD)
-						  .append(product.sellPrice().isEmpty()
-								  ? Text.literal("No data").formatted(Formatting.RED)
-								  : ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble(), count)));
+						.formatted(Formatting.GOLD)
+						.append(product.sellPrice().isEmpty()
+								? Text.literal("No data").formatted(Formatting.RED)
+								: ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble(), count)));
 		}
 	}
 

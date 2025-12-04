@@ -70,9 +70,9 @@ public class StatusBarsConfigScreen extends Screen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        /*for (ScreenRect screenRect : meaningFullName.keySet()) {
-            context.fillGradient(screenRect.position().x(), screenRect.position().y(), screenRect.position().x() + screenRect.width(), screenRect.position().y() + screenRect.height(), 0xFFFF0000, 0xFF0000FF);
-        }*/
+		/*for (ScreenRect screenRect : meaningFullName.keySet()) {
+			context.fillGradient(screenRect.position().x(), screenRect.position().y(), screenRect.position().x() + screenRect.width(), screenRect.position().y() + screenRect.height(), 0xFFFF0000, 0xFF0000FF);
+		}*/
 		super.render(context, mouseX, mouseY, delta);
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, width / 2 - HOTBAR_WIDTH / 2, height - 22, HOTBAR_WIDTH, 22);
 		editBarWidget.render(context, mouseX, mouseY, delta);

@@ -35,18 +35,18 @@ import net.minecraft.client.input.SystemKeycodes;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 public class UIAndVisualsCategory {
-    public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
-        return ConfigCategory.createBuilder()
-        		.id(SkyblockerMod.id("config/uiandvisuals"))
+	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
+		return ConfigCategory.createBuilder()
+				.id(SkyblockerMod.id("config/uiandvisuals"))
 				.name(Text.translatable("skyblocker.config.uiAndVisuals"))
 
-                //Ungrouped Options
+				//Ungrouped Options
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.uiAndVisuals.swingOnAbilities"))
 						.description(Text.translatable("skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip"))
@@ -63,58 +63,58 @@ public class UIAndVisualsCategory {
 								newValue -> config.uiAndVisuals.nightVisionStrength = newValue)
 						.controller(IntegerController.createBuilder().range(0, 100).slider(1).build())
 						.build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.compactorDeletorPreview"))
-                        .binding(defaults.uiAndVisuals.compactorDeletorPreview,
-                                () -> config.uiAndVisuals.compactorDeletorPreview,
-                                newValue -> config.uiAndVisuals.compactorDeletorPreview = newValue)
-                        .controller(ConfigUtils.createBooleanController())
-                        .build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues"))
-                        .description(Text.translatable("skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues.@Tooltip"))
-                        .binding(defaults.uiAndVisuals.dontStripSkinAlphaValues,
-                                () -> config.uiAndVisuals.dontStripSkinAlphaValues,
-                                newValue -> config.uiAndVisuals.dontStripSkinAlphaValues = newValue)
-                        .controller(ConfigUtils.createBooleanController())
-                        .flags(OptionFlag.ASSET_RELOAD)
-                        .build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift"))
-                        .binding(defaults.uiAndVisuals.backpackPreviewWithoutShift,
-                                () -> config.uiAndVisuals.backpackPreviewWithoutShift,
-                                newValue -> config.uiAndVisuals.backpackPreviewWithoutShift = newValue)
-                        .controller(ConfigUtils.createBooleanController())
-                        .build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.hideEmptyTooltips"))
-                        .description(Text.translatable("skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip"))
-                        .binding(defaults.uiAndVisuals.hideEmptyTooltips,
-                                () -> config.uiAndVisuals.hideEmptyTooltips,
-                                newValue -> config.uiAndVisuals.hideEmptyTooltips = newValue)
-                        .controller(ConfigUtils.createBooleanController())
-                        .build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.fancyCraftingTable"))
-                        .binding(defaults.uiAndVisuals.fancyCraftingTable,
-                                () -> config.uiAndVisuals.fancyCraftingTable,
-                                newValue -> config.uiAndVisuals.fancyCraftingTable = newValue)
-                        .controller(ConfigUtils.createBooleanController())
-                        .build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.hideStatusEffectOverlay"))
-                        .binding(defaults.uiAndVisuals.hideStatusEffectOverlay,
-                                () -> config.uiAndVisuals.hideStatusEffectOverlay,
-                                newValue -> config.uiAndVisuals.hideStatusEffectOverlay = newValue)
-                        .controller(ConfigUtils.createBooleanController())
-                        .build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.showEquipmentInInventory"))
-                        .binding(defaults.uiAndVisuals.showEquipmentInInventory,
-                                () -> config.uiAndVisuals.showEquipmentInInventory,
-                                newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
-                        .controller(ConfigUtils.createBooleanController())
-                        .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.compactorDeletorPreview"))
+						.binding(defaults.uiAndVisuals.compactorDeletorPreview,
+								() -> config.uiAndVisuals.compactorDeletorPreview,
+								newValue -> config.uiAndVisuals.compactorDeletorPreview = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues"))
+						.description(Text.translatable("skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues.@Tooltip"))
+						.binding(defaults.uiAndVisuals.dontStripSkinAlphaValues,
+								() -> config.uiAndVisuals.dontStripSkinAlphaValues,
+								newValue -> config.uiAndVisuals.dontStripSkinAlphaValues = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.flags(OptionFlag.ASSET_RELOAD)
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift"))
+						.binding(defaults.uiAndVisuals.backpackPreviewWithoutShift,
+								() -> config.uiAndVisuals.backpackPreviewWithoutShift,
+								newValue -> config.uiAndVisuals.backpackPreviewWithoutShift = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.hideEmptyTooltips"))
+						.description(Text.translatable("skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip"))
+						.binding(defaults.uiAndVisuals.hideEmptyTooltips,
+								() -> config.uiAndVisuals.hideEmptyTooltips,
+								newValue -> config.uiAndVisuals.hideEmptyTooltips = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.fancyCraftingTable"))
+						.binding(defaults.uiAndVisuals.fancyCraftingTable,
+								() -> config.uiAndVisuals.fancyCraftingTable,
+								newValue -> config.uiAndVisuals.fancyCraftingTable = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.hideStatusEffectOverlay"))
+						.binding(defaults.uiAndVisuals.hideStatusEffectOverlay,
+								() -> config.uiAndVisuals.hideStatusEffectOverlay,
+								newValue -> config.uiAndVisuals.hideStatusEffectOverlay = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.showEquipmentInInventory"))
+						.binding(defaults.uiAndVisuals.showEquipmentInInventory,
+								() -> config.uiAndVisuals.showEquipmentInInventory,
+								newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.uiAndVisuals.museumOverlay"))
 						.description(Text.translatable("skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip"))
@@ -123,14 +123,14 @@ public class UIAndVisualsCategory {
 								newValue -> config.uiAndVisuals.museumOverlay = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation"))
-                        .description(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip"))
-                        .binding(defaults.uiAndVisuals.cancelComponentUpdateAnimation,
-                                () -> config.uiAndVisuals.cancelComponentUpdateAnimation,
-                                newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
-                        .controller(ConfigUtils.createBooleanController())
-                        .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation"))
+						.description(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip"))
+						.binding(defaults.uiAndVisuals.cancelComponentUpdateAnimation,
+								() -> config.uiAndVisuals.cancelComponentUpdateAnimation,
+								newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.uiAndVisuals.showCustomizeButton"))
 						.description(Text.translatable("skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip"))
@@ -156,47 +156,47 @@ public class UIAndVisualsCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 
-                //Chest Value FIXME change dropdown to color controller
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.chestValue"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.chestValue.enableChestValue"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.chestValue.enableChestValue.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.chestValue.enableChestValue,
-                                        () -> config.uiAndVisuals.chestValue.enableChestValue,
-                                        newValue -> config.uiAndVisuals.chestValue.enableChestValue = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Formatting>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.chestValue.color"))
-                                .binding(defaults.uiAndVisuals.chestValue.color,
-                                        () -> config.uiAndVisuals.chestValue.color,
-                                        newValue -> config.uiAndVisuals.chestValue.color = newValue)
-                                .controller(ConfigUtils.createEnumDropdownController(ConfigUtils.FORMATTING_FORMATTER))
-                                .build())
-                        .option(Option.<Formatting>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.chestValue.incompleteColor"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.chestValue.incompleteColor,
-                                        () -> config.uiAndVisuals.chestValue.incompleteColor,
-                                        newValue -> config.uiAndVisuals.chestValue.incompleteColor = newValue)
-                                .controller(ConfigUtils.createEnumDropdownController(ConfigUtils.FORMATTING_FORMATTER))
-                                .build())
-                        .build())
+				//Chest Value FIXME change dropdown to color controller
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.chestValue"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.chestValue.enableChestValue"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.chestValue.enableChestValue.@Tooltip"))
+								.binding(defaults.uiAndVisuals.chestValue.enableChestValue,
+										() -> config.uiAndVisuals.chestValue.enableChestValue,
+										newValue -> config.uiAndVisuals.chestValue.enableChestValue = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Formatting>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.chestValue.color"))
+								.binding(defaults.uiAndVisuals.chestValue.color,
+										() -> config.uiAndVisuals.chestValue.color,
+										newValue -> config.uiAndVisuals.chestValue.color = newValue)
+								.controller(ConfigUtils.createEnumDropdownController(ConfigUtils.FORMATTING_FORMATTER))
+								.build())
+						.option(Option.<Formatting>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.chestValue.incompleteColor"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip"))
+								.binding(defaults.uiAndVisuals.chestValue.incompleteColor,
+										() -> config.uiAndVisuals.chestValue.incompleteColor,
+										newValue -> config.uiAndVisuals.chestValue.incompleteColor = newValue)
+								.controller(ConfigUtils.createEnumDropdownController(ConfigUtils.FORMATTING_FORMATTER))
+								.build())
+						.build())
 
-                //Item Cooldown
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.itemCooldown"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns"))
-                                .binding(defaults.uiAndVisuals.itemCooldown.enableItemCooldowns,
-                                        () -> config.uiAndVisuals.itemCooldown.enableItemCooldowns,
-                                        newValue -> config.uiAndVisuals.itemCooldown.enableItemCooldowns = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .build())
+				//Item Cooldown
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.itemCooldown"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns"))
+								.binding(defaults.uiAndVisuals.itemCooldown.enableItemCooldowns,
+										() -> config.uiAndVisuals.itemCooldown.enableItemCooldowns,
+										newValue -> config.uiAndVisuals.itemCooldown.enableItemCooldowns = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
 
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.uiAndVisuals.slotText"))
@@ -217,64 +217,64 @@ public class UIAndVisualsCategory {
 						.build()
 				)
 
-                // Inventory Search
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch"))
-                        .collapsed(true)
-                        .option(Option.<UIAndVisualsConfig.InventorySearchConfig.EnableState>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.enabled"))
-                                .binding(defaults.uiAndVisuals.inventorySearch.enabled,
-                                        () -> config.uiAndVisuals.inventorySearch.enabled,
-                                        newValue -> config.uiAndVisuals.inventorySearch.enabled = newValue)
-                                .controller(ConfigUtils.createEnumController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(SystemKeycodes.IS_MAC_OS ? Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.cmdK") : Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.ctrlK"))
-                                .binding(defaults.uiAndVisuals.inventorySearch.ctrlK,
-                                        () -> config.uiAndVisuals.inventorySearch.ctrlK,
-                                        newValue -> config.uiAndVisuals.inventorySearch.ctrlK = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.showClickableText"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.showClickableText.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.inventorySearch.clickableText,
-                                        () -> config.uiAndVisuals.inventorySearch.clickableText,
-                                        newValue -> config.uiAndVisuals.inventorySearch.clickableText = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .build())
+				// Inventory Search
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch"))
+						.collapsed(true)
+						.option(Option.<UIAndVisualsConfig.InventorySearchConfig.EnableState>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.enabled"))
+								.binding(defaults.uiAndVisuals.inventorySearch.enabled,
+										() -> config.uiAndVisuals.inventorySearch.enabled,
+										newValue -> config.uiAndVisuals.inventorySearch.enabled = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(SystemKeycodes.IS_MAC_OS ? Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.cmdK") : Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.ctrlK"))
+								.binding(defaults.uiAndVisuals.inventorySearch.ctrlK,
+										() -> config.uiAndVisuals.inventorySearch.ctrlK,
+										newValue -> config.uiAndVisuals.inventorySearch.ctrlK = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.showClickableText"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.showClickableText.@Tooltip"))
+								.binding(defaults.uiAndVisuals.inventorySearch.clickableText,
+										() -> config.uiAndVisuals.inventorySearch.clickableText,
+										newValue -> config.uiAndVisuals.inventorySearch.clickableText = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
 
-                //Title Container
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.titleContainer"))
-                        .description(Text.translatable("skyblocker.config.uiAndVisuals.titleContainer.@Tooltip"))
-                        .collapsed(true)
-                        .option(Option.<Float>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.titleContainer.titleContainerScale"))
-                                .binding(defaults.uiAndVisuals.titleContainer.titleContainerScale,
-                                        () -> config.uiAndVisuals.titleContainer.titleContainerScale,
-                                        newValue -> config.uiAndVisuals.titleContainer.titleContainerScale = newValue)
-                                .controller(FloatController.createBuilder().range(TitleContainerConfigScreen.MIN_TITLE_SCALE, TitleContainerConfigScreen.MAX_TITLE_SCALE).build())
-                                .build())
-                        .option(ButtonOption.createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.titleContainer.config"))
-                                .prompt(Text.translatable("text.skyblocker.open"))
-                                .action(screen -> MinecraftClient.getInstance().setScreen(new TitleContainerConfigScreen(screen)))
-                                .build())
-                        .build())
+				//Title Container
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.titleContainer"))
+						.description(Text.translatable("skyblocker.config.uiAndVisuals.titleContainer.@Tooltip"))
+						.collapsed(true)
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.titleContainer.titleContainerScale"))
+								.binding(defaults.uiAndVisuals.titleContainer.titleContainerScale,
+										() -> config.uiAndVisuals.titleContainer.titleContainerScale,
+										newValue -> config.uiAndVisuals.titleContainer.titleContainerScale = newValue)
+								.controller(FloatController.createBuilder().range(TitleContainerConfigScreen.MIN_TITLE_SCALE, TitleContainerConfigScreen.MAX_TITLE_SCALE).build())
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.titleContainer.config"))
+								.prompt(Text.translatable("text.skyblocker.open"))
+								.action(screen -> MinecraftClient.getInstance().setScreen(new TitleContainerConfigScreen(screen)))
+								.build())
+						.build())
 
-                //Tab Hud
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled"))
-                                .binding(defaults.uiAndVisuals.tabHud.tabHudEnabled,
-                                        () -> config.uiAndVisuals.tabHud.tabHudEnabled,
-                                        newValue -> config.uiAndVisuals.tabHud.tabHudEnabled = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
+				//Tab Hud
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled"))
+								.binding(defaults.uiAndVisuals.tabHud.tabHudEnabled,
+										() -> config.uiAndVisuals.tabHud.tabHudEnabled,
+										newValue -> config.uiAndVisuals.tabHud.tabHudEnabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
@@ -288,14 +288,14 @@ public class UIAndVisualsCategory {
 									}
 								})
 								.build())
-                        .option(Option.<Integer>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.tabHud.tabHudScale,
-                                        () -> config.uiAndVisuals.tabHud.tabHudScale,
-                                        newValue -> config.uiAndVisuals.tabHud.tabHudScale = newValue)
-                                .controller(IntegerController.createBuilder().range(10, 200).slider(1).build())
-                                .build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip"))
+								.binding(defaults.uiAndVisuals.tabHud.tabHudScale,
+										() -> config.uiAndVisuals.tabHud.tabHudScale,
+										newValue -> config.uiAndVisuals.tabHud.tabHudScale = newValue)
+								.controller(IntegerController.createBuilder().range(10, 200).slider(1).build())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault.@Tooltip"))
@@ -330,30 +330,30 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.tabHud.compactWidgets = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.tabHud.enableHudBackground,
-                                        () -> config.uiAndVisuals.tabHud.enableHudBackground,
-                                        newValue -> config.uiAndVisuals.tabHud.enableHudBackground = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.effectsFooter"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip"))
-                                .controller(ConfigUtils.createBooleanController())
-                                .binding(defaults.uiAndVisuals.tabHud.effectsFromFooter,
-                                        () -> config.uiAndVisuals.tabHud.effectsFromFooter,
-                                        newValue -> config.uiAndVisuals.tabHud.effectsFromFooter = newValue)
-                                .build())
-                        .option(Option.<ScreenBuilder.DefaultPositioner>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.defaultPositioning"))
-                                .binding(defaults.uiAndVisuals.tabHud.defaultPositioning,
-                                        () -> config.uiAndVisuals.tabHud.defaultPositioning,
-                                        newValue -> config.uiAndVisuals.tabHud.defaultPositioning = newValue)
-                                .controller(ConfigUtils.createEnumController())
-                                .build()
-                        )
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip"))
+								.binding(defaults.uiAndVisuals.tabHud.enableHudBackground,
+										() -> config.uiAndVisuals.tabHud.enableHudBackground,
+										newValue -> config.uiAndVisuals.tabHud.enableHudBackground = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.effectsFooter"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip"))
+								.controller(ConfigUtils.createBooleanController())
+								.binding(defaults.uiAndVisuals.tabHud.effectsFromFooter,
+										() -> config.uiAndVisuals.tabHud.effectsFromFooter,
+										newValue -> config.uiAndVisuals.tabHud.effectsFromFooter = newValue)
+								.build())
+						.option(Option.<ScreenBuilder.DefaultPositioner>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.defaultPositioning"))
+								.binding(defaults.uiAndVisuals.tabHud.defaultPositioning,
+										() -> config.uiAndVisuals.tabHud.defaultPositioning,
+										newValue -> config.uiAndVisuals.tabHud.defaultPositioning = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build()
+						)
 						.option(Option.<UIAndVisualsConfig.NameSorting>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip"))
@@ -362,44 +362,44 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.tabHud.nameSorting = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
-                        .build())
+						.build())
 
-                // Fancy Auction House
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.fancyAuctionHouse"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.fancyAuctionHouse.enabled"))
-                                .binding(defaults.uiAndVisuals.fancyAuctionHouse.enabled,
-                                        () -> config.uiAndVisuals.fancyAuctionHouse.enabled,
-                                        newValue -> config.uiAndVisuals.fancyAuctionHouse.enabled = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.fancyAuctionHouse.highlightUnderAvgPrice"))
-                                .binding(defaults.uiAndVisuals.fancyAuctionHouse.highlightCheapBIN,
-                                        () -> config.uiAndVisuals.fancyAuctionHouse.highlightCheapBIN,
-                                        newValue -> config.uiAndVisuals.fancyAuctionHouse.highlightCheapBIN = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .build())
+				// Fancy Auction House
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.fancyAuctionHouse"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.fancyAuctionHouse.enabled"))
+								.binding(defaults.uiAndVisuals.fancyAuctionHouse.enabled,
+										() -> config.uiAndVisuals.fancyAuctionHouse.enabled,
+										newValue -> config.uiAndVisuals.fancyAuctionHouse.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.fancyAuctionHouse.highlightUnderAvgPrice"))
+								.binding(defaults.uiAndVisuals.fancyAuctionHouse.highlightCheapBIN,
+										() -> config.uiAndVisuals.fancyAuctionHouse.highlightCheapBIN,
+										newValue -> config.uiAndVisuals.fancyAuctionHouse.highlightCheapBIN = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
 
-                //Fancy Bars
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.bars"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.bars.enableBars"))
-                                .binding(defaults.uiAndVisuals.bars.enableBars,
-                                        () -> config.uiAndVisuals.bars.enableBars,
-                                        newValue -> config.uiAndVisuals.bars.enableBars = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(ButtonOption.createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
-                                .prompt(Text.translatable("text.skyblocker.open"))
-                                .action(screen -> MinecraftClient.getInstance().setScreen(new StatusBarsConfigScreen()))
-                                .build())
+				//Fancy Bars
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.bars"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.bars.enableBars"))
+								.binding(defaults.uiAndVisuals.bars.enableBars,
+										() -> config.uiAndVisuals.bars.enableBars,
+										newValue -> config.uiAndVisuals.bars.enableBars = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
+								.prompt(Text.translatable("text.skyblocker.open"))
+								.action(screen -> MinecraftClient.getInstance().setScreen(new StatusBarsConfigScreen()))
+								.build())
 						.option(Option.<UIAndVisualsConfig.IntelligenceDisplay>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay"))
 								.binding(defaults.uiAndVisuals.bars.intelligenceDisplay,
@@ -408,28 +408,28 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils.createEnumController(intelligenceDisplay -> Text.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay." + intelligenceDisplay.name())))
 								.build()
 						)
-                        .build())
+						.build())
 
-                //Waypoints
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.enableWaypoints"))
-                                .binding(defaults.uiAndVisuals.waypoints.enableWaypoints,
-                                        () -> config.uiAndVisuals.waypoints.enableWaypoints,
-                                        newValue -> config.uiAndVisuals.waypoints.enableWaypoints = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Waypoint.Type>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"),
-                                        Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote"))
-                                .binding(defaults.uiAndVisuals.waypoints.waypointType,
-                                        () -> config.uiAndVisuals.waypoints.waypointType,
-                                        newValue -> config.uiAndVisuals.waypoints.waypointType = newValue)
-                                .controller(ConfigUtils.createEnumController())
-                                .build())
+				//Waypoints
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.enableWaypoints"))
+								.binding(defaults.uiAndVisuals.waypoints.enableWaypoints,
+										() -> config.uiAndVisuals.waypoints.enableWaypoints,
+										newValue -> config.uiAndVisuals.waypoints.enableWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Waypoint.Type>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"),
+										Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote"))
+								.binding(defaults.uiAndVisuals.waypoints.waypointType,
+										() -> config.uiAndVisuals.waypoints.waypointType,
+										newValue -> config.uiAndVisuals.waypoints.waypointType = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip"))
@@ -473,32 +473,32 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.waypoints.allowGoingBackwards = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-                        .option(ButtonOption.createBuilder()
-                                .name(Text.translatable("skyblocker.waypoints.config"))
-                                .prompt(Text.translatable("text.skyblocker.open"))
-                                .action(screen -> MinecraftClient.getInstance().setScreen(new WaypointsScreen(screen)))
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                        		.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints"))
-                        		.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints.@Tooltip"))
-                        		.binding(defaults.uiAndVisuals.waypoints.enableChatWaypoints,
-                        				() -> config.uiAndVisuals.waypoints.enableChatWaypoints,
-                        				newValue -> config.uiAndVisuals.waypoints.enableChatWaypoints = newValue)
-                        		.controller(ConfigUtils.createBooleanController())
-                        		.build())
-                        .build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.waypoints.config"))
+								.prompt(Text.translatable("text.skyblocker.open"))
+								.action(screen -> MinecraftClient.getInstance().setScreen(new WaypointsScreen(screen)))
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints.@Tooltip"))
+								.binding(defaults.uiAndVisuals.waypoints.enableChatWaypoints,
+										() -> config.uiAndVisuals.waypoints.enableChatWaypoints,
+										newValue -> config.uiAndVisuals.waypoints.enableChatWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
 
-                //Teleport Overlays
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays"))
-                                .binding(defaults.uiAndVisuals.teleportOverlay.enableTeleportOverlays,
-                                        () -> config.uiAndVisuals.teleportOverlay.enableTeleportOverlays,
-                                        newValue -> config.uiAndVisuals.teleportOverlay.enableTeleportOverlays = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
+				//Teleport Overlays
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays"))
+								.binding(defaults.uiAndVisuals.teleportOverlay.enableTeleportOverlays,
+										() -> config.uiAndVisuals.teleportOverlay.enableTeleportOverlays,
+										newValue -> config.uiAndVisuals.teleportOverlay.enableTeleportOverlays = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.showWhenInAir"))
 								.binding(defaults.uiAndVisuals.teleportOverlay.showWhenInAir,
@@ -506,58 +506,58 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.teleportOverlay.showWhenInAir = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-                        .option(Option.<Color>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor"))
-                                .binding(defaults.uiAndVisuals.teleportOverlay.teleportOverlayColor,
-                                        () -> config.uiAndVisuals.teleportOverlay.teleportOverlayColor,
-                                        newValue -> {
-                                            config.uiAndVisuals.teleportOverlay.teleportOverlayColor = newValue;
-                                            TeleportOverlay.configCallback(newValue);
-                                       })
-                                .controller(ColourController.createBuilder().hasAlpha(true).build())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableWeirdTransmission"))
-                                .binding(defaults.uiAndVisuals.teleportOverlay.enableWeirdTransmission,
-                                        () -> config.uiAndVisuals.teleportOverlay.enableWeirdTransmission,
-                                        newValue -> config.uiAndVisuals.teleportOverlay.enableWeirdTransmission = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableInstantTransmission"))
-                                .binding(defaults.uiAndVisuals.teleportOverlay.enableInstantTransmission,
-                                        () -> config.uiAndVisuals.teleportOverlay.enableInstantTransmission,
-                                        newValue -> config.uiAndVisuals.teleportOverlay.enableInstantTransmission = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableEtherTransmission"))
-                                .binding(defaults.uiAndVisuals.teleportOverlay.enableEtherTransmission,
-                                        () -> config.uiAndVisuals.teleportOverlay.enableEtherTransmission,
-                                        newValue -> config.uiAndVisuals.teleportOverlay.enableEtherTransmission = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission"))
-                                .binding(defaults.uiAndVisuals.teleportOverlay.enableSinrecallTransmission,
-                                        () -> config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission,
-                                        newValue -> config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableWitherImpact"))
-                                .binding(defaults.uiAndVisuals.teleportOverlay.enableWitherImpact,
-                                        () -> config.uiAndVisuals.teleportOverlay.enableWitherImpact,
-                                        newValue -> config.uiAndVisuals.teleportOverlay.enableWitherImpact = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor"))
+								.binding(defaults.uiAndVisuals.teleportOverlay.teleportOverlayColor,
+										() -> config.uiAndVisuals.teleportOverlay.teleportOverlayColor,
+										newValue -> {
+											config.uiAndVisuals.teleportOverlay.teleportOverlayColor = newValue;
+											TeleportOverlay.configCallback(newValue);
+									})
+								.controller(ColourController.createBuilder().hasAlpha(true).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableWeirdTransmission"))
+								.binding(defaults.uiAndVisuals.teleportOverlay.enableWeirdTransmission,
+										() -> config.uiAndVisuals.teleportOverlay.enableWeirdTransmission,
+										newValue -> config.uiAndVisuals.teleportOverlay.enableWeirdTransmission = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableInstantTransmission"))
+								.binding(defaults.uiAndVisuals.teleportOverlay.enableInstantTransmission,
+										() -> config.uiAndVisuals.teleportOverlay.enableInstantTransmission,
+										newValue -> config.uiAndVisuals.teleportOverlay.enableInstantTransmission = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableEtherTransmission"))
+								.binding(defaults.uiAndVisuals.teleportOverlay.enableEtherTransmission,
+										() -> config.uiAndVisuals.teleportOverlay.enableEtherTransmission,
+										newValue -> config.uiAndVisuals.teleportOverlay.enableEtherTransmission = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission"))
+								.binding(defaults.uiAndVisuals.teleportOverlay.enableSinrecallTransmission,
+										() -> config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission,
+										newValue -> config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableWitherImpact"))
+								.binding(defaults.uiAndVisuals.teleportOverlay.enableWitherImpact,
+										() -> config.uiAndVisuals.teleportOverlay.enableWitherImpact,
+										newValue -> config.uiAndVisuals.teleportOverlay.enableWitherImpact = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
 
-                //Smooth AOTE
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE"))
-                        .description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip"))
-                        .collapsed(true)
+				//Smooth AOTE
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE"))
+						.description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip"))
+						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.predictive"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip"))
@@ -566,46 +566,46 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.smoothAOTE.predictive = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.smoothAOTE.enableWeirdTransmission,
-                                        () -> config.uiAndVisuals.smoothAOTE.enableWeirdTransmission,
-                                        newValue -> config.uiAndVisuals.smoothAOTE.enableWeirdTransmission = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.smoothAOTE.enableInstantTransmission,
-                                        () -> config.uiAndVisuals.smoothAOTE.enableInstantTransmission,
-                                        newValue -> config.uiAndVisuals.smoothAOTE.enableInstantTransmission = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.smoothAOTE.enableEtherTransmission,
-                                        () -> config.uiAndVisuals.smoothAOTE.enableEtherTransmission,
-                                        newValue -> config.uiAndVisuals.smoothAOTE.enableEtherTransmission = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.smoothAOTE.enableSinrecallTransmission,
-                                        () -> config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission,
-                                        newValue -> config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.smoothAOTE.enableWitherImpact,
-                                        () -> config.uiAndVisuals.smoothAOTE.enableWitherImpact,
-                                        newValue -> config.uiAndVisuals.smoothAOTE.enableWitherImpact = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip"))
+								.binding(defaults.uiAndVisuals.smoothAOTE.enableWeirdTransmission,
+										() -> config.uiAndVisuals.smoothAOTE.enableWeirdTransmission,
+										newValue -> config.uiAndVisuals.smoothAOTE.enableWeirdTransmission = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission.@Tooltip"))
+								.binding(defaults.uiAndVisuals.smoothAOTE.enableInstantTransmission,
+										() -> config.uiAndVisuals.smoothAOTE.enableInstantTransmission,
+										newValue -> config.uiAndVisuals.smoothAOTE.enableInstantTransmission = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip"))
+								.binding(defaults.uiAndVisuals.smoothAOTE.enableEtherTransmission,
+										() -> config.uiAndVisuals.smoothAOTE.enableEtherTransmission,
+										newValue -> config.uiAndVisuals.smoothAOTE.enableEtherTransmission = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip"))
+								.binding(defaults.uiAndVisuals.smoothAOTE.enableSinrecallTransmission,
+										() -> config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission,
+										newValue -> config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip"))
+								.binding(defaults.uiAndVisuals.smoothAOTE.enableWitherImpact,
+										() -> config.uiAndVisuals.smoothAOTE.enableWitherImpact,
+										newValue -> config.uiAndVisuals.smoothAOTE.enableWitherImpact = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip"))
@@ -614,28 +614,28 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.smoothAOTE.maximumAddedLag = newValue)
 								.controller(IntegerController.createBuilder().range(0, 500).slider(1).build())
 								.build())
-                        .build())
+						.build())
 
-                //Search overlay
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableBazaar"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableBazaar.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.searchOverlay.enableBazaar,
-                                        () -> config.uiAndVisuals.searchOverlay.enableBazaar,
-                                        newValue -> config.uiAndVisuals.searchOverlay.enableBazaar = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.searchOverlay.enableAuctionHouse,
-                                        () -> config.uiAndVisuals.searchOverlay.enableAuctionHouse,
-                                        newValue -> config.uiAndVisuals.searchOverlay.enableAuctionHouse = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
+				//Search overlay
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableBazaar"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableBazaar.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.enableBazaar,
+										() -> config.uiAndVisuals.searchOverlay.enableBazaar,
+										newValue -> config.uiAndVisuals.searchOverlay.enableBazaar = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.enableAuctionHouse,
+										() -> config.uiAndVisuals.searchOverlay.enableAuctionHouse,
+										newValue -> config.uiAndVisuals.searchOverlay.enableAuctionHouse = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum.@Tooltip"))
@@ -644,39 +644,39 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.searchOverlay.enableMuseum = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.keepPreviousSearches"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.keepPreviousSearches.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.searchOverlay.keepPreviousSearches,
-                                        () -> config.uiAndVisuals.searchOverlay.keepPreviousSearches,
-                                        newValue -> config.uiAndVisuals.searchOverlay.keepPreviousSearches = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Integer>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.searchOverlay.maxSuggestions,
-                                        () -> config.uiAndVisuals.searchOverlay.maxSuggestions,
-                                        newValue -> config.uiAndVisuals.searchOverlay.maxSuggestions = newValue)
-                                .controller(IntegerController.createBuilder().range(0, 5).slider(1).build())
-                                .build())
-                        .option(Option.<Integer>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.historyLength"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.historyLength.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.searchOverlay.historyLength,
-                                        () -> config.uiAndVisuals.searchOverlay.historyLength,
-                                        newValue -> config.uiAndVisuals.searchOverlay.historyLength = newValue)
-                                .controller(IntegerController.createBuilder().range(0, 5).slider(1).build())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableCommands"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableCommands.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.searchOverlay.enableCommands,
-                                        () -> config.uiAndVisuals.searchOverlay.enableCommands,
-                                        newValue -> config.uiAndVisuals.searchOverlay.enableCommands = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.keepPreviousSearches"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.keepPreviousSearches.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.keepPreviousSearches,
+										() -> config.uiAndVisuals.searchOverlay.keepPreviousSearches,
+										newValue -> config.uiAndVisuals.searchOverlay.keepPreviousSearches = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.maxSuggestions,
+										() -> config.uiAndVisuals.searchOverlay.maxSuggestions,
+										newValue -> config.uiAndVisuals.searchOverlay.maxSuggestions = newValue)
+								.controller(IntegerController.createBuilder().range(0, 5).slider(1).build())
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.historyLength"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.historyLength.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.historyLength,
+										() -> config.uiAndVisuals.searchOverlay.historyLength,
+										newValue -> config.uiAndVisuals.searchOverlay.historyLength = newValue)
+								.controller(IntegerController.createBuilder().range(0, 5).slider(1).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableCommands"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableCommands.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.enableCommands,
+										() -> config.uiAndVisuals.searchOverlay.enableCommands,
+										newValue -> config.uiAndVisuals.searchOverlay.enableCommands = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
 
 				// Bazaar Quick Quantities
 				.group(OptionGroup.createBuilder()
@@ -720,26 +720,26 @@ public class UIAndVisualsCategory {
 								.build())
 						.build())
 
-                //Input Calculator
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.enabled"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.inputCalculator.enabled,
-                                        () -> config.uiAndVisuals.inputCalculator.enabled,
-                                        newValue -> config.uiAndVisuals.inputCalculator.enabled = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.inputCalculator.requiresEquals,
-                                        () -> config.uiAndVisuals.inputCalculator.requiresEquals,
-                                        newValue -> config.uiAndVisuals.inputCalculator.requiresEquals = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
+				//Input Calculator
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.enabled"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip"))
+								.binding(defaults.uiAndVisuals.inputCalculator.enabled,
+										() -> config.uiAndVisuals.inputCalculator.enabled,
+										newValue -> config.uiAndVisuals.inputCalculator.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip"))
+								.binding(defaults.uiAndVisuals.inputCalculator.requiresEquals,
+										() -> config.uiAndVisuals.inputCalculator.requiresEquals,
+										newValue -> config.uiAndVisuals.inputCalculator.requiresEquals = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip"))
@@ -748,72 +748,72 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.inputCalculator.closeSignsWithEnter = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-                        .build())
+						.build())
 
-                //Flame Overlay
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.flameOverlay"))
-                        .collapsed(true)
-                        .option(Option.<Integer>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.flameOverlay.flameHeight"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.flameOverlay.flameHeight.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.flameOverlay.flameHeight,
-                                        () -> config.uiAndVisuals.flameOverlay.flameHeight,
-                                        newValue -> config.uiAndVisuals.flameOverlay.flameHeight = newValue)
-                                .controller(IntegerController.createBuilder().range(0, 100).slider(1).build())
-                                .build())
-                        .option(Option.<Integer>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.flameOverlay.flameOpacity,
-                                        () -> config.uiAndVisuals.flameOverlay.flameOpacity,
-                                        newValue -> config.uiAndVisuals.flameOverlay.flameOpacity = newValue)
-                                .controller(IntegerController.createBuilder().range(0, 100).slider(1).build())
-                                .build())
-                        .build())
+				//Flame Overlay
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.flameOverlay"))
+						.collapsed(true)
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.flameOverlay.flameHeight"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.flameOverlay.flameHeight.@Tooltip"))
+								.binding(defaults.uiAndVisuals.flameOverlay.flameHeight,
+										() -> config.uiAndVisuals.flameOverlay.flameHeight,
+										newValue -> config.uiAndVisuals.flameOverlay.flameHeight = newValue)
+								.controller(IntegerController.createBuilder().range(0, 100).slider(1).build())
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity.@Tooltip"))
+								.binding(defaults.uiAndVisuals.flameOverlay.flameOpacity,
+										() -> config.uiAndVisuals.flameOverlay.flameOpacity,
+										newValue -> config.uiAndVisuals.flameOverlay.flameOpacity = newValue)
+								.controller(IntegerController.createBuilder().range(0, 100).slider(1).build())
+								.build())
+						.build())
 
-                //Compact Damage Numbers
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.enabled"))
-                                .binding(defaults.uiAndVisuals.compactDamage.enabled,
-                                        () -> config.uiAndVisuals.compactDamage.enabled,
-                                        newValue -> config.uiAndVisuals.compactDamage.enabled = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .option(Option.<Integer>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.precision"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.compactDamage.precision,
-                                        () -> config.uiAndVisuals.compactDamage.precision,
-                                        newValue -> config.uiAndVisuals.compactDamage.precision = newValue)
-                                .controller(IntegerController.createBuilder().range(1, 3).slider(1).build())
-                                .build())
-                        .option(Option.<Color>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor"))
-                                .binding(defaults.uiAndVisuals.compactDamage.normalDamageColor,
-                                        () -> config.uiAndVisuals.compactDamage.normalDamageColor,
-                                        newValue -> config.uiAndVisuals.compactDamage.normalDamageColor = newValue)
-                                .controller(ColourController.createBuilder().build())
-                                .build())
-                        .option(Option.<Color>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart"))
-                                .binding(defaults.uiAndVisuals.compactDamage.critDamageGradientStart,
-                                        () -> config.uiAndVisuals.compactDamage.critDamageGradientStart,
-                                        newValue -> config.uiAndVisuals.compactDamage.critDamageGradientStart = newValue)
-                                .controller(ColourController.createBuilder().build())
-                                .build())
-                        .option(Option.<Color>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd"))
-                                .binding(defaults.uiAndVisuals.compactDamage.critDamageGradientEnd,
-                                        () -> config.uiAndVisuals.compactDamage.critDamageGradientEnd,
-                                        newValue -> config.uiAndVisuals.compactDamage.critDamageGradientEnd = newValue)
-                                .controller(ColourController.createBuilder().build())
-                                .build())
-                        .build()
-                )
+				//Compact Damage Numbers
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.enabled"))
+								.binding(defaults.uiAndVisuals.compactDamage.enabled,
+										() -> config.uiAndVisuals.compactDamage.enabled,
+										newValue -> config.uiAndVisuals.compactDamage.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.precision"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip"))
+								.binding(defaults.uiAndVisuals.compactDamage.precision,
+										() -> config.uiAndVisuals.compactDamage.precision,
+										newValue -> config.uiAndVisuals.compactDamage.precision = newValue)
+								.controller(IntegerController.createBuilder().range(1, 3).slider(1).build())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor"))
+								.binding(defaults.uiAndVisuals.compactDamage.normalDamageColor,
+										() -> config.uiAndVisuals.compactDamage.normalDamageColor,
+										newValue -> config.uiAndVisuals.compactDamage.normalDamageColor = newValue)
+								.controller(ColourController.createBuilder().build())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart"))
+								.binding(defaults.uiAndVisuals.compactDamage.critDamageGradientStart,
+										() -> config.uiAndVisuals.compactDamage.critDamageGradientStart,
+										newValue -> config.uiAndVisuals.compactDamage.critDamageGradientStart = newValue)
+								.controller(ColourController.createBuilder().build())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd"))
+								.binding(defaults.uiAndVisuals.compactDamage.critDamageGradientEnd,
+										() -> config.uiAndVisuals.compactDamage.critDamageGradientEnd,
+										newValue -> config.uiAndVisuals.compactDamage.critDamageGradientEnd = newValue)
+								.controller(ColourController.createBuilder().build())
+								.build())
+						.build()
+				)
 
 				//Custom Health bars
 				.group(OptionGroup.createBuilder()
@@ -959,8 +959,8 @@ public class UIAndVisualsCategory {
 								.build())
 						.build()
 				)
-                .build();
-    }
+				.build();
+	}
 
 	private static List<Option<Boolean>> createSlotTextToggles(SkyblockerConfig config) {
 		return SlotTextManager.getAdderStream().map(SlotTextAdder::getConfigInformation).filter(Objects::nonNull).distinct()

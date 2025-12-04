@@ -28,11 +28,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class ItemPrice {
-    public static final KeyBinding ITEM_PRICE_LOOKUP = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.itemPriceLookup",
-            GLFW.GLFW_KEY_F6,
-            SkyblockerMod.KEYBINDING_CATEGORY
-    ));
+	public static final KeyBinding ITEM_PRICE_LOOKUP = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+			"key.itemPriceLookup",
+			GLFW.GLFW_KEY_F6,
+			SkyblockerMod.KEYBINDING_CATEGORY
+	));
 
 	/**
 	 * <h2>Crucial init method, do not remove.</h2>
@@ -58,52 +58,52 @@ public class ItemPrice {
 		});
 	}
 
-    public static void itemPriceLookup(ClientPlayerEntity player, @NotNull Slot slot) {
-        ItemStack stack = slot.getStack();
+	public static void itemPriceLookup(ClientPlayerEntity player, @NotNull Slot slot) {
+		ItemStack stack = slot.getStack();
 		itemPriceLookup(player, stack);
 	}
 
 	public static void itemPriceLookup(ClientPlayerEntity player, ItemStack stack) {
-        String skyblockApiId = stack.getSkyblockApiId();
-        ItemStack neuStack = ItemRepository.getItemStack(stack.getNeuName());
-        if (neuStack != null && !neuStack.isEmpty()) {
-            String itemName = Formatting.strip(neuStack.getName().getString());
+		String skyblockApiId = stack.getSkyblockApiId();
+		ItemStack neuStack = ItemRepository.getItemStack(stack.getNeuName());
+		if (neuStack != null && !neuStack.isEmpty()) {
+			String itemName = Formatting.strip(neuStack.getName().getString());
 
-            // Handle Pets
-            if (stack.getSkyblockId().equals("PET")) {
-                itemName = itemName.replaceFirst("\\[Lvl \\d+ ➡ \\d+] ", "");
-            }
+			// Handle Pets
+			if (stack.getSkyblockId().equals("PET")) {
+				itemName = itemName.replaceFirst("\\[Lvl \\d+ ➡ \\d+] ", "");
+			}
 
-            // Handle Enchanted Books
-            if (itemName.equals("Enchanted Book")) {
+			// Handle Enchanted Books
+			if (itemName.equals("Enchanted Book")) {
 				itemName = ItemUtils.getLore(stack).stream().findFirst().orElse(Text.empty()).getString();
-            }
+			}
 
-            // Search up the item in the bazaar or auction house
-            if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
-                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName, true);
+			// Search up the item in the bazaar or auction house
+			if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName, true);
 				return;
-            } else if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId)) {
-                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/ahsearch " + itemName, true);
+			} else if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId)) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/ahsearch " + itemName, true);
 				return;
-            }
-        }
+			}
+		}
 
 		player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceLookupFailed")), false);
-    }
+	}
 
-    private static void refreshItemPrices(ClientPlayerEntity player) {
-        player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshingItemPrices")), false);
-        CompletableFuture.allOf(Stream.of(TooltipInfoType.NPC, TooltipInfoType.BAZAAR, TooltipInfoType.LOWEST_BINS, TooltipInfoType.ONE_DAY_AVERAGE, TooltipInfoType.THREE_DAY_AVERAGE)
-                        .map(DataTooltipInfoType::downloadIfEnabled)
-                        .toArray(CompletableFuture[]::new)
-        ).thenRun(() -> {
-	        ItemPriceUpdateEvent.ON_PRICE_UPDATE.invoker().onPriceUpdate();
-	        player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices")), false);
+	private static void refreshItemPrices(ClientPlayerEntity player) {
+		player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshingItemPrices")), false);
+		CompletableFuture.allOf(Stream.of(TooltipInfoType.NPC, TooltipInfoType.BAZAAR, TooltipInfoType.LOWEST_BINS, TooltipInfoType.ONE_DAY_AVERAGE, TooltipInfoType.THREE_DAY_AVERAGE)
+						.map(DataTooltipInfoType::downloadIfEnabled)
+						.toArray(CompletableFuture[]::new)
+		).thenRun(() -> {
+			ItemPriceUpdateEvent.ON_PRICE_UPDATE.invoker().onPriceUpdate();
+			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices")), false);
 		}).exceptionally(e -> {
 			ItemTooltip.LOGGER.error("[Skyblocker Item Price] Failed to refresh item prices", e);
 			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed")), false);
 			return null;
 		});
-    }
+	}
 }

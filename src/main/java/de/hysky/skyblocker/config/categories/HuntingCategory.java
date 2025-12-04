@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
+import java.awt.Color;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
@@ -13,8 +15,6 @@ import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.ColourController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-
-import java.awt.*;
 
 public class HuntingCategory {
 

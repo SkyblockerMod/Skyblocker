@@ -28,7 +28,7 @@ import net.minecraft.util.math.ColorHelper;
 import org.joml.Matrix3x2f;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Optional;
 import java.util.UUID;
 

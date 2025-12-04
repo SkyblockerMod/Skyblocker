@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import java.awt.Color;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.gl.RenderPipelines;
@@ -8,8 +10,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
-import java.awt.*;
 
 public class DungeonMapConfigScreen extends Screen {
 
