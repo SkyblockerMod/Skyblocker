@@ -26,10 +26,10 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 		if ((TooltipInfoType.ONE_DAY_AVERAGE.getData() == null && type != Average.THREE_DAY) || (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null && type != Average.ONE_DAY)) {
 			ItemTooltip.nullWarning();
 		} else {
-                /*
-                  We are skipping check average prices for potions, runes
-                  and enchanted books because there is no data for their in API.
-                 */
+				/*
+				We are skipping check average prices for potions, runes
+				and enchanted books because there is no data for their in API.
+				 */
 			if (!neuName.isEmpty() && TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId)) {
 
 				// "No data" line because of API not keeping old data, it causes NullPointerException

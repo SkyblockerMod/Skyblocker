@@ -17,32 +17,32 @@ import java.util.Optional;
  */
 public class SkyblockRecipeDisplay implements Display {
 
-    private final Identifier category;
-    private final SkyblockRecipe recipe;
+	private final Identifier category;
+	private final SkyblockRecipe recipe;
 
-    public SkyblockRecipeDisplay(SkyblockRecipe recipe) {
-        this.category = recipe.getCategoryIdentifier();
-        this.recipe = recipe;
-    }
+	public SkyblockRecipeDisplay(SkyblockRecipe recipe) {
+		this.category = recipe.getCategoryIdentifier();
+		this.recipe = recipe;
+	}
 
-    @Override
-    public List<EntryIngredient> getInputEntries() {
-        return recipe.getInputs().stream().map(EntryStacks::of).map(EntryIngredient::of).toList();
-    }
+	@Override
+	public List<EntryIngredient> getInputEntries() {
+		return recipe.getInputs().stream().map(EntryStacks::of).map(EntryIngredient::of).toList();
+	}
 
-    @Override
-    public List<EntryIngredient> getOutputEntries() {
-        return recipe.getOutputs().stream().map(EntryStacks::of).map(EntryIngredient::of).toList();
-    }
+	@Override
+	public List<EntryIngredient> getOutputEntries() {
+		return recipe.getOutputs().stream().map(EntryStacks::of).map(EntryIngredient::of).toList();
+	}
 
-    public SkyblockRecipe getRecipe() {
-        return recipe;
-    }
+	public SkyblockRecipe getRecipe() {
+		return recipe;
+	}
 
-    @Override
-    public CategoryIdentifier<?> getCategoryIdentifier() {
-        return CategoryIdentifier.of(category);
-    }
+	@Override
+	public CategoryIdentifier<?> getCategoryIdentifier() {
+		return CategoryIdentifier.of(category);
+	}
 
 	@Override
 	public Optional<Identifier> getDisplayLocation() {

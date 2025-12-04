@@ -19,26 +19,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BossBarHud.class)
 public abstract class BossBarHudMixin {
 
-    @Final
-    @Shadow
-    private MinecraftClient client;
+	@Final
+	@Shadow
+	private MinecraftClient client;
 
-    @Shadow
-    protected abstract void renderBossBar(DrawContext context, int x, int y, BossBar bossBar);
+	@Shadow
+	protected abstract void renderBossBar(DrawContext context, int x, int y, BossBar bossBar);
 
-    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    private void onRender(DrawContext context, CallbackInfo ci) {
+	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
+	private void onRender(DrawContext context, CallbackInfo ci) {
 
-        if (SkyblockerConfigManager.get().slayers.displayBossbar && SlayerBossBars.shouldRenderBossBar()) {
-            ClientBossBar bar = SlayerBossBars.updateBossBar();
+		if (SkyblockerConfigManager.get().slayers.displayBossbar && SlayerBossBars.shouldRenderBossBar()) {
+			ClientBossBar bar = SlayerBossBars.updateBossBar();
 
-            int textWidth = this.client.textRenderer.getWidth(bar.getName());
-            context.drawTextWithShadow(this.client.textRenderer, bar.getName(), context.getScaledWindowWidth() / 2 - textWidth / 2, 3, Colors.WHITE);
+			int textWidth = this.client.textRenderer.getWidth(bar.getName());
+			context.drawTextWithShadow(this.client.textRenderer, bar.getName(), context.getScaledWindowWidth() / 2 - textWidth / 2, 3, Colors.WHITE);
 
-            this.renderBossBar(context, (context.getScaledWindowWidth() / 2) - 91, 12, bar);
+			this.renderBossBar(context, (context.getScaledWindowWidth() / 2) - 91, 12, bar);
 
-            ci.cancel();
-        }
+			ci.cancel();
+		}
 
-    }
+	}
 }

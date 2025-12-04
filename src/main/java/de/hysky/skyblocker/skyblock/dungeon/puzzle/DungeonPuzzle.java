@@ -18,24 +18,24 @@ import java.util.Set;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public abstract class DungeonPuzzle implements Tickable, Renderable, Resettable {
-    protected final String puzzleName;
-    @NotNull
-    private final Set<String> roomNames;
-    private boolean shouldSolve;
+	protected final String puzzleName;
+	@NotNull
+	private final Set<String> roomNames;
+	private boolean shouldSolve;
 
-    public DungeonPuzzle(String puzzleName, String... roomName) {
-        this(puzzleName, Set.of(roomName));
-    }
+	public DungeonPuzzle(String puzzleName, String... roomName) {
+		this(puzzleName, Set.of(roomName));
+	}
 
-    public DungeonPuzzle(String puzzleName, @NotNull Set<String> roomNames) {
-        this.puzzleName = puzzleName;
-        this.roomNames = roomNames;
-        DungeonEvents.PUZZLE_MATCHED.register(room -> {
-            if (this.roomNames.contains(room.getName())) {
-                room.addSubProcess(this);
-                shouldSolve = true;
-            }
-        });
+	public DungeonPuzzle(String puzzleName, @NotNull Set<String> roomNames) {
+		this.puzzleName = puzzleName;
+		this.roomNames = roomNames;
+		DungeonEvents.PUZZLE_MATCHED.register(room -> {
+			if (this.roomNames.contains(room.getName())) {
+				room.addSubProcess(this);
+				shouldSolve = true;
+			}
+		});
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(puzzleName).then(literal("solve").executes(context -> {
 			Room currentRoom = DungeonManager.getCurrentRoom();
 			if (currentRoom != null) {
@@ -47,15 +47,15 @@ public abstract class DungeonPuzzle implements Tickable, Renderable, Resettable 
 			}
 			return Command.SINGLE_SUCCESS;
 		})))))));
-        ClientPlayConnectionEvents.JOIN.register(this);
-    }
+		ClientPlayConnectionEvents.JOIN.register(this);
+	}
 
-    public boolean shouldSolve() {
-        return shouldSolve;
-    }
+	public boolean shouldSolve() {
+		return shouldSolve;
+	}
 
-    @Override
-    public void reset() {
-        shouldSolve = false;
-    }
+	@Override
+	public void reset() {
+		shouldSolve = false;
+	}
 }

@@ -251,7 +251,6 @@
     "argument.color.hex.invalidChar": "Carattere non valido per l'esadecimale:%s. I caratteri validi sono : [0-9a-fA-F]",
     "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Sottolinea di verde il bottone da premere, e sottolinea di giallo il successivo.",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip": "Evidenzia: Mostra solo l'evidenziazione.\n\nContorno Evidenziato: Mostra sia evidenziazione che contorno.\n\nContorno: Mostra solo un contorno.",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nNota: I Waypoint Segreti dei Dungeon devono essere abilitati per funzionare.",
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit": "Calcolatore di Profitto delle Casse Croesus",
     "skyblocker.config.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "Disabilitare **non è consigliato** se sei una persona smemorata.",
     "text.skyblocker.confirm": "Conferma",
