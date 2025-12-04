@@ -230,8 +230,8 @@ public class ProfileViewerScreen extends Screen {
 					)
 					.executes(Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(MinecraftClient.getInstance().getSession().getUsername())));
 			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(literalArgumentBuilder));
-        });
-    }
+		});
+	}
 
 	private static void fetchCollectionsData() {
 		CompletableFuture.runAsync(() -> {
