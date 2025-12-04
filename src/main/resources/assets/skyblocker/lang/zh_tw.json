@@ -544,7 +544,7 @@
     "skyblocker.bars.config.mainColor": "主顔色",
     "skyblocker.bars.config.overflowColor": "溢出顔色",
     "skyblocker.bars.config.textColor": "文本顔色",
-    "skyblocker.bars.config.text": "顯示價值",
+    "skyblocker.bars.config.text": "文本位置",
     "skyblocker.bars.config.icon": "圖標",
     "skyblocker.config.uiAndVisuals.bars.openScreen": "狀態欄設定介面",
     "skyblocker.bars.config.explanationTitle": "這是什麽？",
