@@ -118,19 +118,16 @@ public class Room implements Tickable, Renderable {
 	}
 
 	// Room from WS
-	Room(@NotNull Type type, Shape shape, Direction direction, String roomName, Vector2ic... physicalPositions) {
+	Room(@NotNull Type type, Shape shape, Direction direction, String roomName, @NotNull Set<Vector2ic> segments, IntSortedSet segmentsX, IntSortedSet segmentsY) {
+		fromWebsocket = true;
 		this.type = type;
 		this.shape = shape;
-		fromWebsocket = true;
-		segments = Set.of(physicalPositions);
-
-		IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
-		IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
-		roomsData = DungeonManager.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(Locale.ENGLISH), Collections.emptyMap());
-
+		this.segments = segments;
 		this.name = roomName;
 		this.direction = direction;
 		this.physicalCornerPos = DungeonMapUtils.getPhysicalCornerPos(direction, segmentsX, segmentsY);
+
+		roomsData = DungeonManager.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(Locale.ENGLISH), Collections.emptyMap());
 		roomMatched();
 		matchState = MatchState.MATCHED;
 		DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this);
@@ -180,6 +177,11 @@ public class Room implements Tickable, Renderable {
 
 	@NotNull
 	private Shape determineShape(IntSortedSet segmentsX, IntSortedSet segmentsY) {
+		return determineShape(type, segments, segmentsX, segmentsY);
+	}
+
+	@NotNull
+	protected static Shape determineShape(Type type, Set<Vector2ic> segments, IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return switch (type) {
 			case PUZZLE -> Shape.PUZZLE;
 			case TRAP -> Shape.TRAP;

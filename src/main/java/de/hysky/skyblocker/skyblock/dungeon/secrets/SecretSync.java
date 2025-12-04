@@ -7,12 +7,16 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.utils.ws.Service;
 import de.hysky.skyblocker.utils.ws.WsMessageHandler;
 import de.hysky.skyblocker.utils.ws.message.*;
+import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import net.minecraft.client.MinecraftClient;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2ic;
 import org.slf4j.Logger;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class SecretSync {
@@ -26,10 +30,10 @@ public class SecretSync {
 		DungeonEvents.SECRET_FOUND.register(SecretSync::syncSecretFound);
 	}
 
-	public static boolean checkUUID(UUID uuid, Message<?> msg) {
+	public static boolean checkUUID(UUID uuid) {
 		if (CLIENT.world == null) return false;
 		if (CLIENT.world.getPlayerByUuid(uuid) != null) return true;
-		LOGGER.error("[Skyblocker Dungeon Secret Sync] Received a message from a player not in the Dungeons run, msg: {}", msg);
+		LOGGER.error("[Skyblocker Dungeon Secret Sync] Received a message from a player not in the Dungeons run: {}", uuid);
 		return false;
 	}
 
@@ -46,21 +50,28 @@ public class SecretSync {
 	}
 
 	public static void handleRoomMatch(DungeonRoomMatchMessage msg) {
-		if (!checkUUID(msg.uuid(), msg)) return;
+		if (!checkUUID(msg.uuid())) return;
+		if (DungeonManager.getRoomsStream().count() > 36 || msg.pos().size() > 4) return;
 		if (DungeonManager.getRoomMetadata(msg.room()) == null) {
 			LOGGER.error("[Skyblocker Dungeons Secret Sync] Received an invalid room over the websocket, msg: {}", msg);
 			return;
 		}
+		if (DungeonManager.checkIfSegmentsExist(msg.pos())) return;
 
-		// just in case!
-		if (DungeonManager.getRoomsStream().count() > 36) return;
+		// Validate shape
+		Set<Vector2ic> segments = Set.of(msg.pos().toArray(Vector2ic[]::new));
 
-		// Check if we already have this room
-		if (!DungeonManager.validateRoomSegmentsFromWs(msg.pos())) return;
+		IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
+		IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
+		if (Room.determineShape(msg.roomType(), segments, segmentsX, segmentsY) != msg.shape()) {
+			LOGGER.error("[Skyblocker Dungeons Secret Sync] Received a room with an invalid shape!, msg: {}", msg);
+			return;
+		}
 
 		// Make the room and add it
-		Room newRoom = new Room(msg.roomType(), msg.shape(), msg.direction(), msg.room(), msg.pos().toArray(Vector2ic[]::new));
+		Room newRoom = new Room(msg.roomType(), msg.shape(), msg.direction(), msg.room(), segments, segmentsX, segmentsY);
 		DungeonManager.addRoomFromWs(newRoom);
+		LOGGER.info("[Skyblocker Dungeon Secret Sync] Added room {}", msg.room());
 	}
 
 	/**
@@ -73,7 +84,7 @@ public class SecretSync {
 	}
 
 	public static void handleSecretCountUpdate(DungeonRoomSecretCountMessage msg) {
-		if (!checkUUID(msg.uuid(), msg)) return;
+		if (!checkUUID(msg.uuid())) return;
 		Room room = getRoomByName(msg.roomName());
 		if (room == null || room.secretsFound >= msg.secretCount() || msg.secretCount() > room.getSecretCount()) return;
 
@@ -89,12 +100,13 @@ public class SecretSync {
 	}
 
 	public static void handleHideWaypoint(DungeonRoomHideWaypointMessage msg) {
-		if (!checkUUID(msg.uuid(), msg)) return;
+		if (!checkUUID(msg.uuid())) return;
 		Room room = getRoomByName(msg.roomName());
 		if (room == null) return;
-		int index = room.getIndexByWaypointHash(msg.waypointHash());
-		if (index == -1) return;
-		room.markSecrets(index, true);
+		int secretIndex = room.getIndexByWaypointHash(msg.waypointHash());
+		if (secretIndex == -1) return;
+		room.markSecrets(secretIndex, true);
+		LOGGER.info("[Skyblocker Dungeon Secret Sync] Hiding waypoints for secret #{} in room {}", secretIndex, msg.roomName());
 	}
 
 	public static void syncMimicKilled() {
@@ -104,8 +116,9 @@ public class SecretSync {
 	}
 
 	public static void handleMimicKilled(DungeonMimicKilledMessage msg) {
-		if (!checkUUID(msg.uuid(), msg)) return;
+		if (!checkUUID(msg.uuid())) return;
 		DungeonScore.onMimicKill();
+		LOGGER.info("[Skyblocker Dungeon Secret Sync] Mimic killed!");
 	}
 
 	public static void syncPrinceKilled() {
@@ -115,7 +128,8 @@ public class SecretSync {
 	}
 
 	public static void handlePrinceKilled(DungeonPrinceKilledMessage msg) {
-		if (!checkUUID(msg.uuid(), msg)) return;
+		if (!checkUUID(msg.uuid())) return;
 		DungeonScore.onPrinceKill(false);
+		LOGGER.info("[Skyblocker Dungeon Secret Sync] Prince killed!");
 	}
 }

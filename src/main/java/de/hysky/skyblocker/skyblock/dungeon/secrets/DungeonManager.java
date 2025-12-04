@@ -751,8 +751,8 @@ public class DungeonManager {
 		}
 	}
 
-	protected static boolean validateRoomSegmentsFromWs(List<Vector2ic> segments) {
-		return segments.stream().noneMatch(rooms::containsKey);
+	protected static boolean checkIfSegmentsExist(List<Vector2ic> segments) {
+		return segments.stream().anyMatch(rooms::containsKey);
 	}
 
 	/**
