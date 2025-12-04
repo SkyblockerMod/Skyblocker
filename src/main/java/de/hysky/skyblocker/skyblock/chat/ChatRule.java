@@ -3,6 +3,8 @@ package de.hysky.skyblocker.skyblock.chat;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.annotations.GenEquals;
+import de.hysky.skyblocker.annotations.GenHashCode;
 import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.*;
@@ -377,6 +379,14 @@ public class ChatRule {
 		@Override
 		@GenToString
 		public native String toString();
+
+		@Override
+		@GenEquals
+		public native boolean equals(Object obj);
+
+		@Override
+		@GenHashCode
+		public native int hashCode();
 	}
 
 	static class AnnouncementMessage {
@@ -400,6 +410,14 @@ public class ChatRule {
 		@Override
 		@GenToString
 		public native String toString();
+
+		@Override
+		@GenEquals
+		public native boolean equals(Object obj);
+
+		@Override
+		@GenHashCode
+		public native int hashCode();
 	}
 
 	@Override
