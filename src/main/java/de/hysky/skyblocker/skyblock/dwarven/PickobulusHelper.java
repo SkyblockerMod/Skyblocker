@@ -166,12 +166,9 @@ public class PickobulusHelper {
 				for (int k = 1; k < 7; k++) {
 					BlockState state = blocks[i][j][k];
 					if (state.isAir() || state.isOf(Blocks.BEDROCK)) continue;
-					boolean exposed = blocks[i - 1][j][k].isAir()
-									  || blocks[i + 1][j][k].isAir()
-									  || blocks[i][j - 1][k].isAir()
-									  || blocks[i][j + 1][k].isAir()
-									  || blocks[i][j][k - 1].isAir()
-									  || blocks[i][j][k + 1].isAir();
+					boolean exposed = blocks[i - 1][j][k].isAir() || blocks[i + 1][j][k].isAir()
+									|| blocks[i][j - 1][k].isAir() || blocks[i][j + 1][k].isAir()
+									|| blocks[i][j][k - 1].isAir() || blocks[i][j][k + 1].isAir();
 					if (!exposed) continue;
 
 					if (Utils.getArea().equals(Area.GLACITE_TUNNELS)) handleGlaciteTunnels(pos, state, i, j, k);
