@@ -67,6 +67,7 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
     public void setSearch(String s) {
         search = s.toLowerCase(Locale.ENGLISH);
         updateDisplay();
+		refreshScroll();
     }
 
     @Override
