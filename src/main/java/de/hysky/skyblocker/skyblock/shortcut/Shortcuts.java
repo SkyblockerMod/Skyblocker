@@ -19,6 +19,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.Text;
@@ -36,6 +37,7 @@ public class Shortcuts {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Shortcuts.class);
 	private static final Path SHORTCUTS_FILE = SkyblockerMod.CONFIG_DIR.resolve("shortcuts.json");
 	public static final JsonData<ShortcutsRecord> shortcuts = new JsonData<>(SHORTCUTS_FILE, ShortcutsRecord.CODEC, getDefaultShortcuts());
+	private static final int VERSION = 1;
 
 	/**
 	 * Keys that are currently held down.
@@ -52,9 +54,18 @@ public class Shortcuts {
 
 	@Init
 	public static void init() {
-		shortcuts.init();
+		shortcuts.init().thenRunAsync(Shortcuts::addNewShortcuts, MinecraftClient.getInstance());
 		ClientCommandRegistrationCallback.EVENT.register(Shortcuts::registerCommands);
 		ClientSendMessageEvents.MODIFY_COMMAND.register(Shortcuts::modifyCommand);
+	}
+
+	private static void addNewShortcuts() {
+		ShortcutsRecord data = shortcuts.getData();
+		if (data.version == VERSION) return;
+		if (data.version < 1) {
+			data.commandArgs().putIfAbsent("/pv", "/skyblocker pv");
+		}
+		shortcuts.setData(data.withVersion(VERSION));
 	}
 
 	private static ShortcutsRecord getDefaultShortcuts() {
@@ -86,6 +97,9 @@ public class Shortcuts {
 		// Visit
 		commandArgs.put("/v", "/visit");
 		commands.put("/vp", "/visit portalhub");
+
+		// Skyblocker commands
+		commandArgs.put("/pv", "/skyblocker pv");
 
 		return new ShortcutsRecord(commands, commandArgs, new Object2ObjectOpenHashMap<>());
 	}
@@ -244,13 +258,22 @@ public class Shortcuts {
 		}
 	}
 
-	public record ShortcutsRecord(Object2ObjectMap<String, String> commands, Object2ObjectMap<String, String> commandArgs, Object2ObjectMap<ShortcutKeyBinding, String> keyBindings) {
+	public record ShortcutsRecord(Object2ObjectMap<String, String> commands, Object2ObjectMap<String, String> commandArgs, Object2ObjectMap<ShortcutKeyBinding, String> keyBindings, int version) {
 		@VisibleForTesting
 		static final Codec<ShortcutsRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				CodecUtils.object2ObjectMapCodec(Codec.STRING, Codec.STRING).fieldOf("commands").forGetter(ShortcutsRecord::commands),
 				CodecUtils.object2ObjectMapCodec(Codec.STRING, Codec.STRING).fieldOf("commandArgs").forGetter(ShortcutsRecord::commandArgs),
-				CodecUtils.mutableOptional(CodecUtils.object2ObjectMapCodec(ShortcutKeyBinding.CODEC, Codec.STRING).optionalFieldOf("keyBindings", Object2ObjectMaps.emptyMap()), Object2ObjectOpenHashMap::new).forGetter(ShortcutsRecord::keyBindings)
+				CodecUtils.mutableOptional(CodecUtils.object2ObjectMapCodec(ShortcutKeyBinding.CODEC, Codec.STRING).optionalFieldOf("keyBindings", Object2ObjectMaps.emptyMap()), Object2ObjectOpenHashMap::new).forGetter(ShortcutsRecord::keyBindings),
+				Codec.INT.fieldOf("version").forGetter(ShortcutsRecord::version)
 		).apply(instance, ShortcutsRecord::new));
+
+		public ShortcutsRecord(Object2ObjectMap<String, String> commands, Object2ObjectMap<String, String> commandArgs, Object2ObjectMap<ShortcutKeyBinding, String> keyBindings) {
+			this(commands, commandArgs, keyBindings, 0);
+		}
+
+		public ShortcutsRecord withVersion(int version) {
+			return new ShortcutsRecord(this.commands, this.commandArgs, this.keyBindings, version);
+		}
 
 		public int size() {
 			return commands.size() + commandArgs.size() + keyBindings.size();
