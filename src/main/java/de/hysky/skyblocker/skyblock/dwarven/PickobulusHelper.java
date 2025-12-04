@@ -138,7 +138,7 @@ public class PickobulusHelper {
 			return;
 		}
 
-		Vec3d start = client.player.getEyePos().add(0, 0.53625, 0); // Magic number according to https://youtu.be/5hdDrr6jk4E
+		Vec3d start = client.player.getEntityPos().add(0, Utils.getEyeHeight(client.player) + 0.53625, 0); // Magic number according to https://youtu.be/5hdDrr6jk4E
 		BlockHitResult blockHitResult = client.world.raycast(new RaycastContext(start, start.add(client.player.getRotationVecClient().multiply(20)), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, client.player));
 		if (blockHitResult.getType() != HitResult.Type.BLOCK) {
 			errorMessage = Text.literal("Not looking at a block").formatted(Formatting.RED);
