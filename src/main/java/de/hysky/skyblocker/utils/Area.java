@@ -13,7 +13,7 @@ public enum Area {
 	DWARVEN_BASE_CAMP("Dwarven Base Camp"),
 	GLACITE_TUNNELS("Glacite Tunnels"),
 	GLACITE_MINESHAFTS("Glacite Mineshafts"),
-	GLACITE_LAKE("Glacite Lake"),
+	GREAT_GLACITE_LAKE("Great Glacite Lake"),
 	UNKNOWN("Unknown");
 
 	private final String name;

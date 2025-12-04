@@ -91,7 +91,7 @@ public class CommissionLabels {
 		activeWaypoints.clear();
 		Area area = Utils.getArea();
 		//find commission locations in glacite
-		if (area.equals(Area.DWARVEN_BASE_CAMP) || area.equals(Area.GLACITE_TUNNELS) || area.equals(Area.GLACITE_MINESHAFTS) || area.equals(Area.GLACITE_LAKE)) {
+		if (area.equals(Area.DWARVEN_BASE_CAMP) || area.equals(Area.GLACITE_TUNNELS) || area.equals(Area.GLACITE_MINESHAFTS) || area.equals(Area.GREAT_GLACITE_LAKE)) {
 			if (currentMode != MiningConfig.CommissionWaypointMode.BOTH && currentMode != MiningConfig.CommissionWaypointMode.GLACITE) {
 				return;
 			}
