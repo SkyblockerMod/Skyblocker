@@ -262,7 +262,7 @@ public class PickobulusHelper {
 		} else if (state.isOf(Blocks.TERRACOTTA)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.UMBER.ordinal()]++;
-		} else if (state.isOf(Blocks.RED_SANDSTONE_SLAB)) {
+		} else if (state.isOf(Blocks.SMOOTH_RED_SANDSTONE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.UMBER.ordinal()]++;
 		} else if (state.isOf(Blocks.INFESTED_COBBLESTONE)) {
