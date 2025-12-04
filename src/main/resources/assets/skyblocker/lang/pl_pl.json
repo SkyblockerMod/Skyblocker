@@ -27,7 +27,6 @@
     "skyblocker.config.dungeons.croesusHelper.@Tooltip": "Oznacz na szaro skrzynie, które zostały już otwarte.",
     "skyblocker.config.dungeons.doorHighlight": "Podświetlanie drzwi",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType": "Typ podświetlania drzwi",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nUwaga: Aby ta funkcja działała, muszą być włączone sekretne punkty orientacyjne w Dungeonach.",
     "skyblocker.config.dungeons.dungeonChestProfit": "Kalkulator zysków ze skrzyń z Danguenów",
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit": "Kalkulator zysku z skrzynnki Croesusa",
     "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator": "Włącz kalkulator zysków",

@@ -54,7 +54,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 
 			recipe.getAllOutputs().stream().findFirst().ifPresent(outputIngredient ->
 					lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)
-								  .append(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), count))));
+								.append(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), count))));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: {}", stack.getNeuName(), e);
 		}

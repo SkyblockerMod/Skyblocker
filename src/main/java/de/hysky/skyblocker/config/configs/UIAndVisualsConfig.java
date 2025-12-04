@@ -45,7 +45,7 @@ public class UIAndVisualsConfig {
 
 	public boolean trueQuiverCount = true;
 
-    public ChestValue chestValue = new ChestValue();
+	public ChestValue chestValue = new ChestValue();
 
 	public ItemCooldown itemCooldown = new ItemCooldown();
 
