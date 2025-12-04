@@ -1,4 +1,4 @@
-# Release 5.9.1 (Beta 1)
+# Release 5.9.1
 
 ## Highlight
 * Add support for Aura's 50% slayer exp buff
@@ -21,7 +21,7 @@
 * Add Aura's Slayer EXP Buff by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1877
 * Add Friendly Names to All Locations by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1892
 
-**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.9.0+1.21.10...v5.9.1-beta.1+1.21.10
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.9.0+1.21.10...v5.9.1+1.21.10
 ___
 
 # Release 5.9.0
