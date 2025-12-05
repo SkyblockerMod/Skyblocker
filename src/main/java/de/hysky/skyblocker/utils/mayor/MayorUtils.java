@@ -121,7 +121,7 @@ public class MayorUtils {
 				}
 				LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
 				scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
-				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChanged();
+				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
 			}
 		});
 	}
@@ -133,7 +133,7 @@ public class MayorUtils {
 				mayorPerkOverrides = PerkOverride.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
 
 				LOGGER.info("[Skyblocker] Loaded {} mayor perk overrides.", mayorPerkOverrides.size());
-				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChanged();
+				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to load mayor perk overrides.", e);
 			}

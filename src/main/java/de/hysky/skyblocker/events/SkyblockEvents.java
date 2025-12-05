@@ -51,9 +51,9 @@ public final class SkyblockEvents {
 		}
 	});
 
-	public static final Event<MayorChanged> MAYOR_CHANGE = EventFactory.createArrayBacked(MayorChanged.class, callbacks -> () -> {
-		for (MayorChanged callback : callbacks) {
-			callback.onMayorChanged();
+	public static final Event<MayorChange> MAYOR_CHANGE = EventFactory.createArrayBacked(MayorChange.class, callbacks -> () -> {
+		for (MayorChange callback : callbacks) {
+			callback.onMayorChange();
 		}
 	});
 
@@ -95,7 +95,7 @@ public final class SkyblockEvents {
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface MayorChanged {
-		void onMayorChanged();
+	public interface MayorChange {
+		void onMayorChange();
 	}
 }
