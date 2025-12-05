@@ -17,7 +17,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public final class JerryTimer {
-	private static boolean IS_JERRY_ACTIVE = false;
+	private static boolean isJerryActive = false;
 
 	private JerryTimer() {}
 
@@ -26,7 +26,7 @@ public final class JerryTimer {
 		//Example message: "§b ☺ §eThere is a §aGreen Jerry§e!"
 		//There are various formats, all of which start with the "§b ☺ " prefix and contain the word "<color> Jerry"
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
-			if (overlay || !IS_JERRY_ACTIVE || !SkyblockerConfigManager.get().helpers.jerry.enableJerryTimer) return true;
+			if (overlay || !isJerryActive || !SkyblockerConfigManager.get().helpers.jerry.enableJerryTimer) return true;
 			String text = message.getString();
 			//This part of hypixel still uses legacy text formatting, so we can't directly check for the actual text
 			if (!text.startsWith("§b ☺ ") || !text.contains("Jerry")) return true;
@@ -42,6 +42,6 @@ public final class JerryTimer {
 			return true;
 		});
 
-		SkyblockEvents.MAYOR_CHANGE.register(() -> IS_JERRY_ACTIVE = MayorUtils.getActivePerks().stream().anyMatch(perk -> perk.equals("Jerrypocalypse")));
+		SkyblockEvents.MAYOR_CHANGE.register(() -> isJerryActive = MayorUtils.getActivePerks().stream().anyMatch(perk -> perk.equals("Jerrypocalypse")));
 	}
 }
