@@ -13,16 +13,16 @@ public class GameOptionsMixin {
 
 	@ModifyReturnValue(method = "update", at = @At("TAIL"))
 	private NbtCompound updateSkyblockerKeybinds(NbtCompound nbt) {
-		update("wikiLookup.official", nbt);
-		update("wikiLookup.fandom", nbt);
-		update("hotbarSlotLock", nbt);
-		update("itemPriceLookup", nbt);
-		update("itemProtection", nbt);
+		skyblocker$update("wikiLookup.official", nbt);
+		skyblocker$update("wikiLookup.fandom", nbt);
+		skyblocker$update("hotbarSlotLock", nbt);
+		skyblocker$update("itemPriceLookup", nbt);
+		skyblocker$update("itemProtection", nbt);
 		return nbt;
 	}
 
 	@Unique
-	private void update(String key, NbtCompound nbt) {
+	private void skyblocker$update(String key, NbtCompound nbt) {
 		NbtElement element = nbt.get("key_key." + key);
 		if (element != null && !nbt.contains("key_key.skyblocker." + key)) nbt.put("key_key.skyblocker." + key, element);
 	}
