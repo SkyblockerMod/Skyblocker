@@ -1251,7 +1251,7 @@
     "skyblocker.config.helpers.bazaar.enableReorderHelper": "啟用重新下單助手",
     "skyblocker.config.helpers.bazaar.enableReorderHelper.@Tooltip": "當取消沒有完成的購買/出售訂單時按住CTRL鍵即可將訂單剩餘數量複製到剪貼簿。",
     "skyblocker.disableAll.confirmYes": "§c[停用全部功能]",
-    "skyblocker.config.quickNav.enableQuickNav.@Tooltip": "新增14個可自訂的背包按鈕以便透過點擊快速執行指令。",
+    "skyblocker.config.quickNav.enableQuickNav.@Tooltip": "新增14個可自訂的物品欄按鈕以便透過點擊快速執行指令。",
     "skyblocker.disableAll.success": "§c全部功能已停用。",
     "skyblocker.disableAll.failed": "§c未能停用所有功能。",
     "skyblocker.disableAll.notPending": "§c請先使用 /skyblocker disableAll 。",
