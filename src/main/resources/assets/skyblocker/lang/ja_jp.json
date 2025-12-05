@@ -701,5 +701,17 @@
     "skyblocker.config.uiAndVisuals.inventorySearch.enabled": "有効",
     "skyblocker.config.uiAndVisuals.healthBars.enabled": "有効",
     "skyblocker.config.quickNav.button.doubleClick": "ダブルクリックが必要",
-    "skyblocker.config.general.hitbox.oldCactusHitbox": "バージョン1.8でのサボテンのヒットボックスを有効にする"
+    "skyblocker.config.general.hitbox.oldCactusHitbox": "バージョン1.8でのサボテンのヒットボックスを有効にする",
+    "skyblocker.tips.previous": "前のヒント",
+    "skyblocker.tips.beta": "GitHub Actionsでは、新機能や実験的な機能を含むベータ版を提供しています。",
+    "skyblocker.dwarvenMines.metalDetectorHelper.treasure": "宝箱",
+    "skyblocker.wikiLookup.noArticleFound.official": "Hypixel official wikiでこのアイテムの記事が見つかりません…",
+    "skyblocker.tips.next": "次のヒント",
+    "skyblocker.tips.tip": "§aヒント：%s\n",
+    "skyblocker.dwarvenMines.metalDetectorHelper.foundTreasureMessage": "宝箱発見",
+    "skyblocker.tips.configSearch": "設定インターフェースの検索ボックスを使用し、すべての設定を検索できます。",
+    "skyblocker.dwarvenMines.metalDetectorHelper.possible": "可能",
+    "skyblocker.wikiLookup.noArticleFound.fandom": "Fandom wikiでこのアイテムの記事が見つかりません…",
+    "skyblocker.museum.hud.skyblockXp": "SkyBlock経験値",
+    "skyblocker.events.crops": "作物："
 }
