@@ -251,8 +251,8 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 			case AUCTION_TYPE_BUTTON_SLOT ->
 					auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(stack.skyblocker$getLoreString())));
 			case RARITY_BUTTON_SLOT -> {
+				int ordinal = getOrdinal(stack.skyblocker$getLoreString());
 				List<Text> tooltip = ItemUtils.getLore(stack);
-				int ordinal = getOrdinal(tooltip.stream().map(Text::getString).toList());
 				String split = tooltip.get(ordinal + 1).getString().substring(2);
 				rarityWidget.setText(tooltip.subList(1, tooltip.size() - 3), split);
 			}
