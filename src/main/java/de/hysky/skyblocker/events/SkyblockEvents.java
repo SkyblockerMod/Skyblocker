@@ -51,7 +51,7 @@ public final class SkyblockEvents {
 		}
 	});
 
-	public static final Event<MayorChanged> MAYOR_CHANGED = EventFactory.createArrayBacked(MayorChanged.class, callbacks -> () -> {
+	public static final Event<MayorChanged> MAYOR_CHANGE = EventFactory.createArrayBacked(MayorChanged.class, callbacks -> () -> {
 		for (MayorChanged callback : callbacks) {
 			callback.onMayorChanged();
 		}

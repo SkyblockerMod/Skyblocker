@@ -13,7 +13,6 @@ import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import org.apache.http.client.HttpResponseException;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,7 +121,7 @@ public class MayorUtils {
 				}
 				LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
 				scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
-				SkyblockEvents.MAYOR_CHANGED.invoker().onMayorChanged();
+				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChanged();
 			}
 		});
 	}
@@ -134,6 +133,7 @@ public class MayorUtils {
 				mayorPerkOverrides = PerkOverride.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
 
 				LOGGER.info("[Skyblocker] Loaded {} mayor perk overrides.", mayorPerkOverrides.size());
+				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChanged();
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to load mayor perk overrides.", e);
 			}
