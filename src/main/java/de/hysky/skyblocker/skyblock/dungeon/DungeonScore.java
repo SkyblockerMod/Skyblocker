@@ -6,6 +6,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
@@ -58,6 +59,8 @@ public class DungeonScore {
 	private static final String MIMIC_MESSAGE = "Mimic dead!";
 	private static final String PRINCE_MESSAGE = "Prince dead!";
 
+	private static boolean isMayorPaul = false;
+
 	private static FloorRequirement floorRequirement;
 	private static String currentFloor;
 	private static boolean isCurrentFloorEntrance;
@@ -68,7 +71,6 @@ public class DungeonScore {
 	private static boolean mimicKilled;
 	private static boolean princeKilled;
 	private static boolean dungeonStarted;
-	private static boolean isMayorPaul;
 	private static boolean firstDeathHasSpiritPet;
 	private static boolean bloodRoomCompleted;
 	private static long startingTime;
@@ -94,6 +96,7 @@ public class DungeonScore {
 
 			return true;
 		});
+		SkyblockEvents.MAYOR_CHANGED.register(() -> isMayorPaul = MayorUtils.getActivePerks().contains("EZPZ"));
 	}
 
 	public static void tick() {
@@ -153,7 +156,6 @@ public class DungeonScore {
 		mimicKilled = false;
 		princeKilled = false;
 		dungeonStarted = false;
-		isMayorPaul = false;
 		firstDeathHasSpiritPet = false;
 		bloodRoomCompleted = false;
 		startingTime = 0L;
@@ -167,7 +169,6 @@ public class DungeonScore {
 		setCurrentFloor();
 		dungeonStarted = true;
 		puzzleCount = getPuzzleCount();
-		isMayorPaul = MayorUtils.getActivePerks().contains("EZPZ");
 		startingTime = System.currentTimeMillis();
 		floorRequirement = FloorRequirement.valueOf(currentFloor);
 		floorHasMimics = MIMIC_FLOORS_PATTERN.matcher(currentFloor).matches();

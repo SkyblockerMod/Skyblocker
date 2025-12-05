@@ -143,9 +143,9 @@ public class SlayerManager {
 		int xpPerTier = slayerQuest.slayerType.xpPerTier[tier - 1];
 
 		// TODO: Remove when Aura leaves office
-		if (MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("Work Smarter"))) {
+		if (MayorUtils.getActivePerks().stream().anyMatch(perk -> perk.equals("Work Smarter"))) {
 			xpPerTier = (int) (xpPerTier * 1.5);
-		} else if (MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("Slayer XP Buff")) || MayorUtils.getMinister().perk().name().equals("Slayer XP Buff")) {
+		} else if (MayorUtils.getActivePerks().stream().anyMatch(perk -> perk.equals("Slayer XP Buff"))) {
 			xpPerTier = (int) (xpPerTier * 1.25);
 		}
 

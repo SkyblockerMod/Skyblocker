@@ -31,16 +31,6 @@ public class MayorUtils {
 
 	private MayorUtils() {}
 
-	@NotNull
-	public static Mayor getMayor() {
-		return mayor;
-	}
-
-	@NotNull
-	public static Minister getMinister() {
-		return minister;
-	}
-
 	/**
 	 * Returns the perks that are currently active from the mayor, minister, and any overrides.
 	 */
@@ -132,6 +122,7 @@ public class MayorUtils {
 				}
 				LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
 				scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
+				SkyblockEvents.MAYOR_CHANGED.invoker().onMayorChanged();
 			}
 		});
 	}
