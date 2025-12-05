@@ -1284,7 +1284,7 @@
     "skyblocker.config.dungeons.dungeonSplits": "地牢阶段计时小部件",
     "skyblocker.config.helpers.bazaar.enableReorderHelper": "启用重新下单助手",
     "skyblocker.config.helpers.bazaar.enableReorderHelper.@Tooltip": "当取消没有完成的购买/出售订单时按住CTRL键即可将订单剩余数量复制到剪贴板。",
-    "skyblocker.config.quickNav.enableQuickNav.@Tooltip": "添加14个可自定义的背包按钮以便通过点击快速执行命令。",
+    "skyblocker.config.quickNav.enableQuickNav.@Tooltip": "添加14个可自定义的物品栏按钮以便通过点击快速执行命令。",
     "skyblocker.config.chat.filter.hideToggleLottery": "在Galatea之外隐藏Lottery消息",
     "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "该小部件将显示你在地牢各阶段所用时间及最佳纪录。",
     "skyblocker.config.dungeons.highlightDoorKeys": "高亮大门钥匙",
