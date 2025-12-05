@@ -689,5 +689,17 @@
     "skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages": "Egg発見メッセージを送信する",
     "skyblocker.bars.config.text": "テキストの位置",
     "skyblocker.config.eventNotifications": "イベント通知",
-    "skyblocker.bars.config.textColor": "テキストの色"
+    "skyblocker.bars.config.textColor": "テキストの色",
+    "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.OFF": "オフ",
+    "skyblocker.config.slayer.highlightBosses.OFF": "オフ",
+    "skyblocker.config.slayer.highlightBosses.HITBOX": "ヒットボックス",
+    "skyblocker.config.uiAndVisuals.slotText.mode.DISABLED": "無効",
+    "skyblocker.config.uiAndVisuals.compactDamage.enabled": "有効",
+    "skyblocker.config.uiAndVisuals.fancyAuctionHouse.enabled": "有効",
+    "skyblocker.config.misc.configBackend.@Tooltip": "YetAnotherConfigLib（YACL）とMoulConfigの二つの設定インターフェースから選択できます。",
+    "skyblocker.config.uiAndVisuals.slotText.mode.ENABLED": "有効",
+    "skyblocker.config.uiAndVisuals.inventorySearch.enabled": "有効",
+    "skyblocker.config.uiAndVisuals.healthBars.enabled": "有効",
+    "skyblocker.config.quickNav.button.doubleClick": "ダブルクリックが必要",
+    "skyblocker.config.general.hitbox.oldCactusHitbox": "バージョン1.8でのサボテンのヒットボックスを有効にする"
 }
