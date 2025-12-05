@@ -330,7 +330,7 @@
     "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip": "必要なアイテムは、単なる合計数ではなく、（5スタック＋45）と表示されます。",
     "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Forest Node Helperを有効にする",
     "skyblocker.containerValue.minionValue.@Tooltip": "このミニオンが生成したリソースの価値を計算する。",
-    "skyblocker.config.general.hitbox.oldMushroomHitbox": "1.8のキノコのヒットボックスを有効にする",
+    "skyblocker.config.general.hitbox.oldMushroomHitbox": "バージョン1.8でのキノコのヒットボックスを有効にする",
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle": "アイテムの背景のスタイル",
     "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly": "Gardenのみ",
     "skyblocker.config.general.itemList.filter.all": "すべて",
