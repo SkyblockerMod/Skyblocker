@@ -14,7 +14,7 @@ import java.util.Set;
 @RegisterWidget
 public class PickobulusHudWidget extends ComponentBasedWidget {
 	private static final MutableText TITLE = Text.literal("Pickobulus").formatted(Formatting.BLUE, Formatting.BOLD);
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.PRIVATE_ISLAND, Location.GOLD_MINE, Location.DEEP_CAVERNS, Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
+	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GOLD_MINE, Location.DEEP_CAVERNS, Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
 	private static PickobulusHudWidget instance;
 
 	public PickobulusHudWidget() {
