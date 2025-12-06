@@ -6,11 +6,11 @@ import net.minecraft.util.Uuids;
 
 import java.util.UUID;
 
-public record DungeonMimicKilledMessage(String type, UUID uuid) implements Message<DungeonMimicKilledMessage> {
+public record DungeonMimicKilledMessage(String type, UUID sender) implements Message<DungeonMimicKilledMessage> {
 	public static final String TYPE = "mimic_killed";
 	public static final Codec<DungeonMimicKilledMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 					Codec.STRING.fieldOf("type").forGetter(DungeonMimicKilledMessage::type),
-					Uuids.STRING_CODEC.fieldOf("uuid").forGetter(DungeonMimicKilledMessage::uuid))
+					Uuids.STRING_CODEC.fieldOf("uuid").forGetter(DungeonMimicKilledMessage::sender))
 			.apply(instance, DungeonMimicKilledMessage::new));
 
 	public DungeonMimicKilledMessage(UUID uuid) {

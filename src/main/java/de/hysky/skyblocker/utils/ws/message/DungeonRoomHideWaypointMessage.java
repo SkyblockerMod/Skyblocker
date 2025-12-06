@@ -6,11 +6,11 @@ import net.minecraft.util.Uuids;
 
 import java.util.UUID;
 
-public record DungeonRoomHideWaypointMessage(String type, UUID uuid, String roomName, int waypointHash) implements Message<DungeonRoomHideWaypointMessage> {
+public record DungeonRoomHideWaypointMessage(String type, UUID sender, String roomName, int waypointHash) implements Message<DungeonRoomHideWaypointMessage> {
 	public static final String TYPE = "room_hide_waypoint";
 	public static final Codec<DungeonRoomHideWaypointMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 					Codec.STRING.fieldOf("type").forGetter(DungeonRoomHideWaypointMessage::type),
-					Uuids.STRING_CODEC.fieldOf("uuid").forGetter(DungeonRoomHideWaypointMessage::uuid),
+					Uuids.STRING_CODEC.fieldOf("uuid").forGetter(DungeonRoomHideWaypointMessage::sender),
 					Codec.STRING.fieldOf("room").forGetter(DungeonRoomHideWaypointMessage::roomName),
 					Codec.INT.fieldOf("waypointHash").forGetter(DungeonRoomHideWaypointMessage::waypointHash))
 			.apply(instance, DungeonRoomHideWaypointMessage::new));

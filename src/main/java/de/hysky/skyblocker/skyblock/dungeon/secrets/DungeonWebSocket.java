@@ -21,7 +21,7 @@ public class DungeonWebSocket {
 		DungeonEvents.DUNGEON_STARTED.register(DungeonWebSocket::connect);
 	}
 
-	public static void connect() {
+	private static void connect() {
 		WsStateManager.subscribeServer(Service.DUNGEON_SECRETS, Optional.empty());
 	}
 

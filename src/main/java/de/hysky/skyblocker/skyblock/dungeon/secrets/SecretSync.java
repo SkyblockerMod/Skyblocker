@@ -38,7 +38,7 @@ public class SecretSync {
 		DungeonEvents.SECRET_FOUND.register(SecretSync::syncSecretFound);
 	}
 
-	public static boolean checkUUID(UUID uuid) {
+	public static boolean checkSender(UUID uuid) {
 		if (CLIENT.world == null) return false;
 		if (CLIENT.world.getPlayerByUuid(uuid) != null) return true;
 		LOGGER.error("[Skyblocker Dungeon Secret Sync] Received a message from a player not in the Dungeons run: {}", uuid);
@@ -58,7 +58,7 @@ public class SecretSync {
 	}
 
 	public static void handleRoomMatch(DungeonRoomMatchMessage msg) {
-		if (!CONFIG.get().receiveRoomMatch || !checkUUID(msg.uuid())) return;
+		if (!CONFIG.get().receiveRoomMatch || !checkSender(msg.sender())) return;
 		if (DungeonManager.getRoomsStream().count() > 36 || msg.pos().size() > 4) return;
 		if (DungeonManager.getRoomMetadata(msg.room()) == null) {
 			LOGGER.error("[Skyblocker Dungeons Secret Sync] Received an invalid room over the websocket, msg: {}", msg);
@@ -89,7 +89,7 @@ public class SecretSync {
 	}
 
 	public static void handleSecretCountUpdate(DungeonRoomSecretCountMessage msg) {
-		if (!CONFIG.get().receiveRoomSecretCount || !checkUUID(msg.uuid())) return;
+		if (!CONFIG.get().receiveRoomSecretCount || !checkSender(msg.sender())) return;
 		Room room = getRoomByName(msg.roomName());
 		if (room == null || room.secretsFound >= msg.secretCount() || msg.secretCount() > room.getSecretCount()) return;
 
@@ -105,7 +105,7 @@ public class SecretSync {
 	}
 
 	public static void handleHideWaypoint(DungeonRoomHideWaypointMessage msg) {
-		if (!checkUUID(msg.uuid()) || !CONFIG.get().hideReceivedWaypoints) return;
+		if (!checkSender(msg.sender()) || !CONFIG.get().hideReceivedWaypoints) return;
 		Room room = getRoomByName(msg.roomName());
 		if (room == null) return;
 		int secretIndex = room.getIndexByWaypointHash(msg.waypointHash());
@@ -121,7 +121,7 @@ public class SecretSync {
 	}
 
 	public static void handleMimicKilled(DungeonMimicKilledMessage msg) {
-		if (!checkUUID(msg.uuid())) return;
+		if (!checkSender(msg.sender())) return;
 		DungeonScore.onMimicKill();
 		LOGGER.info("[Skyblocker Dungeon Secret Sync] Mimic killed!");
 	}
@@ -133,7 +133,7 @@ public class SecretSync {
 	}
 
 	public static void handlePrinceKilled(DungeonPrinceKilledMessage msg) {
-		if (!checkUUID(msg.uuid())) return;
+		if (!checkSender(msg.sender())) return;
 		DungeonScore.onPrinceKill(false);
 		LOGGER.info("[Skyblocker Dungeon Secret Sync] Prince killed!");
 	}
