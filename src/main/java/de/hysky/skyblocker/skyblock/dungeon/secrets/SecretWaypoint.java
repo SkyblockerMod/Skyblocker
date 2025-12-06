@@ -121,7 +121,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 		ITEM("item", secretWaypoints -> secretWaypoints.enableItemWaypoints, 2, 64, 250),
 		BAT("bat", secretWaypoints -> secretWaypoints.enableBatWaypoints, 142, 66, 0),
 		WITHER("wither", secretWaypoints -> secretWaypoints.enableWitherWaypoints, 30, 30, 30),
-		REDSTONE_KEY("key", secretWaypoints -> secretWaypoints.enableRedstoneKeyWaypoints, 255, 0, 0),
+		REDSTONE_KEY("key", secretWaypoints -> secretWaypoints.enableRedstoneKeyWaypoints, 200, 30, 30),
 		LEVER("lever", secretWaypoints -> secretWaypoints.enableLeverWaypoints, 250, 217, 2),
 		FAIRYSOUL("fairysoul", secretWaypoints -> secretWaypoints.enableFairySoulWaypoints, 255, 85, 255),
 		STONK("stonk", secretWaypoints -> secretWaypoints.enableStonkWaypoints, 146, 52, 235),
