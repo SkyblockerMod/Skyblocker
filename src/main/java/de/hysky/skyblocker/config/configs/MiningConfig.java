@@ -15,6 +15,8 @@ public class MiningConfig {
 
 	public boolean redialOnBadSignal = true;
 
+	public boolean enablePickobulusHelper = true;
+
 	public DwarvenMines dwarvenMines = new DwarvenMines();
 
 	@Deprecated
