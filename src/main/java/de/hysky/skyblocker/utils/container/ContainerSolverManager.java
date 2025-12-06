@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.container;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.RaffleTaskHighlight;
+import de.hysky.skyblocker.skyblock.accessories.AccessoriesContainerSolver;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
 import de.hysky.skyblocker.skyblock.auction.CopyUnderbidPrice;
@@ -72,6 +73,7 @@ public class ContainerSolverManager {
 			new SellableItemsHighlighter(),
 			StereoHarmonyHelper.INSTANCE,
 			new EndStatsBestiaryUpdater(),
+			AccessoriesContainerSolver.INSTANCE,
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;
