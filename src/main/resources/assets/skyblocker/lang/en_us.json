@@ -319,10 +319,8 @@
 
   "skyblocker.config.dungeons.secretSync": "Secret Sync",
   "skyblocker.config.dungeons.secretSync.hideReceivedWaypoints": "Hide Received Secret Waypoints",
-  "skyblocker.config.dungeons.secretSync.syncFoundWaypoints": "Sync Found Secret Waypoints",
-  "skyblocker.config.dungeons.secretSync.syncRoomMatch": "Sync Rooms Found",
-  "skyblocker.config.dungeons.secretSync.syncRoomSecretCount": "Sync Room Secret Count",
-  "skyblocker.config.dungeons.secretSync.syncScoreMessages": "Sync Mimic/Prince Killed",
+  "skyblocker.config.dungeons.secretSync.receiveMatchedRooms": "Add Synced Rooms",
+  "skyblocker.config.dungeons.secretSync.receiveRoomSecretCount": "Use Synced Room Secret Count",
 
   "skyblocker.config.dungeons.secretWaypoints": "Dungeon Secret Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableAotvWaypoints": "Enable AOTV Waypoints",

@@ -212,13 +212,9 @@ public class DungeonsConfig {
 	}
 
 	public static class SecretSync {
-		public boolean syncRoomMatch = true;
+		public boolean receiveRoomMatch = true;
 
-		public boolean syncRoomSecretCount = true;
-
-		public boolean syncScoreMessages = true;
-
-		public boolean syncFoundWaypoints = true;
+		public boolean receiveRoomSecretCount = true;
 
 		public boolean hideReceivedWaypoints = true;
 	}

@@ -645,31 +645,17 @@ public class DungeonsCategory {
 						.collapsed(true)
 						// TODO: Add description when labels work properly on MoulConfig
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.dungeons.secretSync.syncRoomMatch"))
-								.binding(defaults.dungeons.secretSync.syncRoomMatch,
-										() -> config.dungeons.secretSync.syncRoomMatch,
-										newValue -> config.dungeons.secretSync.syncRoomMatch = newValue)
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.receiveMatchedRooms"))
+								.binding(defaults.dungeons.secretSync.receiveRoomMatch,
+										() -> config.dungeons.secretSync.receiveRoomMatch,
+										newValue -> config.dungeons.secretSync.receiveRoomMatch = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.dungeons.secretSync.syncRoomSecretCount"))
-								.binding(defaults.dungeons.secretSync.syncRoomSecretCount,
-										() -> config.dungeons.secretSync.syncRoomSecretCount,
-										newValue -> config.dungeons.secretSync.syncRoomSecretCount = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.dungeons.secretSync.syncScoreMessages"))
-								.binding(defaults.dungeons.secretSync.syncScoreMessages,
-										() -> config.dungeons.secretSync.syncScoreMessages,
-										newValue -> config.dungeons.secretSync.syncScoreMessages = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.dungeons.secretSync.syncFoundWaypoints"))
-								.binding(defaults.dungeons.secretSync.syncFoundWaypoints,
-										() -> config.dungeons.secretSync.syncFoundWaypoints,
-										newValue -> config.dungeons.secretSync.syncFoundWaypoints = newValue)
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.receiveRoomSecretCount"))
+								.binding(defaults.dungeons.secretSync.receiveRoomSecretCount,
+										() -> config.dungeons.secretSync.receiveRoomSecretCount,
+										newValue -> config.dungeons.secretSync.receiveRoomSecretCount = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
