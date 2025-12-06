@@ -4,7 +4,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -21,8 +20,7 @@ public interface Constants {
 	Pattern PLAYER_NAME = Pattern.compile("(?:\\[[0-9]+\\] )?(?:[" + Constants.LEVEL_EMBLEMS + "] )?(?:\\[[A-Z+]+\\] )?([A-Za-z0-9_]+)");
 
 	Supplier<MutableText> PREFIX = () -> {
-		LocalDate time = LocalDate.now();
-		if (time.getMonthValue() == 4 && time.getDayOfMonth() == 1) {
+		if (FunUtils.shouldEnableFun()) {
 			return Text.empty().append(Text.literal("[").formatted(Formatting.GRAY))
 					.append(Text.literal("S").withColor(0x00FF4C))
 					.append(Text.literal("k").withColor(0x02FA60))
