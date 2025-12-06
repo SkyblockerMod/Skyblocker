@@ -7,7 +7,11 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.ws.Service;
 import de.hysky.skyblocker.utils.ws.Type;
 import de.hysky.skyblocker.utils.ws.WsStateManager;
-import de.hysky.skyblocker.utils.ws.message.*;
+import de.hysky.skyblocker.utils.ws.message.DungeonMimicKilledMessage;
+import de.hysky.skyblocker.utils.ws.message.DungeonPrinceKilledMessage;
+import de.hysky.skyblocker.utils.ws.message.DungeonRoomHideWaypointMessage;
+import de.hysky.skyblocker.utils.ws.message.DungeonRoomMatchMessage;
+import de.hysky.skyblocker.utils.ws.message.DungeonRoomSecretCountMessage;
 
 import java.util.Optional;
 
