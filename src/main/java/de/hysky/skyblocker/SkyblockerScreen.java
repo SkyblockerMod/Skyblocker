@@ -11,7 +11,11 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.GridWidget;
+import net.minecraft.client.gui.widget.MultilineTextWidget;
+import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.gui.widget.ThreePartsLayoutWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
@@ -84,13 +88,13 @@ public class SkyblockerScreen extends Screen {
 		GridWidget.Adder footerAdder = footerGridWidget.createAdder(2);
 		footerAdder.add(tip = new MultilineTextWidget(Tips.nextTip(), this.textRenderer).setCentered(true).setMaxWidth((int) (this.width * 0.7)), 2);
 		footerAdder.add(ButtonWidget.builder(Text.translatable("skyblocker.tips.previous"), button -> {
-            tip.setMessage(Tips.previousTip());
+			tip.setMessage(Tips.previousTip());
 			layout.refreshPositions();
-        }).build());
+		}).build());
 		footerAdder.add(ButtonWidget.builder(Text.translatable("skyblocker.tips.next"), button -> {
-            tip.setMessage(Tips.nextTip());
+			tip.setMessage(Tips.nextTip());
 			layout.refreshPositions();
-        }).build());
+		}).build());
 
 		this.layout.refreshPositions();
 		this.layout.forEachChild(this::addDrawableChild);

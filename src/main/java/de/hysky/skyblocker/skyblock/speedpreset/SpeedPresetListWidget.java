@@ -6,7 +6,12 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ElementListWidget;
+import net.minecraft.client.gui.widget.GridWidget;
+import net.minecraft.client.gui.widget.SimplePositioningWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
@@ -66,9 +71,9 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 		var instance = SpeedPresets.getInstance();
 		instance.getPresets().clear();
 		children().stream()
-				  .filter(SpeedPresetEntry.class::isInstance)
-				  .map(SpeedPresetEntry.class::cast)
-				  .forEach(SpeedPresetEntry::save);
+				.filter(SpeedPresetEntry.class::isInstance)
+				.map(SpeedPresetEntry.class::cast)
+				.forEach(SpeedPresetEntry::save);
 		instance.savePresets(); // Write down the changes.
 	}
 

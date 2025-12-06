@@ -6,7 +6,11 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.*;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetClickedPositionVisitor;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetRenderWidthVisitor;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetStyleVisitor;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.InsertTextVisitor;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.SetStyleVisitor;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
@@ -19,7 +23,13 @@ import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.ContainerWidget;
+import net.minecraft.client.gui.widget.GridWidget;
+import net.minecraft.client.gui.widget.Positioner;
+import net.minecraft.client.gui.widget.PressableWidget;
+import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.input.AbstractInput;
 import net.minecraft.client.input.CharInput;
 import net.minecraft.client.input.KeyInput;
@@ -27,7 +37,11 @@ import net.minecraft.client.sound.SoundManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.*;
+import net.minecraft.util.Colors;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.StringHelper;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -118,7 +132,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 
 	public void setItem(ItemStack stack) {
 		uuid = stack.getUuid();
-		setText(stack.getName().copy());
+		setText(stack.getName().copy(), false);
 	}
 
 	@Override
@@ -195,10 +209,10 @@ public class CustomizeNameWidget extends ContainerWidget {
 	 *
 	 * @param text the text to set
 	 */
-	public void setText(Text text) {
+	public void setText(Text text, boolean updateConfig) {
 		this.text = text;
 		textString = text.getString();
-		if (!uuid.isEmpty()) {
+		if (updateConfig && !uuid.isEmpty()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			if (textString.isBlank()) config.general.customItemNames.remove(uuid);
 			else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(Formatting.WHITE)));
@@ -208,6 +222,10 @@ public class CustomizeNameWidget extends ContainerWidget {
 
 		// called before init
 		if (textField != null) textField.updateMePrettyPlease = true;
+	}
+
+	public void setText(Text text) {
+		setText(text, true);
 	}
 
 	@Override

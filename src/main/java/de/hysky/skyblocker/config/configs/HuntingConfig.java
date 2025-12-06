@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.config.configs;
 
-import net.minecraft.util.DyeColor;
+import java.awt.Color;
 
-import java.awt.*;
+import net.minecraft.util.DyeColor;
 
 public class HuntingConfig {
 	public HuntingBox huntingBox = new HuntingBox();

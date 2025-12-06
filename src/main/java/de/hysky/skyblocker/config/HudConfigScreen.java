@@ -8,7 +8,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 /**

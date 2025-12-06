@@ -27,7 +27,14 @@ import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget;
-import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.ContainerWidget;
+import net.minecraft.client.gui.widget.CyclingButtonWidget;
+import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
+import net.minecraft.client.gui.widget.GridWidget;
+import net.minecraft.client.gui.widget.SimplePositioningWidget;
+import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
@@ -37,7 +44,14 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -294,7 +308,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 		private final Text smoothLine = LineSmoothener.createSmoothLine();
 		private final Text wikiLine = Text.translatable("skyblocker.accessory_helper.openWiki").formatted(Formatting.YELLOW);
 		private final Text fandomLine = Text.translatable("skyblocker.accessory_helper.fandom").formatted(Formatting.GRAY, Formatting.ITALIC);
-		private AccessoryInfo accessory;
+		private @Nullable AccessoryInfo accessory;
 		private @Nullable List<Text> afterSelling;
 
 		private void setAccessory(AccessoryInfo info) {
@@ -324,7 +338,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 			super.renderWidget(context, mouseX, mouseY, delta);
 			ItemStack stack = getDisplayStack();
-			if (isHovered() && stack != null) {
+			if (isHovered() && stack != null && accessory != null) {
 				accessory.highestOwned().ifPresent(owned -> AccessoriesContainerSolver.INSTANCE.highlightedAccessory = owned.id());
 				MinecraftClient client = MinecraftClient.getInstance();
 				List<Text> tooltip = new ArrayList<>(Screen.getTooltipFromItem(client, stack));

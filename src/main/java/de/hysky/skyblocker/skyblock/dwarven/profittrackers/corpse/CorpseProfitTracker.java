@@ -9,11 +9,19 @@ import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
 import de.hysky.skyblocker.skyblock.dwarven.profittrackers.AbstractProfitTracker;
-import de.hysky.skyblocker.utils.*;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
-import it.unimi.dsi.fastutil.objects.*;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
@@ -73,7 +81,6 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 
 		INSTANCE.allRewards.init();
 
-		SkyblockEvents.PROFILE_INIT.register(INSTANCE::onProfileInit);
 		SkyblockEvents.PROFILE_CHANGE.register(INSTANCE::onProfileChange);
 
 		// @formatter:off // Don't you hate it when your format style for chained method calls makes a chain like this incredibly ugly?
@@ -109,10 +116,6 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	}
 
 	private void onProfileChange(String prevProfileId, String newProfileId) {
-		onProfileInit(newProfileId);
-	}
-
-	private void onProfileInit(String profileId) {
 		if (!isEnabled()) return;
 		currentProfileRewards = allRewards.computeIfAbsent(ObjectArrayList::new);
 		recalculateAll();
