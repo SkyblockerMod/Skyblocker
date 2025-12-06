@@ -35,7 +35,7 @@ import net.minecraft.client.input.SystemKeycodes;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -387,6 +387,7 @@ public class UIAndVisualsCategory {
 				//Fancy Bars
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.uiAndVisuals.bars"))
+						.tags(Text.literal("fancy status bars"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.bars.enableBars"))

@@ -51,6 +51,12 @@ public final class SkyblockEvents {
 		}
 	});
 
+	public static final Event<MayorChange> MAYOR_CHANGE = EventFactory.createArrayBacked(MayorChange.class, callbacks -> () -> {
+		for (MayorChange callback : callbacks) {
+			callback.onMayorChange();
+		}
+	});
+
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface SkyblockJoin {
@@ -85,5 +91,11 @@ public final class SkyblockEvents {
 	@FunctionalInterface
 	public interface PurseChange {
 		void onPurseChange(double diff, PurseChangeCause cause);
+	}
+
+	@Environment(EnvType.CLIENT)
+	@FunctionalInterface
+	public interface MayorChange {
+		void onMayorChange();
 	}
 }

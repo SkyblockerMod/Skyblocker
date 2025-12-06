@@ -7,12 +7,23 @@
     <property name="localeCountry" value="US"/>
     <property name="tabWidth" value="4"/>
 
+    <!-- Configure suppression filters -->
+    <module name="SuppressionFilter">
+        <property name="file" value="${suppressionsFile}"/>
+        <property name="optional" value="false"/>
+    </module>
+
     <module name="NewlineAtEndOfFile"/>
 
     <!-- disallow trailing whitespace -->
     <module name="RegexpSingleline">
         <property name="format" value="\s+$"/>
         <property name="message" value="trailing whitespace"/>
+    </module>
+
+    <!-- Require each package to have a package-info file -->
+    <module name="JavadocPackage">
+        <message key="javadoc.packageInfo" value="The enclosing package must have a package-info file."/>
     </module>
 
     <module name="TreeWalker">
@@ -24,6 +35,7 @@
         </module>
 
         <!-- Ensure all imports are ship shape -->
+        <module name="AvoidStarImport"/>
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
@@ -154,9 +166,16 @@
 
         <!-- Prevent String#toLowerCase/toUpperCase without a given Locale to prevent localization issues -->
         <!-- Not specifying a locale is error prone as it can easily lead to silent breakages with some locales! -->
-        <module name = "MatchXpath">
+        <module name="MatchXpath">
             <property name="query" value="//METHOD_CALL[./DOT/IDENT[@text='toLowerCase' or @text='toUpperCase']]/ELIST[count(./*) = 0]"/>
             <message key="matchxpath.match" value="String#toLowerCase/toUpperCase calls must specify a locale, English recommended"/>
+        </module>
+
+        <!--  Require package-info files to have NullMarked annotations -->
+        <module name="MatchXpath">
+            <!--  Package info files cannot be identified separately so we check if its not a package declaration in another type of class -->
+            <property name="query" value="/COMPILATION_UNIT[.//PACKAGE_DEF][not(.//CLASS_DEF) and not(.//INTERFACE_DEF) and not(.//ENUM_DEF) and not(.//RECORD_DEF) and not(.//ANNOTATION_DEF)][not(.//ANNOTATIONS/ANNOTATION/IDENT[@text='NullMarked'])]"/>
+            <message key="matchxpath.match" value="Package declarations in package-info files must be annotated with @NullMarked"/>
         </module>
     </module>
 </module>

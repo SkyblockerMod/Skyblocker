@@ -206,6 +206,9 @@ dependencies {
 	// Apache Commons Text
 	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
 
+	// JSpecify Annotations
+	include implementation("org.jspecify:jspecify:1.0.0")
+
 	// Fabric Language Kotlin for using MoulConfig - we are still a Java-exclusive mod
 	modImplementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
 }
@@ -326,6 +329,9 @@ spotless {
 checkstyle {
 	toolVersion = "${checkstyle_version}"
 	configFile = rootProject.file("checkstyle.xml")
+	configProperties = [
+		"suppressionsFile": rootProject.file("checkstyle-suppressions.xml")
+	]
 }
 
 def truncateChangelog = { String text, int limit ->

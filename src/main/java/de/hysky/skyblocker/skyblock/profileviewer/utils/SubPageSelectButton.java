@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer.utils;
 
+import java.awt.Color;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import net.minecraft.client.MinecraftClient;
@@ -13,8 +15,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
-
-import java.awt.*;
 
 public class SubPageSelectButton extends ClickableWidget {
 	private final ProfileViewerPage page;

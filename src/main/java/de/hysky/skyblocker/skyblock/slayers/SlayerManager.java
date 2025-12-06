@@ -53,11 +53,15 @@ public class SlayerManager {
 	private static SlayerQuest slayerQuest;
 	private static BossFight bossFight;
 
+	private static boolean slayerExpBuffActive = false;
+	private static float slayerExpBuff = 1.0f;
+
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(SlayerManager::onChatMessage);
 		SkyblockEvents.LOCATION_CHANGE.register(SlayerManager::onLocationChange);
 		SkyblockEvents.AREA_CHANGE.register(SlayerManager::onAreaChange);
+		SkyblockEvents.MAYOR_CHANGE.register(SlayerManager::onMayorChange);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfigManager.get().slayers.vampireSlayer.steakStakeUpdateFrequency);
@@ -69,12 +73,26 @@ public class SlayerManager {
 		}
 	}
 
+	private static void onMayorChange() {
+		slayerExpBuffActive = false;
+		slayerExpBuff = 1.0f;
+		// TODO: Remove when Aura leaves office
+		if (MayorUtils.getActivePerks().contains("Work Smarter")) {
+			slayerExpBuffActive = true;
+			slayerExpBuff = 1.5f;
+		} else if (MayorUtils.getActivePerks().contains("Slayer XP Buff")) {
+			slayerExpBuffActive = true;
+			slayerExpBuff = 1.25f;
+		}
+	}
+
 	private static void onLocationChange(Location location) {
 		slayerQuest = null;
 		bossFight = null;
 		Scheduler.INSTANCE.schedule(() -> getSlayerBossInfo(false), 20 * 2);
 	}
 
+	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Text text, boolean overlay) {
 		if (overlay || !Utils.isOnSkyblock()) return true;
 		String message = text.getString();
@@ -141,12 +159,8 @@ public class SlayerManager {
 		}
 
 		int xpPerTier = slayerQuest.slayerType.xpPerTier[tier - 1];
-
-		// TODO: Remove when Aura leaves office
-		if (MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("Work Smarter"))) {
-			xpPerTier = (int) (xpPerTier * 1.5);
-		} else if (MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("Slayer XP Buff")) || MayorUtils.getMinister().perk().name().equals("Slayer XP Buff")) {
-			xpPerTier = (int) (xpPerTier * 1.25);
+		if (slayerExpBuffActive) {
+			xpPerTier = (int) (xpPerTier * slayerExpBuff);
 		}
 
 		slayerQuest.bossesNeeded = (int) Math.ceil((double) slayerQuest.xpRemaining / xpPerTier);
