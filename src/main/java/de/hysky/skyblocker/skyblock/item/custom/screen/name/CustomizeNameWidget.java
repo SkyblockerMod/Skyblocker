@@ -106,7 +106,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 
 	public void setItem(ItemStack stack) {
 		uuid = stack.getUuid();
-		setText(stack.getName().copy());
+		setText(stack.getName().copy(), false);
 	}
 
 	@Override
@@ -183,10 +183,10 @@ public class CustomizeNameWidget extends ContainerWidget {
 	 *
 	 * @param text the text to set
 	 */
-	public void setText(Text text) {
+	public void setText(Text text, boolean updateConfig) {
 		this.text = text;
 		textString = text.getString();
-		if (!uuid.isEmpty()) {
+		if (updateConfig && !uuid.isEmpty()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			if (textString.isBlank()) config.general.customItemNames.remove(uuid);
 			else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(Formatting.WHITE)));
@@ -195,6 +195,10 @@ public class CustomizeNameWidget extends ContainerWidget {
 
 		// called before init
 		if (textField != null) textField.updateMePrettyPlease = true;
+	}
+
+	public void setText(Text text) {
+		setText(text, true);
 	}
 
 	@Override
