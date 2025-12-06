@@ -559,7 +559,7 @@ public class Room implements Tickable, Renderable {
 	}
 
 	/**
-	 * Sets {@link #lastChestSecret} as found if message equals {@link #CHEST_ALREADY_OPENED}.
+	 * Marks {@link #lastChestSecret} as found if message equals {@link #CHEST_ALREADY_OPENED}.
 	 */
 	protected void onChatMessage(String message) {
 		if (CHEST_ALREADY_OPENED.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
@@ -585,8 +585,8 @@ public class Room implements Tickable, Renderable {
 	}
 
 	/**
-	 * Marks the secret at the interaction position as found when the player interacts with a player head, or lever
-	 * For chests, check if it disappears (Mimic). Otherwise, it is handled in {@link #onChestOpened(BlockPos)}
+	 * Marks the secret at the interaction position as found when the player interacts with a player head or lever.<br>
+	 * Chest secrets are only marked as found here if the block disappears (Mimic). Otherwise, chests are handled in {@link #onChestOpened(BlockPos)} and {@link #onChatMessage(String)}.
 	 *
 	 * @param world the world to get the block from
 	 * @param pos   the position of the block being interacted with
@@ -610,6 +610,9 @@ public class Room implements Tickable, Renderable {
 		}
 	}
 
+	/**
+	 * Marks the chest at the position as found.
+	 */
 	protected void onChestOpened(BlockPos pos) {
 		secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).filter(SecretWaypoint::isEnabled).findAny()
 				.ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected chest opened, setting secret #{} as found", secretWaypoint.secretIndex));
