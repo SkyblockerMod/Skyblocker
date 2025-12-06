@@ -56,7 +56,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackProvider {
+class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStackProvider {
 	private static final Identifier TEXTURE = SkyblockerMod.id("background");
 	private static final int BORDER_SIZE = 8;
 	private static final int BUTTON_COUNT = 20;
@@ -77,8 +77,8 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 	private static boolean showHighestTierOnly;
 
 	static void attachToScreen(GenericContainerScreen screen) {
-		if (!SkyblockerConfigManager.get().helpers.enableAccessoryHelper) return;
-		final AccessoryHelperWidget widget = new AccessoryHelperWidget();
+		if (!SkyblockerConfigManager.get().helpers.enableAccessoriesHelperWidget) return;
+		final AccessoriesHelperWidget widget = new AccessoriesHelperWidget();
 		widget.setY((screen.height - widget.getHeight()) / 2);
 		Screens.getButtons(screen).add(widget);
 		final int previousX = ((HandledScreenAccessor) screen).getX();
@@ -113,7 +113,7 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 		tabButton.setToggled(open);
 	}
 
-	AccessoryHelperWidget() {
+	AccessoriesHelperWidget() {
 		super(0, 0, 147, 182, ScreenTexts.EMPTY);
 		this.layout = new SimplePositioningWidget(getWidth() - BORDER_SIZE * 2, getHeight() - BORDER_SIZE * 2);
 		DirectionalLayoutWidget mainLayout = layout.add(DirectionalLayoutWidget.vertical());

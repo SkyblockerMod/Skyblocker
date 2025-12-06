@@ -528,7 +528,7 @@
   "skyblocker.config.general.itemTooltip.craft.SELL_ORDER": "Sell Order",
   "skyblocker.config.general.itemTooltip.dungeonQuality": "Dungeon Quality",
   "skyblocker.config.general.itemTooltip.dungeonQuality.@Tooltip": "Displays quality and tier of dungeon drops from mobs.\n\n\nReminder:\nTier 1-3 dropped from F1-F3\nTier 4-7 dropped from F4-F7 or M1-M4\nTier 8-10 are dropped only from M5-M7",
-  "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "Enable Accessories Helper",
+  "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "Enable Accessories Helper Tooltip",
   "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]": "When hovering over an accessory, you are informed about whether you already have it or not, and whether it's worse than what you have already collected or better. List of Statuses:",
   "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[1]": "You have the highest tier accessory from that family.",
   "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[2]": "This accessory is an upgrade from the one that you already have in the same family. Also shows you what tier this accessory is in its family.",
@@ -623,8 +623,8 @@
   "skyblocker.config.helpers.chocolateFactory.straySound": "Stray Rabbit Sound",
   "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "Repeatedly plays a ding while a stray rabbit is present. If it is golden, the sound will be more frequent and different.",
 
-  "skyblocker.config.helpers.enableAccessoryHelper": "Enable Accessory Helper",
-  "skyblocker.config.helpers.enableAccessoryHelper.@Tooltip": "Displays a list of missing accessories in the accessory bag.",
+  "skyblocker.config.helpers.enableAccessoriesHelperWidget": "Enable Accessory Helper Widget",
+  "skyblocker.config.helpers.enableAccessoriesHelperWidget.@Tooltip": "Displays a list of missing accessories and ways of increasing MP in the accessory bag. Requires \"Accessories Helper Tooltip\" to be enabled.",
 
   "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
   "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip.",

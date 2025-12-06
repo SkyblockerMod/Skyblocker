@@ -55,7 +55,7 @@ public class AccessoriesHelper {
 
 						collectAccessories(handler.slots.subList(0, handler.getRows() * 9), page);
 					});
-					AccessoryHelperWidget.attachToScreen(genericContainerScreen);
+					AccessoriesHelperWidget.attachToScreen(genericContainerScreen);
 				}
 			}
 		});
