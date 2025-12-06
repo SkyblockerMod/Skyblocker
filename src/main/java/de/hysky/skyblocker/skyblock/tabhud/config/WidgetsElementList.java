@@ -7,15 +7,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
@@ -26,23 +23,7 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 	static final Identifier MOVE_DOWN_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("transferable_list/move_down_highlighted");
 	static final Identifier MOVE_DOWN_TEXTURE = Identifier.ofVanilla("transferable_list/move_down");
 
-	static final WidgetsListEntry SEPARATOR = new WidgetsListEntry() {
-
-		@Override
-		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of("- Skyblocker Widgets -"), this.getX() + this.getWidth() / 2, this.getY() + (this.getHeight() - 9) / 2, Colors.WHITE);
-		}
-
-		@Override
-		public List<? extends Element> children() {
-			return List.of();
-		}
-
-		@Override
-		public void drawBorder(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {}
-	};
-
-	private final WidgetsListTab parent;
+	private final WidgetsListScreen parent;
 	private boolean rightUpArrowHovered = false;
 	private boolean rightDownArrowHovered = false;
 	private boolean leftUpArrowHovered = false;
@@ -50,7 +31,7 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 
 	private int editingPosition = -1;
 
-	public WidgetsElementList(WidgetsListTab parent, MinecraftClient minecraftClient, int width, int height, int y) {
+	public WidgetsElementList(WidgetsListScreen parent, MinecraftClient minecraftClient, int width, int height, int y) {
 		super(minecraftClient, width, height, y, 32);
 		this.parent = parent;
 	}
@@ -75,10 +56,6 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 					.sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))
 					.map(Map.Entry::getValue)
 					.forEach(this::addEntry);
-			if (!parent.getCustomWidgetEntries().isEmpty() && parent.shouldShowCustomWidgetEntries()) {
-				if (!children().isEmpty()) addEntry(SEPARATOR);
-				parent.getCustomWidgetEntries().forEach(this::addEntry);
-			}
 			refreshScroll();
 		}
 		super.renderWidget(context, mouseX, mouseY, delta);
