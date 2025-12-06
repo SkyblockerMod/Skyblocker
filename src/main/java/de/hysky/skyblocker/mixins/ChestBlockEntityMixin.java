@@ -22,8 +22,8 @@ public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity
 	}
 
 	@Inject(at = @At("HEAD"), method = "onSyncedBlockEvent(II)Z")
-	public void test(int type, int data, CallbackInfoReturnable<Boolean> cir) {
-		if (type != 1 || data <= 0) return;
+	public void skyblocker$onSyncedBlockEvent(int type, int data, CallbackInfoReturnable<Boolean> cir) {
+		if (type != 1 || data <= 0) return; // should open lid
 		DungeonManager.onChestOpened(pos);
 	}
 }
