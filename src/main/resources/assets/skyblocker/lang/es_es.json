@@ -210,5 +210,7 @@
     "skyblocker.config.dungeons.princeMessage": "Mensaje de Prince",
     "skyblocker.config.dungeons.princeMessage.sendPrinceMessage": "Activar el Mensaje de Prince",
     "skyblocker.config.dungeons.professor": "The Professor (F3/M3)",
-    "skyblocker.config.title.settings": "Ajustes"
+    "skyblocker.config.title.settings": "Ajustes",
+    "skyblocker.config.dungeons.princeMessage.sendPrinceMessage.@Tooltip": "Envía un mensaje en el chat al matar a un Prince para mods de cálculos de puntuación de otros jugadores.",
+    "skyblocker.config.dungeons.map.fancyMap": "Mapa de Dungeon elegante"
 }
