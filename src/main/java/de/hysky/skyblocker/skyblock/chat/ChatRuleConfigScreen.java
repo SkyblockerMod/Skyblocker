@@ -43,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -87,7 +88,7 @@ public class ChatRuleConfigScreen extends Screen {
 
 	@Override
 	protected void init() {
-		assert client != null;
+		Objects.requireNonNull(client);
 		layout.addHeader(new TextWidget(title, textRenderer));
 		layout.addFooter(ButtonWidget.builder(ScreenTexts.DONE, b -> close()).build());
 		layout.addBody(new ContentContainer());
@@ -363,7 +364,7 @@ public class ChatRuleConfigScreen extends Screen {
 		@Override
 		public void onClick(Click click, boolean doubled) {
 			super.onClick(click, doubled);
-			assert client != null;
+			Objects.requireNonNull(client);
 			client.setScreen(new ItemSelectionPopup(ChatRuleConfigScreen.this, item -> {
 				if (item == null) return;
 				input.setText(getItemString(item));
