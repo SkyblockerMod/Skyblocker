@@ -587,6 +587,13 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.enableRedstoneKeyWaypoints,
+										() -> config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints,
+										newValue -> config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableLeverWaypoints"))
 								.binding(defaults.dungeons.secretWaypoints.enableLeverWaypoints,
 										() -> config.dungeons.secretWaypoints.enableLeverWaypoints,

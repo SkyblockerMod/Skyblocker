@@ -26,21 +26,21 @@
     },
     {
       "secretName": "2 - Redstone Skull (right click)",
-      "category": "lever",
+      "category": "key",
       "x": 10,
       "y": 70,
       "z": 26
     },
     {
       "secretName": "2 - Redstone Skull (right click)",
-      "category": "lever",
+      "category": "key",
       "x": 19,
       "y": 66,
       "z": 7
     },
     {
       "secretName": "2 - Place Skull",
-      "category": "lever",
+      "category": "key",
       "x": 27,
       "y": 69,
       "z": 7
