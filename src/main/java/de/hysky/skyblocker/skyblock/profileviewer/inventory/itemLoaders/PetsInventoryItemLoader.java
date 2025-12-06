@@ -13,28 +13,28 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PetsInventoryItemLoader extends ItemLoader {
-    @Override
-    public List<ItemStack> loadItems(JsonObject data) {
-        List<Pet> petList = new ArrayList<>();
-        try {
-            JsonObject petsData = data.getAsJsonObject("pets_data");
-            if (petsData != null && petsData.has("pets")) {
-                for (var petElement : petsData.get("pets").getAsJsonArray()) {
-                    PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(petElement.toString())).getOrThrow();
-                    petList.add(new Pet(petInfo));
-                }
-            }
-        } catch (Exception e) {
-            ProfileViewerScreen.LOGGER.error("[Skyblocker Profile Viewer] Failed to load pets", e);
-        }
+	@Override
+	public List<ItemStack> loadItems(JsonObject data) {
+		List<Pet> petList = new ArrayList<>();
+		try {
+			JsonObject petsData = data.getAsJsonObject("pets_data");
+			if (petsData != null && petsData.has("pets")) {
+				for (var petElement : petsData.get("pets").getAsJsonArray()) {
+					PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(petElement.toString())).getOrThrow();
+					petList.add(new Pet(petInfo));
+				}
+			}
+		} catch (Exception e) {
+			ProfileViewerScreen.LOGGER.error("[Skyblocker Profile Viewer] Failed to load pets", e);
+		}
 
-        // Sort pets by tier (in reverse order) and level (in reverse order)
-        petList.sort(Comparator.comparingInt(Pet::getTier).thenComparingInt(Pet::getLevel).reversed());
+		// Sort pets by tier (in reverse order) and level (in reverse order)
+		petList.sort(Comparator.comparingInt(Pet::getTier).thenComparingInt(Pet::getLevel).reversed());
 
-        List<ItemStack> itemList = new ArrayList<>();
-        for (Pet pet : petList) {
-            itemList.add(pet.getIcon());
-        }
-        return itemList;
-    }
+		List<ItemStack> itemList = new ArrayList<>();
+		for (Pet pet : petList) {
+			itemList.add(pet.getIcon());
+		}
+		return itemList;
+	}
 }

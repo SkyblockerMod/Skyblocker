@@ -18,11 +18,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Map.entry;
+
+import java.awt.Color;
 
 public class ChatRuleConfigScreen extends Screen {
 	private static final int SPACER_X = 5;

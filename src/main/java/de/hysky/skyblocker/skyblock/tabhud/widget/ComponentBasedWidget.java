@@ -7,7 +7,9 @@ import de.hysky.skyblocker.skyblock.tabhud.config.option.BooleanOption;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.FloatOption;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.*;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -19,7 +21,11 @@ import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -57,7 +63,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	/**
 	 * Most often than not this should be instantiated only once.
 	 *
-	 * @param title      title
+	 * @param title title
 	 * @param color the color for the border
 	 */
 	public ComponentBasedWidget(Text title, Integer color, @NotNull Information information) { // use Integer object to not get that annoying warning on Formatting#getColor grrr

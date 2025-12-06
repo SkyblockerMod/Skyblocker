@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import java.awt.Color;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
@@ -18,8 +20,6 @@ import net.minecraft.block.CarpetBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import java.awt.*;
 
 /**
  * Highlights unbreakable carpets within ore veins in the Dwarven Mines.

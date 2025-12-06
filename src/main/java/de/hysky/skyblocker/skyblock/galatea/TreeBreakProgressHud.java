@@ -28,7 +28,6 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 	static {
 		ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> ARMOR_STANDS.remove(entity.getId()));
 	}
-
 	public TreeBreakProgressHud() {
 		super(Text.literal("Tree Break Progress").formatted(Formatting.GREEN, Formatting.BOLD), Formatting.GREEN.getColorValue(), new Information("hud_treeprogress", Text.literal("Tree Break Progress HUD"), location -> location == Location.GALATEA));
 		update();

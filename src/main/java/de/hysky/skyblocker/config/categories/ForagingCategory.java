@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
+import java.awt.Color;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
@@ -12,8 +14,6 @@ import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.controllers.ColourController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.text.Text;
-
-import java.awt.*;
 
 public class ForagingCategory {
 

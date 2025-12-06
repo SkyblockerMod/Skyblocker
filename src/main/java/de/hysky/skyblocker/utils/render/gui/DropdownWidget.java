@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
@@ -11,16 +12,14 @@ import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.util.Colors;
-
 public class DropdownWidget<T> extends ContainerWidget {
-    public final int entryHeight;
+	public final int entryHeight;
 	protected int headerHeight;
 	protected final MinecraftClient client;
 	protected final List<T> entries;
@@ -87,14 +86,14 @@ public class DropdownWidget<T> extends ContainerWidget {
 		dropdownList.visible = open;
 		dropdownList.render(context, mouseX, mouseY, delta);
 		renderHeader(context, mouseX, mouseY, delta);
-        if (isMouseOver(mouseX, mouseY)) context.setCursor(StandardCursors.POINTING_HAND);
+		if (isMouseOver(mouseX, mouseY)) context.setCursor(StandardCursors.POINTING_HAND);
 	}
 
 	protected void renderHeader(DrawContext context, int mouseX, int mouseY, float delta) {
 		context.fill(getX(), getY(), getRight(), getY() + headerHeight + 1, Colors.BLACK);
 		HudHelper.drawBorder(context, getX(), getY(), getWidth(), headerHeight + 1, Colors.WHITE);
-        context.drawText(client.textRenderer, ">", getX() + 4, getY() + 6, Colors.ALTERNATE_WHITE, true);
-        context.drawText(client.textRenderer, selected.toString(), getX() + 12, getY() + 6, Colors.WHITE, true);
+		context.drawText(client.textRenderer, ">", getX() + 4, getY() + 6, Colors.ALTERNATE_WHITE, true);
+		context.drawText(client.textRenderer, selected.toString(), getX() + 12, getY() + 6, Colors.WHITE, true);
 	}
 
 	@Override

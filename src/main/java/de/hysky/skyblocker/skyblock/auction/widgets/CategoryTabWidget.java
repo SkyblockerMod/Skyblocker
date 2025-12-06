@@ -12,32 +12,32 @@ import net.minecraft.item.tooltip.TooltipType;
 import org.jetbrains.annotations.NotNull;
 
 public class CategoryTabWidget extends SideTabButtonWidget {
-    private final SlotClickHandler slotClick;
-    private int slotId = -1;
+	private final SlotClickHandler slotClick;
+	private int slotId = -1;
 
-    public CategoryTabWidget(@NotNull ItemStack icon, SlotClickHandler slotClick) {
-        super(0, 0, false, icon);
-        this.slotClick = slotClick;
-    }
+	public CategoryTabWidget(@NotNull ItemStack icon, SlotClickHandler slotClick) {
+		super(0, 0, false, icon);
+		this.slotClick = slotClick;
+	}
 
-    @Override
-    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderWidget(context, mouseX, mouseY, delta);
+	@Override
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+		super.renderWidget(context, mouseX, mouseY, delta);
 
-        if (isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(MinecraftClient.getInstance().textRenderer, icon.getTooltip(TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC), mouseX, mouseY);
-        }
+		if (isMouseOver(mouseX, mouseY)) {
+			context.drawTooltip(MinecraftClient.getInstance().textRenderer, icon.getTooltip(TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC), mouseX, mouseY);
+		}
 
-    }
+	}
 
-    public void setSlotId(int slotId) {
-        this.slotId = slotId;
-    }
+	public void setSlotId(int slotId) {
+		this.slotId = slotId;
+	}
 
-    @Override
-    public void onClick(Click click, boolean doubled) {
-        if (isToggled() || slotId == -1) return;
-        super.onClick(click, doubled);
-        slotClick.click(slotId);
-    }
+	@Override
+	public void onClick(Click click, boolean doubled) {
+		if (isToggled() || slotId == -1) return;
+		super.onClick(click, doubled);
+		slotClick.click(slotId);
+	}
 }

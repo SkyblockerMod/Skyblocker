@@ -24,8 +24,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.*;
-
 public class CorpseList extends ElementListWidget<CorpseList.AbstractEntry> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CorpseList.class);
 	private static final int BORDER_COLOR = 0xFF6C7086;
@@ -53,7 +51,7 @@ public class CorpseList extends ElementListWidget<CorpseList.AbstractEntry> {
 				Text itemName = getItemName(reward.itemId());
 
 				// If the item is priceless, don't show the prices
-				if (PRICELESS_ITEMS.contains(reward.itemId())) addEntry(new CorpseList.MultiEntry(itemName, reward.amount()));
+				if (CorpseProfitTracker.PRICELESS_ITEMS.contains(reward.itemId())) addEntry(new CorpseList.MultiEntry(itemName, reward.amount()));
 				else addEntry(new CorpseList.MultiEntry(itemName, reward.amount(), reward.pricePerUnit()));
 			}
 
@@ -73,15 +71,15 @@ public class CorpseList extends ElementListWidget<CorpseList.AbstractEntry> {
 
 	public static Text getItemName(String itemId) {
 		return switch (itemId) {
-			case GLACITE_POWDER -> Text.literal("Glacite Powder").formatted(Formatting.AQUA);
-			case OPAL_CRYSTAL -> Text.literal("Opal Crystal").formatted(Formatting.WHITE);
-			case ONYX_CRYSTAL -> Text.literal("Onyx Crystal").formatted(Formatting.DARK_GRAY);
-			case AQUAMARINE_CRYSTAL -> Text.literal("Aquamarine Crystal").formatted(Formatting.BLUE);
-			case PERIDOT_CRYSTAL -> Text.literal("Peridot Crystal").formatted(Formatting.DARK_GREEN);
-			case CITRINE_CRYSTAL -> Text.literal("Citrine Crystal").formatted(Formatting.DARK_RED);
-			case RUBY_CRYSTAL -> Text.literal("Ruby Crystal").formatted(Formatting.RED);
-			case JASPER_CRYSTAL -> Text.literal("Jasper Crystal").formatted(Formatting.LIGHT_PURPLE);
-			case ENCHANTMENT_ICE_COLD_1 -> Text.literal("Enchanted Book (Ice Cold I)").formatted(Formatting.WHITE);
+			case CorpseProfitTracker.GLACITE_POWDER -> Text.literal("Glacite Powder").formatted(Formatting.AQUA);
+			case CorpseProfitTracker.OPAL_CRYSTAL -> Text.literal("Opal Crystal").formatted(Formatting.WHITE);
+			case CorpseProfitTracker.ONYX_CRYSTAL -> Text.literal("Onyx Crystal").formatted(Formatting.DARK_GRAY);
+			case CorpseProfitTracker.AQUAMARINE_CRYSTAL -> Text.literal("Aquamarine Crystal").formatted(Formatting.BLUE);
+			case CorpseProfitTracker.PERIDOT_CRYSTAL -> Text.literal("Peridot Crystal").formatted(Formatting.DARK_GREEN);
+			case CorpseProfitTracker.CITRINE_CRYSTAL -> Text.literal("Citrine Crystal").formatted(Formatting.DARK_RED);
+			case CorpseProfitTracker.RUBY_CRYSTAL -> Text.literal("Ruby Crystal").formatted(Formatting.RED);
+			case CorpseProfitTracker.JASPER_CRYSTAL -> Text.literal("Jasper Crystal").formatted(Formatting.LIGHT_PURPLE);
+			case CorpseProfitTracker.ENCHANTMENT_ICE_COLD_1 -> Text.literal("Enchanted Book (Ice Cold I)").formatted(Formatting.WHITE);
 			default -> {
 				ItemStack itemStack = ItemRepository.getItemStack(itemId);
 				if (itemStack == null) {

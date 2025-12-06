@@ -40,7 +40,11 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -168,12 +172,12 @@ public class WidgetManager {
 				JsonObject jsonObject = config.widgetOptions.get(key);
 				if (jsonObject == null) continue;
 				HudWidget widget = entry.getValue();
-                try {
-                    setWidgetOptions(widget, jsonObject);
-                } catch (Exception e) {
+				try {
+					setWidgetOptions(widget, jsonObject);
+				} catch (Exception e) {
 					LOGGER.error("Failed to load config for {}", widget.getId(), e);
-                }
-            }
+				}
+			}
 		} catch (Exception e) {
 			LOGGER.error("Failed to load config", e);
 			showErrorToast();

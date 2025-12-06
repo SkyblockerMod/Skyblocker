@@ -91,4 +91,5 @@ public class Ico {
 	public static final ItemStack TROPICAL_FISH_BUCKET = Items.TROPICAL_FISH_BUCKET.getDefaultStack();
 	public static final ItemStack STRIPPED_SPRUCE_WOOD = Items.STRIPPED_SPRUCE_WOOD.getDefaultStack();
 	public static final ItemStack MANGROVE_LOG = Items.MANGROVE_LOG.getDefaultStack();
+	public static final ItemStack OMINOUS_BOTTLE = Items.OMINOUS_BOTTLE.getDefaultStack();
 }
