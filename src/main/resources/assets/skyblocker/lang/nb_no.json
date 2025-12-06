@@ -25,7 +25,7 @@
     "skyblocker.config.misc.richPresence.customMessage": "Egendefinert melding",
     "skyblocker.config.quickNav": "Rask navigering",
     "skyblocker.config.quickNav.enableQuickNav": "Aktiver hurtignavigering",
-    "key.hotbarSlotLock": "Slot lås (Hotbar)",
+    "key.skyblocker.hotbarSlotLock": "Slot lås (Hotbar)",
     "skyblocker.config.general": "Generelt",
     "skyblocker.config.uiAndVisuals.bars": "Helse, mana, forsvar og XP-barer",
     "skyblocker.config.general.itemTooltip.avg.@Tooltip": "Du kan velge hvor mange dager med gjennomsnittspris som skal være",

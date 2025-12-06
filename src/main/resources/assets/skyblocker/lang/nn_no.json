@@ -1,5 +1,5 @@
 {
-    "key.hotbarSlotLock": "Slotslås (Hotbar)",
+    "key.skyblocker.hotbarSlotLock": "Slotslås (Hotbar)",
     "skyblocker.config.title": "Skyblocker Innstillinger",
     "skyblocker.config.general": "Generelt",
     "skyblocker.config.uiAndVisuals.bars": "Liv, mana, forsvar og XP-bar",

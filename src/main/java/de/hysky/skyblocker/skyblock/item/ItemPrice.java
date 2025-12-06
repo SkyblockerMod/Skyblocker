@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 public class ItemPrice {
 	public static final KeyBinding ITEM_PRICE_LOOKUP = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-			"key.itemPriceLookup",
+			"key.skyblocker.itemPriceLookup",
 			GLFW.GLFW_KEY_F6,
 			SkyblockerMod.KEYBINDING_CATEGORY
 	));

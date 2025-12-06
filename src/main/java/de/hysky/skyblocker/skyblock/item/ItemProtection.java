@@ -38,7 +38,7 @@ public class ItemProtection {
 	@Init
 	public static void init() {
 		itemProtection = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.itemProtection",
+				"key.skyblocker.itemProtection",
 				GLFW.GLFW_KEY_V,
 				SkyblockerMod.KEYBINDING_CATEGORY
 		));

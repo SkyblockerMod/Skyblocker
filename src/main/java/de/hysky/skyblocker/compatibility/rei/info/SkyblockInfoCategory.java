@@ -83,7 +83,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 		DirectionalLayoutWidget layoutWidget = DirectionalLayoutWidget.vertical();
 		layoutWidget.setPosition(bounds.x + OFFSET, bounds.y + OFFSET + REI_SLOT_HEIGHT);
 
-		layoutWidget.add(ButtonWidget.builder(Text.translatable("key.itemPriceLookup"), (button) -> {
+		layoutWidget.add(ButtonWidget.builder(Text.translatable("key.skyblocker.itemPriceLookup"), (button) -> {
 			ItemPrice.itemPriceLookup(player, itemStack);
 
 			Scheduler.INSTANCE.schedule(() -> {
@@ -93,8 +93,8 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 			}, 10);
 		}).build());
 
-		layoutWidget.add(getWikiLookupButton(Text.translatable("key.wikiLookup.official"), true, itemStack, player));
-		layoutWidget.add(getWikiLookupButton(Text.translatable("key.wikiLookup.fandom"), false, itemStack, player));
+		layoutWidget.add(getWikiLookupButton(Text.translatable("key.skyblocker.wikiLookup.official"), true, itemStack, player));
+		layoutWidget.add(getWikiLookupButton(Text.translatable("key.skyblocker.wikiLookup.fandom"), false, itemStack, player));
 
 		layoutWidget.forEachChild(child -> widgets.add(Widgets.wrapVanillaWidget(child)));
 		layoutWidget.refreshPositions();
