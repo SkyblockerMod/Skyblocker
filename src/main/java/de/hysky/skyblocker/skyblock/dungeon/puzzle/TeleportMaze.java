@@ -13,9 +13,16 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
 
 public class TeleportMaze extends DungeonPuzzle {
 	private static final float[] LIME = ColorUtils.getFloatComponents(DyeColor.LIME);

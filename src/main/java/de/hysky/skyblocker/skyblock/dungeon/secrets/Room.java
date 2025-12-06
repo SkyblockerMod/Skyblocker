@@ -39,7 +39,16 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,6 +88,7 @@ public class Room implements Tickable, Renderable {
 	 * Contains all possible dungeon rooms for this room. The list is gradually shrunk by checking blocks until only one room is left.
 	 */
 	protected List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms;
+
 	/**
 	 * Contains all blocks that have been checked to prevent checking the same block multiple times.
 	 */

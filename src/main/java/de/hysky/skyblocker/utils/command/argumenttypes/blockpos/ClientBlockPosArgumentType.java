@@ -18,7 +18,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
-import static net.minecraft.command.argument.BlockPosArgumentType.*;
+import static net.minecraft.command.argument.BlockPosArgumentType.OUT_OF_BOUNDS_EXCEPTION;
+import static net.minecraft.command.argument.BlockPosArgumentType.OUT_OF_WORLD_EXCEPTION;
+import static net.minecraft.command.argument.BlockPosArgumentType.UNLOADED_EXCEPTION;
 
 // Uses the static fields of BlockPosArgumentType to not create the same field twice
 public class ClientBlockPosArgumentType implements ArgumentType<ClientPosArgument> {

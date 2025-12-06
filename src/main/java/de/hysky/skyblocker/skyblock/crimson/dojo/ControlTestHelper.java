@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
+import java.awt.Color;
+
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.MinecraftClient;
@@ -7,8 +9,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.WitherSkeletonEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-
-import java.awt.*;
 
 public class ControlTestHelper {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
