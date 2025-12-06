@@ -29,6 +29,7 @@
   "skyblocker.accessory_helper.filter.UPGRADES": "Upgrades",
   "skyblocker.accessory_helper.highestTierOnly": "Show highest tier only",
   "skyblocker.accessory_helper.openWiki": "Click to open on the wiki!",
+  "skyblocker.accessory_helper.recombobulate": "Recombobulate a %s accessory.",
 
   "skyblocker.api.cache.HIT": "This data was cached!\nIt's %s seconds old.",
   "skyblocker.api.cache.MISS": "This data wasn't cached!",

@@ -3,8 +3,10 @@ package de.hysky.skyblocker.skyblock.accessories;
 import com.google.common.collect.ImmutableList;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper.Accessory;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
@@ -16,6 +18,7 @@ import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
@@ -45,7 +48,6 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -54,7 +56,7 @@ import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStackProvider {
 	private static final Identifier TEXTURE = SkyblockerMod.id("background");
@@ -68,7 +70,8 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 	private final ArrowButton nextPageButton = new ArrowButton(true);
 
 	private List<AccessoryInfo> accessories = List.of();
-	private List<AccessoryInfo> displayedAccessories = List.of();
+	private List<MagicPowerSource> displays = List.of();
+	private List<RecombobulateSource> recombDisplays = List.of();
 
 	// Things that should persist when you close the accessory bag
 	private static Filter filter = Filter.MISSING;
@@ -93,15 +96,30 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 			button.setY((toggled ? widget.getY() : ((HandledScreenAccessor) screen).getY()) + 8);
 			if (toggled) {
 				final Set<Accessory> collectedAccessories = AccessoriesHelper.getCollectedAccessories();
-				widget.setAccessories(AccessoriesHelper.ACCESSORY_DATA.values().stream()
-						.filter(accessory -> ItemRepository.getItemStack(accessory.id()) != null) // Remove admin items
+				widget.recombDisplays = collectedAccessories.stream()
+						.filter(Accessory::recombobulatable)
+						.map(Accessory::id)
+						.filter(id -> !AccessoriesHelper.isRecombobulated(id))
+						.map(ItemRepository::getItemStack)
+						.filter(Objects::nonNull)
+						.map(SkyblockerStack::getSkyblockRarity)
+						.distinct()
+						.map(RecombobulateSource::new)
+						.toList();
+
+				widget.accessories = AccessoriesHelper.ACCESSORY_DATA.values().stream()
+						.filter(accessory -> ItemRepository.getItemStack(accessory.id()) != null) // Removes admin items
 						.map(accessory -> {
 							if (accessory.family().isPresent()) {
 								AccessoriesHelper.FamilyReport report = AccessoriesHelper.calculateFamilyReport(accessory, collectedAccessories);
 								return new AccessoryInfo(accessory, report.highestCollectedInFamily(), report.highestInFamily());
 							} else
 								return new AccessoryInfo(accessory, collectedAccessories.contains(accessory) ? Optional.of(accessory) : Optional.empty(), accessory);
-						}).collect(Collectors.toSet()));
+						}).distinct()
+						.filter(info -> info.accessory().tier() > info.highestOwned().map(Accessory::tier).orElse(-1))
+						.toList();
+				widget.updateFilter(); // Update items
+				widget.changePage(0); // Updates display
 			} else {
 				// Reset when you close the helper
 				filter = Filter.MISSING;
@@ -138,7 +156,7 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 				.initially(filter)
 				.build(0, 0, filterWidth, 16, Text.translatable("skyblocker.accessory_helper.filter"), (b, v) -> {
 					filter = v;
-					updataFilter();
+					updateFilter();
 					changePage(0);
 				})
 		);
@@ -147,7 +165,7 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 				.omitKeyText()
 				.build(0, 0, filterWidth, 16, ScreenTexts.EMPTY, (button, value) -> {
 					showHighestTierOnly = value;
-					updataFilter();
+					updateFilter();
 					changePage(0);
 				})
 		);
@@ -157,39 +175,18 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 		updatePageSwitcher();
 	}
 
-	void setAccessories(Collection<AccessoryInfo> accessories) {
-		this.accessories = accessories.stream()
-				.filter(info -> info.accessory().tier() > info.highestOwned().map(Accessory::tier).orElse(-1))
-				.toList();
-		updataFilter(); // Update items
-		changePage(0); // Updates display
-	}
-
-	private void updataFilter() {
+	private void updateFilter() {
 		Predicate<AccessoryInfo> predicate = switch (filter) {
 			case ALL -> info -> true;
 			case MISSING -> info -> info.highestOwned().isEmpty();
 			case UPGRADES -> info -> info.highestOwned().isPresent() && info.accessory().tier() > info.highestOwned().get().tier();
 		};
-		displayedAccessories = accessories.stream()
+		Stream<AccessoryInfo.Source> stream = accessories.stream()
 				.filter(predicate)
 				.filter(info -> !showHighestTierOnly || info.accessory().tier() >= info.highestInFamily().tier())
-				.sorted(Comparator.comparingDouble(info -> {
-							OptionalDouble priceOpt = getPrice(info.accessory());
-							if (priceOpt.isEmpty()) return Double.MAX_VALUE;
-							double price = priceOpt.getAsDouble();
-							int originalMP = 0;
-							if (info.highestOwned().isPresent()) {
-								OptionalDouble ownedPrice = getPrice(info.highestOwned().get());
-								price -= ownedPrice.orElse(0);
-								ItemStack stack = ItemRepository.getItemStack(info.highestOwned().get().id());
-								originalMP = stack != null ? stack.getSkyblockRarity().getMP() : 0;
-							}
-							ItemStack stack = ItemRepository.getItemStack(info.accessory().id());
-							if (stack == null) return Double.MAX_VALUE;
-							int mp = stack.getSkyblockRarity().getMP() - originalMP;
-							return mp <= 0 ? Double.MAX_VALUE : price / mp;
-						})
+				.map(AccessoryInfo.Source::new);
+		displays = Stream.concat(stream, recombDisplays.stream())
+				.sorted(Comparator.comparingDouble(MagicPowerSource::pricePerMp)
 				).toList();
 	}
 
@@ -212,13 +209,13 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 		updatePageSwitcher();
 		for (int i = 0; i < BUTTON_COUNT; i++) {
 			int j = i + page * BUTTON_COUNT;
-			if (j < displayedAccessories.size()) buttons.get(i).setAccessory(displayedAccessories.get(j));
+			if (j < displays.size()) buttons.get(i).setSource(displays.get(j));
 			else buttons.get(i).clearDisplayStack();
 		}
 	}
 
 	private int getPageCount() {
-		return displayedAccessories.size() / BUTTON_COUNT + 1;
+		return displays.size() / BUTTON_COUNT + 1;
 	}
 
 	private void updatePageSwitcher() {
@@ -299,74 +296,7 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 	}
 
-	private static class ResultButton extends SkyblockRecipeResultButton implements HoveredItemStackProvider {
-		private final Text smoothLine = LineSmoothener.createSmoothLine();
-		private final Text wikiLine = Text.translatable("skyblocker.accessory_helper.openWiki").formatted(Formatting.YELLOW);
-		private final Text fandomLine = Text.translatable("skyblocker.accessory_helper.fandom").formatted(Formatting.GRAY, Formatting.ITALIC);
-		private @Nullable AccessoryInfo accessory;
-		private @Nullable List<Text> afterSelling;
-
-		private void setAccessory(AccessoryInfo info) {
-			this.accessory = info;
-			ItemStack stack = ItemRepository.getItemStack(info.accessory().id());
-			afterSelling = null;
-			if (stack == null) return;
-			afterSelling = accessory.highestOwned()
-					.map(Accessory::id)
-					.map(ItemRepository::getItemStack)
-					.flatMap(accStack -> {
-						OptionalDouble priceOpt = getPrice(info.accessory());
-						if (priceOpt.isEmpty()) return Optional.empty();
-						DoubleBooleanPair price = ItemUtils.getItemPrice(accStack);
-						if (!price.rightBoolean()) return Optional.empty();
-						return Optional.of(List.of(
-								Text.translatable("skyblocker.accessory_helper.afterSelling", ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1)),
-								accStack.getName(),
-								Text.empty()
-								));
-					})
-					.orElse(null);
-			setDisplayStack(stack);
-		}
-
-		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			super.renderWidget(context, mouseX, mouseY, delta);
-			ItemStack stack = getDisplayStack();
-			if (isHovered() && stack != null && accessory != null) {
-				accessory.highestOwned().ifPresent(owned -> AccessoriesContainerSolver.INSTANCE.highlightedAccessory = owned.id());
-				MinecraftClient client = MinecraftClient.getInstance();
-				List<Text> tooltip = new ArrayList<>(Screen.getTooltipFromItem(client, stack));
-				tooltip.add(smoothLine);
-				if (afterSelling != null) {
-					tooltip.addAll(afterSelling);
-				}
-				tooltip.add(wikiLine);
-				tooltip.add(fandomLine);
-				context.drawTooltip(client.textRenderer, tooltip, stack.getTooltipData(), mouseX, mouseY, stack.get(DataComponentTypes.TOOLTIP_STYLE));
-				context.setCursor(StandardCursors.POINTING_HAND);
-			}
-		}
-
-		@Override
-		public void onClick(Click click, boolean doubled) {
-			ClientPlayerEntity player = MinecraftClient.getInstance().player;
-			if (getDisplayStack() != null && player != null) {
-				WikiLookupManager.openWiki(getDisplayStack(), player, !MinecraftClient.getInstance().isShiftPressed());
-			}
-		}
-
-		@Override
-		protected void clearDisplayStack() {
-			super.clearDisplayStack();
-		}
-
-		@Override
-		public @Nullable ItemStack getFocusedItem() {
-			return isHovered() ? getDisplayStack() : null;
-		}
-	}
-
+	// TODO abstract away this and SkyblockRecipeTabButton
 	private static class TabButton extends ToggleButtonWidget {
 		private final Consumer<TabButton> onToggled;
 
@@ -412,7 +342,173 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 		}
 	}
 
-	private record AccessoryInfo(Accessory accessory, Optional<Accessory> highestOwned, Accessory highestInFamily) {}
+	private static class ResultButton extends SkyblockRecipeResultButton implements HoveredItemStackProvider {
+
+		private @Nullable MagicPowerSource source;
+
+		private void setSource(MagicPowerSource source) {
+			this.source = source;
+			setDisplayStack(source.icon());
+		}
+
+		@Override
+		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+			super.renderWidget(context, mouseX, mouseY, delta);
+			ItemStack stack = getDisplayStack();
+			if (isHovered() && stack != null && source != null) {
+				source.drawTooltip(context, mouseX, mouseY);
+				context.setCursor(StandardCursors.POINTING_HAND);
+			}
+		}
+
+		@Override
+		public void onClick(Click click, boolean doubled) {
+			if (source != null) source.click();
+		}
+
+		@Override
+		protected void clearDisplayStack() {
+			super.clearDisplayStack();
+		}
+		@Override
+		public @Nullable ItemStack getFocusedItem() {
+			return isHovered() ? getDisplayStack() : null;
+		}
+
+	}
+
+	private record AccessoryInfo(Accessory accessory, Optional<Accessory> highestOwned, Accessory highestInFamily) {
+		private static class Source implements MagicPowerSource {
+			private static final Text smoothLine = LineSmoothener.createSmoothLine();
+			private static final Text wikiLine = Text.translatable("skyblocker.accessory_helper.openWiki").formatted(Formatting.YELLOW);
+			private static final Text fandomLine = Text.translatable("skyblocker.accessory_helper.fandom").formatted(Formatting.GRAY, Formatting.ITALIC);
+
+			private final AccessoryInfo info;
+			private final @Nullable List<Text> afterSelling;
+
+			private @Nullable ItemStack icon;
+
+			private Source(AccessoryInfo info) {
+				this.info = info;
+				afterSelling = info.highestOwned()
+						.map(Accessory::id)
+						.map(ItemRepository::getItemStack)
+						.flatMap(accStack -> {
+							OptionalDouble priceOpt = getPrice(info.accessory());
+							if (priceOpt.isEmpty()) return Optional.empty();
+							DoubleBooleanPair price = ItemUtils.getItemPrice(accStack);
+							if (!price.rightBoolean()) return Optional.empty();
+							return Optional.of(List.of(
+									Text.translatable("skyblocker.accessory_helper.afterSelling", ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1)),
+									accStack.getName(),
+									Text.empty()
+							));
+						})
+						.orElse(null);
+			}
+
+			@Override
+			public ItemStack icon() {
+				return icon != null ? icon : (icon = Optional.ofNullable(ItemRepository.getItemStack(info.accessory().id())).orElse(ItemStack.EMPTY));
+			}
+
+			@Override
+			public void drawTooltip(DrawContext context, int mouseX, int mouseY) {
+				if (icon == null) {
+					return;
+				}
+				info.highestOwned().ifPresent(owned -> AccessoriesContainerSolver.INSTANCE.highlightedAccessory = owned.id());
+				MinecraftClient client = MinecraftClient.getInstance();
+				List<Text> tooltip = new ArrayList<>(Screen.getTooltipFromItem(client, icon));
+				tooltip.add(smoothLine);
+				if (afterSelling != null) {
+					tooltip.addAll(afterSelling);
+				}
+				tooltip.add(wikiLine);
+				tooltip.add(fandomLine);
+				context.drawTooltip(client.textRenderer, tooltip, icon.getTooltipData(), mouseX, mouseY, icon.get(DataComponentTypes.TOOLTIP_STYLE));
+			}
+
+			@Override
+			public double pricePerMp() {
+				OptionalDouble priceOpt = getPrice(info.accessory());
+				if (priceOpt.isEmpty()) return Double.MAX_VALUE;
+				double price = priceOpt.getAsDouble();
+				int originalMP = 0;
+				if (info.highestOwned().isPresent()) {
+					OptionalDouble ownedPrice = getPrice(info.highestOwned().get());
+					price -= ownedPrice.orElse(0);
+					ItemStack stack = ItemRepository.getItemStack(info.highestOwned().get().id());
+					originalMP = stack != null ? stack.getSkyblockRarity().getMP() : 0;
+				}
+				ItemStack stack = ItemRepository.getItemStack(info.accessory().id());
+				if (stack == null) return Double.MAX_VALUE;
+				int mp = stack.getSkyblockRarity().getMP() - originalMP;
+				return mp <= 0 ? Double.MAX_VALUE : price / mp;
+			}
+
+			@Override
+			public void click() {
+				if (icon == null) return;
+				ClientPlayerEntity player = MinecraftClient.getInstance().player;
+				if (player == null) return;
+				WikiLookupManager.openWiki(icon, player, !MinecraftClient.getInstance().isShiftPressed());
+			}
+		}
+	}
+
+	private static class RecombobulateSource implements MagicPowerSource {
+		private final ItemStack icon;
+		private final double pricePerMp;
+		private final List<Text> tooltip;
+		private RecombobulateSource(SkyblockItemRarity rarity) {
+			this.icon = ItemRepository.getItemStack("RECOMBOBULATOR_3000", ItemStack.EMPTY);
+			DoubleBooleanPair pair = ItemUtils.getItemPrice("RECOMBOBULATOR_3000");
+			double price = pair.rightBoolean() ? pair.leftDouble() : 6000000;
+			int mp = rarity.recombulate().getMP() - rarity.getMP();
+			pricePerMp = mp <= 0 ? Double.MAX_VALUE : price / mp;
+			tooltip = List.of(
+					Text.translatable(
+							"skyblocker.accessory_helper.recombobulate",
+							Text.literal(rarity.name().replace("_", " ")).withColor(rarity.color)
+					),
+					ItemTooltip.getCoinsMessage(price, 1)
+			);
+		}
+
+		@Override
+		public ItemStack icon() {
+			return icon;
+		}
+
+		@Override
+		public void drawTooltip(DrawContext context, int mouseX, int mouseY) {
+			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+			context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
+		}
+
+		@Override
+		public double pricePerMp() {
+			return pricePerMp;
+		}
+
+		@Override
+		public void click() {
+			ClientPlayerEntity player = MinecraftClient.getInstance().player;
+			if (player == null) return;
+			WikiLookupManager.openWikiLinkName("Recombobulator_3000#Usage", player, !MinecraftClient.getInstance().isShiftPressed());
+		}
+	}
+
+	private interface MagicPowerSource {
+		ItemStack icon();
+
+		void drawTooltip(DrawContext context, int mouseX, int mouseY);
+
+		double pricePerMp();
+
+		void click();
+	}
 
 	private enum Filter {
 		ALL,

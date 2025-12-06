@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import it.unimi.dsi.fastutil.Pair;
@@ -31,6 +32,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class AccessoriesHelper {
+	private static final ObjectOpenHashSet<String> EMPTY = new ObjectOpenHashSet<>(0);
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("collected_accessories.json");
 	static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag(?: \\((?<page>\\d+)\\/\\d+\\))?");
 	//UUID -> Profile Id & Data
@@ -71,8 +73,17 @@ public class AccessoriesHelper {
 				.filter(NON_EMPTY)
 				.toList();
 
-		COLLECTED_ACCESSORIES.computeIfAbsent(ProfileAccessoryData::createDefault).pages()
-				.put(page, new ObjectOpenHashSet<>(accessoryIds));
+		List<String> recombobulated = slots.stream()
+				.map(Slot::getStack)
+				.filter(stack -> ItemUtils.getCustomData(stack).getInt("rarity_upgrades", 0) > 0)
+				.map(ItemStack::getSkyblockId)
+				.filter(NON_EMPTY)
+				.toList();
+
+		ProfileAccessoryData data = COLLECTED_ACCESSORIES.computeIfAbsent(ProfileAccessoryData::createDefault);
+		data.recombobulatedAccessories().removeAll(data.pages().getOrDefault(page, EMPTY)); // Remove previous accessories.
+		data.recombobulatedAccessories().addAll(recombobulated);
+		data.pages().put(page, new ObjectOpenHashSet<>(accessoryIds));
 	}
 
 	public static Pair<AccessoryReport, String> calculateReport4Accessory(String accessoryId) {
@@ -139,18 +150,28 @@ public class AccessoriesHelper {
 				.collect(Collectors.toSet());
 	}
 
+	public static boolean hasAccessory(String accessoryId) {
+		return COLLECTED_ACCESSORIES.computeIfAbsent(ProfileAccessoryData::createDefault).pages().values().stream()
+				.anyMatch(set -> set.contains(accessoryId));
+	}
+
+	public static boolean isRecombobulated(String accessoryId) {
+		return hasAccessory(accessoryId) && COLLECTED_ACCESSORIES.computeIfAbsent(ProfileAccessoryData::createDefault).recombobulatedAccessories().contains(accessoryId);
+	}
+
 	public static void refreshData(Map<String, Accessory> data) {
 		ACCESSORY_DATA = data;
 	}
 
-	private record ProfileAccessoryData(Int2ObjectOpenHashMap<ObjectOpenHashSet<String>> pages) {
+	private record ProfileAccessoryData(Int2ObjectOpenHashMap<ObjectOpenHashSet<String>> pages, ObjectOpenHashSet<String> recombobulatedAccessories) {
 		private static final Codec<ProfileAccessoryData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.unboundedMap(Codec.INT, Codec.STRING.listOf().xmap(ObjectOpenHashSet::new, ObjectArrayList::new))
-						.xmap(Int2ObjectOpenHashMap::new, Int2ObjectOpenHashMap::new).fieldOf("pages").forGetter(ProfileAccessoryData::pages)
+						.xmap(Int2ObjectOpenHashMap::new, Int2ObjectOpenHashMap::new).fieldOf("pages").forGetter(ProfileAccessoryData::pages),
+				Codec.STRING.listOf().optionalFieldOf("recombobulatedAccessories", List.of()).xmap(ObjectOpenHashSet::new, List::copyOf).forGetter(ProfileAccessoryData::recombobulatedAccessories)
 		).apply(instance, ProfileAccessoryData::new));
 
 		private static ProfileAccessoryData createDefault() {
-			return new ProfileAccessoryData(new Int2ObjectOpenHashMap<>());
+			return new ProfileAccessoryData(new Int2ObjectOpenHashMap<>(), new ObjectOpenHashSet<>());
 		}
 	}
 
