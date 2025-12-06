@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
@@ -48,6 +49,14 @@ public class DungeonsCategory {
 						.binding(defaults.dungeons.salvageHelper,
 								() -> config.dungeons.salvageHelper,
 								newValue -> config.dungeons.salvageHelper = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.salvageHelper.onlyDonated"))
+						.tags(CommonTags.ADDED_IN_5_9_0)
+						.binding(defaults.dungeons.onlyHighlightDonatedItems,
+								() -> config.dungeons.onlyHighlightDonatedItems,
+								newValue -> config.dungeons.onlyHighlightDonatedItems = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
@@ -154,6 +163,14 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.dungeonMap.showSelfHead,
 										() -> config.dungeons.dungeonMap.showSelfHead,
 										newValue -> config.dungeons.dungeonMap.showSelfHead = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.map.showRoomLabels"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
+								.binding(defaults.dungeons.dungeonMap.showRoomLabels,
+										() -> config.dungeons.dungeonMap.showRoomLabels,
+										newValue -> config.dungeons.dungeonMap.showRoomLabels = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Float>createBuilder()
@@ -463,6 +480,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.devices.solveArrowAlign"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.description(Text.translatable("skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip"))
 								.binding(defaults.dungeons.devices.solveArrowAlign,
 										() -> config.dungeons.devices.solveArrowAlign,
@@ -471,6 +489,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.devices.solveTargetPractice"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
 								.description(Text.translatable("skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip"))
 								.binding(defaults.dungeons.devices.solveTargetPractice,
 										() -> config.dungeons.devices.solveTargetPractice,
@@ -512,8 +531,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Type>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType"))
-								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"),
-										Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"))
 								.binding(defaults.dungeons.secretWaypoints.waypointType,
 										() -> config.dungeons.secretWaypoints.waypointType,
 										newValue -> config.dungeons.secretWaypoints.waypointType = newValue)
@@ -664,8 +682,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<DungeonsConfig.DoorHighlight.Type>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType"))
-								.description(Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip"),
-										Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote"))
+								.description(Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip"))
 								.binding(defaults.dungeons.doorHighlight.doorHighlightType,
 										() -> config.dungeons.doorHighlight.doorHighlightType,
 										newValue -> config.dungeons.doorHighlight.doorHighlightType = newValue)

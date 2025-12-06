@@ -53,7 +53,7 @@ public class CommunityShopAdder extends SimpleSlotTextAdder {
 				yield SlotText.bottomLeftList(switch (lastLine) {
 					case "Maxed out!" -> Text.literal("Max").withColor(SlotText.LIGHT_ORANGE);
 					case "Currently upgrading!", "Click to instantly upgrade!" -> Text.literal("⏰").withColor(SlotText.LIGHT_YELLOW).formatted(Formatting.BOLD);
-					case "Click to claim!" -> Text.literal("✅").withColor(0xa6e3a1).formatted(Formatting.BOLD);
+					case "Click to claim!" -> Text.literal("✅").withColor(0xA6E3A1).formatted(Formatting.BOLD);
 					default -> Text.literal(String.valueOf(RomanNumerals.romanToDecimal(roman))).withColor(SlotText.LIGHT_PURPLE);
 				});
 			}

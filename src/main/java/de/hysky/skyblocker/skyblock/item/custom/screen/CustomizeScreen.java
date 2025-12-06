@@ -5,7 +5,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
-import de.hysky.skyblocker.injected.RecipeBookHolder;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
@@ -18,8 +17,10 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -65,7 +66,7 @@ public class CustomizeScreen extends Screen {
 						((HandledScreenAccessor) inventoryScreen).getY() + 10
 				);
 				Screens.getButtons(inventoryScreen).add(button);
-				((RecipeBookHolder) inventoryScreen).registerRecipeBookToggleCallback(() -> button.setPosition(
+				inventoryScreen.registerRecipeBookToggleCallback(() -> button.setPosition(
 						((HandledScreenAccessor) inventoryScreen).getX() + 63,
 						((HandledScreenAccessor) inventoryScreen).getY() + 10
 				));
@@ -168,8 +169,8 @@ public class CustomizeScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		boolean b = super.mouseClicked(mouseX, mouseY, button);
+	public boolean mouseClicked(Click click, boolean doubled) {
+		boolean b = super.mouseClicked(click, doubled);
 		if (!b) setFocused(null);
 		return b;
 	}
@@ -209,14 +210,14 @@ public class CustomizeScreen extends Screen {
 	}
 
 	private record PreviousConfig(Optional<CustomArmorTrims.ArmorTrimId> armorTrimId,
-								  OptionalInt color,
-								  Optional<CustomArmorAnimatedDyes.AnimatedDye> animatedDye,
-								  Optional<String> helmetTexture,
-								  Optional<Text> itemName,
-								  Optional<Boolean> glint,
-								  Optional<Identifier> itemModel,
-								  Optional<Identifier> armorModel
-								  ) {}
+								OptionalInt color,
+								Optional<CustomArmorAnimatedDyes.AnimatedDye> animatedDye,
+								Optional<String> helmetTexture,
+								Optional<Text> itemName,
+								Optional<Boolean> glint,
+								Optional<Identifier> itemModel,
+								Optional<Identifier> armorModel
+								) {}
 
 	private static class CustomizeButton extends ClickableWidget {
 		// thanks to @yuflow
@@ -228,11 +229,15 @@ public class CustomizeScreen extends Screen {
 
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight(), isHovered() ? 0xFFfafa96 : 0x80FFFFFF);
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight(), isHovered() ? 0xFFFAFA96 : 0x80FFFFFF);
+
+			if (this.isHovered()) {
+				context.setCursor(StandardCursors.POINTING_HAND);
+			}
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			CLIENT.setScreen(new CustomizeScreen(CLIENT.currentScreen, false));
 		}
 

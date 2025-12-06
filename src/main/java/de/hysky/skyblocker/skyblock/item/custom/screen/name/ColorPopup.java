@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen.name;
 
-
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
@@ -8,7 +7,11 @@ import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.EmptyWidget;
+import net.minecraft.client.gui.widget.GridWidget;
+import net.minecraft.client.gui.widget.Positioner;
+import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 
 import java.util.function.IntConsumer;
@@ -78,7 +81,7 @@ public class ColorPopup extends AbstractPopupScreen {
 		addDrawableChild(argb);
 
 		argb.setOnChange(color -> {
-			colorPicker.setRGBColor(color);
+			colorPicker.setARGBColor(color);
 			currentColor.first(color);
 		});
 		colorPicker.setOnColorChange((color, mouseRelease) -> {
@@ -101,7 +104,7 @@ public class ColorPopup extends AbstractPopupScreen {
 		addDrawableChild(argbEnd);
 
 		argbStart.setOnChange(color -> {
-			colorPickerStart.setRGBColor(color);
+			colorPickerStart.setARGBColor(color);
 			currentColor.first(color);
 		});
 		colorPickerStart.setOnColorChange((color, mouseRelease) -> {
@@ -109,7 +112,7 @@ public class ColorPopup extends AbstractPopupScreen {
 			currentColor.first(color);
 		});
 		argbEnd.setOnChange(color -> {
-			colorPickerEnd.setRGBColor(color);
+			colorPickerEnd.setARGBColor(color);
 			currentColor.second(color);
 		});
 		colorPickerEnd.setOnColorChange((color, mouseRelease) -> {

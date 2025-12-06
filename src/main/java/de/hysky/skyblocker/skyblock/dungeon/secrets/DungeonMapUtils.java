@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.block.MapColor;
@@ -11,6 +10,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Position;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.RoundingMode;
@@ -18,8 +24,6 @@ import org.joml.Vector2d;
 import org.joml.Vector2dc;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
-
-import java.util.*;
 
 public class DungeonMapUtils {
 	public static final byte BLACK_COLOR = MapColor.BLACK.getRenderColorByte(MapColor.Brightness.LOWEST);
@@ -243,8 +247,8 @@ public class DungeonMapUtils {
 		};
 	}
 
-	public static BlockPos relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, JsonObject posJson) {
-		return relativeToActual(direction, physicalCornerPos, new BlockPos(posJson.get("x").getAsInt(), posJson.get("y").getAsInt(), posJson.get("z").getAsInt()));
+	public static BlockPos relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, DungeonManager.RoomWaypoint waypoint) {
+		return relativeToActual(direction, physicalCornerPos, new BlockPos(waypoint.x(), waypoint.y(), waypoint.z()));
 	}
 
 	public static BlockPos relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, BlockPos pos) {

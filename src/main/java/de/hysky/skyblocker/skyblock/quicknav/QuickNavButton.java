@@ -12,7 +12,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.navigation.GuiNavigation;
 import net.minecraft.client.gui.navigation.GuiNavigationPath;
 import net.minecraft.client.gui.screen.PopupScreen;
@@ -130,12 +132,9 @@ public class QuickNavButton extends ClickableWidget {
 	/**
 	 * Handles click events. If the button is not currently toggled,
 	 * it sets the toggled state to true and sends a message with the command after cooldown.
-	 *
-	 * @param mouseX the x-coordinate of the mouse click
-	 * @param mouseY the y-coordinate of the mouse click
 	 */
 	@Override
-	public void onClick(double mouseX, double mouseY) {
+	public void onClick(Click click, boolean doubled) {
 		if (!this.temporaryToggled) {
 			this.temporaryToggled = true;
 			this.toggleTime = System.currentTimeMillis();
@@ -190,6 +189,10 @@ public class QuickNavButton extends ClickableWidget {
 		// Render the button icon
 		int yOffset = this.index < 7 ? 1 : -1;
 		context.drawItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
+
+		if (this.isHovered()) {
+			context.setCursor(StandardCursors.POINTING_HAND);
+		}
 	}
 
 	@Override

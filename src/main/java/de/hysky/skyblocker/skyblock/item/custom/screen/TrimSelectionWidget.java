@@ -5,10 +5,15 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.ContainerWidget;
+import net.minecraft.client.gui.widget.GridWidget;
+import net.minecraft.client.gui.widget.Positioner;
+import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
@@ -179,8 +184,8 @@ public class TrimSelectionWidget extends ContainerWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		return super.mouseClicked(mouseX, mouseY + this.getScrollY(), button);
+	public boolean mouseClicked(Click click, boolean doubled) {
+		return super.mouseClicked(new Click(click.x(), click.y() + this.getScrollY(), click.buttonInfo()), doubled);
 	}
 
 	@Override
@@ -195,7 +200,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 			widget.setY(widget.getY() + scrollY);
 		}
 
-		drawScrollbar(context);
+		drawScrollbar(context, mouseX, mouseY);
 		context.disableScissor();
 	}
 

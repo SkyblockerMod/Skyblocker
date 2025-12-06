@@ -19,7 +19,6 @@ import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
@@ -54,7 +53,12 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -101,9 +105,8 @@ public final class ItemUtils {
 	 * @return The {@link DataComponentTypes#CUSTOM_DATA custom data} of the itemstack,
 	 *         or an empty {@link NbtCompound} if the itemstack is missing a custom data component
 	 */
-	@SuppressWarnings("deprecation")
 	public static @NotNull NbtCompound getCustomData(@NotNull ComponentHolder stack) {
-		return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
+		return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
 	}
 
 	/**
@@ -263,7 +266,7 @@ public final class ItemUtils {
 			case "ATTRIBUTE_SHARD" -> {
 				Attribute attribute = Attributes.getAttributeFromItemName(stack);
 				if (attribute == null) yield id;
-				yield ItemRepository.getBazaarStocks().getOrDefault(attribute.apiId(), id);
+				yield attribute.neuId();
 			}
 			case "PARTY_HAT_CRAB", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
 			case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
@@ -461,7 +464,7 @@ public final class ItemUtils {
 		ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
 		if (profile == null) return "";
 
-		return profile.properties().get("textures").stream()
+		return profile.getGameProfile().properties().get("textures").stream()
 				.map(Property::value)
 				.findFirst()
 				.orElse("");
@@ -480,15 +483,14 @@ public final class ItemUtils {
 	}
 
 	public static @NotNull ItemStack createSkull(String textureBase64) {
-		GameProfile profile = new GameProfile(java.util.UUID.randomUUID(), "a");
-		profile.getProperties().put("textures", new Property("textures", textureBase64));
+		GameProfile profile = new GameProfile(java.util.UUID.randomUUID(), "a", propertyMapWithTexture(textureBase64));
 		return createSkull(profile);
 	}
 
 	public static @NotNull ItemStack createSkull(GameProfile profile) {
 		try {
 			ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-			stack.set(DataComponentTypes.PROFILE, new ProfileComponent(profile));
+			stack.set(DataComponentTypes.PROFILE, ProfileComponent.ofStatic(profile));
 			return stack;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

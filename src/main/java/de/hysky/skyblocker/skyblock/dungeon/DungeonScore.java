@@ -6,6 +6,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
@@ -58,6 +59,8 @@ public class DungeonScore {
 	private static final String MIMIC_MESSAGE = "Mimic dead!";
 	private static final String PRINCE_MESSAGE = "Prince dead!";
 
+	private static boolean isMayorPaul = false;
+
 	private static FloorRequirement floorRequirement;
 	private static String currentFloor;
 	private static boolean isCurrentFloorEntrance;
@@ -68,7 +71,6 @@ public class DungeonScore {
 	private static boolean mimicKilled;
 	private static boolean princeKilled;
 	private static boolean dungeonStarted;
-	private static boolean isMayorPaul;
 	private static boolean firstDeathHasSpiritPet;
 	private static boolean bloodRoomCompleted;
 	private static long startingTime;
@@ -77,10 +79,11 @@ public class DungeonScore {
 	private static int score;
 
 	@Init
-    public static void init() {
+	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonScore::tick, 20);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 		DungeonEvents.DUNGEON_STARTED.register(DungeonScore::onDungeonStart);
+		DungeonEvents.DUNGEON_ENDED.register(DungeonScore::reset);
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 			if (overlay || !Utils.isInDungeons()) return true;
 			String str = message.getString();
@@ -93,6 +96,7 @@ public class DungeonScore {
 
 			return true;
 		});
+		SkyblockEvents.MAYOR_CHANGE.register(() -> isMayorPaul = MayorUtils.getActivePerks().contains("EZPZ"));
 	}
 
 	public static void tick() {
@@ -106,7 +110,7 @@ public class DungeonScore {
 		score = calculateScore();
 		if (!sent270 && !sent300 && score >= 270 && score < 300) {
 			if (SCORE_CONFIG.get().enableDungeonScore270Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270"), false);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270"), true);
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore270Title) {
 				client.inGameHud.setDefaultTitleFade();
@@ -121,14 +125,14 @@ public class DungeonScore {
 		int crypts = getCrypts();
 		if (!sentCrypts && score >= SCORE_CONFIG.get().dungeonCryptsMessageThreshold && crypts < 5) {
 			if (SCORE_CONFIG.get().enableDungeonCryptsMessage) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)), false);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)), true);
 			}
 			sentCrypts = true;
 		}
 
 		if (!sent300 && score >= 300) {
 			if (SCORE_CONFIG.get().enableDungeonScore300Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300"), false);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300"), true);
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore300Title) {
 				client.inGameHud.setDefaultTitleFade();
@@ -152,7 +156,6 @@ public class DungeonScore {
 		mimicKilled = false;
 		princeKilled = false;
 		dungeonStarted = false;
-		isMayorPaul = false;
 		firstDeathHasSpiritPet = false;
 		bloodRoomCompleted = false;
 		startingTime = 0L;
@@ -166,7 +169,6 @@ public class DungeonScore {
 		setCurrentFloor();
 		dungeonStarted = true;
 		puzzleCount = getPuzzleCount();
-		isMayorPaul = MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("EZPZ")) || MayorUtils.getMinister().perk().name().equals("EZPZ");
 		startingTime = System.currentTimeMillis();
 		floorRequirement = FloorRequirement.valueOf(currentFloor);
 		floorHasMimics = MIMIC_FLOORS_PATTERN.matcher(currentFloor).matches();
@@ -228,7 +230,7 @@ public class DungeonScore {
 	public static void handleEntityDeath(Entity entity) {
 		if (mimicKilled) return;
 		if (!isEntityMimic(entity)) return;
-		if (MIMIC_MESSAGE_CONFIG.get().sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + MIMIC_MESSAGE, false);
+		if (MIMIC_MESSAGE_CONFIG.get().sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + MIMIC_MESSAGE, true);
 		mimicKilled = true;
 	}
 
@@ -239,7 +241,7 @@ public class DungeonScore {
 	private static void onPrinceKill(boolean fromHypixel) {
 		if (princeKilled) return;
 		//Ensure that we don't send a prince kill message if a teammate does
-		if (PRINCE_MESSAGE_CONFIG.get().sendPrinceMessage && fromHypixel) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + PRINCE_MESSAGE, false);
+		if (PRINCE_MESSAGE_CONFIG.get().sendPrinceMessage && fromHypixel) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + PRINCE_MESSAGE, true);
 		princeKilled = true;
 	}
 

@@ -11,11 +11,17 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
+import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.GridWidget.Adder;
+import net.minecraft.client.gui.widget.SimplePositioningWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
@@ -33,7 +39,11 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Locale;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class LeapOverlay extends Screen implements ScreenHandlerListener {
@@ -88,11 +98,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 		if (slotId < containerSlots && stack.isOf(Items.PLAYER_HEAD) && stack.contains(DataComponentTypes.PROFILE)) {
 			ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
-
-			//All heads in the leap menu have the id property set
-			if (profile.uuid().isEmpty()) return;
-
-			UUID uuid = profile.uuid().get();
+			UUID uuid = profile.getGameProfile().id();
 			//We take the name from the item because the name from the profile component can leave out _ characters for some reason?
 			String name = stack.getName().getString();
 			DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(name);
@@ -116,23 +122,20 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (super.keyPressed(keyCode, scanCode, modifiers)) {
+	public boolean keyPressed(KeyInput input) {
+		if (super.keyPressed(input)) {
 			return true;
-		} else if (this.client.options.inventoryKey.matchesKey(keyCode, scanCode)) {
+		} else if (this.client.options.inventoryKey.matchesKey(input)) {
 			this.close();
 			return true;
 		} else if (CONFIG.get().leapKeybinds) {
-			boolean result = switch (keyCode) {
+			return switch (input.key()) {
 				case GLFW.GLFW_KEY_1 -> leapToPlayer(0);
 				case GLFW.GLFW_KEY_2 -> leapToPlayer(1);
 				case GLFW.GLFW_KEY_3 -> leapToPlayer(2);
 				case GLFW.GLFW_KEY_4 -> leapToPlayer(3);
-
 				default -> false;
 			};
-
-			if (result) return true;
 		}
 		return false;
 	}
@@ -179,11 +182,11 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 			LeapOverlay.this.hovered = DungeonMap.render(context, getX(), getY(), CONFIG.get().scale, true, mouseX - getX(), mouseY - getY(), hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
-			context.drawBorder(getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), Colors.WHITE);
+			HudHelper.drawBorder(context, getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), Colors.WHITE);
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			if (LeapOverlay.this.hovered == null) return;
 
 			assert client != null && client.player != null && client.interactionManager != null;
@@ -250,7 +253,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			reference.clickSlot();
 		}
 	}
@@ -279,7 +282,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		private void clickSlot() {
 			CLIENT.interactionManager.clickSlot(this.syncId(), this.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, CLIENT.player);
 			if (CONFIG.get().enableLeapMessage) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + CONFIG.get().leapMessage.replaceAll("\\[name]", this.name), false);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + CONFIG.get().leapMessage.replaceAll("\\[name]", this.name), true);
 			}
 		}
 	}

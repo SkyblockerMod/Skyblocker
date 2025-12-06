@@ -34,7 +34,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -157,8 +161,8 @@ public class EnigmaSouls {
 
 		SOUL_WAYPOINTS.values().stream()
 				.filter(Waypoint::shouldRender)
-				.min(Comparator.comparingDouble(soul -> soul.pos.getSquaredDistance(player.getPos())))
-				.filter(soul -> soul.pos.getSquaredDistance(player.getPos()) <= 16)
+				.min(Comparator.comparingDouble(soul -> soul.pos.getSquaredDistance(player.getEntityPos())))
+				.filter(soul -> soul.pos.getSquaredDistance(player.getEntityPos()) <= 16)
 				.ifPresent(Waypoint::setFound);
 	}
 

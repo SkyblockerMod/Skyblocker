@@ -1,5 +1,13 @@
 package de.hysky.skyblocker.skyblock.garden.visitor;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -14,12 +22,14 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import me.shedaniel.math.Rectangle;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenPos;
+import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -32,8 +42,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-
-import java.util.*;
 
 public class VisitorHelper extends ClickableWidget {
 	private static final Set<Visitor> activeVisitors = new HashSet<>();
@@ -77,10 +85,10 @@ public class VisitorHelper extends ClickableWidget {
 		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getIslandArea().contains("Bazaar"));
 	}
 
-	public static List<Rectangle> getExclusionZones() {
+	public static List<ScreenRect> getExclusionZones() {
 		if (activeVisitors.isEmpty()) return List.of();
 
-		return List.of(new Rectangle(xOffset, yOffset, exclusionZoneWidth, exclusionZoneHeight));
+		return List.of(new ScreenRect(new ScreenPos(xOffset, yOffset), exclusionZoneWidth, exclusionZoneHeight));
 	}
 
 	/**
@@ -231,17 +239,17 @@ public class VisitorHelper extends ClickableWidget {
 	}
 
 	@Override
-	protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-		setPosition(xOffset = (int) mouseX - dragStartX, yOffset = (int) mouseY - dragStartY);
+	protected void onDrag(Click click, double offsetX, double offsetY) {
+		setPosition(xOffset = (int) click.x() - dragStartX, yOffset = (int) click.y() - dragStartY);
 	}
 
 	/**
 	 * Handles mouse click events on the visitor UI.
 	 */
-	public void onClick(double mouseX, double mouseY) {
+	public void onClick(Click click, boolean doubled) {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		dragStartX = (int) mouseX - getX();
-		dragStartY = (int) mouseY - getY();
+		dragStartX = (int) click.x() - getX();
+		dragStartY = (int) click.y() - getY();
 
 		int index = 0;
 		int y = getY() - (int) (textRenderer.fontHeight / 2f - ICON_SIZE * 0.95f / 2) + PADDING;
@@ -263,7 +271,7 @@ public class VisitorHelper extends ClickableWidget {
 						? name.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
 						: name.append(" x" + totalAmount);
 
-				if (isMouseOverText(textRenderer, itemText, textX, yPosition, mouseX, mouseY)) {
+				if (isMouseOverText(textRenderer, itemText, textX, yPosition, click.x(), click.y())) {
 					MinecraftClient.getInstance().keyboard.setClipboard(String.valueOf(totalAmount));
 					copiedTimestamps.put(itemName, System.currentTimeMillis());
 

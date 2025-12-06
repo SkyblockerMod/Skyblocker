@@ -88,7 +88,7 @@ public class CrystalsChestHighlighter {
 
 		if (waitingForChest > 0 && newState.isOf(Blocks.CHEST)) {
 			//make sure it is not too far from the player (more than 10 blocks away)
-			if (immutable.getSquaredDistance(CLIENT.player.getPos()) > 100) {
+			if (immutable.getSquaredDistance(CLIENT.player.getEntityPos()) > 100) {
 				return;
 			}
 			activeChests.add(immutable);
@@ -131,7 +131,7 @@ public class CrystalsChestHighlighter {
 			Vec3d rotationVec = player.getRotationVec(0);
 			double range = player.getBlockInteractionRange();
 			Vec3d vec3d3 = eyePos.add(rotationVec.x * range, rotationVec.y * range, rotationVec.z * range);
-			BlockHitResult raycast = player.getWorld().raycast(new BlockStateRaycastContext(eyePos, vec3d3, blockState -> blockState.isOf(Blocks.CHEST)));
+			BlockHitResult raycast = player.getEntityWorld().raycast(new BlockStateRaycastContext(eyePos, vec3d3, blockState -> blockState.isOf(Blocks.CHEST)));
 			if (!raycast.getType().equals(HitResult.Type.MISS)) {
 				currentLockCount += 1;
 				activeParticles.clear();

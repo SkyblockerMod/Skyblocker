@@ -1,19 +1,15 @@
 package de.hysky.skyblocker.mixins.accessors;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.client.font.FontStorage;
+import net.minecraft.client.font.BakedGlyph;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.util.Identifier;
+import net.minecraft.text.Style;
 
 @Mixin(TextRenderer.class)
 public interface TextRendererAccessor {
 
-	@Accessor
-	boolean getValidateAdvance();
-
 	@Invoker
-	FontStorage invokeGetFontStorage(Identifier id);
+	BakedGlyph invokeGetGlyph(int codePoint, Style style);
 }

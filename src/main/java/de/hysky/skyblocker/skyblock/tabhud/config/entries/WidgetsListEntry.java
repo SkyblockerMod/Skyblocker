@@ -12,15 +12,16 @@ import net.minecraft.util.Formatting;
 
 import java.util.List;
 
+import de.hysky.skyblocker.utils.render.HudHelper;
+
 public abstract class WidgetsListEntry extends ElementListWidget.Entry<WidgetsListEntry> {
 	public static final Text ENABLED_TEXT = Text.literal("ENABLED").formatted(Formatting.GREEN);
 	public static final Text DISABLED_TEXT = Text.literal("DISABLED").formatted(Formatting.RED);
 
 	public void renderTooltip(DrawContext context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {}
 
-	@Override
 	public void drawBorder(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		if (hovered) context.drawBorder(x, y, entryWidth, entryHeight, -1);
+		if (hovered) HudHelper.drawBorder(context, x, y, entryWidth, entryHeight, -1);
 	}
 
 	@Override

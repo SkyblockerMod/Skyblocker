@@ -13,6 +13,8 @@ public class DungeonsConfig {
 
 	public boolean salvageHelper = true;
 
+	public boolean onlyHighlightDonatedItems = false;
+
 	public boolean sellableItemsHighlighter = true;
 
 	public boolean bloodCampHelper = false;
@@ -67,6 +69,8 @@ public class DungeonsConfig {
 		public boolean fancyMap = true;
 
 		public boolean showSelfHead = true;
+
+		public boolean showRoomLabels = true;
 
 		public float mapScaling = 1f;
 

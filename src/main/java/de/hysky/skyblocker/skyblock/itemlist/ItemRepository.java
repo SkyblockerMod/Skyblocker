@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.jei.JEICompatibility;
+import de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
@@ -8,7 +10,11 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
-import io.github.moulberry.repo.data.*;
+import io.github.moulberry.repo.data.NEUCraftingRecipe;
+import io.github.moulberry.repo.data.NEUForgeRecipe;
+import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.data.NEUNpcShopRecipe;
+import io.github.moulberry.repo.data.NEURecipe;
 import io.github.moulberry.repo.util.NEUId;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -20,7 +26,13 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
@@ -69,7 +81,13 @@ public class ItemRepository {
 
 		SynchronizeRecipesS2CPacket packet = new SynchronizeRecipesS2CPacket(Map.of(), CuttingRecipeDisplay.Grouping.empty());
 		try {
-			client.execute(() -> client.getNetworkHandler().onSynchronizeRecipes(packet));
+			client.execute(() -> {
+				client.getNetworkHandler().onSynchronizeRecipes(packet);
+
+				if (JEICompatibility.JEI_LOADED) {
+					SkyblockerJEIPlugin.trickJEIIntoLoadingRecipes();
+				}
+			});
 		} catch (Exception e) {
 			LOGGER.info("[Skyblocker Item Repo] recipe sync error", e);
 		}

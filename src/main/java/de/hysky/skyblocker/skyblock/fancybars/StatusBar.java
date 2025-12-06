@@ -12,7 +12,12 @@ import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.Click;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
@@ -25,11 +30,10 @@ import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.function.Consumer;
 
 public class StatusBar implements Widget, Drawable, Element, Selectable {
-
 	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
 	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
@@ -115,6 +119,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		if (enabled) renderText(context);
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public void renderBar(DrawContext context) {
 		if (renderWidth <= 0) return;
 		int transparency = transparency(-1);
@@ -264,10 +269,10 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (!isMouseOver(mouseX, mouseY)) return false;
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (!isMouseOver(click.x(), click.y())) return false;
 		if (onClick != null) {
-			onClick.onClick(this, button, (int) mouseX, (int) mouseY);
+			onClick.onClick(this, click);
 		}
 		return true;
 	}
@@ -351,8 +356,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 	@FunctionalInterface
 	public interface OnClick {
-
-		void onClick(StatusBar statusBar, int button, int mouseX, int mouseY);
+		void onClick(StatusBar statusBar, Click click);
 	}
 
 	public void loadFromJson(JsonObject object) {

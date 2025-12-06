@@ -15,9 +15,11 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -30,6 +32,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,7 +143,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 				craftText = textRenderer.trimToWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS_STRING;
 			}
 
-			context.drawTextWithShadow(textRenderer, craftText, x + 11, y + 31, 0xffffffff);
+			context.drawTextWithShadow(textRenderer, craftText, x + 11, y + 31, Colors.WHITE);
 		}
 
 		//Render the resulting item's name
@@ -150,16 +153,16 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			StringVisitable trimmed = StringVisitable.concat(textRenderer.trimToWidth(itemName, MAX_TEXT_WIDTH), ScreenTexts.ELLIPSIS);
 			OrderedText ordered = Language.getInstance().reorder(trimmed);
 
-			context.drawTextWithShadow(textRenderer, ordered, x + 11, y + 43, 0xffffffff);
+			context.drawTextWithShadow(textRenderer, ordered, x + 11, y + 43, Colors.WHITE);
 
 			//Set the resulting item's name as hovered text if we're hovering over it since the text got truncated
 			if (isMouseHoveringText(x + 11, y + 43, mouseX, mouseY)) this.hoveredText = itemName;
 		} else {
-			context.drawTextWithShadow(textRenderer, itemName, x + 11, y + 43, 0xffffffff);
+			context.drawTextWithShadow(textRenderer, itemName, x + 11, y + 43, Colors.WHITE);
 		}
 
 		//Draw the arrow that points to the recipe's result
-		context.drawTextWithShadow(textRenderer, "▶", x + 96, y + 90, 0xaaffffff);
+		context.drawTextWithShadow(textRenderer, "▶", x + 96, y + 90, 0xAAFFFFFF);
 		if (this.hoveredText == null && mouseX >= x + 86 && mouseY >= y + 81 && mouseX < x + 86 + 25 && mouseY < y + 81 + 25 && recipe instanceof SkyblockForgeRecipe forgeRecipe) {
 			this.hoveredText = Text.of(forgeRecipe.getDurationString());
 		}
@@ -329,24 +332,24 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (this.nextPageButton.mouseClicked(mouseX, mouseY, button)) {
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (this.nextPageButton.mouseClicked(click, doubled)) {
 			this.currentPage++;
 			this.updateResultButtons();
 
 			return true;
-		} else if (this.prevPageButton.mouseClicked(mouseX, mouseY, button)) {
+		} else if (this.prevPageButton.mouseClicked(click, doubled)) {
 			this.currentPage--;
 			this.updateResultButtons();
 
 			return true;
 		}
 
-		if (this.recipeView && button == 1) {
+		if (this.recipeView && click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
 			// The crafting result button
 			var result = resultButtons.get(14);
 			var rawID = result.getDisplayStack().getSkyblockId();
-			if (result.isMouseOver(mouseX, mouseY)) {
+			if (result.isMouseOver(click.x(), click.y())) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown(String.format("/viewrecipe %s", rawID), true);
 				return true;
 			}
@@ -355,7 +358,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 		for (SkyblockRecipeResultButton resultButton : recipeView ? recipeSlotButtons : this.resultButtons) {
 			//If the result button was clicked then try and show a recipe if there is one
 			//for the item
-			if (resultButton.mouseClicked(mouseX, mouseY, button)) {
+			if (resultButton.mouseClicked(click, doubled)) {
 				String itemId = resultButton.getDisplayStack().getSkyblockId();
 
 				//Continue if this item doesn't have an item id
@@ -384,15 +387,15 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	}
 
 	@Override
-	public boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(double mouseX, double mouseY, KeyInput input) {
 		ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
 		if (hovered == null) return false;
 
-		if (WikiLookupManager.handleWikiLookup(Either.right(hovered), client.player, keyCode, scanCode)) {
+		if (WikiLookupManager.handleWikiLookup(Either.right(hovered), client.player, input)) {
 			return true;
 		}
 
-		if (SkyblockerConfigManager.get().helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
+		if (SkyblockerConfigManager.get().helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(input)) {
 			ItemPrice.itemPriceLookup(client.player, hovered);
 			return true;
 		}

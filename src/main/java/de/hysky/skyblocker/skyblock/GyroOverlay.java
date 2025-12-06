@@ -12,9 +12,8 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Locale;
-
 
 public class GyroOverlay {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -60,7 +59,7 @@ public class GyroOverlay {
 		String heldItem = CLIENT.player.getMainHandStack().getSkyblockId();
 		if (!heldItem.equals("GYROKINETIC_WAND")) return;
 
-		HitResult hit = CLIENT.cameraEntity.raycast(MAX_REACH, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false), false);
+		HitResult hit = CLIENT.getCameraEntity().raycast(MAX_REACH, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false), false);
 		if (hit.getType() == HitResult.Type.MISS) {
 			return;
 		}

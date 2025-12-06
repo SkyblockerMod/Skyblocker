@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
 import com.demonwav.mcdev.annotations.Translatable;
-import de.hysky.skyblocker.debug.Debug;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
@@ -20,22 +20,27 @@ import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfigListWidget.AbstractShortcutEntry> {
+	private static final int TEXT_Y_OFFSET = 5 + 2;
+	private static final int TEXT_FIELD_PADDING = 2;
 	private final ShortcutsConfigScreen screen;
 
 	/**
 	 * @param width      the width of the widget
 	 * @param height     the height of the widget
 	 * @param y          the y coordinate to start rendering/placing the widget from
-	 * @param itemHeight the height of each item
 	 */
-	public ShortcutsConfigListWidget(MinecraftClient minecraftClient, ShortcutsConfigScreen screen, int width, int height, int y, int itemHeight) {
-		super(minecraftClient, width, height, y, itemHeight);
+	public ShortcutsConfigListWidget(MinecraftClient minecraftClient, ShortcutsConfigScreen screen, int width, int height, int y) {
+		super(minecraftClient, width, height, y, 24);
 		this.screen = screen;
 
 		ShortcutCategoryEntry<String> commandCategory = new ShortcutCategoryEntry<>(Shortcuts.shortcuts.getData().commands(), CommandShortcutEntry::new, "skyblocker.shortcuts.command.target", "skyblocker.shortcuts.command.replacement");
@@ -60,7 +65,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 
 	@Override
 	public int getRowWidth() {
-		return super.getRowWidth() + 100;
+		return super.getRowWidth() + 100 + 2 * TEXT_FIELD_PADDING;
 	}
 
 	@Override
@@ -84,7 +89,13 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 	}
 
 	protected void addShortcutAfterSelected() {
-		getCategory().ifPresent(category -> children().add(children().indexOf(getSelectedOrNull()) + 1, category.entrySupplier.get()));
+		getCategory().ifPresent(category -> {
+			ArrayList<AbstractShortcutEntry> newEntries = new ArrayList<>(children());
+			ShortcutEntry<?> newEntry = category.entrySupplier.get();
+			newEntries.add(children().indexOf(getSelectedOrNull()) + 1, newEntry);
+			replaceEntries(newEntries);
+			setSelected(newEntry);
+		});
 	}
 
 	protected void updatePositions() {
@@ -104,19 +115,14 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		return children().stream().filter(KeybindShortcutEntry.class::isInstance).map(KeybindShortcutEntry.class::cast).anyMatch(KeybindShortcutEntry::stopEditing);
 	}
 
-	/**
-	 * Returns true if the client is in debug mode and the entry at the given index is selected.
-	 * <p>
-	 * Used to show the box around the selected entry in debug mode.
-	 */
 	@Override
-	protected boolean isSelectedEntry(int index) {
-		return Debug.debugEnabled() ? Objects.equals(getSelectedOrNull(), children().get(index)) : super.isSelectedEntry(index);
+	protected boolean isEntrySelectionAllowed() {
+		return true;
 	}
 
 	@Override
-	protected boolean removeEntry(AbstractShortcutEntry entry) {
-		return super.removeEntry(entry);
+	protected void removeEntry(AbstractShortcutEntry entry) {
+		super.removeEntry(entry);
 	}
 
 	protected boolean hasChanges() {
@@ -137,6 +143,12 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 
 	public abstract static class AbstractShortcutEntry extends ElementListWidget.Entry<AbstractShortcutEntry> {
 		protected void updatePositions() {}
+
+		@Override
+		public boolean mouseClicked(Click click, boolean doubled) {
+			super.mouseClicked(click, doubled);
+			return true;
+		}
 	}
 
 	protected class ShortcutCategoryEntry<T> extends AbstractShortcutEntry {
@@ -186,20 +198,12 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			context.drawCenteredTextWithShadow(client.textRenderer, targetName, width / 2 - 85, y + 5, Colors.WHITE);
-			context.drawCenteredTextWithShadow(client.textRenderer, replacementName, width / 2 + 85, y + 5, Colors.WHITE);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			context.drawCenteredTextWithShadow(client.textRenderer, targetName, getContentMiddleX() - 85, getY() + TEXT_Y_OFFSET, Colors.WHITE);
+			context.drawCenteredTextWithShadow(client.textRenderer, replacementName, getContentMiddleX() + 85, getY() + TEXT_Y_OFFSET, Colors.WHITE);
 			if (tooltip != null && isMouseOver(mouseX, mouseY)) {
 				context.drawTooltip(tooltip, mouseX, mouseY);
 			}
-		}
-
-		/**
-		 * Returns true so that category entries can be focused and selected, so that we can add shortcut entries after them.
-		 */
-		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
-			return true;
 		}
 	}
 
@@ -231,8 +235,8 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			context.drawCenteredTextWithShadow(client.textRenderer, text, width / 2, y + 5, Colors.WHITE);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			context.drawCenteredTextWithShadow(client.textRenderer, text, this.getWidth() / 2, this.getY() + TEXT_Y_OFFSET, Colors.WHITE);
 		}
 	}
 
@@ -242,7 +246,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 
 		private ShortcutEntry(ShortcutCategoryEntry<T> category, T targetKey) {
 			this.category = category;
-			replacement = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, width / 2 + 10, 5, 150, 20, category.replacementName);
+			replacement = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, width / 2 + 10, TEXT_Y_OFFSET, 150, 20, category.replacementName);
 			replacement.setMaxLength(48);
 			replacement.setText(category.shortcutsMap.getOrDefault(targetKey, ""));
 		}
@@ -254,10 +258,10 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		protected abstract void save();
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			replacement.setY(y);
-			replacement.render(context, mouseX, mouseY, tickDelta);
-			context.drawCenteredTextWithShadow(client.textRenderer, "→", width / 2, y + 5, Colors.WHITE);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			replacement.setY(this.getY() + TEXT_FIELD_PADDING);
+			replacement.render(context, mouseX, mouseY, deltaTicks);
+			context.drawCenteredTextWithShadow(client.textRenderer, "→", this.getX() + this.getWidth() / 2, this.getY() + TEXT_Y_OFFSET, Colors.WHITE);
 		}
 
 		@Override
@@ -277,7 +281,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 
 		private CommandShortcutEntry(ShortcutCategoryEntry<String> category, String targetString) {
 			super(category, targetString);
-			target = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, width / 2 - 160, 5, 150, 20, category.targetName);
+			target = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, width / 2 - 160, TEXT_Y_OFFSET, 150, 20, category.targetName);
 			target.setMaxLength(48);
 			target.setText(targetString);
 			children = List.of(target, replacement);
@@ -314,10 +318,10 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
-			target.setY(y);
-			target.render(context, mouseX, mouseY, tickDelta);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			super.render(context, mouseX, mouseY, hovered, deltaTicks);
+			target.setY(this.getY() + TEXT_FIELD_PADDING);
+			target.render(context, mouseX, mouseY, deltaTicks);
 		}
 
 		@Override
@@ -344,7 +348,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		private KeybindShortcutEntry(ShortcutCategoryEntry<ShortcutKeyBinding> category, ShortcutKeyBinding keyBinding) {
 			super(category, keyBinding);
 			this.keyBinding = keyBinding;
-			keybindButton = new KeybindWidget(keyBinding, width / 2 - 160, 5, 150, 20, keyBinding.getBoundKeysText(),
+			keybindButton = new KeybindWidget(keyBinding, width / 2 - 160, TEXT_Y_OFFSET, 150, 20, keyBinding.getBoundKeysText(),
 					textSupplier -> keyBinding.isUnbound()
 							? Text.translatable("narrator.controls.unbound", replacement.getText())
 							: Text.translatable("narrator.controls.bound", replacement.getText(), textSupplier.get()),
@@ -387,15 +391,15 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		}
 
 		/**
-		 * Modified from {@link net.minecraft.client.gui.screen.option.ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float) ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float)}.
+		 * Modified from {@link net.minecraft.client.gui.screen.option.ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, boolean, float) ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float)}.
 		 */
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
-			keybindButton.setY(y);
-			keybindButton.render(context, mouseX, mouseY, tickDelta);
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			super.render(context, mouseX, mouseY, hovered, deltaTicks);
+			keybindButton.setY(this.getY() + TEXT_FIELD_PADDING);
+			keybindButton.render(context, mouseX, mouseY, deltaTicks);
 			if (duplicate) {
-				context.fill(keybindButton.getX() - 6, y, keybindButton.getX() - 3, y + entryHeight, 0xFFFF0000);
+				context.fill(keybindButton.getX() - 6, this.getY(), keybindButton.getX() - 3, this.getY() + this.getHeight(), Colors.YELLOW);
 			}
 		}
 
@@ -421,7 +425,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 							text.append(", ");
 						}
 						duplicate = true;
-						text.append(Text.translatable(otherKeyBinding.getTranslationKey()));
+						text.append(Text.translatable(otherKeyBinding.getId()));
 					}
 				}
 				// Check for conflicts with other keybind shortcuts

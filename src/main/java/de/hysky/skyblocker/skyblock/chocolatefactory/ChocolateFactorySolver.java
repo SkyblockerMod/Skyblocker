@@ -3,7 +3,10 @@ package de.hysky.skyblocker.skyblock.chocolatefactory;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
-import de.hysky.skyblocker.utils.*;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegexUtils;
+import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
@@ -24,7 +27,13 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -322,8 +331,8 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	private boolean addUpgradeTimerToLore(List<Text> lines, long cost) {
 		if (totalChocolate < 0L || totalCps < 0.0) return false;
 		lines.add(Text.empty()
-					  .append(Text.literal("Time until upgrade: ").formatted(Formatting.GRAY))
-					  .append(formatTime((cost - totalChocolate) / totalCps)));
+					.append(Text.literal("Time until upgrade: ").formatted(Formatting.GRAY))
+					.append(formatTime((cost - totalChocolate) / totalCps)));
 		return true;
 	}
 
@@ -331,12 +340,12 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		if (totalCps < 0.0 || reachedMaxPrestige) return false;
 		if (requiredUntilNextPrestige > 0 && !canPrestige) {
 			lines.add(Text.empty()
-						  .append(Text.literal("Chocolate until next prestige: ").formatted(Formatting.GRAY))
-						  .append(Text.literal(Formatters.FLOAT_NUMBERS.format(requiredUntilNextPrestige)).formatted(Formatting.GOLD)));
+						.append(Text.literal("Chocolate until next prestige: ").formatted(Formatting.GRAY))
+						.append(Text.literal(Formatters.FLOAT_NUMBERS.format(requiredUntilNextPrestige)).formatted(Formatting.GOLD)));
 		}
 		lines.add(Text.empty() //Keep this outside of the `if` to match the format of the upgrade tooltips, that say "Time until upgrade: Now" when it's possible
-					  .append(Text.literal("Time until next prestige: ").formatted(Formatting.GRAY))
-					  .append(formatTime(requiredUntilNextPrestige / totalCps)));
+					.append(Text.literal("Time until next prestige: ").formatted(Formatting.GRAY))
+					.append(formatTime(requiredUntilNextPrestige / totalCps)));
 		return true;
 	}
 
@@ -344,19 +353,19 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		if (totalCps < 0.0 || totalCpsMultiplier < 0.0 || timeTowerMultiplier < 0.0) return false;
 		lines.add(Text.literal("Current stats:").formatted(Formatting.GRAY));
 		lines.add(Text.empty()
-					  .append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
-					  .append(Text.literal(Formatters.FLOAT_NUMBERS.format(totalCps / totalCpsMultiplier * timeTowerMultiplier)).formatted(Formatting.GOLD)));
+					.append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
+					.append(Text.literal(Formatters.FLOAT_NUMBERS.format(totalCps / totalCpsMultiplier * timeTowerMultiplier)).formatted(Formatting.GOLD)));
 		lines.add(Text.empty()
-					  .append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
-					  .append(Text.literal(Formatters.FLOAT_NUMBERS.format(isTimeTowerActive ? totalCps : totalCps / totalCpsMultiplier * (timeTowerMultiplier + totalCpsMultiplier))).formatted(Formatting.GOLD)));
+					.append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
+					.append(Text.literal(Formatters.FLOAT_NUMBERS.format(isTimeTowerActive ? totalCps : totalCps / totalCpsMultiplier * (timeTowerMultiplier + totalCpsMultiplier))).formatted(Formatting.GOLD)));
 		if (!isTimeTowerMaxed) {
 			lines.add(Text.literal("Stats after upgrade:").formatted(Formatting.GRAY));
 			lines.add(Text.empty()
-						  .append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
-						  .append(Text.literal(Formatters.FLOAT_NUMBERS.format(totalCps / (totalCpsMultiplier) * (timeTowerMultiplier + 0.1))).formatted(Formatting.GOLD)));
+						.append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
+						.append(Text.literal(Formatters.FLOAT_NUMBERS.format(totalCps / (totalCpsMultiplier) * (timeTowerMultiplier + 0.1))).formatted(Formatting.GOLD)));
 			lines.add(Text.empty()
-						  .append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
-						  .append(Text.literal(Formatters.FLOAT_NUMBERS.format(isTimeTowerActive ? totalCps / totalCpsMultiplier * (totalCpsMultiplier + 0.1) : totalCps / totalCpsMultiplier * (timeTowerMultiplier + 0.1 + totalCpsMultiplier))).formatted(Formatting.GOLD)));
+						.append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
+						.append(Text.literal(Formatters.FLOAT_NUMBERS.format(isTimeTowerActive ? totalCps / totalCpsMultiplier * (totalCpsMultiplier + 0.1) : totalCps / totalCpsMultiplier * (timeTowerMultiplier + 0.1 + totalCpsMultiplier))).formatted(Formatting.GOLD)));
 		}
 		return true;
 	}
@@ -366,12 +375,12 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		for (Rabbit rabbit : cpsIncreaseFactors) {
 			if (rabbit.slot == slot) {
 				lines.add(Text.empty()
-							  .append(Text.literal("CPS Increase: ").formatted(Formatting.GRAY))
-							  .append(Text.literal(Formatters.FLOAT_NUMBERS.format(rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
+							.append(Text.literal("CPS Increase: ").formatted(Formatting.GRAY))
+							.append(Text.literal(Formatters.FLOAT_NUMBERS.format(rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
 
 				lines.add(Text.empty()
-							  .append(Text.literal("Cost per CPS: ").formatted(Formatting.GRAY))
-							  .append(Text.literal(Formatters.FLOAT_NUMBERS.format(rabbit.cost / rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
+							.append(Text.literal("Cost per CPS: ").formatted(Formatting.GRAY))
+							.append(Text.literal(Formatters.FLOAT_NUMBERS.format(rabbit.cost / rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
 
 				if (rabbit.slot == bestUpgrade) {
 					if (rabbit.cost <= totalChocolate) {
@@ -439,10 +448,10 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 				else levelText = levelText.formatted(Formatting.YELLOW); // Some amount that is neither 0 nor the max
 
 				MutableText result = Text.empty()
-										 .append(levelText);
+										.append(levelText);
 				if (purchasedHitmanSlots < maxHitmanSlots) {
 					result.append(Text.literal("/").formatted(Formatting.GRAY))
-						  .append(Text.literal(String.valueOf(purchasedHitmanSlots)).formatted(Formatting.YELLOW));
+						.append(Text.literal(String.valueOf(purchasedHitmanSlots)).formatted(Formatting.YELLOW));
 				}
 
 				yield SlotText.topLeftList(result);

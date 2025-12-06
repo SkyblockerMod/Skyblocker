@@ -106,7 +106,7 @@ public class KuudraWaypoints {
 
 					Waypoint waypoint = new Waypoint(BlockPos.ofFloored(x, y, z), SUPPLIES_AND_FUEL_TYPE, SUPPLIES_COLOR, false);
 
-					if (Objects.requireNonNull(Kuudra.phase) == Kuudra.KuudraPhase.DPS) {
+					if (Objects.requireNonNull(Kuudra.phase) == KuudraPhase.DPS) {
 						fuelCells.add(waypoint);
 					} else {
 						supplies.add(waypoint);

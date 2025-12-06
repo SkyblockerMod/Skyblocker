@@ -1,5 +1,4 @@
 {
-    "key.categories.skyblocker": "Skyblocker",
     "key.hotbarSlotLock": "Bloquear Slot (Barra de objetos)",
     "skyblocker.config.title": "%s de Skyblocker",
     "skyblocker.config.general": "General",
@@ -98,7 +97,6 @@
     "skyblocker.config.crimsonIsle.kuudra.suppliesAndFuelWaypointType": "Tipo de marcador para Suministros/Combustible",
     "skyblocker.config.crimsonIsle.kuudra.supplyWaypoints": "Indicadores de Suministros",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip": "Destacado: Sólo muestra un destacado.\n\nDestacado Bordeado: Muestra un destacado y un borde.\n\nBordeado: Sólo muestra un borde.",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nNota: Los Secretos de las Mazmorras deben estar activados para que esto funcione.",
     "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight": "Activar Destacado de Puerta",
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit": "Calculador de Ganancias de Cofres de Croesus",
     "skyblocker.config.dungeons.devices": "Solucionador de Terminales (F7/M7)",

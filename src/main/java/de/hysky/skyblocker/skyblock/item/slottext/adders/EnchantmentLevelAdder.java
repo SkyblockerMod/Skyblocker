@@ -50,7 +50,7 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("charm", "CM");
 		ENCHANTMENT_ABBREVIATIONS.put("cleave", "CL");
 		ENCHANTMENT_ABBREVIATIONS.put("compact", "CO");
-		ENCHANTMENT_ABBREVIATIONS.put("corruption", "CP");
+		ENCHANTMENT_ABBREVIATIONS.put("corruption", "CI");
 		ENCHANTMENT_ABBREVIATIONS.put("counter_strike", "CS");
 		ENCHANTMENT_ABBREVIATIONS.put("critical", "CR");
 		ENCHANTMENT_ABBREVIATIONS.put("cubism", "CU");

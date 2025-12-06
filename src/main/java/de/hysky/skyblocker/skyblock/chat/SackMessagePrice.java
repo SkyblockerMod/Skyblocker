@@ -8,7 +8,11 @@ import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.RegexUtils;
 import io.github.moulberry.repo.data.NEUItem;
-import it.unimi.dsi.fastutil.objects.*;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.HoverEvent.ShowText;
@@ -94,22 +98,22 @@ public class SackMessagePrice {
 			textList.add(ScreenTexts.LINE_BREAK);
 
 			textList.add(Text.empty()
-							 .append(Text.literal("NPC Sell Price: ").formatted(Formatting.YELLOW))
-							 .append(npcPrice > 0
-									 ? ItemTooltip.getCoinsMessage(npcPrice, 1)
-									 : Text.literal("No data").formatted(Formatting.RED)));
+							.append(Text.literal("NPC Sell Price: ").formatted(Formatting.YELLOW))
+							.append(npcPrice > 0
+									? ItemTooltip.getCoinsMessage(npcPrice, 1)
+									: Text.literal("No data").formatted(Formatting.RED)));
 			textList.add(ScreenTexts.LINE_BREAK);
 			textList.add(Text.empty()
-							 .append(Text.literal("Bazaar Buy Price: ").formatted(Formatting.GOLD))
-							 .append(bazaarBuyPrice > 0
-									 ? ItemTooltip.getCoinsMessage(bazaarBuyPrice, 1)
-									 : Text.literal("No data").formatted(Formatting.RED)));
+							.append(Text.literal("Bazaar Buy Price: ").formatted(Formatting.GOLD))
+							.append(bazaarBuyPrice > 0
+									? ItemTooltip.getCoinsMessage(bazaarBuyPrice, 1)
+									: Text.literal("No data").formatted(Formatting.RED)));
 			textList.add(ScreenTexts.LINE_BREAK);
 			textList.add(Text.empty()
-							 .append(Text.literal("Bazaar Sell Price: ").formatted(Formatting.GOLD))
-							 .append(bazaarSellPrice > 0
-									 ? ItemTooltip.getCoinsMessage(bazaarSellPrice, 1)
-									 : Text.literal("No data").formatted(Formatting.RED)));
+							.append(Text.literal("Bazaar Sell Price: ").formatted(Formatting.GOLD))
+							.append(bazaarSellPrice > 0
+									? ItemTooltip.getCoinsMessage(bazaarSellPrice, 1)
+									: Text.literal("No data").formatted(Formatting.RED)));
 		}
 
 		return copy;
@@ -177,14 +181,14 @@ public class SackMessagePrice {
 		/*
 			The hover message's structure is as follows:
 			- Added items:
-			  - item count
-			  - item name
-			  - sack name
-			  (for any other item, repeat the above three lines with a newline in between)
-			  - \n\n
-			  - `This message can be toggled off in the settings` warning
+			- item count
+			- item name
+			- sack name
+			(for any other item, repeat the above three lines with a newline in between)
+			- \n\n
+			- `This message can be toggled off in the settings` warning
 
-			  We only care about the groups of three lines that make up each item entry.
+			We only care about the groups of three lines that make up each item entry.
 		 */
 		Object2IntArrayMap<String> items = new Object2IntArrayMap<>();
 		Integer lastCount = null;

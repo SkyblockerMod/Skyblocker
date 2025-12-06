@@ -5,7 +5,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.ContainerWidget;
+import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
+import net.minecraft.client.gui.widget.GridWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -132,7 +136,7 @@ public abstract class SearchableGridWidget extends ContainerWidget {
 			for (ClickableWidget widget : filteredWidgets) {
 				if (isVisible(widget)) widget.render(context, mouseX, mouseY, deltaTicks);
 			}
-			drawScrollbar(context);
+			drawScrollbar(context, mouseX, mouseY);
 			context.disableScissor();
 		}
 

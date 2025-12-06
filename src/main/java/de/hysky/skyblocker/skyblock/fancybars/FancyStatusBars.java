@@ -28,7 +28,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class FancyStatusBars {
@@ -109,6 +114,7 @@ public class FancyStatusBars {
 	 * @param counts   the counts for each bar position (LAYER1, LAYER2, RIGHT)
 	 * @param position the position to load
 	 */
+	@SuppressWarnings("incomplete-switch")
 	private static void initBarPosition(StatusBar bar, int[] counts, UIAndVisualsConfig.LegacyBarPosition position) {
 		switch (position) {
 			case RIGHT:

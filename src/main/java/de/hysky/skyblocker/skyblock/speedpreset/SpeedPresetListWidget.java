@@ -6,7 +6,12 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ElementListWidget;
+import net.minecraft.client.gui.widget.GridWidget;
+import net.minecraft.client.gui.widget.SimplePositioningWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
@@ -66,9 +71,9 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 		var instance = SpeedPresets.getInstance();
 		instance.getPresets().clear();
 		children().stream()
-				  .filter(SpeedPresetEntry.class::isInstance)
-				  .map(SpeedPresetEntry.class::cast)
-				  .forEach(SpeedPresetEntry::save);
+				.filter(SpeedPresetEntry.class::isInstance)
+				.map(SpeedPresetEntry.class::cast)
+				.forEach(SpeedPresetEntry::save);
 		instance.savePresets(); // Write down the changes.
 	}
 
@@ -77,12 +82,12 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 		protected void updatePosition() {}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			this.children().forEach(child -> {
 				if (child instanceof Widget widget)
-					widget.setY(y);
+					widget.setY(this.getY());
 				if (child instanceof Drawable drawable)
-					drawable.render(context, mouseX, mouseY, tickDelta);
+					drawable.render(context, mouseX, mouseY, deltaTicks);
 			});
 		}
 	}
@@ -90,11 +95,11 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 	public class TitleEntry extends AbstractEntry {
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// The line height is 25, the height of a single character is always 9.
 			// 25 - 9 = 16, 16 / 2 = 8, therefore the Y-offset should be 8.
-			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.general.speedPresets.config.title"), width / 2 - 50, y + 8, Colors.WHITE);
-			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.general.speedPresets.config.speed"), width / 2 + 50, y + 8, Colors.WHITE);
+			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.general.speedPresets.config.title"), width / 2 - 50, this.getY() + 8, Colors.WHITE);
+			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.general.speedPresets.config.speed"), width / 2 + 50, this.getY() + 8, Colors.WHITE);
 		}
 
 		@Override

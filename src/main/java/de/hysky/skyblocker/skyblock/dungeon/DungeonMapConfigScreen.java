@@ -1,14 +1,15 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import java.awt.Color;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
-import java.awt.*;
 
 public class DungeonMapConfigScreen extends Screen {
 
@@ -37,31 +38,31 @@ public class DungeonMapConfigScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+	public boolean mouseDragged(Click click, double offsetX, double offsetY) {
 		int mapSize = (int) (128 * SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling);
 		float scoreScaling = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling;
 		int scoreWidth = (int) (textRenderer.getWidth(DungeonScoreHUD.getFormattedScoreText()) * scoreScaling);
 		int scoreHeight = (int) (textRenderer.fontHeight * scoreScaling);
-		if (HudHelper.pointIsInArea(mouseX, mouseY, mapX, mapY, mapX + mapSize, mapY + mapSize) && button == 0) {
-			mapX = (int) Math.max(Math.min(mouseX - (mapSize >> 1), this.width - mapSize), 0);
-			mapY = (int) Math.max(Math.min(mouseY - (mapSize >> 1), this.height - mapSize), 0);
-		} else if (HudHelper.pointIsInArea(mouseX, mouseY, scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight) && button == 0) {
-			scoreX = (int) Math.max(Math.min(mouseX - (scoreWidth >> 1), this.width - scoreWidth), 0);
-			scoreY = (int) Math.max(Math.min(mouseY - (scoreHeight >> 1), this.height - scoreHeight), 0);
+		if (HudHelper.pointIsInArea(click.x(), click.y(), mapX, mapY, mapX + mapSize, mapY + mapSize) && click.button() == 0) {
+			mapX = (int) Math.max(Math.min(click.x() - (mapSize >> 1), this.width - mapSize), 0);
+			mapY = (int) Math.max(Math.min(click.y() - (mapSize >> 1), this.height - mapSize), 0);
+		} else if (HudHelper.pointIsInArea(click.x(), click.y(), scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight) && click.button() == 0) {
+			scoreX = (int) Math.max(Math.min(click.x() - (scoreWidth >> 1), this.width - scoreWidth), 0);
+			scoreY = (int) Math.max(Math.min(click.y() - (scoreHeight >> 1), this.height - scoreHeight), 0);
 		}
-		return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+		return super.mouseDragged(click, offsetX, offsetY);
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (button == 1) {
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (click.button() == 1) {
 			mapX = 2;
 			mapY = 2;
 			scoreX = Math.max((int) ((mapX + (64 * SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling)) - textRenderer.getWidth(DungeonScoreHUD.getFormattedScoreText()) * SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling / 2), 0);
 			scoreY = (int) (mapY + (128 * SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling) + 4);
 		}
 
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	@Override

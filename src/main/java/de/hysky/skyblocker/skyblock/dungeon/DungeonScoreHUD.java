@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import org.joml.Matrix3x2fStack;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -14,7 +15,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 public class DungeonScoreHUD {
-	private static final Identifier DUNGEON_SCORE = Identifier.of("skyblocker", "dungeon_score");
+	private static final Identifier DUNGEON_SCORE = SkyblockerMod.id("dungeon_score");
 
 	private DungeonScoreHUD() {
 	}

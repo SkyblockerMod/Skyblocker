@@ -19,7 +19,8 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.SequencedMap;
 import java.util.regex.Pattern;
 
 public class SeaCreatureTracker {

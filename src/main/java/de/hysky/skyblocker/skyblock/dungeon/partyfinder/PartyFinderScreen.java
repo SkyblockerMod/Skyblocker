@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -35,7 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class PartyFinderScreen extends Screen {
@@ -93,6 +99,7 @@ public class PartyFinderScreen extends Screen {
 	private int createPartyButtonSlotId = -1;
 
 	private boolean dirty = false;
+	private boolean resetScroll = false;
 	private long dirtiedTime;
 
 	public void markDirty() {
@@ -137,7 +144,7 @@ public class PartyFinderScreen extends Screen {
 		super.init();
 		int topRowButtonsHeight = 20;
 
-		// Entry list widget, pretty much every position is based on this guy since it centers automagically
+		// AbstractEntry list widget, pretty much every position is based on this guy since it centers automagically
 		int widget_height = (int) (this.height * 0.8);
 		int entryListTopY = Math.max(43, (int) (height * 0.1));
 		this.partyEntryListWidget = new PartyEntryListWidget(client, width, widget_height, entryListTopY, 68);
@@ -150,6 +157,7 @@ public class PartyFinderScreen extends Screen {
 		refreshButton = ButtonWidget.builder(Text.literal("⟳").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), (a) -> {
 					if (refreshSlotId != -1) {
 						clickAndWaitForServer(refreshSlotId);
+						resetScroll = true;
 					}
 				})
 				.position(searchField.getX() + searchField.getWidth() + 12 * 2, searchField.getY())
@@ -160,6 +168,7 @@ public class PartyFinderScreen extends Screen {
 		previousPageButton = ButtonWidget.builder(Text.literal("←"), (a) -> {
 					if (prevPageSlotId != -1) {
 						clickAndWaitForServer(prevPageSlotId);
+						resetScroll = true;
 					}
 				})
 				.position(searchField.getX() + searchField.getWidth(), searchField.getY())
@@ -168,6 +177,7 @@ public class PartyFinderScreen extends Screen {
 		nextPageButton = ButtonWidget.builder(Text.literal("→"), (a) -> {
 					if (nextPageSlotId != -1) {
 						clickAndWaitForServer(nextPageSlotId);
+						resetScroll = true;
 					}
 				})
 				.position(searchField.getX() + searchField.getWidth() + 12, searchField.getY())
@@ -261,6 +271,7 @@ public class PartyFinderScreen extends Screen {
 				for (int i = 0; i < handler.slots.size(); i++) {
 					context.drawItem(handler.slots.get(i).getStack(), (i % 9) * 16, (i / 9) * 16);
 				}
+				context.drawText(textRenderer, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), Colors.WHITE, true);
 			}
 		}
 		if (isWaitingForServer()) {
@@ -410,8 +421,6 @@ public class PartyFinderScreen extends Screen {
 				createPartyButton.active = true;
 			} else if (slot.getStack().isOf(Items.NETHER_STAR)) {
 				settingsButtonSlotId = slot.id;
-				if (DEBUG)
-					settingsButton.setMessage(settingsButton.getMessage().copy().append(Text.of(" " + settingsButtonSlotId)));
 			} else if (slot.getStack().isOf(Items.BOOKSHELF)) {
 				deListSlotId = slot.id;
 			} else if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
@@ -446,6 +455,11 @@ public class PartyFinderScreen extends Screen {
 			parties.add(new PartyEntry.YourParty(title, ItemUtils.getLore(yourPartyStack), this, deListSlotId));
 		}
 		this.partyEntryListWidget.setEntries(parties);
+
+		if (resetScroll) {
+			resetScroll = false;
+			partyEntryListWidget.setScrollY(0);
+		}
 	}
 
 	private boolean aborted = false;
@@ -485,11 +499,11 @@ public class PartyFinderScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		if (settingsContainer != null && settingsContainer.hasOpenOption()) {
-			return settingsContainer.mouseClicked(mouseX, mouseY, button);
+			return settingsContainer.mouseClicked(click, doubled);
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	public void clickAndWaitForServer(int slotID) {

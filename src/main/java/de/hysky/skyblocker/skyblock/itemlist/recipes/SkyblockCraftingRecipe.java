@@ -14,76 +14,75 @@ import java.util.List;
 import java.util.Locale;
 
 public class SkyblockCraftingRecipe implements SkyblockRecipe {
+	public static final Identifier ID = SkyblockerMod.id("skyblock_crafting");
 
-    public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_crafting");
+	private final Text craftText;
+	private final List<ItemStack> grid = new ArrayList<>(9);
+	private final ItemStack result;
 
-    private final Text craftText;
-    private final List<ItemStack> grid = new ArrayList<>(9);
-    private final ItemStack result;
+	public SkyblockCraftingRecipe(NEUCraftingRecipe neuCraftingRecipe) {
+		this.craftText = neuCraftingRecipe.getExtraText() != null ? Text.literal(neuCraftingRecipe.getExtraText()) : Text.empty();
+		for (NEUIngredient input : neuCraftingRecipe.getInputs()) {
+			grid.add(SkyblockRecipe.getItemStack(input));
+		}
+		result = SkyblockRecipe.getItemStack(neuCraftingRecipe.getOutput());
+	}
 
-    public SkyblockCraftingRecipe(NEUCraftingRecipe neuCraftingRecipe) {
-        this.craftText = neuCraftingRecipe.getExtraText() != null ? Text.literal(neuCraftingRecipe.getExtraText()) : Text.empty();
-        for (NEUIngredient input : neuCraftingRecipe.getInputs()) {
-            grid.add(SkyblockRecipe.getItemStack(input));
-        }
-        result = SkyblockRecipe.getItemStack(neuCraftingRecipe.getOutput());
-    }
+	public List<ItemStack> getGrid() {
+		return grid;
+	}
 
-    public List<ItemStack> getGrid() {
-        return grid;
-    }
+	public ItemStack getResult() {
+		return result;
+	}
 
-    public ItemStack getResult() {
-        return result;
-    }
+	@Override
+	public List<RecipeSlot> getInputSlots(int width, int height) {
+		ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 27 : 32));
+		List<RecipeSlot> toReturn = new ArrayList<>(9);
+		for (int i = 0; i < grid.size(); i++) {
+			int x = i % 3;
+			int y = i / 3;
+			toReturn.add(new RecipeSlot(start.x() + 1 + x * 18, start.y() + 1 + y * 18, grid.get(i)));
+		}
+		return toReturn;
+	}
 
-    @Override
-    public List<RecipeSlot> getInputSlots(int width, int height) {
-        ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 27 : 32));
-        List<RecipeSlot> toReturn = new ArrayList<>(9);
-        for (int i = 0; i < grid.size(); i++) {
-            int x = i % 3;
-            int y = i / 3;
-            toReturn.add(new RecipeSlot(start.x() + 1 + x * 18, start.y() + 1 + y * 18, grid.get(i)));
-        }
-        return toReturn;
-    }
+	@Override
+	public List<RecipeSlot> getOutputSlots(int width, int height) {
+		ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 26 : 31));
+		return List.of(new RecipeSlot(start.x() + 95, start.y() + 19, result));
+	}
 
-    @Override
-    public List<RecipeSlot> getOutputSlots(int width, int height) {
-        ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 26 : 31));
-        return List.of(new RecipeSlot(start.x() + 95, start.y() + 19, result));
-    }
+	@Override
+	public List<ItemStack> getInputs() {
+		return grid;
+	}
 
-    @Override
-    public List<ItemStack> getInputs() {
-        return grid;
-    }
+	@Override
+	public List<ItemStack> getOutputs() {
+		return List.of(result);
+	}
 
-    @Override
-    public List<ItemStack> getOutputs() {
-        return List.of(result);
-    }
+	@Override
+	public Text getExtraText() {
+		return craftText;
+	}
 
-    @Override
-    public Text getExtraText() {
-        return craftText;
-    }
+	@Override
+	public Identifier getCategoryIdentifier() {
+		return SkyblockCraftingRecipe.ID;
+	}
 
-    @Override
-    public Identifier getCategoryIdentifier() {
-        return SkyblockCraftingRecipe.IDENTIFIER;
-    }
+	@Override
+	public Identifier getRecipeIdentifier() {
+		return Identifier.of("skyblock", getResult().getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + getResult().getCount());
 
-    @Override
-    public Identifier getRecipeIdentifier() {
-        return Identifier.of("skyblock", getResult().getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + getResult().getCount());
+	}
 
-    }
-
-    @Override
-    public @Nullable ScreenPos getArrowLocation(int width, int height) {
-        ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 26 : 31));
-        return new ScreenPos(start.x() + 60, start.y() + 18);
-    }
+	@Override
+	public @Nullable ScreenPos getArrowLocation(int width, int height) {
+		ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 26 : 31));
+		return new ScreenPos(start.x() + 60, start.y() + 18);
+	}
 }
