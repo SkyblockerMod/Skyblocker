@@ -20,7 +20,11 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
+import net.minecraft.client.gui.widget.EmptyWidget;
+import net.minecraft.client.gui.widget.MultilineTextWidget;
+import net.minecraft.client.gui.widget.Positioner;
+import net.minecraft.client.gui.widget.ScrollableLayoutWidget;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
@@ -210,8 +214,8 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	public static void initClass() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (screen instanceof HandledScreen<?> handledScreen) {
-				ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
-					if (key != GLFW.GLFW_KEY_I) return;
+				ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key) -> {
+					if (key.key() != GLFW.GLFW_KEY_I) return;
 					Slot slot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
 					if (slot == null || !slot.hasStack()) return;
 					NetworthResult networth = NetworthCalculator.getItemNetworth(slot.getStack());
@@ -269,7 +273,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 		drawPopupBackground(context, scrollable.getX(), scrollable.getY(), scrollable.getWidth(), scrollable.getHeight());
 	}
 
-	private static Text getCoinsText(double price)  {
+	private static Text getCoinsText(double price) {
 		return getCoinsText(price, 0);
 	}
 
@@ -286,8 +290,8 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	}
 
 	public interface LayoutAppender {
-
 		void appendTo(NetworthResult networthResult, List<Calculation> calculations, DirectionalLayoutWidget layout);
+
 		default void appendCountAndPrice(Calculation calc, double totalPrice, MutableText empty) {
 			if (calc.count() > 1)
 				empty.append(Text.literal(" x").formatted(Formatting.GRAY)).append(Text.literal(String.valueOf(calc.count())).formatted(Formatting.YELLOW));
@@ -297,13 +301,12 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 		}
 
 	}
-	private record BasicSingleAppender(Text displayName, Function<String, Text> idFormatter,
-									   boolean hideIfWorthNothing) implements LayoutAppender {
 
-
+	private record BasicSingleAppender(Text displayName, Function<String, Text> idFormatter, boolean hideIfWorthNothing) implements LayoutAppender {
 		private BasicSingleAppender(Text displayName, Function<String, Text> idFormatter) {
 			this(displayName, idFormatter, true);
 		}
+
 		@Override
 		public void appendTo(NetworthResult networthResult, List<Calculation> calculations, DirectionalLayoutWidget layout) {
 			if (calculations.size() > 1) {

@@ -52,10 +52,10 @@ public abstract class AbstractCustomHypixelGUI<T extends ScreenHandler> extends 
 	}
 
 	@Override
-    public void removed() {
-        super.removed();
-        handler.removeListener(this);
-    }
+	public void removed() {
+		super.removed();
+		handler.removeListener(this);
+	}
 
 	@Override
 	public final void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
