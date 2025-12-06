@@ -158,12 +158,14 @@ public class AccessoriesHelper {
 	 * @author AzureAaron
 	 * @implSpec <a href="https://github.com/AzureAaron/aaron-mod/blob/1.20/src/main/java/net/azureaaron/mod/commands/MagicalPowerCommand.java#L475">Aaron's Mod</a>
 	 */
-	public record Accessory(String id, Optional<String> family, int tier, Optional<String> origin) {
+	public record Accessory(String id, Optional<String> family, int tier, Optional<String> origin, boolean enrichable, boolean recombobulatable) {
 		private static final Codec<Accessory> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("id").forGetter(Accessory::id),
 				Codec.STRING.optionalFieldOf("family").forGetter(Accessory::family),
 				Codec.INT.optionalFieldOf("tier", 0).forGetter(Accessory::tier),
-				Codec.STRING.optionalFieldOf("origin").forGetter(Accessory::origin)
+				Codec.STRING.optionalFieldOf("origin").forGetter(Accessory::origin),
+				Codec.BOOL.optionalFieldOf("enrichable", true).forGetter(Accessory::enrichable),
+				Codec.BOOL.optionalFieldOf("recombobulatable", true).forGetter(Accessory::recombobulatable)
 		).apply(instance, Accessory::new));
 		public static final Codec<Map<String, Accessory>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC);
 
