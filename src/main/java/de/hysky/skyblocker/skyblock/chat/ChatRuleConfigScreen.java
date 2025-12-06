@@ -38,7 +38,6 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ public class ChatRuleConfigScreen extends Screen {
 	private static final Text YES_TEXT = ScreenTexts.YES.copy().formatted(Formatting.GREEN);
 	private static final Text NO_TEXT = ScreenTexts.NO.copy().formatted(Formatting.RED);
 
-	private final Map<SoundEvent, Text> soundNames = Util.make(new Object2ObjectOpenHashMap<>(), map -> {
+	private final Map<@Nullable SoundEvent, Text> soundNames = Util.make(new Object2ObjectOpenHashMap<>(), map -> {
 		map.put(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling").formatted(Formatting.YELLOW));
 		map.put(SoundEvents.AMBIENT_CAVE.value(), Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.cave").formatted(Formatting.YELLOW));
 		map.put(SoundEvents.ENTITY_ZOMBIE_AMBIENT, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie").formatted(Formatting.YELLOW));
@@ -77,7 +76,7 @@ public class ChatRuleConfigScreen extends Screen {
 	private final Screen parent;
 
 	private final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
-	private GridWidget content;
+	private final GridWidget content = new GridWidget().setColumnSpacing(GRID_SPACING);
 
 	public ChatRuleConfigScreen(Screen parent, int chatRuleIndex) {
 		super(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"));
@@ -88,11 +87,11 @@ public class ChatRuleConfigScreen extends Screen {
 
 	@Override
 	protected void init() {
+		assert client != null;
 		layout.addHeader(new TextWidget(title, textRenderer));
 		layout.addFooter(ButtonWidget.builder(ScreenTexts.DONE, b -> close()).build());
 		layout.addBody(new ContentContainer());
 
-		content = new GridWidget().setColumnSpacing(GRID_SPACING);
 		content.getMainPositioner().alignVerticalCenter().alignHorizontalCenter().marginTop(GRID_SPACING); // Have to separate them due to the toggleable layouts, did not think about that when I made them
 		Positioner alignedLeft = content.copyPositioner().alignLeft();
 		GridWidget.Adder contentAdder = content.createAdder(3);
@@ -251,11 +250,11 @@ public class ChatRuleConfigScreen extends Screen {
 		SimplePositioningWidget textAndIcon = new SimplePositioningWidget(getWidth(1), 0);
 		contentAdder.add(new ToggleableLayoutWidget(textAndIcon, toastOptionsPredicate));
 
-		ToastIconPreview preview = textAndIcon.add(new ToastIconPreview(), Positioner::alignRight);
+		TextFieldWidget itemInput = new TextFieldWidget(textRenderer, getWidth(1), 20, Text.empty());
+		ToastIconPreview preview = textAndIcon.add(new ToastIconPreview(itemInput), Positioner::alignRight);
 		textAndIcon.add(new MultilineTextWidget(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon"), textRenderer), Positioner::alignLeft).setMaxWidth(getWidth(1) - preview.getWidth()).setCentered(false);
 
 		// Item input
-		TextFieldWidget itemInput = new TextFieldWidget(textRenderer, getWidth(1), 20, Text.empty());
 		contentAdder.add(new ToggleableLayoutWidget(itemInput, toastOptionsPredicate));
 		itemInput.setChangedListener(itemData -> {
 			ItemStack stack = ItemStackComponentizationFixer.fromItemString(itemData, 1);
@@ -265,7 +264,6 @@ public class ChatRuleConfigScreen extends Screen {
 			if (message == null) return;
 			message.icon = stack;
 		});
-		preview.input = itemInput;
 		itemInput.setText(chatRule.getToastMessage() != null ? getItemString(chatRule.getToastMessage().icon) : "minecraft:painting");
 
 		// Duration slider
@@ -285,7 +283,7 @@ public class ChatRuleConfigScreen extends Screen {
 		recreateLayout();
 	}
 
-	private static @NotNull String getItemString(ItemStack stack) {
+	private static String getItemString(ItemStack stack) {
 		return Registries.ITEM.getId(stack.getItem()) + ItemStackComponentizationFixer.componentsAsString(stack);
 	}
 
@@ -343,11 +341,12 @@ public class ChatRuleConfigScreen extends Screen {
 	}
 
 	private class ToastIconPreview extends ClickableWidget {
-		private ItemStack stack;
-		private TextFieldWidget input;
+		private ItemStack stack = ItemStack.EMPTY;
+		private final TextFieldWidget input;
 
-		private ToastIconPreview() {
+		private ToastIconPreview(TextFieldWidget input) {
 			super(0, 0, 16, 16, Text.empty());
+			this.input = input;
 			setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.iconPreview.@Tooltip")));
 		}
 
@@ -364,6 +363,7 @@ public class ChatRuleConfigScreen extends Screen {
 		@Override
 		public void onClick(Click click, boolean doubled) {
 			super.onClick(click, doubled);
+			assert client != null;
 			client.setScreen(new ItemSelectionPopup(ChatRuleConfigScreen.this, item -> {
 				if (item == null) return;
 				input.setText(getItemString(item));

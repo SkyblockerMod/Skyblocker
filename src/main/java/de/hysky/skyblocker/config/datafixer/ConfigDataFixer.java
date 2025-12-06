@@ -13,6 +13,7 @@ import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 public class ConfigDataFixer {
@@ -20,7 +21,7 @@ public class ConfigDataFixer {
 	protected static final Logger LOGGER = LogUtils.getLogger();
 	public static final DSL.TypeReference CONFIG_TYPE = () -> "config";
 	public static final DSL.TypeReference CHAT_RULES_TYPE = () -> "chat_rules";
-	private static DataFixer dataFixer;
+	private static @Nullable DataFixer dataFixer;
 
 	public static JsonObject apply(DSL.TypeReference type, JsonObject oldConfig) {
 		return apply(type, oldConfig, SkyblockerConfigManager.CONFIG_VERSION);

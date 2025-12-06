@@ -29,7 +29,6 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.nio.file.Path;
@@ -118,8 +117,7 @@ public class ChatRulesHandler {
 	 * @param codedString the string with color codes in
 	 * @return formatted text
 	 */
-	@NotNull
-	protected static MutableText formatText(@NotNull String codedString) {
+	protected static MutableText formatText(String codedString) {
 		// These are done in order of precedence, so § is checked first, then &.
 		// This is to ensure that there are no accidental formatting issues due to an actual use of '&' with a valid color code.
 		if (codedString.contains("§")) return TextTransformer.fromLegacy(codedString, '§', false);
@@ -128,7 +126,7 @@ public class ChatRulesHandler {
 	}
 
 	public static void saveChatRules() {
-		if (CHAT_RULE_LIST.getData() != null) CHAT_RULE_LIST.save();
+		if (CHAT_RULE_LIST.isLoaded()) CHAT_RULE_LIST.save();
 	}
 
 	private static class ChatRulesToast implements Toast {

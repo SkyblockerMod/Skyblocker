@@ -171,7 +171,7 @@ public class SkyblockerConfigManager {
 		}
 	}
 
-	private static JsonObject loadConfig(Path path) {
+	private static @Nullable JsonObject loadConfig(Path path) {
 		try (BufferedReader reader = Files.newBufferedReader(path)) {
 			return JsonParser.parseReader(reader).getAsJsonObject();
 		} catch (Throwable t) {

@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -77,7 +76,7 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 	private @Nullable ItemWidget selectedItem = null;
 
 	private final GridWidget gridWidget = new GridWidget();
-	private ButtonWidget doneButton;
+	private @Nullable ButtonWidget doneButton;
 
 	/**
 	 * @param backgroundScreen The screen to display in the background.
@@ -88,9 +87,9 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 		this.onDone = onDone;
 	}
 
-	private void setSelectedItem(@NotNull ItemWidget selectedItem) {
+	private void setSelectedItem(ItemWidget selectedItem) {
 		this.selectedItem = selectedItem;
-		doneButton.active = true;
+		if (doneButton != null) doneButton.active = true;
 	}
 
 	@Override

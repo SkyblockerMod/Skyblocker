@@ -69,7 +69,7 @@ public class ChatRule {
 	public static final Codec<List<ChatRule>> LIST_CODEC = CODEC.listOf();
 
 	private String name;
-	private Pattern pattern; // Only compile Regex patterns once
+	private @Nullable Pattern pattern; // Only compile Regex patterns once
 
 	// Inputs
 	private boolean enabled;
