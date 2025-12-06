@@ -178,22 +178,17 @@ class AccessoryHelperWidget extends ContainerWidget implements HoveredItemStackP
 							OptionalDouble priceOpt = getPrice(info.accessory());
 							if (priceOpt.isEmpty()) return Double.MAX_VALUE;
 							double price = priceOpt.getAsDouble();
+							int originalMP = 0;
 							if (info.highestOwned().isPresent()) {
 								OptionalDouble ownedPrice = getPrice(info.highestOwned().get());
 								price -= ownedPrice.orElse(0);
+								ItemStack stack = ItemRepository.getItemStack(info.highestOwned().get().id());
+								originalMP = stack != null ? stack.getSkyblockRarity().getMP() : 0;
 							}
 							ItemStack stack = ItemRepository.getItemStack(info.accessory().id());
 							if (stack == null) return Double.MAX_VALUE;
-							int mp = switch (stack.getSkyblockRarity()) {
-								case COMMON, SPECIAL -> 3;
-								case UNCOMMON, VERY_SPECIAL -> 5;
-								case RARE -> 8;
-								case EPIC -> 12;
-								case LEGENDARY -> 13;
-								case MYTHIC -> 22;
-								default -> 1;
-							};
-							return price / mp;
+							int mp = stack.getSkyblockRarity().getMP() - originalMP;
+							return mp <= 0 ? Double.MAX_VALUE : price / mp;
 						})
 				).toList();
 	}
