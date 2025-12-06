@@ -12,12 +12,17 @@ import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-
 
 public final class ColorTerminal extends SimpleContainerSolver implements TerminalSolver, StackDisplayModifier {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ColorTerminal.class.getName());

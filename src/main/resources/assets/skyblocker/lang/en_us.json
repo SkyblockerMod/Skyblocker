@@ -133,7 +133,7 @@
   "skyblocker.config.chat.filter.hideHeal": "Hide Heal Messages",
   "skyblocker.config.chat.filter.hideImplosion": "Hide Implosion Message",
   "skyblocker.config.chat.filter.hideMana": "Hide Mana Consumption Messages from Action Bar",
-  "skyblocker.config.chat.filter.hideMana.@Tooltip": "Gives a better experience with FancyBar",
+  "skyblocker.config.chat.filter.hideMana.@Tooltip": "Gives a better experience when using Fancy Status Bars",
   "skyblocker.config.chat.filter.hideMimicKill": "Hide Mimic Kill Messages",
   "skyblocker.config.chat.filter.hideMimicKill.@Tooltip": "Filters the \"Mimic dead!\" and \"Mimic killed!\" messages from chat.",
   "skyblocker.config.chat.filter.hideMoltenWave": "Hide Molten Wave Message",
@@ -246,7 +246,7 @@
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD": "Enable Score HUD",
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.@Tooltip": "Displays the dungeon score in the HUD.",
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nNote: This only works correctly if death messages are enabled in your Skyblock settings. If you want to hide death messages, use this mod's Hide Player Death Messages setting instead to allow further processing of death messages.",
-  "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Score Scaling",
+  "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Score HUD Scaling",
 
   "skyblocker.config.dungeons.dungeonSplits": "Dungeon Splits Widget",
   "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "Enables a widget that shows your fastest times in each dungeon section.",

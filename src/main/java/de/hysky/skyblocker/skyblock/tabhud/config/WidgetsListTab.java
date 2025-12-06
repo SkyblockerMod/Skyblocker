@@ -1,7 +1,11 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.*;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.BooleanSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.DefaultSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.EditableSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;

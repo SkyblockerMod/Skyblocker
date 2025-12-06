@@ -49,8 +49,9 @@ public class BuildersWandPreview {
 	private static void extractBuildersWandPreview(PrimitiveCollector collector, BlockHitResult hitResult) {
 		if (client.world == null) return;
 		BlockPos hitPos = hitResult.getBlockPos();
-		BlockState state = client.world.getBlockState(hitPos);
 		Direction side = hitResult.getSide();
+		if (!client.world.getBlockState(hitPos.offset(side)).isAir()) return;
+		BlockState state = client.world.getBlockState(hitPos);
 		for (BlockPos pos : findConnectedFaces(client.world, hitPos, side, state)) {
 			extractBlockPreview(collector, pos.offset(side), state);
 		}

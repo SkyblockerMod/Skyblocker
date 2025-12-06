@@ -2,7 +2,11 @@ package de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.text.*;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.StringVisitable;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
