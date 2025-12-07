@@ -109,7 +109,6 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 		super.extractRendering(collector);
 	}
 
-	@NotNull
 	SecretWaypoint relativeToActual(Room room) {
 		return new SecretWaypoint(secretIndex, category, name, room.relativeToActual(pos));
 	}

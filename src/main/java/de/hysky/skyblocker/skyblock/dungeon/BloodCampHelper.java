@@ -18,6 +18,7 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -188,7 +189,7 @@ public class BloodCampHelper {
 		static final int DELTA_SAMPLES = 5;
 		final Deque<Vec3d> deltas = new ArrayDeque<>();
 		boolean inMotion = false;
-		Vec3d predictedPos;
+		@Nullable Vec3d predictedPos;
 
 		TrackedMob(ArmorStandEntity entity) {
 			this.entity = entity;

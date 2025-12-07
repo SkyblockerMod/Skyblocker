@@ -17,6 +17,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Intersectiond;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class CreeperBeams extends DungeonPuzzle {
 	private static final CreeperBeams INSTANCE = new CreeperBeams();
 
 	private static ArrayList<Beam> beams = new ArrayList<>();
-	private static BlockPos base = null;
+	@Nullable private static BlockPos base = null;
 
 	private CreeperBeams() {
 		super("creeper", "creeper-room");
@@ -94,6 +95,7 @@ public class CreeperBeams extends DungeonPuzzle {
 	}
 
 	// find the sea lantern block beneath the creeper
+	@Nullable
 	private static BlockPos findCreeperBase(ClientPlayerEntity player, ClientWorld world) {
 
 		// find all creepers

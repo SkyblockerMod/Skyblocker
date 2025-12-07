@@ -116,6 +116,7 @@ public class Trivia extends DungeonPuzzle {
 
 		Room room = DungeonManager.getCurrentRoom();
 		for (Direction direction : DIRECTIONS) {
+			//noinspection DataFlowIssue - the room must not be null and must be matched (would not tick otherwise)
 			Box buttonBox = RenderHelper.getBlockBoundingBox(client.world, room.relativeToActual(correctBlockPos).offset(direction));
 			if (buttonBox != null) BOXES_TO_HIGHLIGHT.add(buttonBox);
 		}
@@ -127,7 +128,7 @@ public class Trivia extends DungeonPuzzle {
 			case "ⓐ" -> CHOICE_A;
 			case "ⓑ" -> CHOICE_B;
 			case "ⓒ" -> CHOICE_C;
-			case null, default -> null;
+			default -> null;
 		};
 	}
 
@@ -188,7 +189,6 @@ public class Trivia extends DungeonPuzzle {
 		});
 	}
 
-	@NotNull
 	private static List<String> getFairySoulsSizeString(@Nullable String location) {
 		return List.of("%d Fairy Souls".formatted(FairySouls.getFairySoulsSize(location)));
 	}

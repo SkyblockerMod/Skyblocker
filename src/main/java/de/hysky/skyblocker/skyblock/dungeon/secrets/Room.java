@@ -34,7 +34,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
@@ -59,9 +58,7 @@ public class Room implements Tickable, Renderable {
 	private static final String LOCKED_CHEST = "That chest is locked!";
 	protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
 	protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
-	@NotNull
 	private final Type type;
-	@NotNull
 	final Set<Vector2ic> segments;
 	/**
 	 * Used to allow rooms to have their secrets unmarked after the map detects the green checkmark.
@@ -74,25 +71,27 @@ public class Room implements Tickable, Renderable {
 	/**
 	 * The shape of the room. See {@link #determineShape(IntSortedSet, IntSortedSet)}.
 	 */
-	@NotNull
 	private final Shape shape;
 	/**
 	 * The room data containing all rooms for a specific dungeon and {@link #shape}.
+	 * This is null after the room is matched.
 	 */
-	protected Map<String, int[]> roomsData;
+	@Nullable protected Map<String, int[]> roomsData;
 	/**
 	 * Contains all possible dungeon rooms for this room. The list is gradually shrunk by checking blocks until only one room is left.
+	 * This is null after the room is matched.
 	 */
-	protected List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms;
+	@Nullable protected List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms;
 
 	/**
 	 * Contains all blocks that have been checked to prevent checking the same block multiple times.
+	 * This is null after the room is matched.
 	 */
-	private Set<BlockPos> checkedBlocks = new HashSet<>();
+	@Nullable private Set<BlockPos> checkedBlocks = new HashSet<>();
 	/**
 	 * The task that is used to check blocks. This is used to ensure only one such task can run at a time.
 	 */
-	protected CompletableFuture<Void> findRoom;
+	@Nullable protected CompletableFuture<Void> findRoom;
 	private int doubleCheckBlocks;
 	/**
 	 * Represents the matching state of the room with the following possible values:
@@ -102,17 +101,17 @@ public class Room implements Tickable, Renderable {
 	 * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
 	 */
 	protected MatchState matchState = MatchState.MATCHING;
-	private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
-	private String name;
-	private Direction direction;
-	private Vector2ic physicalCornerPos;
+	@Nullable private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
+	@Nullable private String name;
+	@Nullable private Direction direction;
+	@Nullable private Vector2ic physicalCornerPos;
 
 	protected List<Tickable> tickables = new ArrayList<>();
 	protected List<Renderable> renderables = new ArrayList<>();
-	private BlockPos lastChestSecret;
+	@Nullable private BlockPos lastChestSecret;
 	private long lastChestSecretTime;
 
-	public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
+	public Room(Type type, Vector2ic... physicalPositions) {
 		this.type = type;
 		segments = Set.of(physicalPositions);
 		IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
@@ -122,23 +121,16 @@ public class Room implements Tickable, Renderable {
 		possibleRooms = getPossibleRooms(segmentsX, segmentsY);
 	}
 
-	@NotNull
 	public Type getType() {
 		return type;
 	}
 
-	@NotNull
 	public Set<Vector2ic> getSegments() {
 		return segments;
 	}
 
-	@NotNull
 	public Shape getShape() {
 		return shape;
-	}
-
-	public Vector2ic getPhysicalCornerPos() {
-		return physicalCornerPos;
 	}
 
 	public boolean isMatched() {
@@ -148,6 +140,7 @@ public class Room implements Tickable, Renderable {
 	/**
 	 * Not null if {@link #isMatched()}.
 	 */
+	@Nullable
 	public String getName() {
 		return name;
 	}
@@ -155,6 +148,7 @@ public class Room implements Tickable, Renderable {
 	/**
 	 * Not null if {@link #isMatched()}.
 	 */
+	@Nullable
 	public Direction getDirection() {
 		return direction;
 	}
@@ -164,7 +158,6 @@ public class Room implements Tickable, Renderable {
 		return "Room{type=%s, segments=%s, shape=%s, matchState=%s, name=%s, direction=%s, physicalCornerPos=%s}".formatted(type, Arrays.toString(segments.toArray()), shape, matchState, name, direction, physicalCornerPos);
 	}
 
-	@NotNull
 	private Shape determineShape(IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return switch (type) {
 			case PUZZLE -> Shape.PUZZLE;
@@ -181,6 +174,7 @@ public class Room implements Tickable, Renderable {
 	}
 
 	private List<MutableTriple<Direction, Vector2ic, List<String>>> getPossibleRooms(IntSortedSet segmentsX, IntSortedSet segmentsY) {
+		if (roomsData == null) return List.of();
 		List<String> possibleDirectionRooms = new ArrayList<>(roomsData.keySet());
 		List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms = new ArrayList<>();
 		for (Direction direction : getPossibleDirections(segmentsX, segmentsY)) {
@@ -189,7 +183,6 @@ public class Room implements Tickable, Renderable {
 		return possibleRooms;
 	}
 
-	@NotNull
 	private Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return switch (shape) {
 			case ONE_BY_ONE, TWO_BY_TWO, PUZZLE, TRAP, MINIBOSS -> Direction.values();
@@ -237,7 +230,9 @@ public class Room implements Tickable, Renderable {
 	 */
 	@SuppressWarnings("JavadocReference")
 	private void addCustomWaypoint(int secretIndex, SecretWaypoint.Category category, Text waypointName, BlockPos pos) {
+		if (!isMatched()) return;
 		SecretWaypoint waypoint = new SecretWaypoint(secretIndex, category, waypointName, pos);
+		//noinspection DataFlowIssue - room is matched
 		DungeonManager.addCustomWaypoint(name, waypoint);
 		DungeonManager.getRoomsStream().filter(r -> name.equals(r.getName())).forEach(r -> r.addCustomWaypoint(waypoint));
 	}
@@ -248,6 +243,7 @@ public class Room implements Tickable, Renderable {
 	 * @param relativeWaypoint the secret waypoint relative to this room to add
 	 */
 	private void addCustomWaypoint(SecretWaypoint relativeWaypoint) {
+		if (secretWaypoints == null) return;
 		SecretWaypoint actualWaypoint = relativeWaypoint.relativeToActual(this);
 		secretWaypoints.put(actualWaypoint.secretIndex, actualWaypoint.pos, actualWaypoint);
 	}
@@ -273,6 +269,7 @@ public class Room implements Tickable, Renderable {
 	@SuppressWarnings("JavadocReference")
 	@Nullable
 	private SecretWaypoint removeCustomWaypoint(BlockPos pos) {
+		if (name == null) return null;
 		SecretWaypoint waypoint = DungeonManager.removeCustomWaypoint(name, pos);
 		if (waypoint != null) {
 			DungeonManager.getRoomsStream().filter(r -> name.equals(r.getName())).forEach(r -> r.removeCustomWaypoint(waypoint.secretIndex, pos));
@@ -287,6 +284,7 @@ public class Room implements Tickable, Renderable {
 	 * @param relativePos the position of the secret waypoint relative to this room
 	 */
 	private void removeCustomWaypoint(int secretIndex, BlockPos relativePos) {
+		if (secretWaypoints == null) return;
 		BlockPos actualPos = relativeToActual(relativePos);
 		secretWaypoints.remove(secretIndex, actualPos);
 	}
@@ -336,6 +334,7 @@ public class Room implements Tickable, Renderable {
 		}
 		findRoom = CompletableFuture.runAsync(() -> {
 			for (BlockPos pos : BlockPos.iterate(player.getBlockPos().add(-5, -5, -5), player.getBlockPos().add(5, 5, 5))) {
+				assert checkedBlocks != null;
 				if (segments.contains(DungeonMapUtils.getPhysicalRoomPos(pos)) && notInDoorway(pos) && checkedBlocks.add(pos) && checkBlock(client.world, pos)) {
 					break;
 				}
@@ -405,10 +404,12 @@ public class Room implements Tickable, Renderable {
 		if (id == 0) {
 			return false;
 		}
+		assert possibleRooms != null;
 		for (MutableTriple<Direction, Vector2ic, List<String>> directionRooms : possibleRooms) {
 			int block = posIdToInt(DungeonMapUtils.actualToRelative(directionRooms.getLeft(), directionRooms.getMiddle(), pos), id);
 			List<String> possibleDirectionRooms = new ArrayList<>();
 			for (String room : directionRooms.getRight()) {
+				assert roomsData != null;
 				if (Arrays.binarySearch(roomsData.get(room), block) >= 0) {
 					possibleDirectionRooms.add(room);
 				}
@@ -420,6 +421,7 @@ public class Room implements Tickable, Renderable {
 		if (matchingRoomsSize == 0) synchronized (this) {
 			// If no rooms match, reset the fields and scan again after 50 ticks.
 			matchState = MatchState.FAILED;
+			assert checkedBlocks != null;
 			DungeonManager.LOGGER.warn("[Skyblocker Dungeon Secrets] No dungeon room matched after checking {} block(s) including double checking {} block(s)", checkedBlocks.size(), doubleCheckBlocks);
 			Scheduler.INSTANCE.schedule(() -> matchState = MatchState.MATCHING, 50);
 			reset();
@@ -432,6 +434,7 @@ public class Room implements Tickable, Renderable {
 				name = directionRoom.getRight().getFirst();
 				direction = directionRoom.getLeft();
 				physicalCornerPos = directionRoom.getMiddle();
+				assert checkedBlocks != null;
 				DungeonManager.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} matched after checking {} block(s), starting double checking", name, checkedBlocks.size());
 				roomMatched();
 				return false;
@@ -439,12 +442,14 @@ public class Room implements Tickable, Renderable {
 				// If double-checked, set state to matched and discard the no longer needed fields.
 				matchState = MatchState.MATCHED;
 				DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this);
+				assert checkedBlocks != null;
 				DungeonManager.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} confirmed after checking {} block(s) including double checking {} block(s)", name, checkedBlocks.size(), doubleCheckBlocks);
 				discard();
 				return true;
 			}
 			return false;
 		} else {
+			assert checkedBlocks != null;
 			DungeonManager.LOGGER.debug("[Skyblocker Dungeon Secrets] {} room(s) remaining after checking {} block(s)", matchingRoomsSize, checkedBlocks.size());
 			return false;
 		}
@@ -469,6 +474,7 @@ public class Room implements Tickable, Renderable {
 	 */
 	@SuppressWarnings("JavadocReference")
 	private void roomMatched() {
+		assert name != null && direction != null && physicalCornerPos != null;
 		secretWaypoints = HashBasedTable.create();
 		List<DungeonManager.RoomWaypoint> roomWaypoints = DungeonManager.getRoomWaypoints(name);
 		if (roomWaypoints != null) {
@@ -514,6 +520,7 @@ public class Room implements Tickable, Renderable {
 	 * Fails if !{@link #isMatched()}
 	 */
 	public BlockPos actualToRelative(BlockPos pos) {
+		assert direction != null && physicalCornerPos != null;
 		return DungeonMapUtils.actualToRelative(direction, physicalCornerPos, pos);
 	}
 
@@ -521,6 +528,7 @@ public class Room implements Tickable, Renderable {
 	 * Fails if !{@link #isMatched()}
 	 */
 	public Vec3d actualToRelative(Vec3d pos) {
+		assert direction != null && physicalCornerPos != null;
 		return DungeonMapUtils.actualToRelative(direction, physicalCornerPos, pos);
 	}
 
@@ -528,6 +536,7 @@ public class Room implements Tickable, Renderable {
 	 * Fails if !{@link #isMatched()}
 	 */
 	public BlockPos relativeToActual(BlockPos pos) {
+		assert direction != null && physicalCornerPos != null;
 		return DungeonMapUtils.relativeToActual(direction, physicalCornerPos, pos);
 	}
 
@@ -535,6 +544,7 @@ public class Room implements Tickable, Renderable {
 	 * Fails if !{@link #isMatched()}
 	 */
 	public Vec3d relativeToActual(Vec3d pos) {
+		assert direction != null && physicalCornerPos != null;
 		return DungeonMapUtils.relativeToActual(direction, physicalCornerPos, pos);
 	}
 
@@ -548,6 +558,7 @@ public class Room implements Tickable, Renderable {
 		}
 
 		synchronized (this) {
+			if (secretWaypoints == null) return;
 			if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
 				for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
 					if (secretWaypoint.shouldRender()) {
@@ -562,6 +573,7 @@ public class Room implements Tickable, Renderable {
 	 * Sets {@link #lastChestSecret} as missing if message equals {@link #LOCKED_CHEST}.
 	 */
 	protected void onChatMessage(String message) {
+		if (secretWaypoints == null) return;
 		if (LOCKED_CHEST.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
 			secretWaypoints.column(lastChestSecret).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
 					.ifPresent(secretWaypoint -> markSecretsAndLogInfo(secretWaypoint, false, "[Skyblocker Dungeon Secrets] Detected locked chest interaction, setting secret #{} as missing", secretWaypoint.secretIndex));
@@ -591,6 +603,7 @@ public class Room implements Tickable, Renderable {
 	 * @see #markSecretsFoundAndLogInfo(SecretWaypoint, String, Object...)
 	 */
 	protected void onUseBlock(World world, BlockPos pos) {
+		if (secretWaypoints == null) return;
 		BlockState state = world.getBlockState(pos);
 		if ((state.isOf(Blocks.CHEST) || state.isOf(Blocks.TRAPPED_CHEST)) && lastChestSecretTime + 1000 < System.currentTimeMillis() || state.isOf(Blocks.PLAYER_HEAD) || state.isOf(Blocks.PLAYER_WALL_HEAD)) {
 			secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).filter(SecretWaypoint::isEnabled).findAny()
@@ -611,9 +624,8 @@ public class Room implements Tickable, Renderable {
 	 * @see #markSecretsFoundAndLogInfo(SecretWaypoint, String, Object...)
 	 */
 	protected void onItemPickup(ItemEntity itemEntity) {
-		if (SecretWaypoint.SECRET_ITEMS.stream().noneMatch(itemEntity.getStack().getName().getString()::contains)) {
-			return;
-		}
+		if (secretWaypoints == null) return;
+		if (SecretWaypoint.SECRET_ITEMS.stream().noneMatch(itemEntity.getStack().getName().getString()::contains)) return;
 		secretWaypoints.values().stream().filter(SecretWaypoint::needsItemPickup).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(itemEntity))).filter(SecretWaypoint.getRangePredicate(itemEntity))
 				.ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected item {} removed from a {} secret, setting secret #{} as found", itemEntity.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
 	}
@@ -625,6 +637,7 @@ public class Room implements Tickable, Renderable {
 	 * @see #markSecretsFoundAndLogInfo(SecretWaypoint, String, Object...)
 	 */
 	protected void onBatRemoved(AmbientEntity bat) {
+		if (secretWaypoints == null) return;
 		secretWaypoints.values().stream().filter(SecretWaypoint::isBat).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(bat))).filter(SecretWaypoint.getRangePredicate(bat))
 				.ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} killed for a {} secret, setting secret #{} as found", bat.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
 	}
@@ -654,6 +667,7 @@ public class Room implements Tickable, Renderable {
 	}
 
 	protected boolean markSecrets(int secretIndex, boolean found) {
+		if (secretWaypoints == null) return false;
 		Map<BlockPos, SecretWaypoint> secret = secretWaypoints.row(secretIndex);
 		if (secret.isEmpty()) {
 			return false;
@@ -670,6 +684,7 @@ public class Room implements Tickable, Renderable {
 	}
 
 	protected int getSecretCount() {
+		if (secretWaypoints == null) return 0;
 		return secretWaypoints.rowMap().size();
 	}
 

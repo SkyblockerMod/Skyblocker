@@ -275,7 +275,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 
 		@Override
-		public int compareTo(@NotNull LeapOverlay.PlayerReference o) {
+		public int compareTo(LeapOverlay.PlayerReference o) {
 			return COMPARATOR.compare(this, o);
 		}
 

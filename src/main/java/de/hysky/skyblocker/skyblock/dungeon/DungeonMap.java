@@ -47,7 +47,7 @@ public class DungeonMap {
 	private static final Identifier DUNGEON_MAP = SkyblockerMod.id("dungeon_map");
 	private static final MapIdComponent DEFAULT_MAP_ID_COMPONENT = new MapIdComponent(1024);
 	private static final MapRenderState MAP_RENDER_STATE = new MapRenderState();
-	private static MapIdComponent cachedMapIdComponent = null;
+	private static @Nullable MapIdComponent cachedMapIdComponent = null;
 
 	@Init
 	public static void init() {
@@ -105,6 +105,7 @@ public class DungeonMap {
 		return hoveredHead;
 	}
 
+	@Nullable
 	public static MapIdComponent getMapIdComponent(ItemStack stack) {
 		if (stack.isOf(Items.FILLED_MAP) && stack.contains(DataComponentTypes.MAP_ID)) {
 			MapIdComponent mapIdComponent = stack.get(DataComponentTypes.MAP_ID);
@@ -180,7 +181,7 @@ public class DungeonMap {
 	}
 
 	public record PlayerRenderState(UUID uuid, String name, Vector2dc mapPos, float deg) {
-		public static PlayerRenderState of(@NotNull World world, @NotNull DungeonPlayerManager.DungeonPlayer dungeonPlayer, @NotNull MapDecoration mapDecoration) {
+		public static PlayerRenderState of(World world, DungeonPlayerManager.DungeonPlayer dungeonPlayer, MapDecoration mapDecoration) {
 			// Use the player entity if it exists, since it gives the most accurate position and rotation
 			PlayerEntity playerEntity = world.getPlayerByUuid(dungeonPlayer.uuid());
 			Vector2dc mapPos = playerEntity != null ? DungeonMapUtils.getMapPosFromPhysical(DungeonManager.getPhysicalEntrancePos(), DungeonManager.getMapEntrancePos(), DungeonManager.getMapRoomSize(), playerEntity.getEntityPos()) : new Vector2d(mapDecoration.x() / 2d + 64, mapDecoration.z() / 2d + 64);

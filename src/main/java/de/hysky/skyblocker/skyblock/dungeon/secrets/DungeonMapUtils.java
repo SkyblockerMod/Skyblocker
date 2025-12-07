@@ -269,6 +269,7 @@ public class DungeonMapUtils {
 		};
 	}
 
+	@Nullable
 	public static Room.Type getRoomType(MapState map, Vector2ic mapPos) {
 		return switch (getColor(map, mapPos)) {
 			case GREEN_COLOR -> Room.Type.ENTRANCE;

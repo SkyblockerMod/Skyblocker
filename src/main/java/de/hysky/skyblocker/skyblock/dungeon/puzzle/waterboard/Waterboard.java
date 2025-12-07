@@ -10,6 +10,7 @@ import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 public class Waterboard {
 	public static final int BOARD_MIN_X = 6;
@@ -54,7 +55,7 @@ public class Waterboard {
 		public final DyeColor color;
 		// Holds positions where the corresponding block is present in the initial state of each variant, offset from the water entrance position
 		// This is more reliable at detecting if the lever is active than looking at the lever's block state
-		public final BlockPos[] initialPositions;
+		public final @Nullable BlockPos[] initialPositions;
 
 		LeverType(Block block, BlockPos leverPos, DyeColor color, BlockPos[] initialPositions) {
 			this.block = block;
@@ -63,6 +64,7 @@ public class Waterboard {
 			this.initialPositions = initialPositions;
 		}
 
+		@Nullable
 		public static LeverType fromName(String name) {
 			for (LeverType leverType : LeverType.values()) {
 				if (leverType.name().equalsIgnoreCase(name)) {
@@ -72,6 +74,7 @@ public class Waterboard {
 			return null;
 		}
 
+		@Nullable
 		public static LeverType fromBlock(Block block) {
 			for (LeverType leverType : LeverType.values()) {
 				if (leverType.block == block) {
@@ -81,6 +84,7 @@ public class Waterboard {
 			return null;
 		}
 
+		@Nullable
 		public static LeverType fromPos(BlockPos leverPos) {
 			for (LeverType leverType : LeverType.values()) {
 				if (leverPos.equals(leverType.leverPos)) {

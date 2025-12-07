@@ -52,6 +52,7 @@ public class PlayerListManager {
 	/**
 	 * The player list in tab.
 	 */
+	@Nullable
 	private static List<PlayerListEntry> playerList = new ArrayList<>(); // Initialize to prevent npe.
 
 	/**
@@ -110,9 +111,10 @@ public class PlayerListManager {
 	 *
 	 * @param lines used for the config screen
 	 */
-	public static void updateDungeons(List<Text> lines) {
+	public static void updateDungeons(@Nullable List<Text> lines) {
 		if (lines != null) {
 			// This is so wack I hate this
+			// I hate this too
 			playerList = new ArrayList<>();
 			for (int i = 0; i < lines.size(); i++) {
 				playerList.add(new PlayerListEntry(new GameProfile(UUID.randomUUID(), String.valueOf(i)), false));
@@ -287,6 +289,7 @@ public class PlayerListManager {
 	/**
 	 * @return the cached player list
 	 */
+	@Nullable
 	public static List<PlayerListEntry> getPlayerList() {
 		return playerList;
 	}
@@ -298,7 +301,7 @@ public class PlayerListManager {
 		return playerStringList;
 	}
 
-	public static void updateFooter(Text f) {
+	public static void updateFooter(@Nullable Text f) {
 		if (f == null) {
 			footer = null;
 		} else {
@@ -320,6 +323,7 @@ public class PlayerListManager {
 	 *
 	 * @return the matcher if p fully matches, else null
 	 */
+	@Nullable
 	public static Matcher regexAt(int idx, Pattern p) {
 
 		String str = PlayerListManager.strAt(idx);
@@ -343,6 +347,7 @@ public class PlayerListManager {
 	 * @return the string or null, if the display name is null, empty or whitespace
 	 * only
 	 */
+	@Nullable
 	public static String strAt(int idx) {
 
 		if (playerList == null) {
@@ -372,6 +377,7 @@ public class PlayerListManager {
 	 * widget and the rift widgets, might not work correctly without
 	 * modification for other stuff. you've been warned!
 	 */
+	@Nullable
 	public static Text textAt(int idx) {
 
 		if (playerList == null) {
