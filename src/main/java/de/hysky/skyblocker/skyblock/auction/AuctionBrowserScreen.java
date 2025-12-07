@@ -247,12 +247,12 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 				}
 			}
 			case SORT_BUTTON_SLOT ->
-					sortWidget.setCurrent(SortWidget.Option.get(getOrdinal(ItemUtils.getLore(stack))));
+					sortWidget.setCurrent(SortWidget.Option.get(getOrdinal(stack.skyblocker$getLoreString())));
 			case AUCTION_TYPE_BUTTON_SLOT ->
-					auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(ItemUtils.getLore(stack))));
+					auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(stack.skyblocker$getLoreString())));
 			case RARITY_BUTTON_SLOT -> {
+				int ordinal = getOrdinal(stack.skyblocker$getLoreString());
 				List<Text> tooltip = ItemUtils.getLore(stack);
-				int ordinal = getOrdinal(tooltip);
 				String split = tooltip.get(ordinal + 1).getString().substring(2);
 				rarityWidget.setText(tooltip.subList(1, tooltip.size() - 3), split);
 			}
@@ -261,9 +261,8 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 					resetFiltersButton.active = handler.getSlot(slotId).getStack().isOf(Items.ANVIL);
 			}
 			case SEARCH_BUTTON_SLOT -> {
-				List<Text> tooltipSearch = ItemUtils.getLore(stack);
-				for (Text text : tooltipSearch) {
-					String string = text.getString();
+				List<String> tooltipSearch = stack.skyblocker$getLoreString();
+				for (String string : tooltipSearch) {
 					if (string.contains("Filtered:")) {
 						String[] splitSearch = string.split(":");
 						if (splitSearch.length < 2) {
@@ -278,9 +277,9 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 					CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(slotId / 9);
 					categoryTabWidget.setSlotId(slotId);
 					categoryTabWidget.setIcon(handler.getSlot(slotId).getStack());
-					List<Text> tooltipDefault = ItemUtils.getLore(handler.getSlot(slotId).getStack());
+					List<String> tooltipDefault = handler.getSlot(slotId).getStack().skyblocker$getLoreString();
 					for (int j = tooltipDefault.size() - 1; j >= 0; j--) {
-						String lowerCase = tooltipDefault.get(j).getString().toLowerCase(Locale.ENGLISH);
+						String lowerCase = tooltipDefault.get(j).toLowerCase(Locale.ENGLISH);
 						if (lowerCase.contains("currently")) {
 							categoryTabWidget.setToggled(true);
 							break;
@@ -291,10 +290,9 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 					}
 				} else if (slotId > 9 && slotId < (handler.getRows() - 1) * 9 && slotId % 9 > 1 && slotId % 9 < 8) {
 					if (!SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN) return;
-					List<Text> tooltip = ItemUtils.getLore(stack);
+					List<String> tooltip = stack.skyblocker$getLoreString();
 					for (int k = tooltip.size() - 1; k >= 0; k--) {
-						Text text = tooltip.get(k);
-						String string = text.getString();
+						String string = tooltip.get(k);
 						if (string.toLowerCase(Locale.ENGLISH).contains("buy it now:")) {
 							String[] split = string.split(":");
 							if (split.length < 2) continue;
@@ -326,11 +324,11 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 		return super.keyPressed(input);
 	}
 
-	private static int getOrdinal(List<Text> tooltip) {
+	private static int getOrdinal(List<String> tooltip) {
 		int ordinal = 0;
 		for (int j = 0; j < tooltip.size() - 4; j++) {
 			if (j + 1 >= tooltip.size()) break;
-			if (tooltip.get(j + 1).getString().contains("▶")) {
+			if (tooltip.get(j + 1).contains("▶")) {
 				ordinal = j;
 				break;
 			}
@@ -346,8 +344,8 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	private void parsePage(ItemStack stack) {
 		assert client != null;
 		try {
-			List<Text> tooltip = ItemUtils.getLore(stack);
-			String str = tooltip.getFirst().getString().trim();
+			List<String> tooltip = stack.skyblocker$getLoreString();
+			String str = tooltip.getFirst().trim();
 			str = str.substring(1, str.length() - 1); // remove parentheses
 			String[] parts = str.split("/"); // split the string
 			currentPage = Integer.parseInt(parts[0].replace(",", "")); // parse current page

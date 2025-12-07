@@ -32,6 +32,7 @@ import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 @Mixin(ItemStack.class)
@@ -50,6 +51,9 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@Unique
 	private String uuid;
+
+	@Unique
+	private List<String> loreString;
 
 	@Unique
 	private PetInfo petInfo;
@@ -113,9 +117,10 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 		skyblocker$getAndCacheDurability();
 	}
 
-	@Inject(method = "set", at = @At("TAIL"))
+	@Inject(method = "set*", at = @At("TAIL"))
 	private <T> void skyblocker$resetUuid(ComponentType<T> type, @Nullable T value, CallbackInfoReturnable<T> cir) {
 		if (type == DataComponentTypes.CUSTOM_DATA) uuid = null;
+		if (type == DataComponentTypes.LORE) loreString = null;
 	}
 
 	@Unique
@@ -170,6 +175,14 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	public String getUuid() {
 		if (uuid != null) return uuid;
 		return uuid = ItemUtils.getItemUuid(this);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	@NotNull
+	public List<String> skyblocker$getLoreString() {
+		if (loreString != null) return loreString;
+		return loreString = ItemUtils.getLore((ItemStack) (Object) this).stream().map(Text::getString).toList();
 	}
 
 	@SuppressWarnings("deprecation")
