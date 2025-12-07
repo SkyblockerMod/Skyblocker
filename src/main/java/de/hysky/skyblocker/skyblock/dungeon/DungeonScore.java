@@ -397,8 +397,7 @@ public class DungeonScore {
 		M5(100, 480),
 		M6(100, 600),
 		M7(100, 840),
-		NONE(0, 0),
-		;
+		NONE(0, 0);
 
 		private final int percentage;
 		private final int timeLimit;
