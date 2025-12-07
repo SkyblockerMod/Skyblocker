@@ -21,7 +21,9 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2ic;
 import org.slf4j.Logger;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -39,8 +41,9 @@ public class SecretSync {
 	}
 
 	public static boolean checkSender(UUID uuid) {
-		if (CLIENT.world == null) return false;
-		if (CLIENT.world.getPlayerByUuid(uuid) != null) return true;
+		if (Arrays.stream(DungeonPlayerManager.getPlayers()).filter(Objects::nonNull).anyMatch(player -> uuid.equals(player.uuid()))) {
+			return true;
+		}
 		LOGGER.error("[Skyblocker Dungeon Secret Sync] Received a message from a player not in the Dungeons run: {}", uuid);
 		return false;
 	}
