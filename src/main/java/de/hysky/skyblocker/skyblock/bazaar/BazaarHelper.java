@@ -59,8 +59,8 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 
 		Matcher matcher = ItemUtils.getLoreLineIfMatch(item, FILLED_PATTERN);
 		if (matcher != null) {
-			List<Text> lore = ItemUtils.getLore(item);
-			if (!lore.isEmpty() && lore.getLast().getString().equals("Click to claim!")) { //Only show the filled icon when there are items to claim
+			List<String> lore = item.skyblocker$getLoreStrings();
+			if (!lore.isEmpty() && lore.getLast().equals("Click to claim!")) { //Only show the filled icon when there are items to claim
 				int filled = NumberUtils.toInt(matcher.group(1));
 				return SlotText.topLeftList(getFilledIcon(filled));
 			}
