@@ -66,13 +66,13 @@ public class ChestValue {
 	/**
 	 * Pattern to match the essence count from Croesus tooltips or the chest menus.
 	 *
-	 * Note: Essence within the Croesus tooltip won't list the amount if you only got one essence.
+	 * <p>Note: Essence within the Croesus tooltip won't list the amount if you only got one essence.
 	 */
 	public static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence(?: x(?<amount>\\d+))?");
 	/**
 	 * Pattern to match shards from the Croesus tooltips and in the chest menus.
 	 *
-	 * Note: Shards within the Croesus tooltip won't list the amount if you only got one shard.
+	 * <p>Note: Shards within the Croesus tooltip won't list the amount if you only got one shard.
 	 */
 	public static final Pattern SHARD_PATTERN = Pattern.compile("[A-Za-z ]+ Shard(?: x(?<amount>\\d+))?");
 	/** Pattern to match Kuudra Teeth. Only needed for Croesus profit. */
@@ -162,7 +162,7 @@ public class ChestValue {
 
 						// Apply Kuudra Pet bonus
 						if (type.equals("CRIMSON")) {
-							amount *= computeCrimsonEssenceMultiplier();
+							amount = (int) (amount * computeCrimsonEssenceMultiplier());
 						}
 
 						//Add the price of the essence to the profit
@@ -255,9 +255,8 @@ public class ChestValue {
 			case SkyblockItemRarity.EPIC, SkyblockItemRarity.LEGENDARY -> 20f;
 			default -> 10f;
 		} * (kuudraPet.level() / 100f);
-		float multiplier = (percentBonus / 100f) + 1f;
 
-		return multiplier;
+		return percentBonus / 100f + 1f;
 	}
 
 	public static DoubleBooleanPair computeKuudraKeyPrice(String kuudraKeyName) {
