@@ -47,7 +47,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.Codecs;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -407,12 +408,27 @@ public final class ItemUtils {
 	}
 
 	/**
+	 * Gets the first line of the lore that contains the specified substring.
+	 * @return The first line of the lore that contains the substring, or {@code null} if no line contains the substring.
+	 */
+	@Nullable
+	public static String getLoreLineContains(ItemStack stack, String substring) {
+		for (String line : stack.skyblocker$getLoreStrings()) {
+			if (line.contains(substring)) {
+				return line;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Gets the first line of the lore that matches the specified predicate.
 	 * @return The first line of the lore that matches the predicate, or {@code null} if no line matches.
 	 */
 	@Nullable
 	public static String getLoreLineIf(ItemStack stack, Predicate<String> predicate) {
-		for (String line : stack.skyblocker$getLoreString()) {
+		for (String line : stack.skyblocker$getLoreStrings()) {
 			if (predicate.test(line)) {
 				return line;
 			}
@@ -427,7 +443,7 @@ public final class ItemUtils {
 	 */
 	@Nullable
 	public static Matcher getLoreLineIfMatch(ItemStack stack, Pattern pattern) {
-		return RegexListUtils.matchInList(stack.skyblocker$getLoreString(), pattern);
+		return RegexListUtils.matchInList(stack.skyblocker$getLoreStrings(), pattern);
 	}
 
 	/**
@@ -435,7 +451,7 @@ public final class ItemUtils {
 	 * @see RegexListUtils#matchInList(List, Pattern...)
 	 */
 	public static List<Matcher> getLoreLineIfMatch(ItemStack stack, Pattern... patterns) {
-		return RegexListUtils.matchInList(stack.skyblocker$getLoreString(), patterns);
+		return RegexListUtils.matchInList(stack.skyblocker$getLoreStrings(), patterns);
 	}
 
 	/**
@@ -446,11 +462,11 @@ public final class ItemUtils {
 	 */
 	@Nullable
 	public static Matcher getLoreLineIfContainsMatch(ItemStack stack, Pattern pattern) {
-		return RegexListUtils.findInList(stack.skyblocker$getLoreString(), pattern);
+		return RegexListUtils.findInList(stack.skyblocker$getLoreStrings(), pattern);
 	}
 
 	/**
-	 * @deprecated Consider using {@link ItemStack#skyblocker$getLoreString()} which caches text to string conversions.
+	 * @deprecated Consider using {@link ItemStack#skyblocker$getLoreStrings()} which caches text to string conversions.
 	 */
 	@Deprecated
 	public static @NotNull List<Text> getLore(ItemStack stack) {
@@ -468,6 +484,7 @@ public final class ItemUtils {
 		if (profile == null) return "";
 
 		return profile.getGameProfile().properties().get("textures").stream()
+				.filter(Objects::nonNull)
 				.map(Property::value)
 				.findFirst()
 				.orElse("");
@@ -561,7 +578,7 @@ public final class ItemUtils {
 	@NotNull
 	public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<String> lines, boolean isLore) {
 		// Gemstones sack is a special case, it has a different 2nd line.
-		if (lines.size() < 2 || !StringUtils.endsWithAny(lines.get(isLore ? 0 : 1), "Sack", "Gemstones")) {
+		if (lines.size() < 2 || !Strings.CS.endsWithAny(lines.get(isLore ? 0 : 1), "Sack", "Gemstones")) {
 			return OptionalInt.empty();
 		}
 

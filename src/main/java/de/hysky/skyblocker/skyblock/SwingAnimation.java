@@ -10,7 +10,7 @@ public class SwingAnimation {
 
 	public static boolean hasAbility(ItemStack stack) {
 		if (stack.isEmpty()) return false;
-		var lore = stack.skyblocker$getLoreString();
+		var lore = stack.skyblocker$getLoreStrings();
 		for (var line : lore) {
 			if (ABILITY.matcher(line.trim().toLowerCase(Locale.ENGLISH)).matches())
 				return true;

@@ -29,7 +29,7 @@ public class RaffleTaskHighlight extends SimpleContainerSolver {
 		for (Entry<ItemStack> entry : set) {
 			ItemStack itemStack = entry.getValue();
 			if (!itemStack.isOf(Items.PAPER) && !itemStack.isOf(Items.MAP) && !itemStack.isOf(Items.FILLED_MAP)) continue;
-			List<String> lore = itemStack.skyblocker$getLoreString();
+			List<String> lore = itemStack.skyblocker$getLoreStrings();
 			if (lore.isEmpty()) continue;
 			switch (lore.getLast()) {
 				case "COMPLETE" -> highlights.add(ColorHighlight.green(entry.getIntKey()));

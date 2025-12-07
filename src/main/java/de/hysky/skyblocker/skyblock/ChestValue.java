@@ -66,13 +66,13 @@ public class ChestValue {
 	/**
 	 * Pattern to match the essence count from Croesus tooltips or the chest menus.
 	 *
-	 * Note: Essence within the Croesus tooltip won't list the amount if you only got one essence.
+	 * <p>Note: Essence within the Croesus tooltip won't list the amount if you only got one essence.
 	 */
 	public static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence(?: x(?<amount>\\d+))?");
 	/**
 	 * Pattern to match shards from the Croesus tooltips and in the chest menus.
 	 *
-	 * Note: Shards within the Croesus tooltip won't list the amount if you only got one shard.
+	 * <p>Note: Shards within the Croesus tooltip won't list the amount if you only got one shard.
 	 */
 	public static final Pattern SHARD_PATTERN = Pattern.compile("[A-Za-z ]+ Shard(?: x(?<amount>\\d+))?");
 	/** Pattern to match Kuudra Teeth. Only needed for Croesus profit. */
@@ -162,7 +162,7 @@ public class ChestValue {
 
 						// Apply Kuudra Pet bonus
 						if (type.equals("CRIMSON")) {
-							amount *= computeCrimsonEssenceMultiplier();
+							amount = (int) (amount * computeCrimsonEssenceMultiplier());
 						}
 
 						//Add the price of the essence to the profit
@@ -225,7 +225,7 @@ public class ChestValue {
 
 				//Determine if a kismet was used or not
 				if (name.contains("Reroll Chest")) {
-					usedKismet = !StringUtils.isBlank(searchLoreFor(stack, "You already rerolled a chest!"));
+					usedKismet = !StringUtils.isBlank(ItemUtils.getLoreLineContains(stack, "You already rerolled a chest!"));
 				}
 			}
 
@@ -255,9 +255,8 @@ public class ChestValue {
 			case SkyblockItemRarity.EPIC, SkyblockItemRarity.LEGENDARY -> 20f;
 			default -> 10f;
 		} * (kuudraPet.level() / 100f);
-		float multiplier = (percentBonus / 100f) + 1f;
 
-		return multiplier;
+		return percentBonus / 100f + 1f;
 	}
 
 	public static DoubleBooleanPair computeKuudraKeyPrice(String kuudraKeyName) {
@@ -330,7 +329,7 @@ public class ChestValue {
 
 				int count = switch (screenType) {
 					case ScreenType.SACK -> {
-						List<String> lines = stack.skyblocker$getLoreString();
+						List<String> lines = stack.skyblocker$getLoreStrings();
 						yield ItemUtils.getItemCountInSack(stack, lines, true).orElse(0); // If this is in a sack and the item is not a stored item, we can just skip it
 					}
 					case ScreenType.STASH -> ItemUtils.getItemCountInStash(stack).orElse(0);
@@ -362,13 +361,6 @@ public class ChestValue {
 			int y = slot.id / 9;
 			return x > 2 && x < 8 && y > 1 && y < 5 || slot.id == 28;
 		}).toList();
-	}
-
-	/**
-	 * Searches for a specific string of characters in the name and lore of an item
-	 */
-	private static String searchLoreFor(ItemStack stack, String searchString) {
-		return ItemUtils.getLoreLineIf(stack, line -> line.contains(searchString));
 	}
 
 	static Text getProfitText(long profit, boolean hasIncompleteData) {

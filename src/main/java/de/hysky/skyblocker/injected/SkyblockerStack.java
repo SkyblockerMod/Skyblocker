@@ -28,7 +28,7 @@ public interface SkyblockerStack {
 	}
 
 	@NotNull
-	default List<String> skyblocker$getLoreString() {
+	default List<String> skyblocker$getLoreStrings() {
 		return List.of();
 	}
 

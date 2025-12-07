@@ -247,11 +247,11 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 				}
 			}
 			case SORT_BUTTON_SLOT ->
-					sortWidget.setCurrent(SortWidget.Option.get(getOrdinal(stack.skyblocker$getLoreString())));
+					sortWidget.setCurrent(SortWidget.Option.get(getOrdinal(stack.skyblocker$getLoreStrings())));
 			case AUCTION_TYPE_BUTTON_SLOT ->
-					auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(stack.skyblocker$getLoreString())));
+					auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(stack.skyblocker$getLoreStrings())));
 			case RARITY_BUTTON_SLOT -> {
-				int ordinal = getOrdinal(stack.skyblocker$getLoreString());
+				int ordinal = getOrdinal(stack.skyblocker$getLoreStrings());
 				List<Text> tooltip = ItemUtils.getLore(stack);
 				String split = tooltip.get(ordinal + 1).getString().substring(2);
 				rarityWidget.setText(tooltip.subList(1, tooltip.size() - 3), split);
@@ -261,7 +261,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 					resetFiltersButton.active = handler.getSlot(slotId).getStack().isOf(Items.ANVIL);
 			}
 			case SEARCH_BUTTON_SLOT -> {
-				List<String> tooltipSearch = stack.skyblocker$getLoreString();
+				List<String> tooltipSearch = stack.skyblocker$getLoreStrings();
 				for (String string : tooltipSearch) {
 					if (string.contains("Filtered:")) {
 						String[] splitSearch = string.split(":");
@@ -277,7 +277,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 					CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(slotId / 9);
 					categoryTabWidget.setSlotId(slotId);
 					categoryTabWidget.setIcon(handler.getSlot(slotId).getStack());
-					List<String> tooltipDefault = handler.getSlot(slotId).getStack().skyblocker$getLoreString();
+					List<String> tooltipDefault = handler.getSlot(slotId).getStack().skyblocker$getLoreStrings();
 					for (int j = tooltipDefault.size() - 1; j >= 0; j--) {
 						String lowerCase = tooltipDefault.get(j).toLowerCase(Locale.ENGLISH);
 						if (lowerCase.contains("currently")) {
@@ -290,7 +290,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 					}
 				} else if (slotId > 9 && slotId < (handler.getRows() - 1) * 9 && slotId % 9 > 1 && slotId % 9 < 8) {
 					if (!SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN) return;
-					List<String> tooltip = stack.skyblocker$getLoreString();
+					List<String> tooltip = stack.skyblocker$getLoreStrings();
 					for (int k = tooltip.size() - 1; k >= 0; k--) {
 						String string = tooltip.get(k);
 						if (string.toLowerCase(Locale.ENGLISH).contains("buy it now:")) {
@@ -344,7 +344,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	private void parsePage(ItemStack stack) {
 		assert client != null;
 		try {
-			List<String> tooltip = stack.skyblocker$getLoreString();
+			List<String> tooltip = stack.skyblocker$getLoreStrings();
 			String str = tooltip.getFirst().trim();
 			str = str.substring(1, str.length() - 1); // remove parentheses
 			String[] parts = str.split("/"); // split the string
