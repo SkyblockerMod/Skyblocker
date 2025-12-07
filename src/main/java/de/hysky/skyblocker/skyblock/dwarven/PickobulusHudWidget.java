@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import java.util.Set;
 public class PickobulusHudWidget extends ComponentBasedWidget {
 	private static final MutableText TITLE = Text.literal("Pickobulus").formatted(Formatting.BLUE, Formatting.BOLD);
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.PRIVATE_ISLAND, Location.GOLD_MINE, Location.DEEP_CAVERNS, Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
+	@Nullable
 	private static PickobulusHudWidget instance;
 
 	public PickobulusHudWidget() {
