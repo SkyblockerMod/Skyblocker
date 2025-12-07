@@ -14,7 +14,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 public class ConsumableProtection {
-	private static final Set<String> PROTECTED_CONSUMABLES = Set.of("NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE");
+	private static final Set<String> PROTECTED_CONSUMABLES = Set.of("NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE", "MOBY_DUCK");
 
 	@Init
 	public static void init() {
