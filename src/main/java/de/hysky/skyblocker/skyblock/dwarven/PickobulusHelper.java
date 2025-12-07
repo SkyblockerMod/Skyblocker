@@ -96,11 +96,16 @@ public class PickobulusHelper {
 	private static final float[] LIGHT_BLUE = ColorUtils.getFloatComponents(DyeColor.LIGHT_BLUE);
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 
+	private static boolean shouldRender;
 	@Nullable
 	private static Text errorMessage;
 	private static final BlockState[][][] blocks = new BlockState[8][8][8];
 	private static final Set<BlockPos> breakBlocks = new HashSet<>();
 	private static final int[] drops = new int[MiningDrop.values().length];
+
+	public static boolean shouldRender() {
+		return shouldRender;
+	}
 
 	@Nullable
 	public static Text getErrorMessage() {
@@ -124,6 +129,7 @@ public class PickobulusHelper {
 	private static void update() {
 		if (!SkyblockerConfigManager.get().mining.enablePickobulusHelper) return;
 
+		shouldRender = true;
 		errorMessage = null;
 		breakBlocks.clear();
 		Arrays.fill(drops, 0);
@@ -133,7 +139,8 @@ public class PickobulusHelper {
 			return;
 		}
 
-		if (ItemUtils.getLoreLineIf(client.player.getMainHandStack(), s -> s.contains("Ability: Pickobulus")) == null) {
+		if (ItemUtils.getLoreLineContains(client.player.getMainHandStack(), "Ability: Pickobulus") == null) {
+			shouldRender = false;
 			errorMessage = Text.literal("Not holding a tool with pickobulus").formatted(Formatting.RED);
 			return;
 		}
