@@ -408,6 +408,21 @@ public final class ItemUtils {
 	}
 
 	/**
+	 * Gets the first line of the lore that contains the specified substring.
+	 * @return The first line of the lore that contains the substring, or {@code null} if no line contains the substring.
+	 */
+	@Nullable
+	public static String getLoreLineContains(ItemStack stack, String substring) {
+		for (String line : stack.skyblocker$getLoreStrings()) {
+			if (line.contains(substring)) {
+				return line;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Gets the first line of the lore that matches the specified predicate.
 	 * @return The first line of the lore that matches the predicate, or {@code null} if no line matches.
 	 */

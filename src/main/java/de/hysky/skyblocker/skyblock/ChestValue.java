@@ -225,7 +225,7 @@ public class ChestValue {
 
 				//Determine if a kismet was used or not
 				if (name.contains("Reroll Chest")) {
-					usedKismet = !StringUtils.isBlank(searchLoreFor(stack, "You already rerolled a chest!"));
+					usedKismet = !StringUtils.isBlank(ItemUtils.getLoreLineContains(stack, "You already rerolled a chest!"));
 				}
 			}
 
@@ -361,13 +361,6 @@ public class ChestValue {
 			int y = slot.id / 9;
 			return x > 2 && x < 8 && y > 1 && y < 5 || slot.id == 28;
 		}).toList();
-	}
-
-	/**
-	 * Searches for a specific string of characters in the name and lore of an item
-	 */
-	private static String searchLoreFor(ItemStack stack, String searchString) {
-		return ItemUtils.getLoreLineIf(stack, line -> line.contains(searchString));
 	}
 
 	static Text getProfitText(long profit, boolean hasIncompleteData) {
