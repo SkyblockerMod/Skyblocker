@@ -330,7 +330,7 @@ public class ChestValue {
 
 				int count = switch (screenType) {
 					case ScreenType.SACK -> {
-						List<String> lines = stack.skyblocker$getLoreString();
+						List<String> lines = stack.skyblocker$getLoreStrings();
 						yield ItemUtils.getItemCountInSack(stack, lines, true).orElse(0); // If this is in a sack and the item is not a stored item, we can just skip it
 					}
 					case ScreenType.STASH -> ItemUtils.getItemCountInStash(stack).orElse(0);

@@ -54,7 +54,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 		try {
 			double totalCraftCost = getItemCost(recipe, 0);
 			if (totalCraftCost <= 0) return;
-			int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreString()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
+			int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreStrings()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
 			recipe.getAllOutputs().stream().findFirst().ifPresent(outputIngredient ->
 					lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)

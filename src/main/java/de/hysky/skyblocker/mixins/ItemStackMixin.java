@@ -180,7 +180,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	@SuppressWarnings("deprecation")
 	@Override
 	@NotNull
-	public List<String> skyblocker$getLoreString() {
+	public List<String> skyblocker$getLoreStrings() {
 		if (loreString != null) return loreString;
 		return loreString = ItemUtils.getLore((ItemStack) (Object) this).stream().map(Text::getString).toList();
 	}

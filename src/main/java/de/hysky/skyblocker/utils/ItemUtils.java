@@ -412,7 +412,7 @@ public final class ItemUtils {
 	 */
 	@Nullable
 	public static String getLoreLineIf(ItemStack stack, Predicate<String> predicate) {
-		for (String line : stack.skyblocker$getLoreString()) {
+		for (String line : stack.skyblocker$getLoreStrings()) {
 			if (predicate.test(line)) {
 				return line;
 			}
@@ -427,7 +427,7 @@ public final class ItemUtils {
 	 */
 	@Nullable
 	public static Matcher getLoreLineIfMatch(ItemStack stack, Pattern pattern) {
-		return RegexListUtils.matchInList(stack.skyblocker$getLoreString(), pattern);
+		return RegexListUtils.matchInList(stack.skyblocker$getLoreStrings(), pattern);
 	}
 
 	/**
@@ -435,7 +435,7 @@ public final class ItemUtils {
 	 * @see RegexListUtils#matchInList(List, Pattern...)
 	 */
 	public static List<Matcher> getLoreLineIfMatch(ItemStack stack, Pattern... patterns) {
-		return RegexListUtils.matchInList(stack.skyblocker$getLoreString(), patterns);
+		return RegexListUtils.matchInList(stack.skyblocker$getLoreStrings(), patterns);
 	}
 
 	/**
@@ -446,11 +446,11 @@ public final class ItemUtils {
 	 */
 	@Nullable
 	public static Matcher getLoreLineIfContainsMatch(ItemStack stack, Pattern pattern) {
-		return RegexListUtils.findInList(stack.skyblocker$getLoreString(), pattern);
+		return RegexListUtils.findInList(stack.skyblocker$getLoreStrings(), pattern);
 	}
 
 	/**
-	 * @deprecated Consider using {@link ItemStack#skyblocker$getLoreString()} which caches text to string conversions.
+	 * @deprecated Consider using {@link ItemStack#skyblocker$getLoreStrings()} which caches text to string conversions.
 	 */
 	@Deprecated
 	public static @NotNull List<Text> getLore(ItemStack stack) {

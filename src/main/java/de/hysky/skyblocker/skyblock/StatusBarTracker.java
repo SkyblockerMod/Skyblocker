@@ -92,7 +92,7 @@ public class StatusBarTracker {
 		ItemStack handStack = client.player.getMainHandStack();
 		int manaCost = 0;
 		boolean foundRightClick = false;
-		for (String text : handStack.skyblocker$getLoreString()) {
+		for (String text : handStack.skyblocker$getLoreStrings()) {
 			Matcher matcher;
 			if (foundRightClick && (matcher = MANA_LORE.matcher(text)).matches()) {
 				manaCost = RegexUtils.parseIntFromMatcher(matcher, 1);
