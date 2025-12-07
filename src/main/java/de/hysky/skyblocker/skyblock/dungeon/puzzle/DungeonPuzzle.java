@@ -11,7 +11,6 @@ import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.render.Renderable;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
