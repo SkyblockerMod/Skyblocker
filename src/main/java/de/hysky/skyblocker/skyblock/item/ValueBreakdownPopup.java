@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -13,6 +14,7 @@ import io.github.moulberry.repo.data.NEUItem;
 import net.azureaaron.networth.Calculation;
 import net.azureaaron.networth.NetworthResult;
 import net.azureaaron.networth.utils.ItemConstants;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.MinecraftClient;
@@ -25,6 +27,7 @@ import net.minecraft.client.gui.widget.EmptyWidget;
 import net.minecraft.client.gui.widget.MultilineTextWidget;
 import net.minecraft.client.gui.widget.Positioner;
 import net.minecraft.client.gui.widget.ScrollableLayoutWidget;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
@@ -42,6 +45,11 @@ import java.util.function.Function;
 
 public class ValueBreakdownPopup extends AbstractPopupScreen {
 	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final KeyBinding KEY_BINDING = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+			"key.skyblocker.valueBreadownPopup",
+			GLFW.GLFW_KEY_I,
+			SkyblockerMod.KEYBINDING_CATEGORY
+	));
 
 	private static final Function<String, Text> EMPTY = s -> Text.empty();
 	private static final Function<String, Text> ITEM_NAME = s -> {
@@ -215,7 +223,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (screen instanceof HandledScreen<?> handledScreen) {
 				ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key) -> {
-					if (key.key() != GLFW.GLFW_KEY_I) return;
+					if (!KEY_BINDING.matchesKey(key)) return;
 					Slot slot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
 					if (slot == null || !slot.hasStack()) return;
 					NetworthResult networth = NetworthCalculator.getItemNetworth(slot.getStack());
