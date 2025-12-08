@@ -1701,6 +1701,12 @@
 
   "skyblocker.utils.locationUpdateError": "Failed to update your location! Some features of the mod may not work properly :(",
 
+  "skyblocker.valueBreakdownPopup": "Skyblocker Estimated Value Breakdown",
+  "skyblocker.valueBreakdownPopup.baseItemPrice": "Base item price: %s",
+  "skyblocker.valueBreakdownPopup.coins": "%s coins",
+  "skyblocker.valueBreakdownPopup.total": "Total: %s",
+  "skyblocker.valueBreakdownPopup.totalPricePercent": "%s%% of total price",
+
   "skyblocker.waypoints.chat.display": "Click to display waypoint at x: %s y: %s z: %s",
   "skyblocker.waypoints.chat.displayed": "Displayed temporary waypoint at x: %s y: %s z: %s %s",
   "skyblocker.waypoints.config": "Waypoints Config",

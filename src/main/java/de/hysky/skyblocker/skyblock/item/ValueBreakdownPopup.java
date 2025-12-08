@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.TextTransformer;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import io.github.moulberry.repo.data.NEUItem;
@@ -221,6 +222,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	@Init
 	public static void initClass() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+			if (!Utils.isOnSkyblock()) return;
 			if (screen instanceof HandledScreen<?> handledScreen) {
 				ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key) -> {
 					if (!KEY_BINDING.matchesKey(key)) return;
@@ -234,7 +236,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	}
 
 	protected ValueBreakdownPopup(Screen backgroundScreen, NetworthResult networthResult) {
-		super(Text.empty(), backgroundScreen);
+		super(Text.translatable("skyblocker.valueBreakdownPopup"), backgroundScreen);
 		this.networthResult = networthResult;
 
 		this.map = new EnumMap<>(Calculation.Type.class);
@@ -246,7 +248,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	@Override
 	protected void init() {
 		DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
-		layout.add(createTextWidget(Text.literal("Base Item Price: ").append(getCoinsText(networthResult.base(), networthResult.price())), textRenderer));
+		layout.add(createTextWidget(Text.translatable("skyblocker.valueBreakdownPopup.baseItemPrice", getCoinsText(networthResult.base(), networthResult.price())), textRenderer));
 		for (Map.Entry<Calculation.Type, List<Calculation>> entry : map.entrySet()) {
 			LayoutAppender appender = FORMATTERS.get(entry.getKey());
 			if (appender == EMPTY_APPENDER) continue;
@@ -257,11 +259,11 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 			}
 			layout.add(createTextWidget(Text.literal(entry.getKey().toString()), textRenderer));
 			for (Calculation calculation : entry.getValue()) {
-				layout.add(createTextWidget(Text.literal(calculation.id() + ": " + calculation.price() + " coins"), textRenderer), p -> p.marginLeft(20));
+				layout.add(createTextWidget(Text.literal(calculation.id() + ": ").append(getCoinsText(calculation.price())), textRenderer), p -> p.marginLeft(20));
 			}
 		}
 		layout.add(EmptyWidget.ofHeight(10));
-		layout.add(createTextWidget(Text.literal("Total: ").append(getCoinsText(networthResult.price())), textRenderer), Positioner::alignRight);
+		layout.add(createTextWidget(Text.translatable("skyblocker.valueBreakdownPopup.total", getCoinsText(networthResult.price())), textRenderer), Positioner::alignRight);
 		scrollable = new ScrollableLayoutWidget(client, layout, 300);
 		scrollable.setHeight(200);
 		scrollable.forEachChild(this::addDrawableChild);
@@ -276,6 +278,12 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	}
 
 	@Override
+	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		super.render(context, mouseX, mouseY, deltaTicks);
+		context.drawCenteredTextWithShadow(textRenderer, title, width / 2, 15, -1);
+	}
+
+	@Override
 	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.renderBackground(context, mouseX, mouseY, delta);
 		drawPopupBackground(context, scrollable.getX(), scrollable.getY(), scrollable.getWidth(), scrollable.getHeight());
@@ -286,9 +294,9 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	}
 
 	private static Text getCoinsText(double price, double totalPrice) {
-		MutableText text = Text.literal(Formatters.FLOAT_NUMBERS.format(price) + " coins").formatted(Formatting.GOLD);
+		MutableText text = Text.translatable("skyblocker.valueBreakdownPopup.coins", Formatters.FLOAT_NUMBERS.format(price)).formatted(Formatting.GOLD);
 		if (totalPrice > 0) {
-			text.fillStyle(Style.EMPTY.withHoverEvent(new HoverEvent.ShowText(Text.literal(Formatters.FLOAT_NUMBERS.format(price / totalPrice * 100) + "% of total price"))));
+			text.fillStyle(Style.EMPTY.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.valueBreakdownPopup.totalPricePercent", Formatters.FLOAT_NUMBERS.format(price / totalPrice * 100)))));
 		}
 		return text;
 	}
@@ -346,7 +354,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 				total += calc.price();
 				layout.add(createTextWidget(empty, textRenderer), p -> p.marginLeft(15));
 			}
-			layout.add(createTextWidget(Text.literal("Total: ").append(getCoinsText(total, networthResult.price())), textRenderer), p -> p.marginLeft(10));
+			layout.add(createTextWidget(Text.translatable("skyblocker.valueBreakdownPopup.total", getCoinsText(total, networthResult.price())), textRenderer), p -> p.marginLeft(10));
 		}
 	}
 }
