@@ -38,6 +38,8 @@ public abstract class AbstractCustomHypixelGUI<T extends ScreenHandler> extends 
 	}
 
 	protected void refreshListener() {
+		// Ensure this listener is added, because listeners are removed on screen removal.
+		// This ensures this listener is added after a popup has been closed.
 		handler.removeListener(this);
 		handler.addListener(this);
 	}
