@@ -81,6 +81,16 @@ public class HelperCategory {
 								newValue -> config.helpers.enableBuildersWandPreview = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				// Anvil Helper
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.enableAnvilHelper"))
+						.description(Text.translatable("skyblocker.config.helpers.enableAnvilHelper.@Tooltip"))
+						.binding(defaults.helpers.enableAnvilHelper,
+								() -> config.helpers.enableAnvilHelper,
+								newValue -> config.helpers.enableAnvilHelper = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+
 				//Mythological Ritual
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.helpers.mythologicalRitual"))

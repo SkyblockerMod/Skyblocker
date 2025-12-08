@@ -613,6 +613,9 @@
   "skyblocker.config.helpers.chocolateFactory.straySound": "Stray Rabbit Sound",
   "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "Repeatedly plays a ding while a stray rabbit is present. If it is golden, the sound will be more frequent and different.",
 
+  "skyblocker.config.helpers.enableAnvilHelper": "Enable Anvil Helper",
+  "skyblocker.config.helpers.enableAnvilHelper.@Tooltip": "Displays a warning when combining enchantments of different levels.",
+
   "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
   "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip.",
 
