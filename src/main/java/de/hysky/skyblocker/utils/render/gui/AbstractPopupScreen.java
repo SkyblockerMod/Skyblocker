@@ -30,7 +30,7 @@ public class AbstractPopupScreen extends Screen {
 
 	@Override
 	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.backgroundScreen.renderBackground(context, mouseX, mouseY, delta);
+		this.backgroundScreen.renderBackground(context, -1, -1, delta);
 		context.createNewRootLayer();
 		this.backgroundScreen.render(context, -1, -1, delta);
 		context.createNewRootLayer();
