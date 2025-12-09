@@ -30,10 +30,10 @@ public class DungeonBlaze extends DungeonPuzzle {
 	@SuppressWarnings("unused")
 	private static final DungeonBlaze INSTANCE = new DungeonBlaze();
 
-	@Nullable private static ArmorStandEntity highestBlaze = null;
-	@Nullable private static ArmorStandEntity lowestBlaze = null;
-	@Nullable private static ArmorStandEntity nextHighestBlaze = null;
-	@Nullable private static ArmorStandEntity nextLowestBlaze = null;
+	private static @Nullable ArmorStandEntity highestBlaze = null;
+	private static @Nullable ArmorStandEntity lowestBlaze = null;
+	private static @Nullable ArmorStandEntity nextHighestBlaze = null;
+	private static @Nullable ArmorStandEntity nextLowestBlaze = null;
 
 	private DungeonBlaze() {
 		super("blaze", "blaze-room-1-high", "blaze-room-1-low");

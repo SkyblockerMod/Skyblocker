@@ -30,10 +30,8 @@ import java.util.regex.Matcher;
 public class SecretsTracker {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecretsTracker.class);
 
-	@Nullable
-	private static volatile TrackedRun currentRun = null;
-	@Nullable
-	private static volatile TrackedRun lastRun = null;
+	private static volatile @Nullable TrackedRun currentRun = null;
+	private static volatile @Nullable TrackedRun lastRun = null;
 	private static volatile long lastRunEnded = 0L;
 
 	@Init

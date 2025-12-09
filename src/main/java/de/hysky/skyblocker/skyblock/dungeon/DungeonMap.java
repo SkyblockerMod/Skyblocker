@@ -104,8 +104,7 @@ public class DungeonMap {
 		return hoveredHead;
 	}
 
-	@Nullable
-	public static MapIdComponent getMapIdComponent(ItemStack stack) {
+	public static @Nullable MapIdComponent getMapIdComponent(ItemStack stack) {
 		if (stack.isOf(Items.FILLED_MAP) && stack.contains(DataComponentTypes.MAP_ID)) {
 			MapIdComponent mapIdComponent = stack.get(DataComponentTypes.MAP_ID);
 			cachedMapIdComponent = mapIdComponent;
@@ -113,8 +112,7 @@ public class DungeonMap {
 		} else return cachedMapIdComponent != null ? cachedMapIdComponent : DEFAULT_MAP_ID_COMPONENT;
 	}
 
-	@Nullable
-	private static UUID renderPlayerHeads(DrawContext context, World world, MapState state, double mouseX, double mouseY, @Nullable UUID enlarge) {
+	private static @Nullable UUID renderPlayerHeads(DrawContext context, World world, MapState state, double mouseX, double mouseY, @Nullable UUID enlarge) {
 		if (!DungeonManager.isClearingDungeon()) return null;
 
 		// Used to index through the player list to find which dungeon player corresponds to which map decoration.

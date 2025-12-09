@@ -60,8 +60,7 @@ public class ProfileUtils {
 		});
 	}
 
-	@Nullable
-	private static JsonObject fetchProfilesInternal(String uuid) {
+	private static @Nullable JsonObject fetchProfilesInternal(String uuid) {
 		try (Http.ApiResponse response = Http.sendHypixelRequest("skyblock/profiles", "?uuid=" + uuid)) {
 			if (!response.ok()) {
 				throw new IllegalStateException(String.format("Failed to get profile for player: %s!, Status Code: %d, Response: %s", uuid, response.statusCode(), response.content()));

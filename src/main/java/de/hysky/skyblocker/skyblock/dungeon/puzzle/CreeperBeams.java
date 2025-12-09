@@ -44,7 +44,7 @@ public class CreeperBeams extends DungeonPuzzle {
 	private static final CreeperBeams INSTANCE = new CreeperBeams();
 
 	private static ArrayList<Beam> beams = new ArrayList<>();
-	@Nullable private static BlockPos base = null;
+	private static @Nullable BlockPos base = null;
 
 	private CreeperBeams() {
 		super("creeper", "creeper-room");

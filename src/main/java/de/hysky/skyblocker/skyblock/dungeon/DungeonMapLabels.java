@@ -112,9 +112,8 @@ public class DungeonMapLabels {
 	 * For L-shaped rooms, the text is centered on the wide part of the room.<br>
 	 * For the remaining room types, we take the average of the x and y.<br>
 	 */
-	@Nullable
 	@SuppressWarnings("incomplete-switch")
-	private static Vec3d getPosForLabel(Room room, int mapRoomSize, int fontHeight) {
+	private static @Nullable Vec3d getPosForLabel(Room room, int mapRoomSize, int fontHeight) {
 		switch (room.getType()) {
 			case BLOOD, FAIRY:
 				return null;

@@ -28,8 +28,8 @@ public class ThreeWeirdos extends DungeonPuzzle {
 	private static final ThreeWeirdos INSTANCE = new ThreeWeirdos();
 	protected static final Pattern PATTERN = Pattern.compile("^\\[NPC] ([A-Z][a-z]+): (?:The reward is(?: not in my chest!|n't in any of our chests\\.)|My chest (?:doesn't have the reward\\. We are all telling the truth\\.|has the reward and I'm telling the truth!)|At least one of them is lying, and the reward is not in [A-Z][a-z]+'s chest!|Both of them are telling the truth\\. Also, [A-Z][a-z]+ has the reward in their chest!)$");
 	private static final float[] GREEN_COLOR_COMPONENTS = new float[]{0, 1, 0};
-	@Nullable private static BlockPos pos;
-	@Nullable static Box boundingBox;
+	private static @Nullable BlockPos pos;
+	static @Nullable Box boundingBox;
 
 	private ThreeWeirdos() {
 		super("three-weirdos", "three-chests");

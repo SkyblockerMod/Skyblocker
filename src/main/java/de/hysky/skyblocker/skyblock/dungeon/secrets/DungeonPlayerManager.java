@@ -93,8 +93,7 @@ public class DungeonPlayerManager {
 		}
 	}
 
-	@Nullable
-	public static Matcher getPlayerFromTab(@Range(from = 1, to = 5) int index) {
+	public static @Nullable Matcher getPlayerFromTab(@Range(from = 1, to = 5) int index) {
 		return PlayerListManager.regexAt(1 + (index - 1) * 4, PLAYER_TAB_PATTERN);
 	}
 

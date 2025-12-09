@@ -52,8 +52,7 @@ public class PlayerListManager {
 	/**
 	 * The player list in tab.
 	 */
-	@Nullable
-	private static List<PlayerListEntry> playerList = new ArrayList<>(); // Initialize to prevent npe.
+	private static @Nullable List<PlayerListEntry> playerList = new ArrayList<>(); // Initialize to prevent npe.
 
 	/**
 	 * The player list in tab, but a list of strings instead of {@link PlayerListEntry}s.
@@ -61,8 +60,7 @@ public class PlayerListManager {
 	 * @implNote All leading and trailing whitespace is removed from the strings.
 	 */
 	private static List<String> playerStringList = new ArrayList<>();
-	@Nullable
-	private static String footer;
+	private static @Nullable String footer;
 	public static final Map<String, TabHudWidget> tabWidgetInstances = new Object2ObjectOpenHashMap<>();
 	public static final List<TabHudWidget> tabWidgetsToShow = new ObjectArrayList<>(5);
 

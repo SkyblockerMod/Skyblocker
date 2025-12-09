@@ -76,22 +76,22 @@ public class Room implements Tickable, Renderable {
 	 * The room data containing all rooms for a specific dungeon and {@link #shape}.
 	 * This is null after the room is matched.
 	 */
-	@Nullable protected Map<String, int[]> roomsData;
+	protected @Nullable Map<String, int[]> roomsData;
 	/**
 	 * Contains all possible dungeon rooms for this room. The list is gradually shrunk by checking blocks until only one room is left.
 	 * This is null after the room is matched.
 	 */
-	@Nullable protected List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms;
+	protected @Nullable List<MutableTriple<Direction, Vector2ic, List<String>>> possibleRooms;
 
 	/**
 	 * Contains all blocks that have been checked to prevent checking the same block multiple times.
 	 * This is null after the room is matched.
 	 */
-	@Nullable private Set<BlockPos> checkedBlocks = new HashSet<>();
+	private @Nullable Set<BlockPos> checkedBlocks = new HashSet<>();
 	/**
 	 * The task that is used to check blocks. This is used to ensure only one such task can run at a time.
 	 */
-	@Nullable protected CompletableFuture<Void> findRoom;
+	protected @Nullable CompletableFuture<Void> findRoom;
 	private int doubleCheckBlocks;
 	/**
 	 * Represents the matching state of the room with the following possible values:
@@ -101,14 +101,14 @@ public class Room implements Tickable, Renderable {
 	 * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
 	 */
 	protected MatchState matchState = MatchState.MATCHING;
-	@Nullable private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
-	@Nullable private String name;
-	@Nullable private Direction direction;
-	@Nullable private Vector2ic physicalCornerPos;
+	private @Nullable Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
+	private @Nullable String name;
+	private @Nullable Direction direction;
+	private @Nullable Vector2ic physicalCornerPos;
 
 	protected List<Tickable> tickables = new ArrayList<>();
 	protected List<Renderable> renderables = new ArrayList<>();
-	@Nullable private BlockPos lastChestSecret;
+	private @Nullable BlockPos lastChestSecret;
 	private long lastChestSecretTime;
 
 	public Room(Type type, Vector2ic... physicalPositions) {
@@ -140,16 +140,14 @@ public class Room implements Tickable, Renderable {
 	/**
 	 * Not null if {@link #isMatched()}.
 	 */
-	@Nullable
-	public String getName() {
+	public @Nullable String getName() {
 		return name;
 	}
 
 	/**
 	 * Not null if {@link #isMatched()}.
 	 */
-	@Nullable
-	public Direction getDirection() {
+	public @Nullable Direction getDirection() {
 		return direction;
 	}
 
@@ -267,8 +265,7 @@ public class Room implements Tickable, Renderable {
 	 * @return the removed secret waypoint or {@code null} if there was no secret waypoint at the given position
 	 */
 	@SuppressWarnings("JavadocReference")
-	@Nullable
-	private SecretWaypoint removeCustomWaypoint(BlockPos pos) {
+	private @Nullable SecretWaypoint removeCustomWaypoint(BlockPos pos) {
 		if (name == null) return null;
 		SecretWaypoint waypoint = DungeonManager.removeCustomWaypoint(name, pos);
 		if (waypoint != null) {
