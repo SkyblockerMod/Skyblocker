@@ -287,8 +287,7 @@ public class PlayerListManager {
 	/**
 	 * @return the cached player list
 	 */
-	@Nullable
-	public static List<PlayerListEntry> getPlayerList() {
+	public static @Nullable List<PlayerListEntry> getPlayerList() {
 		return playerList;
 	}
 
@@ -321,8 +320,7 @@ public class PlayerListManager {
 	 *
 	 * @return the matcher if p fully matches, else null
 	 */
-	@Nullable
-	public static Matcher regexAt(int idx, Pattern p) {
+	public static @Nullable Matcher regexAt(int idx, Pattern p) {
 
 		String str = PlayerListManager.strAt(idx);
 
@@ -345,8 +343,7 @@ public class PlayerListManager {
 	 * @return the string or null, if the display name is null, empty or whitespace
 	 * only
 	 */
-	@Nullable
-	public static String strAt(int idx) {
+	public static @Nullable String strAt(int idx) {
 
 		if (playerList == null) {
 			return null;
@@ -375,8 +372,7 @@ public class PlayerListManager {
 	 * widget and the rift widgets, might not work correctly without
 	 * modification for other stuff. you've been warned!
 	 */
-	@Nullable
-	public static Text textAt(int idx) {
+	public static @Nullable Text textAt(int idx) {
 
 		if (playerList == null) {
 			return null;

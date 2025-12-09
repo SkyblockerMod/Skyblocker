@@ -64,8 +64,7 @@ public class Waterboard {
 			this.initialPositions = initialPositions;
 		}
 
-		@Nullable
-		public static LeverType fromName(String name) {
+		public static @Nullable LeverType fromName(String name) {
 			for (LeverType leverType : LeverType.values()) {
 				if (leverType.name().equalsIgnoreCase(name)) {
 					return leverType;
@@ -74,8 +73,7 @@ public class Waterboard {
 			return null;
 		}
 
-		@Nullable
-		public static LeverType fromBlock(Block block) {
+		public static @Nullable LeverType fromBlock(Block block) {
 			for (LeverType leverType : LeverType.values()) {
 				if (leverType.block == block) {
 					return leverType;
@@ -84,8 +82,7 @@ public class Waterboard {
 			return null;
 		}
 
-		@Nullable
-		public static LeverType fromPos(BlockPos leverPos) {
+		public static @Nullable LeverType fromPos(BlockPos leverPos) {
 			for (LeverType leverType : LeverType.values()) {
 				if (leverPos.equals(leverType.leverPos)) {
 					return leverType;

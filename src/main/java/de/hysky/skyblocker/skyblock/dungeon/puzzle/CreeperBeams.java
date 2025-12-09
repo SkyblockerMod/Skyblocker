@@ -95,8 +95,7 @@ public class CreeperBeams extends DungeonPuzzle {
 	}
 
 	// find the sea lantern block beneath the creeper
-	@Nullable
-	private static BlockPos findCreeperBase(ClientPlayerEntity player, ClientWorld world) {
+	private static @Nullable BlockPos findCreeperBase(ClientPlayerEntity player, ClientWorld world) {
 
 		// find all creepers
 		List<CreeperEntity> creepers = world.getEntitiesByClass(
