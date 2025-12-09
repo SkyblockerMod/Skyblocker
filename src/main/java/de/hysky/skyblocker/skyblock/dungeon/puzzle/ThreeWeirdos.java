@@ -41,8 +41,8 @@ public class ThreeWeirdos extends DungeonPuzzle {
 			if (!matcher.matches()) return true;
 			String name = matcher.group(1);
 			Room room = DungeonManager.getCurrentRoom();
+			if (room == null || !room.isMatched()) return true;
 
-			//noinspection DataFlowIssue
 			checkForNPC(world, room, new BlockPos(13, 69, 24), name);
 			checkForNPC(world, room, new BlockPos(15, 69, 25), name);
 			checkForNPC(world, room, new BlockPos(17, 69, 24), name);
