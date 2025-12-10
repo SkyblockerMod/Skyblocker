@@ -1540,5 +1540,5 @@
     "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "点击将彩蛋位置分享到聊天栏！",
     "skyblocker.config.dungeons.map.showRoomLabels": "显示房间名称",
     "skyblocker.tips.configureNewFeatures": "使用 /skyblocker config v%s 即可配置此次更新的新功能。",
-    "skyblocker.config.helpers.hoppitysHunt": "巧克力兔子蛋活动"
+    "skyblocker.config.helpers.hoppitysHunt": ""
 }
