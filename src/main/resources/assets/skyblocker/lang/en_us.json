@@ -332,6 +332,7 @@
   "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "With these waypoints, you throw a pearl towards the block and at the same time AOTV up.",
   "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints": "Enable Prince Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints.@Tooltip": "Helpful for obtaining +1 Bonus Score in your runs with the Reborn attribute.",
+  "skyblocker.config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints": "Enable Redstone Key Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints": "Enable Dungeon Secret Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "Enable Stonk Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "Enable Superboom Waypoints",
