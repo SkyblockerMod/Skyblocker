@@ -57,6 +57,7 @@ public class CyclingIconButtonWidget<T> extends PressableWidget {
 
 	@Override
 	protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		this.drawButton(context);
 		int x = this.showText ? (this.getX() + this.getWidth() - this.currentIcon.width() - 2) : (this.getX() + this.getWidth() / 2 - this.currentIcon.width() / 2);
 		int y = this.getY() + this.getHeight() / 2 - this.currentIcon.height() / 2;
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, this.currentIcon.id(), x, y, this.currentIcon.width(), this.currentIcon.height(), this.alpha);

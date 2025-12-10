@@ -28,6 +28,7 @@ public class ItemButtonWidget extends ButtonWidget {
 
 	@Override
 	protected void drawIcon(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.drawButton(context);
 		context.drawItem(this.item, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
 	}
 }
