@@ -49,7 +49,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	private static final KeyBinding KEY_BINDING = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 			"key.skyblocker.valueBreadownPopup",
 			GLFW.GLFW_KEY_I,
-			SkyblockerMod.KEYBINDING_CATEGORY
+			"key.categories.skyblocker"
 	));
 
 	private static final Function<String, Text> EMPTY = s -> Text.empty();
@@ -224,8 +224,8 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (!Utils.isOnSkyblock()) return;
 			if (screen instanceof HandledScreen<?> handledScreen) {
-				ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key) -> {
-					if (!KEY_BINDING.matchesKey(key)) return;
+				ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, keyCode, scanCode, modifiers) -> {
+					if (!KEY_BINDING.matchesKey(keyCode, scanCode)) return;
 					Slot slot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
 					if (slot == null || !slot.hasStack()) return;
 					NetworthResult networth = NetworthCalculator.getItemNetworth(slot.getStack());
