@@ -302,7 +302,7 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 		private void drawLabel(DrawnTextConsumer drawer) {
 			int padding = 5;
 			int startY = getY() + padding;
-			drawer.marqueedText(text, getX() + padding, startY, getRight() - padding, startY + 9, -1);
+			drawer.text(text, getX() + padding, getRight() - padding, startY, startY + 9);
 		}
 
 		@Override

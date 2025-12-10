@@ -251,7 +251,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 		@Override
 		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// drawScrollableText does some weird stuff with the y value, so we put startY = y and endY = y + 11 which makes the text render on the same line as the tick mark below (y + 2).
-			context.getTextConsumer(HoverType.NONE).marqueedText(Text.literal(entry.toString()).fillStyle(Style.EMPTY.withUnderline(hovered)), this.getX() + 10, this.getY(), this.getX() + this.getWidth(), this.getY() + 11, -1);
+			context.getTextConsumer(HoverType.NONE).text(Text.literal(entry.toString()).fillStyle(Style.EMPTY.withUnderline(hovered)), this.getX() + 10, this.getX() + this.getWidth(), this.getY(), this.getY() + 11);
 			if (selected == this.entry) {
 				context.drawTextWithShadow(client.textRenderer, "✔", this.getX() + 1, this.getY() + 2, 0xFFFFFFFF);
 			}

@@ -67,9 +67,9 @@ public class CyclingIconButtonWidget<T> extends PressableWidget {
 	public void drawLabel(DrawnTextConsumer drawer) {
 		if (!showText) return;
 		int x1 = this.getX() + 2;
-		int xCenter = this.getX() + this.getWidth() - this.currentIcon.width() - 4;
-		int x2 = this.getX() + this.getWidth() / 2;
-		drawer.marqueedText(this.getMessage(), x2, x1, this.getY(), xCenter, this.getY() + this.getHeight());
+		int x2 = this.getX() + this.getWidth() - this.currentIcon.width() - 4;
+		int xCenter = this.getX() + this.getWidth() / 2;
+		drawer.marqueedText(this.getMessage(), xCenter, x1, x2, this.getY(), this.getY() + this.getHeight());
 	}
 
 	@Override

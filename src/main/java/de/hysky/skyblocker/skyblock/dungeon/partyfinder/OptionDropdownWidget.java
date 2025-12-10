@@ -189,7 +189,7 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 			if (PartyFinderScreen.DEBUG) context.drawText(client.textRenderer, String.valueOf(optionSlotId), this.getX() + 8, this.getY(), Colors.RED, true);
 			MutableText text = Text.literal(message).fillStyle(Style.EMPTY.withUnderline(hovered));
 			if (client.textRenderer.getWidth(text) >= this.getWidth() - 14) {
-				context.getTextConsumer(HoverType.NONE).marqueedText(text, this.getX() + 14, getY() + 3, this.getX() + this.getWidth(), this.getY() + 3 + client.textRenderer.fontHeight, Colors.WHITE);
+				context.getTextConsumer(HoverType.NONE).text(text, this.getX() + 14, this.getX() + this.getWidth(), getY() + 3, this.getY() + 3 + client.textRenderer.fontHeight);
 			} else {
 				context.drawText(client.textRenderer, text, this.getX() + 14, this.getY() + 3, Colors.WHITE, false);
 			}
