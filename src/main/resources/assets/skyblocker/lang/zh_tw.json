@@ -1538,6 +1538,5 @@
     "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "點擊將彩蛋位置分享到聊天欄！",
     "skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip": "突出顯示Hoppity's Hunt期間的彩蛋。\n新發現的彩蛋會在啟用此功能的玩家之間自動共享。",
     "skyblocker.config.dungeons.map.showRoomLabels": "顯示房間名稱",
-    "skyblocker.tips.configureNewFeatures": "使用 /skyblocker config v%s 即可配置此次更新的新功能。",
-    "skyblocker.config.helpers.hoppitysHunt": ""
+    "skyblocker.tips.configureNewFeatures": "使用 /skyblocker config v%s 即可配置此次更新的新功能。"
 }
