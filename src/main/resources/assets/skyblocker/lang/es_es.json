@@ -100,7 +100,7 @@
     "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight": "Activar Destacado de Puerta",
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit": "Calculador de Ganancias de Cofres de Croesus",
     "skyblocker.config.dungeons.devices": "Solucionador de Terminales (F7/M7)",
-    "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Marca las palancas correctas en rojo",
+    "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Marca las palancas correctas en rojo.",
     "skyblocker.config.dungeons.devices.solveLightsOn": "Solucionar Luces Encendidas",
     "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Destaca el botón correcto a presionar en verde, y destaca el siguiente a presionar en amarillo.",
     "key.skyblocker.slottext": "Etiqueta de ranura",
