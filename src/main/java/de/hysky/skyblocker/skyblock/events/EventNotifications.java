@@ -14,6 +14,7 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -36,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EventNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public static final String JACOBS = "Jacob's Farming Contest";
-	public static final IntList DEFAULT_REMINDERS = IntList.of(60, 60 * 5);
+	public static final IntArrayList DEFAULT_REMINDERS = new IntArrayList(IntList.of(60, 60 * 5));
 	public static final Map<String, ItemStack> eventIcons = Map.ofEntries(
 			Map.entry("Dark Auction", new ItemStack(Items.NETHER_BRICK)),
 			Map.entry("Bonus Fishing Festival", new ItemStack(Items.FISHING_ROD)),
