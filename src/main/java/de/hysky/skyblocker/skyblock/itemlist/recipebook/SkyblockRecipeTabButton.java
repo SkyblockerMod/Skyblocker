@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.item.ItemStack;
@@ -35,10 +34,6 @@ public class SkyblockRecipeTabButton extends TexturedButtonWidget {
 			//Render item icon
 			int offset = this.selected ? -2 : 0;
 			context.drawItemWithoutEntity(this.icon, this.getX() + 9 + offset, this.getY() + 5);
-
-			if (this.isHovered()) {
-				context.setCursor(StandardCursors.POINTING_HAND);
-			}
 		}
 	}
 

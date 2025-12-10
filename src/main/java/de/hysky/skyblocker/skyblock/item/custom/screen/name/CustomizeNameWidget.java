@@ -453,6 +453,11 @@ public class CustomizeNameWidget extends ContainerWidget {
 
 			context.drawText(textRenderer, text, textX, textY, -1, false);
 
+			this.setCursor(context);
+		}
+
+		@Override
+		protected void setCursor(DrawContext context) {
 			if (this.isHovered()) {
 				context.setCursor(StandardCursors.IBEAM);
 			}

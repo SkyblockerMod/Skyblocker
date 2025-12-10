@@ -20,7 +20,6 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -230,10 +229,7 @@ public class CustomizeScreen extends Screen {
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight(), isHovered() ? 0xFFFAFA96 : 0x80FFFFFF);
-
-			if (this.isHovered()) {
-				context.setCursor(StandardCursors.POINTING_HAND);
-			}
+			this.setCursor(context);
 		}
 
 		@Override
