@@ -28,11 +28,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import org.jspecify.annotations.Nullable;
 
 public class MuseumManager extends ClickableWidget implements HoveredItemStackProvider {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();

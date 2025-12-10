@@ -24,10 +24,11 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.context.ContextParameterMap;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * Based on {@link net.minecraft.client.gui.screen.recipebook.RecipeBookWidget}.

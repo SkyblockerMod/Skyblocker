@@ -19,8 +19,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +108,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		return 16;
 	}
 
-	private double getChestValue(@NotNull ItemStack chest) {
+	private double getChestValue(ItemStack chest) {
 		double chestValue = 0;
 		int chestPrice = 0;
 

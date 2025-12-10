@@ -32,7 +32,7 @@ import net.minecraft.util.math.ColorHelper;
 
 import java.time.Duration;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Environment(value = EnvType.CLIENT)
 public class QuickNavButton extends ClickableWidget {
@@ -147,8 +147,7 @@ public class QuickNavButton extends ClickableWidget {
 	 * manually drawn and the click logic is manual as well. If that ever changes, this should be adjusted to match the new vanilla behaviour.
 	 */
 	@Override
-	@Nullable
-	public GuiNavigationPath getNavigationPath(GuiNavigation navigation) {
+	public @Nullable GuiNavigationPath getNavigationPath(GuiNavigation navigation) {
 		return null;
 	}
 

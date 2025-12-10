@@ -38,7 +38,6 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -99,7 +98,7 @@ public class ContainerSolverManager {
 	}
 
 	@SuppressWarnings({"ConstantValue", "java:S1066"})
-	public static void onSetScreen(@NotNull GenericContainerScreen screen) {
+	public static void onSetScreen(GenericContainerScreen screen) {
 		String screenName = screen.getTitle().getString();
 		for (ContainerSolver solver : solvers) {
 			if (solver.isEnabled()) {

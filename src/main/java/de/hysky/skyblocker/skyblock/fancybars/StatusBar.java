@@ -28,7 +28,7 @@ import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.awt.Color;
 import java.util.function.Consumer;
@@ -74,7 +74,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	public float x = 0;
 	public float y = 0;
 	public float width = 0;
-	public @Nullable BarPositioner.BarAnchor anchor = null;
+	public BarPositioner.@Nullable BarAnchor anchor = null;
 
 	public int size = 1;
 

@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public class SideTabButtonWidget extends TexturedButtonWidget {
 	protected ItemStack icon;
@@ -17,7 +16,7 @@ public class SideTabButtonWidget extends TexturedButtonWidget {
 		this.icon = icon.copy();
 	}
 
-	public SideTabButtonWidget(int x, int y, boolean toggled, @NotNull ItemStack icon) {
+	public SideTabButtonWidget(int x, int y, boolean toggled, ItemStack icon) {
 		super(x, y, 35, 27, RecipeGroupButtonWidget.TEXTURES, _ignored -> {});
 		this.icon = icon.copy();
 	}

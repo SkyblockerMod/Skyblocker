@@ -8,7 +8,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -19,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import com.mojang.brigadier.Command;
@@ -58,7 +56,7 @@ public class ItemPrice {
 		});
 	}
 
-	public static void itemPriceLookup(ClientPlayerEntity player, @NotNull Slot slot) {
+	public static void itemPriceLookup(ClientPlayerEntity player, Slot slot) {
 		ItemStack stack = slot.getStack();
 		itemPriceLookup(player, stack);
 	}
@@ -76,7 +74,7 @@ public class ItemPrice {
 
 			// Handle Enchanted Books
 			if (itemName.equals("Enchanted Book")) {
-				itemName = ItemUtils.getLore(stack).stream().findFirst().orElse(Text.empty()).getString();
+				itemName = stack.skyblocker$getLoreStrings().stream().findFirst().orElse("");
 			}
 
 			// Search up the item in the bazaar or auction house

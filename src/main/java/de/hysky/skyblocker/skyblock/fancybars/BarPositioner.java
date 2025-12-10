@@ -2,8 +2,8 @@ package de.hysky.skyblocker.skyblock.fancybars;
 
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.ScreenRect;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -21,7 +21,7 @@ public class BarPositioner {
 	}
 
 
-	public int getRowCount(@NotNull BarAnchor barAnchor) {
+	public int getRowCount(BarAnchor barAnchor) {
 		return map.get(barAnchor).size();
 	}
 
@@ -30,7 +30,7 @@ public class BarPositioner {
 	 *
 	 * @param barAnchor the anchor
 	 */
-	public void addRow(@NotNull BarAnchor barAnchor) {
+	public void addRow(BarAnchor barAnchor) {
 		map.get(barAnchor).add(new LinkedList<>());
 	}
 
@@ -40,7 +40,7 @@ public class BarPositioner {
 	 * @param barAnchor the anchor
 	 * @param row       row index
 	 */
-	public void addRow(@NotNull BarAnchor barAnchor, int row) {
+	public void addRow(BarAnchor barAnchor, int row) {
 		LinkedList<LinkedList<StatusBar>> rows = map.get(barAnchor);
 		for (int i = row; i < rows.size(); i++) {
 			for (StatusBar bar : rows.get(i)) {
@@ -57,7 +57,7 @@ public class BarPositioner {
 	 * @param row       the row
 	 * @param bar       the bar to add
 	 */
-	public void addBar(@NotNull BarAnchor barAnchor, int row, StatusBar bar) {
+	public void addBar(BarAnchor barAnchor, int row, StatusBar bar) {
 		LinkedList<StatusBar> statusBars = map.get(barAnchor).get(row);
 		statusBars.add(bar);
 		bar.gridY = row;
@@ -73,7 +73,7 @@ public class BarPositioner {
 	 * @param x         the index in the row
 	 * @param bar       the bar to add
 	 */
-	public void addBar(@NotNull BarAnchor barAnchor, int row, int x, StatusBar bar) {
+	public void addBar(BarAnchor barAnchor, int row, int x, StatusBar bar) {
 		LinkedList<StatusBar> statusBars = map.get(barAnchor).get(row);
 		for (int i = x; i < statusBars.size(); i++) {
 			statusBars.get(i).gridX++;
@@ -91,7 +91,7 @@ public class BarPositioner {
 	 * @param row       dah row
 	 * @param x         dah x
 	 */
-	public void removeBar(@NotNull BarAnchor barAnchor, int row, int x) {
+	public void removeBar(BarAnchor barAnchor, int row, int x) {
 		LinkedList<StatusBar> statusBars = map.get(barAnchor).get(row);
 		StatusBar remove = statusBars.remove(x);
 		remove.anchor = null;
@@ -108,7 +108,7 @@ public class BarPositioner {
 	 * @param row       dah row
 	 * @param bar       dah bar
 	 */
-	public void removeBar(@NotNull BarAnchor barAnchor, int row, StatusBar bar) {
+	public void removeBar(BarAnchor barAnchor, int row, StatusBar bar) {
 		LinkedList<StatusBar> barRow = map.get(barAnchor).get(row);
 		int x = barRow.indexOf(bar);
 		if (x < 0) return; // probably a bad idea
@@ -127,7 +127,7 @@ public class BarPositioner {
 	 * @param barAnchor the anchor
 	 * @param row       the row to remove
 	 */
-	public void removeRow(@NotNull BarAnchor barAnchor, int row) {
+	public void removeRow(BarAnchor barAnchor, int row) {
 		LinkedList<StatusBar> barRow = map.get(barAnchor).get(row);
 		if (!barRow.isEmpty())
 			throw new IllegalStateException("Can't remove a non-empty row (" + barAnchor + "," + row + ")");
@@ -140,15 +140,15 @@ public class BarPositioner {
 	}
 
 
-	public LinkedList<StatusBar> getRow(@NotNull BarAnchor barAnchor, int row) {
+	public LinkedList<StatusBar> getRow(BarAnchor barAnchor, int row) {
 		return map.get(barAnchor).get(row);
 	}
 
-	public StatusBar getBar(@NotNull BarAnchor barAnchor, int row, int x) {
+	public StatusBar getBar(BarAnchor barAnchor, int row, int x) {
 		return map.get(barAnchor).get(row).get(x);
 	}
 
-	public boolean hasNeighbor(@NotNull BarAnchor barAnchor, int row, int x, boolean right) {
+	public boolean hasNeighbor(BarAnchor barAnchor, int row, int x, boolean right) {
 		LinkedList<StatusBar> statusBars = map.get(barAnchor).get(row);
 		if (barAnchor.isRight()) {
 			return (right && x < statusBars.size() - 1) || (!right && x > 0);

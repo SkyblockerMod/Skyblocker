@@ -18,7 +18,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +27,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import org.jspecify.annotations.Nullable;
 
 public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfigListWidget.AbstractShortcutEntry> {
 	private static final int TEXT_Y_OFFSET = 5 + 2;
@@ -83,7 +84,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 	}
 
 	@Override
-	public void setSelected(@Nullable ShortcutsConfigListWidget.AbstractShortcutEntry entry) {
+	public void setSelected(ShortcutsConfigListWidget.@Nullable AbstractShortcutEntry entry) {
 		super.setSelected(entry);
 		screen.updateButtons();
 	}
@@ -157,8 +158,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		private final Supplier<ShortcutEntry<T>> entrySupplier;
 		private final Text targetName;
 		private final Text replacementName;
-		@Nullable
-		private final Text tooltip;
+		private final @Nullable Text tooltip;
 
 		private ShortcutCategoryEntry(Map<T, String> shortcutsMap, Function<ShortcutCategoryEntry<T>, ShortcutEntry<T>> entryFactory, @Translatable String targetName, @Translatable String replacementName) {
 			this(shortcutsMap, entryFactory, targetName, replacementName, (Text) null);

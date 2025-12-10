@@ -20,7 +20,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +44,6 @@ import java.util.regex.Pattern;
  * is holding periodically. The list is sorted like in the vanilla game.
  */
 public class PlayerListManager {
-
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
 	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("\\s*(Players \\(\\d+\\)|Island|Coop \\(\\d+\\))\\s*");
 	private static final Pattern INFO_COLUMN_PATTERN = Pattern.compile("\\s*Info\\s*");
@@ -60,8 +60,7 @@ public class PlayerListManager {
 	 * @implNote All leading and trailing whitespace is removed from the strings.
 	 */
 	private static List<String> playerStringList = new ArrayList<>();
-	@Nullable
-	private static String footer;
+	private static @Nullable String footer;
 	public static final Map<String, TabHudWidget> tabWidgetInstances = new Object2ObjectOpenHashMap<>();
 	public static final List<TabHudWidget> tabWidgetsToShow = new ObjectArrayList<>(5);
 
@@ -309,8 +308,7 @@ public class PlayerListManager {
 		}
 	}
 
-	@Nullable
-	public static String getFooter() {
+	public static @Nullable String getFooter() {
 		return footer;
 	}
 

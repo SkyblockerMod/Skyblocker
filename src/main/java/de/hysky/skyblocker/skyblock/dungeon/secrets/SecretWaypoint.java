@@ -17,7 +17,6 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,7 +108,6 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 		super.extractRendering(collector);
 	}
 
-	@NotNull
 	SecretWaypoint relativeToActual(Room room) {
 		return new SecretWaypoint(secretIndex, category, name, room.relativeToActual(pos));
 	}

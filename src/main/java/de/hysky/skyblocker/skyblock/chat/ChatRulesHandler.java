@@ -18,7 +18,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.nio.file.Path;
@@ -110,8 +109,7 @@ public class ChatRulesHandler {
 	 * @param codedString the string with color codes in
 	 * @return formatted text
 	 */
-	@NotNull
-	protected static MutableText formatText(@NotNull String codedString) {
+	protected static MutableText formatText(String codedString) {
 		// These are done in order of precedence, so § is checked first, then &.
 		// This is to ensure that there are no accidental formatting issues due to an actual use of '&' with a valid color code.
 		if (codedString.contains("§")) return TextTransformer.fromLegacy(codedString, '§', false);

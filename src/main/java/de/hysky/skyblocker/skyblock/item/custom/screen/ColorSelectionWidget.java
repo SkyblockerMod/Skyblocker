@@ -40,7 +40,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Closeable;
 import java.util.List;
@@ -315,7 +314,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		timelineWidget.close();
 	}
 
-	public void setCurrentItem(@NotNull ItemStack currentItem) {
+	public void setCurrentItem(ItemStack currentItem) {
 		this.currentItem = currentItem;
 		refresh();
 	}

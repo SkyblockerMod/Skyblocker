@@ -43,7 +43,6 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +50,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+
+import org.jspecify.annotations.Nullable;
 
 public class PreviewTab implements Tab {
 	public static final int RIGHT_SIDE_WIDTH = 120;
@@ -137,9 +138,8 @@ public class PreviewTab implements Tab {
 				return name.getString().replace(' ', '_');
 			}
 
-			@Nullable
 			@Override
-			public Text getDisplayName() {
+			public @Nullable Text getDisplayName() {
 				return name;
 			}
 		};
@@ -471,7 +471,7 @@ public class PreviewTab implements Tab {
 
 	private class AnchorSelectionWidget extends ClickableWidget {
 		private final boolean other;
-		private @Nullable PositionRule.Point hoveredPoint = null;
+		private PositionRule.@Nullable Point hoveredPoint = null;
 
 		private AnchorSelectionWidget(int width, Text text, boolean other) {
 			super(0, 0, width, 40, text);

@@ -20,7 +20,8 @@ import net.minecraft.network.encryption.PlayerKeyPair;
 import net.minecraft.text.Text;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.dynamic.Codecs;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.nio.ByteBuffer;
@@ -45,7 +46,7 @@ public class ApiAuthentication {
 	private static final String CONTENT_TYPE = "application/json";
 	private static final String ALGORITHM = "SHA256withRSA";
 
-	private static TokenInfo tokenInfo = null;
+	private static @Nullable TokenInfo tokenInfo = null;
 	private static boolean sentWarningOnce;
 
 	@Init
@@ -151,8 +152,7 @@ public class ApiAuthentication {
 		}
 	}
 
-	@Nullable
-	public static String getToken() {
+	public static @Nullable String getToken() {
 		return tokenInfo != null ? tokenInfo.token() : null;
 	}
 

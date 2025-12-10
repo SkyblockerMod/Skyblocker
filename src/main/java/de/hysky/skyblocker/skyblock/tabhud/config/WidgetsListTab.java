@@ -22,13 +22,14 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+
+import org.jspecify.annotations.Nullable;
 
 // TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsListTab implements Tab {

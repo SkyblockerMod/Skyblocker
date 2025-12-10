@@ -26,7 +26,6 @@ import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -230,7 +229,7 @@ public class NEURepoManager {
 		return NEU_REPO.getConstants();
 	}
 
-	public static @Nullable NEURepoFile file(@NotNull String path) {
+	public static @Nullable NEURepoFile file(String path) {
 		return NEU_REPO.file(path);
 	}
 

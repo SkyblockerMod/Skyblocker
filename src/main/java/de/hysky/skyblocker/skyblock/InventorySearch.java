@@ -22,7 +22,6 @@ import net.minecraft.util.Formatting;
 
 import java.util.Locale;
 
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 public class InventorySearch {
@@ -60,7 +59,7 @@ public class InventorySearch {
 		ScreenEvents.remove(handledScreen).register(InventorySearch::onScreenClosed);
 	}
 
-	private static @NotNull TextFieldWidget getTextFieldWidget(HandledScreen<?> handledScreen) {
+	private static TextFieldWidget getTextFieldWidget(HandledScreen<?> handledScreen) {
 		// Slightly modified text field widget
 		TextFieldWidget textFieldWidget = new SearchTextFieldWidget(handledScreen);
 		textFieldWidget.setPosition((handledScreen.width - textFieldWidget.getWidth()) / 2, 15);

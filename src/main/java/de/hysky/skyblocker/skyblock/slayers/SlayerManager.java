@@ -25,7 +25,8 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -235,8 +236,7 @@ public class SlayerManager {
 	 * @param armorStand the entity that contains the display name of the Slayer (mini)boss
 	 * @implNote This method is not perfect. Possible improvements could be sort by x and z distance only (ignore y difference).
 	 */
-	@Nullable
-	public static <T extends Entity> T findClosestMobEntity(@Nullable EntityType<T> entityType, ArmorStandEntity armorStand) {
+	public static <T extends Entity> @Nullable T findClosestMobEntity(@Nullable EntityType<T> entityType, ArmorStandEntity armorStand) {
 		if (entityType == null) return null;
 		List<T> mobEntities = armorStand.getEntityWorld().getEntitiesByType(entityType, armorStand.getBoundingBox().expand(0, 1.5f, 0), SlayerManager::isValidSlayerMob);
 		mobEntities.sort(Comparator.comparingDouble(armorStand::squaredDistanceTo));
@@ -275,8 +275,7 @@ public class SlayerManager {
 	 * Returns the highlight bounding box for the given slayer boss armor stand entity.
 	 * It's slightly larger and lower than the armor stand's bounding box.
 	 */
-	@Nullable
-	public static Box getSlayerMobBoundingBox(ArmorStandEntity armorStand) {
+	public static @Nullable Box getSlayerMobBoundingBox(ArmorStandEntity armorStand) {
 		return switch (getSlayerType()) {
 			case SlayerType.REVENANT -> new Box(armorStand.getX() - 0.4, armorStand.getY() - 0.1, armorStand.getZ() - 0.4, armorStand.getX() + 0.4, armorStand.getY() - 2.2, armorStand.getZ() + 0.4);
 			case SlayerType.TARANTULA -> new Box(armorStand.getX() - 0.9, armorStand.getY() - 0.2, armorStand.getZ() - 0.9, armorStand.getX() + 0.9, armorStand.getY() - 1.2, armorStand.getZ() + 0.9);
@@ -332,8 +331,7 @@ public class SlayerManager {
 	 *
 	 * @return The BossFight instance, or null if no boss fight is active.
 	 */
-	@Nullable
-	public static BossFight getBossFight() {
+	public static @Nullable BossFight getBossFight() {
 		return bossFight;
 	}
 
@@ -342,8 +340,7 @@ public class SlayerManager {
 	 *
 	 * @return The SlayerQuest instance, or null if no Slayer Quest is active.
 	 */
-	@Nullable
-	public static SlayerQuest getSlayerQuest() {
+	public static @Nullable SlayerQuest getSlayerQuest() {
 		return slayerQuest;
 	}
 
@@ -352,8 +349,7 @@ public class SlayerManager {
 	 *
 	 * @return The SlayerType of the current quest, or null if no quest is active.
 	 */
-	@Nullable
-	public static SlayerType getSlayerType() {
+	public static @Nullable SlayerType getSlayerType() {
 		return slayerQuest != null ? slayerQuest.slayerType : null;
 	}
 
@@ -362,8 +358,7 @@ public class SlayerManager {
 	 *
 	 * @return The SlayerTier of the current quest, or null if no quest is active.
 	 */
-	@Nullable
-	public static SlayerTier getSlayerTier() {
+	public static @Nullable SlayerTier getSlayerTier() {
 		return slayerQuest != null ? slayerQuest.slayerTier : null;
 	}
 
@@ -372,8 +367,7 @@ public class SlayerManager {
 	 *
 	 * @return The armor stand entity, or null if no boss fight is active.
 	 */
-	@Nullable
-	public static ArmorStandEntity getSlayerBossArmorStand() {
+	public static @Nullable ArmorStandEntity getSlayerBossArmorStand() {
 		return bossFight != null ? bossFight.bossArmorStand : null;
 	}
 
@@ -382,8 +376,7 @@ public class SlayerManager {
 	 *
 	 * @return The boss entity, or null if no boss fight is active.
 	 */
-	@Nullable
-	public static Entity getSlayerBoss() {
+	public static @Nullable Entity getSlayerBoss() {
 		return bossFight != null ? bossFight.boss : null;
 	}
 

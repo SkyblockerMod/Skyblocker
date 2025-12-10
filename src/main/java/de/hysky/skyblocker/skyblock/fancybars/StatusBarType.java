@@ -5,7 +5,7 @@ import net.minecraft.util.StringIdentifiable;
 
 import java.awt.Color;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum StatusBarType implements StringIdentifiable {
 	HEALTH("health", BarPositioner.BarAnchor.HOTBAR_TOP, 0, new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)}, true, true, new Color(255, 85, 85), Text.translatable("skyblocker.bars.config.health")),
@@ -21,8 +21,7 @@ public enum StatusBarType implements StringIdentifiable {
 	private final Color[] colors;
 	private final boolean hasOverflow;
 	private final boolean hasMax;
-	@Nullable
-	private final Color textColor;
+	private final @Nullable Color textColor;
 	private final Text name;
 
 	StatusBarType(String id, BarPositioner.BarAnchor defaultAnchor, int defaultGridY, Color[] colors, boolean hasOverflow, boolean hasMax, @Nullable Color textColor, Text name) {

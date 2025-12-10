@@ -22,7 +22,7 @@ import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
 import net.minecraft.recipe.display.CuttingRecipeDisplay;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -198,8 +198,7 @@ public class ItemRepository {
 	/**
 	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName()}.
 	 */
-	@Nullable
-	public static ItemStack getItemStack(String neuId) {
+	public static @Nullable ItemStack getItemStack(String neuId) {
 		return itemsImported ? itemsMap.get(neuId) : null;
 	}
 

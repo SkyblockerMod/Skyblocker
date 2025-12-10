@@ -21,13 +21,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
+
+import org.jspecify.annotations.Nullable;
 
 public class ItemSelectionScreen extends AbstractPopupScreen {
 
@@ -84,7 +84,7 @@ public class ItemSelectionScreen extends AbstractPopupScreen {
 		this.target = target;
 	}
 
-	private void setSelectedItem(@NotNull ItemWidget selectedItem) {
+	private void setSelectedItem(ItemWidget selectedItem) {
 		this.selectedItem = selectedItem;
 		doneButton.active = true;
 	}

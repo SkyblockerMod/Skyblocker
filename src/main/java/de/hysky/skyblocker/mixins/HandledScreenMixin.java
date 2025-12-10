@@ -48,7 +48,8 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -102,8 +103,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	);
 
 	@Shadow
-	@Nullable
-	protected Slot focusedSlot;
+	protected @Nullable Slot focusedSlot;
 
 	@Shadow
 	@Final

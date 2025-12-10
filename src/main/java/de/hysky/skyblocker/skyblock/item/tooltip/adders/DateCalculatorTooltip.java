@@ -10,9 +10,6 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -20,6 +17,8 @@ import java.util.function.Predicate;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
 
 public class DateCalculatorTooltip extends SimpleTooltipAdder {
 	//((?<days>\d+)d)? ?((?<hours>\d+)h)? ?((?<minutes>\d+)m)? ?((?<seconds>\d+)s)?
@@ -31,7 +30,7 @@ public class DateCalculatorTooltip extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public boolean test(@NotNull Screen screen) {
+	public boolean test(Screen screen) {
 		for (Timer timer : Timer.values()) {
 			Matcher matcher = timer.titlePattern.matcher(screen.getTitle().getString());
 

@@ -8,8 +8,7 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -25,7 +24,7 @@ public class ChoosePetLevelAdder extends SimpleSlotTextAdder {
 	public ChoosePetLevelAdder() { super("^Choose Pet.*", CONFIG_INFORMATION); }
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slotId < 18 || slotId > 44 || !stack.isOf(Items.PLAYER_HEAD)) return List.of();
 		Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, AUTOPET_LEVEL_PATTERN);
 		if (matcher == null) {

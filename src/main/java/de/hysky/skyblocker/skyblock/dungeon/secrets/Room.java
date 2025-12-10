@@ -34,10 +34,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,9 +58,7 @@ public class Room implements Tickable, Renderable {
 	private static final String LOCKED_CHEST = "That chest is locked!";
 	protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
 	protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
-	@NotNull
 	private final Type type;
-	@NotNull
 	final Set<Vector2ic> segments;
 	/**
 	 * Used to allow rooms to have their secrets unmarked after the map detects the green checkmark.
@@ -74,7 +71,6 @@ public class Room implements Tickable, Renderable {
 	/**
 	 * The shape of the room. See {@link #determineShape(IntSortedSet, IntSortedSet)}.
 	 */
-	@NotNull
 	private final Shape shape;
 	/**
 	 * The room data containing all rooms for a specific dungeon and {@link #shape}.
@@ -112,7 +108,7 @@ public class Room implements Tickable, Renderable {
 	private BlockPos lastChestSecret;
 	private long lastChestSecretTime;
 
-	public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
+	public Room(Type type, Vector2ic... physicalPositions) {
 		this.type = type;
 		segments = Set.of(physicalPositions);
 		IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
@@ -122,17 +118,14 @@ public class Room implements Tickable, Renderable {
 		possibleRooms = getPossibleRooms(segmentsX, segmentsY);
 	}
 
-	@NotNull
 	public Type getType() {
 		return type;
 	}
 
-	@NotNull
 	public Set<Vector2ic> getSegments() {
 		return segments;
 	}
 
-	@NotNull
 	public Shape getShape() {
 		return shape;
 	}
@@ -164,7 +157,6 @@ public class Room implements Tickable, Renderable {
 		return "Room{type=%s, segments=%s, shape=%s, matchState=%s, name=%s, direction=%s, physicalCornerPos=%s}".formatted(type, Arrays.toString(segments.toArray()), shape, matchState, name, direction, physicalCornerPos);
 	}
 
-	@NotNull
 	private Shape determineShape(IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return switch (type) {
 			case PUZZLE -> Shape.PUZZLE;
@@ -189,7 +181,6 @@ public class Room implements Tickable, Renderable {
 		return possibleRooms;
 	}
 
-	@NotNull
 	private Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return switch (shape) {
 			case ONE_BY_ONE, TWO_BY_TWO, PUZZLE, TRAP, MINIBOSS -> Direction.values();
@@ -271,8 +262,7 @@ public class Room implements Tickable, Renderable {
 	 * @return the removed secret waypoint or {@code null} if there was no secret waypoint at the given position
 	 */
 	@SuppressWarnings("JavadocReference")
-	@Nullable
-	private SecretWaypoint removeCustomWaypoint(BlockPos pos) {
+	private @Nullable SecretWaypoint removeCustomWaypoint(BlockPos pos) {
 		SecretWaypoint waypoint = DungeonManager.removeCustomWaypoint(name, pos);
 		if (waypoint != null) {
 			DungeonManager.getRoomsStream().filter(r -> name.equals(r.getName())).forEach(r -> r.removeCustomWaypoint(waypoint.secretIndex, pos));

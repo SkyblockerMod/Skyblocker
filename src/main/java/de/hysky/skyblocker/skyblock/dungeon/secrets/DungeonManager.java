@@ -29,11 +29,10 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,13 +164,11 @@ public class DungeonManager {
 	 * The map of dungeon room names to custom waypoints relative to the room.
 	 */
 	private static final Table<String, BlockPos, SecretWaypoint> customWaypoints = HashBasedTable.create();
-	@Nullable
-	private static CompletableFuture<Void> roomsLoaded;
+	private static @Nullable CompletableFuture<Void> roomsLoaded;
 	/**
 	 * The map position of the top left corner of the entrance room.
 	 */
-	@Nullable
-	private static Vector2ic mapEntrancePos;
+	private static @Nullable Vector2ic mapEntrancePos;
 	/**
 	 * The size of a room on the map.
 	 */
@@ -179,13 +176,10 @@ public class DungeonManager {
 	/**
 	 * The physical position of the northwest corner of the entrance room.
 	 */
-	@Nullable
-	private static Vector2ic physicalEntrancePos;
+	private static @Nullable Vector2ic physicalEntrancePos;
 	private static Room currentRoom;
-	@NotNull
-	private static DungeonBoss boss = DungeonBoss.NONE;
-	@Nullable
-	private static Box bloodRushDoorBox;
+	private static @Nullable DungeonBoss boss = DungeonBoss.NONE;
+	private static @Nullable Box bloodRushDoorBox;
 	private static boolean bloodOpened;
 	private static boolean hasKey;
 	private static boolean runEnded;
@@ -198,13 +192,11 @@ public class DungeonManager {
 		return rooms.values().stream();
 	}
 
-	@Nullable
-	public static RoomInfo getRoomMetadata(String room) {
+	public static @Nullable RoomInfo getRoomMetadata(String room) {
 		return ROOMS_INFO.get(room);
 	}
 
-	@Nullable
-	public static List<RoomWaypoint> getRoomWaypoints(String room) {
+	public static @Nullable List<RoomWaypoint> getRoomWaypoints(String room) {
 		return ROOMS_WAYPOINTS.get(room);
 	}
 
@@ -235,13 +227,11 @@ public class DungeonManager {
 	/**
 	 * @see #customWaypoints
 	 */
-	@Nullable
-	public static SecretWaypoint removeCustomWaypoint(String room, BlockPos pos) {
+	public static @Nullable SecretWaypoint removeCustomWaypoint(String room, BlockPos pos) {
 		return customWaypoints.remove(room, pos);
 	}
 
-	@Nullable
-	public static Vector2ic getMapEntrancePos() {
+	public static @Nullable Vector2ic getMapEntrancePos() {
 		return mapEntrancePos;
 	}
 
@@ -249,8 +239,7 @@ public class DungeonManager {
 		return mapRoomSize;
 	}
 
-	@Nullable
-	public static Vector2ic getPhysicalEntrancePos() {
+	public static @Nullable Vector2ic getPhysicalEntrancePos() {
 		return physicalEntrancePos;
 	}
 
@@ -261,7 +250,6 @@ public class DungeonManager {
 		return currentRoom;
 	}
 
-	@NotNull
 	public static DungeonBoss getBoss() {
 		return boss;
 	}
@@ -576,8 +564,7 @@ public class DungeonManager {
 		}));
 	}
 
-	@Nullable
-	private static Room newDebugRoom(String roomName, Room.Direction direction, PlayerEntity player, MapState map) {
+	private static @Nullable Room newDebugRoom(String roomName, Room.Direction direction, PlayerEntity player, MapState map) {
 		Room room = null;
 		int[] roomData;
 		// we will clean this up one day (no we won't)
@@ -725,8 +712,7 @@ public class DungeonManager {
 	 * @param type              the type of room to create
 	 * @param physicalPositions the physical positions of the room
 	 */
-	@Nullable
-	private static Room newRoom(Room.Type type, Vector2ic... physicalPositions) {
+	private static @Nullable Room newRoom(Room.Type type, Vector2ic... physicalPositions) {
 		try {
 			Room newRoom = new Room(type, physicalPositions);
 			for (Vector2ic physicalPos : physicalPositions) {
@@ -863,8 +849,7 @@ public class DungeonManager {
 	 * @see #rooms
 	 * @see DungeonMapUtils#getPhysicalRoomPos(Vec3d)
 	 */
-	@Nullable
-	private static Room getRoomAtPhysical(Vec3d pos) {
+	private static @Nullable Room getRoomAtPhysical(Vec3d pos) {
 		return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
 	}
 
@@ -876,16 +861,14 @@ public class DungeonManager {
 	 * @see #rooms
 	 * @see DungeonMapUtils#getPhysicalRoomPos(Vec3i)
 	 */
-	@Nullable
-	private static Room getRoomAtPhysical(Vec3i pos) {
+	private static @Nullable Room getRoomAtPhysical(Vec3i pos) {
 		return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
 	}
 
 	/**
 	 * Get the state of the map in the user's 9th slot.
 	 */
-	@Nullable
-	private static MapState getMapState(MinecraftClient client) {
+	private static @Nullable MapState getMapState(MinecraftClient client) {
 		if (client.player == null) return null;
 		return FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().getMainStacks().get(8)), client.world);
 	}
@@ -947,7 +930,7 @@ public class DungeonManager {
 	 *
 	 * @implNote Relies on the minimap to check for doors
 	 */
-	private static void getBloodRushDoorPos(@NotNull MapState map) {
+	private static void getBloodRushDoorPos(MapState map) {
 		if (mapEntrancePos == null || mapRoomSize == 0) {
 			LOGGER.error("[Skyblocker Dungeon Secrets] Dungeon map info missing with map entrance pos {} and map room size {}", mapEntrancePos, mapRoomSize);
 			return;

@@ -34,9 +34,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Comparator;
@@ -57,8 +56,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	private static final int BUTTON_HEIGHT = 50;
 	private final GenericContainerScreenHandler handler;
 	private final SortedSet<PlayerReference> references = new TreeSet<>();
-	@Nullable
-	private UUID hovered;
+	private @Nullable UUID hovered;
 
 	public LeapOverlay(GenericContainerScreenHandler handler) {
 		super(Text.literal("Skyblocker Leap Overlay"));
@@ -274,7 +272,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 
 		@Override
-		public int compareTo(@NotNull LeapOverlay.PlayerReference o) {
+		public int compareTo(LeapOverlay.PlayerReference o) {
 			return COMPARATOR.compare(this, o);
 		}
 

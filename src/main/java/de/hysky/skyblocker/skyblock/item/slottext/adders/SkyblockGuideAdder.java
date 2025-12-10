@@ -5,12 +5,12 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
 
 public class SkyblockGuideAdder extends SimpleSlotTextAdder {
 	private static final Pattern GUIDE_PATTERN = Pattern.compile("^(?<symbol>[✖✔])\\s*(?<text>.+)");
@@ -23,7 +23,7 @@ public class SkyblockGuideAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slotId < 18 || slotId > 44) return List.of();
 		Matcher match = GUIDE_PATTERN.matcher(stack.getName().getString());
 		if (!match.matches()) return List.of();

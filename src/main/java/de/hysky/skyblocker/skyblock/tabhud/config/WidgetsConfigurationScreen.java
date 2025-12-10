@@ -31,8 +31,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -114,7 +113,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	 * @param handler        the container handler
 	 * @param titleLowercase the title in lowercase
 	 */
-	private WidgetsConfigurationScreen(@Nullable GenericContainerScreenHandler handler, String titleLowercase, Location targetLocation, @Nullable WidgetManager.ScreenLayer widgetLayerToGoTo) {
+	private WidgetsConfigurationScreen(@Nullable GenericContainerScreenHandler handler, String titleLowercase, Location targetLocation, WidgetManager.@Nullable ScreenLayer widgetLayerToGoTo) {
 		super(Text.literal("Widgets Configuration"));
 		this.handler = handler;
 		this.titleLowercase = titleLowercase;
@@ -135,7 +134,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	 * @param handler        the container handler
 	 * @param titleLowercase the title in lowercase, to figure out where you are
 	 */
-	public WidgetsConfigurationScreen(@NotNull GenericContainerScreenHandler handler, String titleLowercase) {
+	public WidgetsConfigurationScreen(GenericContainerScreenHandler handler, String titleLowercase) {
 		this(handler, titleLowercase, Location.UNKNOWN, null);
 	}
 
@@ -192,7 +191,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		}
 	}
 
-	public void updateHandler(@NotNull GenericContainerScreenHandler newHandler, String titleLowercase) {
+	public void updateHandler(GenericContainerScreenHandler newHandler, String titleLowercase) {
 		if (handler == null) return;
 		handler.removeListener(this);
 		handler = newHandler;

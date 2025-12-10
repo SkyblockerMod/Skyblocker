@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui.state;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.mixins.accessors.TextRendererAccessor;
 import net.minecraft.client.font.BakedGlyph;
@@ -14,10 +14,8 @@ import net.minecraft.text.OrderedText;
 
 public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState {
 	private final int outlineColor;
-	@Nullable
-	private OutlineGlyphDrawable preparation;
-	@Nullable
-	private ScreenRect bounds;
+	private @Nullable OutlineGlyphDrawable preparation;
+	private @Nullable ScreenRect bounds;
 
 	public OutlinedTextGuiElementRenderState(
 			TextRenderer textRenderer,
@@ -83,9 +81,8 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 		return this.preparation;
 	}
 
-	@Nullable
 	@Override
-	public ScreenRect bounds() {
+	public @Nullable ScreenRect bounds() {
 		this.prepare();
 
 		return this.bounds;

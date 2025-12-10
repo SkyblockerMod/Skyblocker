@@ -16,7 +16,6 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.minecraft.command.CommandSource;
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -90,7 +89,6 @@ public class SpeedPresets {
 		return true;
 	}
 
-	@NotNull
 	public Object2IntMap<String> getPresets() {
 		// There's a non-null default value, so this is safe
 		return presets.getData();

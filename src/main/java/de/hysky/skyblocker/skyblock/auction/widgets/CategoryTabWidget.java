@@ -9,13 +9,11 @@ import net.minecraft.item.Item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 
-import org.jetbrains.annotations.NotNull;
-
 public class CategoryTabWidget extends SideTabButtonWidget {
 	private final SlotClickHandler slotClick;
 	private int slotId = -1;
 
-	public CategoryTabWidget(@NotNull ItemStack icon, SlotClickHandler slotClick) {
+	public CategoryTabWidget(ItemStack icon, SlotClickHandler slotClick) {
 		super(0, 0, false, icon);
 		this.slotClick = slotClick;
 	}

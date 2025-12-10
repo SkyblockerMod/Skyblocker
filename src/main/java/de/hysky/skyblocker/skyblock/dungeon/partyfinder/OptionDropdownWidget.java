@@ -11,9 +11,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -58,7 +57,7 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 		return getWidth() - 6;
 	}
 
-	public void setSelectedOption(@NotNull OptionDropdownWidget.Option entry) {
+	public void setSelectedOption(OptionDropdownWidget.Option entry) {
 		selectedOption = entry;
 	}
 
@@ -170,7 +169,7 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 		private final ItemStack icon;
 		private final int optionSlotId;
 
-		public Option(@NotNull String message, @Nullable ItemStack icon, int slotId) {
+		public Option(String message, @Nullable ItemStack icon, int slotId) {
 			this.message = message;
 			this.icon = icon;
 			this.optionSlotId = slotId;

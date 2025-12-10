@@ -19,9 +19,8 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -121,8 +120,7 @@ public class Trivia extends DungeonPuzzle {
 		}
 	}
 
-	@Nullable
-	private static BlockPos updateCorrectBlockPos() {
+	private static @Nullable BlockPos updateCorrectBlockPos() {
 		return switch (currentSolution) {
 			case "ⓐ" -> CHOICE_A;
 			case "ⓑ" -> CHOICE_B;
@@ -188,7 +186,6 @@ public class Trivia extends DungeonPuzzle {
 		});
 	}
 
-	@NotNull
 	private static List<String> getFairySoulsSizeString(@Nullable String location) {
 		return List.of("%d Fairy Souls".formatted(FairySouls.getFairySoulsSize(location)));
 	}

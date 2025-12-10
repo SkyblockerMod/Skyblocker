@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -8,7 +10,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A more bare-bones version of Vanilla's Popup Screen. Meant to be extended.

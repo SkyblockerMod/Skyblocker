@@ -20,14 +20,13 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TunerSolver.class);
@@ -135,7 +134,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (!isEnabled()) {
 			return List.of();
 		}

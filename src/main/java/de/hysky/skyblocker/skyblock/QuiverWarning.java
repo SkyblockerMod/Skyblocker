@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -9,11 +11,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 public class QuiverWarning {
-	@Nullable
-	private static Type warning = null;
+	private static @Nullable Type warning = null;
 
 	@Init
 	public static void init() {
