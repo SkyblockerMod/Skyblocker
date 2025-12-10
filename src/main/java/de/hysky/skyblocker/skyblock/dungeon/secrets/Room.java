@@ -34,7 +34,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
@@ -59,9 +58,7 @@ public class Room implements Tickable, Renderable {
 	private static final String LOCKED_CHEST = "That chest is locked!";
 	protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
 	protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
-	@NotNull
 	private final Type type;
-	@NotNull
 	final Set<Vector2ic> segments;
 	/**
 	 * Used to allow rooms to have their secrets unmarked after the map detects the green checkmark.
@@ -78,7 +75,6 @@ public class Room implements Tickable, Renderable {
 	/**
 	 * The shape of the room. See {@link #determineShape(IntSortedSet, IntSortedSet)}.
 	 */
-	@NotNull
 	private final Shape shape;
 	/**
 	 * The room data containing all rooms for a specific dungeon and {@link #shape}.
@@ -117,7 +113,7 @@ public class Room implements Tickable, Renderable {
 	private long lastChestSecretTime;
 	boolean fromWebsocket = false;
 
-	public Room(@NotNull Type type, @NotNull Vector2ic... physicalPositions) {
+	public Room(Type type, Vector2ic... physicalPositions) {
 		this.type = type;
 		segments = Set.of(physicalPositions);
 		IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
@@ -128,7 +124,7 @@ public class Room implements Tickable, Renderable {
 	}
 
 	// Room from WS
-	Room(@NotNull Type type, Shape shape, Direction direction, String roomName, @NotNull Set<Vector2ic> segments, IntSortedSet segmentsX, IntSortedSet segmentsY) {
+	Room(Type type, Shape shape, Direction direction, String roomName, Set<Vector2ic> segments, IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		fromWebsocket = true;
 		this.type = type;
 		this.shape = shape;
@@ -143,17 +139,14 @@ public class Room implements Tickable, Renderable {
 		DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this);
 	}
 
-	@NotNull
 	public Type getType() {
 		return type;
 	}
 
-	@NotNull
 	public Set<Vector2ic> getSegments() {
 		return segments;
 	}
 
-	@NotNull
 	public Shape getShape() {
 		return shape;
 	}
@@ -185,12 +178,10 @@ public class Room implements Tickable, Renderable {
 		return "Room{type=%s, segments=%s, shape=%s, matchState=%s, name=%s, direction=%s, physicalCornerPos=%s}".formatted(type, Arrays.toString(segments.toArray()), shape, matchState, name, direction, physicalCornerPos);
 	}
 
-	@NotNull
 	private Shape determineShape(IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return determineShape(type, segments, segmentsX, segmentsY);
 	}
 
-	@NotNull
 	protected static Shape determineShape(Type type, Set<Vector2ic> segments, IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return switch (type) {
 			case PUZZLE -> Shape.PUZZLE;
@@ -215,7 +206,6 @@ public class Room implements Tickable, Renderable {
 		return possibleRooms;
 	}
 
-	@NotNull
 	private Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return switch (shape) {
 			case ONE_BY_ONE, TWO_BY_TWO, PUZZLE, TRAP, MINIBOSS -> Direction.values();
