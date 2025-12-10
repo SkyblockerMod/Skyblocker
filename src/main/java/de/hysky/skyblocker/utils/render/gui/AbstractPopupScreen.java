@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
  */
 public class AbstractPopupScreen extends Screen {
 	private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("popup/background");
-	private final Screen backgroundScreen;
+	public final Screen backgroundScreen;
 
 	protected AbstractPopupScreen(Text title, Screen backgroundScreen) {
 		super(title);
@@ -31,7 +31,7 @@ public class AbstractPopupScreen extends Screen {
 
 	@Override
 	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.backgroundScreen.renderBackground(context, mouseX, mouseY, delta);
+		this.backgroundScreen.renderBackground(context, -1, -1, delta);
 		context.createNewRootLayer();
 		this.backgroundScreen.render(context, -1, -1, delta);
 		context.createNewRootLayer();
