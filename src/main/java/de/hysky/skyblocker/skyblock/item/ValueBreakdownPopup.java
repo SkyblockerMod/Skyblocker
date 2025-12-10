@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -175,7 +174,6 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 			Map.entry(Calculation.Type.REFORGE, new BasicSingleAppender(
 					Text.literal("Reforge"),
 					s -> {
-						//noinspection UnstableApiUsage
 						String neuId = ItemConstants.REFORGES.get(s);
 						if (neuId == null) return Text.literal(s);
 						return ITEM_NAME.apply(neuId);
