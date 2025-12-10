@@ -39,14 +39,14 @@ public final class WikiLookupManager {
 	@Init
 	public static void init() {
 		officialWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.wikiLookup.official",
+				"key.skyblocker.wikiLookup.official",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_F4,
 				"key.categories.skyblocker"
 		));
 
 		fandomWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.wikiLookup.fandom",
+				"key.skyblocker.wikiLookup.fandom",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_F1,
 				"key.categories.skyblocker"

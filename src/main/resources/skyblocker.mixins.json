@@ -24,6 +24,7 @@
     "EquipmentRendererMixin",
     "FishingBobberEntityMixin",
     "FogRendererMixin",
+    "GameOptionsMixin",
     "GameRendererMixin",
     "GenericContainerScreenHandlerMixin",
     "GlCommandEncoderMixin",
