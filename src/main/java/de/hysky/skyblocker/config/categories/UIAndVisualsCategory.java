@@ -387,6 +387,7 @@ public class UIAndVisualsCategory {
 				//Fancy Bars
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.uiAndVisuals.bars"))
+						.tags(Text.literal("fancy status bars"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.bars.enableBars"))

@@ -17,6 +17,7 @@
   "key.skyblocker.itemProtection": "Protect Item",
   "key.skyblocker.slottext": "Slot Text",
   "key.skyblocker.toggleA": "Show tab HUD secondary view",
+  "key.skyblocker.valueBreadownPopup": "Open Value Breakdown Popup",
   "key.skyblocker.wikiLookup.fandom": "Fandom Wiki Lookup",
   "key.skyblocker.wikiLookup.official": "Hypixel Wiki Lookup",
 
@@ -124,7 +125,7 @@
   "skyblocker.config.chat.filter.hideHeal": "Hide Heal Messages",
   "skyblocker.config.chat.filter.hideImplosion": "Hide Implosion Message",
   "skyblocker.config.chat.filter.hideMana": "Hide Mana Consumption Messages from Action Bar",
-  "skyblocker.config.chat.filter.hideMana.@Tooltip": "Gives a better experience with FancyBar",
+  "skyblocker.config.chat.filter.hideMana.@Tooltip": "Gives a better experience when using Fancy Status Bars",
   "skyblocker.config.chat.filter.hideMimicKill": "Hide Mimic Kill Messages",
   "skyblocker.config.chat.filter.hideMimicKill.@Tooltip": "Filters the \"Mimic dead!\" and \"Mimic killed!\" messages from chat.",
   "skyblocker.config.chat.filter.hideMoltenWave": "Hide Molten Wave Message",
@@ -237,7 +238,7 @@
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD": "Enable Score HUD",
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.@Tooltip": "Displays the dungeon score in the HUD.",
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nNote: This only works correctly if death messages are enabled in your Skyblock settings. If you want to hide death messages, use this mod's Hide Player Death Messages setting instead to allow further processing of death messages.",
-  "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Score Scaling",
+  "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Score HUD Scaling",
 
   "skyblocker.config.dungeons.dungeonSplits": "Dungeon Splits Widget",
   "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "Enables a widget that shows your fastest times in each dungeon section.",
@@ -331,6 +332,7 @@
   "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "With these waypoints, you throw a pearl towards the block and at the same time AOTV up.",
   "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints": "Enable Prince Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints.@Tooltip": "Helpful for obtaining +1 Bonus Score in your runs with the Reborn attribute.",
+  "skyblocker.config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints": "Enable Redstone Key Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints": "Enable Dungeon Secret Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "Enable Stonk Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "Enable Superboom Waypoints",
@@ -612,6 +614,9 @@
   "skyblocker.config.helpers.chocolateFactory.sendTimeTowerReminderMessage": "Your Chocolate Factory's Time Tower has deactivated!",
   "skyblocker.config.helpers.chocolateFactory.straySound": "Stray Rabbit Sound",
   "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "Repeatedly plays a ding while a stray rabbit is present. If it is golden, the sound will be more frequent and different.",
+
+  "skyblocker.config.helpers.enableAnvilHelper": "Enable Anvil Helper",
+  "skyblocker.config.helpers.enableAnvilHelper.@Tooltip": "Displays a warning when combining enchantments of different levels.",
 
   "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
   "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip.",
@@ -1699,6 +1704,12 @@
   "skyblocker.updateRepository.success": "§aUpdated the local repository successfully.",
 
   "skyblocker.utils.locationUpdateError": "Failed to update your location! Some features of the mod may not work properly :(",
+
+  "skyblocker.valueBreakdownPopup": "Skyblocker Estimated Value Breakdown",
+  "skyblocker.valueBreakdownPopup.baseItemPrice": "Base item price: %s",
+  "skyblocker.valueBreakdownPopup.coins": "%s coins",
+  "skyblocker.valueBreakdownPopup.total": "Total: %s",
+  "skyblocker.valueBreakdownPopup.totalPricePercent": "%s%% of total price",
 
   "skyblocker.waypoints.chat.display": "Click to display waypoint at x: %s y: %s z: %s",
   "skyblocker.waypoints.chat.displayed": "Displayed temporary waypoint at x: %s y: %s z: %s %s",
