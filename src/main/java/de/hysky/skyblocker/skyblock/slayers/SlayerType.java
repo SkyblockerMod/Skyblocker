@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.StringIdentifiable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,7 @@ public enum SlayerType implements StringIdentifiable {
 
 	public static final Codec<SlayerType> CODEC = StringIdentifiable.createCodec(SlayerType::values);
 	public final String name;
-	public final EntityType<? extends Entity> mobType;
+	public final @Nullable EntityType<? extends Entity> mobType;
 	public final String bossName;
 	public final ItemStack icon;
 	public final int maxLevel;
@@ -38,7 +39,7 @@ public enum SlayerType implements StringIdentifiable {
 		}
 	}
 
-	SlayerType(String name, EntityType<? extends Entity> mobType, String bossName, ItemStack icon, int[] xpPerTier, int[] levelMilestones, List<String> minibossNames) {
+	SlayerType(String name, @Nullable EntityType<? extends Entity> mobType, String bossName, ItemStack icon, int[] xpPerTier, int[] levelMilestones, List<String> minibossNames) {
 		this.name = name;
 		this.mobType = mobType;
 		this.bossName = bossName;

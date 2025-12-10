@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 
 import java.util.Locale;
@@ -11,9 +10,9 @@ public class SwingAnimation {
 
 	public static boolean hasAbility(ItemStack stack) {
 		if (stack.isEmpty()) return false;
-		var lore = ItemUtils.getLore(stack);
+		var lore = stack.skyblocker$getLoreStrings();
 		for (var line : lore) {
-			if (ABILITY.matcher(line.getString().trim().toLowerCase(Locale.ENGLISH)).matches())
+			if (ABILITY.matcher(line.trim().toLowerCase(Locale.ENGLISH)).matches())
 				return true;
 		}
 		return false;
