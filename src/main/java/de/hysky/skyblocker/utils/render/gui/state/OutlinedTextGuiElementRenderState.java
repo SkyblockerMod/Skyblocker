@@ -28,8 +28,9 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 			int color,
 			int outlineColor,
 			boolean shadow,
+			boolean trackEmpty,
 			ScreenRect clipBounds) {
-		super(textRenderer, orderedText, matrix, x, y, color, 0, shadow, clipBounds);
+		super(textRenderer, orderedText, matrix, x, y, color, 0, shadow, trackEmpty, clipBounds);
 		this.outlineColor = outlineColor;
 	}
 
@@ -38,7 +39,7 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 	 */
 	private GlyphDrawable prepareOutline() {
 		TextRendererAccessor accessor = (TextRendererAccessor) this.textRenderer;
-		TextRenderer.Drawer drawer = this.textRenderer.new Drawer(0.0f, 0.0f, this.outlineColor, false);
+		TextRenderer.Drawer drawer = this.textRenderer.new Drawer(0.0f, 0.0f, this.outlineColor, false, this.trackEmpty);
 
 		for (int i = -1; i <= 1; i++) {
 			for (int j = -1; j <= 1; j++) {
@@ -62,7 +63,7 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 	}
 
 	private GlyphDrawable prepareText() {
-		GlyphDrawable textPreparation = this.textRenderer.prepare(this.orderedText, (float) this.x, (float) this.y, this.color, this.shadow, this.backgroundColor);
+		GlyphDrawable textPreparation = this.textRenderer.prepare(this.orderedText, (float) this.x, (float) this.y, this.color, this.shadow, this.trackEmpty, this.backgroundColor);
 
 		ScreenRect screenRect = textPreparation.getScreenRect();
 		if (screenRect != null) {

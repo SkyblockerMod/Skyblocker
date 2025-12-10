@@ -68,8 +68,8 @@ public class QuickNavButton extends ClickableWidget {
 		this.renderInFront = renderInFront;
 	}
 
-	public int getAlpha() {
-		return alpha;
+	public float getAlpha() {
+		return alpha / 255f;
 	}
 
 	/**

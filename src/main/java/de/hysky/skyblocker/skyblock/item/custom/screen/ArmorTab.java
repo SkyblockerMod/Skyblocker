@@ -4,12 +4,14 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.DrawnTextConsumer;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.DrawContext.HoverType;
 import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tab.GridScreenTab;
@@ -233,7 +235,7 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 	}
 
 	private class ModelFieldContainer extends ContainerWidget {
-		private final Text TEXT = Text.translatable("skyblocker.customization.armor.modelOverride").formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
+		private final Text text = Text.translatable("skyblocker.customization.armor.modelOverride").formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
 		private final SimplePositioningWidget containerLayout;
 		private final IdentifierTextField field;
 
@@ -298,15 +300,17 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 					getWidth(),
 					getHeight()
 			);
+			this.field.render(context, mouseX, mouseY, deltaTicks);
+			this.drawLabel(context.getTextConsumer(HoverType.NONE));
+		}
+
+		private void drawLabel(DrawnTextConsumer drawer) {
 			int padding = 5;
 			int startY = getY() + padding;
-			drawScrollableText(context, CLIENT.textRenderer, TEXT, getX() + padding, startY, getRight() - padding, startY + 9, -1);
-			field.render(context, mouseX, mouseY, deltaTicks);
+			drawer.marqueedText(text, getX() + padding, startY, getRight() - padding, startY + 9, -1);
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-
-		}
+		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 	}
 }

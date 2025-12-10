@@ -5,7 +5,6 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -66,7 +65,8 @@ public abstract sealed class TrimElementButton extends PressableWidget permits T
 	}
 
 	@Override
-	public void drawMessage(DrawContext context, TextRenderer textRenderer, int color) {
+	public void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		this.drawButton(context);
 		draw(context);
 	}
 

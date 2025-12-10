@@ -20,7 +20,7 @@ import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.ToggleButtonWidget;
+import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.input.CharInput;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.item.ItemStack;
@@ -48,8 +48,8 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 	private static String searchQuery = "";
 	private static int currentPage = 0;
 	private static List<Donation> donations = new ArrayList<>();
-	private final ToggleButtonWidget nextPageButton;
-	private final ToggleButtonWidget prevPageButton;
+	private final TexturedButtonWidget nextPageButton;
+	private final TexturedButtonWidget prevPageButton;
 	private final TextFieldWidget searchField;
 	private final List<Donation> filteredDonations = new ArrayList<>();
 	private final List<String> excludedDonationIds = new ArrayList<>();
@@ -71,10 +71,8 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 		this.searchField.setPlaceholder(Text.translatable("gui.recipebook.search_hint").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
 
 		// Initialize page navigation buttons
-		this.nextPageButton = new ToggleButtonWidget(getX() + 93, getY() + 133, 12, 17, false);
-		this.nextPageButton.setTextures(RecipeBookResults.PAGE_FORWARD_TEXTURES);
-		this.prevPageButton = new ToggleButtonWidget(getX() + 38, getY() + 133, 12, 17, true);
-		this.prevPageButton.setTextures(RecipeBookResults.PAGE_BACKWARD_TEXTURES);
+		this.nextPageButton = new TexturedButtonWidget(getX() + 93, getY() + 133, 12, 17, RecipeBookResults.PAGE_FORWARD_TEXTURES, _ignored -> {});
+		this.prevPageButton = new TexturedButtonWidget(getX() + 38, getY() + 133, 12, 17, RecipeBookResults.PAGE_BACKWARD_TEXTURES, _ignored -> {});
 
 		donations = MuseumItemCache.getDonations();
 

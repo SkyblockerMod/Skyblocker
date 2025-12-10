@@ -63,7 +63,6 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	public LeapOverlay(GenericContainerScreenHandler handler) {
 		super(Text.literal("Skyblocker Leap Overlay"));
 		this.handler = handler;
-		this.client = CLIENT; //Stops an NPE due to items being sent (and calling clearAndInit) before the main init method can initialize this field
 
 		//Listen for slot updates
 		handler.addListener(this);
@@ -206,12 +205,12 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		private final PlayerReference reference;
 
 		private PlayerButton(int x, int y, int width, int height, PlayerReference reference) {
-			super(x, y, width, height, Text.empty(), b -> {}, ts -> Text.empty());
+			super(x, y, width, height, net.minecraft.text.Text.empty(), b -> {}, ts -> net.minecraft.text.Text.empty());
 			this.reference = reference;
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+		protected void drawIcon(DrawContext context, int mouseX, int mouseY, float delta) {
 			Identifier texture = this.isSelected() || reference.uuid().equals(LeapOverlay.this.hovered) ? BUTTON_HIGHLIGHTED : BUTTON;
 			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
@@ -236,7 +235,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			matrices.pushMatrix();
 			matrices.translate(baseX + HEAD_SIZE * scale + 8, centreY - halfFontHeight);
 			matrices.scale(scale, scale);
-			context.drawTextWithShadow(CLIENT.textRenderer, Text.literal(reference.name()), 0, 0, Colors.WHITE);
+			context.drawTextWithShadow(CLIENT.textRenderer, net.minecraft.text.Text.literal(reference.name()), 0, 0, Colors.WHITE);
 			matrices.popMatrix();
 
 			if (reference.status() != null) {

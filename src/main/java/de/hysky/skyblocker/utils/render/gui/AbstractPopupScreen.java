@@ -52,7 +52,7 @@ public class AbstractPopupScreen extends Screen {
 
 	@Override
 	protected void refreshWidgetPositions() {
-		this.backgroundScreen.resize(this.client, this.width, this.height);
+		this.backgroundScreen.resize(this.width, this.height);
 	}
 
 	@Override

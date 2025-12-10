@@ -338,8 +338,6 @@ public class CustomizeNameWidget extends ContainerWidget {
 	}
 
 	private class FormattingButton extends PressableWidget {
-
-
 		private boolean enabled;
 		private final Formatting format;
 		private final Predicate<Style> isEnabled;
@@ -380,10 +378,13 @@ public class CustomizeNameWidget extends ContainerWidget {
 		@Override
 		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 
+		@Override
+		protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+			this.drawButton(context);
+		}
 	}
 
 	private class ColorButton extends PressableWidget {
-
 		private final Formatting color;
 		private final int intColor;
 
@@ -400,7 +401,8 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void drawMessage(DrawContext context, TextRenderer textRenderer, int color) {
+		public void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+			this.drawButton(context);
 			context.fill(getX() + 2, getY() + 2, getRight() - 2, getBottom() - 2, intColor);
 		}
 

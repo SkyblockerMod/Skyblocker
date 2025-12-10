@@ -1,26 +1,26 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
 import net.minecraft.client.gui.Click;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.input.AbstractInput;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
 
 public class KeybindWidget extends ButtonWidget {
 	private final ShortcutKeyBinding keyBinding;
 	private final Runnable updateListener;
 	private boolean editing;
 
-	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, Text message, Runnable updateListener) {
+	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, net.minecraft.text.Text message, Runnable updateListener) {
 		this(keyBinding, x, y, width, height, message, DEFAULT_NARRATION_SUPPLIER, updateListener);
 	}
 
-	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, Text message, NarrationSupplier narrationSupplier, Runnable updateListener) {
+	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, net.minecraft.text.Text message, NarrationSupplier narrationSupplier, Runnable updateListener) {
 		this(keyBinding, x, y, width, height, message, button -> {}, narrationSupplier, updateListener);
 	}
 
-	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, Text message, PressAction onPress, NarrationSupplier narrationSupplier, Runnable updateListener) {
+	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, net.minecraft.text.Text message, PressAction onPress, NarrationSupplier narrationSupplier, Runnable updateListener) {
 		super(x, y, width, height, message, onPress, narrationSupplier);
 		this.keyBinding = keyBinding;
 		this.updateListener = updateListener;
@@ -73,5 +73,10 @@ public class KeybindWidget extends ButtonWidget {
 			return true;
 		}
 		return super.keyPressed(input);
+	}
+
+	@Override
+	protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		this.drawButton(context);
 	}
 }

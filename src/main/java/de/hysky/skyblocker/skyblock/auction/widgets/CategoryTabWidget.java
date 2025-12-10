@@ -21,7 +21,7 @@ public class CategoryTabWidget extends SideTabButtonWidget {
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void drawIcon(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.renderWidget(context, mouseX, mouseY, delta);
 
 		if (isMouseOver(mouseX, mouseY)) {
@@ -36,7 +36,7 @@ public class CategoryTabWidget extends SideTabButtonWidget {
 
 	@Override
 	public void onClick(Click click, boolean doubled) {
-		if (isToggled() || slotId == -1) return;
+		if (this.selected || slotId == -1) return;
 		super.onClick(click, doubled);
 		slotClick.click(slotId);
 	}
