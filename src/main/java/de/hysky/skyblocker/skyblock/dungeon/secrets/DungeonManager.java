@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -124,7 +125,7 @@ public class DungeonManager {
 	 * @implNote Not using {@link Registry#getId(Object) Registry#getId(Block)} and {@link Blocks Blocks} since this is also used by {@link de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
 	 */
 	@SuppressWarnings("JavadocReference")
-	protected static final Object2ByteMap<String> NUMERIC_ID = Object2ByteMaps.unmodifiable(new Object2ByteOpenHashMap<>(Map.ofEntries(
+	public static final Object2ByteMap<String> NUMERIC_ID = Object2ByteMaps.unmodifiable(new Object2ByteOpenHashMap<>(Map.ofEntries(
 			Map.entry("minecraft:stone", (byte) 1),
 			Map.entry("minecraft:diorite", (byte) 2),
 			Map.entry("minecraft:polished_diorite", (byte) 3),
@@ -1006,6 +1007,12 @@ public class DungeonManager {
 		}
 
 		return -1;
+	}
+
+	public static Optional<int[]> getRoomBlockData(String roomType, String roomName) {
+		var typeData = DungeonManager.ROOMS_DATA.get("catacombs").get(roomType);
+		if (typeData == null) return Optional.empty();
+		return Optional.ofNullable(typeData.get(roomName));
 	}
 
 	@VisibleForTesting

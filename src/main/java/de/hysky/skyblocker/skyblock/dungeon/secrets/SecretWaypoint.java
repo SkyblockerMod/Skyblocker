@@ -42,7 +42,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 	final int secretIndex;
 	final Category category;
 
-	SecretWaypoint(int secretIndex, Category category, String name, BlockPos pos) {
+	public SecretWaypoint(int secretIndex, Category category, String name, BlockPos pos) {
 		this(secretIndex, category == null ? Category.DEFAULT : category, Text.of(name), pos);
 	}
 
