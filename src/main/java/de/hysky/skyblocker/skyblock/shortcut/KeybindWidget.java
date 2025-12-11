@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.shortcut;
 
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawContext.HoverType;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.input.AbstractInput;
 import net.minecraft.client.input.KeyInput;
@@ -78,5 +79,6 @@ public class KeybindWidget extends ButtonWidget {
 	@Override
 	protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 		this.drawButton(context);
+		this.drawLabel(context.getTextConsumer(HoverType.NONE));
 	}
 }
