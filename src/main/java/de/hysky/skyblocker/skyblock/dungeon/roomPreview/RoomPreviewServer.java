@@ -15,6 +15,7 @@ import net.minecraft.resource.DataConfiguration;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.structure.StructurePlacementData;
+import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -22,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.gen.GeneratorOptions;
 import net.minecraft.world.gen.WorldPresets;
 import net.minecraft.world.gen.chunk.FlatChunkGenerator;
@@ -29,6 +31,7 @@ import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
 import net.minecraft.world.level.LevelInfo;
 import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +56,7 @@ public class RoomPreviewServer {
 		if (!isActive) return;
 		Scheduler.INSTANCE.schedule(RoomPreview::onJoin, 5);
 		applyNightVision(player);
+		player.sendMessage(Constants.PREFIX.get().append(Text.literal("Welcome to the Room Preview world. You can fly around, modify your custom secret waypoints, and more!")));
 		for (Text msg : errorMessages) {
 			player.sendMessage(msg);
 		}
@@ -70,10 +74,10 @@ public class RoomPreviewServer {
 	}
 
 	public static void createServer() {
-		var previousSave = CLIENT.getLevelStorage().resolve(SAVE_NAME).toFile();
+		File previousSave = CLIENT.getLevelStorage().resolve(SAVE_NAME).toFile();
 		FileUtils.deleteQuietly(previousSave);
 
-		var gameRules = new GameRules(DataConfiguration.SAFE_MODE.enabledFeatures());
+		GameRules gameRules = new GameRules(DataConfiguration.SAFE_MODE.enabledFeatures());
 		gameRules.get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null);
 		gameRules.get(GameRules.RANDOM_TICK_SPEED).set(0, null);
 
@@ -87,9 +91,7 @@ public class RoomPreviewServer {
 				},
 				null
 		);
-	}
 
-	public static void setupServer() {
 		IntegratedServer server = CLIENT.getServer();
 		if (server == null) return;
 		isActive = true;
@@ -109,13 +111,13 @@ public class RoomPreviewServer {
 		}
 
 		selectedRoom = roomName;
-		var template = server.getStructureTemplateManager().createTemplate(RoomStructure.getCompound(blockData.get()));
-		server.executeAsync(future ->
+		StructureTemplate template = server.getStructureTemplateManager().createTemplate(RoomStructure.getCompound(blockData.get()));
+		server.execute(() ->
 				template.place(server.getOverworld(), BlockPos.ORIGIN, BlockPos.ORIGIN, new StructurePlacementData(), server.getOverworld().random, 0));
 
 		// Add a world border to partially prevent falling out of the world
 		server.execute(() -> {
-			var border = server.getOverworld().getWorldBorder();
+			WorldBorder border = server.getOverworld().getWorldBorder();
 			border.setCenter(((double) template.getSize().getX() + 1) / 2, ((double) template.getSize().getZ() + 1) / 2);
 			border.setSize(Math.max(template.getSize().getX(), template.getSize().getZ()));
 		});

@@ -49,6 +49,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.serialization.JsonOps;
 
 import de.hysky.skyblocker.SkyblockerMod;
@@ -867,6 +869,7 @@ public class DungeonManager {
 	 */
 	@Nullable
 	private static Room getRoomAtPhysical(Vec3d pos) {
+		if (RoomPreviewServer.isActive) return currentRoom;
 		return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
 	}
 
@@ -880,6 +883,7 @@ public class DungeonManager {
 	 */
 	@Nullable
 	private static Room getRoomAtPhysical(Vec3i pos) {
+		if (RoomPreviewServer.isActive) return currentRoom;
 		return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
 	}
 
@@ -1023,6 +1027,15 @@ public class DungeonManager {
 
 	public static void setRunEnded() {
 		runEnded = true;
+	}
+
+	public static CompletableFuture<Suggestions> suggestRoomTypes(CommandContext<FabricClientCommandSource> ctx, SuggestionsBuilder suggestionsBuilder) {
+		return CommandSource.suggestMatching(ROOMS_DATA.get("catacombs").keySet(), suggestionsBuilder);
+	}
+
+	public static CompletableFuture<Suggestions> suggestRooms(String roomType, SuggestionsBuilder suggestionsBuilder) {
+		if (ROOMS_DATA.get("catacombs").get(roomType) == null) return Suggestions.empty();
+		return CommandSource.suggestMatching(ROOMS_DATA.get("catacombs").get(roomType).keySet(), suggestionsBuilder);
 	}
 
 	@VisibleForTesting

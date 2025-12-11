@@ -19,13 +19,12 @@ import java.util.regex.Matcher;
 
 public class PreviewRoom extends Room {
 	private static final Vector2i ORIGIN = new Vector2i(0, 0);
-	private static final Vector2i OFFSET = new Vector2i(-8, -8);
 
 	public PreviewRoom(String name) {
-		super(Type.ROOM, ORIGIN, OFFSET);
+		super(Type.ROOM, ORIGIN);
+		this.direction = Direction.NW;
 		this.matchState = MatchState.MATCHED;
 		this.name = name;
-		this.direction = Direction.NW;
 		this.physicalCornerPos = ORIGIN;
 		loadSecrets();
 	}

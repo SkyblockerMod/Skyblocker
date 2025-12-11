@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -29,17 +30,22 @@ public class RoomPreview {
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
 				dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("dungeons").
-						then(ClientCommandManager.literal("previewRoom").then(argument("type", StringArgumentType.string()).then(argument("room", StringArgumentType.string())
-								.executes(RoomPreview::startPreview)))))));
+						then(ClientCommandManager.literal("previewRoom").then(argument("type", StringArgumentType.string()).suggests(DungeonManager::suggestRoomTypes)
+								.then(argument("room", StringArgumentType.string()).suggests((ctx, sB) -> DungeonManager.suggestRooms(ctx.getArgument("type", String.class), sB))
+										.executes(RoomPreview::startPreview)))))));
 		ClientPlayConnectionEvents.JOIN.register((nH, pS, client) -> reset());
 		WorldRenderExtractionCallback.EVENT.register(RoomPreview::renderWorld);
 	}
 
 	private static int startPreview(CommandContext<FabricClientCommandSource> ctx) {
+		if (DungeonManager.getRoomBlockData(ctx.getArgument("type", String.class), ctx.getArgument("room", String.class)).isEmpty()) {
+			ctx.getSource().sendFeedback(Text.literal("Invalid room!").formatted(Formatting.RED));
+			return -1;
+		}
+
 		CLIENT.disconnect(Text.empty());
 		if (CLIENT.isIntegratedServerRunning() && CLIENT.getServer() != null) CLIENT.getServer().stop(true);
 		RoomPreviewServer.createServer();
-		RoomPreviewServer.setupServer();
 		RoomPreviewServer.loadRoom(ctx.getArgument("type", String.class), ctx.getArgument("room", String.class));
 		return Command.SINGLE_SUCCESS;
 	}
