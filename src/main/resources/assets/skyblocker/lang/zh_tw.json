@@ -1538,5 +1538,14 @@
     "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "點擊將彩蛋位置分享到聊天欄！",
     "skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip": "突出顯示Hoppity's Hunt期間的彩蛋。\n新發現的彩蛋會在啟用此功能的玩家之間自動共享。",
     "skyblocker.config.dungeons.map.showRoomLabels": "顯示房間名稱",
-    "skyblocker.tips.configureNewFeatures": "使用 /skyblocker config v%s 即可配置此次更新的新功能。"
+    "skyblocker.tips.configureNewFeatures": "使用 /skyblocker config v%s 即可配置此次更新的新功能。",
+    "skyblocker.config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints": "啟用Redstone Key路徑點",
+    "skyblocker.config.helpers.enableAnvilHelper": "啟用鐵砧助手",
+    "skyblocker.config.helpers.enableAnvilHelper.@Tooltip": "合併不同等級的附魔書時顯示警告。",
+    "skyblocker.valueBreakdownPopup.totalPricePercent": "總價值的%s%%",
+    "skyblocker.valueBreakdownPopup.total": "總價值：%s",
+    "key.skyblocker.valueBreadownPopup": "打開價值明細彈窗",
+    "skyblocker.valueBreakdownPopup": "Skyblocker估計價值明細",
+    "skyblocker.valueBreakdownPopup.baseItemPrice": "物品基礎價格：%s",
+    "skyblocker.valueBreakdownPopup.coins": "%s金幣"
 }
