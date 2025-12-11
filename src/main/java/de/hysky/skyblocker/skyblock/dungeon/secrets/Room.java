@@ -133,6 +133,10 @@ public class Room implements Tickable, Renderable {
 		return shape;
 	}
 
+	public Vector2ic getPhysicalCornerPos() {
+		return physicalCornerPos;
+	}
+
 	public boolean isMatched() {
 		return matchState == MatchState.DOUBLE_CHECKING || matchState == MatchState.MATCHED;
 	}
