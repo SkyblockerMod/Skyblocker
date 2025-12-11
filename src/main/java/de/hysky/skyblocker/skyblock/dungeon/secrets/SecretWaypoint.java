@@ -39,7 +39,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 	static final List<String> SECRET_ITEMS = List.of("Candycomb", "Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
 	private static final Supplier<DungeonsConfig.SecretWaypoints> CONFIG = () -> SkyblockerConfigManager.get().dungeons.secretWaypoints;
 	static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
-	final int secretIndex;
+	public final int secretIndex;
 	final Category category;
 
 	public SecretWaypoint(int secretIndex, Category category, String name, BlockPos pos) {

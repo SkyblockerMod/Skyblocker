@@ -29,6 +29,7 @@ import java.util.zip.InflaterInputStream;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.skyblock.dungeon.roomPreview.RoomPreviewServer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -924,7 +925,7 @@ public class DungeonManager {
 	 * @return whether room matching and dungeon secrets should be processed
 	 */
 	private static boolean shouldProcess() {
-		return Utils.isInDungeons();
+		return Utils.isInDungeons() || RoomPreviewServer.isActive;
 	}
 
 	/**
@@ -1013,6 +1014,15 @@ public class DungeonManager {
 		var typeData = DungeonManager.ROOMS_DATA.get("catacombs").get(roomType);
 		if (typeData == null) return Optional.empty();
 		return Optional.ofNullable(typeData.get(roomName));
+	}
+
+	public static void setCurrentRoom(Room room) {
+		room.segments.forEach((segment) -> rooms.put(segment, room));
+		currentRoom = room;
+	}
+
+	public static void setRunEnded() {
+		runEnded = true;
 	}
 
 	@VisibleForTesting

@@ -102,10 +102,10 @@ public class Room implements Tickable, Renderable {
 	 * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
 	 */
 	protected MatchState matchState = MatchState.MATCHING;
-	private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
-	private String name;
-	private Direction direction;
-	private Vector2ic physicalCornerPos;
+	protected Table<Integer, BlockPos, SecretWaypoint> secretWaypoints = HashBasedTable.create();
+	protected String name;
+	protected Direction direction;
+	protected Vector2ic physicalCornerPos;
 
 	protected List<Tickable> tickables = new ArrayList<>();
 	protected List<Renderable> renderables = new ArrayList<>();
@@ -190,7 +190,7 @@ public class Room implements Tickable, Renderable {
 	}
 
 	@NotNull
-	private Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
+	protected Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return switch (shape) {
 			case ONE_BY_ONE, TWO_BY_TWO, PUZZLE, TRAP, MINIBOSS -> Direction.values();
 			case ONE_BY_TWO, ONE_BY_THREE, ONE_BY_FOUR -> {
@@ -469,7 +469,6 @@ public class Room implements Tickable, Renderable {
 	 */
 	@SuppressWarnings("JavadocReference")
 	private void roomMatched() {
-		secretWaypoints = HashBasedTable.create();
 		List<DungeonManager.RoomWaypoint> roomWaypoints = DungeonManager.getRoomWaypoints(name);
 		if (roomWaypoints != null) {
 			for (DungeonManager.RoomWaypoint waypoint : roomWaypoints) {

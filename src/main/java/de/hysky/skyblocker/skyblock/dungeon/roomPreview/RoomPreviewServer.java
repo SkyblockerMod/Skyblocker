@@ -38,7 +38,7 @@ public class RoomPreviewServer {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final String SAVE_NAME = "skyblocker-room-preview";
 
-	static boolean isActive = false;
+	public static boolean isActive = false;
 	static String selectedRoom = "";
 	static List<Text> errorMessages = new ArrayList<>();
 
