@@ -10,6 +10,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.MinecraftClientAccessor;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -94,10 +95,13 @@ public class ApiAuthentication {
 
 				try {
 					tokenInfo = TokenInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(Http.sendPostRequest(AUTH_URL, request, CONTENT_TYPE))).getOrThrow();
-					int refreshAtTicks = (int) (((tokenInfo.expiresAt() - tokenInfo.issuedAt()) / 1000L) - 300L) * 20; //Refresh 5 minutes before expiry date
 
-					LOGGER.info("[Skyblocker Api Auth] Successfully refreshed api token.");
-					Scheduler.INSTANCE.schedule(ApiAuthentication::updateToken, refreshAtTicks, true);
+					RenderHelper.runOnRenderThread(() -> {
+						int refreshAtTicks = (int) (((tokenInfo.expiresAt() - tokenInfo.issuedAt()) / 1000L) - 300L) * 20; //Refresh 5 minutes before expiry date
+
+						LOGGER.info("[Skyblocker Api Auth] Successfully refreshed api token.");
+						Scheduler.INSTANCE.schedule(ApiAuthentication::updateToken, refreshAtTicks, true);
+					});
 				} catch (Exception e) {
 					//Try again in 15 minutes
 					logErrorAndScheduleRetry(Text.translatable("skyblocker.api.token.authFailure"), 900 * 20, "[Skyblocker Api Auth] Failed to refresh the api token! Some features might not work :(", e);
@@ -143,13 +147,15 @@ public class ApiAuthentication {
 	}
 
 	private static void logErrorAndScheduleRetry(Text warningMessage, int retryAfter, String logMessage, Object... logArgs) {
-		LOGGER.error(logMessage, logArgs);
-		if (retryAfter != -1) Scheduler.INSTANCE.schedule(ApiAuthentication::updateToken, retryAfter, true);
+		RenderHelper.runOnRenderThread(() -> {
+			LOGGER.error(logMessage, logArgs);
+			if (retryAfter != -1) Scheduler.INSTANCE.schedule(ApiAuthentication::updateToken, retryAfter, true);
 
-		if (CLIENT.player != null && !sentWarningOnce) {
-			CLIENT.player.sendMessage(Constants.PREFIX.get().append(warningMessage), false);
-			sentWarningOnce = true;
-		}
+			if (CLIENT.player != null && !sentWarningOnce) {
+				CLIENT.player.sendMessage(Constants.PREFIX.get().append(warningMessage), false);
+				sentWarningOnce = true;
+			}
+		});
 	}
 
 	public static @Nullable String getToken() {
