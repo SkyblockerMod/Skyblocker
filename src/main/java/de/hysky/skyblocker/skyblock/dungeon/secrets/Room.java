@@ -101,7 +101,7 @@ public class Room implements Tickable, Renderable {
 	 * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
 	 */
 	protected MatchState matchState = MatchState.MATCHING;
-	private @Nullable Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
+	private final Table<Integer, BlockPos, SecretWaypoint> secretWaypoints = HashBasedTable.create();
 	private @Nullable String name;
 	private @Nullable Direction direction;
 	private @Nullable Vector2ic physicalCornerPos;
@@ -245,7 +245,6 @@ public class Room implements Tickable, Renderable {
 	 * @param relativeWaypoint the secret waypoint relative to this room to add
 	 */
 	private void addCustomWaypoint(SecretWaypoint relativeWaypoint) {
-		if (secretWaypoints == null) return;
 		SecretWaypoint actualWaypoint = relativeWaypoint.relativeToActual(this);
 		secretWaypoints.put(actualWaypoint.secretIndex, actualWaypoint.pos, actualWaypoint);
 	}
@@ -285,7 +284,6 @@ public class Room implements Tickable, Renderable {
 	 * @param relativePos the position of the secret waypoint relative to this room
 	 */
 	private void removeCustomWaypoint(int secretIndex, BlockPos relativePos) {
-		if (secretWaypoints == null) return;
 		BlockPos actualPos = relativeToActual(relativePos);
 		secretWaypoints.remove(secretIndex, actualPos);
 	}
@@ -476,7 +474,6 @@ public class Room implements Tickable, Renderable {
 	@SuppressWarnings("JavadocReference")
 	private void roomMatched() {
 		assert name != null && direction != null && physicalCornerPos != null;
-		secretWaypoints = HashBasedTable.create();
 		List<DungeonManager.RoomWaypoint> roomWaypoints = DungeonManager.getRoomWaypoints(name);
 		if (roomWaypoints != null) {
 			for (DungeonManager.RoomWaypoint waypoint : roomWaypoints) {
@@ -500,7 +497,7 @@ public class Room implements Tickable, Renderable {
 		possibleRooms = getPossibleRooms(segmentsX, segmentsY);
 		checkedBlocks = new HashSet<>();
 		doubleCheckBlocks = 0;
-		secretWaypoints = null;
+		secretWaypoints.clear();
 		name = null;
 		direction = null;
 		physicalCornerPos = null;
@@ -559,7 +556,6 @@ public class Room implements Tickable, Renderable {
 		}
 
 		synchronized (this) {
-			if (secretWaypoints == null) return;
 			if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
 				for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
 					if (secretWaypoint.shouldRender()) {
@@ -574,7 +570,6 @@ public class Room implements Tickable, Renderable {
 	 * Sets {@link #lastChestSecret} as missing if message equals {@link #LOCKED_CHEST}.
 	 */
 	protected void onChatMessage(String message) {
-		if (secretWaypoints == null) return;
 		if (LOCKED_CHEST.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
 			secretWaypoints.column(lastChestSecret).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
 					.ifPresent(secretWaypoint -> markSecretsAndLogInfo(secretWaypoint, false, "[Skyblocker Dungeon Secrets] Detected locked chest interaction, setting secret #{} as missing", secretWaypoint.secretIndex));
@@ -604,7 +599,6 @@ public class Room implements Tickable, Renderable {
 	 * @see #markSecretsFoundAndLogInfo(SecretWaypoint, String, Object...)
 	 */
 	protected void onUseBlock(World world, BlockPos pos) {
-		if (secretWaypoints == null) return;
 		BlockState state = world.getBlockState(pos);
 		if ((state.isOf(Blocks.CHEST) || state.isOf(Blocks.TRAPPED_CHEST)) && lastChestSecretTime + 1000 < System.currentTimeMillis() || state.isOf(Blocks.PLAYER_HEAD) || state.isOf(Blocks.PLAYER_WALL_HEAD)) {
 			secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).filter(SecretWaypoint::isEnabled).findAny()
@@ -625,7 +619,6 @@ public class Room implements Tickable, Renderable {
 	 * @see #markSecretsFoundAndLogInfo(SecretWaypoint, String, Object...)
 	 */
 	protected void onItemPickup(ItemEntity itemEntity) {
-		if (secretWaypoints == null) return;
 		if (SecretWaypoint.SECRET_ITEMS.stream().noneMatch(itemEntity.getStack().getName().getString()::contains)) return;
 		secretWaypoints.values().stream().filter(SecretWaypoint::needsItemPickup).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(itemEntity))).filter(SecretWaypoint.getRangePredicate(itemEntity))
 				.ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected item {} removed from a {} secret, setting secret #{} as found", itemEntity.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
@@ -638,7 +631,6 @@ public class Room implements Tickable, Renderable {
 	 * @see #markSecretsFoundAndLogInfo(SecretWaypoint, String, Object...)
 	 */
 	protected void onBatRemoved(AmbientEntity bat) {
-		if (secretWaypoints == null) return;
 		secretWaypoints.values().stream().filter(SecretWaypoint::isBat).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(bat))).filter(SecretWaypoint.getRangePredicate(bat))
 				.ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} killed for a {} secret, setting secret #{} as found", bat.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
 	}
@@ -668,7 +660,6 @@ public class Room implements Tickable, Renderable {
 	}
 
 	protected boolean markSecrets(int secretIndex, boolean found) {
-		if (secretWaypoints == null) return false;
 		Map<BlockPos, SecretWaypoint> secret = secretWaypoints.row(secretIndex);
 		if (secret.isEmpty()) {
 			return false;
@@ -680,12 +671,10 @@ public class Room implements Tickable, Renderable {
 
 	protected void markAllSecrets(boolean found) {
 		//Prevent a crash if this runs before the room is matched or something
-		if (secretWaypoints == null) return;
 		secretWaypoints.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
 	}
 
 	protected int getSecretCount() {
-		if (secretWaypoints == null) return 0;
 		return secretWaypoints.rowMap().size();
 	}
 
