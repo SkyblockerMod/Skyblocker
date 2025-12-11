@@ -49,7 +49,7 @@
     "skyblocker.config.chat.filter.hideCombo": "Comboのメッセージを非表示にする",
     "skyblocker.config.chat.filter.hideAutopet": "Autopetのメッセージを非表示にする",
     "skyblocker.config.chat.filter.hideMana": "マナの使用表示をアクションバーから非表示にする",
-    "skyblocker.config.chat.filter.hideMana.@Tooltip": "FancyBarでより良くできます",
+    "skyblocker.config.chat.filter.hideMana.@Tooltip": "Fancy Status Barsと一緒に使用すると、より良いエクスペリエンスが提供されます",
     "key.skyblocker.toggleA": "TabのHUDのセカンダリビューを表示",
     "skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays": "テレポート先の表示を有効にする",
     "skyblocker.config.uiAndVisuals.teleportOverlay": "テレポート先の表示",
@@ -119,7 +119,7 @@
     "skyblocker.config.dungeons.puzzle.solveTicTacToe": "三目並べのソルバー",
     "skyblocker.config.otherLocations.end": "ジ・エンド",
     "skyblocker.config.dungeons.dungeonChestProfit.neutralColor": "中性の色",
-    "skyblocker.config.dungeons.dungeonScore.scoreScaling": "得点の大きさ",
+    "skyblocker.config.dungeons.dungeonScore.scoreScaling": "得点HUDの大きさ",
     "skyblocker.config.dungeons.dungeonChestProfit.neutralThreshold.@Tooltip": "この数値以下の利益は中性に見される。",
     "skyblocker.config.dungeons.mimicMessage": "Mimicメッセージ",
     "skyblocker.config.farming.garden": "庭園",
@@ -713,5 +713,7 @@
     "skyblocker.dwarvenMines.metalDetectorHelper.possible": "可能",
     "skyblocker.wikiLookup.noArticleFound.fandom": "Fandom wikiでこのアイテムの記事が見つかりません…",
     "skyblocker.museum.hud.skyblockXp": "SkyBlock経験値",
-    "skyblocker.events.crops": "作物："
+    "skyblocker.events.crops": "作物：",
+    "skyblocker.config.slayer.callMaddox": "Maddoxに電話する",
+    "skyblocker.config.quickNav.button": "ボタン%s"
 }
