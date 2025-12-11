@@ -47,7 +47,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.Codecs;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -569,7 +569,7 @@ public final class ItemUtils {
 	 */
 	public static OptionalInt getItemCountInSack(ItemStack itemStack, List<String> lines, boolean isLore) {
 		// Gemstones sack is a special case, it has a different 2nd line.
-		if (lines.size() < 2 || !StringUtils.endsWithAny(lines.get(isLore ? 0 : 1), "Sack", "Gemstones")) {
+		if (lines.size() < 2 || !Strings.CS.endsWithAny(lines.get(isLore ? 0 : 1), "Sack", "Gemstones")) {
 			return OptionalInt.empty();
 		}
 
