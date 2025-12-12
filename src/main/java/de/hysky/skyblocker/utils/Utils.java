@@ -29,6 +29,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.scoreboard.ScoreHolder;
@@ -136,7 +137,7 @@ public class Utils {
 	}
 
 	public static boolean isInDwarvenMines() {
-		return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFT;
+		return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFTS;
 	}
 
 	public static boolean isInTheRift() {
@@ -308,6 +309,10 @@ public class Utils {
 		return (!serverAddress.isEmpty() && serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS)) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
 	}
 
+	/**
+	 * @deprecated use type safe {@link #getArea()}.
+	 */
+	@Deprecated
 	public static String getIslandArea() {
 		try {
 			for (String sidebarLine : STRING_SCOREBOARD) {
@@ -625,5 +630,16 @@ public class Utils {
 		} catch (NumberFormatException e) {
 			return OptionalInt.empty();
 		}
+	}
+
+	/**
+	 * Get players eye height from the servers point of view based on it's minecraft version
+	 *
+	 * @return offset from players pos to their eyes
+	 */
+	public static float getEyeHeight(PlayerEntity player) {
+		if (player == null || !player.isSneaking()) return 1.62f;
+		//sneaking height is different depending on server
+		return getLocation().isModern() ? 1.27f : 1.54f;
 	}
 }
