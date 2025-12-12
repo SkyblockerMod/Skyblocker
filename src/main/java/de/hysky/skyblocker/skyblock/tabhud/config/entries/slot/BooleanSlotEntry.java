@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListScreen;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -15,7 +15,7 @@ import java.util.Locale;
 public class BooleanSlotEntry extends WidgetsListSlotEntry {
 	private final ButtonWidget enableButton;
 
-	public BooleanSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
+	public BooleanSlotEntry(WidgetsListScreen parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
 		boolean enabled = !icon.skyblocker$getLoreStrings().getLast().toLowerCase(Locale.ENGLISH).contains("enable");
 		enableButton = ButtonWidget.builder(enabled ? ENABLED_TEXT : DISABLED_TEXT, button -> this.parent.clickAndWaitForServer(this.slotId, 0))

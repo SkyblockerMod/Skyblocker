@@ -36,7 +36,7 @@ public record SlotText(Text text, TextPosition position) {
 		return new SlotText(text, TextPosition.TOP_RIGHT);
 	}
 
-	// The methods below use ObjectLists.singleton rather than List.of because List.of
+	// The methods below use ObjectLists.singleton rather than EntryList.of because EntryList.of
 	// has 1 more method call (a null check) and 1 more field set for no good reason.
 
 	/**

@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
@@ -10,6 +10,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
 import java.util.Set;
 
 @RegisterWidget
@@ -19,7 +20,7 @@ public class PickobulusHudWidget extends ComponentBasedWidget {
 	private static @Nullable PickobulusHudWidget instance;
 
 	public PickobulusHudWidget() {
-		super(TITLE, Formatting.BLUE.getColorValue(), "hud_pickobulus");
+		super(TITLE, Formatting.BLUE.getColorValue(), new Information("hud_pickobulus", Text.translatable("skyblocker.config.mining.enablePickobulusHelper"), AVAILABLE_LOCATIONS::contains));
 		instance = this;
 		update();
 	}
@@ -54,23 +55,12 @@ public class PickobulusHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
+	protected List<Component> getConfigComponents() {
+		return List.of(new PlainTextComponent(Text.literal("Total Blocks: 50")), new PlainTextComponent(Text.literal("Mithril: 45")), new PlainTextComponent(Text.literal("Titanium: 5")));
 	}
 
 	@Override
-	public boolean isEnabledIn(Location location) {
-		return AVAILABLE_LOCATIONS.contains(location) && SkyblockerConfigManager.get().mining.enablePickobulusHelper && PickobulusHelper.shouldRender();
-	}
-
-	@Override
-	public Text getDisplayName() {
-		return Text.translatable("skyblocker.config.mining.enablePickobulusHelper");
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!AVAILABLE_LOCATIONS.contains(location)) return;
-		SkyblockerConfigManager.get().mining.enablePickobulusHelper = enabled;
+	public boolean shouldRender() {
+		return PickobulusHelper.shouldRender();
 	}
 }

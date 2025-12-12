@@ -5,15 +5,11 @@ import java.awt.Color;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.skyblock.hunting.LassoHud;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.ColourController;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class HuntingCategory {
@@ -30,8 +26,6 @@ public class HuntingCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.description(Text.translatable("skyblocker.config.hunting.huntingBoxHelper.@Tooltip"))
 						.build())
-
-				//Hunting Mob Features
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.hunting.huntingMobs"))
 						.collapsed(false)
@@ -94,6 +88,49 @@ public class HuntingCategory {
 										})
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.colorPicker.Hideonleaf"))
+								.binding(defaults.hunting.huntingMobs.hideonleafGlowColor,
+										() -> config.hunting.huntingMobs.hideonleafGlowColor,
+										newValue -> {
+											config.hunting.huntingMobs.hideonleafGlowColor = newValue;
+										})
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightShellwise"))
+								.description(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip"))
+								.binding(defaults.hunting.huntingMobs.highlightShellwise,
+										() -> config.hunting.huntingMobs.highlightShellwise,
+										newValue -> config.hunting.huntingMobs.highlightShellwise = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise"))
+								.binding(defaults.hunting.huntingMobs.shellwiseGlowColor,
+										() -> config.hunting.huntingMobs.shellwiseGlowColor,
+										newValue -> {
+											config.hunting.huntingMobs.shellwiseGlowColor = newValue;
+										})
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightCoralot"))
+								.description(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightCoralot.@Tooltip"))
+								.binding(defaults.hunting.huntingMobs.highlightCoralot,
+										() -> config.hunting.huntingMobs.highlightCoralot,
+										newValue -> config.hunting.huntingMobs.highlightCoralot = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.colorPicker.Coralot"))
+								.binding(defaults.hunting.huntingMobs.coralotGlowColor,
+										() -> config.hunting.huntingMobs.coralotGlowColor,
+										newValue -> {
+											config.hunting.huntingMobs.coralotGlowColor = newValue;
+										})
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
 						.build())
 
 				//Lasso Hud
@@ -111,7 +148,7 @@ public class HuntingCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.hunting.lassoHud.hud.screen"))
 								.prompt(Text.translatable("text.skyblocker.open"))
-								.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, LassoHud.getInstance().getInternalID(), screen)))
+//								.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, LassoHud.getInstance().getInternalID(), screen)))
 								.build())
 
 						.build())
