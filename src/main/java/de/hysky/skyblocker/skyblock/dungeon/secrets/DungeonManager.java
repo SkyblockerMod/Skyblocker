@@ -808,7 +808,7 @@ public class DungeonManager {
 
 	/**
 	 * Calls {@link Room#onUseBlock(World, BlockHitResult)} on {@link #currentRoom} if {@link #isCurrentRoomMatched()}.
-	 * Used to detect finding {@link SecretWaypoint.Category.CHEST} and {@link SecretWaypoint.Category.WITHER} secrets.
+	 * Used to detect finding {@link SecretWaypoint.Category.CHEST} and {@link SecretWaypoint.Category.WITHER} secrets, as well as for hiding {@link SecretWaypoint.Category.LEVER} waypoints.
 	 *
 	 * @return {@link ActionResult#PASS}
 	 */
@@ -819,6 +819,12 @@ public class DungeonManager {
 			currentRoom.onUseBlock(world, hitResult.getBlockPos());
 		}
 		return ActionResult.PASS;
+	}
+
+	public static void onChestOpened(BlockPos pos) {
+		if (isCurrentRoomMatched()) {
+			currentRoom.onChestOpened(pos);
+		}
 	}
 
 	/**
