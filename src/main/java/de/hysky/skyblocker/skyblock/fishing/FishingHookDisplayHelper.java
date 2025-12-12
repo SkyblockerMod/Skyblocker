@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 public class FishingHookDisplayHelper {
 	protected static ArmorStandEntity fishingHookArmorStand;
-	private static final Identifier FISHING_HOOK_DISPLAY = Identifier.of(SkyblockerMod.NAMESPACE, "fishing_hook_display");
+	private static final Identifier FISHING_HOOK_DISPLAY = SkyblockerMod.id("fishing_hook_display");
 	static Pattern pattern = Pattern.compile("\\d.\\d");
 
 	@Init
@@ -72,7 +72,7 @@ public class FishingHookDisplayHelper {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (client.player == null || client.player.fishHook == null) return;
 		// Check the distance between the armor stand and the player's fishing hook
-		double distance = armorStand.getPos().distanceTo(client.player.fishHook.getPos());
+		double distance = armorStand.getEntityPos().distanceTo(client.player.fishHook.getEntityPos());
 		if (distance > 0.1) return; // Checks for a minimum distance of 0.1 blocks
 
 		Matcher matcher = pattern.matcher(armorStand.getName().getString());

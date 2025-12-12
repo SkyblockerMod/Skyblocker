@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -7,7 +8,7 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -36,8 +37,9 @@ public class ShortcutsConfigScreen extends Screen {
 		if (initialized) {
 			shortcutsConfigListWidget.setDimensions(width, height - 96);
 			shortcutsConfigListWidget.updatePositions();
+			shortcutsConfigListWidget.refreshScroll();
 		} else {
-			shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height - 96, 32, 24);
+			shortcutsConfigListWidget = new ShortcutsConfigListWidget(client, this, width, height - 96, 32);
 			initialized = true;
 		}
 		addDrawableChild(shortcutsConfigListWidget);
@@ -47,7 +49,7 @@ public class ShortcutsConfigScreen extends Screen {
 		buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), button -> {
 			if (client != null && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry<?> shortcutEntry) {
 				scrollAmount = shortcutsConfigListWidget.getScrollY();
-				client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.stringifiedTranslatable("skyblocker.shortcuts.deleteWarning", shortcutEntry), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
+				client.setScreen(new ConfirmScreen(confirmedAction -> deleteEntry(confirmedAction, shortcutEntry), Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.stringifiedTranslatable("skyblocker.shortcuts.deleteWarning", shortcutEntry), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
 			}
 		}).build();
 		adder.add(buttonDelete);
@@ -65,9 +67,9 @@ public class ShortcutsConfigScreen extends Screen {
 		updateButtons();
 	}
 
-	private void deleteEntry(boolean confirmedAction) {
+	private void deleteEntry(boolean confirmedAction, ShortcutsConfigListWidget.AbstractShortcutEntry entry) {
 		if (client != null) {
-			if (confirmedAction && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry<?> shortcutEntry) {
+			if (confirmedAction && entry instanceof ShortcutsConfigListWidget.ShortcutEntry<?> shortcutEntry) {
 				shortcutsConfigListWidget.removeEntry(shortcutEntry);
 			}
 			client.setScreen(this); // Re-inits the screen and keeps the old instance of ShortcutsConfigListWidget
@@ -82,8 +84,8 @@ public class ShortcutsConfigScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (super.mouseClicked(mouseX, mouseY, button)) {
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (super.mouseClicked(click, doubled)) {
 			return true;
 		}
 		// Only stop editing if super didn't consume the click
@@ -95,13 +97,13 @@ public class ShortcutsConfigScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(KeyInput input) {
 		// Process ESC before super to prevent closing the screen if we were editing a keybind
-		if (keyCode == InputUtil.GLFW_KEY_ESCAPE && shortcutsConfigListWidget.stopEditing()) {
+		if (input.isEscape() && shortcutsConfigListWidget.stopEditing()) {
 			shortcutsConfigListWidget.updateKeybinds();
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(input);
 	}
 
 	@Override

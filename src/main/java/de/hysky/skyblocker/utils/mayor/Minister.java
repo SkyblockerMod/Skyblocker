@@ -20,7 +20,7 @@ public record Minister(@NotNull String key, @NotNull String name, @NotNull Perk 
 	 */
 	@Override
 	public String toString() {
-		if (isEmpty()) return "Mayor.EMPTY";
+		if (isEmpty()) return "Minister.EMPTY";
 		return name;
 	}
 

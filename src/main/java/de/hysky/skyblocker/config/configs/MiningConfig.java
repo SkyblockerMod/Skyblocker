@@ -2,7 +2,7 @@ package de.hysky.skyblocker.config.configs;
 
 import net.minecraft.client.resource.language.I18n;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +14,8 @@ public class MiningConfig {
 	public boolean callMismyla = true;
 
 	public boolean redialOnBadSignal = true;
+
+	public boolean enablePickobulusHelper = true;
 
 	public DwarvenMines dwarvenMines = new DwarvenMines();
 
@@ -143,6 +145,8 @@ public class MiningConfig {
 		public boolean autoShareCorpses = false;
 
 		public boolean enableCorpseProfitTracker = true;
+
+		public boolean forceEnglishCorpseProfitTracker = true;
 	}
 
 	/**

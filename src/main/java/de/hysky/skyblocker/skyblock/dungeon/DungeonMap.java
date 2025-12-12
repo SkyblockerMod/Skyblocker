@@ -31,7 +31,6 @@ import net.minecraft.item.map.MapDecorationTypes;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
@@ -44,10 +43,10 @@ import java.util.UUID;
 
 public class DungeonMap {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonMap.class);
-	private static final Identifier DUNGEON_MAP = Identifier.of(SkyblockerMod.NAMESPACE, "dungeon_map");
+	private static final Identifier DUNGEON_MAP = SkyblockerMod.id("dungeon_map");
 	private static final MapIdComponent DEFAULT_MAP_ID_COMPONENT = new MapIdComponent(1024);
 	private static final MapRenderState MAP_RENDER_STATE = new MapRenderState();
-	private static MapIdComponent cachedMapIdComponent = null;
+	private static @Nullable MapIdComponent cachedMapIdComponent = null;
 
 	@Init
 	public static void init() {
@@ -97,13 +96,15 @@ public class DungeonMap {
 		context.getMatrices().scale(scale, scale);
 		context.drawMap(MAP_RENDER_STATE);
 
+		DungeonMapLabels.renderRoomNames(context);
+
 		UUID hoveredHead = null;
 		if (fancy) hoveredHead = renderPlayerHeads(context, client.world, state, mouseX / scale, mouseY / scale, enlarge);
 		context.getMatrices().popMatrix();
 		return hoveredHead;
 	}
 
-	public static MapIdComponent getMapIdComponent(ItemStack stack) {
+	public static @Nullable MapIdComponent getMapIdComponent(ItemStack stack) {
 		if (stack.isOf(Items.FILLED_MAP) && stack.contains(DataComponentTypes.MAP_ID)) {
 			MapIdComponent mapIdComponent = stack.get(DataComponentTypes.MAP_ID);
 			cachedMapIdComponent = mapIdComponent;
@@ -111,8 +112,7 @@ public class DungeonMap {
 		} else return cachedMapIdComponent != null ? cachedMapIdComponent : DEFAULT_MAP_ID_COMPONENT;
 	}
 
-	@Nullable
-	private static UUID renderPlayerHeads(DrawContext context, World world, MapState state, double mouseX, double mouseY, @Nullable UUID enlarge) {
+	private static @Nullable UUID renderPlayerHeads(DrawContext context, World world, MapState state, double mouseX, double mouseY, @Nullable UUID enlarge) {
 		if (!DungeonManager.isClearingDungeon()) return null;
 
 		// Used to index through the player list to find which dungeon player corresponds to which map decoration.
@@ -158,7 +158,7 @@ public class DungeonMap {
 				hovered = player.uuid();
 			}
 			HudHelper.drawPlayerHead(context, -4, -4, 8, player.uuid());
-			context.drawBorder(-5, -5, 10, 10, dungeonPlayer.dungeonClass().color());
+			HudHelper.drawBorder(context, -5, -5, 10, 10, dungeonPlayer.dungeonClass().color());
 			context.fill(-1, -7, 1, -5, dungeonPlayer.dungeonClass().color());
 			context.getMatrices().popMatrix();
 		}
@@ -178,10 +178,10 @@ public class DungeonMap {
 	}
 
 	public record PlayerRenderState(UUID uuid, String name, Vector2dc mapPos, float deg) {
-		public static PlayerRenderState of(@NotNull World world, @NotNull DungeonPlayerManager.DungeonPlayer dungeonPlayer, @NotNull MapDecoration mapDecoration) {
+		public static PlayerRenderState of(World world, DungeonPlayerManager.DungeonPlayer dungeonPlayer, MapDecoration mapDecoration) {
 			// Use the player entity if it exists, since it gives the most accurate position and rotation
 			PlayerEntity playerEntity = world.getPlayerByUuid(dungeonPlayer.uuid());
-			Vector2dc mapPos = playerEntity != null ? DungeonMapUtils.getMapPosFromPhysical(DungeonManager.getPhysicalEntrancePos(), DungeonManager.getMapEntrancePos(), DungeonManager.getMapRoomSize(), playerEntity.getPos()) : new Vector2d(mapDecoration.x() / 2d + 64, mapDecoration.z() / 2d + 64);
+			Vector2dc mapPos = playerEntity != null ? DungeonMapUtils.getMapPosFromPhysical(DungeonManager.getPhysicalEntrancePos(), DungeonManager.getMapEntrancePos(), DungeonManager.getMapRoomSize(), playerEntity.getEntityPos()) : new Vector2d(mapDecoration.x() / 2d + 64, mapDecoration.z() / 2d + 64);
 			float deg = playerEntity != null ? playerEntity.getYaw() : mapDecoration.rotation() * 360 / 16.0F;
 
 			return new PlayerRenderState(dungeonPlayer.uuid(), dungeonPlayer.name(), mapPos, deg);

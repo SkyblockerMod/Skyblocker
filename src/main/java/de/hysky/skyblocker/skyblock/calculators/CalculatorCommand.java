@@ -21,37 +21,37 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.arg
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class CalculatorCommand {
-    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	@Init
-    public static void init() {
-        ClientCommandRegistrationCallback.EVENT.register(CalculatorCommand::calculate);
-    }
+	public static void init() {
+		ClientCommandRegistrationCallback.EVENT.register(CalculatorCommand::calculate);
+	}
 
-    private static void calculate(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
-        dispatcher.register(literal(SkyblockerMod.NAMESPACE)
-                .then(literal("calculate")
-                        .then(argument("equation", StringArgumentType.greedyString())
-                                .executes(context -> doCalculation(getString(context, "equation")))
-                        )
-                )
-        );
-    }
+	private static void calculate(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
+				.then(literal("calculate")
+						.then(argument("equation", StringArgumentType.greedyString())
+								.executes(context -> doCalculation(getString(context, "equation")))
+						)
+				)
+		);
+	}
 
-    private static int doCalculation(String calculation) {
-        MutableText text = Constants.PREFIX.get();
-        try {
-            text.append(Text.literal(Formatters.DOUBLE_NUMBERS.format(Calculator.calculate(calculation))).formatted(Formatting.GREEN));
-        } catch (UnsupportedOperationException e) {
-            text.append(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").formatted(Formatting.RED));
-			text.append(Text.literal(": ").append(Text.translatable(e.getMessage())).formatted(Formatting.RED));
-        }
+	private static int doCalculation(String calculation) {
+		MutableText text = Constants.PREFIX.get();
+		try {
+			text.append(Text.literal(Formatters.DOUBLE_NUMBERS.format(Calculator.calculate(calculation))).formatted(Formatting.GREEN));
+		} catch (Calculator.CalculatorException e) {
+			text.append(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").formatted(Formatting.RED));
+			text.append(Text.literal(": ").append(Text.translatable(e.getMessage(), e.args)).formatted(Formatting.RED));
+		}
 
-        if (CLIENT == null || CLIENT.player == null) {
-            return 0;
-        }
+		if (CLIENT == null || CLIENT.player == null) {
+			return 0;
+		}
 
-        CLIENT.player.sendMessage(text, false);
-        return Command.SINGLE_SUCCESS;
-    }
+		CLIENT.player.sendMessage(text, false);
+		return Command.SINGLE_SUCCESS;
+	}
 }

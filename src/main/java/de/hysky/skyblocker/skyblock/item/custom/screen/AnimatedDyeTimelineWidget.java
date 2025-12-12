@@ -5,13 +5,16 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.OkLabColor;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.text.Text;
@@ -27,14 +30,14 @@ import java.util.List;
 
 public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closeable {
 
-	private static final Identifier GRADIENT_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "generated/dye_gradient");
+	private static final Identifier GRADIENT_TEXTURE = SkyblockerMod.id("generated/dye_gradient");
 
 	private static final int HORIZONTAL_MARGIN = 3;
 	private static final int VERTICAL_MARGIN = 1;
 
-	private final NativeImageBackedTexture gradientTexture;
-	private final int textureWidth;
-	private final int textureHeight;
+	private NativeImageBackedTexture gradientTexture;
+	private int textureWidth;
+	private int textureHeight;
 	private final FrameCallback frameCallback;
 
 	private String uuid = "";
@@ -44,12 +47,31 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	public AnimatedDyeTimelineWidget(int x, int y, int width, int height, FrameCallback frameCallback) {
 		super(x, y, width, height, Text.literal("Animated Dye Timeline"));
+		createImage(width, height);
+		this.frameCallback = frameCallback;
+	}
+
+	private void createImage(int width, int height) {
 		gradientTexture = new NativeImageBackedTexture("TimelineGradient", width - HORIZONTAL_MARGIN * 2, height - VERTICAL_MARGIN * 2, true);
 		assert gradientTexture.getImage() != null;
 		textureWidth = gradientTexture.getImage().getWidth();
 		textureHeight = gradientTexture.getImage().getHeight();
 		MinecraftClient.getInstance().getTextureManager().registerTexture(GRADIENT_TEXTURE, gradientTexture);
-		this.frameCallback = frameCallback;
+	}
+
+	/**
+	 * Called when the screen has been displayed again after a popup
+	 */
+	public void recreateImage() {
+		createImage(width, height);
+		createGradientTexture();
+	}
+
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		createImage(width, height);
+		createGradientTexture();
 	}
 
 	@Override
@@ -114,14 +136,14 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 			}
 		}
 		double v = (System.currentTimeMillis() - l) / 1000.d;
-		CustomizeArmorScreen.LOGGER.debug("Time taken to generate gradient texture: {}s", v);
+		CustomizeScreen.LOGGER.debug("Time taken to generate gradient texture: {}s", v);
 		gradientTexture.upload();
 	}
 
 	private int deletedIndex = -1;
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		boolean b = super.mouseClicked(mouseX, mouseY, button);
+	public boolean mouseClicked(Click click, boolean doubled) {
+		boolean b = super.mouseClicked(click, doubled);
 		if (b) {
 			if (deletedIndex != -1) {
 				setFocused(keyframes.get(deletedIndex));
@@ -129,8 +151,8 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 			}
 			return true;
 		}
-		if (isMouseOver(mouseX, mouseY)) {
-			mouseX -= getX() + HORIZONTAL_MARGIN;
+		if (isMouseOver(click.x(), click.y())) {
+			double mouseX = click.x() - getX() + HORIZONTAL_MARGIN;
 			KeyframeWidget e = new KeyframeWidget(0xFFFF0000, (float) (mouseX / (getWidth() - HORIZONTAL_MARGIN * 2 - 1)), true);
 			keyframes.add(e);
 			setFocused(e);
@@ -142,7 +164,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	public void setColor(int argb) {
 		if (focusedFrame == null) {
-			CustomizeArmorScreen.LOGGER.warn("Tried to set color when no frame was focused");
+			CustomizeScreen.LOGGER.warn("Tried to set color when no frame was focused");
 			return;
 		}
 		focusedFrame.color = argb;
@@ -171,7 +193,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		private final boolean draggable;
 
 		private KeyframeWidget(int color, float time, boolean draggable) {
-			super(0, AnimatedDyeTimelineWidget.this.getY(), 7, AnimatedDyeTimelineWidget.this.getHeight(), Text.literal("Keyframe"));
+			super(0, 0, 7, AnimatedDyeTimelineWidget.this.getHeight(), Text.literal("Keyframe"));
 			this.draggable = draggable;
 			this.color = color;
 			this.time = time;
@@ -180,7 +202,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 			context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color);
-			context.drawBorder(getX(), getY(), getWidth(), getHeight(), isFocused() ? -1 : Colors.GRAY);
+			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), isFocused() ? -1 : Colors.GRAY);
 		}
 
 		@Override
@@ -189,41 +211,46 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 			return (int) (parent.getX() + HORIZONTAL_MARGIN + time * (parent.getWidth() - HORIZONTAL_MARGIN * 2 - 1)) - 3;
 		}
 
+		@Override
+		public int getY() {
+			return AnimatedDyeTimelineWidget.this.getY();
+		}
+
 		private boolean dragging = false;
 		@Override
-		protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-			super.onDrag(mouseX, mouseY, deltaX, deltaY);
+		protected void onDrag(Click click, double offsetX, double offsetY) {
+			super.onDrag(click, offsetX, offsetY);
 			if (!draggable) {
 				return;
 			}
 			AnimatedDyeTimelineWidget parent = AnimatedDyeTimelineWidget.this;
-			mouseX -= parent.getX() + HORIZONTAL_MARGIN;
+			double mouseX = click.x() - parent.getX() + HORIZONTAL_MARGIN;
 			float v = (float) (mouseX / (parent.getWidth() - HORIZONTAL_MARGIN * 2 - 1));
 			time = Math.clamp(v, 0, 1);
 			dragging = true;
 		}
 
 		@Override
-		public void onRelease(double mouseX, double mouseY) {
-			super.onRelease(mouseX, mouseY);
+		public void onRelease(Click click) {
+			super.onRelease(click);
 			if (dragging) dataChanged();
 		}
 
 		@Override
-		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-			if (keyCode == GLFW.GLFW_KEY_DELETE) {
+		public boolean keyPressed(KeyInput input) {
+			if (input.key() == GLFW.GLFW_KEY_DELETE) {
 				deleteThis(false);
 			}
-			return super.keyPressed(keyCode, scanCode, modifiers);
+			return super.keyPressed(input);
 		}
 
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
-			if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && isMouseOver(mouseX, mouseY)) {
+		public boolean mouseClicked(Click click, boolean doubled) {
+			if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && isMouseOver(click.x(), click.y())) {
 				deleteThis(true);
 				return true;
 			}
-			return super.mouseClicked(mouseX, mouseY, button);
+			return super.mouseClicked(click, doubled);
 		}
 
 		private void deleteThis(boolean mouse) {
@@ -241,12 +268,21 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+
 	@Override
-	protected int getContentsHeightWithPadding() { return getHeight(); }
+	protected int getContentsHeightWithPadding() {
+		return getHeight();
+	}
+
 	@Override
-	protected double getDeltaYPerScroll() { return 0; }
+	protected double getDeltaYPerScroll() {
+		return 0;
+	}
+
 	@Override
-	public void close() { gradientTexture.close(); }
+	public void close() {
+		MinecraftClient.getInstance().getTextureManager().destroyTexture(GRADIENT_TEXTURE);
+	}
 
 	public interface FrameCallback {
 		void onFrameSelected(int color, float time);

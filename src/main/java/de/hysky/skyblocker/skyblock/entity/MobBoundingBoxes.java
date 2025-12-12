@@ -7,12 +7,10 @@ import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.glow.adder.DungeonGlowAdder;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.FrustumUtils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,13 +24,11 @@ public class MobBoundingBoxes {
 
 	@Init
 	public static void init() {
-		WorldRenderEvents.BEFORE_DEBUG_RENDER.register(MobBoundingBoxes::render);
+		WorldRenderExtractionCallback.EVENT.register(MobBoundingBoxes::extractRendering);
 	}
 
 	public static boolean shouldDrawMobBoundingBox(Entity entity) {
-		Box box = entity.getBoundingBox();
-
-		if (Utils.isInDungeons() && FrustumUtils.isVisible(box) && !entity.isInvisible()) {
+		if (Utils.isInDungeons() && !entity.isInvisible()) {
 			String name = entity.getName().getString();
 
 			return switch (entity) {
@@ -62,9 +58,9 @@ public class MobBoundingBoxes {
 		BOXES_2_RENDER.add(new RenderableBox(box, colorComponents));
 	}
 
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		for (RenderableBox box : BOXES_2_RENDER) {
-			box.render(context);
+			box.extractRendering(collector);
 		}
 
 		BOXES_2_RENDER.clear();
@@ -73,8 +69,8 @@ public class MobBoundingBoxes {
 	private record RenderableBox(Box box, float[] colorComponents) implements Renderable {
 
 		@Override
-		public void render(WorldRenderContext context) {
-			RenderHelper.renderOutline(context, box, colorComponents, 6, false);
+		public void extractRendering(PrimitiveCollector collector) {
+			collector.submitOutlinedBox(box, colorComponents, 6, false);
 		}
 	}
 }

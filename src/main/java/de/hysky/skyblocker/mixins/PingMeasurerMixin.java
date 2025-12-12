@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.skyblock.SmoothAOTE;
+import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.network.PingMeasurer;
@@ -11,13 +11,13 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 @Mixin(PingMeasurer.class)
 public class PingMeasurerMixin {
 
-    @ModifyArg(method = "onPingResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/MultiValueDebugSampleLogImpl;push(J)V"))
-    private long skyblocker$onPingResult(long ping) {
-        if (Utils.isInCrimson()) {
-            DojoManager.onPingResult(ping);
-        }
-        SmoothAOTE.updatePing(ping);
+	@ModifyArg(method = "onPingResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/MultiValueDebugSampleLogImpl;push(J)V"))
+	private long skyblocker$onPingResult(long ping) {
+		if (Utils.isInCrimson()) {
+			DojoManager.onPingResult(ping);
+		}
+		PredictiveSmoothAOTE.updatePing(ping);
 
-        return ping;
-    }
+		return ping;
+	}
 }

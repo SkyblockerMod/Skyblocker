@@ -9,14 +9,13 @@ import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Http.ApiResponse;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,26 +23,25 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Tracks the amount of secrets players get every run
  */
 public class SecretsTracker {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecretsTracker.class);
-	private static final Pattern TEAM_SCORE_PATTERN = Pattern.compile(" +Team Score: [0-9]+ \\([A-z+]+\\)");
 
-	private static volatile TrackedRun currentRun = null;
-	private static volatile TrackedRun lastRun = null;
+	private static volatile @Nullable TrackedRun currentRun = null;
+	private static volatile @Nullable TrackedRun lastRun = null;
 	private static volatile long lastRunEnded = 0L;
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.ALLOW_GAME.register(SecretsTracker::onMessage);
 		DungeonEvents.DUNGEON_STARTED.register(() -> calculate(RunPhase.START));
+		DungeonEvents.DUNGEON_ENDED.register(() -> calculate(RunPhase.END));
 	}
 
 	private static void calculate(RunPhase phase) {
+		if (!SkyblockerConfigManager.get().dungeons.playerSecretsTracker) return;
 		switch (phase) {
 			case START -> CompletableFuture.runAsync(() -> {
 				TrackedRun newlyStartedRun = new TrackedRun();
@@ -56,8 +54,9 @@ public class SecretsTracker {
 					if (!playerName.isEmpty()) {
 
 						//If the player was a part of the last run, had non-empty secret data and that run ended less than 5 mins ago then copy the secret data over
-						if (lastRun != null && System.currentTimeMillis() <= lastRunEnded + 300_000 && lastRun.playersSecretData().getOrDefault(playerName, SecretData.EMPTY) != SecretData.EMPTY) {
-							newlyStartedRun.playersSecretData().put(playerName, lastRun.playersSecretData().get(playerName));
+						TrackedRun previousRun = lastRun;
+						if (previousRun != null && System.currentTimeMillis() <= lastRunEnded + 300_000 && previousRun.playersSecretData().getOrDefault(playerName, SecretData.EMPTY) != SecretData.EMPTY) {
+							newlyStartedRun.playersSecretData().put(playerName, previousRun.playersSecretData().get(playerName));
 						} else {
 							newlyStartedRun.playersSecretData().put(playerName, getPlayerSecrets(playerName));
 						}
@@ -68,12 +67,12 @@ public class SecretsTracker {
 			});
 
 			case END -> CompletableFuture.runAsync(() -> {
-				//In case the game crashes from something
-				if (currentRun != null) {
+				TrackedRun thisRun = currentRun;
+				if (thisRun != null) {
 					Object2ObjectOpenHashMap<String, SecretData> secretsFound = new Object2ObjectOpenHashMap<>();
 
 					//Update secret counts
-					for (Entry<String, SecretData> entry : currentRun.playersSecretData().entrySet()) {
+					for (Entry<String, SecretData> entry : thisRun.playersSecretData().entrySet()) {
 						String playerName = entry.getKey();
 						SecretData startingSecrets = entry.getValue();
 						SecretData secretsNow = getPlayerSecrets(playerName);
@@ -86,48 +85,36 @@ public class SecretsTracker {
 
 					//Print the results all in one go, so its clean and less of a chance of it being broken up
 					for (Map.Entry<String, SecretData> entry : secretsFound.entrySet()) {
-						sendResultMessage(entry.getKey(), entry.getValue(), true);
+						RenderHelper.runOnRenderThread(() -> sendResultMessage(entry.getKey(), entry.getValue()));
 					}
 
 					//Swap the current and last run as well as mark the run end time
 					lastRunEnded = System.currentTimeMillis();
-					lastRun = currentRun;
+					lastRun = thisRun;
 					currentRun = null;
 				} else {
-					sendResultMessage(null, null, false);
+					RenderHelper.runOnRenderThread(SecretsTracker::sendFailureMessage);
 				}
 			});
 		}
 	}
 
-	private static void sendResultMessage(String player, SecretData secretData, boolean success) {
+	private static void sendResultMessage(String player, SecretData secretData) {
 		PlayerEntity playerEntity = MinecraftClient.getInstance().player;
-		if (playerEntity != null) {
-			if (success) {
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.feedback", Text.literal(player).append(" (" + DungeonPlayerManager.getClassFromPlayer(player).displayName() + ")").withColor(0xf57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))), false);
-			} else {
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.failFeedback")), false);
-			}
-		}
+		if (playerEntity == null) return;
+		playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.feedback", Text.literal(player).append(" (" + DungeonPlayerManager.getClassFromPlayer(player).displayName() + ")").withColor(0xF57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))), false);
+	}
+
+	private static void sendFailureMessage() {
+		PlayerEntity playerEntity = MinecraftClient.getInstance().player;
+		if (playerEntity == null) return;
+		playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.failFeedback")), false);
 	}
 
 	private static Text getCacheText(boolean cached, int cacheAge) {
-		return Text.literal("\u2139").styled(style -> style.withColor(cached ? 0xeac864 : 0x218bff).withHoverEvent(
+		//noinspection UnnecessaryUnicodeEscape
+		return Text.literal("\u2139").styled(style -> style.withColor(cached ? 0xEAC864 : 0x218BFF).withHoverEvent(
 				new HoverEvent.ShowText(cached ? Text.translatable("skyblocker.api.cache.HIT", cacheAge) : Text.translatable("skyblocker.api.cache.MISS"))));
-	}
-
-	private static boolean onMessage(Text text, boolean overlay) {
-		if (Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.playerSecretsTracker && !overlay) {
-			String message = Formatting.strip(text.getString());
-
-			try {
-				if (TEAM_SCORE_PATTERN.matcher(message).matches()) calculate(RunPhase.END);
-			} catch (Exception e) {
-				LOGGER.error("[Skyblocker] Encountered an unknown error while trying to track player secrets!", e);
-			}
-		}
-
-		return true;
 	}
 
 	private static String getPlayerNameAt(int index) {
@@ -178,6 +165,6 @@ public class SecretsTracker {
 	}
 
 	private enum RunPhase {
-        START, END
+		START, END
 	}
 }

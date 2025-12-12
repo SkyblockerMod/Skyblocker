@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import com.google.gson.JsonObject;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.Room.Type;
+
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.block.MapColor;
@@ -11,15 +12,19 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Position;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.Set;
+
 import org.jetbrains.annotations.Nullable;
 import org.joml.RoundingMode;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
-
-import java.util.*;
 
 public class DungeonMapUtils {
 	public static final byte BLACK_COLOR = MapColor.BLACK.getRenderColorByte(MapColor.Brightness.LOWEST);
@@ -38,15 +43,14 @@ public class DungeonMapUtils {
 	}
 
 	public static boolean isEntranceColor(MapState map, int x, int z) {
-		return getColor(map, x, z) == Room.Type.ENTRANCE.color;
+		return getColor(map, x, z) == Type.ENTRANCE.color;
 	}
 
 	public static boolean isEntranceColor(MapState map, @Nullable Vector2ic pos) {
-		return getColor(map, pos) == Room.Type.ENTRANCE.color;
+		return getColor(map, pos) == Type.ENTRANCE.color;
 	}
 
-	@Nullable
-	private static Vector2i getMapPlayerPos(MapState map) {
+	private static @Nullable Vector2i getMapPlayerPos(MapState map) {
 		for (MapDecoration decoration : map.getDecorations()) {
 			if (decoration.type().value().equals(MapDecorationTypes.FRAME.value())) {
 				return new Vector2i((decoration.x() >> 1) + 64, (decoration.z() >> 1) + 64);
@@ -55,8 +59,7 @@ public class DungeonMapUtils {
 		return null;
 	}
 
-	@Nullable
-	public static ObjectIntPair<Vector2ic> getMapEntrancePosAndRoomSize(@NotNull MapState map) {
+	public static @Nullable ObjectIntPair<Vector2ic> getMapEntrancePosAndRoomSize(MapState map) {
 		Vector2ic mapPos = getMapPlayerPos(map);
 		if (mapPos == null) {
 			return null;
@@ -124,8 +127,7 @@ public class DungeonMapUtils {
 	 * so subtracting the modulo will give the top left corner of the room shifted by {@code offset}.
 	 * Finally, {@code mapPos} is shifted back by {@code offset} to its intended position.
 	 */
-	@Nullable
-	public static Vector2ic getMapRoomPos(MapState map, Vector2ic mapEntrancePos, int mapRoomSize) {
+	public static @Nullable Vector2ic getMapRoomPos(MapState map, Vector2ic mapEntrancePos, int mapRoomSize) {
 		int mapRoomSizeWithGap = mapRoomSize + 4;
 		Vector2i mapPos = getMapPlayerPos(map);
 		if (mapPos == null) {
@@ -167,16 +169,14 @@ public class DungeonMapUtils {
 	/**
 	 * @see #getPhysicalRoomPos(double, double)
 	 */
-	@NotNull
-	public static Vector2ic getPhysicalRoomPos(@NotNull Vec3d pos) {
+	public static Vector2ic getPhysicalRoomPos(Vec3d pos) {
 		return getPhysicalRoomPos(pos.getX(), pos.getZ());
 	}
 
 	/**
 	 * @see #getPhysicalRoomPos(double, double)
 	 */
-	@NotNull
-	public static Vector2ic getPhysicalRoomPos(@NotNull Vec3i pos) {
+	public static Vector2ic getPhysicalRoomPos(Vec3i pos) {
 		return getPhysicalRoomPos(pos.getX(), pos.getZ());
 	}
 
@@ -190,7 +190,6 @@ public class DungeonMapUtils {
 	 * {@code physicalPos} is further shifted by 8 because Hypixel offset dungeons by 8 blocks in Skyblock 0.12.3.
 	 * Subtracting the modulo gives the northwest corner of the room shifted by 8. Finally, {@code physicalPos} is shifted back by 8 to its intended position.
 	 */
-	@NotNull
 	public static Vector2ic getPhysicalRoomPos(double x, double z) {
 		Vector2i physicalPos = new Vector2i(x + 8.5, z + 8.5, RoundingMode.TRUNCATE);
 		return physicalPos.sub(Math.floorMod(physicalPos.x(), 32), Math.floorMod(physicalPos.y(), 32)).sub(8, 8);
@@ -243,8 +242,8 @@ public class DungeonMapUtils {
 		};
 	}
 
-	public static BlockPos relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, JsonObject posJson) {
-		return relativeToActual(direction, physicalCornerPos, new BlockPos(posJson.get("x").getAsInt(), posJson.get("y").getAsInt(), posJson.get("z").getAsInt()));
+	public static BlockPos relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, DungeonManager.RoomWaypoint waypoint) {
+		return relativeToActual(direction, physicalCornerPos, new BlockPos(waypoint.x(), waypoint.y(), waypoint.z()));
 	}
 
 	public static BlockPos relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, BlockPos pos) {
@@ -265,16 +264,16 @@ public class DungeonMapUtils {
 		};
 	}
 
-	public static Room.Type getRoomType(MapState map, Vector2ic mapPos) {
+	public static @Nullable Type getRoomType(MapState map, Vector2ic mapPos) {
 		return switch (getColor(map, mapPos)) {
-			case GREEN_COLOR -> Room.Type.ENTRANCE;
-			case 63 -> Room.Type.ROOM;
-			case 66 -> Room.Type.PUZZLE;
-			case 62 -> Room.Type.TRAP;
-			case 74 -> Room.Type.MINIBOSS;
-			case 82 -> Room.Type.FAIRY;
-			case 18 -> Room.Type.BLOOD;
-			case 85 -> Room.Type.UNKNOWN;
+			case GREEN_COLOR -> Type.ENTRANCE;
+			case 63 -> Type.ROOM;
+			case 66 -> Type.PUZZLE;
+			case 62 -> Type.TRAP;
+			case 74 -> Type.MINIBOSS;
+			case 82 -> Type.FAIRY;
+			case 18 -> Type.BLOOD;
+			case 85 -> Type.UNKNOWN;
 			default -> null;
 		};
 	}

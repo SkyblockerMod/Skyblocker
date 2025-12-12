@@ -25,32 +25,32 @@ import java.util.Map;
  * EMI integration
  */
 public class SkyblockerEMIPlugin implements EmiPlugin {
-    public static final Identifier SIMPLIFIED_TEXTURES = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/emi_icons.png");
+	public static final Identifier SIMPLIFIED_TEXTURES = SkyblockerMod.id("textures/gui/emi_icons.png");
 
-    public static final EmiRecipeCategory SKYBLOCK_CRAFTING = new EmiRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, EmiStack.of(Items.CRAFTING_TABLE), new EmiTexture(SIMPLIFIED_TEXTURES, 0, 0, 16, 16));
-    public static final EmiRecipeCategory SKYBLOCK_FORGE = new EmiRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, EmiStack.of(Items.LAVA_BUCKET), new EmiTexture(SIMPLIFIED_TEXTURES, 16, 0, 16, 16));
+	public static final EmiRecipeCategory SKYBLOCK_CRAFTING = new EmiRecipeCategory(SkyblockCraftingRecipe.ID, EmiStack.of(Items.CRAFTING_TABLE), new EmiTexture(SIMPLIFIED_TEXTURES, 0, 0, 16, 16));
+	public static final EmiRecipeCategory SKYBLOCK_FORGE = new EmiRecipeCategory(SkyblockForgeRecipe.ID, EmiStack.of(Items.LAVA_BUCKET), new EmiTexture(SIMPLIFIED_TEXTURES, 16, 0, 16, 16));
 
-    protected static final Map<Identifier, EmiRecipeCategory> IDENTIFIER_CATEGORY_MAP = Map.of(
-            SkyblockCraftingRecipe.IDENTIFIER, SKYBLOCK_CRAFTING,
-            SkyblockForgeRecipe.IDENTIFIER, SKYBLOCK_FORGE
-    );
+	protected static final Map<Identifier, EmiRecipeCategory> IDENTIFIER_CATEGORY_MAP = Map.of(
+			SkyblockCraftingRecipe.ID, SKYBLOCK_CRAFTING,
+			SkyblockForgeRecipe.ID, SKYBLOCK_FORGE
+	);
 
-    @Override
-    public void register(EmiRegistry registry) {
+	@Override
+	public void register(EmiRegistry registry) {
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
-        ItemRepository.getItemsStream().map(EmiStack::of).forEach(emiStack -> {
-            registry.addEmiStack(emiStack);
-            registry.setDefaultComparison(emiStack, Comparison.compareData(emiStack1 -> emiStack1.getItemStack().getSkyblockId()));
-        });
-        registry.addCategory(SKYBLOCK_CRAFTING);
-        registry.addCategory(SKYBLOCK_FORGE);
-        registry.addWorkstation(SKYBLOCK_CRAFTING, EmiStack.of(Items.CRAFTING_TABLE));
-        registry.addWorkstation(SKYBLOCK_CRAFTING, EmiStack.of(Items.LAVA_BUCKET));
-        ItemRepository.getRecipesStream().map(SkyblockEmiRecipe::new).forEach(registry::addRecipe);
-        registry.addExclusionArea(InventoryScreen.class, (screen, consumer) -> {
-            if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return;
-            HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
-            consumer.accept(new Bounds(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
-        });
-    }
+		ItemRepository.getItemsStream().map(EmiStack::of).forEach(emiStack -> {
+			registry.addEmiStack(emiStack);
+			registry.setDefaultComparison(emiStack, Comparison.compareData(emiStack1 -> emiStack1.getItemStack().getSkyblockId()));
+		});
+		registry.addCategory(SKYBLOCK_CRAFTING);
+		registry.addCategory(SKYBLOCK_FORGE);
+		registry.addWorkstation(SKYBLOCK_CRAFTING, EmiStack.of(Items.CRAFTING_TABLE));
+		registry.addWorkstation(SKYBLOCK_CRAFTING, EmiStack.of(Items.LAVA_BUCKET));
+		ItemRepository.getRecipesStream().map(SkyblockEmiRecipe::new).forEach(registry::addRecipe);
+		registry.addExclusionArea(InventoryScreen.class, (screen, consumer) -> {
+			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return;
+			HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
+			consumer.accept(new Bounds(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+		});
+	}
 }

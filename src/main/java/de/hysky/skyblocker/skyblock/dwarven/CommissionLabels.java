@@ -5,12 +5,12 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
-import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.item.ItemStack;
@@ -37,7 +37,7 @@ public class CommissionLabels {
 
 	@Init
 	public static void init() {
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(CommissionLabels::render);
+		WorldRenderExtractionCallback.EVENT.register(CommissionLabels::extractRendering);
 		Scheduler.INSTANCE.scheduleCyclic(CommissionLabels::tick, 20);
 	}
 
@@ -89,9 +89,9 @@ public class CommissionLabels {
 
 		MiningConfig.CommissionWaypointMode currentMode = SkyblockerConfigManager.get().mining.commissionWaypoints.mode;
 		activeWaypoints.clear();
-		String location = Utils.getIslandArea().substring(2);
+		Area area = Utils.getArea();
 		//find commission locations in glacite
-		if (location.equals("Dwarven Base Camp") || location.equals("Glacite Tunnels") || location.equals("Glacite Mineshafts") || location.equals("Glacite Lake")) {
+		if (area.equals(Area.DWARVEN_BASE_CAMP) || area.equals(Area.GLACITE_TUNNELS) || area.equals(Area.GLACITE_MINESHAFTS) || area.equals(Area.GREAT_GLACITE_LAKE)) {
 			if (currentMode != MiningConfig.CommissionWaypointMode.BOTH && currentMode != MiningConfig.CommissionWaypointMode.GLACITE) {
 				return;
 			}
@@ -130,7 +130,7 @@ public class CommissionLabels {
 		if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
 			if (SkyblockerConfigManager.get().mining.commissionWaypoints.hideEmissaryOnPigeon) {
 				for (ItemStack stack : MinecraftClient.getInstance().player.getInventory().getMainStacks()) {
-					if (ItemUtils.getItemId(stack).equals("ROYAL_PIGEON")) {
+					if (stack.getSkyblockId().equals("ROYAL_PIGEON")) {
 						return;
 					}
 				}
@@ -143,15 +143,13 @@ public class CommissionLabels {
 
 	/**
 	 * render all the active waypoints
-	 *
-	 * @param context render context
 	 */
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		// Only render in the dwarven mines and not the mineshaft.
 		if (Location.DWARVEN_MINES != Utils.getLocation() || !enabled()) return;
 
 		for (MiningLocationLabel MiningLocationLabel : activeWaypoints) {
-			MiningLocationLabel.render(context);
+			MiningLocationLabel.extractRendering(collector);
 		}
 	}
 }

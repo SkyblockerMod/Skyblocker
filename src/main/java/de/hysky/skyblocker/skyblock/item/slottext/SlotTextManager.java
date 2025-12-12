@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.WardrobeKeybinds;
@@ -8,7 +9,28 @@ import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.SameColorTerminal;
 import de.hysky.skyblocker.skyblock.hunting.AttributeLevelHelper;
-import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.BestiaryLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.CatacombsLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.ChoosePetLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.CollectionAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.CommunityShopAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.EnchantmentLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.EssenceShopAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.EvolvingItemAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.HotfPerkLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.HotmPerkLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.MinionLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.NewYearCakeAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.PetLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.PotionLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.PowerStonesGuideAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.PrehistoricEggAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.RancherBootsSpeedAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.SkillLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.SkyblockGuideAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.SkyblockLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.StatsTuningAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.YourEssenceAdder;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
@@ -69,7 +91,7 @@ public class SlotTextManager {
 			new BestiaryLevelAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
-	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.skyblocker"));
+	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));
 	private static boolean keyHeld = false;
 
 	private SlotTextManager() {
@@ -82,14 +104,14 @@ public class SlotTextManager {
 				onScreenChange(screen);
 				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 			}
-			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
-				if (keyBinding.matchesKey(key, scancode)) {
+			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, input) -> {
+				if (keyBinding.matchesKey(input)) {
 					SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled = !SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled;
 					keyHeld = true;
 				}
 			});
-			ScreenKeyboardEvents.afterKeyRelease(screen).register((screen1, key, scancode, modifiers) -> {
-				if (keyBinding.matchesKey(key, scancode)) {
+			ScreenKeyboardEvents.afterKeyRelease(screen).register((screen1, input) -> {
+				if (keyBinding.matchesKey(input)) {
 					keyHeld = false;
 				}
 			});

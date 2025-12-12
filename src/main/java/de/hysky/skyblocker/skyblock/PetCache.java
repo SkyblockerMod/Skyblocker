@@ -130,7 +130,7 @@ public class PetCache {
 			//The index has nothing to do with the codepoint's position so we must track it ourselves
 			//The visitor automatically folds section symbols into regular Style instances so we don't need to care about those either :)
 			ordered.accept((index, style, codePoint) -> {
-				if (codePointIndex.getValue() == nameIndex) {
+				if (codePointIndex.intValue() == nameIndex) {
 					color.setValue(style.getColor().getRgb());
 
 					return false;
@@ -140,7 +140,7 @@ public class PetCache {
 				return true;
 			});
 
-			SkyblockItemRarity rarity = SkyblockItemRarity.fromColor(color.getValue());
+			SkyblockItemRarity rarity = SkyblockItemRarity.fromColor(color.intValue());
 
 			if (rarity != null && rarity != SkyblockItemRarity.UNKNOWN) {
 				//This is technically an internal class but I don't feel like copying it out right now and I got no plans to change/remove it :shrug:

@@ -63,17 +63,17 @@ public class ItemTickList<T> extends ElementListWidget<ItemTickList.ItemTickEntr
 		for (T item : allItems) {
 			ItemTickEntry entry = new ItemTickEntry(
 					CheckboxWidget.builder(Text.of(item.toString()), client.textRenderer)
-					              .checked(whitelist == filters.contains(item))
-					              .callback((checkbox1, checked) -> {
-									  if (whitelist) {
-										  if (checked) filters.add(item);
-										  else filters.remove(item);
-									  } else {
-										  if (checked) filters.remove(item);
-										  else filters.add(item);
-									  }
-					              })
-					              .build()
+								.checked(whitelist == filters.contains(item))
+								.callback((checkbox1, checked) -> {
+									if (whitelist) {
+										if (checked) filters.add(item);
+										else filters.remove(item);
+									} else {
+										if (checked) filters.remove(item);
+										else filters.add(item);
+									}
+								})
+								.build()
 			);
 			addEntry(entry);
 		}
@@ -94,13 +94,13 @@ public class ItemTickList<T> extends ElementListWidget<ItemTickList.ItemTickEntr
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			for (CheckboxWidget child : children) {
-				child.setX(x);
-				child.setY(y);
-				child.setWidth(entryWidth);
-				child.setHeight(entryHeight);
-				child.render(context, mouseX, mouseY, tickDelta);
+				child.setX(this.getX());
+				child.setY(this.getY());
+				child.setWidth(this.getWidth());
+				child.setHeight(this.getHeight());
+				child.render(context, mouseX, mouseY, deltaTicks);
 			}
 		}
 

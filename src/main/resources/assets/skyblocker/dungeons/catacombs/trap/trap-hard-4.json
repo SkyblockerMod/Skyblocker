@@ -1,0 +1,56 @@
+{
+  "info": {
+    "name": "Old Trap"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 26,
+      "y": 83,
+      "z": 4
+    },
+    {
+      "secretName": "2 - Lever",
+      "category": "lever",
+      "x": 28,
+      "y": 83,
+      "z": 3
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 23,
+      "y": 90,
+      "z": 17
+    },
+    {
+      "secretName": "3 - Bat",
+      "category": "bat",
+      "x": 22,
+      "y": 90,
+      "z": 9
+    },
+    {
+      "secretName": "4 - Lever",
+      "category": "lever",
+      "x": 4,
+      "y": 90,
+      "z": 8
+    },
+    {
+      "secretName": "4 - Stonk",
+      "category": "stonk",
+      "x": 6,
+      "y": 70,
+      "z": 6
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 4,
+      "y": 71,
+      "z": 9
+    }
+  ]
+}

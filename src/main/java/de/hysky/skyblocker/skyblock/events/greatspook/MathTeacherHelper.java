@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.events.greatspook;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Calculator;
 import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -30,7 +31,7 @@ public final class MathTeacherHelper {
 	 * Appends the result of the math expression to the message and a send in chat text that, well, sends the result in chat.
 	 */
 	public static Text onMessage(Text message, boolean overlay) {
-		if (overlay) return message;
+		if (overlay || !SkyblockerConfigManager.get().helpers.greatSpookEvent.enableMathTeacherHelper) return message;
 		List<Text> siblings = message.getSiblings();
 		if (message.getContent() != PlainTextContent.EMPTY || siblings.size() != 3) return message;
 		if (!siblings.getFirst().getString().equals("QUICK MATHS! ")) return message;
@@ -40,16 +41,16 @@ public final class MathTeacherHelper {
 			String result = "%.0f".formatted(Calculator.calculate(expression));
 
 			return message.copy()
-			              .append(" = ")
-			              .append(Text.literal(result)
-			                          .formatted(Formatting.AQUA))
-			              .append(ScreenTexts.SPACE)
-			              .append(Text.translatable("text.skyblocker.clickToSend")
-			                          .formatted(Formatting.GREEN)
-			                          .styled(style ->
-					                          style.withClickEvent(new ClickEvent.RunCommand("/ac " + result))
-					                               .withHoverEvent(new HoverEvent.ShowText(Constants.PREFIX.get().append(Text.translatable("text.skyblocker.clickToSend.@Tooltip"))))
-			                          ));
+						.append(" = ")
+						.append(Text.literal(result)
+									.formatted(Formatting.AQUA))
+						.append(ScreenTexts.SPACE)
+						.append(Text.translatable("text.skyblocker.clickToSend")
+									.formatted(Formatting.GREEN)
+									.styled(style ->
+											style.withClickEvent(new ClickEvent.RunCommand("/ac " + result))
+												.withHoverEvent(new HoverEvent.ShowText(Constants.PREFIX.get().append(Text.translatable("text.skyblocker.clickToSend.@Tooltip"))))
+									));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Math Teacher Helper] Failed to calculate math expression: {}", expression, e);
 			return message;

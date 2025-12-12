@@ -23,7 +23,7 @@ import net.minecraft.util.Formatting;
 
 public class GardenGlowAdder extends MobGlowAdder {
 	private static final GardenGlowAdder INSTANCE = new GardenGlowAdder();
-	private static final int PEST_COLOUR = 0xb62f00;
+	private static final int PEST_COLOUR = 0xB62F00;
 	private static final Pattern CURRENT_CROP_PATTERN = Pattern.compile("^ [○☘] (?<crop>.+) .+$");
 
 	@Init

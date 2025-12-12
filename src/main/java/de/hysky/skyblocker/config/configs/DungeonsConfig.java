@@ -13,6 +13,8 @@ public class DungeonsConfig {
 
 	public boolean salvageHelper = true;
 
+	public boolean onlyHighlightDonatedItems = false;
+
 	public boolean sellableItemsHighlighter = true;
 
 	public boolean bloodCampHelper = false;
@@ -51,6 +53,8 @@ public class DungeonsConfig {
 
 	public SecretWaypoints secretWaypoints = new SecretWaypoints();
 
+	public SecretSync secretSync = new SecretSync();
+
 	public MimicMessage mimicMessage = new MimicMessage();
 
 	public PrinceMessage princeMessage = new PrinceMessage();
@@ -67,6 +71,8 @@ public class DungeonsConfig {
 		public boolean fancyMap = true;
 
 		public boolean showSelfHead = true;
+
+		public boolean showRoomLabels = true;
 
 		public float mapScaling = 1f;
 
@@ -156,6 +162,10 @@ public class DungeonsConfig {
 		public boolean solveSimonSays = true;
 
 		public boolean solveLightsOn = true;
+
+		public boolean solveArrowAlign = true;
+
+		public boolean solveTargetPractice = true;
 	}
 
 	public static class Goldor {
@@ -186,6 +196,8 @@ public class DungeonsConfig {
 
 		public boolean enableWitherWaypoints = true;
 
+		public boolean enableRedstoneKeyWaypoints = true;
+
 		public boolean enableLeverWaypoints = true;
 
 		public boolean enableFairySoulWaypoints = true;
@@ -199,6 +211,14 @@ public class DungeonsConfig {
 		public boolean enablePrinceWaypoints = true;
 
 		public boolean enableDefaultWaypoints = true;
+	}
+
+	public static class SecretSync {
+		public boolean receiveRoomMatch = true;
+
+		public boolean receiveRoomSecretCount = true;
+
+		public boolean hideReceivedWaypoints = true;
 	}
 
 	public static class MimicMessage {

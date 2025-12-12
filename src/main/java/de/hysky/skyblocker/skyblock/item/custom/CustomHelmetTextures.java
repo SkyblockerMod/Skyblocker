@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.custom;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -13,8 +14,8 @@ import org.slf4j.Logger;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -23,12 +24,8 @@ import java.util.regex.Pattern;
  */
 public class CustomHelmetTextures {
 	private static final Logger LOGGER = LogUtils.getLogger();
-
 	public static final List<NamedTexture> TEXTURES = new ArrayList<>();
 	public static final Object2ObjectOpenHashMap<String, ProfileComponent> PROFILE_CACHE = new Object2ObjectOpenHashMap<>();
-
-	public record NamedTexture(String name, String texture, String internalName) {}
-
 	private static final Pattern LEVEL_PATTERN = Pattern.compile("\\[Lvl[^\\]]*\\]");
 
 	@Init
@@ -51,7 +48,7 @@ public class CustomHelmetTextures {
 						TEXTURES.add(new NamedTexture(name, texture, stack.getNeuName()));
 					});
 
-			TEXTURES.sort(java.util.Comparator.comparing(NamedTexture::internalName));
+			TEXTURES.sort(Comparator.comparing(NamedTexture::internalName));
 			LOGGER.info("[Skyblocker] Loaded and sorted {} helmet textures from repo", TEXTURES.size());
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to load helmet textures from repo", e);
@@ -68,8 +65,10 @@ public class CustomHelmetTextures {
 
 	public static ProfileComponent getProfile(String texture) {
 		return PROFILE_CACHE.computeIfAbsent(texture, (String t) ->
-				new ProfileComponent(Optional.of("custom"),
-						Optional.of(UUID.nameUUIDFromBytes(t.getBytes(StandardCharsets.UTF_8))),
-						ItemUtils.propertyMapWithTexture(t)));
+				ProfileComponent.ofStatic(new GameProfile(UUID.nameUUIDFromBytes(t.getBytes(StandardCharsets.UTF_8)),
+						"custom",
+						ItemUtils.propertyMapWithTexture(t))));
 	}
+
+	public record NamedTexture(String name, String texture, String internalName) {}
 }

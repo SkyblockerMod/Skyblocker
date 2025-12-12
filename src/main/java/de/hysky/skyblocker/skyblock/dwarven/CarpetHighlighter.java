@@ -1,26 +1,25 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import java.awt.Color;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Resettable;
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CarpetBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import java.awt.*;
 
 /**
  * Highlights unbreakable carpets within ore veins in the Dwarven Mines.
@@ -38,17 +37,17 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 	@Init
 	public static void init() {
 		INSTANCE.configCallback(SkyblockerConfigManager.get().mining.dwarvenMines.carpetHighlightColor);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(INSTANCE::render);
+		WorldRenderExtractionCallback.EVENT.register(INSTANCE::extractRendering);
 		SkyblockEvents.LOCATION_CHANGE.register(INSTANCE::onLocationChange);
 		Scheduler.INSTANCE.scheduleCyclic(INSTANCE::tick, TICK_INTERVAL);
 		ClientPlayConnectionEvents.JOIN.register(INSTANCE);
 	}
 
 	@Override
-	public void render(WorldRenderContext context) {
+	public void extractRendering(PrimitiveCollector collector) {
 		if (!isLocationValid || !SkyblockerConfigManager.get().mining.dwarvenMines.enableCarpetHighlighter) return;
 		for (BlockPos carpetLocation : CARPET_LOCATIONS) {
-			RenderHelper.renderFilled(context, Vec3d.of(carpetLocation), CARPET_BOUNDING_BOX, colorComponents, colorComponents[3], false);
+			collector.submitFilledBox(Vec3d.of(carpetLocation), CARPET_BOUNDING_BOX, colorComponents, colorComponents[3], false);
 		}
 	}
 

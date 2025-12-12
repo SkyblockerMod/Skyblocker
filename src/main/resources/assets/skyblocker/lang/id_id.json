@@ -1,6 +1,5 @@
 {
-    "key.categories.skyblocker": "Skyblocker",
-    "key.hotbarSlotLock": "Kunci Slot (Hotbar)",
+    "key.skyblocker.hotbarSlotLock": "Kunci Slot (Hotbar)",
     "skyblocker.config.title": "Pengaturan Skyblocker",
     "skyblocker.config.general": "Umum",
     "skyblocker.config.uiAndVisuals.bars": "Darah, Mana, Pertahanan & Bar XP",
@@ -43,7 +42,7 @@
     "skyblocker.config.shortcutToKeybindsSettings": "Ubah Tombol Pintasan",
     "skyblocker.waypoints.type.WAYPOINT": "Titik Jalan",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Peringatan Bahaya",
-    "key.itemPriceLookup": "Pencarian Bazar",
+    "key.skyblocker.itemPriceLookup": "Pencarian Bazar",
     "text.skyblocker.clickToSend": "[Klik Untuk Mengirim Pesan]",
     "text.skyblocker.clickToSend.@Tooltip": "Klik untuk mengirim pesan ini ke percakapan.",
     "skyblocker.itemTooltip.noData": "Tidak Ada Data",

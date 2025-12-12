@@ -9,15 +9,14 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
@@ -38,7 +37,7 @@ public class CustomArmorAnimatedDyes {
 	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register(CustomArmorAnimatedDyes::registerCommands);
-		WorldRenderEvents.START.register(ignored -> ++frames);
+		WorldRenderExtractionCallback.EVENT.register(ignored -> ++frames);
 		// have the animation restart on world change because why not?
 		SkyblockEvents.LOCATION_CHANGE.register(ignored -> cleanTrackers());
 	}
@@ -62,7 +61,7 @@ public class CustomArmorAnimatedDyes {
 
 		if (Utils.isOnSkyblock() && heldItem != null && !heldItem.isEmpty()) {
 			if (heldItem.isIn(ItemTags.DYEABLE)) {
-				String itemUuid = ItemUtils.getItemUuid(heldItem);
+				String itemUuid = heldItem.getUuid();
 
 				if (!itemUuid.isEmpty()) {
 					Object2ObjectOpenHashMap<String, AnimatedDye> customAnimatedDyes = SkyblockerConfigManager.get().general.customAnimatedDyes;

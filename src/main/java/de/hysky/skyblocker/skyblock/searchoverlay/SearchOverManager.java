@@ -4,16 +4,17 @@ import com.google.common.collect.Streams;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.museum.Donation;
 import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.util.NEUId;
@@ -35,9 +36,14 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -48,7 +54,6 @@ public class SearchOverManager {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Search Overlay");
 
-	private static final Pattern BAZAAR_ENCHANTMENT_PATTERN = Pattern.compile("Enchantment (\\D*) (\\d+)");
 	private static final String PET_NAME_START = "[Lvl {LVL}] ";
 
 	private static @Nullable SignBlockEntity sign = null;
@@ -91,6 +96,12 @@ public class SearchOverManager {
 					.executes(context -> startCommand(false, StringArgumentType.getString(context, "item"))
 					)));
 		}
+
+		if (!Debug.debugEnabled()) return;
+		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("debug")).then(literal("reloadSearchOverManager")).executes(ctx -> {
+			SearchOverManager.loadItems();
+			return Command.SINGLE_SUCCESS;
+		}));
 	}
 
 	private static int startCommand(boolean isAuction, String itemName) {
@@ -121,28 +132,20 @@ public class SearchOverManager {
 			for (Map.Entry<String, BazaarProduct> entry : products.entrySet()) {
 				BazaarProduct product = entry.getValue();
 				String id = product.id();
-				String name = product.name();
+
 				int sellVolume = product.sellVolume();
 				if (sellVolume == 0)
 					continue; //do not add items that do not sell e.g. they are not actual in the bazaar
 
 				// Format Enchantments
-				Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(name);
-				if (matcher.matches() && ItemRepository.getBazaarStocks().containsKey(id)) {
-					name = matcher.group(1);
-					if (!name.contains("Ultimate Wise") && !name.contains("Ultimate Jerry")) {
-						name = name.replace("Ultimate ", "");
-					}
+				if (id.startsWith("ENCHANTMENT_") && ItemRepository.getBazaarStocks().containsKey(id)) {
+					String neuId = ItemRepository.getBazaarStocks().get(id);
+					NEUItem neuItem = NEURepoManager.getItemByNeuId(neuId);
+					if (neuItem == null) continue;
 
-					// Fix Turbo-Cane / other turbo books
-					if (name.startsWith("Turbo ")) {
-						name = name.replace("Turbo ", "Turbo-");
-					}
-
-					String level = matcher.group(2);
-					name += " " + RomanNumerals.decimalToRoman(Integer.parseInt(level));
+					String name = Formatting.strip(neuItem.getLore().getFirst());
 					bazaarItems.add(name);
-					namesToNeuId.put(name, ItemRepository.getBazaarStocks().get(id));
+					namesToNeuId.put(name, neuId);
 					continue;
 				}
 
@@ -154,7 +157,7 @@ public class SearchOverManager {
 				//look up id for name
 				NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
 				if (neuItem != null) {
-					name = Formatting.strip(neuItem.getDisplayName());
+					String name = Formatting.strip(neuItem.getDisplayName());
 					bazaarItems.add(name);
 					namesToNeuId.put(name, id);
 				}
@@ -231,6 +234,7 @@ public class SearchOverManager {
 	 *
 	 * @param newValue new search value
 	 */
+	@SuppressWarnings("incomplete-switch")
 	protected static void updateSearch(String newValue) {
 		search = newValue;
 		//update the suggestion values
@@ -295,7 +299,7 @@ public class SearchOverManager {
 	protected static String getSuggestion(int index) {
 		if (suggestionsArray.length > index && suggestionsArray[index] != null) {
 			return suggestionsArray[index];
-		} else {//there are no suggestions yet
+		} else { //there are no suggestions yet
 			return "";
 		}
 	}
@@ -382,6 +386,7 @@ public class SearchOverManager {
 	/**
 	 * Add the current search value to the start of the history list and truncate to the max history value and save this to the config
 	 */
+	@SuppressWarnings("incomplete-switch")
 	private static void saveHistory() {
 		//save to history
 		UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;

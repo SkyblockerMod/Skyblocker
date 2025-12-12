@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class ForagingConfig {
 
@@ -17,9 +17,9 @@ public class ForagingConfig {
 
 		public boolean enableSeaLumiesHighlighter = true;
 
-		public boolean enableTreeBreakProgress = true;
-
 		public int seaLumiesMinimumCount = 3;
+
+		public boolean enableTreeBreakProgress = true;
 
 		public boolean enableTunerSolver = true;
 

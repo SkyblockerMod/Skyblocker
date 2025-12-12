@@ -9,7 +9,11 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
-import io.github.moulberry.repo.data.*;
+import io.github.moulberry.repo.data.NEUIngredient;
+import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.data.NEUKatUpgradeRecipe;
+import io.github.moulberry.repo.data.NEURecipe;
+import io.github.moulberry.repo.data.NEUTradeRecipe;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.item.ItemStack;
@@ -50,11 +54,11 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 		try {
 			double totalCraftCost = getItemCost(recipe, 0);
 			if (totalCraftCost <= 0) return;
-			int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
+			int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreStrings()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
 			recipe.getAllOutputs().stream().findFirst().ifPresent(outputIngredient ->
 					lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)
-								  .append(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), count))));
+								.append(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), count))));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: {}", stack.getNeuName(), e);
 		}

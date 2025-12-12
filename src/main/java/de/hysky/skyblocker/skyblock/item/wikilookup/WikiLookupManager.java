@@ -3,12 +3,15 @@ package de.hysky.skyblocker.skyblock.item.wikilookup;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.client.input.KeyInput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
+
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -39,17 +42,17 @@ public final class WikiLookupManager {
 	@Init
 	public static void init() {
 		officialWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.wikiLookup.official",
+				"key.skyblocker.wikiLookup.official",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_F4,
-				"key.categories.skyblocker"
+				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 
 		fandomWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.wikiLookup.fandom",
+				"key.skyblocker.wikiLookup.fandom",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_F1,
-				"key.categories.skyblocker"
+				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 	}
 
@@ -64,14 +67,14 @@ public final class WikiLookupManager {
 		return (official + "/" + fandom).toUpperCase(Locale.ENGLISH);
 	}
 
-	public static boolean handleWikiLookup(@NotNull Either<Slot, ItemStack> either, PlayerEntity player, int keyCode, int scanCode) {
-		return handleWikiLookup(null, either, player, keyCode, scanCode);
+	public static boolean handleWikiLookup(@NotNull Either<Slot, ItemStack> either, PlayerEntity player, KeyInput input) {
+		return handleWikiLookup(null, either, player, input);
 	}
 
-	public static boolean handleWikiLookup(@Nullable String title, @NotNull Either<Slot, ItemStack> either, PlayerEntity player, int keyCode, int scanCode) {
+	public static boolean handleWikiLookup(@Nullable String title, @NotNull Either<Slot, ItemStack> either, PlayerEntity player, KeyInput input) {
 		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
-			boolean official = officialWikiLookup.matchesKey(keyCode, scanCode);
-			if (official || fandomWikiLookup.matchesKey(keyCode, scanCode)) {
+			boolean official = officialWikiLookup.matchesKey(input);
+			if (official || fandomWikiLookup.matchesKey(input)) {
 				openWiki(title, either, player, official);
 				return true;
 			}

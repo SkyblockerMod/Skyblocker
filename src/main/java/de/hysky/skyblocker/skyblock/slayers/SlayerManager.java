@@ -25,6 +25,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,14 +51,18 @@ public class SlayerManager {
 	private static final Pattern PATTERN_LVL_UP = Pattern.compile("\\s*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9]\\s*");
 	private static final Title MINIBOSS_SPAWN = new Title(Text.translatable("skyblocker.slayer.miniBossSpawnAlert").formatted(Formatting.RED));
 	private static final Title BOSS_SPAWN = new Title(Text.translatable("skyblocker.slayer.bossSpawnAlert").formatted(Formatting.RED));
-	private static SlayerQuest slayerQuest;
-	private static BossFight bossFight;
+	private static @Nullable SlayerQuest slayerQuest;
+	private static @Nullable BossFight bossFight;
+
+	private static boolean slayerExpBuffActive = false;
+	private static float slayerExpBuff = 1.0f;
 
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(SlayerManager::onChatMessage);
 		SkyblockEvents.LOCATION_CHANGE.register(SlayerManager::onLocationChange);
 		SkyblockEvents.AREA_CHANGE.register(SlayerManager::onAreaChange);
+		SkyblockEvents.MAYOR_CHANGE.register(SlayerManager::onMayorChange);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfigManager.get().slayers.vampireSlayer.steakStakeUpdateFrequency);
@@ -69,12 +74,27 @@ public class SlayerManager {
 		}
 	}
 
+	private static void onMayorChange() {
+		slayerExpBuffActive = false;
+		slayerExpBuff = 1.0f;
+		// TODO: Remove when Aura leaves office
+		if (MayorUtils.getActivePerks().contains("Work Smarter")) {
+			slayerExpBuffActive = true;
+			slayerExpBuff *= 1.5f;
+		}
+		if (MayorUtils.getActivePerks().contains("Slayer XP Buff")) {
+			slayerExpBuffActive = true;
+			slayerExpBuff *= 1.25f;
+		}
+	}
+
 	private static void onLocationChange(Location location) {
 		slayerQuest = null;
 		bossFight = null;
 		Scheduler.INSTANCE.schedule(() -> getSlayerBossInfo(false), 20 * 2);
 	}
 
+	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Text text, boolean overlay) {
 		if (overlay || !Utils.isOnSkyblock()) return true;
 		String message = text.getString();
@@ -134,6 +154,7 @@ public class SlayerManager {
 	}
 
 	public static void calculateBossesNeeded() {
+		assert slayerQuest != null;
 		int tier = slayerQuest.slayerTier.ordinal();
 		if (tier == 0) {
 			slayerQuest.bossesNeeded = -1;
@@ -141,9 +162,8 @@ public class SlayerManager {
 		}
 
 		int xpPerTier = slayerQuest.slayerType.xpPerTier[tier - 1];
-
-		if (MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("Slayer XP Buff")) || MayorUtils.getMinister().perk().name().equals("Slayer XP Buff")) {
-			xpPerTier = (int) (xpPerTier * 1.25);
+		if (slayerExpBuffActive) {
+			xpPerTier = (int) (xpPerTier * slayerExpBuff);
 		}
 
 		slayerQuest.bossesNeeded = (int) Math.ceil((double) slayerQuest.xpRemaining / xpPerTier);
@@ -177,6 +197,7 @@ public class SlayerManager {
 	 * {@link #findClosestMobEntity(EntityType, ArmorStandEntity)} could be modified and run more than once to ensure the correct entity is found.
 	 */
 	public static void checkSlayerBoss(ArmorStandEntity armorStand) {
+		//noinspection DataFlowIssue - bossFight is checked in isBossSpawned()
 		if (slayerQuest == null || !armorStand.hasCustomName() || (isBossSpawned() && bossFight.boss != null)) return;
 		if (armorStand.getName().getString().contains(CLIENT.getSession().getUsername())) {
 			for (Entity otherArmorStands : getEntityArmorStands(armorStand, 1.5f)) {
@@ -203,7 +224,7 @@ public class SlayerManager {
 	 * Gets nearby armor stands with custom names. Used to find other armor stands showing a different line of text above a slayer boss.
 	 */
 	public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {
-		return entity.getWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.1F, expandY, 0.1F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
+		return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.1F, expandY, 0.1F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
 	}
 
 	/**
@@ -214,9 +235,10 @@ public class SlayerManager {
 	 * @param armorStand the entity that contains the display name of the Slayer (mini)boss
 	 * @implNote This method is not perfect. Possible improvements could be sort by x and z distance only (ignore y difference).
 	 */
-	public static <T extends Entity> T findClosestMobEntity(EntityType<T> entityType, ArmorStandEntity armorStand) {
+	@Nullable
+	public static <T extends Entity> T findClosestMobEntity(@Nullable EntityType<T> entityType, ArmorStandEntity armorStand) {
 		if (entityType == null) return null;
-		List<T> mobEntities = armorStand.getWorld().getEntitiesByType(entityType, armorStand.getBoundingBox().expand(0, 1.5f, 0), SlayerManager::isValidSlayerMob);
+		List<T> mobEntities = armorStand.getEntityWorld().getEntitiesByType(entityType, armorStand.getBoundingBox().expand(0, 1.5f, 0), SlayerManager::isValidSlayerMob);
 		mobEntities.sort(Comparator.comparingDouble(armorStand::squaredDistanceTo));
 
 		return switch (mobEntities.size()) {
@@ -243,7 +265,9 @@ public class SlayerManager {
 	 */
 	public static boolean shouldGlow(Entity entity, SlayersConfig.HighlightSlayerEntities highlightType) {
 		if (!isInSlayer()) return false;
+		//noinspection DataFlowIssue - slayerQuest is checked in isInSlayer()
 		if (SkyblockerConfigManager.get().slayers.highlightMinis == highlightType && isInSlayer() && getSlayerQuest().minibosses.contains(entity)) return true;
+		//noinspection DataFlowIssue - bossFight is checked in isBossSpawned()
 		return SkyblockerConfigManager.get().slayers.highlightBosses == highlightType && isBossSpawned() && getBossFight().boss == entity;
 	}
 
@@ -251,6 +275,7 @@ public class SlayerManager {
 	 * Returns the highlight bounding box for the given slayer boss armor stand entity.
 	 * It's slightly larger and lower than the armor stand's bounding box.
 	 */
+	@Nullable
 	public static Box getSlayerMobBoundingBox(ArmorStandEntity armorStand) {
 		return switch (getSlayerType()) {
 			case SlayerType.REVENANT -> new Box(armorStand.getX() - 0.4, armorStand.getY() - 0.1, armorStand.getZ() - 0.4, armorStand.getX() + 0.4, armorStand.getY() - 2.2, armorStand.getZ() + 0.4);
@@ -288,7 +313,7 @@ public class SlayerManager {
 	 * @return True if in a boss fight of the given Slayer type; false otherwise.
 	 */
 	public static boolean isInSlayerType(SlayerType slayerType) {
-		return isBossSpawned() && slayerQuest.slayerType.equals(slayerType);
+		return isBossSpawned() && slayerQuest != null && slayerQuest.slayerType.equals(slayerType);
 	}
 
 	/**
@@ -299,7 +324,7 @@ public class SlayerManager {
 	 * @return True if in a Slayer Quest of the given type and waiting for a boss to spawn; false otherwise.
 	 */
 	public static boolean isInSlayerQuestType(SlayerType slayerType) {
-		return !isBossSpawned() && slayerQuest.slayerType.equals(slayerType);
+		return !isBossSpawned() && slayerQuest != null && slayerQuest.slayerType.equals(slayerType);
 	}
 
 	/**
@@ -307,6 +332,7 @@ public class SlayerManager {
 	 *
 	 * @return The BossFight instance, or null if no boss fight is active.
 	 */
+	@Nullable
 	public static BossFight getBossFight() {
 		return bossFight;
 	}
@@ -316,6 +342,7 @@ public class SlayerManager {
 	 *
 	 * @return The SlayerQuest instance, or null if no Slayer Quest is active.
 	 */
+	@Nullable
 	public static SlayerQuest getSlayerQuest() {
 		return slayerQuest;
 	}
@@ -325,6 +352,7 @@ public class SlayerManager {
 	 *
 	 * @return The SlayerType of the current quest, or null if no quest is active.
 	 */
+	@Nullable
 	public static SlayerType getSlayerType() {
 		return slayerQuest != null ? slayerQuest.slayerType : null;
 	}
@@ -334,6 +362,7 @@ public class SlayerManager {
 	 *
 	 * @return The SlayerTier of the current quest, or null if no quest is active.
 	 */
+	@Nullable
 	public static SlayerTier getSlayerTier() {
 		return slayerQuest != null ? slayerQuest.slayerTier : null;
 	}
@@ -343,6 +372,7 @@ public class SlayerManager {
 	 *
 	 * @return The armor stand entity, or null if no boss fight is active.
 	 */
+	@Nullable
 	public static ArmorStandEntity getSlayerBossArmorStand() {
 		return bossFight != null ? bossFight.bossArmorStand : null;
 	}
@@ -352,27 +382,30 @@ public class SlayerManager {
 	 *
 	 * @return The boss entity, or null if no boss fight is active.
 	 */
+	@Nullable
 	public static Entity getSlayerBoss() {
 		return bossFight != null ? bossFight.boss : null;
 	}
 
 	public static class BossFight {
-		public ArmorStandEntity bossArmorStand;
-		public Entity boss;
+		public @Nullable ArmorStandEntity bossArmorStand;
+		public @Nullable Entity boss;
 		public Instant bossSpawnTime;
 		public boolean slain = false;
 
-		private BossFight(ArmorStandEntity armorStand) {
+		private BossFight(@Nullable ArmorStandEntity armorStand) {
 			findBoss(armorStand);
 			bossSpawnTime = Instant.now();
 			if (SkyblockerConfigManager.get().slayers.bossSpawnAlert) {
 				TitleContainer.addTitle(BOSS_SPAWN, 20);
+				assert CLIENT.player != null;
 				CLIENT.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
 			}
 		}
 
-		public void findBoss(ArmorStandEntity armorStand) {
+		public void findBoss(@Nullable ArmorStandEntity armorStand) {
 			bossArmorStand = armorStand;
+			//noinspection DataFlowIssue
 			boss = armorStand != null ? findClosestMobEntity(slayerQuest.slayerType.mobType, armorStand) : null;
 		}
 	}
@@ -389,9 +422,12 @@ public class SlayerManager {
 		private void onMiniboss(ArmorStandEntity armorStand, SlayerType type) {
 			if (minibossesArmorStand.contains(armorStand)) return;
 			minibossesArmorStand.add(armorStand);
-			minibosses.add(findClosestMobEntity(type.mobType, armorStand));
+			Entity miniboss = findClosestMobEntity(type.mobType, armorStand);
+			if (miniboss == null) return;
+			minibosses.add(miniboss);
 			if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert) {
 				TitleContainer.addTitle(SlayerManager.MINIBOSS_SPAWN, 20);
+				assert CLIENT.player != null;
 				CLIENT.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
 			}
 		}

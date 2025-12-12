@@ -1,17 +1,25 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
+import com.mojang.brigadier.Command;
 import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.preview.PreviewTab;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tab.TabManager;
@@ -56,7 +64,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 			Map.entry("deep caverns", Location.DEEP_CAVERNS),
 			Map.entry("dwarven mines", Location.DWARVEN_MINES),
 			Map.entry("crystal hollows", Location.CRYSTAL_HOLLOWS),
-			Map.entry("the mineshaft", Location.GLACITE_MINESHAFT),
+			Map.entry("the mineshaft", Location.GLACITE_MINESHAFTS),
 			Map.entry("spider's den", Location.SPIDERS_DEN),
 			Map.entry("the end", Location.THE_END),
 			Map.entry("crimson isle", Location.CRIMSON_ISLE),
@@ -80,6 +88,25 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	private WidgetsListTab widgetsListTab;
 
 	private boolean switchingToPopup = false;
+
+	/**
+	 * Register the /skyblocker hud command, which will open /widgets if on Skyblock and Fancy Tab Hud is enabled.
+	 * Otherwise, it'll open the widgets config screen.
+	 */
+	@Init
+	public static void initCommands() {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("hud").executes((ctx) -> {
+				if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
+					MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
+				} else {
+					Location currentLocation = Utils.isOnSkyblock() ? Utils.getLocation() : Location.HUB;
+					MessageScheduler.queueOpenScreen(new WidgetsConfigurationScreen(currentLocation, WidgetManager.ScreenLayer.MAIN_TAB, null));
+				}
+				return Command.SINGLE_SUCCESS;
+			})));
+		});
+	}
 
 	/**
 	 * Creates the screen to configure, putting the handler at null will hide the first tab. Putting it to null is used in the config
@@ -238,9 +265,35 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		}
 	}
 
+	private void getBackOnTheScreenYouScallywagsAngryEmoji() {
+		if (isDragging() || !(tabManager.getCurrentTab() instanceof PreviewTab tab)) return;
+		ScreenBuilder builder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
+		List<HudWidget> widgets = builder.getHudWidgets(tab.getCurrentScreenLayer());
+		boolean needReposition = false;
+		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
+		int padding = 2;
+		ScreenRect screenRect = new ScreenRect(padding, padding, (int) (width / scale) - padding * 2, (int) (height / scale) - padding * 2);
+		for (HudWidget widget : widgets) {
+			PositionRule rule = builder.getPositionRule(widget.getInternalID());
+			if (rule != null && !widget.getNavigationFocus().intersects(screenRect)) {
+				needReposition = true;
+				builder.setPositionRule(widget.getInternalID(), new PositionRule(
+						"screen",
+						PositionRule.Point.DEFAULT,
+						PositionRule.Point.DEFAULT,
+						5,
+						5,
+						rule.screenLayer()
+				));
+			}
+		}
+		if (needReposition) tab.updateWidgets();
+	}
+
 	@Override
 	public void tick() {
 		super.tick();
+		getBackOnTheScreenYouScallywagsAngryEmoji();
 		if (noHandler) return;
 		if (slotThirteenBacklog != null && widgetsListTab != null) {
 			widgetsListTab.hopper(ItemUtils.getLore(slotThirteenBacklog));
@@ -289,6 +342,8 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		return new DropdownWidget<>(client, 0, 0, 50, 50, locations, location -> {
 			setCurrentLocation(location);
 			onLocationChanged.accept(location);
-		}, locations.contains(currentLocation) ? currentLocation : Location.HUB);
+		},
+				locations.contains(currentLocation) ? currentLocation : Location.HUB,
+				(isOpen) -> previewTab.locationDropdownOpened(isOpen));
 	}
 }

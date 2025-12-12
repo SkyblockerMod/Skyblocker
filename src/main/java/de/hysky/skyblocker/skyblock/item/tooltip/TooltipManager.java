@@ -2,10 +2,32 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarOrderTracker;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
+import de.hysky.skyblocker.skyblock.dungeon.CroesusProfit;
 import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilSolver;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.AccessoryTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.AvgBinTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.BazaarPriceTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.BitsHelper;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.ColorTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.DateCalculatorTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.DungeonQualityTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.EssenceShopPrice;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.EstimatedItemValueTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.HuntingBoxPriceTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.LBinTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.MotesTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.MuseumTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.NpcPriceTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.StackingEnchantProgressTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.SupercraftReminder;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.TrueHexDisplay;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.TrueHexDyeScreenDisplay;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerMatcher;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
@@ -34,6 +56,7 @@ public class TooltipManager {
 			BitsHelper.INSTANCE,
 			new FossilSolver(),
 			new ReorderHelper(),
+			BazaarOrderTracker.INSTANCE,
 			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
@@ -49,7 +72,8 @@ public class TooltipManager {
 			new ColorTooltip(12),
 			new AccessoryTooltip(13),
 			new DateCalculatorTooltip(14),
-			new HuntingBoxPriceTooltip(15)
+			new HuntingBoxPriceTooltip(15),
+			CroesusProfit.INSTANCE, // priority = 16
 	};
 	private static List<TooltipAdder> currentScreenAdders = new ArrayList<>();
 

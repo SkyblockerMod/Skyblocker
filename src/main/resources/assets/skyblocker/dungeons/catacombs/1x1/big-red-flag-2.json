@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "Big Red Flag"
+  },
+  "secrets": [
+    {
+      "secretName": "1/2 - Entrance",
+      "category": "entrance",
+      "x": 26,
+      "y": 78,
+      "z": 16
+    },
+    {
+      "secretName": "1 - Item",
+      "category": "item",
+      "x": 21,
+      "y": 75,
+      "z": 23
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 26,
+      "y": 75,
+      "z": 25
+    },
+    {
+      "secretName": "Prince",
+      "category": "prince",
+      "x": 17,
+      "y": 70,
+      "z": 8
+    }
+  ]
+}

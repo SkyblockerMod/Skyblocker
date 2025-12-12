@@ -1,15 +1,30 @@
 package de.hysky.skyblocker.config;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.backup.ConfigBackupManager;
-import de.hysky.skyblocker.config.categories.*;
+import de.hysky.skyblocker.config.categories.ChatCategory;
+import de.hysky.skyblocker.config.categories.CrimsonIsleCategory;
+import de.hysky.skyblocker.config.categories.DebugCategory;
+import de.hysky.skyblocker.config.categories.DungeonsCategory;
+import de.hysky.skyblocker.config.categories.EventNotificationsCategory;
+import de.hysky.skyblocker.config.categories.FarmingCategory;
+import de.hysky.skyblocker.config.categories.ForagingCategory;
+import de.hysky.skyblocker.config.categories.GeneralCategory;
+import de.hysky.skyblocker.config.categories.HelperCategory;
+import de.hysky.skyblocker.config.categories.HuntingCategory;
+import de.hysky.skyblocker.config.categories.MiningCategory;
+import de.hysky.skyblocker.config.categories.MiscCategory;
+import de.hysky.skyblocker.config.categories.OtherLocationsCategory;
+import de.hysky.skyblocker.config.categories.QuickNavigationCategory;
+import de.hysky.skyblocker.config.categories.SlayersCategory;
+import de.hysky.skyblocker.config.categories.UIAndVisualsCategory;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.azureaaron.dandelion.systems.ConfigManager;
 import net.azureaaron.dandelion.systems.DandelionConfigScreen;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -20,13 +35,16 @@ import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
+import org.apache.commons.lang3.function.Consumers;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.StackWalker.Option;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-import org.apache.commons.lang3.function.Consumers;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class SkyblockerConfigManager {
 	public static final int CONFIG_VERSION = 4;
@@ -47,7 +65,7 @@ public class SkyblockerConfigManager {
 		}
 
 		CONFIG_MANAGER.load();
-		ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(configLiteral("config")).then(configLiteral("options"))));
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (get().uiAndVisuals.showConfigButton && screen instanceof GenericContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
 				Screens.getButtons(screen).add(ButtonWidget
@@ -74,6 +92,10 @@ public class SkyblockerConfigManager {
 	}
 
 	public static Screen createGUI(Screen parent) {
+		return createGUI(parent, "");
+	}
+
+	public static Screen createGUI(@Nullable Screen parent, String search) {
 		return DandelionConfigScreen.create(CONFIG_MANAGER, (defaults, config, builder) -> builder
 				.title(Text.translatable("skyblocker.config.title", SkyblockerMod.VERSION))
 				.category(GeneralCategory.create(defaults, config))
@@ -92,6 +114,7 @@ public class SkyblockerConfigManager {
 				.category(EventNotificationsCategory.create(defaults, config))
 				.category(MiscCategory.create(defaults, config))
 				.categoryIf(Debug.debugEnabled(), DebugCategory.create(defaults, config))
+				.search(search)
 		).generateScreen(parent, get().misc.configBackend);
 	}
 
@@ -110,13 +133,12 @@ public class SkyblockerConfigManager {
 	}
 
 	/**
-	 * Registers an options command with the given name. Used for registering both options and config as valid commands.
+	 * Registers a command argument to open the config.
 	 *
-	 * @param name the name of the command node
 	 * @return the command builder
 	 */
-	private static LiteralArgumentBuilder<FabricClientCommandSource> optionsLiteral(String name) {
-		// Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
-		return ClientCommandManager.literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)));
+	private static LiteralArgumentBuilder<FabricClientCommandSource> configLiteral(String name) {
+		return literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
+				.then(argument("option", StringArgumentType.greedyString()).executes((ctx) -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("option", String.class)))));
 	}
 }

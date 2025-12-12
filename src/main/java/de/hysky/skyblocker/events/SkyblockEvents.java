@@ -45,21 +45,15 @@ public final class SkyblockEvents {
 		}
 	});
 
-	/**
-	 * <p>Called when the player's skyblock profile is first detected via chat messages.</p>
-	 * <p>This is useful for initializing data on features that track data for separate profiles separately.</p>
-	 *
-	 * @implNote This is called upon receiving the chat message for the profile change rather than the exact moment of profile change, so it may be delayed by a few seconds.
-	 */
-	public static final Event<ProfileInit> PROFILE_INIT = EventFactory.createArrayBacked(ProfileInit.class, callbacks -> profile -> {
-		for (ProfileInit callback : callbacks) {
-			callback.onSkyblockProfileInit(profile);
-		}
-	});
-
 	public static final Event<PurseChange> PURSE_CHANGE = EventFactory.createArrayBacked(PurseChange.class, callbacks -> (diff, cause) -> {
 		for (PurseChange callback : callbacks) {
 			callback.onPurseChange(diff, cause);
+		}
+	});
+
+	public static final Event<MayorChange> MAYOR_CHANGE = EventFactory.createArrayBacked(MayorChange.class, callbacks -> () -> {
+		for (MayorChange callback : callbacks) {
+			callback.onMayorChange();
 		}
 	});
 
@@ -95,13 +89,13 @@ public final class SkyblockEvents {
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface ProfileInit {
-		void onSkyblockProfileInit(String profileId);
+	public interface PurseChange {
+		void onPurseChange(double diff, PurseChangeCause cause);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface PurseChange {
-		void onPurseChange(double diff, PurseChangeCause cause);
+	public interface MayorChange {
+		void onMayorChange();
 	}
 }

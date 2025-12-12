@@ -7,18 +7,18 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.function.Consumer;
 
 /**
@@ -31,7 +31,7 @@ public class IndividualWaypoint extends NamedWaypoint {
 	@Init
 	public static void init() {
 		ClientTickEvents.END_CLIENT_TICK.register(IndividualWaypoint::onTick);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> { if (waypoint != null) waypoint.render(context); });
+		WorldRenderExtractionCallback.EVENT.register(collector -> { if (waypoint != null) waypoint.extractRendering(collector); });
 		ClientPlayConnectionEvents.JOIN.register((ignore, ignore2, ignore3) -> waypoint = null);
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("waypoints").then(ClientCommandManager.literal("individual")
@@ -69,9 +69,9 @@ public class IndividualWaypoint extends NamedWaypoint {
 		setWaypoint(x, y, z, area);
 		if (area != null && !area.isEmpty()) {
 			area = "| " + area;
-			feedback.accept(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.displayed", x, y, z, area)));
+			feedback.accept(Constants.PREFIX.get().append(Text.translatable("skyblocker.waypoints.chat.displayed", x, y, z, area)));
 		} else {
-			feedback.accept(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.displayed", x, y, z, "")));
+			feedback.accept(Constants.PREFIX.get().append(Text.translatable("skyblocker.waypoints.chat.displayed", x, y, z, "")));
 		}
 		return Command.SINGLE_SUCCESS;
 	}

@@ -1,0 +1,70 @@
+{
+  "info": {
+    "name": "Redstone Skull"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 22,
+      "y": 70,
+      "z": 24
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 21,
+      "y": 69,
+      "z": 27
+    },
+    {
+      "secretName": "2/3 - Superboom",
+      "category": "superboom",
+      "x": 24,
+      "y": 70,
+      "z": 26
+    },
+    {
+      "secretName": "2/3 - Redstone Skull (right click)",
+      "category": "key",
+      "x": 26,
+      "y": 71,
+      "z": 26
+    },
+    {
+      "secretName": "2/3 - Place Skull",
+      "category": "key",
+      "x": 4,
+      "y": 73,
+      "z": 24
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 18,
+      "y": 70,
+      "z": 15
+    },
+    {
+      "secretName": "3 - Lever",
+      "category": "lever",
+      "x": 15,
+      "y": 68,
+      "z": 15
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 5,
+      "y": 70,
+      "z": 15
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 1,
+      "y": 70,
+      "z": 15
+    }
+  ]
+}

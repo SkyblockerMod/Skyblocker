@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.HelperConfig;
@@ -17,12 +18,11 @@ import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class HelperCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
-				.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/helpers"))
+				.id(SkyblockerMod.id("config/helpers"))
 				.name(Text.translatable("skyblocker.config.helpers"))
 
 				//Ungrouped Options
@@ -73,6 +73,24 @@ public class HelperCategory {
 								newValue -> config.helpers.enableCopyUnderbidPrice = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				// Builder's Wand and Ruler Preview
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.enableBuildersWandPreview"))
+						.binding(defaults.helpers.enableBuildersWandPreview,
+								() -> config.helpers.enableBuildersWandPreview,
+								newValue -> config.helpers.enableBuildersWandPreview = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				// Anvil Helper
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.enableAnvilHelper"))
+						.description(Text.translatable("skyblocker.config.helpers.enableAnvilHelper.@Tooltip"))
+						.binding(defaults.helpers.enableAnvilHelper,
+								() -> config.helpers.enableAnvilHelper,
+								newValue -> config.helpers.enableAnvilHelper = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+
 				//Mythological Ritual
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.helpers.mythologicalRitual"))
@@ -282,31 +300,6 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableEggFinder"))
-								.description(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableEggFinder.@Tooltip"))
-								.binding(defaults.helpers.chocolateFactory.enableEggFinder,
-										() -> config.helpers.chocolateFactory.enableEggFinder,
-										newValue -> config.helpers.chocolateFactory.enableEggFinder = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.modifiable(false)
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages"))
-								.description(Text.translatable("skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages.@Tooltip"))
-								.binding(defaults.helpers.chocolateFactory.sendEggFoundMessages,
-										() -> config.helpers.chocolateFactory.sendEggFoundMessages,
-										newValue -> config.helpers.chocolateFactory.sendEggFoundMessages = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Waypoint.Type>createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.waypointType"))
-								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"))
-								.binding(defaults.helpers.chocolateFactory.waypointType,
-										() -> config.helpers.chocolateFactory.waypointType,
-										newValue -> config.helpers.chocolateFactory.waypointType = newValue)
-								.controller(ConfigUtils.createEnumController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder"))
 								.description(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip"))
 								.binding(defaults.helpers.chocolateFactory.enableTimeTowerReminder,
@@ -320,6 +313,48 @@ public class HelperCategory {
 								.binding(defaults.helpers.chocolateFactory.straySound,
 										() -> config.helpers.chocolateFactory.straySound,
 										newValue -> config.helpers.chocolateFactory.straySound = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
+				// Hoppity's Hunt
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt.enableEggFinder"))
+								.description(Text.translatable("skyblocker.config.helpers.hoppitysHunt.enableEggFinder.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
+								.binding(defaults.helpers.chocolateFactory.enableEggFinder,
+										() -> config.helpers.chocolateFactory.enableEggFinder,
+										newValue -> config.helpers.chocolateFactory.enableEggFinder = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages"))
+								.description(Text.translatable("skyblocker.config.helpers.hoppitysHunt.sendEggFoundMessages.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
+								.binding(defaults.helpers.chocolateFactory.sendEggFoundMessages,
+										() -> config.helpers.chocolateFactory.sendEggFoundMessages,
+										newValue -> config.helpers.chocolateFactory.sendEggFoundMessages = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Waypoint.Type>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt.waypointType"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
+								.binding(defaults.helpers.chocolateFactory.waypointType,
+										() -> config.helpers.chocolateFactory.waypointType,
+										newValue -> config.helpers.chocolateFactory.waypointType = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.hoppitysHunt.showThroughWalls"))
+								.description(Text.translatable("skyblocker.config.helpers.hoppitysHunt.showThroughWalls.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
+								.binding(defaults.helpers.chocolateFactory.showThroughWalls,
+										() -> config.helpers.chocolateFactory.showThroughWalls,
+										newValue -> config.helpers.chocolateFactory.showThroughWalls = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
@@ -366,6 +401,14 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.bazaar.enableOrderTracker"))
+								.description(Text.translatable("skyblocker.config.helpers.bazaar.enableOrderTracker.@Tooltip"))
+								.binding(defaults.helpers.bazaar.enableOrderTracker,
+										() -> config.helpers.bazaar.enableOrderTracker,
+										newValue -> config.helpers.bazaar.enableOrderTracker = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup"))
 								.description(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip"))
 								.binding(defaults.helpers.itemPrice.enableItemPriceLookup,
@@ -382,6 +425,19 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(ConfigUtils.createShortcutToKeybindsScreen())
+						.build())
+				// Great Spook Event
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.greatSpook"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.greatSpook.enableMathTeacherHelper"))
+								.description(Text.translatable("skyblocker.config.helpers.greatSpook.enableMathTeacherHelper.@Tooltip"))
+								.binding(defaults.helpers.greatSpookEvent.enableMathTeacherHelper,
+										() -> config.helpers.greatSpookEvent.enableMathTeacherHelper,
+										newValue -> config.helpers.greatSpookEvent.enableMathTeacherHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 				.build();
 	}

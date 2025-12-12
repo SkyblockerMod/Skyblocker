@@ -10,17 +10,17 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
+import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.LeverType;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -29,19 +29,38 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.DyeColor;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.*;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MAX_X;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MAX_Y;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MIN_X;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MIN_Y;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_Z;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.WATER_ENTRANCE_POSITION;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
@@ -101,7 +120,7 @@ Time starts when the water lever is turned on and stops when the last door opens
 public class WaterboardOneFlow extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WaterboardOneFlow.class);
 	public static final WaterboardOneFlow INSTANCE = new WaterboardOneFlow();
-	private static final Identifier WATER_TIMES = Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/watertimes.json");
+	private static final Identifier WATER_TIMES = SkyblockerMod.id("dungeons/watertimes.json");
 	private static final Text WAIT_TEXT = Text.literal("WAIT").formatted(Formatting.RED, Formatting.BOLD);
 	private static final Text CLICK_TEXT = Text.literal("CLICK").formatted(Formatting.GREEN, Formatting.BOLD);
 	private static JsonObject SOLUTIONS;
@@ -120,14 +139,14 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	private long waterStartMillis;
 	private CompletableFuture<Void> solve;
 
-    private WaterboardOneFlow() {
-        super("waterboard", "water-puzzle");
-    }
+	private WaterboardOneFlow() {
+		super("waterboard", "water-puzzle");
+	}
 
-    @Init
-    public static void init() {
+	@Init
+	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(WaterboardOneFlow::loadSolutions);
-        UseBlockCallback.EVENT.register(INSTANCE::onUseBlock);
+		UseBlockCallback.EVENT.register(INSTANCE::onUseBlock);
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
 						.then(literal("reset").executes(context -> {
@@ -215,7 +234,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 					}))
 			)))));
 		}
-    }
+	}
 
 	private static void loadSolutions(MinecraftClient client) {
 		try (BufferedReader reader = client.getResourceManager().openAsReader(WATER_TIMES)) {
@@ -225,15 +244,15 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		}
 	}
 
-    @Override
-    public void tick(MinecraftClient client) {
-        if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow ||
+	@Override
+	public void tick(MinecraftClient client) {
+		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow ||
 				!shouldSolve() ||
 				client.world == null ||
 				client.player == null ||
 				!DungeonManager.isCurrentRoomMatched()) {
-            return;
-        }
+			return;
+		}
 
 		world = client.world;
 		room = DungeonManager.getCurrentRoom();
@@ -268,7 +287,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				}
 			}
 		}
-    }
+	}
 
 	private void solvePuzzle() {
 		variant = findVariant();
@@ -424,16 +443,16 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		return true;
 	}
 
-    @Override
-    public void render(WorldRenderContext context) {
+	@Override
+	public void extractRendering(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow ||
 				world == null || room == null || player == null) return;
 
 		try {
 			for (Mark mark : marks) {
 				float[] components = ColorUtils.getFloatComponents(mark.reached ? DyeColor.LIME : DyeColor.WHITE);
-				RenderHelper.renderFilled(context, mark.pos, components, 0.5f, true);
-				RenderHelper.renderText(context, Text.of(String.format("Mark %d", mark.index)),
+				collector.submitFilledBox(mark.pos, components, 0.5f, true);
+				collector.submitText(Text.of(String.format("Mark %d", mark.index)),
 						mark.pos.toCenterPos().offset(Direction.UP, 0.2), true);
 			}
 
@@ -449,25 +468,24 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				LeverType nextNextLever = sortedTimes.size() < 2 ? null : sortedTimes.get(1).left();
 
 				if (nextLever != null) {
-					RenderHelper.renderLineFromCursor(context,
-							room.relativeToActual(nextLever.leverPos).toCenterPos(),
-							ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 2f);
+					collector.submitLineFromCursor(room.relativeToActual(nextLever.leverPos).toCenterPos(),
+							ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 4f);
 					if (nextNextLever != null) {
-						RenderHelper.renderLinesFromPoints(context, new Vec3d[]{
+						collector.submitLinesFromPoints(new Vec3d[]{
 								room.relativeToActual(nextLever.leverPos).toCenterPos(),
 								room.relativeToActual(nextNextLever.leverPos).toCenterPos()
-						}, ColorUtils.getFloatComponents(DyeColor.WHITE), 0.5f, 1f, true);
+						}, ColorUtils.getFloatComponents(DyeColor.WHITE), 1f, 2f, true);
 					}
 				}
 
-				renderLeverText(context, nextLever);
+				extractLeverText(collector, nextLever);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waterboard] Error while rendering one flow", e);
 		}
 	}
 
-	private void renderLeverText(WorldRenderContext context, LeverType nextLever) {
+	private void extractLeverText(PrimitiveCollector collector, LeverType nextLever) {
 		for (Map.Entry<LeverType, DoubleList> leverData : solution.entrySet()) {
 			LeverType lever = leverData.getKey();
 			for (int i = 0; i < leverData.getValue().size(); i++) {
@@ -485,14 +503,14 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 					text = Text.literal(String.format("%.2f", timeToShow)).formatted(Formatting.YELLOW);
 				}
 
-				RenderHelper.renderText(context, text,
+				collector.submitText(text,
 						room.relativeToActual(lever.leverPos).toCenterPos()
 								.offset(Direction.UP, 0.5 * (i + 1)), true);
 			}
 		}
 	}
 
-    private ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult blockHitResult) {
+	private ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult blockHitResult) {
 		try {
 			if (SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow &&
 					solution != null && blockHitResult.getType() == HitResult.Type.BLOCK) {
@@ -515,14 +533,14 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waterboard] Exception in onUseBlock", e);
 		}
-        return ActionResult.PASS;
-    }
+		return ActionResult.PASS;
+	}
 
-    @Override
-    public void reset() {
-        super.reset();
+	@Override
+	public void reset() {
+		super.reset();
 		softReset();
-    }
+	}
 
 	private void softReset() {
 		// In most cases we want the solver to remain active after resetting, so don't call super.reset()

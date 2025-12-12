@@ -1,0 +1,63 @@
+{
+  "info": {
+    "name": "Raccoon"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 6,
+      "y": 77,
+      "z": 24
+    },
+    {
+      "secretName": "2/3 - Entrance",
+      "category": "entrance",
+      "x": 21,
+      "y": 78,
+      "z": 26
+    },
+    {
+      "secretName": "2/3 - Superboom",
+      "category": "superboom",
+      "x": 25,
+      "y": 74,
+      "z": 22
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 27,
+      "y": 69,
+      "z": 24
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 21,
+      "y": 69,
+      "z": 24
+    },
+    {
+      "secretName": "4 - Entrance",
+      "category": "entrance",
+      "x": 26,
+      "y": 85,
+      "z": 4
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 26,
+      "y": 84,
+      "z": 8
+    },
+    {
+      "secretName": "Fairy Soul",
+      "category": "fairysoul",
+      "x": 19,
+      "y": 83,
+      "z": 8
+    }
+  ]
+}

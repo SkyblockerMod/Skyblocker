@@ -9,43 +9,37 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 // this widget shows the status or results of the current election
 @RegisterWidget
 public class ElectionWidget extends TabHudWidget {
-
 	private static final MutableText TITLE = Text.literal("Election Info").formatted(Formatting.YELLOW,
 			Formatting.BOLD);
-
-	private static final HashMap<String, ItemStack> MAYOR_DATA = new HashMap<>();
-
+	private static final Map<String, ItemStack> MAYOR_DATA = Map.ofEntries(
+			Map.entry("Aatrox", Ico.DIA_SWORD),
+			Map.entry("Cole", Ico.IRON_PICKAXE),
+			Map.entry("Diana", Ico.BONE),
+			Map.entry("Diaz", Ico.GOLD),
+			Map.entry("Finnegan", Ico.IRON_HOE),
+			Map.entry("Foxy", Ico.SUGAR),
+			Map.entry("Paul", Ico.COMPASS),
+			Map.entry("Scorpius", Ico.GOLDEN_APPLE),
+			Map.entry("Jerry", Ico.VILLAGER),
+			Map.entry("Derpy", Ico.DBUSH),
+			Map.entry("Marina", Ico.FISH_ROD),
+			Map.entry("Aura", Ico.OMINOUS_BOTTLE)
+			);
 	private static final Text EL_OVER = Text.literal("Election: ")
 			.append(Text.literal("Over!").formatted(Formatting.RED));
-
 	// pattern matching a candidate while people are voting
 	// group 1: name
 	// group 2: % of votes
 	private static final Pattern VOTE_PATTERN = Pattern.compile("(?<mayor>\\S*): \\|+ \\((?<pcnt>\\d*)%\\)");
-
-	static {
-		MAYOR_DATA.put("Aatrox", Ico.DIA_SWORD);
-		MAYOR_DATA.put("Cole", Ico.IRON_PICKAXE);
-		MAYOR_DATA.put("Diana", Ico.BONE);
-		MAYOR_DATA.put("Diaz", Ico.GOLD);
-		MAYOR_DATA.put("Finnegan", Ico.IRON_HOE);
-		MAYOR_DATA.put("Foxy", Ico.SUGAR);
-		MAYOR_DATA.put("Paul", Ico.COMPASS);
-		MAYOR_DATA.put("Scorpius", Ico.GOLDEN_APPLE);
-		MAYOR_DATA.put("Jerry", Ico.VILLAGER);
-		MAYOR_DATA.put("Derpy", Ico.DBUSH);
-		MAYOR_DATA.put("Marina", Ico.FISH_ROD);
-	}
-
-	private static final Formatting[] COLS = {Formatting.RED, Formatting.LIGHT_PURPLE, Formatting.GREEN, Formatting.AQUA, Formatting.YELLOW};
+	private static final Formatting[] COLS = { Formatting.RED, Formatting.LIGHT_PURPLE, Formatting.GREEN, Formatting.AQUA, Formatting.YELLOW };
 
 	public ElectionWidget() {
 		super("Election", TITLE, Formatting.YELLOW.getColorValue());

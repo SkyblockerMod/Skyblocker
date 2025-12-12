@@ -7,6 +7,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Atlases;
 
 import java.util.function.Supplier;
 
@@ -24,7 +25,8 @@ public abstract class ColoredItemBackground<T> {
 
 	protected ColoredItemBackground() {
 		this.sprite = () -> MinecraftClient.getInstance()
-				.getGuiAtlasManager()
+				.getAtlasManager()
+				.getAtlasTexture(Atlases.GUI)
 				.getSprite(SkyblockerConfigManager.get().general.itemInfoDisplay.itemBackgroundStyle.tex);
 	}
 

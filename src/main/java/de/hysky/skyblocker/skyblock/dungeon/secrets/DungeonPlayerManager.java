@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
@@ -61,7 +60,7 @@ public class DungeonPlayerManager {
 	 * @implNote If a player is currently a ghost, this will return {@link DungeonClass#UNKNOWN}.
 	 */
 	public static DungeonClass getClassFromPlayer(PlayerEntity player) {
-		return getClassFromPlayer(player.getGameProfile().getName());
+		return getClassFromPlayer(player.getGameProfile().name());
 	}
 
 	/**
@@ -85,25 +84,32 @@ public class DungeonPlayerManager {
 			String name = matcher.group("name");
 			DungeonClass dungeonClass = DungeonClass.from(matcher.group("class"));
 
-			if (players[i] != null && players[i].name.equals(name)) {
-				players[i].update(dungeonClass);
+			DungeonPlayer dungeonPlayer = players[i];
+			if (dungeonPlayer != null && dungeonPlayer.name.equals(name)) {
+				dungeonPlayer.update(dungeonClass);
 			} else {
 				players[i] = new DungeonPlayer(name, dungeonClass);
 			}
 		}
 	}
 
-	public static Matcher getPlayerFromTab(@Range(from = 1, to = 5) int index) {
+	public static @Nullable Matcher getPlayerFromTab(@Range(from = 1, to = 5) int index) {
 		return PlayerListManager.regexAt(1 + (index - 1) * 4, PLAYER_TAB_PATTERN);
 	}
 
+	@SuppressWarnings("SameReturnValue")
 	private static boolean onPlayerGhost(Text text, boolean overlay) {
 		if (!dungeonLoaded) return true;
 
 		Matcher matcher = PLAYER_GHOST_PATTERN.matcher(text.getString());
 		if (!matcher.find()) return true;
 
-		getPlayer(matcher.group("name")).ifPresentOrElse(DungeonPlayer::ghost, () -> DungeonManager.LOGGER.error("[Skyblocker Dungeon Player Manager] Received ghost message for player '{}' but player was not found in the player list: {}", matcher.group("name"), Arrays.toString(players)));
+		String name = matcher.group("name");
+		if (name.equals("You")) {
+			assert MinecraftClient.getInstance().player != null;
+			name = MinecraftClient.getInstance().player.getName().getString();
+		}
+		getPlayer(name).ifPresentOrElse(DungeonPlayer::ghost, () -> DungeonManager.LOGGER.error("[Skyblocker Dungeon Player Manager] Received ghost message for player '{}' but player was not found in the player list: {}", matcher.group("name"), Arrays.toString(players)));
 
 		return true;
 	}
@@ -115,26 +121,26 @@ public class DungeonPlayerManager {
 
 	public static class DungeonPlayer {
 		private @Nullable UUID uuid;
-		private final @NotNull String name;
-		private @NotNull DungeonClass dungeonClass = DungeonClass.UNKNOWN;
+		private final String name;
+		private DungeonClass dungeonClass = DungeonClass.UNKNOWN;
 		private boolean alive;
 		private long lastGhostTime; // Used to prevent player list from overriding a recently ghosted player. The player list may have a few seconds of delay.
 
-		public DungeonPlayer(@NotNull String name, @NotNull DungeonClass dungeonClass) {
+		public DungeonPlayer(String name, DungeonClass dungeonClass) {
 			this.uuid = findPlayerUuid(name);
 			this.name = name;
 			update(dungeonClass);
 
 			// Pre-fetches game profiles for rendering skins in the leap overlay and fancy dungeon map.
-			CompletableFuture.runAsync(() -> MinecraftClient.getInstance().getSessionService().fetchProfile(uuid, false));
+			CompletableFuture.runAsync(() -> MinecraftClient.getInstance().getApiServices().sessionService().fetchProfile(uuid, false));
 		}
 
-		private static @Nullable UUID findPlayerUuid(@NotNull String name) {
+		private static @Nullable UUID findPlayerUuid(String name) {
 			assert MinecraftClient.getInstance().world != null;
 			return StreamSupport.stream(MinecraftClient.getInstance().world.getEntities().spliterator(), false)
 					.filter(PlayerEntity.class::isInstance)
 					.map(PlayerEntity.class::cast)
-					.filter(player -> player.getGameProfile().getName().equals(name))
+					.filter(player -> player.getGameProfile().name().equals(name))
 					.findAny()
 					.map(PlayerEntity::getUuid)
 					.orElse(null);
@@ -159,11 +165,11 @@ public class DungeonPlayerManager {
 			return uuid;
 		}
 
-		public @NotNull String name() {
+		public String name() {
 			return name;
 		}
 
-		public @NotNull DungeonClass dungeonClass() {
+		public DungeonClass dungeonClass() {
 			return dungeonClass;
 		}
 

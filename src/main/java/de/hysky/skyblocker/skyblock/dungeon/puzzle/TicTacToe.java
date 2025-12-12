@@ -5,14 +5,15 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.tictactoe.BoardIndex;
 import de.hysky.skyblocker.utils.tictactoe.TicTacToeUtils;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,15 +28,15 @@ public class TicTacToe extends DungeonPuzzle {
 	private static final float[] GREEN_COLOR_COMPONENTS = { 0.0F, 1.0F, 0.0F };
 	@SuppressWarnings("unused")
 	private static final TicTacToe INSTANCE = new TicTacToe();
-	private static Box nextBestMoveToMake = null;
+	private static @Nullable Box nextBestMoveToMake = null;
 
 	private TicTacToe() {
 		super("tic-tac-toe", "tic-tac-toe-1");
 	}
 
 	@Init
-    public static void init() {
-    }
+	public static void init() {
+	}
 
 	@Override
 	public void tick(MinecraftClient client) {
@@ -62,7 +63,7 @@ public class TicTacToe extends DungeonPuzzle {
 
 					if (mapState == null) continue;
 
-					//Surely if we pass shouldSolve then the room should be matched right
+					//noinspection DataFlowIssue - the room must not be null and must be matched
 					BlockPos relative = DungeonManager.getCurrentRoom().actualToRelative(itemFrame.getBlockPos());
 
 					//Determine the row -- 72 = top, 71 = middle, 70 = bottom
@@ -103,6 +104,7 @@ public class TicTacToe extends DungeonPuzzle {
 				double nextY = 72 - bestMove.row();
 				double nextZ = 17 - bestMove.column();
 
+				//noinspection DataFlowIssue - same as above, room is not null and matched
 				BlockPos nextPos = DungeonManager.getCurrentRoom().relativeToActual(BlockPos.ofFloored(nextX, nextY, nextZ));
 				nextBestMoveToMake = RenderHelper.getBlockBoundingBox(client.world, nextPos);
 			}
@@ -112,11 +114,11 @@ public class TicTacToe extends DungeonPuzzle {
 	}
 
 	@Override
-	public void render(WorldRenderContext context) {
+	public void extractRendering(PrimitiveCollector collector) {
 		try {
 			if (SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveTicTacToe && nextBestMoveToMake != null) {
-				RenderHelper.renderFilled(context, nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 0.5f, false);
-				RenderHelper.renderOutline(context, nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 5f, false);
+				collector.submitFilledBox(nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 0.5f, false);
+				collector.submitOutlinedBox(nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 5f, false);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Tic Tac Toe] Encountered an exception while rendering the tic tac toe solution!", e);

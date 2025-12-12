@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
@@ -16,7 +17,6 @@ import net.azureaaron.dandelion.systems.controllers.StringController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 import java.awt.Color;
 
@@ -24,7 +24,7 @@ public class DungeonsCategory {
 
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
-				.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/dungeons"))
+				.id(SkyblockerMod.id("config/dungeons"))
 				.name(Text.translatable("skyblocker.config.dungeons"))
 
 				//Ungrouped Options
@@ -49,6 +49,14 @@ public class DungeonsCategory {
 						.binding(defaults.dungeons.salvageHelper,
 								() -> config.dungeons.salvageHelper,
 								newValue -> config.dungeons.salvageHelper = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.salvageHelper.onlyDonated"))
+						.tags(CommonTags.ADDED_IN_5_9_0)
+						.binding(defaults.dungeons.onlyHighlightDonatedItems,
+								() -> config.dungeons.onlyHighlightDonatedItems,
+								newValue -> config.dungeons.onlyHighlightDonatedItems = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
@@ -155,6 +163,14 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.dungeonMap.showSelfHead,
 										() -> config.dungeons.dungeonMap.showSelfHead,
 										newValue -> config.dungeons.dungeonMap.showSelfHead = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.map.showRoomLabels"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
+								.binding(defaults.dungeons.dungeonMap.showRoomLabels,
+										() -> config.dungeons.dungeonMap.showRoomLabels,
+										newValue -> config.dungeons.dungeonMap.showRoomLabels = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Float>createBuilder()
@@ -462,6 +478,24 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.devices.solveLightsOn = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.devices.solveArrowAlign"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
+								.description(Text.translatable("skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip"))
+								.binding(defaults.dungeons.devices.solveArrowAlign,
+										() -> config.dungeons.devices.solveArrowAlign,
+										newValue -> config.dungeons.devices.solveArrowAlign = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.devices.solveTargetPractice"))
+								.tags(CommonTags.ADDED_IN_5_9_0)
+								.description(Text.translatable("skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip"))
+								.binding(defaults.dungeons.devices.solveTargetPractice,
+										() -> config.dungeons.devices.solveTargetPractice,
+										newValue -> config.dungeons.devices.solveTargetPractice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				// Waypoints for goldor phase in f7/m7
@@ -497,8 +531,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Type>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType"))
-								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"),
-										Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"))
 								.binding(defaults.dungeons.secretWaypoints.waypointType,
 										() -> config.dungeons.secretWaypoints.waypointType,
 										newValue -> config.dungeons.secretWaypoints.waypointType = newValue)
@@ -551,6 +584,13 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.secretWaypoints.enableWitherWaypoints,
 										() -> config.dungeons.secretWaypoints.enableWitherWaypoints,
 										newValue -> config.dungeons.secretWaypoints.enableWitherWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.enableRedstoneKeyWaypoints,
+										() -> config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints,
+										newValue -> config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
@@ -607,6 +647,33 @@ public class DungeonsCategory {
 								.build())
 						.build())
 
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.secretSync"))
+						.collapsed(true)
+						// TODO: Add description when labels work properly on MoulConfig
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.receiveMatchedRooms"))
+								.binding(defaults.dungeons.secretSync.receiveRoomMatch,
+										() -> config.dungeons.secretSync.receiveRoomMatch,
+										newValue -> config.dungeons.secretSync.receiveRoomMatch = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.receiveRoomSecretCount"))
+								.binding(defaults.dungeons.secretSync.receiveRoomSecretCount,
+										() -> config.dungeons.secretSync.receiveRoomSecretCount,
+										newValue -> config.dungeons.secretSync.receiveRoomSecretCount = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.hideReceivedWaypoints"))
+								.binding(defaults.dungeons.secretSync.hideReceivedWaypoints,
+										() -> config.dungeons.secretSync.hideReceivedWaypoints,
+										newValue -> config.dungeons.secretSync.hideReceivedWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
 				// Mimic Message
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.dungeons.mimicMessage"))
@@ -649,8 +716,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<DungeonsConfig.DoorHighlight.Type>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType"))
-								.description(Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip"),
-										Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote"))
+								.description(Text.translatable("skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip"))
 								.binding(defaults.dungeons.doorHighlight.doorHighlightType,
 										() -> config.dungeons.doorHighlight.doorHighlightType,
 										newValue -> config.dungeons.doorHighlight.doorHighlightType = newValue)

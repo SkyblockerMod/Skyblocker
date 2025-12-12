@@ -10,9 +10,8 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
@@ -107,6 +106,9 @@ public class IceFill extends DungeonPuzzle {
 		for (int row = 0; row < iceFillBoard.length; pos.move(iceFillBoard[row].length, 0, -1), row++) {
 			for (int col = 0; col < iceFillBoard[row].length; pos.move(Direction.WEST), col++) {
 				BlockPos actualPos = room.relativeToActual(pos);
+				// Don't solve the board if the block below is air
+				if (world.getBlockState(actualPos.down()).isAir()) return false;
+
 				boolean isBlock = !world.getBlockState(actualPos).isAir();
 				if (iceFillBoard[row][col] != isBlock) {
 					iceFillBoard[row][col] = isBlock;
@@ -140,40 +142,40 @@ public class IceFill extends DungeonPuzzle {
 			}
 		}
 
-        Vector2ic[] newPosArray = {pos.add(1, 0, new Vector2i()), pos.add(-1, 0, new Vector2i()), pos.add(0, 1, new Vector2i()), pos.add(0, -1, new Vector2i())};
-        for (Vector2ic newPos : newPosArray) {
-            if (newPos.x() >= 0 && newPos.x() < iceFillBoard.length && newPos.y() >= 0 && newPos.y() < iceFillBoard[0].length && !iceFillBoard[newPos.x()][newPos.y()] && !visited[newPos.x()][newPos.y()]) {
-                path.add(newPos);
-                visited[newPos.x()][newPos.y()] = true;
-                List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
-                if (newPath != null) {
-                    return newPath;
-                }
-                path.removeLast();
-                visited[newPos.x()][newPos.y()] = false;
-            }
-        }
+		Vector2ic[] newPosArray = {pos.add(1, 0, new Vector2i()), pos.add(-1, 0, new Vector2i()), pos.add(0, 1, new Vector2i()), pos.add(0, -1, new Vector2i())};
+		for (Vector2ic newPos : newPosArray) {
+			if (newPos.x() >= 0 && newPos.x() < iceFillBoard.length && newPos.y() >= 0 && newPos.y() < iceFillBoard[0].length && !iceFillBoard[newPos.x()][newPos.y()] && !visited[newPos.x()][newPos.y()]) {
+				path.add(newPos);
+				visited[newPos.x()][newPos.y()] = true;
+				List<Vector2ic> newPath = solveDfs(iceFillBoard, count - 1, path, visited);
+				if (newPath != null) {
+					return newPath;
+				}
+				path.removeLast();
+				visited[newPos.x()][newPos.y()] = false;
+			}
+		}
 
 		return null;
 	}
 
 	@Override
-	public void render(WorldRenderContext context) {
+	public void extractRendering(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveIceFill || !DungeonManager.isCurrentRoomMatched()) {
 			return;
 		}
 		Room room = DungeonManager.getCurrentRoom();
 		for (int i = 0; i < 3; i++) {
-			renderPath(context, room, iceFillPaths.get(i), BOARD_ORIGINS[i]);
+			extractPath(collector, room, iceFillPaths.get(i), BOARD_ORIGINS[i]);
 		}
 	}
 
-	private void renderPath(WorldRenderContext context, Room room, List<Vector2ic> iceFillPath, BlockPos originPos) {
+	private void extractPath(PrimitiveCollector collector, Room room, List<Vector2ic> iceFillPath, BlockPos originPos) {
 		BlockPos.Mutable pos = new BlockPos.Mutable();
 		for (int i = 0; i < iceFillPath.size() - 1; i++) {
 			Vec3d start = Vec3d.ofCenter(room.relativeToActual(pos.set(originPos).move(-iceFillPath.get(i).y(), 0, -iceFillPath.get(i).x())));
 			Vec3d end = Vec3d.ofCenter(room.relativeToActual(pos.set(originPos).move(-iceFillPath.get(i + 1).y(), 0, -iceFillPath.get(i + 1).x())));
-			RenderHelper.renderLinesFromPoints(context, new Vec3d[]{start, end}, RED_COLOR_COMPONENTS, 1f, 5f, true);
+			collector.submitLinesFromPoints(new Vec3d[]{start, end}, RED_COLOR_COMPONENTS, 1f, 5f, true);
 		}
 	}
 }

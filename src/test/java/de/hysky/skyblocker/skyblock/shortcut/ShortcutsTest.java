@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.InputUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,7 +30,7 @@ public class ShortcutsTest {
 
 	@Test
 	void testShortcutsParse() {
-		Shortcuts.ShortcutsRecord expected = new Shortcuts.ShortcutsRecord(Object2ObjectMaps.singleton("/s", "/skyblock"), Object2ObjectMaps.singleton("/pa", "/p accept"), Object2ObjectMaps.singleton(new ShortcutKeyBinding(List.of(InputUtil.fromKeyCode(InputUtil.GLFW_KEY_K, -1))), "/skyblock"));
+		Shortcuts.ShortcutsRecord expected = new Shortcuts.ShortcutsRecord(Object2ObjectMaps.singleton("/s", "/skyblock"), Object2ObjectMaps.singleton("/pa", "/p accept"), Object2ObjectMaps.singleton(new ShortcutKeyBinding(List.of(fromKeyCode(InputUtil.GLFW_KEY_K, -1))), "/skyblock"));
 		Shortcuts.ShortcutsRecord shortcuts = Shortcuts.ShortcutsRecord.CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(SHORTCUTS_JSON, JsonObject.class)).getOrThrow();
 
 		Assertions.assertEquals(expected, shortcuts);
@@ -37,7 +38,7 @@ public class ShortcutsTest {
 
 	@Test
 	void testShortcutsParseKeyCombo() {
-		Shortcuts.ShortcutsRecord expected = new Shortcuts.ShortcutsRecord(Object2ObjectMaps.singleton("/s", "/skyblock"), Object2ObjectMaps.singleton("/pa", "/p accept"), new Object2ObjectOpenHashMap<>(Map.of(new ShortcutKeyBinding(List.of(InputUtil.fromKeyCode(InputUtil.GLFW_KEY_S, -1), InputUtil.fromKeyCode(InputUtil.GLFW_KEY_K, -1))), "/skyblock", new ShortcutKeyBinding(List.of(InputUtil.fromKeyCode(InputUtil.GLFW_KEY_P, -1), InputUtil.fromKeyCode(InputUtil.GLFW_KEY_V, -1))), "/pv")));
+		Shortcuts.ShortcutsRecord expected = new Shortcuts.ShortcutsRecord(Object2ObjectMaps.singleton("/s", "/skyblock"), Object2ObjectMaps.singleton("/pa", "/p accept"), new Object2ObjectOpenHashMap<>(Map.of(new ShortcutKeyBinding(List.of(fromKeyCode(InputUtil.GLFW_KEY_S, -1), fromKeyCode(InputUtil.GLFW_KEY_K, -1))), "/skyblock", new ShortcutKeyBinding(List.of(fromKeyCode(InputUtil.GLFW_KEY_P, -1), fromKeyCode(InputUtil.GLFW_KEY_V, -1))), "/pv")));
 		Shortcuts.ShortcutsRecord shortcuts = Shortcuts.ShortcutsRecord.CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(SHORTCUTS_JSON_KEY_COMBO, JsonObject.class)).getOrThrow();
 
 		Assertions.assertEquals(expected, shortcuts);
@@ -45,7 +46,7 @@ public class ShortcutsTest {
 
 	@Test
 	void testShortcutsEncode() {
-		Shortcuts.ShortcutsRecord shortcuts = new Shortcuts.ShortcutsRecord(Object2ObjectMaps.singleton("/s", "/skyblock"), Object2ObjectMaps.singleton("/pa", "/p accept"), Object2ObjectMaps.singleton(new ShortcutKeyBinding(List.of(InputUtil.fromKeyCode(InputUtil.GLFW_KEY_K, -1))), "/skyblock"));
+		Shortcuts.ShortcutsRecord shortcuts = new Shortcuts.ShortcutsRecord(Object2ObjectMaps.singleton("/s", "/skyblock"), Object2ObjectMaps.singleton("/pa", "/p accept"), Object2ObjectMaps.singleton(new ShortcutKeyBinding(List.of(fromKeyCode(InputUtil.GLFW_KEY_K, -1))), "/skyblock"));
 		String shortcutsJson = SkyblockerMod.GSON_COMPACT.toJson(Shortcuts.ShortcutsRecord.CODEC.encodeStart(JsonOps.INSTANCE, shortcuts).getOrThrow());
 
 		Assertions.assertEquals(SHORTCUTS_JSON, shortcutsJson);
@@ -53,7 +54,7 @@ public class ShortcutsTest {
 
 	@Test
 	void testShortcutsEncodeKeyCombo() {
-		Shortcuts.ShortcutsRecord shortcuts = new Shortcuts.ShortcutsRecord(Object2ObjectMaps.singleton("/s", "/skyblock"), Object2ObjectMaps.singleton("/pa", "/p accept"), new Object2ObjectOpenHashMap<>(Map.of(new ShortcutKeyBinding(List.of(InputUtil.fromKeyCode(InputUtil.GLFW_KEY_S, -1), InputUtil.fromKeyCode(InputUtil.GLFW_KEY_K, -1))), "/skyblock", new ShortcutKeyBinding(List.of(InputUtil.fromKeyCode(InputUtil.GLFW_KEY_P, -1), InputUtil.fromKeyCode(InputUtil.GLFW_KEY_V, -1))), "/pv")));
+		Shortcuts.ShortcutsRecord shortcuts = new Shortcuts.ShortcutsRecord(Object2ObjectMaps.singleton("/s", "/skyblock"), Object2ObjectMaps.singleton("/pa", "/p accept"), new Object2ObjectOpenHashMap<>(Map.of(new ShortcutKeyBinding(List.of(fromKeyCode(InputUtil.GLFW_KEY_S, -1), fromKeyCode(InputUtil.GLFW_KEY_K, -1))), "/skyblock", new ShortcutKeyBinding(List.of(fromKeyCode(InputUtil.GLFW_KEY_P, -1), fromKeyCode(InputUtil.GLFW_KEY_V, -1))), "/pv")));
 		JsonElement shortcutsJson = Shortcuts.ShortcutsRecord.CODEC.encodeStart(JsonOps.INSTANCE, shortcuts).getOrThrow();
 
 		Assertions.assertEquals(SkyblockerMod.GSON.fromJson(SHORTCUTS_JSON_KEY_COMBO, JsonObject.class), shortcutsJson); // Convert to json to prevent issues with hash map iteration order
@@ -62,10 +63,14 @@ public class ShortcutsTest {
 	@Test
 	void testShortcutsModify() {
 		Shortcuts.ShortcutsRecord shortcuts = Shortcuts.ShortcutsRecord.CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(SHORTCUTS_JSON_OLD, JsonObject.class)).getOrThrow();
-		shortcuts.keyBindings().put(new ShortcutKeyBinding(List.of(InputUtil.fromKeyCode(InputUtil.GLFW_KEY_S, -1), InputUtil.fromKeyCode(InputUtil.GLFW_KEY_K, -1))), "/skyblock");
-		shortcuts.keyBindings().put(new ShortcutKeyBinding(List.of(InputUtil.fromKeyCode(InputUtil.GLFW_KEY_P, -1), InputUtil.fromKeyCode(InputUtil.GLFW_KEY_V, -1))), "/pv");
+		shortcuts.keyBindings().put(new ShortcutKeyBinding(List.of(fromKeyCode(InputUtil.GLFW_KEY_S, -1), fromKeyCode(InputUtil.GLFW_KEY_K, -1))), "/skyblock");
+		shortcuts.keyBindings().put(new ShortcutKeyBinding(List.of(fromKeyCode(InputUtil.GLFW_KEY_P, -1), fromKeyCode(InputUtil.GLFW_KEY_V, -1))), "/pv");
 		JsonElement shortcutsJson = Shortcuts.ShortcutsRecord.CODEC.encodeStart(JsonOps.INSTANCE, shortcuts).getOrThrow();
 
 		Assertions.assertEquals(SkyblockerMod.GSON.fromJson(SHORTCUTS_JSON_KEY_COMBO, JsonObject.class), shortcutsJson); // Convert to json to prevent issues with hash map iteration order
+	}
+
+	private static InputUtil.Key fromKeyCode(int key, int scancode) {
+		return InputUtil.fromKeyCode(new KeyInput(key, scancode, 0));
 	}
 }

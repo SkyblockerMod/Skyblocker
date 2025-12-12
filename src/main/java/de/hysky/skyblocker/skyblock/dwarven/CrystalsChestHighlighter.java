@@ -6,12 +6,11 @@ import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -48,7 +47,7 @@ public class CrystalsChestHighlighter {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(CrystalsChestHighlighter::extractLocationFromMessage);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsChestHighlighter::render);
+		WorldRenderExtractionCallback.EVENT.register(CrystalsChestHighlighter::extractRendering);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 		WorldEvents.BLOCK_STATE_UPDATE.register(CrystalsChestHighlighter::onBlockUpdate);
 		ParticleEvents.FROM_SERVER.register(CrystalsChestHighlighter::onParticle);
@@ -89,7 +88,7 @@ public class CrystalsChestHighlighter {
 
 		if (waitingForChest > 0 && newState.isOf(Blocks.CHEST)) {
 			//make sure it is not too far from the player (more than 10 blocks away)
-			if (immutable.getSquaredDistance(CLIENT.player.getPos()) > 100) {
+			if (immutable.getSquaredDistance(CLIENT.player.getEntityPos()) > 100) {
 				return;
 			}
 			activeChests.add(immutable);
@@ -132,7 +131,7 @@ public class CrystalsChestHighlighter {
 			Vec3d rotationVec = player.getRotationVec(0);
 			double range = player.getBlockInteractionRange();
 			Vec3d vec3d3 = eyePos.add(rotationVec.x * range, rotationVec.y * range, rotationVec.z * range);
-			BlockHitResult raycast = player.getWorld().raycast(new BlockStateRaycastContext(eyePos, vec3d3, blockState -> blockState.isOf(Blocks.CHEST)));
+			BlockHitResult raycast = player.getEntityWorld().raycast(new BlockStateRaycastContext(eyePos, vec3d3, blockState -> blockState.isOf(Blocks.CHEST)));
 			if (!raycast.getType().equals(HitResult.Type.MISS)) {
 				currentLockCount += 1;
 				activeParticles.clear();
@@ -153,18 +152,16 @@ public class CrystalsChestHighlighter {
 	/**
 	 * If enabled, renders a box around active treasure chests, taking the color from the config.
 	 * Additionally, calculates and displaces the highlight to indicate lock-picking spots on chests.
-	 * Finally, renders text showing how many lock picks the player has done
-	 *
-	 * @param context context
+	 * Finally, renders text showing how many lock picks the player has done.
 	 */
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
 			return;
 		}
 		//render chest outline
 		float[] color = SkyblockerConfigManager.get().mining.crystalHollows.chestHighlightColor.getComponents(new float[]{0, 0, 0, 0});
 		for (BlockPos chest : activeChests) {
-			RenderHelper.renderOutline(context, Box.of(chest.toCenterPos().subtract(0, 0.0625, 0), 0.885, 0.885, 0.885), color, color[3], 3, false);
+			collector.submitOutlinedBox(Box.of(chest.toCenterPos().subtract(0, 0.0625, 0), 0.885, 0.885, 0.885), color, color[3], 3, false);
 		}
 
 		//render lock picking if player is looking at chest that is in the active chests list
@@ -193,14 +190,14 @@ public class CrystalsChestHighlighter {
 
 				//render the spot
 				highlightSpot = highlightSpot.multiply((double) 1 / addedParticles).subtract(LOCK_HIGHLIGHT_SIZE.multiply(0.5));
-				RenderHelper.renderFilled(context, highlightSpot, LOCK_HIGHLIGHT_SIZE, color, color[3], true);
+				collector.submitFilledBox(highlightSpot, LOCK_HIGHLIGHT_SIZE, color, color[3], true);
 			}
 
 			//render total text if needed is more than 0
 			if (neededLockCount <= 0) {
 				return;
 			}
-			RenderHelper.renderText(context, Text.literal(Math.min(currentLockCount, neededLockCount) + "/" + neededLockCount).withColor(SkyblockerConfigManager.get().mining.crystalHollows.chestHighlightColor.getRGB()), chestPos, true);
+			collector.submitText(Text.literal(Math.min(currentLockCount, neededLockCount) + "/" + neededLockCount).withColor(SkyblockerConfigManager.get().mining.crystalHollows.chestHighlightColor.getRGB()), chestPos, true);
 		}
 	}
 }

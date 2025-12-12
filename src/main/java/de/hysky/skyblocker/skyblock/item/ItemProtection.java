@@ -6,7 +6,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -33,15 +32,15 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class ItemProtection {
-	public static final Identifier ITEM_PROTECTION_TEX = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
+	public static final Identifier ITEM_PROTECTION_TEX = SkyblockerMod.id("textures/gui/item_protection.png");
 	public static KeyBinding itemProtection;
 
 	@Init
 	public static void init() {
 		itemProtection = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.itemProtection",
+				"key.skyblocker.itemProtection",
 				GLFW.GLFW_KEY_V,
-				"key.categories.skyblocker"
+				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 		ClientCommandRegistrationCallback.EVENT.register(ItemProtection::registerCommand);
 		UseEntityCallback.EVENT.register(ItemProtection::onEntityInteract);
@@ -49,7 +48,7 @@ public class ItemProtection {
 
 	public static boolean isItemProtected(ItemStack stack) {
 		if (stack == null) return false;
-		String itemUuid = ItemUtils.getItemUuid(stack);
+		String itemUuid = stack.getUuid();
 		return SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid);
 	}
 
@@ -63,7 +62,7 @@ public class ItemProtection {
 		ItemStack heldItem = source.getPlayer().getMainHandStack();
 
 		if (Utils.isOnSkyblock()) {
-			String itemUuid = ItemUtils.getItemUuid(heldItem);
+			String itemUuid = heldItem.getUuid();
 
 			if (!itemUuid.isEmpty()) {
 				ObjectOpenHashSet<String> protectedItems = SkyblockerConfigManager.get().general.protectedItems;
@@ -104,7 +103,7 @@ public class ItemProtection {
 			return;
 		}
 
-		String itemUuid = ItemUtils.getItemUuid(heldItem);
+		String itemUuid = heldItem.getUuid();
 		if (!itemUuid.isEmpty()) {
 			ObjectOpenHashSet<String> protectedItems = SkyblockerConfigManager.get().general.protectedItems;
 
@@ -134,7 +133,7 @@ public class ItemProtection {
 	}
 
 	private static ActionResult onEntityInteract(PlayerEntity playerEntity, World world, Hand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
-		if (!Utils.isOnSkyblock() || !world.isClient) return ActionResult.PASS;
+		if (!Utils.isOnSkyblock() || !world.isClient()) return ActionResult.PASS;
 
 		Location location = Utils.getLocation();
 		if (!(location == Location.PRIVATE_ISLAND || location == Location.GARDEN)) {

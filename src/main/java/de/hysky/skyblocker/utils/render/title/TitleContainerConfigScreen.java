@@ -11,15 +11,18 @@ import de.hysky.skyblocker.utils.render.gui.EmptyWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 import java.util.Set;
 
 public class TitleContainerConfigScreen extends HudConfigScreen {
+	public static final float MIN_TITLE_SCALE = 30f;
+	public static final float MAX_TITLE_SCALE = 140f;
 	// ImmutableSet preserves insertion order
 	private static final Set<Title> EXAMPLES = ImmutableSet.of(
 			new Title(Text.literal("Test1").formatted(Formatting.RED)),
@@ -87,8 +90,8 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		switch (keyCode) {
+	public boolean keyPressed(KeyInput input) {
+		switch (input.key()) {
 			case GLFW.GLFW_KEY_Q -> SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment = EnumUtils.cycle(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment);
 			case GLFW.GLFW_KEY_E -> SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment = EnumUtils.cycleBackwards(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment);
 			case GLFW.GLFW_KEY_R -> {
@@ -96,15 +99,17 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 				updateWidgetDimensions();
 			}
 			case GLFW.GLFW_KEY_EQUAL -> {
-				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.titleContainerScale += 10;
+				UIAndVisualsConfig.TitleContainer conf = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
+				conf.titleContainerScale = Math.min(MAX_TITLE_SCALE, conf.titleContainerScale + 10);
 				updateWidgetDimensions();
 			}
 			case GLFW.GLFW_KEY_MINUS -> {
-				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.titleContainerScale -= 10;
+				UIAndVisualsConfig.TitleContainer conf = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
+				conf.titleContainerScale = Math.max(MIN_TITLE_SCALE, conf.titleContainerScale - 10);
 				updateWidgetDimensions();
 			}
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(input);
 	}
 
 	@Override

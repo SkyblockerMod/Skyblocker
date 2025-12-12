@@ -5,8 +5,10 @@ import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.*;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.POSSIBLE_STATES;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.flipGrid;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.getFossilChance;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.rotateGrid;
 
 public class FossilSolverTest {
 
@@ -67,7 +69,6 @@ public class FossilSolverTest {
 		Assertions.assertTrue(Double.isNaN(getFossilChance(tileGrid, null)[1]));
 	}
 
-
 	TileGrid createTestRotationGrid(int height, int width) {
 		TileState[][] tileStates = new TileState[height][width];
 		for (int x = 0; x < height; x++) {
@@ -76,10 +77,10 @@ public class FossilSolverTest {
 			}
 		}
 		return new TileGrid(tileStates);
-
 	}
+
 	@Test
-	void testRotation90(){
+	void testRotation90() {
 		TileGrid originalGrid = createTestRotationGrid(6, 3);
 		originalGrid.updateSlot(0, 0, TileState.FOSSIL);
 		TileGrid targetGrid = createTestRotationGrid(3, 6);
@@ -87,8 +88,9 @@ public class FossilSolverTest {
 		TileGrid rotatedGrid = rotateGrid(originalGrid, 90);
 		Assertions.assertEquals(targetGrid, rotatedGrid);
 	}
+
 	@Test
-	void testRotation180(){
+	void testRotation180() {
 		TileGrid originalGrid = createTestRotationGrid(6, 3);
 		originalGrid.updateSlot(0, 0, TileState.FOSSIL);
 		TileGrid targetGrid = createTestRotationGrid(6, 3);
@@ -98,7 +100,7 @@ public class FossilSolverTest {
 	}
 
 	@Test
-	void testRotation270(){
+	void testRotation270() {
 		TileGrid originalGrid = createTestRotationGrid(6, 3);
 		originalGrid.updateSlot(0, 0, TileState.FOSSIL);
 		TileGrid targetGrid = createTestRotationGrid(3, 6);
@@ -108,7 +110,7 @@ public class FossilSolverTest {
 	}
 
 	@Test
-	void testFlipped(){
+	void testFlipped() {
 		TileGrid originalGrid = createTestRotationGrid(6, 3);
 		originalGrid.updateSlot(0, 0, TileState.FOSSIL);
 		TileGrid targetGrid = createTestRotationGrid(6, 3);

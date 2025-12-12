@@ -7,12 +7,23 @@
     <property name="localeCountry" value="US"/>
     <property name="tabWidth" value="4"/>
 
+    <!-- Configure suppression filters -->
+    <module name="SuppressionFilter">
+        <property name="file" value="${suppressionsFile}"/>
+        <property name="optional" value="false"/>
+    </module>
+
     <module name="NewlineAtEndOfFile"/>
 
     <!-- disallow trailing whitespace -->
     <module name="RegexpSingleline">
         <property name="format" value="\s+$"/>
         <property name="message" value="trailing whitespace"/>
+    </module>
+
+    <!-- Require each package to have a package-info file -->
+    <module name="JavadocPackage">
+        <message key="javadoc.packageInfo" value="The enclosing package must have a package-info file."/>
     </module>
 
     <module name="TreeWalker">
@@ -24,6 +35,7 @@
         </module>
 
         <!-- Ensure all imports are ship shape -->
+        <module name="AvoidStarImport"/>
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
@@ -44,6 +56,17 @@
             <property name="tokens" value="AT,INC,DEC,UNARY_MINUS,UNARY_PLUS,BNOT,LNOT,DOT,ARRAY_DECLARATOR,INDEX_OP"/>
         </module>
         <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround">
+            <!-- Allow PLUS, MINUS, STAR, DIV as they may be more readable without spaces in some cases -->
+            <property name="tokens" value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV_ASSIGN,DO_WHILE,EQUAL,GE,GT,LAMBDA,LAND,LCURLY,LE,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_RETURN,LITERAL_SWITCH,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE,LOR,LT,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS_ASSIGN,QUESTION,RCURLY,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR_ASSIGN,LITERAL_ASSERT,TYPE_EXTENSION_AND"/>
+            <property name="allowEmptyCatches" value="true"/>
+            <property name="allowEmptyConstructors" value="true"/>
+            <property name="allowEmptyLambdas" value="true"/>
+            <property name="allowEmptyLoops" value="true"/>
+            <property name="allowEmptyMethods" value="true"/>
+            <property name="allowEmptySwitchBlockStatements" value="true"/>
+            <property name="allowEmptyTypes" value="true"/>
+        </module>
         <module name="GenericWhitespace"/>
 
         <module name="ArrayTypeStyle"/>
@@ -55,6 +78,9 @@
         <module name="StringLiteralEquality"/>
         <module name="EqualsHashCode"/>
 
+        <module name="HexLiteralCase"/>
+        <module name="UpperEll"/>
+
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>
 
@@ -62,11 +88,10 @@
         <module name="MissingOverride"/>
 
         <!-- Enforce tabs -->
-        <!-- TODO: enforce tabs in the future -->
-        <!--<module name="RegexpSinglelineJava">-->
-            <!--<property name="format" value="^\t* ([^*]|\*[^ /])"/>-->
-            <!--<property name="message" value="non-tab indentation"/>-->
-        <!--</module>-->
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="^\t* ([^*]|\*[^ /])"/>
+            <property name="message" value="non-tab indentation"/>
+        </module>
 
         <module name="OuterTypeFilename"/>
         <module name="PackageDeclaration"/>
@@ -104,6 +129,7 @@
                             or @text='Inject'
                             or @text='ModifyArg'
                             or @text='ModifyExpressionValue'
+                            or @text='ModifyReceiver'
                             or @text='ModifyReturnValue'
                             or @text='ModifyVariable'
                             or @text='Override'
@@ -140,9 +166,16 @@
 
         <!-- Prevent String#toLowerCase/toUpperCase without a given Locale to prevent localization issues -->
         <!-- Not specifying a locale is error prone as it can easily lead to silent breakages with some locales! -->
-        <module name = "MatchXpath">
+        <module name="MatchXpath">
             <property name="query" value="//METHOD_CALL[./DOT/IDENT[@text='toLowerCase' or @text='toUpperCase']]/ELIST[count(./*) = 0]"/>
             <message key="matchxpath.match" value="String#toLowerCase/toUpperCase calls must specify a locale, English recommended"/>
+        </module>
+
+        <!--  Require package-info files to have NullMarked annotations -->
+        <module name="MatchXpath">
+            <!--  Package info files cannot be identified separately so we check if its not a package declaration in another type of class -->
+            <property name="query" value="/COMPILATION_UNIT[.//PACKAGE_DEF][not(.//CLASS_DEF) and not(.//INTERFACE_DEF) and not(.//ENUM_DEF) and not(.//RECORD_DEF) and not(.//ANNOTATION_DEF)][not(.//ANNOTATIONS/ANNOTATION/IDENT[@text='NullMarked'])]"/>
+            <message key="matchxpath.match" value="Package declarations in package-info files must be annotated with @NullMarked"/>
         </module>
     </module>
 </module>

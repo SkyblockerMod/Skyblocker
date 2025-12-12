@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.utils.waypoint;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -13,12 +14,13 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 	private static final float[] RED_COLOR_COMPONENTS = {1f, 0f, 0f};
 	private static final float[] WHITE_COLOR_COMPONENTS = {1f, 1f, 1f};
 	private static final float[] GREEN_COLOR_COMPONENTS = {0f, 1f, 0f};
+	private static final float[] FLOAT_ARRAY = new float[4];
 
 	int index;
-	RelativeIndex relativeIndex;
+	RelativeIndex relativeIndex = RelativeIndex.NONE;
 
 	public OrderedNamedWaypoint(NamedWaypoint namedWaypoint) {
-		this(namedWaypoint.pos, namedWaypoint.name, namedWaypoint.typeSupplier, namedWaypoint.colorComponents, namedWaypoint.alpha, namedWaypoint.isEnabled());
+		this(namedWaypoint.pos, namedWaypoint.name, namedWaypoint.typeSupplier, namedWaypoint.colorComponents, namedWaypoint.alpha, namedWaypoint.isEnabled(), namedWaypoint.throughWalls);
 	}
 
 	public OrderedNamedWaypoint(BlockPos pos, String name, float[] colorComponents) {
@@ -26,7 +28,11 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 	}
 
 	public OrderedNamedWaypoint(BlockPos pos, Text name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean shouldRender) {
-		super(pos, name, typeSupplier, colorComponents, alpha, shouldRender);
+		this(pos, name, typeSupplier, colorComponents, alpha, shouldRender, true);
+	}
+
+	public OrderedNamedWaypoint(BlockPos pos, Text name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean shouldRender, boolean throughWalls) {
+		super(pos, name, typeSupplier, colorComponents, alpha, shouldRender, throughWalls);
 	}
 
 	@Override
@@ -36,22 +42,32 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 
 	@Override
 	public OrderedNamedWaypoint withX(int x) {
-		return new OrderedNamedWaypoint(new BlockPos(x, pos.getY(), pos.getZ()), name, typeSupplier, colorComponents, alpha, isEnabled());
+		return new OrderedNamedWaypoint(new BlockPos(x, pos.getY(), pos.getZ()), name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
 	}
 
 	@Override
 	public OrderedNamedWaypoint withY(int y) {
-		return new OrderedNamedWaypoint(new BlockPos(pos.getX(), y, pos.getZ()), name, typeSupplier, colorComponents, alpha, isEnabled());
+		return new OrderedNamedWaypoint(new BlockPos(pos.getX(), y, pos.getZ()), name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
 	}
 
 	@Override
 	public OrderedNamedWaypoint withZ(int z) {
-		return new OrderedNamedWaypoint(new BlockPos(pos.getX(), pos.getY(), z), name, typeSupplier, colorComponents, alpha, isEnabled());
+		return new OrderedNamedWaypoint(new BlockPos(pos.getX(), pos.getY(), z), name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
 	}
 
 	@Override
 	public OrderedNamedWaypoint withColor(float[] colorComponents, float alpha) {
-		return new OrderedNamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled());
+		return new OrderedNamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
+	}
+
+	@Override
+	public OrderedNamedWaypoint withThroughWalls(boolean throughWalls) {
+		return new OrderedNamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
+	}
+
+	@Override
+	public OrderedNamedWaypoint withTypeSupplier(Supplier<Type> typeSupplier) {
+		return new OrderedNamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled(), throughWalls);
 	}
 
 	@Override
@@ -75,14 +91,16 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 	}
 
 	@Override
-	public void render(WorldRenderContext context) {
-		super.render(context);
-		if (relativeIndex == RelativeIndex.NEXT && shouldRender()) {
-			RenderHelper.renderLineFromCursor(context, centerPos, getRenderColorComponents(), 1f, DEFAULT_LINE_WIDTH);
+	public void extractRendering(PrimitiveCollector collector) {
+		super.extractRendering(collector);
+		UIAndVisualsConfig.Waypoints waypoints = SkyblockerConfigManager.get().uiAndVisuals.waypoints;
+		if (waypoints.renderLine && relativeIndex == RelativeIndex.NEXT && shouldRender()) {
+			float[] components = waypoints.lineColor.getComponents(FLOAT_ARRAY);
+			collector.submitLineFromCursor(centerPos, components, components[3], waypoints.lineWidth);
 		}
 		if (shouldRenderName()) {
-			float scale = Math.max((float) context.camera().getPos().distanceTo(centerPos) / 10, 1);
-			RenderHelper.renderText(context, Text.of(String.valueOf(index + 1)), centerPos.add(0, 1, 0), scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
+			float scale = Math.max((float) RenderHelper.getCamera().getPos().distanceTo(centerPos) / 10, 1);
+			collector.submitText(Text.of(String.valueOf(index + 1)), centerPos.add(0, 1, 0), scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
 		}
 	}
 
