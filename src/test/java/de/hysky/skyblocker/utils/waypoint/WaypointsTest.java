@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils.waypoint;
 
-import WaypointGroup;
 import de.hysky.skyblocker.skyblock.waypoint.Waypoints;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.SharedConstants;

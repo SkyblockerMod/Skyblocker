@@ -26,7 +26,7 @@ public class ItemStackComponentizationFixerTest {
 	private final ItemStack TEST_STACK = Util.make(new ItemStack(Items.DIAMOND_SWORD, 1), item -> {
 		ItemEnchantments.Mutable builder = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
 
-		builder.upgrade(Utils.getRegistryWrapperLookup().getOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
+		builder.upgrade(Utils.getRegistryWrapperLookup().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
 		item.set(DataComponents.ENCHANTMENTS, builder.toImmutable());
 	});
 
@@ -44,7 +44,7 @@ public class ItemStackComponentizationFixerTest {
 	@Test
 	void testDataFixer() {
 		ItemStack fixedStack = ItemStackComponentizationFixer.fixUpItem(NBT);
-		JsonElement stackJson = ItemStack.CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(JsonOps.INSTANCE), fixedStack).getOrThrow();
+		JsonElement stackJson = ItemStack.CODEC.encodeStart(Utils.getRegistryWrapperLookup().createSerializationContext(JsonOps.INSTANCE), fixedStack).getOrThrow();
 
 		Assertions.assertEquals("{\"id\":\"minecraft:diamond_sword\",\"count\":1,\"components\":{\"minecraft:custom_data\":{\"ExtraAttributes\":{\"id\":\"TEST\"}}}}", GSON.toJson(stackJson));
 	}
