@@ -76,6 +76,7 @@ public class DungeonMapLabels {
 		Vec3d labelPos = getPosForLabel(room, mapRoomSize, textRenderer.fontHeight);
 		if (labelPos == null) return;
 		Vector2dc mapPos = DungeonMapUtils.getMapPosFromPhysical(entrancePos, mapEntrancePos, mapRoomSize, labelPos);
+		//noinspection DataFlowIssue - room is matched
 		DungeonManager.RoomInfo roomInfo = DungeonManager.getRoomMetadata(room.getName());
 		if (roomInfo == null) return;
 		String roomName = roomInfo.name();
@@ -112,7 +113,7 @@ public class DungeonMapLabels {
 	 * For the remaining room types, we take the average of the x and y.<br>
 	 */
 	@SuppressWarnings("incomplete-switch")
-	private static Vec3d getPosForLabel(Room room, int mapRoomSize, int fontHeight) {
+	private static @Nullable Vec3d getPosForLabel(Room room, int mapRoomSize, int fontHeight) {
 		switch (room.getType()) {
 			case BLOOD, FAIRY:
 				return null;

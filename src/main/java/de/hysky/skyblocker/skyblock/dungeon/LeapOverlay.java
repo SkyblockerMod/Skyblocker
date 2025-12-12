@@ -34,7 +34,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
@@ -275,7 +274,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 
 		@Override
-		public int compareTo(@NotNull LeapOverlay.PlayerReference o) {
+		public int compareTo(LeapOverlay.PlayerReference o) {
 			return COMPARATOR.compare(this, o);
 		}
 
