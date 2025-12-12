@@ -1,6 +1,7 @@
 ### Dungeon Features:
 - **Fancy Party Finder GUI**
 - **Secrets Waypoint Highlight:** Fully customizable
+- **Room and Secret Syncing**
 - **Fancy Minimap & Score**
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
@@ -159,6 +160,7 @@
 - **Powder HUD**
 - **Ordered Waypoints**
     - Basic ordered waypoint commands
+- **Pickobulus Helper**
 
 ### Rift Features:
 - **Mirrorverse Waypoints**
@@ -309,6 +311,7 @@
 - **Sack Message Prices**
 - **Bazaar order tracker**
 - **Builder's wand preview**
+- **Item Value Breakdown Popup**
 
 ### Barn Features:
 - **Barn Solver:**
@@ -357,6 +360,7 @@
 - **Disable All Command**
 - **Abiphone Call Prompts**
     - Adds clickable messages in chat to quickly call Trevor the Trapper, Maddox, and Queen Mismyla
+- **Anvil Helper**
 
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
