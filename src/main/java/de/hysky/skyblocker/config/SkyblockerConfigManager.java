@@ -23,6 +23,7 @@ import de.hysky.skyblocker.config.categories.UIAndVisualsCategory;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.azureaaron.dandelion.platform.ConfigType;
 import net.azureaaron.dandelion.systems.ConfigManager;
 import net.azureaaron.dandelion.systems.DandelionConfigScreen;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -115,7 +116,7 @@ public class SkyblockerConfigManager {
 				.category(MiscCategory.create(defaults, config))
 				.categoryIf(Debug.debugEnabled(), DebugCategory.create(defaults, config))
 				.search(search)
-		).generateScreen(parent, get().misc.configBackend);
+		).generateScreen(parent, /*get().misc.configBackend*/ConfigType.YACL);
 	}
 
 	/**
