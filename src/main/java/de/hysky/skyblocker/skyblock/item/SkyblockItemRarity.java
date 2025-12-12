@@ -50,13 +50,13 @@ public enum SkyblockItemRarity implements StringIdentifiable {
 			case UNCOMMON, VERY_SPECIAL -> 5;
 			case RARE -> 8;
 			case EPIC -> 12;
-			case LEGENDARY -> 13;
+			case LEGENDARY -> 16;
 			case MYTHIC -> 22;
 			default -> 1;
 		};
 	}
 
-	public SkyblockItemRarity recombulate() {
+	public SkyblockItemRarity recombobulate() {
 		return switch (this) {
 			case COMMON -> UNCOMMON;
 			case UNCOMMON -> RARE;

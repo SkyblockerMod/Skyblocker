@@ -465,7 +465,7 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 			this.icon = ItemRepository.getItemStack("RECOMBOBULATOR_3000", ItemStack.EMPTY);
 			DoubleBooleanPair pair = ItemUtils.getItemPrice("RECOMBOBULATOR_3000");
 			double price = pair.rightBoolean() ? pair.leftDouble() : 6000000;
-			int mp = rarity.recombulate().getMP() - rarity.getMP();
+			int mp = rarity.recombobulate().getMP() - rarity.getMP();
 			pricePerMp = mp <= 0 ? Double.MAX_VALUE : price / mp;
 			tooltip = List.of(
 					Text.translatable(
