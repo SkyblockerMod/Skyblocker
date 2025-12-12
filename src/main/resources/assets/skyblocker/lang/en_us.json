@@ -1526,6 +1526,7 @@
   "skyblocker.helpers.hoppitysHunt.unableToShareEgg": "Unable to share this egg.",
 
   "skyblocker.inventorySearch.clickHereToSearch": "Click here to search.",
+  "skyblocker.inventorySearch.searchInventory": "Search Inventory",
 
   "skyblocker.itemProtection.added": "§fYour %s will now be protected! §o*your item now feels a little safer :')*",
   "skyblocker.itemProtection.noItemUuid": "§cYou must be holding an item that has a uuid to protect it!",
