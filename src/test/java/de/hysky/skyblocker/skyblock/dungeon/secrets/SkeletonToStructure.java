@@ -34,7 +34,7 @@ public class SkeletonToStructure {
 
 	static void convertToStructure(String inputPath) throws IOException, ClassNotFoundException {
 		Path outputPath = Path.of(inputPath + ".nbt");
-		if (outputPath.toFile().exists()) throw new RuntimeException("Output file already exists! - %s".formatted(outputPath));
+		if (Files.exists(outputPath)) throw new RuntimeException("Output file already exists! - %s".formatted(outputPath));
 
 		int[] blocks = readSkeletonFile(Path.of(inputPath));
 		List<SkeletonBlock> blockData = createBlockList(blocks);
