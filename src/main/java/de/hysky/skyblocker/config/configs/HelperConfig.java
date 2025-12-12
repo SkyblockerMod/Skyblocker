@@ -21,6 +21,8 @@ public class HelperConfig {
 
 	public boolean enableBuildersWandPreview = true;
 
+	public boolean enableAnvilHelper = true;
+
 	public boolean enableAccessoriesHelperWidget = true;
 
 	public MythologicalRitual mythologicalRitual = new MythologicalRitual();

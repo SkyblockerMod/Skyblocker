@@ -110,7 +110,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 			// For Enchanted Books, change the name of the category to the enchant name
 			Text name;
 			if (parentItem.get().isOf(Items.ENCHANTED_BOOK)) {
-				String enchantName = ItemUtils.getLore(parentItem.get()).getFirst().getString();
+				String enchantName = parentItem.get().skyblocker$getLoreStrings().getFirst();
 				enchantName = enchantName.substring(0, enchantName.lastIndexOf(' ')); // drop level
 				name = Text.literal(enchantName).formatted(parentId.startsWith("ULTIMATE") ? Formatting.LIGHT_PURPLE : Formatting.BLUE);
 			} else {

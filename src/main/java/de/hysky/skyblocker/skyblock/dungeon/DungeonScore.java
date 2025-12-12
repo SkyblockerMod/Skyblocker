@@ -8,6 +8,7 @@ import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretSync;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -24,6 +25,7 @@ import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,8 +63,8 @@ public class DungeonScore {
 
 	private static boolean isMayorPaul = false;
 
-	private static FloorRequirement floorRequirement;
-	private static String currentFloor;
+	private static FloorRequirement floorRequirement = FloorRequirement.NONE;
+	private static String currentFloor = "";
 	private static boolean isCurrentFloorEntrance;
 	private static boolean floorHasMimics;
 	private static boolean sentCrypts;
@@ -146,7 +148,7 @@ public class DungeonScore {
 	}
 
 	private static void reset() {
-		floorRequirement = null;
+		floorRequirement = FloorRequirement.NONE;
 		currentFloor = "";
 		isCurrentFloorEntrance = false;
 		floorHasMimics = false;
@@ -231,6 +233,7 @@ public class DungeonScore {
 		if (mimicKilled) return;
 		if (!isEntityMimic(entity)) return;
 		if (MIMIC_MESSAGE_CONFIG.get().sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + MIMIC_MESSAGE, true);
+		SecretSync.syncMimicKilled();
 		mimicKilled = true;
 	}
 
@@ -238,10 +241,13 @@ public class DungeonScore {
 		mimicKilled = true;
 	}
 
-	private static void onPrinceKill(boolean fromHypixel) {
+	public static void onPrinceKill(boolean fromHypixel) {
 		if (princeKilled) return;
 		//Ensure that we don't send a prince kill message if a teammate does
-		if (PRINCE_MESSAGE_CONFIG.get().sendPrinceMessage && fromHypixel) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + PRINCE_MESSAGE, true);
+		if (fromHypixel) {
+			if (PRINCE_MESSAGE_CONFIG.get().sendPrinceMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + PRINCE_MESSAGE, true);
+			SecretSync.syncPrinceKilled();
+		}
 		princeKilled = true;
 	}
 
@@ -310,7 +316,7 @@ public class DungeonScore {
 		return matcher != null ? Integer.parseInt(matcher.group("crypts")) : 0;
 	}
 
-	private static boolean hasSpiritPet(JsonObject player, String name) {
+	private static boolean hasSpiritPet(@Nullable JsonObject player, String name) {
 		if (player == null) {
 			LOGGER.error("[Skyblocker] Spirit pet lookup by name failed! (likely due to an earlier error!) Name: {}", name);
 			return false;
@@ -330,6 +336,7 @@ public class DungeonScore {
 	}
 
 	private static void checkMessageForDeaths(String message) {
+		//noinspection UnnecessaryUnicodeEscape
 		if (!message.startsWith("\u2620", 1)) return;
 		Matcher matcher = DEATHS_PATTERN.matcher(message);
 		if (!matcher.matches()) return;
@@ -394,7 +401,8 @@ public class DungeonScore {
 		M4(100, 480),
 		M5(100, 480),
 		M6(100, 600),
-		M7(100, 840);
+		M7(100, 840),
+		NONE(0, 0);
 
 		private final int percentage;
 		private final int timeLimit;
