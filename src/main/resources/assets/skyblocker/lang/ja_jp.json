@@ -715,5 +715,10 @@
     "skyblocker.museum.hud.skyblockXp": "SkyBlock経験値",
     "skyblocker.events.crops": "作物：",
     "skyblocker.config.slayer.callMaddox": "Maddoxに電話する",
-    "skyblocker.config.quickNav.button": "ボタン%s"
+    "skyblocker.config.quickNav.button": "ボタン%s",
+    "skyblocker.config.chat.filter.chatFilterResult.PASS": "無効",
+    "skyblocker.config.chat.filter.hideDungeonBreaker": "Dungeonbreakerメッセージを隠す",
+    "skyblocker.config.chat.filter.hideMimicKill": "Mimicが殺されたメッセージを隠す",
+    "skyblocker.config.chat.filter.hideDicer": "Dicerメッセージを隠す",
+    "skyblocker.config.chat.filter.chatFilterResult.FILTER": "有効"
 }
