@@ -18,7 +18,7 @@ public class GlCommandEncoderMixin {
 	@WrapWithCondition(method = "writeToBuffer", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/DirectStateAccess;bufferSubData(IJLjava/nio/ByteBuffer;I)V"))
 	private static boolean skyblocker$replaceBufferData(DirectStateAccess manager, int buffer, long offset, ByteBuffer data, int usage, @Local(argsOnly = true) GpuBufferSlice gpuBufferSlice) {
 		if (offset == 0 && gpuBufferSlice.length() == gpuBufferSlice.buffer().size()) {
-			((BufferManagerInvoker) manager).invokeSetBufferData(buffer, data, gpuBufferSlice.buffer().usage());
+			((BufferManagerInvoker) manager).invokeBufferData(buffer, data, gpuBufferSlice.buffer().usage());
 
 			return false;
 		}

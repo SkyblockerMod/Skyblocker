@@ -4,7 +4,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 
@@ -13,15 +12,15 @@ import net.minecraft.world.item.ItemStack;
  */
 class IcoTextComponent extends Component {
 	private ItemStack ico;
-	private Component text;
+	private net.minecraft.network.chat.Component text;
 
-	IcoTextComponent(ItemStack ico, Component txt) {
+	IcoTextComponent(ItemStack ico, net.minecraft.network.chat.Component txt) {
 		this.ico = (ico == null) ? Ico.BARRIER : ico;
 		this.text = txt;
 
 		if (txt == null) {
 			this.ico = Ico.BARRIER;
-			this.text = Component.literal("No data").withStyle(ChatFormatting.GRAY);
+			this.text = net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY);
 		}
 
 		int iconDim = ICO_DIM.get();

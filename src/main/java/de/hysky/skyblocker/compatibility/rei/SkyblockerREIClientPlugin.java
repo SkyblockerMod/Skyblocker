@@ -126,13 +126,13 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 		zones.register(ContainerScreen.class, containerScreen -> {
 			if (!SkyblockerConfigManager.get().uiAndVisuals.museumOverlay || !containerScreen.getTitle().getString().contains("Museum")) return List.of();
 			HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
-			return List.of(new Rectangle(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
+			return List.of(new Rectangle(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
 		});
 
 		zones.register(InventoryScreen.class, screen -> {
 			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.isInGarden()) return List.of();
 			HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
-			return List.of(new Rectangle(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+			return List.of(new Rectangle(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
 		});
 
 		zones.register(Screen.class, screen -> {

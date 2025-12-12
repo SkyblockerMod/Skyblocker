@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 
@@ -13,17 +12,17 @@ import net.minecraft.world.item.ItemStack;
 class IcoFatTextComponent extends Component {
 	private static final int ICO_OFFS = 4;
 	private ItemStack ico;
-	private Component line1, line2;
+	private net.minecraft.network.chat.Component line1, line2;
 
-	IcoFatTextComponent(ItemStack ico, Component l1, Component l2) {
+	IcoFatTextComponent(ItemStack ico, net.minecraft.network.chat.Component l1, net.minecraft.network.chat.Component l2) {
 		this.ico = (ico == null) ? Ico.BARRIER : ico;
 		this.line1 = l1;
 		this.line2 = l2;
 
 		if (l1 == null || l2 == null) {
 			this.ico = Ico.BARRIER;
-			this.line1 = Component.literal("No data").withStyle(ChatFormatting.GRAY);
-			this.line2 = Component.literal("No data").withStyle(ChatFormatting.GRAY);
+			this.line1 = net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY);
+			this.line2 = net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY);
 		}
 
 		this.width = ICO_DIM.get() + PAD_L + Math.max(txtRend.width(this.line1), txtRend.width(this.line2));

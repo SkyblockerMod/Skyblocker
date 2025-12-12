@@ -30,7 +30,7 @@ public class EquipmentGuiElementRenderer<S> extends PictureInPictureRenderer<Equ
 	}
 
 	@Override
-	protected void render(EquipmentGuiElementRenderState<S> state, PoseStack matrices) {
+	protected void renderToTexture(EquipmentGuiElementRenderState<S> state, PoseStack matrices) {
 		Minecraft client = Minecraft.getInstance();
 
 		matrices.pushPose();

@@ -144,7 +144,7 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
-	private class DropdownList extends ContainerObjectSelectionList<de.hysky.skyblocker.utils.render.gui.DropdownWidget.Entry> {
+	private class DropdownList extends ContainerObjectSelectionList<Entry> {
 
 		private DropdownList(Minecraft minecraftClient, int x, int y, int width, int height) {
 			super(minecraftClient, width, height, y, ENTRY_HEIGHT);

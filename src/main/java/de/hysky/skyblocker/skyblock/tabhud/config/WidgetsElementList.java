@@ -91,7 +91,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	}
 
 	@Override
-	protected void renderEntry(GuiGraphics context, int mouseX, int mouseY, float delta, WidgetsListEntry entry) {
+	protected void renderItem(GuiGraphics context, int mouseX, int mouseY, float delta, WidgetsListEntry entry) {
 		super.renderItem(context, mouseX, mouseY, delta, entry);
 		if (this.getSelected() != entry) return;
 

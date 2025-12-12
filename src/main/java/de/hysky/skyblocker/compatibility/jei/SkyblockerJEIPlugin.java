@@ -86,7 +86,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 		public List<Rect2i> getGuiExtraAreas(ContainerScreen containerScreen) {
 			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.museumOverlay || !containerScreen.getTitle().getString().contains("Museum")) return List.of();
 			HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
-			return List.of(new Rect2i(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
+			return List.of(new Rect2i(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
 		}
 	}
 
@@ -95,7 +95,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 		public List<Rect2i> getGuiExtraAreas(InventoryScreen containerScreen) {
 			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.isInGarden()) return List.of();
 			HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
-			return List.of(new Rect2i(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+			return List.of(new Rect2i(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
 		}
 	}
 

@@ -49,7 +49,7 @@ public class SkyblockerEMIPlugin implements EmiPlugin {
 		registry.addExclusionArea(InventoryScreen.class, (screen, consumer) -> {
 			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return;
 			HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
-			consumer.accept(new Bounds(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+			consumer.accept(new Bounds(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
 		});
 	}
 }

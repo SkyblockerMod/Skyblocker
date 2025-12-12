@@ -63,7 +63,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 
 	// This constructor takes in a comparator that is triggered to decide where to add the element in the tree map
 	// This causes it to be sorted at all times. This is for rendering them in a sort of easy-to-read manner.
-	private final Object2IntAVLTreeMap<Component> shownRewards = new Object2IntAVLTreeMap<>(Comparator.<Component>comparingInt(text -> comparePriority(text.getString())).thenComparing(Component::getString));
+	private final Object2IntAVLTreeMap<Component> shownRewards = new Object2IntAVLTreeMap<>(Comparator.<Component>comparingInt(text -> comparePriority(text.getString())).thenComparing(c -> c.getString()));
 
 	/**
 	 * Holds the total reward maps for all accounts and profiles. {@link #currentProfileRewards} is a subset of this map, updated on profile change.
