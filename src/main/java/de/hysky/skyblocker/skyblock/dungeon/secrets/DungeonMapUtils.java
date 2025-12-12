@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import de.hysky.skyblocker.skyblock.dungeon.secrets.Room.Type;
+
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.block.MapColor;
@@ -41,11 +43,11 @@ public class DungeonMapUtils {
 	}
 
 	public static boolean isEntranceColor(MapState map, int x, int z) {
-		return getColor(map, x, z) == Room.Type.ENTRANCE.color;
+		return getColor(map, x, z) == Type.ENTRANCE.color;
 	}
 
 	public static boolean isEntranceColor(MapState map, @Nullable Vector2ic pos) {
-		return getColor(map, pos) == Room.Type.ENTRANCE.color;
+		return getColor(map, pos) == Type.ENTRANCE.color;
 	}
 
 	private static @Nullable Vector2i getMapPlayerPos(MapState map) {
@@ -262,16 +264,16 @@ public class DungeonMapUtils {
 		};
 	}
 
-	public static Room.Type getRoomType(MapState map, Vector2ic mapPos) {
+	public static @Nullable Type getRoomType(MapState map, Vector2ic mapPos) {
 		return switch (getColor(map, mapPos)) {
-			case GREEN_COLOR -> Room.Type.ENTRANCE;
-			case 63 -> Room.Type.ROOM;
-			case 66 -> Room.Type.PUZZLE;
-			case 62 -> Room.Type.TRAP;
-			case 74 -> Room.Type.MINIBOSS;
-			case 82 -> Room.Type.FAIRY;
-			case 18 -> Room.Type.BLOOD;
-			case 85 -> Room.Type.UNKNOWN;
+			case GREEN_COLOR -> Type.ENTRANCE;
+			case 63 -> Type.ROOM;
+			case 66 -> Type.PUZZLE;
+			case 62 -> Type.TRAP;
+			case 74 -> Type.MINIBOSS;
+			case 82 -> Type.FAIRY;
+			case 18 -> Type.BLOOD;
+			case 85 -> Type.UNKNOWN;
 			default -> null;
 		};
 	}

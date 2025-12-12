@@ -84,18 +84,20 @@ public class DungeonPlayerManager {
 			String name = matcher.group("name");
 			DungeonClass dungeonClass = DungeonClass.from(matcher.group("class"));
 
-			if (players[i] != null && players[i].name.equals(name)) {
-				players[i].update(dungeonClass);
+			DungeonPlayer dungeonPlayer = players[i];
+			if (dungeonPlayer != null && dungeonPlayer.name.equals(name)) {
+				dungeonPlayer.update(dungeonClass);
 			} else {
 				players[i] = new DungeonPlayer(name, dungeonClass);
 			}
 		}
 	}
 
-	public static Matcher getPlayerFromTab(@Range(from = 1, to = 5) int index) {
+	public static @Nullable Matcher getPlayerFromTab(@Range(from = 1, to = 5) int index) {
 		return PlayerListManager.regexAt(1 + (index - 1) * 4, PLAYER_TAB_PATTERN);
 	}
 
+	@SuppressWarnings("SameReturnValue")
 	private static boolean onPlayerGhost(Text text, boolean overlay) {
 		if (!dungeonLoaded) return true;
 

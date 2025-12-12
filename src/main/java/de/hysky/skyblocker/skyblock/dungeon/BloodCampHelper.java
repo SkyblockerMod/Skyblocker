@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Helper for camping Blood Mobs in the dungeon Blood Room.
  */
@@ -188,7 +190,7 @@ public class BloodCampHelper {
 		static final int DELTA_SAMPLES = 5;
 		final Deque<Vec3d> deltas = new ArrayDeque<>();
 		boolean inMotion = false;
-		Vec3d predictedPos;
+		@Nullable Vec3d predictedPos;
 
 		TrackedMob(ArmorStandEntity entity) {
 			this.entity = entity;

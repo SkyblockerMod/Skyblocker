@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard;
 
 import java.util.Locale;
 
+import org.jspecify.annotations.Nullable;
+
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
@@ -54,7 +56,7 @@ public class Waterboard {
 		public final DyeColor color;
 		// Holds positions where the corresponding block is present in the initial state of each variant, offset from the water entrance position
 		// This is more reliable at detecting if the lever is active than looking at the lever's block state
-		public final BlockPos[] initialPositions;
+		public final @Nullable BlockPos[] initialPositions;
 
 		LeverType(Block block, BlockPos leverPos, DyeColor color, BlockPos[] initialPositions) {
 			this.block = block;
@@ -63,7 +65,7 @@ public class Waterboard {
 			this.initialPositions = initialPositions;
 		}
 
-		public static LeverType fromName(String name) {
+		public static @Nullable LeverType fromName(String name) {
 			for (LeverType leverType : LeverType.values()) {
 				if (leverType.name().equalsIgnoreCase(name)) {
 					return leverType;
@@ -72,7 +74,7 @@ public class Waterboard {
 			return null;
 		}
 
-		public static LeverType fromBlock(Block block) {
+		public static @Nullable LeverType fromBlock(Block block) {
 			for (LeverType leverType : LeverType.values()) {
 				if (leverType.block == block) {
 					return leverType;
@@ -81,7 +83,7 @@ public class Waterboard {
 			return null;
 		}
 
-		public static LeverType fromPos(BlockPos leverPos) {
+		public static @Nullable LeverType fromPos(BlockPos leverPos) {
 			for (LeverType leverType : LeverType.values()) {
 				if (leverPos.equals(leverType.leverPos)) {
 					return leverType;

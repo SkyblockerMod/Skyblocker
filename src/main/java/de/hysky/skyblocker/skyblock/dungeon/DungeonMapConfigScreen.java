@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import java.awt.Color;
 
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.gl.RenderPipelines;
@@ -18,13 +20,13 @@ public class DungeonMapConfigScreen extends Screen {
 	private int scoreX = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX;
 	private int scoreY = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY;
 	private static final Identifier MAP_BACKGROUND = Identifier.ofVanilla("textures/map/map_background.png");
-	private final Screen parent;
+	private final @Nullable Screen parent;
 
 	protected DungeonMapConfigScreen() {
 		this(null);
 	}
 
-	public DungeonMapConfigScreen(Screen parent) {
+	public DungeonMapConfigScreen(@Nullable Screen parent) {
 		super(Text.literal("Dungeon Map Config"));
 		this.parent = parent;
 	}
