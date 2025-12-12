@@ -102,7 +102,7 @@ public class Room implements Tickable, Renderable {
 	 * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
 	 */
 	protected MatchState matchState = MatchState.MATCHING;
-	private Table<Integer, BlockPos, @NotNull SecretWaypoint> secretWaypoints;
+	private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
 	private String name;
 	private Direction direction;
 	private Vector2ic physicalCornerPos;
