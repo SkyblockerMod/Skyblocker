@@ -65,6 +65,11 @@ public class PickobulusHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
+	public Text getDisplayName() {
+		return Text.translatable("skyblocker.config.mining.enablePickobulusHelper");
+	}
+
+	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!AVAILABLE_LOCATIONS.contains(location)) return;
 		SkyblockerConfigManager.get().mining.enablePickobulusHelper = enabled;
