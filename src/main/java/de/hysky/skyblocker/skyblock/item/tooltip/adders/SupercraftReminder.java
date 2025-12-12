@@ -6,10 +6,11 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
 
 public class SupercraftReminder extends SimpleTooltipAdder {
 	private static final byte SUPERCRAFT_SLOT = 32;

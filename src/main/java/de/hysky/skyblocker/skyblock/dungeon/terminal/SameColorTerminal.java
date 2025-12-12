@@ -18,8 +18,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -117,7 +116,7 @@ public final class SameColorTerminal extends SimpleContainerSolver implements Te
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		int clicks = clickMap.getOrDefault(slotId, 0);
 		if (clicks == 0) return List.of();
 		return SlotText.topLeftList(Text.literal(String.valueOf(clicks)).formatted(Formatting.GOLD));

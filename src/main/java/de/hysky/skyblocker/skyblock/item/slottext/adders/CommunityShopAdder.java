@@ -2,17 +2,16 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 public class CommunityShopAdder extends SimpleSlotTextAdder {
 	private static final byte CATEGORIES_START = 10;
@@ -28,7 +27,7 @@ public class CommunityShopAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slotId >= CATEGORIES_START && slotId <= CATEGORIES_END && stack.isOf(Items.LIME_STAINED_GLASS_PANE)) { //Only the selected category has a lime stained glass pane, the others have a gray one.
 			currentScreen = (byte) (slotId - CATEGORIES_START);
 			return List.of();
@@ -47,9 +46,9 @@ public class CommunityShopAdder extends SimpleSlotTextAdder {
 				String roman = name.substring(lastIndex + 1); // + 1 as we don't want the space
 				if (!RomanNumerals.isValidRomanNumeral(roman)) yield List.of();
 
-				List<Text> lore = ItemUtils.getLore(stack);
+				List<String> lore = stack.skyblocker$getLoreStrings();
 				if (lore.isEmpty()) yield List.of();
-				String lastLine = lore.getLast().getString();
+				String lastLine = lore.getLast();
 				yield SlotText.bottomLeftList(switch (lastLine) {
 					case "Maxed out!" -> Text.literal("Max").withColor(SlotText.LIGHT_ORANGE);
 					case "Currently upgrading!", "Click to instantly upgrade!" -> Text.literal("⏰").withColor(SlotText.LIGHT_YELLOW).formatted(Formatting.BOLD);

@@ -7,12 +7,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
 
 public class RancherBootsSpeedAdder extends SimpleSlotTextAdder {
 	private static final Pattern SPEED_PATTERN = Pattern.compile("Current Speed Cap: (\\d+) ?(\\d+)?");
@@ -25,7 +25,7 @@ public class RancherBootsSpeedAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (!stack.isOf(Items.LEATHER_BOOTS) && !stack.getSkyblockId().equals("RANCHERS_BOOTS")) return List.of();
 		Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, SPEED_PATTERN);
 		if (matcher == null) return List.of();

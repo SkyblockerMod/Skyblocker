@@ -3,6 +3,8 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -13,7 +15,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 
 public class SkyblockRecipeResultButton extends ClickableWidget {
 	//Corresponds to AnimatedResultButton#field_32415

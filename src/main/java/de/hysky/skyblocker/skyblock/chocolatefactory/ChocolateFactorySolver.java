@@ -24,8 +24,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -409,7 +408,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	// ======== Slot Text Adder ========
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		for (ChocolateFactorySolver.Rabbit rabbit : cpsIncreaseFactors) { // Coach is included in these
 			if (slotId == rabbit.slot()) {
 				// Use SlotText#topLeft for positioning and add color to the text.

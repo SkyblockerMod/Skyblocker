@@ -3,8 +3,8 @@ package de.hysky.skyblocker.skyblock.item.wikilookup;
 import java.util.function.Predicate;
 
 import org.apache.commons.text.WordUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
+
 import com.google.common.collect.Iterables;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -29,7 +29,7 @@ public class EnchantmentBookItemLookup implements WikiLookup {
 	private EnchantmentBookItemLookup() {}
 
 	@Override
-	public void open(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
+	public void open(ItemStack itemStack, PlayerEntity player, boolean useOfficial) {
 		NbtCompound nbt = ItemUtils.getCustomData(itemStack);
 		NbtCompound enchantments = nbt.getCompoundOrEmpty("enchantments");
 		String firstEnchantment = Iterables.getFirst(enchantments.getKeys(), null)
@@ -40,7 +40,7 @@ public class EnchantmentBookItemLookup implements WikiLookup {
 	}
 
 	@Override
-	public boolean canSearch(@Nullable String title, @NotNull Either<Slot, ItemStack> either) {
+	public boolean canSearch(@Nullable String title, Either<Slot, ItemStack> either) {
 		ItemStack itemStack = WikiLookupManager.mapEitherToItemStack(either);
 		return ENCHANTMENT_BOOK_FILTER.test(itemStack);
 	}

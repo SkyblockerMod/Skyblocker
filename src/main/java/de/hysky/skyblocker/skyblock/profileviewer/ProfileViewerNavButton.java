@@ -5,7 +5,6 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.ItemStack;
@@ -43,10 +42,7 @@ public class ProfileViewerNavButton extends ClickableWidget {
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, toggled ? BUTTON_TEXTURES_TOGGLED : BUTTON_TEXTURES, this.getX(), this.getY(), this.width, this.height - ((this.toggled) ? 0 : 4));
 		context.drawItem(this.icon, this.getX() + 6, this.getY() + (this.toggled ? 7 : 9));
-
-		if (this.isHovered()) {
-			context.setCursor(StandardCursors.POINTING_HAND);
-		}
+		this.setCursor(context);
 	}
 
 	@Override

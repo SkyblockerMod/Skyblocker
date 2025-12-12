@@ -20,6 +20,7 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 
@@ -139,7 +140,7 @@ public class SkyblockerScreen extends Screen {
 			int iconX = x - 34;
 			int iconY = y - 13;
 
-			context.drawTextWithShadow(textRenderer, orderedText, x, y, this.getTextColor());
+			context.drawTextWithShadow(textRenderer, orderedText, x, y, Colors.WHITE);
 			context.drawTexture(RenderPipelines.GUI_TEXTURED, this.icon, iconX, iconY, 0, 0, 32, 32, 32, 32);
 		}
 

@@ -2,7 +2,9 @@ package de.hysky.skyblocker.utils.render.primitive;
 
 import org.joml.Matrix4f;
 
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.FilterMode;
+
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
@@ -18,7 +20,7 @@ public final class TexturedQuadRenderer implements PrimitiveRenderer<TexturedQua
 
 	@Override
 	public void submitPrimitives(TexturedQuadRenderState state, CameraRenderState cameraState) {
-		TextureSetup textureSetup = RenderHelper.singleTexture(MinecraftClient.getInstance().getTextureManager().getTexture(state.texture).getGlTextureView());
+		TextureSetup textureSetup = TextureSetup.of(MinecraftClient.getInstance().getTextureManager().getTexture(state.texture).getGlTextureView(), RenderSystem.getSamplerCache().get(FilterMode.NEAREST));
 		BufferBuilder buffer = Renderer.getBuffer(state.throughWalls ? SkyblockerRenderPipelines.TEXTURE_THROUGH_WALLS : SkyblockerRenderPipelines.TEXTURE, textureSetup);
 		Matrix4f positionMatrix = new Matrix4f()
 				.translate((float) (state.pos.getX() - cameraState.pos.getX()), (float) (state.pos.getY() - cameraState.pos.getY()), (float) (state.pos.getZ() - cameraState.pos.getZ()))

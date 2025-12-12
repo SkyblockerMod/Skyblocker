@@ -34,9 +34,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -154,8 +154,7 @@ public class Room implements Tickable, Renderable {
 		return shape;
 	}
 
-	@Nullable
-	public Vector2ic getPhysicalCornerPos() {
+	public @Nullable Vector2ic getPhysicalCornerPos() {
 		return physicalCornerPos;
 	}
 

@@ -21,14 +21,14 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Locale;
 
 public class InventorySearch {
-	@Nullable
-	private static HandledScreen<?> openedHandledScreen = null;
+	private static @Nullable HandledScreen<?> openedHandledScreen = null;
 	private static final Int2BooleanMap slotToMatch = new Int2BooleanArrayMap(64);
 	private static String search = "";
 

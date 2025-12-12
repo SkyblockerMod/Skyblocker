@@ -47,9 +47,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Colors;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -133,8 +132,7 @@ public class SlotTextManager {
 	 * @implNote The order of the adders remains the same as they were added to the {@link SlotTextManager#adders} array.
 	 *           It is the implementors' duty to ensure they do not add slot text to the same location as other adders on the same slot.
 	 */
-	@NotNull
-	public static List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public static List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		List<SlotText> text = new ObjectArrayList<>();
 		if (currentScreenAdders.isEmpty() || !isEnabled()) return text;
 		for (SlotTextAdder adder : currentScreenAdders) {
@@ -143,7 +141,7 @@ public class SlotTextManager {
 		return text;
 	}
 
-	public static void renderSlotText(DrawContext context, TextRenderer textRenderer, @NotNull Slot slot) {
+	public static void renderSlotText(DrawContext context, TextRenderer textRenderer, Slot slot) {
 		renderSlotText(context, textRenderer, slot, slot.getStack(), slot.id, slot.x, slot.y);
 	}
 

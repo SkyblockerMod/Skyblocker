@@ -177,11 +177,11 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	}
 
 	@Override
-	protected void drawSlot(DrawContext context, Slot slot) {
+	protected void drawSlot(DrawContext context, Slot slot, int mouseX, int mouseY) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN && slot.hasStack() && isSlotHighlighted.getOrDefault(slot.id, false)) {
 			HudHelper.drawBorder(context, slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
 		}
-		super.drawSlot(context, slot);
+		super.drawSlot(context, slot, mouseX, mouseY);
 	}
 
 	@Override
@@ -253,6 +253,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 					auctionTypeWidget.setCurrent(AuctionTypeWidget.Option.get(getOrdinal(stack.skyblocker$getLoreStrings())));
 			case RARITY_BUTTON_SLOT -> {
 				int ordinal = getOrdinal(stack.skyblocker$getLoreStrings());
+				@SuppressWarnings("deprecation")
 				List<Text> tooltip = ItemUtils.getLore(stack);
 				String split = tooltip.get(ordinal + 1).getString().substring(2);
 				rarityWidget.setText(tooltip.subList(1, tooltip.size() - 3), split);
@@ -282,12 +283,12 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 					for (int j = tooltipDefault.size() - 1; j >= 0; j--) {
 						String lowerCase = tooltipDefault.get(j).toLowerCase(Locale.ENGLISH);
 						if (lowerCase.contains("currently")) {
-							categoryTabWidget.setToggled(true);
+							categoryTabWidget.select();
 							break;
 						} else if (lowerCase.contains("click")) {
-							categoryTabWidget.setToggled(false);
+							categoryTabWidget.unselect();
 							break;
-						} else categoryTabWidget.setToggled(false);
+						} else categoryTabWidget.unselect();
 					}
 				} else if (slotId > 9 && slotId < (handler.getRows() - 1) * 9 && slotId % 9 > 1 && slotId % 9 < 8) {
 					if (!SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN) return;
@@ -363,13 +364,14 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
 	private static class ScaledTextButtonWidget extends ButtonWidget {
 
-		protected ScaledTextButtonWidget(int x, int y, int width, int height, Text message, PressAction onPress) {
+		protected ScaledTextButtonWidget(int x, int y, int width, int height, net.minecraft.text.Text message, PressAction onPress) {
 			super(x, y, width, height, message, onPress, Supplier::get);
 		}
 
 		// Code taken mostly from YACL by isxander. Love you <3
 		@Override
-		public void drawMessage(DrawContext context, TextRenderer textRenderer, int color) {
+		public void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+			this.drawButton(context);
 			TextRenderer font = MinecraftClient.getInstance().textRenderer;
 			Matrix3x2fStack matrices = context.getMatrices();
 			float textScale = 2.f;
@@ -377,7 +379,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 			matrices.pushMatrix();
 			matrices.translate(((this.getX() + this.width / 2f) - font.getWidth(getMessage()) * textScale / 2) + 1, (float) this.getY() + (this.height - font.fontHeight * textScale) / 2f - 1);
 			matrices.scale(textScale, textScale);
-			context.drawText(font, getMessage(), 0, 0, color | MathHelper.ceil(this.alpha * 255.0F) << 24, true);
+			context.drawText(font, getMessage(), 0, 0, Colors.WHITE | MathHelper.ceil(this.alpha * 255.0F) << 24, true);
 			matrices.popMatrix();
 		}
 	}
