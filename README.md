@@ -19,6 +19,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 ### Dungeon Features:
 - **Fancy Party Finder GUI**
 - **Secrets Waypoint Highlight:** Fully customizable
+- **Room and Secret Syncing**
 - **Fancy Minimap & Score**
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
@@ -180,6 +181,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Powder HUD**
 - **Ordered Waypoints**
     - Basic ordered waypoint commands
+- **Pickobulus Helper**
 
 ### Rift Features:
 - **Mirrorverse Waypoints**
@@ -314,7 +316,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Skyblock ID*
     - *Bazaar Reorder Helper*
 - **Quick Navigation:** Fully customizable fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
-    - Item Selector
+    - Item Selector 
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
     - Crafting
     - Forge
@@ -330,6 +332,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Sack Message Prices**
 - **Bazaar order tracker**
 - **Builder's wand preview**
+- **Item Value Breakdown Popup**
 
 ### Barn Features:
 - **Barn Solver:**
@@ -379,6 +382,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Disable All Command**
 - **Abiphone Call Prompts**
     - Adds clickable messages in chat to quickly call Trevor the Trapper, Maddox, and Queen Mismyla
+- **Anvil Helper**
 
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**

@@ -211,7 +211,7 @@ public class PredictiveSmoothAOTE {
 		//work out start pos of warp and set start time. if there is an active warp going on make the end of that the start of the next one
 		if (teleportsAhead == 0 || startPos == null || teleportVector == null) {
 			//start of teleport sequence
-			startPos = CLIENT.player.getEntityPos().add(0, getEyeHeight(), 0); // the eye poss should not be affected by crouching
+			startPos = CLIENT.player.getEntityPos().add(0, Utils.getEyeHeight(CLIENT.player), 0); // the eye poss should not be affected by crouching
 			cameraStartPos = CLIENT.player.getEyePos();
 			lastTeleportTime = System.currentTimeMillis();
 			// update the ping used for the teleport
@@ -242,7 +242,7 @@ public class PredictiveSmoothAOTE {
 		}
 
 		//find target location depending on how far the item they are using takes them
-		teleportVector = raycast(distance, look, startPos);
+		teleportVector = raycast(distance, look, startPos, false);
 		if (teleportVector == null) {
 			startPos = null;
 			return;
@@ -250,21 +250,10 @@ public class PredictiveSmoothAOTE {
 
 		//compensate for hypixel round to center of block (to x.5 y.(eye height - 1), z.5)
 		Vec3d predictedEnd = startPos.add(teleportVector);
-		Vec3d offsetVec = new Vec3d(predictedEnd.x - roundToCenter(predictedEnd.x), predictedEnd.y - (Math.ceil(predictedEnd.y) + getEyeHeight() - 1), predictedEnd.z - roundToCenter(predictedEnd.z));
+		Vec3d offsetVec = new Vec3d(predictedEnd.x - roundToCenter(predictedEnd.x), predictedEnd.y - (Math.ceil(predictedEnd.y) + Utils.getEyeHeight(CLIENT.player) - 1), predictedEnd.z - roundToCenter(predictedEnd.z));
 		teleportVector = teleportVector.subtract(offsetVec);
 		//add 1 to teleports ahead
 		teleportsAhead += 1;
-	}
-
-	/**
-	 * Get players eye height from the servers point of view based on it's minecraft version
-	 *
-	 * @return offset from players pos to their eyes
-	 */
-	protected static float getEyeHeight() {
-		if (CLIENT.player == null || !CLIENT.player.isSneaking()) return 1.62f;
-		//sneaking height is different depending on server
-		return Utils.getLocation().isModern() ? 1.27f : 1.54f;
 	}
 
 	/**
@@ -423,12 +412,12 @@ public class PredictiveSmoothAOTE {
 	}
 
 	/**
-	 * Custom raycast for teleporting checks for blocks for each 1 block forward in teleport. (very similar to hypixels method)
+	 * Custom raycast for teleporting checks for blocks for each 1 block forward in teleport. (very similar to Hypixel's method)
 	 *
 	 * @param distance maximum distance
 	 * @return teleport vector
 	 */
-	protected static Vec3d raycast(int distance, Vec3d direction, Vec3d startPos) {
+	protected static Vec3d raycast(int distance, Vec3d direction, Vec3d startPos, boolean isEtherwarp) {
 		if (CLIENT.world == null || direction == null || startPos == null) {
 			return null;
 		}
@@ -449,15 +438,16 @@ public class PredictiveSmoothAOTE {
 
 			//check if there is a block at the check location
 			if (!canTeleportThrough(checkPos)) {
-				if (offset == 0) {
+				if (!isEtherwarp && offset == 0) {
 					// no teleport can happen
 					return null;
 				}
+				if (isEtherwarp) return direction.multiply(offset - 1).add(direction);
 				return direction.multiply(offset - 1);
 			}
 
 			//check if the block at head height is free
-			if (!canTeleportThrough(checkPos.up())) {
+			if (!canTeleportThrough(checkPos.up()) && !isEtherwarp) {
 				if (offset == 0) {
 					//cancel the check if starting height is too low
 					Vec3d justAhead = startPos.add(direction.multiply(0.2));
@@ -495,7 +485,7 @@ public class PredictiveSmoothAOTE {
 
 	/**
 	 * Checks to see if a block is in the allowed list to teleport though
-	 * Air, non-colision blocks, carpets, pots, 3 or less snow layers
+	 * Air, non-collidable blocks, carpets, pots, 3 or less snow layers
 	 *
 	 * @param blockPos block location
 	 * @return if a block location can be teleported though

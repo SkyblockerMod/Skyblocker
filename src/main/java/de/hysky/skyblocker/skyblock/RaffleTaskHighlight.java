@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -9,7 +8,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.Text;
 
 import java.util.List;
 
@@ -31,9 +29,9 @@ public class RaffleTaskHighlight extends SimpleContainerSolver {
 		for (Entry<ItemStack> entry : set) {
 			ItemStack itemStack = entry.getValue();
 			if (!itemStack.isOf(Items.PAPER) && !itemStack.isOf(Items.MAP) && !itemStack.isOf(Items.FILLED_MAP)) continue;
-			List<Text> lore = ItemUtils.getLore(itemStack);
+			List<String> lore = itemStack.skyblocker$getLoreStrings();
 			if (lore.isEmpty()) continue;
-			switch (lore.getLast().getString()) {
+			switch (lore.getLast()) {
 				case "COMPLETE" -> highlights.add(ColorHighlight.green(entry.getIntKey()));
 				case "INCOMPLETE" -> highlights.add(ColorHighlight.red(entry.getIntKey()));
 			}

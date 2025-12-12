@@ -14,6 +14,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.util.dynamic.Codecs;
 
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
@@ -24,6 +25,8 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 
 public final class CodecUtils {
 	public static final Codec<Color> COLOR_CODEC = Codec.INT.xmap(argb -> new Color(argb, true), Color::getRGB);
@@ -43,6 +46,11 @@ public final class CodecUtils {
 	public static MapCodec<OptionalDouble> optionalDouble(MapCodec<Optional<Double>> codec) {
 		return codec.xmap(opt -> opt.map(OptionalDouble::of).orElseGet(OptionalDouble::empty), optDouble -> optDouble.isPresent() ? Optional.of(optDouble.getAsDouble()) : Optional.empty());
 	}
+
+	public static final Codec<Vector2ic> VECTOR_2I = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.INT.fieldOf("x").forGetter(Vector2ic::x),
+			Codec.INT.fieldOf("y").forGetter(Vector2ic::y)
+	).apply(instance, Vector2i::new));
 
 	/**
 	 * @see #mutableOptional(MapCodec, Function) mutableOptional(MapCodec, Function) for important notes when using this codec for an optional field with a default value.

@@ -40,7 +40,7 @@ public class CommsWidget extends TabHudWidget {
 	private boolean progressBar = true;
 
 	public CommsWidget() {
-		super("Commissions", TITLE, Formatting.DARK_AQUA.getColorValue(), Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFT);
+		super("Commissions", TITLE, Formatting.DARK_AQUA.getColorValue(), Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 public class DungeonMapConfigScreen extends Screen {
 
@@ -18,13 +19,13 @@ public class DungeonMapConfigScreen extends Screen {
 	private int scoreX = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX;
 	private int scoreY = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY;
 	private static final Identifier MAP_BACKGROUND = Identifier.ofVanilla("textures/map/map_background.png");
-	private final Screen parent;
+	private final @Nullable Screen parent;
 
 	protected DungeonMapConfigScreen() {
 		this(null);
 	}
 
-	public DungeonMapConfigScreen(Screen parent) {
+	public DungeonMapConfigScreen(@Nullable Screen parent) {
 		super(Text.literal("Dungeon Map Config"));
 		this.parent = parent;
 	}

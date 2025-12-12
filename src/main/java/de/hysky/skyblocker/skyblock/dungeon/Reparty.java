@@ -35,15 +35,14 @@ public class Reparty extends ChatPatternListener {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final int BASE_DELAY = 10;
 
-	private boolean repartying;
-	private String partyLeader;
+	private boolean repartying = false;
+	private String partyLeader = "";
 
 	public Reparty() {
 		super("^(?:([\\[A-z+\\]]* )?(?<disband>.*) has disbanded .*" +
 				"|.*\n([\\[A-z+\\]]* )?(?<invite>.*) has invited you to join their party!" +
 				"\nYou have 60 seconds to accept. Click here to join!\n.*)$");
 
-		this.repartying = false;
 		HypixelPacketEvents.PARTY_INFO.register(this::onPacket);
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			dispatcher.register(ClientCommandManager.literal("reparty").executes(this::executeCommand));
@@ -65,7 +64,7 @@ public class Reparty extends ChatPatternListener {
 			case PartyInfoS2CPacket(var inParty, var members) when this.repartying -> {
 				UUID ourUuid = Objects.requireNonNull(CLIENT.getSession().getUuidOrNull());
 
-				if (inParty && members.get(ourUuid) == PartyRole.LEADER) {
+				if (inParty && members != null && members.get(ourUuid) == PartyRole.LEADER) {
 					sendCommand("/p disband", 1);
 					int count = 0;
 
@@ -73,18 +72,20 @@ public class Reparty extends ChatPatternListener {
 						UUID uuid = entry.getKey();
 						PartyRole role = entry.getValue();
 
-						//Don't invite ourself
-						if (role != PartyRole.LEADER) sendCommand("/p " + uuid.toString(), ++count + 2);
+						//Don't invite ourselves
+						if (role != PartyRole.LEADER) sendCommand("/p " + uuid, ++count + 2);
 					}
 
 					Scheduler.INSTANCE.schedule(() -> this.repartying = false, count * BASE_DELAY);
 				} else {
+					assert CLIENT.player != null;
 					CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.reparty.notInPartyOrNotLeader")), false);
 					this.repartying = false;
 				}
 			}
 
 			case ErrorS2CPacket(var id, var error) when id.equals(PartyInfoS2CPacket.ID) && this.repartying -> {
+				assert CLIENT.player != null;
 				CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.reparty.error")), false);
 				LOGGER.error("[Skyblocker Reparty] The party info packet returned an unexpected error! {}", error);
 
@@ -104,7 +105,7 @@ public class Reparty extends ChatPatternListener {
 	public boolean onMatch(Text message, Matcher matcher) {
 		if (matcher.group("disband") != null && !matcher.group("disband").equals(CLIENT.getSession().getUsername())) {
 			partyLeader = matcher.group("disband");
-			Scheduler.INSTANCE.schedule(() -> partyLeader = null, 61);
+			Scheduler.INSTANCE.schedule(() -> partyLeader = "", 61);
 		} else if (matcher.group("invite") != null && matcher.group("invite").equals(partyLeader)) {
 			String command = "/party accept " + partyLeader;
 			sendCommand(command, 0);

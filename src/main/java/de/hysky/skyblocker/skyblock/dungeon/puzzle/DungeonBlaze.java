@@ -12,6 +12,7 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +30,10 @@ public class DungeonBlaze extends DungeonPuzzle {
 	@SuppressWarnings("unused")
 	private static final DungeonBlaze INSTANCE = new DungeonBlaze();
 
-	private static ArmorStandEntity highestBlaze = null;
-	private static ArmorStandEntity lowestBlaze = null;
-	private static ArmorStandEntity nextHighestBlaze = null;
-	private static ArmorStandEntity nextLowestBlaze = null;
+	private static @Nullable ArmorStandEntity highestBlaze = null;
+	private static @Nullable ArmorStandEntity lowestBlaze = null;
+	private static @Nullable ArmorStandEntity nextHighestBlaze = null;
+	private static @Nullable ArmorStandEntity nextLowestBlaze = null;
 
 	private DungeonBlaze() {
 		super("blaze", "blaze-room-1-high", "blaze-room-1-low");
@@ -129,7 +130,7 @@ public class DungeonBlaze extends DungeonPuzzle {
 	 * @param blaze     The Blaze entity for which to render an outline.
 	 * @param nextBlaze The next Blaze entity for connection rendering.
 	 */
-	private static void extractBlazeOutline(ArmorStandEntity blaze, ArmorStandEntity nextBlaze, PrimitiveCollector collector) {
+	private static void extractBlazeOutline(ArmorStandEntity blaze, @Nullable ArmorStandEntity nextBlaze, PrimitiveCollector collector) {
 		Box blazeBox = blaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
 		collector.submitOutlinedBox(blazeBox, GREEN_COLOR_COMPONENTS, 5f, false);
 

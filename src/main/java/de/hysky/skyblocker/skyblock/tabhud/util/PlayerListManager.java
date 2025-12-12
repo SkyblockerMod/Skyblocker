@@ -54,7 +54,7 @@ public class PlayerListManager {
 	/**
 	 * The player list in tab.
 	 */
-	private static List<PlayerListEntry> playerList = new ArrayList<>(); // Initialize to prevent npe.
+	private static @Nullable List<PlayerListEntry> playerList = new ArrayList<>(); // Initialize to prevent npe.
 
 	/**
 	 * The player list in tab, but a list of strings instead of {@link PlayerListEntry}s.
@@ -62,8 +62,7 @@ public class PlayerListManager {
 	 * @implNote All leading and trailing whitespace are removed from the strings.
 	 */
 	private static List<String> playerStringList = new ArrayList<>();
-	@Nullable
-	private static String footer;
+	private static @Nullable String footer;
 	static final Map<String, TabListWidget> WIDGET_MAP = new Object2ObjectLinkedOpenHashMap<>(); // linked so iterating gives the same order as the vanilla tab
 	private static final Set<Runnable> TAB_LISTENERS = new ObjectOpenHashSet<>(); // this might not actually be a set due to how lambdas work
 	private static final Set<Runnable> FOOTER_LISTENERS = new ObjectOpenHashSet<>();
@@ -264,7 +263,7 @@ public class PlayerListManager {
 	/**
 	 * @return the cached player list
 	 */
-	public static List<PlayerListEntry> getPlayerList() {
+	public static @Nullable List<PlayerListEntry> getPlayerList() {
 		return playerList;
 	}
 
@@ -275,7 +274,7 @@ public class PlayerListManager {
 		return playerStringList;
 	}
 
-	public static void updateFooter(Text f) {
+	public static void updateFooter(@Nullable Text f) {
 		if (f == null) {
 			footer = null;
 		} else {
@@ -298,7 +297,7 @@ public class PlayerListManager {
 	 *
 	 * @return the matcher if p fully matches, else null
 	 */
-	public static Matcher regexAt(int idx, Pattern p) {
+	public static @Nullable Matcher regexAt(int idx, Pattern p) {
 
 		String str = PlayerListManager.strAt(idx);
 
@@ -321,7 +320,7 @@ public class PlayerListManager {
 	 * @return the string or null, if the display name is null, empty or whitespace
 	 * only
 	 */
-	public static String strAt(int idx) {
+	public static @Nullable String strAt(int idx) {
 
 		if (playerList == null) {
 			return null;
@@ -340,6 +339,56 @@ public class PlayerListManager {
 			return null;
 		}
 		return str;
+	}
+
+	/**
+	 * Gets the display name at some index of the player list
+	 *
+	 * @return the text or null, if the display name is null
+	 * @implNote currently designed specifically for crimson isles faction quests
+	 * widget and the rift widgets, might not work correctly without
+	 * modification for other stuff. you've been warned!
+	 */
+	public static @Nullable Text textAt(int idx) {
+
+		if (playerList == null) {
+			return null;
+		}
+
+		if (playerList.size() <= idx) {
+			return null;
+		}
+
+		Text txt = playerList.get(idx).getDisplayName();
+		if (txt == null) {
+			return null;
+		}
+
+		// Rebuild the text object to remove leading space thats in all faction quest
+		// stuff (also removes trailing space just in case)
+		MutableText newText = Text.empty();
+		int size = txt.getSiblings().size();
+
+		for (int i = 0; i < size; i++) {
+			Text current = txt.getSiblings().get(i);
+			String textToAppend = current.getString();
+
+			// Trim leading & trailing space - this can only be done at the start and end
+			// otherwise it'll produce malformed results
+			if (i == 0)
+				textToAppend = textToAppend.stripLeading();
+			if (i == size - 1)
+				textToAppend = textToAppend.stripTrailing();
+
+			newText.append(Text.literal(textToAppend).setStyle(current.getStyle()));
+		}
+
+		// Avoid returning an empty component - Rift advertisements needed this
+		if (newText.getString().isEmpty()) {
+			return null;
+		}
+
+		return newText;
 	}
 
 	/**

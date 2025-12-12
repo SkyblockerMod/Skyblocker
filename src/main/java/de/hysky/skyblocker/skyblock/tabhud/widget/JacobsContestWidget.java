@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -38,7 +39,10 @@ public class JacobsContestWidget extends TabHudWidget {
 			entry("Cactus", new ItemStack(Items.CACTUS)),
 			entry("Sugar Cane", new ItemStack(Items.SUGAR_CANE)),
 			entry("Nether Wart", new ItemStack(Items.NETHER_WART)),
-			entry("Cocoa Beans", new ItemStack(Items.COCOA_BEANS))
+			entry("Cocoa Beans", new ItemStack(Items.COCOA_BEANS)),
+			entry("Sunflower", ItemRepository.getItemStack("DOUBLE_PLANT", new ItemStack(Items.SUNFLOWER))),
+			entry("Moonflower", ItemRepository.getItemStack("MOONFLOWER", new ItemStack(Items.BLUE_ORCHID))),
+			entry("Wild Rose", ItemRepository.getItemStack("WILD_ROSE", new ItemStack(Items.ROSE_BUSH)))
 	);
 
 	public JacobsContestWidget() {
