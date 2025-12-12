@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtSizeTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,22 +60,22 @@ public class StructureToSkeleton {
 	 */
 	static List<SkeletonBlock> getStructureBlocks(String structureFilePath, int yOffset) throws IOException {
 		List<SkeletonBlock> blockData = new ArrayList<>();
-		NbtCompound nbtData = NbtIo.readCompressed(Path.of(structureFilePath), NbtSizeTracker.ofUnlimitedBytes());
+		CompoundTag nbtData = NbtIo.readCompressed(Path.of(structureFilePath), NbtAccounter.unlimitedHeap());
 		if (!nbtData.contains("palette") || !nbtData.contains("blocks")) throw new RuntimeException("Invalid structure NBT");
 
-		NbtList nbtPalette = Objects.requireNonNull(nbtData.get("palette")).asNbtList().orElseThrow();
+		ListTag nbtPalette = Objects.requireNonNull(nbtData.get("palette")).asList().orElseThrow();
 		List<Byte> palette = nbtPalette.stream()
 				.map(nbtElem -> Objects.requireNonNull(nbtElem.asCompound().orElseThrow().get("Name")).asString().orElseThrow())
 				.map(blockName -> DungeonManager.NUMERIC_ID.getOrDefault(blockName, (byte) 0))
 				.toList();
 
-		NbtList nbtBlocks = Objects.requireNonNull(nbtData.get("blocks")).asNbtList().orElseThrow();
+		ListTag nbtBlocks = Objects.requireNonNull(nbtData.get("blocks")).asList().orElseThrow();
 		nbtBlocks.forEach(nbtElem -> {
-			NbtCompound block = nbtElem.asCompound().orElseThrow();
+			CompoundTag block = nbtElem.asCompound().orElseThrow();
 			byte blockType = palette.get(Objects.requireNonNull(block.get("state")).asInt().orElseThrow());
 			if (blockType == 0) return; // Invalid block.
 
-			NbtList blockPos = Objects.requireNonNull(block.get("pos")).asNbtList().orElseThrow();
+			ListTag blockPos = Objects.requireNonNull(block.get("pos")).asList().orElseThrow();
 			blockData.add(new SkeletonBlock(
 					blockPos.getInt(0).orElseThrow(), blockPos.getInt(1).orElseThrow() + yOffset, blockPos.getInt(2).orElseThrow(), blockType
 			));

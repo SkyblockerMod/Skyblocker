@@ -11,8 +11,8 @@ import com.mojang.serialization.JavaOps;
 
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
 
 public class UpdateNotificationsTest {
 	private final Comparator<Version> COMPARATOR = UpdateNotifications.COMPARATOR;
@@ -21,8 +21,8 @@ public class UpdateNotificationsTest {
 
 	@BeforeAll
 	public static void setupEnvironment() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 	}
 
 	@Test
