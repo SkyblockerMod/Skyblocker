@@ -6,6 +6,7 @@ import net.minecraft.util.StringIdentifiable;
 
 public enum Service implements StringIdentifiable {
 	CRYSTAL_WAYPOINTS,
+	DUNGEON_SECRETS,
 	EGG_WAYPOINTS;
 
 	public static final Codec<Service> CODEC = StringIdentifiable.createBasicCodec(Service::values);

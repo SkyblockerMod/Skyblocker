@@ -587,6 +587,13 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints"))
+								.binding(defaults.dungeons.secretWaypoints.enableRedstoneKeyWaypoints,
+										() -> config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints,
+										newValue -> config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableLeverWaypoints"))
 								.binding(defaults.dungeons.secretWaypoints.enableLeverWaypoints,
 										() -> config.dungeons.secretWaypoints.enableLeverWaypoints,
@@ -636,6 +643,33 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.secretWaypoints.enableDefaultWaypoints,
 										() -> config.dungeons.secretWaypoints.enableDefaultWaypoints,
 										newValue -> config.dungeons.secretWaypoints.enableDefaultWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.secretSync"))
+						.collapsed(true)
+						// TODO: Add description when labels work properly on MoulConfig
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.receiveMatchedRooms"))
+								.binding(defaults.dungeons.secretSync.receiveRoomMatch,
+										() -> config.dungeons.secretSync.receiveRoomMatch,
+										newValue -> config.dungeons.secretSync.receiveRoomMatch = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.receiveRoomSecretCount"))
+								.binding(defaults.dungeons.secretSync.receiveRoomSecretCount,
+										() -> config.dungeons.secretSync.receiveRoomSecretCount,
+										newValue -> config.dungeons.secretSync.receiveRoomSecretCount = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretSync.hideReceivedWaypoints"))
+								.binding(defaults.dungeons.secretSync.hideReceivedWaypoints,
+										() -> config.dungeons.secretSync.hideReceivedWaypoints,
+										newValue -> config.dungeons.secretSync.hideReceivedWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

@@ -33,34 +33,34 @@ public class TeleportOverlay {
 			switch (itemId) {
 				case "ASPECT_OF_THE_LEECH_1" -> {
 					if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWeirdTransmission) {
-						extractRendering(collector, 3);
+						extractRendering(collector, 3, false);
 					}
 				}
 				case "ASPECT_OF_THE_LEECH_2" -> {
 					if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWeirdTransmission) {
-						extractRendering(collector, 4);
+						extractRendering(collector, 4, false);
 					}
 				}
 				case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
 					if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && customData.getInt("ethermerge", 0) == 1) {
-						extractRendering(collector, customData, 57);
+						extractRendering(collector, customData, 57, true);
 					} else if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableInstantTransmission) {
-						extractRendering(collector, customData, 8);
+						extractRendering(collector, customData, 8, false);
 					}
 				}
 				case "ETHERWARP_CONDUIT" -> {
 					if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableEtherTransmission) {
-						extractRendering(collector, customData, 57);
+						extractRendering(collector, customData, 57, true);
 					}
 				}
 				case "SINSEEKER_SCYTHE" -> {
 					if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableSinrecallTransmission) {
-						extractRendering(collector, customData, 4);
+						extractRendering(collector, customData, 4, false);
 					}
 				}
 				case "NECRON_BLADE", "ASTRAEA", "HYPERION", "SCYLLA", "VALKYRIE" -> {
 					if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWitherImpact) {
-						extractRendering(collector, 10);
+						extractRendering(collector, 10, false);
 					}
 				}
 			}
@@ -70,29 +70,33 @@ public class TeleportOverlay {
 	/**
 	 * Renders the teleport overlay with a given base range and the tuned transmission stat.
 	 */
-	private static void extractRendering(PrimitiveCollector collector, NbtCompound customData, int baseRange) {
-		extractRendering(collector, customData != null && customData.contains("tuned_transmission") ? baseRange + customData.getInt("tuned_transmission", 0) : baseRange);
+	private static void extractRendering(PrimitiveCollector collector, NbtCompound customData, int baseRange, boolean isEtherwarp) {
+		extractRendering(collector, customData != null && customData.contains("tuned_transmission") ? baseRange + customData.getInt("tuned_transmission", 0) : baseRange, isEtherwarp);
 	}
 
 	/**
-	 * Renders the teleport overlay with a given range. Uses {@link PredictiveSmoothAOTE#raycast(int, Vec3d, Vec3d)} to predict the target
+	 * Renders the teleport overlay with a given range. Uses {@link PredictiveSmoothAOTE#raycast(int, Vec3d, Vec3d, boolean)} to predict the target
 	 *
 	 * @implNote {@link MinecraftClient#player} and {@link MinecraftClient#world} must not be null when calling this method.
 	 */
-	private static void extractRendering(PrimitiveCollector collector, int range) {
+	private static void extractRendering(PrimitiveCollector collector, int range, boolean isEtherwarp) {
 		if (client.player == null || client.world == null) return;
 		//set up values for smooth AOTEs raycast
 		float pitch = client.player.getPitch();
 		float yaw = client.player.getYaw();
 		Vec3d look = client.player.getRotationVector(pitch, yaw);
 		Vec3d startPos = client.player.getEntityPos().add(0, Utils.getEyeHeight(client.player), 0);
-		Vec3d raycast = PredictiveSmoothAOTE.raycast(range, look, startPos);
+		Vec3d raycast = PredictiveSmoothAOTE.raycast(range, look, startPos, isEtherwarp);
 
 		if (raycast != null) {
-			BlockPos target = BlockPos.ofFloored(startPos.add(raycast)).down();
-			//do not render if in air and disabled in air
+			BlockPos target = BlockPos.ofFloored(startPos.add(raycast));
+			if (isEtherwarp) {
+				if (!client.world.getBlockState(target.up()).isAir()) return;
+				if (!client.world.getBlockState(target.up(2)).isAir()) return;
+			} else {
+				target = target.down();
+			}
 			if (!SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.showWhenInAir && client.world.getBlockState(target).isAir()) return;
-			//render they highlight
 			collector.submitFilledBox(target, colorComponents, colorComponents[3], false);
 		}
 	}
