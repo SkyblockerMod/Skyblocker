@@ -694,14 +694,17 @@ public class DungeonManager {
 
 	// Calculate the checkmark colour and mark all secrets as found if the checkmark is green
 	// We also wait for it being matched to ensure that we don't try to mark the room as completed if secret waypoints haven't yet loaded (since the room is still matching)
+	// Mark the secret count as outdated to ensure we have an accurate count
 	private static void updateRoomCheckmark(Room room, MapState map) {
 		if (room.getType() == Room.Type.ENTRANCE || room.greenChecked && room.whiteChecked) return;
 		if (!room.greenChecked && getRoomCheckmarkColour(CLIENT, map, room) == DungeonMapUtils.GREEN_COLOR) {
 			room.greenChecked = true;
 			room.whiteChecked = true;
+			room.secretCountOutdated = true;
 			room.markAllSecrets(true);
 		} else if (!room.whiteChecked && getRoomCheckmarkColour(CLIENT, map, room) == DungeonMapUtils.WHITE_COLOR) {
 			room.whiteChecked = true;
+			room.secretCountOutdated = true;
 		}
 	}
 
@@ -723,6 +726,19 @@ public class DungeonManager {
 			LOGGER.error("[Skyblocker Dungeon Secrets] Failed to create room", e);
 		}
 		return null;
+	}
+
+	/**
+	 * Adds a room that was shared over the WebSocket.
+	 */
+	protected static void addRoomFromWs(Room room) {
+		for (Vector2ic physicalPos : room.segments) {
+			rooms.put(physicalPos, room);
+		}
+	}
+
+	protected static boolean checkIfSegmentsExist(List<Vector2ic> segments) {
+		return segments.stream().anyMatch(rooms::containsKey);
 	}
 
 	/**
@@ -774,6 +790,8 @@ public class DungeonManager {
 				hasKey = false;
 			}
 		}
+
+		// Dungeon Events
 
 		if (message.equals("§e[NPC] §bMort§f: You should find it useful if you get lost.")) {
 			DungeonEvents.DUNGEON_STARTED.invoker().onDungeonStarted();
