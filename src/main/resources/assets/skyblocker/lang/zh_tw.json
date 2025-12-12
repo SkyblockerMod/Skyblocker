@@ -1547,5 +1547,10 @@
     "key.skyblocker.valueBreadownPopup": "打開價值明細彈窗",
     "skyblocker.valueBreakdownPopup": "Skyblocker估計價值明細",
     "skyblocker.valueBreakdownPopup.baseItemPrice": "物品基礎價格：%s",
-    "skyblocker.valueBreakdownPopup.coins": "%s金幣"
+    "skyblocker.valueBreakdownPopup.coins": "%s金幣",
+    "skyblocker.config.dungeons.secretSync": "同步秘密",
+    "skyblocker.config.dungeons.secretSync.hideReceivedWaypoints": "隱藏已收到的秘密路徑點",
+    "skyblocker.config.dungeons.secretSync.receiveRoomSecretCount": "使用同步得到的房間秘密統計",
+    "skyblocker.config.dungeons.secretSync.receiveMatchedRooms": "添加已同步的房間",
+    "skyblocker.inventorySearch.searchInventory": "搜尋物品欄"
 }
