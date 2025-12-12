@@ -653,6 +653,7 @@ public class DungeonsCategory {
 						// TODO: Add description when labels work properly on MoulConfig
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretSync.receiveMatchedRooms"))
+								.tags(CommonTags.ADDED_IN_5_10_0)
 								.binding(defaults.dungeons.secretSync.receiveRoomMatch,
 										() -> config.dungeons.secretSync.receiveRoomMatch,
 										newValue -> config.dungeons.secretSync.receiveRoomMatch = newValue)
@@ -660,6 +661,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretSync.receiveRoomSecretCount"))
+								.tags(CommonTags.ADDED_IN_5_10_0)
 								.binding(defaults.dungeons.secretSync.receiveRoomSecretCount,
 										() -> config.dungeons.secretSync.receiveRoomSecretCount,
 										newValue -> config.dungeons.secretSync.receiveRoomSecretCount = newValue)
@@ -667,6 +669,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretSync.hideReceivedWaypoints"))
+								.tags(CommonTags.ADDED_IN_5_10_0)
 								.binding(defaults.dungeons.secretSync.hideReceivedWaypoints,
 										() -> config.dungeons.secretSync.hideReceivedWaypoints,
 										newValue -> config.dungeons.secretSync.hideReceivedWaypoints = newValue)
