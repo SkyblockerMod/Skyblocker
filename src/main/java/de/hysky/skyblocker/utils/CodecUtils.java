@@ -40,7 +40,7 @@ public final class CodecUtils {
 		return codec.xmap(opt -> opt.map(OptionalDouble::of).orElseGet(OptionalDouble::empty), optDouble -> optDouble.isPresent() ? Optional.of(optDouble.getAsDouble()) : Optional.empty());
 	}
 
-	public static final Codec<Vector2ic> vector2i = RecordCodecBuilder.create(instance -> instance.group(
+	public static final Codec<Vector2ic> VECTOR_2I = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.INT.fieldOf("x").forGetter(Vector2ic::x),
 			Codec.INT.fieldOf("y").forGetter(Vector2ic::y)
 	).apply(instance, Vector2i::new));
