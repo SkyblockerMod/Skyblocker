@@ -21,7 +21,7 @@ public class ClientPlayerInteractionManagerMixin {
 	// Inject so that we only swing when the result is not success because vanilla handles swing on success.
 	@Inject(method = "method_41929",
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;use(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;")),
-			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/entity/player/Player;getStackInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;")
+			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/entity/player/Player;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;")
 	)
 	public void swingOnAbility(InteractionHand hand, Player playerEntity, MutableObject<?> mutableObject,
 							int sequence, CallbackInfoReturnable<Packet<?>> cir, @Local(ordinal = 0) ItemStack itemStack) {

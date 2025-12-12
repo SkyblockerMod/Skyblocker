@@ -178,7 +178,7 @@ public abstract class InGameHudMixin {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay) ci.cancel();
 	}
 
-	@ModifyExpressionValue(method = "renderCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getAttackCooldownProgress(F)F"))
+	@ModifyExpressionValue(method = "renderCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getAttackStrengthScale(F)F"))
 	private float skyblocker$modifyAttackIndicatorCooldown(float cooldownProgress) {
 		if (Utils.isOnSkyblock() && minecraft.player != null) {
 			ItemStack stack = minecraft.player.getMainHandItem();

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 @Mixin(PingDebugMonitor.class)
 public class PingMeasurerMixin {
 
-	@ModifyArg(method = "onPongReceived", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/debugchart/LocalSampleLogger;push(J)V"))
+	@ModifyArg(method = "onPongReceived", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/debugchart/LocalSampleLogger;logSample(J)V"))
 	private long skyblocker$onPingResult(long ping) {
 		if (Utils.isInCrimson()) {
 			DojoManager.onPingResult(ping);
