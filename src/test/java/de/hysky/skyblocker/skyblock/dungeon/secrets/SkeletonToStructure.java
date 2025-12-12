@@ -1,6 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtInt;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
