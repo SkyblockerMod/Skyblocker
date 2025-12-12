@@ -38,7 +38,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,8 +71,8 @@ public class ChatRuleConfigScreen extends Screen {
 	private final int chatRuleIndex;
 	private final ChatRule chatRule;
 
-	private @Nullable ChatRule.ToastMessage previousToastMessage = null;
-	private @Nullable ChatRule.AnnouncementMessage previousAnnouncementMessage = null;
+	private ChatRule.@Nullable ToastMessage previousToastMessage = null;
+	private ChatRule.@Nullable AnnouncementMessage previousAnnouncementMessage = null;
 
 	private final Screen parent;
 
@@ -116,17 +116,14 @@ public class ChatRuleConfigScreen extends Screen {
 
 		// Filter settings
 		DirectionalLayoutWidget filtersRow1 = contentAdder.add(DirectionalLayoutWidget.horizontal().spacing(GRID_SPACING), 3);
-		filtersRow1.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
-				.initially(chatRule.getRegex())
+		filtersRow1.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT, chatRule.getRegex())
 				.tooltip(b -> Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
 				.build(0, 0, getWidth(1.5f), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (button, value) -> chatRule.setRegex(value)));
-		filtersRow1.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
-				.initially(chatRule.getIgnoreCase())
+		filtersRow1.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT, chatRule.getIgnoreCase())
 				.tooltip(b -> Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
 				.build(0, 0, getWidth(1.5f), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (button, value) -> chatRule.setIgnoreCase(value)));
 		DirectionalLayoutWidget filtersRow2 = contentAdder.add(DirectionalLayoutWidget.horizontal().spacing(GRID_SPACING), 3);
-		filtersRow2.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
-				.initially(chatRule.getPartialMatch())
+		filtersRow2.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT, chatRule.getPartialMatch())
 				.tooltip(b -> Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
 				.build(0, 0, getWidth(1.5f), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (button, value) -> chatRule.setPartialMatch(value)));
 		filtersRow2.add(ButtonWidget.builder(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
@@ -141,8 +138,7 @@ public class ChatRuleConfigScreen extends Screen {
 
 		DirectionalLayoutWidget buttons = contentAdder.add(DirectionalLayoutWidget.horizontal().spacing(GRID_SPACING), 3);
 
-		buttons.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT)
-				.initially(chatRule.getHideMessage())
+		buttons.add(CyclingButtonWidget.onOffBuilder(YES_TEXT, NO_TEXT, chatRule.getHideMessage())
 				.tooltip(b -> Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip")))
 				.build(0, 0, getWidth(1.5f), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"), (button, value) -> {
 					chatRule.setHideMessage(value);
@@ -160,9 +156,8 @@ public class ChatRuleConfigScreen extends Screen {
 			displayedValues.add(Optional.ofNullable(chatRule.getCustomSound()));
 		}
 		// using an optional since it doesn't allow null values.
-		buttons.add(CyclingButtonWidget.<Optional<SoundEvent>>builder(opt -> soundNames.get(opt.orElse(null)))
+		buttons.add(CyclingButtonWidget.builder(opt -> soundNames.get(opt.orElse(null)), Optional.ofNullable(chatRule.getCustomSound()))
 				.values(() -> true, displayedValues, availableValues)
-				.initially(Optional.ofNullable(chatRule.getCustomSound()))
 				.build(0, 0, getWidth(1.5f), 20, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds"), (button, value) -> {
 					chatRule.setCustomSound(value.orElse(null));
 					value.ifPresent(soundEvent -> client.getSoundManager().play(PositionedSoundInstance.master(soundEvent, 1.0F)));
