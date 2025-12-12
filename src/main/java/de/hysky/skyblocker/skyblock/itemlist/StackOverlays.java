@@ -10,10 +10,10 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.data.NEUItem;
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Handles applying "overlays" to modern {@code ItemStack}s from the NEU Repository. Overlays are already in the modern components
@@ -39,15 +39,15 @@ public class StackOverlays {
 			if (file != null) {
 				//Read the overlay file and parse an ItemStack from it
 				String overlayData = Files.readString(file.getFsPath());
-				ItemStack overlayStack = ItemStack.CODEC.parse(Utils.getRegistryWrapperLookup().getOps(NbtOps.INSTANCE), StringNbtReader.readCompound(overlayData))
+				ItemStack overlayStack = ItemStack.CODEC.parse(Utils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), TagParser.parseCompoundFully(overlayData))
 						.setPartial(ItemStack.EMPTY)
 						.resultOrPartial(error -> logParseError(neuItem, error))
 						.get();
 
 				if (!overlayStack.isEmpty()) {
 					//Apply the component changes from the overlay stack
-					ComponentChanges changes = overlayStack.getComponentChanges();
-					stack.applyChanges(changes);
+					DataComponentPatch changes = overlayStack.getComponentsPatch();
+					stack.applyComponentsAndValidate(changes);
 				}
 			}
 		} catch (Exception e) {

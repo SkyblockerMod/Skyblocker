@@ -10,20 +10,20 @@ import com.llamalad7.mixinextras.sugar.Local;
 
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.render.GlowRenderer;
-import net.minecraft.client.render.OutlineVertexConsumerProvider;
-import net.minecraft.client.render.command.ItemCommandRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
+import net.minecraft.client.renderer.OutlineBufferSource;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 
-@Mixin(ItemCommandRenderer.class)
+@Mixin(ItemFeatureRenderer.class)
 public class ItemCommandRendererMixin {
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/command/OrderedRenderCommandQueueImpl$ItemCommand;outlineColor()I"), require = 2)
-	private int skyblocker$useCustomGlowColour(OrderedRenderCommandQueueImpl.ItemCommand command, Operation<Integer> operation) {
+	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeStorage$ItemSubmit;outlineColor()I"), require = 2)
+	private int skyblocker$useCustomGlowColour(SubmitNodeStorage.ItemSubmit command, Operation<Integer> operation) {
 		return command.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW ? command.skyblocker$getCustomGlowColour() : operation.call(command);
 	}
 
 	@ModifyVariable(method = "render", at = @At("LOAD"), argsOnly = true, require = 2)
-	private OutlineVertexConsumerProvider skyblocker$useCustomGlowConsumers(OutlineVertexConsumerProvider original, @Local OrderedRenderCommandQueueImpl.ItemCommand command) {
+	private OutlineBufferSource skyblocker$useCustomGlowConsumers(OutlineBufferSource original, @Local SubmitNodeStorage.ItemSubmit command) {
 		return command.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW ? GlowRenderer.getInstance().getGlowVertexConsumers() : original;
 	}
 }

@@ -18,23 +18,23 @@ import net.azureaaron.networth.utils.ItemConstants;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.EmptyWidget;
-import net.minecraft.client.gui.widget.MultilineTextWidget;
-import net.minecraft.client.gui.widget.Positioner;
-import net.minecraft.client.gui.widget.ScrollableLayoutWidget;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.MultiLineTextWidget;
+import net.minecraft.client.gui.components.ScrollableLayout;
+import net.minecraft.client.gui.layouts.LayoutSettings;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.layouts.SpacerElement;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.inventory.Slot;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
@@ -46,189 +46,189 @@ import java.util.function.Function;
 
 public class ValueBreakdownPopup extends AbstractPopupScreen {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final KeyBinding KEY_BINDING = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+	private static final KeyMapping KEY_BINDING = KeyBindingHelper.registerKeyBinding(new KeyMapping(
 			"key.skyblocker.valueBreadownPopup",
 			GLFW.GLFW_KEY_I,
 			SkyblockerMod.KEYBINDING_CATEGORY
 	));
 
-	private static final Function<String, Text> EMPTY = s -> Text.empty();
-	private static final Function<String, Text> ITEM_NAME = s -> {
+	private static final Function<String, Component> EMPTY = s -> Component.empty();
+	private static final Function<String, Component> ITEM_NAME = s -> {
 		NEUItem neuItem = NEURepoManager.getItemByNeuId(s);
-		if (neuItem == null) return Text.literal(s);
+		if (neuItem == null) return Component.literal(s);
 		return TextTransformer.fromLegacy(neuItem.getDisplayName());
 	};
 	private static final LayoutAppender EMPTY_APPENDER = (r, c, l) -> {};
 
 	private static final Map<Calculation.Type, LayoutAppender> FORMATTERS = new EnumMap<>(Map.ofEntries(
 			Map.entry(Calculation.Type.STAR, new BasicListAppender(
-					Text.literal("Star Upgrades"),
+					Component.literal("Star Upgrades"),
 					ITEM_NAME
 			)),
 			// TODO Prestige (idk how it works)
 			Map.entry(Calculation.Type.GOD_ROLL, new BasicSingleAppender(
-					Text.literal("God Roll"),
+					Component.literal("God Roll"),
 					ITEM_NAME
 			)),
 			Map.entry(Calculation.Type.SHEN_AUCTION, EMPTY_APPENDER),
 			Map.entry(Calculation.Type.WINNING_BID, EMPTY_APPENDER),
 			Map.entry(Calculation.Type.ENCHANTMENT, new BasicListAppender(
-					Text.literal("Enchantments"),
+					Component.literal("Enchantments"),
 					s -> {
 						String neuId = ItemRepository.getBazaarStocks().get("ENCHANTMENT_" + s);
-						if (neuId == null) return Text.literal(s);
+						if (neuId == null) return Component.literal(s);
 						NEUItem neuItem = NEURepoManager.getItemByNeuId(neuId);
-						if (neuItem == null) return Text.literal(s);
+						if (neuItem == null) return Component.literal(s);
 						return TextTransformer.fromLegacy(neuItem.getLore().getFirst());
 					}
 			)),
 			Map.entry(Calculation.Type.SKIN, new BasicSingleAppender(
-					Text.literal("Skin"),
+					Component.literal("Skin"),
 					s -> {
 						NEUItem neuItem = NEURepoManager.getItemByNeuId(s);
 						if (neuItem == null) neuItem = NEURepoManager.getItemByNeuId("PET_SKIN_" + s);
-						if (neuItem == null) return Text.literal(s);
+						if (neuItem == null) return Component.literal(s);
 						return TextTransformer.fromLegacy(neuItem.getDisplayName());
 					}
 			)),
 			Map.entry(Calculation.Type.SILEX, new BasicSingleAppender(
-					Text.literal("Silex"),
+					Component.literal("Silex"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.GOLDEN_BOUNTY, new BasicSingleAppender(
-					Text.literal("Golden Bounty"),
+					Component.literal("Golden Bounty"),
 					EMPTY
 			)),
 			// TODO Attributes
 			Map.entry(Calculation.Type.POCKET_SACK_IN_A_SACK, new BasicSingleAppender(
-					Text.literal("Pocket Sack in a sack"),
+					Component.literal("Pocket Sack in a sack"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.WOOD_SINGULARITY, new BasicSingleAppender(
-					Text.literal("Wood Singularity"),
+					Component.literal("Wood Singularity"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.JALAPENO_BOOK, new BasicSingleAppender(
-					Text.literal("Jalapeno Book"),
+					Component.literal("Jalapeno Book"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.TRANSMISSION_TUNER, new BasicSingleAppender(
-					Text.literal("Transmission Tuner"),
+					Component.literal("Transmission Tuner"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.MANA_DISINTEGRATOR, new BasicSingleAppender(
-					Text.literal("Mana Disintegrator"),
+					Component.literal("Mana Disintegrator"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.THUNDER_IN_A_BOTTLE, new BasicSingleAppender(
-					Text.literal("Thunder in a Bottle"),
+					Component.literal("Thunder in a Bottle"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.RUNE, new BasicSingleAppender(
-					Text.literal("Rune"),
+					Component.literal("Rune"),
 					ITEM_NAME
 			)),
 			Map.entry(Calculation.Type.FUMING_POTATO_BOOK, new BasicSingleAppender(
-					Text.literal("Fuming Potato Book"),
+					Component.literal("Fuming Potato Book"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.HOT_POTATO_BOOK, new BasicSingleAppender(
-					Text.literal("Hot Potato Book"),
+					Component.literal("Hot Potato Book"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.DYE, new BasicSingleAppender(
-					Text.literal("Dye"),
+					Component.literal("Dye"),
 					ITEM_NAME
 			)),
 			Map.entry(Calculation.Type.ART_OF_WAR, new BasicSingleAppender(
-					Text.literal("Art of War"),
+					Component.literal("Art of War"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.ART_OF_PEACE, new BasicSingleAppender(
-					Text.literal("Art of Peace"),
+					Component.literal("Art of Peace"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.FARMING_FOR_DUMMIES, new BasicSingleAppender(
-					Text.literal("Farming For Dummies"),
+					Component.literal("Farming For Dummies"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.TALISMAN_ENRICHMENT, new BasicSingleAppender(
-					Text.literal("Talisman Enrichment"),
+					Component.literal("Talisman Enrichment"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.RECOMBOBULATOR, new BasicSingleAppender(
-					Text.literal("Recombobulator"),
+					Component.literal("Recombobulator"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.GEMSTONE_SLOT, new BasicSingleAppender(
-					Text.literal("Gemstone Slot"),
+					Component.literal("Gemstone Slot"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.GEMSTONE, new BasicListAppender(
-					Text.literal("Gemstones"),
+					Component.literal("Gemstones"),
 					ITEM_NAME
 			)),
 			Map.entry(Calculation.Type.POWER_SCROLL, new BasicSingleAppender(
-					Text.literal("Power Scroll"),
+					Component.literal("Power Scroll"),
 					ITEM_NAME
 			)),
 			Map.entry(Calculation.Type.REFORGE, new BasicSingleAppender(
-					Text.literal("Reforge"),
+					Component.literal("Reforge"),
 					s -> {
 						//noinspection UnstableApiUsage
 						String neuId = ItemConstants.REFORGES.get(s);
-						if (neuId == null) return Text.literal(s);
+						if (neuId == null) return Component.literal(s);
 						return ITEM_NAME.apply(neuId);
 					}
 			)),
 			Map.entry(Calculation.Type.MASTER_STAR, new BasicListAppender(
-					Text.literal("Master Stars"),
+					Component.literal("Master Stars"),
 					ITEM_NAME
 			)),
 			Map.entry(Calculation.Type.WITHER_BLADE_SCROLL, new BasicListAppender(
-					Text.literal("Wither Blade Scrolls"),
+					Component.literal("Wither Blade Scrolls"),
 					ITEM_NAME
 			)),
 			Map.entry(Calculation.Type.DRILL_PART, new BasicListAppender(
-					Text.literal("Drill Parts"),
+					Component.literal("Drill Parts"),
 					ITEM_NAME
 			)),
 			Map.entry(Calculation.Type.POLARVOID_BOOK, new BasicSingleAppender(
-					Text.literal("Polarvoid Book"),
+					Component.literal("Polarvoid Book"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.DIVAN_POWDER_COATING, new BasicSingleAppender(
-					Text.literal("Divan Powder Coating"),
+					Component.literal("Divan Powder Coating"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.ETHERWARP_CONDUIT, new BasicSingleAppender(
-					Text.literal("Etherwarp Conduit"),
+					Component.literal("Etherwarp Conduit"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.NEW_YEAR_CAKES, new BasicSingleAppender(
-					Text.literal("New Year Cakes"),
+					Component.literal("New Year Cakes"),
 					EMPTY
 			)),
 			Map.entry(Calculation.Type.PET_ITEM, new BasicSingleAppender(
-					Text.literal("Pet Item"),
+					Component.literal("Pet Item"),
 					ITEM_NAME
 			))
 	));
 
 	private final NetworthResult networthResult;
 	private final EnumMap<Calculation.Type, List<Calculation>> map;
-	private ScrollableLayoutWidget scrollable;
+	private ScrollableLayout scrollable;
 
 	@Init
 	public static void initClass() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (!Utils.isOnSkyblock()) return;
-			if (screen instanceof HandledScreen<?> handledScreen) {
+			if (screen instanceof AbstractContainerScreen<?> handledScreen) {
 				ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key) -> {
-					if (!KEY_BINDING.matchesKey(key)) return;
+					if (!KEY_BINDING.matches(key)) return;
 					Slot slot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
-					if (slot == null || !slot.hasStack()) return;
-					NetworthResult networth = NetworthCalculator.getItemNetworth(slot.getStack());
+					if (slot == null || !slot.hasItem()) return;
+					NetworthResult networth = NetworthCalculator.getItemNetworth(slot.getItem());
 					if (networth.price() > 0) client.setScreen(new ValueBreakdownPopup(screen, networth));
 				});
 			}
@@ -236,7 +236,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	}
 
 	protected ValueBreakdownPopup(Screen backgroundScreen, NetworthResult networthResult) {
-		super(Text.translatable("skyblocker.valueBreakdownPopup"), backgroundScreen);
+		super(Component.translatable("skyblocker.valueBreakdownPopup"), backgroundScreen);
 		this.networthResult = networthResult;
 
 		this.map = new EnumMap<>(Calculation.Type.class);
@@ -247,117 +247,117 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 
 	@Override
 	protected void init() {
-		DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
-		layout.add(createTextWidget(Text.translatable("skyblocker.valueBreakdownPopup.baseItemPrice", getCoinsText(networthResult.base(), networthResult.price())), textRenderer));
+		LinearLayout layout = LinearLayout.vertical();
+		layout.addChild(createTextWidget(Component.translatable("skyblocker.valueBreakdownPopup.baseItemPrice", getCoinsText(networthResult.base(), networthResult.price())), font));
 		for (Map.Entry<Calculation.Type, List<Calculation>> entry : map.entrySet()) {
 			LayoutAppender appender = FORMATTERS.get(entry.getKey());
 			if (appender == EMPTY_APPENDER) continue;
-			layout.add(EmptyWidget.ofHeight(5));
+			layout.addChild(SpacerElement.height(5));
 			if (appender != null) {
 				appender.appendTo(networthResult, entry.getValue(), layout);
 				continue;
 			}
-			layout.add(createTextWidget(Text.literal(entry.getKey().toString()), textRenderer));
+			layout.addChild(createTextWidget(Component.literal(entry.getKey().toString()), font));
 			for (Calculation calculation : entry.getValue()) {
-				layout.add(createTextWidget(Text.literal(calculation.id() + ": ").append(getCoinsText(calculation.price())), textRenderer), p -> p.marginLeft(20));
+				layout.addChild(createTextWidget(Component.literal(calculation.id() + ": ").append(getCoinsText(calculation.price())), font), p -> p.paddingLeft(20));
 			}
 		}
-		layout.add(EmptyWidget.ofHeight(10));
-		layout.add(createTextWidget(Text.translatable("skyblocker.valueBreakdownPopup.total", getCoinsText(networthResult.price())), textRenderer), Positioner::alignRight);
-		scrollable = new ScrollableLayoutWidget(client, layout, 300);
-		scrollable.setHeight(200);
-		scrollable.forEachChild(this::addDrawableChild);
+		layout.addChild(SpacerElement.height(10));
+		layout.addChild(createTextWidget(Component.translatable("skyblocker.valueBreakdownPopup.total", getCoinsText(networthResult.price())), font), LayoutSettings::alignHorizontallyRight);
+		scrollable = new ScrollableLayout(minecraft, layout, 300);
+		scrollable.setMaxHeight(200);
+		scrollable.visitWidgets(this::addRenderableWidget);
 		super.init();
 	}
 
 	@Override
-	protected void refreshWidgetPositions() {
-		super.refreshWidgetPositions();
-		scrollable.refreshPositions();
+	protected void repositionElements() {
+		super.repositionElements();
+		scrollable.arrangeElements();
 		scrollable.setPosition((width - scrollable.getWidth()) / 2, (height - scrollable.getHeight()) / 2);
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		super.render(context, mouseX, mouseY, deltaTicks);
-		context.drawCenteredTextWithShadow(textRenderer, title, width / 2, 15, -1);
+		context.drawCenteredString(font, title, width / 2, 15, -1);
 	}
 
 	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.renderBackground(context, mouseX, mouseY, delta);
 		drawPopupBackground(context, scrollable.getX(), scrollable.getY(), scrollable.getWidth(), scrollable.getHeight());
 	}
 
-	private static Text getCoinsText(double price) {
+	private static Component getCoinsText(double price) {
 		return getCoinsText(price, 0);
 	}
 
-	private static Text getCoinsText(double price, double totalPrice) {
-		MutableText text = Text.translatable("skyblocker.valueBreakdownPopup.coins", Formatters.FLOAT_NUMBERS.format(price)).formatted(Formatting.GOLD);
+	private static Component getCoinsText(double price, double totalPrice) {
+		MutableComponent text = Component.translatable("skyblocker.valueBreakdownPopup.coins", Formatters.FLOAT_NUMBERS.format(price)).withStyle(ChatFormatting.GOLD);
 		if (totalPrice > 0) {
-			text.fillStyle(Style.EMPTY.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.valueBreakdownPopup.totalPricePercent", Formatters.FLOAT_NUMBERS.format(price / totalPrice * 100)))));
+			text.withStyle(Style.EMPTY.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.valueBreakdownPopup.totalPricePercent", Formatters.FLOAT_NUMBERS.format(price / totalPrice * 100)))));
 		}
 		return text;
 	}
 
-	private static MultilineTextWidget createTextWidget(Text text, TextRenderer textRenderer) {
-		MultilineTextWidget widget = new MultilineTextWidget(text, textRenderer);
-		widget.onClick(s -> {});
+	private static MultiLineTextWidget createTextWidget(Component text, Font textRenderer) {
+		MultiLineTextWidget widget = new MultiLineTextWidget(text, textRenderer);
+		widget.setComponentClickHandler(s -> {});
 
 		return widget;
 	}
 
 	public interface LayoutAppender {
-		void appendTo(NetworthResult networthResult, List<Calculation> calculations, DirectionalLayoutWidget layout);
+		void appendTo(NetworthResult networthResult, List<Calculation> calculations, LinearLayout layout);
 
-		default void appendCountAndPrice(Calculation calc, double totalPrice, MutableText empty) {
+		default void appendCountAndPrice(Calculation calc, double totalPrice, MutableComponent empty) {
 			if (calc.count() > 1)
-				empty.append(Text.literal(" x").formatted(Formatting.GRAY)).append(Text.literal(String.valueOf(calc.count())).formatted(Formatting.YELLOW));
-			empty.append(Text.literal(" (").formatted(Formatting.GRAY));
+				empty.append(Component.literal(" x").withStyle(ChatFormatting.GRAY)).append(Component.literal(String.valueOf(calc.count())).withStyle(ChatFormatting.YELLOW));
+			empty.append(Component.literal(" (").withStyle(ChatFormatting.GRAY));
 			empty.append(getCoinsText(calc.price(), totalPrice));
-			empty.append(Text.literal(")").formatted(Formatting.GRAY));
+			empty.append(Component.literal(")").withStyle(ChatFormatting.GRAY));
 		}
 
 	}
 
-	private record BasicSingleAppender(Text displayName, Function<String, Text> idFormatter, boolean hideIfWorthNothing) implements LayoutAppender {
-		private BasicSingleAppender(Text displayName, Function<String, Text> idFormatter) {
+	private record BasicSingleAppender(Component displayName, Function<String, Component> idFormatter, boolean hideIfWorthNothing) implements LayoutAppender {
+		private BasicSingleAppender(Component displayName, Function<String, Component> idFormatter) {
 			this(displayName, idFormatter, true);
 		}
 
 		@Override
-		public void appendTo(NetworthResult networthResult, List<Calculation> calculations, DirectionalLayoutWidget layout) {
+		public void appendTo(NetworthResult networthResult, List<Calculation> calculations, LinearLayout layout) {
 			if (calculations.size() > 1) {
 				LOGGER.warn("More than one calculation was found for type {}", calculations.getFirst().type());
 			}
 			Calculation calc = calculations.getFirst();
 			if (calc.price() <= 0 && hideIfWorthNothing) return;
-			MutableText empty = Text.empty();
+			MutableComponent empty = Component.empty();
 			empty.append(displayName());
-			Text apply = idFormatter.apply(calc.id());
+			Component apply = idFormatter.apply(calc.id());
 			if (!apply.getString().isBlank()) empty.append(": ").append(apply);
 			appendCountAndPrice(calc, networthResult.price(), empty);
-			layout.add(createTextWidget(empty, MinecraftClient.getInstance().textRenderer));
+			layout.addChild(createTextWidget(empty, Minecraft.getInstance().font));
 		}
 
 	}
 
-	private record BasicListAppender(Text displayName, Function<String, Text> idFormatter) implements LayoutAppender {
+	private record BasicListAppender(Component displayName, Function<String, Component> idFormatter) implements LayoutAppender {
 		@Override
-		public void appendTo(NetworthResult networthResult, List<Calculation> calculations, DirectionalLayoutWidget layout) {
-			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			layout.add(createTextWidget(displayName, textRenderer));
+		public void appendTo(NetworthResult networthResult, List<Calculation> calculations, LinearLayout layout) {
+			Font textRenderer = Minecraft.getInstance().font;
+			layout.addChild(createTextWidget(displayName, textRenderer));
 			double total = 0;
 			for (Calculation calc : calculations) {
-				MutableText empty = Text.empty();
-				Text apply = idFormatter.apply(calc.id());
+				MutableComponent empty = Component.empty();
+				Component apply = idFormatter.apply(calc.id());
 				empty.append(apply);
 				appendCountAndPrice(calc, networthResult.price(), empty);
 				total += calc.price();
-				layout.add(createTextWidget(empty, textRenderer), p -> p.marginLeft(15));
+				layout.addChild(createTextWidget(empty, textRenderer), p -> p.paddingLeft(15));
 			}
-			layout.add(createTextWidget(Text.translatable("skyblocker.valueBreakdownPopup.total", getCoinsText(total, networthResult.price())), textRenderer), p -> p.marginLeft(10));
+			layout.addChild(createTextWidget(Component.translatable("skyblocker.valueBreakdownPopup.total", getCoinsText(total, networthResult.price())), textRenderer), p -> p.paddingLeft(10));
 		}
 	}
 }

@@ -7,12 +7,11 @@ import de.hysky.skyblocker.injected.EntityRenderMarker;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.render.entity.EntityRenderManager;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(EntityRenderManager.class)
+@Mixin(EntityRenderDispatcher.class)
 public class EntityRenderManagerMixin implements EntityRenderMarker {
 	@Unique
 	private EntityRenderState currentStateBeingRendered;
@@ -30,18 +29,18 @@ public class EntityRenderManagerMixin implements EntityRenderMarker {
 		return this.currentStateBeingRendered;
 	}
 
-	@Inject(method = "render", at = @At("HEAD"))
+	@Inject(method = "submit", at = @At("HEAD"))
 	private void skyblocker$markEntityStateBeingRendered(CallbackInfo ci, @Local(argsOnly = true) EntityRenderState state) {
 		this.currentStateBeingRendered = state;
 	}
 
-	@Inject(method = "render", at = @At("RETURN"))
+	@Inject(method = "submit", at = @At("RETURN"))
 	private void skyblocker$clearEntityStateBeingRendered(CallbackInfo ci) {
 		this.currentStateBeingRendered = null;
 	}
 
 	@ModifyReturnValue(method = "shouldRender", at = @At("RETURN"))
 	private <E extends Entity> boolean skyblocker$dontRenderSoulweaverSkulls(boolean original, @Local(argsOnly = true) E entity) {
-		return Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.hideSoulweaverSkulls && entity instanceof ArmorStandEntity armorStand && entity.isInvisible() && armorStand.hasStackEquipped(EquipmentSlot.HEAD) ? !ItemUtils.getHeadTexture(armorStand.getEquippedStack(EquipmentSlot.HEAD)).equals(HeadTextures.SOULWEAVER_HAUNTED_SKULL) : original;
+		return Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.hideSoulweaverSkulls && entity instanceof ArmorStand armorStand && entity.isInvisible() && armorStand.hasItemInSlot(EquipmentSlot.HEAD) ? !ItemUtils.getHeadTexture(armorStand.getItemBySlot(EquipmentSlot.HEAD)).equals(HeadTextures.SOULWEAVER_HAUNTED_SKULL) : original;
 	}
 }

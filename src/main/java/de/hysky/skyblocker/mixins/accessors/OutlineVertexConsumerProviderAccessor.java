@@ -1,16 +1,15 @@
 package de.hysky.skyblocker.mixins.accessors;
 
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OutlineBufferSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.render.OutlineVertexConsumerProvider;
-import net.minecraft.client.render.VertexConsumerProvider;
-
-@Mixin(OutlineVertexConsumerProvider.class)
+@Mixin(OutlineBufferSource.class)
 public interface OutlineVertexConsumerProviderAccessor {
 
 	@Accessor
 	@Mutable
-	void setPlainDrawer(VertexConsumerProvider.Immediate immediate);
+	void setOutlineBufferSource(MultiBufferSource.BufferSource immediate);
 }

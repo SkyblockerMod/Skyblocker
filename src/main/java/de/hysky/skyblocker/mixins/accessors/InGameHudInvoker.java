@@ -1,21 +1,20 @@
 package de.hysky.skyblocker.mixins.accessors;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.text.Text;
-
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.scores.Objective;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(InGameHud.class)
+@Mixin(Gui.class)
 public interface InGameHudInvoker {
 
 	@Accessor
-	@Nullable Text getOverlayMessage();
+	@Nullable Component getOverlayMessageString();
 
-	@Invoker("renderScoreboardSidebar")
-	void skyblocker$renderSidebar(DrawContext context, ScoreboardObjective objective);
+	@Invoker("displayScoreboardSidebar")
+	void skyblocker$renderSidebar(GuiGraphics context, Objective objective);
 }

@@ -8,21 +8,21 @@ import com.llamalad7.mixinextras.sugar.Local;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.equipment.EquipmentAsset;
-import net.minecraft.item.equipment.EquipmentAssetKeys;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 
-@Mixin(EquipmentRenderer.class)
+@Mixin(EquipmentLayerRenderer.class)
 public class EquipmentRendererMixin {
 
-	@ModifyVariable(method = "render(Lnet/minecraft/client/render/entity/equipment/EquipmentModel$LayerType;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;ILnet/minecraft/util/Identifier;II)V", at = @At("HEAD"), argsOnly = true)
-	private RegistryKey<EquipmentAsset> customArmorModel(RegistryKey<EquipmentAsset> assetKey, @Local(argsOnly = true) ItemStack stack) {
+	@ModifyVariable(method = "renderLayers(Lnet/minecraft/client/resources/model/EquipmentClientInfo$LayerType;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lnet/minecraft/world/item/ItemStack;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/resources/Identifier;II)V", at = @At("HEAD"), argsOnly = true)
+	private ResourceKey<EquipmentAsset> customArmorModel(ResourceKey<EquipmentAsset> assetKey, @Local(argsOnly = true) ItemStack stack) {
 		if (Utils.isOnSkyblock() && !stack.getUuid().isEmpty()) {
 			Identifier identifier = SkyblockerConfigManager.get().general.customArmorModel.get(stack.getUuid());
-			return identifier == null ? assetKey : RegistryKey.of(EquipmentAssetKeys.REGISTRY_KEY, identifier);
+			return identifier == null ? assetKey : ResourceKey.create(EquipmentAssets.ROOT_ID, identifier);
 		}
 
 		return assetKey;

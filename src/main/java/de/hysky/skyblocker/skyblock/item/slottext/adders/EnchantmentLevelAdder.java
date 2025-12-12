@@ -6,18 +6,18 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
@@ -209,31 +209,31 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
-		if (!stack.isOf(Items.ENCHANTED_BOOK)) return List.of();
-		String name = stack.getName().getString();
+		if (!stack.is(Items.ENCHANTED_BOOK)) return List.of();
+		String name = stack.getHoverName().getString();
 		if (name.equals("Enchanted Book")) {
-			NbtCompound nbt = ItemUtils.getCustomData(stack);
+			CompoundTag nbt = ItemUtils.getCustomData(stack);
 			if (nbt.isEmpty() || !nbt.contains("enchantments")) return List.of();
-			NbtCompound enchantments = nbt.getCompoundOrEmpty("enchantments");
-			if (enchantments.getSize() != 1) return List.of(); //Only makes sense to display the level when there's one enchant.
-			final String enchantmentId = enchantments.getKeys().iterator().next();
-			int level = enchantments.getInt(enchantmentId, 0);
-			final SlotText enchantmentLevel = SlotText.bottomLeft(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
+			CompoundTag enchantments = nbt.getCompoundOrEmpty("enchantments");
+			if (enchantments.size() != 1) return List.of(); //Only makes sense to display the level when there's one enchant.
+			final String enchantmentId = enchantments.keySet().iterator().next();
+			int level = enchantments.getIntOr(enchantmentId, 0);
+			final SlotText enchantmentLevel = SlotText.bottomLeft(Component.literal(String.valueOf(level)).withColor(SlotText.CREAM));
 
 			return getAbbreviation(enchantmentId)
 					.map(text -> List.of(SlotText.topRight(text), enchantmentLevel))
 					.orElseGet(() -> List.of(enchantmentLevel));
 		} else { //In bazaar, the books have the enchantment level in the name
 			int level = getEnchantLevelFromString(name);
-			return level != 0 ? SlotText.bottomLeftList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM)) : List.of();
+			return level != 0 ? SlotText.bottomLeftList(Component.literal(String.valueOf(level)).withColor(SlotText.CREAM)) : List.of();
 		}
 	}
 
-	private Optional<Text> getAbbreviation(String enchantmentId) {
+	private Optional<Component> getAbbreviation(String enchantmentId) {
 		if (ENCHANTMENT_ABBREVIATIONS.containsKey(enchantmentId)) {
-			return Optional.of(Text.literal(ENCHANTMENT_ABBREVIATIONS.get(enchantmentId)).withColor(Formatting.BLUE.getColorValue()));
+			return Optional.of(Component.literal(ENCHANTMENT_ABBREVIATIONS.get(enchantmentId)).withColor(ChatFormatting.BLUE.getColor()));
 		} else if (ULTIMATE_ENCHANTMENT_ABBREVIATIONS.containsKey(enchantmentId)) {
-			return Optional.of(Text.literal(ULTIMATE_ENCHANTMENT_ABBREVIATIONS.get(enchantmentId)).withColor(Formatting.LIGHT_PURPLE.getColorValue()));
+			return Optional.of(Component.literal(ULTIMATE_ENCHANTMENT_ABBREVIATIONS.get(enchantmentId)).withColor(ChatFormatting.LIGHT_PURPLE.getColor()));
 		}
 		return Optional.empty();
 	}

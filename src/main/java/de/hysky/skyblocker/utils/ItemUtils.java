@@ -28,25 +28,25 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.ComponentHolder;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.AttributeModifierSlot;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentHolder;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Util;
-import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.component.ResolvableProfile;
 import org.apache.commons.lang3.Strings;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -70,11 +70,11 @@ public final class ItemUtils {
 	public static final String UUID = "uuid";
 	public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
 	public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
-	private static final Codec<RegistryEntry<Item>> EMPTY_ALLOWING_ITEM_CODEC = Registries.ITEM.getEntryCodec();
+	private static final Codec<Holder<Item>> EMPTY_ALLOWING_ITEM_CODEC = BuiltInRegistries.ITEM.holderByNameCodec();
 	public static final Codec<ItemStack> EMPTY_ALLOWING_ITEMSTACK_CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
-			EMPTY_ALLOWING_ITEM_CODEC.fieldOf("id").forGetter(ItemStack::getRegistryEntry),
+			EMPTY_ALLOWING_ITEM_CODEC.fieldOf("id").forGetter(ItemStack::getItemHolder),
 			Codec.INT.orElse(1).fieldOf("count").forGetter(ItemStack::getCount),
-			ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(ItemStack::getComponentChanges)
+			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
 	).apply(instance, ItemStack::new)));
 	private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
 	private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
@@ -82,31 +82,31 @@ public final class ItemUtils {
 	private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
 	private static final Pattern HUNTING_BOX_COUNT_PATTERN = Pattern.compile("Owned: (?<shards>\\d+) Shards?");
 	private static final short LOG_INTERVAL = 1000;
-	private static long lastLog = Util.getMeasuringTimeMs();
+	private static long lastLog = Util.getMillis();
 
 	private ItemUtils() {}
 
 	public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
 		return literal("dumpHeldItem").executes(context -> {
-			context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
+			context.getSource().sendFeedback(Component.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(Utils.getRegistryWrapperLookup().createSerializationContext(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandItem()).getOrThrow())));
 			return Command.SINGLE_SUCCESS;
 		});
 	}
 
 	public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemNetworthCalculationsCommand() {
 		return literal("dumpHeldItemNetworthCalcs").executes(context -> {
-			context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item NW Calcs: " + SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(context.getSource().getPlayer().getMainHandStack()).calculations()).getOrThrow())));
+			context.getSource().sendFeedback(Component.literal("[Skyblocker Debug] Held Item NW Calcs: " + SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(context.getSource().getPlayer().getMainHandItem()).calculations()).getOrThrow())));
 			return Command.SINGLE_SUCCESS;
 		});
 	}
 
 	/**
 	 * Gets the nbt in the custom data component of the item stack.
-	 * @return The {@link DataComponentTypes#CUSTOM_DATA custom data} of the itemstack,
-	 *         or an empty {@link NbtCompound} if the itemstack is missing a custom data component
+	 * @return The {@link DataComponents#CUSTOM_DATA custom data} of the itemstack,
+	 *         or an empty {@link CompoundTag} if the itemstack is missing a custom data component
 	 */
-	public static NbtCompound getCustomData(ComponentHolder stack) {
-		return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
+	public static CompoundTag getCustomData(DataComponentHolder stack) {
+		return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 	}
 
 	/**
@@ -115,8 +115,8 @@ public final class ItemUtils {
 	 * @param stack the item stack to get the internal name from
 	 * @return an optional containing the Skyblock item id of the item stack
 	 */
-	public static Optional<String> getItemIdOptional(ComponentHolder stack) {
-		NbtCompound customData = getCustomData(stack);
+	public static Optional<String> getItemIdOptional(DataComponentHolder stack) {
+		CompoundTag customData = getCustomData(stack);
 		return customData.getString(ID);
 	}
 
@@ -129,8 +129,8 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getSkyblockId()}
 	 */
 	@Deprecated(since = "5.8.0")
-	public static String getItemId(ComponentHolder stack) {
-		return getCustomData(stack).getString(ID, "");
+	public static String getItemId(DataComponentHolder stack) {
+		return getCustomData(stack).getStringOr(ID, "");
 	}
 
 	/**
@@ -139,8 +139,8 @@ public final class ItemUtils {
 	 * @param stack the item stack to get the UUID from
 	 * @return an optional containing the UUID of the item stack
 	 */
-	public static Optional<String> getItemUuidOptional(ComponentHolder stack) {
-		NbtCompound customData = getCustomData(stack);
+	public static Optional<String> getItemUuidOptional(DataComponentHolder stack) {
+		CompoundTag customData = getCustomData(stack);
 		return customData.getString(UUID);
 	}
 
@@ -153,8 +153,8 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getUuid()}
 	 */
 	@Deprecated(since = "5.8.0")
-	public static String getItemUuid(ComponentHolder stack) {
-		return getCustomData(stack).getString(UUID, "");
+	public static String getItemUuid(DataComponentHolder stack) {
+		return getCustomData(stack).getStringOr(UUID, "");
 	}
 
 	/**
@@ -164,9 +164,9 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getSkyblockApiId()} instead
 	 */
 	@Deprecated(since = "5.8.0")
-	public static String getSkyblockApiId(ComponentHolder itemStack) {
-		NbtCompound customData = getCustomData(itemStack);
-		String id = customData.getString(ID, "");
+	public static String getSkyblockApiId(DataComponentHolder itemStack) {
+		CompoundTag customData = getCustomData(itemStack);
+		String id = customData.getStringOr(ID, "");
 
 		// Transformation to API format.
 		//TODO future - remove this and just handle it directly for the NEU id conversion because this whole system is confusing and hard to follow
@@ -177,15 +177,15 @@ public final class ItemUtils {
 		switch (id) {
 			case "ENCHANTED_BOOK" -> {
 				if (customData.contains("enchantments")) {
-					NbtCompound enchants = customData.getCompoundOrEmpty("enchantments");
-					Optional<String> firstEnchant = enchants.getKeys().stream().findFirst();
+					CompoundTag enchants = customData.getCompoundOrEmpty("enchantments");
+					Optional<String> firstEnchant = enchants.keySet().stream().findFirst();
 					String enchant = firstEnchant.orElse("");
-					return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getInt(enchant, 0);
+					return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getIntOr(enchant, 0);
 				}
 			}
 			case "PET" -> {
 				if (customData.contains("petInfo")) {
-					PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo", ""))).getOrThrow();
+					PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getStringOr("petInfo", ""))).getOrThrow();
 					return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
 				}
 			}
@@ -194,15 +194,15 @@ public final class ItemUtils {
 				String extended = customData.contains("extended") ? "_EXTENDED" : "";
 				String splash = customData.contains("splash") ? "_SPLASH" : "";
 				if (customData.contains("potion") && customData.contains("potion_level")) {
-					return (customData.getString("potion", "") + "_" + id + "_" + customData.getInt("potion_level", 0)
+					return (customData.getStringOr("potion", "") + "_" + id + "_" + customData.getIntOr("potion_level", 0)
 							+ enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
 				}
 			}
 			case "RUNE" -> {
 				if (customData.contains("runes")) {
-					NbtCompound runes = customData.getCompoundOrEmpty("runes");
-					String rune = runes.getKeys().stream().findFirst().orElse("");
-					return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getInt(rune, 0);
+					CompoundTag runes = customData.getCompoundOrEmpty("runes");
+					String rune = runes.keySet().stream().findFirst().orElse("");
+					return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getIntOr(rune, 0);
 				}
 			}
 			case "ATTRIBUTE_SHARD" -> {
@@ -211,21 +211,21 @@ public final class ItemUtils {
 				if (attribute != null) return attribute.apiId();
 			}
 			case "NEW_YEAR_CAKE" -> {
-				return id + "_" + customData.getInt("new_years_cake", 0);
+				return id + "_" + customData.getIntOr("new_years_cake", 0);
 			}
 			case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> {
-				return id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
+				return id + "_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH);
 			}
 			case "PARTY_HAT_SLOTH" -> {
-				return id + "_" + customData.getString("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
+				return id + "_" + customData.getStringOr("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
 			}
 			case "MIDAS_SWORD" -> {
-				if (customData.getInt("winning_bid", 0) >= 50000000) {
+				if (customData.getIntOr("winning_bid", 0) >= 50000000) {
 					return id + "_50M";
 				}
 			}
 			case "MIDAS_STAFF" -> {
-				if (customData.getInt("winning_bid", 0) >= 100000000) {
+				if (customData.getIntOr("winning_bid", 0) >= 100000000) {
 					return id + "_100M";
 				}
 			}
@@ -245,32 +245,32 @@ public final class ItemUtils {
 	public static String getNeuId(ItemStack stack) {
 		if (stack == null) return "";
 		String id = stack.getSkyblockId();
-		NbtCompound customData = ItemUtils.getCustomData(stack);
+		CompoundTag customData = ItemUtils.getCustomData(stack);
 		return switch (id) {
 			case "ENCHANTED_BOOK" -> {
-				NbtCompound enchantments = customData.getCompoundOrEmpty("enchantments");
-				String enchant = enchantments.getKeys().stream().findFirst().orElse("");
-				yield enchant.toUpperCase(Locale.ENGLISH) + ";" + enchantments.getInt(enchant, 0);
+				CompoundTag enchantments = customData.getCompoundOrEmpty("enchantments");
+				String enchant = enchantments.keySet().stream().findFirst().orElse("");
+				yield enchant.toUpperCase(Locale.ENGLISH) + ";" + enchantments.getIntOr(enchant, 0);
 			}
 			case "PET" -> {
 				if (!customData.contains("petInfo")) yield id;
-				PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo", ""))).getOrThrow();
+				PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getStringOr("petInfo", ""))).getOrThrow();
 				yield petInfo.type() + ';' + petInfo.tierIndex();
 			}
 			case "RUNE" -> {
-				NbtCompound runes = customData.getCompoundOrEmpty("runes");
-				String rune = runes.getKeys().stream().findFirst().orElse("");
-				yield rune.toUpperCase(Locale.ENGLISH) + "_RUNE;" + runes.getInt(rune, 0);
+				CompoundTag runes = customData.getCompoundOrEmpty("runes");
+				String rune = runes.keySet().stream().findFirst().orElse("");
+				yield rune.toUpperCase(Locale.ENGLISH) + "_RUNE;" + runes.getIntOr(rune, 0);
 			}
-			case "POTION" -> "POTION_" + customData.getString("potion", "").toUpperCase(Locale.ENGLISH) + ";" + customData.getInt("potion_level", 0);
+			case "POTION" -> "POTION_" + customData.getStringOr("potion", "").toUpperCase(Locale.ENGLISH) + ";" + customData.getIntOr("potion_level", 0);
 			case "ATTRIBUTE_SHARD" -> {
 				Attribute attribute = Attributes.getAttributeFromItemName(stack);
 				if (attribute == null) yield id;
 				yield attribute.neuId();
 			}
-			case "PARTY_HAT_CRAB", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
-			case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
-			case "PARTY_HAT_SLOTH" -> id + "_" + customData.getString("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
+			case "PARTY_HAT_CRAB", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> id + "_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH);
+			case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
+			case "PARTY_HAT_SLOTH" -> id + "_" + customData.getStringOr("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
 			default -> id.replace(":", "-");
 		};
 	}
@@ -286,14 +286,14 @@ public final class ItemUtils {
 	public static PetInfo getPetInfo(ItemStack stack) {
 		if (!stack.getSkyblockId().equals("PET")) return PetInfo.EMPTY;
 
-		String petInfo = getCustomData(stack).getString("petInfo", "");
+		String petInfo = getCustomData(stack).getStringOr("petInfo", "");
 
 		if (!petInfo.isEmpty()) {
 			try {
 				JsonElement jsonElement = JsonParser.parseString(petInfo);
 
 				// Add item name into PetInfo to be used for wiki lookup
-				jsonElement.getAsJsonObject().addProperty("name", stack.getName().getString());
+				jsonElement.getAsJsonObject().addProperty("name", stack.getHoverName().getString());
 				return PetInfo.CODEC.parse(JsonOps.INSTANCE, jsonElement)
 						.setPartial(PetInfo.EMPTY)
 						.getPartialOrThrow();
@@ -378,24 +378,24 @@ public final class ItemUtils {
 	}
 
 	public static boolean hasCustomDurability(ItemStack stack) {
-		NbtCompound customData = getCustomData(stack);
-		return !customData.isEmpty() && (customData.contains("drill_fuel") || customData.getString(ID, "").equals("PICKONIMBUS"));
+		CompoundTag customData = getCustomData(stack);
+		return !customData.isEmpty() && (customData.contains("drill_fuel") || customData.getStringOr(ID, "").equals("PICKONIMBUS"));
 	}
 
 	public static @Nullable IntIntPair getDurability(ItemStack stack) {
-		NbtCompound customData = getCustomData(stack);
+		CompoundTag customData = getCustomData(stack);
 		if (customData.isEmpty()) return null;
 
 		// TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level
 		// TODO Cache the max durability and only update the current durability on inventory tick
 
 		if (stack.getSkyblockId().equals("PICKONIMBUS")) {
-			int pickonimbusDurability = customData.getInt("pickonimbus_durability", 0);
+			int pickonimbusDurability = customData.getIntOr("pickonimbus_durability", 0);
 
 			return IntIntPair.of(customData.contains("pickonimbus_durability") ? pickonimbusDurability : 2000, 2000);
 		}
 
-		String drillFuel = Formatting.strip(getLoreLineIf(stack, FUEL_PREDICATE));
+		String drillFuel = ChatFormatting.stripFormatting(getLoreLineIf(stack, FUEL_PREDICATE));
 		if (drillFuel != null) {
 			String[] drillFuelStrings = NOT_DURABILITY.matcher(drillFuel).replaceAll("").trim().split("/");
 			return IntIntPair.of(Integer.parseInt(drillFuelStrings[0]), Integer.parseInt(drillFuelStrings[1]) * 1000);
@@ -462,21 +462,21 @@ public final class ItemUtils {
 	 * @deprecated Consider using {@link ItemStack#skyblocker$getLoreStrings()} which caches text to string conversions.
 	 */
 	@Deprecated
-	public static List<Text> getLore(ItemStack stack) {
-		return stack.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT).styledLines();
+	public static List<Component> getLore(ItemStack stack) {
+		return stack.getOrDefault(DataComponents.LORE, ItemLore.EMPTY).styledLines();
 	}
 
 	public static PropertyMap propertyMapWithTexture(String textureValue) {
-		return Codecs.GAME_PROFILE_PROPERTY_MAP.parse(JsonOps.INSTANCE, JsonParser.parseString("[{\"name\":\"textures\",\"value\":\"" + textureValue + "\"}]")).getOrThrow();
+		return ExtraCodecs.PROPERTY_MAP.parse(JsonOps.INSTANCE, JsonParser.parseString("[{\"name\":\"textures\",\"value\":\"" + textureValue + "\"}]")).getOrThrow();
 	}
 
 	public static String getHeadTexture(ItemStack stack) {
-		if (!stack.isOf(Items.PLAYER_HEAD) || !stack.contains(DataComponentTypes.PROFILE)) return "";
+		if (!stack.is(Items.PLAYER_HEAD) || !stack.has(DataComponents.PROFILE)) return "";
 
-		ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
+		ResolvableProfile profile = stack.get(DataComponents.PROFILE);
 		if (profile == null) return "";
 
-		return profile.getGameProfile().properties().get("textures").stream()
+		return profile.partialProfile().properties().get("textures").stream()
 				.filter(Objects::nonNull)
 				.map(Property::value)
 				.findFirst()
@@ -503,7 +503,7 @@ public final class ItemUtils {
 	public static ItemStack createSkull(GameProfile profile) {
 		try {
 			ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-			stack.set(DataComponentTypes.PROFILE, ProfileComponent.ofStatic(profile));
+			stack.set(DataComponents.PROFILE, ResolvableProfile.createResolved(profile));
 			return stack;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -529,7 +529,7 @@ public final class ItemUtils {
 	 * Concatenates the lore of an item into one string.
 	 * This is useful in case some pattern we're looking for is split into multiple lines, which would make it harder to regex.
 	 */
-	public static String concatenateLore(List<Text> lore) {
+	public static String concatenateLore(List<Component> lore) {
 		StringBuilder stringBuilder = new StringBuilder();
 		for (int i = 0; i < lore.size(); i++) {
 			stringBuilder.append(lore.get(i).getString());
@@ -543,9 +543,9 @@ public final class ItemUtils {
 	}
 
 	public static List<ItemStack> getArmor(LivingEntity entity) {
-		return AttributeModifierSlot.ARMOR.getSlots().stream()
+		return EquipmentSlotGroup.ARMOR.slots().stream()
 				.filter(es -> es.getType() == EquipmentSlot.Type.HUMANOID_ARMOR)
-				.map(entity::getEquippedStack)
+				.map(entity::getItemBySlot)
 				.toList();
 	}
 
@@ -574,7 +574,7 @@ public final class ItemUtils {
 		}
 
 		// Use the proper item amount in the Gemstones Sack when sorting by Rough/Flawed/Fine
-		if (itemStack.getName().getString().endsWith("Gemstone")) {
+		if (itemStack.getHoverName().getString().endsWith("Gemstone")) {
 			Matcher matcher = RegexListUtils.matchInList(lines, GEMSTONES_SACK_AMOUNT_PATTERN);
 			if (matcher != null) {
 				return RegexUtils.parseOptionalIntFromMatcher(matcher, 1);
@@ -589,9 +589,9 @@ public final class ItemUtils {
 		}
 
 		// Log a warning every second if the amount couldn't be found, to prevent spamming the logs every frame (which can be hundreds of times per second)
-		if (Util.getMeasuringTimeMs() - lastLog > LOG_INTERVAL) {
+		if (Util.getMillis() - lastLog > LOG_INTERVAL) {
 			LOGGER.warn("Failed to find stored amount in sack tooltip for item `{}`", Debug.DumpFormat.JSON.format(itemStack).getString()); // This is a very unintended way of serializing the item stack, but it's so much cleaner than actually using the codec
-			lastLog = Util.getMeasuringTimeMs();
+			lastLog = Util.getMillis();
 		}
 
 		return OptionalInt.empty();
@@ -603,7 +603,7 @@ public final class ItemUtils {
 	 * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
 	 */
 	public static OptionalInt getItemCountInStash(ItemStack itemStack) {
-		return getItemCountInStash(itemStack.getName());
+		return getItemCountInStash(itemStack.getHoverName());
 	}
 
 	/**
@@ -611,7 +611,7 @@ public final class ItemUtils {
 	 * @param itemName The name of the item to look in.
 	 * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
 	 */
-	public static OptionalInt getItemCountInStash(Text itemName) {
+	public static OptionalInt getItemCountInStash(Component itemName) {
 		return RegexUtils.findIntFromMatcher(STASH_COUNT_PATTERN.matcher(itemName.getString()));
 	}
 
@@ -635,7 +635,7 @@ public final class ItemUtils {
 			return ItemUtils.getLore(stack)
 					.reversed()
 					.stream()
-					.map(Text::getString)
+					.map(Component::getString)
 					.map(SkyblockItemRarity::containsName)
 					.flatMap(Optional::stream)
 					.findFirst()

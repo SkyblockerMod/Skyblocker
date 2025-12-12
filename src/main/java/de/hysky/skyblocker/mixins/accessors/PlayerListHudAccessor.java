@@ -1,16 +1,16 @@
 package de.hysky.skyblocker.mixins.accessors;
 
-import net.minecraft.client.gui.hud.PlayerListHud;
-import net.minecraft.client.network.PlayerListEntry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.Comparator;
+import net.minecraft.client.gui.components.PlayerTabOverlay;
+import net.minecraft.client.multiplayer.PlayerInfo;
 
-@Mixin(PlayerListHud.class)
+@Mixin(PlayerTabOverlay.class)
 public interface PlayerListHudAccessor {
-	@Accessor("ENTRY_ORDERING")
-	static Comparator<PlayerListEntry> getOrdering() {
+	@Accessor("PLAYER_COMPARATOR")
+	static Comparator<PlayerInfo> getOrdering() {
 		throw new UnsupportedOperationException();
 	}
 }

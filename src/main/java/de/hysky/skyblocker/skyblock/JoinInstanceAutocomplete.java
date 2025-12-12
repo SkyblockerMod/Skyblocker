@@ -8,8 +8,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandSource;
-
+import net.minecraft.commands.SharedSuggestionProvider;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +55,7 @@ public class JoinInstanceAutocomplete {
 		return literal(command)
 				.requires(source -> Utils.isOnSkyblock())
 				.then(argument("instance", StringArgumentType.word())
-						.suggests((context, builder) -> CommandSource.suggestMatching(
+						.suggests((context, builder) -> SharedSuggestionProvider.suggest(
 								instanceMap.keySet().stream().filter(filter).sorted(),
 								builder)))
 				.build();

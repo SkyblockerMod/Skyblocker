@@ -7,13 +7,13 @@ import de.hysky.skyblocker.skyblock.bazaar.BazaarQuickQuantities;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresets;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,9 +31,9 @@ public abstract class SignEditScreenMixin extends Screen {
 	private String[] messages;
 
 	@Shadow
-	public abstract void close();
+	public abstract void onClose();
 
-	protected SignEditScreenMixin(Text title) {
+	protected SignEditScreenMixin(Component title) {
 		super(title);
 	}
 
@@ -42,38 +42,38 @@ public abstract class SignEditScreenMixin extends Screen {
 		if (Utils.isOnSkyblock()) {
 			var config = SkyblockerConfigManager.get();
 			if (isInputSign() && messages[3].equals("to order") && config.uiAndVisuals.bazaarQuickQuantities.enabled) {
-				ButtonWidget[] buttons = BazaarQuickQuantities.getButtons(this.width, messages);
-				for (ButtonWidget button : buttons) if (button != null) addDrawableChild(button);
+				Button[] buttons = BazaarQuickQuantities.getButtons(this.width, messages);
+				for (Button button : buttons) if (button != null) addRenderableWidget(button);
 			}
 		}
 	}
 
 	@Inject(method = "render", at = @At("HEAD"))
-	private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
+	private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) GuiGraphics context) {
 		if (Utils.isOnSkyblock()) {
 			var config = SkyblockerConfigManager.get();
 			if (isSpeedInputSign() && config.general.speedPresets.enableSpeedPresets) {
 				var presets = SpeedPresets.getInstance();
 				if (presets.hasPreset(messages[0])) {
-					context.drawCenteredTextWithShadow(this.textRenderer, Text.literal(String.format("%s » %d", messages[0], presets.getPreset(messages[0]))).formatted(Formatting.GREEN),
-							context.getScaledWindowWidth() / 2, 55, 0xFFFFFFFF);
+					context.drawCenteredString(this.font, Component.literal(String.format("%s » %d", messages[0], presets.getPreset(messages[0]))).withStyle(ChatFormatting.GREEN),
+							context.guiWidth() / 2, 55, 0xFFFFFFFF);
 				}
 			}
 			//if the sign is being used to enter number send it to the sign calculator
 			else if (isInputSign() && config.uiAndVisuals.inputCalculator.enabled) {
-				SignCalculator.renderCalculator(context, messages[0], context.getScaledWindowWidth() / 2, 55);
+				SignCalculator.renderCalculator(context, messages[0], context.guiWidth() / 2, 55);
 			}
 		}
 	}
 
 	@Inject(method = "keyPressed", at = @At("HEAD"))
-	private void skyblocker$keyPressed(KeyInput input, CallbackInfoReturnable<Boolean> cir) {
+	private void skyblocker$keyPressed(KeyEvent input, CallbackInfoReturnable<Boolean> cir) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.closeSignsWithEnter
 				&& Utils.isOnSkyblock() && isInputSign()
-				&& (input.isEnter())) this.close();
+				&& (input.isConfirmation())) this.onClose();
 	}
 
-	@Inject(method = "finishEditing", at = @At("HEAD"))
+	@Inject(method = "onDone", at = @At("HEAD"))
 	private void skyblocker$finishEditing(CallbackInfo ci) {
 		var config = SkyblockerConfigManager.get();
 		if (Utils.isOnSkyblock()) {

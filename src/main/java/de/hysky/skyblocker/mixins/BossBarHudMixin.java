@@ -2,13 +2,12 @@ package de.hysky.skyblocker.mixins;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerBossBars;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.BossBarHud;
-import net.minecraft.client.gui.hud.ClientBossBar;
-import net.minecraft.entity.boss.BossBar;
-import net.minecraft.util.Colors;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.BossHealthOverlay;
+import net.minecraft.client.gui.components.LerpingBossEvent;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.BossEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,26 +15,26 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(BossBarHud.class)
+@Mixin(BossHealthOverlay.class)
 public abstract class BossBarHudMixin {
 
 	@Final
 	@Shadow
-	private MinecraftClient client;
+	private Minecraft minecraft;
 
 	@Shadow
-	protected abstract void renderBossBar(DrawContext context, int x, int y, BossBar bossBar);
+	protected abstract void drawBar(GuiGraphics context, int x, int y, BossEvent bossBar);
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
-	private void onRender(DrawContext context, CallbackInfo ci) {
+	private void onRender(GuiGraphics context, CallbackInfo ci) {
 
 		if (SkyblockerConfigManager.get().slayers.displayBossbar && SlayerBossBars.shouldRenderBossBar()) {
-			ClientBossBar bar = SlayerBossBars.updateBossBar();
+			LerpingBossEvent bar = SlayerBossBars.updateBossBar();
 
-			int textWidth = this.client.textRenderer.getWidth(bar.getName());
-			context.drawTextWithShadow(this.client.textRenderer, bar.getName(), context.getScaledWindowWidth() / 2 - textWidth / 2, 3, Colors.WHITE);
+			int textWidth = this.minecraft.font.width(bar.getName());
+			context.drawString(this.minecraft.font, bar.getName(), context.guiWidth() / 2 - textWidth / 2, 3, CommonColors.WHITE);
 
-			this.renderBossBar(context, (context.getScaledWindowWidth() / 2) - 91, 12, bar);
+			this.drawBar(context, (context.guiWidth() / 2) - 91, 12, bar);
 
 			ci.cancel();
 		}

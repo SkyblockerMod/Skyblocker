@@ -3,31 +3,31 @@ package de.hysky.skyblocker.skyblock.auction;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.SimplePositioningWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 
 public class EditBidPopup extends AbstractPopupScreen {
-	private DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
+	private LinearLayout layout = LinearLayout.vertical();
 	private final String minimumBid;
 	private final SignBlockEntity signBlockEntity;
 
 	private final boolean signFront;
 
-	private TextFieldWidget textFieldWidget;
+	private EditBox textFieldWidget;
 
 	private boolean packetSent = false;
 
 	public EditBidPopup(AuctionViewScreen auctionViewScreen, SignBlockEntity signBlockEntity, boolean signFront, String minimumBid) {
-		super(Text.literal("Edit Bid"), auctionViewScreen);
+		super(Component.literal("Edit Bid"), auctionViewScreen);
 		this.minimumBid = minimumBid;
 		this.signBlockEntity = signBlockEntity;
 		this.signFront = signFront;
@@ -36,59 +36,59 @@ public class EditBidPopup extends AbstractPopupScreen {
 	@Override
 	protected void init() {
 		super.init();
-		layout = DirectionalLayoutWidget.vertical();
-		layout.spacing(8).getMainPositioner().alignHorizontalCenter();
-		textFieldWidget = new EnterConfirmTextFieldWidget(textRenderer, 120, 15, Text.empty(), () -> done(null));
-		textFieldWidget.setTextPredicate(this::isStringGood);
-		layout.add(new TextWidget(Text.literal("- Set Bid -").fillStyle(Style.EMPTY.withBold(true)), textRenderer));
-		layout.add(textFieldWidget);
-		layout.add(new TextWidget(Text.literal("Minimum Bid: " + minimumBid), textRenderer));
-		DirectionalLayoutWidget horizontal = DirectionalLayoutWidget.horizontal();
-		ButtonWidget buttonWidget = ButtonWidget.builder(Text.literal("Set Minimum Bid"), this::buttonMinimumBid).width(80).build();
+		layout = LinearLayout.vertical();
+		layout.spacing(8).defaultCellSetting().alignHorizontallyCenter();
+		textFieldWidget = new EnterConfirmTextFieldWidget(font, 120, 15, Component.empty(), () -> done(null));
+		textFieldWidget.setFilter(this::isStringGood);
+		layout.addChild(new StringWidget(Component.literal("- Set Bid -").withStyle(Style.EMPTY.withBold(true)), font));
+		layout.addChild(textFieldWidget);
+		layout.addChild(new StringWidget(Component.literal("Minimum Bid: " + minimumBid), font));
+		LinearLayout horizontal = LinearLayout.horizontal();
+		Button buttonWidget = Button.builder(Component.literal("Set Minimum Bid"), this::buttonMinimumBid).width(80).build();
 		buttonWidget.active = isStringGood(minimumBid);
-		horizontal.add(buttonWidget);
-		horizontal.add(ButtonWidget.builder(Text.literal("Done"), this::done).width(80).build());
-		layout.add(horizontal);
-		layout.forEachChild(this::addDrawableChild);
-		this.layout.refreshPositions();
-		SimplePositioningWidget.setPos(layout, this.getNavigationFocus());
+		horizontal.addChild(buttonWidget);
+		horizontal.addChild(Button.builder(Component.literal("Done"), this::done).width(80).build());
+		layout.addChild(horizontal);
+		layout.visitWidgets(this::addRenderableWidget);
+		this.layout.arrangeElements();
+		FrameLayout.centerInRectangle(layout, this.getRectangle());
 		setInitialFocus(textFieldWidget);
 	}
 
 	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.renderBackground(context, mouseX, mouseY, delta);
 		drawPopupBackground(context, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.enabled) {
-			SignCalculator.renderCalculator(context, textFieldWidget.getText(), context.getScaledWindowWidth() / 2, textFieldWidget.getY() - 8);
+			SignCalculator.renderCalculator(context, textFieldWidget.getValue(), context.guiWidth() / 2, textFieldWidget.getY() - 8);
 		}
 	}
 
 	private boolean isStringGood(String s) {
-		assert this.client != null;
-		return this.client.textRenderer.getWidth(minimumBid) <= this.signBlockEntity.getMaxTextWidth();
+		assert this.minecraft != null;
+		return this.minecraft.font.width(minimumBid) <= this.signBlockEntity.getMaxTextLineWidth();
 	}
 
-	private void buttonMinimumBid(ButtonWidget widget) {
+	private void buttonMinimumBid(Button widget) {
 		if (!isStringGood(minimumBid)) return;
 		sendPacket(minimumBid);
-		this.close();
+		this.onClose();
 	}
 
-	private void done(ButtonWidget widget) {
+	private void done(Button widget) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.enabled) {
 			if (!isStringGood(SignCalculator.getNewValue(false))) return;
 			sendPacket(SignCalculator.getNewValue(false));
 		} else {
-			if (!isStringGood(textFieldWidget.getText().trim())) return;
-			sendPacket(textFieldWidget.getText().trim());
+			if (!isStringGood(textFieldWidget.getValue().trim())) return;
+			sendPacket(textFieldWidget.getValue().trim());
 		}
-		this.close();
+		this.onClose();
 	}
 
 	private void sendPacket(String string) {
-		assert MinecraftClient.getInstance().player != null;
-		MinecraftClient.getInstance().player.networkHandler.sendPacket(new UpdateSignC2SPacket(signBlockEntity.getPos(), signFront,
+		assert Minecraft.getInstance().player != null;
+		Minecraft.getInstance().player.connection.send(new ServerboundSignUpdatePacket(signBlockEntity.getBlockPos(), signFront,
 				string.replace("coins", ""),
 				"",
 				"",
@@ -98,10 +98,10 @@ public class EditBidPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void close() {
+	public void onClose() {
 		if (!packetSent) sendPacket("");
-		assert this.client != null;
-		this.client.setScreen(null);
+		assert this.minecraft != null;
+		this.minecraft.setScreen(null);
 	}
 
 	@Override

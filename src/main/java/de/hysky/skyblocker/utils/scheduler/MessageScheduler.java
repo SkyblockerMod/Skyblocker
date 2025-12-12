@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.scheduler;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.StringHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -37,18 +37,18 @@ public class MessageScheduler extends Scheduler {
 	}
 
 	private void sendMessage(String message, boolean hide) {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		if (client.player == null) {
 			Scheduler.LOGGER.error("[Skyblocker Message Scheduler] Tried to send a message while player is null: {}", message);
 			return;
 		}
-		message = StringHelper.truncateChat(StringUtils.normalizeSpace(message.trim()));
+		message = StringUtil.trimChatMessage(StringUtils.normalizeSpace(message.trim()));
 
-		if (!hide) client.inGameHud.getChatHud().addToMessageHistory(message);
+		if (!hide) client.gui.getChat().addRecentChat(message);
 		if (message.startsWith("/")) {
-			client.player.networkHandler.sendChatCommand(message.substring(1));
+			client.player.connection.sendCommand(message.substring(1));
 		} else {
-			client.player.networkHandler.sendChatMessage(message);
+			client.player.connection.sendChat(message);
 		}
 	}
 

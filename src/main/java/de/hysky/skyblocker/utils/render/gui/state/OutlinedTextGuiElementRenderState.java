@@ -4,22 +4,23 @@ import org.joml.Matrix3x2f;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.mixins.accessors.TextRendererAccessor;
-import net.minecraft.client.font.BakedGlyph;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.font.TextRenderer.GlyphDrawable;
-import net.minecraft.client.font.TextRenderer.GlyphDrawer;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.render.state.TextGuiElementRenderState;
-import net.minecraft.text.OrderedText;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Font.GlyphVisitor;
+import net.minecraft.client.gui.Font.PreparedText;
+import net.minecraft.client.gui.Font.PreparedTextBuilder;
+import net.minecraft.client.gui.font.glyphs.BakedGlyph;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.render.state.GuiTextRenderState;
+import net.minecraft.util.FormattedCharSequence;
 
-public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState {
+public class OutlinedTextGuiElementRenderState extends GuiTextRenderState {
 	private final int outlineColor;
 	private @Nullable OutlineGlyphDrawable preparation;
-	private @Nullable ScreenRect bounds;
+	private @Nullable ScreenRectangle bounds;
 
 	public OutlinedTextGuiElementRenderState(
-			TextRenderer textRenderer,
-			OrderedText orderedText,
+			Font textRenderer,
+			FormattedCharSequence orderedText,
 			Matrix3x2f matrix,
 			int x,
 			int y,
@@ -27,7 +28,7 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 			int outlineColor,
 			boolean shadow,
 			boolean trackEmpty,
-			ScreenRect clipBounds) {
+			ScreenRectangle clipBounds) {
 		super(textRenderer, orderedText, matrix, x, y, color, 0, shadow, trackEmpty, clipBounds);
 		this.outlineColor = outlineColor;
 	}
@@ -35,9 +36,9 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 	/**
 	 * The text outline drawing code from the {@code TextRenderer}.
 	 */
-	private GlyphDrawable prepareOutline() {
-		TextRendererAccessor accessor = (TextRendererAccessor) this.textRenderer;
-		TextRenderer.Drawer drawer = this.textRenderer.new Drawer(0.0f, 0.0f, this.outlineColor, false, this.trackEmpty);
+	private PreparedText prepareOutline() {
+		TextRendererAccessor accessor = (TextRendererAccessor) this.font;
+		Font.PreparedTextBuilder drawer = this.font.new PreparedTextBuilder(0.0f, 0.0f, this.outlineColor, false, this.includeEmpty);
 
 		for (int i = -1; i <= 1; i++) {
 			for (int j = -1; j <= 1; j++) {
@@ -45,12 +46,12 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 					float[] fs = new float[]{this.x};
 					int k = i;
 					int l = j;
-					this.orderedText.accept((index, style, codePoint) -> {
+					this.text.accept((index, style, codePoint) -> {
 						boolean bl = style.isBold();
 						BakedGlyph bakedGlyph = accessor.invokeGetGlyph(codePoint, style);
-						drawer.x = fs[0] + k * bakedGlyph.getMetrics().getShadowOffset();
-						drawer.y = y + l * bakedGlyph.getMetrics().getShadowOffset();
-						fs[0] += bakedGlyph.getMetrics().getAdvance(bl);
+						drawer.x = fs[0] + k * bakedGlyph.info().getShadowOffset();
+						drawer.y = y + l * bakedGlyph.info().getShadowOffset();
+						fs[0] += bakedGlyph.info().getAdvance(bl);
 						return drawer.accept(index, style.withColor(this.outlineColor), bakedGlyph);
 					});
 				}
@@ -60,20 +61,20 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 		return drawer;
 	}
 
-	private GlyphDrawable prepareText() {
-		GlyphDrawable textPreparation = this.textRenderer.prepare(this.orderedText, (float) this.x, (float) this.y, this.color, this.shadow, this.trackEmpty, this.backgroundColor);
+	private PreparedText prepareText() {
+		PreparedText textPreparation = this.font.prepareText(this.text, (float) this.x, (float) this.y, this.color, this.dropShadow, this.includeEmpty, this.backgroundColor);
 
-		ScreenRect screenRect = textPreparation.getScreenRect();
+		ScreenRectangle screenRect = textPreparation.bounds();
 		if (screenRect != null) {
-			screenRect = screenRect.transformEachVertex(this.matrix);
-			this.bounds = this.clipBounds != null ? this.clipBounds.intersection(screenRect) : screenRect;
+			screenRect = screenRect.transformMaxBounds(this.pose);
+			this.bounds = this.scissor != null ? this.scissor.intersection(screenRect) : screenRect;
 		}
 
 		return textPreparation;
 	}
 
 	@Override
-	public GlyphDrawable prepare() {
+	public PreparedText ensurePrepared() {
 		if (this.preparation == null) {
 			this.preparation = new OutlineGlyphDrawable(this.prepareOutline(), this.prepareText());
 		}
@@ -82,21 +83,21 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 	}
 
 	@Override
-	public @Nullable ScreenRect bounds() {
-		this.prepare();
+	public @Nullable ScreenRectangle bounds() {
+		this.ensurePrepared();
 
 		return this.bounds;
 	}
 
-	private record OutlineGlyphDrawable(GlyphDrawable outline, GlyphDrawable text) implements GlyphDrawable {
+	private record OutlineGlyphDrawable(PreparedText outline, PreparedText text) implements PreparedText {
 		@Override
-		public void draw(GlyphDrawer glyphDrawer) {
-			this.outline.draw(glyphDrawer);
-			this.text.draw(glyphDrawer);
+		public void visit(GlyphVisitor glyphDrawer) {
+			this.outline.visit(glyphDrawer);
+			this.text.visit(glyphDrawer);
 		}
 
 		@Override
-		public ScreenRect getScreenRect() {
+		public ScreenRectangle bounds() {
 			//Shouldn't need an implementation but if it eventually does its probably best to use the outline rect
 			//since it should be the bigger one
 			throw new UnsupportedOperationException("For drawing only");

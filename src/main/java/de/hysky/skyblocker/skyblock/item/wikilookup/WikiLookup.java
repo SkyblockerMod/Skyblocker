@@ -4,12 +4,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.function.Function;
-
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
 import com.mojang.datafixers.util.Either;
 
 /**
@@ -34,7 +32,7 @@ public interface WikiLookup {
 	 * @param player The player entity.
 	 * @param useOfficial Use official will open Hypixel Wiki, other will open Fandom.
 	 */
-	void open(ItemStack itemStack, PlayerEntity player, boolean useOfficial);
+	void open(ItemStack itemStack, Player player, boolean useOfficial);
 
 	/**
 	 * Called before open the wiki lookup.

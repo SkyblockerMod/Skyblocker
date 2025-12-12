@@ -13,14 +13,12 @@ import de.hysky.skyblocker.skyblock.rift.HealingMelonIndicator;
 import de.hysky.skyblocker.skyblock.searchoverlay.OverlayScreen;
 import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-
 import java.util.Locale;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,60 +27,60 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ClientPlayerEntity.class)
-public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
+@Mixin(LocalPlayer.class)
+public abstract class ClientPlayerEntityMixin extends AbstractClientPlayer {
 	@Shadow
 	@Final
-	protected MinecraftClient client;
+	protected Minecraft minecraft;
 
-	public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
+	public ClientPlayerEntityMixin(ClientLevel world, GameProfile profile) {
 		super(world, profile);
 	}
 
-	@Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "drop(Z)Z", at = @At("HEAD"), cancellable = true)
 	public void skyblocker$dropSelectedItem(CallbackInfoReturnable<Boolean> cir) {
-		if (Utils.isOnSkyblock() && (ItemProtection.isItemProtected(this.getMainHandStack()) || HotbarSlotLock.isLocked(this.getInventory().getSelectedSlot()))
+		if (Utils.isOnSkyblock() && (ItemProtection.isItemProtected(this.getMainHandItem()) || HotbarSlotLock.isLocked(this.getInventory().getSelectedSlot()))
 				&& (!SkyblockerConfigManager.get().dungeons.allowDroppingProtectedItems || !DungeonScore.isDungeonStarted())) {
 			cir.setReturnValue(false);
 		}
 	}
 
-	@Inject(method = "updateHealth", at = @At("RETURN"))
+	@Inject(method = "hurtTo", at = @At("RETURN"))
 	public void skyblocker$updateHealth(CallbackInfo ci) {
 		HealingMelonIndicator.updateHealth();
 	}
 
-	@Inject(method = "openEditSignScreen", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "openTextEdit", at = @At("HEAD"), cancellable = true)
 	public void skyblocker$redirectEditSignScreen(SignBlockEntity sign, boolean front, CallbackInfo ci) {
 		// Fancy Party Finder
-		if (!PartyFinderScreen.isInKuudraPartyFinder && client.currentScreen instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(front).getMessage(3, false).getString().toLowerCase(Locale.ENGLISH).contains("level")) {
+		if (!PartyFinderScreen.isInKuudraPartyFinder && minecraft.screen instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(front).getMessage(3, false).getString().toLowerCase(Locale.ENGLISH).contains("level")) {
 			partyFinderScreen.updateSign(sign, front);
 			ci.cancel();
 			return;
 		}
 
-		if (client.currentScreen instanceof AuctionViewScreen auctionViewScreen) {
-			this.client.setScreen(new EditBidPopup(auctionViewScreen, sign, front, auctionViewScreen.minBid));
+		if (minecraft.screen instanceof AuctionViewScreen auctionViewScreen) {
+			this.minecraft.setScreen(new EditBidPopup(auctionViewScreen, sign, front, auctionViewScreen.minBid));
 			ci.cancel();
 		}
 
 		// Search Overlay
-		if (client.currentScreen != null) {
+		if (minecraft.screen != null) {
 			UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
 			boolean isInputSign = sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query");
 			if (!isInputSign) return;
 
-			if (config.enableAuctionHouse && client.currentScreen.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("auction")) {
+			if (config.enableAuctionHouse && minecraft.screen.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("auction")) {
 				SearchOverManager.updateSign(sign, front, SearchOverManager.SearchLocation.AUCTION);
-				client.setScreen(new OverlayScreen());
+				minecraft.setScreen(new OverlayScreen());
 				ci.cancel();
-			} else if (config.enableBazaar && client.currentScreen.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("bazaar")) {
+			} else if (config.enableBazaar && minecraft.screen.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("bazaar")) {
 				SearchOverManager.updateSign(sign, front, SearchOverManager.SearchLocation.BAZAAR);
-				client.setScreen(new OverlayScreen());
+				minecraft.setScreen(new OverlayScreen());
 				ci.cancel();
-			} else if (config.enableMuseum && client.currentScreen.getTitle().getString().contains("Museum")) {
+			} else if (config.enableMuseum && minecraft.screen.getTitle().getString().contains("Museum")) {
 				SearchOverManager.updateSign(sign, front, SearchOverManager.SearchLocation.MUSEUM);
-				client.setScreen(new OverlayScreen());
+				minecraft.setScreen(new OverlayScreen());
 				ci.cancel();
 			}
 		}

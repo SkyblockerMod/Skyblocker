@@ -6,12 +6,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.gui.hud.PlayerListHud;
+import net.minecraft.client.gui.components.PlayerTabOverlay;
 
-@Mixin(PlayerListHud.class)
+@Mixin(PlayerTabOverlay.class)
 public class PlayerListHudMixin {
 
-	@Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "renderPingIcon", at = @At("HEAD"), cancellable = true)
 	private void skyblocker$hideLatencyIcon(CallbackInfo ci) {
 		if (Utils.isOnSkyblock()) ci.cancel();
 	}

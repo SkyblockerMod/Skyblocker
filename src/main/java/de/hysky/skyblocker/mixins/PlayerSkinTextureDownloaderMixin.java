@@ -2,7 +2,9 @@ package de.hysky.skyblocker.mixins;
 
 import java.awt.Color;
 import java.util.Set;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.SkinTextureDownloader;
+import net.minecraft.util.ARGB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,18 +14,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
-
+import com.mojang.blaze3d.platform.NativeImage;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.skyblock.item.PlayerHeadHashCache;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.PlayerSkinTextureDownloader;
-import net.minecraft.util.math.ColorHelper;
 
-@Mixin(PlayerSkinTextureDownloader.class)
+@Mixin(SkinTextureDownloader.class)
 public class PlayerSkinTextureDownloaderMixin {
 	@Unique
 	private static final Set<String> STRIP_DE_FACTO_TRANSPARENT_PIXELS = Set.of(
@@ -33,9 +31,9 @@ public class PlayerSkinTextureDownloaderMixin {
 	@Unique
 	private static final float BRIGHTNESS_THRESHOLD = 0.1f;
 
-	@Inject(method = "remapTexture", at = @At("HEAD"))
+	@Inject(method = "processLegacySkin", at = @At("HEAD"))
 	private static void skyblocker$determineSkinSource(NativeImage image, String uri, CallbackInfoReturnable<NativeImage> cir, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
-		if (SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues && (Utils.isOnSkyblock() || MinecraftClient.getInstance().currentScreen instanceof ProfileViewerScreen)) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues && (Utils.isOnSkyblock() || Minecraft.getInstance().screen instanceof ProfileViewerScreen)) {
 			String skinTextureHash = PlayerHeadHashCache.getSkinHashFromUrl(uri);
 			int skinHash = skinTextureHash.hashCode();
 			isSkyblockSkinTexture.set(PlayerHeadHashCache.contains(skinHash));
@@ -47,7 +45,7 @@ public class PlayerSkinTextureDownloaderMixin {
 		}
 	}
 
-	@WrapWithCondition(method = "remapTexture", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/PlayerSkinTextureDownloader;stripAlpha(Lnet/minecraft/client/texture/NativeImage;IIII)V"))
+	@WrapWithCondition(method = "processLegacySkin", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/SkinTextureDownloader;setNoAlpha(Lcom/mojang/blaze3d/platform/NativeImage;IIII)V"))
 	private static boolean skyblocker$dontStripAlphaValues(NativeImage image, int x1, int y1, int x2, int y2, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
 		return !isSkyblockSkinTexture.get();
 	}
@@ -59,11 +57,11 @@ public class PlayerSkinTextureDownloaderMixin {
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				int color = image.getColorArgb(x, y);
+				int color = image.getPixel(x, y);
 				float[] hsb = Color.RGBtoHSB((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, null);
 
 				//Work around "fake" transparent pixels - Thanks Hypixel I totally appreciate this!
-				if (hsb[2] <= BRIGHTNESS_THRESHOLD) image.setColorArgb(x, y, ColorHelper.withAlpha(0x00, color & 0x00FFFFFF));
+				if (hsb[2] <= BRIGHTNESS_THRESHOLD) image.setPixel(x, y, ARGB.color(0x00, color & 0x00FFFFFF));
 			}
 		}
 	}

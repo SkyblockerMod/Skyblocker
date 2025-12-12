@@ -13,11 +13,11 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class TargetPractice {
 	private static final BlockPos PRESSURE_PLATE = new BlockPos(63, 127, 35);
@@ -46,7 +46,7 @@ public class TargetPractice {
 		if (pos.equals(PRESSURE_PLATE) && newState.getBlock().equals(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE)) {
 
 			// Reset when the new power does not meet the activation threshold of 1 entity on the plate.
-			if (newState.get(Properties.POWER) < ACTIVATION_THRESHOLD) {
+			if (newState.getValue(BlockStateProperties.POWER) < ACTIVATION_THRESHOLD) {
 				reset();
 
 				return;
@@ -56,7 +56,7 @@ public class TargetPractice {
 			//
 			// This is done despite the above to ensure the solver's state is reset when someone stops doing the device
 			// and then it is resumed afterwards.
-			if (oldState.getBlock().equals(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE) && oldState.get(Properties.POWER) == UNACTIVATED) {
+			if (oldState.getBlock().equals(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE) && oldState.getValue(BlockStateProperties.POWER) == UNACTIVATED) {
 				reset();
 
 				return;
@@ -69,7 +69,7 @@ public class TargetPractice {
 		if (POSSIBLE_TARGETS.contains(pos)) {
 			if (oldState.getBlock().equals(Blocks.EMERALD_BLOCK) && newState.getBlock().equals(Blocks.BLUE_TERRACOTTA)) {
 				// Convert position to immutable since it might be mutable and we can't have it changing
-				HIT_TARGETS.add(pos.toImmutable());
+				HIT_TARGETS.add(pos.immutable());
 			}
 		}
 	}

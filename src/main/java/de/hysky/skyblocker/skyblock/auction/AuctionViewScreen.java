@@ -3,27 +3,6 @@ package de.hysky.skyblocker.skyblock.auction;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.PopupScreen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.SimplePositioningWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import org.joml.Matrix3x2fStack;
 
 import java.time.Duration;
@@ -32,37 +11,58 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.PopupScreen;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
-	protected static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/browser/background_view.png");
+	protected static final Identifier INVENTORY_LOCATION = SkyblockerMod.id("textures/gui/auctions_gui/browser/background_view.png");
 
 	public static final int BACK_BUTTON_SLOT = 49;
 
-	DirectionalLayoutWidget verticalLayout = DirectionalLayoutWidget.vertical();
+	LinearLayout verticalLayout = LinearLayout.vertical();
 
 	public final boolean isBinAuction;
-	private TextWidget priceWidget;
-	private final Text clickToEditBidText = Text.translatable("skyblocker.fancyAuctionHouse.editBid").setStyle(Style.EMPTY.withUnderline(true));
+	private StringWidget priceWidget;
+	private final Component clickToEditBidText = Component.translatable("skyblocker.fancyAuctionHouse.editBid").setStyle(Style.EMPTY.withUnderlined(true));
 
-	private TextWidget infoTextWidget;
+	private StringWidget infoTextWidget;
 	public String minBid = "";
 
 	private BuyState buyState = null;
-	private MutableText priceText = Text.literal("?");
-	private ButtonWidget buyButton;
-	private TextWidget priceTextWidget;
+	private MutableComponent priceText = Component.literal("?");
+	private Button buyButton;
+	private StringWidget priceTextWidget;
 
-	public AuctionViewScreen(AuctionHouseScreenHandler handler, PlayerInventory inventory, Text title) {
+	public AuctionViewScreen(AuctionHouseScreenHandler handler, Inventory inventory, Component title) {
 		super(handler, inventory, title);
-		backgroundHeight = 187;
+		imageHeight = 187;
 		isBinAuction = this.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("bin");
-		playerInventoryTitleY = 93;
-		titleX = 5;
-		titleY = 4;
+		inventoryLabelY = 93;
+		titleLabelX = 5;
+		titleLabelY = 4;
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput input) {
+	public boolean keyPressed(KeyEvent input) {
 		if (input.isEscape()) {
 			clickSlot(BACK_BUTTON_SLOT);
 			return true;
@@ -73,33 +73,33 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 	@Override
 	protected void init() {
 		super.init();
-		verticalLayout = DirectionalLayoutWidget.vertical();
-		verticalLayout.spacing(2).getMainPositioner().alignHorizontalCenter();
-		priceTextWidget = new TextWidget(isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid"), textRenderer).setMaxWidth(backgroundWidth - 10, TextWidget.TextOverflow.SCROLLING);
-		verticalLayout.add(priceTextWidget);
+		verticalLayout = LinearLayout.vertical();
+		verticalLayout.spacing(2).defaultCellSetting().alignHorizontallyCenter();
+		priceTextWidget = new StringWidget(isBinAuction ? Component.translatable("skyblocker.fancyAuctionHouse.price") : Component.translatable("skyblocker.fancyAuctionHouse.newBid"), font).setMaxWidth(imageWidth - 10, StringWidget.TextOverflow.SCROLLING);
+		verticalLayout.addChild(priceTextWidget);
 
-		priceWidget = new TextWidget(Text.literal("?"), textRenderer).setMaxWidth(backgroundWidth - 10, TextWidget.TextOverflow.SCROLLING);
+		priceWidget = new StringWidget(Component.literal("?"), font).setMaxWidth(imageWidth - 10, StringWidget.TextOverflow.SCROLLING);
 		priceWidget.active = true;
-		verticalLayout.add(priceWidget);
+		verticalLayout.addChild(priceWidget);
 
-		infoTextWidget = new TextWidget(Text.literal("Can't Afford"), textRenderer).setMaxWidth(backgroundWidth - 10, TextWidget.TextOverflow.SCROLLING);
-		verticalLayout.add(infoTextWidget);
+		infoTextWidget = new StringWidget(Component.literal("Can't Afford"), font).setMaxWidth(imageWidth - 10, StringWidget.TextOverflow.SCROLLING);
+		verticalLayout.addChild(infoTextWidget);
 
-		buyButton = ButtonWidget.builder(isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.buy") : Text.translatable("skyblocker.fancyAuctionHouse.bid"), button -> {
+		buyButton = Button.builder(isBinAuction ? Component.translatable("skyblocker.fancyAuctionHouse.buy") : Component.translatable("skyblocker.fancyAuctionHouse.bid"), button -> {
 			if (buySlotID == -1) return;
 			clickSlot(buySlotID);
 		}).size(60, 15).build();
-		verticalLayout.add(buyButton);
-		verticalLayout.forEachChild(this::addDrawableChild);
+		verticalLayout.addChild(buyButton);
+		verticalLayout.visitWidgets(this::addRenderableWidget);
 		updateLayout();
 
-		ButtonWidget backButton = new ButtonWidget.Builder(Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
-				.position(x + backgroundWidth - 16, y + 4)
+		Button backButton = new Button.Builder(Component.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
+				.pos(leftPos + imageWidth - 16, topPos + 4)
 				.size(12, 12)
-				.tooltip(Tooltip.of(Text.literal("or press ESC!")))
+				.tooltip(Tooltip.create(Component.literal("or press ESC!")))
 				.build();
 		backButton.setTooltipDelay(Duration.ofSeconds(1));
-		addDrawableChild(backButton);
+		addRenderableWidget(backButton);
 
 
 	}
@@ -109,30 +109,30 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 		buyState = newState;
 		switch (buyState) {
 			case CANT_AFFORD -> {
-				infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.cantAfford").withColor(Colors.RED));
+				infoTextWidget.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.cantAfford").withColor(CommonColors.RED));
 				buyButton.active = false;
 			}
-			case TOP_BID -> infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.alreadyTopBid").withColor(Colors.LIGHT_YELLOW));
-			case AFFORD -> infoTextWidget.setMessage(Text.empty());
+			case TOP_BID -> infoTextWidget.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.alreadyTopBid").withColor(CommonColors.SOFT_YELLOW));
+			case AFFORD -> infoTextWidget.setMessage(Component.empty());
 			case COLLECT_AUCTION -> {
-				infoTextWidget.setMessage(changeProfile ? Text.translatable("skyblocker.fancyAuctionHouse.differentProfile") : wonAuction ? Text.empty() : Text.translatable("skyblocker.fancyAuctionHouse.didntWin"));
+				infoTextWidget.setMessage(changeProfile ? Component.translatable("skyblocker.fancyAuctionHouse.differentProfile") : wonAuction ? Component.empty() : Component.translatable("skyblocker.fancyAuctionHouse.didntWin"));
 				//priceWidget.setMessage(Text.empty());
 				priceWidget.active = false;
 
 				if (changeProfile) {
-					buyButton.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.changeProfile").setStyle(Style.EMPTY.withColor(Formatting.AQUA)));
+					buyButton.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.changeProfile").setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA)));
 				} else if (wonAuction) {
-					buyButton.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.collectAuction"));
+					buyButton.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.collectAuction"));
 				} else {
-					buyButton.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.collectBid"));
+					buyButton.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.collectBid"));
 				}
-				buyButton.setWidth(textRenderer.getWidth(buyButton.getMessage()) + 4);
+				buyButton.setWidth(font.width(buyButton.getMessage()) + 4);
 
-				priceTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.auctionEnded"));
+				priceTextWidget.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.auctionEnded"));
 			}
 			case CANCELLABLE_AUCTION -> {
-				buyButton.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.cancelAuction").setStyle(Style.EMPTY.withColor(Formatting.RED)));
-				buyButton.setWidth(textRenderer.getWidth(buyButton.getMessage()) + 4);
+				buyButton.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.cancelAuction").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+				buyButton.setWidth(font.width(buyButton.getMessage()) + 4);
 
 				buyButton.active = true;
 				buyButton.visible = true;
@@ -141,37 +141,37 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 				buyButton.visible = false;
 				priceWidget.active = false;
 
-				infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.yourAuction"));
+				infoTextWidget.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.yourAuction"));
 			}
 		}
 		updateLayout();
 	}
 
 	private void updateLayout() {
-		verticalLayout.refreshPositions();
-		SimplePositioningWidget.setPos(verticalLayout, x, y + 36, backgroundWidth, 60);
+		verticalLayout.arrangeElements();
+		FrameLayout.centerInRectangle(verticalLayout, leftPos, topPos + 36, imageWidth, 60);
 	}
 
 	@Override
-	protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
+	protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
+		context.blit(RenderPipelines.GUI_TEXTURED, INVENTORY_LOCATION, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 
-		if (isWaitingForServer) context.drawText(textRenderer, "Waiting...", 0, 0, Colors.WHITE, true);
+		if (isWaitingForServer) context.drawString(font, "Waiting...", 0, 0, CommonColors.WHITE, true);
 
-		Matrix3x2fStack matrices = context.getMatrices();
+		Matrix3x2fStack matrices = context.pose();
 
 		matrices.pushMatrix();
-		matrices.translate(x + 77, y + 14);
+		matrices.translate(leftPos + 77, topPos + 14);
 		matrices.scale(1.375f, 1.375f);
 		//matrices.translate(0, 0, 100f);
-		ItemStack stack = handler.getSlot(13).getStack();
-		context.drawItem(stack, 0, 0);
-		context.drawStackOverlay(textRenderer, stack, 0, 0);
+		ItemStack stack = menu.getSlot(13).getItem();
+		context.renderItem(stack, 0, 0);
+		context.renderItemDecorations(font, stack, 0, 0);
 		matrices.popMatrix();
 
 		if (!isBinAuction && buyState != BuyState.COLLECT_AUCTION) {
@@ -182,19 +182,19 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 			}
 		}
 
-		drawMouseoverTooltip(context, mouseX, mouseY);
+		renderTooltip(context, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
-		super.drawMouseoverTooltip(context, x, y);
-		if (x > this.x + 75 && x < this.x + 75 + 26 && y > this.y + 13 && y < this.y + 13 + 26) {
-			context.drawTooltip(this.textRenderer, this.getTooltipFromItem(handler.getSlot(13).getStack()), x, y);
+	protected void renderTooltip(GuiGraphics context, int x, int y) {
+		super.renderTooltip(context, x, y);
+		if (x > this.leftPos + 75 && x < this.leftPos + 75 + 26 && y > this.topPos + 13 && y < this.topPos + 13 + 26) {
+			context.setComponentTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(menu.getSlot(13).getItem()), x, y);
 		}
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (!isBinAuction && priceWidget.isMouseOver(click.x(), click.y())) {
 			clickSlot(31);
 			return true;
@@ -204,31 +204,31 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 
 	@Override
 	public void onSlotChange(AuctionHouseScreenHandler handler, int slotId, ItemStack stack) {
-		if (stack.isOf(Items.BLACK_STAINED_GLASS_PANE) || slotId == 13 || slotId >= handler.getRows() * 9) return;
-		assert client != null;
-		if (stack.isOf(Items.RED_TERRACOTTA)) { // Red terracotta shows up when you can cancel it
+		if (stack.is(Items.BLACK_STAINED_GLASS_PANE) || slotId == 13 || slotId >= handler.getRowCount() * 9) return;
+		assert minecraft != null;
+		if (stack.is(Items.RED_TERRACOTTA)) { // Red terracotta shows up when you can cancel it
 			changeState(BuyState.CANCELLABLE_AUCTION);
 			buySlotID = slotId;
 		}
 		if (priceParsed) return;
-		if (stack.isOf(Items.POISONOUS_POTATO)) {
+		if (stack.is(Items.POISONOUS_POTATO)) {
 			changeState(BuyState.CANT_AFFORD);
 			getPriceFromTooltip(ItemUtils.getLore(stack));
 			buySlotID = slotId;
-		} else if (stack.isOf(Items.GOLD_NUGGET)) {
+		} else if (stack.is(Items.GOLD_NUGGET)) {
 			changeState(BuyState.AFFORD);
 			getPriceFromTooltip(ItemUtils.getLore(stack));
 			buySlotID = slotId;
-		} else if (stack.isOf(Items.GOLD_BLOCK)) {
+		} else if (stack.is(Items.GOLD_BLOCK)) {
 			changeState(BuyState.TOP_BID);
 			getPriceFromTooltip(ItemUtils.getLore(stack));
 			buySlotID = slotId;
-		} else if (stack.isOf(Items.NAME_TAG)) {
+		} else if (stack.is(Items.NAME_TAG)) {
 			getPriceFromTooltip(ItemUtils.getLore(stack));
 			changeProfile = true;
 			buySlotID = slotId;
 		}
-		String lowerCase = stack.getName().getString().toLowerCase(Locale.ENGLISH);
+		String lowerCase = stack.getHoverName().getString().toLowerCase(Locale.ENGLISH);
 		if (priceParsed && lowerCase.contains("collect auction")) {
 			changeState(BuyState.COLLECT_AUCTION);
 		}
@@ -239,13 +239,13 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 	private boolean wonAuction = true;
 	private boolean changeProfile = false;
 
-	private void getPriceFromTooltip(List<Text> tooltip) {
+	private void getPriceFromTooltip(List<Component> tooltip) {
 		if (priceParsed) return;
 		String minBid = null;
 		String priceString = null;
 		AtomicReference<String> stringAtomicReference = new AtomicReference<>("");
 
-		for (Text text : tooltip) {
+		for (Component text : tooltip) {
 			String string = text.getString();
 			String thingToLookFor = (isBinAuction) ? "price:" : "new bid:";
 			String lowerCase = string.toLowerCase(Locale.ENGLISH);
@@ -261,20 +261,20 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 				String[] split = string.split(":");
 				if (split.length < 2) continue;
 				if (buyState != BuyState.CANT_AFFORD && !isBinAuction) {
-					infoTextWidget.setMessage(Text.translatable("skyblocker.fancyAuctionHouse.youPay", split[1].trim()));
+					infoTextWidget.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.youPay", split[1].trim()));
 				}
 
 			} else if (lowerCase.contains("top bid:")) { // Shows up when an auction ended and you lost
 				wonAuction = false;
 			} else if (lowerCase.contains("correct profile")) { // When an auction ended but on a different profile
 				changeProfile = true;
-				priceWidget.setMessage(Text.empty());
+				priceWidget.setMessage(Component.empty());
 			} else if (lowerCase.contains("own auction")) { // it's yours
 				changeState(BuyState.OWN_AUCTION);
 			}
 			text.visit((style, asString) -> {
 				// The regex removes [, ] and +. To ignore mvp++ rank and orange + in mvp+
-				String res = Objects.equals(style.getColor(), TextColor.fromFormatting(Formatting.GOLD)) && !asString.matches(".*[]\\[+].*") && !asString.contains("Collect") ? asString : null;
+				String res = Objects.equals(style.getColor(), TextColor.fromLegacyFormat(ChatFormatting.GOLD)) && !asString.matches(".*[]\\[+].*") && !asString.contains("Collect") ? asString : null;
 				return Optional.ofNullable(res);
 			}, Style.EMPTY).ifPresent(s -> stringAtomicReference.set(stringAtomicReference.get() + s));
 		}
@@ -282,23 +282,23 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 		if (priceString == null) priceString = stringAtomicReference.get();
 		if (minBid != null) this.minBid = minBid;
 		else this.minBid = priceString;
-		priceText = Text.literal(priceString).setStyle(Style.EMPTY.withFormatting(Formatting.BOLD).withColor(Formatting.GOLD));
+		priceText = Component.literal(priceString).setStyle(Style.EMPTY.applyFormat(ChatFormatting.BOLD).withColor(ChatFormatting.GOLD));
 		priceWidget.setMessage(priceText);
 		priceParsed = true;
 		updateLayout();
 	}
 
-	public PopupScreen getConfirmPurchasePopup(Text title) {
+	public PopupScreen getConfirmPurchasePopup(Component title) {
 		// This really shouldn't be possible to be null in its ACTUAL use case.
 		//noinspection DataFlowIssue
 		return new PopupScreen.Builder(this, title)
-				.button(Text.translatable("text.skyblocker.confirm"), popupScreen -> this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 11, 0, SlotActionType.PICKUP, client.player))
-				.button(Text.translatable("gui.cancel"), PopupScreen::close)
-				.message((isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid")).append(" ").append(priceText))
-				.onClosed(() -> {
+				.addButton(Component.translatable("text.skyblocker.confirm"), popupScreen -> this.minecraft.gameMode.handleInventoryMouseClick(this.minecraft.player.containerMenu.containerId, 11, 0, ClickType.PICKUP, minecraft.player))
+				.addButton(Component.translatable("gui.cancel"), PopupScreen::onClose)
+				.setMessage((isBinAuction ? Component.translatable("skyblocker.fancyAuctionHouse.price") : Component.translatable("skyblocker.fancyAuctionHouse.newBid")).append(" ").append(priceText))
+				.onClose(() -> {
 					// This really shouldn't be possible to be null in its ACTUAL use case.
 					//noinspection DataFlowIssue
-					this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 15, 0, SlotActionType.PICKUP, client.player);
+					this.minecraft.gameMode.handleInventoryMouseClick(this.minecraft.player.containerMenu.containerId, 15, 0, ClickType.PICKUP, minecraft.player);
 				})
 				.build();
 	}

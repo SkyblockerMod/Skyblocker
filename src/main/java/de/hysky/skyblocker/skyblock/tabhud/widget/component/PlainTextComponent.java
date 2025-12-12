@@ -1,40 +1,39 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 
 /**
  * Component that consists of 1 or 2 lines of text.
  */
 public class PlainTextComponent extends Component {
-	private final List<Text> lines = new ArrayList<>();
+	private final List<Component> lines = new ArrayList<>();
 
-	public PlainTextComponent(Text txt) {
-		lines.add(txt == null ? Text.literal("No data").formatted(Formatting.GRAY) : txt);
+	public PlainTextComponent(Component txt) {
+		lines.add(txt == null ? Component.literal("No data").withStyle(ChatFormatting.GRAY) : txt);
 
-		this.width = PAD_L + txtRend.getWidth(lines.getFirst()); // looks off without padding
-		this.height = txtRend.fontHeight;
+		this.width = PAD_L + txtRend.width(lines.getFirst()); // looks off without padding
+		this.height = txtRend.lineHeight;
 	}
 
-	public PlainTextComponent(Text line1, Text line2) {
-		lines.add(line1 == null ? Text.literal("No data").formatted(Formatting.GRAY) : line1);
-		lines.add(line2 == null ? Text.literal("No data").formatted(Formatting.GRAY) : line2);
+	public PlainTextComponent(Component line1, Component line2) {
+		lines.add(line1 == null ? Component.literal("No data").withStyle(ChatFormatting.GRAY) : line1);
+		lines.add(line2 == null ? Component.literal("No data").withStyle(ChatFormatting.GRAY) : line2);
 
-		this.width = PAD_L + Math.max(txtRend.getWidth(lines.get(0)), txtRend.getWidth(lines.get(1)));
-		this.height = (txtRend.fontHeight * 2) + PAD_S;
+		this.width = PAD_L + Math.max(txtRend.width(lines.get(0)), txtRend.width(lines.get(1)));
+		this.height = (txtRend.lineHeight * 2) + PAD_S;
 	}
 
 	@Override
-	public void render(DrawContext context, int x, int y) {
+	public void render(GuiGraphics context, int x, int y) {
 		int yOffset = 0;
-		for (Text line : lines) {
-			context.drawText(txtRend, line, x + PAD_L, y + yOffset, Colors.WHITE, false);
-			yOffset += txtRend.fontHeight + PAD_S;
+		for (Component line : lines) {
+			context.drawString(txtRend, line, x + PAD_L, y + yOffset, CommonColors.WHITE, false);
+			yOffset += txtRend.lineHeight + PAD_S;
 		}
 	}
 }

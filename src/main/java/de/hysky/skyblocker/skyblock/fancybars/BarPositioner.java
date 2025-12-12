@@ -1,14 +1,13 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.client.gui.ScreenRect;
-
 import org.jspecify.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 
 public class BarPositioner {
 
@@ -164,40 +163,40 @@ public class BarPositioner {
 
 	public enum BarAnchor {
 		HOTBAR_LEFT(true, false,
-				(scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 - 91 - 2, scaledHeight - 5),
+				(scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 - 91 - 2, scaledHeight - 5),
 				SizeRule.freeSize(25, 2, 6)),
 
 		HOTBAR_RIGHT(true, true,
-				(scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 + 91 + 2, scaledHeight - 5),
+				(scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 + 91 + 2, scaledHeight - 5),
 				SizeRule.freeSize(25, 2, 6)),
 
 		HOTBAR_TOP(true, true,
-				(scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 - 91, scaledHeight - (FancyStatusBars.isExperienceFancyBarEnabled() ? 23 : 35)),
+				(scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 - 91, scaledHeight - (FancyStatusBars.isExperienceFancyBarEnabled() ? 23 : 35)),
 				SizeRule.targetSize(12, 182, 2),
-				anchorPosition -> new ScreenRect(anchorPosition.x(), anchorPosition.y() - 20, 182, 20)),
+				anchorPosition -> new ScreenRectangle(anchorPosition.x(), anchorPosition.y() - 20, 182, 20)),
 
 		SCREEN_TOP_LEFT(false, true,
-				((scaledWidth, scaledHeight) -> new ScreenPos(5, 5)),
+				((scaledWidth, scaledHeight) -> new ScreenPosition(5, 5)),
 				SizeRule.freeSize(25, 2, 6)
 		),
 		SCREEN_TOP_RIGHT(false, false,
-				((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth - 5, 5)),
+				((scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth - 5, 5)),
 				SizeRule.freeSize(25, 2, 6)
 		),
 		SCREEN_BOTTOM_LEFT(true, true,
-				((scaledWidth, scaledHeight) -> new ScreenPos(5, scaledHeight - 5)),
+				((scaledWidth, scaledHeight) -> new ScreenPosition(5, scaledHeight - 5)),
 				SizeRule.freeSize(25, 2, 6)
 		),
 		SCREEN_BOTTOM_RIGHT(true, false,
-				((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth - 5, scaledHeight - 5)),
+				((scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth - 5, scaledHeight - 5)),
 				SizeRule.freeSize(25, 2, 6)
 		),
 		SCREEN_CENTER_LEFT(false, false,
-				((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 - 8, scaledHeight / 2 - 4)),
+				((scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 - 8, scaledHeight / 2 - 4)),
 				SizeRule.freeSize(15, 3, 8)
 		),
 		SCREEN_CENTER_RIGHT(false, true,
-				((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 + 8, scaledHeight / 2 - 4)),
+				((scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 + 8, scaledHeight / 2 - 4)),
 				SizeRule.freeSize(15, 3, 8)
 		);
 
@@ -224,14 +223,14 @@ public class BarPositioner {
 
 		BarAnchor(boolean up, boolean right, AnchorPositionProvider positionProvider, SizeRule sizeRule) {
 			this(up, right, positionProvider, sizeRule,
-					anchorPosition -> new ScreenRect(anchorPosition.x() - (right ? 0 : 20), anchorPosition.y() - (up ? 20 : 0), 20, 20));
+					anchorPosition -> new ScreenRectangle(anchorPosition.x() - (right ? 0 : 20), anchorPosition.y() - (up ? 20 : 0), 20, 20));
 		}
 
-		public ScreenPos getAnchorPosition(int scaledWidth, int scaledHeight) {
+		public ScreenPosition getAnchorPosition(int scaledWidth, int scaledHeight) {
 			return positionProvider.getPosition(scaledWidth, scaledHeight);
 		}
 
-		public ScreenRect getAnchorHitbox(ScreenPos anchorPosition) {
+		public ScreenRectangle getAnchorHitbox(ScreenPosition anchorPosition) {
 			return hitboxProvider.getHitbox(anchorPosition);
 		}
 
@@ -315,7 +314,7 @@ public class BarPositioner {
 	@FunctionalInterface
 	interface AnchorPositionProvider {
 
-		ScreenPos getPosition(int scaledWidth, int scaledHeight);
+		ScreenPosition getPosition(int scaledWidth, int scaledHeight);
 	}
 
 	@FunctionalInterface
@@ -327,6 +326,6 @@ public class BarPositioner {
 		 * @param anchorPosition the position of the anchor
 		 * @return the rectangle that represents the hitbox
 		 */
-		ScreenRect getHitbox(ScreenPos anchorPosition);
+		ScreenRectangle getHitbox(ScreenPosition anchorPosition);
 	}
 }

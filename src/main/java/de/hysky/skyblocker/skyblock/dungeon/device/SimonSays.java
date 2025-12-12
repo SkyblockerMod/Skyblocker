@@ -16,28 +16,27 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
 
 public class SimonSays {
-	private static final Box BOARD_AREA = Box.enclosing(new BlockPos(111, 123, 92), new BlockPos(111, 120, 95));
-	private static final Box BUTTONS_AREA = Box.enclosing(new BlockPos(110, 123, 92), new BlockPos(110, 120, 95));
+	private static final AABB BOARD_AREA = AABB.encapsulatingFullBlocks(new BlockPos(111, 123, 92), new BlockPos(111, 120, 95));
+	private static final AABB BUTTONS_AREA = AABB.encapsulatingFullBlocks(new BlockPos(110, 123, 92), new BlockPos(110, 120, 95));
 	private static final BlockPos START_BUTTON = new BlockPos(110, 121, 91);
 	private static final float[] GREEN = ColorUtils.getFloatComponents(DyeColor.LIME);
 	private static final float[] YELLOW = ColorUtils.getFloatComponents(DyeColor.YELLOW);
@@ -54,13 +53,13 @@ public class SimonSays {
 
 	//When another player is pressing the buttons hypixel doesnt send block or block state updates
 	//so you can't see it which means the solver can only count the buttons you press yourself
-	private static ActionResult onBlockInteract(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+	private static InteractionResult onBlockInteract(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
 		if (shouldProcess()) {
 			BlockPos pos = hitResult.getBlockPos();
 			Block block = world.getBlockState(pos).getBlock();
 
 			if (block.equals(Blocks.STONE_BUTTON)) {
-				if (BUTTONS_AREA.contains(Vec3d.of(pos))) {
+				if (BUTTONS_AREA.contains(Vec3.atLowerCornerOf(pos))) {
 					CLICKED_BUTTONS.add(new BlockPos(pos)); //Copy just in case it becomes mutable in the future
 				} else if (pos.equals(START_BUTTON)) {
 					reset();
@@ -69,7 +68,7 @@ public class SimonSays {
 		}
 
 		//This could also be used to cancel incorrect clicks in the future
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
 	//If the player goes out of the range required to receive block/chunk updates then their solver won't detect stuff but that
@@ -77,11 +76,11 @@ public class SimonSays {
 	//just reset it or have the other person finish the current sequence first then let them do it.
 	private static void onBlockUpdate(BlockPos pos, @Nullable BlockState oldState, BlockState newState) {
 		if (shouldProcess()) {
-			Vec3d posVec = Vec3d.of(pos);
+			Vec3 posVec = Vec3.atLowerCornerOf(pos);
 			Block newBlock = newState.getBlock();
 
 			if (BOARD_AREA.contains(posVec) && newBlock.equals(Blocks.OBSIDIAN) && oldState != null && oldState.getBlock().equals(Blocks.SEA_LANTERN)) {
-				SIMON_PATTERN.add(pos.toImmutable()); //Convert to immutable because chunk delta updates use the mutable variant
+				SIMON_PATTERN.add(pos.immutable()); //Convert to immutable because chunk delta updates use the mutable variant
 			} else if (BUTTONS_AREA.contains(posVec) && newBlock.equals(Blocks.AIR)) {
 				//Upon reaching the showing of the next sequence we need to reset the state so that we don't show old data
 				//Otherwise, the nextIndex will go beyond 5 and that can cause bugs, it also helps with the other case noted above
@@ -97,13 +96,13 @@ public class SimonSays {
 			for (BlockPos pos : SIMON_PATTERN) {
 				//Offset to west (x - 1) to get the position of the button from the sea lantern block
 				BlockPos buttonPos = pos.west();
-				ClientWorld world = Objects.requireNonNull(MinecraftClient.getInstance().world); //Should never be null here
+				ClientLevel world = Objects.requireNonNull(Minecraft.getInstance().level); //Should never be null here
 				BlockState state = world.getBlockState(buttonPos);
 
 				//If the button hasn't been clicked yet
 				//Also don't do anything if the button isn't there which means the device is showing the sequence
 				if (!CLICKED_BUTTONS.contains(buttonPos) && state.getBlock().equals(Blocks.STONE_BUTTON)) {
-					Box outline = RenderHelper.getBlockBoundingBox(world, state, buttonPos);
+					AABB outline = RenderHelper.getBlockBoundingBox(world, state, buttonPos);
 
 					if (outline != null) {
 						float[] colour = buttonsRendered == 0 ? GREEN : YELLOW;

@@ -5,16 +5,15 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import static java.util.Map.entry;
 
@@ -22,8 +21,8 @@ import static java.util.Map.entry;
 @RegisterWidget
 public class JacobsContestWidget extends TabHudWidget {
 
-	private static final MutableText TITLE = Text.literal("Jacob's Contest").formatted(Formatting.YELLOW,
-			Formatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Jacob's Contest").withStyle(ChatFormatting.YELLOW,
+			ChatFormatting.BOLD);
 
 	private static final Pattern CROP_PATTERN = Pattern.compile("(?<fortune>[☘○]) (?<crop>.+?)(?: ◆ )?(?<percentage>Top [\\d.]+%)?");
 
@@ -45,12 +44,12 @@ public class JacobsContestWidget extends TabHudWidget {
 	);
 
 	public JacobsContestWidget() {
-		super("Jacob's Contest", TITLE, Formatting.YELLOW.getColorValue());
+		super("Jacob's Contest", TITLE, ChatFormatting.YELLOW.getColor());
 	}
 
 	@Override
-	public void updateContent(List<Text> lines) {
-		for (Text line : lines) {
+	public void updateContent(List<Component> lines) {
+		for (Component line : lines) {
 			String string = line.getString();
 			if (string.endsWith("left") || string.contains("Starts")) this.addComponent(Components.iconTextComponent(Ico.CLOCK, line));
 			else {
@@ -58,11 +57,11 @@ public class JacobsContestWidget extends TabHudWidget {
 				if (matcher.matches()) {
 					String crop = matcher.group("crop");
 					String percentage = matcher.group("percentage");
-					MutableText cropText = Text.empty().append(crop);
-					if (matcher.group("fortune").equals("☘")) cropText.append(Text.literal(" ☘").formatted(Formatting.GOLD));
+					MutableComponent cropText = Component.empty().append(crop);
+					if (matcher.group("fortune").equals("☘")) cropText.append(Component.literal(" ☘").withStyle(ChatFormatting.GOLD));
 
 					this.addComponent(Components.iconTextComponent(FARM_DATA.get(crop), cropText));
-					if (percentage != null) this.addComponent(new PlainTextComponent(Text.literal(percentage)));
+					if (percentage != null) this.addComponent(new PlainTextComponent(Component.literal(percentage)));
 				} else this.addComponent(new PlainTextComponent(line));
 			}
 		}
