@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -8,14 +10,13 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A more bare-bones version of Vanilla's Popup Screen. Meant to be extended.
  */
 public class AbstractPopupScreen extends Screen {
 	private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("popup/background");
-	private final Screen backgroundScreen;
+	public final Screen backgroundScreen;
 
 	protected AbstractPopupScreen(Text title, Screen backgroundScreen) {
 		super(title);
@@ -30,7 +31,7 @@ public class AbstractPopupScreen extends Screen {
 
 	@Override
 	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.backgroundScreen.renderBackground(context, mouseX, mouseY, delta);
+		this.backgroundScreen.renderBackground(context, -1, -1, delta);
 		context.createNewRootLayer();
 		this.backgroundScreen.render(context, -1, -1, delta);
 		context.createNewRootLayer();
@@ -52,7 +53,7 @@ public class AbstractPopupScreen extends Screen {
 
 	@Override
 	protected void refreshWidgetPositions() {
-		this.backgroundScreen.resize(this.client, this.width, this.height);
+		this.backgroundScreen.resize(this.width, this.height);
 	}
 
 	@Override

@@ -30,9 +30,9 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,8 +70,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	private ObjectArrayList<CorpseLoot> currentProfileRewards = new ObjectArrayList<>();
 	private final ProfiledData<ObjectArrayList<CorpseLoot>> allRewards = new ProfiledData<>(getRewardFilePath("corpse-profits.json"), CorpseLoot.CODEC.listOf().xmap(ObjectArrayList::new, Function.identity()));
 	private boolean insideRewardMessage = false;
-	@Nullable
-	private CorpseLoot lastCorpseLoot = null;
+	private @Nullable CorpseLoot lastCorpseLoot = null;
 
 	private CorpseProfitTracker() {} // Singleton
 
@@ -127,7 +126,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 
 	@SuppressWarnings("SameReturnValue")
 	private boolean onChatMessage(Text text, boolean overlay) {
-		if (Utils.getLocation() != Location.GLACITE_MINESHAFT || !INSTANCE.isEnabled() || overlay) return true;
+		if (Utils.getLocation() != Location.GLACITE_MINESHAFTS || !INSTANCE.isEnabled() || overlay) return true;
 		String message = text.getString();
 
 		// Reward messages end with a separator like so

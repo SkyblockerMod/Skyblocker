@@ -5,13 +5,13 @@ import de.hysky.skyblocker.skyblock.item.PetInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
 
 public class PetItemLookup implements WikiLookup {
 	private static final Pattern PET_ITEM_NAME = Pattern.compile("^\\[Lvl \\d+] (?<name>.+)$");
@@ -27,7 +27,7 @@ public class PetItemLookup implements WikiLookup {
 	private PetItemLookup() {}
 
 	@Override
-	public void open(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
+	public void open(ItemStack itemStack, PlayerEntity player, boolean useOfficial) {
 		String itemName = itemStack.getName().getString();
 		PetInfo petInfo = itemStack.getPetInfo();
 
@@ -35,12 +35,12 @@ public class PetItemLookup implements WikiLookup {
 	}
 
 	@Override
-	public boolean canSearch(@Nullable String title, @NotNull Either<Slot, ItemStack> either) {
+	public boolean canSearch(@Nullable String title, Either<Slot, ItemStack> either) {
 		ItemStack itemStack = WikiLookupManager.mapEitherToItemStack(either);
 		return PET_ITEM_FILTER.test(itemStack);
 	}
 
-	private static void lookupPetItem(Matcher matcher, @NotNull PlayerEntity player, boolean useOfficial) {
+	private static void lookupPetItem(Matcher matcher, PlayerEntity player, boolean useOfficial) {
 		if (matcher.matches()) {
 			String petName = REPLACING_FUNCTION.apply(matcher.group("name").trim());
 			WikiLookupManager.openWikiLinkName(petName, player, useOfficial);

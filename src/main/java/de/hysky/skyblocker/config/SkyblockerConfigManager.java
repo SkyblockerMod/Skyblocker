@@ -28,6 +28,7 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.datafixer.JsonHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.azureaaron.dandelion.platform.ConfigType;
 import net.azureaaron.dandelion.systems.ConfigManager;
 import net.azureaaron.dandelion.systems.DandelionConfigScreen;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -41,7 +42,7 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.function.Consumers;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -127,7 +128,7 @@ public class SkyblockerConfigManager {
 				.category(MiscCategory.create(defaults, config))
 				.categoryIf(Debug.debugEnabled(), DebugCategory.create(defaults, config))
 				.search(search)
-		).generateScreen(parent, get().misc.configBackend);
+		).generateScreen(parent, /*get().misc.configBackend*/ConfigType.YACL);
 	}
 
 	/**

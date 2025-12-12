@@ -3,9 +3,10 @@ package de.hysky.skyblocker.utils.container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 public interface TooltipAdder extends ContainerMatcher {
 	/**

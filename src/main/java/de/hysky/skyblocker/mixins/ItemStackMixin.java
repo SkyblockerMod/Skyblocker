@@ -22,8 +22,8 @@ import net.minecraft.item.tooltip.TooltipAppender;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,6 +32,7 @@ import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 @Mixin(ItemStack.class)
@@ -50,6 +51,9 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@Unique
 	private String uuid;
+
+	@Unique
+	private List<String> loreString;
 
 	@Unique
 	private PetInfo petInfo;
@@ -113,9 +117,10 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 		skyblocker$getAndCacheDurability();
 	}
 
-	@Inject(method = "set", at = @At("TAIL"))
+	@Inject(method = "set*", at = @At("TAIL"))
 	private <T> void skyblocker$resetUuid(ComponentType<T> type, @Nullable T value, CallbackInfoReturnable<T> cir) {
 		if (type == DataComponentTypes.CUSTOM_DATA) uuid = null;
+		if (type == DataComponentTypes.LORE) loreString = null;
 	}
 
 	@Unique
@@ -142,7 +147,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
 	public String getSkyblockId() {
 		if (skyblockId != null && !skyblockId.isEmpty()) return skyblockId;
 		return skyblockId = ItemUtils.getItemId(this);
@@ -150,7 +154,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
 	public String getSkyblockApiId() {
 		if (skyblockApiId != null && !skyblockApiId.isEmpty()) return skyblockApiId;
 		return skyblockApiId = ItemUtils.getSkyblockApiId(this);
@@ -158,7 +161,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
 	public String getNeuName() {
 		if (neuName != null && !neuName.isEmpty()) return neuName;
 		return neuName = ItemUtils.getNeuId((ItemStack) (Object) this);
@@ -166,7 +168,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
 	public String getUuid() {
 		if (uuid != null) return uuid;
 		return uuid = ItemUtils.getItemUuid(this);
@@ -174,7 +175,13 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
+	public List<String> skyblocker$getLoreStrings() {
+		if (loreString != null) return loreString;
+		return loreString = ItemUtils.getLore((ItemStack) (Object) this).stream().map(Text::getString).toList();
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
 	public PetInfo getPetInfo() {
 		if (petInfo != null) return petInfo;
 		return petInfo = ItemUtils.getPetInfo((ItemStack) (Object) this);
@@ -182,7 +189,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
 	public SkyblockItemRarity getSkyblockRarity() {
 		if (skyblockRarity != null) return skyblockRarity;
 		return skyblockRarity = ItemUtils.getItemRarity((ItemStack) (Object) this);

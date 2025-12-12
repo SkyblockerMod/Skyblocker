@@ -67,6 +67,16 @@ public class MiningCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.mining.enablePickobulusHelper"))
+						.description(Text.translatable("skyblocker.config.mining.enablePickobulusHelper.@Tooltip"))
+						.tags(CommonTags.ADDED_IN_5_10_0)
+						.binding(defaults.mining.enablePickobulusHelper,
+								() -> config.mining.enablePickobulusHelper,
+								newValue -> config.mining.enablePickobulusHelper = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
 						.prompt(Text.translatable("text.skyblocker.open"))

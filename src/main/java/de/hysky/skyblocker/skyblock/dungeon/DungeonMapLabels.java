@@ -12,10 +12,10 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.Vec3d;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2dc;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -76,6 +76,7 @@ public class DungeonMapLabels {
 		Vec3d labelPos = getPosForLabel(room, mapRoomSize, textRenderer.fontHeight);
 		if (labelPos == null) return;
 		Vector2dc mapPos = DungeonMapUtils.getMapPosFromPhysical(entrancePos, mapEntrancePos, mapRoomSize, labelPos);
+		//noinspection DataFlowIssue - room is matched
 		DungeonManager.RoomInfo roomInfo = DungeonManager.getRoomMetadata(room.getName());
 		if (roomInfo == null) return;
 		String roomName = roomInfo.name();
@@ -112,7 +113,7 @@ public class DungeonMapLabels {
 	 * For the remaining room types, we take the average of the x and y.<br>
 	 */
 	@SuppressWarnings("incomplete-switch")
-	private static Vec3d getPosForLabel(Room room, int mapRoomSize, int fontHeight) {
+	private static @Nullable Vec3d getPosForLabel(Room room, int mapRoomSize, int fontHeight) {
 		switch (room.getType()) {
 			case BLOOD, FAIRY:
 				return null;

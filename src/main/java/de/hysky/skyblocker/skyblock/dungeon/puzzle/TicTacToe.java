@@ -13,6 +13,8 @@ import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +29,7 @@ public class TicTacToe extends DungeonPuzzle {
 	private static final float[] GREEN_COLOR_COMPONENTS = { 0.0F, 1.0F, 0.0F };
 	@SuppressWarnings("unused")
 	private static final TicTacToe INSTANCE = new TicTacToe();
-	private static Box nextBestMoveToMake = null;
+	private static @Nullable Box nextBestMoveToMake = null;
 
 	private TicTacToe() {
 		super("tic-tac-toe", "tic-tac-toe-1");
@@ -62,7 +64,7 @@ public class TicTacToe extends DungeonPuzzle {
 
 					if (mapState == null) continue;
 
-					//Surely if we pass shouldSolve then the room should be matched right
+					//noinspection DataFlowIssue - the room must not be null and must be matched
 					BlockPos relative = DungeonManager.getCurrentRoom().actualToRelative(itemFrame.getBlockPos());
 
 					//Determine the row -- 72 = top, 71 = middle, 70 = bottom
@@ -103,6 +105,7 @@ public class TicTacToe extends DungeonPuzzle {
 				double nextY = 72 - bestMove.row();
 				double nextZ = 17 - bestMove.column();
 
+				//noinspection DataFlowIssue - same as above, room is not null and matched
 				BlockPos nextPos = DungeonManager.getCurrentRoom().relativeToActual(BlockPos.ofFloored(nextX, nextY, nextZ));
 				nextBestMoveToMake = RenderHelper.getBlockBoundingBox(client.world, nextPos);
 			}

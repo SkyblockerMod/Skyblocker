@@ -11,7 +11,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,8 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
 	@Shadow
-	@Nullable
-	public ClientPlayerEntity player;
+	public @Nullable ClientPlayerEntity player;
 
 	@Inject(method = "handleInputEvents", at = @At("HEAD"))
 	public void skyblocker$handleInputEvents(CallbackInfo ci) {

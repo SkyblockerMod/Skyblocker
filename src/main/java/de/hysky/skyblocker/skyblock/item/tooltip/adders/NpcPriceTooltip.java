@@ -8,9 +8,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 public class NpcPriceTooltip extends SimpleTooltipAdder {
 
@@ -34,7 +35,7 @@ public class NpcPriceTooltip extends SimpleTooltipAdder {
 		double price = TooltipInfoType.NPC.getData().getOrDefault(internalID, -1); // The original default return value of 0 can be an actual price, so we use a value that can't be a price
 		if (price < 0) return;
 
-		int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
+		int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreStrings()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
 		lines.add(Text.literal(String.format("%-21s", "NPC Sell Price:"))
 					.formatted(Formatting.YELLOW)

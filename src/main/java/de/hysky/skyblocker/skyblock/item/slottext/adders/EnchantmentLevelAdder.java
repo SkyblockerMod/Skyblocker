@@ -12,9 +12,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -38,26 +37,26 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("arcane", "WS"); // Woodsplitter
 		ENCHANTMENT_ABBREVIATIONS.put("aiming", "DT"); // Dragon tracer
 
-		ENCHANTMENT_ABBREVIATIONS.put("bane_of_arthropods", "BA");
+		ENCHANTMENT_ABBREVIATIONS.put("bane_of_arthropods", "BOA");
 		ENCHANTMENT_ABBREVIATIONS.put("big_brain", "BB");
 		ENCHANTMENT_ABBREVIATIONS.put("blast_protection", "BP");
 		ENCHANTMENT_ABBREVIATIONS.put("blessing", "BL");
 
-		ENCHANTMENT_ABBREVIATIONS.put("caster", "CA");
-		ENCHANTMENT_ABBREVIATIONS.put("cayenne", "CY");
-		ENCHANTMENT_ABBREVIATIONS.put("champion", "CH");
-		ENCHANTMENT_ABBREVIATIONS.put("chance", "CN");
-		ENCHANTMENT_ABBREVIATIONS.put("charm", "CM");
+		ENCHANTMENT_ABBREVIATIONS.put("caster", "CAT");
+		ENCHANTMENT_ABBREVIATIONS.put("cayenne", "CAY");
+		ENCHANTMENT_ABBREVIATIONS.put("champion", "CHM");
+		ENCHANTMENT_ABBREVIATIONS.put("chance", "CHN");
+		ENCHANTMENT_ABBREVIATIONS.put("charm", "CHR");
 		ENCHANTMENT_ABBREVIATIONS.put("cleave", "CL");
 		ENCHANTMENT_ABBREVIATIONS.put("compact", "CO");
-		ENCHANTMENT_ABBREVIATIONS.put("corruption", "CI");
+		ENCHANTMENT_ABBREVIATIONS.put("corruption", "COR");
 		ENCHANTMENT_ABBREVIATIONS.put("counter_strike", "CS");
 		ENCHANTMENT_ABBREVIATIONS.put("critical", "CR");
-		ENCHANTMENT_ABBREVIATIONS.put("cubism", "CU");
+		ENCHANTMENT_ABBREVIATIONS.put("cubism", "CB");
 
-		ENCHANTMENT_ABBREVIATIONS.put("cultivating", "CT");
-		ENCHANTMENT_ABBREVIATIONS.put("dedication", "DD");
-		ENCHANTMENT_ABBREVIATIONS.put("delicate", "DE");
+		ENCHANTMENT_ABBREVIATIONS.put("cultivating", "CUL");
+		ENCHANTMENT_ABBREVIATIONS.put("dedication", "DED");
+		ENCHANTMENT_ABBREVIATIONS.put("delicate", "DEL");
 
 		ENCHANTMENT_ABBREVIATIONS.put("depth_strider", "DS");
 		ENCHANTMENT_ABBREVIATIONS.put("divine_gift", "DG");
@@ -65,20 +64,19 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 
 		ENCHANTMENT_ABBREVIATIONS.put("efficiency", "EF");
 		ENCHANTMENT_ABBREVIATIONS.put("ender_slayer", "ES");
-		ENCHANTMENT_ABBREVIATIONS.put("execute", "EX");
-		ENCHANTMENT_ABBREVIATIONS.put("experience", "XP");
-		ENCHANTMENT_ABBREVIATIONS.put("expertise", "EP");
+		ENCHANTMENT_ABBREVIATIONS.put("execute", "EXC");
+		ENCHANTMENT_ABBREVIATIONS.put("experience", "EXP");
+		ENCHANTMENT_ABBREVIATIONS.put("expertise", "EPR");
 
 		ENCHANTMENT_ABBREVIATIONS.put("feather_falling", "FF");
 		ENCHANTMENT_ABBREVIATIONS.put("ferocious_mana", "FM");
 		ENCHANTMENT_ABBREVIATIONS.put("fire_aspect", "FA");
-		ENCHANTMENT_ABBREVIATIONS.put("fire_protection", "FI");
+		ENCHANTMENT_ABBREVIATIONS.put("fire_protection", "FPR");
 		ENCHANTMENT_ABBREVIATIONS.put("first_strike", "FS");
 		ENCHANTMENT_ABBREVIATIONS.put("flame", "FL");
-		ENCHANTMENT_ABBREVIATIONS.put("forest_pledge", "FP");
+		ENCHANTMENT_ABBREVIATIONS.put("forest_pledge", "FPL");
 		ENCHANTMENT_ABBREVIATIONS.put("fortune", "FO");
 		ENCHANTMENT_ABBREVIATIONS.put("frail", "FR");
-		ENCHANTMENT_ABBREVIATIONS.put("frost_walker", "FW");
 
 		ENCHANTMENT_ABBREVIATIONS.put("giant_killer", "GK");
 		ENCHANTMENT_ABBREVIATIONS.put("great_spook", "GS");
@@ -87,7 +85,7 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 
 		ENCHANTMENT_ABBREVIATIONS.put("hardened_mana", "HM");
 		ENCHANTMENT_ABBREVIATIONS.put("harvesting", "HV");
-		ENCHANTMENT_ABBREVIATIONS.put("hecatomb", "HE");
+		ENCHANTMENT_ABBREVIATIONS.put("hecatomb", "HEC");
 
 		ENCHANTMENT_ABBREVIATIONS.put("ice_cold", "IC");
 		ENCHANTMENT_ABBREVIATIONS.put("impaling", "IM");
@@ -95,61 +93,61 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 
 		ENCHANTMENT_ABBREVIATIONS.put("knockback", "KB");
 
-		ENCHANTMENT_ABBREVIATIONS.put("lapidary", "LP");
+		ENCHANTMENT_ABBREVIATIONS.put("lapidary", "LAP");
 		ENCHANTMENT_ABBREVIATIONS.put("lethality", "LE");
 		ENCHANTMENT_ABBREVIATIONS.put("life_steal", "LS");
 		ENCHANTMENT_ABBREVIATIONS.put("looting", "LO");
 		ENCHANTMENT_ABBREVIATIONS.put("luck", "LU");
-		ENCHANTMENT_ABBREVIATIONS.put("luck_of_the_sea", "LA");
+		ENCHANTMENT_ABBREVIATIONS.put("luck_of_the_sea", "LTS");
 		ENCHANTMENT_ABBREVIATIONS.put("lure", "LR");
 
-		ENCHANTMENT_ABBREVIATIONS.put("magnet", "MG");
+		ENCHANTMENT_ABBREVIATIONS.put("magnet", "MA");
 		ENCHANTMENT_ABBREVIATIONS.put("mana_steal", "MS");
 		ENCHANTMENT_ABBREVIATIONS.put("mana_vampire", "MV");
 
 		ENCHANTMENT_ABBREVIATIONS.put("overload", "OV");
 
-		ENCHANTMENT_ABBREVIATIONS.put("paleontologist", "PA");
+		ENCHANTMENT_ABBREVIATIONS.put("paleontologist", "PAL");
 		ENCHANTMENT_ABBREVIATIONS.put("pesterminator", "PS");
-		ENCHANTMENT_ABBREVIATIONS.put("piercing", "PI");
-		ENCHANTMENT_ABBREVIATIONS.put("piscary", "PC");
-		ENCHANTMENT_ABBREVIATIONS.put("power", "PW");
-		ENCHANTMENT_ABBREVIATIONS.put("pristine", "PM"); // Prismatic
+		ENCHANTMENT_ABBREVIATIONS.put("piercing", "PR");
+		ENCHANTMENT_ABBREVIATIONS.put("piscary", "PSC");
+		ENCHANTMENT_ABBREVIATIONS.put("power", "POW");
+		ENCHANTMENT_ABBREVIATIONS.put("pristine", "PRI"); // Prismatic
 		ENCHANTMENT_ABBREVIATIONS.put("projectile_protection", "PP");
-		ENCHANTMENT_ABBREVIATIONS.put("PROSECUTE", "PO");
-		ENCHANTMENT_ABBREVIATIONS.put("prosperity", "PE");
-		ENCHANTMENT_ABBREVIATIONS.put("protection", "PR");
+		ENCHANTMENT_ABBREVIATIONS.put("PROSECUTE", "PRS");
+		ENCHANTMENT_ABBREVIATIONS.put("prosperity", "PSP");
+		ENCHANTMENT_ABBREVIATIONS.put("protection", "PRO");
 		ENCHANTMENT_ABBREVIATIONS.put("punch", "PU");
 
-		ENCHANTMENT_ABBREVIATIONS.put("quantum", "QU");
+		ENCHANTMENT_ABBREVIATIONS.put("quantum", "QUA");
 		ENCHANTMENT_ABBREVIATIONS.put("quick_bite", "QB");
 
 		ENCHANTMENT_ABBREVIATIONS.put("rainbow", "RA");
-		ENCHANTMENT_ABBREVIATIONS.put("reflection", "RF");
+		ENCHANTMENT_ABBREVIATIONS.put("reflection", "REF");
 		ENCHANTMENT_ABBREVIATIONS.put("rejuvenate", "RJ");
-		ENCHANTMENT_ABBREVIATIONS.put("replenish", "RP");
-		ENCHANTMENT_ABBREVIATIONS.put("respiration", "RE");
-		ENCHANTMENT_ABBREVIATIONS.put("respite", "RS");
+		ENCHANTMENT_ABBREVIATIONS.put("replenish", "REP");
+		ENCHANTMENT_ABBREVIATIONS.put("respiration", "RES");
+		ENCHANTMENT_ABBREVIATIONS.put("respite", "RSP");
 
-		ENCHANTMENT_ABBREVIATIONS.put("scavenger", "SV");
-		ENCHANTMENT_ABBREVIATIONS.put("scuba", "SC");
+		ENCHANTMENT_ABBREVIATIONS.put("scavenger", "SCV");
+		ENCHANTMENT_ABBREVIATIONS.put("scuba", "SCU");
 		ENCHANTMENT_ABBREVIATIONS.put("sharpness", "SH");
 		ENCHANTMENT_ABBREVIATIONS.put("silk_touch", "ST");
 		ENCHANTMENT_ABBREVIATIONS.put("small_brain", "SB");
 		ENCHANTMENT_ABBREVIATIONS.put("smarty_pants", "SP");
-		ENCHANTMENT_ABBREVIATIONS.put("smelting_touch", "SE");
-		ENCHANTMENT_ABBREVIATIONS.put("smite", "SI");
-		ENCHANTMENT_ABBREVIATIONS.put("smoldering", "SD");
+		ENCHANTMENT_ABBREVIATIONS.put("smelting_touch", "SMT");
+		ENCHANTMENT_ABBREVIATIONS.put("smite", "SMI");
+		ENCHANTMENT_ABBREVIATIONS.put("smoldering", "SML");
 		ENCHANTMENT_ABBREVIATIONS.put("snipe", "SN");
-		ENCHANTMENT_ABBREVIATIONS.put("spiked_hook", "SK");
-		ENCHANTMENT_ABBREVIATIONS.put("stealth", "SL");
+		ENCHANTMENT_ABBREVIATIONS.put("spiked_hook", "SPH");
+		ENCHANTMENT_ABBREVIATIONS.put("stealth", "STE");
 		ENCHANTMENT_ABBREVIATIONS.put("strong_mana", "SM");
 		ENCHANTMENT_ABBREVIATIONS.put("sugar_rush", "SR");
 		ENCHANTMENT_ABBREVIATIONS.put("sunder", "SU");
 		ENCHANTMENT_ABBREVIATIONS.put("syphon", "DR"); // Drain
 
 		ENCHANTMENT_ABBREVIATIONS.put("tabasco", "TA");
-		ENCHANTMENT_ABBREVIATIONS.put("thorns", "TN");
+		ENCHANTMENT_ABBREVIATIONS.put("thorns", "TH");
 		ENCHANTMENT_ABBREVIATIONS.put("thunderbolt", "TB");
 		ENCHANTMENT_ABBREVIATIONS.put("thunderlord", "TL");
 		ENCHANTMENT_ABBREVIATIONS.put("tidal", "TD");
@@ -160,16 +158,19 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("true_protection", "TP");
 
 		// Turbo books
-		ENCHANTMENT_ABBREVIATIONS.put("turbo_cactus", "TI");
-		ENCHANTMENT_ABBREVIATIONS.put("turbo_cane", "TC");
-		ENCHANTMENT_ABBREVIATIONS.put("turbo_carrot", "TR");
-		ENCHANTMENT_ABBREVIATIONS.put("turbo_coco", "TO");
-		ENCHANTMENT_ABBREVIATIONS.put("turbo_melon", "TE");
-		ENCHANTMENT_ABBREVIATIONS.put("turbo_mushrooms", "TM");
-		ENCHANTMENT_ABBREVIATIONS.put("turbo_potato", "TT");
-		ENCHANTMENT_ABBREVIATIONS.put("turbo_pumpkin", "TU");
-		ENCHANTMENT_ABBREVIATIONS.put("turbo_warts", "TW");
-		ENCHANTMENT_ABBREVIATIONS.put("turbo_wheat", "TH");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_cactus", "TCC");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_cane", "TCN");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_carrot", "TCR");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_coco", "TCO");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_melon", "TME");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_moonflower", "TMO");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_mushrooms", "TMU");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_potato", "TPO");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_pumpkin", "TPU");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_rose", "TRO");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_sunflower", "TSU");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_warts", "TWA");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_wheat", "TWH");
 
 		ENCHANTMENT_ABBREVIATIONS.put("vampirism", "VP");
 		ENCHANTMENT_ABBREVIATIONS.put("venomous", "VE");
@@ -207,7 +208,7 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (!stack.isOf(Items.ENCHANTED_BOOK)) return List.of();
 		String name = stack.getName().getString();
 		if (name.equals("Enchanted Book")) {

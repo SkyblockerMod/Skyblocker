@@ -15,7 +15,6 @@ import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -24,6 +23,8 @@ import java.util.List;
 import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
 
 import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.fossilName;
 import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.minimumTiles;

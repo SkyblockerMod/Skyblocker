@@ -28,7 +28,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class ItemProtection {
@@ -38,7 +39,7 @@ public class ItemProtection {
 	@Init
 	public static void init() {
 		itemProtection = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.itemProtection",
+				"key.skyblocker.itemProtection",
 				GLFW.GLFW_KEY_V,
 				SkyblockerMod.KEYBINDING_CATEGORY
 		));

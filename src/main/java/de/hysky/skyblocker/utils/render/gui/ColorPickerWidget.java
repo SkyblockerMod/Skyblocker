@@ -16,7 +16,7 @@ import net.minecraft.util.math.ColorHelper;
 
 import java.awt.Color;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @implNote Does not render a background.

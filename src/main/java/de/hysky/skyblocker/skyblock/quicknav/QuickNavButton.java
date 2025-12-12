@@ -6,6 +6,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.PopupBackgroundAccessor;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -13,7 +14,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.navigation.GuiNavigation;
 import net.minecraft.client.gui.navigation.GuiNavigationPath;
 import net.minecraft.client.gui.screen.PopupScreen;
@@ -32,7 +32,7 @@ import net.minecraft.util.math.ColorHelper;
 
 import java.time.Duration;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Environment(value = EnvType.CLIENT)
 public class QuickNavButton extends ClickableWidget {
@@ -68,8 +68,8 @@ public class QuickNavButton extends ClickableWidget {
 		this.renderInFront = renderInFront;
 	}
 
-	public int getAlpha() {
-		return alpha;
+	public float getAlpha() {
+		return alpha / 255f;
 	}
 
 	/**
@@ -104,13 +104,17 @@ public class QuickNavButton extends ClickableWidget {
 
 	private void updateCoordinates() {
 		Screen screen = MinecraftClient.getInstance().currentScreen;
-		while (screen instanceof PopupScreen) {
-			if (!(screen instanceof PopupBackgroundAccessor popup)) {
-				throw new IllegalStateException(
-						"Current PopupScreen does not support AccessorPopupBackground"
-				);
+		while (screen instanceof PopupScreen || screen instanceof AbstractPopupScreen) {
+			if (screen instanceof PopupScreen) {
+				if (!(screen instanceof PopupBackgroundAccessor popup)) {
+					throw new IllegalStateException(
+							"Current PopupScreen does not support AccessorPopupBackground"
+					);
+				}
+				screen = popup.getUnderlyingScreen();
+			} else if (screen instanceof AbstractPopupScreen abstractPopupScreen) {
+				screen = abstractPopupScreen.backgroundScreen;
 			}
-			screen = popup.getUnderlyingScreen();
 		}
 		if (screen instanceof HandledScreen<?> handledScreen) {
 			var accessibleScreen = (HandledScreenAccessor) handledScreen;
@@ -147,8 +151,7 @@ public class QuickNavButton extends ClickableWidget {
 	 * manually drawn and the click logic is manual as well. If that ever changes, this should be adjusted to match the new vanilla behaviour.
 	 */
 	@Override
-	@Nullable
-	public GuiNavigationPath getNavigationPath(GuiNavigation navigation) {
+	public @Nullable GuiNavigationPath getNavigationPath(GuiNavigation navigation) {
 		return null;
 	}
 
@@ -185,9 +188,7 @@ public class QuickNavButton extends ClickableWidget {
 		int yOffset = this.index < 7 ? 1 : -1;
 		context.drawItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
 
-		if (this.isHovered()) {
-			context.setCursor(StandardCursors.POINTING_HAND);
-		}
+		this.setCursor(context);
 	}
 
 	@Override

@@ -22,13 +22,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
+
 public class ThreeWeirdos extends DungeonPuzzle {
 	@SuppressWarnings("unused")
 	private static final ThreeWeirdos INSTANCE = new ThreeWeirdos();
 	protected static final Pattern PATTERN = Pattern.compile("^\\[NPC] ([A-Z][a-z]+): (?:The reward is(?: not in my chest!|n't in any of our chests\\.)|My chest (?:doesn't have the reward\\. We are all telling the truth\\.|has the reward and I'm telling the truth!)|At least one of them is lying, and the reward is not in [A-Z][a-z]+'s chest!|Both of them are telling the truth\\. Also, [A-Z][a-z]+ has the reward in their chest!)$");
 	private static final float[] GREEN_COLOR_COMPONENTS = new float[]{0, 1, 0};
-	private static BlockPos pos;
-	static Box boundingBox;
+	private static @Nullable BlockPos pos;
+	static @Nullable Box boundingBox;
 
 	private ThreeWeirdos() {
 		super("three-weirdos", "three-chests");
@@ -36,11 +38,11 @@ public class ThreeWeirdos extends DungeonPuzzle {
 			ClientWorld world = MinecraftClient.getInstance().world;
 			if (overlay || !shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveThreeWeirdos || world == null || !DungeonManager.isCurrentRoomMatched()) return true;
 
-			@SuppressWarnings("DataFlowIssue")
 			Matcher matcher = PATTERN.matcher(Formatting.strip(message.getString()));
 			if (!matcher.matches()) return true;
 			String name = matcher.group(1);
 			Room room = DungeonManager.getCurrentRoom();
+			if (room == null || !room.isMatched()) return true;
 
 			checkForNPC(world, room, new BlockPos(13, 69, 24), name);
 			checkForNPC(world, room, new BlockPos(15, 69, 25), name);

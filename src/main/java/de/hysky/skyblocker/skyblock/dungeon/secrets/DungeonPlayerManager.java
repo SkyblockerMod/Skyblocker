@@ -11,9 +11,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -85,18 +84,20 @@ public class DungeonPlayerManager {
 			String name = matcher.group("name");
 			DungeonClass dungeonClass = DungeonClass.from(matcher.group("class"));
 
-			if (players[i] != null && players[i].name.equals(name)) {
-				players[i].update(dungeonClass);
+			DungeonPlayer dungeonPlayer = players[i];
+			if (dungeonPlayer != null && dungeonPlayer.name.equals(name)) {
+				dungeonPlayer.update(dungeonClass);
 			} else {
 				players[i] = new DungeonPlayer(name, dungeonClass);
 			}
 		}
 	}
 
-	public static Matcher getPlayerFromTab(@Range(from = 1, to = 5) int index) {
+	public static @Nullable Matcher getPlayerFromTab(@Range(from = 1, to = 5) int index) {
 		return PlayerListManager.regexAt(1 + (index - 1) * 4, PLAYER_TAB_PATTERN);
 	}
 
+	@SuppressWarnings("SameReturnValue")
 	private static boolean onPlayerGhost(Text text, boolean overlay) {
 		if (!dungeonLoaded) return true;
 
@@ -120,12 +121,12 @@ public class DungeonPlayerManager {
 
 	public static class DungeonPlayer {
 		private @Nullable UUID uuid;
-		private final @NotNull String name;
-		private @NotNull DungeonClass dungeonClass = DungeonClass.UNKNOWN;
+		private final String name;
+		private DungeonClass dungeonClass = DungeonClass.UNKNOWN;
 		private boolean alive;
 		private long lastGhostTime; // Used to prevent player list from overriding a recently ghosted player. The player list may have a few seconds of delay.
 
-		public DungeonPlayer(@NotNull String name, @NotNull DungeonClass dungeonClass) {
+		public DungeonPlayer(String name, DungeonClass dungeonClass) {
 			this.uuid = findPlayerUuid(name);
 			this.name = name;
 			update(dungeonClass);
@@ -134,7 +135,7 @@ public class DungeonPlayerManager {
 			CompletableFuture.runAsync(() -> MinecraftClient.getInstance().getApiServices().sessionService().fetchProfile(uuid, false));
 		}
 
-		private static @Nullable UUID findPlayerUuid(@NotNull String name) {
+		private static @Nullable UUID findPlayerUuid(String name) {
 			assert MinecraftClient.getInstance().world != null;
 			return StreamSupport.stream(MinecraftClient.getInstance().world.getEntities().spliterator(), false)
 					.filter(PlayerEntity.class::isInstance)
@@ -164,11 +165,11 @@ public class DungeonPlayerManager {
 			return uuid;
 		}
 
-		public @NotNull String name() {
+		public String name() {
 			return name;
 		}
 
-		public @NotNull DungeonClass dungeonClass() {
+		public DungeonClass dungeonClass() {
 			return dungeonClass;
 		}
 

@@ -4,8 +4,8 @@ import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.client.input.KeyInput;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import com.mojang.datafixers.util.Either;
@@ -42,14 +42,14 @@ public final class WikiLookupManager {
 	@Init
 	public static void init() {
 		officialWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.wikiLookup.official",
+				"key.skyblocker.wikiLookup.official",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_F4,
 				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 
 		fandomWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.wikiLookup.fandom",
+				"key.skyblocker.wikiLookup.fandom",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_F1,
 				SkyblockerMod.KEYBINDING_CATEGORY
@@ -67,11 +67,11 @@ public final class WikiLookupManager {
 		return (official + "/" + fandom).toUpperCase(Locale.ENGLISH);
 	}
 
-	public static boolean handleWikiLookup(@NotNull Either<Slot, ItemStack> either, PlayerEntity player, KeyInput input) {
+	public static boolean handleWikiLookup(Either<Slot, ItemStack> either, PlayerEntity player, KeyInput input) {
 		return handleWikiLookup(null, either, player, input);
 	}
 
-	public static boolean handleWikiLookup(@Nullable String title, @NotNull Either<Slot, ItemStack> either, PlayerEntity player, KeyInput input) {
+	public static boolean handleWikiLookup(@Nullable String title, Either<Slot, ItemStack> either, PlayerEntity player, KeyInput input) {
 		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
 			boolean official = officialWikiLookup.matchesKey(input);
 			if (official || fandomWikiLookup.matchesKey(input)) {
@@ -82,11 +82,11 @@ public final class WikiLookupManager {
 		return false;
 	}
 
-	public static void openWiki(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
+	public static void openWiki(ItemStack itemStack, PlayerEntity player, boolean useOfficial) {
 		openWiki(null, Either.right(itemStack), player, useOfficial);
 	}
 
-	public static void openWiki(@Nullable String title, @NotNull Either<Slot, ItemStack> either, @NotNull PlayerEntity player, boolean useOfficial) {
+	public static void openWiki(@Nullable String title, Either<Slot, ItemStack> either, PlayerEntity player, boolean useOfficial) {
 		for (WikiLookup lookup : LOOKUPS) {
 			if (lookup.canSearch(title, either)) {
 				ItemStack itemStack = mapEitherToItemStack(either);
@@ -96,7 +96,7 @@ public final class WikiLookupManager {
 		}
 	}
 
-	public static void openWikiLinkName(String name, @NotNull PlayerEntity player, boolean useOfficial) {
+	public static void openWikiLinkName(String name, PlayerEntity player, boolean useOfficial) {
 		String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + name;
 		openWikiLink(wikiLink, player);
 	}

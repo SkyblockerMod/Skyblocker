@@ -1,16 +1,17 @@
 package de.hysky.skyblocker.utils.hoveredItem;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 public class HoveredItemStackUtils {
 
 	public static @Nullable HoveredItemStackProvider getProvider(Screen screen) {
-		if (screen instanceof HoveredItemStackProvider) {
-			return (HoveredItemStackProvider) screen;
-		} else if (screen.getFocused() instanceof HoveredItemStackProvider) {
-			return (HoveredItemStackProvider) screen.getFocused();
+		if (screen instanceof HoveredItemStackProvider provider) {
+			return provider;
+		} else if (screen.getFocused() instanceof HoveredItemStackProvider provider) {
+			return provider;
 		}
 		return null;
 	}

@@ -2,7 +2,6 @@ package de.hysky.skyblocker.utils;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.util.StringIdentifiable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -34,7 +33,7 @@ public enum Location implements StringIdentifiable {
 	/**
 	 * The freezing cold Glacite Mineshafts! *brr... so cold... :(*
 	 */
-	GLACITE_MINESHAFT("mineshaft", "Glacite Mineshaft"),
+	GLACITE_MINESHAFTS("mineshaft", "Glacite Mineshafts"),
 	/**
 	 * <p>Goodbye 1.8 hello 1.21 (and foraging 50 for all)!</p>
 	 */
@@ -84,7 +83,6 @@ public enum Location implements StringIdentifiable {
 	/**
 	 * @return location id
 	 */
-	@NotNull
 	public String id() {
 		return this.id;
 	}
@@ -102,7 +100,6 @@ public enum Location implements StringIdentifiable {
 	 * @param id location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
 	 * @return The {@link Location} with this id, or {@link #UNKNOWN} if not found
 	 */
-	@NotNull
 	public static Location from(String id) {
 		return Arrays.stream(Location.values())
 				.filter(loc -> loc.id.equals(id))
@@ -114,7 +111,6 @@ public enum Location implements StringIdentifiable {
 	 * @param friendlyName friendly name from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
 	 * @return The {@link Location} with this friendly name or {@link #UNKNOWN} if not found
 	 */
-	@NotNull
 	public static Location fromFriendlyName(String friendlyName) {
 		return Arrays.stream(Location.values())
 				.filter(loc -> loc.friendlyName.equalsIgnoreCase(friendlyName))

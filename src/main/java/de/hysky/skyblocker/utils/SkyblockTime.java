@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,7 +131,7 @@ public class SkyblockTime {
 		return Text.literal(formatTimeString(seconds));
 	}
 
-	public static @NotNull String formatTimeString(double seconds) {
+	public static String formatTimeString(double seconds) {
 		seconds = Math.ceil(Math.max(seconds, 0));
 		StringBuilder builder = new StringBuilder();
 		if (seconds >= 86400) {

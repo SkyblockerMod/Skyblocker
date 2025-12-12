@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.google.gson.JsonArray;
@@ -33,10 +33,8 @@ public class SackItemAutocomplete {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Pattern BAD_CHARACTERS = Pattern.compile("[☂☘☠✎✧❁❂❈❤⸕]");
 
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> longCommandNode;
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> shortCommandNode;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> longCommandNode;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> shortCommandNode;
 
 	@Init
 	public static void init() {

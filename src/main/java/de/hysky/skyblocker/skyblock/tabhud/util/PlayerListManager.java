@@ -20,7 +20,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +44,6 @@ import java.util.regex.Pattern;
  * is holding periodically. The list is sorted like in the vanilla game.
  */
 public class PlayerListManager {
-
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
 	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("\\s*(Players \\(\\d+\\)|Island|Coop \\(\\d+\\))\\s*");
 	private static final Pattern INFO_COLUMN_PATTERN = Pattern.compile("\\s*Info\\s*");
@@ -52,7 +52,7 @@ public class PlayerListManager {
 	/**
 	 * The player list in tab.
 	 */
-	private static List<PlayerListEntry> playerList = new ArrayList<>(); // Initialize to prevent npe.
+	private static @Nullable List<PlayerListEntry> playerList = new ArrayList<>(); // Initialize to prevent npe.
 
 	/**
 	 * The player list in tab, but a list of strings instead of {@link PlayerListEntry}s.
@@ -60,8 +60,7 @@ public class PlayerListManager {
 	 * @implNote All leading and trailing whitespace is removed from the strings.
 	 */
 	private static List<String> playerStringList = new ArrayList<>();
-	@Nullable
-	private static String footer;
+	private static @Nullable String footer;
 	public static final Map<String, TabHudWidget> tabWidgetInstances = new Object2ObjectOpenHashMap<>();
 	public static final List<TabHudWidget> tabWidgetsToShow = new ObjectArrayList<>(5);
 
@@ -110,9 +109,10 @@ public class PlayerListManager {
 	 *
 	 * @param lines used for the config screen
 	 */
-	public static void updateDungeons(List<Text> lines) {
+	public static void updateDungeons(@Nullable List<Text> lines) {
 		if (lines != null) {
 			// This is so wack I hate this
+			// I hate this too
 			playerList = new ArrayList<>();
 			for (int i = 0; i < lines.size(); i++) {
 				playerList.add(new PlayerListEntry(new GameProfile(UUID.randomUUID(), String.valueOf(i)), false));
@@ -287,7 +287,7 @@ public class PlayerListManager {
 	/**
 	 * @return the cached player list
 	 */
-	public static List<PlayerListEntry> getPlayerList() {
+	public static @Nullable List<PlayerListEntry> getPlayerList() {
 		return playerList;
 	}
 
@@ -298,7 +298,7 @@ public class PlayerListManager {
 		return playerStringList;
 	}
 
-	public static void updateFooter(Text f) {
+	public static void updateFooter(@Nullable Text f) {
 		if (f == null) {
 			footer = null;
 		} else {
@@ -309,8 +309,7 @@ public class PlayerListManager {
 		}
 	}
 
-	@Nullable
-	public static String getFooter() {
+	public static @Nullable String getFooter() {
 		return footer;
 	}
 
@@ -320,7 +319,7 @@ public class PlayerListManager {
 	 *
 	 * @return the matcher if p fully matches, else null
 	 */
-	public static Matcher regexAt(int idx, Pattern p) {
+	public static @Nullable Matcher regexAt(int idx, Pattern p) {
 
 		String str = PlayerListManager.strAt(idx);
 
@@ -343,7 +342,7 @@ public class PlayerListManager {
 	 * @return the string or null, if the display name is null, empty or whitespace
 	 * only
 	 */
-	public static String strAt(int idx) {
+	public static @Nullable String strAt(int idx) {
 
 		if (playerList == null) {
 			return null;
@@ -372,7 +371,7 @@ public class PlayerListManager {
 	 * widget and the rift widgets, might not work correctly without
 	 * modification for other stuff. you've been warned!
 	 */
-	public static Text textAt(int idx) {
+	public static @Nullable Text textAt(int idx) {
 
 		if (playerList == null) {
 			return null;
