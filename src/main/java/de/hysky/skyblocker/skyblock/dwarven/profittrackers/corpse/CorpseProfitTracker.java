@@ -119,7 +119,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 
 	@SuppressWarnings("SameReturnValue")
 	private boolean onChatMessage(Text text, boolean overlay) {
-		if (Utils.getLocation() != Location.GLACITE_MINESHAFT || !INSTANCE.isEnabled() || overlay) return true;
+		if (Utils.getLocation() != Location.GLACITE_MINESHAFTS || !INSTANCE.isEnabled() || overlay) return true;
 		String message = text.getString();
 
 		// Reward messages end with a separator like so

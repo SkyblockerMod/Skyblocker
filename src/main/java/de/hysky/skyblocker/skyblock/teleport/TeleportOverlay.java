@@ -12,7 +12,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class TeleportOverlay {
 	private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -85,7 +85,7 @@ public class TeleportOverlay {
 		float pitch = client.player.getPitch();
 		float yaw = client.player.getYaw();
 		Vec3d look = client.player.getRotationVector(pitch, yaw);
-		Vec3d startPos = client.player.getPos().add(0, PredictiveSmoothAOTE.getEyeHeight(), 0);
+		Vec3d startPos = client.player.getPos().add(0, Utils.getEyeHeight(client.player), 0);
 		Vec3d raycast = PredictiveSmoothAOTE.raycast(range, look, startPos, isEtherwarp);
 
 		if (raycast != null) {
