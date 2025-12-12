@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.InflaterInputStream;
@@ -52,16 +51,7 @@ public class SkeletonToStructure {
 	 * Opposite of {@link StructureToSkeleton#createBlockArray(List)}
 	 */
 	static List<SkeletonBlock> createBlockList(int[] blocks) {
-		List<SkeletonBlock> blockData = new ArrayList<>(blocks.length);
-		for (int blockNum : blocks) {
-			blockData.add(new SkeletonBlock(
-					(blockNum >> 24) & 255,
-					(blockNum >> 16) & 255,
-					(blockNum >> 8) & 255,
-					(byte) (blockNum & 255)
-			));
-		}
-		return blockData;
+		return Arrays.stream(blocks).mapToObj(SkeletonBlock::from).toList();
 	}
 
 	/**
