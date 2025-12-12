@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.galatea;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
@@ -382,10 +381,10 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	private static int readCurrentSpeed(Int2ObjectMap<ItemStack> slots) {
 		ItemStack speedStack = slots.get(48);
 		if (speedStack != null && !speedStack.isEmpty()) {
-			List<Text> lore = ItemUtils.getLore(speedStack);
+			List<String> lore = speedStack.skyblocker$getLoreStrings();
 			if (lore.size() >= 4) {
 				try {
-					String speedText = lore.get(3).getString();
+					String speedText = lore.get(3);
 					String[] parts = speedText.split(": ");
 					int currentSpeed = Integer.parseInt(parts[1].trim());
 					if (currentSpeed >= 1 && currentSpeed <= 5) {
@@ -401,9 +400,9 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	private static String readCurrentPitch(Int2ObjectMap<ItemStack> slots) {
 		ItemStack pitchStack = slots.get(50);
 		if (pitchStack != null && !pitchStack.isEmpty()) {
-			List<Text> lore = ItemUtils.getLore(pitchStack);
+			List<String> lore = pitchStack.skyblocker$getLoreStrings();
 			if (lore.size() >= 3) {
-				String pitchText = lore.get(2).getString();
+				String pitchText = lore.get(2);
 				if (pitchText.contains("Low")) return "Low";
 				if (pitchText.contains("Normal")) return "Normal";
 				if (pitchText.contains("High")) return "High";

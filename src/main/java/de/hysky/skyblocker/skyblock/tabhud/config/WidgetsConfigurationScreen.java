@@ -12,7 +12,6 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
@@ -254,7 +253,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		}
 		if (slotId == 13) {
 			if (stack.isOf(Items.HOPPER)) {
-				widgetsListTab.hopper(ItemUtils.getLore(stack));
+				widgetsListTab.hopper(stack.skyblocker$getLoreStrings());
 			} else {
 				widgetsListTab.hopper(null);
 			}
@@ -295,7 +294,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		getBackOnTheScreenYouScallywagsAngryEmoji();
 		if (noHandler) return;
 		if (slotThirteenBacklog != null && widgetsListTab != null) {
-			widgetsListTab.hopper(ItemUtils.getLore(slotThirteenBacklog));
+			widgetsListTab.hopper(slotThirteenBacklog.skyblocker$getLoreStrings());
 			slotThirteenBacklog = null;
 		}
 		assert this.client != null;
