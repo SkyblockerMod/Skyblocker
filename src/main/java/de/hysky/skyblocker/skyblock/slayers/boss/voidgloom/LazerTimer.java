@@ -9,50 +9,42 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class LazerTimer {
-	public static double remainingTime = 0;
-	private static boolean isRiding = false;
+	private static long lastPhaseTime;
+	private static double remainingTime;
+	private static boolean active;
 
 	@Init
 	public static void init() {
 		WorldRenderExtractionCallback.EVENT.register(LazerTimer::extractRendering);
 	}
 
-	public static void updateTimer() {
-		if (isRiding) {
-			if (!SlayerManager.isBossSpawned()) {
-				isRiding = false;
-				return;
-			}
+	public static void tick() {
+		remainingTime -= 0.05;
 
-			remainingTime -= 0.05;
-			if (remainingTime <= 0) {
-				isRiding = false;
-			}
+		if (remainingTime <= 0 || !SlayerManager.isBossSpawned()) {
+			active = false;
 		}
 	}
 
-	public static void resetTimer() {
-		remainingTime = 8.0;
-	}
-
-	public static boolean isRiding() {
-		return isRiding;
-	}
-
-	public static void setRiding(boolean riding) {
-		isRiding = riding;
+	public static void activate() {
+		if (System.currentTimeMillis() - lastPhaseTime >= 10000) {
+			lastPhaseTime = System.currentTimeMillis();
+			remainingTime = 8;
+			active = true;
+		}
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (isRiding) {
+		if (active) {
 			Entity boss = SlayerManager.getSlayerBoss();
 			if (boss != null) {
-				String timeText = String.format("%.2fs", remainingTime);
-				Text renderText = Text.literal("Lazer: ").formatted(Formatting.WHITE)
-						.append(Text.literal(timeText).formatted(Formatting.GREEN).formatted(Formatting.BOLD));
-
-				collector.submitText(renderText, boss.getEntityPos().add(0, 2, 0), true);
+				Text text = Text.literal(String.format("%.1fs", remainingTime)).formatted(Formatting.AQUA);
+				collector.submitText(text, boss.getEntityPos().add(0, 1.5, 0), 3, true);
 			}
 		}
+	}
+
+	public static boolean isActive() {
+		return active;
 	}
 }
