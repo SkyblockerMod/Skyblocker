@@ -2,11 +2,26 @@ package de.hysky.skyblocker.utils;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import it.unimi.dsi.fastutil.objects.*;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.function.Function;
 
 public final class CodecUtils {
@@ -23,6 +38,11 @@ public final class CodecUtils {
 	public static MapCodec<OptionalDouble> optionalDouble(MapCodec<Optional<Double>> codec) {
 		return codec.xmap(opt -> opt.map(OptionalDouble::of).orElseGet(OptionalDouble::empty), optDouble -> optDouble.isPresent() ? Optional.of(optDouble.getAsDouble()) : Optional.empty());
 	}
+
+	public static final Codec<Vector2ic> VECTOR_2I = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.INT.fieldOf("x").forGetter(Vector2ic::x),
+			Codec.INT.fieldOf("y").forGetter(Vector2ic::y)
+	).apply(instance, Vector2i::new));
 
 	/**
 	 * @see #mutableOptional(MapCodec, Function) mutableOptional(MapCodec, Function) for important notes when using this codec for an optional field with a default value.
