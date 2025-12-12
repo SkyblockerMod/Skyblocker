@@ -18,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.ColorHelper;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -66,7 +65,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 * @param title title
 	 * @param color the color for the border
 	 */
-	public ComponentBasedWidget(Text title, Integer color, @NotNull Information information) { // use Integer object to not get that annoying warning on Formatting#getColor grrr
+	public ComponentBasedWidget(Text title, Integer color, Information information) { // use Integer object to not get that annoying warning on Formatting#getColor grrr
 		super(information);
 		Objects.requireNonNull(color);
 		this.title = title;

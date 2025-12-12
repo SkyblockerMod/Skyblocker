@@ -17,8 +17,8 @@ import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import net.minecraft.client.MinecraftClient;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Arrays;
@@ -48,8 +48,7 @@ public class SecretSync {
 		return false;
 	}
 
-	@Nullable
-	public static Room getRoomByName(String roomName) {
+	public static @Nullable Room getRoomByName(String roomName) {
 		return DungeonManager.getRoomsStream().filter(Room::isMatched).filter(rm -> rm.getName().equals(roomName)).findAny().orElse(null);
 	}
 

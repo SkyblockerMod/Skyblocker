@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +71,7 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
 	}
 
 	@Override
-	public ItemStack modifyDisplayStack(int slotIndex, @NotNull ItemStack stack) {
+	public ItemStack modifyDisplayStack(int slotIndex, ItemStack stack) {
 		// rows * 9 = 54
 		// hide stacks if the target colour is null to prevent the wrong colour items flashing when hypixel closes & reopens the screen
 		return slotIndex >= 54 || (targetColor != null && targetColor.equals(itemColor.get(stack.getItem()))) ? stack : ItemStack.EMPTY;

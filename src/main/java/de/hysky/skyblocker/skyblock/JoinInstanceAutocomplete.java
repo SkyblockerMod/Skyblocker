@@ -9,7 +9,8 @@ import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandSource;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,12 +27,9 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class JoinInstanceAutocomplete {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JoinInstanceAutocomplete.class);
 
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> joinInstanceCommand;
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> dungeonCommand;
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> kuudraCommand;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> joinInstanceCommand;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> dungeonCommand;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> kuudraCommand;
 
 	private static Map<String, String> instanceMap;
 

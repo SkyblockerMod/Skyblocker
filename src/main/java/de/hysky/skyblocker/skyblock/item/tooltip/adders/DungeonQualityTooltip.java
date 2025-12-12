@@ -8,9 +8,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 public class DungeonQualityTooltip extends SimpleTooltipAdder {
 	public DungeonQualityTooltip(int priority) {

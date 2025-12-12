@@ -10,13 +10,13 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
+import org.jspecify.annotations.Nullable;
+
 public class ChatRuleLocationConfigScreen extends Screen {
-	@Nullable
-	private final Screen parent;
+	private final @Nullable Screen parent;
 	private final ChatRule chatRule;
 	private final EnumSet<Location> enabledLocations;
 

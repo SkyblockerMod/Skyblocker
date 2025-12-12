@@ -4,8 +4,9 @@ import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.FilterMode;
 
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.state.TextRenderState;
 import net.minecraft.client.font.TextDrawable;
@@ -33,7 +34,7 @@ public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRender
 
 		state.glyphs.draw(new TextRenderer.GlyphDrawer() {
 			@Override
-			public void drawGlyph(TextDrawable glyph) {
+			public void drawGlyph(TextDrawable.DrawnGlyphRect glyph) {
 				this.draw(glyph);
 			}
 
@@ -43,7 +44,7 @@ public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRender
 			}
 
 			private void draw(TextDrawable glyph) {
-				TextureSetup textureSetup = RenderHelper.textureWithLightmap(glyph.textureView());
+				TextureSetup textureSetup = TextureSetup.withLightmap(glyph.textureView(), RenderSystem.getSamplerCache().get(FilterMode.NEAREST));
 				BufferBuilder buffer = Renderer.getBuffer(pipeline, textureSetup);
 
 				glyph.render(positionMatrix, buffer, LightmapTextureManager.MAX_LIGHT_COORDINATE, false);

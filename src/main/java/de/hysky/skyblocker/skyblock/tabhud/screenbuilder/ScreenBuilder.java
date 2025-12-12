@@ -20,8 +20,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.profiler.Profilers;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.slf4j.Logger;
 
@@ -36,11 +34,13 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
+
 public class ScreenBuilder {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
 
-	private final @NotNull ScreenConfig config;
+	private final ScreenConfig config;
 	private final @Nullable ScreenBuilder parent;
 	private int positionsHash = 0;
 
@@ -50,12 +50,12 @@ public class ScreenBuilder {
 	public boolean hasFancyTabWidget = false;
 
 
-	public ScreenBuilder(@NotNull ScreenConfig config, @Nullable ScreenBuilder parent) {
+	public ScreenBuilder(ScreenConfig config, @Nullable ScreenBuilder parent) {
 		this.config = config;
 		this.parent = parent;
 	}
 
-	public @NotNull ScreenConfig getFullConfig(boolean addInheritedIndicator) {
+	public ScreenConfig getFullConfig(boolean addInheritedIndicator) {
 		ScreenConfig parentConfig;
 		if (parent != null) {
 			parentConfig = parent.getFullConfig(addInheritedIndicator);
@@ -70,17 +70,17 @@ public class ScreenBuilder {
 		return parentConfig;
 	}
 
-	public @NotNull ScreenConfig getConfig() {
+	public ScreenConfig getConfig() {
 		return config;
 	}
 
-	public void addWidget(@NotNull HudWidget widget) {
+	public void addWidget(HudWidget widget) {
 		Objects.requireNonNull(widget);
 		widgets.add(widget);
 		updateRenderedWidgets();
 	}
 
-	public void removeWidget(@NotNull HudWidget widget) {
+	public void removeWidget(HudWidget widget) {
 		widgets.remove(widget);
 		updateRenderedWidgets();
 	}

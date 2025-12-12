@@ -22,8 +22,8 @@ import net.minecraft.item.tooltip.TooltipAppender;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -147,7 +147,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
 	public String getSkyblockId() {
 		if (skyblockId != null && !skyblockId.isEmpty()) return skyblockId;
 		return skyblockId = ItemUtils.getItemId(this);
@@ -155,7 +154,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
 	public String getSkyblockApiId() {
 		if (skyblockApiId != null && !skyblockApiId.isEmpty()) return skyblockApiId;
 		return skyblockApiId = ItemUtils.getSkyblockApiId(this);
@@ -163,7 +161,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
 	public String getNeuName() {
 		if (neuName != null && !neuName.isEmpty()) return neuName;
 		return neuName = ItemUtils.getNeuId((ItemStack) (Object) this);
@@ -171,7 +168,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
 	public String getUuid() {
 		if (uuid != null) return uuid;
 		return uuid = ItemUtils.getItemUuid(this);
@@ -179,7 +175,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
 	public List<String> skyblocker$getLoreStrings() {
 		if (loreString != null) return loreString;
 		return loreString = ItemUtils.getLore((ItemStack) (Object) this).stream().map(Text::getString).toList();
@@ -187,7 +182,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
 	public PetInfo getPetInfo() {
 		if (petInfo != null) return petInfo;
 		return petInfo = ItemUtils.getPetInfo((ItemStack) (Object) this);
@@ -195,7 +189,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@SuppressWarnings("deprecation")
 	@Override
-	@NotNull
 	public SkyblockItemRarity getSkyblockRarity() {
 		if (skyblockRarity != null) return skyblockRarity;
 		return skyblockRarity = ItemUtils.getItemRarity((ItemStack) (Object) this);

@@ -10,7 +10,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.text.NumberFormat;
@@ -57,12 +56,12 @@ public class FloatOption implements WidgetOption<Float> {
 	}
 
 	@Override
-	public @NotNull Float getValue() {
+	public Float getValue() {
 		return valueGetter.get();
 	}
 
 	@Override
-	public void setValue(@NotNull Float value) {
+	public void setValue(Float value) {
 		valueSetter.accept(value);
 	}
 
@@ -72,17 +71,17 @@ public class FloatOption implements WidgetOption<Float> {
 	}
 
 	@Override
-	public @NotNull JsonElement toJson() {
+	public JsonElement toJson() {
 		return Codec.floatRange(min, max).encodeStart(JsonOps.INSTANCE, valueGetter.get()).getOrThrow();
 	}
 
 	@Override
-	public void fromJson(@NotNull JsonElement json) {
+	public void fromJson(JsonElement json) {
 		valueSetter.accept(Codec.floatRange(min, max).decode(JsonOps.INSTANCE, json).getOrThrow().getFirst());
 	}
 
 	@Override
-	public @NotNull ClickableWidget createNewWidget(WidgetConfig config) {
+	public ClickableWidget createNewWidget(WidgetConfig config) {
 		return new Slider(config);
 	}
 

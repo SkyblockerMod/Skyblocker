@@ -25,8 +25,7 @@ import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.ColorHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
@@ -50,10 +49,10 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	/**
 	 * The currently edited location. {@link Location#UNKNOWN} if editing the global skyblock screen.
 	 */
-	private @NotNull Location currentLocation;
-	private @NotNull WidgetManager.ScreenLayer currentScreenLayer;
+	private Location currentLocation;
+	private WidgetManager.ScreenLayer currentScreenLayer;
 
-	private @NotNull ScreenBuilder builder;
+	private ScreenBuilder builder;
 
 	private SidePanelWidget sidePanelWidget;
 	private AddWidgetWidget addWidgetWidget;
@@ -80,7 +79,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		builder.updateTabWidgetsList();
 	}
 
-	public void setCurrentLocation(@NotNull Location newLocation) {
+	public void setCurrentLocation(Location newLocation) {
 		builder.updateConfig();
 		this.currentLocation = newLocation;
 		builder = WidgetManager.getScreenBuilder(newLocation, currentScreenLayer);
@@ -88,7 +87,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		builder.updateTabWidgetsList();
 	}
 
-	public void setCurrentScreenLayer(@NotNull WidgetManager.ScreenLayer newScreenLayer) {
+	public void setCurrentScreenLayer(WidgetManager.ScreenLayer newScreenLayer) {
 		builder.updateConfig();
 		this.currentScreenLayer = newScreenLayer;
 		builder = WidgetManager.getScreenBuilder(currentLocation, newScreenLayer);
@@ -263,11 +262,11 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		return false;
 	}
 
-	private @NotNull PositionRule.Point getPoint(@NotNull HudWidget widget) {
+	private PositionRule.Point getPoint(HudWidget widget) {
 		return getPoint(widget, widget.getX(), widget.getY());
 	}
 
-	private @NotNull PositionRule.Point getPoint(@NotNull HudWidget widget, int x, int y) {
+	private PositionRule.Point getPoint(HudWidget widget, int x, int y) {
 		int widgetCenterX = x + widget.getScaledWidth() / 2 - getScreenWidth() / 2;
 		int widgetCenterY = y + widget.getScaledHeight() / 2 - getScreenHeight() / 2;
 		PositionRule.HorizontalPoint hPoint = widgetCenterX < -25 ? PositionRule.HorizontalPoint.LEFT : widgetCenterX > 25 ? PositionRule.HorizontalPoint.RIGHT : PositionRule.HorizontalPoint.CENTER;
@@ -403,13 +402,13 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	}
 
 	@Override
-	public void promptSelectWidget(@NotNull Consumer<@Nullable HudWidget> callback, boolean allowItself) {
+	public void promptSelectWidget(Consumer<@Nullable HudWidget> callback, boolean allowItself) {
 		selectWidgetPrompt = new SelectWidgetPrompt(callback, allowItself);
 		sidePanelWidget.close();
 	}
 
 	@Override
-	public void removeWidget(@NotNull HudWidget widget) {
+	public void removeWidget(HudWidget widget) {
 		builder.removeWidget(widget);
 		PositionRule deleted = widget.getPositionRule();
 		for (HudWidget hudWidget : builder.getWidgets()) {
@@ -454,5 +453,5 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		client.setScreen(popupCreator.apply(this));
 	}
 
-	private record SelectWidgetPrompt(@NotNull Consumer<@Nullable HudWidget> callback, boolean allowItself) {}
+	private record SelectWidgetPrompt(Consumer<@Nullable HudWidget> callback, boolean allowItself) {}
 }

@@ -9,13 +9,14 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+
+import org.jspecify.annotations.Nullable;
 
 public abstract class TabHudWidget extends ComponentBasedWidget {
 	private final String hypixelWidgetName;

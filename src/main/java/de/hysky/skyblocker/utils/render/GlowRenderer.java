@@ -2,8 +2,6 @@ package de.hysky.skyblocker.utils.render;
 
 import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.AddressMode;
-import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.textures.TextureFormat;
@@ -29,7 +27,7 @@ public class GlowRenderer implements AutoCloseable {
 	private GlowRenderer() {
 		this.client = MinecraftClient.getInstance();
 		this.glowOutlineVertexConsumers = Util.make(new OutlineVertexConsumerProvider(), outlineVertexConsumers -> {
-			((OutlineVertexConsumerProviderAccessor) outlineVertexConsumers).setPlainDrawer(new GlowVertexConsumerProvider(new BufferAllocator(RenderLayer.DEFAULT_BUFFER_SIZE)));
+			((OutlineVertexConsumerProviderAccessor) outlineVertexConsumers).setPlainDrawer(new GlowVertexConsumerProvider(new BufferAllocator(RenderLayer.field_64010)));
 		});
 	}
 
@@ -82,8 +80,6 @@ public class GlowRenderer implements AutoCloseable {
 
 			this.glowDepthTexture = device.createTexture(() -> "Skyblocker Glow Depth Tex", GpuTexture.USAGE_RENDER_ATTACHMENT | GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_TEXTURE_BINDING, TextureFormat.DEPTH32, neededWidth, neededHeight, 1, 1);
 			this.glowDepthTextureView = device.createTextureView(this.glowDepthTexture);
-			this.glowDepthTexture.setTextureFilter(FilterMode.NEAREST, false);
-			this.glowDepthTexture.setAddressMode(AddressMode.CLAMP_TO_EDGE);
 		}
 	}
 

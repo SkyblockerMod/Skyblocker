@@ -20,11 +20,11 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
+
+import org.jspecify.annotations.Nullable;
 
 // TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
@@ -34,7 +34,7 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 	private ButtonWidget nextPage;
 	private ButtonWidget thirdColumnButton;
 	private String titleLowercase;
-	private @NotNull GenericContainerScreenHandler handler;
+	private GenericContainerScreenHandler handler;
 	private boolean waitingForServer = false;
 
 	private final Int2ObjectMap<WidgetsListSlotEntry> entries = new Int2ObjectOpenHashMap<>();
@@ -50,7 +50,7 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		return entries.int2ObjectEntrySet();
 	}
 
-	public WidgetsListScreen(@NotNull GenericContainerScreenHandler handler, String titleLowercase) {
+	public WidgetsListScreen(GenericContainerScreenHandler handler, String titleLowercase) {
 		super(Text.literal("Widgets EntryList"));
 		this.handler = handler;
 		this.titleLowercase = titleLowercase;
@@ -80,7 +80,7 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		waitingForServer = true;
 	}
 
-	public void updateHandler(@NotNull GenericContainerScreenHandler newHandler, String titleLowercase) {
+	public void updateHandler(GenericContainerScreenHandler newHandler, String titleLowercase) {
 		this.handler.removeListener(this);
 		newHandler.addListener(this);
 		this.handler = newHandler;
@@ -89,7 +89,7 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		listNeedsUpdate = true;
 	}
 
-	public void hopper(@Nullable List<Text> hopperTooltip) {
+	public void hopper(@Nullable List<String> hopperTooltip) {
 		if (hopperTooltip == null) {
 			widgetsElementList.setEditingPosition(-1);
 			return;
@@ -97,8 +97,7 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		int start = -1;
 		int editing = 1;
 		for (int i = 0; i < hopperTooltip.size(); i++) {
-			Text text = hopperTooltip.get(i);
-			String string = text.getString();
+			String string = hopperTooltip.get(i);
 			if (start == -1 && string.contains("▶")) {
 				start = i;
 			}
@@ -143,8 +142,8 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 
 
 		String lowerCase = stack.getName().getString().trim().toLowerCase(Locale.ENGLISH);
-		List<Text> lore = ItemUtils.getLore(stack);
-		String lastLowerCase = lore.getLast().getString().toLowerCase(Locale.ENGLISH);
+		List<String> lore = stack.skyblocker$getLoreStrings();
+		String lastLowerCase = lore.getLast().toLowerCase(Locale.ENGLISH);
 
 		WidgetsListSlotEntry entry;
 		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.isOf(Items.RED_STAINED_GLASS_PANE)) {
@@ -228,7 +227,7 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 	public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
 		if (slotId == 13) {
 			if (stack.isOf(Items.HOPPER)) {
-				hopper(ItemUtils.getLore(stack));
+				hopper(stack.skyblocker$getLoreStrings());
 			} else {
 				hopper(null);
 			}

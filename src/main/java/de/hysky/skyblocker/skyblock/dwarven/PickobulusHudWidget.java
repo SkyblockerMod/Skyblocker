@@ -8,7 +8,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
@@ -17,8 +17,7 @@ import java.util.Set;
 public class PickobulusHudWidget extends ComponentBasedWidget {
 	private static final MutableText TITLE = Text.literal("Pickobulus").formatted(Formatting.BLUE, Formatting.BOLD);
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GOLD_MINE, Location.DEEP_CAVERNS, Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
-	@Nullable
-	private static PickobulusHudWidget instance;
+	private static @Nullable PickobulusHudWidget instance;
 
 	public PickobulusHudWidget() {
 		super(TITLE, Formatting.BLUE.getColorValue(), new Information("hud_pickobulus", Text.translatable("skyblocker.config.mining.enablePickobulusHelper"), AVAILABLE_LOCATIONS::contains));

@@ -11,9 +11,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 public class SkyblockEmiRecipe implements EmiRecipe {
 	private final Text craftText;

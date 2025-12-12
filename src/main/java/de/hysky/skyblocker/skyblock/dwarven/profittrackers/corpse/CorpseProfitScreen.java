@@ -12,11 +12,11 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 public class CorpseProfitScreen extends Screen {
 	private static final int ENTRY_HEIGHT = 11;
@@ -74,18 +74,15 @@ public class CorpseProfitScreen extends Screen {
 	}
 
 	// Lazy init
-	@NotNull
 	private CorpseList getCorpseList() {
 		return corpseList == null ? corpseList = new CorpseList(MinecraftClient.getInstance(), width, height - 96, 32, ENTRY_HEIGHT, rewardsList) : corpseList;
 	}
 
 	// Lazy init
-	@NotNull
 	private RewardList getRewardList() {
 		return rewardList == null ? rewardList = new RewardList(MinecraftClient.getInstance(), width, height - 96, 32, ENTRY_HEIGHT, rewardsList) : rewardList;
 	}
 
-	@NotNull
 	private static DoubleBooleanPair calculateTotalProfit(List<CorpseLoot> list) {
 		double total = 0;
 		boolean isPriceComplete = true;

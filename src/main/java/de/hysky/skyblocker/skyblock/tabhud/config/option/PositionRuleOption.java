@@ -21,8 +21,7 @@ import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +39,12 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 	}
 
 	@Override
-	public @NotNull PositionRule getValue() {
+	public PositionRule getValue() {
 		return valueGetter.get();
 	}
 
 	@Override
-	public void setValue(@NotNull PositionRule value) {
+	public void setValue(PositionRule value) {
 		valueSetter.accept(value);
 	}
 
@@ -55,17 +54,17 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 	}
 
 	@Override
-	public @NotNull JsonElement toJson() {
+	public JsonElement toJson() {
 		return PositionRule.CODEC.encodeStart(JsonOps.INSTANCE, valueGetter.get()).getOrThrow();
 	}
 
 	@Override
-	public void fromJson(@NotNull JsonElement json) {
+	public void fromJson(JsonElement json) {
 		valueSetter.accept(PositionRule.CODEC.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst());
 	}
 
 	@Override
-	public @NotNull ClickableWidget createNewWidget(WidgetConfig config) {
+	public ClickableWidget createNewWidget(WidgetConfig config) {
 		return new PositionRuleOptionWidget(config);
 	}
 
@@ -196,7 +195,7 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 
 	private class AnchorSelectionWidget extends ClickableWidget {
 		private final boolean parent;
-		private @Nullable PositionRule.Point hoveredPoint = null;
+		private PositionRule.@Nullable Point hoveredPoint = null;
 		private final WidgetConfig widgetConfig;
 
 		private AnchorSelectionWidget(WidgetConfig config, Text text, boolean parent) {

@@ -85,11 +85,10 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
 		this.recipeBook.drawTooltip(context, mouseX, mouseY, null);
 	}
 
-
 	@Override
-	protected void drawSlot(DrawContext context, Slot slot) {
+	protected void drawSlot(DrawContext context, Slot slot, int mouseX, int mouseY) {
 		if (slot.id == 23 && slot.getStack().isOf(Items.BARRIER)) return;
-		super.drawSlot(context, slot);
+		super.drawSlot(context, slot, mouseX, mouseY);
 	}
 
 	@Override

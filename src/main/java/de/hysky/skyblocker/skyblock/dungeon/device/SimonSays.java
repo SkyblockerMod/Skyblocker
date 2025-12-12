@@ -33,7 +33,7 @@ import net.minecraft.world.World;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class SimonSays {
 	private static final Box BOARD_AREA = Box.enclosing(new BlockPos(111, 123, 92), new BlockPos(111, 120, 95));

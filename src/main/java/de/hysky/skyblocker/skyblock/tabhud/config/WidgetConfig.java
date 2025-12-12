@@ -2,8 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import net.minecraft.client.gui.screen.Screen;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -17,9 +16,9 @@ public interface WidgetConfig {
 	 * @param callback called once a widget was selected
 	 * @param allowItself allow selecting the edited widget itself
 	 */
-	void promptSelectWidget(@NotNull Consumer<@Nullable HudWidget> callback, boolean allowItself);
+	void promptSelectWidget(Consumer<@Nullable HudWidget> callback, boolean allowItself);
 
-	void removeWidget(@NotNull HudWidget widget);
+	void removeWidget(HudWidget widget);
 
 	HudWidget getEditedWidget();
 

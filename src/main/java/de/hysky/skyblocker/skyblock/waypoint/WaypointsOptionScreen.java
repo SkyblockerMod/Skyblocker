@@ -17,7 +17,6 @@ import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.gui.widget.ThreePartsLayoutWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
 import java.util.function.Supplier;
@@ -25,10 +24,10 @@ import java.util.function.Supplier;
 public class WaypointsOptionScreen extends Screen {
 	private static final Supplier<UIAndVisualsConfig.Waypoints> WAYPOINTS = () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints;
 
-	private final @NotNull Screen parent;
+	private final Screen parent;
 	private final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
 
-	protected WaypointsOptionScreen(@NotNull Screen parent) {
+	protected WaypointsOptionScreen(Screen parent) {
 		super(Text.translatable("skyblocker.waypoints.waypointsOptions"));
 		this.parent = parent;
 	}
@@ -41,19 +40,16 @@ public class WaypointsOptionScreen extends Screen {
 		GridWidget.Adder adder = grid.createAdder(2);
 		UIAndVisualsConfig.Waypoints waypoints = WAYPOINTS.get();
 		adder.add(CyclingButtonWidget
-				.onOffBuilder(ScreenTexts.YES, ScreenTexts.OFF)
-						.initially(waypoints.renderLine)
+				.onOffBuilder(ScreenTexts.YES, ScreenTexts.OFF, waypoints.renderLine)
 				.build(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"), (button, value) -> waypoints.renderLine = value)
 		);
 		adder.add(CyclingButtonWidget
-				.onOffBuilder(ScreenTexts.YES, ScreenTexts.OFF)
-						.initially(waypoints.allowSkippingWaypoints)
+				.onOffBuilder(ScreenTexts.YES, ScreenTexts.OFF, waypoints.allowSkippingWaypoints)
 				.tooltip(ignored -> Tooltip.of(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip")))
 				.build(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints"), (button, value) -> waypoints.allowSkippingWaypoints = value)
 		);
 		adder.add(CyclingButtonWidget
-				.onOffBuilder(ScreenTexts.YES, ScreenTexts.OFF)
-				.initially(waypoints.allowGoingBackwards)
+				.onOffBuilder(ScreenTexts.YES, ScreenTexts.OFF, waypoints.allowGoingBackwards)
 				.tooltip(ignored -> Tooltip.of(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip")))
 				.build(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards"), (button, value) -> waypoints.allowGoingBackwards = value)
 		);

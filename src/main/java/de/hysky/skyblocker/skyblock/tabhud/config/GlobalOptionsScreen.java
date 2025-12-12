@@ -41,9 +41,8 @@ class GlobalOptionsScreen extends Screen {
 		layout.addFooter(ButtonWidget.builder(ScreenTexts.DONE, b -> close()).build());
 
 		UIAndVisualsConfig.HudConf conf = CONFIG.get();
-		body.add(CyclingButtonWidget.<UIAndVisualsConfig.HudStyle>builder(style -> Text.translatable(style.toString()))
+		body.add(CyclingButtonWidget.builder(style -> Text.translatable(style.toString()), conf.style)
 				.values(UIAndVisualsConfig.HudStyle.values())
-				.initially(conf.style)
 				.tooltip(ignored -> STYLE_TOOLTIP)
 				.build(
 						0,
@@ -61,17 +60,14 @@ class GlobalOptionsScreen extends Screen {
 						.callback(d -> conf.hudScale = (int) Math.round(d))
 				.build());
 		// TODO turn these two into per widget things maybe?
-		body.add(CyclingButtonWidget.onOffBuilder(YES, NO)
-				.initially(conf.displayIcons)
+		body.add(CyclingButtonWidget.onOffBuilder(YES, NO, conf.displayIcons)
 				.build(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.displayIcons"), (button, value) -> conf.displayIcons = value)
 		);
-		body.add(CyclingButtonWidget.onOffBuilder(YES, NO)
-						.initially(conf.compactWidgets)
-						.tooltip(ignored -> Tooltip.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip")))
+		body.add(CyclingButtonWidget.onOffBuilder(YES, NO, conf.compactWidgets)
+				.tooltip(ignored -> Tooltip.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip")))
 				.build(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"), (button, value) -> conf.compactWidgets = value)
 		);
-		body.add(CyclingButtonWidget.onOffBuilder(YES, NO)
-				.initially(conf.fancyWidgetsList)
+		body.add(CyclingButtonWidget.onOffBuilder(YES, NO, conf.fancyWidgetsList)
 				.tooltip(ignored -> Tooltip.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip")))
 				.build(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"), (button, value) -> conf.fancyWidgetsList = value)
 		);

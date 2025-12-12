@@ -17,7 +17,7 @@ public class BooleanSlotEntry extends WidgetsListSlotEntry {
 
 	public BooleanSlotEntry(WidgetsListScreen parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
-		boolean enabled = !ItemUtils.getLore(icon).getLast().getString().toLowerCase(Locale.ENGLISH).contains("enable");
+		boolean enabled = !icon.skyblocker$getLoreStrings().getLast().toLowerCase(Locale.ENGLISH).contains("enable");
 		enableButton = ButtonWidget.builder(enabled ? ENABLED_TEXT : DISABLED_TEXT, button -> this.parent.clickAndWaitForServer(this.slotId, 0))
 				.size(64, 12)
 				.build();

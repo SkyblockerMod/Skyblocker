@@ -43,7 +43,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.StringHelper;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.ColorHelper;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -338,8 +339,6 @@ public class CustomizeNameWidget extends ContainerWidget {
 	}
 
 	private class FormattingButton extends PressableWidget {
-
-
 		private boolean enabled;
 		private final Formatting format;
 		private final Predicate<Style> isEnabled;
@@ -380,10 +379,13 @@ public class CustomizeNameWidget extends ContainerWidget {
 		@Override
 		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 
+		@Override
+		protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+			this.drawButton(context);
+		}
 	}
 
 	private class ColorButton extends PressableWidget {
-
 		private final Formatting color;
 		private final int intColor;
 
@@ -400,7 +402,8 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void drawMessage(DrawContext context, TextRenderer textRenderer, int color) {
+		public void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+			this.drawButton(context);
 			context.fill(getX() + 2, getY() + 2, getRight() - 2, getBottom() - 2, intColor);
 		}
 
@@ -450,6 +453,11 @@ public class CustomizeNameWidget extends ContainerWidget {
 
 			context.drawText(textRenderer, text, textX, textY, -1, false);
 
+			this.setCursor(context);
+		}
+
+		@Override
+		protected void setCursor(DrawContext context) {
 			if (this.isHovered()) {
 				context.setCursor(StandardCursors.IBEAM);
 			}

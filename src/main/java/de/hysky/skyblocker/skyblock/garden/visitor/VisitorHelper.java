@@ -119,8 +119,7 @@ public class VisitorHelper extends ClickableWidget {
 		ItemStack acceptButton = handler.getSlot(29).getStack();
 		if (acceptButton == null || ItemUtils.getLoreLineIf(acceptButton, t -> t.contains("Items Required")) == null) return;
 
-		ItemUtils.getLore(acceptButton).stream()
-				.map(Text::getString)
+		acceptButton.skyblocker$getLoreStrings().stream()
 				.map(String::trim)
 				.dropWhile(lore -> !lore.contains("Items Required")) // All lines before Items Required (shouldn't be any, but you never know)
 				.skip(1) // skip the Items Required line

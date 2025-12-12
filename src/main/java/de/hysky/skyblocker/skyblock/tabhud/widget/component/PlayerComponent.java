@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Component that consists of a player's skin icon and their name

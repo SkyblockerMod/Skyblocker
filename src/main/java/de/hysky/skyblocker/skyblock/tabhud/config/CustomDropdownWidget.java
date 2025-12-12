@@ -37,13 +37,13 @@ class CustomDropdownWidget<T> extends DropdownWidget<T> {
 			context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(50, 0));
 		}
 		context.drawText(client.textRenderer, ">", getX() + 4, getY() + (headerHeight - client.textRenderer.fontHeight) / 2 + 1, Colors.ALTERNATE_WHITE, true); // +1 on the y coordinate cuz drawScrollableText does so too
-		drawScrollableText(context, client.textRenderer, formatter.apply(selected),
+		context.getTextConsumer().marqueedText(formatter.apply(selected),
 				getX() + getWidth() / 2,
 				getX() + 4 + 6,
-				getY() + 2,
 				getRight() - 2,
-				getY() + headerHeight - 2,
-				-1);
+				getY() + 2,
+				getY() + headerHeight - 2
+		);
 	}
 
 	@Override
@@ -79,7 +79,13 @@ class CustomDropdownWidget<T> extends DropdownWidget<T> {
 			if (entry != firstEntry) {
 				context.drawHorizontalLine(this.getX(), this.getX() + this.getWidth(), this.getY(), ColorHelper.withAlpha(15, 0));
 			}
-			drawScrollableText(context, client.textRenderer, formatter.apply(entry).copy().fillStyle(Style.EMPTY.withUnderline(hovered)), this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + 11, -1);
+			context.getTextConsumer().text(
+					formatter.apply(entry).copy().fillStyle(Style.EMPTY.withUnderline(hovered)),
+					this.getX(),
+					this.getX() + this.getWidth(),
+					this.getY(),
+					this.getY() + 11
+			);
 
 		}
 	}

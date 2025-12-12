@@ -11,7 +11,6 @@ import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2fStack;
 
 import java.util.List;
@@ -21,14 +20,14 @@ import java.util.function.Predicate;
 
 public abstract class HudWidget implements Widget {
 	private float scale = 1.0f;
-	private PositionRule positionRule;
+	private PositionRule positionRule = PositionRule.DEFAULT;
 	private final Information information;
 	public final RenderingInformation renderingInformation = new RenderingInformation();
 
 	protected int w = 0, h = 0;
 	protected int x = 0, y = 0;
 
-	public HudWidget(@NotNull Information information) {
+	public HudWidget(Information information) {
 		this.information = information;
 	}
 
@@ -48,7 +47,7 @@ public abstract class HudWidget implements Widget {
 	 */
 	protected abstract void renderWidgetConfig(DrawContext context, float delta);
 
-	public @NotNull Information getInformation() {
+	public Information getInformation() {
 		return information;
 	}
 

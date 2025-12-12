@@ -19,7 +19,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +44,6 @@ import java.util.stream.Collectors;
  * is holding periodically. The list is sorted like in the vanilla game.
  */
 public class PlayerListManager {
-
 	public static boolean shouldUpdateNextTick = false;
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
@@ -286,8 +286,7 @@ public class PlayerListManager {
 		}
 	}
 
-	@Nullable
-	public static String getFooter() {
+	public static @Nullable String getFooter() {
 		return footer;
 	}
 

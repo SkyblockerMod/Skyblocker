@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetConfig;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.PressableWidget;
@@ -10,7 +11,6 @@ import net.minecraft.client.input.AbstractInput;
 import net.minecraft.client.input.MouseInput;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
@@ -33,12 +33,12 @@ public class BooleanOption implements WidgetOption<Boolean> {
 	}
 
 	@Override
-	public @NotNull Boolean getValue() {
+	public Boolean getValue() {
 		return valueGetter.get();
 	}
 
 	@Override
-	public void setValue(@NotNull Boolean value) {
+	public void setValue(Boolean value) {
 		valueSetter.accept(value);
 	}
 
@@ -48,21 +48,21 @@ public class BooleanOption implements WidgetOption<Boolean> {
 	}
 
 	@Override
-	public @NotNull JsonElement toJson() {
+	public JsonElement toJson() {
 		return new JsonPrimitive(valueGetter.get());
 	}
 
 	@Override
-	public void fromJson(@NotNull JsonElement json) {
+	public void fromJson(JsonElement json) {
 		valueSetter.accept(json.getAsBoolean());
 	}
 
 	@Override
-	public @NotNull ClickableWidget createNewWidget(WidgetConfig config) {
+	public ClickableWidget createNewWidget(WidgetConfig config) {
 		return new Button(config, createName());
 	}
 
-	private @NotNull MutableText createName() {
+	private MutableText createName() {
 		return valueGetter.get() ? Text.translatable("options.on.composed", name) : Text.translatable("options.off.composed", name);
 	}
 
@@ -79,6 +79,12 @@ public class BooleanOption implements WidgetOption<Boolean> {
 			valueSetter.accept(input.getKeycode() == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? defaultValue : !valueGetter.get());
 			setMessage(createName());
 			config.notifyWidget();
+		}
+
+		@Override
+		protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+			drawButton(context);
+			drawLabel(context.getTextConsumer());
 		}
 
 		@Override

@@ -3,8 +3,8 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import net.minecraft.client.gui.ScreenPos;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
+
 
 public abstract class WidgetPositioner {
 	protected final float maxHeight;
@@ -70,7 +70,7 @@ public abstract class WidgetPositioner {
 	 * @param parentPoint  The point on the parent widget that the child widget should be positioned relative to
 	 * @return The start position of the child widget
 	 */
-	public static @NotNull ScreenPos getStartPosition(String parent, int screenWidth, int screenHeight, PositionRule.Point parentPoint) {
+	public static ScreenPos getStartPosition(String parent, int screenWidth, int screenHeight, PositionRule.Point parentPoint) {
 		if (parent.equals("screen")) {
 			return new ScreenPos(
 					(int) (parentPoint.horizontalPoint().getPercentage() * screenWidth),
@@ -96,7 +96,7 @@ public abstract class WidgetPositioner {
 	 * @param screenHeight The height of the screen
 	 * @return The start position of the widget
 	 */
-	public static @NotNull ScreenPos getStartPosition(HudWidget widget, int screenWidth, int screenHeight) {
+	public static ScreenPos getStartPosition(HudWidget widget, int screenWidth, int screenHeight) {
 		return getStartPosition(widget.getPositionRule().parent(), screenWidth, screenHeight, widget.getPositionRule().parentPoint());
 	}
 

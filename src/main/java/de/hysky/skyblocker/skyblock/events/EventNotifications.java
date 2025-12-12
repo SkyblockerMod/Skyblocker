@@ -14,6 +14,7 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -22,7 +23,8 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvent;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Comparator;
@@ -34,13 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class EventNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
-
-	private static long currentTime = System.currentTimeMillis() / 1000;
-
 	public static final String JACOBS = "Jacob's Farming Contest";
-
-	public static final IntList DEFAULT_REMINDERS = IntList.of(60, 60 * 5);
-
+	public static final IntArrayList DEFAULT_REMINDERS = new IntArrayList(IntList.of(60, 60 * 5));
 	public static final Map<String, ItemStack> eventIcons = Map.ofEntries(
 			Map.entry("Dark Auction", new ItemStack(Items.NETHER_BRICK)),
 			Map.entry("Bonus Fishing Festival", new ItemStack(Items.FISHING_ROD)),
@@ -54,6 +51,7 @@ public class EventNotifications {
 			Map.entry("Jerry's Workshop Opens", new ItemStack(Items.SNOW_BLOCK)),
 			Map.entry("Traveling Zoo", new ItemStack(Items.HAY_BLOCK)) // change to the custom head one day
 	);
+	private static long currentTime = System.currentTimeMillis() / 1000;
 
 	@Init
 	public static void init() {

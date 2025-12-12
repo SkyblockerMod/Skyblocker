@@ -31,7 +31,6 @@ import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
-import org.jetbrains.annotations.NotNull;
 
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
@@ -62,7 +61,7 @@ public class WidgetManager {
 
 	public static final Object2ObjectMap<String, HudWidget> WIDGET_INSTANCES = new Object2ObjectOpenHashMap<>();
 
-	public static @NotNull HudWidget getWidgetOrPlaceholder(String id) {
+	public static HudWidget getWidgetOrPlaceholder(String id) {
 		return WIDGET_INSTANCES.computeIfAbsent(id, PlaceholderWidget::new);
 	}
 

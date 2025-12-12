@@ -8,12 +8,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
 
 public class BestiaryLevelAdder extends SimpleSlotTextAdder {
 	//^[\w '-]+ (?<level>[IVXLCDM]+)$
@@ -29,7 +29,7 @@ public class BestiaryLevelAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		//Ignore slots that cannot have bestiary texts
 		if (!((slotId >= 10 && slotId <= 16) || (slotId >= 19 && slotId <= 25) || (slotId >= 28 && slotId <= 34) || (slotId >= 37 && slotId <= 43))) return List.of();
 		//Ignore slots without an item or bestiaries that aren't unlocked

@@ -12,7 +12,8 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.SinglePreparationResourceReloader;
 import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.util.profiler.Profiler;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.io.IOException;

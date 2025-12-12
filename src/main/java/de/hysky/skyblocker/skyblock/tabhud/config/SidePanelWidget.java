@@ -18,8 +18,7 @@ import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -206,7 +205,7 @@ class SidePanelWidget extends ContainerWidget {
 		return hudWidget;
 	}
 
-	private void add(@NotNull ClickableWidget widget) {
+	private void add(ClickableWidget widget) {
 		optionWidgets.add(widget);
 		layout.add(widget);
 	}

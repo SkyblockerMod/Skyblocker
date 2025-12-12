@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config.option;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetConfig;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.PressableWidget;
@@ -12,7 +13,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
@@ -43,12 +43,12 @@ public class EnumOption<T extends Enum<T> & StringIdentifiable> implements Widge
 	}
 
 	@Override
-	public @NotNull T getValue() {
+	public T getValue() {
 		return valueGetter.get();
 	}
 
 	@Override
-	public void setValue(@NotNull T value) {
+	public void setValue(T value) {
 		valueSetter.accept(value);
 	}
 
@@ -58,12 +58,12 @@ public class EnumOption<T extends Enum<T> & StringIdentifiable> implements Widge
 	}
 
 	@Override
-	public @NotNull JsonElement toJson() {
+	public JsonElement toJson() {
 		return codec.encodeStart(JsonOps.INSTANCE, valueGetter.get()).getOrThrow();
 	}
 
 	@Override
-	public void fromJson(@NotNull JsonElement json) {
+	public void fromJson(JsonElement json) {
 		valueSetter.accept(codec.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst());
 	}
 
@@ -72,7 +72,7 @@ public class EnumOption<T extends Enum<T> & StringIdentifiable> implements Widge
 	}
 
 	@Override
-	public @NotNull ClickableWidget createNewWidget(WidgetConfig config) {
+	public ClickableWidget createNewWidget(WidgetConfig config) {
 		return new Button(config, createMessage());
 	}
 
@@ -89,6 +89,12 @@ public class EnumOption<T extends Enum<T> & StringIdentifiable> implements Widge
 			valueSetter.accept(input.getKeycode() == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? defaultValue : (enumConstants[(ArrayUtils.indexOf(enumConstants, valueGetter.get()) + 1) % enumConstants.length]));
 			setMessage(createMessage());
 			config.notifyWidget();
+		}
+
+		@Override
+		protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+			drawButton(context);
+			drawLabel(context.getTextConsumer());
 		}
 
 		@Override
