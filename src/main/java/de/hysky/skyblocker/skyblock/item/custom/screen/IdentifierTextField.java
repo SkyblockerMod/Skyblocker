@@ -17,12 +17,12 @@ class IdentifierTextField extends EditBox {
 
 	IdentifierTextField(int width, int height, Consumer<@Nullable Identifier> callback) {
 		super(Minecraft.getInstance().font, width, height, Component.empty());
-		super.setResponder(this::onValueChange);
+		super.setResponder(this::onChanged);
 		this.callback = callback;
 		addFormatter((string, _firstCharacterIndex) -> FormattedCharSequence.forward(string, valid ? Style.EMPTY : Style.EMPTY.applyFormat(ChatFormatting.RED)));
 	}
 
-	private void onValueChange(String s) {
+	private void onChanged(String s) {
 		Identifier identifier = Identifier.tryParse(s);
 		valid = true;
 		if (s.isBlank()) {

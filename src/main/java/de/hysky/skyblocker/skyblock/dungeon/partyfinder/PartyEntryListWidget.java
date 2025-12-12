@@ -75,11 +75,12 @@ public class PartyEntryListWidget extends ContainerObjectSelectionList<PartyEntr
 	}
 
 
-	public void setActive(boolean active) {
+	public void setWidgetActive(boolean active) {
 		isActive = active;
 	}
 
-	public boolean isActive() {
+	// Mojmap conversion: this is not meant to override isActive
+	public boolean isWidgetActive() {
 		return isActive;
 	}
 
