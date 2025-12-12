@@ -291,7 +291,7 @@ public class PickobulusHelper {
 
 	private static void extractRendering(PrimitiveCollector collector) {
 		for (BlockPos breakPos : breakBlocks) {
-			collector.submitOutlinedBox(breakPos, LIGHT_BLUE, 2f, true);
+			collector.submitOutlinedBox(breakPos, LIGHT_BLUE, 2f, false);
 		}
 	}
 
