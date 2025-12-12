@@ -20,12 +20,11 @@ public class CategoryTabWidget extends SideTabButtonWidget {
 
 	@Override
 	public void drawIcon(DrawContext context, int mouseX, int mouseY, float delta) {
-		super.renderWidget(context, mouseX, mouseY, delta);
+		super.drawIcon(context, mouseX, mouseY, delta);
 
 		if (isMouseOver(mouseX, mouseY)) {
 			context.drawTooltip(MinecraftClient.getInstance().textRenderer, icon.getTooltip(TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC), mouseX, mouseY);
 		}
-
 	}
 
 	public void setSlotId(int slotId) {
