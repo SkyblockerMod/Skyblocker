@@ -16,7 +16,6 @@ import java.util.zip.InflaterInputStream;
 /**
  * This is the opposite of {@link StructureToSkeleton}, for more detailed comments see that class instead.
  */
-@SuppressWarnings("JavadocReference")
 public class SkeletonToStructure {
 	private static final Logger LOGGER = LoggerFactory.getLogger("SkeletonToStructure");
 

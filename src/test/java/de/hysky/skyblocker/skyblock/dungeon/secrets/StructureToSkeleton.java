@@ -40,7 +40,7 @@ public class StructureToSkeleton {
 	 */
 	static void convertToSkeleton(String structureTemplatePath, int baseY) throws IOException {
 		Path outputPath = Path.of(structureTemplatePath + ".skeleton");
-		if (outputPath.toFile().exists()) throw new RuntimeException("Output file already exists! - %s".formatted(outputPath));
+		if (Files.exists(outputPath)) throw new RuntimeException("Output file already exists! - %s".formatted(outputPath));
 
 		List<SkeletonBlock> blockData = getStructureBlocks(structureTemplatePath, baseY);
 		int[] blockNums = createBlockArray(blockData);
