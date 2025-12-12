@@ -7,12 +7,13 @@ import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import org.jspecify.annotations.Nullable;
 
 public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 	public static final Identifier ID = SkyblockerMod.id("skyblock_npc_shop");

@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.utils.mayor;
 
 import it.unimi.dsi.fastutil.objects.ObjectLists;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
  * @param name The name of the mayor.
  * @param perks The perks of the mayor.
  */
-public record Mayor(@NotNull String key, @NotNull String name, @NotNull List<Perk> perks) {
+public record Mayor(String key, String name, List<Perk> perks) {
 	/**
 	 * An empty mayor. Allows for better null safety.
 	 */

@@ -29,7 +29,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,7 +161,7 @@ public class FairySouls {
 		if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
 			for (Waypoint fairySoul : fairySouls.get(Utils.getLocationRaw()).values()) {
 				boolean fairySoulNotFound = fairySoul.shouldRender();
-				if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.getSquaredDistance(RenderHelper.getCamera().getPos()) > 2500) {
+				if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.getSquaredDistance(RenderHelper.getCamera().getCameraPos()) > 2500) {
 					continue;
 				}
 				fairySoul.extractRendering(collector);

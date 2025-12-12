@@ -14,7 +14,6 @@ import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 
 public class EditBidPopup extends AbstractPopupScreen {
 	private DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
@@ -27,7 +26,7 @@ public class EditBidPopup extends AbstractPopupScreen {
 
 	private boolean packetSent = false;
 
-	public EditBidPopup(AuctionViewScreen auctionViewScreen, @NotNull SignBlockEntity signBlockEntity, boolean signFront, String minimumBid) {
+	public EditBidPopup(AuctionViewScreen auctionViewScreen, SignBlockEntity signBlockEntity, boolean signFront, String minimumBid) {
 		super(Text.literal("Edit Bid"), auctionViewScreen);
 		this.minimumBid = minimumBid;
 		this.signBlockEntity = signBlockEntity;

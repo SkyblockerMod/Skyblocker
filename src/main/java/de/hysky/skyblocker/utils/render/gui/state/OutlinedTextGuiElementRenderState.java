@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui.state;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.mixins.accessors.TextRendererAccessor;
 import net.minecraft.client.font.BakedGlyph;
@@ -14,10 +14,8 @@ import net.minecraft.text.OrderedText;
 
 public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState {
 	private final int outlineColor;
-	@Nullable
-	private OutlineGlyphDrawable preparation;
-	@Nullable
-	private ScreenRect bounds;
+	private @Nullable OutlineGlyphDrawable preparation;
+	private @Nullable ScreenRect bounds;
 
 	public OutlinedTextGuiElementRenderState(
 			TextRenderer textRenderer,
@@ -28,8 +26,9 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 			int color,
 			int outlineColor,
 			boolean shadow,
+			boolean trackEmpty,
 			ScreenRect clipBounds) {
-		super(textRenderer, orderedText, matrix, x, y, color, 0, shadow, clipBounds);
+		super(textRenderer, orderedText, matrix, x, y, color, 0, shadow, trackEmpty, clipBounds);
 		this.outlineColor = outlineColor;
 	}
 
@@ -38,7 +37,7 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 	 */
 	private GlyphDrawable prepareOutline() {
 		TextRendererAccessor accessor = (TextRendererAccessor) this.textRenderer;
-		TextRenderer.Drawer drawer = this.textRenderer.new Drawer(0.0f, 0.0f, this.outlineColor, false);
+		TextRenderer.Drawer drawer = this.textRenderer.new Drawer(0.0f, 0.0f, this.outlineColor, false, this.trackEmpty);
 
 		for (int i = -1; i <= 1; i++) {
 			for (int j = -1; j <= 1; j++) {
@@ -62,7 +61,7 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 	}
 
 	private GlyphDrawable prepareText() {
-		GlyphDrawable textPreparation = this.textRenderer.prepare(this.orderedText, (float) this.x, (float) this.y, this.color, this.shadow, this.backgroundColor);
+		GlyphDrawable textPreparation = this.textRenderer.prepare(this.orderedText, (float) this.x, (float) this.y, this.color, this.shadow, this.trackEmpty, this.backgroundColor);
 
 		ScreenRect screenRect = textPreparation.getScreenRect();
 		if (screenRect != null) {
@@ -82,9 +81,8 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 		return this.preparation;
 	}
 
-	@Nullable
 	@Override
-	public ScreenRect bounds() {
+	public @Nullable ScreenRect bounds() {
 		this.prepare();
 
 		return this.bounds;

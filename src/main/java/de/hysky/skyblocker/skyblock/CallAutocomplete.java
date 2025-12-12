@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.google.gson.JsonParser;
@@ -28,8 +28,7 @@ import net.minecraft.command.CommandSource;
 
 public class CallAutocomplete {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> commandNode;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> commandNode;
 
 	@Init
 	public static void init() {

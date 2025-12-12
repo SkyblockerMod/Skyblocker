@@ -40,9 +40,10 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * Manager class for {@link SimpleContainerSolver}s like terminal solvers and experiment solvers. To add a new gui solver, extend {@link SimpleContainerSolver} and register it in {@link #ContainerSolverManager()}.
@@ -77,10 +78,8 @@ public class ContainerSolverManager {
 			AccessoriesContainerSolver.INSTANCE,
 			new AnvilHelper(),
 	};
-	@Nullable
-	private static ContainerSolver currentSolver = null;
-	@Nullable
-	private static List<ColorHighlight> highlights;
+	private static @Nullable ContainerSolver currentSolver = null;
+	private static @Nullable List<ColorHighlight> highlights;
 	/**
 	 * Useful for keeping track of a solver's state in a Screen instance, such as if Hypixel closes & reopens a screen after every click (as they do with terminals).
 	 */
@@ -88,8 +87,7 @@ public class ContainerSolverManager {
 
 	private ContainerSolverManager() {}
 
-	@Nullable
-	public static ContainerSolver getCurrentSolver() {
+	public static @Nullable ContainerSolver getCurrentSolver() {
 		return currentSolver;
 	}
 

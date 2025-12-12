@@ -12,8 +12,9 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
-import org.jetbrains.annotations.Nullable;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 public class ColorTooltip extends SimpleTooltipAdder {
 	private static final long WITHER_GLITCHED_AFTER_DATE = 1605830400000L;

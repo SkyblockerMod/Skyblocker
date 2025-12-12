@@ -13,7 +13,6 @@ public class SkyblockerRenderPipelines {
 	/** Similar to {@link RenderPipelines#DEBUG_FILLED_BOX} */
 	public static final RenderPipeline FILLED_THROUGH_WALLS = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
 			.withLocation(SkyblockerMod.id("pipeline/debug_filled_box_through_walls"))
-			.withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP)
 			.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
 			.build());
 	/** Similar to {@link RenderPipelines#LINES} */

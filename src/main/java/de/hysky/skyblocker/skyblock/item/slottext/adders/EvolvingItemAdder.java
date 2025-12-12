@@ -8,13 +8,13 @@ import de.hysky.skyblocker.utils.RegexUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
 
 // Evolving items are those that get upgraded after holding them in your inventory for a certain amount of time.
 public class EvolvingItemAdder extends SimpleSlotTextAdder {
@@ -29,7 +29,7 @@ public class EvolvingItemAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		switch (stack.getSkyblockId()) {
 			case "NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE", "MOBY_DUCK" -> {
 				return actualLogic(stack, "Current Bonus: ");

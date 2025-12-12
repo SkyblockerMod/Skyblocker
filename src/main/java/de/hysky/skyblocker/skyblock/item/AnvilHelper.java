@@ -8,9 +8,10 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 public class AnvilHelper extends SimpleContainerSolver {
 	public AnvilHelper() {
@@ -26,8 +27,7 @@ public class AnvilHelper extends SimpleContainerSolver {
 		return List.of(ColorHighlight.red(13));
 	}
 
-	@Nullable
-	private NbtCompound getEnchantments(ItemStack stack) {
+	private @Nullable NbtCompound getEnchantments(ItemStack stack) {
 		NbtCompound nbt = ItemUtils.getCustomData(stack);
 		if (nbt.isEmpty() || !nbt.contains("enchantments")) return null;
 		return nbt.getCompoundOrEmpty("enchantments");

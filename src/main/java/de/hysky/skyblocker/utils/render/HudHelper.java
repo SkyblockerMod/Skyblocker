@@ -86,7 +86,7 @@ public class HudHelper {
 		if (CaxtonCompatibility.drawOutlinedText(context, text, x, y, color, outlineColor)) return;
 		if (ModernUICompatibility.drawOutlinedText(context, text, outlineText, x, y, color, outlineColor)) return;
 
-		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text, new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, context.scissorStack.peekLast());
+		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text, new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, false, context.scissorStack.peekLast());
 		context.state.addText(renderState);
 	}
 
@@ -94,7 +94,8 @@ public class HudHelper {
 		return x >= x1 && x <= x2 && y >= y1 && y <= y2;
 	}
 
-	// Temp fix for this?
+	// 1.21.10 Port: Temp fix for this?
+	// 1.21.11 Port: "nothing is more permanent than a temporary solution"
 	public static boolean hasShiftDown() {
 		return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
 	}

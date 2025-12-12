@@ -302,7 +302,10 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	}
 
 	private static MultilineTextWidget createTextWidget(Text text, TextRenderer textRenderer) {
-		return new MultilineTextWidget(text, textRenderer).setStyleConfig(true, s -> {});
+		MultilineTextWidget widget = new MultilineTextWidget(text, textRenderer);
+		widget.onClick(s -> {});
+
+		return widget;
 	}
 
 	public interface LayoutAppender {

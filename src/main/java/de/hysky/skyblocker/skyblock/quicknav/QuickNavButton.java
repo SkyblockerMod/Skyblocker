@@ -14,7 +14,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.navigation.GuiNavigation;
 import net.minecraft.client.gui.navigation.GuiNavigationPath;
 import net.minecraft.client.gui.screen.PopupScreen;
@@ -33,7 +32,7 @@ import net.minecraft.util.math.ColorHelper;
 
 import java.time.Duration;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Environment(value = EnvType.CLIENT)
 public class QuickNavButton extends ClickableWidget {
@@ -69,8 +68,8 @@ public class QuickNavButton extends ClickableWidget {
 		this.renderInFront = renderInFront;
 	}
 
-	public int getAlpha() {
-		return alpha;
+	public float getAlpha() {
+		return alpha / 255f;
 	}
 
 	/**
@@ -152,8 +151,7 @@ public class QuickNavButton extends ClickableWidget {
 	 * manually drawn and the click logic is manual as well. If that ever changes, this should be adjusted to match the new vanilla behaviour.
 	 */
 	@Override
-	@Nullable
-	public GuiNavigationPath getNavigationPath(GuiNavigation navigation) {
+	public @Nullable GuiNavigationPath getNavigationPath(GuiNavigation navigation) {
 		return null;
 	}
 
@@ -190,9 +188,7 @@ public class QuickNavButton extends ClickableWidget {
 		int yOffset = this.index < 7 ? 1 : -1;
 		context.drawItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
 
-		if (this.isHovered()) {
-			context.setCursor(StandardCursors.POINTING_HAND);
-		}
+		this.setCursor(context);
 	}
 
 	@Override

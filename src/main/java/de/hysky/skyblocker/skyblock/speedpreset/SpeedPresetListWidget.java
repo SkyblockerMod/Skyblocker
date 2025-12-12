@@ -15,12 +15,13 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.jspecify.annotations.Nullable;
 
 public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidget.AbstractEntry> {
 
@@ -173,8 +174,7 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 			SimplePositioningWidget.setPos(grid, 0, 0, width, itemHeight, 0.5f, 0.5f);
 		}
 
-		@Nullable
-		protected ObjectIntPair<String> getMapping() {
+		protected @Nullable ObjectIntPair<String> getMapping() {
 			if (isEmpty()) return null;
 			try {
 				return ObjectIntPair.of(titleInput.getText(), Integer.parseInt(speedInput.getText()));

@@ -47,9 +47,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.Codecs;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.apache.commons.lang3.Strings;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +105,7 @@ public final class ItemUtils {
 	 * @return The {@link DataComponentTypes#CUSTOM_DATA custom data} of the itemstack,
 	 *         or an empty {@link NbtCompound} if the itemstack is missing a custom data component
 	 */
-	public static @NotNull NbtCompound getCustomData(@NotNull ComponentHolder stack) {
+	public static NbtCompound getCustomData(ComponentHolder stack) {
 		return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
 	}
 
@@ -116,7 +115,7 @@ public final class ItemUtils {
 	 * @param stack the item stack to get the internal name from
 	 * @return an optional containing the Skyblock item id of the item stack
 	 */
-	public static @NotNull Optional<String> getItemIdOptional(@NotNull ComponentHolder stack) {
+	public static Optional<String> getItemIdOptional(ComponentHolder stack) {
 		NbtCompound customData = getCustomData(stack);
 		return customData.getString(ID);
 	}
@@ -130,7 +129,7 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getSkyblockId()}
 	 */
 	@Deprecated(since = "5.8.0")
-	public static @NotNull String getItemId(@NotNull ComponentHolder stack) {
+	public static String getItemId(ComponentHolder stack) {
 		return getCustomData(stack).getString(ID, "");
 	}
 
@@ -140,7 +139,7 @@ public final class ItemUtils {
 	 * @param stack the item stack to get the UUID from
 	 * @return an optional containing the UUID of the item stack
 	 */
-	public static @NotNull Optional<String> getItemUuidOptional(@NotNull ComponentHolder stack) {
+	public static Optional<String> getItemUuidOptional(ComponentHolder stack) {
 		NbtCompound customData = getCustomData(stack);
 		return customData.getString(UUID);
 	}
@@ -154,7 +153,7 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getUuid()}
 	 */
 	@Deprecated(since = "5.8.0")
-	public static @NotNull String getItemUuid(@NotNull ComponentHolder stack) {
+	public static String getItemUuid(ComponentHolder stack) {
 		return getCustomData(stack).getString(UUID, "");
 	}
 
@@ -165,7 +164,7 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getSkyblockApiId()} instead
 	 */
 	@Deprecated(since = "5.8.0")
-	public static @NotNull String getSkyblockApiId(@NotNull ComponentHolder itemStack) {
+	public static String getSkyblockApiId(ComponentHolder itemStack) {
 		NbtCompound customData = getCustomData(itemStack);
 		String id = customData.getString(ID, "");
 
@@ -243,7 +242,7 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getNeuName()} instead
 	 */
 	@Deprecated(since = "5.8.0")
-	public static @NotNull String getNeuId(ItemStack stack) {
+	public static String getNeuId(ItemStack stack) {
 		if (stack == null) return "";
 		String id = stack.getSkyblockId();
 		NbtCompound customData = ItemUtils.getCustomData(stack);
@@ -284,7 +283,6 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getPetInfo()} instead
 	 */
 	@Deprecated(since = "5.8.0")
-	@NotNull
 	public static PetInfo getPetInfo(ItemStack stack) {
 		if (!stack.getSkyblockId().equals("PET")) return PetInfo.EMPTY;
 
@@ -311,14 +309,14 @@ public final class ItemUtils {
 	 * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
 	 * and the {@code right boolean} indicating if the price was based on complete data.
 	 */
-	public static @NotNull DoubleBooleanPair getItemPrice(@NotNull ItemStack stack) {
+	public static DoubleBooleanPair getItemPrice(ItemStack stack) {
 		return getItemPrice(stack.getSkyblockApiId(), false);
 	}
 
 	/**
 	 * @see #getItemPrice(String, boolean)
 	 */
-	public static @NotNull DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId) {
+	public static DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId) {
 		return getItemPrice(skyblockApiId, false);
 	}
 
@@ -328,7 +326,7 @@ public final class ItemUtils {
 	 * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
 	 * and the {@code right boolean} indicating if the price was based on complete data.
 	 */
-	public static @NotNull DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice) {
+	public static DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice) {
 		Object2ObjectMap<String, BazaarProduct> bazaarPrices = TooltipInfoType.BAZAAR.getData();
 		Object2DoubleMap<String> lowestBinPrices = TooltipInfoType.LOWEST_BINS.getData();
 
@@ -379,13 +377,12 @@ public final class ItemUtils {
 		return ObtainedDateTooltip.getTimestamp(stack);
 	}
 
-	public static boolean hasCustomDurability(@NotNull ItemStack stack) {
+	public static boolean hasCustomDurability(ItemStack stack) {
 		NbtCompound customData = getCustomData(stack);
 		return !customData.isEmpty() && (customData.contains("drill_fuel") || customData.getString(ID, "").equals("PICKONIMBUS"));
 	}
 
-	@Nullable
-	public static IntIntPair getDurability(@NotNull ItemStack stack) {
+	public static @Nullable IntIntPair getDurability(ItemStack stack) {
 		NbtCompound customData = getCustomData(stack);
 		if (customData.isEmpty()) return null;
 
@@ -411,8 +408,7 @@ public final class ItemUtils {
 	 * Gets the first line of the lore that contains the specified substring.
 	 * @return The first line of the lore that contains the substring, or {@code null} if no line contains the substring.
 	 */
-	@Nullable
-	public static String getLoreLineContains(ItemStack stack, String substring) {
+	public static @Nullable String getLoreLineContains(ItemStack stack, String substring) {
 		for (String line : stack.skyblocker$getLoreStrings()) {
 			if (line.contains(substring)) {
 				return line;
@@ -426,8 +422,7 @@ public final class ItemUtils {
 	 * Gets the first line of the lore that matches the specified predicate.
 	 * @return The first line of the lore that matches the predicate, or {@code null} if no line matches.
 	 */
-	@Nullable
-	public static String getLoreLineIf(ItemStack stack, Predicate<String> predicate) {
+	public static @Nullable String getLoreLineIf(ItemStack stack, Predicate<String> predicate) {
 		for (String line : stack.skyblocker$getLoreStrings()) {
 			if (predicate.test(line)) {
 				return line;
@@ -441,8 +436,7 @@ public final class ItemUtils {
 	 * Gets the first line of the lore that matches the specified pattern, using {@link Matcher#matches()}.
 	 * @return A matcher that contains match results if the pattern was found in the lore, otherwise {@code null}.
 	 */
-	@Nullable
-	public static Matcher getLoreLineIfMatch(ItemStack stack, Pattern pattern) {
+	public static @Nullable Matcher getLoreLineIfMatch(ItemStack stack, Pattern pattern) {
 		return RegexListUtils.matchInList(stack.skyblocker$getLoreStrings(), pattern);
 	}
 
@@ -460,8 +454,7 @@ public final class ItemUtils {
 	 * @param stack the stack to search the lore of
 	 * @return A {@link Matcher matcher} that contains match results if the pattern was found in the lore, otherwise {@code null}.
 	 */
-	@Nullable
-	public static Matcher getLoreLineIfContainsMatch(ItemStack stack, Pattern pattern) {
+	public static @Nullable Matcher getLoreLineIfContainsMatch(ItemStack stack, Pattern pattern) {
 		return RegexListUtils.findInList(stack.skyblocker$getLoreStrings(), pattern);
 	}
 
@@ -469,15 +462,15 @@ public final class ItemUtils {
 	 * @deprecated Consider using {@link ItemStack#skyblocker$getLoreStrings()} which caches text to string conversions.
 	 */
 	@Deprecated
-	public static @NotNull List<Text> getLore(ItemStack stack) {
+	public static List<Text> getLore(ItemStack stack) {
 		return stack.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT).styledLines();
 	}
 
-	public static @NotNull PropertyMap propertyMapWithTexture(String textureValue) {
+	public static PropertyMap propertyMapWithTexture(String textureValue) {
 		return Codecs.GAME_PROFILE_PROPERTY_MAP.parse(JsonOps.INSTANCE, JsonParser.parseString("[{\"name\":\"textures\",\"value\":\"" + textureValue + "\"}]")).getOrThrow();
 	}
 
-	public static @NotNull String getHeadTexture(@NotNull ItemStack stack) {
+	public static String getHeadTexture(ItemStack stack) {
 		if (!stack.isOf(Items.PLAYER_HEAD) || !stack.contains(DataComponentTypes.PROFILE)) return "";
 
 		ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
@@ -490,24 +483,24 @@ public final class ItemUtils {
 				.orElse("");
 	}
 
-	public static @NotNull Optional<String> getHeadTextureOptional(ItemStack stack) {
+	public static Optional<String> getHeadTextureOptional(ItemStack stack) {
 		String texture = getHeadTexture(stack);
 		if (texture.isBlank()) return Optional.empty();
 		return Optional.of(texture);
 	}
 
-	public static @NotNull String toTextureBase64(String textureUUID) {
+	public static String toTextureBase64(String textureUUID) {
 		//noinspection HttpUrlsUsage
 		String str = "{textures:{SKIN:{url:\"http://textures.minecraft.net/texture/"+textureUUID+"\"}}}";
 		return Base64.getEncoder().encodeToString(str.getBytes());
 	}
 
-	public static @NotNull ItemStack createSkull(String textureBase64) {
+	public static ItemStack createSkull(String textureBase64) {
 		GameProfile profile = new GameProfile(java.util.UUID.randomUUID(), "a", propertyMapWithTexture(textureBase64));
 		return createSkull(profile);
 	}
 
-	public static @NotNull ItemStack createSkull(GameProfile profile) {
+	public static ItemStack createSkull(GameProfile profile) {
 		try {
 			ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
 			stack.set(DataComponentTypes.PROFILE, ProfileComponent.ofStatic(profile));
@@ -517,18 +510,18 @@ public final class ItemUtils {
 		}
 	}
 
-	public static @NotNull ItemStack getSkyblockerStack() {
+	public static ItemStack getSkyblockerStack() {
 		return createSkull("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=");
 	}
 
-	public static @NotNull ItemStack getSkyblockerForgeStack() {
+	public static ItemStack getSkyblockerForgeStack() {
 		return createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzJkZGQ4OWE2YWU5NTdmNzY2ZDMwMDAxMWZmNDQ3MTQ4MWMzYmI2MWI2NzYwNzhhOGM2YzNjNDA4MzIwMWI1YzIifX19");
 	}
 
 	/**
 	 * Utility method.
 	 */
-	public static @NotNull String getConcatenatedLore(@NotNull ItemStack item) {
+	public static String getConcatenatedLore(ItemStack item) {
 		return concatenateLore(getLore(item));
 	}
 
@@ -536,7 +529,7 @@ public final class ItemUtils {
 	 * Concatenates the lore of an item into one string.
 	 * This is useful in case some pattern we're looking for is split into multiple lines, which would make it harder to regex.
 	 */
-	public static @NotNull String concatenateLore(@NotNull List<Text> lore) {
+	public static String concatenateLore(List<Text> lore) {
 		StringBuilder stringBuilder = new StringBuilder();
 		for (int i = 0; i < lore.size(); i++) {
 			stringBuilder.append(lore.get(i).getString());
@@ -562,8 +555,7 @@ public final class ItemUtils {
 	 * @param lines The tooltip lines to search in. This isn't equivalent to the item's lore.
 	 * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
 	 */
-	@NotNull
-	public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<String> lines) {
+	public static OptionalInt getItemCountInSack(ItemStack itemStack, List<String> lines) {
 		return getItemCountInSack(itemStack, lines, false);
 	}
 
@@ -575,10 +567,9 @@ public final class ItemUtils {
 	 * @param isLore    Whether the lines are from the item's lore or not. This is useful to figure out which line to look at, as lore and tooltip lines are different due to the first line being the item's name.
 	 * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
 	 */
-	@NotNull
-	public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<String> lines, boolean isLore) {
+	public static OptionalInt getItemCountInSack(ItemStack itemStack, List<String> lines, boolean isLore) {
 		// Gemstones sack is a special case, it has a different 2nd line.
-		if (lines.size() < 2 || !StringUtils.endsWithAny(lines.get(isLore ? 0 : 1), "Sack", "Gemstones")) {
+		if (lines.size() < 2 || !Strings.CS.endsWithAny(lines.get(isLore ? 0 : 1), "Sack", "Gemstones")) {
 			return OptionalInt.empty();
 		}
 
@@ -611,8 +602,7 @@ public final class ItemUtils {
 	 * @param itemStack The item stack.
 	 * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
 	 */
-	@NotNull
-	public static OptionalInt getItemCountInStash(@NotNull ItemStack itemStack) {
+	public static OptionalInt getItemCountInStash(ItemStack itemStack) {
 		return getItemCountInStash(itemStack.getName());
 	}
 
@@ -621,16 +611,14 @@ public final class ItemUtils {
 	 * @param itemName The name of the item to look in.
 	 * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
 	 */
-	@NotNull
-	public static OptionalInt getItemCountInStash(@NotNull Text itemName) {
+	public static OptionalInt getItemCountInStash(Text itemName) {
 		return RegexUtils.findIntFromMatcher(STASH_COUNT_PATTERN.matcher(itemName.getString()));
 	}
 
 	/**
 	 * Finds the number of shards the player owns inside of the hunting box.
 	 */
-	@NotNull
-	public static OptionalInt getItemCountInHuntingBox(@NotNull ItemStack stack) {
+	public static OptionalInt getItemCountInHuntingBox(ItemStack stack) {
 		Matcher matcher = ItemUtils.getLoreLineIfContainsMatch(stack, HUNTING_BOX_COUNT_PATTERN);
 
 		return matcher != null ? RegexUtils.parseOptionalIntFromMatcher(matcher, "shards") : OptionalInt.empty();
@@ -639,9 +627,8 @@ public final class ItemUtils {
 	/**
 	 * @deprecated Use {@link ItemStack#getSkyblockRarity()} which caches the result.
 	 */
-	@NotNull
 	@Deprecated(since = "5.8.0")
-	public static SkyblockItemRarity getItemRarity(@NotNull ItemStack stack) {
+	public static SkyblockItemRarity getItemRarity(ItemStack stack) {
 		if (stack.isEmpty()) return SkyblockItemRarity.UNKNOWN;
 
 		if (!stack.getSkyblockId().equals("PET")) {

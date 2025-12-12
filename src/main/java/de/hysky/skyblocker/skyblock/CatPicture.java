@@ -12,7 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.model.BlockStateManagers;
@@ -56,7 +56,7 @@ public class CatPicture {
 		// Render Item Frame
 		commandQueue.submitBlockStateModel(
 				matrices,
-				RenderLayer.getEntitySolidZOffsetForward(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE),
+				RenderLayers.entitySolidZOffsetForward(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE),
 				blockStateModel,
 				1f,
 				1f,
@@ -70,7 +70,7 @@ public class CatPicture {
 		matrices.translate(1, 1, 0);
 		matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180.0F));
 
-		commandQueue.submitCustom(matrices, RenderLayer.getText(TEXTURE), (matricesEntry, buffer) -> {
+		commandQueue.submitCustom(matrices, RenderLayers.text(TEXTURE), (matricesEntry, buffer) -> {
 			float z = 1F - 1 / 16f - 1 / 2048f;
 			buffer.vertex(matricesEntry, 0.0F, 1, z).color(Colors.WHITE).texture(0.0F, 1.0F).light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
 			buffer.vertex(matricesEntry, 1, 1, z).color(Colors.WHITE).texture(1.0F, 1.0F).light(LightmapTextureManager.MAX_LIGHT_COORDINATE);

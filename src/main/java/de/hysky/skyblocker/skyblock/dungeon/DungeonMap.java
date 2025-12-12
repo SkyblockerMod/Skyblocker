@@ -31,9 +31,9 @@ import net.minecraft.item.map.MapDecorationTypes;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,8 +79,7 @@ public class DungeonMap {
 	/**
 	 * @return the {@link UUID} of the hovered player head, or null if no player head is hovered.
 	 */
-	@Nullable
-	public static UUID render(DrawContext context, int x, int y, float scale, boolean fancy, int mouseX, int mouseY, @Nullable UUID enlarge) {
+	public static @Nullable UUID render(DrawContext context, int x, int y, float scale, boolean fancy, int mouseX, int mouseY, @Nullable UUID enlarge) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (client.player == null || client.world == null) return null;
 
