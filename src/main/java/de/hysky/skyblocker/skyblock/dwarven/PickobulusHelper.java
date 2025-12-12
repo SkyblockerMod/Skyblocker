@@ -290,6 +290,7 @@ public class PickobulusHelper {
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
+		if (!SkyblockerConfigManager.get().mining.enablePickobulusHelper) return;
 		for (BlockPos breakPos : breakBlocks) {
 			collector.submitOutlinedBox(breakPos, LIGHT_BLUE, 2f, false);
 		}
