@@ -11,28 +11,28 @@ import org.lwjgl.glfw.GLFW;
 import java.util.List;
 
 public class HotbarSlotLock {
-    public static KeyBinding hotbarSlotLock;
+	public static KeyBinding hotbarSlotLock;
 
-    @Init
-    public static void init() {
-        hotbarSlotLock = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.hotbarSlotLock",
-                GLFW.GLFW_KEY_H,
-                SkyblockerMod.KEYBINDING_CATEGORY
-        ));
-    }
+	@Init
+	public static void init() {
+		hotbarSlotLock = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+				"key.skyblocker.hotbarSlotLock",
+				GLFW.GLFW_KEY_H,
+				SkyblockerMod.KEYBINDING_CATEGORY
+		));
+	}
 
-    public static boolean isLocked(int slot) {
-        return SkyblockerConfigManager.get().general.lockedSlots.contains(slot);
-    }
+	public static boolean isLocked(int slot) {
+		return SkyblockerConfigManager.get().general.lockedSlots.contains(slot);
+	}
 
-    public static void handleInputEvents(ClientPlayerEntity player) {
-        while (hotbarSlotLock.wasPressed()) {
-            List<Integer> lockedSlots = SkyblockerConfigManager.get().general.lockedSlots;
-            int selected = player.getInventory().getSelectedSlot();
-            if (!isLocked(player.getInventory().getSelectedSlot())) lockedSlots.add(selected);
-            else lockedSlots.remove(Integer.valueOf(selected));
-            SkyblockerConfigManager.save();
-        }
-    }
+	public static void handleInputEvents(ClientPlayerEntity player) {
+		while (hotbarSlotLock.wasPressed()) {
+			List<Integer> lockedSlots = SkyblockerConfigManager.get().general.lockedSlots;
+			int selected = player.getInventory().getSelectedSlot();
+			if (!isLocked(player.getInventory().getSelectedSlot())) lockedSlots.add(selected);
+			else lockedSlots.remove(Integer.valueOf(selected));
+			SkyblockerConfigManager.save();
+		}
+	}
 }

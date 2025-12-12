@@ -26,7 +26,7 @@ public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 			return; // Bazaar price already displayed
 		}
 
-		int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
+		int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreStrings()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
 		NetworthResult result = NetworthCalculator.getItemNetworth(stack, count);
 

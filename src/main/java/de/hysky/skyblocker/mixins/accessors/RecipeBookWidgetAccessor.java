@@ -7,9 +7,9 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(RecipeBookWidget.class)
 public interface RecipeBookWidgetAccessor {
-    @Invoker
-    int invokeGetTop();
+	@Invoker
+	int invokeGetTop();
 
-    @Invoker
-    int invokeGetLeft();
+	@Invoker
+	int invokeGetLeft();
 }

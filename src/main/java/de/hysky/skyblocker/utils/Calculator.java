@@ -7,7 +7,12 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.util.StringIdentifiable;
 
 import java.io.Serial;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

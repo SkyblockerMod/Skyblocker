@@ -17,6 +17,6 @@ public interface InGameHudInvoker {
 	@Nullable
 	Text getOverlayMessage();
 
-    @Invoker("renderScoreboardSidebar")
-    void skyblocker$renderSidebar(DrawContext context, ScoreboardObjective objective);
+	@Invoker("renderScoreboardSidebar")
+	void skyblocker$renderSidebar(DrawContext context, ScoreboardObjective objective);
 }

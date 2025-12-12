@@ -25,6 +25,15 @@ public class DungeonEvents {
 		}
 	});
 
+	/**
+	 * Called after the dungeons run ends and the team score is being sent in chat.
+	 */
+	public static final Event<DungeonEnded> DUNGEON_ENDED = EventFactory.createArrayBacked(DungeonEnded.class, callbacks -> () -> {
+		for (DungeonEnded callback : callbacks) {
+			callback.onDungeonEnded();
+		}
+	});
+
 	public static final Event<RoomMatched> PUZZLE_MATCHED = EventFactory.createArrayBacked(RoomMatched.class, callbacks -> room -> {
 		for (RoomMatched callback : callbacks) {
 			callback.onRoomMatched(room);
@@ -50,6 +59,12 @@ public class DungeonEvents {
 	@FunctionalInterface
 	public interface DungeonStarted {
 		void onDungeonStarted();
+	}
+
+	@Environment(EnvType.CLIENT)
+	@FunctionalInterface
+	public interface DungeonEnded {
+		void onDungeonEnded();
 	}
 
 	@Environment(EnvType.CLIENT)

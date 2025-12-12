@@ -36,7 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class PartyFinderScreen extends Screen {
@@ -94,6 +99,7 @@ public class PartyFinderScreen extends Screen {
 	private int createPartyButtonSlotId = -1;
 
 	private boolean dirty = false;
+	private boolean resetScroll = false;
 	private long dirtiedTime;
 
 	public void markDirty() {
@@ -151,6 +157,7 @@ public class PartyFinderScreen extends Screen {
 		refreshButton = ButtonWidget.builder(Text.literal("⟳").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), (a) -> {
 					if (refreshSlotId != -1) {
 						clickAndWaitForServer(refreshSlotId);
+						resetScroll = true;
 					}
 				})
 				.position(searchField.getX() + searchField.getWidth() + 12 * 2, searchField.getY())
@@ -161,6 +168,7 @@ public class PartyFinderScreen extends Screen {
 		previousPageButton = ButtonWidget.builder(Text.literal("←"), (a) -> {
 					if (prevPageSlotId != -1) {
 						clickAndWaitForServer(prevPageSlotId);
+						resetScroll = true;
 					}
 				})
 				.position(searchField.getX() + searchField.getWidth(), searchField.getY())
@@ -169,6 +177,7 @@ public class PartyFinderScreen extends Screen {
 		nextPageButton = ButtonWidget.builder(Text.literal("→"), (a) -> {
 					if (nextPageSlotId != -1) {
 						clickAndWaitForServer(nextPageSlotId);
+						resetScroll = true;
 					}
 				})
 				.position(searchField.getX() + searchField.getWidth() + 12, searchField.getY())
@@ -262,6 +271,7 @@ public class PartyFinderScreen extends Screen {
 				for (int i = 0; i < handler.slots.size(); i++) {
 					context.drawItem(handler.slots.get(i).getStack(), (i % 9) * 16, (i / 9) * 16);
 				}
+				context.drawText(textRenderer, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), Colors.WHITE, true);
 			}
 		}
 		if (isWaitingForServer()) {
@@ -411,8 +421,6 @@ public class PartyFinderScreen extends Screen {
 				createPartyButton.active = true;
 			} else if (slot.getStack().isOf(Items.NETHER_STAR)) {
 				settingsButtonSlotId = slot.id;
-				if (DEBUG)
-					settingsButton.setMessage(settingsButton.getMessage().copy().append(Text.of(" " + settingsButtonSlotId)));
 			} else if (slot.getStack().isOf(Items.BOOKSHELF)) {
 				deListSlotId = slot.id;
 			} else if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
@@ -447,6 +455,11 @@ public class PartyFinderScreen extends Screen {
 			parties.add(new PartyEntry.YourParty(title, ItemUtils.getLore(yourPartyStack), this, deListSlotId));
 		}
 		this.partyEntryListWidget.setEntries(parties);
+
+		if (resetScroll) {
+			resetScroll = false;
+			partyEntryListWidget.setScrollY(0);
+		}
 	}
 
 	private boolean aborted = false;

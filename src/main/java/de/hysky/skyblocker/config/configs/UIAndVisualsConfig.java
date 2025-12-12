@@ -10,7 +10,7 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -45,7 +45,7 @@ public class UIAndVisualsConfig {
 
 	public boolean trueQuiverCount = true;
 
-    public ChestValue chestValue = new ChestValue();
+	public ChestValue chestValue = new ChestValue();
 
 	public ItemCooldown itemCooldown = new ItemCooldown();
 

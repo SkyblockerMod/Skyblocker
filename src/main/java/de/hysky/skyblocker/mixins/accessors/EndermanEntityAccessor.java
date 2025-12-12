@@ -10,8 +10,8 @@ import java.util.Optional;
 
 @Mixin(EndermanEntity.class)
 public interface EndermanEntityAccessor {
-    @Accessor
-    static TrackedData<Optional<BlockState>> getCARRIED_BLOCK() {
-        throw new UnsupportedOperationException();
-    }
+	@Accessor
+	static TrackedData<Optional<BlockState>> getCARRIED_BLOCK() {
+		throw new UnsupportedOperationException();
+	}
 }

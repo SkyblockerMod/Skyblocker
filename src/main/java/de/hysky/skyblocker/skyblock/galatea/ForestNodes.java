@@ -1,5 +1,10 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
@@ -24,8 +29,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-
-import java.util.*;
 
 public class ForestNodes {
 	private static final MinecraftClient client = MinecraftClient.getInstance();

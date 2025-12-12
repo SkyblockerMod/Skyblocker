@@ -206,6 +206,9 @@ dependencies {
 	// Apache Commons Text
 	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
 
+	// JSpecify Annotations
+	include implementation("org.jspecify:jspecify:1.0.0")
+
 	// Fabric Language Kotlin for using MoulConfig - we are still a Java-exclusive mod
 	modImplementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
 }
@@ -263,7 +266,7 @@ test {
 spotless {
 	java {
 		removeUnusedImports()
-		//indentWithTabs() // TODO: turn on when more files are converted to tabs
+		leadingSpacesToTabs()
 		trimTrailingWhitespace()
 		endWithNewline()
 		lineEndings = com.diffplug.spotless.LineEnding.UNIX
@@ -273,7 +276,7 @@ spotless {
 		target 'src/**/lang/en_us.json'
 		targetExclude 'src/**/generated/**'
 
-		gson()/*.sortByKeys()*/.indentWithSpaces(2) // TODO: turn on `sortByKeys` in the future
+		gson().sortByKeys().indentWithSpaces(2)
 		// Note: a stem is a part of a key between dots, e.g. "skyblocker.config.chat" has three stems: "skyblocker", "config", and "chat".
 		replaceRegex \
 				"Separate different first stems",
@@ -326,6 +329,9 @@ spotless {
 checkstyle {
 	toolVersion = "${checkstyle_version}"
 	configFile = rootProject.file("checkstyle.xml")
+	configProperties = [
+		"suppressionsFile": rootProject.file("checkstyle-suppressions.xml")
+	]
 }
 
 def truncateChangelog = { String text, int limit ->

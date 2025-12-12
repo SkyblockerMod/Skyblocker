@@ -13,31 +13,31 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
 public class ManiaIndicator {
-    private static final Title title = new Title("skyblocker.rift.mania", Formatting.RED);
+	private static final Title title = new Title("skyblocker.rift.mania", Formatting.RED);
 
 	public static void updateMania() {
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !SlayerManager.isInSlayerType(SlayerType.VAMPIRE) || client.player == null || client.world == null) {
-            TitleContainer.removeTitle(title);
-            return;
-        }
+			TitleContainer.removeTitle(title);
+			return;
+		}
 
 		Entity slayerEntity = SlayerManager.getSlayerBossArmorStand();
-        if (slayerEntity == null) return;
+		if (slayerEntity == null) return;
 
-        boolean anyMania = false;
+		boolean anyMania = false;
 		for (Entity entity : SlayerManager.getEntityArmorStands(slayerEntity, 2.5f)) {
-            if (entity.getDisplayName().toString().contains("MANIA")) {
-                anyMania = true;
-                BlockPos pos = client.player.getBlockPos().down();
-                boolean isGreen = client.world.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;
-                title.setText(Text.translatable("skyblocker.rift.mania").formatted(isGreen ? Formatting.GREEN : Formatting.RED));
-                TitleContainer.addTitleAndPlaySound(title);
-            }
-        }
-        if (!anyMania) {
-            TitleContainer.removeTitle(title);
-        }
-    }
+			if (entity.getDisplayName().toString().contains("MANIA")) {
+				anyMania = true;
+				BlockPos pos = client.player.getBlockPos().down();
+				boolean isGreen = client.world.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;
+				title.setText(Text.translatable("skyblocker.rift.mania").formatted(isGreen ? Formatting.GREEN : Formatting.RED));
+				TitleContainer.addTitleAndPlaySound(title);
+			}
+		}
+		if (!anyMania) {
+			TitleContainer.removeTitle(title);
+		}
+	}
 }

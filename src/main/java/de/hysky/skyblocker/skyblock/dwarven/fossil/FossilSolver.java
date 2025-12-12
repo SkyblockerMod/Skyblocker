@@ -17,7 +17,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +25,11 @@ import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.*;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.fossilName;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.minimumTiles;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.permutations;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.convertItemsToTiles;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.getFossilChance;
 
 public class FossilSolver extends SimpleContainerSolver implements TooltipAdder {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();

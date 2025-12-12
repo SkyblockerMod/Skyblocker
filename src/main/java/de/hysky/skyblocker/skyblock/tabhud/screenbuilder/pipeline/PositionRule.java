@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 
 public record PositionRule(String parent, Point parentPoint, Point thisPoint, int relativeX, int relativeY,
-						   WidgetManager.ScreenLayer screenLayer) {
+						WidgetManager.ScreenLayer screenLayer) {
 	public static final PositionRule DEFAULT = new PositionRule("screen", Point.DEFAULT, Point.DEFAULT, 5, 5, WidgetManager.ScreenLayer.DEFAULT);
 	public static final Codec<PositionRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("parent").forGetter(PositionRule::parent),
