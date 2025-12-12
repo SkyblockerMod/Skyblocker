@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -16,14 +17,15 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.Locale;
 
-import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
-
 public class InventorySearch {
+	@Nullable
 	private static HandledScreen<?> openedHandledScreen = null;
 	private static final Int2BooleanMap slotToMatch = new Int2BooleanArrayMap(64);
 	private static String search = "";
@@ -33,6 +35,7 @@ public class InventorySearch {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			UIAndVisualsConfig.InventorySearchConfig inventorySearchConfig = SkyblockerConfigManager.get().uiAndVisuals.inventorySearch;
 			if (!inventorySearchConfig.enabled.isEnabled() || !(screen instanceof HandledScreen<?> handledScreen)) return;
+			openedHandledScreen = null;
 
 			if (inventorySearchConfig.clickableText) Screens.getButtons(handledScreen).add(new SearchTextWidget(handledScreen));
 
@@ -50,7 +53,6 @@ public class InventorySearch {
 		if (handledScreen == openedHandledScreen) return;
 		openedHandledScreen = handledScreen;
 		TextFieldWidget textFieldWidget = getTextFieldWidget(handledScreen);
-		Screens.getButtons(handledScreen).add(new TextWidget(0, 5, handledScreen.width, 10, Text.literal("Search Inventory"), handledScreen.getTextRenderer()));
 		Screens.getButtons(handledScreen).addFirst(textFieldWidget);
 		Screens.getButtons(handledScreen).removeIf(button -> button instanceof SearchTextWidget); // remove search text
 		handledScreen.setFocused(textFieldWidget);
@@ -58,9 +60,9 @@ public class InventorySearch {
 		ScreenEvents.remove(handledScreen).register(InventorySearch::onScreenClosed);
 	}
 
-	private static @NotNull TextFieldWidget getTextFieldWidget(HandledScreen<?> handledScreen) {
+	private static TextFieldWidget getTextFieldWidget(HandledScreen<?> handledScreen) {
 		// Slightly modified text field widget
-		TextFieldWidget textFieldWidget = new SearchTextFieldWidget(handledScreen);
+		TextFieldWidget textFieldWidget = new SearchTextFieldWidget(handledScreen.getTextRenderer(), Text.translatable("skyblocker.inventorySearch.searchInventory"));
 		textFieldWidget.setPosition((handledScreen.width - textFieldWidget.getWidth()) / 2, 15);
 		textFieldWidget.setPlaceholder(Text.translatable("gui.socialInteractions.search_hint"));
 		textFieldWidget.setText(search); // Restore previous search
@@ -128,8 +130,19 @@ public class InventorySearch {
 	}
 
 	public static class SearchTextFieldWidget extends TextFieldWidget {
-		public SearchTextFieldWidget(HandledScreen<?> handledScreen) {
-			super(handledScreen.getTextRenderer(), 120, 20, Text.literal("Search Inventory"));
+		TextRenderer textRenderer;
+		Text message;
+
+		public SearchTextFieldWidget(TextRenderer textRenderer, Text message) {
+			super(textRenderer, 120, 20, message);
+			this.textRenderer = textRenderer;
+			this.message = message;
+		}
+
+		@Override
+		public void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+			super.renderWidget(context, mouseX, mouseY, deltaTicks);
+			context.drawCenteredTextWithShadow(textRenderer, message, getX() + width / 2, getY() - 1 - textRenderer.fontHeight, Colors.WHITE);
 		}
 
 		@Override
@@ -147,7 +160,11 @@ public class InventorySearch {
 				return false;
 			}
 
-			return super.mouseClicked(mouseX, mouseY, button);
+			if (super.mouseClicked(mouseX, mouseY, button)) {
+				setFocused(true);
+				return true;
+			}
+			return false;
 		}
 	}
 }
