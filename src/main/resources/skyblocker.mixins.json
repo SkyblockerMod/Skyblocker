@@ -9,6 +9,7 @@
     "BossBarHudMixin",
     "CactusBlockMixin",
     "CameraMixin",
+    "ChestBlockEntityMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
