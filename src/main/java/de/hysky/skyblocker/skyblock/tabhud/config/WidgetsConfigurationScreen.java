@@ -62,7 +62,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 			Map.entry("deep caverns", Location.DEEP_CAVERNS),
 			Map.entry("dwarven mines", Location.DWARVEN_MINES),
 			Map.entry("crystal hollows", Location.CRYSTAL_HOLLOWS),
-			Map.entry("the mineshaft", Location.GLACITE_MINESHAFT),
+			Map.entry("the mineshaft", Location.GLACITE_MINESHAFTS),
 			Map.entry("spider's den", Location.SPIDERS_DEN),
 			Map.entry("the end", Location.THE_END),
 			Map.entry("crimson isle", Location.CRIMSON_ISLE),

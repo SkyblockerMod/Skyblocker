@@ -94,7 +94,7 @@ public class CorpseFinder {
 	private static boolean seenDebugWarning = false;
 
 	private static void handleLocationChange(Location location) {
-		isLocationCorrect = location == Location.GLACITE_MINESHAFT;
+		isLocationCorrect = location == Location.GLACITE_MINESHAFTS;
 	}
 
 	public static void checkIfCorpse(Entity entity) {

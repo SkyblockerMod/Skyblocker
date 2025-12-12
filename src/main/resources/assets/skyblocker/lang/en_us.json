@@ -842,6 +842,9 @@
   "skyblocker.config.mining.enableDrillFuel": "Enable Drill Fuel",
   "skyblocker.config.mining.enableDrillFuel.@Tooltip": "Shows remaining fuel with the durability bar.\nShows the remaining blocks for Pickonimbus.",
 
+  "skyblocker.config.mining.enablePickobulusHelper": "Pickobulus Helper",
+  "skyblocker.config.mining.enablePickobulusHelper.@Tooltip": "Shows the blocks that will be mined when using the Pickobulus ability.",
+
   "skyblocker.config.mining.glacite": "Glacite Tunnels",
   "skyblocker.config.mining.glacite.autoShareCorpses": "Automatically Share Found Corpses In Chat",
   "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Sends a message in party chat with the location of the found corpse when you find one.",
