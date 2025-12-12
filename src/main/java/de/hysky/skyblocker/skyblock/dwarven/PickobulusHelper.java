@@ -94,7 +94,7 @@ public class PickobulusHelper {
 			Blocks.BLACK_STAINED_GLASS_PANE
 	);
 	private static final float[] LIGHT_BLUE = ColorUtils.getFloatComponents(DyeColor.LIGHT_BLUE);
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static boolean shouldRender;
 	@Nullable
@@ -134,19 +134,19 @@ public class PickobulusHelper {
 		breakBlocks.clear();
 		Arrays.fill(drops, 0);
 
-		if (client.player == null || client.world == null) {
+		if (CLIENT.player == null || CLIENT.world == null) {
 			errorMessage = Text.literal("Can't find player or world?").formatted(Formatting.RED);
 			return;
 		}
 
-		if (ItemUtils.getLoreLineContains(client.player.getMainHandStack(), "Ability: Pickobulus") == null) {
+		if (ItemUtils.getLoreLineContains(CLIENT.player.getMainHandStack(), "Ability: Pickobulus") == null) {
 			shouldRender = false;
 			errorMessage = Text.literal("Not holding a tool with pickobulus").formatted(Formatting.RED);
 			return;
 		}
 
-		Vec3d start = client.player.getEntityPos().add(0, Utils.getEyeHeight(client.player) + 0.53625, 0); // Magic number according to https://youtu.be/5hdDrr6jk4E
-		BlockHitResult blockHitResult = client.world.raycast(new RaycastContext(start, start.add(client.player.getRotationVecClient().multiply(20)), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, client.player));
+		Vec3d start = CLIENT.player.getEntityPos().add(0, Utils.getEyeHeight(CLIENT.player) + 0.53625, 0); // Magic number according to https://youtu.be/5hdDrr6jk4E
+		BlockHitResult blockHitResult = CLIENT.world.raycast(new RaycastContext(start, start.add(CLIENT.player.getRotationVecClient().multiply(20)), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, CLIENT.player));
 		if (blockHitResult.getType() != HitResult.Type.BLOCK) {
 			errorMessage = Text.literal("Not looking at a block").formatted(Formatting.RED);
 			return;
@@ -156,11 +156,12 @@ public class PickobulusHelper {
 	}
 
 	private static void calculatePickobulus(BlockPos pos) {
+		assert CLIENT.world != null;
 		BlockPos.Mutable posMutable = pos.mutableCopy().move(-4, -4, -4);
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				for (int k = 0; k < 8; k++) {
-					blocks[i][j][k] = client.world.getBlockState(posMutable);
+					blocks[i][j][k] = CLIENT.world.getBlockState(posMutable);
 					posMutable.move(Direction.SOUTH);
 				}
 				posMutable.move(0, 1, -8);
