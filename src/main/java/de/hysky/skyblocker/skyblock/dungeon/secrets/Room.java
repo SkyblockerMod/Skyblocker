@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
 public class Room implements Tickable, Renderable {
 	private static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
 	private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
-	private static final String LOCKED_CHEST = "That chest is locked!";
+	private static final String CHEST_ALREADY_OPENED = "This chest has already been searched!";
 	protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
 	protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
 	@NotNull
@@ -92,7 +92,7 @@ public class Room implements Tickable, Renderable {
 	 * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
 	 */
 	protected MatchState matchState = MatchState.MATCHING;
-	private Table<Integer, BlockPos, SecretWaypoint> secretWaypoints;
+	private Table<Integer, BlockPos, @NotNull SecretWaypoint> secretWaypoints;
 	private String name;
 	private Direction direction;
 	private Vector2ic physicalCornerPos;
@@ -549,12 +549,14 @@ public class Room implements Tickable, Renderable {
 	}
 
 	/**
-	 * Sets {@link #lastChestSecret} as missing if message equals {@link #LOCKED_CHEST}.
+	 * Marks {@link #lastChestSecret} as found if message equals {@link #CHEST_ALREADY_OPENED}.
 	 */
 	protected void onChatMessage(String message) {
-		if (LOCKED_CHEST.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
+		if (CHEST_ALREADY_OPENED.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
 			secretWaypoints.column(lastChestSecret).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
-					.ifPresent(secretWaypoint -> markSecretsAndLogInfo(secretWaypoint, false, "[Skyblocker Dungeon Secrets] Detected locked chest interaction, setting secret #{} as missing", secretWaypoint.secretIndex));
+					.ifPresent(secretWaypoint -> {
+						markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected already searched chest interaction, setting secret #{} as found", secretWaypoint.secretIndex);
+					});
 		}
 	}
 
@@ -573,8 +575,8 @@ public class Room implements Tickable, Renderable {
 	}
 
 	/**
-	 * Marks the secret at the interaction position as found when the player interacts with a chest, player head, or lever
-	 * if there is a secret at the interaction position and saves the position to {@link #lastChestSecret} if the block is a chest.
+	 * Marks the secret at the interaction position as found when the player interacts with a player head or lever.<br>
+	 * Chest secrets are only marked as found here if the block disappears (Mimic). Otherwise, chests are handled in {@link #onChestOpened(BlockPos)} and {@link #onChatMessage(String)}.
 	 *
 	 * @param world the world to get the block from
 	 * @param pos   the position of the block being interacted with
@@ -585,8 +587,11 @@ public class Room implements Tickable, Renderable {
 		if (state.isOf(Blocks.CHEST) || state.isOf(Blocks.TRAPPED_CHEST)) {
 			lastChestSecret = pos;
 			lastChestSecretTime = System.currentTimeMillis();
-			secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).filter(SecretWaypoint::isEnabled).findAny()
-					.ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
+			Scheduler.INSTANCE.schedule(() -> {
+				if (!world.getBlockState(pos).isAir()) return;
+				secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).filter(SecretWaypoint::isEnabled).findAny()
+						.ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected chest block removed, setting secret #{} as found", secretWaypoint.secretIndex));
+			}, 5);
 		} else if (state.isOf(Blocks.PLAYER_HEAD) || state.isOf(Blocks.PLAYER_WALL_HEAD)) {
 			secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).filter(SecretWaypoint::isEnabled).findAny()
 					.ifPresent(secretWaypoint -> {
@@ -603,6 +608,14 @@ public class Room implements Tickable, Renderable {
 		} else if (state.isOf(Blocks.LEVER)) {
 			secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::isLever).forEach(SecretWaypoint::setFound);
 		}
+	}
+
+	/**
+	 * Marks the chest at the position as found.
+	 */
+	protected void onChestOpened(BlockPos pos) {
+		secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).filter(SecretWaypoint::isEnabled).findAny()
+				.ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected chest opened, setting secret #{} as found", secretWaypoint.secretIndex));
 	}
 
 	/**
