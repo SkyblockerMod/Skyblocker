@@ -101,7 +101,7 @@ public class Room implements Tickable, Renderable {
 	 * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
 	 */
 	protected MatchState matchState = MatchState.MATCHING;
-	private final Table<Integer, BlockPos, @NotNull SecretWaypoint> secretWaypoints = HashBasedTable.create();
+	private final Table<Integer, BlockPos, SecretWaypoint> secretWaypoints = HashBasedTable.create();
 	private @Nullable String name;
 	private @Nullable Direction direction;
 	private @Nullable Vector2ic physicalCornerPos;
@@ -133,6 +133,7 @@ public class Room implements Tickable, Renderable {
 		return shape;
 	}
 
+	@Nullable
 	public Vector2ic getPhysicalCornerPos() {
 		return physicalCornerPos;
 	}
