@@ -88,7 +88,9 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
 
 	@Override
 	protected void drawSlot(DrawContext context, Slot slot) {
-		if (slot.id == 23 && slot.getStack().isOf(Items.BARRIER)) return;
+		ItemStack stack = slot.getStack();
+		if (slot.id == 23 && stack.isOf(Items.BARRIER)) return;
+		if (stack.isOf(Items.GRAY_STAINED_GLASS_PANE) && stack.getSkyblockId().isEmpty()) return;
 		super.drawSlot(context, slot);
 	}
 
