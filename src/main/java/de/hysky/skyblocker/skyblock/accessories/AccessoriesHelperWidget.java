@@ -37,7 +37,8 @@ import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.gui.widget.ToggleButtonWidget;
+import net.minecraft.client.gui.widget.TexturedButtonWidget;
+import net.minecraft.client.input.AbstractInput;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
@@ -45,7 +46,7 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -87,7 +88,7 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 		final int previousX = ((HandledScreenAccessor) screen).getX();
 		final int offset = Math.max(180 - previousX, 0);
 		TabButton tabButton = new TabButton(button -> {
-			boolean toggled = button.isToggled();
+			boolean toggled = button.toggled;
 			widget.visible = open = toggled;
 			int x = toggled ? previousX + offset : previousX;
 			((HandledScreenAccessor) screen).setX(x);
@@ -151,17 +152,15 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 
 		int filterWidth = layout.getWidth() - 2;
 
-		mainLayout.add(CyclingButtonWidget.<Filter>builder(f -> Text.translatable(f.toString()))
+		mainLayout.add(CyclingButtonWidget.builder(f -> Text.translatable(f.toString()), filter)
 				.values(Filter.values())
-				.initially(filter)
 				.build(0, 0, filterWidth, 16, Text.translatable("skyblocker.accessory_helper.filter"), (b, v) -> {
 					filter = v;
 					updateFilter();
 					changePage(0);
 				})
 		);
-		mainLayout.add(CyclingButtonWidget.onOffBuilder(Text.translatable("skyblocker.accessory_helper.highestTierOnly"), Text.translatable("skyblocker.accessory_helper.allTiers"))
-				.initially(showHighestTierOnly)
+		mainLayout.add(CyclingButtonWidget.onOffBuilder(Text.translatable("skyblocker.accessory_helper.highestTierOnly"), Text.translatable("skyblocker.accessory_helper.allTiers"), showHighestTierOnly)
 				.omitKeyText()
 				.build(0, 0, filterWidth, 16, ScreenTexts.EMPTY, (button, value) -> {
 					showHighestTierOnly = value;
@@ -297,17 +296,17 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 	}
 
 	// TODO abstract away this and SkyblockRecipeTabButton
-	private static class TabButton extends ToggleButtonWidget {
+	private static class TabButton extends TexturedButtonWidget {
 		private final Consumer<TabButton> onToggled;
+		private boolean toggled;
 
 		TabButton(Consumer<TabButton> onToggled) {
-			super(0, 0, 35, 27, false);
-			this.setTextures(RecipeGroupButtonWidget.TEXTURES);
+			super(35, 27, RecipeGroupButtonWidget.TEXTURES, b -> {}, ScreenTexts.EMPTY);
 			this.onToggled = onToggled;
 		}
 
 		@Override
-		public void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		public void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 			if (this.textures == null) return;
 			int x = this.getX();
 			if (this.toggled) x -= 2;
@@ -330,14 +329,12 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 		}
 
 		@Override
-		public void onClick(Click click, boolean doubled) {
-			super.onClick(click, doubled);
+		public void onPress(AbstractInput input) {
 			setToggled(!this.toggled);
 		}
 
-		@Override
 		public void setToggled(boolean toggled) {
-			super.setToggled(toggled);
+			this.toggled = toggled;
 			onToggled.accept(this);
 		}
 	}
