@@ -75,7 +75,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 	}
 
 	@Inject(method = "addDetailsToTooltip",
-			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/core/DefaultedRegistry;getId(Ljava/lang/Object;)Lnet/minecraft/resources/Identifier;")),
+			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/core/DefaultedRegistry;getKey(Ljava/lang/Object;)Lnet/minecraft/resources/Identifier;")),
 			at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", shift = At.Shift.AFTER, ordinal = 0)
 	)
 	private void skyblocker$skyblockIdTooltip(CallbackInfo ci, @Local(argsOnly = true) Consumer<Component> textConsumer) {
