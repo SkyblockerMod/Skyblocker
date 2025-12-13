@@ -21,7 +21,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.CaveSpiderEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
@@ -49,7 +49,6 @@ public class SlayerManager {
 	private static final Pattern SLAYER_TIER_PATTERN = Pattern.compile("^(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend)\\s+(I|II|III|IV|V)$");
 	private static final Pattern PATTERN_XP_NEEDED = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
 	private static final Pattern PATTERN_LVL_UP = Pattern.compile("\\s*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9]\\s*");
-	private static final Title MINIBOSS_SPAWN = new Title(Text.translatable("skyblocker.slayer.miniBossSpawnAlert").formatted(Formatting.RED));
 	private static final Title BOSS_SPAWN = new Title(Text.translatable("skyblocker.slayer.bossSpawnAlert").formatted(Formatting.RED));
 	private static @Nullable SlayerQuest slayerQuest;
 	private static @Nullable BossFight bossFight;
@@ -398,9 +397,7 @@ public class SlayerManager {
 			findBoss(armorStand);
 			bossSpawnTime = Instant.now();
 			if (SkyblockerConfigManager.get().slayers.bossSpawnAlert) {
-				TitleContainer.addTitle(BOSS_SPAWN, 20);
-				assert CLIENT.player != null;
-				CLIENT.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
+				TitleContainer.addTitleAndPlaySound(BOSS_SPAWN, 40);
 			}
 		}
 
@@ -423,13 +420,13 @@ public class SlayerManager {
 		private void onMiniboss(ArmorStandEntity armorStand, SlayerType type) {
 			if (minibossesArmorStand.contains(armorStand)) return;
 			minibossesArmorStand.add(armorStand);
+
 			Entity miniboss = findClosestMobEntity(type.mobType, armorStand);
 			if (miniboss == null) return;
 			minibosses.add(miniboss);
+
 			if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert) {
-				TitleContainer.addTitle(SlayerManager.MINIBOSS_SPAWN, 20);
-				assert CLIENT.player != null;
-				CLIENT.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
+				TitleContainer.addTitleAndPlaySound(new Title((MutableText) armorStand.getCustomName()), 40);
 			}
 		}
 	}
