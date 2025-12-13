@@ -193,7 +193,7 @@ public class PickobulusHelper {
 						case PRIVATE_ISLAND -> handleBreakable(pos, i, j, k);
 						case GOLD_MINE, DEEP_CAVERNS, DWARVEN_MINES -> handleConvertIntoBedrock(pos, state, i, j, k);
 						case CRYSTAL_HOLLOWS -> handleCrystalHollows(pos, state, i, j, k);
-						case GLACITE_MINESHAFTS -> handleGlaciteMineshafts(pos, state, i, j, k); // This does seem to be actually possible according to the API?
+						case GLACITE_MINESHAFTS -> handleGlaciteMineshafts(pos, state, i, j, k); // This doesn't seem to be actually possible according to the API?
 					}
 				}
 			}
