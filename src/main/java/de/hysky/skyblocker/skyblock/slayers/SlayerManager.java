@@ -54,7 +54,6 @@ public class SlayerManager {
 	private static @Nullable SlayerQuest slayerQuest;
 	private static @Nullable BossFight bossFight;
 
-	private static boolean slayerExpBuffActive = false;
 	private static float slayerExpBuff = 1.0f;
 
 	public static void sendTestMessage(String text) {
@@ -76,21 +75,16 @@ public class SlayerManager {
 	}
 
 	private static void onAreaChange(Area area) {
-		if (area.equals(Area.CHATEAU)) {
-			getSlayerBossInfo(false);
-		}
+		getSlayerBossInfo(false);
 	}
 
 	private static void onMayorChange() {
-		slayerExpBuffActive = false;
 		slayerExpBuff = 1.0f;
 		// TODO: Remove when Aura leaves office
 		if (MayorUtils.getActivePerks().contains("Work Smarter")) {
-			slayerExpBuffActive = true;
 			slayerExpBuff *= 1.5f;
 		}
 		if (MayorUtils.getActivePerks().contains("Slayer XP Buff")) {
-			slayerExpBuffActive = true;
 			slayerExpBuff *= 1.25f;
 		}
 	}
@@ -114,24 +108,15 @@ public class SlayerManager {
 				return true;
 			}
 			case "SLAYER QUEST STARTED!" -> {
-				if (slayerQuest == null) slayerQuest = new SlayerQuest();
 				bossFight = null;
 				return true;
 			}
-			case "NICE! SLAYER BOSS SLAIN!" -> {
+			case "NICE! SLAYER BOSS SLAIN!", "SLAYER QUEST COMPLETE!" -> {
 				if (slayerQuest != null && bossFight != null) {
-					bossFight.slain = true;
 					SlayerTimer.onBossDeath(bossFight);
 					CallMaddox.onBossKilled();
+					bossFight = null;
 				}
-				return true;
-			}
-			case "SLAYER QUEST COMPLETE!" -> {
-				if (slayerQuest != null && bossFight != null && !bossFight.slain) {
-					SlayerTimer.onBossDeath(bossFight);
-					CallMaddox.onBossKilled();
-				}
-				bossFight = null;
 				return true;
 			}
 		}
@@ -165,15 +150,10 @@ public class SlayerManager {
 		int tier = slayerQuest.slayerTier.ordinal();
 		if (tier == 0) {
 			slayerQuest.bossesNeeded = -1;
-			return;
+		} else {
+			int xpPerTier = (int) (slayerQuest.slayerType.xpPerTier[tier - 1] * slayerExpBuff);
+			slayerQuest.bossesNeeded = (int) Math.ceil((double) slayerQuest.xpRemaining / xpPerTier);
 		}
-
-		int xpPerTier = slayerQuest.slayerType.xpPerTier[tier - 1];
-		if (slayerExpBuffActive) {
-			xpPerTier = (int) (xpPerTier * slayerExpBuff);
-		}
-
-		slayerQuest.bossesNeeded = (int) Math.ceil((double) slayerQuest.xpRemaining / xpPerTier);
 	}
 
 	public static void getSlayerBossInfo(boolean checkStatus) {
@@ -182,16 +162,18 @@ public class SlayerManager {
 			for (String line : Utils.STRING_SCOREBOARD) {
 				Matcher matcher = SLAYER_TIER_PATTERN.matcher(line);
 				if (matcher.find()) {
-					if (slayerQuest == null || !matcher.group(1).equals(slayerQuest.slayerType.bossName) || !matcher.group(2).equals(slayerQuest.slayerTier.name())) {
-						slayerQuest = new SlayerQuest();
+					String bossName = matcher.group(1);
+					String bossTier = matcher.group(2);
+					if (slayerQuest == null ||
+							!bossName.equals(slayerQuest.slayerType.bossName) ||
+							!bossTier.equals(slayerQuest.slayerTier.name())) {
+						slayerQuest = new SlayerQuest(SlayerType.fromBossName(bossName), SlayerTier.valueOf(bossTier));
 					}
-					slayerQuest.slayerType = SlayerType.fromBossName(matcher.group(1));
-					slayerQuest.slayerTier = SlayerTier.valueOf(matcher.group(2));
 				} else if (line.equals("Slay the boss!") && !isBossSpawned()) {
 					bossFight = new BossFight(null);
 				}
 			}
-		} catch (IndexOutOfBoundsException e) {
+		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to get slayer boss info", e);
 		}
 	}
@@ -398,7 +380,6 @@ public class SlayerManager {
 		public @Nullable ArmorStandEntity bossArmorStand;
 		public @Nullable Entity boss;
 		public Instant bossSpawnTime;
-		public boolean slain = false;
 		public boolean sentTime = false;
 
 		private BossFight(@Nullable ArmorStandEntity armorStand) {
@@ -417,13 +398,18 @@ public class SlayerManager {
 	}
 
 	public static class SlayerQuest {
-		public SlayerType slayerType = SlayerType.UNKNOWN;
-		public SlayerTier slayerTier = SlayerTier.UNKNOWN;
-		public List<ArmorStandEntity> minibossesArmorStand = new ArrayList<>();
-		public List<Entity> minibosses = new ArrayList<>();
+		public final SlayerType slayerType;
+		public final SlayerTier slayerTier;
+		public final List<ArmorStandEntity> minibossesArmorStand = new ArrayList<>();
+		public final List<Entity> minibosses = new ArrayList<>();
 		public int level;
 		public int xpRemaining;
 		public int bossesNeeded;
+
+		public SlayerQuest(SlayerType slayerType, SlayerTier slayerTier) {
+			this.slayerType = slayerType;
+			this.slayerTier = slayerTier;
+		}
 
 		private void onMiniboss(ArmorStandEntity armorStand, SlayerType type) {
 			if (minibossesArmorStand.contains(armorStand)) return;

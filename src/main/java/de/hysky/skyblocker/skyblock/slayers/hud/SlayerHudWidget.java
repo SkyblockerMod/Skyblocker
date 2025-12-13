@@ -56,7 +56,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public boolean shouldRender(Location location) {
-		return super.shouldRender(location) && SlayerManager.isInSlayer() && !SlayerManager.getSlayerType().isUnknown() && !SlayerManager.getSlayerTier().isUnknown();
+		return super.shouldRender(location) && SlayerManager.isInSlayer();
 	}
 
 	@Override
