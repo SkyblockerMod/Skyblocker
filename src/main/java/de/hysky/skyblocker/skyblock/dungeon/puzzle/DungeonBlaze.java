@@ -5,14 +5,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +12,13 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * This class provides functionality to render outlines around Blaze entities
@@ -31,10 +30,10 @@ public class DungeonBlaze extends DungeonPuzzle {
 	@SuppressWarnings("unused")
 	private static final DungeonBlaze INSTANCE = new DungeonBlaze();
 
-	private static @Nullable ArmorStandEntity highestBlaze = null;
-	private static @Nullable ArmorStandEntity lowestBlaze = null;
-	private static @Nullable ArmorStandEntity nextHighestBlaze = null;
-	private static @Nullable ArmorStandEntity nextLowestBlaze = null;
+	private static @Nullable ArmorStand highestBlaze = null;
+	private static @Nullable ArmorStand lowestBlaze = null;
+	private static @Nullable ArmorStand nextHighestBlaze = null;
+	private static @Nullable ArmorStand nextLowestBlaze = null;
 
 	private DungeonBlaze() {
 		super("blaze", "blaze-room-1-high", "blaze-room-1-low");
@@ -48,12 +47,12 @@ public class DungeonBlaze extends DungeonPuzzle {
 	 * Updates the state of Blaze entities and triggers the rendering process if necessary.
 	 */
 	@Override
-	public void tick(MinecraftClient client) {
+	public void tick(Minecraft client) {
 		if (!shouldSolve()) {
 			return;
 		}
-		if (client.world == null || client.player == null || !Utils.isInDungeons()) return;
-		List<ObjectIntPair<ArmorStandEntity>> blazes = getBlazesInWorld(client.world, client.player);
+		if (client.level == null || client.player == null || !Utils.isInDungeons()) return;
+		List<ObjectIntPair<ArmorStand>> blazes = getBlazesInWorld(client.level, client.player);
 		sortBlazes(blazes);
 		updateBlazeEntities(blazes);
 	}
@@ -64,9 +63,9 @@ public class DungeonBlaze extends DungeonPuzzle {
 	 * @param world The client world to search for Blaze entities.
 	 * @return A list of Blaze entities and their associated health.
 	 */
-	private static List<ObjectIntPair<ArmorStandEntity>> getBlazesInWorld(ClientWorld world, ClientPlayerEntity player) {
-		List<ObjectIntPair<ArmorStandEntity>> blazes = new ArrayList<>();
-		for (ArmorStandEntity blaze : world.getEntitiesByClass(ArmorStandEntity.class, player.getBoundingBox().expand(500D), EntityPredicates.NOT_MOUNTED)) {
+	private static List<ObjectIntPair<ArmorStand>> getBlazesInWorld(ClientLevel world, LocalPlayer player) {
+		List<ObjectIntPair<ArmorStand>> blazes = new ArrayList<>();
+		for (ArmorStand blaze : world.getEntitiesOfClass(ArmorStand.class, player.getBoundingBox().inflate(500D), EntitySelector.ENTITY_NOT_BEING_RIDDEN)) {
 			String blazeName = blaze.getName().getString();
 			if (blazeName.contains("Blaze") && blazeName.contains("/")) {
 				try {
@@ -85,7 +84,7 @@ public class DungeonBlaze extends DungeonPuzzle {
 	 *
 	 * @param blazes The list of Blaze entities to be sorted.
 	 */
-	private static void sortBlazes(List<ObjectIntPair<ArmorStandEntity>> blazes) {
+	private static void sortBlazes(List<ObjectIntPair<ArmorStand>> blazes) {
 		blazes.sort(Comparator.comparingInt(ObjectIntPair::rightInt));
 	}
 
@@ -94,7 +93,7 @@ public class DungeonBlaze extends DungeonPuzzle {
 	 *
 	 * @param blazes The sorted list of Blaze entities with associated health values.
 	 */
-	private static void updateBlazeEntities(List<ObjectIntPair<ArmorStandEntity>> blazes) {
+	private static void updateBlazeEntities(List<ObjectIntPair<ArmorStand>> blazes) {
 		if (!blazes.isEmpty()) {
 			lowestBlaze = blazes.getFirst().left();
 			int highestIndex = blazes.size() - 1;
@@ -131,18 +130,18 @@ public class DungeonBlaze extends DungeonPuzzle {
 	 * @param blaze     The Blaze entity for which to render an outline.
 	 * @param nextBlaze The next Blaze entity for connection rendering.
 	 */
-	private static void extractBlazeOutline(ArmorStandEntity blaze, @Nullable ArmorStandEntity nextBlaze, PrimitiveCollector collector) {
-		Box blazeBox = blaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
+	private static void extractBlazeOutline(ArmorStand blaze, @Nullable ArmorStand nextBlaze, PrimitiveCollector collector) {
+		AABB blazeBox = blaze.getBoundingBox().inflate(0.3, 0.9, 0.3).move(0, -1.1, 0);
 		collector.submitOutlinedBox(blazeBox, GREEN_COLOR_COMPONENTS, 5f, false);
 
 		if (nextBlaze != null && nextBlaze.isAlive() && nextBlaze != blaze) {
-			Box nextBlazeBox = nextBlaze.getBoundingBox().expand(0.3, 0.9, 0.3).offset(0, -1.1, 0);
+			AABB nextBlazeBox = nextBlaze.getBoundingBox().inflate(0.3, 0.9, 0.3).move(0, -1.1, 0);
 			collector.submitOutlinedBox(nextBlazeBox, WHITE_COLOR_COMPONENTS, 5f, false);
 
-			Vec3d blazeCenter = blazeBox.getCenter();
-			Vec3d nextBlazeCenter = nextBlazeBox.getCenter();
+			Vec3 blazeCenter = blazeBox.getCenter();
+			Vec3 nextBlazeCenter = nextBlazeBox.getCenter();
 
-			collector.submitLinesFromPoints(new Vec3d[]{blazeCenter, nextBlazeCenter}, WHITE_COLOR_COMPONENTS, 1f, 5f, false);
+			collector.submitLinesFromPoints(new Vec3[]{blazeCenter, nextBlazeCenter}, WHITE_COLOR_COMPONENTS, 1f, 5f, false);
 		}
 	}
 

@@ -1,18 +1,18 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.minecraft.client.option.GameOptions;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.client.Options;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(GameOptions.class)
+@Mixin(Options.class)
 public class GameOptionsMixin {
 
-	@ModifyReturnValue(method = "update", at = @At("TAIL"))
-	private NbtCompound updateSkyblockerKeybinds(NbtCompound nbt) {
+	@ModifyReturnValue(method = "dataFix", at = @At("TAIL"))
+	private CompoundTag updateSkyblockerKeybinds(CompoundTag nbt) {
 		skyblocker$update("wikiLookup.official", nbt);
 		skyblocker$update("wikiLookup.fandom", nbt);
 		skyblocker$update("hotbarSlotLock", nbt);
@@ -22,8 +22,8 @@ public class GameOptionsMixin {
 	}
 
 	@Unique
-	private void skyblocker$update(String key, NbtCompound nbt) {
-		NbtElement element = nbt.get("key_key." + key);
+	private void skyblocker$update(String key, CompoundTag nbt) {
+		Tag element = nbt.get("key_key." + key);
 		if (element != null && !nbt.contains("key_key.skyblocker." + key)) nbt.put("key_key.skyblocker." + key, element);
 	}
 }

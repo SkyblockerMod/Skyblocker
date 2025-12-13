@@ -6,10 +6,10 @@ import com.mojang.brigadier.context.CommandContext;
 import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.profiler.Profiler;
-import net.minecraft.util.profiler.Profilers;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.util.profiling.ProfilerFiller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,9 +56,9 @@ public class Scheduler {
 	 * @param multithreaded whether to run the task on the schedulers dedicated thread pool
 	 */
 	public void schedule(Runnable task, int delay, boolean multithreaded) {
-		if (!RenderSystem.isOnRenderThread() && MinecraftClient.getInstance() != null) {
+		if (!RenderSystem.isOnRenderThread() && Minecraft.getInstance() != null) {
 			LOGGER.warn("[Skyblocker Scheduler] Called the scheduler from the {} class on the {} thread. This will be unsupported in the future.", StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName(), Thread.currentThread().getName());
-			MinecraftClient.getInstance().send(() -> schedule(task, delay, multithreaded));
+			Minecraft.getInstance().schedule(() -> schedule(task, delay, multithreaded));
 
 			return;
 		}
@@ -78,9 +78,9 @@ public class Scheduler {
 	 * @param multithreaded whether to run the task on the schedulers dedicated thread pool
 	 */
 	public void scheduleCyclic(Runnable task, int period, boolean multithreaded) {
-		if (!RenderSystem.isOnRenderThread() && MinecraftClient.getInstance() != null) {
+		if (!RenderSystem.isOnRenderThread() && Minecraft.getInstance() != null) {
 			LOGGER.warn("[Skyblocker Scheduler] Called the scheduler from the {} class on the {} thread. This will be unsupported in the future.", StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName(), Thread.currentThread().getName());
-			MinecraftClient.getInstance().send(() -> scheduleCyclic(task, period, multithreaded));
+			Minecraft.getInstance().schedule(() -> scheduleCyclic(task, period, multithreaded));
 
 			return;
 		}
@@ -141,12 +141,12 @@ public class Scheduler {
 	 * @see #queueOpenScreenFactoryCommand(Function)
 	 */
 	public static int queueOpenScreen(Screen screen) {
-		MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screen));
+		Minecraft.getInstance().schedule(() -> Minecraft.getInstance().setScreen(screen));
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public void tick() {
-		Profiler profiler = Profilers.get();
+		ProfilerFiller profiler = Profiler.get();
 		profiler.push("skyblockerSchedulerTick");
 
 		if (tasks.containsKey(currentTick)) {
@@ -204,8 +204,8 @@ public class Scheduler {
 			task.run();
 
 			if (cyclic) {
-				if (!RenderSystem.isOnRenderThread() && MinecraftClient.getInstance() != null) {
-					MinecraftClient.getInstance().send(() -> INSTANCE.addTask(this, INSTANCE.currentTick + interval));
+				if (!RenderSystem.isOnRenderThread() && Minecraft.getInstance() != null) {
+					Minecraft.getInstance().schedule(() -> INSTANCE.addTask(this, INSTANCE.currentTick + interval));
 				} else {
 					INSTANCE.addTask(this, INSTANCE.currentTick + interval);
 				}

@@ -3,16 +3,14 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import io.github.moulberry.repo.data.NEUNpcShopRecipe;
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public class SkyblockNpcShopRecipe implements SkyblockRecipe {
@@ -93,11 +91,11 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public @Nullable ScreenPos getArrowLocation(int width, int height) {
+	public @Nullable ScreenPosition getArrowLocation(int width, int height) {
 		int centerX = getCenterX(width);
 		int centerY = height / 2;
 		if (inputs.size() == 7 || inputs.size() == 8) centerX += SLOT_SIZE;
-		return new ScreenPos(centerX - ARROW_LENGTH / 2 - 1, centerY);
+		return new ScreenPosition(centerX - ARROW_LENGTH / 2 - 1, centerY);
 	}
 
 	public ItemStack getNpcItem() {
@@ -115,8 +113,8 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public Text getExtraText() {
-		return Text.empty();
+	public Component getExtraText() {
+		return Component.empty();
 	}
 
 	@Override
@@ -126,6 +124,6 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 
 	@Override
 	public Identifier getRecipeIdentifier() {
-		return Identifier.of("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
+		return Identifier.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
 	}
 }

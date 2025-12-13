@@ -22,7 +22,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.SharedSuggestionProvider;
 
 public class RngMeterAutocomplete {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -50,9 +50,9 @@ public class RngMeterAutocomplete {
 		return literal(command)
 				.requires(source -> Utils.isOnSkyblock())
 				.then(argument("type", StringArgumentType.string())
-						.suggests((context, builder) -> CommandSource.suggestMatching(rngMeters.keySet(), builder))
+						.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.keySet(), builder))
 						.then(argument("subtype", StringArgumentType.string())
-								.suggests((context, builder) -> CommandSource.suggestMatching(rngMeters.getOrDefault(StringArgumentType.getString(context, "type"), List.of()), builder)))
+								.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.getOrDefault(StringArgumentType.getString(context, "type"), List.of()), builder)))
 				).build();
 	}
 }

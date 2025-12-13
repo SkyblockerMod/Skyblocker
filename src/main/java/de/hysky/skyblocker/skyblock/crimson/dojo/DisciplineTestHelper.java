@@ -1,12 +1,11 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
-import net.minecraft.client.MinecraftClient;
-
 import java.util.Map;
 import java.util.Objects;
+import net.minecraft.client.Minecraft;
 
 public class DisciplineTestHelper {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 
 	/**
 	 * Stores what sword is needed for the name of a zombie
@@ -39,7 +38,7 @@ public class DisciplineTestHelper {
 		if (CLIENT == null || CLIENT.player == null) {
 			return false;
 		}
-		String heldId = CLIENT.player.getMainHandStack().getSkyblockId();
+		String heldId = CLIENT.player.getMainHandItem().getSkyblockId();
 		return Objects.equals(SWORD_TO_NAME_LOOKUP.get(heldId), name);
 	}
 
@@ -52,7 +51,7 @@ public class DisciplineTestHelper {
 		if (DojoManager.currentChallenge != DojoManager.DojoChallenges.DISCIPLINE || CLIENT == null || CLIENT.player == null) {
 			return 0;
 		}
-		String heldId = CLIENT.player.getMainHandStack().getSkyblockId();
+		String heldId = CLIENT.player.getMainHandItem().getSkyblockId();
 		return SWORD_TO_COLOR_LOOKUP.getOrDefault(heldId, 0);
 	}
 }

@@ -6,9 +6,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.Uuids;
-
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.util.StringRepresentable;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
@@ -34,7 +33,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param file       The file to load/save the data from/to.
 	 * @param codec      The codec to use for serializing/deserializing the data.
 	 * @param compressed Whether the {@link JsonOps#COMPRESSED} should be used.
-	 *                   When compressed, {@link StringIdentifiable#createCodec(Supplier)} will use the ordinals instead of {@link StringIdentifiable#asString()}.
+	 *                   When compressed, {@link StringRepresentable#fromEnum(Supplier)} will use the ordinals instead of {@link StringRepresentable#getSerializedName()}.
 	 *                   When compressed, codecs built with {@link RecordCodecBuilder} will be serialized as a list instead of a map.
 	 *                   {@link JsonOps#COMPRESSED} is required for maps with non-string keys.
 	 */
@@ -57,7 +56,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param file       The file to load/save the data from/to.
 	 * @param codec      The codec to use for serializing/deserializing the data.
 	 * @param compressed Whether the {@link JsonOps#COMPRESSED} should be used.
-	 *                   When compressed, {@link StringIdentifiable#createCodec(Supplier)} will use the ordinals instead of {@link StringIdentifiable#asString()}.
+	 *                   When compressed, {@link StringRepresentable#fromEnum(Supplier)} will use the ordinals instead of {@link StringRepresentable#getSerializedName()}.
 	 *                   When compressed, codecs built with {@link RecordCodecBuilder} will be serialized as a list instead of a map.
 	 *                   {@link JsonOps#COMPRESSED} is required for maps with non-string keys.
 	 * @param loadAsync  Whether the data should be loaded asynchronously. Default true.
@@ -67,7 +66,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	public ProfiledData(Path file, Codec<T> codec, boolean compressed, boolean loadAsync, boolean saveAsync) {
 		super(file,
 				// Mojang's internal Codec implementation uses ImmutableMaps so we'll just xmap those away and type safety while we're at it :')
-				Codec.unboundedMap(Uuids.CODEC,
+				Codec.unboundedMap(UUIDUtil.AUTHLIB_CODEC,
 						Codec.unboundedMap(Codec.STRING, codec).xmap(Object2ObjectOpenHashMap::new, Function.identity())
 				).xmap(Object2ObjectOpenHashMap::new, Function.identity()),
 				new Object2ObjectOpenHashMap<>(),

@@ -6,10 +6,9 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import net.azureaaron.dandelion.systems.Option;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -38,28 +37,28 @@ public interface SlotTextAdder extends ContainerMatcher {
 		return null;
 	}
 
-	record ConfigInformation(String id, Text name, @Nullable Text... description) {
-		public ConfigInformation(String id, Text name) {
-			this(id, name, (Text[]) null);
+	record ConfigInformation(String id, Component name, @Nullable Component... description) {
+		public ConfigInformation(String id, Component name) {
+			this(id, name, (Component[]) null);
 		}
 
 		public ConfigInformation(String id, @Translatable String name) {
-			this(id, Text.translatable(name));
+			this(id, Component.translatable(name));
 		}
 
 		public ConfigInformation(String id, @Translatable String name, @Translatable String... descriptionLines) {
-			this(id, name, Stream.of(descriptionLines).map(Text::translatable).toArray(Text[]::new));
+			this(id, name, Stream.of(descriptionLines).map(Component::translatable).toArray(Component[]::new));
 		}
 
 		// Additional constructor in case the description lines have any formatting
-		public ConfigInformation(String id, @Translatable String name, Text... descriptionLines) {
-			this(id, Text.translatable(name), descriptionLines);
+		public ConfigInformation(String id, @Translatable String name, Component... descriptionLines) {
+			this(id, Component.translatable(name), descriptionLines);
 		}
 
 		public Option<Boolean> getOption(SkyblockerConfig config) {
 			return Option.<Boolean>createBuilder()
 					.name(name)
-					.description(description != null ? description : new Text[0])
+					.description(description != null ? description : new Component[0])
 					.binding(true,
 							() -> config.uiAndVisuals.slotText.textEnabled.getOrDefault(id, true),
 							newValue -> config.uiAndVisuals.slotText.textEnabled.put(id, newValue.booleanValue()))

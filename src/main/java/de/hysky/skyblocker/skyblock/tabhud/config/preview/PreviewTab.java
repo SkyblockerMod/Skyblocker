@@ -18,63 +18,61 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.render.gui.NoopInput;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tab.Tab;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.ScrollableWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.input.MouseInput;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.item.ItemStack;
-import net.minecraft.scoreboard.ScoreHolder;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardCriterion;
-import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.scoreboard.number.BlankNumberFormat;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractScrollArea;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.tabs.Tab;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.numbers.BlankFormat;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.ScoreHolder;
+import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import org.jspecify.annotations.Nullable;
 
 public class PreviewTab implements Tab {
 	public static final int RIGHT_SIDE_WIDTH = 120;
 
-	final MinecraftClient client;
+	final Minecraft client;
 	private final PreviewWidget previewWidget;
 	final WidgetsConfigurationScreen parent;
 	private final WidgetOptionsScrollable widgetOptions;
 	private final Mode mode;
-	private final ButtonWidget restorePositioning;
+	private final Button restorePositioning;
 	private WidgetManager.ScreenLayer currentScreenLayer = WidgetManager.ScreenLayer.MAIN_TAB;
-	private final ButtonWidget[] layerButtons;
-	private final TextWidget textWidget;
-	final ScoreboardObjective placeHolderObjective;
+	private final Button[] layerButtons;
+	private final StringWidget textWidget;
+	final Objective placeHolderObjective;
 	final DropdownWidget<Location> locationDropdown;
 
-	public PreviewTab(MinecraftClient client, WidgetsConfigurationScreen parent, Mode mode) {
+	public PreviewTab(Minecraft client, WidgetsConfigurationScreen parent, Mode mode) {
 		this.client = client;
 		this.parent = parent;
 		this.mode = mode;
-		this.textWidget = new TextWidget(
-				Text.literal("This tab is specifically for dungeons, as it currently doesn't have hypixel's system"),
-				client.textRenderer
+		this.textWidget = new StringWidget(
+				Component.literal("This tab is specifically for dungeons, as it currently doesn't have hypixel's system"),
+				client.font
 		);
 
 		previewWidget = new PreviewWidget(this);
@@ -82,12 +80,12 @@ public class PreviewTab implements Tab {
 		widgetOptions.setWidth(RIGHT_SIDE_WIDTH - 10);
 
 		WidgetManager.ScreenLayer[] values = WidgetManager.ScreenLayer.values();
-		layerButtons = new ButtonWidget[3];
+		layerButtons = new Button[3];
 		for (int i = 0; i < 3; i++) {
 			WidgetManager.ScreenLayer screenLayer = values[i];
-			layerButtons[i] = ButtonWidget.builder(Text.literal(screenLayer.toString()), button -> {
+			layerButtons[i] = Button.builder(Component.literal(screenLayer.toString()), button -> {
 						this.currentScreenLayer = screenLayer;
-						for (ButtonWidget layerButton : this.layerButtons) {
+						for (Button layerButton : this.layerButtons) {
 							layerButton.active = !layerButton.equals(button);
 						}
 					})
@@ -96,50 +94,50 @@ public class PreviewTab implements Tab {
 			if (screenLayer == currentScreenLayer) layerButtons[i].active = false;
 		}
 
-		restorePositioning = ButtonWidget.builder(Text.literal("Restore Positioning"), button -> {
+		restorePositioning = Button.builder(Component.literal("Restore Positioning"), button -> {
 					WidgetManager.getScreenBuilder(getCurrentLocation()).restorePositioningFromBackup();
 					updateWidgets();
 					onHudWidgetSelected(previewWidget.selectedWidget);
 				})
 				.width(100)
-				.tooltip(Tooltip.of(Text.literal("Reset positions to before you opened this screen!")))
+				.tooltip(Tooltip.create(Component.literal("Reset positions to before you opened this screen!")))
 				.build();
 
-		placeHolderObjective = new ScoreboardObjective(
+		placeHolderObjective = new Objective(
 				new Scoreboard(),
 				"temp",
-				ScoreboardCriterion.DUMMY,
-				Text.literal("SKYBLOCK"),
-				ScoreboardCriterion.RenderType.INTEGER,
+				ObjectiveCriteria.DUMMY,
+				Component.literal("SKYBLOCK"),
+				ObjectiveCriteria.RenderType.INTEGER,
 				true,
-				BlankNumberFormat.INSTANCE
+				BlankFormat.INSTANCE
 		);
 		Scoreboard scoreboard = placeHolderObjective.getScoreboard();
-		scoreboard.getOrCreateScore(createHolder(Text.literal("Random text!")), placeHolderObjective).setScore(0);
-		scoreboard.getOrCreateScore(createHolder(Text.literal("To fill in")), placeHolderObjective).setScore(-1);
-		scoreboard.getOrCreateScore(createHolder(Text.literal("The place!")), placeHolderObjective).setScore(-2);
-		scoreboard.getOrCreateScore(createHolder(Text.literal("...")), placeHolderObjective).setScore(-3);
-		scoreboard.getOrCreateScore(createHolder(Text.literal("yea")), placeHolderObjective).setScore(-4);
-		scoreboard.getOrCreateScore(createHolder(Text.literal("so how's your")), placeHolderObjective).setScore(-5);
-		scoreboard.getOrCreateScore(createHolder(Text.literal("day? great that's")), placeHolderObjective).setScore(-6);
-		scoreboard.getOrCreateScore(createHolder(Text.literal("nice to hear.")), placeHolderObjective).setScore(-7);
-		scoreboard.getOrCreateScore(createHolder(Text.literal("this should be")), placeHolderObjective).setScore(-8);
-		scoreboard.getOrCreateScore(createHolder(Text.literal("enough lines bye")), placeHolderObjective).setScore(-9);
-		scoreboard.getOrCreateScore(createHolder(Text.literal("NEVER GONNA GIVE Y-")), placeHolderObjective).setScore(-10);
+		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("Random text!")), placeHolderObjective).set(0);
+		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("To fill in")), placeHolderObjective).set(-1);
+		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("The place!")), placeHolderObjective).set(-2);
+		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("...")), placeHolderObjective).set(-3);
+		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("yea")), placeHolderObjective).set(-4);
+		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("so how's your")), placeHolderObjective).set(-5);
+		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("day? great that's")), placeHolderObjective).set(-6);
+		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("nice to hear.")), placeHolderObjective).set(-7);
+		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("this should be")), placeHolderObjective).set(-8);
+		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("enough lines bye")), placeHolderObjective).set(-9);
+		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("NEVER GONNA GIVE Y-")), placeHolderObjective).set(-10);
 
 		locationDropdown = parent.createLocationDropdown(location -> updateWidgets());
 		updateWidgets();
 	}
 
-	private ScoreHolder createHolder(Text name) {
+	private ScoreHolder createHolder(Component name) {
 		return new ScoreHolder() {
 			@Override
-			public String getNameForScoreboard() {
+			public String getScoreboardName() {
 				return name.getString().replace(' ', '_');
 			}
 
 			@Override
-			public @Nullable Text getDisplayName() {
+			public @Nullable Component getDisplayName() {
 				return name;
 			}
 		};
@@ -151,15 +149,15 @@ public class PreviewTab implements Tab {
 	}
 
 	@Override
-	public Text getTitle() {
-		return Text.literal(mode == Mode.DUNGEON ? "Dungeons Editing" : "Preview");
+	public Component getTabTitle() {
+		return Component.literal(mode == Mode.DUNGEON ? "Dungeons Editing" : "Preview");
 	}
 
 	@Override
-	public void forEachChild(Consumer<ClickableWidget> consumer) {
+	public void visitChildren(Consumer<AbstractWidget> consumer) {
 		if (mode == Mode.EDITABLE_LOCATION) consumer.accept(locationDropdown);
 		consumer.accept(previewWidget);
-		for (ButtonWidget layerButton : layerButtons) {
+		for (Button layerButton : layerButtons) {
 			consumer.accept(layerButton);
 		}
 		consumer.accept(widgetOptions);
@@ -168,34 +166,34 @@ public class PreviewTab implements Tab {
 	}
 
 	@Override
-	public void refreshGrid(ScreenRect tabArea) {
+	public void doLayout(ScreenRectangle tabArea) {
 		float ratio = Math.min((tabArea.height() - 35) / (float) (parent.height), (tabArea.width() - RIGHT_SIDE_WIDTH - 5) / (float) (parent.width));
 
-		previewWidget.setPosition(5, tabArea.getTop() + 5);
+		previewWidget.setPosition(5, tabArea.top() + 5);
 		previewWidget.setWidth((int) (parent.width * ratio));
 		previewWidget.setHeight((int) (parent.height * ratio));
 		previewWidget.ratio = ratio;
 		updateWidgets();
 
-		int startY = tabArea.getTop() + 10;
+		int startY = tabArea.top() + 10;
 		if (mode == Mode.EDITABLE_LOCATION) {
 			locationDropdown.setWidth(RIGHT_SIDE_WIDTH - 5);
-			locationDropdown.setPosition(tabArea.getRight() - locationDropdown.getWidth() - 2, startY);
+			locationDropdown.setPosition(tabArea.right() - locationDropdown.getWidth() - 2, startY);
 			locationDropdown.setMaxHeight(Math.min(180, tabArea.height() - 20));
 			startY += DropdownWidget.ENTRY_HEIGHT + 4 + 10;
 		}
 
 		for (int i = 0; i < layerButtons.length; i++) {
-			ButtonWidget layerButton = layerButtons[i];
+			Button layerButton = layerButtons[i];
 			layerButton.setPosition(tabArea.width() - layerButton.getWidth() - 10, startY + i * 15);
 		}
 		int optionsY = startY + layerButtons.length * 15 + 5;
 		widgetOptions.setPosition(tabArea.width() - widgetOptions.getWidth() - 5, optionsY);
 		widgetOptions.setHeight(tabArea.height() - optionsY - 5);
-		textWidget.setPosition((tabArea.width() - textWidget.getWidth()) / 2, tabArea.getBottom() - 9);
-		restorePositioning.setPosition(10, tabArea.getBottom() - 25);
+		textWidget.setPosition((tabArea.width() - textWidget.getWidth()) / 2, tabArea.bottom() - 9);
+		restorePositioning.setPosition(10, tabArea.bottom() - 25);
 
-		forEachChild(clickableWidget -> clickableWidget.visible = mode == Mode.DUNGEON || parent.isPreviewVisible() || parent.noHandler);
+		visitChildren(clickableWidget -> clickableWidget.visible = mode == Mode.DUNGEON || parent.isPreviewVisible() || parent.noHandler);
 		locationDropdownOpened(locationDropdown.isOpen());
 	}
 
@@ -205,34 +203,34 @@ public class PreviewTab implements Tab {
 			return;
 		}
 		if (!parent.isPreviewVisible() || parent.getHandler() == null) return;
-		List<Text> lines = new ArrayList<>();
+		List<Component> lines = new ArrayList<>();
 
 		// Preview doesn't include any players, so adding this as default
-		lines.add(Text.literal("Players (6)"));
-		lines.add(Text.literal("[PIG").formatted(Formatting.LIGHT_PURPLE)
-				.append(Text.literal("+++").formatted(Formatting.AQUA))
-				.append(Text.literal("] Technoblade").formatted(Formatting.LIGHT_PURPLE))
+		lines.add(Component.literal("Players (6)"));
+		lines.add(Component.literal("[PIG").withStyle(ChatFormatting.LIGHT_PURPLE)
+				.append(Component.literal("+++").withStyle(ChatFormatting.AQUA))
+				.append(Component.literal("] Technoblade").withStyle(ChatFormatting.LIGHT_PURPLE))
 		);
-		lines.add(Text.literal("Kevinthegreat1"));
-		lines.add(Text.literal("AzureAaron"));
-		lines.add(Text.literal("LifeIsAParadox"));
-		lines.add(Text.literal("Rime"));
-		lines.add(Text.literal("Vic is a Cat"));
-		lines.add(Text.literal("that's right i "));
-		lines.add(Text.literal("don't care about"));
-		lines.add(Text.literal("spaces MWAHAHA"));
-		lines.add(Text.literal("[MVP--] sixteencharacter"));
+		lines.add(Component.literal("Kevinthegreat1"));
+		lines.add(Component.literal("AzureAaron"));
+		lines.add(Component.literal("LifeIsAParadox"));
+		lines.add(Component.literal("Rime"));
+		lines.add(Component.literal("Vic is a Cat"));
+		lines.add(Component.literal("that's right i "));
+		lines.add(Component.literal("don't care about"));
+		lines.add(Component.literal("spaces MWAHAHA"));
+		lines.add(Component.literal("[MVP--] sixteencharacter"));
 
 		for (int i = 3; i <= 5; i++) {
-			ItemStack stack = parent.getHandler().getSlot(i).getStack();
+			ItemStack stack = parent.getHandler().getSlot(i).getItem();
 
-			for (Text text : ItemUtils.getLore(stack)) {
-				MutableText mutableText = Text.empty();
+			for (Component text : ItemUtils.getLore(stack)) {
+				MutableComponent mutableText = Component.empty();
 				AtomicBoolean foundSquare = new AtomicBoolean(false);
 
 				text.visit((style, asString) -> {
 					if (!asString.startsWith("⬛")) {
-						mutableText.append(Text.literal(asString).fillStyle(style));
+						mutableText.append(Component.literal(asString).withStyle(style));
 					} else foundSquare.set(true);
 					return Optional.empty();
 				}, Style.EMPTY);
@@ -245,8 +243,8 @@ public class PreviewTab implements Tab {
 			}
 		}
 		PlayerListManager.updateWidgetsFrom(lines.stream().map(line -> {
-			PlayerListEntry playerListEntry = new PlayerListEntry(new GameProfile(UUID.randomUUID(), ""), false);
-			playerListEntry.setDisplayName(line);
+			PlayerInfo playerListEntry = new PlayerInfo(new GameProfile(UUID.randomUUID(), ""), false);
+			playerListEntry.setTabListDisplayName(line);
 			return playerListEntry;
 		}).toList());
 	}
@@ -269,7 +267,7 @@ public class PreviewTab implements Tab {
 	void onHudWidgetSelected(@Nullable HudWidget hudWidget) {
 		widgetOptions.clearWidgets();
 		if (hudWidget == null) return;
-		if (locationDropdown.isOpen()) locationDropdown.mouseClicked(new Click(locationDropdown.getX(), locationDropdown.getY(), new MouseInput(0, 0)), false);
+		if (locationDropdown.isOpen()) locationDropdown.mouseClicked(new MouseButtonEvent(locationDropdown.getX(), locationDropdown.getY(), new MouseButtonInfo(0, 0)), false);
 		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
 		PositionRule positionRule = screenBuilder.getPositionRule(hudWidget.getInternalID());
 		int width = widgetOptions.getWidth() - 6;
@@ -282,9 +280,9 @@ public class PreviewTab implements Tab {
 
 		// TODO localization
 
-		widgetOptions.addWidget(new TextWidget(width, 9, hudWidget.getDisplayName().copy().formatted(Formatting.BOLD, Formatting.UNDERLINE), client.textRenderer));
+		widgetOptions.addWidget(new StringWidget(width, 9, hudWidget.getDisplayName().copy().withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), client.font));
 		if (positionRule == null) {
-			widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Positioning: Auto"), button -> {
+			widgetOptions.addWidget(Button.builder(Component.literal("Positioning: Auto"), button -> {
 						PositionRule rule = new PositionRule(
 								"screen",
 								PositionRule.Point.DEFAULT,
@@ -301,7 +299,7 @@ public class PreviewTab implements Tab {
 		} else {
 			// Normal hud widgets don't have auto.
 			if (hudWidget instanceof TabHudWidget) {
-				widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Positioning: Custom"), button -> {
+				widgetOptions.addWidget(Button.builder(Component.literal("Positioning: Custom"), button -> {
 							screenBuilder.setPositionRule(hudWidget.getInternalID(), null);
 							updateWidgets();
 							onHudWidgetSelected(hudWidget);
@@ -312,7 +310,7 @@ public class PreviewTab implements Tab {
 
 			String ye = "Layer: " + positionRule.screenLayer().toString();
 
-			widgetOptions.addWidget(ButtonWidget.builder(Text.literal(ye), button -> {
+			widgetOptions.addWidget(Button.builder(Component.literal(ye), button -> {
 				ScreenBuilder builder = WidgetManager.getScreenBuilder(getCurrentLocation());
 				PositionRule rule = builder.getPositionRuleOrDefault(hudWidget.getInternalID());
 				WidgetManager.ScreenLayer newLayer = EnumUtils.cycle(rule.screenLayer());
@@ -326,7 +324,7 @@ public class PreviewTab implements Tab {
 						newLayer
 				);
 				builder.setPositionRule(hudWidget.getInternalID(), newRule);
-				button.setMessage(Text.literal("Layer: " + newRule.screenLayer().toString()));
+				button.setMessage(Component.literal("Layer: " + newRule.screenLayer().toString()));
 				updateWidgets();
 				if (newLayer != WidgetManager.ScreenLayer.DEFAULT) {
 					layerButtons[newLayer.ordinal()].onPress(NoopInput.INSTANCE);
@@ -334,39 +332,39 @@ public class PreviewTab implements Tab {
 
 			}).width(width).build());
 
-			Text parentName;
+			Component parentName;
 			HudWidget parent;
 			if (positionRule.parent().equals("screen")) {
-				parentName = Text.literal("Screen");
+				parentName = Component.literal("Screen");
 			} else if ((parent = WidgetManager.widgetInstances.get(positionRule.parent())) == null) {
-				parentName = Text.literal("Unloaded Widget");
+				parentName = Component.literal("Unloaded Widget");
 			} else {
 				parentName = parent.getDisplayName();
 			}
 
-			widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Parent: ").append(parentName), button -> {
+			widgetOptions.addWidget(Button.builder(Component.literal("Parent: ").append(parentName), button -> {
 				this.previewWidget.pickParent = true;
-				button.setMessage(Text.literal("Click on a widget"));
+				button.setMessage(Component.literal("Click on a widget"));
 			}).width(width).build());
 
-			widgetOptions.addWidget(new AnchorSelectionWidget(width, Text.literal("This anchor"), false));
-			widgetOptions.addWidget(new AnchorSelectionWidget(width, Text.literal("Parent anchor"), true));
+			widgetOptions.addWidget(new AnchorSelectionWidget(width, Component.literal("This anchor"), false));
+			widgetOptions.addWidget(new AnchorSelectionWidget(width, Component.literal("Parent anchor"), true));
 
 			// apply to all locations
 			if (mode == Mode.DUNGEON) return;
 			// padding thing
-			widgetOptions.addWidget(new ClickableWidget(0, 0, width, 20, Text.empty()) {
+			widgetOptions.addWidget(new AbstractWidget(0, 0, width, 20, Component.empty()) {
 				@Override
-				protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+				protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 				}
 
 				@Override
-				protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+				protected void updateWidgetNarration(NarrationElementOutput builder) {
 				}
 			});
 		}
 
-		widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Apply Everywhere"), button -> {
+		widgetOptions.addWidget(Button.builder(Component.literal("Apply Everywhere"), button -> {
 					if (this.previewWidget.selectedWidget == null) return;
 					PositionRule toCopy = WidgetManager.getScreenBuilder(getCurrentLocation()).getPositionRule(this.previewWidget.selectedWidget.getInternalID());
 					if (toCopy == null && !(this.previewWidget.selectedWidget instanceof TabHudWidget)) return;
@@ -377,9 +375,9 @@ public class PreviewTab implements Tab {
 								toCopy
 						);
 					}
-					button.setMessage(Text.literal("Applied!"));
-					Scheduler.INSTANCE.schedule(() -> button.setMessage(Text.literal("Apply Everywhere")), 15);
-				}).width(width).tooltip(Tooltip.of(Text.literal("Apply positioning to all locations. This cannot be restored!"))).build()
+					button.setMessage(Component.literal("Applied!"));
+					Scheduler.INSTANCE.schedule(() -> button.setMessage(Component.literal("Apply Everywhere")), 15);
+				}).width(width).tooltip(Tooltip.create(Component.literal("Apply positioning to all locations. This cannot be restored!"))).build()
 		);
 	}
 
@@ -397,26 +395,26 @@ public class PreviewTab implements Tab {
 	public void locationDropdownOpened(boolean isOpen) {
 		onHudWidgetSelected(null);
 		previewWidget.selectedWidget = null;
-		for (ButtonWidget layerButton : layerButtons) {
+		for (Button layerButton : layerButtons) {
 			layerButton.visible = !isOpen;
 		}
 	}
 
-	private static class WidgetOptionsScrollable extends ScrollableWidget {
-		private final List<ClickableWidget> widgets = new ArrayList<>();
+	private static class WidgetOptionsScrollable extends AbstractScrollArea {
+		private final List<AbstractWidget> widgets = new ArrayList<>();
 		private int height = 0;
 
 		private WidgetOptionsScrollable() {
-			super(0, 0, 0, 0, Text.literal("Widget Options Scrollable"));
+			super(0, 0, 0, 0, Component.literal("Widget Options Scrollable"));
 		}
 
 		@Override
-		protected int getContentsHeightWithPadding() {
+		protected int contentHeight() {
 			return height;
 		}
 
 		@Override
-		protected double getDeltaYPerScroll() {
+		protected double scrollRate() {
 			return 6;
 		}
 
@@ -433,12 +431,12 @@ public class PreviewTab implements Tab {
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			this.drawScrollbar(context, mouseX, mouseY);
+		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+			this.renderScrollbar(context, mouseX, mouseY);
 			height = 0;
-			for (ClickableWidget widget : widgets) {
+			for (AbstractWidget widget : widgets) {
 				widget.setX(getX() + 1);
-				widget.setY((int) (getY() + 1 + height - getScrollY()));
+				widget.setY((int) (getY() + 1 + height - scrollAmount()));
 
 				height += widget.getHeight() + 1;
 				if (isNotVisible(widget.getY(), widget.getBottom(), widget.getHeight())) continue;
@@ -447,9 +445,9 @@ public class PreviewTab implements Tab {
 		}
 
 		@Override
-		public boolean mouseClicked(Click click, boolean doubled) {
-			boolean bl = checkScrollbarDragged(click);
-			for (ClickableWidget widget : widgets) {
+		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+			boolean bl = updateScrolling(click);
+			for (AbstractWidget widget : widgets) {
 				if (isNotVisible(widget.getY(), widget.getBottom(), widget.getHeight())) continue;
 				if (widget.mouseClicked(click, doubled)) return true;
 			}
@@ -457,40 +455,40 @@ public class PreviewTab implements Tab {
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+		protected void updateWidgetNarration(NarrationElementOutput builder) {
 		}
 
 		private void clearWidgets() {
 			widgets.clear();
 		}
 
-		private void addWidget(ClickableWidget clickableWidget) {
+		private void addWidget(AbstractWidget clickableWidget) {
 			widgets.add(clickableWidget);
 		}
 	}
 
-	private class AnchorSelectionWidget extends ClickableWidget {
+	private class AnchorSelectionWidget extends AbstractWidget {
 		private final boolean other;
 		private PositionRule.@Nullable Point hoveredPoint = null;
 
-		private AnchorSelectionWidget(int width, Text text, boolean other) {
+		private AnchorSelectionWidget(int width, Component text, boolean other) {
 			super(0, 0, width, 40, text);
 			this.other = other;
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 			hoveredPoint = null;
-			context.drawText(client.textRenderer, getMessage(), getX(), getY(), Colors.WHITE, true);
-			context.getMatrices().pushMatrix();
-			context.getMatrices().translate(getX(), getY() + 10);
+			context.drawString(client.font, getMessage(), getX(), getY(), CommonColors.WHITE, true);
+			context.pose().pushMatrix();
+			context.pose().translate(getX(), getY() + 10);
 			// Rectangle thing
 			int x = getWidth() / 6;
 			int w = (int) (4 * getWidth() / 6f);
 			int y = 5; // 30 / 6
 			int h = 20;
 
-			HudHelper.drawBorder(context, x, y + 1, w, h, Colors.WHITE);
+			HudHelper.drawBorder(context, x, y + 1, w, h, CommonColors.WHITE);
 			for (int i = 0; i < 3; i++) {
 				for (int j = 0; j < 3; j++) {
 					int squareX = x + (i * getWidth()) / 3;
@@ -516,14 +514,14 @@ public class PreviewTab implements Tab {
 						hoveredPoint = new PositionRule.Point(verticalPoints[j], horizontalPoints[i]);
 					}
 
-					context.fill(squareX - 1, squareY - 1, squareX + 2, squareY + 2, hoveredAnchor ? Colors.RED : selectedAnchor ? Colors.YELLOW : Colors.WHITE);
+					context.fill(squareX - 1, squareY - 1, squareX + 2, squareY + 2, hoveredAnchor ? CommonColors.RED : selectedAnchor ? CommonColors.YELLOW : CommonColors.WHITE);
 				}
 			}
-			context.getMatrices().popMatrix();
+			context.pose().popMatrix();
 		}
 
 		@Override
-		public void onClick(Click click, boolean doubled) {
+		public void onClick(MouseButtonEvent click, boolean doubled) {
 			HudWidget affectedWidget = previewWidget.selectedWidget;
 			if (hoveredPoint != null && affectedWidget != null) {
 				ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
@@ -531,11 +529,11 @@ public class PreviewTab implements Tab {
 				PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(internalID);
 				// Get the x, y of the parent's point
 				float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
-				ScreenPos startPos = WidgetPositioner.getStartPosition(oldRule.parent(), (int) (parent.width / scale), (int) (parent.height / scale), other ? hoveredPoint : oldRule.parentPoint());
-				if (startPos == null) startPos = new ScreenPos(0, 0);
+				ScreenPosition startPos = WidgetPositioner.getStartPosition(oldRule.parent(), (int) (parent.width / scale), (int) (parent.height / scale), other ? hoveredPoint : oldRule.parentPoint());
+				if (startPos == null) startPos = new ScreenPosition(0, 0);
 				// Same but for the affected widget
 				PositionRule.Point thisPoint = other ? oldRule.thisPoint() : hoveredPoint;
-				ScreenPos endPos = new ScreenPos(
+				ScreenPosition endPos = new ScreenPosition(
 						(int) (affectedWidget.getX() + thisPoint.horizontalPoint().getPercentage() * affectedWidget.getWidth()),
 						(int) (affectedWidget.getY() + thisPoint.verticalPoint().getPercentage() * affectedWidget.getHeight())
 				);
@@ -562,12 +560,12 @@ public class PreviewTab implements Tab {
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+		protected void updateWidgetNarration(NarrationElementOutput builder) {
 		}
 	}
 
 	@Override
-	public Text getNarratedHint() {
-		return Text.empty();
+	public Component getTabExtraNarration() {
+		return Component.empty();
 	}
 }

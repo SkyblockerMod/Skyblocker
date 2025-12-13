@@ -1,14 +1,13 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class ItemFilter {
 	private FilterMode currentFilterMode = FilterMode.ALL;
@@ -40,32 +39,32 @@ public class ItemFilter {
 	}
 
 	public Tooltip getTooltip() {
-		Text tooltip = Text.translatable("skyblocker.museum.hud.filter").append("\n\n").formatted(Formatting.GREEN)
+		Component tooltip = Component.translatable("skyblocker.museum.hud.filter").append("\n\n").withStyle(ChatFormatting.GREEN)
 				.append(getFilterText(FilterMode.ALL))
 				.append(getFilterText(FilterMode.WEAPONS))
 				.append(getFilterText(FilterMode.ARMOR))
 				.append(getFilterText(FilterMode.RARITIES))
-				.append("\n").append(Text.translatable("skyblocker.museum.hud.filter.switch").formatted(Formatting.YELLOW));
-		return Tooltip.of(tooltip);
+				.append("\n").append(Component.translatable("skyblocker.museum.hud.filter.switch").withStyle(ChatFormatting.YELLOW));
+		return Tooltip.create(tooltip);
 	}
 
-	private Text getFilterText(FilterMode mode) {
+	private Component getFilterText(FilterMode mode) {
 		boolean isCurrent = mode == currentFilterMode;
-		return Text.literal((isCurrent ? "➤ " : "  ")).append(mode.getDisplayName()).append("\n")
-				.formatted(isCurrent ? Formatting.AQUA : Formatting.GRAY);
+		return Component.literal((isCurrent ? "➤ " : "  ")).append(mode.getDisplayName()).append("\n")
+				.withStyle(isCurrent ? ChatFormatting.AQUA : ChatFormatting.GRAY);
 	}
 
 	public enum FilterMode {
-		ALL(new ItemStack(Items.NETHER_STAR), FILTER_ALL, Text.translatable("skyblocker.museum.hud.filter.all")),
-		WEAPONS(new ItemStack(Items.DIAMOND_SWORD), FILTER_WEAPONS, Text.translatable("skyblocker.museum.hud.filter.weapons")),
-		ARMOR(new ItemStack(Items.DIAMOND_CHESTPLATE), FILTER_ARMOR, Text.translatable("skyblocker.museum.hud.filter.armor")),
-		RARITIES(new ItemStack(Items.EMERALD), FILTER_RARITIES, Text.translatable("skyblocker.museum.hud.filter.rarities"));
+		ALL(new ItemStack(Items.NETHER_STAR), FILTER_ALL, Component.translatable("skyblocker.museum.hud.filter.all")),
+		WEAPONS(new ItemStack(Items.DIAMOND_SWORD), FILTER_WEAPONS, Component.translatable("skyblocker.museum.hud.filter.weapons")),
+		ARMOR(new ItemStack(Items.DIAMOND_CHESTPLATE), FILTER_ARMOR, Component.translatable("skyblocker.museum.hud.filter.armor")),
+		RARITIES(new ItemStack(Items.EMERALD), FILTER_RARITIES, Component.translatable("skyblocker.museum.hud.filter.rarities"));
 
 		private final ItemStack associatedItem;
 		private final UnaryOperator<List<Donation>> filterFunction;
-		private final Text displayName;
+		private final Component displayName;
 
-		FilterMode(ItemStack item, UnaryOperator<List<Donation>> function, Text displayName) {
+		FilterMode(ItemStack item, UnaryOperator<List<Donation>> function, Component displayName) {
 			this.associatedItem = item;
 			this.filterFunction = function;
 			this.displayName = displayName;
@@ -75,7 +74,7 @@ public class ItemFilter {
 			return associatedItem;
 		}
 
-		public Text getDisplayName() {
+		public Component getDisplayName() {
 			return displayName;
 		}
 

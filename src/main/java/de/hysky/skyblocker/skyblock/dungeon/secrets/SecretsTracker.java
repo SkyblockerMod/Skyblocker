@@ -11,11 +11,6 @@ import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Http.ApiResponse;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Text;
-
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +19,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Tracks the amount of secrets players get every run
@@ -101,21 +100,21 @@ public class SecretsTracker {
 	}
 
 	private static void sendResultMessage(String player, SecretData secretData) {
-		PlayerEntity playerEntity = MinecraftClient.getInstance().player;
+		Player playerEntity = Minecraft.getInstance().player;
 		if (playerEntity == null) return;
-		playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.feedback", Text.literal(player).append(" (" + DungeonPlayerManager.getClassFromPlayer(player).displayName() + ")").withColor(0xF57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))), false);
+		playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.feedback", Component.literal(player).append(" (" + DungeonPlayerManager.getClassFromPlayer(player).displayName() + ")").withColor(0xF57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))), false);
 	}
 
 	private static void sendFailureMessage() {
-		PlayerEntity playerEntity = MinecraftClient.getInstance().player;
+		Player playerEntity = Minecraft.getInstance().player;
 		if (playerEntity == null) return;
-		playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.failFeedback")), false);
+		playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.failFeedback")), false);
 	}
 
-	private static Text getCacheText(boolean cached, int cacheAge) {
+	private static Component getCacheText(boolean cached, int cacheAge) {
 		//noinspection UnnecessaryUnicodeEscape
-		return Text.literal("\u2139").styled(style -> style.withColor(cached ? 0xEAC864 : 0x218BFF).withHoverEvent(
-				new HoverEvent.ShowText(cached ? Text.translatable("skyblocker.api.cache.HIT", cacheAge) : Text.translatable("skyblocker.api.cache.MISS"))));
+		return Component.literal("\u2139").withStyle(style -> style.withColor(cached ? 0xEAC864 : 0x218BFF).withHoverEvent(
+				new HoverEvent.ShowText(cached ? Component.translatable("skyblocker.api.cache.HIT", cacheAge) : Component.translatable("skyblocker.api.cache.MISS"))));
 	}
 
 	private static String getPlayerNameAt(int index) {

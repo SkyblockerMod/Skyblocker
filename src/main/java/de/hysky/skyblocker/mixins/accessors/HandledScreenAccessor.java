@@ -1,42 +1,41 @@
 package de.hysky.skyblocker.mixins.accessors;
 
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(HandledScreen.class)
+@Mixin(AbstractContainerScreen.class)
 public interface HandledScreenAccessor {
-	@Accessor("x")
+	@Accessor("leftPos")
 	int getX();
 
-	@Accessor("y")
+	@Accessor("topPos")
 	int getY();
 
 	@Accessor
-	int getBackgroundWidth();
+	int getImageWidth();
 
 	@Accessor
-	int getBackgroundHeight();
+	int getImageHeight();
 
 	@Mutable
-	@Accessor("handler")
-	void setHandler(ScreenHandler handler);
+	@Accessor("menu")
+	void setHandler(AbstractContainerMenu handler);
 
-	@Accessor("focusedSlot")
+	@Accessor("hoveredSlot")
 	Slot getFocusedSlot();
 
 	@Accessor
-	static Identifier getSLOT_HIGHLIGHT_BACK_TEXTURE() {
+	static Identifier getSLOT_HIGHLIGHT_BACK_SPRITE() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Accessor
-	static Identifier getSLOT_HIGHLIGHT_FRONT_TEXTURE() {
+	static Identifier getSLOT_HIGHLIGHT_FRONT_SPRITE() {
 		throw new UnsupportedOperationException();
 	}
 }

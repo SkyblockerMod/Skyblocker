@@ -19,13 +19,12 @@ import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +102,7 @@ public class DungeonScore {
 	}
 
 	public static void tick() {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		if (!Utils.isInDungeons() || client.player == null) {
 			reset();
 			return;
@@ -116,11 +115,11 @@ public class DungeonScore {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270"), true);
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore270Title) {
-				client.inGameHud.setDefaultTitleFade();
-				client.inGameHud.setTitle(Text.of(SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270")));
+				client.gui.resetTitleTimes();
+				client.gui.setTitle(Component.nullToEmpty(SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270")));
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore270Sound) {
-				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+				client.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
 			}
 			sent270 = true;
 		}
@@ -138,11 +137,11 @@ public class DungeonScore {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300"), true);
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore300Title) {
-				client.inGameHud.setDefaultTitleFade();
-				client.inGameHud.setTitle(Text.of(SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300")));
+				client.gui.resetTitleTimes();
+				client.gui.setTitle(Component.nullToEmpty(SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300")));
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore300Sound) {
-				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+				client.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
 			}
 			sent300 = true;
 		}
@@ -220,7 +219,7 @@ public class DungeonScore {
 	}
 
 	public static boolean isEntityMimic(Entity entity) {
-		if (!Utils.isInDungeons() || !floorHasMimics || !(entity instanceof ZombieEntity zombie) || !zombie.isBaby()) return false;
+		if (!Utils.isInDungeons() || !floorHasMimics || !(entity instanceof Zombie zombie) || !zombie.isBaby()) return false;
 		try {
 			List<ItemStack> armor = ItemUtils.getArmor(zombie);
 			return armor.stream().allMatch(ItemStack::isEmpty);
@@ -344,7 +343,7 @@ public class DungeonScore {
 		deathCount++;
 		if (deathCount > 1) return;
 		final String whoDied = matcher.group("whodied").transform(s -> {
-			if (s.equals("You")) return MinecraftClient.getInstance().getSession().getUsername(); //This will be wrong if the dead player is called 'You' but that's unlikely
+			if (s.equals("You")) return Minecraft.getInstance().getUser().getName(); //This will be wrong if the dead player is called 'You' but that's unlikely
 			else return s;
 		});
 		ProfileUtils.fetchProfileMember(whoDied).thenAccept(player -> firstDeathHasSpiritPet = hasSpiritPet(player, whoDied));

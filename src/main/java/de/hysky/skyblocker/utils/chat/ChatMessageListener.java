@@ -30,10 +30,10 @@ import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 
 @FunctionalInterface
 public interface ChatMessageListener {
@@ -96,7 +96,7 @@ public interface ChatMessageListener {
 				return true;
 			}
 
-			ChatFilterResult result = EVENT.invoker().onMessage(message, Formatting.strip(message.getString()));
+			ChatFilterResult result = EVENT.invoker().onMessage(message, ChatFormatting.stripFormatting(message.getString()));
 
 			switch (result) {
 				case ACTION_BAR -> {
@@ -104,10 +104,10 @@ public interface ChatMessageListener {
 						return true;
 					}
 
-					ClientPlayerEntity player = MinecraftClient.getInstance().player;
+					LocalPlayer player = Minecraft.getInstance().player;
 
 					if (player != null) {
-						player.sendMessage(message, true);
+						player.displayClientMessage(message, true);
 
 						return false;
 					}
@@ -121,5 +121,5 @@ public interface ChatMessageListener {
 		});
 	}
 
-	ChatFilterResult onMessage(Text message, String asString);
+	ChatFilterResult onMessage(Component message, String asString);
 }

@@ -6,8 +6,6 @@ import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class HuntingBoxHelper extends SimpleContainerSolver {
 	private static final Pattern OWNED_PATTERN = Pattern.compile("Owned: (\\d+) Shards?");
@@ -34,11 +34,11 @@ public class HuntingBoxHelper extends SimpleContainerSolver {
 			ItemStack stack = entry.getValue();
 			if (stack.isEmpty()) continue;
 
-			List<Text> lore = ItemUtils.getLore(stack);
+			List<Component> lore = ItemUtils.getLore(stack);
 			if (lore.isEmpty()) continue;
 
 			String owned = null, syphon = null;
-			for (Text line : lore) { // We iterate manually instead of the ItemUtils helper methods because the lines are adjacent, this way we only iterate once rather than twice.
+			for (Component line : lore) { // We iterate manually instead of the ItemUtils helper methods because the lines are adjacent, this way we only iterate once rather than twice.
 				String text = line.getString();
 				if (owned == null) {
 					Matcher matcher = OWNED_PATTERN.matcher(text);

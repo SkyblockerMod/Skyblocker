@@ -15,11 +15,10 @@ import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.Bounds;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
-
 import java.util.Map;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Items;
 
 /**
  * EMI integration
@@ -50,7 +49,7 @@ public class SkyblockerEMIPlugin implements EmiPlugin {
 		registry.addExclusionArea(InventoryScreen.class, (screen, consumer) -> {
 			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return;
 			HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
-			consumer.accept(new Bounds(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+			consumer.accept(new Bounds(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
 		});
 	}
 }

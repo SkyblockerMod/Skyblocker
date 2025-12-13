@@ -2,28 +2,28 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.ItemStack;
 
-public abstract class AbstractCustomHypixelGUI<T extends ScreenHandler> extends HandledScreen<T> implements ScreenHandlerListener {
+public abstract class AbstractCustomHypixelGUI<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> implements ContainerListener {
 
 	public boolean isWaitingForServer = true;
-	public AbstractCustomHypixelGUI(T handler, PlayerInventory inventory, Text title) {
+	public AbstractCustomHypixelGUI(T handler, Inventory inventory, Component title) {
 		super(handler, inventory, title);
-		handler.addListener(this);
+		handler.addSlotListener(this);
 	}
 
 	protected void clickSlot(int slotID, int button) {
 		if (isWaitingForServer) return;
-		if (client == null) return;
-		assert this.client.interactionManager != null;
-		this.client.interactionManager.clickSlot(handler.syncId, slotID, button, SlotActionType.PICKUP, client.player);
-		handler.getCursorStack().setCount(0);
+		if (minecraft == null) return;
+		assert this.minecraft.gameMode != null;
+		this.minecraft.gameMode.handleInventoryMouseClick(menu.containerId, slotID, button, ClickType.PICKUP, minecraft.player);
+		menu.getCarried().setCount(0);
 		isWaitingForServer = true;
 	}
 
@@ -32,41 +32,41 @@ public abstract class AbstractCustomHypixelGUI<T extends ScreenHandler> extends 
 	}
 
 	public void changeHandler(AuctionHouseScreenHandler newHandler) {
-		handler.removeListener(this);
+		menu.removeSlotListener(this);
 		((HandledScreenAccessor) this).setHandler(newHandler);
-		handler.addListener(this);
+		menu.addSlotListener(this);
 	}
 
 	protected void refreshListener() {
 		// Ensure this listener is added, because listeners are removed on screen removal.
 		// This ensures this listener is added after a popup has been closed.
-		handler.removeListener(this);
-		handler.addListener(this);
+		menu.removeSlotListener(this);
+		menu.addSlotListener(this);
 	}
 
 	@Override
-	protected void refreshWidgetPositions() {
-		super.refreshWidgetPositions();
+	protected void repositionElements() {
+		super.repositionElements();
 		refreshListener();
-		for (int i = 0; i < handler.getStacks().size(); i++) {
-			onSlotChange(handler, i, handler.getStacks().get(i));
+		for (int i = 0; i < menu.getItems().size(); i++) {
+			onSlotChange(menu, i, menu.getItems().get(i));
 		}
 	}
 
 	@Override
 	public void removed() {
 		super.removed();
-		handler.removeListener(this);
+		menu.removeSlotListener(this);
 	}
 
 	@Override
-	public final void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
-		onSlotChange(this.handler, slotId, stack);
+	public final void slotChanged(AbstractContainerMenu handler, int slotId, ItemStack stack) {
+		onSlotChange(this.menu, slotId, stack);
 		isWaitingForServer = false;
 	}
 
 	protected abstract void onSlotChange(T handler, int slotID, ItemStack stack);
 
 	@Override
-	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {}
+	public void dataChanged(AbstractContainerMenu handler, int property, int value) {}
 }

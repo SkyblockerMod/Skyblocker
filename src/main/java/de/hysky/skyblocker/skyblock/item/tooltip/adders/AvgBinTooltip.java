@@ -4,13 +4,11 @@ import de.hysky.skyblocker.config.configs.GeneralConfig.Average;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public class AvgBinTooltip extends SimpleTooltipAdder {
@@ -19,7 +17,7 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		String skyblockApiId = stack.getSkyblockApiId();
 		String neuName = stack.getNeuName();
 		Average type = ItemTooltip.config.get().avg;
@@ -36,20 +34,20 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 				// "No data" line because of API not keeping old data, it causes NullPointerException
 				if (type == Average.ONE_DAY || type == Average.BOTH) {
 					lines.add(
-							Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
-									.formatted(Formatting.GOLD)
+							Component.literal(String.format("%-19s", "1 Day Avg. Price:"))
+									.withStyle(ChatFormatting.GOLD)
 									.append(!TooltipInfoType.ONE_DAY_AVERAGE.getData().containsKey(neuName)
-											? Text.literal("No data").formatted(Formatting.RED)
+											? Component.literal("No data").withStyle(ChatFormatting.RED)
 											: ItemTooltip.getCoinsMessage(TooltipInfoType.ONE_DAY_AVERAGE.getData().getDouble(neuName), stack.getCount())
 									)
 					);
 				}
 				if (type == Average.THREE_DAY || type == Average.BOTH) {
 					lines.add(
-							Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
-									.formatted(Formatting.GOLD)
+							Component.literal(String.format("%-19s", "3 Day Avg. Price:"))
+									.withStyle(ChatFormatting.GOLD)
 									.append(!TooltipInfoType.THREE_DAY_AVERAGE.getData().containsKey(neuName)
-											? Text.literal("No data").formatted(Formatting.RED)
+											? Component.literal("No data").withStyle(ChatFormatting.RED)
 											: ItemTooltip.getCoinsMessage(TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(neuName), stack.getCount())
 									)
 					);

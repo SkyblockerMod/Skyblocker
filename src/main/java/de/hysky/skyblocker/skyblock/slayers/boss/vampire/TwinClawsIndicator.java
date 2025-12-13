@@ -6,11 +6,11 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.entity.Entity;
 
 public class TwinClawsIndicator {
-	private static final Title title = new Title("skyblocker.rift.iceNow", Formatting.AQUA);
+	private static final Title title = new Title("skyblocker.rift.iceNow", ChatFormatting.AQUA);
 	private static boolean scheduled = false;
 
 	public static void updateIce() {

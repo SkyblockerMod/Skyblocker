@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.utils;
 
 import it.unimi.dsi.fastutil.chars.CharList;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 
 /**
  * Contains utilities for transforming text. These methods are from Aaron's Mod.
@@ -20,9 +20,9 @@ public class TextTransformer {
 	 * @author AzureAaron
 	 *
 	 * @param legacy The string with legacy formatting to be transformed
-	 * @return A {@link MutableText} object matching the exact formatting of the input
+	 * @return A {@link MutableComponent} object matching the exact formatting of the input
 	 */
-	public static MutableText fromLegacy(String legacy) {
+	public static MutableComponent fromLegacy(String legacy) {
 		return fromLegacy(legacy, '§', true);
 	}
 
@@ -35,12 +35,12 @@ public class TextTransformer {
 	 * @param legacyPrefix The character that prefixes the legacy formatting codes (e.g., '§' or '&')
 	 * @param override Whether to override the parent style by defaulting to false instead of null for bold, italic, underline, strikethrough, and obfuscated properties.
 	 *                 This is required to be true for item name and lore texts, or else the parent style will make the name and lore texts italic.
-	 * @return A {@link MutableText} object matching the exact formatting of the input
+	 * @return A {@link MutableComponent} object matching the exact formatting of the input
 	 */
-	public static MutableText fromLegacy(String legacy, char legacyPrefix, boolean override) {
-		MutableText newText = Text.empty();
+	public static MutableComponent fromLegacy(String legacy, char legacyPrefix, boolean override) {
+		MutableComponent newText = Component.empty();
 		StringBuilder builder = new StringBuilder();
-		Formatting formatting = null;
+		ChatFormatting formatting = null;
 		Boolean bold = override ? false : null;
 		Boolean italic = override ? false : null;
 		Boolean underline = override ? false : null;
@@ -50,11 +50,11 @@ public class TextTransformer {
 		for (int i = 0; i < legacy.length(); i++) {
 			//If we've encountered a new formatting code then append the text from the previous "sequence" and reset state
 			if (i != 0 && legacy.charAt(i - 1) == legacyPrefix && FORMAT_CODES.contains(Character.toLowerCase(legacy.charAt(i))) && !builder.isEmpty()) {
-				newText.append(Text.literal(builder.toString()).setStyle(Style.EMPTY
+				newText.append(Component.literal(builder.toString()).setStyle(Style.EMPTY
 						.withColor(formatting)
 						.withBold(bold)
 						.withItalic(italic)
-						.withUnderline(underline)
+						.withUnderlined(underline)
 						.withStrikethrough(strikethrough)
 						.withObfuscated(obfuscated)));
 
@@ -71,7 +71,7 @@ public class TextTransformer {
 			}
 
 			if (i != 0 && legacy.charAt(i - 1) == legacyPrefix) {
-				Formatting fmt = Formatting.byCode(legacy.charAt(i));
+				ChatFormatting fmt = ChatFormatting.getByCode(legacy.charAt(i));
 
 				switch (fmt) {
 					case BOLD -> bold = true;
@@ -93,11 +93,11 @@ public class TextTransformer {
 
 			// We've read the last character so append the last text with all the formatting
 			if (i == legacy.length() - 1) {
-				newText.append(Text.literal(builder.toString()).setStyle(Style.EMPTY
+				newText.append(Component.literal(builder.toString()).setStyle(Style.EMPTY
 						.withColor(formatting)
 						.withBold(bold)
 						.withItalic(italic)
-						.withUnderline(underline)
+						.withUnderlined(underline)
 						.withStrikethrough(strikethrough)
 						.withObfuscated(obfuscated)));
 			}

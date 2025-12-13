@@ -1,16 +1,15 @@
 package de.hysky.skyblocker.skyblock.item;
 
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
-
 import java.util.Arrays;
 import java.util.Locale;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 
-public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHandler {
+public class SkyblockCraftingTableScreenHandler extends ChestMenu {
 
 	private static final int[] normalSlots = new int[]{
 			10, 11, 12,     16,
@@ -26,7 +25,7 @@ public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHa
 
 	public final boolean mirrorverse;
 
-	public SkyblockCraftingTableScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, Inventory inventory, int rows) {
+	public SkyblockCraftingTableScreenHandler(MenuType<?> type, int syncId, Inventory playerInventory, Container inventory, int rows) {
 		super(type, syncId, playerInventory, inventory, rows);
 		mirrorverse = Utils.getIslandArea().toLowerCase(Locale.ENGLISH).contains("mirrorverse");
 		int[] activeSlots = mirrorverse ? riftNormalSlots : normalSlots;
@@ -35,26 +34,26 @@ public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHa
 			Slot originalSlot = slots.get(i);
 			if (Arrays.binarySearch(activeSlots, i) >= 0) {
 				int[] coords = getCoords(i);
-				Slot slot = new Slot(originalSlot.inventory, originalSlot.getIndex(), coords[0], coords[1]);
-				slot.id = i;
+				Slot slot = new Slot(originalSlot.container, originalSlot.getContainerSlot(), coords[0], coords[1]);
+				slot.index = i;
 				slots.set(i, slot);
 			} else {
-				DisabledSlot slot = new DisabledSlot(originalSlot.inventory, originalSlot.getIndex(), -20, -20);
-				slot.id = i;
+				DisabledSlot slot = new DisabledSlot(originalSlot.container, originalSlot.getContainerSlot(), -20, -20);
+				slot.index = i;
 				slots.set(i, slot);
 			}
 		}
 		int yOffset = (rows - 4) * 18 + 19;
 		for (int i = rows * 9; i < slots.size(); i++) {
 			Slot originalSlot = slots.get(i);
-			Slot slot = new Slot(originalSlot.inventory, originalSlot.getIndex(), originalSlot.x, originalSlot.y - yOffset);
-			slot.id = i;
+			Slot slot = new Slot(originalSlot.container, originalSlot.getContainerSlot(), originalSlot.x, originalSlot.y - yOffset);
+			slot.index = i;
 			slots.set(i, slot);
 		}
 	}
 
-	public SkyblockCraftingTableScreenHandler(GenericContainerScreenHandler handler, PlayerInventory playerInventory) {
-		this(handler.getType(), handler.syncId, playerInventory, handler.getInventory(), handler.getRows());
+	public SkyblockCraftingTableScreenHandler(ChestMenu handler, Inventory playerInventory) {
+		this(handler.getType(), handler.containerId, playerInventory, handler.getContainer(), handler.getRowCount());
 	}
 
 	private int[] getCoords(int slot) {
@@ -77,12 +76,12 @@ public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHa
 
 	public static class DisabledSlot extends Slot {
 
-		public DisabledSlot(Inventory inventory, int index, int x, int y) {
+		public DisabledSlot(Container inventory, int index, int x, int y) {
 			super(inventory, index, x, y);
 		}
 
 		@Override
-		public boolean isEnabled() {
+		public boolean isActive() {
 			return false;
 		}
 	}

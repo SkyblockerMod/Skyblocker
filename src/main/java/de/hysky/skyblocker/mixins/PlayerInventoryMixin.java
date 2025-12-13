@@ -7,15 +7,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import de.hysky.skyblocker.skyblock.crimson.kuudra.ArrowPoisonWarning;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Inventory;
 
-@Mixin(PlayerInventory.class)
+@Mixin(Inventory.class)
 public class PlayerInventoryMixin {
 	@Shadow
-	public int selectedSlot;
+	public int selected;
 
 	@Inject(method = "setSelectedSlot", at = @At("TAIL"))
 	private void skyblocker$onHotbarScroll(CallbackInfo ci) {
-		ArrowPoisonWarning.tryWarn(selectedSlot);
+		ArrowPoisonWarning.tryWarn(selected);
 	}
 }

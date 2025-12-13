@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 public class FarmingConfig {
 	public Garden garden = new Garden();
@@ -50,7 +50,7 @@ public class FarmingConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.farming.garden.farmingHud.type." + name());
+			return I18n.get("skyblocker.config.farming.garden.farmingHud.type." + name());
 		}
 	}
 }

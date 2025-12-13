@@ -1,17 +1,17 @@
 package de.hysky.skyblocker.mixins.accessors;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.mob.EndermanEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.Optional;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.level.block.state.BlockState;
 
-@Mixin(EndermanEntity.class)
+@Mixin(EnderMan.class)
 public interface EndermanEntityAccessor {
 	@Accessor
-	static TrackedData<Optional<BlockState>> getCARRIED_BLOCK() {
+	static EntityDataAccessor<Optional<BlockState>> getDATA_CARRY_STATE() {
 		throw new UnsupportedOperationException();
 	}
 }

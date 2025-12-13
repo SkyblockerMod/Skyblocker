@@ -1,18 +1,18 @@
 package de.hysky.skyblocker.utils.render.gui.special;
 
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
-import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
-import net.minecraft.client.render.command.RenderDispatcher;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 
-public class EquipmentGuiElementRenderer<S> extends SpecialGuiElementRenderer<EquipmentGuiElementRenderState<S>> {
+public class EquipmentGuiElementRenderer<S> extends PictureInPictureRenderer<EquipmentGuiElementRenderState<S>> {
 
 	private EquipmentGuiElementRenderer(SpecialGuiElementRegistry.Context context) {
 		super(context.vertexConsumers());
@@ -25,23 +25,23 @@ public class EquipmentGuiElementRenderer<S> extends SpecialGuiElementRenderer<Eq
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Class getElementClass() {
+	public Class getRenderStateClass() {
 		return EquipmentGuiElementRenderState.class;
 	}
 
 	@Override
-	protected void render(EquipmentGuiElementRenderState<S> state, MatrixStack matrices) {
-		MinecraftClient client = MinecraftClient.getInstance();
+	protected void renderToTexture(EquipmentGuiElementRenderState<S> state, PoseStack matrices) {
+		Minecraft client = Minecraft.getInstance();
 
-		matrices.push();
+		matrices.pushPose();
 		matrices.translate(0, state.offset() / state.scale(), 0);
-		matrices.multiply(RotationAxis.NEGATIVE_X.rotationDegrees(-5));
-		matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(state.rotation()));
+		matrices.mulPose(Axis.XN.rotationDegrees(-5));
+		matrices.mulPose(Axis.YN.rotationDegrees(state.rotation()));
 
-		client.gameRenderer.getDiffuseLighting().setShaderLights(DiffuseLighting.Type.ENTITY_IN_UI);
-		RenderDispatcher renderDispatcher = MinecraftClient.getInstance().gameRenderer.getEntityRenderDispatcher();
-		OrderedRenderCommandQueueImpl orderedRenderCommandQueueImpl = renderDispatcher.getQueue();
-		state.equipmentRenderer().render(
+		client.gameRenderer.getLighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
+		FeatureRenderDispatcher renderDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
+		SubmitNodeStorage orderedRenderCommandQueueImpl = renderDispatcher.getSubmitNodeStorage();
+		state.equipmentRenderer().renderLayers(
 				state.layerType(),
 				state.assetKey(),
 				state.model(),
@@ -49,21 +49,21 @@ public class EquipmentGuiElementRenderer<S> extends SpecialGuiElementRenderer<Eq
 				state.stack(),
 				matrices,
 				orderedRenderCommandQueueImpl,
-				LightmapTextureManager.MAX_LIGHT_COORDINATE,
+				LightTexture.FULL_BRIGHT,
 				0
 		);
 
-		renderDispatcher.render();
-		matrices.pop();
+		renderDispatcher.renderAllFeatures();
+		matrices.popPose();
 	}
 
 	@Override
-	protected float getYOffset(int height, int windowScaleFactor) {
+	protected float getTranslateY(int height, int windowScaleFactor) {
 		return height / 2;
 	}
 
 	@Override
-	protected String getName() {
+	protected String getTextureLabel() {
 		return "skyblocker equipment renderer";
 	}
 }

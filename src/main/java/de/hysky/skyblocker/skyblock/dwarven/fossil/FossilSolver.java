@@ -7,15 +7,6 @@ import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +14,14 @@ import java.util.List;
 import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
 import org.jspecify.annotations.Nullable;
 
 import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.fossilName;
@@ -33,7 +31,7 @@ import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.con
 import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.getFossilChance;
 
 public class FossilSolver extends SimpleContainerSolver implements TooltipAdder {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("Fossil Excavation Progress: (\\d{1,2}.\\d)%");
 	private static final Pattern CHARGES_PATTERN = Pattern.compile("Chisel Charges Remaining: (\\d{1,2})");
 
@@ -72,7 +70,7 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 	 * @return how many chisels are left and "-1" if not found
 	 */
 	private int getChiselLeft(ItemStack itemStack) {
-		for (Text line : itemStack.getTooltip(Item.TooltipContext.DEFAULT, CLIENT.player, TooltipType.BASIC)) {
+		for (Component line : itemStack.getTooltipLines(Item.TooltipContext.EMPTY, CLIENT.player, TooltipFlag.NORMAL)) {
 			Matcher matcher = CHARGES_PATTERN.matcher(line.getString());
 			if (matcher.find()) {
 				return Integer.parseInt(matcher.group(1));
@@ -89,7 +87,7 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 	 */
 	private String getFossilPercentage(Int2ObjectMap<ItemStack> slots) {
 		for (ItemStack item : slots.values()) {
-			for (Text line : item.getTooltip(Item.TooltipContext.DEFAULT, CLIENT.player, TooltipType.BASIC)) {
+			for (Component line : item.getTooltipLines(Item.TooltipContext.EMPTY, CLIENT.player, TooltipFlag.NORMAL)) {
 				Matcher matcher = PERCENTAGE_PATTERN.matcher(line.getString());
 				if (matcher.matches()) {
 					return matcher.group(1);
@@ -136,7 +134,7 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 	 * @param lines       the lines for the tooltip
 	 */
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) { //todo translatable
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) { //todo translatable
 		//only add if fossil or dirt
 		if (stack.getItem() != Items.GRAY_STAINED_GLASS_PANE && stack.getItem() != Items.BROWN_STAINED_GLASS_PANE) {
 			return;
@@ -146,21 +144,21 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 
 		//if no permutation say this instead of other stats
 		if (permutations == 0) {
-			lines.add(Text.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound").formatted(Formatting.GOLD));
+			lines.add(Component.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound").withStyle(ChatFormatting.GOLD));
 			return;
 		}
 
 		//add permutation count
-		lines.add(Text.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns").append(Text.literal(String.valueOf(permutations)).formatted(Formatting.YELLOW)));
+		lines.add(Component.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns").append(Component.literal(String.valueOf(permutations)).withStyle(ChatFormatting.YELLOW)));
 		//add minimum tiles left count
-		lines.add(Text.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.minimumTilesLeft").append(Text.literal(String.valueOf(minimumTiles)).formatted(chiselLeft >= minimumTiles ? Formatting.YELLOW : Formatting.RED)));
+		lines.add(Component.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.minimumTilesLeft").append(Component.literal(String.valueOf(minimumTiles)).withStyle(chiselLeft >= minimumTiles ? ChatFormatting.YELLOW : ChatFormatting.RED)));
 		//add probability if available and not uncovered
-		if (focusedSlot != null && probability != null && probability.length > focusedSlot.getIndex() && stack.getItem() == Items.BROWN_STAINED_GLASS_PANE) {
-			lines.add(Text.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.probability").append(Text.literal(Math.round(probability[focusedSlot.getIndex()] * 100) + "%").formatted(Formatting.YELLOW)));
+		if (focusedSlot != null && probability != null && probability.length > focusedSlot.getContainerSlot() && stack.getItem() == Items.BROWN_STAINED_GLASS_PANE) {
+			lines.add(Component.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.probability").append(Component.literal(Math.round(probability[focusedSlot.getContainerSlot()] * 100) + "%").withStyle(ChatFormatting.YELLOW)));
 		}
 		//if only 1 type of fossil left and a fossil is partially uncovered add the fossil name
 		if (fossilName != null && percentage != null) {
-			lines.add(Text.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.foundFossil").append(Text.literal(fossilName).formatted(Formatting.YELLOW)));
+			lines.add(Component.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.foundFossil").append(Component.literal(fossilName).withStyle(ChatFormatting.YELLOW)));
 		}
 	}
 

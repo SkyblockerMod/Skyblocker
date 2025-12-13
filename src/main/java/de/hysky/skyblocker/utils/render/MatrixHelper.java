@@ -1,8 +1,7 @@
 package de.hysky.skyblocker.utils.render;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Matrix4f;
-
-import net.minecraft.client.util.math.MatrixStack;
 
 /**
  * Matrix helper methods
@@ -18,12 +17,12 @@ public interface MatrixHelper {
 	}
 
 	/**
-	 * Creates a blank {@link MatrixStack} and sets it's position matrix to the supplied
+	 * Creates a blank {@link PoseStack} and sets it's position matrix to the supplied
 	 * {@code positionMatrix}.
 	 */
-	static MatrixStack toStack(Matrix4f positionMatrix) {
-		MatrixStack matrices = new MatrixStack();
-		matrices.peek().getPositionMatrix().set(positionMatrix);
+	static PoseStack toStack(Matrix4f positionMatrix) {
+		PoseStack matrices = new PoseStack();
+		matrices.last().pose().set(positionMatrix);
 
 		return matrices;
 	}
