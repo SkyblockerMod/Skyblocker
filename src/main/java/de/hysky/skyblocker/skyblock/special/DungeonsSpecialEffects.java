@@ -5,10 +5,10 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class DungeonsSpecialEffects {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonsSpecialEffects.class);
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern DROP_PATTERN = Pattern.compile("(?:\\[[A-Z+]+] )?(?<player>[A-Za-z0-9_]+) unlocked (?<item>.+)!");
 
 	@Init
@@ -25,7 +25,7 @@ public class DungeonsSpecialEffects {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonsSpecialEffects::displayRareDropEffect);
 	}
 
-	private static boolean displayRareDropEffect(Text message, boolean overlay) {
+	private static boolean displayRareDropEffect(Component message, boolean overlay) {
 		//We don't check if we're in dungeons because that check doesn't work in m7 which defeats the point of this
 		//It might also allow it to work with Croesus
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.specialEffects.rareDungeonDropEffects && !overlay) {
@@ -34,12 +34,12 @@ public class DungeonsSpecialEffects {
 				Matcher matcher = DROP_PATTERN.matcher(stringForm);
 
 				if (matcher.matches()) {
-					if (matcher.group("player").equals(CLIENT.getSession().getUsername())) {
+					if (matcher.group("player").equals(CLIENT.getUser().getName())) {
 						ItemStack stack = getStackFromName(matcher.group("item"));
 
 						if (stack != null && !stack.isEmpty()) {
-							CLIENT.particleManager.addEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
-							CLIENT.gameRenderer.showFloatingItem(stack);
+							CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
+							CLIENT.gameRenderer.displayItemActivation(stack);
 						}
 					}
 				}

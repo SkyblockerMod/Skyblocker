@@ -8,7 +8,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
 
 import de.hysky.skyblocker.utils.render.GlowRenderer;
-import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.renderer.RenderPipelines;
 
 @Mixin(RenderPipeline.class)
 public class RenderPipelineMixin {

@@ -9,26 +9,26 @@ import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.StringController;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 public class MiscCategory {
 
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.id(SkyblockerMod.id("config/misc"))
-				.name(Text.translatable("skyblocker.config.misc"))
+				.name(Component.translatable("skyblocker.config.misc"))
 
 				//Uncategorized Options
 				.option(Option.<ConfigType>createBuilder()
-						.name(Text.translatable("skyblocker.config.misc.configBackend"))
-						.description(Text.translatable("skyblocker.config.misc.configBackend.@Tooltip"))
+						.name(Component.translatable("skyblocker.config.misc.configBackend"))
+						.description(Component.translatable("skyblocker.config.misc.configBackend.@Tooltip"))
 						.binding(defaults.misc.configBackend,
 								() -> config.misc.configBackend,
 								newValue -> config.misc.configBackend = newValue)
 						.controller(ConfigUtils.createEnumController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.literal("cat"))
+						.name(Component.literal("cat"))
 						.binding(
 								defaults.misc.cat,
 								() -> config.misc.cat,
@@ -39,32 +39,32 @@ public class MiscCategory {
 
 				//Discord RPC
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("skyblocker.config.misc.richPresence"))
+						.name(Component.translatable("skyblocker.config.misc.richPresence"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.misc.richPresence.enableRichPresence"))
+								.name(Component.translatable("skyblocker.config.misc.richPresence.enableRichPresence"))
 								.binding(defaults.misc.richPresence.enableRichPresence,
 										() -> config.misc.richPresence.enableRichPresence,
 										newValue -> config.misc.richPresence.enableRichPresence = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<MiscConfig.Info>createBuilder()
-								.name(Text.translatable("skyblocker.config.misc.richPresence.info"))
-								.description(Text.translatable("skyblocker.config.misc.richPresence.info.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.misc.richPresence.info"))
+								.description(Component.translatable("skyblocker.config.misc.richPresence.info.@Tooltip"))
 								.binding(defaults.misc.richPresence.info,
 										() -> config.misc.richPresence.info,
 										newValue -> config.misc.richPresence.info = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.misc.richPresence.cycleMode"))
+								.name(Component.translatable("skyblocker.config.misc.richPresence.cycleMode"))
 								.binding(defaults.misc.richPresence.cycleMode,
 										() -> config.misc.richPresence.cycleMode,
 										newValue -> config.misc.richPresence.cycleMode = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<String>createBuilder()
-								.name(Text.translatable("skyblocker.config.misc.richPresence.customMessage"))
+								.name(Component.translatable("skyblocker.config.misc.richPresence.customMessage"))
 								.binding(defaults.misc.richPresence.customMessage,
 										() -> config.misc.richPresence.customMessage,
 										newValue -> config.misc.richPresence.customMessage = newValue)

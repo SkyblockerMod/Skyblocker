@@ -16,46 +16,46 @@ import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.controllers.ColourController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 public class ForagingCategory {
 
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.id(SkyblockerMod.id("config/foraging"))
-				.name(Text.translatable("skyblocker.config.foraging"))
+				.name(Component.translatable("skyblocker.config.foraging"))
 
 				//Galatea
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("skyblocker.config.foraging.galatea"))
+						.name(Component.translatable("skyblocker.config.foraging.galatea"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.galatea.enableForestNodeHelper"))
+								.name(Component.translatable("skyblocker.config.foraging.galatea.enableForestNodeHelper"))
 								.binding(defaults.foraging.galatea.enableForestNodeHelper,
 										() -> config.foraging.galatea.enableForestNodeHelper,
 										newValue -> config.foraging.galatea.enableForestNodeHelper = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.galatea.solveForestTemplePuzzle"))
-								.description(Text.translatable("skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.foraging.galatea.solveForestTemplePuzzle"))
+								.description(Component.translatable("skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip"))
 								.binding(defaults.foraging.galatea.solveForestTemplePuzzle,
 										() -> config.foraging.galatea.solveForestTemplePuzzle,
 										newValue -> config.foraging.galatea.solveForestTemplePuzzle = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.galatea.enableLushlilacHighlighter"))
-								.description(Text.translatable("skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.foraging.galatea.enableLushlilacHighlighter"))
+								.description(Component.translatable("skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip"))
 								.binding(defaults.foraging.galatea.enableLushlilacHighlighter,
 										() -> config.foraging.galatea.enableLushlilacHighlighter,
 										newValue -> config.foraging.galatea.enableLushlilacHighlighter = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter"))
-								.description(Text.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter"))
+								.description(Component.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip"))
 								.binding(defaults.foraging.galatea.enableSeaLumiesHighlighter,
 										() -> config.foraging.galatea.enableSeaLumiesHighlighter,
 										newValue -> {
@@ -65,8 +65,8 @@ public class ForagingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Integer>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount"))
-								.description(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount"))
+								.description(Component.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip"))
 								.binding(defaults.foraging.galatea.seaLumiesMinimumCount,
 										() -> config.foraging.galatea.seaLumiesMinimumCount,
 										newValue -> {
@@ -76,29 +76,29 @@ public class ForagingCategory {
 								.controller(IntegerController.createBuilder().range(1, 4).slider(1).build())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress"))
-								.description(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress"))
+								.description(Component.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip"))
 								.binding(defaults.foraging.galatea.enableTreeBreakProgress,
 										() -> config.foraging.galatea.enableTreeBreakProgress,
 										newValue -> config.foraging.galatea.enableTreeBreakProgress = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(ButtonOption.createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakHud"))
-								.prompt(Text.translatable("text.skyblocker.open"))
-								.action((screen) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, TreeBreakProgressHud.getInstance().getInternalID(), screen)))
+								.name(Component.translatable("skyblocker.config.foraging.galatea.enableTreeBreakHud"))
+								.prompt(Component.translatable("text.skyblocker.open"))
+								.action((screen) -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, TreeBreakProgressHud.getInstance().getInternalID(), screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))
-								.description(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))
+								.description(Component.translatable("skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip"))
 								.binding(defaults.foraging.galatea.enableTunerSolver,
 										() -> config.foraging.galatea.enableTunerSolver,
 										newValue -> config.foraging.galatea.enableTunerSolver = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.galatea.enableSweepDetailsWidget"))
-								.description(Text.translatable("skyblocker.config.foraging.galatea.enableSweepDetailsWidget.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.foraging.galatea.enableSweepDetailsWidget"))
+								.description(Component.translatable("skyblocker.config.foraging.galatea.enableSweepDetailsWidget.@Tooltip"))
 								.binding(defaults.foraging.galatea.enableSweepDetailsWidget,
 										() -> config.foraging.galatea.enableSweepDetailsWidget,
 										newValue -> config.foraging.galatea.enableSweepDetailsWidget = newValue)
@@ -107,25 +107,25 @@ public class ForagingCategory {
 						.build())
 				//Sweep Overlays
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("skyblocker.config.foraging.sweepOverlay"))
+						.name(Component.translatable("skyblocker.config.foraging.sweepOverlay"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.sweepOverlay.enableSweepOverlay"))
-								.description(Text.translatable("skyblocker.config.foraging.sweepOverlay.enableSweepOverlay.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.foraging.sweepOverlay.enableSweepOverlay"))
+								.description(Component.translatable("skyblocker.config.foraging.sweepOverlay.enableSweepOverlay.@Tooltip"))
 								.binding(defaults.foraging.sweepOverlay.enableSweepOverlay,
 										() -> config.foraging.sweepOverlay.enableSweepOverlay,
 										newValue -> config.foraging.sweepOverlay.enableSweepOverlay = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay"))
+								.name(Component.translatable("skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay"))
 								.binding(defaults.foraging.sweepOverlay.enableThrownAbilityOverlay,
 										() -> config.foraging.sweepOverlay.enableThrownAbilityOverlay,
 										newValue -> config.foraging.sweepOverlay.enableThrownAbilityOverlay = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Text.translatable("skyblocker.config.foraging.sweepOverlay.sweepOverlayColor"))
+								.name(Component.translatable("skyblocker.config.foraging.sweepOverlay.sweepOverlayColor"))
 								.binding(defaults.foraging.sweepOverlay.sweepOverlayColor,
 										() -> config.foraging.sweepOverlay.sweepOverlayColor,
 										newValue -> {

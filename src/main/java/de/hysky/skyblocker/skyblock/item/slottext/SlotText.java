@@ -1,11 +1,10 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
 import it.unimi.dsi.fastutil.objects.ObjectLists;
-import net.minecraft.text.Text;
-
 import java.util.List;
+import net.minecraft.network.chat.Component;
 
-public record SlotText(Text text, TextPosition position) {
+public record SlotText(Component text, TextPosition position) {
 	/**
 	 * The "default" slot text color.
 	 */
@@ -20,19 +19,19 @@ public record SlotText(Text text, TextPosition position) {
 	public static final int MID_BLUE = 0x74C7EC;
 	public static final int WHITE = 0xFFFFFF;
 
-	public static SlotText bottomLeft(Text text) {
+	public static SlotText bottomLeft(Component text) {
 		return new SlotText(text, TextPosition.BOTTOM_LEFT);
 	}
 
-	public static SlotText bottomRight(Text text) {
+	public static SlotText bottomRight(Component text) {
 		return new SlotText(text, TextPosition.BOTTOM_RIGHT);
 	}
 
-	public static SlotText topLeft(Text text) {
+	public static SlotText topLeft(Component text) {
 		return new SlotText(text, TextPosition.TOP_LEFT);
 	}
 
-	public static SlotText topRight(Text text) {
+	public static SlotText topRight(Component text) {
 		return new SlotText(text, TextPosition.TOP_RIGHT);
 	}
 
@@ -43,7 +42,7 @@ public record SlotText(Text text, TextPosition position) {
 	 * Convenience method for creating a singleton list containing this SlotText. Useful for returning a single SlotText from a method that returns a list.
 	 * @return A singleton list containing a SlotText with the {@link TextPosition#TOP_LEFT top left} position and the given text.
 	 */
-	public static List<SlotText> topLeftList(Text text) {
+	public static List<SlotText> topLeftList(Component text) {
 		return ObjectLists.singleton(topLeft(text));
 	}
 
@@ -51,7 +50,7 @@ public record SlotText(Text text, TextPosition position) {
 	 *  Convenience method for creating a singleton list containing this SlotText. Useful for returning a single SlotText from a method that returns a list.
 	 * @return A singleton list containing a SlotText with the {@link TextPosition#TOP_RIGHT top right} position and the given text.
 	 */
-	public static List<SlotText> topRightList(Text text) {
+	public static List<SlotText> topRightList(Component text) {
 		return ObjectLists.singleton(topRight(text));
 	}
 
@@ -59,7 +58,7 @@ public record SlotText(Text text, TextPosition position) {
 	 *  Convenience method for creating a singleton list containing this SlotText. Useful for returning a single SlotText from a method that returns a list.
 	 * @return A singleton list containing a SlotText with the {@link TextPosition#BOTTOM_LEFT bottom left} position and the given text.
 	 */
-	public static List<SlotText> bottomLeftList(Text text) {
+	public static List<SlotText> bottomLeftList(Component text) {
 		return ObjectLists.singleton(bottomLeft(text));
 	}
 
@@ -67,7 +66,7 @@ public record SlotText(Text text, TextPosition position) {
 	 *  Convenience method for creating a singleton list containing this SlotText. Useful for returning a single SlotText from a method that returns a list.
 	 * @return A singleton list containing a SlotText with the {@link TextPosition#BOTTOM_RIGHT bottom right} position and the given text.
 	 */
-	public static List<SlotText> bottomRightList(Text text) {
+	public static List<SlotText> bottomRightList(Component text) {
 		return ObjectLists.singleton(bottomRight(text));
 	}
 }

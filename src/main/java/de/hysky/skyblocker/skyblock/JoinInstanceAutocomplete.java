@@ -8,8 +8,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandSource;
-
+import net.minecraft.commands.SharedSuggestionProvider;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.arg
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 /**
- * the mixin {@link de.hysky.skyblocker.mixins.CommandTreeS2CPacketMixin}
+ * the mixin {@link de.hysky.skyblocker.mixins.ClientboundCommandsPacketMixin}
  */
 public class JoinInstanceAutocomplete {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JoinInstanceAutocomplete.class);
@@ -56,7 +55,7 @@ public class JoinInstanceAutocomplete {
 		return literal(command)
 				.requires(source -> Utils.isOnSkyblock())
 				.then(argument("instance", StringArgumentType.word())
-						.suggests((context, builder) -> CommandSource.suggestMatching(
+						.suggests((context, builder) -> SharedSuggestionProvider.suggest(
 								instanceMap.keySet().stream().filter(filter).sorted(),
 								builder)))
 				.build();

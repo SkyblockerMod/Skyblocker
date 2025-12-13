@@ -1,15 +1,14 @@
 package de.hysky.skyblocker.utils;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.util.StringIdentifiable;
-
 import java.util.Arrays;
 import java.util.EnumSet;
+import net.minecraft.util.StringRepresentable;
 
 /**
  * All Skyblock locations
  */
-public enum Location implements StringIdentifiable {
+public enum Location implements StringRepresentable {
 	PRIVATE_ISLAND("dynamic", "Private Island"),
 	GARDEN("garden", "Garden"),
 	HUB("hub", "Hub"),
@@ -43,7 +42,7 @@ public enum Location implements StringIdentifiable {
 	 */
 	UNKNOWN("unknown", "Unknown");
 
-	public static final Codec<Location> CODEC = StringIdentifiable.createCodec(Location::values);
+	public static final Codec<Location> CODEC = StringRepresentable.fromEnum(Location::values);
 	public static final Codec<EnumSet<Location>> SET_CODEC = CodecUtils.enumSetCodec(CODEC, Location.class);
 
 	/**
@@ -92,7 +91,7 @@ public enum Location implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return id();
 	}
 

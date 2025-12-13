@@ -3,23 +3,23 @@ package de.hysky.skyblocker.skyblock.slayers;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
 
 public class CallMaddox {
 	private static void sendMessage() {
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
+		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
 
-		Text text = Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.callMaddox.message")).styled(style ->
+		Component text = Constants.PREFIX.get().append(Component.translatable("skyblocker.slayer.callMaddox.message")).withStyle(style ->
 				style.withClickEvent(new ClickEvent.RunCommand("/call slayer"))
-						.withColor(Formatting.AQUA)
+						.withColor(ChatFormatting.AQUA)
 		);
 
-		player.sendMessage(text, false);
+		player.displayClientMessage(text, false);
 	}
 
 	// This is also called when the slayer is cancelled.

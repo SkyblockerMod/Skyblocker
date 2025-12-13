@@ -6,8 +6,7 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.util.StringIdentifiable;
-
+import net.minecraft.util.StringRepresentable;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +54,7 @@ public class JsonData<T> {
 	 * @param codec        The codec to use for serializing/deserializing the data.
 	 * @param defaultValue The default value of {@link #data} to use in case the file does not exist yet.
 	 * @param compressed   Whether the {@link JsonOps#COMPRESSED} should be used.
-	 *                     When compressed, {@link StringIdentifiable#createCodec(Supplier)} will use the ordinals instead of {@link StringIdentifiable#asString()}.
+	 *                     When compressed, {@link StringRepresentable#fromEnum(Supplier)} will use the ordinals instead of {@link StringRepresentable#getSerializedName()}.
 	 *                     When compressed, codecs built with {@link RecordCodecBuilder} will be serialized as a list instead of a map.
 	 *                     {@link JsonOps#COMPRESSED} is required for maps with non-string keys.
 	 */
@@ -68,7 +67,7 @@ public class JsonData<T> {
 	 * @param codec        The codec to use for serializing/deserializing the data.
 	 * @param defaultValue The default value of {@link #data} to use in case the file does not exist c.
 	 * @param compressed   Whether the {@link JsonOps#COMPRESSED} should be used.
-	 *                     When compressed, {@link StringIdentifiable#createCodec(Supplier)} will use the ordinals instead of {@link StringIdentifiable#asString()}.
+	 *                     When compressed, {@link StringRepresentable#fromEnum(Supplier)} will use the ordinals instead of {@link StringRepresentable#getSerializedName()}.
 	 *                     When compressed, codecs built with {@link RecordCodecBuilder} will be serialized as a list instead of a map.
 	 *                     {@link JsonOps#COMPRESSED} is required for maps with non-string keys.
 	 * @param loadAsync    Whether the data should be loaded asynchronously.

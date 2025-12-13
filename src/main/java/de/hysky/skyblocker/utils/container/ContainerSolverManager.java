@@ -35,12 +35,11 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
-
+import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 import org.jspecify.annotations.Nullable;
@@ -150,7 +149,7 @@ public class ContainerSolverManager {
 		if (currentSolver == null) return;
 
 		context.pose().pushMatrix();
-		context.pose().translate(((AbstractContainerScreenAccessor) handledScreen).getLeftPos(), ((AbstractContainerScreenAccessor) handledScreen).getTopPos());
+		context.pose().translate(((AbstractContainerScreenAccessor) handledScreen).getX(), ((AbstractContainerScreenAccessor) handledScreen).getY());
 
 		if (highlights == null) highlights = currentSolver.getColors(slotMap(currentSolver instanceof ContainerAndInventorySolver ? slots : slots.subList(0, handledScreen.getMenu().getRowCount() * 9)));
 		for (ColorHighlight highlight : highlights) {

@@ -1,30 +1,29 @@
 package de.hysky.skyblocker.skyblock.profileviewer.utils;
 
 import java.awt.Color;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemLore;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ButtonTextures;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.item.ItemStack;
 
-public class SubPageSelectButton extends ClickableWidget {
+public class SubPageSelectButton extends AbstractWidget {
 	private final ProfileViewerPage page;
 	private final int index;
 	private boolean toggled;
 
-	private static final ButtonTextures TEXTURES = new ButtonTextures(SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled_highlighted.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon_highlighted.png"));
+	private static final WidgetSprites TEXTURES = new WidgetSprites(SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled_highlighted.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon_highlighted.png"));
 	private final ItemStack ICON;
 
 	public SubPageSelectButton(ProfileViewerPage page, int x, int y, int index, ItemStack item) {
-		super(x, y, 22, 22, item.getName());
+		super(x, y, 22, 22, item.getHoverName());
 		this.ICON = item;
 		this.toggled = index == 0;
 		this.index = index;
@@ -33,16 +32,16 @@ public class SubPageSelectButton extends ClickableWidget {
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		context.fill(this.getX(), this.getY(), this.getX() + 20, this.getY() + 20, Color.BLACK.getRGB());
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURES.get(toggled, (mouseX > getX() && mouseX < getX() + 19 && mouseY > getY() && mouseY < getY() + 19)), this.getX() + 1, this.getY() + 1, 0, 0, 18, 18, 18, 18);
-		context.drawItem(ICON, this.getX() + 2, this.getY() + 2);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURES.get(toggled, (mouseX > getX() && mouseX < getX() + 19 && mouseY > getY() && mouseY < getY() + 19)), this.getX() + 1, this.getY() + 1, 0, 0, 18, 18, 18, 18);
+		context.renderItem(ICON, this.getX() + 2, this.getY() + 2);
 		if ((mouseX > getX() + 1 && mouseX < getX() + 19 && mouseY > getY() + 1 && mouseY < getY() + 19)) {
-			LoreComponent lore = ICON.get(DataComponentTypes.LORE);
-			if (lore != null) context.drawTooltip(MinecraftClient.getInstance().textRenderer, lore.lines(), mouseX, mouseY + 10);
+			ItemLore lore = ICON.get(DataComponents.LORE);
+			if (lore != null) context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, lore.lines(), mouseX, mouseY + 10);
 		}
 
-		this.setCursor(context);
+		this.handleCursor(context);
 	}
 
 	@Override
@@ -51,14 +50,14 @@ public class SubPageSelectButton extends ClickableWidget {
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	public void setToggled(boolean toggled) {
 		this.toggled = toggled;
 	}
 
 	@Override
-	public void onClick(Click click, boolean doubled) {
+	public void onClick(MouseButtonEvent click, boolean doubled) {
 		page.onNavButtonClick(this);
 	}
 

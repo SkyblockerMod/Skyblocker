@@ -11,12 +11,6 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import net.minecraft.command.argument.EnumArgumentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,13 +19,19 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
+import net.minecraft.commands.arguments.StringRepresentableArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.entity.Entity;
 
 public class SecretWaypoint extends DistancedNamedWaypoint {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecretWaypoint.class);
 	public static final Codec<SecretWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.INT.fieldOf("secretIndex").forGetter(secretWaypoint -> secretWaypoint.secretIndex),
 			Category.CODEC.fieldOf("category").forGetter(secretWaypoint -> secretWaypoint.category),
-			TextCodecs.CODEC.fieldOf("name").forGetter(secretWaypoint -> secretWaypoint.name),
+			ComponentSerialization.CODEC.fieldOf("name").forGetter(secretWaypoint -> secretWaypoint.name),
 			BlockPos.CODEC.fieldOf("pos").forGetter(secretWaypoint -> secretWaypoint.pos)
 	).apply(instance, SecretWaypoint::new));
 	public static final Codec<List<SecretWaypoint>> LIST_CODEC = CODEC.listOf();
@@ -42,21 +42,21 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 	final Category category;
 
 	SecretWaypoint(int secretIndex, Category category, String name, BlockPos pos) {
-		this(secretIndex, category, Text.of(name), pos);
+		this(secretIndex, category, Component.nullToEmpty(name), pos);
 	}
 
-	SecretWaypoint(int secretIndex, Category category, Text name, BlockPos pos) {
+	SecretWaypoint(int secretIndex, Category category, Component name, BlockPos pos) {
 		super(pos, name, TYPE_SUPPLIER, category.colorComponents);
 		this.secretIndex = secretIndex;
 		this.category = category;
 	}
 
 	static ToDoubleFunction<SecretWaypoint> getSquaredDistanceToFunction(Entity entity) {
-		return secretWaypoint -> entity.squaredDistanceTo(secretWaypoint.centerPos);
+		return secretWaypoint -> entity.distanceToSqr(secretWaypoint.centerPos);
 	}
 
 	static Predicate<SecretWaypoint> getRangePredicate(Entity entity) {
-		return secretWaypoint -> entity.getEntityPos().isInRange(secretWaypoint.centerPos, 16);
+		return secretWaypoint -> entity.position().closerThan(secretWaypoint.centerPos, 16);
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 		return new SecretWaypoint(secretIndex, category, name, room.relativeToActual(pos));
 	}
 
-	enum Category implements StringIdentifiable {
+	enum Category implements StringRepresentable {
 		ENTRANCE("entrance", secretWaypoints -> secretWaypoints.enableEntranceWaypoints, 0, 255, 0),
 		SUPERBOOM("superboom", secretWaypoints -> secretWaypoints.enableSuperboomWaypoints, 255, 0, 0),
 		CHEST("chest", secretWaypoints -> secretWaypoints.enableChestWaypoints, 2, 213, 250),
@@ -127,7 +127,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 		PEARL("pearl", secretWaypoints -> secretWaypoints.enablePearlWaypoints, 57, 117, 125),
 		PRINCE("prince", secretWaypoints -> secretWaypoints.enablePrinceWaypoints, 133, 21, 13),
 		DEFAULT("default", secretWaypoints -> secretWaypoints.enableDefaultWaypoints, 190, 255, 252);
-		public static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
+		public static final Codec<Category> CODEC = StringRepresentable.fromEnum(Category::values);
 		private final String name;
 		private final Predicate<DungeonsConfig.SecretWaypoints> enabledPredicate;
 		private final float[] colorComponents;
@@ -175,11 +175,11 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name;
 		}
 
-		static class CategoryArgumentType extends EnumArgumentType<Category> {
+		static class CategoryArgumentType extends StringRepresentableArgument<Category> {
 			CategoryArgumentType() {
 				super(Category.CODEC, Category::values);
 			}

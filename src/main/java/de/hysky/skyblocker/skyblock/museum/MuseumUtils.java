@@ -4,14 +4,13 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.ItemStack;
 
 public class MuseumUtils {
 	private static final Set<String> EQUIPMENT_TYPES = Set.of("BELT", "GLOVES", "CLOAK", "GAUNTLET", "NECKLACE", "BRACELET", "HAT", "LOCKET", "VINE", "GRIPPERS");
@@ -42,30 +41,30 @@ public class MuseumUtils {
 	 * @param isSet true if the ID refers to a set, false if it refers to an individual item
 	 * @return the display name of the item or set
 	 */
-	protected static Text getDisplayName(String id, boolean isSet) {
+	protected static Component getDisplayName(String id, boolean isSet) {
 		if (isSet) {
 			Style nameStyle = Style.EMPTY;
 			String setName = MuseumItemCache.ARMOR_NAMES.get(id);
 			if (setName != null) {
 				for (Donation donation : MuseumItemCache.MUSEUM_DONATIONS) {
 					if (donation.getId().equals(id) && !donation.getSet().isEmpty()) {
-						Text pieceName = getDisplayName(donation.getSet().getFirst().left(), false);
+						Component pieceName = getDisplayName(donation.getSet().getFirst().left(), false);
 						if (pieceName != null) {
-							List<Text> siblings = pieceName.getSiblings();
+							List<Component> siblings = pieceName.getSiblings();
 							nameStyle = siblings.isEmpty() ? Style.EMPTY : siblings.getFirst().getStyle();
 						}
 						break;
 					}
 				}
-				return Text.literal(setName).setStyle(nameStyle);
+				return Component.literal(setName).setStyle(nameStyle);
 			}
 		} else {
 			ItemStack stack = ItemRepository.getItemStack(id);
 			if (stack != null) {
-				return stack.getName();
+				return stack.getHoverName();
 			}
 		}
-		return Text.literal(id);
+		return Component.literal(id);
 	}
 
 	/**

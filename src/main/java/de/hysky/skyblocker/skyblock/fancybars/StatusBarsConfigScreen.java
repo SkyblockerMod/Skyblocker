@@ -4,53 +4,52 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanPair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.navigation.NavigationAxis;
-import net.minecraft.client.gui.navigation.NavigationDirection;
-import net.minecraft.client.gui.screen.PopupScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.Window;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.Window;
 import de.hysky.skyblocker.skyblock.fancybars.BarPositioner.BarLocation;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.PopupScreen;
+import net.minecraft.client.gui.navigation.ScreenAxis;
+import net.minecraft.client.gui.navigation.ScreenDirection;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public class StatusBarsConfigScreen extends Screen {
-	private static final Identifier HOTBAR_TEXTURE = Identifier.ofVanilla("hud/hotbar");
+	private static final Identifier HOTBAR_TEXTURE = Identifier.withDefaultNamespace("hud/hotbar");
 	private static final int HOTBAR_WIDTH = 182;
 	private static final float RESIZE_THRESHOLD = 0.75f;
 	private static final int BAR_MINIMUM_WIDTH = 30;
 	public static final long RESIZE_CURSOR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR);
 	// prioritize left and right cuz they are much smaller than up and down
-	private static final NavigationDirection[] DIRECTION_CHECK_ORDER = new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT, NavigationDirection.UP, NavigationDirection.DOWN};
+	private static final ScreenDirection[] DIRECTION_CHECK_ORDER = new ScreenDirection[]{ScreenDirection.LEFT, ScreenDirection.RIGHT, ScreenDirection.UP, ScreenDirection.DOWN};
 
 	private static boolean resizeCursor = false;
 	private static void setResizeCursor(boolean bl) {
 		if (bl != resizeCursor) {
 			resizeCursor = bl;
-			Window window = MinecraftClient.getInstance().getWindow();
+			Window window = Minecraft.getInstance().getWindow();
 			if (resizeCursor) {
-				GLFW.glfwSetCursor(window.getHandle(), RESIZE_CURSOR);
+				GLFW.glfwSetCursor(window.handle(), RESIZE_CURSOR);
 			} else {
-				GLFW.glfwSetCursor(window.getHandle(), 0);
+				GLFW.glfwSetCursor(window.handle(), 0);
 			}
 		}
 	}
 
-	private final Map<ScreenRect, Pair<StatusBar, BarLocation>> rectToBar = new HashMap<>();
+	private final Map<ScreenRectangle, Pair<StatusBar, BarLocation>> rectToBar = new HashMap<>();
 	/**
 	 * Contains the hovered bar and a boolean that is true if hovering the right side or false otherwise.
 	 */
@@ -58,47 +57,47 @@ public class StatusBarsConfigScreen extends Screen {
 	private final Pair<@Nullable StatusBar, @Nullable StatusBar> resizedBars = ObjectObjectMutablePair.of(null, null);
 
 	private @Nullable StatusBar cursorBar = null;
-	private ScreenPos cursorOffset = new ScreenPos(0, 0);
+	private ScreenPosition cursorOffset = new ScreenPosition(0, 0);
 	private BarLocation currentInsertLocation = new BarLocation(null, 0, 0);
 
 	private boolean resizing = false;
 	private EditBarWidget editBarWidget;
 
 	public StatusBarsConfigScreen() {
-		super(Text.of("Status Bars Config"));
+		super(Component.nullToEmpty("Status Bars Config"));
 	}
 
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		/*for (ScreenRect screenRect : meaningFullName.keySet()) {
 			context.fillGradient(screenRect.position().x(), screenRect.position().y(), screenRect.position().x() + screenRect.width(), screenRect.position().y() + screenRect.height(), 0xFFFF0000, 0xFF0000FF);
 		}*/
 		super.render(context, mouseX, mouseY, delta);
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, width / 2 - HOTBAR_WIDTH / 2, height - 22, HOTBAR_WIDTH, 22);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, width / 2 - HOTBAR_WIDTH / 2, height - 22, HOTBAR_WIDTH, 22);
 		editBarWidget.render(context, mouseX, mouseY, delta);
 
-		assert client != null;
-		Window window = client.getWindow();
-		int scaleFactor = window.calculateScaleFactor(0, client.forcesUnicodeFont()) - (int) window.getScaleFactor() + 3;
+		assert minecraft != null;
+		Window window = minecraft.getWindow();
+		int scaleFactor = window.calculateScale(0, minecraft.isEnforceUnicode()) - (int) window.getGuiScale() + 3;
 		if ((scaleFactor & 2) == 0) scaleFactor++;
 
-		ScreenRect mouseRect = new ScreenRect(new ScreenPos(mouseX - scaleFactor / 2, mouseY - scaleFactor / 2), scaleFactor, scaleFactor);
+		ScreenRectangle mouseRect = new ScreenRectangle(new ScreenPosition(mouseX - scaleFactor / 2, mouseY - scaleFactor / 2), scaleFactor, scaleFactor);
 
 		if (cursorBar != null) {
 			cursorBar.renderCursor(context, mouseX + cursorOffset.x(), mouseY + cursorOffset.y(), delta);
 			boolean inserted = false;
 			boolean updatePositions = false;
 			rectLoop:
-			for (ScreenRect screenRect : rectToBar.keySet()) {
-				for (NavigationDirection direction : DIRECTION_CHECK_ORDER) {
-					boolean overlaps = screenRect.getBorder(direction).add(direction).overlaps(mouseRect);
+			for (ScreenRectangle screenRect : rectToBar.keySet()) {
+				for (ScreenDirection direction : DIRECTION_CHECK_ORDER) {
+					boolean overlaps = screenRect.getBorder(direction).step(direction).overlaps(mouseRect);
 
 					if (overlaps) {
 						Pair<StatusBar, BarLocation> barPair = rectToBar.get(screenRect);
 						BarLocation barSnap = barPair.right();
 						if (barSnap.barAnchor() == null) break;
-						if (direction.getAxis().equals(NavigationAxis.VERTICAL)) {
+						if (direction.getAxis().equals(ScreenAxis.VERTICAL)) {
 							int neighborInsertY = getNeighborInsertY(barSnap, !direction.isPositive());
 							inserted = true;
 							if (!currentInsertLocation.equals(barSnap.barAnchor(), barSnap.x(), neighborInsertY)) {
@@ -130,7 +129,7 @@ public class StatusBarsConfigScreen extends Screen {
 			}
 			// check for hovering empty anchors
 			for (BarPositioner.BarAnchor barAnchor : BarPositioner.BarAnchor.allAnchors()) {
-				ScreenRect anchorHitbox = barAnchor.getAnchorHitbox(barAnchor.getAnchorPosition(width, height));
+				ScreenRectangle anchorHitbox = barAnchor.getAnchorHitbox(barAnchor.getAnchorPosition(width, height));
 				if (FancyStatusBars.barPositioner.getRowCount(barAnchor) != 0) {
 					// this fixes flickering
 					if (FancyStatusBars.barPositioner.getRowCount(barAnchor) == 1) {
@@ -140,7 +139,7 @@ public class StatusBarsConfigScreen extends Screen {
 					continue;
 				}
 
-				context.fill(anchorHitbox.getLeft(), anchorHitbox.getTop(), anchorHitbox.getRight(), anchorHitbox.getBottom(), 0x99FFFFFF);
+				context.fill(anchorHitbox.left(), anchorHitbox.top(), anchorHitbox.right(), anchorHitbox.bottom(), 0x99FFFFFF);
 				if (anchorHitbox.overlaps(mouseRect)) {
 					inserted = true;
 					if (currentInsertLocation.barAnchor() == barAnchor) continue;
@@ -229,16 +228,16 @@ public class StatusBarsConfigScreen extends Screen {
 
 			} else { // hovering bars
 				rectLoop:
-				for (ScreenRect screenRect : rectToBar.keySet()) {
-					for (NavigationDirection direction : new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT}) {
-						boolean overlaps = screenRect.getBorder(direction).add(direction).overlaps(mouseRect);
+				for (ScreenRectangle screenRect : rectToBar.keySet()) {
+					for (ScreenDirection direction : new ScreenDirection[]{ScreenDirection.LEFT, ScreenDirection.RIGHT}) {
+						boolean overlaps = screenRect.getBorder(direction).step(direction).overlaps(mouseRect);
 
 						if (overlaps && !editBarWidget.isMouseOver(mouseX, mouseY)) {
 							Pair<StatusBar, BarLocation> barPair = rectToBar.get(screenRect);
 							BarLocation barLocation = barPair.right();
 							StatusBar bar = barPair.left();
 							if (!bar.enabled) break;
-							boolean right = direction.equals(NavigationDirection.RIGHT);
+							boolean right = direction.equals(ScreenDirection.RIGHT);
 							if (barLocation.barAnchor() != null) {
 								if (barLocation.barAnchor().getSizeRule().isTargetSize() && !FancyStatusBars.barPositioner.hasNeighbor(barLocation.barAnchor(), barLocation.y(), barLocation.x(), right)) {
 									break;
@@ -288,24 +287,24 @@ public class StatusBarsConfigScreen extends Screen {
 		FancyStatusBars.updatePositions(true);
 		editBarWidget = new EditBarWidget(0, 0, this);
 		editBarWidget.visible = false;
-		addSelectableChild(editBarWidget); // rendering separately to have it above hotbar
+		addWidget(editBarWidget); // rendering separately to have it above hotbar
 		Collection<StatusBar> values = FancyStatusBars.statusBars.values();
 		values.forEach(this::setup);
 		updateScreenRects();
-		this.addDrawableChild(ButtonWidget.builder(Text.literal("?"),
+		this.addRenderableWidget(Button.builder(Component.literal("?"),
 						button -> {
-							assert client != null;
-							client.setScreen(new PopupScreen.Builder(this, Text.translatable("skyblocker.bars.config.explanationTitle"))
-									.button(Text.translatable("gui.ok"), PopupScreen::close)
-									.message(Text.translatable("skyblocker.bars.config.explanation"))
+							assert minecraft != null;
+							minecraft.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.explanationTitle"))
+									.addButton(Component.translatable("gui.ok"), PopupScreen::onClose)
+									.setMessage(Component.translatable("skyblocker.bars.config.explanation"))
 									.build());
 						})
-				.dimensions(width - 20, (height - 15) / 2, 15, 15)
+				.bounds(width - 20, (height - 15) / 2, 15, 15)
 				.build());
 	}
 
 	private void setup(StatusBar statusBar) {
-		this.addDrawableChild(statusBar);
+		this.addRenderableWidget(statusBar);
 		statusBar.setOnClick(this::onBarClick);
 	}
 
@@ -315,19 +314,19 @@ public class StatusBarsConfigScreen extends Screen {
 		FancyStatusBars.statusBars.values().forEach(statusBar -> statusBar.setOnClick(null));
 		if (cursorBar != null) cursorBar.inMouse = false;
 		FancyStatusBars.updatePositions(false);
-		assert client != null;
+		assert minecraft != null;
 		setResizeCursor(false);
 		FancyStatusBars.saveBarConfig();
 	}
 
 	@Override
-	public boolean shouldPause() {
+	public boolean isPauseScreen() {
 		return false;
 	}
 
-	private void onBarClick(StatusBar statusBar, Click click) {
+	private void onBarClick(StatusBar statusBar, MouseButtonEvent click) {
 		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-			cursorOffset = new ScreenPos((int) (statusBar.getX() - click.x()), (int) (statusBar.getY() - click.y()));
+			cursorOffset = new ScreenPosition((int) (statusBar.getX() - click.x()), (int) (statusBar.getY() - click.y()));
 			cursorBar = statusBar;
 			cursorBar.inMouse = true;
 			cursorBar.enabled = true;
@@ -352,13 +351,13 @@ public class StatusBarsConfigScreen extends Screen {
 		FancyStatusBars.statusBars.values().forEach(statusBar1 -> {
 			if (!statusBar1.enabled) return;
 			rectToBar.put(
-					new ScreenRect(new ScreenPos(statusBar1.getX(), statusBar1.getY()), statusBar1.getWidth(), statusBar1.getHeight()),
+					new ScreenRectangle(new ScreenPosition(statusBar1.getX(), statusBar1.getY()), statusBar1.getWidth(), statusBar1.getHeight()),
 					Pair.of(statusBar1, BarLocation.of(statusBar1)));
 		});
 	}
 
 	@Override
-	public boolean mouseReleased(Click click) {
+	public boolean mouseReleased(MouseButtonEvent click) {
 		if (cursorBar != null) {
 			cursorBar.inMouse = false;
 			if (currentInsertLocation == BarLocation.NULL) {
@@ -391,7 +390,7 @@ public class StatusBarsConfigScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		StatusBar first = resizeHover.first();
 		// want the right click thing to have priority
 		if (!editBarWidget.isMouseOver(click.x(), click.y()) && click.button() == 0 && first != null) {

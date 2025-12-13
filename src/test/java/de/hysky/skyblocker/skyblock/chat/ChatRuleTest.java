@@ -76,7 +76,7 @@ class ChatRuleTest {
 		Assertions.assertEquals(
 				EnumSet.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND, Location.THE_PARK),
 				ChatRule.LOCATION_FIXING_CODEC.parse(JsonOps.INSTANCE, JsonOps.INSTANCE.createList(Stream.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND, Location.THE_PARK)
-						.map(Location::asString)
+						.map(Location::getSerializedName)
 						.map(JsonOps.INSTANCE::createString)
 				)).getOrThrow()
 		);
@@ -99,7 +99,7 @@ class ChatRuleTest {
 
 		Assertions.assertEquals(
 				JsonOps.INSTANCE.createList(Stream.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND)
-						.map(Location::asString)
+						.map(Location::getSerializedName)
 						.map(JsonOps.INSTANCE::createString)
 				),
 				ChatRule.LOCATION_FIXING_CODEC.encodeStart(JsonOps.INSTANCE, EnumSet.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND)).getOrThrow()

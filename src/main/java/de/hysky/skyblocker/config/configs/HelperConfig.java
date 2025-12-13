@@ -3,10 +3,9 @@ package de.hysky.skyblocker.config.configs;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import net.minecraft.client.resources.language.I18n;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.resources.language.I18n;
 
 public class HelperConfig {
 	public boolean enableNewYearCakesHelper = true;

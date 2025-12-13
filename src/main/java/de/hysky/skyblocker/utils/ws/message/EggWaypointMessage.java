@@ -6,10 +6,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.ws.Type;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.core.BlockPos;
 
 public record EggWaypointMessage(EggFinder.EggType eggType, BlockPos coordinates) implements Message<EggWaypointMessage> {
 	private static final Codec<EggWaypointMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(

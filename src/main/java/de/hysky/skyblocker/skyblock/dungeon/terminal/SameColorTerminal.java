@@ -9,15 +9,13 @@ import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -119,6 +117,6 @@ public final class SameColorTerminal extends SimpleContainerSolver implements Te
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		int clicks = clickMap.getOrDefault(slotId, 0);
 		if (clicks == 0) return List.of();
-		return SlotText.topLeftList(Text.literal(String.valueOf(clicks)).formatted(Formatting.GOLD));
+		return SlotText.topLeftList(Component.literal(String.valueOf(clicks)).withStyle(ChatFormatting.GOLD));
 	}
 }
