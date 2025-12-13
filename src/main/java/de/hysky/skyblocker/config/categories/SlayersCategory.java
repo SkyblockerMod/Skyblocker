@@ -46,6 +46,19 @@ public class SlayersCategory {
 						.controller(ConfigUtils.createEnumController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
+						.description(Text.translatable("skyblocker.config.slayer.enableHud.@Tooltip"))
+						.binding(defaults.slayers.enableHud,
+								() -> config.slayers.enableHud,
+								newValue -> config.slayers.enableHud = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(ButtonOption.createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
+						.prompt(Text.translatable("text.skyblocker.open"))
+						.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.bossbar"))
 						.description(Text.translatable("skyblocker.config.slayer.bossbar.@Tooltip"))
 						.binding(defaults.slayers.displayBossbar,
@@ -85,17 +98,12 @@ public class SlayersCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
-						.description(Text.translatable("skyblocker.config.slayer.enableHud.@Tooltip"))
-						.binding(defaults.slayers.enableHud,
-								() -> config.slayers.enableHud,
-								newValue -> config.slayers.enableHud = newValue)
+						.name(Text.translatable("skyblocker.config.slayer.highlightUnclaimedRewards"))
+						.description(Text.translatable("skyblocker.config.slayer.highlightUnclaimedRewards@Tooltip"))
+						.binding(defaults.slayers.highlightUnclaimedRewards,
+								() -> config.slayers.highlightUnclaimedRewards,
+								newValue -> config.slayers.highlightUnclaimedRewards = newValue)
 						.controller(ConfigUtils.createBooleanController())
-						.build())
-				.option(ButtonOption.createBuilder()
-						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
-						.prompt(Text.translatable("text.skyblocker.open"))
-						.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
 						.build())
 
 				.group(OptionGroup.createBuilder()

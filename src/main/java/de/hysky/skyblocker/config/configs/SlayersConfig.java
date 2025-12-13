@@ -28,6 +28,8 @@ public class SlayersConfig {
 
 	public boolean enableHud = true;
 
+	public boolean highlightUnclaimedRewards = true;
+
 	public CallMaddox callMaddox = new CallMaddox();
 
 	public EndermanSlayer endermanSlayer = new EndermanSlayer();
