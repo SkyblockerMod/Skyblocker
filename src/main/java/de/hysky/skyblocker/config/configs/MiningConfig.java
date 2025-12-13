@@ -36,11 +36,14 @@ public class MiningConfig {
 
 	public Glacite glacite = new Glacite();
 
+	public BlockBreakPrediction BlockBreakPrediction = new BlockBreakPrediction();
+
 	public static class PickobulusHelper {
 		public boolean enablePickobulusHud = true;
 
 		public boolean hideHudOnCooldown = false;
 	}
+	
 
 	public static class DwarvenMines {
 		public boolean solveFetchur = true;
@@ -157,6 +160,14 @@ public class MiningConfig {
 		public boolean enableCorpseProfitTracker = true;
 
 		public boolean forceEnglishCorpseProfitTracker = true;
+	}
+
+	public static class BlockBreakPrediction {
+		public boolean enabled = true;
+
+		public boolean playSound = false;
+
+
 	}
 
 	/**
