@@ -143,7 +143,7 @@ public class PickobulusHelper {
 		Optional<String> pickobulusCooldownHud = PlayerListManager.getPlayerStringList().stream().map(String::trim).filter(entry -> entry.startsWith("Pickobulus: ")).findAny();
 		// Only process if the pickobulus ability info is in the player list, so pickobulus helper will still render if this info is not in the player list
 		if (pickobulusCooldownHud.isPresent() && !pickobulusCooldownHud.get().equals("Pickobulus: Available")) {
-			errorMessage = Text.literal("Pickobulus is on cooldown: " + pickobulusCooldownHud.get().substring(12)).formatted(Formatting.RED);
+			errorMessage = Component.literal("Pickobulus is on cooldown: " + pickobulusCooldownHud.get().substring(12)).withStyle(ChatFormatting.RED);
 			return;
 		}
 
