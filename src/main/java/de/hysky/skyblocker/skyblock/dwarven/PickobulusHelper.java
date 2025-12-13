@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -26,6 +27,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class PickobulusHelper {
@@ -134,6 +136,14 @@ public class PickobulusHelper {
 
 		if (CLIENT.player == null || CLIENT.world == null) {
 			errorMessage = Text.literal("Can't find player or world?").formatted(Formatting.RED);
+			return;
+		}
+
+		// Process cooldown info before checking whether the user is holding a pickaxe with pickobulus so cooldown info is always displayed
+		Optional<String> pickobulusCooldownHud = PlayerListManager.getPlayerStringList().stream().map(String::trim).filter(entry -> entry.startsWith("Pickobulus: ")).findAny();
+		// Only process if the pickobulus ability info is in the player list, so pickobulus helper will still render if this info is not in the player list
+		if (pickobulusCooldownHud.isPresent() && !pickobulusCooldownHud.get().equals("Pickobulus: Available")) {
+			errorMessage = Text.literal("Pickobulus is on cooldown: " + pickobulusCooldownHud.get().substring(12)).formatted(Formatting.RED);
 			return;
 		}
 
