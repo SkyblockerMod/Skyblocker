@@ -1,14 +1,13 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
-import net.minecraft.client.gui.hud.ClientBossBar;
-import net.minecraft.entity.boss.BossBar;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.text.Text;
-
 import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.client.gui.components.LerpingBossEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.BossEvent;
+import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class SlayerBossBars {
 	public static final UUID UUID = java.util.UUID.randomUUID();
@@ -16,7 +15,7 @@ public class SlayerBossBars {
 	private static final long UPDATE_INTERVAL = 400;
 	private static int bossMaxHealth = -1;
 	private static long lastUpdateTime = 0;
-	private static ClientBossBar bossBar;
+	private static LerpingBossEvent bossBar;
 
 	/**
 	 * Determines if the boss bar should be rendered and updates the max health of the boss.
@@ -37,7 +36,7 @@ public class SlayerBossBars {
 		}
 
 		// Update boss max health
-		ArmorStandEntity bossArmorStand = SlayerManager.getSlayerBossArmorStand();
+		ArmorStand bossArmorStand = SlayerManager.getSlayerBossArmorStand();
 		if (bossArmorStand != null && bossMaxHealth == -1) {
 			Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(bossArmorStand.getName().getString());
 			if (maxHealthMatcher.find()) bossMaxHealth = convertToInt(maxHealthMatcher.group(0));
@@ -51,27 +50,27 @@ public class SlayerBossBars {
 	 *
 	 * @return The updated boss bar.
 	 */
-	public static ClientBossBar updateBossBar() {
-		ArmorStandEntity slayer = SlayerManager.getSlayerBossArmorStand();
-		if (bossBar == null) bossBar = new ClientBossBar(UUID, slayer != null ? slayer.getDisplayName() : Text.of("Attempting to Locate Slayer..."), 1f, BossBar.Color.PURPLE, BossBar.Style.PROGRESS, false, false, false);
+	public static LerpingBossEvent updateBossBar() {
+		ArmorStand slayer = SlayerManager.getSlayerBossArmorStand();
+		if (bossBar == null) bossBar = new LerpingBossEvent(UUID, slayer != null ? slayer.getDisplayName() : Component.nullToEmpty("Attempting to Locate Slayer..."), 1f, BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS, false, false, false);
 
 		// If no slayer armor stand is found, display a red progress bar
 		if (slayer == null) {
-			bossBar.setStyle(BossBar.Style.PROGRESS);
-			bossBar.setColor(BossBar.Color.RED);
+			bossBar.setOverlay(BossEvent.BossBarOverlay.PROGRESS);
+			bossBar.setColor(BossEvent.BossBarColor.RED);
 			return bossBar;
 		}
 
 		// Update the boss bar with the current slayer's health
 		Matcher healthMatcher = HEALTH_PATTERN.matcher(slayer.getName().getString());
 		if (healthMatcher.find() && slayer.isAlive()) {
-			bossBar.setPercent(bossMaxHealth == -1 ? 1f : (float) convertToInt(healthMatcher.group(1)) / bossMaxHealth);
-			bossBar.setColor(BossBar.Color.PINK);
+			bossBar.setProgress(bossMaxHealth == -1 ? 1f : (float) convertToInt(healthMatcher.group(1)) / bossMaxHealth);
+			bossBar.setColor(BossEvent.BossBarColor.PINK);
 			bossBar.setName(slayer.getDisplayName());
-			bossBar.setStyle(BossBar.Style.NOTCHED_10);
+			bossBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_10);
 		} else {
-			bossBar.setColor(BossBar.Color.RED);
-			bossBar.setStyle(BossBar.Style.PROGRESS);
+			bossBar.setColor(BossEvent.BossBarColor.RED);
+			bossBar.setOverlay(BossEvent.BossBarOverlay.PROGRESS);
 			bossBar.setName(slayer.getDisplayName());
 		}
 

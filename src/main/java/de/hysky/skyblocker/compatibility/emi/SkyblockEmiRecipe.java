@@ -7,17 +7,15 @@ import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import java.util.List;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
 public class SkyblockEmiRecipe implements EmiRecipe {
-	private final Text craftText;
+	private final Component craftText;
 	private final SkyblockRecipe recipe;
 
 	public SkyblockEmiRecipe(SkyblockRecipe recipe) {
@@ -57,9 +55,9 @@ public class SkyblockEmiRecipe implements EmiRecipe {
 
 	@Override
 	public void addWidgets(WidgetHolder widgets) {
-		ScreenPos arrowLocation = recipe.getArrowLocation(getDisplayWidth(), getDisplayHeight());
+		ScreenPosition arrowLocation = recipe.getArrowLocation(getDisplayWidth(), getDisplayHeight());
 		if (arrowLocation != null) widgets.addTexture(EmiTexture.EMPTY_ARROW, arrowLocation.x(), arrowLocation.y());
-		widgets.addText(craftText, 59 - MinecraftClient.getInstance().textRenderer.getWidth(craftText) / 2, 55, 0xFFFFFF, true);
+		widgets.addText(craftText, 59 - Minecraft.getInstance().font.width(craftText) / 2, 55, 0xFFFFFF, true);
 		for (SkyblockRecipe.RecipeSlot inputSlot : recipe.getInputSlots(getDisplayWidth(), getDisplayHeight())) {
 			widgets.addSlot(EmiStack.of(inputSlot.stack()), inputSlot.x(), inputSlot.y());
 		}

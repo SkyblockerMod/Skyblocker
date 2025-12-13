@@ -9,31 +9,31 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jspecify.annotations.Nullable;
 
 import java.awt.Color;
 import java.util.function.Consumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.StringRepresentable;
 
-public class StatusBar implements Widget, Drawable, Element, Selectable {
+public class StatusBar implements LayoutElement, Renderable, GuiEventListener, NarratableEntry {
 	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
 	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
@@ -64,7 +64,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		this.textColor = textColor;
 	}
 
-	public Text getName() {
+	public Component getName() {
 		return type.getName();
 	}
 
@@ -102,7 +102,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	public boolean showOverflow = false;
 
 	public StatusBar(StatusBarType type) {
-		this.icon = SkyblockerMod.id("bars/icons/" + type.asString());
+		this.icon = SkyblockerMod.id("bars/icons/" + type.getSerializedName());
 		this.colors = type.getColors();
 		this.textColor = type.getTextColor();
 		this.type = type;
@@ -114,28 +114,28 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		renderBar(context);
 		if (enabled) renderText(context);
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	public void renderBar(DrawContext context) {
+	public void renderBar(GuiGraphics context) {
 		if (renderWidth <= 0) return;
 		int transparency = transparency(-1);
 		switch (iconPosition) {
-			case LEFT -> context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, icon, renderX, renderY, ICON_SIZE, ICON_SIZE, transparency);
-			case RIGHT -> context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, icon, renderX + renderWidth - ICON_SIZE, renderY, ICON_SIZE, ICON_SIZE, transparency);
+			case LEFT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, icon, renderX, renderY, ICON_SIZE, ICON_SIZE, transparency);
+			case RIGHT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, icon, renderX + renderWidth - ICON_SIZE, renderY, ICON_SIZE, ICON_SIZE, transparency);
 		}
 
 		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 1 : renderX;
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
 		drawBarFill(context, barX, barWidth);
 		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
 	}
 
-	protected void drawBarFill(DrawContext context, int barX, int barWith) {
+	protected void drawBarFill(GuiGraphics context, int barX, int barWith) {
 		HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
 
 		if (hasOverflow() && overflowFill > 0) {
@@ -155,24 +155,24 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		updateValues(resource.value() / (float) resource.max(), resource.overflow() / (float) resource.max(), resource.value(), resource.max(), resource.overflow() > 0 ? resource.overflow() : null);
 	}
 
-	public void renderText(DrawContext context) {
+	public void renderText(GuiGraphics context) {
 		if (!showText()) return;
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		Font textRenderer = Minecraft.getInstance().font;
 		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 2 : renderX;
 		String stringValue = this.value.toString();
-		MutableText text = Text.literal(stringValue).styled(style -> style.withColor((textColor == null ? colors[0] : textColor).getRGB()));
+		MutableComponent text = Component.literal(stringValue).withStyle(style -> style.withColor((textColor == null ? colors[0] : textColor).getRGB()));
 
 		if (hasMax() && showMax && max != null) {
 			text.append("/").append(max.toString());
 		}
 		if (hasOverflow() && showOverflow && overflow != null) {
-			MutableText literal = Text.literal(" + ").styled(style -> style.withColor(colors[1].getRGB()));
+			MutableComponent literal = Component.literal(" + ").withStyle(style -> style.withColor(colors[1].getRGB()));
 			literal.append(overflow.toString());
 			text.append(literal);
 		}
 
-		int textWidth = textRenderer.getWidth(text);
+		int textWidth = textRenderer.width(text);
 		int x;
 		switch (textPosition) {
 			case RIGHT -> x = barX + barWidth - textWidth;
@@ -183,12 +183,12 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		int y = this.renderY - 3;
 
 		int color = transparency((textColor == null ? colors[0] : textColor).getRGB());
-		int outlineColor = transparency(Colors.BLACK);
+		int outlineColor = transparency(CommonColors.BLACK);
 
-		HudHelper.drawOutlinedText(context, Text.of(text), x, y, color, outlineColor);
+		HudHelper.drawOutlinedText(context, Component.translationArg(text), x, y, color, outlineColor);
 	}
 
-	public void renderCursor(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderCursor(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		int temp_x = renderX;
 		int temp_y = renderY;
 		boolean temp_ghost = inMouse;
@@ -241,8 +241,8 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	}
 
 	@Override
-	public ScreenRect getNavigationFocus() {
-		return Widget.super.getNavigationFocus();
+	public ScreenRectangle getRectangle() {
+		return LayoutElement.super.getRectangle();
 	}
 
 	@Override
@@ -251,7 +251,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	}
 
 	@Override
-	public void forEachChild(Consumer<ClickableWidget> consumer) {
+	public void visitWidgets(Consumer<AbstractWidget> consumer) {
 	}
 
 	@Override
@@ -264,12 +264,12 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	}
 
 	@Override
-	public SelectionType getType() {
-		return SelectionType.NONE;
+	public NarrationPriority narrationPriority() {
+		return NarrationPriority.NONE;
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (!isMouseOver(click.x(), click.y())) return false;
 		if (onClick != null) {
 			onClick.onClick(this, click);
@@ -282,7 +282,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder builder) {
+	public void updateNarration(NarrationElementOutput builder) {
 	}
 
 	@Override
@@ -319,23 +319,23 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		this.textPosition = textPosition;
 	}
 
-	public enum IconPosition implements StringIdentifiable {
+	public enum IconPosition implements StringRepresentable {
 		LEFT,
 		RIGHT,
 		OFF;
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name();
 		}
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.bars.config.commonPosition." + name());
+			return I18n.get("skyblocker.bars.config.commonPosition." + name());
 		}
 	}
 
-	public enum TextPosition implements StringIdentifiable {
+	public enum TextPosition implements StringRepresentable {
 		LEFT,
 		CENTER,
 		BAR_CENTER,
@@ -343,20 +343,20 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		OFF;
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name();
 		}
 
 		@Override
 		public String toString() {
-			if (this == CENTER || this == BAR_CENTER) return I18n.translate("skyblocker.bars.config.textPosition." + name());
-			return I18n.translate("skyblocker.bars.config.commonPosition." + name());
+			if (this == CENTER || this == BAR_CENTER) return I18n.get("skyblocker.bars.config.textPosition." + name());
+			return I18n.get("skyblocker.bars.config.commonPosition." + name());
 		}
 	}
 
 	@FunctionalInterface
 	public interface OnClick {
-		void onClick(StatusBar statusBar, Click click);
+		void onClick(StatusBar statusBar, MouseButtonEvent click);
 	}
 
 	public void loadFromJson(JsonObject object) {
@@ -421,8 +421,8 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 			object.addProperty("x", x);
 			object.addProperty("y", y);
 		}
-		object.addProperty("icon_position", iconPosition.asString());
-		object.addProperty("text_position", textPosition.asString());
+		object.addProperty("icon_position", iconPosition.getSerializedName());
+		object.addProperty("text_position", textPosition.getSerializedName());
 		object.addProperty("show_max", showMax);
 		object.addProperty("show_overflow", showOverflow);
 		object.addProperty("enabled", enabled);
@@ -436,7 +436,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		}
 
 		@Override
-		protected void drawBarFill(DrawContext context, int barX, int barWith) {
+		protected void drawBarFill(GuiGraphics context, int barX, int barWith) {
 			if (hasOverflow() && overflowFill > 0) {
 				if (overflowFill > fill && SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.IN_FRONT) {
 					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));

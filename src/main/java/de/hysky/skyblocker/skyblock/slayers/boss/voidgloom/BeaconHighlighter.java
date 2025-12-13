@@ -11,10 +11,10 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class BeaconHighlighter {
 	private static final ObjectOpenHashSet<BlockPos> beaconPositions = new ObjectOpenHashSet<>();
@@ -40,13 +40,13 @@ public class BeaconHighlighter {
 		if (Utils.isInTheEnd() && SlayerManager.isBossSpawned()) {
 			beaconPositions.remove(pos);
 
-			if (newState.isOf(Blocks.BEACON)) {
-				beaconPositions.add(pos.toImmutable());
+			if (newState.is(Blocks.BEACON)) {
+				beaconPositions.add(pos.immutable());
 			}
 		}
 	}
 
-	private static boolean onMessage(Text text, boolean overlay) {
+	private static boolean onMessage(Component text, boolean overlay) {
 		if (Utils.isInTheEnd() && !overlay) {
 			String message = text.getString();
 

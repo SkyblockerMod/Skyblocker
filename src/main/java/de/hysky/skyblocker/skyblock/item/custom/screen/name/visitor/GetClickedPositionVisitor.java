@@ -1,49 +1,48 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.StringVisitable;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 
-public class GetClickedPositionVisitor implements StringVisitable.StyledVisitor<Void> {
-	private final MutableText text = Text.empty();
-	private final TextRenderer textRenderer;
+public class GetClickedPositionVisitor implements FormattedText.StyledContentConsumer<Void> {
+	private final MutableComponent text = Component.empty();
+	private final Font textRenderer;
 	private int position = -1;
 	private final int x;
 
-	public GetClickedPositionVisitor(TextRenderer textRenderer, int x) {
+	public GetClickedPositionVisitor(Font textRenderer, int x) {
 		this.x = x;
 		this.textRenderer = textRenderer;
 	}
 
 	public GetClickedPositionVisitor(int x) {
-		this(MinecraftClient.getInstance().textRenderer, x);
+		this(Minecraft.getInstance().font, x);
 	}
 
 	protected void visit(Style style, String asString) {
 		if (position >= 0) return; // already found position
 		if (asString.isEmpty()) return;
-		MutableText text1 = Text.literal(asString).setStyle(style);
-		int originalWidth = textRenderer.getWidth(text);
-		if (originalWidth + textRenderer.getWidth(text1) < x) { // if the text is smaller than the x position, we skip it and append it
+		MutableComponent text1 = Component.literal(asString).setStyle(style);
+		int originalWidth = textRenderer.width(text);
+		if (originalWidth + textRenderer.width(text1) < x) { // if the text is smaller than the x position, we skip it and append it
 			text.append(text1);
 			return;
 		}
 		// the x position is within the text, we need to find the position
 		int currentWidth = 0;
 		AtomicInteger atomicInteger = new AtomicInteger(0);
-		OrderedText orderedText = visitor -> {
+		FormattedCharSequence orderedText = visitor -> {
 			visitor.accept(0, style, asString.codePointAt(atomicInteger.get()));
 			return true;
 		};
-		while (atomicInteger.get() < asString.length() && originalWidth + currentWidth + textRenderer.getWidth(orderedText) / 2 <= x) {
-			currentWidth += textRenderer.getWidth(orderedText);
+		while (atomicInteger.get() < asString.length() && originalWidth + currentWidth + textRenderer.width(orderedText) / 2 <= x) {
+			currentWidth += textRenderer.width(orderedText);
 			atomicInteger.incrementAndGet();
 		}
 		position = Math.max(text.getString().length() + atomicInteger.get(), 0);

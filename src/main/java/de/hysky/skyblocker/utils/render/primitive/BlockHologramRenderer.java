@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
 import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
-import net.minecraft.client.render.state.CameraRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 
 public final class BlockHologramRenderer implements PrimitiveRenderer<BlockHologramRenderState> {
 	protected static final BlockHologramRenderer INSTANCE = new BlockHologramRenderer();

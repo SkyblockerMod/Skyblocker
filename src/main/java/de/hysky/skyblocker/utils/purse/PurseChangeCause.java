@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.purse;
 
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 public enum PurseChangeCause {
 	// Gain
@@ -26,7 +26,7 @@ public enum PurseChangeCause {
 				return DICE_SIX;
 			}
 
-			if (MinecraftClient.getInstance().currentScreen == null) {
+			if (Minecraft.getInstance().screen == null) {
 				// UI closed
 				// need to make this more specific, but atm might as well attrib to mob kill
 				return MOB_KILL;

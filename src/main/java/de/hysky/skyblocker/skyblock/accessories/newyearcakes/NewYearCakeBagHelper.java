@@ -4,11 +4,10 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class NewYearCakeBagHelper extends SimpleContainerSolver {
 	public NewYearCakeBagHelper() {
@@ -22,10 +21,10 @@ public class NewYearCakeBagHelper extends SimpleContainerSolver {
 
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		if (client.player != null) {
-			for (Slot slot : client.player.currentScreenHandler.slots) {
-				NewYearCakesHelper.INSTANCE.addCake(NewYearCakesHelper.getCakeYear(slot.getStack()));
+			for (Slot slot : client.player.containerMenu.slots) {
+				NewYearCakesHelper.INSTANCE.addCake(NewYearCakesHelper.getCakeYear(slot.getItem()));
 			}
 		}
 		return List.of();

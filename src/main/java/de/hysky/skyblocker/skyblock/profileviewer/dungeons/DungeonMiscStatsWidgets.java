@@ -6,20 +6,19 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Identifier;
-
 import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.Map;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 
 public class DungeonMiscStatsWidgets {
 	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
 	private static final Identifier RUN_ICON = SkyblockerMod.id("textures/gui/profile_viewer/run_icon.png");
-	private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+	private static final Font textRenderer = Minecraft.getInstance().font;
 	private static final DecimalFormat DF = new DecimalFormat("#.##");
 	private static final String[] DUNGEONS = {"catacombs", "master_catacombs"};
 
@@ -47,17 +46,17 @@ public class DungeonMiscStatsWidgets {
 		} catch (Exception ignored) {}
 	}
 
-	public void render(DrawContext context, int x, int y) {
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-		context.drawItem(Ico.FEATHER, x + 2, y + 4);
+	public void render(GuiGraphics context, int x, int y) {
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+		context.renderItem(Ico.FEATHER, x + 2, y + 4);
 
-		context.drawText(textRenderer, "Secrets " + secrets, x + 30, y + 4, Color.WHITE.getRGB(), true);
-		context.drawText(textRenderer, "Avg " + (totalRuns > 0 ? DF.format(secrets / (float) totalRuns) : 0) + "/Run", x + 30, y + 14, Color.WHITE.getRGB(), true);
+		context.drawString(textRenderer, "Secrets " + secrets, x + 30, y + 4, Color.WHITE.getRGB(), true);
+		context.drawString(textRenderer, "Avg " + (totalRuns > 0 ? DF.format(secrets / (float) totalRuns) : 0) + "/Run", x + 30, y + 14, Color.WHITE.getRGB(), true);
 
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + 28, 0, 0, 109, 26, 109, 26);
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, RUN_ICON, x + 4, y + 33, 0, 0, 14, 16, 14, 16);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + 28, 0, 0, 109, 26, 109, 26);
+		context.blit(RenderPipelines.GUI_TEXTURED, RUN_ICON, x + 4, y + 33, 0, 0, 14, 16, 14, 16);
 
-		context.drawText(textRenderer, "§aNormal §r" + dungeonRuns.getOrDefault("catacombs", 0), x + 30, y + 32, Color.WHITE.getRGB(), true);
-		context.drawText(textRenderer, "§cMaster §r" + dungeonRuns.getOrDefault("master_catacombs", 0), x + 30, y + 42, Color.WHITE.getRGB(), true);
+		context.drawString(textRenderer, "§aNormal §r" + dungeonRuns.getOrDefault("catacombs", 0), x + 30, y + 32, Color.WHITE.getRGB(), true);
+		context.drawString(textRenderer, "§cMaster §r" + dungeonRuns.getOrDefault("master_catacombs", 0), x + 30, y + 42, Color.WHITE.getRGB(), true);
 	}
 }

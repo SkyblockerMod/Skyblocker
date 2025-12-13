@@ -3,41 +3,40 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.DrawnTextConsumer;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.DrawContext.HoverType;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tab.GridScreenTab;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.Positioner;
-import net.minecraft.client.gui.widget.SimplePositioningWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.network.OtherClientPlayerEntity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.components.tabs.GridLayoutTab;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.LayoutSettings;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import static de.hysky.skyblocker.skyblock.item.custom.screen.CustomizeScreen.CLIENT;
 
-public class ArmorTab extends GridScreenTab implements Closeable {
+public class ArmorTab extends GridLayoutTab implements Closeable {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 	private static final int PLAYER_WIDGET_WIDTH = 84;
 	private static final int PADDING = 10;
@@ -54,55 +53,55 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 	private final ModelFieldContainer modelFieldContainer;
 
 	private final boolean nothingCustomizable;
-	private final OtherClientPlayerEntity player = new OtherClientPlayerEntity(CLIENT.world, CLIENT.getGameProfile()) {
+	private final RemotePlayer player = new RemotePlayer(CLIENT.level, CLIENT.getGameProfile()) {
 		@Override
-		public boolean isInvisibleTo(PlayerEntity player) {
+		public boolean isInvisibleTo(Player player) {
 			return true;
 		}
 
 		@Override
-		public void onEquipStack(EquipmentSlot slot, ItemStack oldStack, ItemStack newStack) {}
+		public void onEquipItem(EquipmentSlot slot, ItemStack oldStack, ItemStack newStack) {}
 	};
 
 	public ArmorTab(CustomizeScreen parent) {
-		super(Text.literal("Armor"));
+		super(Component.literal("Armor"));
 		this.parent = parent;
-		grid.setRowSpacing(PADDING / 2).setColumnSpacing(PADDING);
+		layout.rowSpacing(PADDING / 2).columnSpacing(PADDING);
 
 		List<ItemStack> list = ItemUtils.getArmor(CLIENT.player);
 		for (int i = 0; i < list.size(); i++) {
 			ItemStack copy = list.get(i).copy();
 			armor[3 - i] = copy;
-			player.equipStack(ARMOR_SLOTS[i], copy);
+			player.setItemSlot(ARMOR_SLOTS[i], copy);
 		}
 		while (selectedSlot < armor.length - 1 && !canEdit(armor[selectedSlot])) selectedSlot++;
 		nothingCustomizable = !canEdit(armor[selectedSlot]);
 
-		DirectionalLayoutWidget vertical = DirectionalLayoutWidget.vertical().spacing(1);
+		LinearLayout vertical = LinearLayout.vertical().spacing(1);
 		PlayerWidget playerWidget = new PlayerWidget(0, 0, 84, 165, player);
-		vertical.add(playerWidget);
+		vertical.addChild(playerWidget);
 		PieceSelectionWidget pieceSelectionWidget = new PieceSelectionWidget(0, 0);
-		vertical.add(pieceSelectionWidget);
-		grid.add(vertical, 0, 0, 2, 1, Positioner::alignVerticalCenter);
+		vertical.addChild(pieceSelectionWidget);
+		layout.addChild(vertical, 0, 0, 2, 1, LayoutSettings::alignVerticallyMiddle);
 
 		int width = 200;
 		headSelectionWidget = new HeadSelectionWidget(0, 0, width, 165);
-		grid.add(headSelectionWidget, 0, 1, 2, 1, Positioner::alignVerticalCenter);
+		layout.addChild(headSelectionWidget, 0, 1, 2, 1, LayoutSettings::alignVerticallyMiddle);
 
-		DirectionalLayoutWidget layoutWidget = DirectionalLayoutWidget.horizontal().spacing(PADDING / 2);
+		LinearLayout layoutWidget = LinearLayout.horizontal().spacing(PADDING / 2);
 		int containerWidth = (int) (width * (1f / 3f));
 		trimSelectionWidget = new TrimSelectionWidget(0, 0, width - containerWidth - PADDING / 2, 80);
-		modelFieldContainer = layoutWidget.add(new ModelFieldContainer(containerWidth, 80));
-		layoutWidget.add(trimSelectionWidget);
-		layoutWidget.refreshPositions();
-		grid.add(layoutWidget, 0, 1);
+		modelFieldContainer = layoutWidget.addChild(new ModelFieldContainer(containerWidth, 80));
+		layoutWidget.addChild(trimSelectionWidget);
+		layoutWidget.arrangeElements();
+		layout.addChild(layoutWidget, 0, 1);
 
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		Font textRenderer = Minecraft.getInstance().font;
 		colorSelectionWidget = new ColorSelectionWidget(0, 0, width, 100, textRenderer);
-		grid.add(colorSelectionWidget, 1, 1);
+		layout.addChild(colorSelectionWidget, 1, 1);
 
 		if (nothingCustomizable) {
-			grid.add(new TextWidget(Text.translatable("skyblocker.customization.nothingCustomizable"), textRenderer), 0, 1, 2, 1, p -> p.alignVerticalCenter().alignHorizontalCenter());
+			layout.addChild(new StringWidget(Component.translatable("skyblocker.customization.nothingCustomizable"), textRenderer), 0, 1, 2, 1, p -> p.alignVerticallyMiddle().alignHorizontallyCenter());
 		}
 
 		updateWidgets();
@@ -111,8 +110,8 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 
 	private static boolean canEdit(ItemStack stack) {
 		boolean hasUuid = !stack.getUuid().isEmpty();
-		if (stack.isOf(Items.PLAYER_HEAD)) return hasUuid;
-		return stack.isIn(ItemTags.TRIMMABLE_ARMOR) && hasUuid;
+		if (stack.is(Items.PLAYER_HEAD)) return hasUuid;
+		return stack.is(ItemTags.TRIMMABLE_ARMOR) && hasUuid;
 	}
 
 	private void updateWidgets() {
@@ -125,7 +124,7 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 		}
 		ItemStack item = armor[selectedSlot];
 		parent.backupConfigs(item);
-		boolean isPlayerHead = item.isOf(Items.PLAYER_HEAD);
+		boolean isPlayerHead = item.is(Items.PLAYER_HEAD);
 		headSelectionWidget.setCurrentItem(item);
 		trimSelectionWidget.setCurrentItem(item);
 		colorSelectionWidget.setCurrentItem(item);
@@ -137,25 +136,25 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 		if (SkyblockerConfigManager.get().general.customArmorModel.containsKey(uuid)) {
 			Identifier identifier = SkyblockerConfigManager.get().general.customArmorModel.get(uuid);
 			String string = identifier.toString();
-			modelFieldContainer.field.setText(string);
+			modelFieldContainer.field.setValue(string);
 		} else {
-			modelFieldContainer.field.setText("");
+			modelFieldContainer.field.setValue("");
 		}
 	}
 
 	void tick() {
-		player.age++;
+		player.tickCount++;
 	}
 
 	@Override
-	public void refreshGrid(ScreenRect tabArea) {
+	public void doLayout(ScreenRectangle tabArea) {
 		int width = Math.min(460, tabArea.width()) - PLAYER_WIDGET_WIDTH - PADDING * 3;
 		headSelectionWidget.setWidth(width);
 		int modelFieldWidth = (int) (width * (1 / 3f));
 		trimSelectionWidget.setWidth(width - modelFieldWidth - PADDING / 2);
 		modelFieldContainer.setWidth(modelFieldWidth);
 		colorSelectionWidget.setWidth(width);
-		super.refreshGrid(tabArea);
+		super.doLayout(tabArea);
 	}
 
 	public void recreate() {
@@ -167,14 +166,14 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 		colorSelectionWidget.close();
 	}
 
-	private class PieceSelectionWidget extends ClickableWidget {
+	private class PieceSelectionWidget extends AbstractWidget {
 		private static final Identifier HOTBAR_TEXTURE = SkyblockerMod.id("armor_customization_screen/mini_hotbar");
 		private static final Identifier HOTBAR_SELECTION_TEXTURE = SkyblockerMod.id("hotbar_selection_full");
 
 		private final boolean[] selectable;
 
 		private PieceSelectionWidget(int x, int y) {
-			super(x, y, 84, 24, Text.of(""));
+			super(x, y, 84, 24, Component.nullToEmpty(""));
 			selectable = new boolean[armor.length];
 			for (int i = 0; i < armor.length; i++) {
 				selectable[i] = canEdit(armor[i]);
@@ -182,8 +181,8 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, getX() + 1, getY() + 1, 82, 22);
+		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, getX() + 1, getY() + 1, 82, 22);
 
 			int hoveredSlot = -1;
 			int localX = mouseX - getX() - 2;
@@ -198,17 +197,17 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 			}
 
 			for (int i = 0; i < armor.length; i++) {
-				context.drawItem(armor[i], getX() + 4 + i * 20, getY() + 4);
+				context.renderItem(armor[i], getX() + 4 + i * 20, getY() + 4);
 				if (!selectable[i] && !armor[i].isEmpty()) {
-					context.drawItem(BARRIER, getX() + 4 + i * 20, getY() + 4);
+					context.renderItem(BARRIER, getX() + 4 + i * 20, getY() + 4);
 				}
 			}
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HOTBAR_SELECTION_TEXTURE, getX() + selectedSlot * 20, getY(), 24, 24);
-			this.setCursor(context);
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_SELECTION_TEXTURE, getX() + selectedSlot * 20, getY(), 24, 24);
+			this.handleCursor(context);
 		}
 
 		@Override
-		public void onClick(Click click, boolean doubled) {
+		public void onClick(MouseButtonEvent click, boolean doubled) {
 			double localX = click.x() - getX() - 2;
 			double localY = click.y() - getY() - 2;
 			if (localY < 0 || localY >= 20) return;
@@ -226,40 +225,40 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 	}
 
-	private class ModelFieldContainer extends ContainerWidget {
-		private final Text text = Text.translatable("skyblocker.customization.armor.modelOverride").formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
-		private final SimplePositioningWidget containerLayout;
+	private class ModelFieldContainer extends AbstractContainerWidget {
+		private final Component text = Component.translatable("skyblocker.customization.armor.modelOverride").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
+		private final FrameLayout containerLayout;
 		private final IdentifierTextField field;
 
 		private ModelFieldContainer(int width, int height) {
-			super(0, 0, width, height, Text.empty());
-			containerLayout = new SimplePositioningWidget();
-			field = containerLayout.add(new IdentifierTextField(width - 10, 20, identifier -> {
+			super(0, 0, width, height, Component.empty());
+			containerLayout = new FrameLayout();
+			field = containerLayout.addChild(new IdentifierTextField(width - 10, 20, identifier -> {
 				String uuid = armor[selectedSlot].getUuid();
 				if (uuid.isEmpty()) return;
 				if (identifier == null) SkyblockerConfigManager.get().general.customArmorModel.remove(uuid);
 				else SkyblockerConfigManager.get().general.customArmorModel.put(uuid, identifier);
 				colorSelectionWidget.refresh();
 			}));
-			containerLayout.refreshPositions();
-			field.setTooltip(Tooltip.of(Text.translatable("skyblocker.customization.armor.modelOverride.tooltip")));
+			containerLayout.arrangeElements();
+			field.setTooltip(Tooltip.create(Component.translatable("skyblocker.customization.armor.modelOverride.tooltip")));
 			field.setTooltipDelay(Duration.ofMillis(400));
 		}
 
 		@Override
 		public void setX(int x) {
 			super.setX(x);
-			SimplePositioningWidget.setPos(getX(), getWidth(), containerLayout.getWidth(), containerLayout::setX, 0.5f);
+			FrameLayout.alignInDimension(getX(), getWidth(), containerLayout.getWidth(), containerLayout::setX, 0.5f);
 		}
 
 		@Override
 		public void setWidth(int width) {
 			super.setWidth(width);
 			containerLayout.setMinWidth(width);
-			containerLayout.refreshPositions();
+			containerLayout.arrangeElements();
 			field.setWidth(width - 10);
 			setX(getX());
 		}
@@ -267,28 +266,28 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 		@Override
 		public void setY(int y) {
 			super.setY(y);
-			SimplePositioningWidget.setPos(getY(), getHeight(), containerLayout.getHeight(), containerLayout::setY, 0.5f);
+			FrameLayout.alignInDimension(getY(), getHeight(), containerLayout.getHeight(), containerLayout::setY, 0.5f);
 		}
 
 		@Override
-		public List<? extends Element> children() {
+		public List<? extends GuiEventListener> children() {
 			return visible ? List.of(field) : List.of();
 		}
 
 		@Override
-		protected int getContentsHeightWithPadding() {
+		protected int contentHeight() {
 			return 0;
 		}
 
 		@Override
-		protected double getDeltaYPerScroll() {
+		protected double scrollRate() {
 			return 0;
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 			if (!visible) return;
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
+			context.blitSprite(RenderPipelines.GUI_TEXTURED,
 					INNER_SPACE_TEXTURE,
 					getX(),
 					getY(),
@@ -296,16 +295,16 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 					getHeight()
 			);
 			this.field.render(context, mouseX, mouseY, deltaTicks);
-			this.drawLabel(context.getTextConsumer(HoverType.NONE));
+			this.drawLabel(context.textRenderer(HoveredTextEffects.NONE));
 		}
 
-		private void drawLabel(DrawnTextConsumer drawer) {
+		private void drawLabel(ActiveTextCollector drawer) {
 			int padding = 5;
 			int startY = getY() + padding;
-			drawer.text(text, getX() + padding, getRight() - padding, startY, startY + 9);
+			drawer.acceptScrollingWithDefaultCenter(text, getX() + padding, getRight() - padding, startY, startY + 9);
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 	}
 }

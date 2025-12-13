@@ -1,26 +1,24 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.DrawContext.HoverType;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-
 import java.util.List;
 import java.util.function.Consumer;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.CommonColors;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.util.Colors;
 
-public class DropdownWidget<T> extends ContainerWidget {
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+public class DropdownWidget<T> extends AbstractContainerWidget {
+	private static final Minecraft client = Minecraft.getInstance();
 	public static final int ENTRY_HEIGHT = 15;
 	public static final int HEADER_HEIGHT = ENTRY_HEIGHT + 4;
 	protected final List<T> entries;
@@ -32,8 +30,8 @@ public class DropdownWidget<T> extends ContainerWidget {
 	protected boolean open;
 	private int maxHeight;
 
-	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
-		super(x, y, width, HEADER_HEIGHT, Text.empty());
+	public DropdownWidget(Minecraft minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
+		super(x, y, width, HEADER_HEIGHT, Component.empty());
 		this.maxHeight = maxHeight;
 		this.entries = entries;
 		this.selectCallback = selectCallback;
@@ -51,23 +49,23 @@ public class DropdownWidget<T> extends ContainerWidget {
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		return List.of(dropdownList);
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		dropdownList.visible = open;
 		dropdownList.render(context, mouseX, mouseY, delta);
-		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, Colors.BLACK);
-		HudHelper.drawBorder(context, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, Colors.WHITE);
-		context.drawText(client.textRenderer, ">", getX() + 4, getY() + 6, Colors.ALTERNATE_WHITE, true);
-		context.drawText(client.textRenderer, selected.toString(), getX() + 12, getY() + 6, Colors.WHITE, true);
-		if (isMouseOver(mouseX, mouseY)) context.setCursor(StandardCursors.POINTING_HAND);
+		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, CommonColors.BLACK);
+		HudHelper.drawBorder(context, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, CommonColors.WHITE);
+		context.drawString(client.font, ">", getX() + 4, getY() + 6, CommonColors.LIGHTER_GRAY, true);
+		context.drawString(client.font, selected.toString(), getX() + 12, getY() + 6, CommonColors.WHITE, true);
+		if (isMouseOver(mouseX, mouseY)) context.requestCursor(CursorTypes.POINTING_HAND);
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	private void setOpen(boolean open) {
 		this.open = open;
@@ -97,7 +95,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 	public void setX(int x) {
 		super.setX(x);
 		dropdownList.setX(getX() + 1);
-		dropdownList.refreshScroll(); // update entry list positions
+		dropdownList.refreshScrollAmount(); // update entry list positions
 	}
 
 	@Override
@@ -118,7 +116,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (!visible) return false;
 		if (getX() <= click.x() && click.x() < getX() + getWidth() && getY() <= click.y() && click.y() < getY() + HEADER_HEIGHT) {
 			setOpen(!open);
@@ -129,12 +127,12 @@ public class DropdownWidget<T> extends ContainerWidget {
 	}
 
 	@Override
-	protected int getContentsHeightWithPadding() {
+	protected int contentHeight() {
 		return getHeight();
 	}
 
 	@Override
-	protected double getDeltaYPerScroll() {
+	protected double scrollRate() {
 		return 0;
 	}
 
@@ -142,13 +140,13 @@ public class DropdownWidget<T> extends ContainerWidget {
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
 		if (!visible) return false;
-		if (this.hoveredElement(mouseX, mouseY).filter(element -> element.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)).isPresent()) return true;
+		if (this.getChildAt(mouseX, mouseY).filter(element -> element.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)).isPresent()) return true;
 		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
-	private class DropdownList extends ElementListWidget<Entry> {
+	private class DropdownList extends ContainerObjectSelectionList<Entry> {
 
-		private DropdownList(MinecraftClient minecraftClient, int x, int y, int width, int height) {
+		private DropdownList(Minecraft minecraftClient, int x, int y, int width, int height) {
 			super(minecraftClient, width, height, y, ENTRY_HEIGHT);
 			setX(x);
 		}
@@ -172,37 +170,37 @@ public class DropdownWidget<T> extends ContainerWidget {
 
 
 		@Override
-		protected void drawScrollbar(DrawContext context, int mouseX, int mouseY) {
-			if (this.overflows()) {
-				int i = this.getScrollbarX();
-				int j = this.getScrollbarThumbHeight();
-				int k = this.getScrollbarThumbY();
+		protected void renderScrollbar(GuiGraphics context, int mouseX, int mouseY) {
+			if (this.scrollbarVisible()) {
+				int i = this.scrollBarX();
+				int j = this.scrollerHeight();
+				int k = this.scrollBarY();
 				// Modified from DrawContext#drawVerticalLine
 				context.fill(i, k + 1, i + 2, k + j, -1);
 			}
 		}
 
 		@Override
-		protected int getScrollbarX() {
+		protected int scrollBarX() {
 			return getRowLeft() + getRowWidth();
 		}
 
 		// Visible
 
 		@Override
-		public boolean mouseClicked(Click click, boolean doubled) {
+		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 			if (!visible) return false;
 			return super.mouseClicked(click, doubled);
 		}
 
 		@Override
-		public boolean mouseReleased(Click click) {
+		public boolean mouseReleased(MouseButtonEvent click) {
 			if (!visible) return false;
 			return super.mouseReleased(click);
 		}
 
 		@Override
-		public boolean mouseDragged(Click click, double offsetX, double offsetY) {
+		public boolean mouseDragged(MouseButtonEvent click, double offsetX, double offsetY) {
 			if (!visible) return false;
 			return super.mouseDragged(click, offsetX, offsetY);
 		}
@@ -216,21 +214,21 @@ public class DropdownWidget<T> extends ContainerWidget {
 		// Background
 
 		@Override
-		protected void drawHeaderAndFooterSeparators(DrawContext context) {}
+		protected void renderListSeparators(GuiGraphics context) {}
 
 		@Override
-		protected void drawMenuListBackground(DrawContext context) {
+		protected void renderListBackground(GuiGraphics context) {
 			context.fill(getX(), getY(), getRight(), getBottom(), 0xFF << 24);
 			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), -1);
 		}
 
 		@Override
-		protected void enableScissor(DrawContext context) {
+		protected void enableScissor(GuiGraphics context) {
 			context.enableScissor(this.getX(), this.getY() + 1, this.getRight(), this.getBottom() - 1);
 		}
 	}
 
-	private class Entry extends ElementListWidget.Entry<Entry> {
+	private class Entry extends ContainerObjectSelectionList.Entry<Entry> {
 
 		private final T entry;
 
@@ -239,26 +237,26 @@ public class DropdownWidget<T> extends ContainerWidget {
 		}
 
 		@Override
-		public List<? extends Selectable> selectableChildren() {
+		public List<? extends NarratableEntry> narratables() {
 			return List.of();
 		}
 
 		@Override
-		public List<? extends Element> children() {
+		public List<? extends GuiEventListener> children() {
 			return List.of();
 		}
 
 		@Override
-		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// drawScrollableText does some weird stuff with the y value, so we put startY = y and endY = y + 11 which makes the text render on the same line as the tick mark below (y + 2).
-			context.getTextConsumer(HoverType.NONE).text(Text.literal(entry.toString()).fillStyle(Style.EMPTY.withUnderline(hovered)), this.getX() + 10, this.getX() + this.getWidth(), this.getY(), this.getY() + 11);
+			context.textRenderer(HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(Component.literal(entry.toString()).withStyle(Style.EMPTY.withUnderlined(hovered)), this.getX() + 10, this.getX() + this.getWidth(), this.getY(), this.getY() + 11);
 			if (selected == this.entry) {
-				context.drawTextWithShadow(client.textRenderer, "✔", this.getX() + 1, this.getY() + 2, 0xFFFFFFFF);
+				context.drawString(client.font, "✔", this.getX() + 1, this.getY() + 2, 0xFFFFFFFF);
 			}
 		}
 
 		@Override
-		public boolean mouseClicked(Click click, boolean doubled) {
+		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 			select(entry);
 			return true;
 		}

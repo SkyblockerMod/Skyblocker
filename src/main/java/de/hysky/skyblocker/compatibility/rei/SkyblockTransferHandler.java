@@ -10,11 +10,11 @@ import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class SkyblockTransferHandler implements TransferHandler {
 	private static final int MAX_FAIL_COUNT = 5;
@@ -37,7 +37,7 @@ public class SkyblockTransferHandler implements TransferHandler {
 		// Not applicable if it has 0 recipes, or no crafting recipe
 		String neuId = itemStack.getNeuName();
 		if (!NEURepoManager.getRecipes().containsKey(neuId) || NEURepoManager.getRecipes().get(neuId).stream().noneMatch(recipe -> recipe instanceof NEUCraftingRecipe))
-			return ApplicabilityResult.createApplicableWithError(Text.translatable("skyblocker.rei.transfer.noRecipe"));
+			return ApplicabilityResult.createApplicableWithError(Component.translatable("skyblocker.rei.transfer.noRecipe"));
 
 		return ApplicabilityResult.createApplicable();
 
@@ -57,8 +57,8 @@ public class SkyblockTransferHandler implements TransferHandler {
 	}
 
 	private void checkScreen(String skyblockId) {
-		Screen currentScreen = MinecraftClient.getInstance().currentScreen;
-		if (!(currentScreen instanceof GenericContainerScreen)) {
+		Screen currentScreen = Minecraft.getInstance().screen;
+		if (!(currentScreen instanceof ContainerScreen)) {
 			FAIL_COUNT = 0;
 			FAILED_ITEM = skyblockId;
 		}
@@ -71,7 +71,7 @@ public class SkyblockTransferHandler implements TransferHandler {
 		if (!(entryStack.getValue() instanceof ItemStack itemStack)) return Result.createNotApplicable();
 
 		String skyblockId = itemStack.getSkyblockId();
-		if (hasFailed(skyblockId)) return Result.createFailed(Text.translatable("skyblocker.rei.transfer.failed"));
+		if (hasFailed(skyblockId)) return Result.createFailed(Component.translatable("skyblocker.rei.transfer.failed"));
 		if (!context.isActuallyCrafting()) return Result.createSuccessful();
 
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/viewrecipe " + skyblockId, false);

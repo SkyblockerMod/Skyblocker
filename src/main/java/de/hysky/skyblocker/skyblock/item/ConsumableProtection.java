@@ -7,11 +7,11 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class ConsumableProtection {
 	private static final Set<String> PROTECTED_CONSUMABLES = Set.of("NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE", "MOBY_DUCK");
@@ -23,16 +23,16 @@ public class ConsumableProtection {
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onInteract(player, world, hand));
 	}
 
-	private static ActionResult onInteract(PlayerEntity player, World world, Hand hand) {
-		if (world.isClient() && SkyblockerConfigManager.get().general.itemProtection.protectValuableConsumables && Utils.isOnSkyblock()) {
-			ItemStack stack = player.getStackInHand(hand);
+	private static InteractionResult onInteract(Player player, Level world, InteractionHand hand) {
+		if (world.isClientSide() && SkyblockerConfigManager.get().general.itemProtection.protectValuableConsumables && Utils.isOnSkyblock()) {
+			ItemStack stack = player.getItemInHand(hand);
 			String skyblockId = stack.getSkyblockId();
 
 			if (!skyblockId.isEmpty() && PROTECTED_CONSUMABLES.contains(skyblockId)) {
-				return ActionResult.FAIL;
+				return InteractionResult.FAIL;
 			}
 		}
 
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 }
