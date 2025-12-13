@@ -19,7 +19,7 @@ public class ScreenMixin {
 	@Shadow
 	protected MinecraftClient client;
 
-	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
+	@Inject(method = "init(II)V", at = @At("TAIL"))
 	private void skyblocker$hideCursor(CallbackInfo ci) {
 		Object instance = this;
 

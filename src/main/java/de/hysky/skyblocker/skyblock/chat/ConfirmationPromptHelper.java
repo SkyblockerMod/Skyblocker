@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.DrawnTextConsumer;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
@@ -50,10 +51,13 @@ public class ConfirmationPromptHelper {
 					if (hasCommand()) {
 						MinecraftClient client = MinecraftClient.getInstance();
 						if (client.currentScreen instanceof ChatScreen) {	// Ignore clicks on other interactive elements
-								Style style = client.inGameHud.getChatHud().getTextStyleAt(click.x(), click.y());
-								if (style != null && style.getClickEvent() != null) {	// clicking on some prompts invalidates first prompt but not in all cases, so I decided not to nullify command
-									return;
-								}
+							DrawnTextConsumer.ClickHandler clickHandler = new DrawnTextConsumer.ClickHandler(screen.getTextRenderer(), (int) click.x(), (int) click.y())
+									.insert(false);
+							Style clickedStyle = clickHandler.getStyle();
+
+							if (clickedStyle != null && clickedStyle.getClickEvent() != null) {	// clicking on some prompts invalidates first prompt but not in all cases, so I decided not to nullify command
+								return;
+							}
 						}
 
 						MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);

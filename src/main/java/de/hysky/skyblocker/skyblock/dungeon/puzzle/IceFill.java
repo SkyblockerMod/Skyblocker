@@ -18,10 +18,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,7 +118,6 @@ public class IceFill extends DungeonPuzzle {
 		return boardChanged;
 	}
 
-	@NotNull
 	List<Vector2ic> solve(boolean[][] iceFillBoard) {
 		Vector2ic start = new Vector2i(iceFillBoard.length - 1, iceFillBoard[0].length / 2);
 		int count = iceFillBoard.length * iceFillBoard[0].length - Arrays.stream(iceFillBoard).mapToInt(Booleans::countTrue).sum();
@@ -131,8 +129,7 @@ public class IceFill extends DungeonPuzzle {
 		return newPath != null ? newPath : List.of();
 	}
 
-	@Nullable
-	private List<Vector2ic> solveDfs(boolean[][] iceFillBoard, int count, List<Vector2ic> path, boolean[][] visited) {
+	private @Nullable List<Vector2ic> solveDfs(boolean[][] iceFillBoard, int count, List<Vector2ic> path, boolean[][] visited) {
 		Vector2ic pos = path.getLast();
 		if (count == 0) {
 			if (pos.x() == 0 && pos.y() == iceFillBoard[0].length / 2) {

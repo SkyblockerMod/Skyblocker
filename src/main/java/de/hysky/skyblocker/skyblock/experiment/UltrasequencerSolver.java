@@ -16,7 +16,7 @@ import net.minecraft.util.DyeColor;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class UltrasequencerSolver extends ExperimentSolver {
 	public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();
@@ -36,8 +36,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	 * Saves the {@link DyeColor} instance corresponding to the color of the pane showed in the screen as it changes each round.
 	 * Used for detecting when the round ends.
 	 */
-	@Nullable
-	private DyeColor lastColor;
+	private @Nullable DyeColor lastColor;
 
 	private UltrasequencerSolver() {
 		super("^Ultrasequencer \\(\\w+\\)$");

@@ -19,7 +19,8 @@ import net.azureaaron.hmapi.data.rank.PackageRank;
 import net.azureaaron.hmapi.data.rank.RankType;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandSource;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +45,7 @@ public class WarpAutocomplete {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WarpAutocomplete.class);
 	private static final Codec<Object2BooleanMap<String>> MAP_CODEC = CodecUtils.object2BooleanMapCodec(Codec.STRING);
 
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> commandNode;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> commandNode;
 
 	@Init
 	public static void init() {

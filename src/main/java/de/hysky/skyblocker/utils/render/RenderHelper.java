@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.utils.render;
 
+import org.jspecify.annotations.Nullable;
+
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTextureView;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
@@ -12,15 +13,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.texture.TextureSetup;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.profiler.Profilers;
 import net.minecraft.util.shape.VoxelShape;
-
-import org.jetbrains.annotations.Nullable;
 
 public class RenderHelper {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -85,31 +83,13 @@ public class RenderHelper {
 	 * @param pos   The position of the block.
 	 * @return The bounding box of the block.
 	 */
-	@Nullable
-	public static Box getBlockBoundingBox(ClientWorld world, BlockPos pos) {
+	public static @Nullable Box getBlockBoundingBox(ClientWorld world, BlockPos pos) {
 		return getBlockBoundingBox(world, world.getBlockState(pos), pos);
 	}
 
-	@Nullable
-	public static Box getBlockBoundingBox(ClientWorld world, BlockState state, BlockPos pos) {
+	public static @Nullable Box getBlockBoundingBox(ClientWorld world, BlockState state, BlockPos pos) {
 		VoxelShape shape = state.getOutlineShape(world, pos).asCuboid();
 
 		return shape.isEmpty() ? null : shape.getBoundingBox().offset(pos);
-	}
-
-	//The method names for TextureSetup are very... odd and misleading...
-
-	/**
-	 * Returns a {@code TextureSetup} with a single texture input only.
-	 */
-	public static TextureSetup singleTexture(GpuTextureView texture) {
-		return TextureSetup.withoutGlTexture(texture);
-	}
-
-	/**
-	 * Returns a {@code TextureSetup} with the texture input and a lightmap.
-	 */
-	public static TextureSetup textureWithLightmap(GpuTextureView texture) {
-		return TextureSetup.of(texture);
 	}
 }

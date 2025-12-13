@@ -31,8 +31,7 @@ import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.function.Consumers;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,7 +208,7 @@ public class SearchOverManager {
 	 * @param sign  the sign that is being edited
 	 * @param front if it's the front of the sign
 	 */
-	public static void updateSign(@NotNull SignBlockEntity sign, boolean front, SearchLocation location) {
+	public static void updateSign(SignBlockEntity sign, boolean front, SearchLocation location) {
 		signFront = front;
 		SearchOverManager.sign = sign;
 		isCommand = false;

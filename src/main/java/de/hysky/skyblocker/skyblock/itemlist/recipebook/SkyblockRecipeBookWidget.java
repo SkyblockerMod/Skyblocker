@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.navigation.NavigationAxis;
+import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.recipebook.GhostRecipe;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
@@ -23,10 +24,11 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.context.ContextParameterMap;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * Based on {@link net.minecraft.client.gui.screen.recipebook.RecipeBookWidget}.
@@ -114,7 +116,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 			this.currentTab = this.tabButtons.getFirst();
 		}
 
-		this.currentTab.right().setToggled(true);
+		this.currentTab.right().select();
 		this.refreshTabButtons(false);
 
 		// Tab Init
@@ -153,10 +155,10 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 				for (Pair<RecipeTab, SkyblockRecipeTabButton> tabButton : this.tabButtons) {
 					if (tabButton.right().mouseClicked(click, doubled)) {
 						if (this.currentTab != tabButton) {
-							if (this.currentTab != null) this.currentTab.right().setToggled(false);
+							if (this.currentTab != null) this.currentTab.right().unselect();
 
 							this.currentTab = tabButton;
-							this.currentTab.right().setToggled(true);
+							this.currentTab.right().select();
 						}
 
 						return true;
@@ -248,7 +250,9 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	 * No-op as we don't use the button.
 	 */
 	@Override
-	protected void setBookButtonTexture() {}
+	protected @Nullable ButtonTextures getBookButtonTextures() {
+		return null;
+	}
 
 	/**
 	 * No-op.

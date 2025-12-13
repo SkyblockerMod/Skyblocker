@@ -12,7 +12,6 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import org.apache.http.client.HttpResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +66,7 @@ public class MayorUtils {
 	private static void tickMayorCache() {
 		CompletableFuture.supplyAsync(() -> {
 			try (Http.ApiResponse response = Http.sendCacheableGetRequest("https://hysky.de/api/skyblock/election", null)) {
-				if (!response.ok()) throw new HttpResponseException(response.statusCode(), response.content());
+				if (!response.ok()) throw new RuntimeException("Received bad http response: " + response.statusCode() + " " + response.content());
 				JsonObject json = JsonParser.parseString(response.content()).getAsJsonObject();
 				if (!json.get("success").getAsBoolean()) throw new RuntimeException("Request failed!"); //Can't find a more appropriate exception to throw here.
 				JsonObject mayorObject = json.getAsJsonObject("mayor");

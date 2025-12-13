@@ -13,7 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,8 +26,7 @@ public class EntityRenderManagerMixin implements EntityRenderMarker {
 	private EntityRenderState currentStateBeingRendered;
 
 	@Override
-	@Nullable
-	public EntityRenderState skyblocker$getEntityStateBeingRendered() {
+	public @Nullable EntityRenderState skyblocker$getEntityStateBeingRendered() {
 		return this.currentStateBeingRendered;
 	}
 

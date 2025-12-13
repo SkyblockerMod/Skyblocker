@@ -18,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -209,7 +208,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 
 	}
 
-	public void setCurrentItem(@NotNull ItemStack currentItem) {
+	public void setCurrentItem(ItemStack currentItem) {
 		this.currentItem = currentItem;
 		Map<String, CustomArmorTrims.ArmorTrimId> trims = SkyblockerConfigManager.get().general.customArmorTrims;
 		String itemUuid = currentItem.getUuid();

@@ -15,8 +15,8 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -64,7 +64,7 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (!stack.isOf(Items.PINK_DYE) && !stack.isOf(Items.LIME_DYE)) return List.of();
 		if (!(slotId >= 36 && slotId <= 44)) return List.of();
 		return SlotText.bottomLeftList(Text.literal(String.valueOf(slotId - 35)).withColor(SlotText.MID_BLUE));

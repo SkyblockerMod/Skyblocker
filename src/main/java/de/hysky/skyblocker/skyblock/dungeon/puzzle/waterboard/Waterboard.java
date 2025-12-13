@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard;
 
 import java.util.Locale;
 
+import org.jspecify.annotations.Nullable;
+
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
@@ -10,7 +12,6 @@ import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
-import org.jetbrains.annotations.Nullable;
 
 public class Waterboard {
 	public static final int BOARD_MIN_X = 6;

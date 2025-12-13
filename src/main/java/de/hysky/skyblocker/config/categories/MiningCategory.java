@@ -70,6 +70,7 @@ public class MiningCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.mining.enablePickobulusHelper"))
 						.description(Text.translatable("skyblocker.config.mining.enablePickobulusHelper.@Tooltip"))
+						.tags(CommonTags.ADDED_IN_5_10_0)
 						.binding(defaults.mining.enablePickobulusHelper,
 								() -> config.mining.enablePickobulusHelper,
 								newValue -> config.mining.enablePickobulusHelper = newValue)

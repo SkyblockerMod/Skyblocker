@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TeleportMaze extends DungeonPuzzle {
 	private static final float[] LIME = ColorUtils.getFloatComponents(DyeColor.LIME);
@@ -76,8 +76,7 @@ public class TeleportMaze extends DungeonPuzzle {
 	/**
 	 * The actual coordinate of the final pad.
 	 */
-	@Nullable
-	private BlockPos finalPad;
+	private @Nullable BlockPos finalPad;
 
 	private TeleportMaze() {
 		super("teleport-maze", "teleport-pad-room");

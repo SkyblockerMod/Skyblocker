@@ -16,7 +16,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +80,7 @@ public class ChatPositionShare {
 		return true;
 	}
 
-	private static void requestWaypoint(String x, String y, String z, @NotNull String area) {
+	private static void requestWaypoint(String x, String y, String z, String area) {
 		String command = "/skyblocker waypoints individual " + x + " " + y + " " + z + " " + area;
 		MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.waypoints.chat.display", x, y, z).formatted(Formatting.AQUA)
 				.styled(style -> style

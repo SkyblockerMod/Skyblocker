@@ -6,7 +6,6 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.LabelOption;
 import net.azureaaron.dandelion.systems.ListOption;
@@ -62,10 +61,10 @@ public class EventNotificationsCategory {
 	}
 
 	private static List<OptionGroup> createGroups(SkyblockerConfig config) {
-		Map<String, IntList> eventsReminderTimes = config.eventNotifications.eventsReminderTimes;
+		Map<String, IntArrayList> eventsReminderTimes = config.eventNotifications.eventsReminderTimes;
 		List<OptionGroup> groups = new ArrayList<>(eventsReminderTimes.size());
 		if (eventsReminderTimes.isEmpty()) return List.of(OptionGroup.createBuilder().option(LabelOption.createBuilder().label(Text.translatable("skyblocker.config.eventNotifications.monologue")).build()).build());
-		for (Map.Entry<String, IntList> entry : eventsReminderTimes.entrySet()) {
+		for (Map.Entry<String, IntArrayList> entry : eventsReminderTimes.entrySet()) {
 			groups.add(ListOption.<Integer>createBuilder()
 					.name(Text.literal(entry.getKey()))
 					.binding(EventNotifications.DEFAULT_REMINDERS, entry::getValue, integers -> entry.setValue(new IntArrayList(integers)))

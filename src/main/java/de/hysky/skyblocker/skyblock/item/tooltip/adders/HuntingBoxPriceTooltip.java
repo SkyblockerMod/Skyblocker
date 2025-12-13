@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;

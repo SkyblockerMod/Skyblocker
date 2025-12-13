@@ -3,7 +3,7 @@ package de.hysky.skyblocker.utils;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.google.common.cache.CacheBuilder;

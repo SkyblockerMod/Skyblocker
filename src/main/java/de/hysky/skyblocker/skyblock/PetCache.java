@@ -25,7 +25,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.Locale;
@@ -176,8 +176,7 @@ public class PetCache {
 		return true;
 	}
 
-	@Nullable
-	public static PetInfo getCurrentPet() {
+	public static @Nullable PetInfo getCurrentPet() {
 		return CACHED_PETS.get();
 	}
 }

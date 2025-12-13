@@ -20,7 +20,8 @@ import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.Closeable;
@@ -29,9 +30,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closeable {
-
 	private static final Identifier GRADIENT_TEXTURE = SkyblockerMod.id("generated/dye_gradient");
-
 	private static final int HORIZONTAL_MARGIN = 3;
 	private static final int VERTICAL_MARGIN = 1;
 

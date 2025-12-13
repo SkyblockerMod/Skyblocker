@@ -1,13 +1,14 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.mixins.accessors.InventoryScreenInvoker;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -45,18 +46,8 @@ public class PlayerWidget extends ClickableWidget {
 		Vector3f translation = new Vector3f(0, player.getHeight() / 2f + 0.0625f, 0);
 		Quaternionf rotation = new Quaternionf().rotationXYZ(-xRotation * MathHelper.RADIANS_PER_DEGREE, -yRotation * MathHelper.RADIANS_PER_DEGREE, FLIP_ROTATION);
 
-		InventoryScreen.drawEntity(
-				context,
-				getX(),
-				getY(),
-				this.getRight(),
-				this.getBottom(),
-				size,
-				translation,
-				rotation,
-				null,
-				player
-		);
+		EntityRenderState renderState = InventoryScreenInvoker.invokeDrawEntity(this.player);
+		context.addEntity(renderState, size, translation, rotation, null, getX(), getY(), this.getRight(), this.getBottom());
 	}
 
 	@Override

@@ -11,7 +11,6 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
@@ -24,9 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +45,7 @@ public class HeadSelectionWidget extends ContainerWidget {
 	/**
 	 * Null if a custom (animated or not) head wasn't selected.
 	 */
-	@Nullable
-	private HeadButton selectedButton;
+	private @Nullable HeadButton selectedButton;
 
 	public HeadSelectionWidget(int x, int y, int width, int height) {
 		super(x, y, width, height, Text.of("HeadSelection"));
@@ -257,7 +253,7 @@ public class HeadSelectionWidget extends ContainerWidget {
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 
-	public void setCurrentItem(@NotNull ItemStack item) {
+	public void setCurrentItem(ItemStack item) {
 		this.currentItem = item;
 		String uuid = item.getUuid();
 
@@ -295,17 +291,15 @@ public class HeadSelectionWidget extends ContainerWidget {
 		/**
 		 * Only null if this is an animated head.
 		 */
-		@UnknownNullability
-		private final String texture;
+		private final @Nullable String texture;
 		/**
 		 * Only null if this is an animated head.
 		 */
-		@UnknownNullability
-		private final ItemStack head;
+		private final @Nullable ItemStack head;
 		private final Consumer<HeadButton> onPress;
 		private boolean selected = false;
 
-		HeadButton(String name, @UnknownNullability String texture, @UnknownNullability ItemStack head, Consumer<HeadButton> onPress) {
+		HeadButton(String name, @Nullable String texture, @Nullable ItemStack head, Consumer<HeadButton> onPress) {
 			super(0, 0, 20, 20, Text.empty());
 			this.name = name;
 			this.texture = texture;
@@ -319,7 +313,7 @@ public class HeadSelectionWidget extends ContainerWidget {
 		 * Will never return null.
 		 */
 		protected ItemStack getHead() {
-			return this.head;
+			return Objects.requireNonNull(this.head);
 		}
 
 		@Override
@@ -330,8 +324,8 @@ public class HeadSelectionWidget extends ContainerWidget {
 			}
 			if (this.isHovered()) {
 				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
-				context.setCursor(StandardCursors.POINTING_HAND);
 			}
+			this.setCursor(context);
 		}
 
 		@Override

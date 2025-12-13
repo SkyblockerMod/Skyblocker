@@ -33,7 +33,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,7 +154,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 
 			if (hovered) context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HandledScreenAccessor.getSLOT_HIGHLIGHT_BACK_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
 
-			drawSlot(context, equipmentSlot);
+			drawSlot(context, equipmentSlot, mouseX, mouseY);
 
 			if (hovered) context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HandledScreenAccessor.getSLOT_HIGHLIGHT_FRONT_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
 		}
@@ -197,8 +197,8 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	}
 
 	@Override
-	protected void drawSlot(DrawContext context, Slot slot) {
-		super.drawSlot(context, slot);
+	protected void drawSlot(DrawContext context, Slot slot, int mouseX, int mouseY) {
+		super.drawSlot(context, slot, mouseX, mouseY);
 		if (slot instanceof EquipmentSlot && !slot.hasStack()) {
 			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, EMPTY_SLOT, slot.x, slot.y, 16, 16);
 		}

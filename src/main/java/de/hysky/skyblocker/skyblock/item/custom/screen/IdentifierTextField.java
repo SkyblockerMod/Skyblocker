@@ -1,5 +1,9 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import java.util.function.Consumer;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.OrderedText;
@@ -7,14 +11,10 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 class IdentifierTextField extends TextFieldWidget {
 	private final Consumer<@Nullable Identifier> callback;
-	private @NotNull String lastValid = "";
+	private String lastValid = "";
 	private boolean valid = false;
 
 	IdentifierTextField(int width, int height, Consumer<@Nullable Identifier> callback) {

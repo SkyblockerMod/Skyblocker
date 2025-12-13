@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import org.jetbrains.annotations.NotNull;
-
 import it.unimi.dsi.fastutil.chars.CharList;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -24,7 +22,7 @@ public class TextTransformer {
 	 * @param legacy The string with legacy formatting to be transformed
 	 * @return A {@link MutableText} object matching the exact formatting of the input
 	 */
-	public static MutableText fromLegacy(@NotNull String legacy) {
+	public static MutableText fromLegacy(String legacy) {
 		return fromLegacy(legacy, '§', true);
 	}
 
@@ -39,7 +37,7 @@ public class TextTransformer {
 	 *                 This is required to be true for item name and lore texts, or else the parent style will make the name and lore texts italic.
 	 * @return A {@link MutableText} object matching the exact formatting of the input
 	 */
-	public static MutableText fromLegacy(@NotNull String legacy, char legacyPrefix, boolean override) {
+	public static MutableText fromLegacy(String legacy, char legacyPrefix, boolean override) {
 		MutableText newText = Text.empty();
 		StringBuilder builder = new StringBuilder();
 		Formatting formatting = null;

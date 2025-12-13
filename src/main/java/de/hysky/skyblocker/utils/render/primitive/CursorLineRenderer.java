@@ -17,7 +17,7 @@ public final class CursorLineRenderer implements PrimitiveRenderer<CursorLineRen
 
 	@Override
 	public void submitPrimitives(CursorLineRenderState state, CameraRenderState cameraState) {
-		BufferBuilder buffer = Renderer.getBuffer(SkyblockerRenderPipelines.LINES_THROUGH_WALLS, state.lineWidth);
+		BufferBuilder buffer = Renderer.getBuffer(SkyblockerRenderPipelines.LINES_THROUGH_WALLS);
 		Matrix4f positionMatrix = new Matrix4f()
 				.translate((float) -cameraState.pos.x, (float) -cameraState.pos.y, (float) -cameraState.pos.z);
 
@@ -28,10 +28,12 @@ public final class CursorLineRenderer implements PrimitiveRenderer<CursorLineRen
 
 		buffer.vertex(positionMatrix, (float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z)
 		.color(state.colourComponents[0], state.colourComponents[1], state.colourComponents[2], state.alpha)
-		.normal(normal.x(), normal.y(), normal.z());
+		.normal(normal.x(), normal.y(), normal.z())
+		.lineWidth(state.lineWidth);
 
 		buffer.vertex(positionMatrix, (float) point.getX(), (float) point.getY(), (float) point.getZ())
 		.color(state.colourComponents[0], state.colourComponents[1], state.colourComponents[2], state.alpha)
-		.normal(normal.x(), normal.y(), normal.z());
+		.normal(normal.x(), normal.y(), normal.z())
+		.lineWidth(state.lineWidth);
 	}
 }

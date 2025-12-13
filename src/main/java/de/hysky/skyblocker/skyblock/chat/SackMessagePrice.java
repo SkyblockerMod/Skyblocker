@@ -21,9 +21,8 @@ import net.minecraft.text.PlainTextContent.Literal;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.apache.commons.lang3.Strings;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,8 +144,7 @@ public class SackMessagePrice {
 		return copy;
 	}
 
-	@Nullable
-	private static String getNeuId(@NotNull String itemName) {
+	private static @Nullable String getNeuId(String itemName) {
 		return NEURepoManager.getItemByName(itemName)
 				.stream()
 				.findFirst()
@@ -157,13 +155,12 @@ public class SackMessagePrice {
 				});
 	}
 
-	@NotNull
-	private static ObjectArrayList<List<Text>> getHoverEventSiblings(@NotNull Text text) {
+	private static ObjectArrayList<List<Text>> getHoverEventSiblings(Text text) {
 		ObjectArrayList<List<Text>> listList = new ObjectArrayList<>();
 		for (Text sibling : text.getSiblings()) {
 			if (sibling.getStyle().getHoverEvent() instanceof ShowText(Text hoverText)
 					&& hoverText.getContent() instanceof Literal(String rootContent) // Only match the root content since we only need the root content.
-					&& StringUtils.startsWithAny(rootContent, "Added items:", "Removed items:")) {
+					&& Strings.CS.startsWithAny(rootContent, "Added items:", "Removed items:")) {
 				listList.add(hoverText.getSiblings());
 			}
 		}
@@ -176,8 +173,7 @@ public class SackMessagePrice {
 	 * @return A map of item names to their counts.
 	 */
 	@SuppressWarnings("ConstantValue") // It's much easier to read this way.
-	@NotNull
-	private static Object2IntArrayMap<String> parseItems(@NotNull List<Text> texts) {
+	private static Object2IntArrayMap<String> parseItems(List<Text> texts) {
 		/*
 			The hover message's structure is as follows:
 			- Added items:

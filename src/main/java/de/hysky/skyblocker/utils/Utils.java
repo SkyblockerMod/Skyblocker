@@ -40,7 +40,6 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,27 +70,22 @@ public class Utils {
 	/**
 	 * The player's rank.
 	 */
-	@NotNull
 	private static RankType rank = PackageRank.NONE;
 	/**
 	 * Current Skyblock location (from the Mod API)
 	 */
-	@NotNull
 	private static Location location = Location.UNKNOWN;
 	/**
 	 * Current Skyblock island area.
 	 */
-	@NotNull
 	private static Area area = Area.UNKNOWN;
 	/**
 	 * The profile name parsed from the player list.
 	 */
-	@NotNull
 	private static String profile = "";
 	/**
 	 * The profile id parsed from the chat.
 	 */
-	@NotNull
 	private static String profileId = "";
 	/**
 	 * The server from which we last received the profile id message from.
@@ -102,15 +96,10 @@ public class Utils {
 	 * The following fields store data returned from the Mod API: {@link #environment}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
 	 */
 	@SuppressWarnings("JavadocDeclaration")
-	@NotNull
 	private static Environment environment = Environment.PRODUCTION;
-	@NotNull
 	private static String server = "";
-	@NotNull
 	private static String gameType = "";
-	@NotNull
 	private static String locationRaw = "";
-	@NotNull
 	private static String map = "";
 	public static double purse = 0;
 
@@ -182,12 +171,10 @@ public class Utils {
 	/**
 	 * @return the profile parsed from the player list.
 	 */
-	@NotNull
 	public static String getProfile() {
 		return profile;
 	}
 
-	@NotNull
 	public static String getProfileId() {
 		return profileId;
 	}
@@ -195,7 +182,6 @@ public class Utils {
 	/**
 	 * @return the location parsed from the Mod API.
 	 */
-	@NotNull
 	public static Location getLocation() {
 		return location;
 	}
@@ -205,7 +191,6 @@ public class Utils {
 	 *
 	 * @return the area parsed from the scoreboard.
 	 */
-	@NotNull
 	public static Area getArea() {
 		return area;
 	}
@@ -215,7 +200,6 @@ public class Utils {
 	 *
 	 * @return the current environment parsed from the Mod API.
 	 */
-	@NotNull
 	public static Environment getEnvironment() {
 		return environment;
 	}
@@ -223,7 +207,6 @@ public class Utils {
 	/**
 	 * @return the server parsed from the Mod API.
 	 */
-	@NotNull
 	public static String getServer() {
 		return server;
 	}
@@ -231,7 +214,6 @@ public class Utils {
 	/**
 	 * @return the game type parsed from the Mod API.
 	 */
-	@NotNull
 	public static String getGameType() {
 		return gameType;
 	}
@@ -239,7 +221,6 @@ public class Utils {
 	/**
 	 * @return the raw location from the Mod API.
 	 */
-	@NotNull
 	public static String getLocationRaw() {
 		return locationRaw;
 	}
@@ -247,7 +228,6 @@ public class Utils {
 	/**
 	 * @return the map parsed from the Mod API.
 	 */
-	@NotNull
 	public static String getMap() {
 		return map;
 	}
@@ -255,7 +235,6 @@ public class Utils {
 	/**
 	 * @return the player's rank
 	 */
-	@NotNull
 	public static RankType getRank() {
 		return rank;
 	}

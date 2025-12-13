@@ -3,17 +3,16 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawContext.HoverType;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -58,7 +57,7 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 		return getWidth() - 6;
 	}
 
-	public void setSelectedOption(@NotNull OptionDropdownWidget.Option entry) {
+	public void setSelectedOption(OptionDropdownWidget.Option entry) {
 		selectedOption = entry;
 	}
 
@@ -170,7 +169,7 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 		private final ItemStack icon;
 		private final int optionSlotId;
 
-		public Option(@NotNull String message, @Nullable ItemStack icon, int slotId) {
+		public Option(String message, @Nullable ItemStack icon, int slotId) {
 			this.message = message;
 			this.icon = icon;
 			this.optionSlotId = slotId;
@@ -190,7 +189,7 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 			if (PartyFinderScreen.DEBUG) context.drawText(client.textRenderer, String.valueOf(optionSlotId), this.getX() + 8, this.getY(), Colors.RED, true);
 			MutableText text = Text.literal(message).fillStyle(Style.EMPTY.withUnderline(hovered));
 			if (client.textRenderer.getWidth(text) >= this.getWidth() - 14) {
-				ClickableWidget.drawScrollableText(context, client.textRenderer, text, this.getX() + 14, getY() + 3, this.getX() + this.getWidth(), this.getY() + 3 + client.textRenderer.fontHeight, Colors.WHITE);
+				context.getTextConsumer(HoverType.NONE).text(text, this.getX() + 14, this.getX() + this.getWidth(), getY() + 3, this.getY() + 3 + client.textRenderer.fontHeight);
 			} else {
 				context.drawText(client.textRenderer, text, this.getX() + 14, this.getY() + 3, Colors.WHITE, false);
 			}

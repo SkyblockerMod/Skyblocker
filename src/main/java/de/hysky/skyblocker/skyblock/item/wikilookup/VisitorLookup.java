@@ -3,8 +3,8 @@ package de.hysky.skyblocker.skyblock.item.wikilookup;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
+
 import com.mojang.datafixers.util.Either;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -17,13 +17,13 @@ public class VisitorLookup implements WikiLookup {
 	private VisitorLookup() {}
 
 	@Override
-	public void open(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
+	public void open(ItemStack itemStack, PlayerEntity player, boolean useOfficial) {
 		String itemName = REPLACING_FUNCTION.apply(itemStack.getName().getString());
 		WikiLookupManager.openWikiLinkName(itemName, player, useOfficial);
 	}
 
 	@Override
-	public boolean canSearch(@Nullable String title, @NotNull Either<Slot, ItemStack> either) {
+	public boolean canSearch(@Nullable String title, Either<Slot, ItemStack> either) {
 		Optional<Slot> optional = either.left();
 		if (optional.isEmpty()) return false;
 		Slot slot = optional.get();

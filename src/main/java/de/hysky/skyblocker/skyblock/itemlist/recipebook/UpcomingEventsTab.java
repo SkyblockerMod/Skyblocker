@@ -18,13 +18,14 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 public class UpcomingEventsTab implements RecipeTab {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -142,8 +143,7 @@ public class UpcomingEventsTab implements RecipeTab {
 			return components;
 		}
 
-		@Nullable
-		private String getWarpCommand() {
+		private @Nullable String getWarpCommand() {
 			return !events.isEmpty() ? events.peek().warpCommand() : null;
 		}
 	}

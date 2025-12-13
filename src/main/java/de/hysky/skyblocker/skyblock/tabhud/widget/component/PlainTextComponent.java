@@ -17,7 +17,7 @@ public class PlainTextComponent extends Component {
 	public PlainTextComponent(Text txt) {
 		lines.add(txt == null ? Text.literal("No data").formatted(Formatting.GRAY) : txt);
 
-		this.width = PAD_L + txtRend.getWidth(txt); // looks off without padding
+		this.width = PAD_L + txtRend.getWidth(lines.getFirst()); // looks off without padding
 		this.height = txtRend.fontHeight;
 	}
 
@@ -25,7 +25,7 @@ public class PlainTextComponent extends Component {
 		lines.add(line1 == null ? Text.literal("No data").formatted(Formatting.GRAY) : line1);
 		lines.add(line2 == null ? Text.literal("No data").formatted(Formatting.GRAY) : line2);
 
-		this.width = PAD_L + Math.max(txtRend.getWidth(line1), txtRend.getWidth(line2));
+		this.width = PAD_L + Math.max(txtRend.getWidth(lines.get(0)), txtRend.getWidth(lines.get(1)));
 		this.height = (txtRend.fontHeight * 2) + PAD_S;
 	}
 

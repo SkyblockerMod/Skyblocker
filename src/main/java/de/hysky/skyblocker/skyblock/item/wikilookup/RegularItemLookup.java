@@ -6,7 +6,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 public class RegularItemLookup implements WikiLookup {
 	public static final RegularItemLookup INSTANCE = new RegularItemLookup();
@@ -14,7 +13,7 @@ public class RegularItemLookup implements WikiLookup {
 	private RegularItemLookup() {}
 
 	@Override
-	public void open(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
+	public void open(ItemStack itemStack, PlayerEntity player, boolean useOfficial) {
 		String neuId = itemStack.getNeuName();
 
 		if (StringUtils.isNotEmpty(neuId)) {
@@ -24,7 +23,7 @@ public class RegularItemLookup implements WikiLookup {
 		}
 	}
 
-	private static void noArticleFound(@NotNull PlayerEntity player, boolean useOfficial) {
+	private static void noArticleFound(PlayerEntity player, boolean useOfficial) {
 		player.sendMessage(Constants.PREFIX.get().append(useOfficial ?
 				Text.translatable("skyblocker.wikiLookup.noArticleFound.official") :
 				Text.translatable("skyblocker.wikiLookup.noArticleFound.fandom")), false);

@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import org.apache.commons.text.WordUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.google.gson.JsonParser;
@@ -70,8 +70,7 @@ public class CustomAnimatedHelmetTextures {
 		return WordUtils.capitalizeFully(id.replace('_', ' '));
 	}
 
-	@Nullable
-	public static ProfileComponent animateHeadTexture(String id) {
+	public static @Nullable ProfileComponent animateHeadTexture(String id) {
 		AnimatedHead head = ANIMATED_HEADS.get(id);
 
 		if (head != null) {

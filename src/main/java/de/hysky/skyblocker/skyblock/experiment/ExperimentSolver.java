@@ -10,7 +10,6 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * The general class for all experiment solvers, implemented with a state machine.
@@ -19,7 +18,7 @@ public abstract sealed class ExperimentSolver extends SimpleContainerSolver impl
 	private State state = State.REMEMBER;
 	private final Int2ObjectMap<ItemStack> slots = new Int2ObjectOpenHashMap<>();
 
-	protected ExperimentSolver(@NotNull @Language("RegExp") String containerName) {
+	protected ExperimentSolver(@Language("RegExp") String containerName) {
 		super(containerName);
 	}
 
@@ -65,7 +64,7 @@ public abstract sealed class ExperimentSolver extends SimpleContainerSolver impl
 	 * Display the actual item stacks if the solver is in the {@link State#SHOW} state.
 	 */
 	@Override
-	public ItemStack modifyDisplayStack(int slotIndex, @NotNull ItemStack stack) {
+	public ItemStack modifyDisplayStack(int slotIndex, ItemStack stack) {
 		if ((this instanceof SuperpairsSolver || this instanceof UltrasequencerSolver) && getState() == State.SHOW) {
 			ItemStack displayStack = getSlots().get(slotIndex);
 			return displayStack != null ? displayStack : stack;

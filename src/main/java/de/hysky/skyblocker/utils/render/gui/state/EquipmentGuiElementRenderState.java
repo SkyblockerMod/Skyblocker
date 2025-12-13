@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils.render.gui.state;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;

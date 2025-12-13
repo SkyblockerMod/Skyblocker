@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import de.hysky.skyblocker.utils.ItemUtils;
-
 public class FinderSettingsContainer extends ContainerWidget {
 	private boolean isInitialized = false;
 	private OptionDropdownWidget floorSelector;
@@ -161,10 +159,10 @@ public class FinderSettingsContainer extends ContainerWidget {
 	 * @return true if all goes well
 	 */
 	private boolean setRangeFromTooltip(ItemStack stack, RangedValueWidget widget) {
-		for (Text text : ItemUtils.getLore(stack)) {
-			String textLowerCase = text.getString().toLowerCase(Locale.ENGLISH);
+		for (String text : stack.skyblocker$getLoreStrings()) {
+			String textLowerCase = text.toLowerCase(Locale.ENGLISH);
 			if (textLowerCase.contains("selected:")) {
-				String[] split = text.getString().split(":");
+				String[] split = text.split(":");
 				if (split.length < 2) return false;
 				String[] minAndMax = split[1].split("-");
 				if (minAndMax.length < 2) return false;
@@ -186,10 +184,10 @@ public class FinderSettingsContainer extends ContainerWidget {
 	 * @return true if all goes well
 	 */
 	private boolean setSelectedElementFromTooltip(Slot slot, ItemStack stack, OptionDropdownWidget dropdownWidget) {
-		for (Text text : ItemUtils.getLore(stack)) {
-			String textLowerCase = text.getString().toLowerCase(Locale.ENGLISH);
+		for (String text : stack.skyblocker$getLoreStrings()) {
+			String textLowerCase = text.toLowerCase(Locale.ENGLISH);
 			if (textLowerCase.contains("selected:")) {
-				String[] split = text.getString().split(":");
+				String[] split = text.split(":");
 				if (split.length < 2) return false;
 				String floorName = split[1].trim();
 				dropdownWidget.setSelectedOption(dropdownWidget.new Option(floorName, stack, slot.id));

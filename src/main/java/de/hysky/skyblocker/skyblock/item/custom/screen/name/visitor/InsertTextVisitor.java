@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.text.MutableText;
 import net.minecraft.text.PlainTextContent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 
 public class InsertTextVisitor extends BaseVisitor {
 	private final MutableText newText = MutableText.of(new PlainTextContent.Literal(""));

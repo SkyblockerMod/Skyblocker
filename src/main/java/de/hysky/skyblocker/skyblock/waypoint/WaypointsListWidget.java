@@ -583,7 +583,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 			int padding = 1;
 			context.fill(getX() + padding, getY() + padding, getRight() - padding, getBottom() - padding, isHovered() ? Colors.WHITE : Colors.BLACK);
 			context.fill(getX() + padding + 1, getY() + padding + 1, getRight() - padding - 1, getBottom() - padding - 1, this.color);

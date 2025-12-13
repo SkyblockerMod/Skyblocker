@@ -9,9 +9,10 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 public class AccessoryTooltip extends SimpleTooltipAdder {
 	public static final int COLLECTED_COLOUR = Formatting.GREEN.getColorValue();

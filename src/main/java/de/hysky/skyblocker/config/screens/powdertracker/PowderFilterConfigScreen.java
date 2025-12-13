@@ -11,14 +11,14 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 public class PowderFilterConfigScreen extends Screen {
-	@Nullable
-	private final Screen parent;
+	private final @Nullable Screen parent;
 	private final List<String> filters;
 	private final List<String> allItems;
 

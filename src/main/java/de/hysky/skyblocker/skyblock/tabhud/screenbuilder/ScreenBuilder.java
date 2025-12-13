@@ -12,13 +12,14 @@ import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.resource.language.I18n;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+
+import org.jspecify.annotations.Nullable;
 
 public class ScreenBuilder {
 	// TODO: eliminate this static field completely?

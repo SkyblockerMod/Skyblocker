@@ -10,7 +10,6 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
@@ -36,7 +35,7 @@ public final class JerryTimer {
 			Scheduler.INSTANCE.schedule(() -> {
 				if (player == null || !Utils.isOnSkyblock()) return;
 				player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.jerry.sendJerryTimerMessage")).formatted(Formatting.GREEN), false);
-				player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_TRADE, SoundCategory.NEUTRAL, 100f, 1.0f);
+				player.playSound(SoundEvents.ENTITY_VILLAGER_TRADE, 100f, 1.0f);
 			}, 20 * 60 * 6); // 6 minutes
 
 			return true;

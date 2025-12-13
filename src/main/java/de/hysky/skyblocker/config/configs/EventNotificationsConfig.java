@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
-import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -13,7 +13,7 @@ public class EventNotificationsConfig {
 
 	public Sound reminderSound = Sound.PLING;
 
-	public Map<String, IntList> eventsReminderTimes = new HashMap<>();
+	public Map<String, IntArrayList> eventsReminderTimes = new HashMap<>();
 
 	public enum Criterion {
 		NONE,

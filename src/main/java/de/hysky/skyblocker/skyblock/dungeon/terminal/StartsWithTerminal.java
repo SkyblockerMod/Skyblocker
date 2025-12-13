@@ -10,7 +10,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +78,7 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 	}
 
 	@Override
-	public ItemStack modifyDisplayStack(int slotIndex, @NotNull ItemStack stack) {
+	public ItemStack modifyDisplayStack(int slotIndex, ItemStack stack) {
 		// rows * 9 = 54
 		return slotIndex >= 54 || stack.getName().getString().startsWith(groups[0]) ? stack : ItemStack.EMPTY;
 	}

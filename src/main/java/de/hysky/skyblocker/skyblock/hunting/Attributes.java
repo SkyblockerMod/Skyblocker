@@ -9,7 +9,8 @@ import com.mojang.serialization.JsonOps;
 import io.github.moulberry.repo.NEURepoFile;
 import net.minecraft.component.ComponentHolder;
 import net.minecraft.component.DataComponentTypes;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import de.hysky.skyblocker.annotations.Init;
@@ -35,16 +36,14 @@ public class Attributes {
 		}
 	}
 
-	@Nullable
-	public static Attribute getAttributeFromItemName(ComponentHolder stack) {
+	public static @Nullable Attribute getAttributeFromItemName(ComponentHolder stack) {
 		if (!stack.contains(DataComponentTypes.CUSTOM_NAME)) return null;
 		String name = stack.get(DataComponentTypes.CUSTOM_NAME).getString();
 
 		return getAttributeFromItemName(name);
 	}
 
-	@Nullable
-	public static Attribute getAttributeFromItemName(String name) {
+	public static @Nullable Attribute getAttributeFromItemName(String name) {
 		// Shards outside the hunting box now have "Shard" in their item name.
 		// Dungeon chests also have x<number> after the "Shard" and this strips that too
 		int index = name.indexOf("Shard");

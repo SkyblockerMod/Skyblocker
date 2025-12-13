@@ -8,8 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -33,7 +32,7 @@ public class CatacombsLevelAdder {
 		}
 
 		@Override
-		public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+		public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 			switch (slotId) {
 				case 12, 29, 30, 31, 32, 33 -> {
 					Matcher matcher = LEVEL_PATTERN.matcher(stack.getName().getString());
@@ -66,7 +65,7 @@ public class CatacombsLevelAdder {
 		}
 
 		@Override
-		public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+		public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 			switch (slotId) {
 				case 11, 12, 13, 14, 15 -> {
 					String level = getBracketedLevelFromName(stack);
@@ -87,7 +86,7 @@ public class CatacombsLevelAdder {
 		}
 
 		@Override
-		public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+		public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 			switch (slotId) {
 				case 29, 30, 31, 32, 33 -> {
 					String level = getBracketedLevelFromName(stack);

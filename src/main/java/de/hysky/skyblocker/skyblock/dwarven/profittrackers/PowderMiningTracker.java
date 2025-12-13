@@ -32,7 +32,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -315,7 +314,6 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 		NAME2ID_MAP.put("Superlite Motor", "SUPERLITE_MOTOR");
 	}
 
-	@NotNull
 	private String getItemId(String itemName) {
 		return NAME2ID_MAP.getOrDefault(itemName, "");
 	}

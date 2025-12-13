@@ -12,7 +12,6 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
@@ -31,8 +30,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -114,7 +112,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	 * @param handler        the container handler
 	 * @param titleLowercase the title in lowercase
 	 */
-	private WidgetsConfigurationScreen(@Nullable GenericContainerScreenHandler handler, String titleLowercase, Location targetLocation, @Nullable WidgetManager.ScreenLayer widgetLayerToGoTo) {
+	private WidgetsConfigurationScreen(@Nullable GenericContainerScreenHandler handler, String titleLowercase, Location targetLocation, WidgetManager.@Nullable ScreenLayer widgetLayerToGoTo) {
 		super(Text.literal("Widgets Configuration"));
 		this.handler = handler;
 		this.titleLowercase = titleLowercase;
@@ -135,7 +133,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	 * @param handler        the container handler
 	 * @param titleLowercase the title in lowercase, to figure out where you are
 	 */
-	public WidgetsConfigurationScreen(@NotNull GenericContainerScreenHandler handler, String titleLowercase) {
+	public WidgetsConfigurationScreen(GenericContainerScreenHandler handler, String titleLowercase) {
 		this(handler, titleLowercase, Location.UNKNOWN, null);
 	}
 
@@ -192,7 +190,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		}
 	}
 
-	public void updateHandler(@NotNull GenericContainerScreenHandler newHandler, String titleLowercase) {
+	public void updateHandler(GenericContainerScreenHandler newHandler, String titleLowercase) {
 		if (handler == null) return;
 		handler.removeListener(this);
 		handler = newHandler;
@@ -255,7 +253,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		}
 		if (slotId == 13) {
 			if (stack.isOf(Items.HOPPER)) {
-				widgetsListTab.hopper(ItemUtils.getLore(stack));
+				widgetsListTab.hopper(stack.skyblocker$getLoreStrings());
 			} else {
 				widgetsListTab.hopper(null);
 			}
@@ -296,7 +294,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		getBackOnTheScreenYouScallywagsAngryEmoji();
 		if (noHandler) return;
 		if (slotThirteenBacklog != null && widgetsListTab != null) {
-			widgetsListTab.hopper(ItemUtils.getLore(slotThirteenBacklog));
+			widgetsListTab.hopper(slotThirteenBacklog.skyblocker$getLoreStrings());
 			slotThirteenBacklog = null;
 		}
 		assert this.client != null;

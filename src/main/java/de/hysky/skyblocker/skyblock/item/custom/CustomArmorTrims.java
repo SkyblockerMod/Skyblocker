@@ -11,7 +11,6 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -33,7 +32,6 @@ import net.minecraft.registry.entry.RegistryEntry.Reference;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +82,6 @@ public class CustomArmorTrims {
 												.executes(context -> customizeTrim(context.getSource(), context.getArgument("material", Identifier.class), context.getArgument("pattern", Identifier.class))))))));
 	}
 
-	@NotNull
 	private static SuggestionProvider<FabricClientCommandSource> getIdSuggestionProvider(RegistryKey<? extends Registry<?>> registryKey) {
 		return (context, builder) -> context.getSource().listIdSuggestions(registryKey, CommandSource.SuggestedIdType.ELEMENTS, builder, context);
 	}
@@ -133,7 +130,7 @@ public class CustomArmorTrims {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public record ArmorTrimId(@SerialEntry Identifier material, @SerialEntry Identifier pattern) implements Pair<Identifier, Identifier> {
+	public record ArmorTrimId(Identifier material, Identifier pattern) implements Pair<Identifier, Identifier> {
 		public static final Codec<ArmorTrimId> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 						Identifier.CODEC.fieldOf("material").forGetter(ArmorTrimId::material),
 						Identifier.CODEC.fieldOf("pattern").forGetter(ArmorTrimId::pattern))

@@ -87,7 +87,6 @@ public class ChatRuleConfigScreen extends Screen {
 		this.currentSoundIndex = getCurrentSoundIndex();
 
 		// Early initialization of values from the static instance because we want to initialize this stuff in the constructor
-		this.client = MinecraftClient.getInstance();
 		this.width = client.getWindow().getScaledWidth();
 		this.height = client.getWindow().getScaledHeight();
 

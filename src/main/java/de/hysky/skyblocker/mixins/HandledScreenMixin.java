@@ -48,7 +48,8 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -102,8 +103,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	);
 
 	@Shadow
-	@Nullable
-	protected Slot focusedSlot;
+	protected @Nullable Slot focusedSlot;
 
 	@Shadow
 	@Final
@@ -397,7 +397,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	}
 
 	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
-	private void skyblocker$drawOnItem(DrawContext context, Slot slot, CallbackInfo ci) {
+	private void skyblocker$drawOnItem(CallbackInfo ci, @Local(argsOnly = true) DrawContext context, @Local(argsOnly = true) Slot slot) {
 		if (Utils.isOnSkyblock()) {
 			ItemBackgroundManager.drawBackgrounds(slot.getStack(), context, slot.x, slot.y);
 		}
@@ -414,7 +414,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	}
 
 	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawStackOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V"))
-	private void skyblocker$drawSlotText(DrawContext context, Slot slot, CallbackInfo ci) {
+	private void skyblocker$drawSlotText(CallbackInfo ci, @Local(argsOnly = true) DrawContext context, @Local(argsOnly = true) Slot slot) {
 		if (Utils.isOnSkyblock()) {
 			SlotTextManager.renderSlotText(context, textRenderer, slot);
 		}

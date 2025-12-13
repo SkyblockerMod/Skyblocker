@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.font.DrawnTextConsumer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawContext.HoverType;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.PressableWidget;
@@ -55,20 +56,21 @@ public class CyclingIconButtonWidget<T> extends PressableWidget {
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-		super.renderWidget(context, mouseX, mouseY, deltaTicks);
+	protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		this.drawButton(context);
 		int x = this.showText ? (this.getX() + this.getWidth() - this.currentIcon.width() - 2) : (this.getX() + this.getWidth() / 2 - this.currentIcon.width() / 2);
 		int y = this.getY() + this.getHeight() / 2 - this.currentIcon.height() / 2;
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, this.currentIcon.id(), x, y, this.currentIcon.width(), this.currentIcon.height(), this.alpha);
+		this.drawLabel(context.getTextConsumer(HoverType.NONE));
 	}
 
 	@Override
-	public void drawMessage(DrawContext context, TextRenderer textRenderer, int color) {
+	public void drawLabel(DrawnTextConsumer drawer) {
 		if (!showText) return;
 		int x1 = this.getX() + 2;
-		int xCenter = this.getX() + this.getWidth() - this.currentIcon.width() - 4;
-		int x2 = this.getX() + this.getWidth() / 2;
-		drawScrollableText(context, textRenderer, this.getMessage(), x2, x1, this.getY(), xCenter, this.getY() + this.getHeight(), color);
+		int x2 = this.getX() + this.getWidth() - this.currentIcon.width() - 4;
+		int xCenter = this.getX() + this.getWidth() / 2;
+		drawer.marqueedText(this.getMessage(), xCenter, x1, x2, this.getY(), this.getY() + this.getHeight());
 	}
 
 	@Override

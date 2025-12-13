@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import net.minecraft.item.ItemStack;

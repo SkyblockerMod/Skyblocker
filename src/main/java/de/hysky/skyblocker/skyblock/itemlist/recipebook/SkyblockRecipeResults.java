@@ -10,7 +10,6 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
@@ -18,7 +17,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
-import net.minecraft.client.gui.widget.ToggleButtonWidget;
+import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
@@ -30,8 +29,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -52,11 +51,11 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	private final List<SkyblockRecipeResultButton> resultButtons = Lists.newArrayListWithCapacity(20);
 	private final List<SkyblockRecipeResultButton> recipeSlotButtons = Lists.newArrayListWithCapacity(16);
 	private @Nullable ItemStack recipeIcon = null;
-	private MinecraftClient client;
-	private ToggleButtonWidget nextPageButton;
-	private ToggleButtonWidget prevPageButton;
+	private final MinecraftClient client = MinecraftClient.getInstance();
+	private @Nullable TexturedButtonWidget nextPageButton;
+	private @Nullable TexturedButtonWidget prevPageButton;
 	private SkyblockRecipeResultButton hoveredResultButton;
-	private String lastSearchQuery = null;
+	private @Nullable String lastSearchQuery = null;
 	private final List<ItemStack> searchResults = new ArrayList<>();
 	/**
 	 * Text to be displayed as a tooltip.
@@ -78,18 +77,14 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 
 	@Override
 	public void initialize(MinecraftClient client, int parentLeft, int parentTop) {
-		this.client = client;
-
 		//Position the result buttons
 		for (int i = 0; i < resultButtons.size(); i++) {
 			this.resultButtons.get(i).setPosition(parentLeft + 11 + 25 * (i % 5), parentTop + 31 + 25 * (i / 5));
 		}
 
 		//Setup & position the page flip buttons
-		this.nextPageButton = new ToggleButtonWidget(parentLeft + 93, parentTop + 137, 12, 17, false);
-		this.nextPageButton.setTextures(RecipeBookResults.PAGE_FORWARD_TEXTURES);
-		this.prevPageButton = new ToggleButtonWidget(parentLeft + 38, parentTop + 137, 12, 17, true);
-		this.prevPageButton.setTextures(RecipeBookResults.PAGE_BACKWARD_TEXTURES);
+		this.nextPageButton = new TexturedButtonWidget(parentLeft + 93, parentTop + 137, 12, 17, RecipeBookResults.PAGE_FORWARD_TEXTURES, _ignored -> {});
+		this.prevPageButton = new TexturedButtonWidget(parentLeft + 38, parentTop + 137, 12, 17, RecipeBookResults.PAGE_BACKWARD_TEXTURES, _ignored -> {});
 		updateResultButtons();
 	}
 
@@ -122,11 +117,14 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			if (resultButton.visible && resultButton.isSelected()) this.hoveredResultButton = resultButton;
 		}
 
-
-
 		//Render the page flip buttons
-		if (this.prevPageButton.active) this.prevPageButton.render(context, mouseX, mouseY, delta);
-		if (this.nextPageButton.active) this.nextPageButton.render(context, mouseX, mouseY, delta);
+		if (this.prevPageButton != null) {
+			this.prevPageButton.render(context, mouseX, mouseY, delta);
+		}
+
+		if (this.nextPageButton != null) {
+			this.nextPageButton.render(context, mouseX, mouseY, delta);
+		}
 	}
 
 	//TODO enable scissor?
@@ -216,9 +214,9 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 				String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
 				if (!filterOption.test(name)) continue;
 
-				List<Text> lore = ItemUtils.getLore(stack);
+				List<String> lore = stack.skyblocker$getLoreStrings();
 
-				if (name.contains(query) || lore.stream().map(Text::getString)
+				if (name.contains(query) || lore.stream()
 						.map(string -> string.toLowerCase(Locale.ENGLISH))
 						.anyMatch(line -> line.contains(query))) {
 					this.searchResults.add(stack);

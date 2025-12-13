@@ -5,7 +5,6 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -36,11 +35,11 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Atlases;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Consumer;
+
+import org.jspecify.annotations.Nullable;
 
 public abstract sealed class TrimElementButton extends PressableWidget permits TrimElementButton.Pattern, TrimElementButton.Material {
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
@@ -66,7 +65,8 @@ public abstract sealed class TrimElementButton extends PressableWidget permits T
 	}
 
 	@Override
-	public void drawMessage(DrawContext context, TextRenderer textRenderer, int color) {
+	public void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		this.drawButton(context);
 		draw(context);
 	}
 
@@ -99,7 +99,7 @@ public abstract sealed class TrimElementButton extends PressableWidget permits T
 					RegistryEntry.of(pattern));
 		}
 
-		public void setStack(@NotNull ItemStack newStack) {
+		public void setStack(ItemStack newStack) {
 			newStack = newStack.copy();
 			// Remove the uuid so it doesn't render with the selected trim
 			NbtCompound nbtCopy = ItemUtils.getCustomData(newStack).copy();

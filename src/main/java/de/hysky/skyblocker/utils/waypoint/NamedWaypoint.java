@@ -166,7 +166,7 @@ public class NamedWaypoint extends Waypoint {
 	public void extractRendering(PrimitiveCollector collector) {
 		super.extractRendering(collector);
 		if (shouldRenderName()) {
-			float scale = Math.max((float) RenderHelper.getCamera().getPos().distanceTo(centerPos) / 10, 1);
+			float scale = Math.max((float) RenderHelper.getCamera().getCameraPos().distanceTo(centerPos) / 10, 1);
 			collector.submitText(name, centerPos.add(0, 1, 0), scale, true);
 		}
 	}

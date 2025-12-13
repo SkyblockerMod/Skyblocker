@@ -9,12 +9,12 @@ import net.azureaaron.dandelion.systems.Option;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import org.jspecify.annotations.Nullable;
 
 public interface SlotTextAdder extends ContainerMatcher {
 
@@ -26,8 +26,7 @@ public interface SlotTextAdder extends ContainerMatcher {
 	 * It's also not anti-aliased, so it looks horribly jagged and unreadable when scaled down too much.
 	 * So, limit your text to 3 characters (or roughly less than 20 width) if you want it to not look horrible.
 	 */
-	@NotNull
-	List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId);
+	List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId);
 
 	@Override
 	default boolean isEnabled() {
@@ -35,8 +34,7 @@ public interface SlotTextAdder extends ContainerMatcher {
 		return SlotTextManager.isEnabled(getConfigInformation().id());
 	}
 
-	@Nullable
-	default ConfigInformation getConfigInformation() {
+	default @Nullable ConfigInformation getConfigInformation() {
 		return null;
 	}
 

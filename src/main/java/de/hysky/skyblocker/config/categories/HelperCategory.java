@@ -85,6 +85,7 @@ public class HelperCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.helpers.enableAnvilHelper"))
 						.description(Text.translatable("skyblocker.config.helpers.enableAnvilHelper.@Tooltip"))
+						.tags(CommonTags.ADDED_IN_5_10_0)
 						.binding(defaults.helpers.enableAnvilHelper,
 								() -> config.helpers.enableAnvilHelper,
 								newValue -> config.helpers.enableAnvilHelper = newValue)

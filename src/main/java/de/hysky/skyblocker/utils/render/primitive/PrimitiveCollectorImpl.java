@@ -129,7 +129,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		int colour = ColorHelper.fromFloats(1f, colourComponents[0], colourComponents[1], colourComponents[2]);
-		float length = (float) RenderHelper.getCamera().getPos().subtract(pos.toCenterPos()).horizontalLength();
+		float length = (float) RenderHelper.getCamera().getCameraPos().subtract(pos.toCenterPos()).horizontalLength();
 		BeaconBlockEntityRenderState state = new BeaconBlockEntityRenderState();
 		state.pos = pos;
 		state.blockState = Blocks.BEACON.getDefaultState();
@@ -303,7 +303,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 
 		TextRenderer textRenderer = CLIENT.textRenderer;
 		float xOffset = -textRenderer.getWidth(text) / 2f;
-		TextRenderer.GlyphDrawable glyphs = textRenderer.prepare(text, xOffset, yOffset, Colors.WHITE, false, 0);
+		TextRenderer.GlyphDrawable glyphs = textRenderer.prepare(text, xOffset, yOffset, Colors.WHITE, false, false, 0);
 
 		TextRenderState state = new TextRenderState();
 		state.glyphs = glyphs;

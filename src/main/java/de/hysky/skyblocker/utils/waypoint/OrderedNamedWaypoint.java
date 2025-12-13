@@ -99,7 +99,7 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 			collector.submitLineFromCursor(centerPos, components, components[3], waypoints.lineWidth);
 		}
 		if (shouldRenderName()) {
-			float scale = Math.max((float) RenderHelper.getCamera().getPos().distanceTo(centerPos) / 10, 1);
+			float scale = Math.max((float) RenderHelper.getCamera().getCameraPos().distanceTo(centerPos) / 10, 1);
 			collector.submitText(Text.of(String.valueOf(index + 1)), centerPos.add(0, 1, 0), scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
 		}
 	}

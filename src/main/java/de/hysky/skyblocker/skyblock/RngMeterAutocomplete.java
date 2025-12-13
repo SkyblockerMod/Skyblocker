@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.google.gson.JsonParser;
@@ -28,10 +28,8 @@ public class RngMeterAutocomplete {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Codec<Map<String, List<String>>> CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf());
 	private static Map<String, List<String>> rngMeters = new HashMap<>();
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> longCommand;
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> shortCommand;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> longCommand;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> shortCommand;
 
 	@Init
 	public static void init() {

@@ -30,8 +30,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -518,7 +518,7 @@ public class PartyFinderScreen extends Screen {
 		return waitingForServer;
 	}
 
-	public @NotNull MinecraftClient getClient() {
+	public MinecraftClient getClient() {
 		assert this.client != null;
 		return this.client;
 	}

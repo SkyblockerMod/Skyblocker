@@ -7,7 +7,6 @@ import de.hysky.skyblocker.annotations.GenHashCode;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +73,7 @@ public class ShortcutKeyBinding implements Comparable<ShortcutKeyBinding> {
 	public native int hashCode();
 
 	@Override
-	public int compareTo(@NotNull ShortcutKeyBinding shortcutKeyBinding) {
+	public int compareTo(ShortcutKeyBinding shortcutKeyBinding) {
 		return COMPARATOR.compare(this, shortcutKeyBinding);
 	}
 }

@@ -22,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -97,8 +97,7 @@ public class PickobulusHelper {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static boolean shouldRender;
-	@Nullable
-	private static Text errorMessage;
+	private static @Nullable Text errorMessage;
 	private static final BlockState[][][] blocks = new BlockState[8][8][8];
 	private static final Set<BlockPos> breakBlocks = new HashSet<>();
 	private static final int[] drops = new int[MiningDrop.values().length];
@@ -107,8 +106,7 @@ public class PickobulusHelper {
 		return shouldRender;
 	}
 
-	@Nullable
-	public static Text getErrorMessage() {
+	public static @Nullable Text getErrorMessage() {
 		return errorMessage;
 	}
 

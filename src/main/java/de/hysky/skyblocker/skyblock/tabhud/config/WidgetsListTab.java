@@ -22,13 +22,14 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+
+import org.jspecify.annotations.Nullable;
 
 // TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsListTab implements Tab {
@@ -129,7 +130,7 @@ public class WidgetsListTab implements Tab {
 		listNeedsUpdate = true;
 	}
 
-	public void hopper(@Nullable List<Text> hopperTooltip) {
+	public void hopper(@Nullable List<String> hopperTooltip) {
 		if (hopperTooltip == null) {
 			widgetsElementList.setEditingPosition(-1);
 			return;
@@ -137,8 +138,7 @@ public class WidgetsListTab implements Tab {
 		int start = -1;
 		int editing = 1;
 		for (int i = 0; i < hopperTooltip.size(); i++) {
-			Text text = hopperTooltip.get(i);
-			String string = text.getString();
+			String string = hopperTooltip.get(i);
 			if (start == -1 && string.contains("▶")) {
 				start = i;
 			}
@@ -183,8 +183,8 @@ public class WidgetsListTab implements Tab {
 
 
 		String lowerCase = stack.getName().getString().trim().toLowerCase(Locale.ENGLISH);
-		List<Text> lore = ItemUtils.getLore(stack);
-		String lastLowerCase = lore.getLast().getString().toLowerCase(Locale.ENGLISH);
+		List<String> lore = stack.skyblocker$getLoreStrings();
+		String lastLowerCase = lore.getLast().toLowerCase(Locale.ENGLISH);
 
 		WidgetsListSlotEntry entry;
 		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.isOf(Items.RED_STAINED_GLASS_PANE)) {

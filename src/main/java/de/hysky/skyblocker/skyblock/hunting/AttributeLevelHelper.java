@@ -8,8 +8,7 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class AttributeLevelHelper extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slot == null || stack.isEmpty()) return List.of();
 		if (slot.id <= 9 || slot.id >= 44) return List.of(); // Don't need to process the first row and the last row
 		if (stack.isOf(Items.BLACK_STAINED_GLASS_PANE)) return List.of();

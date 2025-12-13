@@ -37,7 +37,7 @@ import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import org.apache.commons.text.WordUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -264,8 +264,7 @@ public class EggFinder {
 			return name;
 		}
 
-		@Nullable
-		public static EggType getTypeByName(String eggType) {
+		public static @Nullable EggType getTypeByName(String eggType) {
 			for (EggType type : EggType.entries) {
 				if (type.name.equals(eggType)) {
 					return type;

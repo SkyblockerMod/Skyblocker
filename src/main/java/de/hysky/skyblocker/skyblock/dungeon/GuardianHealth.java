@@ -63,7 +63,7 @@ public class GuardianHealth {
 					String health = matcher.group(2);
 					String quantity = matcher.group(3);
 
-					double distance = RenderHelper.getCamera().getPos().distanceTo(guardian.getLerpedPos(RenderHelper.getTickCounter().getTickProgress(false)));
+					double distance = RenderHelper.getCamera().getCameraPos().distanceTo(guardian.getLerpedPos(RenderHelper.getTickCounter().getTickProgress(false)));
 
 					collector.submitText(
 							Text.literal(health + quantity).formatted(Formatting.GREEN),

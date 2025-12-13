@@ -9,8 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
+
 import com.mojang.datafixers.util.Either;
 
 public class EventCalendarLookup implements WikiLookup {
@@ -20,7 +20,7 @@ public class EventCalendarLookup implements WikiLookup {
 	private EventCalendarLookup() {}
 
 	@Override
-	public void open(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
+	public void open(ItemStack itemStack, PlayerEntity player, boolean useOfficial) {
 		Matcher matcher = CALENDAR_EVENT_NAME.matcher(itemStack.getName().getString());
 
 		if (matcher.matches()) {
@@ -41,7 +41,7 @@ public class EventCalendarLookup implements WikiLookup {
 	}
 
 	@Override
-	public boolean canSearch(@Nullable String title, @NotNull Either<Slot, ItemStack> either) {
+	public boolean canSearch(@Nullable String title, Either<Slot, ItemStack> either) {
 		Optional<Slot> optional = either.left();
 		if (optional.isEmpty()) return false;
 		Slot slot = optional.get();

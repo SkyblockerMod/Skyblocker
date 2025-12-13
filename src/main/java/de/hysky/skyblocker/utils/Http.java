@@ -2,8 +2,6 @@ package de.hysky.skyblocker.utils;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.SharedConstants;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +18,8 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * @implNote All http requests are sent using HTTP 2
@@ -115,7 +115,7 @@ public class Http {
 	 *
 	 * @implNote the {@code v2} prefix is automatically added
 	 */
-	public static ApiResponse sendHypixelRequest(String endpoint, @NotNull String query) throws IOException, InterruptedException {
+	public static ApiResponse sendHypixelRequest(String endpoint, String query) throws IOException, InterruptedException {
 		return sendCacheableGetRequest(HYPIXEL_PROXY + endpoint + query, ApiAuthentication.getToken());
 	}
 

@@ -39,8 +39,7 @@ import net.minecraft.world.World;
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,8 +57,7 @@ public class MythologicalRitual {
 
 	private static long lastEchoTime;
 	private static final Map<BlockPos, GriffinBurrow> griffinBurrows = new HashMap<>();
-	@Nullable
-	private static BlockPos lastDugBurrowPos;
+	private static @Nullable BlockPos lastDugBurrowPos;
 	private static GriffinBurrow previousBurrow = new GriffinBurrow(BlockPos.ORIGIN);
 
 	@Init
@@ -237,7 +235,6 @@ public class MythologicalRitual {
 		return onInteractBlock(hitResult.getBlockPos());
 	}
 
-	@NotNull
 	private static ActionResult onInteractBlock(BlockPos pos) {
 		if (isActive() && griffinBurrows.containsKey(pos)) {
 			lastDugBurrowPos = pos;
@@ -290,27 +287,21 @@ public class MythologicalRitual {
 		 */
 		private TriState confirmed = TriState.FALSE;
 		private final SimpleRegression regression = new SimpleRegression();
-		@Nullable
-		private Vec3d[] nextBurrowLine;
+		private @Nullable Vec3d[] nextBurrowLine;
 		/**
 		 * The positions of the last two echo burrow particles.
 		 */
-		@Nullable
-		private Vec3d[] echoBurrowDirection;
-		@Nullable
-		private Vec3d[] echoBurrowLine;
-		@Nullable
-		private BlockPos nextBurrowEstimatedPos;
+		private @Nullable Vec3d[] echoBurrowDirection;
+		private @Nullable Vec3d[] echoBurrowLine;
+		private @Nullable BlockPos nextBurrowEstimatedPos;
 		/**
 		 * The line in the direction of the next burrow estimated by the previous burrow particles.
 		 */
-		@Nullable
-		private Line nextBurrowLineEstimation;
+		private @Nullable Line nextBurrowLineEstimation;
 		/**
 		 * The line in the direction of the next burrow estimated by the echo ability.
 		 */
-		@Nullable
-		private Line echoBurrowLineEstimation;
+		private @Nullable Line echoBurrowLineEstimation;
 
 		private GriffinBurrow(BlockPos pos) {
 			super(pos, Type.WAYPOINT, ORANGE_COLOR_COMPONENTS, 0.25F);
