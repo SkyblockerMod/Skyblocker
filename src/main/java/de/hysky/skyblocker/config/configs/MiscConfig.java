@@ -11,6 +11,8 @@ public class MiscConfig {
 
 	public boolean cat = true;
 
+	public boolean disableBreakReminders = false;
+
 	public static class RichPresence {
 		public boolean enableRichPresence = false;
 
