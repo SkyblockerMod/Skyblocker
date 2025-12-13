@@ -10,8 +10,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SlayerBossBars {
-	public static final UUID UUID = java.util.UUID.randomUUID();
+public class SlayerBossBar {
+	private static final UUID UUID = java.util.UUID.randomUUID();
 	private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?[kM]?)(?=❤)");
 	private static final long UPDATE_INTERVAL = 400;
 	private static int bossMaxHealth = -1;
@@ -27,23 +27,24 @@ public class SlayerBossBars {
 		if (currentTime - lastUpdateTime < UPDATE_INTERVAL) {
 			return bossBar != null;
 		}
+
 		lastUpdateTime = currentTime;
+		ArmorStandEntity bossArmorStand = SlayerManager.getSlayerBossArmorStand();
 
 		// Reset if no slayer
-		if (!SlayerManager.isBossSpawned()) {
+		if (bossArmorStand == null) {
 			bossMaxHealth = -1;
 			bossBar = null;
 			return false;
 		}
 
 		// Update boss max health
-		ArmorStandEntity bossArmorStand = SlayerManager.getSlayerBossArmorStand();
-		if (bossArmorStand != null && bossMaxHealth == -1) {
+		if (bossMaxHealth == -1) {
 			Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(bossArmorStand.getName().getString());
 			if (maxHealthMatcher.find()) bossMaxHealth = convertToInt(maxHealthMatcher.group(0));
 		}
 
-		return bossBar != null || bossArmorStand != null;
+		return bossBar != null;
 	}
 
 	/**

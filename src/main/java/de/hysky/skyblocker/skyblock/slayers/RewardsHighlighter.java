@@ -27,11 +27,8 @@ public class RewardsHighlighter extends SimpleContainerSolver {
 			ItemStack stack = entry.getValue();
 			if (stack != null && stack.contains(DataComponentTypes.LORE)) {
 				List<String> lastLine = stack.skyblocker$getLoreStrings();
-				if (!lastLine.isEmpty()) {
-					System.out.println(lastLine.getLast());
-					if (lastLine.getLast().equals("Click to claim rewards!")) {
-						highlights.add(ColorHighlight.green(entry.getIntKey()));
-					}
+				if (!lastLine.isEmpty() && lastLine.getLast().equals("Click to claim rewards!")) {
+					highlights.add(ColorHighlight.green(entry.getIntKey()));
 				}
 			}
 		}
