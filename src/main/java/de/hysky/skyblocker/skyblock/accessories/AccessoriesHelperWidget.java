@@ -85,16 +85,16 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		final AccessoriesHelperWidget widget = new AccessoriesHelperWidget();
 		widget.setY((screen.height - widget.getHeight()) / 2);
 		Screens.getButtons(screen).add(widget);
-		final int previousX = ((AbstractContainerScreenAccessor) screen).getLeftPos();
+		final int previousX = ((AbstractContainerScreenAccessor) screen).getX();
 		final int offset = Math.max(180 - previousX, 0);
 		TabButton tabButton = new TabButton(button -> {
 			boolean toggled = button.toggled;
 			widget.visible = open = toggled;
 			int x = toggled ? previousX + offset : previousX;
-			((AbstractContainerScreenAccessor) screen).setLeftPos(x);
+			((AbstractContainerScreenAccessor) screen).setX(x);
 			widget.setX(x - widget.getWidth() - 2);
 			button.setX((toggled ? widget.getX() : x) - button.getWidth() + 5);
-			button.setY((toggled ? widget.getY() : ((AbstractContainerScreenAccessor) screen).getTopPos()) + 8);
+			button.setY((toggled ? widget.getY() : ((AbstractContainerScreenAccessor) screen).getY()) + 8);
 			if (toggled) {
 				final Set<Accessory> collectedAccessories = AccessoriesHelper.getCollectedAccessories();
 				widget.recombDisplays = collectedAccessories.stream()
