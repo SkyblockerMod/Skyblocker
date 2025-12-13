@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -42,6 +43,7 @@ public class BlockBreakPrediction {
 	private static final Pattern MINING_SPEED_PATTERN = Pattern.compile("Mining Speed: ⸕(\\d+)");
 
 	private static boolean newBlock = false;
+	private static boolean soundPlayed = false;
 	private static long currentBlockBreakTime;
 	private static long startAttackingTime;
 
@@ -53,16 +55,17 @@ public class BlockBreakPrediction {
 
 	}
 
+
 	private static ActionResult onBlockInteract(PlayerEntity playerEntity, World world, Hand hand, BlockPos blockPos, Direction direction) {
 		newBlock = true;
 		startAttackingTime = System.currentTimeMillis();
-
+		soundPlayed = false;
 		return ActionResult.PASS;
 	}
 
 	public static int getBlockBreakPrediction(BlockPos pos, int progression) {
-		if (MinecraftClient.getInstance().player == null) return -1;
-		if (MinecraftClient.getInstance().crosshairTarget instanceof BlockHitResult hitResult) {
+		if (CLIENT.player == null || !SkyblockerConfigManager.get().mining.BlockBreakPrediction.enabled) return progression;
+		if (CLIENT.crosshairTarget instanceof BlockHitResult hitResult) {
 			if (!hitResult.getBlockPos().equals(pos)) {
 				return progression;
 			}
@@ -73,13 +76,13 @@ public class BlockBreakPrediction {
 			newBlock = false;
 			currentBlockBreakTime = getBreakTime(pos);
 		}
-		if (currentBlockBreakTime != -1){
+		if (currentBlockBreakTime > 0) {
 			long timeElapsed = System.currentTimeMillis() - startAttackingTime;
-			if ((int) ((timeElapsed * 10) / (currentBlockBreakTime)) > 9){
-
-				//CLIENT.player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
+			if (SkyblockerConfigManager.get().mining.BlockBreakPrediction.playSound && !soundPlayed && (int) ((timeElapsed * 10) / (currentBlockBreakTime)) == 10) {
+				soundPlayed = true;
+				CLIENT.player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 1f);
 			}
-			return  Math.min((int) ((timeElapsed * 10) / (currentBlockBreakTime)), 9);
+			return Math.min((int) ((timeElapsed * 10) / (currentBlockBreakTime)), 9);
 		}
 		System.out.println(progression);
 		return progression;
@@ -110,7 +113,7 @@ public class BlockBreakPrediction {
 		int miningSpeed = getCurrentMiningSpeed();
 		//using equation mining time (ticks) = (block strength x 30) / mining speed
 
-		return (long) (50 *Math.min( ((blockStrength * 30f) / miningSpeed), (20f / 3) * blockStrength ));
+		return (long) (50 * Math.min(((blockStrength * 30f) / miningSpeed), (20f / 3) * blockStrength));
 
 	}
 
@@ -132,13 +135,13 @@ public class BlockBreakPrediction {
 					for (block blockType : data.blocks) {
 						for (String location : blockType.onlyIn) {
 							//if its mithril edit it to the actual strength as that is not in the repo
-							if (data.name.equals("Mithril Ore")){
+							if (data.name.equals("Mithril Ore")) {
 								Block block = LegacyLookup.get(blockType.itemId, blockType.damage);
-								if(block == Blocks.GRAY_WOOL || block == Blocks.CYAN_TERRACOTTA) {
+								if (block == Blocks.GRAY_WOOL || block == Blocks.CYAN_TERRACOTTA) {
 									addStrength(location, block, 500);
 								} else if (block == Blocks.LIGHT_BLUE_WOOL) {
 									addStrength(location, block, 1500);
-								}else {
+								} else {
 									addStrength(location, block, 800);
 								}
 								continue;
