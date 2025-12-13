@@ -991,6 +991,8 @@
   "skyblocker.config.slayer.minibossSpawnAlert": "MiniBoss Spawn Alert",
   "skyblocker.config.slayer.minibossSpawnAlert.@Tooltip": "\nDisplays a warning when a slayer miniboss spawns.",
 
+  "skyblocker.config.slayer.showMiniBossNameInAlert": "Show MiniBoss Name in Alert",
+
   "skyblocker.config.slayer.slainTime": "Slayer kill time",
   "skyblocker.config.slayer.slainTime.@Tooltip": "Sends the amount of time spent to kill the slayer.",
 
@@ -1646,6 +1648,7 @@
   "skyblocker.slayer.hud.bossesNeeded": "Bosses until level up",
   "skyblocker.slayer.hud.levelMaxed": "MAXED OUT",
   "skyblocker.slayer.hud.levelUpIn": "Level up in %s bosses",
+  "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss",
   "skyblocker.slayer.personalBest": "PERSONAL BEST!",
   "skyblocker.slayer.previousPersonalBest": "Your previous Personal Best was %s.",
   "skyblocker.slayer.slainTime": "Slayer has been killed in %s!",

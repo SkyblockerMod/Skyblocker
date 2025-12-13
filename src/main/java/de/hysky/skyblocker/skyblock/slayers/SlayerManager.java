@@ -50,11 +50,19 @@ public class SlayerManager {
 	private static final Pattern PATTERN_XP_NEEDED = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
 	private static final Pattern PATTERN_LVL_UP = Pattern.compile("\\s*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9]\\s*");
 	private static final Title BOSS_SPAWN = new Title(Text.translatable("skyblocker.slayer.bossSpawnAlert").formatted(Formatting.RED));
+	private static final Title MINIBOSS_SPAWN = new Title(Text.translatable("skyblocker.slayer.miniBossSpawnAlert").formatted(Formatting.RED));
 	private static @Nullable SlayerQuest slayerQuest;
 	private static @Nullable BossFight bossFight;
 
 	private static boolean slayerExpBuffActive = false;
 	private static float slayerExpBuff = 1.0f;
+
+	public static void sendTestMessage(String text) {
+		var player = MinecraftClient.getInstance().player;
+		if (player != null) {
+			player.sendMessage(Text.of("[Slayers] " + text), false);
+		}
+	}
 
 	@Init
 	public static void init() {
@@ -397,7 +405,7 @@ public class SlayerManager {
 			findBoss(armorStand);
 			bossSpawnTime = Instant.now();
 			if (SkyblockerConfigManager.get().slayers.bossSpawnAlert) {
-				TitleContainer.addTitleAndPlaySound(BOSS_SPAWN, 40);
+				TitleContainer.addTitleAndPlaySound(BOSS_SPAWN, 20);
 			}
 		}
 
@@ -426,7 +434,9 @@ public class SlayerManager {
 			minibosses.add(miniboss);
 
 			if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert) {
-				TitleContainer.addTitleAndPlaySound(new Title((MutableText) armorStand.getCustomName()), 40);
+				Title title = SkyblockerConfigManager.get().slayers.showMiniBossNameInAlert ?
+						new Title((MutableText) armorStand.getCustomName()) : MINIBOSS_SPAWN;
+				TitleContainer.addTitleAndPlaySound(title, 20);
 			}
 		}
 	}
