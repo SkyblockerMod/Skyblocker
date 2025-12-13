@@ -183,7 +183,8 @@ public class TheEnd {
 	}
 
 	public static boolean isSpecialZealot(EnderMan enderman) {
-		return isZealot(enderman) && enderman.getCarriedBlock() != null && enderman.getCarriedBlock().is(Blocks.END_PORTAL_FRAME);
+		// Filter out non-special zealots using the faster carried block check first
+		return enderman.getCarriedBlock() != null && enderman.getCarriedBlock().is(Blocks.END_PORTAL_FRAME) && isZealot(enderman);
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
