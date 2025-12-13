@@ -2,8 +2,8 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public class AuctionTypeWidget extends SliderWidget<AuctionTypeWidget.Option> {
 
@@ -13,7 +13,7 @@ public class AuctionTypeWidget extends SliderWidget<AuctionTypeWidget.Option> {
 	 * @param slotClick IDK figure it out
 	 */
 	public AuctionTypeWidget(int x, int y, SlotClickHandler slotClick) {
-		super(x, y, 17, 17, Text.literal("Auction Type Widget"), slotClick, Option.ALL);
+		super(x, y, 17, 17, Component.literal("Auction Type Widget"), slotClick, Option.ALL);
 	}
 
 	public enum Option implements SliderWidget.OptionInfo {

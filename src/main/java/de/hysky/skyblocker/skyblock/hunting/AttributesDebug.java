@@ -25,14 +25,14 @@ import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.GenericContainerScreenHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.item.ItemStack;
 
 public class AttributesDebug {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final List<Attribute> DUMPED_ATTRIBUTES = new ArrayList<>();
 	private static final Pattern SOURCE_PATTERN = Pattern.compile("Source: (?<shardName>[A-za-z ]+) Shard \\((?<id>[CUREL]\\d+)\\)");
 	private static final Path ATTRIBUTE_EXPORT_DEST = SkyblockerMod.CONFIG_DIR.resolve("attribute_export.json");
@@ -51,15 +51,15 @@ public class AttributesDebug {
 	}
 
 	private static void dumpAttributes() {
-		if (CLIENT.currentScreen instanceof HandledScreen<?> screen && screen.getTitle().getString().equals("Attribute Menu")) {
+		if (CLIENT.screen instanceof AbstractContainerScreen<?> screen && screen.getTitle().getString().equals("Attribute Menu")) {
 			@SuppressWarnings("unchecked")
-			Int2ObjectMap<ItemStack> slots = ContainerSolverManager.slotMap(screen.getScreenHandler().slots.subList(0, ((HandledScreen<GenericContainerScreenHandler>) screen).getScreenHandler().getRows() * 9));
+			Int2ObjectMap<ItemStack> slots = ContainerSolverManager.slotMap(screen.getMenu().slots.subList(0, ((AbstractContainerScreen<ChestMenu>) screen).getMenu().getRowCount() * 9));
 			ContainerSolver.trimEdges(slots, 6);
 
 			for (ItemStack stack : slots.values()) {
 				if (stack.isEmpty()) continue;
 
-				String name = stack.getName().getString();
+				String name = stack.getHoverName().getString();
 				Matcher sourceMatcher = ItemUtils.getLoreLineIfMatch(stack, SOURCE_PATTERN);
 
 				//Remove roman numeral from name
@@ -89,7 +89,7 @@ public class AttributesDebug {
 	}
 
 	private static void exportAttributes() {
-		if (CLIENT.currentScreen instanceof HandledScreen screen && screen.getTitle().getString().equals("Attribute Menu")) {
+		if (CLIENT.screen instanceof AbstractContainerScreen screen && screen.getTitle().getString().equals("Attribute Menu")) {
 			List<Attribute> copy = DUMPED_ATTRIBUTES.stream().distinct().toList();
 
 			CompletableFuture.runAsync(() -> {

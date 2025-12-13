@@ -8,16 +8,16 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.tictactoe.BoardIndex;
 import de.hysky.skyblocker.utils.tictactoe.TicTacToeUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.decoration.ItemFrameEntity;
-import net.minecraft.item.map.MapState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.phys.AABB;
 
 /**
  * Thanks to Danker for a reference implementation!
@@ -28,7 +28,7 @@ public class TicTacToe extends DungeonPuzzle {
 	private static final float[] GREEN_COLOR_COMPONENTS = { 0.0F, 1.0F, 0.0F };
 	@SuppressWarnings("unused")
 	private static final TicTacToe INSTANCE = new TicTacToe();
-	private static @Nullable Box nextBestMoveToMake = null;
+	private static @Nullable AABB nextBestMoveToMake = null;
 
 	private TicTacToe() {
 		super("tic-tac-toe", "tic-tac-toe-1");
@@ -39,18 +39,18 @@ public class TicTacToe extends DungeonPuzzle {
 	}
 
 	@Override
-	public void tick(MinecraftClient client) {
+	public void tick(Minecraft client) {
 		if (!shouldSolve()) {
 			return;
 		}
 
 		nextBestMoveToMake = null;
 
-		if (client.world == null || client.player == null || !Utils.isInDungeons()) return;
+		if (client.level == null || client.player == null || !Utils.isInDungeons()) return;
 
 		//Search within 21 blocks for item frames that contain maps
-		Box searchBox = new Box(client.player.getX() - 21, client.player.getY() - 21, client.player.getZ() - 21, client.player.getX() + 21, client.player.getY() + 21, client.player.getZ() + 21);
-		List<ItemFrameEntity> itemFramesThatHoldMaps = client.world.getEntitiesByClass(ItemFrameEntity.class, searchBox, ItemFrameEntity::containsMap);
+		AABB searchBox = new AABB(client.player.getX() - 21, client.player.getY() - 21, client.player.getZ() - 21, client.player.getX() + 21, client.player.getY() + 21, client.player.getZ() + 21);
+		List<ItemFrame> itemFramesThatHoldMaps = client.level.getEntitiesOfClass(ItemFrame.class, searchBox, ItemFrame::hasFramedMap);
 
 		try {
 			//Only attempt to solve if the puzzle wasn't just completed and if its the player's turn
@@ -58,13 +58,13 @@ public class TicTacToe extends DungeonPuzzle {
 			if (itemFramesThatHoldMaps.size() != 9 && (itemFramesThatHoldMaps.size() & 1) == 1) {
 				char[][] board = new char[3][3];
 
-				for (ItemFrameEntity itemFrame : itemFramesThatHoldMaps) {
-					MapState mapState = client.world.getMapState(itemFrame.getMapId(itemFrame.getHeldItemStack()));
+				for (ItemFrame itemFrame : itemFramesThatHoldMaps) {
+					MapItemSavedData mapState = client.level.getMapData(itemFrame.getFramedMapId(itemFrame.getItem()));
 
 					if (mapState == null) continue;
 
 					//noinspection DataFlowIssue - the room must not be null and must be matched
-					BlockPos relative = DungeonManager.getCurrentRoom().actualToRelative(itemFrame.getBlockPos());
+					BlockPos relative = DungeonManager.getCurrentRoom().actualToRelative(itemFrame.blockPosition());
 
 					//Determine the row -- 72 = top, 71 = middle, 70 = bottom
 					int y = relative.getY();
@@ -105,8 +105,8 @@ public class TicTacToe extends DungeonPuzzle {
 				double nextZ = 17 - bestMove.column();
 
 				//noinspection DataFlowIssue - same as above, room is not null and matched
-				BlockPos nextPos = DungeonManager.getCurrentRoom().relativeToActual(BlockPos.ofFloored(nextX, nextY, nextZ));
-				nextBestMoveToMake = RenderHelper.getBlockBoundingBox(client.world, nextPos);
+				BlockPos nextPos = DungeonManager.getCurrentRoom().relativeToActual(BlockPos.containing(nextX, nextY, nextZ));
+				nextBestMoveToMake = RenderHelper.getBlockBoundingBox(client.level, nextPos);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Tic Tac Toe] Encountered an exception while determining a tic tac toe solution!", e);

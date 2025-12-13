@@ -1,19 +1,18 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.StringIdentifiable;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
-public enum SlayerType implements StringIdentifiable {
+public enum SlayerType implements StringRepresentable {
 	REVENANT("revenant", EntityType.ZOMBIE, "Revenant Horror", new ItemStack(Items.ROTTEN_FLESH), new int[]{5, 25, 100, 500, 1500}, new int[]{5, 15, 200, 1000, 5000, 20000, 100000, 400000, 1000000}, List.of("Revenant Sycophant", "Revenant Champion", "Deformed Revenant", "Atoned Champion", "Atoned Revenant")),
 	TARANTULA("tarantula", EntityType.SPIDER, "Tarantula Broodfather", new ItemStack(Items.STRING), new int[]{5, 25, 100, 500, 1500}, new int[]{5, 25, 200, 1000, 5000, 20000, 100000, 400000, 1000000}, List.of("Tarantula Vermin", "Tarantula Beast", "Mutant Tarantula")),
 	SVEN("sven", EntityType.WOLF, "Sven Packmaster", new ItemStack(Items.MUTTON), new int[]{5, 25, 100, 500, 1500}, new int[]{10, 30, 250, 1500, 5000, 20000, 100000, 400000, 1000000}, List.of("Pack Enforcer", "Sven Follower", "Sven Alpha")),
@@ -22,7 +21,7 @@ public enum SlayerType implements StringIdentifiable {
 	DEMONLORD("demonlord", EntityType.BLAZE, "Inferno Demonlord", new ItemStack(Items.BLAZE_POWDER), new int[]{5, 25, 100, 500, 1500}, new int[]{10, 30, 250, 1500, 5000, 20000, 100000, 400000, 1000000}, List.of("Flare Demon", "Kindleheart Demon", "Burningsoul Demon")),
 	UNKNOWN("unknown", null, "Unknown", new ItemStack(Items.BARRIER), new int[]{}, new int[]{}, List.of());
 
-	public static final Codec<SlayerType> CODEC = StringIdentifiable.createCodec(SlayerType::values);
+	public static final Codec<SlayerType> CODEC = StringRepresentable.fromEnum(SlayerType::values);
 	public final String name;
 	public final @Nullable EntityType<? extends Entity> mobType;
 	public final String bossName;
@@ -59,7 +58,7 @@ public enum SlayerType implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return name;
 	}
 }

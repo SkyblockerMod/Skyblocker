@@ -5,9 +5,8 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import net.minecraft.text.Text;
-
 import java.util.regex.Matcher;
+import net.minecraft.network.chat.Component;
 
 public class MimicFilter extends ChatPatternListener {
 	public MimicFilter() {
@@ -20,7 +19,7 @@ public class MimicFilter extends ChatPatternListener {
 	}
 
 	@Override
-	protected boolean onMatch(Text message, Matcher matcher) {
+	protected boolean onMatch(Component message, Matcher matcher) {
 		if (!Utils.isInDungeons() || !DungeonScore.isDungeonStarted() || !DungeonScore.isMimicOnCurrentFloor()) return false;
 		DungeonScore.onMimicKill(); //Only called when the message is cancelled | sent to action bar, complementing DungeonScore#checkMessageForMimic
 		return true;

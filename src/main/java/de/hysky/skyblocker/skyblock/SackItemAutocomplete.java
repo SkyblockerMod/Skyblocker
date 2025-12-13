@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.google.gson.JsonArray;
@@ -26,17 +26,15 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import io.github.moulberry.repo.data.NEUItem;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandSource;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.SharedSuggestionProvider;
 
 public class SackItemAutocomplete {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Pattern BAD_CHARACTERS = Pattern.compile("[☂☘☠✎✧❁❂❈❤⸕]");
 
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> longCommandNode;
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> shortCommandNode;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> longCommandNode;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> shortCommandNode;
 
 	@Init
 	public static void init() {
@@ -58,7 +56,7 @@ public class SackItemAutocomplete {
 					.map(neuId -> {
 						NEUItem stack = NEURepoManager.getItemByNeuId(neuId);
 
-						return stack != null ? Formatting.strip(stack.getDisplayName()) : neuId;
+						return stack != null ? ChatFormatting.stripFormatting(stack.getDisplayName()) : neuId;
 					})
 					.map(name -> BAD_CHARACTERS.matcher(name).replaceAll("").trim())
 					.collect(Collectors.toUnmodifiableSet());
@@ -74,7 +72,7 @@ public class SackItemAutocomplete {
 		return literal(command)
 				.requires(fccs -> Utils.isOnSkyblock())
 				.then(argument("item", StringArgumentType.greedyString())
-						.suggests((context, builder) -> CommandSource.suggestMatching(sackItems, builder))
+						.suggests((context, builder) -> SharedSuggestionProvider.suggest(sackItems, builder))
 						.then(argument("amount", IntegerArgumentType.integer(0))) // Adds a nice <amount> text to the suggestion when any number is entered after the item string
 				)
 				.build();

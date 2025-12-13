@@ -1,43 +1,54 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget;
-import net.minecraft.client.gui.widget.ToggleButtonWidget;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.world.item.ItemStack;
 
 /**
- * Based off {@link net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget}
+ * Based off {@link net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton}
  */
-public class SkyblockRecipeTabButton extends ToggleButtonWidget {
+public class SkyblockRecipeTabButton extends ImageButton {
 	protected final ItemStack icon;
+	private boolean selected;
 
 	protected SkyblockRecipeTabButton(ItemStack icon) {
-		super(0, 0, 35, 27, false);
-
+		super(0, 0, 35, 27, RecipeBookTabButton.SPRITES, _ignored -> {});
 		this.icon = icon;
-		this.setTextures(RecipeGroupButtonWidget.TEXTURES);
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		if (this.textures != null) {
+	public void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		if (this.sprites != null) {
 			int x = this.getX();
 
 			//Offset x
-			if (this.toggled) x -= 2;
+			if (this.selected) {
+				x -= 2;
+			}
 
 			//Render main texture
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, this.textures.get(true, this.toggled), x, this.getY(), this.width, this.height);
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(true, this.selected), x, this.getY(), this.width, this.height);
 
 			//Render item icon
-			int offset = this.toggled ? -2 : 0;
-			context.drawItemWithoutEntity(this.icon, this.getX() + 9 + offset, this.getY() + 5);
-
-			if (this.isHovered()) {
-				context.setCursor(StandardCursors.POINTING_HAND);
-			}
+			int offset = this.selected ? -2 : 0;
+			context.renderFakeItem(this.icon, this.getX() + 9 + offset, this.getY() + 5);
 		}
+	}
+
+	@Override
+	protected void handleCursor(GuiGraphics context) {
+		if (!this.selected) {
+			super.handleCursor(context);
+		}
+	}
+
+	public void select() {
+		this.selected = true;
+	}
+
+	public void unselect() {
+		this.selected = false;
 	}
 }

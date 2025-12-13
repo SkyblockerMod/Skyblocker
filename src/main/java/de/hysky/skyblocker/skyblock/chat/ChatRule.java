@@ -7,11 +7,8 @@ import de.hysky.skyblocker.utils.CollectionUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -23,6 +20,9 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 
 /**
  * Data class to contain all the settings for a chat rule
@@ -51,7 +51,7 @@ public class ChatRule {
 			Codec.BOOL.fieldOf("showActionBar").forGetter(ChatRule::getShowActionBar),
 			Codec.BOOL.fieldOf("showAnnouncement").forGetter(ChatRule::getShowAnnouncement),
 			Codec.STRING.optionalFieldOf("replaceMessage").forGetter(ChatRule::getReplaceMessageOpt),
-			SoundEvent.CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOpt)
+			SoundEvent.DIRECT_CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOpt)
 	).apply(instance, ChatRule::new));
 
 	public static final Codec<List<ChatRule>> LIST_CODEC = CODEC.listOf();
@@ -227,9 +227,9 @@ public class ChatRule {
 			this.pattern = Pattern.compile(filterText);
 		} catch (PatternSyntaxException ex) {
 			this.enabled = false;
-			MinecraftClient client = MinecraftClient.getInstance();
+			Minecraft client = Minecraft.getInstance();
 			if (client.player == null) return;
-			client.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)), false);
+			client.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)), false);
 		}
 	}
 

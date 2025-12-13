@@ -4,14 +4,13 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.regex.Matcher;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CallMismyla extends ChatPatternListener {
 	public CallMismyla() {
@@ -24,16 +23,16 @@ public class CallMismyla extends ChatPatternListener {
 	}
 
 	@Override
-	protected boolean onMatch(Text message, Matcher matcher) {
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
+	protected boolean onMatch(Component message, Matcher matcher) {
+		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) return false;
 
-		MutableText callMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.callMismyla.message"));
-		callMessage.styled(style ->
+		MutableComponent callMessage = Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.callMismyla.message"));
+		callMessage.withStyle(style ->
 				style.withClickEvent(new ClickEvent.RunCommand("/call mismyla"))
-						.withColor(Formatting.AQUA)
+						.withColor(ChatFormatting.AQUA)
 		);
-		player.sendMessage(callMessage, false);
+		player.displayClientMessage(callMessage, false);
 
 		return false;
 	}

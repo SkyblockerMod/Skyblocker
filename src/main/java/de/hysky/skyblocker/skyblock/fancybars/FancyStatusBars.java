@@ -12,11 +12,11 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -171,7 +171,7 @@ public class FancyStatusBars {
 
 	public static void saveBarConfig() {
 		JsonObject output = new JsonObject();
-		statusBars.forEach((s, statusBar) -> output.add(s.asString(), statusBar.toJson()));
+		statusBars.forEach((s, statusBar) -> output.add(s.getSerializedName(), statusBar.toJson()));
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
 			SkyblockerMod.GSON.toJson(output, writer);
 			LOGGER.info("[Skyblocker] Saved status bars config");
@@ -182,8 +182,8 @@ public class FancyStatusBars {
 
 	public static void updatePositions(boolean ignoreVisibility) {
 		if (!configLoaded) return;
-		final int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
-		final int height = MinecraftClient.getInstance().getWindow().getScaledHeight();
+		final int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+		final int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 
 		// Put these in the corner for the config screen
 		int offset = 0;
@@ -204,7 +204,7 @@ public class FancyStatusBars {
 		}
 
 		for (BarPositioner.BarAnchor barAnchor : BarPositioner.BarAnchor.allAnchors()) {
-			ScreenPos anchorPosition = barAnchor.getAnchorPosition(width, height);
+			ScreenPosition anchorPosition = barAnchor.getAnchorPosition(width, height);
 			BarPositioner.SizeRule sizeRule = barAnchor.getSizeRule();
 
 			int targetSize = sizeRule.targetSize();
@@ -292,14 +292,14 @@ public class FancyStatusBars {
 					float x = barAnchor.isRight() ?
 							anchorPosition.x() + (visibleHealthMove ? sizeRule.totalWidth() / 2.f : 0) + currSize * widthPerSize :
 							anchorPosition.x() - currSize * widthPerSize - statusBar.size * widthPerSize;
-					statusBar.setX(MathHelper.ceil(x) + offsetX);
+					statusBar.setX(Mth.ceil(x) + offsetX);
 
 					int y = barAnchor.isUp() ?
 							anchorPosition.y() - (row + 1) * (statusBar.getHeight() + 1) :
 							anchorPosition.y() + row * (statusBar.getHeight() + 1);
 					statusBar.setY(y);
 
-					statusBar.setWidth(MathHelper.floor(statusBar.size * widthPerSize) - lessWidth);
+					statusBar.setWidth(Mth.floor(statusBar.size * widthPerSize) - lessWidth);
 					currSize += statusBar.size;
 				}
 				if (currSize > 0) row++;
@@ -312,8 +312,8 @@ public class FancyStatusBars {
 		return SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift();
 	}
 
-	public static boolean render(DrawContext context, MinecraftClient client) {
-		ClientPlayerEntity player = client.player;
+	public static boolean render(GuiGraphics context, Minecraft client) {
+		LocalPlayer player = client.player;
 		if (!isEnabled() || player == null) return false;
 
 		Collection<StatusBar> barCollection = statusBars.values();
@@ -341,8 +341,8 @@ public class FancyStatusBars {
 		StatusBarTracker.Resource air = StatusBarTracker.getAir();
 		StatusBar airBar = statusBars.get(StatusBarType.AIR);
 		airBar.updateWithResource(air);
-		if (player.isSubmergedInWater() != airBar.visible) {
-			airBar.visible = player.isSubmergedInWater();
+		if (player.isUnderWater() != airBar.visible) {
+			airBar.visible = player.isUnderWater();
 			updatePositions(false);
 		}
 		return true;

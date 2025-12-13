@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.utils;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility class for text operations.
@@ -65,8 +65,7 @@ public final class RegexListUtils {
 	 * @param pattern the pattern to search for
 	 * @return the matcher if found, {@code null} otherwise
 	 */
-	@Nullable
-	public static Matcher findInList(List<String> list, Pattern pattern) {
+	public static @Nullable Matcher findInList(List<String> list, Pattern pattern) {
 		return findInList(list, Function.identity(), pattern);
 	}
 
@@ -78,8 +77,7 @@ public final class RegexListUtils {
 	 * @param pattern          the pattern to search for
 	 * @return the matcher if found, {@code null} otherwise
 	 */
-	@Nullable
-	public static <T> Matcher findInList(List<T> list, Function<T, String> toStringFunction, Pattern pattern) {
+	public static <T> @Nullable Matcher findInList(List<T> list, Function<T, String> toStringFunction, Pattern pattern) {
 		return findInList(list, toStringFunction, pattern, 0);
 	}
 
@@ -92,8 +90,7 @@ public final class RegexListUtils {
 	 * @param startIndex       the index to start searching from (inclusive)
 	 * @return the matcher if found, {@code null} otherwise
 	 */
-	@Nullable
-	public static <T> Matcher findInList(List<T> list, Function<T, String> toStringFunction, Pattern pattern, int startIndex) {
+	public static <T> @Nullable Matcher findInList(List<T> list, Function<T, String> toStringFunction, Pattern pattern, int startIndex) {
 		if (startIndex >= list.size()) return null; // Start index is out of bounds, or the list is empty
 
 		Matcher matcher = pattern.matcher(""); // Empty matcher
@@ -112,8 +109,7 @@ public final class RegexListUtils {
 	 * @param pattern the pattern to search for
 	 * @return the matcher if found, {@code null} otherwise
 	 */
-	@Nullable
-	public static Matcher matchInList(List<String> list, Pattern pattern) {
+	public static @Nullable Matcher matchInList(List<String> list, Pattern pattern) {
 		return matchInList(list, Function.identity(), pattern);
 	}
 
@@ -125,8 +121,7 @@ public final class RegexListUtils {
 	 * @param pattern          the pattern to search for
 	 * @return the matcher if found, {@code null} otherwise
 	 */
-	@Nullable
-	public static <T> Matcher matchInList(List<T> list, Function<T, String> toStringFunction, Pattern pattern) {
+	public static <T> @Nullable Matcher matchInList(List<T> list, Function<T, String> toStringFunction, Pattern pattern) {
 		return matchInList(list, toStringFunction, pattern, 0);
 	}
 
@@ -138,8 +133,7 @@ public final class RegexListUtils {
 	 * @param startIndex the index to start searching from (inclusive)
 	 * @return the matcher if found, {@code null} otherwise
 	 */
-	@Nullable
-	public static <T> Matcher matchInList(List<T> list, Function<T, String> toStringFunction, Pattern pattern, int startIndex) {
+	public static <T> @Nullable Matcher matchInList(List<T> list, Function<T, String> toStringFunction, Pattern pattern, int startIndex) {
 		if (startIndex >= list.size()) return null; // Start index is out of bounds, or the list is empty
 
 		Matcher matcher = pattern.matcher(""); // Empty matcher

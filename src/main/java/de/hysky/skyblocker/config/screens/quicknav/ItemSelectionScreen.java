@@ -7,27 +7,25 @@ import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import de.hysky.skyblocker.utils.render.gui.SearchableGridWidget;
 import it.unimi.dsi.fastutil.Pair;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
+import org.jspecify.annotations.Nullable;
 
 public class ItemSelectionScreen extends AbstractPopupScreen {
 
@@ -76,43 +74,43 @@ public class ItemSelectionScreen extends AbstractPopupScreen {
 	private final QuickNavigationConfig.ItemData target;
 	private @Nullable ItemWidget selectedItem = null;
 
-	private final GridWidget gridWidget = new GridWidget();
-	private ButtonWidget doneButton;
+	private final GridLayout gridWidget = new GridLayout();
+	private Button doneButton;
 
 	public ItemSelectionScreen(Screen backgroundScreen, QuickNavigationConfig.ItemData target) {
-		super(Text.literal("Select Item"), backgroundScreen);
+		super(Component.literal("Select Item"), backgroundScreen);
 		this.target = target;
 	}
 
-	private void setSelectedItem(@NotNull ItemWidget selectedItem) {
+	private void setSelectedItem(ItemWidget selectedItem) {
 		this.selectedItem = selectedItem;
 		doneButton.active = true;
 	}
 
 	@Override
 	protected void init() {
-		GridWidget.Adder adder = gridWidget.createAdder(2);
-		addDrawableChild(adder.add(new ItemList(300, (int) (height * 0.8f)), 2));
-		addDrawableChild(adder.add(ButtonWidget.builder(ScreenTexts.CANCEL, b -> close()).build()));
-		doneButton = ButtonWidget.builder(ScreenTexts.DONE, b -> {
+		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
+		addRenderableWidget(adder.addChild(new ItemList(300, (int) (height * 0.8f)), 2));
+		addRenderableWidget(adder.addChild(Button.builder(CommonComponents.GUI_CANCEL, b -> onClose()).build()));
+		doneButton = Button.builder(CommonComponents.GUI_DONE, b -> {
 			if (selectedItem == null) return;
 			target.item = selectedItem.item.getItem();
 			target.components = ItemStackComponentizationFixer.componentsAsString(selectedItem.item);
-			close();
+			onClose();
 		}).build();
 		doneButton.active = false;
-		addDrawableChild(adder.add(doneButton));
-		gridWidget.refreshPositions();
-		refreshWidgetPositions();
+		addRenderableWidget(adder.addChild(doneButton));
+		gridWidget.arrangeElements();
+		repositionElements();
 	}
 
 	@Override
-	protected void refreshWidgetPositions() {
+	protected void repositionElements() {
 		gridWidget.setPosition((width - gridWidget.getWidth()) / 2, (height - gridWidget.getHeight()) / 2);
 	}
 
 	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.renderBackground(context, mouseX, mouseY, delta);
 		drawPopupBackground(context, gridWidget.getX(), gridWidget.getY(), gridWidget.getWidth(), gridWidget.getHeight());
 	}
@@ -121,10 +119,10 @@ public class ItemSelectionScreen extends AbstractPopupScreen {
 		private final List<ItemWidget> items;
 
 		private ItemList(int width, int height) {
-			super(0, 0, width, height, Text.literal("Item List"), 20);
+			super(0, 0, width, height, Component.literal("Item List"), 20);
 			Stream<ItemStack> icons = skullIcons.stream().map(pair -> {
 						ItemStack skull = ItemUtils.createSkull(ItemUtils.toTextureBase64(pair.right()));
-						skull.set(DataComponentTypes.CUSTOM_NAME, Text.literal(pair.left()).styled(style -> style.withItalic(false)));
+						skull.set(DataComponents.CUSTOM_NAME, Component.literal(pair.left()).withStyle(style -> style.withItalic(false)));
 						return skull;
 			});
 			items = Stream.concat(icons, ItemRepository.getItemsStream()).map(ItemWidget::new).toList();
@@ -132,33 +130,33 @@ public class ItemSelectionScreen extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected Collection<? extends ClickableWidget> filterWidgets(String input) {
+		protected Collection<? extends AbstractWidget> filterWidgets(String input) {
 			return items.stream().filter(w -> w.getMessage().getString().toLowerCase(Locale.ENGLISH).contains(input.toLowerCase(Locale.ENGLISH))).toList();
 		}
 
 		@Override
-		protected double getDeltaYPerScroll() {
+		protected double scrollRate() {
 			return 15;
 		}
 	}
 
-	private class ItemWidget extends ClickableWidget {
+	private class ItemWidget extends AbstractWidget {
 		private final ItemStack item;
 
 		private ItemWidget(ItemStack stack) {
-			super(0, 0, 20, 20, Text.literal(stack.getName().getString()));
+			super(0, 0, 20, 20, Component.literal(stack.getHoverName().getString()));
 			item = new ItemStack(stack.getItem());
-			item.copy(DataComponentTypes.PROFILE, stack);
+			item.copyFrom(DataComponents.PROFILE, stack);
 			String itemId = stack.getSkyblockId();
-			NbtCompound customData = new NbtCompound();
+			CompoundTag customData = new CompoundTag();
 			customData.putString(ItemUtils.ID, itemId);
-			item.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(customData));
-			setTooltip(Tooltip.of(getMessage()));
+			item.set(DataComponents.CUSTOM_DATA, CustomData.of(customData));
+			setTooltip(Tooltip.create(getMessage()));
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-			context.drawItem(item, getX() + 2, getY() + 2);
+		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+			context.renderItem(item, getX() + 2, getY() + 2);
 			if (selectedItem == this) {
 				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
 			}
@@ -168,12 +166,12 @@ public class ItemSelectionScreen extends AbstractPopupScreen {
 		}
 
 		@Override
-		public void onClick(Click click, boolean doubled) {
+		public void onClick(MouseButtonEvent click, boolean doubled) {
 			super.onClick(click, doubled);
 			setSelectedItem(this);
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 	}
 }
