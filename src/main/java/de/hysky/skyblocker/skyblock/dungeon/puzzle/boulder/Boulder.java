@@ -10,18 +10,17 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-
 import java.util.Arrays;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class Boulder extends DungeonPuzzle {
 	@SuppressWarnings("unused")
@@ -29,8 +28,8 @@ public class Boulder extends DungeonPuzzle {
 	private static final float[] RED_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
 	private static final float[] ORANGE_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.ORANGE);
 	private static final int BASE_Y = 65;
-	static Vec3d[] linePoints;
-	static Box boundingBox;
+	static Vec3[] linePoints;
+	static AABB boundingBox;
 
 	private Boulder() {
 		super("boulder", "boxes-room");
@@ -41,9 +40,9 @@ public class Boulder extends DungeonPuzzle {
 	}
 
 	@Override
-	public void tick(MinecraftClient client) {
+	public void tick(Minecraft client) {
 
-		if (!shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveBoulder || client.world == null || !DungeonManager.isCurrentRoomMatched()) {
+		if (!shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveBoulder || client.level == null || !DungeonManager.isCurrentRoomMatched()) {
 			return;
 		}
 
@@ -63,7 +62,7 @@ public class Boulder extends DungeonPuzzle {
 			int row = 0;
 			for (int x = start.getX(); x > end.getX(); x--) {
 				if (Math.abs(start.getX() - x) % 3 == 1 && Math.abs(start.getZ() - z) % 3 == 1) {
-					String blockType = getBlockType(client.world, x, BASE_Y, z);
+					String blockType = getBlockType(client.level, x, BASE_Y, z);
 					board.placeObject(column, row, new BoulderObject(x, BASE_Y, z, blockType));
 					row++;
 				}
@@ -89,26 +88,26 @@ public class Boulder extends DungeonPuzzle {
 		List<int[]> solution = BoulderSolver.aStarSolve(initialStates);
 
 		if (solution != null) {
-			linePoints = new Vec3d[solution.size()];
+			linePoints = new Vec3[solution.size()];
 			int index = 0;
 			// Convert solution coordinates to Vec3d points for rendering
 			for (int[] coord : solution) {
 				int x = coord[0];
 				int y = coord[1];
 				// Convert relative coordinates to actual coordinates
-				linePoints[index++] = Vec3d.ofCenter(room.relativeToActual(board.getObject3DPosition(x, y)));
+				linePoints[index++] = Vec3.atCenterOf(room.relativeToActual(board.getObject3DPosition(x, y)));
 			}
 
 			BlockPos button = null;
 			if (linePoints != null && linePoints.length > 0) {
 				// Check for buttons along the path of the solution
 				for (int i = 0; i < linePoints.length - 1; i++) {
-					Vec3d point1 = linePoints[i];
-					Vec3d point2 = linePoints[i + 1];
-					button = checkForButtonBlocksOnLine(client.world, point1, point2);
+					Vec3 point1 = linePoints[i];
+					Vec3 point2 = linePoints[i + 1];
+					button = checkForButtonBlocksOnLine(client.level, point1, point2);
 					if (button != null) {
 						// If a button is found, calculate its bounding box
-						boundingBox = RenderHelper.getBlockBoundingBox(client.world, button);
+						boundingBox = RenderHelper.getBlockBoundingBox(client.level, button);
 						break;
 					}
 				}
@@ -119,7 +118,7 @@ public class Boulder extends DungeonPuzzle {
 			}
 		} else {
 			// If no solution is found, display a title message and reset the puzzle
-			Title title = new Title("skyblocker.dungeons.puzzle.boulder.noSolution", Formatting.GREEN);
+			Title title = new Title("skyblocker.dungeons.puzzle.boulder.noSolution", ChatFormatting.GREEN);
 			TitleContainer.addTitleAndPlaySound(title, 15);
 			reset();
 		}
@@ -135,7 +134,7 @@ public class Boulder extends DungeonPuzzle {
 	 * @param z     The z-coordinate of the block.
 	 * @return The type of block at the specified position.
 	 */
-	public static String getBlockType(ClientWorld world, int x, int y, int z) {
+	public static String getBlockType(ClientLevel world, int x, int y, int z) {
 		Block block = world.getBlockState(DungeonManager.getCurrentRoom().relativeToActual(new BlockPos(x, y, z))).getBlock();
 		return (block == Blocks.BIRCH_PLANKS || block == Blocks.JUNGLE_PLANKS) ? "B" : ".";
 	}
@@ -149,14 +148,14 @@ public class Boulder extends DungeonPuzzle {
 	 * @param point2  The ending point of the line.
 	 * @return The position of the block found on the line, or null if no block is found.
 	 */
-	private static BlockPos checkForButtonBlocksOnLine(ClientWorld world, Vec3d point1, Vec3d point2) {
-		double x1 = point1.getX();
-		double y1 = point1.getY() + 1;
-		double z1 = point1.getZ();
+	private static BlockPos checkForButtonBlocksOnLine(ClientLevel world, Vec3 point1, Vec3 point2) {
+		double x1 = point1.x();
+		double y1 = point1.y() + 1;
+		double z1 = point1.z();
 
-		double x2 = point2.getX();
-		double y2 = point2.getY() + 1;
-		double z2 = point2.getZ();
+		double x2 = point2.x();
+		double y2 = point2.y() + 1;
+		double z2 = point2.z();
 
 		int steps = (int) Math.max(Math.abs(x2 - x1), Math.max(Math.abs(y2 - y1), Math.abs(z2 - z1)));
 
@@ -170,7 +169,7 @@ public class Boulder extends DungeonPuzzle {
 			double currentY = y1 + step * yStep;
 			double currentZ = z1 + step * zStep;
 
-			BlockPos blockPos = BlockPos.ofFloored(currentX, currentY, currentZ);
+			BlockPos blockPos = BlockPos.containing(currentX, currentY, currentZ);
 			Block block = world.getBlockState(blockPos).getBlock();
 
 			if (block == Blocks.STONE_BUTTON) {
@@ -190,9 +189,9 @@ public class Boulder extends DungeonPuzzle {
 
 		if (linePoints != null && linePoints.length > 0) {
 			for (int i = 0; i < linePoints.length - 1; i++) {
-				Vec3d startPoint = linePoints[i];
-				Vec3d endPoint = linePoints[i + 1];
-				collector.submitLinesFromPoints(new Vec3d[]{startPoint, endPoint}, ORANGE_COLOR_COMPONENTS, alpha, lineWidth, true);
+				Vec3 startPoint = linePoints[i];
+				Vec3 endPoint = linePoints[i + 1];
+				collector.submitLinesFromPoints(new Vec3[]{startPoint, endPoint}, ORANGE_COLOR_COMPONENTS, alpha, lineWidth, true);
 			}
 			if (boundingBox != null) {
 				collector.submitFilledBox(boundingBox, RED_COLOR_COMPONENTS, 0.5f, false);

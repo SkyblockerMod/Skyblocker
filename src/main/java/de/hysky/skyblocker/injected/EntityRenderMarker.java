@@ -1,8 +1,7 @@
 package de.hysky.skyblocker.injected;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import org.jspecify.annotations.Nullable;
-
-import net.minecraft.client.render.entity.state.EntityRenderState;
 
 public interface EntityRenderMarker {
 

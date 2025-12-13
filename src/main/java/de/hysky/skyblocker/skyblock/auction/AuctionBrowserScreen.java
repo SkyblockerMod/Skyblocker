@@ -12,28 +12,6 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Atlases;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.MathHelper;
-
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,16 +22,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.data.AtlasIds;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);
 	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/browser/background.png");
-	private static final Identifier SCROLLER_TEXTURE = Identifier.ofVanilla("container/creative_inventory/scroller");
+	private static final Identifier SCROLLER_TEXTURE = Identifier.withDefaultNamespace("container/creative_inventory/scroller");
 
 	private static final Identifier up_arrow_tex = SkyblockerMod.id("up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
 	private static final Identifier down_arrow_tex = SkyblockerMod.id("down_arrow_even");
-	public static final Supplier<Sprite> UP_ARROW = () -> MinecraftClient.getInstance().getAtlasManager().getAtlasTexture(Atlases.GUI).getSprite(up_arrow_tex);
-	public static final Supplier<Sprite> DOWN_ARROW = () -> MinecraftClient.getInstance().getAtlasManager().getAtlasTexture(Atlases.GUI).getSprite(down_arrow_tex);
+	public static final Supplier<TextureAtlasSprite> UP_ARROW = () -> Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI).getSprite(up_arrow_tex);
+	public static final Supplier<TextureAtlasSprite> DOWN_ARROW = () -> Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI).getSprite(down_arrow_tex);
 
 
 	// SLOTS
@@ -74,36 +73,36 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	private SortWidget sortWidget;
 	private AuctionTypeWidget auctionTypeWidget;
 	private RarityWidget rarityWidget;
-	private ButtonWidget resetFiltersButton;
+	private Button resetFiltersButton;
 	private final List<CategoryTabWidget> categoryTabWidgets = new ArrayList<>(6);
 	private String search = "";
 
-	public AuctionBrowserScreen(AuctionHouseScreenHandler handler, PlayerInventory inventory) {
-		super(handler, inventory, ResourcePackCompatibility.options.renameAuctionBrowser().orElse(false) ? Text.literal("AuctionBrowserSkyblocker") : Text.literal("Auctions Browser"));
-		this.backgroundHeight = 187;
-		this.playerInventoryTitleY = 92;
-		this.titleX = 999;
+	public AuctionBrowserScreen(AuctionHouseScreenHandler handler, Inventory inventory) {
+		super(handler, inventory, ResourcePackCompatibility.options.renameAuctionBrowser().orElse(false) ? Component.literal("AuctionBrowserSkyblocker") : Component.literal("Auctions Browser"));
+		this.imageHeight = 187;
+		this.inventoryLabelY = 92;
+		this.titleLabelX = 999;
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-		sortWidget = new SortWidget(x + 25, y + 81, this::clickSlot);
+		sortWidget = new SortWidget(leftPos + 25, topPos + 81, this::clickSlot);
 		sortWidget.setSlotId(SORT_BUTTON_SLOT);
-		addDrawableChild(sortWidget);
-		auctionTypeWidget = new AuctionTypeWidget(x + 134, y + 77, this::clickSlot);
+		addRenderableWidget(sortWidget);
+		auctionTypeWidget = new AuctionTypeWidget(leftPos + 134, topPos + 77, this::clickSlot);
 		auctionTypeWidget.setSlotId(AUCTION_TYPE_BUTTON_SLOT);
-		addDrawableChild(auctionTypeWidget);
-		rarityWidget = new RarityWidget(x + 73, y + 80, this::clickSlot);
+		addRenderableWidget(auctionTypeWidget);
+		rarityWidget = new RarityWidget(leftPos + 73, topPos + 80, this::clickSlot);
 		rarityWidget.setSlotId(RARITY_BUTTON_SLOT);
-		addDrawableChild(rarityWidget);
-		resetFiltersButton = new ScaledTextButtonWidget(x + 10, y + 77, 12, 12, Text.literal("↻"), this::onResetPressed);
-		addDrawableChild(resetFiltersButton);
-		resetFiltersButton.setTooltip(Tooltip.of(Text.literal("Reset Filters")));
+		addRenderableWidget(rarityWidget);
+		resetFiltersButton = new ScaledTextButtonWidget(leftPos + 10, topPos + 77, 12, 12, Component.literal("↻"), this::onResetPressed);
+		addRenderableWidget(resetFiltersButton);
+		resetFiltersButton.setTooltip(Tooltip.create(Component.literal("Reset Filters")));
 		resetFiltersButton.setTooltipDelay(Duration.ofMillis(500));
 
-		addDrawableChild(new ButtonWidget.Builder(Text.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
-				.position(x + 98, y + 4)
+		addRenderableWidget(new Button.Builder(Component.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
+				.pos(leftPos + 98, topPos + 4)
 				.size(12, 12)
 				.build());
 
@@ -111,87 +110,87 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 			for (int i = 0; i < 6; i++) {
 				CategoryTabWidget categoryTabWidget = new CategoryTabWidget(new ItemStack(Items.SPONGE), this::clickSlot);
 				categoryTabWidgets.add(categoryTabWidget);
-				addSelectableChild(categoryTabWidget); // This method only makes it clickable, does not add it to the drawables list
+				addWidget(categoryTabWidget); // This method only makes it clickable, does not add it to the drawables list
 				// manually rendered in the render method to have it not render behind the durability bars
-				categoryTabWidget.setPosition(x - 30, y + 3 + i * 28);
+				categoryTabWidget.setPosition(leftPos - 30, topPos + 3 + i * 28);
 			}
 		else
 			for (int i = 0; i < categoryTabWidgets.size(); i++) {
 				CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(i);
-				categoryTabWidget.setPosition(x - 30, y + 3 + i * 28);
-				addSelectableChild(categoryTabWidget);
+				categoryTabWidget.setPosition(leftPos - 30, topPos + 3 + i * 28);
+				addWidget(categoryTabWidget);
 
 			}
 	}
 
-	private void onResetPressed(ButtonWidget buttonWidget) {
+	private void onResetPressed(Button buttonWidget) {
 		buttonWidget.setFocused(false); // Annoying.
 		this.clickSlot(RESET_BUTTON_SLOT, 0);
 	}
 
 	@Override
-	protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
+	protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 		for (CategoryTabWidget categoryTabWidget : categoryTabWidgets) {
 			categoryTabWidget.render(context, mouseX, mouseY, delta);
 		}
 		if (isWaitingForServer) {
 			String waiting = "Waiting for server...";
-			context.drawText(textRenderer, waiting, this.width - textRenderer.getWidth(waiting) - 5, this.height - textRenderer.fontHeight - 2, Colors.WHITE, true);
+			context.drawString(font, waiting, this.width - font.width(waiting) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
 		}
 
-		Matrix3x2fStack matrices = context.getMatrices();
+		Matrix3x2fStack matrices = context.pose();
 		matrices.pushMatrix();
-		matrices.translate(x, y);
+		matrices.translate(leftPos, topPos);
 		// Search
-		context.enableScissor(x + 7, y + 4, x + 97, y + 16);
-		context.drawText(textRenderer, Text.literal(search).fillStyle(Style.EMPTY.withUnderline(onSearchField(mouseX, mouseY))), 9, 6, Colors.WHITE, true);
+		context.enableScissor(leftPos + 7, topPos + 4, leftPos + 97, topPos + 16);
+		context.drawString(font, Component.literal(search).withStyle(Style.EMPTY.withUnderlined(onSearchField(mouseX, mouseY))), 9, 6, CommonColors.WHITE, true);
 		context.disableScissor();
 
 		// Scrollbar
 		if (prevPageVisible) {
 			if (onScrollbarTop(mouseX, mouseY))
-				context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, UP_ARROW.get(), 159, 13, 6, 3);
-			else context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, UP_ARROW.get(), 159, 13, 6, 3, ColorHelper.getArgb(137, 137, 137));
+				context.blitSprite(RenderPipelines.GUI_TEXTURED, UP_ARROW.get(), 159, 13, 6, 3);
+			else context.blitSprite(RenderPipelines.GUI_TEXTURED, UP_ARROW.get(), 159, 13, 6, 3, ARGB.color(137, 137, 137));
 		}
 
 		if (nextPageVisible) {
 			if (onScrollbarBottom(mouseX, mouseY))
-				context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3);
-			else context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3, ColorHelper.getArgb(137, 137, 137));
+				context.blitSprite(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3);
+			else context.blitSprite(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3, ARGB.color(137, 137, 137));
 		}
-		context.drawText(textRenderer, String.format("%d/%d", currentPage, totalPages), 111, 6, Colors.GRAY, false);
+		context.drawString(font, String.format("%d/%d", currentPage, totalPages), 111, 6, CommonColors.GRAY, false);
 		if (totalPages <= 1)
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, 18, 12, 15);
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, 18, 12, 15);
 		else
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, (int) (18 + (float) (Math.min(currentPage, totalPages) - 1) / (totalPages - 1) * 37), 12, 15);
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, (int) (18 + (float) (Math.min(currentPage, totalPages) - 1) / (totalPages - 1) * 37), 12, 15);
 
 		matrices.popMatrix();
 
-		this.drawMouseoverTooltip(context, mouseX, mouseY);
+		this.renderTooltip(context, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawSlot(DrawContext context, Slot slot, int mouseX, int mouseY) {
-		if (SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN && slot.hasStack() && isSlotHighlighted.getOrDefault(slot.id, false)) {
+	protected void renderSlot(GuiGraphics context, Slot slot, int mouseX, int mouseY) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN && slot.hasItem() && isSlotHighlighted.getOrDefault(slot.index, false)) {
 			HudHelper.drawBorder(context, slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
 		}
-		super.drawSlot(context, slot, mouseX, mouseY);
+		super.renderSlot(context, slot, mouseX, mouseY);
 	}
 
 	@Override
-	protected void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType) {
-		if (slotId >= handler.getRows() * 9) return;
-		super.onMouseClick(slot, slotId, button, actionType);
+	protected void slotClicked(Slot slot, int slotId, int button, ClickType actionType) {
+		if (slotId >= menu.getRowCount() * 9) return;
+		super.slotClicked(slot, slotId, button, actionType);
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (isWaitingForServer) return super.mouseClicked(click, doubled);
 		if (onScrollbarTop((int) click.x(), (int) click.y()) && prevPageVisible) {
 			clickSlot(PREV_PAGE_BUTTON);
@@ -210,39 +209,39 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	}
 
 	private boolean onScrollbarTop(int mouseX, int mouseY) {
-		int localX = mouseX - x;
-		int localY = mouseY - y;
+		int localX = mouseX - leftPos;
+		int localY = mouseY - topPos;
 		return localX > 154 && localX < 169 && localY > 6 && localY < 44;
 	}
 
 	private boolean onScrollbarBottom(int mouseX, int mouseY) {
-		int localX = mouseX - x;
-		int localY = mouseY - y;
+		int localX = mouseX - leftPos;
+		int localY = mouseY - topPos;
 		return localX > 154 && localX < 169 && localY > 43 && localY < 80;
 	}
 
 	private boolean onSearchField(int mouseX, int mouseY) {
-		int localX = mouseX - x;
-		int localY = mouseY - y;
+		int localX = mouseX - leftPos;
+		int localY = mouseY - topPos;
 		return localX > 6 && localX < 97 && localY > 3 && localY < 16;
 	}
 
 	@Override
 	public void onSlotChange(AuctionHouseScreenHandler handler, int slotId, ItemStack stack) {
-		if (client == null || stack.isEmpty()) return;
+		if (minecraft == null || stack.isEmpty()) return;
 		isWaitingForServer = false;
 
 		switch (slotId) {
 			case PREV_PAGE_BUTTON -> {
 				prevPageVisible = false;
-				if (stack.isOf(Items.ARROW)) {
+				if (stack.is(Items.ARROW)) {
 					prevPageVisible = true;
 					parsePage(stack);
 				}
 			}
 			case NEXT_PAGE_BUTTON -> {
 				nextPageVisible = false;
-				if (stack.isOf(Items.ARROW)) {
+				if (stack.is(Items.ARROW)) {
 					nextPageVisible = true;
 					parsePage(stack);
 				}
@@ -254,13 +253,13 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 			case RARITY_BUTTON_SLOT -> {
 				int ordinal = getOrdinal(stack.skyblocker$getLoreStrings());
 				@SuppressWarnings("deprecation")
-				List<Text> tooltip = ItemUtils.getLore(stack);
+				List<Component> tooltip = ItemUtils.getLore(stack);
 				String split = tooltip.get(ordinal + 1).getString().substring(2);
 				rarityWidget.setText(tooltip.subList(1, tooltip.size() - 3), split);
 			}
 			case RESET_BUTTON_SLOT -> {
 				if (resetFiltersButton != null)
-					resetFiltersButton.active = handler.getSlot(slotId).getStack().isOf(Items.ANVIL);
+					resetFiltersButton.active = handler.getSlot(slotId).getItem().is(Items.ANVIL);
 			}
 			case SEARCH_BUTTON_SLOT -> {
 				List<String> tooltipSearch = stack.skyblocker$getLoreStrings();
@@ -275,11 +274,11 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 				}
 			}
 			default -> {
-				if (slotId < this.handler.getRows() * 9 && slotId % 9 == 0) {
+				if (slotId < this.menu.getRowCount() * 9 && slotId % 9 == 0) {
 					CategoryTabWidget categoryTabWidget = categoryTabWidgets.get(slotId / 9);
 					categoryTabWidget.setSlotId(slotId);
-					categoryTabWidget.setIcon(handler.getSlot(slotId).getStack());
-					List<String> tooltipDefault = handler.getSlot(slotId).getStack().skyblocker$getLoreStrings();
+					categoryTabWidget.setIcon(handler.getSlot(slotId).getItem());
+					List<String> tooltipDefault = handler.getSlot(slotId).getItem().skyblocker$getLoreStrings();
 					for (int j = tooltipDefault.size() - 1; j >= 0; j--) {
 						String lowerCase = tooltipDefault.get(j).toLowerCase(Locale.ENGLISH);
 						if (lowerCase.contains("currently")) {
@@ -290,7 +289,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 							break;
 						} else categoryTabWidget.unselect();
 					}
-				} else if (slotId > 9 && slotId < (handler.getRows() - 1) * 9 && slotId % 9 > 1 && slotId % 9 < 8) {
+				} else if (slotId > 9 && slotId < (handler.getRowCount() - 1) * 9 && slotId % 9 > 1 && slotId % 9 < 8) {
 					if (!SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN) return;
 					List<String> tooltip = stack.skyblocker$getLoreStrings();
 					for (int k = tooltip.size() - 1; k >= 0; k--) {
@@ -314,7 +313,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput input) {
+	public boolean keyPressed(KeyEvent input) {
 		if (input.isUp() && prevPageVisible) {
 			clickSlot(PREV_PAGE_BUTTON);
 			return true;
@@ -344,7 +343,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	private boolean nextPageVisible = false;
 
 	private void parsePage(ItemStack stack) {
-		assert client != null;
+		assert minecraft != null;
 		try {
 			List<String> tooltip = stack.skyblocker$getLoreStrings();
 			String str = tooltip.getFirst().trim();
@@ -358,28 +357,28 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	}
 
 	@Override
-	protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
-		return mouseX < (double) left - 32 || mouseY < (double) top || mouseX >= (double) (left + this.backgroundWidth) || mouseY >= (double) (top + this.backgroundHeight);
+	protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top) {
+		return mouseX < (double) left - 32 || mouseY < (double) top || mouseX >= (double) (left + this.imageWidth) || mouseY >= (double) (top + this.imageHeight);
 	}
 
-	private static class ScaledTextButtonWidget extends ButtonWidget {
+	private static class ScaledTextButtonWidget extends Button {
 
-		protected ScaledTextButtonWidget(int x, int y, int width, int height, net.minecraft.text.Text message, PressAction onPress) {
+		protected ScaledTextButtonWidget(int x, int y, int width, int height, net.minecraft.network.chat.Component message, OnPress onPress) {
 			super(x, y, width, height, message, onPress, Supplier::get);
 		}
 
 		// Code taken mostly from YACL by isxander. Love you <3
 		@Override
-		public void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-			this.drawButton(context);
-			TextRenderer font = MinecraftClient.getInstance().textRenderer;
-			Matrix3x2fStack matrices = context.getMatrices();
+		public void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+			this.renderDefaultSprite(context);
+			Font font = Minecraft.getInstance().font;
+			Matrix3x2fStack matrices = context.pose();
 			float textScale = 2.f;
 
 			matrices.pushMatrix();
-			matrices.translate(((this.getX() + this.width / 2f) - font.getWidth(getMessage()) * textScale / 2) + 1, (float) this.getY() + (this.height - font.fontHeight * textScale) / 2f - 1);
+			matrices.translate(((this.getX() + this.width / 2f) - font.width(getMessage()) * textScale / 2) + 1, (float) this.getY() + (this.height - font.lineHeight * textScale) / 2f - 1);
 			matrices.scale(textScale, textScale);
-			context.drawText(font, getMessage(), 0, 0, Colors.WHITE | MathHelper.ceil(this.alpha * 255.0F) << 24, true);
+			context.drawString(font, getMessage(), 0, 0, CommonColors.WHITE | Mth.ceil(this.alpha * 255.0F) << 24, true);
 			matrices.popMatrix();
 		}
 	}

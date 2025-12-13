@@ -1,27 +1,27 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.DrawContext.HoverType;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.input.AbstractInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.util.InputUtil;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 
-public class KeybindWidget extends ButtonWidget {
+public class KeybindWidget extends Button {
 	private final ShortcutKeyBinding keyBinding;
 	private final Runnable updateListener;
 	private boolean editing;
 
-	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, net.minecraft.text.Text message, Runnable updateListener) {
-		this(keyBinding, x, y, width, height, message, DEFAULT_NARRATION_SUPPLIER, updateListener);
+	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, net.minecraft.network.chat.Component message, Runnable updateListener) {
+		this(keyBinding, x, y, width, height, message, DEFAULT_NARRATION, updateListener);
 	}
 
-	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, net.minecraft.text.Text message, NarrationSupplier narrationSupplier, Runnable updateListener) {
+	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, net.minecraft.network.chat.Component message, CreateNarration narrationSupplier, Runnable updateListener) {
 		this(keyBinding, x, y, width, height, message, button -> {}, narrationSupplier, updateListener);
 	}
 
-	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, net.minecraft.text.Text message, PressAction onPress, NarrationSupplier narrationSupplier, Runnable updateListener) {
+	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, net.minecraft.network.chat.Component message, OnPress onPress, CreateNarration narrationSupplier, Runnable updateListener) {
 		super(x, y, width, height, message, onPress, narrationSupplier);
 		this.keyBinding = keyBinding;
 		this.updateListener = updateListener;
@@ -38,7 +38,7 @@ public class KeybindWidget extends ButtonWidget {
 	}
 
 	@Override
-	public void onPress(AbstractInput input) {
+	public void onPress(InputWithModifiers input) {
 		editing = true;
 		keyBinding.clearBoundKeys();
 		updateListener.run();
@@ -46,12 +46,12 @@ public class KeybindWidget extends ButtonWidget {
 	}
 
 	/**
-	 * Modified from {@link net.minecraft.client.gui.screen.option.KeybindsScreen#mouseClicked(Click, boolean) KeybindsScreen#mouseClicked(Click, boolean)}.
+	 * Modified from {@link net.minecraft.client.gui.screens.options.controls.KeyBindsScreen#mouseClicked(MouseButtonEvent, boolean) KeybindsScreen#mouseClicked(Click, boolean)}.
 	 */
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (editing) {
-			keyBinding.addBoundKey(InputUtil.Type.MOUSE.createFromCode(click.button()));
+			keyBinding.addBoundKey(InputConstants.Type.MOUSE.getOrCreate(click.button()));
 			updateListener.run();
 			return true;
 		}
@@ -59,16 +59,16 @@ public class KeybindWidget extends ButtonWidget {
 	}
 
 	/**
-	 * Modified from {@link net.minecraft.client.gui.screen.option.KeybindsScreen#keyPressed(KeyInput) KeybindsScreen#keyPressed(KeyInput)}.
+	 * Modified from {@link net.minecraft.client.gui.screens.options.controls.KeyBindsScreen#keyPressed(KeyEvent) KeybindsScreen#keyPressed(KeyInput)}.
 	 */
 	@Override
-	public boolean keyPressed(KeyInput input) {
+	public boolean keyPressed(KeyEvent input) {
 		if (editing) {
 			if (input.isEscape()) {
 				// This should never happen because ESC is handled in ShortcutsConfigScreen#keyPressed
-				keyBinding.addBoundKey(InputUtil.UNKNOWN_KEY);
+				keyBinding.addBoundKey(InputConstants.UNKNOWN);
 			} else {
-				keyBinding.addBoundKey(InputUtil.fromKeyCode(input));
+				keyBinding.addBoundKey(InputConstants.getKey(input));
 			}
 			updateListener.run();
 			return true;
@@ -77,8 +77,8 @@ public class KeybindWidget extends ButtonWidget {
 	}
 
 	@Override
-	protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-		this.drawButton(context);
-		this.drawLabel(context.getTextConsumer(HoverType.NONE));
+	protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		this.renderDefaultSprite(context);
+		this.renderDefaultLabel(context.textRenderer(HoveredTextEffects.NONE));
 	}
 }

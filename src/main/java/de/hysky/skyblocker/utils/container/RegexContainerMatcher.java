@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.utils.container;
 
 import de.hysky.skyblocker.skyblock.ChestValue;
-import net.minecraft.client.gui.screen.Screen;
 import org.intellij.lang.annotations.Language;
 import org.jspecify.annotations.Nullable;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.client.gui.screens.Screen;
 
 /**
  * A regex implementation of {@link ContainerMatcher} that matches the title of the screen.

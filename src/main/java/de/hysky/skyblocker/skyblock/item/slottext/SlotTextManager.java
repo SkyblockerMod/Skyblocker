@@ -38,15 +38,14 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.Colors;
-
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -90,7 +89,7 @@ public class SlotTextManager {
 			new BestiaryLevelAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
-	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));
+	private static final KeyMapping keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));
 	private static boolean keyHeld = false;
 
 	private SlotTextManager() {
@@ -99,18 +98,18 @@ public class SlotTextManager {
 	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-			if ((screen instanceof HandledScreen<?> && Utils.isOnSkyblock()) || screen instanceof ProfileViewerScreen) {
+			if ((screen instanceof AbstractContainerScreen<?> && Utils.isOnSkyblock()) || screen instanceof ProfileViewerScreen) {
 				onScreenChange(screen);
 				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 			}
 			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, input) -> {
-				if (keyBinding.matchesKey(input)) {
+				if (keyBinding.matches(input)) {
 					SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled = !SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled;
 					keyHeld = true;
 				}
 			});
 			ScreenKeyboardEvents.afterKeyRelease(screen).register((screen1, input) -> {
-				if (keyBinding.matchesKey(input)) {
+				if (keyBinding.matches(input)) {
 					keyHeld = false;
 				}
 			});
@@ -141,35 +140,35 @@ public class SlotTextManager {
 		return text;
 	}
 
-	public static void renderSlotText(DrawContext context, TextRenderer textRenderer, Slot slot) {
-		renderSlotText(context, textRenderer, slot, slot.getStack(), slot.id, slot.x, slot.y);
+	public static void renderSlotText(GuiGraphics context, Font textRenderer, Slot slot) {
+		renderSlotText(context, textRenderer, slot, slot.getItem(), slot.index, slot.x, slot.y);
 	}
 
-	public static void renderSlotText(DrawContext context, TextRenderer textRenderer, @Nullable Slot slot, ItemStack stack, int slotId, int x, int y) {
+	public static void renderSlotText(GuiGraphics context, Font textRenderer, @Nullable Slot slot, ItemStack stack, int slotId, int x, int y) {
 		List<SlotText> textList = getText(slot, stack, slotId);
 		if (textList.isEmpty()) return;
-		Matrix3x2fStack matrices = context.getMatrices();
+		Matrix3x2fStack matrices = context.pose();
 
 		for (SlotText slotText : textList) {
 			matrices.pushMatrix();
-			int length = textRenderer.getWidth(slotText.text());
+			int length = textRenderer.width(slotText.text());
 			if (length > 16) {
 				float scale = 16f / length;
 				matrices.scale(scale, scale);
 				// Both of these translations translate by (-x, -y, 0) and then by the correct scaling and translation.
 				switch (slotText.position()) {
 					case TOP_LEFT, TOP_RIGHT -> matrices.translate(x / scale - x, y / scale - y);
-					case BOTTOM_LEFT, BOTTOM_RIGHT -> matrices.translate(x / scale - x, (y + 16f) / scale - textRenderer.fontHeight + 2f - y);
+					case BOTTOM_LEFT, BOTTOM_RIGHT -> matrices.translate(x / scale - x, (y + 16f) / scale - textRenderer.lineHeight + 2f - y);
 				}
 			} else {
 				switch (slotText.position()) {
 					case TOP_LEFT -> { /*Do Nothing*/ }
 					case TOP_RIGHT -> matrices.translate(16f - length, 0.0f);
-					case BOTTOM_LEFT -> matrices.translate(0.0f, 16f - textRenderer.fontHeight + 2f);
-					case BOTTOM_RIGHT -> matrices.translate(16f - length, 16f - textRenderer.fontHeight + 2f);
+					case BOTTOM_LEFT -> matrices.translate(0.0f, 16f - textRenderer.lineHeight + 2f);
+					case BOTTOM_RIGHT -> matrices.translate(16f - length, 16f - textRenderer.lineHeight + 2f);
 				}
 			}
-			context.drawText(textRenderer, slotText.text(), x, y, Colors.WHITE, true);
+			context.drawString(textRenderer, slotText.text(), x, y, CommonColors.WHITE, true);
 			matrices.popMatrix();
 		}
 	}

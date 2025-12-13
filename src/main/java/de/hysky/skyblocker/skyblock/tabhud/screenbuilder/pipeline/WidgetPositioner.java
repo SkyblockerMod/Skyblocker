@@ -2,10 +2,8 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import net.minecraft.client.gui.ScreenPos;
-
 import java.util.function.Function;
-
+import net.minecraft.client.gui.navigation.ScreenPosition;
 import org.jspecify.annotations.Nullable;
 
 public abstract class WidgetPositioner {
@@ -72,9 +70,9 @@ public abstract class WidgetPositioner {
 	 * @param parentPoint  The point on the parent widget that the child widget should be positioned relative to
 	 * @return The start position of the child widget
 	 */
-	public static @Nullable ScreenPos getStartPosition(String parent, int screenWidth, int screenHeight, PositionRule.Point parentPoint) {
+	public static @Nullable ScreenPosition getStartPosition(String parent, int screenWidth, int screenHeight, PositionRule.Point parentPoint) {
 		if (parent.equals("screen")) {
-			return new ScreenPos(
+			return new ScreenPosition(
 					(int) (parentPoint.horizontalPoint().getPercentage() * screenWidth),
 					(int) (parentPoint.verticalPoint().getPercentage() * screenHeight)
 			);
@@ -83,7 +81,7 @@ public abstract class WidgetPositioner {
 			HudWidget parentWidget = WidgetManager.widgetInstances.get(parent);
 			if (parentWidget == null) return null;
 
-			return new ScreenPos(
+			return new ScreenPosition(
 					parentWidget.getX() + (int) (parentPoint.horizontalPoint().getPercentage() * parentWidget.getWidth()),
 					parentWidget.getY() + (int) (parentPoint.verticalPoint().getPercentage() * parentWidget.getHeight()));
 

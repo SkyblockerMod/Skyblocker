@@ -3,15 +3,13 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.Formatters;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public class YourEssenceAdder extends SimpleSlotTextAdder {
@@ -28,11 +26,11 @@ public class YourEssenceAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
-		if (stack.getName().getString().contains("Essence")) {
+		if (stack.getHoverName().getString().contains("Essence")) {
 			return essenceAmountMatcher(stack.skyblocker$getLoreStrings()).<List<SlotText>>map(essenceAmountMatcher -> {
 				String essenceAmount = essenceAmountMatcher.group("essence").replace(",", "");
 				if (!essenceAmount.matches("-?\\d+")) return List.of();
-				return SlotText.bottomRightList(Text.literal(Formatters.SHORT_FLOAT_NUMBERS.format(Integer.parseInt(essenceAmount))).withColor(SlotText.CREAM));
+				return SlotText.bottomRightList(Component.literal(Formatters.SHORT_FLOAT_NUMBERS.format(Integer.parseInt(essenceAmount))).withColor(SlotText.CREAM));
 			}).orElse(List.of());
 		}
 		return List.of();

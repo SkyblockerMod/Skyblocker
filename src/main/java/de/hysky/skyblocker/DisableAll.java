@@ -10,9 +10,9 @@ import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
@@ -33,7 +33,7 @@ public class DisableAll {
 	private static final long CONFIRM_TIMEOUT = 30_000L; // 30 seconds
 	private static long confirmAllowedUntil;
 
-	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, net.minecraft.command.CommandRegistryAccess registryAccess) {
+	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, net.minecraft.commands.CommandBuildContext registryAccess) {
 		dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
 				.then(ClientCommandManager.literal("disableAll")
 						.executes(DisableAll::confirmMessage)
@@ -44,15 +44,15 @@ public class DisableAll {
 
 	private static int confirmMessage(CommandContext<FabricClientCommandSource> context) {
 		confirmAllowedUntil = System.currentTimeMillis() + CONFIRM_TIMEOUT;
-		MutableText confirm = Text.translatable("skyblocker.disableAll.confirmYes")
-				.styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/" + SkyblockerMod.NAMESPACE + " disableAll confirm")));
-		context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.disableAll.confirm", confirm)));
+		MutableComponent confirm = Component.translatable("skyblocker.disableAll.confirmYes")
+				.withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/" + SkyblockerMod.NAMESPACE + " disableAll confirm")));
+		context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.confirm", confirm)));
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int disableAll(CommandContext<FabricClientCommandSource> context) {
 		if (System.currentTimeMillis() > confirmAllowedUntil) {
-			context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.disableAll.notPending")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.notPending")));
 			return Command.SINGLE_SUCCESS;
 		}
 		confirmAllowedUntil = 0;
@@ -64,10 +64,10 @@ public class DisableAll {
 					throw new RuntimeException(e);
 				}
 			});
-			context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.disableAll.success")));
+			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.success")));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker DisableAll] Failed to disable all features", e);
-			context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.disableAll.failed")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.failed")));
 		}
 		return Command.SINGLE_SUCCESS;
 	}

@@ -1,12 +1,11 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
 import org.joml.Matrix4f;
-
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.FilledCircleRenderState;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.state.CameraRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 
 public final class FilledCircleRenderer implements PrimitiveRenderer<FilledCircleRenderState> {
 	protected static final FilledCircleRenderer INSTANCE = new FilledCircleRenderer();
@@ -24,7 +23,7 @@ public final class FilledCircleRenderer implements PrimitiveRenderer<FilledCircl
 			float dx = (float) Math.cos(angle) * state.radius;
 			float dz = (float) Math.sin(angle) * state.radius;
 
-			buffer.vertex(positionMatrix, (float) state.centre.getX() + dx, (float) state.centre.getY(), (float) state.centre.getZ() + dz).color(state.colour);
+			buffer.addVertex(positionMatrix, (float) state.centre.x() + dx, (float) state.centre.y(), (float) state.centre.z() + dz).setColor(state.colour);
 		}
 	}
 }

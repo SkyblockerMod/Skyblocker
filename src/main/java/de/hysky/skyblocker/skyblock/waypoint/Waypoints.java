@@ -28,12 +28,12 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.EnumArgumentType;
-import net.minecraft.text.Text;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.arguments.StringRepresentableArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
 import org.apache.commons.io.IOUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -72,7 +72,7 @@ public class Waypoints {
 	private static final Codec<Collection<WaypointGroup>> SKYBLOCKER_LEGACY_ORDERED_CODEC = Codec.unboundedMap(Codec.STRING, WaypointGroup.SKYBLOCKER_LEGACY_ORDERED_CODEC).xmap(Map::values, groups -> groups.stream().collect(Collectors.toMap(WaypointGroup::name, Function.identity())));
 	private static final String PREFIX = "[Skyblocker-Waypoint-Data-V1]";
 	private static final String SKYBLOCKER_LEGACY_ORDERED = "[Skyblocker::OrderedWaypoints::v1]";
-	protected static final SystemToast.Type WAYPOINTS_TOAST_TYPE = new SystemToast.Type();
+	protected static final SystemToast.SystemToastId WAYPOINTS_TOAST_TYPE = new SystemToast.SystemToastId();
 
 	private static final Path WAYPOINTS_FILE = SkyblockerMod.CONFIG_DIR.resolve("waypoints.json");
 	private static final Path SKYBLOCKER_LEGACY_ORDERED_FILE = SkyblockerMod.CONFIG_DIR.resolve("ordered_waypoints.json");
@@ -88,9 +88,9 @@ public class Waypoints {
 		Scheduler.INSTANCE.scheduleCyclic(Waypoints::tick, 1);
 	}
 
-	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess access) {
+	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext access) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
-				.then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(MinecraftClient.getInstance().currentScreen)))
+				.then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(Minecraft.getInstance().screen)))
 						.then(literal("ordered").then(argument("action", OrderedAction.ArgumentType.orderedAction()).executes(Waypoints::executeOrderedWaypointAction)))
 				));
 	}
@@ -100,7 +100,7 @@ public class Waypoints {
 				.filter(group -> group.ordered() && !group.waypoints().isEmpty() && group.waypoints().stream().allMatch(Waypoint::isEnabled))
 				.findFirst();
 		if (groupOptional.isEmpty()) {
-			context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.literal("No ordered group enabled here! (make sure all waypoints in the group are enabled)")));
+			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.literal("No ordered group enabled here! (make sure all waypoints in the group are enabled)")));
 			return Command.SINGLE_SUCCESS;
 		}
 		WaypointGroup group = groupOptional.get();
@@ -138,7 +138,7 @@ public class Waypoints {
 		}
 	}
 
-	public static void saveWaypoints(MinecraftClient client) {
+	public static void saveWaypoints(Minecraft client) {
 		try (BufferedWriter writer = Files.newBufferedWriter(WAYPOINTS_FILE)) {
 			JsonElement waypointsJson = CODEC.encodeStart(JsonOps.INSTANCE, List.copyOf(waypoints.values())).resultOrPartial(LOGGER::error).orElseThrow();
 			SkyblockerMod.GSON.toJson(waypointsJson, writer);
@@ -301,20 +301,20 @@ public class Waypoints {
 		waypoints.values().forEach(WaypointGroup::resetCurrentIndex);
 	}
 
-	private enum OrderedAction implements StringIdentifiable {
+	private enum OrderedAction implements StringRepresentable {
 		NEXT,
 		PREVIOUS,
 		FIRST,
 		RESET;
 
-		private static final Codec<OrderedAction> CODEC = StringIdentifiable.createCodec(OrderedAction::values);
+		private static final Codec<OrderedAction> CODEC = StringRepresentable.fromEnum(OrderedAction::values);
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name().toLowerCase(Locale.ENGLISH);
 		}
 
-		static class ArgumentType extends EnumArgumentType<OrderedAction> {
+		static class ArgumentType extends StringRepresentableArgument<OrderedAction> {
 			protected ArgumentType() {
 				super(CODEC, OrderedAction::values);
 			}

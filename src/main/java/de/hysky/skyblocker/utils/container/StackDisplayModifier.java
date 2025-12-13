@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils.container;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Optional interface for container solvers that want to modify how item stacks

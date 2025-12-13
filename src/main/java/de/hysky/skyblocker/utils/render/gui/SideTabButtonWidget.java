@@ -1,14 +1,14 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget;
-import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 
-public class SideTabButtonWidget extends TexturedButtonWidget {
+public class SideTabButtonWidget extends ImageButton {
 	protected ItemStack icon;
 	protected boolean selected = false;
 
@@ -17,22 +17,22 @@ public class SideTabButtonWidget extends TexturedButtonWidget {
 	}
 
 	public SideTabButtonWidget(int x, int y, boolean toggled, ItemStack icon) {
-		super(x, y, 35, 27, RecipeGroupButtonWidget.TEXTURES, _ignored -> {});
+		super(x, y, 35, 27, RecipeBookTabButton.SPRITES, _ignored -> {});
 		this.icon = icon.copy();
 	}
 
 	@Override
-	public void drawIcon(DrawContext context, int mouseX, int mouseY, float delta) {
-		if (textures == null) return;
-		Identifier identifier = textures.get(true, this.selected);
+	public void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		if (sprites == null) return;
+		Identifier identifier = sprites.get(true, this.selected);
 		int x = getX();
 		if (this.selected) x -= 2;
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, identifier, x, this.getY(), this.width, this.height);
-		context.drawItem(icon, x + 9, getY() + 5);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, identifier, x, this.getY(), this.width, this.height);
+		context.renderItem(icon, x + 9, getY() + 5);
 	}
 
 	@Override
-	public void onClick(Click click, boolean doubled) {
+	public void onClick(MouseButtonEvent click, boolean doubled) {
 		super.onClick(click, doubled);
 		if (!this.selected) this.selected = true;
 	}

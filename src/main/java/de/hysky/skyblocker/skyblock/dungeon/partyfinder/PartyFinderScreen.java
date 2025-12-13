@@ -7,30 +7,29 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,9 +45,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class PartyFinderScreen extends Screen {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(PartyFinderScreen.class);
-	protected static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("social_interactions/background");
-	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.ofVanilla("icon/search");
-	protected static final Text SEARCH_TEXT = Text.translatable("gui.socialInteractions.search_hint").formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
+	protected static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("social_interactions/background");
+	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
+	protected static final Component SEARCH_TEXT = Component.translatable("gui.socialInteractions.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
 	public static boolean isInKuudraPartyFinder = false;
 
 	public static boolean DEBUG = false;
@@ -62,13 +61,13 @@ public class PartyFinderScreen extends Screen {
 			"sort"
 	);
 
-	public GenericContainerScreenHandler getHandler() {
+	public ChestMenu getHandler() {
 		return handler;
 	}
 
-	private Text name;
-	private GenericContainerScreenHandler handler;
-	private final PlayerInventory inventory;
+	private Component name;
+	private ChestMenu handler;
+	private final Inventory inventory;
 	private Page currentPage;
 	public PartyEntryListWidget partyEntryListWidget;
 
@@ -80,22 +79,22 @@ public class PartyFinderScreen extends Screen {
 
 	private int refreshSlotId = -1;
 
-	private TextFieldWidget searchField;
-	private ButtonWidget refreshButton;
+	private EditBox searchField;
+	private Button refreshButton;
 
-	private ButtonWidget previousPageButton;
+	private Button previousPageButton;
 	private int prevPageSlotId = -1;
 
-	private ButtonWidget nextPageButton;
+	private Button nextPageButton;
 	private int nextPageSlotId = -1;
 
-	protected ButtonWidget partyFinderButton;
+	protected Button partyFinderButton;
 	protected int partyButtonSlotId = -1;
 
-	private ButtonWidget settingsButton;
+	private Button settingsButton;
 	private int settingsButtonSlotId = -1;
 
-	private ButtonWidget createPartyButton;
+	private Button createPartyButton;
 	private int createPartyButtonSlotId = -1;
 
 	private boolean dirty = false;
@@ -132,7 +131,7 @@ public class PartyFinderScreen extends Screen {
 		});
 	}
 
-	public PartyFinderScreen(GenericContainerScreenHandler handler, PlayerInventory inventory, Text title) {
+	public PartyFinderScreen(ChestMenu handler, Inventory inventory, Component title) {
 		super(title);
 		this.handler = handler;
 		this.inventory = inventory;
@@ -147,46 +146,46 @@ public class PartyFinderScreen extends Screen {
 		// AbstractEntry list widget, pretty much every position is based on this guy since it centers automagically
 		int widget_height = (int) (this.height * 0.8);
 		int entryListTopY = Math.max(43, (int) (height * 0.1));
-		this.partyEntryListWidget = new PartyEntryListWidget(client, width, widget_height, entryListTopY, 68);
+		this.partyEntryListWidget = new PartyEntryListWidget(minecraft, width, widget_height, entryListTopY, 68);
 
 		// Search field
-		this.searchField = new TextFieldWidget(textRenderer, partyEntryListWidget.getRowLeft() + 12, entryListTopY - 12, partyEntryListWidget.getRowWidth() - 12 * 3 - 6, 12, Text.literal("Search..."));
-		searchField.setPlaceholder(SEARCH_TEXT);
-		searchField.setChangedListener(s -> partyEntryListWidget.setSearch(s));
+		this.searchField = new EditBox(font, partyEntryListWidget.getRowLeft() + 12, entryListTopY - 12, partyEntryListWidget.getRowWidth() - 12 * 3 - 6, 12, Component.literal("Search..."));
+		searchField.setHint(SEARCH_TEXT);
+		searchField.setResponder(s -> partyEntryListWidget.setSearch(s));
 		// Refresh button
-		refreshButton = ButtonWidget.builder(Text.literal("⟳").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), (a) -> {
+		refreshButton = Button.builder(Component.literal("⟳").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)), (a) -> {
 					if (refreshSlotId != -1) {
 						clickAndWaitForServer(refreshSlotId);
 						resetScroll = true;
 					}
 				})
-				.position(searchField.getX() + searchField.getWidth() + 12 * 2, searchField.getY())
+				.pos(searchField.getX() + searchField.getWidth() + 12 * 2, searchField.getY())
 				.size(12, 12).build();
 		refreshButton.active = false;
 
 		// Prev and next page buttons
-		previousPageButton = ButtonWidget.builder(Text.literal("←"), (a) -> {
+		previousPageButton = Button.builder(Component.literal("←"), (a) -> {
 					if (prevPageSlotId != -1) {
 						clickAndWaitForServer(prevPageSlotId);
 						resetScroll = true;
 					}
 				})
-				.position(searchField.getX() + searchField.getWidth(), searchField.getY())
+				.pos(searchField.getX() + searchField.getWidth(), searchField.getY())
 				.size(12, 12).build();
 		previousPageButton.active = false;
-		nextPageButton = ButtonWidget.builder(Text.literal("→"), (a) -> {
+		nextPageButton = Button.builder(Component.literal("→"), (a) -> {
 					if (nextPageSlotId != -1) {
 						clickAndWaitForServer(nextPageSlotId);
 						resetScroll = true;
 					}
 				})
-				.position(searchField.getX() + searchField.getWidth() + 12, searchField.getY())
+				.pos(searchField.getX() + searchField.getWidth() + 12, searchField.getY())
 				.size(12, 12).build();
 		nextPageButton.active = false;
 
 		// Settings container
 		if (this.settingsContainer == null) this.settingsContainer = new FinderSettingsContainer(partyEntryListWidget.getRowLeft(), entryListTopY - 12, widget_height + 12);
-		else settingsContainer.setDimensionsAndPosition(partyEntryListWidget.getRowWidth() - 2, widget_height + 12, partyEntryListWidget.getRowLeft(), entryListTopY - 12);
+		else settingsContainer.setRectangle(partyEntryListWidget.getRowWidth() - 2, widget_height + 12, partyEntryListWidget.getRowLeft(), entryListTopY - 12);
 
 
 		// Buttons at the top
@@ -194,45 +193,45 @@ public class PartyFinderScreen extends Screen {
 		int searchButtonWidth = (partyEntryListWidget.getRowWidth() + 6) / 3 - 2 * searchButtonMargin;
 
 
-		partyFinderButton = ButtonWidget.builder(Text.translatable("skyblocker.partyFinder.tabs.partyFinder"), (a) -> {
+		partyFinderButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.partyFinder"), (a) -> {
 					if (partyButtonSlotId != -1) {
 						setCurrentPage(Page.FINDER);
 						clickAndWaitForServer(partyButtonSlotId);
 					}
 				})
-				.position(partyEntryListWidget.getRowLeft(), entryListTopY - 39)
+				.pos(partyEntryListWidget.getRowLeft(), entryListTopY - 39)
 				.size(searchButtonWidth + searchButtonMargin, topRowButtonsHeight).build();
 
-		settingsButton = ButtonWidget.builder(Text.translatable("skyblocker.partyFinder.tabs.searchSettings"), (a) -> {
+		settingsButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.searchSettings"), (a) -> {
 					if (settingsButtonSlotId != -1) {
 						setCurrentPage(Page.SETTINGS);
 						clickAndWaitForServer(settingsButtonSlotId);
 					}
 				})
-				.position(partyEntryListWidget.getRowLeft() + searchButtonWidth + 3 * searchButtonMargin, entryListTopY - 39)
+				.pos(partyEntryListWidget.getRowLeft() + searchButtonWidth + 3 * searchButtonMargin, entryListTopY - 39)
 				.size(searchButtonWidth, topRowButtonsHeight).build();
 
-		createPartyButton = ButtonWidget.builder(Text.translatable("skyblocker.partyFinder.tabs.createParty"), (a) -> {
+		createPartyButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.createParty"), (a) -> {
 					if (createPartyButtonSlotId != -1) {
 						clickAndWaitForServer(createPartyButtonSlotId);
 					}
 				})
-				.position(partyEntryListWidget.getRowLeft() + searchButtonWidth * 2 + 5 * searchButtonMargin, entryListTopY - 39)
+				.pos(partyEntryListWidget.getRowLeft() + searchButtonWidth * 2 + 5 * searchButtonMargin, entryListTopY - 39)
 				.size(searchButtonWidth, topRowButtonsHeight).build();
 		createPartyButton.active = false;
 
 
-		addDrawableChild(partyEntryListWidget);
-		addDrawableChild(searchField);
-		addDrawableChild(refreshButton);
-		addDrawableChild(previousPageButton);
-		addDrawableChild(nextPageButton);
-		addDrawableChild(partyFinderButton);
-		addDrawableChild(settingsButton);
-		addDrawableChild(createPartyButton);
-		addDrawableChild(settingsContainer);
+		addRenderableWidget(partyEntryListWidget);
+		addRenderableWidget(searchField);
+		addRenderableWidget(refreshButton);
+		addRenderableWidget(previousPageButton);
+		addRenderableWidget(nextPageButton);
+		addRenderableWidget(partyFinderButton);
+		addRenderableWidget(settingsButton);
+		addRenderableWidget(createPartyButton);
+		addRenderableWidget(settingsContainer);
 		if (Debug.debugEnabled()) {
-			addDrawableChild(ButtonWidget.builder(Text.of("DEBUG"), (a) -> DEBUG = !DEBUG).dimensions(width - 40, 0, 40, 20).build());
+			addRenderableWidget(Button.builder(Component.nullToEmpty("DEBUG"), (a) -> DEBUG = !DEBUG).bounds(width - 40, 0, 40, 20).build());
 		}
 
 		dirtiedTime = System.currentTimeMillis();
@@ -245,62 +244,62 @@ public class PartyFinderScreen extends Screen {
 	}
 
 	@Override
-	public boolean shouldPause() {
+	public boolean isPauseScreen() {
 		return false;
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		if (!settingsContainer.canInteract(null)) {
 			context.fill(0, 0, width, height, 0x40000000);
 		}
 		super.render(context, mouseX, mouseY, delta);
 
 		if (searchField.visible) {
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
 		}
 		if (DEBUG) {
-			context.drawText(textRenderer, currentPage.toString(), 0, 0, Colors.WHITE, true);
-			context.drawText(textRenderer, "Truly a party finder", 20, 20, Colors.WHITE, true);
+			context.drawString(font, currentPage.toString(), 0, 0, CommonColors.WHITE, true);
+			context.drawString(font, "Truly a party finder", 20, 20, CommonColors.WHITE, true);
 			if (sign != null) {
-				context.drawText(textRenderer, "You are in a sign btw", 20, 30, Colors.WHITE, true);
+				context.drawString(font, "You are in a sign btw", 20, 30, CommonColors.WHITE, true);
 			} else {
-				context.drawText(textRenderer, String.valueOf(refreshSlotId), width - 25, 30, Colors.WHITE, true);
-				context.drawText(textRenderer, String.valueOf(prevPageSlotId), width - 25, 40, Colors.WHITE, true);
-				context.drawText(textRenderer, String.valueOf(nextPageSlotId), width - 25, 50, Colors.WHITE, true);
+				context.drawString(font, String.valueOf(refreshSlotId), width - 25, 30, CommonColors.WHITE, true);
+				context.drawString(font, String.valueOf(prevPageSlotId), width - 25, 40, CommonColors.WHITE, true);
+				context.drawString(font, String.valueOf(nextPageSlotId), width - 25, 50, CommonColors.WHITE, true);
 				for (int i = 0; i < handler.slots.size(); i++) {
-					context.drawItem(handler.slots.get(i).getStack(), (i % 9) * 16, (i / 9) * 16);
+					context.renderItem(handler.slots.get(i).getItem(), (i % 9) * 16, (i / 9) * 16);
 				}
-				context.drawText(textRenderer, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), Colors.WHITE, true);
+				context.drawString(font, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), CommonColors.WHITE, true);
 			}
 		}
 		if (isWaitingForServer()) {
 			String s = "Waiting for server...";
-			context.drawText(textRenderer, s, this.width - textRenderer.getWidth(s) - 5, this.height - textRenderer.fontHeight - 2, Colors.WHITE, true);
+			context.drawString(font, s, this.width - font.width(s) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
 		}
 	}
 
 	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderInGameBackground(context);
+	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		this.renderTransparentBackground(context);
 		int i = partyEntryListWidget.getRowWidth() + 16 + 6;
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
 	}
 
 	@Override
-	public void close() {
-		assert this.client != null;
-		assert this.client.player != null;
+	public void onClose() {
+		assert this.minecraft != null;
+		assert this.minecraft.player != null;
 		if (currentPage != Page.SIGN)
-			this.client.player.closeHandledScreen();
+			this.minecraft.player.closeContainer();
 		else {
-			ClientPlayNetworkHandler networkHandler = this.client.getNetworkHandler();
+			ClientPacketListener networkHandler = this.minecraft.getConnection();
 			if (networkHandler != null && sign != null) {
-				List<String> originalText = Arrays.stream(sign.getText(signFront).getMessages(true)).map(Text::getString).toList();
-				networkHandler.sendPacket(new UpdateSignC2SPacket(sign.getPos(), signFront, originalText.getFirst(), originalText.get(1), originalText.get(2), originalText.get(3)));
+				List<String> originalText = Arrays.stream(sign.getText(signFront).getMessages(true)).map(Component::getString).toList();
+				networkHandler.send(new ServerboundSignUpdatePacket(sign.getBlockPos(), signFront, originalText.getFirst(), originalText.get(1), originalText.get(2), originalText.get(3)));
 			}
 		}
-		super.close();
+		super.onClose();
 	}
 
 	public void setCurrentPage(Page page) {
@@ -309,9 +308,9 @@ public class PartyFinderScreen extends Screen {
 			partyEntryListWidget.visible = true;
 
 			partyFinderButton.active = false;
-			partyFinderButton.setMessage(partyFinderButton.getMessage().copy().setStyle(Style.EMPTY.withUnderline(true)));
+			partyFinderButton.setMessage(partyFinderButton.getMessage().copy().setStyle(Style.EMPTY.withUnderlined(true)));
 			settingsButton.active = true;
-			settingsButton.setMessage(settingsButton.getMessage().copy().setStyle(Style.EMPTY.withUnderline(false)));
+			settingsButton.setMessage(settingsButton.getMessage().copy().setStyle(Style.EMPTY.withUnderlined(false)));
 			createPartyButton.active = true;
 
 			searchField.active = true;
@@ -324,9 +323,9 @@ public class PartyFinderScreen extends Screen {
 			partyEntryListWidget.visible = false;
 
 			partyFinderButton.active = page != Page.SIGN;
-			partyFinderButton.setMessage(partyFinderButton.getMessage().copy().setStyle(Style.EMPTY.withUnderline(false)));
+			partyFinderButton.setMessage(partyFinderButton.getMessage().copy().setStyle(Style.EMPTY.withUnderlined(false)));
 			settingsButton.active = false;
-			settingsButton.setMessage(settingsButton.getMessage().copy().setStyle(Style.EMPTY.withUnderline(true)));
+			settingsButton.setMessage(settingsButton.getMessage().copy().setStyle(Style.EMPTY.withUnderlined(true)));
 			createPartyButton.active = false;
 
 			searchField.active = false;
@@ -339,7 +338,7 @@ public class PartyFinderScreen extends Screen {
 	}
 
 	// Called when the handler object/title gets changed
-	public void updateHandler(GenericContainerScreenHandler handler, Text name) {
+	public void updateHandler(ChestMenu handler, Component name) {
 		this.handler = handler;
 		this.name = name;
 		closedSign();
@@ -389,20 +388,20 @@ public class PartyFinderScreen extends Screen {
 		List<PartyEntry> parties = new ArrayList<>();
 
 		if (currentPage != Page.FINDER) setCurrentPage(Page.FINDER);
-		if (handler.slots.stream().anyMatch(slot -> slot.hasStack() && slot.getStack().isOf(Items.BEDROCK))) {
+		if (handler.slots.stream().anyMatch(slot -> slot.hasItem() && slot.getItem().is(Items.BEDROCK))) {
 			parties.add(new PartyEntry.NoParties());
 		} else {
 			for (Slot slot : handler.slots) {
-				if (slot.id > (handler.getRows() - 1) * 9 - 1 || !slot.hasStack()) continue;
-				ItemStack stack = slot.getStack();
-				if (stack.isOf(Items.PLAYER_HEAD)) {
-					assert this.client != null;
-					parties.add(new PartyEntry(stack.getName(), ItemUtils.getLore(stack), this, slot.id));
-				} else if (stack.isOf(Items.ARROW) && stack.getName().getString().toLowerCase(Locale.ENGLISH).contains("previous")) {
-					prevPageSlotId = slot.id;
+				if (slot.index > (handler.getRowCount() - 1) * 9 - 1 || !slot.hasItem()) continue;
+				ItemStack stack = slot.getItem();
+				if (stack.is(Items.PLAYER_HEAD)) {
+					assert this.minecraft != null;
+					parties.add(new PartyEntry(stack.getHoverName(), ItemUtils.getLore(stack), this, slot.index));
+				} else if (stack.is(Items.ARROW) && stack.getHoverName().getString().toLowerCase(Locale.ENGLISH).contains("previous")) {
+					prevPageSlotId = slot.index;
 					previousPageButton.active = true;
-				} else if (stack.isOf(Items.ARROW) && stack.getName().getString().toLowerCase(Locale.ENGLISH).contains("next")) {
-					nextPageSlotId = slot.id;
+				} else if (stack.is(Items.ARROW) && stack.getHoverName().getString().toLowerCase(Locale.ENGLISH).contains("next")) {
+					nextPageSlotId = slot.index;
 					nextPageButton.active = true;
 				}
 			}
@@ -410,27 +409,27 @@ public class PartyFinderScreen extends Screen {
 
 		ItemStack yourPartyStack = null;
 		int deListSlotId = -1;
-		for (int i = (handler.getRows() - 1) * 9; i < handler.getRows() * 9; i++) {
+		for (int i = (handler.getRowCount() - 1) * 9; i < handler.getRowCount() * 9; i++) {
 			Slot slot = handler.slots.get(i);
-			if (!slot.hasStack()) continue;
-			if (slot.getStack().isOf(Items.EMERALD_BLOCK)) {
-				refreshSlotId = slot.id;
+			if (!slot.hasItem()) continue;
+			if (slot.getItem().is(Items.EMERALD_BLOCK)) {
+				refreshSlotId = slot.index;
 				refreshButton.active = true;
-			} else if (slot.getStack().isOf(Items.REDSTONE_BLOCK)) {
-				createPartyButtonSlotId = slot.id;
+			} else if (slot.getItem().is(Items.REDSTONE_BLOCK)) {
+				createPartyButtonSlotId = slot.index;
 				createPartyButton.active = true;
-			} else if (slot.getStack().isOf(Items.NETHER_STAR)) {
-				settingsButtonSlotId = slot.id;
-			} else if (slot.getStack().isOf(Items.BOOKSHELF)) {
-				deListSlotId = slot.id;
-			} else if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
-				assert this.client != null;
-				yourPartyStack = slot.getStack();
+			} else if (slot.getItem().is(Items.NETHER_STAR)) {
+				settingsButtonSlotId = slot.index;
+			} else if (slot.getItem().is(Items.BOOKSHELF)) {
+				deListSlotId = slot.index;
+			} else if (slot.getItem().is(Items.PLAYER_HEAD)) {
+				assert this.minecraft != null;
+				yourPartyStack = slot.getItem();
 			}
 		}
 
-		assert client != null;
-		String playerName = client.getSession().getUsername();
+		assert minecraft != null;
+		String playerName = minecraft.getUser().getName();
 
 		// It's possible for the party to show up in the search results before it does next to the delist button.
 		// This means that it will have the "You are in this party" error text, but it'll still be possible to click and delist.
@@ -440,14 +439,14 @@ public class PartyFinderScreen extends Screen {
 							&& party.partyLeader.name.getString().equals(playerName)).findFirst()
 					.map(party -> party.slotID)
 					.map(slotId -> handler.slots.get(slotId))
-					.map(Slot::getStack).orElse(null);
+					.map(Slot::getItem).orElse(null);
 		}
 
 		if (yourPartyStack != null) {
-			Text title = yourPartyStack.getName();
+			Component title = yourPartyStack.getHoverName();
 			if (deListSlotId != -1) {
 				// Such a wacky thing lol
-				title = Text.literal(playerName + "'s party");
+				title = Component.literal(playerName + "'s party");
 			}
 			// Remove the party if it's already in the list from the search results
 			parties.removeIf(party -> party.partyLeader != null
@@ -458,7 +457,7 @@ public class PartyFinderScreen extends Screen {
 
 		if (resetScroll) {
 			resetScroll = false;
-			partyEntryListWidget.setScrollY(0);
+			partyEntryListWidget.setScrollAmount(0);
 		}
 	}
 
@@ -469,22 +468,22 @@ public class PartyFinderScreen extends Screen {
 	}
 
 	public void abort() {
-		assert this.client != null;
+		assert this.minecraft != null;
 		if (currentPage == Page.SIGN) {
-			assert this.client.player != null;
-			this.client.player.openEditSignScreen(sign, signFront);
-		} else this.client.setScreen(new GenericContainerScreen(handler, inventory, title));
-		this.client.getToastManager().add(new SystemToast(SystemToast.Type.PERIODIC_NOTIFICATION, Text.translatable("skyblocker.partyFinder.error.name"), Text.translatable("skyblocker.partyFinder.error.message")));
+			assert this.minecraft.player != null;
+			this.minecraft.player.openTextEdit(sign, signFront);
+		} else this.minecraft.setScreen(new ContainerScreen(handler, inventory, title));
+		this.minecraft.getToastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION, Component.translatable("skyblocker.partyFinder.error.name"), Component.translatable("skyblocker.partyFinder.error.message")));
 		aborted = true;
 	}
 
 	@Override
 	public void removed() {
-		assert this.client != null;
-		if (this.client.player == null || aborted || currentPage == Page.SIGN) {
+		assert this.minecraft != null;
+		if (this.minecraft.player == null || aborted || currentPage == Page.SIGN) {
 			return;
 		}
-		this.handler.onClosed(this.client.player);
+		this.handler.removed(this.minecraft.player);
 	}
 
 	@Override
@@ -492,14 +491,14 @@ public class PartyFinderScreen extends Screen {
 		super.tick();
 		// Slight delay to make sure all slots are received, because they are most of the time sent one at a time
 		if (dirty && System.currentTimeMillis() - dirtiedTime > 60) update();
-		assert this.client != null && this.client.player != null;
-		if (!this.client.player.isAlive() || this.client.player.isRemoved() && currentPage != Page.SIGN) {
-			this.client.player.closeHandledScreen();
+		assert this.minecraft != null && this.minecraft.player != null;
+		if (!this.minecraft.player.isAlive() || this.minecraft.player.isRemoved() && currentPage != Page.SIGN) {
+			this.minecraft.player.closeContainer();
 		}
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (settingsContainer != null && settingsContainer.hasOpenOption()) {
 			return settingsContainer.mouseClicked(click, doubled);
 		}
@@ -508,9 +507,9 @@ public class PartyFinderScreen extends Screen {
 
 	public void clickAndWaitForServer(int slotID) {
 		//System.out.println("hey");
-		assert client != null;
-		assert client.interactionManager != null;
-		client.interactionManager.clickSlot(handler.syncId, slotID, 0, SlotActionType.PICKUP, client.player);
+		assert minecraft != null;
+		assert minecraft.gameMode != null;
+		minecraft.gameMode.handleInventoryMouseClick(handler.containerId, slotID, 0, ClickType.PICKUP, minecraft.player);
 		waitingForServer = true;
 	}
 
@@ -518,9 +517,9 @@ public class PartyFinderScreen extends Screen {
 		return waitingForServer;
 	}
 
-	public MinecraftClient getClient() {
-		assert this.client != null;
-		return this.client;
+	public Minecraft getClient() {
+		assert this.minecraft != null;
+		return this.minecraft;
 	}
 
 	public enum Page {

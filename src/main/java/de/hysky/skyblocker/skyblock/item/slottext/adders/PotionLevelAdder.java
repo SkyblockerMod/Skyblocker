@@ -3,13 +3,11 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-
 import java.util.List;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public class PotionLevelAdder extends SimpleSlotTextAdder {
@@ -23,11 +21,11 @@ public class PotionLevelAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
-		NbtCompound customData = ItemUtils.getCustomData(stack);
-		String title = stack.getName().getString();
+		CompoundTag customData = ItemUtils.getCustomData(stack);
+		String title = stack.getHoverName().getString();
 		if (customData.contains("potion_level") && !title.contains("Healer") && !title.contains("Class Passives")) {
-			int level = customData.getInt("potion_level", 0);
-			return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
+			int level = customData.getIntOr("potion_level", 0);
+			return SlotText.bottomRightList(Component.literal(String.valueOf(level)).withColor(SlotText.CREAM));
 		}
 		return List.of();
 	}

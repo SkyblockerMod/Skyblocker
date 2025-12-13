@@ -4,12 +4,11 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
-
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,14 +37,14 @@ public class ItemCooldowns {
 		UseItemCallback.EVENT.register(ItemCooldowns::onItemInteract);
 	}
 
-	private static ActionResult onItemInteract(PlayerEntity player, World world, Hand hand) {
+	private static InteractionResult onItemInteract(Player player, Level world, InteractionHand hand) {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.itemCooldown.enableItemCooldowns)
-			return ActionResult.PASS;
-		String usedItemId = player.getMainHandStack().getSkyblockId();
+			return InteractionResult.PASS;
+		String usedItemId = player.getMainHandItem().getSkyblockId();
 		switch (usedItemId) {
 			case FIG_AXE_ID, FIGSTONE_ID, JUNGLE_AXE_ID, TREECAPITATOR_ID -> handleItemCooldown(usedItemId, 1000);
 			case SILK_EDGE_SWORD_ID, LEAPING_SWORD_ID -> handleItemCooldown(usedItemId, 1000);
-			case GRAPPLING_HOOK_ID -> handleItemCooldown(GRAPPLING_HOOK_ID, 2000, player.fishHook != null && !isWearingBatArmor(player));
+			case GRAPPLING_HOOK_ID -> handleItemCooldown(GRAPPLING_HOOK_ID, 2000, player.fishing != null && !isWearingBatArmor(player));
 			case ROGUE_SWORD_ID, SPIRIT_LEAP_ID, LIVID_DAGGER_ID -> handleItemCooldown(usedItemId, 5000);
 			case SHADOW_FURY_ID -> handleItemCooldown(SHADOW_FURY_ID, 15000);
 			case INK_WAND_ID, GIANTS_SWORD_ID -> handleItemCooldown(usedItemId, 30000);
@@ -53,7 +52,7 @@ public class ItemCooldowns {
 			// Handle any unlisted items if necessary
 			default -> {}
 		}
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
 	// Method to handle item cooldowns with optional condition
@@ -90,7 +89,7 @@ public class ItemCooldowns {
 		return ITEM_COOLDOWNS.get(itemStack.getSkyblockId());
 	}
 
-	private static boolean isWearingBatArmor(PlayerEntity player) {
+	private static boolean isWearingBatArmor(Player player) {
 		for (ItemStack stack : ItemUtils.getArmor(player)) {
 			String itemId = stack.getSkyblockId();
 			if (!BAT_ARMOR_IDS.contains(itemId)) {

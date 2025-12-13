@@ -18,12 +18,11 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.sound.SoundEvent;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -65,11 +64,11 @@ public class EventNotifications {
 						.then(ClientCommandManager.argument("jacob", BoolArgumentType.bool()).executes(context -> {
 											long time = System.currentTimeMillis() / 1000 + context.getArgument("time", int.class);
 											if (context.getArgument("jacob", Boolean.class)) {
-												MinecraftClient.getInstance().getToastManager().add(
+												Minecraft.getInstance().getToastManager().addToast(
 														new JacobEventToast(time, "Jacob's farming contest", new String[]{"Cactus", "Cocoa Beans", "Pumpkin"})
 												);
 											} else {
-												MinecraftClient.getInstance().getToastManager().add(
+												Minecraft.getInstance().getToastManager().addToast(
 														new EventToast(time, "Jacob's or something idk", new ItemStack(Items.PAPER))
 												);
 											}
@@ -141,19 +140,19 @@ public class EventNotifications {
 
 			for (int reminderTime : reminderTimes) {
 				if (criterionMet() && currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
-					MinecraftClient instance = MinecraftClient.getInstance();
+					Minecraft instance = Minecraft.getInstance();
 					if (eventName.equals(JACOBS)) {
-						instance.getToastManager().add(
+						instance.getToastManager().addToast(
 								new JacobEventToast(skyblockEvent.start(), eventName, skyblockEvent.extras())
 						);
 					} else {
-						instance.getToastManager().add(
+						instance.getToastManager().addToast(
 								new EventToast(skyblockEvent.start(), eventName, eventIcons.getOrDefault(eventName, new ItemStack(Items.PAPER)))
 						);
 					}
 					SoundEvent soundEvent = SkyblockerConfigManager.get().eventNotifications.reminderSound.getSoundEvent();
 					if (soundEvent != null)
-						instance.getSoundManager().play(PositionedSoundInstance.master(soundEvent, 1f, 1f));
+						instance.getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1f, 1f));
 					break;
 				}
 			}

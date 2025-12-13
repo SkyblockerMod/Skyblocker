@@ -11,12 +11,6 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +18,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class CommissionLabels {
 
@@ -53,8 +52,8 @@ public class CommissionLabels {
 		boolean newCommissionDone = false;
 
 		for (int i = 0; i < PlayerListManager.getPlayerList().size(); i++) {
-			PlayerListEntry entry = PlayerListManager.getPlayerList().get(i);
-			Text displayName = entry.getDisplayName();
+			PlayerInfo entry = PlayerListManager.getPlayerList().get(i);
+			Component displayName = entry.getTabListDisplayName();
 			if (displayName == null) continue;
 			String string = displayName.getString();
 			if (foundCommissions) {
@@ -129,7 +128,7 @@ public class CommissionLabels {
 		//if there is a commission completed and enabled show emissary
 		if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
 			if (SkyblockerConfigManager.get().mining.commissionWaypoints.hideEmissaryOnPigeon) {
-				for (ItemStack stack : MinecraftClient.getInstance().player.getInventory().getMainStacks()) {
+				for (ItemStack stack : Minecraft.getInstance().player.getInventory().getNonEquipmentItems()) {
 					if (stack.getSkyblockId().equals("ROYAL_PIGEON")) {
 						return;
 					}

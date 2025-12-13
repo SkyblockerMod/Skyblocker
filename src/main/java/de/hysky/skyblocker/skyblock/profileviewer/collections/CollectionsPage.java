@@ -5,16 +5,15 @@ import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.SubPageSelectButton;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.item.ItemStack;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.world.item.ItemStack;
 
 public class CollectionsPage implements ProfileViewerPage {
 	private static final String[] COLLECTION_CATEGORIES = {"MINING", "FARMING", "COMBAT", "FISHING", "FORAGING", "RIFT"};
@@ -28,7 +27,7 @@ public class CollectionsPage implements ProfileViewerPage {
 			// Map.entry("BOSS", Ico.WITHER), Not currently part of Collections API so skipping for now
 			Map.entry("RIFT", Ico.MYCELIUM)
 	);
-	private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+	private static final Font textRenderer = Minecraft.getInstance().font;
 
 	private final GenericCategory[] collections = new GenericCategory[COLLECTION_CATEGORIES.length];
 	private final List<SubPageSelectButton> collectionSelectButtons = new ArrayList<>();
@@ -47,7 +46,7 @@ public class CollectionsPage implements ProfileViewerPage {
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int startingY = rootY + (TOTAL_HEIGHT - collectionSelectButtons.size() * 21) / 2;
 		for (int i = 0; i < collectionSelectButtons.size(); i++) {
 			collectionSelectButtons.get(i).setX(rootX);
@@ -56,7 +55,7 @@ public class CollectionsPage implements ProfileViewerPage {
 		}
 
 		if (collections[activePage] == null) {
-			context.drawText(textRenderer, "No data...", rootX + 92, rootY + 72, Color.DARK_GRAY.getRGB(), false);
+			context.drawString(textRenderer, "No data...", rootX + 92, rootY + 72, Color.DARK_GRAY.getRGB(), false);
 			return;
 		}
 
@@ -74,8 +73,8 @@ public class CollectionsPage implements ProfileViewerPage {
 	}
 
 	@Override
-	public List<ClickableWidget> getButtons() {
-		List<ClickableWidget> clickableWidgets = new ArrayList<>(collectionSelectButtons);
+	public List<AbstractWidget> getButtons() {
+		List<AbstractWidget> clickableWidgets = new ArrayList<>(collectionSelectButtons);
 		for (ProfileViewerPage page : collections) {
 			if (page != null && page.getButtons() != null) clickableWidgets.addAll(page.getButtons());
 		}
