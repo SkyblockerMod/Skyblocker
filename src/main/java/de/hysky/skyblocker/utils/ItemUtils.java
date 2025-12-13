@@ -557,28 +557,16 @@ public final class ItemUtils {
 	}
 
 	/**
-	 * Finds the number of items stored in a sack based on the tooltip lines.
-	 * @param itemStack The item stack these lines belong to. This is used for logging purposes.
-	 * @param lines The tooltip lines to search in. This isn't equivalent to the item's lore.
-	 * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
-	 */
-	@NotNull
-	public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<String> lines) {
-		return getItemCountInSack(itemStack, lines, false);
-	}
-
-	/**
 	 * Finds the number of items stored in a sack from a list of strings.
 	 *
 	 * @param itemStack The item stack this list of strings belong to. This is used for logging purposes.
 	 * @param lines     A list of string lines that represent the tooltip of the item stack.
-	 * @param isLore    Whether the lines are from the item's lore or not. This is useful to figure out which line to look at, as lore and tooltip lines are different due to the first line being the item's name.
 	 * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
 	 */
 	@NotNull
-	public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<String> lines, boolean isLore) {
+	public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<String> lines) {
 		// Gemstones sack is a special case, it has a different 2nd line.
-		if (lines.size() < 2 || !StringUtils.endsWithAny(lines.get(isLore ? 0 : 1), "Sack", "Gemstones")) {
+		if (lines.size() < 2 || !StringUtils.endsWithAny(lines.getFirst(), "Sack", "Gemstones")) {
 			return OptionalInt.empty();
 		}
 

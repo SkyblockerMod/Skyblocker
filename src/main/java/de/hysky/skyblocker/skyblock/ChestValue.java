@@ -330,7 +330,7 @@ public class ChestValue {
 				int count = switch (screenType) {
 					case ScreenType.SACK -> {
 						List<String> lines = stack.skyblocker$getLoreStrings();
-						yield ItemUtils.getItemCountInSack(stack, lines, true).orElse(0); // If this is in a sack and the item is not a stored item, we can just skip it
+						yield ItemUtils.getItemCountInSack(stack, lines).orElse(0); // If this is in a sack and the item is not a stored item, we can just skip it
 					}
 					case ScreenType.STASH -> ItemUtils.getItemCountInStash(stack).orElse(0);
 					case ScreenType.OTHER, ScreenType.MINION -> stack.getCount();
@@ -402,7 +402,7 @@ public class ChestValue {
 
 	@NotNull
 	private static ScreenType determineScreenType(String rawTitleString) {
-		if ("sack".contains(rawTitleString.toLowerCase(Locale.ENGLISH))) return ScreenType.SACK;
+		if (rawTitleString.toLowerCase(Locale.ENGLISH).endsWith("sack")) return ScreenType.SACK;
 		if (MINION_PATTERN.matcher(rawTitleString.trim()).find()) return ScreenType.MINION;
 		if ("View Stash".equalsIgnoreCase(rawTitleString)) return ScreenType.STASH;
 		return ScreenType.OTHER;
