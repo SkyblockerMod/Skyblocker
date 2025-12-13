@@ -86,7 +86,9 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 
 	@Override
 	protected void renderSlot(GuiGraphics context, Slot slot, int mouseX, int mouseY) {
-		if (slot.index == 23 && slot.getItem().is(Items.BARRIER)) return;
+		ItemStack stack = slot.getItem();
+		if (slot.index == 23 && stack.is(Items.BARRIER)) return;
+		if (stack.is(Items.GRAY_STAINED_GLASS_PANE) && stack.getSkyblockId().isEmpty()) return;
 		super.renderSlot(context, slot, mouseX, mouseY);
 	}
 
