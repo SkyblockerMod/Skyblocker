@@ -131,6 +131,7 @@
   "skyblocker.config.chat.filter.hideMoltenWave": "Hide Molten Wave Message",
   "skyblocker.config.chat.filter.hideShowOff": "Hide Show Off Messages",
   "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "Filters messages from the /show command",
+  "skyblocker.config.chat.filter.hideSlayerMinibossSpawn": "Hide Slayer Miniboss spawn message",
   "skyblocker.config.chat.filter.hideTeleportPad": "Hide Teleport Pad Messages",
   "skyblocker.config.chat.filter.hideToggleLottery": "Hide Lottery Messages outside Galatea",
   "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides Lottery HOTF perk messages while you're outside of Galatea.",
