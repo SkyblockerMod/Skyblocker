@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.injected.SkyblockerStack;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper.Accessory;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
@@ -17,35 +17,35 @@ import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.screen.ButtonTextures;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
-import net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.gui.widget.CyclingButtonWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.client.gui.widget.SimplePositioningWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.client.input.AbstractInput;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -59,14 +59,14 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStackProvider {
+class AccessoriesHelperWidget extends AbstractContainerWidget implements HoveredItemStackProvider {
 	private static final Identifier TEXTURE = SkyblockerMod.id("background");
 	private static final int BORDER_SIZE = 8;
 	private static final int BUTTON_COUNT = 20;
-	private final List<ClickableWidget> widgets;
+	private final List<AbstractWidget> widgets;
 	private final List<ResultButton> buttons = new ArrayList<>(BUTTON_COUNT);
-	private final SimplePositioningWidget layout;
-	private final TextWidget pageText = new TextWidget(ScreenTexts.EMPTY, MinecraftClient.getInstance().textRenderer).setMaxWidth(30, TextWidget.TextOverflow.SCROLLING);
+	private final FrameLayout layout;
+	private final StringWidget pageText = new StringWidget(CommonComponents.EMPTY, Minecraft.getInstance().font).setMaxWidth(30, StringWidget.TextOverflow.SCROLLING);
 	private final ArrowButton prevPageButton = new ArrowButton(false);
 	private final ArrowButton nextPageButton = new ArrowButton(true);
 
@@ -80,21 +80,21 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 	private static boolean open;
 	private static boolean showHighestTierOnly;
 
-	static void attachToScreen(GenericContainerScreen screen) {
+	static void attachToScreen(ContainerScreen screen) {
 		if (!SkyblockerConfigManager.get().helpers.enableAccessoriesHelperWidget) return;
 		final AccessoriesHelperWidget widget = new AccessoriesHelperWidget();
 		widget.setY((screen.height - widget.getHeight()) / 2);
 		Screens.getButtons(screen).add(widget);
-		final int previousX = ((HandledScreenAccessor) screen).getX();
+		final int previousX = ((AbstractContainerScreenAccessor) screen).getLeftPos();
 		final int offset = Math.max(180 - previousX, 0);
 		TabButton tabButton = new TabButton(button -> {
 			boolean toggled = button.toggled;
 			widget.visible = open = toggled;
 			int x = toggled ? previousX + offset : previousX;
-			((HandledScreenAccessor) screen).setX(x);
+			((AbstractContainerScreenAccessor) screen).setLeftPos(x);
 			widget.setX(x - widget.getWidth() - 2);
 			button.setX((toggled ? widget.getX() : x) - button.getWidth() + 5);
-			button.setY((toggled ? widget.getY() : ((HandledScreenAccessor) screen).getY()) + 8);
+			button.setY((toggled ? widget.getY() : ((AbstractContainerScreenAccessor) screen).getTopPos()) + 8);
 			if (toggled) {
 				final Set<Accessory> collectedAccessories = AccessoriesHelper.getCollectedAccessories();
 				widget.recombDisplays = collectedAccessories.stream()
@@ -133,44 +133,44 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 	}
 
 	AccessoriesHelperWidget() {
-		super(0, 0, 147, 182, ScreenTexts.EMPTY);
-		this.layout = new SimplePositioningWidget(getWidth() - BORDER_SIZE * 2, getHeight() - BORDER_SIZE * 2);
-		DirectionalLayoutWidget mainLayout = layout.add(DirectionalLayoutWidget.vertical());
-		mainLayout.getMainPositioner().alignHorizontalCenter();
-		GridWidget.Adder adder = mainLayout.add(new GridWidget()).createAdder(5);
+		super(0, 0, 147, 182, CommonComponents.EMPTY);
+		this.layout = new FrameLayout(getWidth() - BORDER_SIZE * 2, getHeight() - BORDER_SIZE * 2);
+		LinearLayout mainLayout = layout.addChild(LinearLayout.vertical());
+		mainLayout.defaultCellSetting().alignHorizontallyCenter();
+		GridLayout.RowHelper adder = mainLayout.addChild(new GridLayout()).createRowHelper(5);
 		for (int i = 0; i < BUTTON_COUNT; i++) {
 			ResultButton button = new ResultButton();
 			buttons.add(button);
-			adder.add(button);
+			adder.addChild(button);
 		}
-		ImmutableList.Builder<ClickableWidget> builder = ImmutableList.builder();
-		DirectionalLayoutWidget pageSwitcher = mainLayout.add(DirectionalLayoutWidget.horizontal().spacing(2), p -> p.marginY(4));
-		pageSwitcher.getMainPositioner().alignVerticalCenter();
-		pageSwitcher.add(prevPageButton);
-		pageSwitcher.add(new SimplePositioningWidget(30, 0)).add(pageText);
-		pageSwitcher.add(nextPageButton);
+		ImmutableList.Builder<AbstractWidget> builder = ImmutableList.builder();
+		LinearLayout pageSwitcher = mainLayout.addChild(LinearLayout.horizontal().spacing(2), p -> p.paddingVertical(4));
+		pageSwitcher.defaultCellSetting().alignVerticallyMiddle();
+		pageSwitcher.addChild(prevPageButton);
+		pageSwitcher.addChild(new FrameLayout(30, 0)).addChild(pageText);
+		pageSwitcher.addChild(nextPageButton);
 
 		int filterWidth = layout.getWidth() - 2;
 
-		mainLayout.add(CyclingButtonWidget.builder(f -> Text.translatable(f.toString()), filter)
-				.values(Filter.values())
-				.build(0, 0, filterWidth, 16, Text.translatable("skyblocker.accessory_helper.filter"), (b, v) -> {
+		mainLayout.addChild(CycleButton.builder(f -> Component.translatable(f.toString()), filter)
+				.withValues(Filter.values())
+				.create(0, 0, filterWidth, 16, Component.translatable("skyblocker.accessory_helper.filter"), (b, v) -> {
 					filter = v;
 					updateFilter();
 					changePage(0);
 				})
 		);
-		mainLayout.add(CyclingButtonWidget.onOffBuilder(Text.translatable("skyblocker.accessory_helper.highestTierOnly"), Text.translatable("skyblocker.accessory_helper.allTiers"), showHighestTierOnly)
-				.omitKeyText()
-				.build(0, 0, filterWidth, 16, ScreenTexts.EMPTY, (button, value) -> {
+		mainLayout.addChild(CycleButton.booleanBuilder(Component.translatable("skyblocker.accessory_helper.highestTierOnly"), Component.translatable("skyblocker.accessory_helper.allTiers"), showHighestTierOnly)
+				.displayOnlyValue()
+				.create(0, 0, filterWidth, 16, CommonComponents.EMPTY, (button, value) -> {
 					showHighestTierOnly = value;
 					updateFilter();
 					changePage(0);
 				})
 		);
-		mainLayout.forEachChild(builder::add);
+		mainLayout.visitWidgets(builder::add);
 		widgets = builder.build();
-		mainLayout.refreshPositions();
+		mainLayout.arrangeElements();
 		updatePageSwitcher();
 	}
 
@@ -218,14 +218,14 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 	}
 
 	private void updatePageSwitcher() {
-		pageText.setMessage(Text.translatable("gui.recipebook.page", page + 1, getPageCount()));
+		pageText.setMessage(Component.translatable("gui.recipebook.page", page + 1, getPageCount()));
 		prevPageButton.visible = page > 0;
 		nextPageButton.visible = page < getPageCount() - 1;
-		layout.refreshPositions();
+		layout.arrangeElements();
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		return widgets;
 	}
 
@@ -242,26 +242,26 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight());
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight());
 		String prevHighlighted = AccessoriesContainerSolver.INSTANCE.highlightedAccessory;
 		AccessoriesContainerSolver.INSTANCE.highlightedAccessory = null;
-		for (ClickableWidget widget : widgets) {
+		for (AbstractWidget widget : widgets) {
 			widget.render(context, mouseX, mouseY, deltaTicks);
 		}
 		if (!Objects.equals(prevHighlighted, AccessoriesContainerSolver.INSTANCE.highlightedAccessory)) ContainerSolverManager.markHighlightsDirty();
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	@Override
-	protected double getDeltaYPerScroll() {
+	protected double scrollRate() {
 		return 0;
 	}
 
 	@Override
-	protected int getContentsHeightWithPadding() {
+	protected int contentHeight() {
 		return 0;
 	}
 
@@ -270,52 +270,52 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 		return buttons.stream().map(ResultButton::getFocusedItem).filter(Objects::nonNull).findFirst().orElse(null);
 	}
 
-	private class ArrowButton extends ClickableWidget {
+	private class ArrowButton extends AbstractWidget {
 		private final boolean next;
-		private final ButtonTextures textures;
+		private final WidgetSprites textures;
 
 		ArrowButton(boolean next) {
-			super(0, 0, 12, 17, ScreenTexts.EMPTY);
+			super(0, 0, 12, 17, CommonComponents.EMPTY);
 			this.next = next;
-			this.textures = next ? RecipeBookResults.PAGE_FORWARD_TEXTURES : RecipeBookResults.PAGE_BACKWARD_TEXTURES;
+			this.textures = next ? RecipeBookPage.PAGE_FORWARD_SPRITES : RecipeBookPage.PAGE_BACKWARD_SPRITES;
 		}
 
 		@Override
-		public void onClick(Click click, boolean doubled) {
+		public void onClick(MouseButtonEvent click, boolean doubled) {
 			changePage(next ? 1 : -1);
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, textures.get(true, isHovered()), getX(), getY(), getWidth(), getHeight());
-			if (isHovered()) context.setCursor(StandardCursors.POINTING_HAND);
+		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, textures.get(true, isHovered()), getX(), getY(), getWidth(), getHeight());
+			if (isHovered()) context.requestCursor(CursorTypes.POINTING_HAND);
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 	}
 
 	// TODO abstract away this and SkyblockRecipeTabButton
-	private static class TabButton extends TexturedButtonWidget {
+	private static class TabButton extends ImageButton {
 		private final Consumer<TabButton> onToggled;
 		private boolean toggled;
 
 		TabButton(Consumer<TabButton> onToggled) {
-			super(35, 27, RecipeGroupButtonWidget.TEXTURES, b -> {}, ScreenTexts.EMPTY);
+			super(35, 27, RecipeBookTabButton.SPRITES, b -> {}, CommonComponents.EMPTY);
 			this.onToggled = onToggled;
 		}
 
 		@Override
-		public void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-			if (this.textures == null) return;
+		public void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+			if (this.sprites == null) return;
 			int x = this.getX();
 			if (this.toggled) x -= 2;
 
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, this.textures.get(true, this.toggled), x, this.getY(), this.width, this.height);
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(true, this.toggled), x, this.getY(), this.width, this.height);
 
 			int offset = this.toggled ? -2 : 0;
-			ButtonTextures buttonTextures = this.toggled ? RecipeBookResults.PAGE_FORWARD_TEXTURES : RecipeBookResults.PAGE_BACKWARD_TEXTURES;
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
+			WidgetSprites buttonTextures = this.toggled ? RecipeBookPage.PAGE_FORWARD_SPRITES : RecipeBookPage.PAGE_BACKWARD_SPRITES;
+			context.blitSprite(RenderPipelines.GUI_TEXTURED,
 					buttonTextures.get(false, isHovered()),
 					getX() + offset + 9,
 					getY() + (getHeight() - 17) / 2,
@@ -324,12 +324,12 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 
 
 			if (this.isHovered()) {
-				context.setCursor(StandardCursors.POINTING_HAND);
+				context.requestCursor(CursorTypes.POINTING_HAND);
 			}
 		}
 
 		@Override
-		public void onPress(AbstractInput input) {
+		public void onPress(InputWithModifiers input) {
 			setToggled(!this.toggled);
 		}
 
@@ -349,17 +349,17 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 			super.renderWidget(context, mouseX, mouseY, delta);
 			ItemStack stack = getDisplayStack();
 			if (isHovered() && stack != null && source != null) {
 				source.drawTooltip(context, mouseX, mouseY);
-				context.setCursor(StandardCursors.POINTING_HAND);
+				context.requestCursor(CursorTypes.POINTING_HAND);
 			}
 		}
 
 		@Override
-		public void onClick(Click click, boolean doubled) {
+		public void onClick(MouseButtonEvent click, boolean doubled) {
 			if (source != null) source.click();
 		}
 
@@ -376,12 +376,12 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 
 	private record AccessoryInfo(Accessory accessory, Optional<Accessory> highestOwned, Accessory highestInFamily) {
 		private static class Source implements MagicPowerSource {
-			private static final Text smoothLine = LineSmoothener.createSmoothLine();
-			private static final Text wikiLine = Text.translatable("skyblocker.accessory_helper.openWiki").formatted(Formatting.YELLOW);
-			private static final Text fandomLine = Text.translatable("skyblocker.accessory_helper.fandom").formatted(Formatting.GRAY, Formatting.ITALIC);
+			private static final Component smoothLine = LineSmoothener.createSmoothLine();
+			private static final Component wikiLine = Component.translatable("skyblocker.accessory_helper.openWiki").withStyle(ChatFormatting.YELLOW);
+			private static final Component fandomLine = Component.translatable("skyblocker.accessory_helper.fandom").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
 
 			private final AccessoryInfo info;
-			private final @Nullable List<Text> afterSelling;
+			private final @Nullable List<Component> afterSelling;
 
 			private @Nullable ItemStack icon;
 
@@ -396,9 +396,9 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 							DoubleBooleanPair price = ItemUtils.getItemPrice(accStack);
 							if (!price.rightBoolean()) return Optional.empty();
 							return Optional.of(List.of(
-									Text.translatable("skyblocker.accessory_helper.afterSelling", ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1)),
-									accStack.getName(),
-									Text.empty()
+									Component.translatable("skyblocker.accessory_helper.afterSelling", ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1)),
+									accStack.getHoverName(),
+									Component.empty()
 							));
 						})
 						.orElse(null);
@@ -410,20 +410,20 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 			}
 
 			@Override
-			public void drawTooltip(DrawContext context, int mouseX, int mouseY) {
+			public void drawTooltip(GuiGraphics context, int mouseX, int mouseY) {
 				if (icon == null) {
 					return;
 				}
 				info.highestOwned().ifPresent(owned -> AccessoriesContainerSolver.INSTANCE.highlightedAccessory = owned.id());
-				MinecraftClient client = MinecraftClient.getInstance();
-				List<Text> tooltip = new ArrayList<>(Screen.getTooltipFromItem(client, icon));
+				Minecraft client = Minecraft.getInstance();
+				List<Component> tooltip = new ArrayList<>(Screen.getTooltipFromItem(client, icon));
 				tooltip.add(smoothLine);
 				if (afterSelling != null) {
 					tooltip.addAll(afterSelling);
 				}
 				tooltip.add(wikiLine);
 				tooltip.add(fandomLine);
-				context.drawTooltip(client.textRenderer, tooltip, icon.getTooltipData(), mouseX, mouseY, icon.get(DataComponentTypes.TOOLTIP_STYLE));
+				context.setTooltipForNextFrame(client.font, tooltip, icon.getTooltipImage(), mouseX, mouseY, icon.get(DataComponents.TOOLTIP_STYLE));
 			}
 
 			@Override
@@ -447,9 +447,9 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 			@Override
 			public void click() {
 				if (icon == null) return;
-				ClientPlayerEntity player = MinecraftClient.getInstance().player;
+				LocalPlayer player = Minecraft.getInstance().player;
 				if (player == null) return;
-				WikiLookupManager.openWiki(icon, player, !MinecraftClient.getInstance().isShiftPressed());
+				WikiLookupManager.openWiki(icon, player, !Minecraft.getInstance().hasShiftDown());
 			}
 		}
 	}
@@ -457,7 +457,7 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 	private static class RecombobulateSource implements MagicPowerSource {
 		private final ItemStack icon;
 		private final double pricePerMp;
-		private final List<Text> tooltip;
+		private final List<Component> tooltip;
 		private RecombobulateSource(SkyblockItemRarity rarity) {
 			this.icon = ItemRepository.getItemStack("RECOMBOBULATOR_3000", ItemStack.EMPTY);
 			DoubleBooleanPair pair = ItemUtils.getItemPrice("RECOMBOBULATOR_3000");
@@ -465,9 +465,9 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 			int mp = rarity.recombobulate().getMP() - rarity.getMP();
 			pricePerMp = mp <= 0 ? Double.MAX_VALUE : price / mp;
 			tooltip = List.of(
-					Text.translatable(
+					Component.translatable(
 							"skyblocker.accessory_helper.recombobulate",
-							Text.literal(rarity.name().replace("_", " ")).withColor(rarity.color)
+							Component.literal(rarity.name().replace("_", " ")).withColor(rarity.color)
 					),
 					ItemTooltip.getCoinsMessage(price, 1)
 			);
@@ -479,9 +479,9 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 		}
 
 		@Override
-		public void drawTooltip(DrawContext context, int mouseX, int mouseY) {
-			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
+		public void drawTooltip(GuiGraphics context, int mouseX, int mouseY) {
+			Font textRenderer = Minecraft.getInstance().font;
+			context.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
 		}
 
 		@Override
@@ -491,16 +491,16 @@ class AccessoriesHelperWidget extends ContainerWidget implements HoveredItemStac
 
 		@Override
 		public void click() {
-			ClientPlayerEntity player = MinecraftClient.getInstance().player;
+			LocalPlayer player = Minecraft.getInstance().player;
 			if (player == null) return;
-			WikiLookupManager.openWikiLinkName("Recombobulator_3000#Usage", player, !MinecraftClient.getInstance().isShiftPressed());
+			WikiLookupManager.openWikiLinkName("Recombobulator_3000#Usage", player, !Minecraft.getInstance().hasShiftDown());
 		}
 	}
 
 	private interface MagicPowerSource {
 		ItemStack icon();
 
-		void drawTooltip(DrawContext context, int mouseX, int mouseY);
+		void drawTooltip(GuiGraphics context, int mouseX, int mouseY);
 
 		double pricePerMp();
 

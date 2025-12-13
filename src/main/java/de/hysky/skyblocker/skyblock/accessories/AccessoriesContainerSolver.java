@@ -4,15 +4,15 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Colors;
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.ARGB;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
 public class AccessoriesContainerSolver extends SimpleContainerSolver {
-	private static final int COLOR = ColorHelper.withAlpha(0.7f, Colors.GREEN);
+	private static final int COLOR = ARGB.color(0.7f, CommonColors.GREEN);
 	public static final AccessoriesContainerSolver INSTANCE = new AccessoriesContainerSolver();
 
 	@Nullable String highlightedAccessory;

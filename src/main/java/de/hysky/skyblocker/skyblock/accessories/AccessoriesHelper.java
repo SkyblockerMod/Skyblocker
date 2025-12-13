@@ -14,10 +14,10 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.Slot;
 
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -47,15 +47,15 @@ public class AccessoriesHelper {
 	public static void init() {
 		COLLECTED_ACCESSORIES.init();
 		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
-			if (Utils.isOnSkyblock() && TooltipInfoType.ACCESSORIES.isTooltipEnabled() && !Utils.getProfileId().isEmpty() && screen instanceof GenericContainerScreen genericContainerScreen) {
+			if (Utils.isOnSkyblock() && TooltipInfoType.ACCESSORIES.isTooltipEnabled() && !Utils.getProfileId().isEmpty() && screen instanceof ContainerScreen genericContainerScreen) {
 				Matcher matcher = ACCESSORY_BAG_TITLE.matcher(genericContainerScreen.getTitle().getString());
 
 				if (matcher.matches()) {
 					ScreenEvents.afterTick(screen).register(_screen -> {
-						GenericContainerScreenHandler handler = genericContainerScreen.getScreenHandler();
+						ChestMenu handler = genericContainerScreen.getMenu();
 						int page = matcher.group("page") != null ? Integer.parseInt(matcher.group("page")) : 1;
 
-						collectAccessories(handler.slots.subList(0, handler.getRows() * 9), page);
+						collectAccessories(handler.slots.subList(0, handler.getRowCount() * 9), page);
 					});
 					AccessoriesHelperWidget.attachToScreen(genericContainerScreen);
 				}
@@ -68,14 +68,14 @@ public class AccessoriesHelper {
 		if (!COLLECTED_ACCESSORIES.isLoaded()) return;
 
 		List<String> accessoryIds = slots.stream()
-				.map(Slot::getStack)
+				.map(Slot::getItem)
 				.map(ItemStack::getSkyblockId)
 				.filter(NON_EMPTY)
 				.toList();
 
 		List<String> recombobulated = slots.stream()
-				.map(Slot::getStack)
-				.filter(stack -> ItemUtils.getCustomData(stack).getInt("rarity_upgrades", 0) > 0)
+				.map(Slot::getItem)
+				.filter(stack -> ItemUtils.getCustomData(stack).getIntOr("rarity_upgrades", 0) > 0)
 				.map(ItemStack::getSkyblockId)
 				.filter(NON_EMPTY)
 				.toList();
