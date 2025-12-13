@@ -11,6 +11,7 @@ public enum SlayerTier implements StringIdentifiable {
 	III("III", Formatting.RED),
 	IV("IV", Formatting.DARK_RED),
 	V("V", Formatting.DARK_PURPLE);
+
 	public static final Codec<SlayerTier> CODEC = StringIdentifiable.createCodec(SlayerTier::values);
 	public final String name;
 	public final Formatting color;

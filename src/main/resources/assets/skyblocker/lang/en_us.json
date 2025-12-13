@@ -1647,7 +1647,7 @@
   "skyblocker.slayer.hud.levelMaxed": "MAXED OUT",
   "skyblocker.slayer.hud.levelUpIn": "Level up in %s bosses",
   "skyblocker.slayer.personalBest": "PERSONAL BEST!",
-  "skyblocker.slayer.previousPB": "Your previous Personal Best was %s.",
+  "skyblocker.slayer.previousPersonalBest": "Your previous Personal Best was %s.",
   "skyblocker.slayer.slainTime": "Slayer has been killed in %s!",
 
   "skyblocker.tips.accessoryHelper": "Open your accessory bag and Skyblocker will remember them. The accessory helper will tell you what accessories you have and what accessories are missing.",

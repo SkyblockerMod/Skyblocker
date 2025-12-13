@@ -7,6 +7,8 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.data.ProfiledData;
+import de.hysky.skyblocker.utils.render.title.Title;
+import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -31,21 +33,36 @@ public class SlayerTimer {
 		if (!SkyblockerConfigManager.get().slayers.slainTime || bossFight.sentTime) return;
 		bossFight.sentTime = true;
 
-		long timeElapsed = Duration.between(bossFight.bossSpawnTime, Instant.now()).toMillis();
-		String duration = formatTime(timeElapsed);
+		SlayerType slayerType = SlayerManager.getSlayerType();
+		SlayerTier slayerTier = SlayerManager.getSlayerTier();
+		if (slayerType == null || slayerTier == null || slayerType.isUnknown() || slayerTier.isUnknown()) return;
 
-		long currentPB = getPersonalBest(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier());
+		long newPBMills = Duration.between(bossFight.bossSpawnTime, Instant.now()).toMillis();
+		String newPB = formatTime(newPBMills);
+
+		long currentPBMills = getPersonalBest(slayerType, slayerTier);
+		String currentPB = formatTime(currentPBMills);
 
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		assert player != null;
-		if (currentPB != -1 && currentPB > timeElapsed) {
-			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW)).append(" ").append(Text.translatable("skyblocker.slayer.personalBest").formatted(Formatting.LIGHT_PURPLE))), false);
-			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.previousPB", Text.literal(formatTime(currentPB)).formatted(Formatting.YELLOW))), false);
-			updateBestTime(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier(), timeElapsed);
+		if (currentPBMills != -1 && currentPBMills > newPBMills) {
+			player.sendMessage(Constants.PREFIX.get().append(
+					Text.translatable("skyblocker.slayer.slainTime", Text.literal(newPB).formatted(Formatting.YELLOW))
+							.append(" ")
+							.append(Text.translatable("skyblocker.slayer.personalBest").formatted(Formatting.LIGHT_PURPLE))), false);
+			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.previousPersonalBest", Text.literal(currentPB).formatted(Formatting.YELLOW))), false);
+
+			TitleContainer.addTitleAndPlaySound(new Title("skyblocker.slayer.personalBest", Formatting.AQUA), 100);
+			TitleContainer.addTitle(new Title(
+					Text.literal(currentPB).formatted(Formatting.YELLOW)
+							.append(Text.literal(" ➜ ").formatted(Formatting.DARK_AQUA))
+							.append(Text.literal(newPB).formatted(Formatting.GREEN))), 100);
+
+			updateBestTime(slayerType, slayerTier, newPBMills);
 		} else {
-			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW))), false);
-			if (currentPB == -1) {
-				updateBestTime(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier(), timeElapsed);
+			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(newPB).formatted(Formatting.YELLOW))), false);
+			if (currentPBMills == -1) {
+				updateBestTime(slayerType, slayerTier, newPBMills);
 			}
 		}
 	}
@@ -71,8 +88,8 @@ public class SlayerTimer {
 		return String.format("%.2fs", millis / 1000.0);
 	}
 
-	public record SlayerInfo(long bestTimeMillis, long dateMillis) {
-		public static final Codec<SlayerInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+	private record SlayerInfo(long bestTimeMillis, long dateMillis) {
+		private static final Codec<SlayerInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.LONG.fieldOf("bestTimeMillis").forGetter(SlayerInfo::bestTimeMillis),
 				Codec.LONG.fieldOf("dateMillis").forGetter(SlayerInfo::dateMillis)
 		).apply(instance, SlayerInfo::new));

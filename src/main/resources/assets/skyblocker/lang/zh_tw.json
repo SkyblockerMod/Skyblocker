@@ -922,7 +922,7 @@
     "skyblocker.config.slayer.bossSpawnAlert": "Boss生成警告",
     "skyblocker.config.slayer.slayerHud": "獵手HUD配置",
     "skyblocker.slayer.personalBest": "最佳紀錄！",
-    "skyblocker.slayer.previousPB": "之前的最佳紀錄是%s。",
+    "skyblocker.slayer.previousPersonalBest": "之前的最佳紀錄是%s。",
     "skyblocker.waypoints.importWaypointsSkyblocker.tooltip": "從剪貼簿匯入路徑點（Skyblocker格式）",
     "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight.@Tooltip": "高亮矮人礦井中不可破壞的地毯。",
     "skyblocker.config.mining.dwarvenMines.carpetHighlightColor": "地毯高亮顏色",
