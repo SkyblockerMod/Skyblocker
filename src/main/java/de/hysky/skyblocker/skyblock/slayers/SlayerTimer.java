@@ -7,8 +7,11 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.data.ProfiledData;
+import de.hysky.skyblocker.utils.render.title.Title;
+import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -26,22 +29,40 @@ public class SlayerTimer {
 		CACHED_SLAYER_STATS.load();
 	}
 
-	public static void onBossDeath(Instant startTime) {
-		if (!SkyblockerConfigManager.get().slayers.slainTime || startTime == null) return;
-		Instant slainTime = Instant.now();
-		long timeElapsed = Duration.between(startTime, slainTime).toMillis();
-		String duration = formatTime(timeElapsed);
+	public static void onBossDeath(SlayerManager.BossFight bossFight) {
+		if (!SkyblockerConfigManager.get().slayers.slainTime || bossFight.sentTime) return;
+		bossFight.sentTime = true;
 
-		long currentPB = getPersonalBest(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier());
+		SlayerType slayerType = SlayerManager.getSlayerType();
+		SlayerTier slayerTier = SlayerManager.getSlayerTier();
+		if (slayerType == null || slayerTier == null || slayerType.isUnknown() || slayerTier.isUnknown()) return;
 
-		if (currentPB != -1 && (currentPB > timeElapsed)) {
-			MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW)).append(" ").append(Text.translatable("skyblocker.slayer.personalBest").formatted(Formatting.LIGHT_PURPLE))), false);
-			MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.previousPB", Text.literal(formatTime(currentPB)).formatted(Formatting.YELLOW))), false);
-			updateBestTime(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier(), timeElapsed);
+		long newPBMills = Duration.between(bossFight.bossSpawnTime, Instant.now()).toMillis();
+		String newPB = formatTime(newPBMills);
+
+		long currentPBMills = getPersonalBest(slayerType, slayerTier);
+		String currentPB = formatTime(currentPBMills);
+
+		ClientPlayerEntity player = MinecraftClient.getInstance().player;
+		assert player != null;
+		if (currentPBMills != -1 && currentPBMills > newPBMills) {
+			player.sendMessage(Constants.PREFIX.get().append(
+					Text.translatable("skyblocker.slayer.slainTime", Text.literal(newPB).formatted(Formatting.YELLOW))
+							.append(" ")
+							.append(Text.translatable("skyblocker.slayer.personalBest").formatted(Formatting.LIGHT_PURPLE))), false);
+			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.previousPersonalBest", Text.literal(currentPB).formatted(Formatting.YELLOW))), false);
+
+			TitleContainer.addTitleAndPlaySound(new Title("skyblocker.slayer.personalBest", Formatting.AQUA), 100);
+			TitleContainer.addTitle(new Title(
+					Text.literal(currentPB).formatted(Formatting.YELLOW)
+							.append(Text.literal(" ➜ ").formatted(Formatting.DARK_AQUA))
+							.append(Text.literal(newPB).formatted(Formatting.GREEN))), 100);
+
+			updateBestTime(slayerType, slayerTier, newPBMills);
 		} else {
-			MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW))), false);
-			if (currentPB == -1) {
-				updateBestTime(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier(), timeElapsed);
+			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(newPB).formatted(Formatting.YELLOW))), false);
+			if (currentPBMills == -1) {
+				updateBestTime(slayerType, slayerTier, newPBMills);
 			}
 		}
 	}
@@ -51,15 +72,13 @@ public class SlayerTimer {
 		Object2ObjectOpenHashMap<SlayerTier, SlayerInfo> typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
 
 		SlayerInfo currentBest = typeData.get(slayerTier);
-		return currentBest != null ? currentBest.bestTimeMillis : -1;
+		return currentBest != null ? currentBest.bestTimeMillis() : -1;
 	}
 
 	private static void updateBestTime(SlayerType slayerType, SlayerTier slayerTier, long timeElapsed) {
-		long nowMillis = System.currentTimeMillis();
-
 		Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>> profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
 		Object2ObjectOpenHashMap<SlayerTier, SlayerInfo> typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
-		SlayerInfo newInfo = new SlayerInfo(timeElapsed, nowMillis);
+		SlayerInfo newInfo = new SlayerInfo(timeElapsed, System.currentTimeMillis());
 
 		typeData.put(slayerTier, newInfo);
 		CACHED_SLAYER_STATS.save();
@@ -69,8 +88,8 @@ public class SlayerTimer {
 		return String.format("%.2fs", millis / 1000.0);
 	}
 
-	public record SlayerInfo(long bestTimeMillis, long dateMillis) {
-		public static final Codec<SlayerInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+	private record SlayerInfo(long bestTimeMillis, long dateMillis) {
+		private static final Codec<SlayerInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.LONG.fieldOf("bestTimeMillis").forGetter(SlayerInfo::bestTimeMillis),
 				Codec.LONG.fieldOf("dateMillis").forGetter(SlayerInfo::dateMillis)
 		).apply(instance, SlayerInfo::new));

@@ -70,6 +70,13 @@ public class SlayersCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.showMiniBossNameInAlert"))
+						.binding(defaults.slayers.showMiniBossNameInAlert,
+								() -> config.slayers.showMiniBossNameInAlert,
+								newValue -> config.slayers.showMiniBossNameInAlert = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.slainTime"))
 						.description(Text.translatable("skyblocker.config.slayer.slainTime.@Tooltip"))
 						.binding(defaults.slayers.slainTime,

@@ -166,6 +166,13 @@ public class ChatCategory {
 										newValue -> config.chat.hideDungeonBreaker = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
+						.option(Option.<ChatFilterResult>createBuilder()
+								.name(Text.translatable("skyblocker.config.chat.filter.hideSlayerMinibossSpawn"))
+								.binding(defaults.chat.hideSlayerMinibossSpawn,
+										() -> config.chat.hideSlayerMinibossSpawn,
+										newValue -> config.chat.hideSlayerMinibossSpawn = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
 						.build())
 
 				//chat rules options

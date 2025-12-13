@@ -22,6 +22,8 @@ public class SlayersConfig {
 
 	public boolean miniBossSpawnAlert = true;
 
+	public boolean showMiniBossNameInAlert = false;
+
 	public boolean slainTime = true;
 
 	public boolean enableHud = true;
@@ -78,7 +80,8 @@ public class SlayersConfig {
 
 	public static class BlazeSlayer {
 		public FirePillar firePillarCountdown = FirePillar.SOUND_AND_VISUAL;
-		public Boolean attunementHighlights = true;
+
+		public boolean attunementHighlights = true;
 
 		public enum FirePillar {
 			OFF,
