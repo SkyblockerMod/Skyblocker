@@ -36,11 +36,11 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.function.Consumers;
 import org.jspecify.annotations.Nullable;
 
@@ -80,11 +80,11 @@ public class SkyblockerConfigManager {
 		CONFIG_MANAGER.load();
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(configLiteral("config")).then(configLiteral("options"))));
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-			if (get().uiAndVisuals.showConfigButton && screen instanceof GenericContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
-				Screens.getButtons(screen).add(ButtonWidget
-						.builder(Text.literal("\uD83D\uDD27"), buttonWidget -> client.setScreen(createGUI(screen)))
-						.dimensions(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
-						.tooltip(Tooltip.of(Text.translatable("skyblocker.config.title", Text.translatable("skyblocker.config.title.settings"))))
+			if (get().uiAndVisuals.showConfigButton && screen instanceof ContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
+				Screens.getButtons(screen).add(Button
+						.builder(Component.literal("\uD83D\uDD27"), buttonWidget -> client.setScreen(createGUI(screen)))
+						.bounds(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
+						.tooltip(Tooltip.create(Component.translatable("skyblocker.config.title", Component.translatable("skyblocker.config.title.settings"))))
 						.build());
 			}
 		});
@@ -110,7 +110,7 @@ public class SkyblockerConfigManager {
 
 	public static Screen createGUI(@Nullable Screen parent, String search) {
 		return DandelionConfigScreen.create(CONFIG_MANAGER, (defaults, config, builder) -> builder
-				.title(Text.translatable("skyblocker.config.title", SkyblockerMod.VERSION))
+				.title(Component.translatable("skyblocker.config.title", SkyblockerMod.VERSION))
 				.category(GeneralCategory.create(defaults, config))
 				.category(UIAndVisualsCategory.create(defaults, config))
 				.category(HelperCategory.create(defaults, config))
