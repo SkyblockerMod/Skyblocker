@@ -114,14 +114,14 @@ public class SlayerManager {
 			case "NICE! SLAYER BOSS SLAIN!" -> {
 				if (slayerQuest != null && bossFight != null) {
 					bossFight.slain = true;
-					SlayerTimer.onBossDeath(bossFight.bossSpawnTime);
+					SlayerTimer.onBossDeath(bossFight);
 					CallMaddox.onBossKilled();
 				}
 				return true;
 			}
 			case "SLAYER QUEST COMPLETE!" -> {
 				if (slayerQuest != null && bossFight != null && !bossFight.slain) {
-					SlayerTimer.onBossDeath(bossFight.bossSpawnTime);
+					SlayerTimer.onBossDeath(bossFight);
 					CallMaddox.onBossKilled();
 				}
 				bossFight = null;
@@ -392,6 +392,7 @@ public class SlayerManager {
 		public @Nullable Entity boss;
 		public Instant bossSpawnTime;
 		public boolean slain = false;
+		public boolean sentTime = false;
 
 		private BossFight(@Nullable ArmorStandEntity armorStand) {
 			findBoss(armorStand);

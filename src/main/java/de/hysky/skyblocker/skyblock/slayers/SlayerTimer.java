@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -26,20 +27,23 @@ public class SlayerTimer {
 		CACHED_SLAYER_STATS.load();
 	}
 
-	public static void onBossDeath(Instant startTime) {
-		if (!SkyblockerConfigManager.get().slayers.slainTime || startTime == null) return;
-		Instant slainTime = Instant.now();
-		long timeElapsed = Duration.between(startTime, slainTime).toMillis();
+	public static void onBossDeath(SlayerManager.BossFight bossFight) {
+		if (!SkyblockerConfigManager.get().slayers.slainTime || bossFight.sentTime) return;
+		bossFight.sentTime = true;
+
+		long timeElapsed = Duration.between(bossFight.bossSpawnTime, Instant.now()).toMillis();
 		String duration = formatTime(timeElapsed);
 
 		long currentPB = getPersonalBest(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier());
 
-		if (currentPB != -1 && (currentPB > timeElapsed)) {
-			MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW)).append(" ").append(Text.translatable("skyblocker.slayer.personalBest").formatted(Formatting.LIGHT_PURPLE))), false);
-			MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.previousPB", Text.literal(formatTime(currentPB)).formatted(Formatting.YELLOW))), false);
+		ClientPlayerEntity player = MinecraftClient.getInstance().player;
+		assert player != null;
+		if (currentPB != -1 && currentPB > timeElapsed) {
+			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW)).append(" ").append(Text.translatable("skyblocker.slayer.personalBest").formatted(Formatting.LIGHT_PURPLE))), false);
+			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.previousPB", Text.literal(formatTime(currentPB)).formatted(Formatting.YELLOW))), false);
 			updateBestTime(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier(), timeElapsed);
 		} else {
-			MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW))), false);
+			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW))), false);
 			if (currentPB == -1) {
 				updateBestTime(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier(), timeElapsed);
 			}
@@ -51,15 +55,13 @@ public class SlayerTimer {
 		Object2ObjectOpenHashMap<SlayerTier, SlayerInfo> typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
 
 		SlayerInfo currentBest = typeData.get(slayerTier);
-		return currentBest != null ? currentBest.bestTimeMillis : -1;
+		return currentBest != null ? currentBest.bestTimeMillis() : -1;
 	}
 
 	private static void updateBestTime(SlayerType slayerType, SlayerTier slayerTier, long timeElapsed) {
-		long nowMillis = System.currentTimeMillis();
-
 		Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>> profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
 		Object2ObjectOpenHashMap<SlayerTier, SlayerInfo> typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
-		SlayerInfo newInfo = new SlayerInfo(timeElapsed, nowMillis);
+		SlayerInfo newInfo = new SlayerInfo(timeElapsed, System.currentTimeMillis());
 
 		typeData.put(slayerTier, newInfo);
 		CACHED_SLAYER_STATS.save();
