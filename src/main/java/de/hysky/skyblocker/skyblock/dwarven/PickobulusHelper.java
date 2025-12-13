@@ -178,11 +178,12 @@ public class PickobulusHelper {
 					if (!exposed) continue;
 
 					if (Utils.getArea().equals(Area.GLACITE_TUNNELS)) handleGlaciteTunnels(pos, state, i, j, k);
+					else if (Utils.getArea().equals(Area.GLACITE_MINESHAFTS)) handleGlaciteMineshafts(pos, state, i, j, k);
 					else switch (Utils.getLocation()) {
 						case PRIVATE_ISLAND -> handleBreakable(pos, i, j, k);
 						case GOLD_MINE, DEEP_CAVERNS, DWARVEN_MINES -> handleConvertIntoBedrock(pos, state, i, j, k);
 						case CRYSTAL_HOLLOWS -> handleCrystalHollows(pos, state, i, j, k);
-						case GLACITE_MINESHAFTS -> handleGlaciteMineshafts(pos, state, i, j, k);
+						case GLACITE_MINESHAFTS -> handleGlaciteMineshafts(pos, state, i, j, k); // This does seem to be actually possible according to the API?
 					}
 				}
 			}
