@@ -6,6 +6,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
@@ -28,6 +29,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +60,7 @@ public class TheEnd {
 	private static final Set<UUID> HIT_ZEALOTS = new ObjectOpenHashSet<>();
 	public static final ProfiledData<EndStats> PROFILES_STATS = new ProfiledData<>(FILE, EndStats.CODEC);
 
+	@Nullable
 	public static ProtectorLocation currentProtectorLocation = null;
 	public static int stage = 0;
 
@@ -71,14 +74,12 @@ public class TheEnd {
 		});
 
 		ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
-			String lowerCase = Utils.getIslandArea().toLowerCase(Locale.ENGLISH);
-			if (Utils.isInTheEnd() || lowerCase.contains("the end") || lowerCase.contains("dragon's nest")) {
+			Area area = Utils.getArea();
+			if (Utils.isInTheEnd() || area.equals(Area.THE_END) || area.equals(Area.DRAGONS_NEST)) {
 				ChunkPos pos = chunk.getPos();
-				//
 				AABB box = new AABB(pos.getMinBlockX(), 0, pos.getMinBlockZ(), pos.getMaxBlockX() + 1, 1, pos.getMaxBlockZ() + 1);
 				for (ProtectorLocation protectorLocation : PROTECTOR_LOCATIONS) {
 					if (box.contains(protectorLocation.x(), 0.5, protectorLocation.z())) {
-						// MinecraftClient.getInstance().player.sendMessage(Text.literal("Checking: ").append(protectorLocation.name));//MinecraftClient.getInstance().player.sendMessage(Text.literal(pos.getStartX() + " " + pos.getStartZ() + " " + pos.getEndX() + " " + pos.getEndZ()));
 						if (isProtectorHere(world, protectorLocation)) break;
 					}
 				}
