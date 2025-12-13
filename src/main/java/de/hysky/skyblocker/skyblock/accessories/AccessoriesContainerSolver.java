@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.ColorHelper;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
