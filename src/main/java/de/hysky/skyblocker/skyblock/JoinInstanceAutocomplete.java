@@ -21,7 +21,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.arg
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 /**
- * the mixin {@link de.hysky.skyblocker.mixins.CommandTreeS2CPacketMixin}
+ * the mixin {@link de.hysky.skyblocker.mixins.ClientboundCommandsPacketMixin}
  */
 public class JoinInstanceAutocomplete {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JoinInstanceAutocomplete.class);

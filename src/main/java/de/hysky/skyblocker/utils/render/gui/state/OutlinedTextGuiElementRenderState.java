@@ -3,7 +3,7 @@ package de.hysky.skyblocker.utils.render.gui.state;
 import org.joml.Matrix3x2f;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.mixins.accessors.TextRendererAccessor;
+import de.hysky.skyblocker.mixins.accessors.FontAccessor;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.GlyphVisitor;
 import net.minecraft.client.gui.Font.PreparedText;
@@ -37,7 +37,7 @@ public class OutlinedTextGuiElementRenderState extends GuiTextRenderState {
 	 * The text outline drawing code from the {@code TextRenderer}.
 	 */
 	private PreparedText prepareOutline() {
-		TextRendererAccessor accessor = (TextRendererAccessor) this.font;
+		FontAccessor accessor = (FontAccessor) this.font;
 		Font.PreparedTextBuilder drawer = this.font.new PreparedTextBuilder(0.0f, 0.0f, this.outlineColor, false, this.includeEmpty);
 
 		for (int i = -1; i <= 1; i++) {

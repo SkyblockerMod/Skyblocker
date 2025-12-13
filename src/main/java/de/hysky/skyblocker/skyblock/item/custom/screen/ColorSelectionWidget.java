@@ -3,8 +3,8 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import com.demonwav.mcdev.annotations.Translatable;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
-import de.hysky.skyblocker.mixins.accessors.EntityRenderManagerAccessor;
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
+import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
@@ -212,7 +212,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 
 	private void onRemoveCustomColor(Button button) {
 		animated = false;
-		((CheckboxWidgetAccessor) animatedCheckbox).setSelected(false);
+		((CheckboxAccessor) animatedCheckbox).setSelected(false);
 		changeVisibilities();
 
 		String itemUuid = currentItem.getUuid();
@@ -238,7 +238,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 			timelineWidget.setAnimatedDye(itemUuid);
 			delaySlider.setValue(0);
 			durationSlider.setValue(1);
-			((CheckboxWidgetAccessor) cycleBackCheckbox).setSelected(true);
+			((CheckboxAccessor) cycleBackCheckbox).setSelected(true);
 		} else {
 			int color = SkyblockerConfigManager.get().general.customDyeColors.getOrDefault(itemUuid, DyedItemColor.getOrDefault(currentItem, -1));
 			colorPicker.setARGBColor(color);
@@ -329,21 +329,21 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 		}
 		if (key == null) customizable = false;
 		else {
-			EquipmentClientInfo model = ((EntityRenderManagerAccessor) Minecraft.getInstance().getEntityRenderDispatcher()).getEquipmentAssets().get(key);
+			EquipmentClientInfo model = ((EntityRenderDispatcherAccessor) Minecraft.getInstance().getEntityRenderDispatcher()).getEquipmentAssets().get(key);
 			customizable = Stream.of(EquipmentClientInfo.LayerType.HUMANOID, EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS, EquipmentClientInfo.LayerType.WINGS)
 					.flatMap(l -> model.getLayers(l).stream())
 					.anyMatch(layer -> layer.dyeable().isPresent());
 		}
 		if (!customizable) {
 			animated = false;
-			((CheckboxWidgetAccessor) animatedCheckbox).setSelected(false);
+			((CheckboxAccessor) animatedCheckbox).setSelected(false);
 			changeVisibilities();
 			return;
 		}
 		if (SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(itemUuid)) {
 			animated = true;
 			CustomArmorAnimatedDyes.AnimatedDye animatedDye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
-			((CheckboxWidgetAccessor) cycleBackCheckbox).setSelected(animatedDye.cycleBack());
+			((CheckboxAccessor) cycleBackCheckbox).setSelected(animatedDye.cycleBack());
 			delaySlider.setValue(animatedDye.delay());
 			durationSlider.setValue(animatedDye.duration());
 			timelineWidget.setAnimatedDye(itemUuid);
@@ -359,7 +359,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 			colorPicker.setARGBColor(color);
 		}
 		changeVisibilities();
-		((CheckboxWidgetAccessor) animatedCheckbox).setSelected(animated);
+		((CheckboxAccessor) animatedCheckbox).setSelected(animated);
 	}
 
 	private static class Slider extends AbstractSliderButton {

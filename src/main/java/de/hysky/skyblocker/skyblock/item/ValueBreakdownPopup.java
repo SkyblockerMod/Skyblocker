@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.item;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -226,7 +226,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 			if (screen instanceof AbstractContainerScreen<?> handledScreen) {
 				ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key) -> {
 					if (!KEY_BINDING.matches(key)) return;
-					Slot slot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
+					Slot slot = ((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot();
 					if (slot == null || !slot.hasItem()) return;
 					NetworthResult networth = NetworthCalculator.getItemNetworth(slot.getItem());
 					if (networth.price() > 0) client.setScreen(new ValueBreakdownPopup(screen, networth));

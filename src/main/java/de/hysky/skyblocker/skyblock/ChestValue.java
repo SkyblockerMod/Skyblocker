@@ -4,7 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.skyblock.crimson.CrimsonFaction;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
@@ -108,7 +108,7 @@ public class ChestValue {
 									}
 								});
 							})
-							.bounds(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getImageWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
+							.bounds(((AbstractContainerScreenAccessor) genericContainerScreen).getX() + ((AbstractContainerScreenAccessor) genericContainerScreen).getImageWidth() - 16, ((AbstractContainerScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
 							.tooltip(Tooltip.create(getButtonTooltipText(screenType)))
 							.build()
 					);
@@ -381,9 +381,9 @@ public class ChestValue {
 
 	private static void addValueToContainer(ContainerScreen genericContainerScreen, Component chestValue, Component title) {
 		Screens.getButtons(genericContainerScreen).removeIf(ChestValueTextWidget.class::isInstance);
-		int backgroundWidth = ((HandledScreenAccessor) genericContainerScreen).getImageWidth();
-		int y = ((HandledScreenAccessor) genericContainerScreen).getY();
-		int x = ((HandledScreenAccessor) genericContainerScreen).getX();
+		int backgroundWidth = ((AbstractContainerScreenAccessor) genericContainerScreen).getImageWidth();
+		int y = ((AbstractContainerScreenAccessor) genericContainerScreen).getY();
+		int x = ((AbstractContainerScreenAccessor) genericContainerScreen).getX();
 		((ScreenAccessor) genericContainerScreen).setTitle(Component.empty());
 		Font textRenderer = Minecraft.getInstance().font;
 		int chestValueWidth = Math.min(textRenderer.width(chestValue), Math.max((backgroundWidth - 8) / 2 - 2, backgroundWidth - 8 - textRenderer.width(title)));

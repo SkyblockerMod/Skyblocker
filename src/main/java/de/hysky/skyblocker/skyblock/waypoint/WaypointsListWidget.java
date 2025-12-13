@@ -39,7 +39,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
@@ -221,7 +221,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 	void updateButtons() {
 		for (net.minecraft.client.gui.components.ContainerObjectSelectionList.Entry<AbstractWaypointEntry> entry : children()) {
 			if (entry instanceof WaypointGroupEntry groupEntry && groupEntry.enabled.selected() != groupEntry.shouldBeChecked()) {
-				((CheckboxWidgetAccessor) groupEntry.enabled).setSelected(!groupEntry.enabled.selected());
+				((CheckboxAccessor) groupEntry.enabled).setSelected(!groupEntry.enabled.selected());
 			} else if (entry instanceof WaypointEntry waypointEntry && waypointEntry.enabled.selected() != screen.isEnabled(waypointEntry.waypoint)) {
 				waypointEntry.enabled.onPress(NoopInput.INSTANCE);
 			}

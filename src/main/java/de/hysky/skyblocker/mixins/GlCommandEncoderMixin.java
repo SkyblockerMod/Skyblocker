@@ -10,7 +10,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.opengl.DirectStateAccess;
 import com.mojang.blaze3d.opengl.GlCommandEncoder;
-import de.hysky.skyblocker.mixins.accessors.BufferManagerInvoker;
+import de.hysky.skyblocker.mixins.accessors.DirectStateAccessInvoker;
 
 @Mixin(GlCommandEncoder.class)
 public class GlCommandEncoderMixin {
@@ -18,7 +18,7 @@ public class GlCommandEncoderMixin {
 	@WrapWithCondition(method = "writeToBuffer", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/DirectStateAccess;bufferSubData(IJLjava/nio/ByteBuffer;I)V"))
 	private static boolean skyblocker$replaceBufferData(DirectStateAccess manager, int buffer, long offset, ByteBuffer data, int usage, @Local(argsOnly = true) GpuBufferSlice gpuBufferSlice) {
 		if (offset == 0 && gpuBufferSlice.length() == gpuBufferSlice.buffer().size()) {
-			((BufferManagerInvoker) manager).invokeBufferData(buffer, data, gpuBufferSlice.buffer().usage());
+			((DirectStateAccessInvoker) manager).invokeBufferData(buffer, data, gpuBufferSlice.buffer().usage());
 
 			return false;
 		}

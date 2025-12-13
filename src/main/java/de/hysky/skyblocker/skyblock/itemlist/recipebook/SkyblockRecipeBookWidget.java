@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import com.google.common.collect.Lists;
-import de.hysky.skyblocker.mixins.accessors.RecipeBookWidgetAccessor;
+import de.hysky.skyblocker.mixins.accessors.RecipeBookComponentAccessor;
 import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
 import it.unimi.dsi.fastutil.Pair;
 import java.util.List;
@@ -231,8 +231,8 @@ public class SkyblockRecipeBookWidget extends RecipeBookComponent<NoopRecipeScre
 		this.currentTab.left().updateSearchResults(query, this.filterOption.getCurrent());
 	}
 
-	private RecipeBookWidgetAccessor accessor() {
-		return (RecipeBookWidgetAccessor) this;
+	private RecipeBookComponentAccessor accessor() {
+		return (RecipeBookComponentAccessor) this;
 	}
 
 	@Override

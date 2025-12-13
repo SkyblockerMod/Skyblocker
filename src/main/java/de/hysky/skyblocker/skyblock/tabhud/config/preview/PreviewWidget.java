@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.preview;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.InGameHudInvoker;
+import de.hysky.skyblocker.mixins.accessors.GuiInvoker;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
@@ -138,7 +138,7 @@ public class PreviewWidget extends AbstractWidget {
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 		matrices.scale(ratio, ratio);
-		((InGameHudInvoker) Minecraft.getInstance().gui).skyblocker$renderSidebar(context, tab.placeHolderObjective);
+		((GuiInvoker) Minecraft.getInstance().gui).skyblocker$renderSidebar(context, tab.placeHolderObjective);
 		matrices.popMatrix();
 		context.disableScissor();
 	}

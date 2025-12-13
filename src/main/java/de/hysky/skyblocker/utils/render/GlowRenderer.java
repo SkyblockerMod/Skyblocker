@@ -7,7 +7,7 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.textures.TextureFormat;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import de.hysky.skyblocker.mixins.accessors.OutlineVertexConsumerProviderAccessor;
+import de.hysky.skyblocker.mixins.accessors.OutlineBufferSourceAccessor;
 import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMaps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -26,7 +26,7 @@ public class GlowRenderer implements AutoCloseable {
 	private GlowRenderer() {
 		this.client = Minecraft.getInstance();
 		this.glowOutlineVertexConsumers = Util.make(new OutlineBufferSource(), outlineVertexConsumers -> {
-			((OutlineVertexConsumerProviderAccessor) outlineVertexConsumers).setOutlineBufferSource(new GlowVertexConsumerProvider(new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE)));
+			((OutlineBufferSourceAccessor) outlineVertexConsumers).setOutlineBufferSource(new GlowVertexConsumerProvider(new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE)));
 		});
 	}
 

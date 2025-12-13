@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarOrderTracker;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
@@ -84,7 +84,7 @@ public class TooltipManager {
 	public static void init() {
 		ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
 			if (Minecraft.getInstance().screen instanceof AbstractContainerScreen<?> handledScreen) {
-				addToTooltip(((HandledScreenAccessor) handledScreen).getFocusedSlot(), stack, lines);
+				addToTooltip(((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot(), stack, lines);
 			} else {
 				addToTooltip(null, stack, lines);
 			}

@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -33,7 +33,7 @@ public abstract class AbstractCustomHypixelGUI<T extends AbstractContainerMenu> 
 
 	public void changeHandler(AuctionHouseScreenHandler newHandler) {
 		menu.removeSlotListener(this);
-		((HandledScreenAccessor) this).setHandler(newHandler);
+		((AbstractContainerScreenAccessor) this).setHandler(newHandler);
 		menu.addSlotListener(this);
 	}
 

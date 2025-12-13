@@ -4,7 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.mixins.accessors.MapStateAccessor;
+import de.hysky.skyblocker.mixins.accessors.MapItemSavedDataAccessor;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
@@ -118,7 +118,7 @@ public class DungeonMap {
 		// Start at 1 because the first entry in the player list is the self player.
 		int i = 1;
 		UUID hovered = null;
-		for (Map.Entry<String, MapDecoration> mapDecoration : ((MapStateAccessor) state).getDecorations().entrySet()) {
+		for (Map.Entry<String, MapDecoration> mapDecoration : ((MapItemSavedDataAccessor) state).getDecorations().entrySet()) {
 			// Get the corresponding dungeon player for the map decoration.
 			DungeonPlayerManager.DungeonPlayer dungeonPlayer = null;
 			// If the map decoration is the self player, use the first player in this list. The self player is always the first player in the list.
@@ -132,13 +132,13 @@ public class DungeonMap {
 
 			// If we still didn't find a valid dungeon player after searching though the entire player list, something is wrong.
 			if (dungeonPlayer == null) {
-				dungeonPlayerError(mapDecoration.getKey(), "not found", i - 1, DungeonPlayerManager.getPlayers(), ((MapStateAccessor) state).getDecorations());
+				dungeonPlayerError(mapDecoration.getKey(), "not found", i - 1, DungeonPlayerManager.getPlayers(), ((MapItemSavedDataAccessor) state).getDecorations());
 				continue;
 			} else if (!dungeonPlayer.alive()) {
-				dungeonPlayerError(mapDecoration.getKey(), "not alive", i - 1, DungeonPlayerManager.getPlayers(), ((MapStateAccessor) state).getDecorations());
+				dungeonPlayerError(mapDecoration.getKey(), "not alive", i - 1, DungeonPlayerManager.getPlayers(), ((MapItemSavedDataAccessor) state).getDecorations());
 				continue;
 			} else if (dungeonPlayer.uuid() == null) {
-				dungeonPlayerError(mapDecoration.getKey(), "has null uuid", i - 1, DungeonPlayerManager.getPlayers(), ((MapStateAccessor) state).getDecorations());
+				dungeonPlayerError(mapDecoration.getKey(), "has null uuid", i - 1, DungeonPlayerManager.getPlayers(), ((MapItemSavedDataAccessor) state).getDecorations());
 				continue;
 			}
 			PlayerRenderState player = PlayerRenderState.of(world, dungeonPlayer, mapDecoration.getValue());

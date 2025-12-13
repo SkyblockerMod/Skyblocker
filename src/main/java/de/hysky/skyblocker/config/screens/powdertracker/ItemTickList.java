@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.config.screens.powdertracker;
 
-import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import java.util.Collection;
 import java.util.List;
 import net.minecraft.client.Minecraft;
@@ -88,7 +88,7 @@ public class ItemTickList<T> extends ContainerObjectSelectionList<ItemTickList.I
 
 		public void setChecked(boolean checked) {
 			for (Checkbox child : children) {
-				((CheckboxWidgetAccessor) child).setSelected(checked);
+				((CheckboxAccessor) child).setSelected(checked);
 			}
 		}
 

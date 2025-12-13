@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.mixins.accessors.EntityRenderManagerAccessor;
+import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.HudHelper;
@@ -88,7 +88,7 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 			if (equipmentModelData == null) {
 				equipmentModelData = ArmorModelSet.bake(ModelLayers.PLAYER_ARMOR, Minecraft.getInstance().getEntityModels(), modelPart -> new PlayerModel(modelPart, false));
 				equipmentRenderer = new EquipmentLayerRenderer(
-						((EntityRenderManagerAccessor) Minecraft.getInstance().getEntityRenderDispatcher()).getEquipmentAssets(),
+						((EntityRenderDispatcherAccessor) Minecraft.getInstance().getEntityRenderDispatcher()).getEquipmentAssets(),
 						Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.ARMOR_TRIMS));
 			}
 

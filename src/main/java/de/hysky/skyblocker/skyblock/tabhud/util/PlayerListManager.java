@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.util;
 
 import com.mojang.authlib.GameProfile;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
+import de.hysky.skyblocker.mixins.accessors.PlayerTabOverlayAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
@@ -82,7 +82,7 @@ public class PlayerListManager {
 		if (networkHandler != null) {
 			playerList = networkHandler.getOnlinePlayers()
 									.stream()
-									.sorted(PlayerListHudAccessor.getOrdering())
+									.sorted(PlayerTabOverlayAccessor.getOrdering())
 									.toList();
 			playerStringList = playerList.stream()
 										.map(PlayerInfo::getTabListDisplayName)

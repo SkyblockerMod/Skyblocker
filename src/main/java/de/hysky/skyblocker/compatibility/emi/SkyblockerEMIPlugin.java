@@ -2,7 +2,7 @@ package de.hysky.skyblocker.compatibility.emi;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
@@ -48,7 +48,7 @@ public class SkyblockerEMIPlugin implements EmiPlugin {
 		ItemRepository.getRecipesStream().map(SkyblockEmiRecipe::new).forEach(registry::addRecipe);
 		registry.addExclusionArea(InventoryScreen.class, (screen, consumer) -> {
 			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return;
-			HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
+			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) screen;
 			consumer.accept(new Bounds(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
 		});
 	}

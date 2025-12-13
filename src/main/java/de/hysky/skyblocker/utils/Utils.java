@@ -5,7 +5,7 @@ import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
+import de.hysky.skyblocker.mixins.accessors.ChatListenerAccessor;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.purse.PurseChangeCause;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -576,7 +576,7 @@ public class Utils {
 		Minecraft client = Minecraft.getInstance();
 
 		client.gui.getChat().addMessage(message);
-		((MessageHandlerAccessor) client.getChatListener()).invokeLogSystemMessage(message, Instant.now());
+		((ChatListenerAccessor) client.getChatListener()).invokeLogSystemMessage(message, Instant.now());
 		client.getNarrator().saySystemQueued(message);
 	}
 

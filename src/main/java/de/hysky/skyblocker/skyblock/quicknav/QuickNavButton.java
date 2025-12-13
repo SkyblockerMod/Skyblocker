@@ -3,8 +3,8 @@ package de.hysky.skyblocker.skyblock.quicknav;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.PopupBackgroundAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.PopupScreenAccessor;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -105,7 +105,7 @@ public class QuickNavButton extends AbstractWidget {
 		Screen screen = Minecraft.getInstance().screen;
 		while (screen instanceof PopupScreen || screen instanceof AbstractPopupScreen) {
 			if (screen instanceof PopupScreen) {
-				if (!(screen instanceof PopupBackgroundAccessor popup)) {
+				if (!(screen instanceof PopupScreenAccessor popup)) {
 					throw new IllegalStateException(
 							"Current PopupScreen does not support AccessorPopupBackground"
 					);
@@ -116,7 +116,7 @@ public class QuickNavButton extends AbstractWidget {
 			}
 		}
 		if (screen instanceof AbstractContainerScreen<?> handledScreen) {
-			var accessibleScreen = (HandledScreenAccessor) handledScreen;
+			var accessibleScreen = (AbstractContainerScreenAccessor) handledScreen;
 			int x = accessibleScreen.getX();
 			int y = accessibleScreen.getY();
 			int h = accessibleScreen.getImageHeight();

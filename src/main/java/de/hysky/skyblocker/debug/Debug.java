@@ -8,8 +8,8 @@ import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.InGameHudInvoker;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.GuiInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -108,7 +108,7 @@ public class Debug {
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (!(screen instanceof AbstractContainerScreen<?> handledScreen)) return;
 			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, keyInput) -> {
-				Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
+				Slot focusedSlot = ((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot();
 				if (dumpHoveredItemKey.matches(keyInput) && client.player != null && focusedSlot != null && focusedSlot.hasItem()) {
 					if (!keyInput.hasShiftDown()) {
 						client.player.displayClientMessage(Constants.PREFIX.get().append("Hovered Item: ").append(SkyblockerConfigManager.get().debug.dumpFormat.format(focusedSlot.getItem())), false);
@@ -185,7 +185,7 @@ public class Debug {
 		return literal("dumpActionBar")
 				.executes(context -> {
 					FabricClientCommandSource source = context.getSource();
-					Component actionBar = ((InGameHudInvoker) (source.getClient().gui)).getOverlayMessageString();
+					Component actionBar = ((GuiInvoker) (source.getClient().gui)).getOverlayMessageString();
 
 					if (actionBar != null) {
 						Component pretty = NbtUtils.toPrettyComponent(ComponentSerialization.CODEC.encodeStart(Utils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), actionBar).getOrThrow());

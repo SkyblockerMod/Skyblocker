@@ -7,7 +7,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -123,13 +123,13 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 				});
 			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) {
 				GardenPlotsWidget widget = new GardenPlotsWidget(
-						((HandledScreenAccessor) inventoryScreen).getX() + ((HandledScreenAccessor) inventoryScreen).getImageWidth() + 4,
-						((HandledScreenAccessor) inventoryScreen).getY());
+						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,
+						((AbstractContainerScreenAccessor) inventoryScreen).getY());
 				Screens.getButtons(inventoryScreen).add(widget);
 
 				inventoryScreen.registerRecipeBookToggleCallback(() -> widget.setPosition(
-						((HandledScreenAccessor) inventoryScreen).getX() + ((HandledScreenAccessor) inventoryScreen).getImageWidth() + 4,
-						((HandledScreenAccessor) inventoryScreen).getY()
+						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,
+						((AbstractContainerScreenAccessor) inventoryScreen).getY()
 				));
 			}
 		});

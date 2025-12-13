@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.container;
 
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.RaffleTaskHighlight;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
@@ -147,7 +147,7 @@ public class ContainerSolverManager {
 		if (currentSolver == null) return;
 
 		context.pose().pushMatrix();
-		context.pose().translate(((HandledScreenAccessor) handledScreen).getX(), ((HandledScreenAccessor) handledScreen).getY());
+		context.pose().translate(((AbstractContainerScreenAccessor) handledScreen).getX(), ((AbstractContainerScreenAccessor) handledScreen).getY());
 
 		if (highlights == null) highlights = currentSolver.getColors(slotMap(currentSolver instanceof ContainerAndInventorySolver ? slots : slots.subList(0, handledScreen.getMenu().getRowCount() * 9)));
 		for (ColorHighlight highlight : highlights) {

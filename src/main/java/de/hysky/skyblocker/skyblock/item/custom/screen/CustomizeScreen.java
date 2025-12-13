@@ -5,7 +5,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 import de.hysky.skyblocker.utils.Utils;
@@ -61,13 +61,13 @@ public class CustomizeScreen extends Screen {
 		ScreenEvents.AFTER_INIT.register((client1, screen, scaledWidth, scaledHeight) -> {
 			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showCustomizeButton && screen instanceof InventoryScreen inventoryScreen) {
 				CustomizeButton button = new CustomizeButton(
-						((HandledScreenAccessor) inventoryScreen).getX() + 63,
-						((HandledScreenAccessor) inventoryScreen).getY() + 10
+						((AbstractContainerScreenAccessor) inventoryScreen).getX() + 63,
+						((AbstractContainerScreenAccessor) inventoryScreen).getY() + 10
 				);
 				Screens.getButtons(inventoryScreen).add(button);
 				inventoryScreen.registerRecipeBookToggleCallback(() -> button.setPosition(
-						((HandledScreenAccessor) inventoryScreen).getX() + 63,
-						((HandledScreenAccessor) inventoryScreen).getY() + 10
+						((AbstractContainerScreenAccessor) inventoryScreen).getX() + 63,
+						((AbstractContainerScreenAccessor) inventoryScreen).getY() + 10
 				));
 			}
 		});

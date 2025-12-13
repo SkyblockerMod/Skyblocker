@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
@@ -85,7 +85,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 		@Override
 		public List<Rect2i> getGuiExtraAreas(ContainerScreen containerScreen) {
 			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.museumOverlay || !containerScreen.getTitle().getString().contains("Museum")) return List.of();
-			HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
+			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) containerScreen;
 			return List.of(new Rect2i(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
 		}
 	}
@@ -94,7 +94,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 		@Override
 		public List<Rect2i> getGuiExtraAreas(InventoryScreen containerScreen) {
 			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.isInGarden()) return List.of();
-			HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
+			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) containerScreen;
 			return List.of(new Rect2i(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
 		}
 	}
