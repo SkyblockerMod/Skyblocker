@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class DungeonsSpecialEffects {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonsSpecialEffects.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final Pattern DROP_PATTERN = Pattern.compile("(?:\\[[A-Z+]+] )?(?<player>[A-Za-z0-9_]+) unlocked (?<item>.+)!");
+	private static final Pattern CROESUS_PATTERN = Pattern.compile("^\\s{3,}(?!.*:)(?:RARE REWARD!\\s+)?(?<item>.+)");
 
 	@Init
 	public static void init() {
@@ -27,20 +27,17 @@ public class DungeonsSpecialEffects {
 
 	private static boolean displayRareDropEffect(Component message, boolean overlay) {
 		//We don't check if we're in dungeons because that check doesn't work in m7 which defeats the point of this
-		//It might also allow it to work with Croesus
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.specialEffects.rareDungeonDropEffects && !overlay) {
 			try {
 				String stringForm = message.getString();
-				Matcher matcher = DROP_PATTERN.matcher(stringForm);
+				Matcher matcher = CROESUS_PATTERN.matcher(stringForm);
 
 				if (matcher.matches()) {
-					if (matcher.group("player").equals(CLIENT.getUser().getName())) {
-						ItemStack stack = getStackFromName(matcher.group("item"));
+					ItemStack stack = getStackFromName(matcher.group("item"));
 
-						if (stack != null && !stack.isEmpty()) {
-							CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
-							CLIENT.gameRenderer.displayItemActivation(stack);
-						}
+					if (stack != null && !stack.isEmpty()) {
+						CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
+						CLIENT.gameRenderer.displayItemActivation(stack);
 					}
 				}
 			} catch (Exception e) { //In case there's a regex failure or something else bad happens
@@ -59,11 +56,27 @@ public class DungeonsSpecialEffects {
 			case "Necron's Handle", "Shiny Necron's Handle" -> "NECRON_HANDLE";
 			case "Enchanted Book (Thunderlord VII)" -> "ENCHANTED_BOOK";
 			case "Master Skull - Tier 5" -> "MASTER_SKULL_TIER_5";
-			case "Shadow Warp", "Wither Shield", "Implosion" -> "IMPLOSION_SCROLL";
+			case "Shadow Warp" -> "SHADOW_WARP_SCROLL";
+			case "Wither Shield" -> "WITHER_SHIELD_SCROLL";
+			case "Implosion" -> "IMPLOSION_SCROLL";
 			case "Fifth Master Star" -> "FIFTH_MASTER_STAR";
 
 			//M6
 			case "Giant's Sword" -> "GIANTS_SWORD";
+			case "Fourth Master Star" -> "FOURTH_MASTER_STAR";
+
+			//M5
+			case "Third Master Star" -> "THIRD_MASTER_STAR";
+			case "Shadow Fury" -> "SHADOW_FURY";
+
+			//M4
+			case "Second Master Star" -> "SECOND_MASTER_STAR";
+
+			//M3
+			case "First Master Star" -> "FIRST_MASTER_STAR";
+
+			//I like money
+			case "Recombobulator 3000" -> "RECOMBOBULATOR_3000";
 
 			default -> "NONE";
 		};
