@@ -54,7 +54,7 @@ public class PickobulusHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	protected List<Component> getConfigComponents() {
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
 		return List.of(new PlainTextComponent(Component.literal("Total Blocks: 50")), new PlainTextComponent(Component.literal("Mithril: 45")), new PlainTextComponent(Component.literal("Titanium: 5")));
 	}
 

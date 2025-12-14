@@ -16,7 +16,6 @@ import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 

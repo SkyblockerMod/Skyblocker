@@ -13,7 +13,6 @@ import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;

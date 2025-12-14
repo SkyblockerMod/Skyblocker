@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
 import java.util.List;
@@ -47,7 +46,7 @@ public class DungeonDeathWidget extends TabHudWidget {
 	}
 
 	@Override
-	protected List<Component> getConfigComponents() {
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
 		return List.of(
 				Components.iconTextComponent(Ico.SKULL, simpleEntryText("0", "Deaths:", ChatFormatting.GREEN)),
 				Components.iconTextComponent(Ico.IRON_SWORD, simpleEntryText("200", "Damage Dealt:", ChatFormatting.RED)),

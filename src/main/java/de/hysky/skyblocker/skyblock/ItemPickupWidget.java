@@ -110,10 +110,6 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen) {
-			addSimpleIcoText(Ico.BONE, "Bone ", Formatting.GREEN, "+64");
-			return;
-		}
 		// If the notifications should not be split, merge the counts.
 		boolean split = SkyblockerConfigManager.get().uiAndVisuals.itemPickup.splitNotifications;
 		if (!split) {

@@ -9,7 +9,7 @@ import de.hysky.skyblocker.skyblock.dungeon.LeapOverlay;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreen;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListScreen;
 import de.hysky.skyblocker.utils.Utils;
 import java.util.Locale;
 import net.minecraft.client.Minecraft;
@@ -98,11 +98,11 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			}
 
 			// Excessive widgets config
-			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && (nameLowercase.startsWith("widgets in") || nameLowercase.startsWith("widgets on") || nameLowercase.equals("tablist widgets") || nameLowercase.endsWith("widget settings") || (nameLowercase.startsWith("shown") && client.screen instanceof WidgetsConfigurationScreen)) -> {
+			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.hud.fancyWidgetsList && (nameLowercase.startsWith("widgets in") || nameLowercase.startsWith("widgets on") || nameLowercase.equals("tablist widgets") || nameLowercase.endsWith("widget settings") || (nameLowercase.startsWith("shown") && client.screen instanceof WidgetsListScreen)) -> {
 				client.player.containerMenu = containerScreenHandler;
 				switch (client.screen) {
-					case WidgetsConfigurationScreen screen -> screen.updateHandler(containerScreenHandler, nameLowercase);
-					case null, default -> client.setScreen(new WidgetsConfigurationScreen(containerScreenHandler, nameLowercase));
+					case WidgetsListScreen screen -> screen.updateHandler(containerScreenHandler, nameLowercase);
+					case null, default -> client.setScreen(new WidgetsListScreen(containerScreenHandler, nameLowercase));
 				}
 				ci.cancel();
 			}

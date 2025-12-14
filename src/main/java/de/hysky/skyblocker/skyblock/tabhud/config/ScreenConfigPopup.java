@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
@@ -59,7 +59,7 @@ public class ScreenConfigPopup extends AbstractPopupScreen {
 								else fancyTab.hiddenWidgets.remove(widget.getId());
 							})
 							.build());
-					((CheckboxWidgetAccessor) checkboxWidget).setSelected(fancyTab.hiddenWidgets.contains(widget.getId()));
+					((CheckboxAccessor) checkboxWidget).setSelected(fancyTab.hiddenWidgets.contains(widget.getId()));
 				}
 				ScrollableLayout widget = layout.addChild(new ScrollableLayout(minecraft, checkboxes, 130));
 				widget.setMaxHeight(130);
@@ -81,7 +81,7 @@ public class ScreenConfigPopup extends AbstractPopupScreen {
 					})
 					.build();
 			ScreenBuilder.FancyTabConfig fancyTab = builder.getConfig().fancyTab;
-			((CheckboxWidgetAccessor) checkbox).setSelected(fancyTab != null && fancyTab.enabled);
+			((CheckboxAccessor) checkbox).setSelected(fancyTab != null && fancyTab.enabled);
 		}
 		doneButton = Button.builder(CommonComponents.GUI_DONE, b -> onClose()).build();
 		updateLayout();

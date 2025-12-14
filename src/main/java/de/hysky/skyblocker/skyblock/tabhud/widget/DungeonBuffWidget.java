@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
 import java.util.Arrays;
@@ -58,7 +57,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 	}
 
 	@Override
-	protected List<Component> getConfigComponents() {
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
 		return List.of(new PlainTextComponent(net.minecraft.network.chat.Component.literal("Life Blessing").withStyle(ChatFormatting.LIGHT_PURPLE)));
 	}
 

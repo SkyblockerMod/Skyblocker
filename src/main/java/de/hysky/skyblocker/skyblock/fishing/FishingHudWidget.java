@@ -95,8 +95,8 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	@Override
 	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
 		return List.of(
-				Components.progressComponent(Ico.SALMON_BUCKET, Component.nullToEmpty("Alive Creatures"), nullToEmpty("3/5"), 60, ColorUtils.percentToColor(40)),
-				Components.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), nullToEmpty("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100) // TODO move to inner options
+				Components.progressComponent(Ico.SALMON_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty("3/5"), 60, ColorUtils.percentToColor(40)),
+				Components.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), Component.nullToEmpty("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100) // TODO move to inner options
 		);
 	}
 
