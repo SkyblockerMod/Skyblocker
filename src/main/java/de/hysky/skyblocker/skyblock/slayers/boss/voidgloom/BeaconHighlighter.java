@@ -16,6 +16,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
+@SuppressWarnings("unused")
 public class BeaconHighlighter {
 	private static final ObjectOpenHashSet<BlockPos> beaconPositions = new ObjectOpenHashSet<>();
 	private static final float[] RED_COLOR_COMPONENTS = { 1.0f, 0.0f, 0.0f };

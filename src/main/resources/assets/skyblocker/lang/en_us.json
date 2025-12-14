@@ -953,6 +953,7 @@
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.OFF": "Off",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.SOUND_AND_VISUAL": "Sound and Visual Indicator",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.VISUAL": "Visual Indicator",
+  "skyblocker.config.slayer.blazeSlayer.muteBlazeSounds": "Mute Blaze Sounds",
 
   "skyblocker.config.slayer.bossSpawnAlert": "Boss Spawn Alert",
   "skyblocker.config.slayer.bossSpawnAlert.@Tooltip": "Displays a warning when a slayer boss spawns",

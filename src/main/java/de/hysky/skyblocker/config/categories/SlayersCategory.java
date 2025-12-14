@@ -275,6 +275,13 @@ public class SlayersCategory {
 										newValue -> config.slayers.blazeSlayer.attunementHighlights = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.slayer.blazeSlayer.muteBlazeSounds"))
+								.binding(defaults.slayers.blazeSlayer.muteBlazeSounds,
+										() -> config.slayers.blazeSlayer.muteBlazeSounds,
+										newValue -> config.slayers.blazeSlayer.muteBlazeSounds = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				.build();

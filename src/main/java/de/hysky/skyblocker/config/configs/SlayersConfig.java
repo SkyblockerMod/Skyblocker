@@ -85,6 +85,8 @@ public class SlayersConfig {
 
 		public boolean attunementHighlights = true;
 
+		public boolean muteBlazeSounds = true;
+
 		public enum FirePillar {
 			OFF,
 			VISUAL,

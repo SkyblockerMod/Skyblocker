@@ -203,7 +203,7 @@ public class SlayerManager {
 		}
 		if (!armorStand.isInRange(CLIENT.player, 15)) return;
 		Arrays.stream(SlayerType.values()).forEach(type -> type.minibossNames.forEach((name) -> {
-			if (armorStand.getName().getString().contains(name) && isInSlayerQuestType(type)) {
+			if (armorStand.getName().getString().contains(name) && isInSlayerQuestType(type) && !isBossSpawned()) {
 				slayerQuest.onMiniboss(armorStand, type);
 			}
 		}));
@@ -307,13 +307,12 @@ public class SlayerManager {
 
 	/**
 	 * Checks if the player is in a Slayer Quest of the specified type,
-	 * but no boss has spawned yet.
 	 *
 	 * @param slayerType The Slayer type to check against.
-	 * @return True if in a Slayer Quest of the given type and waiting for a boss to spawn; false otherwise.
+	 * @return True if in a Slayer Quest of the given type; false otherwise.
 	 */
 	public static boolean isInSlayerQuestType(SlayerType slayerType) {
-		return !isBossSpawned() && slayerQuest != null && slayerQuest.slayerType.equals(slayerType);
+		return slayerQuest != null && slayerQuest.slayerType.equals(slayerType);
 	}
 
 	/**
