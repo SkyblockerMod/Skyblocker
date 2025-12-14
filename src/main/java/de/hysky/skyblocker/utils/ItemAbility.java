@@ -17,7 +17,16 @@ public record ItemAbility(String name, Activation activation, OptionalInt manaCo
 	private static final Pattern SOULFLOW_COST_PATTERN = Pattern.compile("Soulflow Cost: (\\d+)");
 	private static final Pattern COOLDOWN_PATTERN = Pattern.compile("Cooldown: ([0-9]+\\.?[0-9]*)s");
 
+	public static final byte MASK_MANA_COST = 1;
+	public static final byte MASK_SOULFLOW_COST = 2;
+	public static final byte MASK_COOLDOWN = 4;
+	public static final byte MASK_ALL = MASK_MANA_COST | MASK_SOULFLOW_COST | MASK_COOLDOWN;
+
 	public static List<ItemAbility> getAbilities(ItemStack stack) {
+		return getAbilities(stack, MASK_ALL);
+	}
+
+	public static List<ItemAbility> getAbilities(ItemStack stack, byte mask) {
 		List<String> strings = stack.skyblocker$getLoreStrings();
 		List<ItemAbility> abilities = new ArrayList<>(2); // items rarely have more than 2
 		String name = null;
@@ -42,7 +51,7 @@ public record ItemAbility(String name, Activation activation, OptionalInt manaCo
 			}
 			if (name == null) continue;
 			// Mana
-			if (manaCost < 0) {
+			if (manaCost < 0 && testMask(mask, MASK_MANA_COST)) {
 				matcher = MANA_COST_PATTERN.matcher(string);
 				if (matcher.matches()) {
 					manaCost = NumberUtils.toInt(matcher.group(1), -1);
@@ -50,7 +59,7 @@ public record ItemAbility(String name, Activation activation, OptionalInt manaCo
 				}
 			}
 			// Soulflow
-			if (soulflowCost < 0) {
+			if (soulflowCost < 0 && testMask(mask, MASK_SOULFLOW_COST)) {
 				matcher = SOULFLOW_COST_PATTERN.matcher(string);
 				if (matcher.matches()) {
 					soulflowCost = NumberUtils.toInt(matcher.group(1), -1);
@@ -58,7 +67,7 @@ public record ItemAbility(String name, Activation activation, OptionalInt manaCo
 				}
 			}
 			// Cooldown
-			if (cooldown < 0) {
+			if (cooldown < 0 && testMask(mask, MASK_COOLDOWN)) {
 				matcher = COOLDOWN_PATTERN.matcher(string);
 				if (matcher.matches()) {
 					cooldown = (int) (NumberUtils.toFloat(matcher.group(1), -1) * 20); // multiply by 20 to convert to ticks.
@@ -73,7 +82,7 @@ public record ItemAbility(String name, Activation activation, OptionalInt manaCo
 	}
 
 	public static boolean hasAbility(ItemStack stack, String ability) {
-		List<ItemAbility> abilities = getAbilities(stack);
+		List<ItemAbility> abilities = getAbilities(stack, (byte) 0);
 		for (ItemAbility itemAbility : abilities) {
 			if (itemAbility.name().equals(ability)) return true;
 		}
@@ -82,6 +91,10 @@ public record ItemAbility(String name, Activation activation, OptionalInt manaCo
 
 	private static OptionalInt positiveOnly(int value) {
 		return value < 0 ? OptionalInt.empty() : OptionalInt.of(value);
+	}
+
+	private static boolean testMask(byte input, byte mask) {
+		return (input & mask) != 0;
 	}
 
 	public enum Activation {

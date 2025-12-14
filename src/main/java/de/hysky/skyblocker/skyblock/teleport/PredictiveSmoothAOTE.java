@@ -196,7 +196,7 @@ public class PredictiveSmoothAOTE {
 		}
 
 		//make sure the player has enough mana to do the teleport
-		List<ItemAbility> abilities = ItemAbility.getAbilities(heldItem);
+		List<ItemAbility> abilities = ItemAbility.getAbilities(heldItem, ItemAbility.MASK_MANA_COST);
 		if (!abilities.isEmpty() && abilities.getFirst().manaCost().isPresent()) {
 			int manaCost = abilities.getFirst().manaCost().getAsInt();
 			int predictedMana = StatusBarTracker.getMana().value();

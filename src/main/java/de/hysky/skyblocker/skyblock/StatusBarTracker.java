@@ -89,7 +89,7 @@ public class StatusBarTracker {
 		if (client.player == null) return InteractionResult.PASS;
 		ItemStack handStack = client.player.getMainHandItem();
 		int manaCost = 0;
-		for (ItemAbility ability : ItemAbility.getAbilities(handStack)) {
+		for (ItemAbility ability : ItemAbility.getAbilities(handStack, ItemAbility.MASK_MANA_COST)) {
 			if (ability.activation() == ItemAbility.Activation.RIGHT_CLICK) {
 				manaCost = ability.manaCost().orElse(0);
 				break;
