@@ -7,8 +7,6 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.ManiaIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.StakeIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.TwinClawsIndicator;
-import de.hysky.skyblocker.utils.Area;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.render.title.Title;
@@ -26,8 +24,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -43,7 +39,6 @@ import java.util.regex.Pattern;
  * {@link #checkSlayerBoss(ArmorStandEntity)} processes the given armor stand and detects if it is a slayer boss or miniboss.</p>
  */
 public class SlayerManager {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SlayerManager.class);
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Atoned Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Bloodfiend");
 	private static final Pattern SLAYER_TIER_PATTERN = Pattern.compile("^(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend)\\s+(I|II|III|IV|V)$");
@@ -66,16 +61,10 @@ public class SlayerManager {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(SlayerManager::onChatMessage);
-		SkyblockEvents.LOCATION_CHANGE.register(SlayerManager::onLocationChange);
-		SkyblockEvents.AREA_CHANGE.register(SlayerManager::onAreaChange);
 		SkyblockEvents.MAYOR_CHANGE.register(SlayerManager::onMayorChange);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfigManager.get().slayers.vampireSlayer.steakStakeUpdateFrequency);
-	}
-
-	private static void onAreaChange(Area area) {
-		getSlayerBossInfo(false);
 	}
 
 	private static void onMayorChange() {
@@ -87,12 +76,6 @@ public class SlayerManager {
 		if (MayorUtils.getActivePerks().contains("Slayer XP Buff")) {
 			slayerExpBuff *= 1.25f;
 		}
-	}
-
-	private static void onLocationChange(Location location) {
-		slayerQuest = null;
-		bossFight = null;
-		Scheduler.INSTANCE.schedule(() -> getSlayerBossInfo(false), 20 * 2);
 	}
 
 	@SuppressWarnings("SameReturnValue")
@@ -122,9 +105,8 @@ public class SlayerManager {
 		}
 
 		if (slayerQuest == null) return true;
-		Matcher matcherNextLvl = PATTERN_XP_NEEDED.matcher(message);
-		Matcher matcherLvlUp = PATTERN_LVL_UP.matcher(message);
 
+		Matcher matcherNextLvl = PATTERN_XP_NEEDED.matcher(message);
 		if (matcherNextLvl.matches()) {
 			if (message.contains("LVL MAXED OUT")) {
 				slayerQuest.level = message.contains("Vampire") ? 5 : 9;
@@ -138,14 +120,14 @@ public class SlayerManager {
 					calculateBossesNeeded();
 				}
 			}
-		} else if (matcherLvlUp.matches()) {
+		} else if (PATTERN_LVL_UP.matcher(message).matches()) {
 			slayerQuest.level = Integer.parseInt(message.replaceAll("(\\d+).+", "$1"));
 		}
 
 		return true;
 	}
 
-	public static void calculateBossesNeeded() {
+	private static void calculateBossesNeeded() {
 		assert slayerQuest != null;
 		int tier = slayerQuest.slayerTier.ordinal();
 		if (tier == 0) {
@@ -156,26 +138,27 @@ public class SlayerManager {
 		}
 	}
 
-	public static void getSlayerBossInfo(boolean checkStatus) {
-		if (checkStatus && slayerQuest == null) return;
-		try {
-			for (String line : Utils.STRING_SCOREBOARD) {
-				Matcher matcher = SLAYER_TIER_PATTERN.matcher(line);
-				if (matcher.find()) {
-					String bossName = matcher.group(1);
-					String bossTier = matcher.group(2);
-					if (slayerQuest == null ||
-							!bossName.equals(slayerQuest.slayerType.bossName) ||
-							!bossTier.equals(slayerQuest.slayerTier.name())) {
-						slayerQuest = new SlayerQuest(SlayerType.fromBossName(bossName), SlayerTier.valueOf(bossTier));
-					}
-				} else if (line.equals("Slay the boss!") && !isBossSpawned()) {
-					bossFight = new BossFight(null);
+	public static void getSlayerBossInfo() {
+		boolean active = false;
+		for (String line : Utils.STRING_SCOREBOARD) {
+			Matcher matcher = SLAYER_TIER_PATTERN.matcher(line);
+			if (matcher.find()) {
+				active = true;
+				String bossName = matcher.group(1);
+				String bossTier = matcher.group(2);
+				if (slayerQuest == null ||
+						!bossName.equals(slayerQuest.slayerType.bossName) ||
+						!bossTier.equals(slayerQuest.slayerTier.name())) {
+					slayerQuest = new SlayerQuest(SlayerType.fromBossName(bossName), SlayerTier.valueOf(bossTier));
 				}
+				//break
+				//Todo: look at this
+			} else if (line.equals("Slay the boss!") && !isBossSpawned()) {
+				bossFight = new BossFight(null);
 			}
-		} catch (Exception e) {
-			LOGGER.error("[Skyblocker] Failed to get slayer boss info", e);
 		}
+
+		if (slayerQuest != null) slayerQuest.active = active;
 	}
 
 	/**
@@ -283,7 +266,7 @@ public class SlayerManager {
 	 * @return True if the player is in a Slayer Quest; false otherwise.
 	 */
 	public static boolean isInSlayer() {
-		return slayerQuest != null;
+		return slayerQuest != null && slayerQuest.active;
 	}
 
 	/**
@@ -401,6 +384,7 @@ public class SlayerManager {
 		public final SlayerTier slayerTier;
 		public final List<ArmorStandEntity> minibossesArmorStand = new ArrayList<>();
 		public final List<Entity> minibosses = new ArrayList<>();
+		public boolean active = true;
 		public int level;
 		public int xpRemaining;
 		public int bossesNeeded;

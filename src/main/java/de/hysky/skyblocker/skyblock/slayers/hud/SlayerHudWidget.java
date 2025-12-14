@@ -20,8 +20,8 @@ import java.util.Set;
 @RegisterWidget
 public class SlayerHudWidget extends ComponentBasedWidget {
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.CRIMSON_ISLE, Location.HUB, Location.SPIDERS_DEN, Location.THE_END, Location.THE_PARK, Location.THE_RIFT);
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static SlayerHudWidget instance;
-	private final MinecraftClient client = MinecraftClient.getInstance();
 
 	public SlayerHudWidget() {
 		super(Text.literal("Slayer").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), Formatting.DARK_PURPLE.getColorValue(), "hud_slayer");
@@ -71,7 +71,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 			return;
 		}
 
-		if (client.player == null || SlayerManager.getSlayerQuest() == null) return;
+		if (CLIENT.player == null || SlayerManager.getSlayerQuest() == null) return;
 
 		SlayerType type = SlayerManager.getSlayerType();
 		SlayerTier tier = SlayerManager.getSlayerTier();
