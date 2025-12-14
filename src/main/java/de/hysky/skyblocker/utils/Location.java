@@ -33,6 +33,8 @@ public enum Location implements StringIdentifiable {
 	KUUDRAS_HOLLOW("kuudra", "Kuudra's Hollow"),
 	/**
 	 * The freezing cold Glacite Mineshafts! *brr... so cold... :(*
+	 *
+	 * <p>This location might not exist according to the API? Try using {@link Area#GLACITE_MINESHAFTS}.
 	 */
 	GLACITE_MINESHAFTS("mineshaft", "Glacite Mineshafts"),
 	/**
