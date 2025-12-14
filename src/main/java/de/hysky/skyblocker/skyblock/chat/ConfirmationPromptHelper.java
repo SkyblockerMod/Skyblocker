@@ -12,12 +12,12 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.DrawnTextConsumer;
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,11 +49,11 @@ public class ConfirmationPromptHelper {
 			if (Utils.isOnSkyblock() && screen instanceof ChatScreen && SkyblockerConfigManager.get().chat.confirmationPromptHelper) {
 				ScreenMouseEvents.beforeMouseClick(screen).register((_screen1, click) -> {
 					if (hasCommand()) {
-						MinecraftClient client = MinecraftClient.getInstance();
-						if (client.currentScreen instanceof ChatScreen) {	// Ignore clicks on other interactive elements
-							DrawnTextConsumer.ClickHandler clickHandler = new DrawnTextConsumer.ClickHandler(screen.getTextRenderer(), (int) click.x(), (int) click.y())
-									.insert(false);
-							Style clickedStyle = clickHandler.getStyle();
+						Minecraft client = Minecraft.getInstance();
+						if (client.screen instanceof ChatScreen) {	// Ignore clicks on other interactive elements
+							ActiveTextCollector.ClickableStyleFinder clickHandler = new ActiveTextCollector.ClickableStyleFinder(screen.getFont(), (int) click.x(), (int) click.y())
+									.includeInsertions(false);
+							Style clickedStyle = clickHandler.result();
 
 							if (clickedStyle != null && clickedStyle.getClickEvent() != null) {	// clicking on some prompts invalidates first prompt but not in all cases, so I decided not to nullify command
 								return;
@@ -77,7 +77,7 @@ public class ConfirmationPromptHelper {
 		return command != null && commandFoundAt + 60_000 > System.currentTimeMillis();
 	}
 
-	private static boolean containsConfirmationPhrase(Text message) {
+	private static boolean containsConfirmationPhrase(Component message) {
 		String messageStr = message.getString();
 		for (String phrase : CONFIRMATION_PHRASES) {
 			if (messageStr.contains(phrase)) {
@@ -87,7 +87,7 @@ public class ConfirmationPromptHelper {
 		return false;
 	}
 
-	private static boolean onMessage(Text message, boolean overlay) {
+	private static boolean onMessage(Component message, boolean overlay) {
 		if (Utils.isOnSkyblock() && !overlay && SkyblockerConfigManager.get().chat.confirmationPromptHelper && containsConfirmationPhrase(message)) {
 			Optional<String> confirmationCommand = message.visit((style, asString) -> {
 				ClickEvent event = style.getClickEvent();
@@ -106,7 +106,7 @@ public class ConfirmationPromptHelper {
 				commandFoundAt = System.currentTimeMillis();
 
 				//Send feedback msg
-				MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.chat.confirmationPromptNotification")), false);
+				Minecraft.getInstance().player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.chat.confirmationPromptNotification")), false);
 			}
 		}
 

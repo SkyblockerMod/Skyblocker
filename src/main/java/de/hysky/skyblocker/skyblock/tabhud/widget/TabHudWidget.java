@@ -120,7 +120,6 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	 */
 	protected abstract void updateContent(List<net.minecraft.network.chat.Component> lines);
 
-
 	/**
 	 * Recommended to override this, I was just lazy adding a thing to all widgets.
 	 */

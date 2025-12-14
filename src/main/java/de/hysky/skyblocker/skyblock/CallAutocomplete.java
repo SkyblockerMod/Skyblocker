@@ -24,7 +24,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.SharedSuggestionProvider;
 
 public class CallAutocomplete {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -47,7 +47,7 @@ public class CallAutocomplete {
 			commandNode = literal("call")
 					.requires(fccs -> Utils.isOnSkyblock())
 					.then(argument("contact", StringArgumentType.greedyString())
-							.suggests((context, builder) -> CommandSource.suggestMatching(suggestions, builder)))
+							.suggests((context, builder) -> SharedSuggestionProvider.suggest(suggestions, builder)))
 					.build();
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Call Autocomplete] Failed to load abiphone contacts list!", e);

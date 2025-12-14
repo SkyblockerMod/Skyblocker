@@ -4,15 +4,15 @@ import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 // This class is split into 3 inner classes as there are multiple screens for showing catacombs levels, each with different slot ids or different style of showing the level.
 // It's still kept in 1 main class for the shared config information.
@@ -35,11 +35,11 @@ public class CatacombsLevelAdder {
 		public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 			switch (slotId) {
 				case 12, 29, 30, 31, 32, 33 -> {
-					Matcher matcher = LEVEL_PATTERN.matcher(stack.getName().getString());
+					Matcher matcher = LEVEL_PATTERN.matcher(stack.getHoverName().getString());
 					if (!matcher.matches()) return List.of();
 					String arabic = matcher.group("arabic");
 					String roman = matcher.group("roman");
-					if (arabic == null && roman == null) return SlotText.bottomLeftList(Text.literal("0").withColor(SlotText.CREAM));
+					if (arabic == null && roman == null) return SlotText.bottomLeftList(Component.literal("0").withColor(SlotText.CREAM));
 					String level;
 					if (arabic != null) {
 						if (!NumberUtils.isDigits(arabic)) return List.of(); //Sanity check
@@ -49,7 +49,7 @@ public class CatacombsLevelAdder {
 						level = String.valueOf(RomanNumerals.romanToDecimal(roman));
 					}
 
-					return SlotText.bottomLeftList(Text.literal(level).withColor(SlotText.CREAM));
+					return SlotText.bottomLeftList(Component.literal(level).withColor(SlotText.CREAM));
 				}
 				default -> {
 					return List.of();
@@ -70,7 +70,7 @@ public class CatacombsLevelAdder {
 				case 11, 12, 13, 14, 15 -> {
 					String level = getBracketedLevelFromName(stack);
 					if (!NumberUtils.isDigits(level)) return List.of();
-					return SlotText.bottomLeftList(Text.literal(level).withColor(SlotText.CREAM));
+					return SlotText.bottomLeftList(Component.literal(level).withColor(SlotText.CREAM));
 				}
 				default -> {
 					return List.of();
@@ -91,7 +91,7 @@ public class CatacombsLevelAdder {
 				case 29, 30, 31, 32, 33 -> {
 					String level = getBracketedLevelFromName(stack);
 					if (!NumberUtils.isDigits(level)) return List.of();
-					return SlotText.bottomLeftList(Text.literal(level).withColor(SlotText.CREAM));
+					return SlotText.bottomLeftList(Component.literal(level).withColor(SlotText.CREAM));
 				}
 				default -> {
 					return List.of();
@@ -101,7 +101,7 @@ public class CatacombsLevelAdder {
 	}
 
 	public static String getBracketedLevelFromName(ItemStack itemStack) {
-		String name = itemStack.getName().getString();
+		String name = itemStack.getHoverName().getString();
 		if (!name.startsWith("[Lvl ")) return null;
 		int index = name.indexOf(']');
 		if (index == -1) return null;

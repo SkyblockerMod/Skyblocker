@@ -4,10 +4,10 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.utils.Location;
 import java.util.List;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 // this widget shows info about... something?
@@ -15,7 +15,7 @@ import net.minecraft.network.chat.MutableComponent;
 @RegisterWidget
 public class DungeonDownedWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = net.minecraft.network.chat.Component.literal("Downed").withStyle(ChatFormatting.DARK_PURPLE,
+	private static final MutableComponent TITLE = Component.literal("Downed").withStyle(ChatFormatting.DARK_PURPLE,
 			ChatFormatting.BOLD);
 
 	public DungeonDownedWidget() {
@@ -35,7 +35,7 @@ public class DungeonDownedWidget extends TabHudWidget {
 				format = ChatFormatting.GRAY;
 			}
 			int idx = down.indexOf(": ");
-			net.minecraft.network.chat.Component downed = (idx == -1) ? null
+			Component downed = (idx == -1) ? null
 					: simpleEntryText(down.substring(idx + 2), "Downed: ", format);
 			this.addComponent(Components.iconTextComponent(Ico.SKULL, downed));
 		}
@@ -45,7 +45,7 @@ public class DungeonDownedWidget extends TabHudWidget {
 	}
 
 	@Override
-	protected List<Component> getConfigComponents() {
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
 		return List.of(
 				Components.iconTextComponent(Ico.SKULL, simpleEntryText("NONE", "Downed: ", ChatFormatting.GRAY)),
 				Components.iconTextComponent(Ico.CLOCK, simpleEntryText("N/A", "Time:", ChatFormatting.GRAY)),
@@ -54,5 +54,5 @@ public class DungeonDownedWidget extends TabHudWidget {
 	}
 
 	@Override
-	protected void updateContent(List<net.minecraft.network.chat.Component> lines) {}
+	protected void updateContent(List<Component> lines) {}
 }

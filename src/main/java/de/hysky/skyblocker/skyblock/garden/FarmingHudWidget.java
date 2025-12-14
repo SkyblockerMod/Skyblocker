@@ -6,7 +6,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -20,10 +19,17 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 
 @RegisterWidget
 public class FarmingHudWidget extends ComponentBasedWidget {
-	private static final MutableComponent TITLE = net.minecraft.network.chat.Component.literal("Farming").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Farming").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD);
 	public static final Map<String, String> FARMING_TOOLS = Map.ofEntries(
 			Map.entry("THEORETICAL_HOE_WHEAT_1", "WHEAT"),
 			Map.entry("THEORETICAL_HOE_WHEAT_2", "WHEAT"),
@@ -62,7 +68,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 	private final Minecraft client = Minecraft.getInstance();
 
 	public FarmingHudWidget() {
-		super(TITLE, ChatFormatting.YELLOW.getColor(), new Information("hud_farming", net.minecraft.network.chat.Component.literal("Farming HUD"), l -> l == Location.GARDEN)); // TODO translatable
+		super(TITLE, ChatFormatting.YELLOW.getColor(), new Information("hud_farming", Component.literal("Farming HUD"), l -> l == Location.GARDEN)); // TODO translatable
 		instance = this;
 		update();
 	}
@@ -75,7 +81,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 	@Override
 	public void updateContent() {
 		if (client.player == null) {
-			addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.literal("Nothing to show :p")));
+			addComponent(new PlainTextComponent(Component.literal("Nothing to show :p")));
 			return;
 		}
 		ItemStack farmingToolStack = client.player.getMainHandItem();
@@ -93,22 +99,22 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.config.farming.general.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
 		addSimpleIconTranslatableText(cropStack, "skyblocker.config.farming.general.blocksPerSec", ChatFormatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
 		//noinspection DataFlowIssue
-		addComponent(Components.progressComponent(Ico.LANTERN, net.minecraft.network.chat.Component.translatable("skyblocker.config.farming.general.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
+		addComponent(Components.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.config.farming.general.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
 		addSimpleIconTranslatableText(Ico.LIME_DYE, "skyblocker.config.farming.general.farmingXPPerHour", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
 
 		Entity cameraEntity = client.getCameraEntity();
-		net.minecraft.network.chat.Component yaw = cameraEntity == null ? net.minecraft.network.chat.Component.translatable("skyblocker.config.farming.general.noCameraEntity") : net.minecraft.network.chat.Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getYRot())));
-		net.minecraft.network.chat.Component pitch = cameraEntity == null ? net.minecraft.network.chat.Component.translatable("skyblocker.config.farming.general.noCameraEntity") : net.minecraft.network.chat.Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getXRot())));
-		addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.translatable("skyblocker.config.farming.general.yaw", yaw).withStyle(ChatFormatting.GOLD)));
-		addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.translatable("skyblocker.config.farming.general.pitch", pitch).withStyle(ChatFormatting.GOLD)));
+		Component yaw = cameraEntity == null ? Component.translatable("skyblocker.config.farming.general.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getYRot())));
+		Component pitch = cameraEntity == null ? Component.translatable("skyblocker.config.farming.general.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getXRot())));
+		addComponent(new PlainTextComponent(Component.translatable("skyblocker.config.farming.general.yaw", yaw).withStyle(ChatFormatting.GOLD)));
+		addComponent(new PlainTextComponent(Component.translatable("skyblocker.config.farming.general.pitch", pitch).withStyle(ChatFormatting.GOLD)));
 		if (LowerSensitivity.isSensitivityLowered()) {
-			addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.translatable("skyblocker.garden.hud.mouseLocked").withStyle(ChatFormatting.ITALIC)));
+			addComponent(new PlainTextComponent(Component.translatable("skyblocker.garden.hud.mouseLocked").withStyle(ChatFormatting.ITALIC)));
 		}
 	}
 
 	@Override
-	protected List<Component> getConfigComponents() {
-		return List.of(Components.iconTextComponent(Ico.BARRIER, net.minecraft.network.chat.Component.literal("TODO"))); // TODO
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		return List.of(Components.iconTextComponent(Ico.BARRIER, Component.literal("TODO"))); // TODO
 	}
 
 	/**
@@ -118,7 +124,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 	 * - NPC: only npc price (if available)
 	 * - BOTH: higher of NPC or bazaar price
 	 */
-	private net.minecraft.network.chat.Component getPriceText(String cropItemId, float cropsPerMinute) {
+	private Component getPriceText(String cropItemId, float cropsPerMinute) {
 		DoubleBooleanPair itemBazaarPrice = ItemUtils.getItemPrice(cropItemId); // Gets the bazaar sell price of the crop.
 		double bazaarPrice = itemBazaarPrice.leftDouble();
 		boolean hasBazaarData = itemBazaarPrice.rightBoolean();
@@ -127,7 +133,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		double itemNpcPrice = TooltipInfoType.NPC.hasOrNullWarning(cropItemId) ? TooltipInfoType.NPC.getData().getDouble(cropItemId) : Double.MIN_VALUE;
 
 		double priceToUse = 0;
-		net.minecraft.network.chat.Component sourceLabel = null;
+		Component sourceLabel = null;
 		boolean hasValidPrice = false;
 
 		switch (SkyblockerConfigManager.get().farming.garden.farmingHud.type) {
@@ -135,7 +141,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 				// Use NPC price if it's available.
 				if (itemNpcPrice > 0 && itemNpcPrice != Double.MIN_VALUE) {
 					priceToUse = itemNpcPrice;
-					sourceLabel = net.minecraft.network.chat.Component.literal(" (").append(net.minecraft.network.chat.Component.translatable("skyblocker.config.farming.garden.farmingHud.type.NPC")).append(")");
+					sourceLabel = Component.literal(" (").append(Component.translatable("skyblocker.config.farming.garden.farmingHud.type.NPC")).append(")");
 					hasValidPrice = true;
 				}
 			}
@@ -143,7 +149,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 				// Use Bazaar price if data is available.
 				if (hasBazaarData) {
 					priceToUse = bazaarPrice;
-					sourceLabel = net.minecraft.network.chat.Component.literal(" (").append(net.minecraft.network.chat.Component.translatable("skyblocker.config.farming.garden.farmingHud.type.BAZAAR")).append(")");
+					sourceLabel = Component.literal(" (").append(Component.translatable("skyblocker.config.farming.garden.farmingHud.type.BAZAAR")).append(")");
 					hasValidPrice = true;
 				}
 			}
@@ -151,13 +157,13 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 				// Use the NPC price if it's higher than the Bazaar price and available.
 				if (itemNpcPrice > bazaarPrice && itemNpcPrice != Double.MIN_VALUE) {
 					priceToUse = itemNpcPrice;
-					sourceLabel = net.minecraft.network.chat.Component.literal(" (").append(net.minecraft.network.chat.Component.translatable("skyblocker.config.farming.garden.farmingHud.type.NPC")).append(")");
+					sourceLabel = Component.literal(" (").append(Component.translatable("skyblocker.config.farming.garden.farmingHud.type.NPC")).append(")");
 					hasValidPrice = true;
 				}
 				// Otherwise, use Bazaar price if available.
 				else if (hasBazaarData) {
 					priceToUse = bazaarPrice;
-					sourceLabel = net.minecraft.network.chat.Component.literal(" (").append(net.minecraft.network.chat.Component.translatable("skyblocker.config.farming.garden.farmingHud.type.BAZAAR")).append(")");
+					sourceLabel = Component.literal(" (").append(Component.translatable("skyblocker.config.farming.garden.farmingHud.type.BAZAAR")).append(")");
 					hasValidPrice = true;
 				}
 			}
@@ -165,6 +171,6 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 
 
 		// Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6.
-		return hasValidPrice ? net.minecraft.network.chat.Component.literal(FarmingHud.NUMBER_FORMAT.format((int) (priceToUse * cropsPerMinute * 0.6) * 100)).append(sourceLabel) : net.minecraft.network.chat.Component.translatable("skyblocker.config.farming.general.noData");
+		return hasValidPrice ? Component.literal(FarmingHud.NUMBER_FORMAT.format((int) (priceToUse * cropsPerMinute * 0.6) * 100)).append(sourceLabel) : net.minecraft.network.chat.Component.translatable("skyblocker.config.farming.general.noData");
 	}
 }

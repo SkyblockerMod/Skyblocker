@@ -8,7 +8,6 @@ import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -18,6 +17,7 @@ import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 
 @RegisterWidget
@@ -32,7 +32,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	}
 
 	public FishingHudWidget() {
-		super(net.minecraft.network.chat.Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), new Information("hud_fishing", net.minecraft.network.chat.Component.literal("Fishing Hud")));
+		super(Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), new Information("hud_fishing", Component.literal("Fishing Hud")));
 		instance = this;
 	}
 
@@ -64,11 +64,11 @@ public class FishingHudWidget extends ComponentBasedWidget {
 		//creature counter
 		if (SkyblockerConfigManager.get().helpers.fishing.enableSeaCreatureCounter && SeaCreatureTracker.isCreaturesAlive()) { // TODO inner options
 
-			ObjectFloatPair<net.minecraft.network.chat.Component> timer = SeaCreatureTracker.getTimerText(SeaCreatureTracker.getOldestSeaCreatureAge());
+			ObjectFloatPair<Component> timer = SeaCreatureTracker.getTimerText(SeaCreatureTracker.getOldestSeaCreatureAge());
 			int seaCreatureCap = SeaCreatureTracker.getSeaCreatureCap();
 			float seaCreaturePercent = (float) SeaCreatureTracker.seaCreatureCount() / seaCreatureCap * 100;
-			addComponent(Components.progressComponent(Ico.TROPICAL_FISH_BUCKET, net.minecraft.network.chat.Component.nullToEmpty("Alive Creatures"), net.minecraft.network.chat.Component.nullToEmpty(SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap), seaCreaturePercent, ColorUtils.percentToColor(100 - seaCreaturePercent)));
-			addComponent(Components.progressComponent(Ico.CLOCK, net.minecraft.network.chat.Component.nullToEmpty("Time Left"), timer.left(), timer.rightFloat()));
+			addComponent(Components.progressComponent(Ico.TROPICAL_FISH_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty(SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap), seaCreaturePercent, ColorUtils.percentToColor(100 - seaCreaturePercent)));
+			addComponent(Components.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), timer.left(), timer.rightFloat()));
 		}
 		//bobber timer
 		if (SkyblockerConfigManager.get().helpers.fishing.enableFishingTimer && FishingHelper.startTime != 0) {
@@ -82,7 +82,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 				maxTime = 20;
 			}
 			time = Math.clamp(time, 0, maxTime);
-			addComponent(Components.progressComponent(Ico.CLOCK, net.minecraft.network.chat.Component.nullToEmpty("Bobber Time"), SkyblockTime.formatTime(maxTime - time),  100 - (time / maxTime) * 100));
+			addComponent(Components.progressComponent(Ico.CLOCK, Component.nullToEmpty("Bobber Time"), SkyblockTime.formatTime(maxTime - time),  100 - (time / maxTime) * 100));
 		}
 		// rod reel timer
 		if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD && FishingHookDisplayHelper.fishingHookArmorStand != null) {
@@ -93,10 +93,10 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	protected List<Component> getConfigComponents() {
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
 		return List.of(
-				Components.progressComponent(Ico.SALMON_BUCKET, net.minecraft.network.chat.Component.nullToEmpty("Alive Creatures"), net.minecraft.network.chat.Component.nullToEmpty("3/5"), 60, ColorUtils.percentToColor(40)),
-				Components.progressComponent(Ico.CLOCK, net.minecraft.network.chat.Component.nullToEmpty("Time Left"), net.minecraft.network.chat.Component.nullToEmpty("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100) // TODO move to inner options
+				Components.progressComponent(Ico.SALMON_BUCKET, Component.nullToEmpty("Alive Creatures"), nullToEmpty("3/5"), 60, ColorUtils.percentToColor(40)),
+				Components.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), nullToEmpty("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100) // TODO move to inner options
 		);
 	}
 

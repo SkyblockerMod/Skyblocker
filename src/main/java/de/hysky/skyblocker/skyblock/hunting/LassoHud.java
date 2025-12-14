@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.hunting;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -10,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -36,9 +36,9 @@ public class LassoHud extends ComponentBasedWidget {
 
 	public LassoHud() {
 		super(
-				net.minecraft.network.chat.Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD),
+				Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD),
 				ChatFormatting.DARK_AQUA.getColor(),
-				new Information("lasso_hud", net.minecraft.network.chat.Component.translatable("skyblocker.config.hunting.lassoHud"), AVAILABLE_LOCATION::contains)
+				new Information("lasso_hud", Component.translatable("skyblocker.config.hunting.lassoHud"), AVAILABLE_LOCATION::contains)
 		);
 		instance = this;
 	}
@@ -48,7 +48,7 @@ public class LassoHud extends ComponentBasedWidget {
 		if (!AVAILABLE_LOCATION.contains(Utils.getLocation()) || lassoEntity == null || entity.distanceToSqr(lassoEntity) > 10) return;
 
 		//see if it's the name we are looking for
-		net.minecraft.network.chat.Component name = entity.getCustomName();
+		Component name = entity.getCustomName();
 		if (name != null) {
 			//percentage bar amor stand when it's not 0
 			if (name.getString().equals(LASSO_COUNT_DOWN_NAME) && name.getSiblings().size() == 2) {
@@ -91,17 +91,17 @@ public class LassoHud extends ComponentBasedWidget {
 	public void updateContent() {
 		//if 0 percent now otherwise wait
 		if (percentage == 0) {
-			addComponent(Components.progressComponent(Items.LEAD.getDefaultInstance(), net.minecraft.network.chat.Component.translatable("skyblocker.config.hunting.lassoHud.reel"), net.minecraft.network.chat.Component.translatable("skyblocker.config.hunting.lassoHud.now").withStyle(ChatFormatting.GREEN), percentage));
+			addComponent(Components.progressComponent(Items.LEAD.getDefaultInstance(), Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.now").withStyle(ChatFormatting.GREEN), percentage));
 			return;
 		}
-		addComponent(Components.progressComponent(Items.LEAD.getDefaultInstance(), net.minecraft.network.chat.Component.translatable("skyblocker.config.hunting.lassoHud.reel"), net.minecraft.network.chat.Component.translatable("skyblocker.config.hunting.lassoHud.wait"), percentage));
+		addComponent(Components.progressComponent(Items.LEAD.getDefaultInstance(), Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.wait"), percentage));
 
 	}
 
 	@Override
-	protected List<Component> getConfigComponents() {
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
 		return List.of(
-				Components.progressComponent(Items.LEAD.getDefaultInstance(), net.minecraft.network.chat.Component.translatable("skyblocker.config.hunting.lassoHud.reel"), net.minecraft.network.chat.Component.translatable("skyblocker.config.hunting.lassoHud.wait"), 50)
+				Components.progressComponent(Items.LEAD.getDefaultInstance(), Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.wait"), 50)
 		);
 	}
 

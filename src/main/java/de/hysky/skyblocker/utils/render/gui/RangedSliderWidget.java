@@ -2,25 +2,24 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.utils.Formatters;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectFunction;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
-
 import java.text.NumberFormat;
 import java.util.function.DoubleConsumer;
+import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 
-public class RangedSliderWidget extends SliderWidget {
+public class RangedSliderWidget extends AbstractSliderButton {
 
 	private final double min;
 	private final double max;
-	private final Double2ObjectFunction<Text> formatter;
+	private final Double2ObjectFunction<Component> formatter;
 	private final DoubleConsumer callback;
 	private final double step;
 
-	public RangedSliderWidget(int x, int y, int width, int height, double defaultValue, double min, double max, double step, Double2ObjectFunction<Text> formatter, DoubleConsumer callback) {
-		super(x, y, width, height, Text.empty(), 0);
+	public RangedSliderWidget(int x, int y, int width, int height, double defaultValue, double min, double max, double step, Double2ObjectFunction<Component> formatter, DoubleConsumer callback) {
+		super(x, y, width, height, Component.empty(), 0);
 		this.min = min;
 		this.max = max;
 		this.step = step;
@@ -61,7 +60,7 @@ public class RangedSliderWidget extends SliderWidget {
 	}
 
 	@Override
-	public void onRelease(Click click) {
+	public void onRelease(MouseButtonEvent click) {
 		super.onRelease(click);
 		this.value = valueToProgress(getValue());
 	}
@@ -71,9 +70,9 @@ public class RangedSliderWidget extends SliderWidget {
 	}
 
 	public static class Builder {
-		private int x, y, width = ButtonWidget.DEFAULT_WIDTH, height = ButtonWidget.DEFAULT_HEIGHT;
+		private int x, y, width = Button.DEFAULT_WIDTH, height = Button.DEFAULT_HEIGHT;
 		private double value, min = 0, max = 1, step;
-		private Double2ObjectFunction<Text> formatter = d -> Text.literal(Formatters.DOUBLE_NUMBERS.format(d));
+		private Double2ObjectFunction<Component> formatter = d -> Component.literal(Formatters.DOUBLE_NUMBERS.format(d));
 		private DoubleConsumer callback = d -> {};
 
 		private Builder() {}
@@ -110,11 +109,11 @@ public class RangedSliderWidget extends SliderWidget {
 			return this;
 		}
 
-		public Builder optionFormatter(Text optionName, NumberFormat formatter) {
-			return formatter(d -> ScreenTexts.composeGenericOptionText(optionName, Text.literal(formatter.format(d))));
+		public Builder optionFormatter(Component optionName, NumberFormat formatter) {
+			return formatter(d -> CommonComponents.optionNameValue(optionName, Component.literal(formatter.format(d))));
 		}
 
-		public Builder formatter(Double2ObjectFunction<Text> formatter) {
+		public Builder formatter(Double2ObjectFunction<Component> formatter) {
 			this.formatter = formatter;
 			return this;
 		}

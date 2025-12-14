@@ -5,19 +5,17 @@ import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
 public class BazaarOrderTracker extends SimpleTooltipAdder {
@@ -48,17 +46,17 @@ public class BazaarOrderTracker extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		if (stack.isOf(Items.FILLED_MAP) && CREATE_BUY_ORDER_TEXT.equals(stack.getName().getString())) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
+		if (stack.is(Items.FILLED_MAP) && CREATE_BUY_ORDER_TEXT.equals(stack.getHoverName().getString())) {
 			addOrderMarker(lines, false);
-		} else if (stack.isOf(Items.MAP) && CREATE_SELL_OFFER_TEXT.equals(stack.getName().getString())) {
+		} else if (stack.is(Items.MAP) && CREATE_SELL_OFFER_TEXT.equals(stack.getHoverName().getString())) {
 			addOrderMarker(lines, true);
 		}
 	}
 
-	private void addOrderMarker(List<Text> lines, boolean sell) {
-		if (!(MinecraftClient.getInstance().currentScreen instanceof GenericContainerScreen screen)) return;
-		String skyblockId = screen.getScreenHandler().slots.get(13).getStack().getSkyblockId();
+	private void addOrderMarker(List<Component> lines, boolean sell) {
+		if (!(Minecraft.getInstance().screen instanceof ContainerScreen screen)) return;
+		String skyblockId = screen.getMenu().slots.get(13).getItem().getSkyblockId();
 		List<Order> yourOrders = orders.values().stream()
 				.filter(o -> o.sell() == sell)
 				.filter(o -> o.skyblockId().equals(skyblockId))
@@ -68,7 +66,7 @@ public class BazaarOrderTracker extends SimpleTooltipAdder {
 		if (!sell) yourOrders = yourOrders.reversed();
 
 		for (int i = 0, yourOrdersIndex = 0; i < lines.size() && yourOrdersIndex < yourOrders.size(); i++) {
-			Text line = lines.get(i);
+			Component line = lines.get(i);
 			Matcher matcher = ORDER_PATTERN.matcher(line.getString());
 			if (!matcher.matches()) continue;
 			double unitPrice = Double.parseDouble(matcher.group(1).replace(",", ""));
@@ -85,7 +83,7 @@ public class BazaarOrderTracker extends SimpleTooltipAdder {
 				yourOrdersIndex++;
 			}
 			if (yourOrdersCount == 0) continue;
-			lines.add(++i, Text.literal("  - ").formatted(Formatting.DARK_GRAY).append(Text.translatable("skyblocker.config.helpers.bazaar.orderTrackerTooltip", Text.literal(String.valueOf(yourOrdersAmount)).formatted(Formatting.GREEN), Text.literal(String.valueOf(yourOrdersCount)).formatted(Formatting.WHITE)).formatted(Formatting.GRAY)));
+			lines.add(++i, Component.literal("  - ").withStyle(ChatFormatting.DARK_GRAY).append(Component.translatable("skyblocker.config.helpers.bazaar.orderTrackerTooltip", Component.literal(String.valueOf(yourOrdersAmount)).withStyle(ChatFormatting.GREEN), Component.literal(String.valueOf(yourOrdersCount)).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GRAY)));
 		}
 	}
 

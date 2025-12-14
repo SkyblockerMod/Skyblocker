@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
 import org.jspecify.annotations.Nullable;
@@ -10,16 +9,17 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 @RegisterWidget
 public class PickobulusHudWidget extends ComponentBasedWidget {
-	private static final MutableComponent TITLE = net.minecraft.network.chat.Component.literal("Pickobulus").withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Pickobulus").withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD);
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GOLD_MINE, Location.DEEP_CAVERNS, Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
 	private static @Nullable PickobulusHudWidget instance;
 
 	public PickobulusHudWidget() {
-		super(TITLE, ChatFormatting.BLUE.getColor(), new Information("hud_pickobulus", net.minecraft.network.chat.Component.translatable("skyblocker.config.mining.enablePickobulusHelper"), AVAILABLE_LOCATIONS::contains));
+		super(TITLE, ChatFormatting.BLUE.getColor(), new Information("hud_pickobulus", Component.translatable("skyblocker.config.mining.enablePickobulusHelper"), AVAILABLE_LOCATIONS::contains));
 		instance = this;
 		update();
 	}
@@ -36,26 +36,26 @@ public class PickobulusHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public void updateContent() {
-		net.minecraft.network.chat.Component errorMessage = PickobulusHelper.getErrorMessage();
+		Component errorMessage = PickobulusHelper.getErrorMessage();
 		if (errorMessage != null) {
 			addComponent(new PlainTextComponent(errorMessage));
 			return;
 		}
 
-		addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.literal("Total Blocks: " + PickobulusHelper.getTotalBlocks())));
+		addComponent(new PlainTextComponent(Component.literal("Total Blocks: " + PickobulusHelper.getTotalBlocks())));
 
 		int[] drops = PickobulusHelper.getDrops();
 		for (PickobulusHelper.MiningDrop drop : PickobulusHelper.MiningDrop.values()) {
 			int count = drops[drop.ordinal()];
 			if (count > 0) {
-				addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.literal(drop.friendlyName() + ": " + count)));
+				addComponent(new PlainTextComponent(Component.literal(drop.friendlyName() + ": " + count)));
 			}
 		}
 	}
 
 	@Override
 	protected List<Component> getConfigComponents() {
-		return List.of(new PlainTextComponent(net.minecraft.network.chat.Component.literal("Total Blocks: 50")), new PlainTextComponent(net.minecraft.network.chat.Component.literal("Mithril: 45")), new PlainTextComponent(net.minecraft.network.chat.Component.literal("Titanium: 5")));
+		return List.of(new PlainTextComponent(Component.literal("Total Blocks: 50")), new PlainTextComponent(Component.literal("Mithril: 45")), new PlainTextComponent(Component.literal("Titanium: 5")));
 	}
 
 	@Override

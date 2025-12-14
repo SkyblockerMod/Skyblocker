@@ -13,6 +13,7 @@ import de.hysky.skyblocker.utils.Utils;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +35,7 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.HUB, Location.THE_PARK);
 
 	public SweepDetailsHudWidget() {
-		super(net.minecraft.network.chat.Component.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails", LOCATIONS);
+		super(Component.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails", LOCATIONS);
 		update();
 	}
 
@@ -53,43 +54,43 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 				case GALATEA -> ItemRepository.getItemStack("FIGSTONE_AXE", new ItemStack(Items.STONE_AXE));
 				default -> RED_CONCRETE;
 			};
-			addComponent(Components.iconTextComponent(axeIcon, net.minecraft.network.chat.Component.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
+			addComponent(Components.iconTextComponent(axeIcon, Component.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
 			return;
 		}
 
 		ItemStack logItem = LOG_TO_ITEM.getOrDefault(SweepDetailsListener.lastTreeType, RED_CONCRETE);
-		addComponent(Components.iconTextComponent(logItem, net.minecraft.network.chat.Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", SweepDetailsListener.lastTreeType)));
-		addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", SweepDetailsListener.toughness)));
+		addComponent(Components.iconTextComponent(logItem, Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", SweepDetailsListener.lastTreeType)));
+		addComponent(new PlainTextComponent(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", SweepDetailsListener.toughness)));
 
-		net.minecraft.network.chat.Component sweepAmount;
+		Component sweepAmount;
 		if (SweepDetailsListener.maxSweep > SweepDetailsListener.lastSweep) {
-			MutableComponent lastSweep = net.minecraft.network.chat.Component.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.lastSweep)).withColor(CommonColors.SOFT_RED);
-			net.minecraft.network.chat.Component thisSweep = net.minecraft.network.chat.Component.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.maxSweep)).withColor(CommonColors.GREEN);
-			sweepAmount = lastSweep.append(net.minecraft.network.chat.Component.literal(" (").withColor(CommonColors.WHITE)).append(thisSweep).append(net.minecraft.network.chat.Component.literal(")").withColor(CommonColors.WHITE));
+			MutableComponent lastSweep = Component.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.lastSweep)).withColor(CommonColors.SOFT_RED);
+			Component thisSweep = Component.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.maxSweep)).withColor(CommonColors.GREEN);
+			sweepAmount = lastSweep.append(Component.literal(" (").withColor(CommonColors.WHITE)).append(thisSweep).append(Component.literal(")").withColor(CommonColors.WHITE));
 		} else {
-			sweepAmount = net.minecraft.network.chat.Component.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.maxSweep)).withColor(CommonColors.GREEN);
+			sweepAmount = Component.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.maxSweep)).withColor(CommonColors.GREEN);
 		}
-		addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", sweepAmount)));
+		addComponent(new PlainTextComponent(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", sweepAmount)));
 
-		addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.translatable("skyblocker.galatea.hud.sweepDetails.logs", net.minecraft.network.chat.Component.literal(SweepDetailsListener.logs).withColor(CommonColors.GREEN))));
+		addComponent(new PlainTextComponent(Component.translatable("skyblocker.galatea.hud.sweepDetails.logs", Component.literal(SweepDetailsListener.logs).withColor(CommonColors.GREEN))));
 
 		if (SweepDetailsListener.axePenalty) {
-			addComponent(Components.iconTextComponent(new ItemStack(Items.BARRIER), net.minecraft.network.chat.Component.translatable("skyblocker.galatea.hud.sweepDetails.throwPenalty", SweepDetailsListener.axePenaltyAmount + "%")));
+			addComponent(Components.iconTextComponent(new ItemStack(Items.BARRIER), Component.translatable("skyblocker.galatea.hud.sweepDetails.throwPenalty", SweepDetailsListener.axePenaltyAmount + "%")));
 		}
 
 		if (SweepDetailsListener.stylePenalty) {
-			addComponent(Components.iconTextComponent(new ItemStack(Items.BARRIER), net.minecraft.network.chat.Component.translatable("skyblocker.galatea.hud.sweepDetails.stylePenalty", SweepDetailsListener.stylePenaltyAmount + "%")));
-			addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.translatable("skyblocker.galatea.hud.sweepDetails.correctStyle", SweepDetailsListener.correctStyle)));
+			addComponent(Components.iconTextComponent(new ItemStack(Items.BARRIER), Component.translatable("skyblocker.galatea.hud.sweepDetails.stylePenalty", SweepDetailsListener.stylePenaltyAmount + "%")));
+			addComponent(new PlainTextComponent(Component.translatable("skyblocker.galatea.hud.sweepDetails.correctStyle", SweepDetailsListener.correctStyle)));
 		}
 	}
 
 	@Override
-	protected List<Component> getConfigComponents() {
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
 		return List.of(
 				Components.iconTextComponent(ItemRepository.getItemStack("FIG_LOG", Items.STRIPPED_SPRUCE_LOG.getDefaultInstance()),
-						net.minecraft.network.chat.Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")),
-				new PlainTextComponent(net.minecraft.network.chat.Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)),
-				new PlainTextComponent(net.minecraft.network.chat.Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15))
+						Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")),
+				new PlainTextComponent(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)),
+				new PlainTextComponent(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15))
 		);
 	}
 

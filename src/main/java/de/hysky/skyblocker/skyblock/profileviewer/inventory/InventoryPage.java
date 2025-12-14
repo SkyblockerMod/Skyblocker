@@ -10,16 +10,15 @@ import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.SubPageSelectButton;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.item.ItemStack;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.world.item.ItemStack;
 
 public class InventoryPage implements ProfileViewerPage {
 	private static final String[] INVENTORY_PAGES = {"inventory", "enderchest", "backpack", "wardrobe", "pets", "accessoryBag"};
@@ -33,7 +32,7 @@ public class InventoryPage implements ProfileViewerPage {
 			Map.entry("accessoryBag", ProfileViewerUtils.createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTYxYTkxOGMwYzQ5YmE4ZDA1M2U1MjJjYjkxYWJjNzQ2ODkzNjdiNGQ4YWEwNmJmYzFiYTkxNTQ3MzA5ODVmZiJ9fX0="))
 	);
 
-	private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+	private static final Font textRenderer = Minecraft.getInstance().font;
 	private final ProfileViewerPage[] inventorySubPages = new ProfileViewerPage[6];
 	private final List<SubPageSelectButton> inventorySelectButtons = new ArrayList<>();
 	private int activePage = 0;
@@ -58,7 +57,7 @@ public class InventoryPage implements ProfileViewerPage {
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int startingY = rootY + (TOTAL_HEIGHT - inventorySelectButtons.size() * 21) / 2;
 		for (int i = 0; i < inventorySelectButtons.size(); i++) {
 			inventorySelectButtons.get(i).setX(rootX);
@@ -67,7 +66,7 @@ public class InventoryPage implements ProfileViewerPage {
 		}
 
 		if (inventorySubPages[activePage] == null) {
-			context.drawText(textRenderer, "No data...", rootX + 92, rootY + 72, Color.DARK_GRAY.getRGB(), false);
+			context.drawString(textRenderer, "No data...", rootX + 92, rootY + 72, Color.DARK_GRAY.getRGB(), false);
 			return;
 		}
 
@@ -85,8 +84,8 @@ public class InventoryPage implements ProfileViewerPage {
 	}
 
 	@Override
-	public List<ClickableWidget> getButtons() {
-		List<ClickableWidget> clickableWidgets = new ArrayList<>(inventorySelectButtons);
+	public List<AbstractWidget> getButtons() {
+		List<AbstractWidget> clickableWidgets = new ArrayList<>(inventorySelectButtons);
 		for (ProfileViewerPage page : inventorySubPages) {
 			if (page != null && page.getButtons() != null) clickableWidgets.addAll(page.getButtons());
 		}

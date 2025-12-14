@@ -4,19 +4,19 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
 import java.util.List;
 import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 // this widget shows info about the secrets of the dungeon
 @RegisterWidget
 public class DungeonSecretWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = net.minecraft.network.chat.Component.literal("Discoveries").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Discoveries").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD);
 	private static final Pattern DISCOVERIES = Pattern.compile("Discoveries: (\\d+)");
 
 	public DungeonSecretWidget() {
@@ -39,7 +39,7 @@ public class DungeonSecretWidget extends TabHudWidget {
 	}
 
 	@Override
-	protected List<Component> getConfigComponents() {
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
 		return List.of(
 				Components.iconTextComponent(Ico.CHEST, simpleEntryText("0", "Secrets:", ChatFormatting.YELLOW)),
 				Components.iconTextComponent(Ico.SKULL, simpleEntryText("0", "Crypts:", ChatFormatting.YELLOW))
@@ -47,5 +47,5 @@ public class DungeonSecretWidget extends TabHudWidget {
 	}
 
 	@Override
-	protected void updateContent(List<net.minecraft.network.chat.Component> lines) {}
+	protected void updateContent(List<Component> lines) {}
 }

@@ -5,19 +5,19 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
 import de.hysky.skyblocker.utils.Location;
 import java.util.List;
 import java.util.regex.Matcher;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 
 // this widget shows info about a player in the current dungeon group
 public class DungeonPlayerWidget extends TabHudWidget {
-	private static final MutableComponent TITLE = net.minecraft.network.chat.Component.literal("Player").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Player").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD);
 	private static final List<String> MSGS = List.of("???", "PRESS A TO JOIN", "Invite a friend!", "But nobody came.", "More is better!");
 
 	private final int player;
@@ -35,7 +35,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 		if (PlayerListManager.strAt(start) == null) {
 			int idx = player - 1;
-			this.addComponent(Components.iconTextComponent(Ico.SIGN, net.minecraft.network.chat.Component.literal(MSGS.get(idx)).withStyle(ChatFormatting.GRAY)));
+			this.addComponent(Components.iconTextComponent(Ico.SIGN, Component.literal(MSGS.get(idx)).withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 		Matcher m = PlayerListManager.regexAt(start, DungeonPlayerManager.PLAYER_TAB_PATTERN);
@@ -44,7 +44,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 			this.addComponent(Components.iconTextComponent());
 		} else {
 
-			net.minecraft.network.chat.Component name = net.minecraft.network.chat.Component.literal("Name: ").append(net.minecraft.network.chat.Component.literal(m.group("name")).withStyle(ChatFormatting.YELLOW));
+			Component name = Component.literal("Name: ").append(Component.literal(m.group("name")).withStyle(ChatFormatting.YELLOW));
 			this.addComponent(new PlayerComponent(PlayerListManager.getRaw(start), name));
 
 			String cl = m.group("class");
@@ -52,7 +52,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 			if (level == null) {
 				PlainTextComponent ptc = new PlainTextComponent(
-						net.minecraft.network.chat.Component.literal("Player is dead").withStyle(ChatFormatting.RED));
+						Component.literal("Player is dead").withStyle(ChatFormatting.RED));
 				this.addComponent(ptc);
 			} else {
 				DungeonClass dungeonClass = DungeonClass.from(cl);
@@ -64,7 +64,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 					cl += " " + m.group("level");
 				}
 
-				net.minecraft.network.chat.Component clazz = net.minecraft.network.chat.Component.literal("Class: ").append(net.minecraft.network.chat.Component.literal(cl).withStyle(clf));
+				Component clazz = Component.literal("Class: ").append(Component.literal(cl).withStyle(clf));
 				this.addComponent(Components.iconTextComponent(cli, clazz));
 			}
 		}
@@ -74,15 +74,15 @@ public class DungeonPlayerWidget extends TabHudWidget {
 	}
 
 	@Override
-	protected List<Component> getConfigComponents() {
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
 		return List.of(
-				new PlainTextComponent(net.minecraft.network.chat.Component.literal("Name: ").append(net.minecraft.network.chat.Component.literal("Player " + player).withStyle(ChatFormatting.YELLOW))),
-				Components.iconTextComponent(DungeonClass.UNKNOWN.icon(), net.minecraft.network.chat.Component.literal("Class: ").append(net.minecraft.network.chat.Component.literal("Unknown")).withStyle(ChatFormatting.GRAY)),
+				new PlainTextComponent(Component.literal("Name: ").append(Component.literal("Player " + player).withStyle(ChatFormatting.YELLOW))),
+				Components.iconTextComponent(DungeonClass.UNKNOWN.icon(), Component.literal("Class: ").append(Component.literal("Unknown")).withStyle(ChatFormatting.GRAY)),
 				Components.iconTextComponent(Ico.CLOCK, simpleEntryText("N/A", "Ult Cooldown:", ChatFormatting.GOLD)),
 				Components.iconTextComponent(Ico.POTION, simpleEntryText("N/A", "Revives:", ChatFormatting.DARK_PURPLE))
 		);
 	}
 
 	@Override
-	protected void updateContent(List<net.minecraft.network.chat.Component> lines) {}
+	protected void updateContent(List<Component> lines) {}
 }

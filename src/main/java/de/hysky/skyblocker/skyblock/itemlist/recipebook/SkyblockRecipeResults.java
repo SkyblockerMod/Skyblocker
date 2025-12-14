@@ -12,23 +12,6 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
-import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.StringVisitable;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Language;
 import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -36,31 +19,48 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 //TODO when in recipe view set search hint to talk about close or smth
 /**
- * Based off {@link net.minecraft.client.gui.screen.recipebook.RecipeBookResults}.
+ * Based off {@link net.minecraft.client.gui.screens.recipebook.RecipeBookPage}.
  */
 public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	/**
 	 * The width before text will go outside of the recipe book area.
 	 */
 	private static final int MAX_TEXT_WIDTH = 124;
-	private static final String ELLIPSIS_STRING = ScreenTexts.ELLIPSIS.getString();
+	private static final String ELLIPSIS_STRING = CommonComponents.ELLIPSIS.getString();
 
 	private final List<SkyblockRecipeResultButton> resultButtons = Lists.newArrayListWithCapacity(20);
 	private final List<SkyblockRecipeResultButton> recipeSlotButtons = Lists.newArrayListWithCapacity(16);
 	private @Nullable ItemStack recipeIcon = null;
-	private final MinecraftClient client = MinecraftClient.getInstance();
-	private @Nullable TexturedButtonWidget nextPageButton;
-	private @Nullable TexturedButtonWidget prevPageButton;
+	private final Minecraft client = Minecraft.getInstance();
+	private @Nullable ImageButton nextPageButton;
+	private @Nullable ImageButton prevPageButton;
 	private SkyblockRecipeResultButton hoveredResultButton;
 	private @Nullable String lastSearchQuery = null;
 	private final List<ItemStack> searchResults = new ArrayList<>();
 	/**
 	 * Text to be displayed as a tooltip.
 	 */
-	private Text hoveredText;
+	private Component hoveredText;
 	private List<SkyblockRecipe> recipeResults = new ArrayList<>();
 	private int pageCount = 0;
 	private int currentPage = 0;
@@ -76,21 +76,21 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	}
 
 	@Override
-	public void initialize(MinecraftClient client, int parentLeft, int parentTop) {
+	public void initialize(Minecraft client, int parentLeft, int parentTop) {
 		//Position the result buttons
 		for (int i = 0; i < resultButtons.size(); i++) {
 			this.resultButtons.get(i).setPosition(parentLeft + 11 + 25 * (i % 5), parentTop + 31 + 25 * (i / 5));
 		}
 
 		//Setup & position the page flip buttons
-		this.nextPageButton = new TexturedButtonWidget(parentLeft + 93, parentTop + 137, 12, 17, RecipeBookResults.PAGE_FORWARD_TEXTURES, _ignored -> {});
-		this.prevPageButton = new TexturedButtonWidget(parentLeft + 38, parentTop + 137, 12, 17, RecipeBookResults.PAGE_BACKWARD_TEXTURES, _ignored -> {});
+		this.nextPageButton = new ImageButton(parentLeft + 93, parentTop + 137, 12, 17, RecipeBookPage.PAGE_FORWARD_SPRITES, _ignored -> {});
+		this.prevPageButton = new ImageButton(parentLeft + 38, parentTop + 137, 12, 17, RecipeBookPage.PAGE_BACKWARD_SPRITES, _ignored -> {});
 		updateResultButtons();
 	}
 
 	@Override
-	public void draw(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
-		TextRenderer textRenderer = this.client.textRenderer;
+	public void draw(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
+		Font textRenderer = this.client.font;
 
 		//Reset the hovered text
 		this.hoveredText = null;
@@ -102,10 +102,10 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 
 		//Render the page count
 		if (this.pageCount > 1) {
-			Text text = Text.translatable("gui.recipebook.page", this.currentPage + 1, this.pageCount);
-			int width = textRenderer.getWidth(text);
+			Component text = Component.translatable("gui.recipebook.page", this.currentPage + 1, this.pageCount);
+			int width = textRenderer.width(text);
 
-			context.drawText(textRenderer, text, x - width / 2 + 73, y + 141, Colors.WHITE, false);
+			context.drawString(textRenderer, text, x - width / 2 + 73, y + 141, CommonColors.WHITE, false);
 		}
 
 		//Render the results
@@ -114,7 +114,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 		for (SkyblockRecipeResultButton resultButton : recipeView ? recipeSlotButtons : resultButtons) {
 			resultButton.render(context, mouseX, mouseY, delta);
 
-			if (resultButton.visible && resultButton.isSelected()) this.hoveredResultButton = resultButton;
+			if (resultButton.visible && resultButton.isHoveredOrFocused()) this.hoveredResultButton = resultButton;
 		}
 
 		//Render the page flip buttons
@@ -128,57 +128,57 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	}
 
 	//TODO enable scissor?
-	private void drawRecipeDisplay(DrawContext context, TextRenderer textRenderer, int x, int y, int mouseX, int mouseY) {
+	private void drawRecipeDisplay(GuiGraphics context, Font textRenderer, int x, int y, int mouseX, int mouseY) {
 		SkyblockRecipe recipe = this.recipeResults.get(this.currentPage);
 		//Render the "Craft Text" which is usually a requirement (e.g. Wolf Slayer 7)
 		String craftText = recipe.getExtraText().getString();
 
 		if (!craftText.isEmpty()) {
-			if (textRenderer.getWidth(craftText) > MAX_TEXT_WIDTH) {
+			if (textRenderer.width(craftText) > MAX_TEXT_WIDTH) {
 				//Set craft text as hovered text if we're hovering over it since it got truncated
-				if (isMouseHoveringText(x + 11, y + 31, mouseX, mouseY)) this.hoveredText = Text.literal(craftText);
+				if (isMouseHoveringText(x + 11, y + 31, mouseX, mouseY)) this.hoveredText = Component.literal(craftText);
 
-				craftText = textRenderer.trimToWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS_STRING;
+				craftText = textRenderer.plainSubstrByWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS_STRING;
 			}
 
-			context.drawTextWithShadow(textRenderer, craftText, x + 11, y + 31, Colors.WHITE);
+			context.drawString(textRenderer, craftText, x + 11, y + 31, CommonColors.WHITE);
 		}
 
 		//Render the resulting item's name
-		Text itemName = recipe.getOutputs().getFirst().getName();
+		Component itemName = recipe.getOutputs().getFirst().getHoverName();
 
-		if (textRenderer.getWidth(itemName) > MAX_TEXT_WIDTH) {
-			StringVisitable trimmed = StringVisitable.concat(textRenderer.trimToWidth(itemName, MAX_TEXT_WIDTH), ScreenTexts.ELLIPSIS);
-			OrderedText ordered = Language.getInstance().reorder(trimmed);
+		if (textRenderer.width(itemName) > MAX_TEXT_WIDTH) {
+			FormattedText trimmed = FormattedText.composite(textRenderer.substrByWidth(itemName, MAX_TEXT_WIDTH), CommonComponents.ELLIPSIS);
+			FormattedCharSequence ordered = Language.getInstance().getVisualOrder(trimmed);
 
-			context.drawTextWithShadow(textRenderer, ordered, x + 11, y + 43, Colors.WHITE);
+			context.drawString(textRenderer, ordered, x + 11, y + 43, CommonColors.WHITE);
 
 			//Set the resulting item's name as hovered text if we're hovering over it since the text got truncated
 			if (isMouseHoveringText(x + 11, y + 43, mouseX, mouseY)) this.hoveredText = itemName;
 		} else {
-			context.drawTextWithShadow(textRenderer, itemName, x + 11, y + 43, Colors.WHITE);
+			context.drawString(textRenderer, itemName, x + 11, y + 43, CommonColors.WHITE);
 		}
 
 		//Draw the arrow that points to the recipe's result
-		context.drawTextWithShadow(textRenderer, "▶", x + 96, y + 90, 0xAAFFFFFF);
+		context.drawString(textRenderer, "▶", x + 96, y + 90, 0xAAFFFFFF);
 		if (this.hoveredText == null && mouseX >= x + 86 && mouseY >= y + 81 && mouseX < x + 86 + 25 && mouseY < y + 81 + 25 && recipe instanceof SkyblockForgeRecipe forgeRecipe) {
-			this.hoveredText = Text.of(forgeRecipe.getDurationString());
+			this.hoveredText = Component.nullToEmpty(forgeRecipe.getDurationString());
 		}
-		if (recipeIcon != null) context.drawItem(recipeIcon, x + 115, y + 61);
+		if (recipeIcon != null) context.renderItem(recipeIcon, x + 115, y + 61);
 	}
 
 	@Override
-	public void drawTooltip(DrawContext context, int x, int y) {
-		if (this.client.currentScreen != null) {
+	public void drawTooltip(GuiGraphics context, int x, int y) {
+		if (this.client.screen != null) {
 			//Draw the tooltip of the hovered result button if one is hovered over
 			if (this.hoveredResultButton != null && !this.hoveredResultButton.getDisplayStack().isEmpty()) {
 				ItemStack stack = this.hoveredResultButton.getDisplayStack();
-				Identifier tooltipStyle = stack.get(DataComponentTypes.TOOLTIP_STYLE);
+				Identifier tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
 
-				context.drawTooltip(this.client.textRenderer, SkyblockRecipeResultButton.getTooltip(stack), x, y, tooltipStyle);
+				context.setComponentTooltipForNextFrame(this.client.font, SkyblockRecipeResultButton.getTooltip(stack), x, y, tooltipStyle);
 			} else if (this.hoveredText != null) {
 				//Draw text as a tooltip if it got truncated & we're hovering over it (for recipe display)
-				context.drawTooltip(this.client.textRenderer, this.hoveredText, x, y);
+				context.setTooltipForNextFrame(this.client.font, this.hoveredText, x, y);
 			}
 		}
 	}
@@ -187,7 +187,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	 * Returns true if the mouse is hovering over the text at this location.
 	 */
 	private boolean isMouseHoveringText(int textX, int textY, int mouseX, int mouseY) {
-		return HudHelper.pointIsInArea(mouseX, mouseY, textX, textY, textX + MAX_TEXT_WIDTH + 4, textY + this.client.textRenderer.fontHeight);
+		return HudHelper.pointIsInArea(mouseX, mouseY, textX, textY, textX + MAX_TEXT_WIDTH + 4, textY + this.client.font.lineHeight);
 	}
 
 	protected void closeRecipeView() {
@@ -211,7 +211,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 
 			//Search for stacks which contain the search term
 			for (ItemStack stack : ItemRepository.getItems()) {
-				String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
+				String name = stack.getHoverName().getString().toLowerCase(Locale.ENGLISH);
 				if (!filterOption.test(name)) continue;
 
 				List<String> lore = stack.skyblocker$getLoreStrings();
@@ -330,7 +330,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (this.nextPageButton.mouseClicked(click, doubled)) {
 			this.currentPage++;
 			this.updateResultButtons();
@@ -385,7 +385,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	}
 
 	@Override
-	public boolean keyPressed(double mouseX, double mouseY, KeyInput input) {
+	public boolean keyPressed(double mouseX, double mouseY, KeyEvent input) {
 		ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
 		if (hovered == null) return false;
 
@@ -393,7 +393,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			return true;
 		}
 
-		if (SkyblockerConfigManager.get().helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(input)) {
+		if (SkyblockerConfigManager.get().helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matches(input)) {
 			ItemPrice.itemPriceLookup(client.player, hovered);
 			return true;
 		}

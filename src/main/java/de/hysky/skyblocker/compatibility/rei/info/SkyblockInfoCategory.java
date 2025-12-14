@@ -16,17 +16,16 @@ import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +43,8 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 	}
 
 	@Override
-	public Text getTitle() {
-		return Text.translatable("emi.category.skyblocker.skyblock_info");
+	public Component getTitle() {
+		return Component.translatable("emi.category.skyblocker.skyblock_info");
 	}
 
 	@Override
@@ -53,8 +52,8 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 		return ICON;
 	}
 
-	private ButtonWidget getWikiLookupButton(Text text, boolean isOfficial, ItemStack itemStack, ClientPlayerEntity player) {
-		ButtonWidget btn = ButtonWidget.builder(text, (button) -> WikiLookupManager.openWiki(itemStack, player, isOfficial)).build();
+	private Button getWikiLookupButton(Component text, boolean isOfficial, ItemStack itemStack, LocalPlayer player) {
+		Button btn = Button.builder(text, (button) -> WikiLookupManager.openWiki(itemStack, player, isOfficial)).build();
 
 		if (ItemRepository.getWikiLink(itemStack.getNeuName(), isOfficial) == null) {
 			btn.setMessage(btn.getMessage().copy().withColor(RED_ERROR_COLOR));
@@ -65,8 +64,8 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 	}
 
 	private boolean checkScreen() {
-		Screen currentScreen = MinecraftClient.getInstance().currentScreen;
-		return currentScreen instanceof GenericContainerScreen || currentScreen instanceof AbstractCustomHypixelGUI<?>;
+		Screen currentScreen = Minecraft.getInstance().screen;
+		return currentScreen instanceof ContainerScreen || currentScreen instanceof AbstractCustomHypixelGUI<?>;
 	}
 
 	@Override
@@ -79,32 +78,32 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 		Slot slot = Widgets.createSlot(new Point(bounds.getCenterX() - 9 + 1, bounds.y + 1 + OFFSET / 2)).entry(entryStack);
 		widgets.add(slot);
 
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
-		DirectionalLayoutWidget layoutWidget = DirectionalLayoutWidget.vertical();
+		LocalPlayer player = Minecraft.getInstance().player;
+		LinearLayout layoutWidget = LinearLayout.vertical();
 		layoutWidget.setPosition(bounds.x + OFFSET, bounds.y + OFFSET + REI_SLOT_HEIGHT);
 
-		layoutWidget.add(ButtonWidget.builder(Text.translatable("key.skyblocker.itemPriceLookup"), (button) -> {
+		layoutWidget.addChild(Button.builder(Component.translatable("key.skyblocker.itemPriceLookup"), (button) -> {
 			ItemPrice.itemPriceLookup(player, itemStack);
 
 			Scheduler.INSTANCE.schedule(() -> {
 				if (checkScreen()) return;
-				button.setMessage(Text.translatable("skyblocker.rei.skyblockInfo.failedToFind").withColor(RED_ERROR_COLOR));
+				button.setMessage(Component.translatable("skyblocker.rei.skyblockInfo.failedToFind").withColor(RED_ERROR_COLOR));
 				button.active = false;
 			}, 10);
 		}).build());
 
-		layoutWidget.add(getWikiLookupButton(Text.translatable("key.skyblocker.wikiLookup.official"), true, itemStack, player));
-		layoutWidget.add(getWikiLookupButton(Text.translatable("key.skyblocker.wikiLookup.fandom"), false, itemStack, player));
+		layoutWidget.addChild(getWikiLookupButton(Component.translatable("key.skyblocker.wikiLookup.official"), true, itemStack, player));
+		layoutWidget.addChild(getWikiLookupButton(Component.translatable("key.skyblocker.wikiLookup.fandom"), false, itemStack, player));
 
-		layoutWidget.forEachChild(child -> widgets.add(Widgets.wrapVanillaWidget(child)));
-		layoutWidget.refreshPositions();
+		layoutWidget.visitWidgets(child -> widgets.add(Widgets.wrapVanillaWidget(child)));
+		layoutWidget.arrangeElements();
 
 		return widgets;
 	}
 
 	@Override
 	public int getDisplayHeight() {
-		return 3 * ButtonWidget.DEFAULT_HEIGHT + REI_SLOT_HEIGHT + 2 * OFFSET;
+		return 3 * Button.DEFAULT_HEIGHT + REI_SLOT_HEIGHT + 2 * OFFSET;
 	}
 
 	@Override

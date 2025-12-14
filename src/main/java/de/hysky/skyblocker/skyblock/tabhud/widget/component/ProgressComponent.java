@@ -7,7 +7,6 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 
@@ -23,21 +22,21 @@ class ProgressComponent extends Component {
 	private static final int COL_BG_BAR = 0xF0101010;
 
 	private final ItemStack ico;
-	private final Component desc, bar;
+	private final net.minecraft.network.chat.Component desc, bar;
 	private final float pcnt;
 	private final int color;
 	private final boolean colorIsBright;
 	private final int barW;
 
 	/**
-	 * @see Components#progressComponent(ItemStack, Component, Component, float)
+	 * @see Components#progressComponent(ItemStack, net.minecraft.network.chat.Component, net.minecraft.network.chat.Component, float)
 	 */
-	ProgressComponent(@Nullable ItemStack ico, @Nullable Component description, @Nullable Component bar, float percent, int color) {
+	ProgressComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component description, net.minecraft.network.chat.@Nullable Component bar, float percent, int color) {
 		boolean showIcons = SkyblockerConfigManager.get().uiAndVisuals.hud.displayIcons;
 		if (description == null || bar == null) {
 			this.ico = showIcons ? Ico.BARRIER : null;
-			this.desc = Component.literal("No data").withStyle(ChatFormatting.GRAY);
-			this.bar = Component.literal("---").withStyle(ChatFormatting.GRAY);
+			this.desc = net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY);
+			this.bar = net.minecraft.network.chat.Component.literal("---").withStyle(ChatFormatting.GRAY);
 			this.pcnt = 100f;
 			this.color = 0xFF000000 | ChatFormatting.DARK_GRAY.getColor();
 		} else {
@@ -57,22 +56,22 @@ class ProgressComponent extends Component {
 	/**
 	 * @see Components#progressComponent(ItemStack, Component, Component, float)
 	 */
-	ProgressComponent(@Nullable ItemStack ico, @Nullable Component description, @Nullable Component bar, float percent) {
+	ProgressComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component description, net.minecraft.network.chat.@Nullable Component bar, float percent) {
 		this(ico, description, bar, percent, ColorUtils.percentToColor(percent));
 	}
 
 	/**
 	 * @see Components#progressComponent(ItemStack, Component, float)
 	 */
-	ProgressComponent(@Nullable ItemStack ico, @Nullable Component description, float percent, int color) {
+	ProgressComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component description, float percent, int color) {
 		// make sure percentages always have two decimals
-		this(ico, description, Component.nullToEmpty(String.format("%.2f%%", percent)), percent, color);
+		this(ico, description, net.minecraft.network.chat.Component.nullToEmpty(String.format("%.2f%%", percent)), percent, color);
 	}
 
 	/**
 	 * @see Components#progressComponent(ItemStack, Component, float)
 	 */
-	ProgressComponent(@Nullable ItemStack ico, @Nullable Component description, float percent) {
+	ProgressComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component description, float percent) {
 		this(ico, description, percent, ColorUtils.percentToColor(percent));
 	}
 

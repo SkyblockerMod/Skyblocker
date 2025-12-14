@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen.name;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
@@ -13,60 +14,58 @@ import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.InsertTextVi
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.SetStyleVisitor;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.client.gui.widget.Positioner;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.input.AbstractInput;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.sound.SoundManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.StringHelper;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.LayoutSettings;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.StringUtil;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.ColorHelper;
-
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 import java.util.function.Predicate;
 
-public class CustomizeNameWidget extends ContainerWidget {
+public class CustomizeNameWidget extends AbstractContainerWidget {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 	private static final int PADDING = 3;
 
-	private final MinecraftClient client = MinecraftClient.getInstance();
-	private final TextRenderer textRenderer = client.textRenderer;
+	private final Minecraft client = Minecraft.getInstance();
+	private final Font textRenderer = client.font;
 	private String uuid = "";
 
-	private Text text = Text.empty();
+	private Component text = Component.empty();
 	private String textString = "";
 
 	private final TextField textField;
-	private final TextWidget previewWidget;
+	private final StringWidget previewWidget;
 	private final FormattingButton[] formattingButtons;
-	private final List<ClickableWidget> widgets;
+	private final List<AbstractWidget> widgets;
 
-	private final GridWidget grid = new GridWidget();
+	private final GridLayout grid = new GridLayout();
 
 	private int selectionStart;
 	private int selectionEnd;
@@ -74,47 +73,47 @@ public class CustomizeNameWidget extends ContainerWidget {
 	private @Nullable Style insertAs;
 
 	public CustomizeNameWidget(Screen parent) {
-		super(0, 0, 0, 0, Text.literal("Customize Item Name"));
-		ImmutableList.Builder<ClickableWidget> builder = ImmutableList.builder();
+		super(0, 0, 0, 0, Component.literal("Customize Item Name"));
+		ImmutableList.Builder<AbstractWidget> builder = ImmutableList.builder();
 		// the gui is a grid of 20 columns, should be 16 px each
-		textField = grid.add(new TextField(), 1, 0, 1, 20);
+		textField = grid.addChild(new TextField(), 1, 0, 1, 20);
 		builder.add(textField);
 		formattingButtons = new FormattingButton[]{
-				new FormattingButton("B", Formatting.BOLD, Style::isBold),
-				new FormattingButton("I", Formatting.ITALIC, Style::isItalic),
-				new FormattingButton("U", Formatting.UNDERLINE, Style::isUnderlined),
-				new FormattingButton("S", Formatting.STRIKETHROUGH, Style::isStrikethrough),
-				new FormattingButton("|||", Formatting.OBFUSCATED, Style::isObfuscated),
+				new FormattingButton("B", ChatFormatting.BOLD, Style::isBold),
+				new FormattingButton("I", ChatFormatting.ITALIC, Style::isItalic),
+				new FormattingButton("U", ChatFormatting.UNDERLINE, Style::isUnderlined),
+				new FormattingButton("S", ChatFormatting.STRIKETHROUGH, Style::isStrikethrough),
+				new FormattingButton("|||", ChatFormatting.OBFUSCATED, Style::isObfuscated),
 		};
 
 		addFormattingButtons(builder);
 
-		builder.add(grid.add(ButtonWidget.builder(Text.translatable("skyblocker.customItemNames.screen.customColor"), b ->
+		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.customColor"), b ->
 				client.setScreen(ColorPopup.create(parent, color -> setStyle(Style.EMPTY.withColor(color))))
 		).size(48, 16).build(), 2, 17, 1, 3));
-		builder.add(grid.add(ButtonWidget.builder(Text.translatable("skyblocker.customItemNames.screen.gradientColor"), b ->
+		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.gradientColor"), b ->
 				client.setScreen(ColorPopup.createGradient(parent, this::createGradient))
 		).size(48, 16).build(), 3, 17, 1, 3));
-		builder.add(grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.translatable("skyblocker.customItemNames.screen.howToRemove").formatted(Formatting.ITALIC, Formatting.GRAY), textRenderer)/*.alignLeft()*/, 4, 0, 1, 20, Positioner.create().marginTop(2)));
-		builder.add(previewWidget = grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.empty(), textRenderer).setMaxWidth(20 * 16, TextWidget.TextOverflow.SCROLLING), 5, 0, 1, 20, Positioner.create().marginY(2).alignHorizontalCenter()));
+		builder.add(grid.addChild(new StringWidget(20 * 16, textRenderer.lineHeight, Component.translatable("skyblocker.customItemNames.screen.howToRemove").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY), textRenderer)/*.alignLeft()*/, 4, 0, 1, 20, LayoutSettings.defaults().paddingTop(2)));
+		builder.add(previewWidget = grid.addChild(new StringWidget(20 * 16, textRenderer.lineHeight, Component.empty(), textRenderer).setMaxWidth(20 * 16, StringWidget.TextOverflow.SCROLLING), 5, 0, 1, 20, LayoutSettings.defaults().paddingVertical(2).alignHorizontallyCenter()));
 		widgets = builder.build();
-		grid.refreshPositions();
+		grid.arrangeElements();
 		grid.setPosition(getX() + PADDING, getY() + PADDING);
-		setDimensions(grid.getWidth() + PADDING * 2, grid.getHeight() + PADDING * 2);
+		setSize(grid.getWidth() + PADDING * 2, grid.getHeight() + PADDING * 2);
 		selectionStart = selectionEnd = textString.length();
 	}
 
 	// Makes it easier for Aaron Mod to add a chroma colour button
-	private void addFormattingButtons(ImmutableList.Builder<ClickableWidget> builder) {
+	private void addFormattingButtons(ImmutableList.Builder<AbstractWidget> builder) {
 		for (int i = 0; i < formattingButtons.length; i++) {
 			FormattingButton button = formattingButtons[i];
-			builder.add(grid.add(button, 0, i));
+			builder.add(grid.addChild(button, 0, i));
 		}
 
 		int colorButtonIndex = 0;
-		for (Formatting formatting : Formatting.values()) {
+		for (ChatFormatting formatting : ChatFormatting.values()) {
 			if (formatting.isColor()) {
-				builder.add(grid.add(new ColorButton(formatting), 2, colorButtonIndex++));
+				builder.add(grid.addChild(new ColorButton(formatting), 2, colorButtonIndex++));
 			}
 		}
 	}
@@ -133,12 +132,12 @@ public class CustomizeNameWidget extends ContainerWidget {
 
 	public void setItem(ItemStack stack) {
 		uuid = stack.getUuid();
-		setText(stack.getName().copy(), false);
+		setText(stack.getHoverName().copy(), false);
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-		context.drawGuiTexture(
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		context.blitSprite(
 				RenderPipelines.GUI_TEXTURED,
 				INNER_SPACE_TEXTURE,
 				getX(),
@@ -146,10 +145,10 @@ public class CustomizeNameWidget extends ContainerWidget {
 				getWidth(),
 				getHeight());
 		if (Debug.debugEnabled()) {
-			context.drawTextWithShadow(textRenderer, Text.literal("Selection Start: " + selectionStart + ", Selection End: " + selectionEnd), getX(), getBottom(), -1);
-			context.drawTextWithShadow(textRenderer, Text.literal("Insert Style: " + (insertAs == null ? "null" : insertAs.toString())), getX(), getBottom() + 10, -1);
+			context.drawString(textRenderer, Component.literal("Selection Start: " + selectionStart + ", Selection End: " + selectionEnd), getX(), getBottom(), -1);
+			context.drawString(textRenderer, Component.literal("Insert Style: " + (insertAs == null ? "null" : insertAs.toString())), getX(), getBottom() + 10, -1);
 		}
-		for (ClickableWidget widget : widgets) {
+		for (AbstractWidget widget : widgets) {
 			widget.render(context, mouseX, mouseY, deltaTicks);
 		}
 	}
@@ -188,7 +187,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 	 */
 	private void setStyle(Style style) {
 		if (selectionStart == selectionEnd) {
-			insertAs = style.withParent(insertAs == null ? Style.EMPTY : insertAs);
+			insertAs = style.applyTo(insertAs == null ? Style.EMPTY : insertAs);
 			return;
 		}
 		SetStyleVisitor setStyleVisitor = new SetStyleVisitor(style, selectionStart, selectionEnd);
@@ -210,32 +209,32 @@ public class CustomizeNameWidget extends ContainerWidget {
 	 *
 	 * @param text the text to set
 	 */
-	public void setText(Text text, boolean updateConfig) {
+	public void setText(Component text, boolean updateConfig) {
 		this.text = text;
 		textString = text.getString();
 		if (updateConfig && !uuid.isEmpty()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			if (textString.isBlank()) config.general.customItemNames.remove(uuid);
-			else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(Formatting.WHITE)));
+			else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(ChatFormatting.WHITE)));
 		}
 		previewWidget.setMessage(text);
-		grid.refreshPositions();
+		grid.arrangeElements();
 
 		// called before init
 		if (textField != null) textField.updateMePrettyPlease = true;
 	}
 
-	public void setText(Text text) {
+	public void setText(Component text) {
 		setText(text, true);
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		return widgets;
 	}
 
 	@Override
-	public boolean charTyped(CharInput input) {
+	public boolean charTyped(CharacterEvent input) {
 		if (super.charTyped(input) || textField.isFocused()) return true;
 		setFocused(textField);
 		return textField.charTyped(input);
@@ -248,9 +247,9 @@ public class CustomizeNameWidget extends ContainerWidget {
 	 * @param str the text to insert
 	 */
 	public void insertText(String str) {
-		str = StringHelper.stripInvalidChars(str);
+		str = StringUtil.filterText(str);
 		if (textString.isEmpty()) {
-			setText(Text.literal(str).setStyle(insertAs != null ? insertAs : Style.EMPTY));
+			setText(Component.literal(str).setStyle(insertAs != null ? insertAs : Style.EMPTY));
 		} else {
 			InsertTextVisitor visitor = new InsertTextVisitor(str, insertAs, selectionStart, selectionEnd);
 			text.visit(visitor, Style.EMPTY);
@@ -277,7 +276,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 		if (ctrlHeld) {
 			selectionStart = getWordSkipPosition(left);
 		} else {
-			selectionStart = Util.moveCursor(textString, selectionStart, left ? -1 : 1);
+			selectionStart = Util.offsetByCodepoints(textString, selectionStart, left ? -1 : 1);
 		}
 		if (!shiftHeld) selectionEnd = selectionStart;
 		insertAs = null;
@@ -338,20 +337,20 @@ public class CustomizeNameWidget extends ContainerWidget {
 		if (!focused) setFocused(null);
 	}
 
-	private class FormattingButton extends PressableWidget {
+	private class FormattingButton extends AbstractButton {
 		private boolean enabled;
-		private final Formatting format;
+		private final ChatFormatting format;
 		private final Predicate<Style> isEnabled;
 
-		protected FormattingButton(Text message, Formatting format, Predicate<Style> isEnabled) {
+		protected FormattingButton(Component message, ChatFormatting format, Predicate<Style> isEnabled) {
 			super(0, 0, 16, 16, message);
 			this.format = format;
 			this.isEnabled = isEnabled;
-			setTooltip(Tooltip.of(ConfigUtils.FORMATTING_FORMATTER.apply(format))); // Yoink from config utils hehhehehehehe
+			setTooltip(Tooltip.create(ConfigUtils.FORMATTING_FORMATTER.apply(format))); // Yoink from config utils hehhehehehehe
 		}
 
-		protected FormattingButton(String str, Formatting format, Predicate<Style> isEnabled) {
-			this(Text.literal(str).formatted(format), format, isEnabled);
+		protected FormattingButton(String str, ChatFormatting format, Predicate<Style> isEnabled) {
+			this(Component.literal(str).withStyle(format), format, isEnabled);
 		}
 
 		private void update(Style style) {
@@ -359,12 +358,12 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onPress(AbstractInput input) {
+		public void onPress(InputWithModifiers input) {
 			setEnabled(!enabled);
 			switch (format) {
 				case BOLD -> setStyle(Style.EMPTY.withBold(enabled));
 				case ITALIC -> setStyle(Style.EMPTY.withItalic(enabled));
-				case UNDERLINE -> setStyle(Style.EMPTY.withUnderline(enabled));
+				case UNDERLINE -> setStyle(Style.EMPTY.withUnderlined(enabled));
 				case STRIKETHROUGH -> setStyle(Style.EMPTY.withStrikethrough(enabled));
 				case OBFUSCATED -> setStyle(Style.EMPTY.withObfuscated(enabled));
 				default -> throw new IllegalStateException("Unexpected value: " + format);
@@ -373,49 +372,49 @@ public class CustomizeNameWidget extends ContainerWidget {
 
 		private void setEnabled(boolean enabled) {
 			this.enabled = enabled;
-			setMessage(getMessage().copy().withColor(enabled ? Colors.YELLOW : Colors.WHITE));
+			setMessage(getMessage().copy().withColor(enabled ? CommonColors.YELLOW : CommonColors.WHITE));
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 		@Override
-		protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-			this.drawButton(context);
+		protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+			this.renderDefaultSprite(context);
 		}
 	}
 
-	private class ColorButton extends PressableWidget {
-		private final Formatting color;
+	private class ColorButton extends AbstractButton {
+		private final ChatFormatting color;
 		private final int intColor;
 
-		private ColorButton(Formatting format) {
+		private ColorButton(ChatFormatting format) {
 			super(0, 0, 16, 16, ConfigUtils.FORMATTING_FORMATTER.apply(format));
-			setTooltip(Tooltip.of(getMessage()));
+			setTooltip(Tooltip.create(getMessage()));
 			this.color = format;
-			this.intColor = ColorHelper.fullAlpha(color.getColorValue());
+			this.intColor = ARGB.opaque(color.getColor());
 		}
 
 		@Override
-		public void onPress(AbstractInput input) {
+		public void onPress(InputWithModifiers input) {
 			setStyle(Style.EMPTY.withColor(color));
 		}
 
 		@Override
-		public void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-			this.drawButton(context);
+		public void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+			this.renderDefaultSprite(context);
 			context.fill(getX() + 2, getY() + 2, getRight() - 2, getBottom() - 2, intColor);
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	}
 
 	/**
 	 * Used to capture inputs and render the text. Most logic is done in the screen itself
 	 */
-	private class TextField extends ClickableWidget {
+	private class TextField extends AbstractWidget {
 		private int renderedSelectionStart;
 
 		private int renderedSelectionEnd;
@@ -424,11 +423,11 @@ public class CustomizeNameWidget extends ContainerWidget {
 		private int renderEnd;
 
 		private TextField() {
-			super(0, 0, 320, 20, Text.literal("TextField"));
+			super(0, 0, 320, 20, Component.literal("TextField"));
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 			if (renderedSelectionStart != selectionStart || renderedSelectionEnd != selectionEnd || updateMePrettyPlease) {
 				renderedSelectionStart = selectionStart;
 				renderedSelectionEnd = selectionEnd;
@@ -439,38 +438,38 @@ public class CustomizeNameWidget extends ContainerWidget {
 				renderEnd = getRenderWidthVisitor.getWidths().secondInt();
 			}
 
-			context.fill(getX(), getY(), getRight(), getBottom(), Colors.BLACK);
-			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), isFocused() ? Colors.WHITE : Colors.GRAY);
+			context.fill(getX(), getY(), getRight(), getBottom(), CommonColors.BLACK);
+			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), isFocused() ? CommonColors.WHITE : CommonColors.GRAY);
 			int textX = getTextX();
-			int textY = getY() + (getHeight() - textRenderer.fontHeight) / 2;
+			int textY = getY() + (getHeight() - textRenderer.lineHeight) / 2;
 
 			if (renderStart != renderEnd) {
-				context.fill(textX + renderStart, textY, textX + renderEnd, textY + textRenderer.fontHeight, Colors.BLUE);
+				context.fill(textX + renderStart, textY, textX + renderEnd, textY + textRenderer.lineHeight, CommonColors.BLUE);
 			}
 			if (this.isFocused()) {
-				context.drawVerticalLine(textX + (selectionStart < selectionEnd ? renderStart : renderEnd) - 1, textY - 1, textY + textRenderer.fontHeight, Colors.WHITE);
+				context.vLine(textX + (selectionStart < selectionEnd ? renderStart : renderEnd) - 1, textY - 1, textY + textRenderer.lineHeight, CommonColors.WHITE);
 			}
 
-			context.drawText(textRenderer, text, textX, textY, -1, false);
+			context.drawString(textRenderer, text, textX, textY, -1, false);
 
-			this.setCursor(context);
+			this.handleCursor(context);
 		}
 
 		@Override
-		protected void setCursor(DrawContext context) {
+		protected void handleCursor(GuiGraphics context) {
 			if (this.isHovered()) {
-				context.setCursor(StandardCursors.IBEAM);
+				context.requestCursor(CursorTypes.IBEAM);
 			}
 		}
 
 		@Override
-		public boolean keyPressed(KeyInput input) {
+		public boolean keyPressed(KeyEvent input) {
 			boolean captured = true;
 			switch (input.key()) {
-				case GLFW.GLFW_KEY_LEFT -> moveCursor(true, input.hasShift(), input.hasCtrl());
-				case GLFW.GLFW_KEY_RIGHT -> moveCursor(false, input.hasShift(), input.hasCtrl());
-				case GLFW.GLFW_KEY_BACKSPACE -> erase(true, input.hasCtrl());
-				case GLFW.GLFW_KEY_DELETE -> erase(false, input.hasCtrl());
+				case GLFW.GLFW_KEY_LEFT -> moveCursor(true, input.hasShiftDown(), input.hasControlDown());
+				case GLFW.GLFW_KEY_RIGHT -> moveCursor(false, input.hasShiftDown(), input.hasControlDown());
+				case GLFW.GLFW_KEY_BACKSPACE -> erase(true, input.hasControlDown());
+				case GLFW.GLFW_KEY_DELETE -> erase(false, input.hasControlDown());
 				default -> captured = false;
 			}
 			if (captured) return true;
@@ -481,16 +480,16 @@ public class CustomizeNameWidget extends ContainerWidget {
 				updateStyleButtons();
 				captured = true;
 			} else if (input.isCopy()) {
-				client.keyboard.setClipboard(text.getString().substring(selectionStart, selectionEnd));
+				client.keyboardHandler.setClipboard(text.getString().substring(selectionStart, selectionEnd));
 				captured = true;
 			} else if (input.isPaste()) {
-				String clipboard = client.keyboard.getClipboard();
+				String clipboard = client.keyboardHandler.getClipboard();
 				if (!clipboard.isEmpty()) {
 					insertText(clipboard);
 				}
 				captured = true;
 			} else if (input.isCut()) {
-				client.keyboard.setClipboard(text.getString().substring(selectionStart, selectionEnd));
+				client.keyboardHandler.setClipboard(text.getString().substring(selectionStart, selectionEnd));
 				insertText("");
 				captured = true;
 			}
@@ -498,11 +497,11 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public boolean charTyped(CharInput input) {
+		public boolean charTyped(CharacterEvent input) {
 			if (!active) {
 				return false;
-			} else if (input.isValidChar()) {
-				insertText(input.asString());
+			} else if (input.isAllowedChatCharacter()) {
+				insertText(input.codepointAsString());
 				return true;
 			} else {
 				return false;
@@ -510,7 +509,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onClick(Click click, boolean doubled) {
+		public void onClick(MouseButtonEvent click, boolean doubled) {
 			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) click.x() - getTextX());
 			text.visit(getClickedPositionVisitor, Style.EMPTY);
 			selectionStart = selectionEnd = getClickedPositionVisitor.getPosition() < 0 ? textString.length() : getClickedPositionVisitor.getPosition();
@@ -518,7 +517,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 		}
 
 		@Override
-		protected void onDrag(Click click, double offsetX, double offsetY) {
+		protected void onDrag(MouseButtonEvent click, double offsetX, double offsetY) {
 			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) click.x() - getTextX());
 			text.visit(getClickedPositionVisitor, Style.EMPTY);
 			selectionStart = getClickedPositionVisitor.getPosition() < 0 ? textString.length() : getClickedPositionVisitor.getPosition();
@@ -533,19 +532,19 @@ public class CustomizeNameWidget extends ContainerWidget {
 		public void playDownSound(SoundManager soundManager) {}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	@Override
-	protected int getContentsHeightWithPadding() {
+	protected int contentHeight() {
 		return 0;
 	}
 
 	@Override
-	protected double getDeltaYPerScroll() {
+	protected double scrollRate() {
 		return 0;
 	}
 }

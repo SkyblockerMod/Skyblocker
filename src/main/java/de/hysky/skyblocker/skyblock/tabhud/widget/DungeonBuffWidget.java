@@ -9,13 +9,14 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 // this widget shows a list of obtained dungeon buffs
 @RegisterWidget
 public class DungeonBuffWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = net.minecraft.network.chat.Component.literal("Dungeon Buffs").withStyle(ChatFormatting.DARK_PURPLE,
+	private static final MutableComponent TITLE = Component.literal("Dungeon Buffs").withStyle(ChatFormatting.DARK_PURPLE,
 			ChatFormatting.BOLD);
 
 	public DungeonBuffWidget() {
@@ -28,7 +29,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 		String footertext = PlayerListManager.getFooter();
 
 		if (footertext == null || !footertext.contains("Dungeon Buffs")) {
-			this.addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY)));
+			this.addComponent(new PlainTextComponent(Component.literal("No data").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
@@ -36,7 +37,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 		String[] lines = interesting.split("\n");
 
 		if (!lines[1].startsWith("Blessing")) {
-			this.addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
+			this.addComponent(new PlainTextComponent(Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
@@ -51,7 +52,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 				break;
 			}
 			int color = getBlessingColor(line);
-			this.addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.literal(line).withStyle(style -> style.withColor(color))));
+			this.addComponent(new PlainTextComponent(Component.literal(line).withStyle(style -> style.withColor(color))));
 		}
 
 	}

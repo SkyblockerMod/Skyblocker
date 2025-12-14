@@ -148,7 +148,7 @@ public class HuntingCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.lassoHud.hud.screen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-//								.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, LassoHud.getInstance().getInternalID(), screen)))
+//								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, LassoHud.getInstance().getInternalID(), screen)))
 								.build())
 
 						.build())

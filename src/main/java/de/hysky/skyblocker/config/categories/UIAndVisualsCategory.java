@@ -31,7 +31,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.InputQuirks;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.ArrayUtils;
-
 import java.awt.Color;
 import java.util.Comparator;
 import java.util.List;

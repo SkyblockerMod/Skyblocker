@@ -9,19 +9,19 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.profiler.Profiler;
-import net.minecraft.util.profiler.Profilers;
-import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.client.Camera;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class RenderHelper {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static PrimitiveCollectorImpl collector;
 
 	@Init
@@ -32,7 +32,7 @@ public class RenderHelper {
 	}
 
 	private static void startExtraction(WorldExtractionContext context) {
-		Profiler profiler = Profilers.get();
+		ProfilerFiller profiler = Profiler.get();
 		profiler.push("skyblockerPrimitiveCollection");
 		collector = new PrimitiveCollectorImpl(context.worldState(), context.frustum());
 		WorldRenderExtractionCallback.EVENT.invoker().onExtract(collector);
@@ -41,14 +41,14 @@ public class RenderHelper {
 	}
 
 	private static void submitVanillaSubmittables(WorldRenderContext context) {
-		Profiler profiler = Profilers.get();
+		ProfilerFiller profiler = Profiler.get();
 		profiler.push("skyblockerSubmitVanillaSubmittables");
 		collector.dispatchVanillaSubmittables(context.worldState(), context.commandQueue());
 		profiler.pop();
 	}
 
 	private static void executeDraws(WorldRenderContext context) {
-		Profiler profiler = Profilers.get();
+		ProfilerFiller profiler = Profiler.get();
 
 		profiler.push("skyblockerSubmitPrimitives");
 		collector.dispatchPrimitivesToRenderers(context.worldState().cameraRenderState);
@@ -68,12 +68,12 @@ public class RenderHelper {
 		}
 	}
 
-	public static RenderTickCounter getTickCounter() {
-		return CLIENT.getRenderTickCounter();
+	public static DeltaTracker getTickCounter() {
+		return CLIENT.getDeltaTracker();
 	}
 
 	public static Camera getCamera() {
-		return CLIENT.gameRenderer.getCamera();
+		return CLIENT.gameRenderer.getMainCamera();
 	}
 
 	/**
@@ -83,13 +83,13 @@ public class RenderHelper {
 	 * @param pos   The position of the block.
 	 * @return The bounding box of the block.
 	 */
-	public static @Nullable Box getBlockBoundingBox(ClientWorld world, BlockPos pos) {
+	public static @Nullable AABB getBlockBoundingBox(ClientLevel world, BlockPos pos) {
 		return getBlockBoundingBox(world, world.getBlockState(pos), pos);
 	}
 
-	public static @Nullable Box getBlockBoundingBox(ClientWorld world, BlockState state, BlockPos pos) {
-		VoxelShape shape = state.getOutlineShape(world, pos).asCuboid();
+	public static @Nullable AABB getBlockBoundingBox(ClientLevel world, BlockState state, BlockPos pos) {
+		VoxelShape shape = state.getShape(world, pos).singleEncompassing();
 
-		return shape.isEmpty() ? null : shape.getBoundingBox().offset(pos);
+		return shape.isEmpty() ? null : shape.bounds().move(pos);
 	}
 }

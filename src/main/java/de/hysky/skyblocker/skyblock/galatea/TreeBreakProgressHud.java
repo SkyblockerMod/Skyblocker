@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.galatea;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -12,6 +11,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -27,7 +27,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 		ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> ARMOR_STANDS.remove(entity.getId()));
 	}
 	public TreeBreakProgressHud() {
-		super(net.minecraft.network.chat.Component.literal("Tree Break Progress").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), ChatFormatting.GREEN.getColor(), new Information("hud_treeprogress", net.minecraft.network.chat.Component.literal("Tree Break Progress HUD"), location -> location == Location.GALATEA));
+		super(Component.literal("Tree Break Progress").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), ChatFormatting.GREEN.getColor(), new Information("hud_treeprogress", Component.literal("Tree Break Progress HUD"), location -> location == Location.GALATEA));
 		update();
 	}
 
@@ -93,8 +93,8 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 	}
 
 	@Override
-	protected List<Component> getConfigComponents() {
-		net.minecraft.network.chat.Component txt = simpleEntryText("37%", "Fig Tree ", ChatFormatting.GREEN);
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		Component txt = simpleEntryText("37%", "Fig Tree ", ChatFormatting.GREEN);
 		return List.of(Components.iconTextComponent(Ico.STRIPPED_SPRUCE_WOOD, txt));
 	}
 

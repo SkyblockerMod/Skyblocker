@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 // this widget shows various dungeon info
@@ -17,7 +18,7 @@ import net.minecraft.network.chat.MutableComponent;
 @RegisterWidget
 public class DungeonDeathWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = net.minecraft.network.chat.Component.literal("Death").withStyle(ChatFormatting.DARK_PURPLE,
+	private static final MutableComponent TITLE = Component.literal("Death").withStyle(ChatFormatting.DARK_PURPLE,
 			ChatFormatting.BOLD);
 
 	// match the deaths entry
@@ -36,7 +37,7 @@ public class DungeonDeathWidget extends TabHudWidget {
 			this.addComponent(Components.iconTextComponent());
 		} else {
 			ChatFormatting f = (m.group("deathnum").equals("0")) ? ChatFormatting.GREEN : ChatFormatting.RED;
-			net.minecraft.network.chat.Component d = simpleEntryText(m.group("deathnum"), "Deaths: ", f);
+			Component d = simpleEntryText(m.group("deathnum"), "Deaths: ", f);
 			this.addComponent(Components.iconTextComponent(Ico.SKULL, d));
 		}
 
