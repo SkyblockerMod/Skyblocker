@@ -45,6 +45,7 @@ import java.util.regex.Pattern;
 public class TheEnd {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(TheEnd.class);
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("end.json");
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 
 	private static final Pattern END_STONE_PROTECTOR_TREMOR = Pattern.compile("^You feel a tremor from beneath the earth!$");
 	private static final Pattern END_STONE_PROTECTOR_RISES = Pattern.compile("^The ground begins to shake as an End Stone Protector rises from below!$");
@@ -61,8 +62,7 @@ public class TheEnd {
 	private static final Set<UUID> HIT_ZEALOTS = new ObjectOpenHashSet<>();
 	public static final ProfiledData<EndStats> PROFILES_STATS = new ProfiledData<>(FILE, EndStats.CODEC);
 
-	@Nullable
-	public static ProtectorLocation currentProtectorLocation = null;
+	public static @Nullable ProtectorLocation currentProtectorLocation = null;
 	public static int stage = 0;
 
 	@Init
@@ -124,7 +124,7 @@ public class TheEnd {
 	}
 
 	private static void checkAllProtectorLocations() {
-		ClientLevel world = Minecraft.getInstance().level;
+		ClientLevel world = CLIENT.level;
 		if (world == null) return;
 		for (ProtectorLocation protectorLocation : PROTECTOR_LOCATIONS) {
 			if (!world.hasChunk(protectorLocation.x() >> 4, protectorLocation.z() >> 4)) continue;
@@ -173,15 +173,12 @@ public class TheEnd {
 
 	public static boolean isZealot(EnderMan enderman) {
 		if (enderman.getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot")) return true; // Future-proof. If they someday decide to actually rename the entities
-		assert Minecraft.getInstance().level != null;
-		List<ArmorStand> entities = Minecraft.getInstance().level.getEntitiesOfClass(
+		assert CLIENT.level != null;
+		List<ArmorStand> entities = CLIENT.level.getEntitiesOfClass(
 				ArmorStand.class,
-				enderman.getDimensions(null).makeBoundingBox(enderman.position()).inflate(1),
+				enderman.getDimensions(enderman.getPose()).makeBoundingBox(enderman.position()).inflate(1),
 				armorStandEntity -> armorStandEntity.getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot"));
-		if (entities.isEmpty()) {
-			return false;
-		}
-		return entities.getFirst().getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot");
+		return !entities.isEmpty();
 	}
 
 	public static boolean isSpecialZealot(EnderMan enderman) {
