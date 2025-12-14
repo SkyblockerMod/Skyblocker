@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public record ItemAbility(String name, Activation activation, OptionalInt manaCo
 		int cooldown = -1;
 		Activation activation = null;
 		for (String string : strings) {
-			string = Formatting.strip(string).trim();
+			string = ChatFormatting.stripFormatting(string).trim();
 			Matcher matcher = ABILITY_NAME_PATTERN.matcher(string);
 			if (matcher.matches()) {
 				// add previous ability to list
@@ -64,7 +64,9 @@ public record ItemAbility(String name, Activation activation, OptionalInt manaCo
 					continue;
 				}
 			}
-
+		}
+		if (name != null) {
+			abilities.add(new ItemAbility(name, activation, positiveOnly(manaCost), positiveOnly(soulflowCost), positiveOnly(cooldown)));
 		}
 		return abilities;
 	}
@@ -78,8 +80,6 @@ public record ItemAbility(String name, Activation activation, OptionalInt manaCo
 		LEFT_CLICK,
 		SNEAK_RIGHT_CLICK,
 		SNEAK_LEFT_CLICK;
-
-
 
 		@Override
 		public String toString() {
