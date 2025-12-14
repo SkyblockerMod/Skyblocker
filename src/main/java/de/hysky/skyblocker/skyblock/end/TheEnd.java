@@ -28,6 +28,7 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -185,7 +186,8 @@ public class TheEnd {
 
 	public static boolean isSpecialZealot(EnderMan enderman) {
 		// Filter out non-special zealots using the faster carried block check first
-		return enderman.getCarriedBlock() != null && enderman.getCarriedBlock().is(Blocks.END_PORTAL_FRAME) && isZealot(enderman);
+		BlockState carriedBlock = enderman.getCarriedBlock();
+		return carriedBlock != null && carriedBlock.is(Blocks.END_PORTAL_FRAME) && isZealot(enderman);
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
