@@ -289,14 +289,14 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		if (hoveredWidget == null) {
 			if (sidePanelWidget.isOpen()) sidePanelWidget.close();
 			selectedWidget = null;
-			if (click.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+			if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
 				List<HudWidget> availableWidgets = new ArrayList<>(WidgetManager.getWidgetsAvailableIn(currentLocation));
 				availableWidgets.removeAll(builder.getWidgets()); // remove already present widgets
 				addWidgetWidget.openWith(availableWidgets);
 				addWidgetWidget.setX(Math.clamp((int) mouseX, 5, width - addWidgetWidget.getWidth() - 5));
 				addWidgetWidget.setY(Math.clamp((int) mouseY, 5, height - addWidgetWidget.getHeight() - 5));
 				addWidgetWidget.refreshScrollAmount(); // refreshes the positions of the entries
-			} else if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && currentScreenLayer != WidgetManager.ScreenLayer.HUD) {
+			} else if (click.hasShiftDown() && currentScreenLayer != WidgetManager.ScreenLayer.HUD) {
 				minecraft.setScreen(new ScreenConfigPopup(this, builder, true));
 			}
 			return true;
