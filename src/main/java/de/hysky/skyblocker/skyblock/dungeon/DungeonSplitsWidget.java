@@ -12,8 +12,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -180,7 +179,7 @@ public class DungeonSplitsWidget extends TableWidget {
 	private long startTime = 0L;
 	private long elapsedTime = 0L;
 	private boolean running = false;
-	private Formatting timerColor = Formatting.YELLOW;
+	private ChatFormatting timerColor = ChatFormatting.YELLOW;
 	private String floor = "?";
 	/**
 	 * The floor that the splits list was last loaded for.
@@ -188,8 +187,8 @@ public class DungeonSplitsWidget extends TableWidget {
 	private String loadedFloor = null;
 
 	public DungeonSplitsWidget() {
-		super(Text.literal("Splits").formatted(Formatting.GOLD, Formatting.BOLD),
-				Formatting.GOLD.getColorValue(), "Dungeon Splits", 3, 0, false, AVAILABLE_LOCATIONS);
+		super(net.minecraft.network.chat.Component.literal("Splits").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD),
+				ChatFormatting.GOLD.getColor(), "Dungeon Splits", 3, 0, false, AVAILABLE_LOCATIONS);
 		instance = this;
 
 		BEST_SPLITS.init();
@@ -207,7 +206,7 @@ public class DungeonSplitsWidget extends TableWidget {
 		running = false;
 		elapsedTime = 0L;
 		startTime = 0L;
-		timerColor = Formatting.YELLOW;
+		timerColor = ChatFormatting.YELLOW;
 		loadedFloor = null; // force reloading splits once Mort has been located
 		updateFloor();
 		loadFloorSplits();
@@ -228,15 +227,15 @@ public class DungeonSplitsWidget extends TableWidget {
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	private boolean onChatMessage(Text text, boolean overlay) {
+	private boolean onChatMessage(net.minecraft.network.chat.Component text, boolean overlay) {
 		if (!Utils.isInDungeons() || overlay) return true;
-		String stripped = Formatting.strip(text.getString());
+		String stripped = ChatFormatting.stripFormatting(text.getString());
 
 		if (!running && DUNGEON_START.matcher(stripped).matches()) {
 			startTime = System.currentTimeMillis();
 			elapsedTime = 0L;
 			running = true;
-			timerColor = Formatting.YELLOW;
+			timerColor = ChatFormatting.YELLOW;
 			for (Split split : splits) {
 				split.reset();
 			}
@@ -324,21 +323,21 @@ public class DungeonSplitsWidget extends TableWidget {
 		updateFloor();
 		loadFloorSplits();
 
-		addComponent(new PlainTextComponent(Text.literal("Floor: " + floor)));
+		addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.literal("Floor: " + floor)));
 
 		super.updateContent();
 
 		long now = running ? System.currentTimeMillis() - startTime : (startTime == 0L ? 0L : elapsedTime);
-		addComponent(new PlainTextComponent(Text.literal(formatTime(now)).formatted(timerColor)));
+		addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.literal(formatTime(now)).withStyle(timerColor)));
 	}
 
 	@Override
 	protected List<Component> getConfigComponents() {
 		List<Component> components = new ArrayList<>(3);
-		components.add(new PlainTextComponent(Text.literal("Floor: " + floor)));
+		components.add(new PlainTextComponent(net.minecraft.network.chat.Component.literal("Floor: " + floor)));
 		components.addAll(super.getConfigComponents());
 		long now = running ? System.currentTimeMillis() - startTime : (startTime == 0L ? 0L : elapsedTime);
-		components.add(new PlainTextComponent(Text.literal(formatTime(now)).formatted(timerColor)));
+		components.add(new PlainTextComponent(net.minecraft.network.chat.Component.literal(formatTime(now)).withStyle(timerColor)));
 		return components;
 	}
 
@@ -351,7 +350,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 		for (int idx = 0; idx < splits.size(); idx++) {
 			Split split = splits.get(idx);
-			Component name = new PlainTextComponent(Text.translatable(split.key)
+			Component name = new PlainTextComponent(net.minecraft.network.chat.Component.translatable(split.key)
 					.withColor(SPLIT_COLORS[idx % SPLIT_COLORS.length]));
 
 			String bestStr = formatTime(split.bestTime);
@@ -362,21 +361,21 @@ public class DungeonSplitsWidget extends TableWidget {
 			if (split.completed) {
 				long segmentTime = split.completedTime - previous;
 				long diff = segmentTime - split.bestTime;
-				Formatting fmt = diff <= 0 ? Formatting.GREEN : Formatting.RED;
+				ChatFormatting fmt = diff <= 0 ? ChatFormatting.GREEN : ChatFormatting.RED;
 				String diffStr = String.format("%+.2fs", diff / 1000.0);
-				mid = new PlainTextComponent(Text.literal(diffStr).formatted(fmt));
-				right = new PlainTextComponent(Text.literal(formatTime(split.completedTime))
-						.formatted(Formatting.YELLOW));
+				mid = new PlainTextComponent(net.minecraft.network.chat.Component.literal(diffStr).withStyle(fmt));
+				right = new PlainTextComponent(net.minecraft.network.chat.Component.literal(formatTime(split.completedTime))
+						.withStyle(ChatFormatting.YELLOW));
 				previous = split.completedTime;
 			} else if (!showingCurrent && (running || startTime != 0L)) {
 				long segmentTime = now - previous;
-				mid = new PlainTextComponent(Text.literal(formatTime(segmentTime)));
-				right = new PlainTextComponent(Text.literal(bestStr));
+				mid = new PlainTextComponent(net.minecraft.network.chat.Component.literal(formatTime(segmentTime)));
+				right = new PlainTextComponent(net.minecraft.network.chat.Component.literal(bestStr));
 				showingCurrent = true;
 				border = SPLIT_COLORS[idx % SPLIT_COLORS.length];
 			} else {
-				mid = new PlainTextComponent(Text.literal("--"));
-				right = new PlainTextComponent(Text.literal(bestStr));
+				mid = new PlainTextComponent(net.minecraft.network.chat.Component.literal("--"));
+				right = new PlainTextComponent(net.minecraft.network.chat.Component.literal(bestStr));
 			}
 
 			rows.add(new Row(List.of(name, mid, right), border));
@@ -409,7 +408,7 @@ public class DungeonSplitsWidget extends TableWidget {
 				}
 			}
 		}
-		timerColor = success ? Formatting.GREEN : Formatting.RED;
+		timerColor = success ? ChatFormatting.GREEN : ChatFormatting.RED;
 	}
 
 	private void updateBest(Split split, long completionTime) {

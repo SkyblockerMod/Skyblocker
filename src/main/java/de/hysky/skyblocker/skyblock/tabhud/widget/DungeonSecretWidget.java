@@ -7,47 +7,45 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 
 // this widget shows info about the secrets of the dungeon
 @RegisterWidget
 public class DungeonSecretWidget extends TabHudWidget {
 
-	private static final MutableText TITLE = Text.literal("Discoveries").formatted(Formatting.DARK_PURPLE, Formatting.BOLD);
+	private static final MutableComponent TITLE = net.minecraft.network.chat.Component.literal("Discoveries").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD);
 	private static final Pattern DISCOVERIES = Pattern.compile("Discoveries: (\\d+)");
 
 	public DungeonSecretWidget() {
-		super("Discoveries", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
+		super("Discoveries", TITLE, ChatFormatting.DARK_PURPLE.getColor(), Location.DUNGEON);
 		cacheForConfig = false;
 	}
 
 	@Override
 	public void updateContent() {
 		if (!DungeonScore.isDungeonStarted()) {
-			this.addSimpleIcoText(Ico.CHEST, "Secrets:", Formatting.YELLOW, 30);
-			this.addSimpleIcoText(Ico.SKULL, "Crypts:", Formatting.YELLOW, 31);
+			this.addSimpleIcoText(Ico.CHEST, "Secrets:", ChatFormatting.YELLOW, 30);
+			this.addSimpleIcoText(Ico.SKULL, "Crypts:", ChatFormatting.YELLOW, 31);
 		} else if (PlayerListManager.regexAt(31, DISCOVERIES) != null) {
-			this.addSimpleIcoText(Ico.CHEST, "Secrets:", Formatting.YELLOW, 32);
-			this.addSimpleIcoText(Ico.SKULL, "Crypts:", Formatting.YELLOW, 33);
+			this.addSimpleIcoText(Ico.CHEST, "Secrets:", ChatFormatting.YELLOW, 32);
+			this.addSimpleIcoText(Ico.SKULL, "Crypts:", ChatFormatting.YELLOW, 33);
 		} else {
-			this.addSimpleIcoText(Ico.CHEST, "Secrets:", Formatting.YELLOW, 31);
-			this.addSimpleIcoText(Ico.SKULL, "Crypts:", Formatting.YELLOW, 32);
+			this.addSimpleIcoText(Ico.CHEST, "Secrets:", ChatFormatting.YELLOW, 31);
+			this.addSimpleIcoText(Ico.SKULL, "Crypts:", ChatFormatting.YELLOW, 32);
 		}
 	}
 
 	@Override
 	protected List<Component> getConfigComponents() {
 		return List.of(
-				Components.iconTextComponent(Ico.CHEST, simpleEntryText("0", "Secrets:", Formatting.YELLOW)),
-				Components.iconTextComponent(Ico.SKULL, simpleEntryText("0", "Crypts:", Formatting.YELLOW))
+				Components.iconTextComponent(Ico.CHEST, simpleEntryText("0", "Secrets:", ChatFormatting.YELLOW)),
+				Components.iconTextComponent(Ico.SKULL, simpleEntryText("0", "Crypts:", ChatFormatting.YELLOW))
 		);
 	}
 
 	@Override
-	protected void updateContent(List<Text> lines) {}
+	protected void updateContent(List<net.minecraft.network.chat.Component> lines) {}
 }

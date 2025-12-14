@@ -5,20 +5,20 @@ import de.hysky.skyblocker.skyblock.tabhud.config.option.PositionRuleOption;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.text.Text;
 import org.joml.Matrix3x2fStack;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.network.chat.Component;
 
-public abstract class HudWidget implements Widget {
+public abstract class HudWidget implements LayoutElement {
 	private float scale = 1.0f;
 	private PositionRule positionRule = PositionRule.DEFAULT;
 	private final Information information;
@@ -40,12 +40,12 @@ public abstract class HudWidget implements Widget {
 	 *
 	 * @implNote The matrix stack is already translated. So the top left corner of the widget is (0,0)
 	 */
-	protected abstract void renderWidget(DrawContext context, float delta);
+	protected abstract void renderWidget(GuiGraphics context, float delta);
 
 	/**
-	 * @see HudWidget#renderWidget(DrawContext, float)
+	 * @see HudWidget#renderWidget(GuiGraphics, float)
 	 */
-	protected abstract void renderWidgetConfig(DrawContext context, float delta);
+	protected abstract void renderWidgetConfig(GuiGraphics context, float delta);
 
 	public Information getInformation() {
 		return information;
@@ -59,8 +59,8 @@ public abstract class HudWidget implements Widget {
 		return true;
 	}
 
-	public final void render(DrawContext context, float delta) {
-		Matrix3x2fStack matrices = context.getMatrices();
+	public final void render(GuiGraphics context, float delta) {
+		Matrix3x2fStack matrices = context.pose();
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 		matrices.scale(scale, scale);
@@ -68,12 +68,12 @@ public abstract class HudWidget implements Widget {
 		matrices.popMatrix();
 	}
 
-	public final void render(DrawContext context) {
-		render(context, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
+	public final void render(GuiGraphics context) {
+		render(context, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks());
 	}
 
-	public final void renderConfig(DrawContext context, float delta) {
-		Matrix3x2fStack matrices = context.getMatrices();
+	public final void renderConfig(GuiGraphics context, float delta) {
+		Matrix3x2fStack matrices = context.pose();
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 		matrices.scale(scale, scale);
@@ -81,8 +81,8 @@ public abstract class HudWidget implements Widget {
 		matrices.popMatrix();
 	}
 
-	public final void renderConfig(DrawContext context) {
-		renderConfig(context, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
+	public final void renderConfig(GuiGraphics context) {
+		renderConfig(context, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks());
 	}
 
 	/**
@@ -92,7 +92,7 @@ public abstract class HudWidget implements Widget {
 	 * @apiNote REMEMBER TO CALL SUPER
 	 */
 	public void getPerScreenOptions(List<WidgetOption<?>> options) {
-		options.add(new FloatOption("scale", Text.literal("Scale"), this::getScale, this::setScale, 1f).setMinAndMax(0.2f, 2f));
+		options.add(new FloatOption("scale", Component.literal("Scale"), this::getScale, this::setScale, 1f).setMinAndMax(0.2f, 2f));
 		options.add(new PositionRuleOption(this::getPositionRule, this::setPositionRule));
 	}
 
@@ -152,8 +152,8 @@ public abstract class HudWidget implements Widget {
 	}
 
 	@Override
-	public ScreenRect getNavigationFocus() {
-		return new ScreenRect(getX(), getY(), getScaledWidth(), getScaledHeight());
+	public ScreenRectangle getRectangle() {
+		return new ScreenRectangle(getX(), getY(), getScaledWidth(), getScaledHeight());
 	}
 
 	/**
@@ -161,13 +161,13 @@ public abstract class HudWidget implements Widget {
 	 * @param displayName the name that will be shown in the config screen
 	 * @param available   in which locations the widget can be added. If not available everywhere, {@link java.util.EnumSet} and {@code contains} are recommended
 	 */
-	public record Information(String id, Text displayName, Predicate<Location> available) {
+	public record Information(String id, Component displayName, Predicate<Location> available) {
 		/**
 		 * Shorter constructor that makes the widget available everywhere
 		 *
-		 * @see Information#Information(String, Text, Predicate)
+		 * @see Information#Information(String, Component, Predicate)
 		 */
-		public Information(String id, Text displayName) {
+		public Information(String id, Component displayName) {
 			this(id, displayName, (location) -> true);
 		}
 
@@ -187,5 +187,5 @@ public abstract class HudWidget implements Widget {
 	}
 
 	@Override
-	public void forEachChild(Consumer<ClickableWidget> consumer) {}
+	public void visitWidgets(Consumer<AbstractWidget> consumer) {}
 }

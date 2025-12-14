@@ -3,11 +3,10 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.TableComponent;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.text.MutableText;
-import net.minecraft.util.Colors;
-
 import java.util.List;
 import java.util.Set;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.CommonColors;
 
 /**
  * Generic widget that arranges rows of components in equal width columns.
@@ -19,30 +18,30 @@ public abstract class TableWidget extends ComponentBasedWidget {
 	private final int lineColor;
 	private final boolean drawLines;
 
-	protected TableWidget(MutableText title, int colorValue, String internalId, int columns, int lineColor, boolean drawLines) {
+	protected TableWidget(MutableComponent title, int colorValue, String internalId, int columns, int lineColor, boolean drawLines) {
 		super(title, colorValue, internalId);
 		this.columns = columns;
 		this.lineColor = lineColor;
 		this.drawLines = drawLines;
 	}
 
-	protected TableWidget(MutableText title, int colorValue, String internalId, int columns, int lineColor, boolean drawLines, Set<Location> availableIn) {
+	protected TableWidget(MutableComponent title, int colorValue, String internalId, int columns, int lineColor, boolean drawLines, Set<Location> availableIn) {
 		super(title, colorValue, internalId, availableIn);
 		this.columns = columns;
 		this.lineColor = lineColor;
 		this.drawLines = drawLines;
 	}
 
-	protected TableWidget(MutableText title, int colorValue, String internalId, int columns, int lineColor) {
+	protected TableWidget(MutableComponent title, int colorValue, String internalId, int columns, int lineColor) {
 		this(title, colorValue, internalId, columns, lineColor, true);
 	}
 
-	protected TableWidget(MutableText title, int colorValue, String internalId, int columns, boolean drawLines) {
-		this(title, colorValue, internalId, columns, Colors.WHITE, drawLines);
+	protected TableWidget(MutableComponent title, int colorValue, String internalId, int columns, boolean drawLines) {
+		this(title, colorValue, internalId, columns, CommonColors.WHITE, drawLines);
 	}
 
-	protected TableWidget(MutableText title, int colorValue, String internalId, int columns) {
-		this(title, colorValue, internalId, columns, Colors.WHITE, true);
+	protected TableWidget(MutableComponent title, int colorValue, String internalId, int columns) {
+		this(title, colorValue, internalId, columns, CommonColors.WHITE, true);
 	}
 
 	/**

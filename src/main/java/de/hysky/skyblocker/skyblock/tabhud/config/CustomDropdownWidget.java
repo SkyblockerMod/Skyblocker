@@ -2,42 +2,41 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Style;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
-
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 
 class CustomDropdownWidget<T> extends DropdownWidget<T> {
 	private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");
 	private final T firstEntry;
 
 	CustomDropdownWidget(int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
-		super(MinecraftClient.getInstance(), x, y, width, maxHeight, 12, entries, selectCallback, selected, opened -> {});
+		super(Minecraft.getInstance(), x, y, width, maxHeight, 12, entries, selectCallback, selected, opened -> {});
 		headerHeight = 15;
 		firstEntry = entries.getFirst();
 	}
 
 
 	@Override
-	protected void renderHeader(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+	protected void renderHeader(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
 		int y = getY() - 1;
 		int y2 = y + headerHeight;
 		TopBarWidget.drawButtonBorder(context, getX(), y, y2);
 		TopBarWidget.drawButtonBorder(context, getRight(), y, y2);
 
 		if (isHovered() && mouseY < y2) {
-			context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(100, 0));
+			context.fill(getX(), y, getRight() + 1, y2, ARGB.color(100, 0));
 		} else {
-			context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(50, 0));
+			context.fill(getX(), y, getRight() + 1, y2, ARGB.color(50, 0));
 		}
-		context.drawText(client.textRenderer, ">", getX() + 4, getY() + (headerHeight - client.textRenderer.fontHeight) / 2 + 1, Colors.ALTERNATE_WHITE, true); // +1 on the y coordinate cuz drawScrollableText does so too
-		context.getTextConsumer().marqueedText(formatter.apply(selected),
+		context.drawString(client.font, ">", getX() + 4, getY() + (headerHeight - client.font.lineHeight) / 2 + 1, CommonColors.LIGHTER_GRAY, true); // +1 on the y coordinate cuz drawScrollableText does so too
+		context.textRenderer().acceptScrolling(formatter.apply(selected),
 				getX() + getWidth() / 2,
 				getX() + 4 + 6,
 				getRight() - 2,
@@ -57,14 +56,14 @@ class CustomDropdownWidget<T> extends DropdownWidget<T> {
 	}
 
 	class CustomDropdownList extends DropdownList {
-		protected CustomDropdownList(MinecraftClient minecraftClient) {
+		protected CustomDropdownList(Minecraft minecraftClient) {
 			super(minecraftClient);
 		}
 
 		@Override
-		protected void drawMenuListBackground(DrawContext context) {
+		protected void renderListBackground(GuiGraphics context) {
 			context.enableScissor(this.getX(), this.getY() - 1, this.getRight(), this.getBottom() + 2);
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX(), this.getY() - 3, this.getWidth(), this.getHeight() + 5);
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX(), this.getY() - 3, this.getWidth(), this.getHeight() + 5);
 			context.disableScissor();
 		}
 	}
@@ -75,12 +74,12 @@ class CustomDropdownWidget<T> extends DropdownWidget<T> {
 		}
 
 		@Override
-		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			if (entry != firstEntry) {
-				context.drawHorizontalLine(this.getX(), this.getX() + this.getWidth(), this.getY(), ColorHelper.withAlpha(15, 0));
+				context.hLine(this.getX(), this.getX() + this.getWidth(), this.getY(), ARGB.color(15, 0));
 			}
-			context.getTextConsumer().text(
-					formatter.apply(entry).copy().fillStyle(Style.EMPTY.withUnderline(hovered)),
+			context.textRenderer().acceptScrollingWithDefaultCenter(
+					formatter.apply(entry).copy().withStyle(Style.EMPTY.withUnderlined(hovered)),
 					this.getX(),
 					this.getX() + this.getWidth(),
 					this.getY(),

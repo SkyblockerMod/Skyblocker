@@ -5,47 +5,46 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.PopupScreen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.SimplePositioningWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.WrapperWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.PopupScreen;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.AbstractLayout;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 
-class TopBarWidget extends ContainerWidget {
+class TopBarWidget extends AbstractContainerWidget {
 	private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");
 	private static final int HEIGHT = 15;
 	private final CustomDropdownWidget<Location> locationDropdown;
 	private final CustomDropdownWidget<WidgetManager.ScreenLayer> screenLayerDropdown;
 	private final Layout layout;
-	private final List<ClickableWidget> widgets;
+	private final List<AbstractWidget> widgets;
 
 	// TODO translatable :)
 	TopBarWidget(int width, WidgetsConfigScreen parent) {
-		super(0, 0, width, HEIGHT, Text.literal("hi"));
+		super(0, 0, width, HEIGHT, Component.literal("hi"));
 
 		layout = new Layout();
 
-		DirectionalLayoutWidget leftButtons = DirectionalLayoutWidget.horizontal();
-		StyledButtonWidget optionsButton = new StyledButtonWidget(60, HEIGHT, Text.literal("Options"), button -> parent.openPopup(GlobalOptionsScreen::new));
-		optionsButton.setTooltip(Tooltip.of(Text.literal("Global options that affect everywhere.")));
-		StyledButtonWidget helpButton = new StyledButtonWidget(60, HEIGHT, Text.literal("(?) Help"), button -> parent.openPopup(screen -> new PopupScreen.Builder(screen, Text.literal("Help"))
-				.message(Text.literal("""
+		LinearLayout leftButtons = LinearLayout.horizontal();
+		StyledButtonWidget optionsButton = new StyledButtonWidget(60, HEIGHT, Component.literal("Options"), button -> parent.openPopup(GlobalOptionsScreen::new));
+		optionsButton.setTooltip(Tooltip.create(Component.literal("Global options that affect everywhere.")));
+		StyledButtonWidget helpButton = new StyledButtonWidget(60, HEIGHT, Component.literal("(?) Help"), button -> parent.openPopup(screen -> new PopupScreen.Builder(screen, Component.literal("Help"))
+				.setMessage(Component.literal("""
 						Use right click to add widgets and edit their options.
 						You can delete a widget by pressing the delete key.
 
@@ -53,10 +52,10 @@ class TopBarWidget extends ContainerWidget {
 
 						You can hold SHIFT to snap to other widgets.
 						"""))
-				.button(ScreenTexts.OK, PopupScreen::close)
+				.addButton(CommonComponents.GUI_OK, PopupScreen::onClose)
 				.build()));
-		leftButtons.add(optionsButton);
-		leftButtons.add(helpButton);
+		leftButtons.addChild(optionsButton);
+		leftButtons.addChild(helpButton);
 		layout.add(leftButtons);
 
 		List<Location> locations = Lists.newArrayList(Location.values());
@@ -64,28 +63,28 @@ class TopBarWidget extends ContainerWidget {
 		locations.remove(Location.UNKNOWN);
 		locations.addFirst(Location.UNKNOWN);
 		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, locations, parent::setCurrentLocation, Utils.getLocation());
-		locationDropdown.setFormatter(location -> location == Location.UNKNOWN ? Text.literal("Everywhere").formatted(Formatting.YELLOW) : Text.literal(location.toString()));
+		locationDropdown.setFormatter(location -> location == Location.UNKNOWN ? Component.literal("Everywhere").withStyle(ChatFormatting.YELLOW) : Component.literal(location.toString()));
 		screenLayerDropdown = new CustomDropdownWidget<>(width / 2 + 5, 0, 100, 200, List.of(WidgetManager.ScreenLayer.values()), parent::setCurrentScreenLayer, WidgetManager.ScreenLayer.HUD);
 
-		DirectionalLayoutWidget dropdownsLayout = DirectionalLayoutWidget.horizontal().spacing(2);
-		dropdownsLayout.add(locationDropdown);
-		dropdownsLayout.add(screenLayerDropdown);
+		LinearLayout dropdownsLayout = LinearLayout.horizontal().spacing(2);
+		dropdownsLayout.addChild(locationDropdown);
+		dropdownsLayout.addChild(screenLayerDropdown);
 		layout.add(dropdownsLayout);
 
 		/*ToggleButtonWidget snappingToggle = new ToggleButtonWidget(80, HEIGHT, Text.literal("Snapping"), b -> parent.snapping = b);
 		snappingToggle.setState(true);
 		snappingToggle.setTooltip(Tooltip.of(Text.literal("Automatically snap widgets to other widgets")));*/
-		ToggleButtonWidget autoAnchorToggle = new ToggleButtonWidget(100, HEIGHT, Text.literal("Auto Screen Anchor"), b -> parent.autoAnchor = b);
+		ToggleButtonWidget autoAnchorToggle = new ToggleButtonWidget(100, HEIGHT, Component.literal("Auto Screen Anchor"), b -> parent.autoAnchor = b);
 		autoAnchorToggle.setState(true);
-		autoAnchorToggle.setTooltip(Tooltip.of(Text.literal("Automatically change the anchor of the widget based on the position")));
+		autoAnchorToggle.setTooltip(Tooltip.create(Component.literal("Automatically change the anchor of the widget based on the position")));
 
-		DirectionalLayoutWidget rightButtons = DirectionalLayoutWidget.horizontal();
+		LinearLayout rightButtons = LinearLayout.horizontal();
 		//rightButtons.add(snappingToggle);
-		rightButtons.add(autoAnchorToggle);
+		rightButtons.addChild(autoAnchorToggle);
 		layout.add(rightButtons);
 
 		widgets = List.of(optionsButton, helpButton, locationDropdown, screenLayerDropdown, autoAnchorToggle);
-		layout.refreshPositions();
+		layout.arrangeElements();
 	}
 
 	@Override
@@ -94,20 +93,20 @@ class TopBarWidget extends ContainerWidget {
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		return widgets;
 	}
 
 	@Override
 	public void setWidth(int width) {
 		super.setWidth(width);
-		layout.refreshPositions();
+		layout.arrangeElements();
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX() - 2, getY() - 2, getWidth() + 4, HEIGHT + 2);
-		for (ClickableWidget widget : widgets) {
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, getX() - 2, getY() - 2, getWidth() + 4, HEIGHT + 2);
+		for (AbstractWidget widget : widgets) {
 			widget.render(context, mouseX, mouseY, deltaTicks);
 		}
 	}
@@ -115,42 +114,42 @@ class TopBarWidget extends ContainerWidget {
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
 		if (!visible) return false;
-		if (this.hoveredElement(mouseX, mouseY).filter(element -> element.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)).isPresent()) return true;
+		if (this.getChildAt(mouseX, mouseY).filter(element -> element.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)).isPresent()) return true;
 		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	@Override
-	protected int getContentsHeightWithPadding() {
+	protected int contentHeight() {
 		return 0;
 	}
 
 	@Override
-	protected double getDeltaYPerScroll() {
+	protected double scrollRate() {
 		return 0;
 	}
 
-	static void drawButtonBorder(DrawContext context, int x, int y, int y2) {
-		context.drawVerticalLine(x - 1, y, y2, ColorHelper.withAlpha(15, -1));
-		context.drawVerticalLine(x, y, y2, ColorHelper.withAlpha(100, 0));
-		context.drawVerticalLine(x + 1, y, y2, ColorHelper.withAlpha(15, -1));
+	static void drawButtonBorder(GuiGraphics context, int x, int y, int y2) {
+		context.vLine(x - 1, y, y2, ARGB.color(15, -1));
+		context.vLine(x, y, y2, ARGB.color(100, 0));
+		context.vLine(x + 1, y, y2, ARGB.color(15, -1));
 	}
 
-	private class Layout extends WrapperWidget {
-		private final List<Widget> widgets = new ArrayList<>(4);
+	private class Layout extends AbstractLayout {
+		private final List<LayoutElement> widgets = new ArrayList<>(4);
 
 		Layout() {
 			super(0, 0, 0, 0);
 		}
 
-		private void add(Widget widget) {
+		private void add(LayoutElement widget) {
 			widgets.add(widget);
 		}
 
 		@Override
-		public void forEachElement(Consumer<Widget> consumer) {
+		public void visitChildren(Consumer<LayoutElement> consumer) {
 			widgets.forEach(consumer);
 		}
 
@@ -175,20 +174,20 @@ class TopBarWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void refreshPositions() {
-			super.refreshPositions();
-			Widget first = widgets.getFirst();
+		public void arrangeElements() {
+			super.arrangeElements();
+			LayoutElement first = widgets.getFirst();
 			first.setPosition(getX(), getY());
 			int low = first.getX() + first.getWidth();
-			Widget last = widgets.getLast();
+			LayoutElement last = widgets.getLast();
 			last.setPosition(getX() + getWidth() - last.getWidth(), getY());
 			int high = last.getX();
 			for (int i = 1; i < widgets.size() - 1; i++) {
-				Widget widget = widgets.get(i);
+				LayoutElement widget = widgets.get(i);
 				widget.setY(getY());
-				SimplePositioningWidget.setPos(0, getWidth(), widget.getWidth(), widget::setX, 0.5f);
+				FrameLayout.alignInDimension(0, getWidth(), widget.getWidth(), widget::setX, 0.5f);
 				if (widget.getX() + widget.getWidth() > high) {
-					SimplePositioningWidget.setPos(low, high - low, widget.getWidth(), widget::setX, 0.5f);
+					FrameLayout.alignInDimension(low, high - low, widget.getWidth(), widget::setX, 0.5f);
 				}
 			}
 		}

@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import net.minecraft.client.gui.screen.Screen;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.minecraft.client.gui.screens.Screen;
 
 public interface WidgetConfig {
 

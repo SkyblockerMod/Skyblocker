@@ -16,20 +16,18 @@ import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RegisterWidget
 public class ItemPickupWidget extends ComponentBasedWidget {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final int LOBBY_CHANGE_DELAY = 60;
 	private static final String SACKS_MESSAGE_START = "[Sacks]";
 	private static final Pattern CHANGE_REGEX = Pattern.compile("([+-])([\\d,]+) (.+) \\((.+)\\)");
@@ -45,7 +43,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	private final Object2ObjectOpenHashMap<String, ChangeData> removedSackCount = new Object2ObjectOpenHashMap<>();
 
 	public ItemPickupWidget() {
-		super(Text.literal("Items"), Formatting.AQUA.getColorValue(), "item_pickup");
+		super(net.minecraft.network.chat.Component.literal("Items"), ChatFormatting.AQUA.getColor(), "item_pickup");
 		instance = this;
 
 		ClientReceiveMessageEvents.ALLOW_GAME.register(instance::onChatMessage);
@@ -74,11 +72,11 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	/**
 	 * Checks chat messages for a stack update message, then finds the items linked to it
 	 */
-	private boolean onChatMessage(Text message, boolean overlay) {
-		if (!Formatting.strip(message.getString()).startsWith(SACKS_MESSAGE_START)) return true;
+	private boolean onChatMessage(net.minecraft.network.chat.Component message, boolean overlay) {
+		if (!ChatFormatting.stripFormatting(message.getString()).startsWith(SACKS_MESSAGE_START)) return true;
 		if (!SkyblockerConfigManager.get().uiAndVisuals.itemPickup.sackNotifications) return true;
 		HoverEvent hoverEvent = message.getSiblings().getFirst().getStyle().getHoverEvent();
-		if (hoverEvent == null || hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT) return true;
+		if (hoverEvent == null || hoverEvent.action() != HoverEvent.Action.SHOW_TEXT) return true;
 		String hoverMessage = ((HoverEvent.ShowText) hoverEvent).value().getString();
 
 		Matcher matcher = CHANGE_REGEX.matcher(hoverMessage);
@@ -145,7 +143,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 				addedCount.remove(item);
 				continue;
 			}
-			addSimpleIcoText(entry.item, itemName, Formatting.GREEN, Formatters.DIFF_NUMBERS.format(entry.amount));
+			addSimpleIcoText(entry.item, itemName, ChatFormatting.GREEN, Formatters.DIFF_NUMBERS.format(entry.amount));
 		}
 		//add negative changes
 		for (String item : removedCount.keySet()) {
@@ -155,11 +153,11 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 				removedCount.remove(item);
 				continue;
 			}
-			addSimpleIcoText(entry.item, itemName, Formatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
+			addSimpleIcoText(entry.item, itemName, ChatFormatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
 		}
 		if (split && !(this.addedSackCount.isEmpty() && this.removedSackCount.isEmpty())) {
 			// Remove the borders and some random 8 value I do not know where that comes from from the width of the widget to make it fit.
-			this.addComponent(new SeparatorComponent(Text.of("Sacks")));
+			this.addComponent(new SeparatorComponent(net.minecraft.network.chat.Component.nullToEmpty("Sacks")));
 			for (String item : addedSackCount.keySet()) {
 				ChangeData entry = addedSackCount.get(item);
 				String itemName = checkNextItem(entry);
@@ -167,7 +165,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 					addedSackCount.remove(item);
 					continue;
 				}
-				addSimpleIcoText(entry.item, itemName, Formatting.GREEN, Formatters.DIFF_NUMBERS.format(entry.amount));
+				addSimpleIcoText(entry.item, itemName, ChatFormatting.GREEN, Formatters.DIFF_NUMBERS.format(entry.amount));
 			}
 			for (String item : removedSackCount.keySet()) {
 				ChangeData entry = removedSackCount.get(item);
@@ -176,14 +174,14 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 					removedSackCount.remove(item);
 					continue;
 				}
-				addSimpleIcoText(entry.item, itemName, Formatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
+				addSimpleIcoText(entry.item, itemName, ChatFormatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
 			}
 		}
 	}
 
 	@Override
 	protected List<Component> getConfigComponents() {
-		return List.of(Components.iconTextComponent(Ico.BONE, Text.literal("Bone ").append(Text.literal("+64").formatted(Formatting.GREEN))));
+		return List.of(Components.iconTextComponent(Ico.BONE, net.minecraft.network.chat.Component.literal("Bone ").append(net.minecraft.network.chat.Component.literal("+64").withStyle(ChatFormatting.GREEN))));
 	}
 
 	/**
@@ -198,7 +196,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 			return null;
 		}
 		//return the formatted name for the item based on user settings
-		return SkyblockerConfigManager.get().uiAndVisuals.itemPickup.showItemName ? entry.item.getName().getString() + " " : " ";
+		return SkyblockerConfigManager.get().uiAndVisuals.itemPickup.showItemName ? entry.item.getHoverName().getString() + " " : " ";
 	}
 
 	@Override
@@ -213,7 +211,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		//if just changed a lobby, don't read item as this is just going to be all the player's items
 		if (changingLobby || CLIENT.player == null) return;
 		//make sure there is not an inventory open
-		if (CLIENT.currentScreen != null) return;
+		if (CLIENT.screen != null) return;
 
 		//if the slot is below 9, it is a slot that we do not care about
 		//if the slot is equals to or above 45, it is not in the player's inventory
@@ -224,7 +222,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		}
 		if (slot == 8) return; // Ignore skyblock menu/quiver slot
 		//find what used to be in the slot
-		ItemStack oldStack = CLIENT.player.getInventory().getMainStacks().get(slot);
+		ItemStack oldStack = CLIENT.player.getInventory().getNonEquipmentItems().get(slot);
 
 		//work out the number of items changed
 		int existingCount = 0;

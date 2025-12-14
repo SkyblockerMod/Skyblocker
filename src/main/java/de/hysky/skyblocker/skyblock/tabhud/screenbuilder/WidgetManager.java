@@ -25,13 +25,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.StringIdentifiable;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.StringRepresentable;
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 
@@ -99,13 +98,13 @@ public class WidgetManager {
 		PlayerListManager.registerTabListener(WidgetManager::onPlayerListChange);
 	}
 
-	private static void render(DrawContext context, boolean hud) {
+	private static void render(GuiGraphics context, boolean hud) {
 		if (!Utils.isOnSkyblock()) return;
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 
-		if (client.currentScreen instanceof WidgetsConfigScreen) return;
+		if (client.screen instanceof WidgetsConfigScreen) return;
 		float scale = TabHud.getScaleFactor();
-		Matrix3x2fStack matrices = context.getMatrices();
+		Matrix3x2fStack matrices = context.pose();
 		matrices.pushMatrix();
 		matrices.scale(scale, scale);
 		WidgetManager.render(context, TabHud.getHudWidth(), TabHud.getHudHeight(), hud);
@@ -122,13 +121,13 @@ public class WidgetManager {
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
-	private static void render(DrawContext context, int w, int h, boolean hud) {
-		MinecraftClient client = MinecraftClient.getInstance();
+	private static void render(GuiGraphics context, int w, int h, boolean hud) {
+		Minecraft client = Minecraft.getInstance();
 		Location location = Utils.getLocation();
 		ScreenLayer layer;
-		if (client.options.playerListKey.isPressed()) {
+		if (client.options.keyPlayerList.isDown()) {
 			if (hud || TabHud.shouldRenderVanilla()) return;
-			if (TabHud.toggleSecondary.isPressed()) {
+			if (TabHud.toggleSecondary.isDown()) {
 				layer = ScreenLayer.SECONDARY_TAB;
 			} else {
 				layer = ScreenLayer.MAIN_TAB;
@@ -185,7 +184,7 @@ public class WidgetManager {
 
 	private static void showErrorToast() {
 		// TODO translatable
-		SystemToast.add(MinecraftClient.getInstance().getToastManager(), new SystemToast.Type(), Text.literal("Error reading Skyblocker HUD Config"), Text.literal("Check your logs!"));
+		SystemToast.add(Minecraft.getInstance().getToastManager(), new SystemToast.SystemToastId(), Component.literal("Error reading Skyblocker HUD Config"), Component.literal("Check your logs!"));
 	}
 
 	public static void saveConfig() {
@@ -266,12 +265,12 @@ public class WidgetManager {
 		).apply(instance, Config::new));
 	}
 
-	public enum ScreenLayer implements StringIdentifiable {
+	public enum ScreenLayer implements StringRepresentable {
 		MAIN_TAB,
 		SECONDARY_TAB,
 		HUD;
 
-		public static final Codec<ScreenLayer> CODEC = StringIdentifiable.createCodec(ScreenLayer::values);
+		public static final Codec<ScreenLayer> CODEC = StringRepresentable.fromEnum(ScreenLayer::values);
 
 		@Override
 		public String toString() {
@@ -283,7 +282,7 @@ public class WidgetManager {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name().toLowerCase(Locale.ENGLISH);
 		}
 	}

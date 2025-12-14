@@ -6,102 +6,102 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.CheckboxWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.EmptyWidget;
-import net.minecraft.client.gui.widget.Positioner;
-import net.minecraft.client.gui.widget.ScrollableLayoutWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.components.ScrollableLayout;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.layouts.LayoutSettings;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.layouts.SpacerElement;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 
 public class ScreenConfigPopup extends AbstractPopupScreen {
 
-	private DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
+	private LinearLayout layout = LinearLayout.vertical();
 	private final ScreenBuilder builder;
 	private final boolean tab;
-	private CheckboxWidget checkbox;
-	private ButtonWidget doneButton;
+	private Checkbox checkbox;
+	private Button doneButton;
 
 	protected ScreenConfigPopup(Screen backgroundScreen, ScreenBuilder builder, boolean isTab) {
-		super(Text.empty(), backgroundScreen);
+		super(Component.empty(), backgroundScreen);
 		this.builder = builder;
 		this.tab = isTab;
 	}
 
 	private void updateLayout() {
-		clearChildren();
-		layout = DirectionalLayoutWidget.vertical().spacing(2);
+		clearWidgets();
+		layout = LinearLayout.vertical().spacing(2);
 		if (tab) {
-			layout.add(checkbox);
+			layout.addChild(checkbox);
 
 			ScreenBuilder.FancyTabConfig fancyTab = builder.getConfig().fancyTab;
-			if (checkbox.isChecked() && fancyTab != null) { // shouldn't be null if it's checked but SQUIGGLY LINE
+			if (checkbox.selected() && fancyTab != null) { // shouldn't be null if it's checked but SQUIGGLY LINE
 
 				// TODO Translatable
-				layout.add(ButtonWidget.builder(Text.literal("Positioner: " + fancyTab.positioner), button -> {
+				layout.addChild(Button.builder(Component.literal("Positioner: " + fancyTab.positioner), button -> {
 					fancyTab.positioner = EnumUtils.cycle(fancyTab.positioner);
-					button.setMessage(Text.literal("Positioner: " + fancyTab.positioner));
+					button.setMessage(Component.literal("Positioner: " + fancyTab.positioner));
 				}).build());
 
-				layout.add(new TextWidget(Text.literal("Hidden Widgets"), textRenderer), Positioner::alignHorizontalCenter);
-				DirectionalLayoutWidget checkboxes = DirectionalLayoutWidget.vertical().spacing(1);
+				layout.addChild(new StringWidget(Component.literal("Hidden Widgets"), font), LayoutSettings::alignHorizontallyCenter);
+				LinearLayout checkboxes = LinearLayout.vertical().spacing(1);
 				for (String s : PlayerListManager.getCurrentWidgets()) {
 					HudWidget widget = PlayerListManager.getTabWidget(s);
 					if (widget == null) continue;
-					Text displayName = widget.getInformation().displayName();
-					CheckboxWidget checkboxWidget = checkboxes.add(CheckboxWidget.builder(displayName, textRenderer)
-							.callback((box, checked) -> {
+					Component displayName = widget.getInformation().displayName();
+					Checkbox checkboxWidget = checkboxes.addChild(Checkbox.builder(displayName, font)
+							.onValueChange((box, checked) -> {
 								if (checked) fancyTab.hiddenWidgets.add(widget.getId());
 								else fancyTab.hiddenWidgets.remove(widget.getId());
 							})
 							.build());
-					((CheckboxWidgetAccessor) checkboxWidget).setChecked(fancyTab.hiddenWidgets.contains(widget.getId()));
+					((CheckboxWidgetAccessor) checkboxWidget).setSelected(fancyTab.hiddenWidgets.contains(widget.getId()));
 				}
-				ScrollableLayoutWidget widget = layout.add(new ScrollableLayoutWidget(client, checkboxes, 130));
-				widget.setHeight(130);
-				widget.setWidth(150);
+				ScrollableLayout widget = layout.addChild(new ScrollableLayout(minecraft, checkboxes, 130));
+				widget.setMaxHeight(130);
+				widget.setMinWidth(150);
 			}
-		} else layout.add(EmptyWidget.ofHeight(120));
-		layout.add(doneButton);
-		layout.forEachChild(this::addDrawableChild);
-		refreshWidgetPositions();
+		} else layout.addChild(SpacerElement.height(120));
+		layout.addChild(doneButton);
+		layout.visitWidgets(this::addRenderableWidget);
+		repositionElements();
 	}
 
 	@Override
 	public void init() {
 		if (tab) {
-			checkbox = CheckboxWidget.builder(Text.literal("Enable fancy tab"), textRenderer)
-					.callback((box, checked) -> {
+			checkbox = Checkbox.builder(Component.literal("Enable fancy tab"), font)
+					.onValueChange((box, checked) -> {
 						builder.getConfig().getOrCreateFancyTab().enabled = checked;
 						updateLayout();
 					})
 					.build();
 			ScreenBuilder.FancyTabConfig fancyTab = builder.getConfig().fancyTab;
-			((CheckboxWidgetAccessor) checkbox).setChecked(fancyTab != null && fancyTab.enabled);
+			((CheckboxWidgetAccessor) checkbox).setSelected(fancyTab != null && fancyTab.enabled);
 		}
-		doneButton = ButtonWidget.builder(ScreenTexts.DONE, b -> close()).build();
+		doneButton = Button.builder(CommonComponents.GUI_DONE, b -> onClose()).build();
 		updateLayout();
 	}
 
 	@Override
-	public void close() {
+	public void onClose() {
 		if (tab) builder.updateTabWidgetsList();
-		super.close();
+		super.onClose();
 	}
 
 	@Override
-	protected void refreshWidgetPositions() {
-		super.refreshWidgetPositions();
-		layout.refreshPositions();
+	protected void repositionElements() {
+		super.repositionElements();
+		layout.arrangeElements();
 		layout.setPosition((width - layout.getWidth()) / 2, (height - layout.getHeight()) / 2);
 	}
 
 	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.renderBackground(context, mouseX, mouseY, delta);
 		drawPopupBackground(context, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
 	}

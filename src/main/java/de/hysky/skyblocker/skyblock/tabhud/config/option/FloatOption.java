@@ -4,11 +4,11 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetConfig;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
@@ -21,7 +21,7 @@ public class FloatOption implements WidgetOption<Float> {
 
 	private final Supplier<Float> valueGetter;
 	private final Consumer<Float> valueSetter;
-	private final Text name;
+	private final Component name;
 	private final String id;
 	private final float defaultValue;
 
@@ -31,7 +31,7 @@ public class FloatOption implements WidgetOption<Float> {
 	private float min = 0;
 	private float max = 1;
 
-	public FloatOption(String id, Text name, Supplier<Float> valueGetter, Consumer<Float> valueSetter, float defaultValue) {
+	public FloatOption(String id, Component name, Supplier<Float> valueGetter, Consumer<Float> valueSetter, float defaultValue) {
 		this.id = id;
 		this.name = name;
 		this.valueGetter = valueGetter;
@@ -81,11 +81,11 @@ public class FloatOption implements WidgetOption<Float> {
 	}
 
 	@Override
-	public ClickableWidget createNewWidget(WidgetConfig config) {
+	public AbstractWidget createNewWidget(WidgetConfig config) {
 		return new Slider(config);
 	}
 
-	private class Slider extends SliderWidget {
+	private class Slider extends AbstractSliderButton {
 
 		private final WidgetConfig config;
 
@@ -116,7 +116,7 @@ public class FloatOption implements WidgetOption<Float> {
 		}
 
 		@Override
-		public void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 			Float v = valueGetter.get();
 			if (v != fromProgress(value)) {
 				value = toProgress(v);
@@ -135,7 +135,7 @@ public class FloatOption implements WidgetOption<Float> {
 		}
 
 		@Override
-		public boolean mouseClicked(Click click, boolean doubled) {
+		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 			if (active && visible && click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && isMouseOver(click.x(), click.y())) {
 				value = toProgress(defaultValue);
 				applyValue();

@@ -4,23 +4,22 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 // this widget shows info about minions placed on the home island
 @RegisterWidget
 public class MinionWidget extends TabHudWidget {
-	private static final MutableText TITLE = Text.literal("Minions").formatted(Formatting.DARK_AQUA,
-			Formatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Minions").withStyle(ChatFormatting.DARK_AQUA,
+			ChatFormatting.BOLD);
 
 	private static final HashMap<String, ItemStack> MIN_ICOS = new HashMap<>();
 
@@ -94,15 +93,15 @@ public class MinionWidget extends TabHudWidget {
 	public static final Pattern MINION_PATTERN = Pattern.compile("^(?<amount>\\d+)x (?<name>.*) (?<level>[XVI]*) \\[(?<status>.*)]");
 
 	public MinionWidget() {
-		super("Minions", TITLE, Formatting.DARK_AQUA.getColorValue(), Location.PRIVATE_ISLAND);
+		super("Minions", TITLE, ChatFormatting.DARK_AQUA.getColor(), Location.PRIVATE_ISLAND);
 	}
 
 	@Override
-	public void updateContent(List<Text> lines) {
-		addComponent(new PlainTextComponent(lines.getFirst().copy().append(Text.literal(" minions"))));
+	public void updateContent(List<Component> lines) {
+		addComponent(new PlainTextComponent(lines.getFirst().copy().append(Component.literal(" minions"))));
 		for (int i = 1; i < lines.size(); i++) {
 			String string = lines.get(i).getString();
-			if (string.toLowerCase(Locale.ENGLISH).startsWith("...")) this.addComponent(new PlainTextComponent(lines.get(i).copy().formatted(Formatting.GRAY)));
+			if (string.toLowerCase(Locale.ENGLISH).startsWith("...")) this.addComponent(new PlainTextComponent(lines.get(i).copy().withStyle(ChatFormatting.GRAY)));
 			else addMinionComponent(string);
 		}
 	}
@@ -116,16 +115,16 @@ public class MinionWidget extends TabHudWidget {
 			String lvl = m.group("level");
 			String stat = m.group("status");
 
-			MutableText mt = Text.literal(amount + "x " + min + " " + lvl).append(Text.literal(": "));
+			MutableComponent mt = Component.literal(amount + "x " + min + " " + lvl).append(Component.literal(": "));
 
-			Formatting format = Formatting.RED;
+			ChatFormatting format = ChatFormatting.RED;
 			if (stat.equals("ACTIVE")) {
-				format = Formatting.GREEN;
+				format = ChatFormatting.GREEN;
 			} else if (stat.equals("SLOW")) {
-				format = Formatting.YELLOW;
+				format = ChatFormatting.YELLOW;
 			}
 			// makes "BLOCKED" also red. in reality, it's some kind of crimson
-			mt.append(Text.literal(stat).formatted(format));
+			mt.append(Component.literal(stat).withStyle(format));
 
 			this.addComponent(Components.iconTextComponent(MIN_ICOS.get(min), mt));
 		}

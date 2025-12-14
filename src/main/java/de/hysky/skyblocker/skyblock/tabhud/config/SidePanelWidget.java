@@ -3,35 +3,35 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.EmptyWidget;
-import net.minecraft.client.gui.widget.MultilineTextWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.MultiLineTextWidget;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.layouts.SpacerElement;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
-class SidePanelWidget extends ContainerWidget {
+class SidePanelWidget extends AbstractContainerWidget {
 	private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");
 	private static final int TOP_MARGIN = 16; // this is kinda horribly used but this widget will only be used here so it is whatever.
 	private static final int SCROLLBAR_AREA = SCROLLBAR_WIDTH + 1; // 1 for padding
 
-	private final MinecraftClient client = MinecraftClient.getInstance();
-	private final List<ClickableWidget> optionWidgets = new ArrayList<>();
+	private final Minecraft client = Minecraft.getInstance();
+	private final List<AbstractWidget> optionWidgets = new ArrayList<>();
 
-	private DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
+	private LinearLayout layout = LinearLayout.vertical();
 	boolean rightSide = false;
 	private int targetX = 0;
 	private float animation = 0.0f;
@@ -42,49 +42,49 @@ class SidePanelWidget extends ContainerWidget {
 	private @Nullable HudWidget hudWidget;
 
 	SidePanelWidget(int width, int height) {
-		super(0, TOP_MARGIN, width, height - TOP_MARGIN, Text.literal("Side Panel"));
+		super(0, TOP_MARGIN, width, height - TOP_MARGIN, Component.literal("Side Panel"));
 		visible = false;
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		return optionWidgets;
 	}
 
 	@Override
-	protected int getContentsHeightWithPadding() {
+	protected int contentHeight() {
 		return layout.getHeight();
 	}
 
 	@Override
-	protected double getDeltaYPerScroll() {
+	protected double scrollRate() {
 		return 5;
 	}
 
 	private boolean isNotVisible(int top, int bottom) {
-		return !(bottom - this.getScrollY() >= this.getY()) || !(top - this.getScrollY() <= this.getY() + this.getHeight());
+		return !(bottom - this.scrollAmount() >= this.getY()) || !(top - this.scrollAmount() <= this.getY() + this.getHeight());
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		if (animation >= 0) {
 			if (animation < 1.0f) {
 				setX(animationStart + (int) ((animationEnd - animationStart) * animation));
-				animation += MinecraftClient.getInstance().getRenderTickCounter().getFixedDeltaTicks() * 50 * 7.5f / 1000.f;
+				animation += Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks() * 50 * 7.5f / 1000.f;
 			} else {
 				setX(animationEnd);
 				animation = -1f;
 			}
 		}
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX() - 4, getY() - 4 - TOP_MARGIN, getWidth() + 8, getHeight() + 8 + TOP_MARGIN);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, getX() - 4, getY() - 4 - TOP_MARGIN, getWidth() + 8, getHeight() + 8 + TOP_MARGIN);
 		context.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
 
-		for (ClickableWidget clickableWidget : this.optionWidgets) {
+		for (AbstractWidget clickableWidget : this.optionWidgets) {
 			if (isNotVisible(clickableWidget.getY(), clickableWidget.getBottom())) continue;
 			clickableWidget.render(context, mouseX, mouseY, deltaTicks);
 		}
 		context.disableScissor();
-		this.drawScrollbar(context, mouseX, mouseY);
+		this.renderScrollbar(context, mouseX, mouseY);
 	}
 
 	public void open() {
@@ -98,25 +98,25 @@ class SidePanelWidget extends ContainerWidget {
 
 	public void open(HudWidget hudWidget, WidgetConfig config, boolean rightSide, int x) {
 		this.hudWidget = hudWidget;
-		layout = DirectionalLayoutWidget.vertical().spacing(5);
-		layout.getMainPositioner().alignHorizontalCenter();
+		layout = LinearLayout.vertical().spacing(5);
+		layout.defaultCellSetting().alignHorizontallyCenter();
 		optionWidgets.clear();
-		add(new TextWidget(0, 15, hudWidget.getInformation().displayName().copy().formatted(Formatting.UNDERLINE), client.textRenderer) {
+		add(new StringWidget(0, 15, hudWidget.getInformation().displayName().copy().withStyle(ChatFormatting.UNDERLINE), client.font) {
 			@Override
 			public void setWidth(int width) {
 				setMaxWidth(width, TextOverflow.SCROLLING);
 			}
 		});
-		add(ButtonWidget.builder(Text.literal("Remove"), b -> config.removeWidget(hudWidget)).build()); // TODO translatable
-		layout.add(EmptyWidget.ofHeight(10));
+		add(Button.builder(Component.literal("Remove"), b -> config.removeWidget(hudWidget)).build()); // TODO translatable
+		layout.addChild(SpacerElement.height(10));
 
 		// Per screen options
-		MultilineTextWidget textWidget = null;
+		MultiLineTextWidget textWidget = null;
 		if (hudWidget.renderingInformation.inherited) {
 			// TODO add a goto location button
-			textWidget = new MultilineTextWidget(Text.literal("This widget is from a parent screen, edit it there or create a copy."), client.textRenderer);
+			textWidget = new MultiLineTextWidget(Component.literal("This widget is from a parent screen, edit it there or create a copy."), client.font);
 			add(textWidget);
-			add(ButtonWidget.builder(Text.literal("Create Copy"), b -> { // TODO translatable
+			add(Button.builder(Component.literal("Create Copy"), b -> { // TODO translatable
 				hudWidget.renderingInformation.inherited = false;
 				open(hudWidget, config, rightSide, x);
 			}).build());
@@ -128,7 +128,7 @@ class SidePanelWidget extends ContainerWidget {
 			}
 		}
 
-		layout.add(EmptyWidget.ofHeight(10));
+		layout.addChild(SpacerElement.height(10));
 
 		// Normal options
 		List<WidgetOption<?>> options = new ArrayList<>();
@@ -138,13 +138,13 @@ class SidePanelWidget extends ContainerWidget {
 		}
 
 		// Position everything
-		for (ClickableWidget widget : optionWidgets) {
+		for (AbstractWidget widget : optionWidgets) {
 			widget.setWidth(getWidth() - SCROLLBAR_AREA);
 		}
 		if (textWidget != null) textWidget.setMaxWidth(getWidth() - SCROLLBAR_AREA);
 
-		layout.setPosition(getX(), getY() - (int) getScrollY());
-		layout.refreshPositions();
+		layout.setPosition(getX(), getY() - (int) scrollAmount());
+		layout.arrangeElements();
 		if (isOpen() && (x != targetX || rightSide != this.rightSide)) {
 			isOpen = false;
 		}
@@ -166,9 +166,9 @@ class SidePanelWidget extends ContainerWidget {
 	}
 
 	@Override
-	public void setScrollY(double scrollY) {
-		super.setScrollY(scrollY);
-		layout.setY(getY() - (int) getScrollY());
+	public void setScrollAmount(double scrollY) {
+		super.setScrollAmount(scrollY);
+		layout.setY(getY() - (int) scrollAmount());
 	}
 
 	@Override
@@ -183,17 +183,17 @@ class SidePanelWidget extends ContainerWidget {
 
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-		if (this.hoveredElement(mouseX, mouseY).filter(element -> element.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)).isPresent()) return true;
+		if (this.getChildAt(mouseX, mouseY).filter(element -> element.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)).isPresent()) return true;
 		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
 	@Override
 	public void setWidth(int width) {
 		super.setWidth(width);
-		for (ClickableWidget widget : optionWidgets) {
+		for (AbstractWidget widget : optionWidgets) {
 			widget.setWidth(getWidth() - SCROLLBAR_AREA); // remove 6 for scrollbar and one for a liiiitle padding
 		}
-		layout.refreshPositions();
+		layout.arrangeElements();
 	}
 
 	@Override
@@ -205,17 +205,17 @@ class SidePanelWidget extends ContainerWidget {
 		return hudWidget;
 	}
 
-	private void add(ClickableWidget widget) {
+	private void add(AbstractWidget widget) {
 		optionWidgets.add(widget);
-		layout.add(widget);
+		layout.addChild(widget);
 	}
 
 
 	@Override
-	protected int getScrollbarX() {
-		return rightSide ? super.getScrollbarX() : 0;
+	protected int scrollBarX() {
+		return rightSide ? super.scrollBarX() : 0;
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 }

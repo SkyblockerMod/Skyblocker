@@ -1,17 +1,15 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.Widget;
-
 import java.util.function.Consumer;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 
 /**
  * Implements a few things so you don't have to!
  */
-public abstract class AbstractWidget implements Widget, Element, Drawable {
+public abstract class AbstractWidget implements LayoutElement, GuiEventListener, Renderable {
 
 	protected int w = 0, h = 0;
 	protected int x = 0, y = 0;
@@ -57,7 +55,7 @@ public abstract class AbstractWidget implements Widget, Element, Drawable {
 	}
 
 	@Override
-	public void forEachChild(Consumer<ClickableWidget> consumer) {}
+	public void visitWidgets(Consumer<net.minecraft.client.gui.components.AbstractWidget> consumer) {}
 
 	public void setDimensions(int size) {
 		setDimensions(size, size);
@@ -86,7 +84,7 @@ public abstract class AbstractWidget implements Widget, Element, Drawable {
 	}
 
 	@Override
-	public ScreenRect getNavigationFocus() {
-		return Widget.super.getNavigationFocus();
+	public ScreenRectangle getRectangle() {
+		return LayoutElement.super.getRectangle();
 	}
 }

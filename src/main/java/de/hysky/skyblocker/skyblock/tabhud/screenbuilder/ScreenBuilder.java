@@ -16,10 +16,6 @@ import de.hysky.skyblocker.utils.CodecUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.profiler.Profilers;
 import org.joml.Vector2i;
 import org.slf4j.Logger;
 
@@ -33,7 +29,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.util.profiling.Profiler;
 import org.jspecify.annotations.Nullable;
 
 public class ScreenBuilder {
@@ -119,7 +118,7 @@ public class ScreenBuilder {
 	 * Updates the widget list and their configs
 	 */
 	public void updateWidgetsList() {
-		Profilers.get().push("skyblocker:updateWidgetsList");
+		Profiler.get().push("skyblocker:updateWidgetsList");
 		widgets.clear();
 		for (Map.Entry<String, WidgetConfig> entry : getFullConfig(true).widgetConfigs.entrySet()) {
 			Optional<Boolean> inherited = entry.getValue().inherited();
@@ -147,14 +146,14 @@ public class ScreenBuilder {
 			if (widget instanceof ComponentBasedWidget componentBasedWidget && !componentBasedWidget.shouldUpdateBeforeRendering()) componentBasedWidget.update();
 		}
 		updateRenderedWidgets();
-		Profilers.get().pop();
+		Profiler.get().pop();
 	}
 
 	public void updateTabWidgetsList() {
 		ScreenConfig fullConfig = getFullConfig(false);
 		hasFancyTabWidget = fullConfig.hasFancyTab();
 		if (!hasFancyTabWidget) return;
-		Profilers.get().push("skyblocker:updateTabWidgetsList");
+		Profiler.get().push("skyblocker:updateTabWidgetsList");
 		Set<String> currentWidgets = PlayerListManager.getCurrentWidgets();
 		Set<HudWidget> newTabWidgets = new ObjectLinkedOpenHashSet<>(currentWidgets.size());
 		FancyTabConfig tabConfig = fullConfig.fancyTab().get();
@@ -171,7 +170,7 @@ public class ScreenBuilder {
 			if (widget instanceof ComponentBasedWidget componentBasedWidget && !componentBasedWidget.shouldUpdateBeforeRendering()) componentBasedWidget.update();
 		}
 		updateRenderedWidgets();
-		Profilers.get().pop();
+		Profiler.get().pop();
 	}
 
 	private void updateRenderedWidgets() {
@@ -181,8 +180,8 @@ public class ScreenBuilder {
 		positionsHash = 0;
 	}
 
-	public void render(DrawContext context, int screenWidth, int screenHeight, boolean renderConfig) {
-		Profilers.get().push("skyblocker:renderHud");
+	public void render(GuiGraphics context, int screenWidth, int screenHeight, boolean renderConfig) {
+		Profiler.get().push("skyblocker:renderHud");
 		int hash = Integer.hashCode(screenWidth);
 		hash = hash * 31 + Integer.hashCode(screenHeight);
 		for (HudWidget widget : renderedWidgets) {
@@ -201,7 +200,7 @@ public class ScreenBuilder {
 			if (renderConfig) widget.renderConfig(context);
 			else widget.render(context);
 		}
-		Profilers.get().pop();
+		Profiler.get().pop();
 	}
 
 	public void updatePositions(int screenWidth, int screenHeight) {
@@ -220,12 +219,12 @@ public class ScreenBuilder {
 	}
 
 	public static void updatePositions(Collection<HudWidget> widgets, int screenWidth, int screenHeight) {
-		Profilers.get().push("skyblocker:updatePositions");
+		Profiler.get().push("skyblocker:updatePositions");
 		widgets.forEach(w -> w.renderingInformation.positioned = false);
 		for (HudWidget widget : widgets) {
 			if (!widget.renderingInformation.positioned) WidgetPositioner.applyRuleToWidget(widget, screenWidth, screenHeight);
 		}
-		Profilers.get().pop();
+		Profiler.get().pop();
 	}
 
 	public Collection<HudWidget> getWidgets() {
@@ -302,11 +301,11 @@ public class ScreenBuilder {
 		}
 	}
 
-	public enum Positioner implements StringIdentifiable {
+	public enum Positioner implements StringRepresentable {
 		TOP(TopAlignedWidgetPositioner::new),
 		CENTERED(CenteredWidgetPositioner::new);
 
-		public static final Codec<Positioner> CODEC = StringIdentifiable.createCodec(Positioner::values);
+		public static final Codec<Positioner> CODEC = StringRepresentable.fromEnum(Positioner::values);
 
 		private final BiFunction<Float, Integer, WidgetPositioner> function;
 
@@ -319,13 +318,13 @@ public class ScreenBuilder {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name().toLowerCase(Locale.ENGLISH);
 		}
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.uiAndVisuals.tabHud.defaultPosition." + name());
+			return I18n.get("skyblocker.config.uiAndVisuals.tabHud.defaultPosition." + name());
 		}
 	}
 }

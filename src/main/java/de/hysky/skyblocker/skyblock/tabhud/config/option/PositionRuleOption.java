@@ -8,25 +8,25 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 
 public class PositionRuleOption implements WidgetOption<PositionRule> {
 
@@ -64,42 +64,42 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 	}
 
 	@Override
-	public ClickableWidget createNewWidget(WidgetConfig config) {
+	public AbstractWidget createNewWidget(WidgetConfig config) {
 		return new PositionRuleOptionWidget(config);
 	}
 
-	private class PositionRuleOptionWidget extends ContainerWidget {
+	private class PositionRuleOptionWidget extends AbstractContainerWidget {
 
 		// TODO editable coords maybe?
 
-		DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
-		List<ClickableWidget> widgets = new ArrayList<>();
-		private final TextWidget coordsDisplay;
-		private final ButtonWidget parentButton;
+		LinearLayout layout = LinearLayout.vertical();
+		List<AbstractWidget> widgets = new ArrayList<>();
+		private final StringWidget coordsDisplay;
+		private final Button parentButton;
 
 		private final WidgetConfig widgetConfig;
 
 		private PositionRuleOptionWidget(WidgetConfig config) {
-			super(0, 0, 0, 0, Text.literal("hi"));
+			super(0, 0, 0, 0, Component.literal("hi"));
 			this.widgetConfig = config;
-			layout.getMainPositioner().alignHorizontalCenter();
+			layout.defaultCellSetting().alignHorizontallyCenter();
 			// TODO translatable
-			parentButton = ButtonWidget.builder(Text.literal("Parent: ").append(getParentName()), ignored -> config.promptSelectWidget(this::onWidgetSelected, false)).build();
-			coordsDisplay = new TextWidget(Text.literal("hi"), MinecraftClient.getInstance().textRenderer);
+			parentButton = Button.builder(Component.literal("Parent: ").append(getParentName()), ignored -> config.promptSelectWidget(this::onWidgetSelected, false)).build();
+			coordsDisplay = new StringWidget(Component.literal("hi"), Minecraft.getInstance().font);
 			coordsDisplay.setHeight(coordsDisplay.getHeight() + 6);
-			AnchorSelectionWidget parentPoint = new AnchorSelectionWidget(config, Text.literal("Parent Point"), true);
-			AnchorSelectionWidget thisPoint = new AnchorSelectionWidget(config, Text.literal("This Point"), false);
+			AnchorSelectionWidget parentPoint = new AnchorSelectionWidget(config, Component.literal("Parent Point"), true);
+			AnchorSelectionWidget thisPoint = new AnchorSelectionWidget(config, Component.literal("This Point"), false);
 			add(parentButton);
 			add(coordsDisplay);
 			add(parentPoint);
 			add(thisPoint);
-			layout.refreshPositions();
+			layout.arrangeElements();
 			setHeight(layout.getHeight());
 		}
 
-		private void add(ClickableWidget widget) {
+		private void add(AbstractWidget widget) {
 			widgets.add(widget);
-			layout.add(widget);
+			layout.addChild(widget);
 		}
 
 		private void onWidgetSelected(@Nullable HudWidget selectedWidget) {
@@ -120,9 +120,9 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 					thisAnchorY - otherAnchorY
 			);
 			if (selectedWidget != null) {
-				parentButton.setMessage(Text.literal("Parent: ").append(selectedWidget.getInformation().displayName()));
+				parentButton.setMessage(Component.literal("Parent: ").append(selectedWidget.getInformation().displayName()));
 			} else {
-				parentButton.setMessage(Text.literal("Parent: ").append("Screen"));
+				parentButton.setMessage(Component.literal("Parent: ").append("Screen"));
 			}
 			valueSetter.accept(newRule);
 		}
@@ -130,11 +130,11 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 		@Override
 		public void setWidth(int width) {
 			super.setWidth(width);
-			for (ClickableWidget widget : widgets) {
+			for (AbstractWidget widget : widgets) {
 				widget.setWidth(width);
 			}
-			coordsDisplay.setMaxWidth(width, TextWidget.TextOverflow.SCROLLING);
-			layout.refreshPositions();
+			coordsDisplay.setMaxWidth(width, StringWidget.TextOverflow.SCROLLING);
+			layout.arrangeElements();
 			setHeight(layout.getHeight());
 		}
 
@@ -150,10 +150,10 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 			layout.setY(y);
 		}
 
-		private Text getParentName() {
+		private Component getParentName() {
 			PositionRule rule = valueGetter.get();
 			if (rule.parent().equals("screen")) {
-				return Text.literal("Screen");
+				return Component.literal("Screen");
 			} else {
 				HudWidget widget = WidgetManager.getWidgetOrPlaceholder(rule.parent());
 				return widget.getInformation().displayName();
@@ -161,25 +161,25 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 		}
 
 		@Override
-		public List<? extends Element> children() {
+		public List<? extends GuiEventListener> children() {
 			return widgets;
 		}
 
 		@Override
-		protected int getContentsHeightWithPadding() {
+		protected int contentHeight() {
 			return getHeight();
 		}
 
 		@Override
-		protected double getDeltaYPerScroll() {
+		protected double scrollRate() {
 			return 0;
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-			coordsDisplay.setMessage(Text.literal("x: " + valueGetter.get().relativeX() + ", y: " + valueGetter.get().relativeY()));
-			layout.refreshPositions();
-			for (ClickableWidget widget : widgets) {
+		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+			coordsDisplay.setMessage(Component.literal("x: " + valueGetter.get().relativeX() + ", y: " + valueGetter.get().relativeY()));
+			layout.arrangeElements();
+			for (AbstractWidget widget : widgets) {
 				widget.render(context, mouseX, mouseY, deltaTicks);
 			}
 		}
@@ -190,33 +190,33 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 	}
 
-	private class AnchorSelectionWidget extends ClickableWidget {
+	private class AnchorSelectionWidget extends AbstractWidget {
 		private final boolean parent;
 		private PositionRule.@Nullable Point hoveredPoint = null;
 		private final WidgetConfig widgetConfig;
 
-		private AnchorSelectionWidget(WidgetConfig config, Text text, boolean parent) {
+		private AnchorSelectionWidget(WidgetConfig config, Component text, boolean parent) {
 			super(0, 0, 20, 40, text);
 			this.parent = parent;
 			widgetConfig = config;
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 			hoveredPoint = null;
-			context.drawText(MinecraftClient.getInstance().textRenderer, getMessage(), getX(), getY(), Colors.WHITE, true);
-			context.getMatrices().pushMatrix();
-			context.getMatrices().translate(getX(), getY() + 10);
+			context.drawString(Minecraft.getInstance().font, getMessage(), getX(), getY(), CommonColors.WHITE, true);
+			context.pose().pushMatrix();
+			context.pose().translate(getX(), getY() + 10);
 			// Rectangle thing
 			int x = getWidth() / 6;
 			int w = (int) (4 * getWidth() / 6f);
 			int y = 5; // 30 / 6
 			int h = 20;
 
-			HudHelper.drawBorder(context, x, y + 1, w, h, Colors.WHITE);
+			HudHelper.drawBorder(context, x, y + 1, w, h, CommonColors.WHITE);
 			PositionRule rule = valueGetter.get();
 			for (int i = 0; i < 3; i++) {
 				for (int j = 0; j < 3; j++) {
@@ -235,22 +235,22 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 						hoveredPoint = new PositionRule.Point(verticalPoints[j], horizontalPoints[i]);
 					}
 
-					context.fill(squareX - 1, squareY - 1, squareX + 2, squareY + 2, hoveredAnchor ? Colors.RED : selectedAnchor ? Colors.YELLOW : Colors.WHITE);
+					context.fill(squareX - 1, squareY - 1, squareX + 2, squareY + 2, hoveredAnchor ? CommonColors.RED : selectedAnchor ? CommonColors.YELLOW : CommonColors.WHITE);
 				}
 			}
-			context.getMatrices().popMatrix();
+			context.pose().popMatrix();
 		}
 
 		@Override
-		public void onClick(Click click, boolean doubled) {
+		public void onClick(MouseButtonEvent click, boolean doubled) {
 			HudWidget editedWidget = widgetConfig.getEditedWidget();
 			if (hoveredPoint != null) {
 				PositionRule oldRule = valueGetter.get();
 				// Get the x, y of the parent's point
-				ScreenPos startPos = WidgetPositioner.getStartPosition(oldRule.parent(), widgetConfig.getScreenWidth(), widgetConfig.getScreenHeight(), parent ? hoveredPoint : oldRule.parentPoint());
+				ScreenPosition startPos = WidgetPositioner.getStartPosition(oldRule.parent(), widgetConfig.getScreenWidth(), widgetConfig.getScreenHeight(), parent ? hoveredPoint : oldRule.parentPoint());
 				// Same but for the affected widget
 				PositionRule.Point thisPoint = parent ? oldRule.thisPoint() : hoveredPoint;
-				ScreenPos endPos = new ScreenPos(
+				ScreenPosition endPos = new ScreenPosition(
 						(int) (editedWidget.getX() + thisPoint.horizontalPoint().getPercentage() * editedWidget.getWidth()),
 						(int) (editedWidget.getY() + thisPoint.verticalPoint().getPercentage() * editedWidget.getHeight())
 				);
@@ -274,6 +274,6 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 	}
 }

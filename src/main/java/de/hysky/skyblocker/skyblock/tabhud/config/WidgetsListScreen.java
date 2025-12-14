@@ -10,31 +10,29 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.Text;
-
 import java.util.List;
 import java.util.Locale;
-
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
 // TODO: recommend disabling spacing and enabling wrapping
-public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
+public class WidgetsListScreen extends Screen implements ContainerListener {
 	private WidgetsElementList widgetsElementList;
-	private ButtonWidget back;
-	private ButtonWidget previousPage;
-	private ButtonWidget nextPage;
-	private ButtonWidget thirdColumnButton;
+	private Button back;
+	private Button previousPage;
+	private Button nextPage;
+	private Button thirdColumnButton;
 	private String titleLowercase;
-	private GenericContainerScreenHandler handler;
+	private ChestMenu handler;
 	private boolean waitingForServer = false;
 
 	private final Int2ObjectMap<WidgetsListSlotEntry> entries = new Int2ObjectOpenHashMap<>();
@@ -50,22 +48,22 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		return entries.int2ObjectEntrySet();
 	}
 
-	public WidgetsListScreen(GenericContainerScreenHandler handler, String titleLowercase) {
-		super(Text.literal("Widgets EntryList"));
+	public WidgetsListScreen(ChestMenu handler, String titleLowercase) {
+		super(Component.literal("Widgets EntryList"));
 		this.handler = handler;
 		this.titleLowercase = titleLowercase;
-		handler.addListener(this);
+		handler.addSlotListener(this);
 	}
 
 	@Override
-	public Text getTitle() {
-		return Text.literal("Widgets");
+	public Component getTitle() {
+		return Component.literal("Widgets");
 	}
 
 	public void clickAndWaitForServer(int slot, int button) {
 		if (waitingForServer) return;
-		if (client.interactionManager == null || this.client.player == null) return;
-		client.interactionManager.clickSlot(handler.syncId, slot, button, SlotActionType.PICKUP, this.client.player);
+		if (minecraft.gameMode == null || this.minecraft.player == null) return;
+		minecraft.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.PICKUP, this.minecraft.player);
 		// wacky fix for "this action is on cooldown"
 		if (slot == 50) Scheduler.INSTANCE.schedule(() -> this.waitingForServer = false, 4);
 		waitingForServer = true;
@@ -73,16 +71,16 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 
 	public void shiftClickAndWaitForServer(int slot, int button) {
 		if (waitingForServer) return;
-		if (client.interactionManager == null || this.client.player == null) return;
-		client.interactionManager.clickSlot(handler.syncId, slot, button, SlotActionType.QUICK_MOVE, this.client.player);
+		if (minecraft.gameMode == null || this.minecraft.player == null) return;
+		minecraft.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.QUICK_MOVE, this.minecraft.player);
 		// When moving a widget down it gets stuck sometimes
 		Scheduler.INSTANCE.schedule(() -> this.waitingForServer = false, 4);
 		waitingForServer = true;
 	}
 
-	public void updateHandler(GenericContainerScreenHandler newHandler, String titleLowercase) {
-		this.handler.removeListener(this);
-		newHandler.addListener(this);
+	public void updateHandler(ChestMenu newHandler, String titleLowercase) {
+		this.handler.removeSlotListener(this);
+		newHandler.addSlotListener(this);
 		this.handler = newHandler;
 		this.titleLowercase = titleLowercase;
 		entries.clear();
@@ -114,39 +112,39 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		listNeedsUpdate = true;
 		switch (slot) {
 			case 45 -> {
-				previousPage.visible = stack.isOf(Items.ARROW);
+				previousPage.visible = stack.is(Items.ARROW);
 				return;
 			}
 			case 53 -> {
-				nextPage.visible = stack.isOf(Items.ARROW);
+				nextPage.visible = stack.is(Items.ARROW);
 				return;
 			}
 			case 50 -> {
-				thirdColumnButton.visible = stack.isOf(Items.BOOKSHELF) || stack.isOf(Items.STONE_BUTTON);
+				thirdColumnButton.visible = stack.is(Items.BOOKSHELF) || stack.is(Items.STONE_BUTTON);
 				if (thirdColumnButton.visible) {
-					if (stack.isOf(Items.STONE_BUTTON))
-						thirdColumnButton.setMessage(Text.literal("Apply to all locations"));
+					if (stack.is(Items.STONE_BUTTON))
+						thirdColumnButton.setMessage(Component.literal("Apply to all locations"));
 					else if (ItemUtils.getLoreLineIf(stack, s -> s.contains("DISABLED")) == null)
-						thirdColumnButton.setMessage(Text.literal("3rd Column: ").append(WidgetsListSlotEntry.ENABLED_TEXT));
+						thirdColumnButton.setMessage(Component.literal("3rd Column: ").append(WidgetsListSlotEntry.ENABLED_TEXT));
 					else
-						thirdColumnButton.setMessage(Text.literal("3rd Column: ").append(WidgetsListSlotEntry.DISABLED_TEXT));
+						thirdColumnButton.setMessage(Component.literal("3rd Column: ").append(WidgetsListSlotEntry.DISABLED_TEXT));
 				}
 				return;
 			}
 		}
 
-		if (stack.isEmpty() || stack.isOf(Items.BLACK_STAINED_GLASS_PANE)) {
+		if (stack.isEmpty() || stack.is(Items.BLACK_STAINED_GLASS_PANE)) {
 			entries.remove(slot);
 			return;
 		}
 
 
-		String lowerCase = stack.getName().getString().trim().toLowerCase(Locale.ENGLISH);
+		String lowerCase = stack.getHoverName().getString().trim().toLowerCase(Locale.ENGLISH);
 		List<String> lore = stack.skyblocker$getLoreStrings();
 		String lastLowerCase = lore.getLast().toLowerCase(Locale.ENGLISH);
 
 		WidgetsListSlotEntry entry;
-		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.isOf(Items.RED_STAINED_GLASS_PANE)) {
+		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.is(Items.RED_STAINED_GLASS_PANE)) {
 			entry = new EditableSlotEntry(this, slot, stack);
 		} else if (lowerCase.endsWith("widget")) {
 			entry = new WidgetSlotEntry(this, slot, stack);
@@ -162,83 +160,83 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 	@Override
 	protected void init() {
 		super.init();
-		widgetsElementList = new WidgetsElementList(this, client, 0, 0, 0);
-		back = ButtonWidget.builder(Text.literal("Back"), button -> clickAndWaitForServer(48, 0))
+		widgetsElementList = new WidgetsElementList(this, minecraft, 0, 0, 0);
+		back = Button.builder(Component.literal("Back"), button -> clickAndWaitForServer(48, 0))
 				.size(64, 15)
 				.build();
-		thirdColumnButton = ButtonWidget.builder(Text.translatable("gui.back"), button -> clickAndWaitForServer(50, 0))
+		thirdColumnButton = Button.builder(Component.translatable("gui.back"), button -> clickAndWaitForServer(50, 0))
 				.size(120, 15)
 				.build();
-		thirdColumnButton.setTooltip(Tooltip.of(Text.literal("It is recommended to have this enabled, to have more info be displayed!")));
-		previousPage = ButtonWidget.builder(Text.translatable("book.page_button.previous"), button -> clickAndWaitForServer(45, 0))
+		thirdColumnButton.setTooltip(Tooltip.create(Component.literal("It is recommended to have this enabled, to have more info be displayed!")));
+		previousPage = Button.builder(Component.translatable("book.page_button.previous"), button -> clickAndWaitForServer(45, 0))
 				.size(100, 15)
 				.build();
-		nextPage = ButtonWidget.builder(Text.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
+		nextPage = Button.builder(Component.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
 				.size(100, 15)
 				.build();
-		addSelectableChild(back); // element list was blocking the clicks for some reason
-		addDrawableChild(widgetsElementList);
-		addDrawable(back);
-		addDrawableChild(thirdColumnButton);
-		addDrawableChild(thirdColumnButton);
-		addDrawableChild(previousPage);
-		addDrawableChild(nextPage);
-		refreshWidgetPositions();
+		addWidget(back); // element list was blocking the clicks for some reason
+		addRenderableWidget(widgetsElementList);
+		addRenderableOnly(back);
+		addRenderableWidget(thirdColumnButton);
+		addRenderableWidget(thirdColumnButton);
+		addRenderableWidget(previousPage);
+		addRenderableWidget(nextPage);
+		repositionElements();
 	}
 
 	@Override
-	protected void refreshWidgetPositions() {
+	protected void repositionElements() {
 		back.setPosition(16, 4);
 		widgetsElementList.setY(0);
-		widgetsElementList.setDimensions(width, height - 20);
-		widgetsElementList.refreshScroll();
+		widgetsElementList.setSize(width, height - 20);
+		widgetsElementList.refreshScrollAmount();
 		previousPage.setPosition(widgetsElementList.getRowLeft(), widgetsElementList.getBottom() + 4);
-		nextPage.setPosition(widgetsElementList.getScrollbarX() - 100, widgetsElementList.getBottom() + 4);
-		thirdColumnButton.setPosition(widgetsElementList.getScrollbarX() + 5, widgetsElementList.getBottom() + 4);
+		nextPage.setPosition(widgetsElementList.scrollBarX() - 100, widgetsElementList.getBottom() + 4);
+		thirdColumnButton.setPosition(widgetsElementList.scrollBarX() + 5, widgetsElementList.getBottom() + 4);
 	}
 
 	@Override
-	public void close() {
-		assert this.client != null;
-		assert this.client.player != null;
-		this.client.player.closeHandledScreen();
-		super.close();
+	public void onClose() {
+		assert this.minecraft != null;
+		assert this.minecraft.player != null;
+		this.minecraft.player.closeContainer();
+		super.onClose();
 	}
 
 	@Override
 	public void removed() {
-		if (this.client != null && this.client.player != null) {
-			this.handler.onClosed(this.client.player);
+		if (this.minecraft != null && this.minecraft.player != null) {
+			this.handler.removed(this.minecraft.player);
 		}
-		handler.removeListener(this);
+		handler.removeSlotListener(this);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		assert this.client != null;
-		assert this.client.player != null;
-		if (!this.client.player.isAlive() || this.client.player.isRemoved()) {
-			this.client.player.closeHandledScreen();
+		assert this.minecraft != null;
+		assert this.minecraft.player != null;
+		if (!this.minecraft.player.isAlive() || this.minecraft.player.isRemoved()) {
+			this.minecraft.player.closeContainer();
 		}
 	}
 
 	@Override
-	public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
+	public void slotChanged(AbstractContainerMenu handler, int slotId, ItemStack stack) {
 		if (slotId == 13) {
-			if (stack.isOf(Items.HOPPER)) {
+			if (stack.is(Items.HOPPER)) {
 				hopper(stack.skyblocker$getLoreStrings());
 			} else {
 				hopper(null);
 			}
 		}
-		if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRows() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50) {
+		if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRowCount() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50) {
 			onSlotChange(slotId, stack);
 		}
 	}
 
 	@Override
-	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {
+	public void dataChanged(AbstractContainerMenu handler, int property, int value) {
 
 	}
 }

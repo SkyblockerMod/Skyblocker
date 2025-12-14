@@ -3,28 +3,27 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 @RegisterWidget
 public class VisitorsWidget extends TabHudWidget {
 
-	private static final MutableText TITLE = Text.literal("Visitors").formatted(Formatting.AQUA,
-			Formatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Visitors").withStyle(ChatFormatting.AQUA,
+			ChatFormatting.BOLD);
 
 	public VisitorsWidget() {
-		super("Visitors", TITLE, Formatting.AQUA.getColorValue(), Location.GARDEN);
+		super("Visitors", TITLE, ChatFormatting.AQUA.getColor(), Location.GARDEN);
 	}
 
 	@Override
-	protected void updateContent(List<Text> lines) {
+	protected void updateContent(List<Component> lines) {
 		String string = lines.getFirst().getString().replaceAll("[()]", "");
 		addComponent(new PlainTextComponent(
-						Text.literal(string).formatted(Formatting.YELLOW, Formatting.BOLD).append(
-								Text.literal(" visitor(s)").formatted(Formatting.WHITE))
+						Component.literal(string).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD).append(
+								Component.literal(" visitor(s)").withStyle(ChatFormatting.WHITE))
 				)
 		);
 

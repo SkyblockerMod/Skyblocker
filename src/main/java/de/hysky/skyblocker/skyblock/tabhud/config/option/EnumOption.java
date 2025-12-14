@@ -3,32 +3,32 @@ package de.hysky.skyblocker.skyblock.tabhud.config.option;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetConfig;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.input.AbstractInput;
-import net.minecraft.client.input.MouseInput;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.StringRepresentable;
 
-public class EnumOption<T extends Enum<T> & StringIdentifiable> implements WidgetOption<T> {
+public class EnumOption<T extends Enum<T> & StringRepresentable> implements WidgetOption<T> {
 
 	private final Supplier<T> valueGetter;
 	private final Consumer<T> valueSetter;
-	private final Text name;
+	private final Component name;
 	private final String id;
 	private final T[] enumConstants;
-	private final StringIdentifiable.EnumCodec<T> codec;
+	private final StringRepresentable.EnumCodec<T> codec;
 	private final T defaultValue;
 
-	public EnumOption(Class<T> enumClass, String id, Text name, Supplier<T> valueGetter, Consumer<T> valueSetter, T defaultValue) {
+	public EnumOption(Class<T> enumClass, String id, Component name, Supplier<T> valueGetter, Consumer<T> valueSetter, T defaultValue) {
 		this.id = id;
 		this.name = name;
 		this.valueGetter = valueGetter;
@@ -38,7 +38,7 @@ public class EnumOption<T extends Enum<T> & StringIdentifiable> implements Widge
 			throw new IllegalArgumentException("Enum class must have at least one enum constant");
 		}
 		this.enumConstants = constants;
-		codec = StringIdentifiable.createCodec(() -> enumConstants);
+		codec = StringRepresentable.fromEnum(() -> enumConstants);
 		this.defaultValue = defaultValue;
 	}
 
@@ -67,41 +67,41 @@ public class EnumOption<T extends Enum<T> & StringIdentifiable> implements Widge
 		valueSetter.accept(codec.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst());
 	}
 
-	private MutableText createMessage() {
+	private MutableComponent createMessage() {
 		return name.copy().append(": ").append(valueGetter.get().toString());
 	}
 
 	@Override
-	public ClickableWidget createNewWidget(WidgetConfig config) {
+	public AbstractWidget createNewWidget(WidgetConfig config) {
 		return new Button(config, createMessage());
 	}
 
-	private class Button extends PressableWidget {
+	private class Button extends AbstractButton {
 		private final WidgetConfig config;
 
-		private Button(WidgetConfig config, Text text) {
+		private Button(WidgetConfig config, Component text) {
 			super(0, 0, 0, 20, text);
 			this.config = config;
 		}
 
 		@Override
-		public void onPress(AbstractInput input) {
-			valueSetter.accept(input.getKeycode() == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? defaultValue : (enumConstants[(ArrayUtils.indexOf(enumConstants, valueGetter.get()) + 1) % enumConstants.length]));
+		public void onPress(InputWithModifiers input) {
+			valueSetter.accept(input.input() == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? defaultValue : (enumConstants[(ArrayUtils.indexOf(enumConstants, valueGetter.get()) + 1) % enumConstants.length]));
 			setMessage(createMessage());
 			config.notifyWidget();
 		}
 
 		@Override
-		protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-			drawButton(context);
-			drawLabel(context.getTextConsumer());
+		protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+			renderDefaultSprite(context);
+			renderDefaultLabel(context.textRenderer());
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 		@Override
-		protected boolean isValidClickButton(MouseInput input) {
+		protected boolean isValidClickButton(MouseButtonInfo input) {
 			return input.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT || GLFW.GLFW_MOUSE_BUTTON_RIGHT == input.button();
 		}
 	}

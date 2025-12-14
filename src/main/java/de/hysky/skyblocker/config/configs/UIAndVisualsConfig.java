@@ -5,12 +5,11 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.widget.PlayerListWidget;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.util.Formatting;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 
 public class UIAndVisualsConfig {
 
@@ -83,9 +82,9 @@ public class UIAndVisualsConfig {
 	public static class ChestValue {
 		public boolean enableChestValue = true;
 
-		public Formatting color = Formatting.DARK_GREEN;
+		public ChatFormatting color = ChatFormatting.DARK_GREEN;
 
-		public Formatting incompleteColor = Formatting.BLUE;
+		public ChatFormatting incompleteColor = ChatFormatting.BLUE;
 	}
 
 	public static class ItemCooldown {
@@ -115,7 +114,7 @@ public class UIAndVisualsConfig {
 
 			@Override
 			public String toString() {
-				return I18n.translate("skyblocker.config.uiAndVisuals.inventorySearch.state." + this.name());
+				return I18n.get("skyblocker.config.uiAndVisuals.inventorySearch.state." + this.name());
 			}
 
 			public boolean isEnabled() {
@@ -149,7 +148,7 @@ public class UIAndVisualsConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.uiAndVisuals.titleContainer.direction." + name());
+			return I18n.get("skyblocker.config.uiAndVisuals.titleContainer.direction." + name());
 		}
 	}
 
@@ -158,7 +157,7 @@ public class UIAndVisualsConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.uiAndVisuals.titleContainer.alignment." + name());
+			return I18n.get("skyblocker.config.uiAndVisuals.titleContainer.alignment." + name());
 		}
 	}
 
@@ -219,7 +218,7 @@ public class UIAndVisualsConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.uiAndVisuals.tabHud.style." + name());
+			return I18n.get("skyblocker.config.uiAndVisuals.tabHud.style." + name());
 		}
 	}
 

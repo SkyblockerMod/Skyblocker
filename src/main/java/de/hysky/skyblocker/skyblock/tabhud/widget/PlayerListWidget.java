@@ -6,32 +6,30 @@ import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.StringIdentifiable;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Matcher;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.StringRepresentable;
 import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class PlayerListWidget extends TabHudWidget {
-	private static final MutableText TITLE = Text.literal("Players").formatted(Formatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Players").withStyle(ChatFormatting.BOLD);
 
 	private NameSorting sorting = NameSorting.DEFAULT;
 
 	public PlayerListWidget() {
-		super("Players", TITLE, Formatting.AQUA.getColorValue());
+		super("Players", TITLE, ChatFormatting.AQUA.getColor());
 	}
 
 	@Override
-	protected void updateContent(List<Text> lines, @Nullable List<PlayerListEntry> playerListEntries) {
+	protected void updateContent(List<Component> lines, @Nullable List<PlayerInfo> playerListEntries) {
 		if (playerListEntries == null) {
 			lines.forEach(text -> addComponent(new PlainTextComponent(text)));
 		} else switch (sorting) {
@@ -41,27 +39,27 @@ public class PlayerListWidget extends TabHudWidget {
 	}
 
 	@Override
-	protected void updateContent(List<Text> lines) {}
+	protected void updateContent(List<Component> lines) {}
 
 	@Override
 	public void getOptions(List<WidgetOption<?>> options) {
 		super.getOptions(options);
 		// TODO Translatable
-		options.add(new EnumOption<>(NameSorting.class, "name_sorting", Text.literal("Name Sorting"), () -> sorting, s -> sorting = s, NameSorting.DEFAULT));
+		options.add(new EnumOption<>(NameSorting.class, "name_sorting", Component.literal("Name Sorting"), () -> sorting, s -> sorting = s, NameSorting.DEFAULT));
 	}
 
-	public enum NameSorting implements StringIdentifiable {
+	public enum NameSorting implements StringRepresentable {
 		DEFAULT,
-		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
-		SKYBLOCK_LEVEL(Comparator.<PlayerListEntry>comparingInt(ple -> matchPlayerName(ple.getDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
+		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
+		SKYBLOCK_LEVEL(Comparator.<PlayerInfo>comparingInt(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
 
-		public final Comparator<PlayerListEntry> comparator;
+		public final Comparator<PlayerInfo> comparator;
 
 		NameSorting() {
 			this(null);
 		}
 
-		NameSorting(Comparator<PlayerListEntry> comparator) {
+		NameSorting(Comparator<PlayerInfo> comparator) {
 			this.comparator = comparator;
 		}
 
@@ -80,7 +78,7 @@ public class PlayerListWidget extends TabHudWidget {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name().toLowerCase(Locale.ENGLISH);
 		}
 	}

@@ -2,9 +2,9 @@ package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Range;
 
 public class Components {
@@ -12,7 +12,7 @@ public class Components {
 		return iconTextComponent(null, null);
 	}
 
-	public static Component iconTextComponent(ItemStack icon, Text text) {
+	public static Component iconTextComponent(ItemStack icon, Component text) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.hud.displayIcons) {
 			return new IcoTextComponent(icon, text);
 		} else {
@@ -20,11 +20,11 @@ public class Components {
 		}
 	}
 
-	public static Component iconFatTextComponent() {
+	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component iconFatTextComponent() {
 		return iconFatTextComponent(null, null, null);
 	}
 
-	public static Component iconFatTextComponent(ItemStack icon, Text line1, Text line2) {
+	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component iconFatTextComponent(ItemStack icon, Component line1, Component line2) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.hud.displayIcons) {
 			return new IcoFatTextComponent(icon, line1, line2);
 		} else {
@@ -32,7 +32,7 @@ public class Components {
 		}
 	}
 
-	public static Component progressComponent() {
+	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component progressComponent() {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.hud.style) {
 			case FANCY -> new ProgressComponent();
 			case null, default -> iconTextComponent();
@@ -44,10 +44,10 @@ public class Components {
 	 *
 	 * @param percent the percentage from 0 to 100
 	 */
-	public static Component progressComponent(ItemStack icon, Text description, @Range(from = 0, to = 100) float percent) {
+	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component progressComponent(ItemStack icon, Component description, @Range(from = 0, to = 100) float percent) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.hud.style) {
 			case FANCY -> new ProgressComponent(icon, description, percent);
-			case null, default -> iconTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
+			case null, default -> iconTextComponent(icon, appendColon(description).append(Component.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
 		};
 	}
 
@@ -56,10 +56,10 @@ public class Components {
 	 *
 	 * @param percent the percentage from 0 to 100
 	 */
-	public static Component progressComponent(ItemStack icon, Text description, @Range(from = 0, to = 100) float percent, int color) {
+	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component progressComponent(ItemStack icon, Component description, @Range(from = 0, to = 100) float percent, int color) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.hud.style) {
 			case FANCY -> new ProgressComponent(icon, description, percent, color);
-			case null, default -> iconTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(color)));
+			case null, default -> iconTextComponent(icon, appendColon(description).append(Component.literal(percent + "%").withColor(color)));
 		};
 	}
 
@@ -68,7 +68,7 @@ public class Components {
 	 *
 	 * @param percent the percentage from 0 to 100
 	 */
-	public static Component progressComponent(ItemStack icon, Text description, Text bar, @Range(from = 0, to = 100) float percent) {
+	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component progressComponent(ItemStack icon, Component description, Component bar, @Range(from = 0, to = 100) float percent) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.hud.style) {
 			case FANCY -> new ProgressComponent(icon, description, bar, percent);
 			case null, default -> iconTextComponent(icon, appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
@@ -80,7 +80,7 @@ public class Components {
 	 *
 	 * @param percent the percentage from 0 to 100
 	 */
-	public static Component progressComponent(ItemStack icon, Text description, Text bar, @Range(from = 0, to = 100) float percent, int color) {
+	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component progressComponent(ItemStack icon, Component description, Component bar, @Range(from = 0, to = 100) float percent, int color) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.hud.style) {
 			case FANCY -> new ProgressComponent(icon, description, bar, percent, color);
 			case null, default -> iconTextComponent(icon, appendColon(description).append(bar.copy().withColor(color)));
@@ -90,7 +90,7 @@ public class Components {
 	/**
 	 * Returns a copy of the given text ending with ": ".
 	 */
-	private static MutableText appendColon(Text text) {
+	private static MutableComponent appendColon(Component text) {
 		String string = text.getString();
 		if (string.endsWith(": ")) {
 			return text.copy();

@@ -2,40 +2,40 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.utils.render.HudHelper;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.input.AbstractInput;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 
-class ToggleButtonWidget extends PressableWidget {
+class ToggleButtonWidget extends AbstractButton {
 
 	private final BooleanConsumer onPress;
 	private boolean state;
 
-	ToggleButtonWidget(int width, int height, Text message, BooleanConsumer onPress) {
+	ToggleButtonWidget(int width, int height, Component message, BooleanConsumer onPress) {
 		super(0, 0, width, height, message);
 		this.onPress = onPress;
 	}
 
 	@Override
-	protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-		MinecraftClient minecraftClient = MinecraftClient.getInstance();
+	protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		Minecraft minecraftClient = Minecraft.getInstance();
 		int y = getY() - 1;
 		int y2 = y + getHeight();
 		TopBarWidget.drawButtonBorder(context, getX(), y, y2);
 		TopBarWidget.drawButtonBorder(context, getRight(), y, y2);
 
 		if (isHovered()) {
-			context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(100, 0));
+			context.fill(getX(), y, getRight() + 1, y2, ARGB.color(100, 0));
 		} else {
-			context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(50, 0));
+			context.fill(getX(), y, getRight() + 1, y2, ARGB.color(50, 0));
 		}
-		int color = (this.active ? 16777215 : 10526880) | MathHelper.ceil(this.alpha * 255.0F) << 24;
-		int textWidth = minecraftClient.textRenderer.getWidth(getMessage());
+		int color = (this.active ? 16777215 : 10526880) | Mth.ceil(this.alpha * 255.0F) << 24;
+		int textWidth = minecraftClient.font.width(getMessage());
 		int startX, endX;
 		int squareX;
 		int paddedTextWidth = textWidth + 9 + 2;
@@ -49,7 +49,7 @@ class ToggleButtonWidget extends PressableWidget {
 			startX = centerX - paddedTextWidth / 2;
 			endX = squareX - 2;
 		}
-		context.getHoverListener(this, DrawContext.HoverType.NONE).text(
+		context.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
 				getMessage(),
 				startX,
 				endX,
@@ -70,11 +70,11 @@ class ToggleButtonWidget extends PressableWidget {
 	}
 
 	@Override
-	public void onPress(AbstractInput input) {
+	public void onPress(InputWithModifiers input) {
 		state = !state;
 		onPress.accept(state);
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 }

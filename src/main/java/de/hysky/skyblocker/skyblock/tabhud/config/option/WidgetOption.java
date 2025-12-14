@@ -2,8 +2,8 @@ package de.hysky.skyblocker.skyblock.tabhud.config.option;
 
 import com.google.gson.JsonElement;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetConfig;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.layouts.LayoutElement;
 
 public interface WidgetOption<T> {
 
@@ -18,10 +18,10 @@ public interface WidgetOption<T> {
 	void fromJson(JsonElement json);
 
 	/**
-	 * {@link Widget#setX(int)}, {@link Widget#setY(int)} and {@link ClickableWidget#setWidth(int)} should be properly implemented.
+	 * {@link LayoutElement#setX(int)}, {@link LayoutElement#setY(int)} and {@link AbstractWidget#setWidth(int)} should be properly implemented.
 	 * Height will not be changed and kept as is.
 	 * @return a new widget instance
 	 */
-	ClickableWidget createNewWidget(WidgetConfig config);
+	AbstractWidget createNewWidget(WidgetConfig config);
 
 }

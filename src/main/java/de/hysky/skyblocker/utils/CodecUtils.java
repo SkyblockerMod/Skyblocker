@@ -7,13 +7,11 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.function.Function;
-
+import net.minecraft.util.ExtraCodecs;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.util.dynamic.Codecs;
-
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -30,7 +28,7 @@ import org.joml.Vector2ic;
 
 public final class CodecUtils {
 	public static final Codec<Color> COLOR_CODEC = Codec.INT.xmap(argb -> new Color(argb, true), Color::getRGB);
-	public static final Codec<JsonObject> JSON_OBJECT_CODEC = Codecs.JSON_ELEMENT.flatXmap(
+	public static final Codec<JsonObject> JSON_OBJECT_CODEC = ExtraCodecs.JSON.flatXmap(
 			element -> element.isJsonObject() ? DataResult.success(element.getAsJsonObject()) : DataResult.error(() -> "Not a json object."),
 			DataResult::success
 	);

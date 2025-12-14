@@ -10,22 +10,20 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 
 @RegisterWidget
 public class SlayerHudWidget extends ComponentBasedWidget {
 	private static final Set<Location> AVAILABLE_LOCATIONS = EnumSet.of(Location.CRIMSON_ISLE, Location.HUB, Location.SPIDERS_DEN, Location.THE_END, Location.THE_PARK, Location.THE_RIFT);
 	private static SlayerHudWidget instance;
-	private final MinecraftClient client = MinecraftClient.getInstance();
+	private final Minecraft client = Minecraft.getInstance();
 
 	public SlayerHudWidget() {
-		super(Text.literal("Slayer").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), Formatting.DARK_PURPLE.getColorValue(), new Information("hud_slayer", Text.literal("Slayer HUD"), AVAILABLE_LOCATIONS::contains)); // TODO translatable
+		super(net.minecraft.network.chat.Component.literal("Slayer").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD), ChatFormatting.DARK_PURPLE.getColor(), new Information("hud_slayer", net.minecraft.network.chat.Component.literal("Slayer HUD"), AVAILABLE_LOCATIONS::contains)); // TODO translatable
 		instance = this;
 		update();
 	}
@@ -58,16 +56,16 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 		addSimpleIcoText(type.icon, "", tier.color, type.bossName + " " + tier);
 		if (level > 0) {
 			if (level == type.maxLevel) {
-				addComponent(Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));
+				addComponent(Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, net.minecraft.network.chat.Component.literal("XP: ").append(net.minecraft.network.chat.Component.translatable("skyblocker.slayer.hud.levelMaxed").withStyle(ChatFormatting.GREEN))));
 			} else {
 				int nextMilestone = type.levelMilestones[level];
 				int currentXP = nextMilestone - SlayerManager.getSlayerQuest().xpRemaining;
-				addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE, Formatters.INTEGER_NUMBERS.format(currentXP) + "/" + Formatters.INTEGER_NUMBERS.format(nextMilestone));
+				addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", ChatFormatting.LIGHT_PURPLE, Formatters.INTEGER_NUMBERS.format(currentXP) + "/" + Formatters.INTEGER_NUMBERS.format(nextMilestone));
 			}
 		}
 
 		if (bossesNeeded > 0) {
-			addComponent(Components.iconTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal(Formatters.INTEGER_NUMBERS.format(bossesNeeded)).formatted(Formatting.LIGHT_PURPLE))));
+			addComponent(Components.iconTextComponent(Ico.NETHER_STAR, net.minecraft.network.chat.Component.translatable("skyblocker.slayer.hud.levelUpIn", net.minecraft.network.chat.Component.literal(Formatters.INTEGER_NUMBERS.format(bossesNeeded)).withStyle(ChatFormatting.LIGHT_PURPLE))));
 		}
 	}
 
@@ -77,8 +75,8 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 		SlayerTier tier = SlayerTier.V;
 		return List.of(
 				Components.iconTextComponent(type.icon, simpleEntryText(type.bossName + " " + tier, "", tier.color)),
-				Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, simpleEntryText("100,000/400,000", "XP: ", Formatting.LIGHT_PURPLE)),
-				Components.iconTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal("200").formatted(Formatting.LIGHT_PURPLE)))
+				Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, simpleEntryText("100,000/400,000", "XP: ", ChatFormatting.LIGHT_PURPLE)),
+				Components.iconTextComponent(Ico.NETHER_STAR, net.minecraft.network.chat.Component.translatable("skyblocker.slayer.hud.levelUpIn", net.minecraft.network.chat.Component.literal("200").withStyle(ChatFormatting.LIGHT_PURPLE)))
 		);
 	}
 }

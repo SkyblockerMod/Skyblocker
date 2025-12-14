@@ -6,16 +6,13 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
-
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.MutableComponent;
 import org.jspecify.annotations.Nullable;
 
 public abstract class TabHudWidget extends ComponentBasedWidget {
@@ -24,13 +21,13 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	protected boolean cacheForConfig = true;
 	private final List<Component> cache = new ArrayList<>();
 
-	public TabHudWidget(String hypixelWidgetName, Text title, int color, Information information) {
+	public TabHudWidget(String hypixelWidgetName, net.minecraft.network.chat.Component title, int color, Information information) {
 		super(title, color, information);
 		this.hypixelWidgetName = hypixelWidgetName;
 		init();
 	}
 
-	public TabHudWidget(String hypixelWidgetName, MutableText title, int colorValue) {
+	public TabHudWidget(String hypixelWidgetName, MutableComponent title, int colorValue) {
 		super(title, colorValue, nameToId(hypixelWidgetName));
 		this.hypixelWidgetName = hypixelWidgetName;
 		init();
@@ -49,23 +46,23 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	}
 
 	/**
-	 * @see ComponentBasedWidget#ComponentBasedWidget(Text, Integer, String, Set)
+	 * @see ComponentBasedWidget#ComponentBasedWidget(net.minecraft.network.chat.Component, Integer, String, Set)
 	 */
-	public TabHudWidget(String hypixelWidgetName, Text title, Integer color, Set<Location> availableLocations) {
+	public TabHudWidget(String hypixelWidgetName, net.minecraft.network.chat.Component title, Integer color, Set<Location> availableLocations) {
 		super(title, color, nameToId(hypixelWidgetName), availableLocations);
 		this.hypixelWidgetName = hypixelWidgetName;
 		init();
 	}
 
-	public TabHudWidget(String hypixelWidgetName, Text title, Integer color, Location availableLocation) {
+	public TabHudWidget(String hypixelWidgetName, net.minecraft.network.chat.Component title, Integer color, Location availableLocation) {
 		this(hypixelWidgetName, title, color, EnumSet.of(availableLocation));
 	}
 
-	public TabHudWidget(String hypixelWidgetName, Text title, Integer color, Location first, Location... availableLocations) {
+	public TabHudWidget(String hypixelWidgetName, net.minecraft.network.chat.Component title, Integer color, Location first, Location... availableLocations) {
 		this(hypixelWidgetName, title, color, EnumSet.of(first, availableLocations));
 	}
 
-	public TabHudWidget(String hypixelWidgetName, Text title, Integer color, Predicate<Location> availableIn) {
+	public TabHudWidget(String hypixelWidgetName, net.minecraft.network.chat.Component title, Integer color, Predicate<Location> availableIn) {
 		super(title, color, nameToId(hypixelWidgetName), availableIn);
 		this.hypixelWidgetName = hypixelWidgetName;
 		init();
@@ -78,7 +75,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 		if (widget == null) {
 			updateTabWidgetAbsent();
 		} else {
-			List<Text> list = new ArrayList<>(widget.lines().size() + 1);
+			List<net.minecraft.network.chat.Component> list = new ArrayList<>(widget.lines().size() + 1);
 			if (!widget.detail().getString().isBlank()) list.add(widget.detail());
 			list.addAll(widget.lines());
 			updateContent(list, widget.playerListEntries());
@@ -86,7 +83,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	}
 
 	protected void updateTabWidgetAbsent() {
-		for (Text text : PlayerListManager.createErrorMessage(hypixelWidgetName)) {
+		for (net.minecraft.network.chat.Component text : PlayerListManager.createErrorMessage(hypixelWidgetName)) {
 			addComponent(new PlainTextComponent(text));
 		}
 	}
@@ -111,7 +108,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	 * @param playerListEntries the player list entries, which should match the lines. If there is text after the : the whole line is included.
 	 * @see #updateContent(List)
 	 */
-	protected void updateContent(List<Text> lines, @Nullable List<PlayerListEntry> playerListEntries) {
+	protected void updateContent(List<net.minecraft.network.chat.Component> lines, @Nullable List<PlayerInfo> playerListEntries) {
 		updateContent(lines);
 	}
 
@@ -121,7 +118,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	 * @param lines the lines, they are formatted and trimmed, no blank lines will be present.
 	 *              If the vanilla tab widget has text right after the : it will be put on the first line.
 	 */
-	protected abstract void updateContent(List<Text> lines);
+	protected abstract void updateContent(List<net.minecraft.network.chat.Component> lines);
 
 
 	/**

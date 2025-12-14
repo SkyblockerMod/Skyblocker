@@ -3,28 +3,28 @@ package de.hysky.skyblocker.skyblock.tabhud.config.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetConfig;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.input.AbstractInput;
-import net.minecraft.client.input.MouseInput;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class BooleanOption implements WidgetOption<Boolean> {
 
 	private final Supplier<Boolean> valueGetter;
 	private final Consumer<Boolean> valueSetter;
 	private final String id;
-	private final Text name;
+	private final Component name;
 	private final boolean defaultValue;
 
-	public BooleanOption(String id, Text name, Supplier<Boolean> valueGetter, Consumer<Boolean> valueSetter, boolean defaultValue) {
+	public BooleanOption(String id, Component name, Supplier<Boolean> valueGetter, Consumer<Boolean> valueSetter, boolean defaultValue) {
 		this.valueGetter = valueGetter;
 		this.valueSetter = valueSetter;
 		this.id = id;
@@ -58,42 +58,42 @@ public class BooleanOption implements WidgetOption<Boolean> {
 	}
 
 	@Override
-	public ClickableWidget createNewWidget(WidgetConfig config) {
+	public AbstractWidget createNewWidget(WidgetConfig config) {
 		return new Button(config, createName());
 	}
 
-	private MutableText createName() {
-		return valueGetter.get() ? Text.translatable("options.on.composed", name) : Text.translatable("options.off.composed", name);
+	private MutableComponent createName() {
+		return valueGetter.get() ? Component.translatable("options.on.composed", name) : Component.translatable("options.off.composed", name);
 	}
 
-	private class Button extends PressableWidget {
+	private class Button extends AbstractButton {
 		private final WidgetConfig config;
 
-		private Button(WidgetConfig config, Text text) {
+		private Button(WidgetConfig config, Component text) {
 			super(0, 0, 0, 20, text);
 			this.config = config;
 		}
 
 		@Override
-		public void onPress(AbstractInput input) {
-			valueSetter.accept(input.getKeycode() == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? defaultValue : !valueGetter.get());
+		public void onPress(InputWithModifiers input) {
+			valueSetter.accept(input.input() == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? defaultValue : !valueGetter.get());
 			setMessage(createName());
 			config.notifyWidget();
 		}
 
 		@Override
-		protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-			drawButton(context);
-			drawLabel(context.getTextConsumer());
+		protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+			renderDefaultSprite(context);
+			renderDefaultLabel(context.textRenderer());
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+		protected void updateWidgetNarration(NarrationElementOutput builder) {
 
 		}
 
 		@Override
-		protected boolean isValidClickButton(MouseInput input) {
+		protected boolean isValidClickButton(MouseButtonInfo input) {
 			return input.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT || GLFW.GLFW_MOUSE_BUTTON_RIGHT == input.button();
 		}
 	}

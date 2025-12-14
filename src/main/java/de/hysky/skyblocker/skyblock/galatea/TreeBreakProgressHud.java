@@ -9,32 +9,30 @@ import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import java.util.Comparator;
 import java.util.List;
 
 @RegisterWidget
 public class TreeBreakProgressHud extends ComponentBasedWidget {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final Int2ObjectMap<ArmorStandEntity> ARMOR_STANDS = new Int2ObjectOpenHashMap<>();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
+	private static final Int2ObjectMap<ArmorStand> ARMOR_STANDS = new Int2ObjectOpenHashMap<>();
 
 	static {
 		ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> ARMOR_STANDS.remove(entity.getId()));
 	}
 	public TreeBreakProgressHud() {
-		super(Text.literal("Tree Break Progress").formatted(Formatting.GREEN, Formatting.BOLD), Formatting.GREEN.getColorValue(), new Information("hud_treeprogress", Text.literal("Tree Break Progress HUD"), location -> location == Location.GALATEA));
+		super(net.minecraft.network.chat.Component.literal("Tree Break Progress").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), ChatFormatting.GREEN.getColor(), new Information("hud_treeprogress", net.minecraft.network.chat.Component.literal("Tree Break Progress HUD"), location -> location == Location.GALATEA));
 		update();
 	}
 
 
-	public static void onEntityUpdate(ArmorStandEntity entity) {
+	public static void onEntityUpdate(ArmorStand entity) {
 		if (entity.getCustomName() != null) {
 			ARMOR_STANDS.put(entity.getId(), entity);
 		}
@@ -45,26 +43,26 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 		return true;
 	}
 
-	private ArmorStandEntity getClosestTree() {
+	private ArmorStand getClosestTree() {
 		if (CLIENT.player == null) return null;
 		return ARMOR_STANDS.values().stream()
 				.filter(entity -> {
-					Text name = entity.getCustomName();
+					net.minecraft.network.chat.Component name = entity.getCustomName();
 					if (name == null) return false;
 					return name.getString().contains("FIG TREE") || name.getString().contains("MANGROVE TREE");
 				})
-				.min(Comparator.comparingDouble(e -> e.squaredDistanceTo(CLIENT.player)))
+				.min(Comparator.comparingDouble(e -> e.distanceToSqr(CLIENT.player)))
 				.orElse(null);
 	}
 
-	private boolean isOwnTree(ArmorStandEntity tree) {
+	private boolean isOwnTree(ArmorStand tree) {
 		if (CLIENT.player == null) return false;
 		if (tree == null) return false;
-		Vec3d treePos = tree.getEntityPos();
+		Vec3 treePos = tree.position();
 
-		List<ArmorStandEntity> groupedArmorStands = ARMOR_STANDS.values().stream()
+		List<ArmorStand> groupedArmorStands = ARMOR_STANDS.values().stream()
 				.filter(e -> {
-					Vec3d pos = e.getEntityPos();
+					Vec3 pos = e.position();
 					return Math.abs(pos.x - treePos.x) < 0.1 &&
 							Math.abs(pos.y - treePos.y) < 2 &&
 							Math.abs(pos.z - treePos.z) < 0.1;
@@ -80,8 +78,8 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 
 	@Override
 	public void updateContent() {
-		ClientWorld world = CLIENT.world;
-		ArmorStandEntity closest;
+		ClientLevel world = CLIENT.level;
+		ArmorStand closest;
 
 		if (CLIENT.player == null || world == null)
 			return;
@@ -91,12 +89,12 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 		String closestName = closest.getName().getString();
 		String treeName = closestName.contains("FIG") ? "Fig Tree" : "Mangrove Tree";
 		ItemStack woodIcon = closestName.contains("FIG") ? Ico.STRIPPED_SPRUCE_WOOD : Ico.MANGROVE_LOG;
-		addSimpleIcoText(woodIcon, treeName + " ", Formatting.GREEN, closestName.replaceAll("[^0-9%]", ""));
+		addSimpleIcoText(woodIcon, treeName + " ", ChatFormatting.GREEN, closestName.replaceAll("[^0-9%]", ""));
 	}
 
 	@Override
 	protected List<Component> getConfigComponents() {
-		Text txt = simpleEntryText("37%", "Fig Tree ", Formatting.GREEN);
+		net.minecraft.network.chat.Component txt = simpleEntryText("37%", "Fig Tree ", ChatFormatting.GREEN);
 		return List.of(Components.iconTextComponent(Ico.STRIPPED_SPRUCE_WOOD, txt));
 	}
 

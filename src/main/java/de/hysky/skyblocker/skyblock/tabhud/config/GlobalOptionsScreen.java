@@ -4,86 +4,85 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.CyclingButtonWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.gui.widget.ThreePartsLayoutWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.function.Supplier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 
 // TODO translatable
 class GlobalOptionsScreen extends Screen {
 	private final Supplier<UIAndVisualsConfig.HudConf> CONFIG = () -> SkyblockerConfigManager.get().uiAndVisuals.hud;
-	private final Tooltip STYLE_TOOLTIP = Tooltip.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]").append("\n")
-			.append(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]")).append("\n")
-			.append(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]")).append("\n")
-			.append(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[3]")));
-	private final Text YES = ScreenTexts.YES.copy().formatted(Formatting.GREEN);
-	private final Text NO = ScreenTexts.NO.copy().formatted(Formatting.RED);
-	private final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
+	private final Tooltip STYLE_TOOLTIP = Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]").append("\n")
+			.append(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]")).append("\n")
+			.append(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]")).append("\n")
+			.append(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[3]")));
+	private final Component YES = CommonComponents.GUI_YES.copy().withStyle(ChatFormatting.GREEN);
+	private final Component NO = CommonComponents.GUI_NO.copy().withStyle(ChatFormatting.RED);
+	private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
 	private final Screen parent;
 
 	GlobalOptionsScreen(Screen parent) {
-		super(Text.literal("HUD and TAB options"));
+		super(Component.literal("HUD and TAB options"));
 		this.parent = parent;
 	}
 
 	@Override
 	protected void init() {
-		layout.addHeader(new TextWidget(title, textRenderer));
-		GridWidget.Adder body = layout.addBody(new GridWidget().setSpacing(2)).createAdder(2);
-		layout.addFooter(ButtonWidget.builder(ScreenTexts.DONE, b -> close()).build());
+		layout.addToHeader(new StringWidget(title, font));
+		GridLayout.RowHelper body = layout.addToContents(new GridLayout().spacing(2)).createRowHelper(2);
+		layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, b -> onClose()).build());
 
 		UIAndVisualsConfig.HudConf conf = CONFIG.get();
-		body.add(CyclingButtonWidget.builder(style -> Text.translatable(style.toString()), conf.style)
-				.values(UIAndVisualsConfig.HudStyle.values())
-				.tooltip(ignored -> STYLE_TOOLTIP)
-				.build(
+		body.addChild(CycleButton.builder(style -> Component.translatable(style.toString()), conf.style)
+				.withValues(UIAndVisualsConfig.HudStyle.values())
+				.withTooltip(ignored -> STYLE_TOOLTIP)
+				.create(
 						0,
 						0,
-						ButtonWidget.DEFAULT_WIDTH * 2 + 2,
-						ButtonWidget.DEFAULT_HEIGHT,
-						Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style"),
+						Button.DEFAULT_WIDTH * 2 + 2,
+						Button.DEFAULT_HEIGHT,
+						Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style"),
 						(button, value) -> conf.style = value),
 				2);
-		body.add(RangedSliderWidget.builder()
-						.optionFormatter(Text.literal("Global Scale"), Formatters.INTEGER_NUMBERS) // FIXME add % when chat rules thing is merged
+		body.addChild(RangedSliderWidget.builder()
+						.optionFormatter(Component.literal("Global Scale"), Formatters.INTEGER_NUMBERS) // FIXME add % when chat rules thing is merged
 						.defaultValue(conf.hudScale)
 						.step(1)
 						.minMax(10, 200)
 						.callback(d -> conf.hudScale = (int) Math.round(d))
 				.build());
 		// TODO turn these two into per widget things maybe?
-		body.add(CyclingButtonWidget.onOffBuilder(YES, NO, conf.displayIcons)
-				.build(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.displayIcons"), (button, value) -> conf.displayIcons = value)
+		body.addChild(CycleButton.booleanBuilder(YES, NO, conf.displayIcons)
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.displayIcons"), (button, value) -> conf.displayIcons = value)
 		);
-		body.add(CyclingButtonWidget.onOffBuilder(YES, NO, conf.compactWidgets)
-				.tooltip(ignored -> Tooltip.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip")))
-				.build(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"), (button, value) -> conf.compactWidgets = value)
+		body.addChild(CycleButton.booleanBuilder(YES, NO, conf.compactWidgets)
+				.withTooltip(ignored -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip")))
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"), (button, value) -> conf.compactWidgets = value)
 		);
-		body.add(CyclingButtonWidget.onOffBuilder(YES, NO, conf.fancyWidgetsList)
-				.tooltip(ignored -> Tooltip.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip")))
-				.build(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"), (button, value) -> conf.fancyWidgetsList = value)
+		body.addChild(CycleButton.booleanBuilder(YES, NO, conf.fancyWidgetsList)
+				.withTooltip(ignored -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip")))
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"), (button, value) -> conf.fancyWidgetsList = value)
 		);
-		layout.forEachChild(this::addDrawableChild);
-		refreshWidgetPositions();
+		layout.visitWidgets(this::addRenderableWidget);
+		repositionElements();
 	}
 
 	@Override
-	protected void refreshWidgetPositions() {
-		layout.refreshPositions();
+	protected void repositionElements() {
+		layout.arrangeElements();
 	}
 
 
 	@Override
-	public void close() {
-		client.setScreen(parent);
+	public void onClose() {
+		minecraft.setScreen(parent);
 	}
 
 	@Override

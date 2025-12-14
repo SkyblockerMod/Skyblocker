@@ -6,28 +6,27 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 // this widget shows info about the garden's composter
 @RegisterWidget
 public class ComposterWidget extends TabHudWidget {
 
-	private static final MutableText TITLE = Text.literal("Composter").formatted(Formatting.GREEN,
-			Formatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Composter").withStyle(ChatFormatting.GREEN,
+			ChatFormatting.BOLD);
 
 	public ComposterWidget() {
-		super("Composter", TITLE, Formatting.GREEN.getColorValue(), Location.GARDEN);
+		super("Composter", TITLE, ChatFormatting.GREEN.getColor(), Location.GARDEN);
 	}
 
 	@Override
-	public void updateContent(List<Text> lines) {
+	public void updateContent(List<Component> lines) {
 
-		for (Text line : lines) {
+		for (Component line : lines) {
 			switch (line.getString().toLowerCase(Locale.ENGLISH)) {
 				case String s when s.contains("organic") -> this.addComponent(Components.iconTextComponent(Ico.SAPLING, line));
 				case String s when s.contains("fuel") -> this.addComponent(Components.iconTextComponent(Ico.FURNACE, line));

@@ -8,14 +8,11 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -28,8 +25,8 @@ import com.mojang.logging.LogUtils;
 public class CommsWidget extends TabHudWidget {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public static final String ID = "commissions";
-	private static final MutableText TITLE = Text.literal("Commissions").formatted(Formatting.DARK_AQUA,
-			Formatting.BOLD);
+	private static final MutableComponent TITLE = net.minecraft.network.chat.Component.literal("Commissions").withStyle(ChatFormatting.DARK_AQUA,
+			ChatFormatting.BOLD);
 
 	// match a comm
 	// group 1: comm name
@@ -40,16 +37,16 @@ public class CommsWidget extends TabHudWidget {
 	private boolean progressBar = true;
 
 	public CommsWidget() {
-		super("Commissions", TITLE, Formatting.DARK_AQUA.getColorValue(), Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
+		super("Commissions", TITLE, ChatFormatting.DARK_AQUA.getColor(), Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
 	}
 
 	@Override
-	public void updateContent(List<Text> lines) {
+	public void updateContent(List<net.minecraft.network.chat.Component> lines) {
 		if (lines.isEmpty()) {
 			this.addComponent(Components.iconTextComponent());
 			return;
 		}
-		for (Text line : lines) {
+		for (net.minecraft.network.chat.Component line : lines) {
 			Matcher m = COMM_PATTERN.matcher(line.getString());
 			if (m.matches()) {
 				Component component;
@@ -77,18 +74,18 @@ public class CommsWidget extends TabHudWidget {
 	private Component getComponent(String name, @Nullable String barText, float percent) {
 		if (progressBar) {
 			return barText == null ?
-					Components.progressComponent(Ico.BOOK, Text.of(name), percent) :
-					Components.progressComponent(Ico.BOOK, Text.of(name), Text.of(barText), percent);
+					Components.progressComponent(Ico.BOOK, net.minecraft.network.chat.Component.nullToEmpty(name), percent) :
+					Components.progressComponent(Ico.BOOK, net.minecraft.network.chat.Component.nullToEmpty(name), net.minecraft.network.chat.Component.nullToEmpty(barText), percent);
 		}
 		return barText == null ?
-				Components.iconTextComponent(Ico.BOOK, Text.literal(name).append(": ").append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent)))) :
-				Components.iconTextComponent(Ico.BOOK, Text.literal(name).append(": ").append(Text.literal(barText).withColor(ColorUtils.percentToColor(percent))));
+				Components.iconTextComponent(Ico.BOOK, net.minecraft.network.chat.Component.literal(name).append(": ").append(net.minecraft.network.chat.Component.literal(percent + "%").withColor(ColorUtils.percentToColor(percent)))) :
+				Components.iconTextComponent(Ico.BOOK, net.minecraft.network.chat.Component.literal(name).append(": ").append(net.minecraft.network.chat.Component.literal(barText).withColor(ColorUtils.percentToColor(percent))));
 	}
 
 	@Override
 	public void getOptions(List<WidgetOption<?>> options) {
 		super.getOptions(options);
 		// TODO translatable
-		options.add(new BooleanOption("progress_bar", Text.literal("Progress Bar"), () -> progressBar, b -> progressBar = b, true));
+		options.add(new BooleanOption("progress_bar", net.minecraft.network.chat.Component.literal("Progress Bar"), () -> progressBar, b -> progressBar = b, true));
 	}
 }
