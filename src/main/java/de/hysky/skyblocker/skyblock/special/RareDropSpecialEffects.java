@@ -19,7 +19,7 @@ public class RareDropSpecialEffects {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RareDropSpecialEffects.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern DUNGEON_CHEST_PATTERN = Pattern.compile("^\\s{3,}(?!.*:)(?:RARE REWARD!\\s+)?(?<item>.+)$");
-	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|CRAZY RARE|INSANE RARE) DROP!\\s+(?<item>.+?)\\s+\\(\\+\\d+ ✯ Magic Find\\)$");
+	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+(?<item>.+?)\\s+\\(\\+\\d+ ✯ Magic Find\\)$");
 
 	@Init
 	public static void init() {
@@ -27,21 +27,19 @@ public class RareDropSpecialEffects {
 	}
 
 	private static boolean displayRareDropEffect(Component message, boolean overlay) {
-		if (Utils.isOnSkyblock()
-		&& SkyblockerConfigManager.get().general.specialEffects.rareDropEffects
-		&& !overlay) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.specialEffects.rareDropEffects && !overlay) {
 
-		try {
-			String stringForm = message.getString();
-			Matcher dungeonMatcher = DUNGEON_CHEST_PATTERN.matcher(stringForm);
-			Matcher magicFindMatcher = MAGIC_FIND_PATTERN.matcher(stringForm);
+			try {
+				String stringForm = message.getString();
+				Matcher dungeonMatcher = DUNGEON_CHEST_PATTERN.matcher(stringForm);
+				Matcher magicFindMatcher = MAGIC_FIND_PATTERN.matcher(stringForm);
 
-			if (dungeonMatcher.matches()) {
-				triggerDropEffect(dungeonMatcher.group("item"));
-			}
+				if (dungeonMatcher.matches()) {
+					triggerDropEffect(dungeonMatcher.group("item"));
+				}
 
-			else if (magicFindMatcher.matches()) {
-				triggerDropEffect(magicFindMatcher.group("item"));
+				else if (magicFindMatcher.matches()) {
+					triggerDropEffect(magicFindMatcher.group("item"));
 				}
 			} catch (Exception e) { //In case there's a regex failure or something else bad happens
 				LOGGER.error("[Skyblocker Special Effects] An unexpected exception was encountered: ", e);
@@ -61,33 +59,38 @@ public class RareDropSpecialEffects {
 
 	private static ItemStack getStackFromName(String itemName) {
 		String itemId = switch (itemName) {
+			//Dungeon
+			case "Recombobulator 3000" -> "RECOMBOBULATOR_3000";
+			//M3
+			case "First Master Star" -> "FIRST_MASTER_STAR";
+			//M4
+			case "Second Master Star" -> "SECOND_MASTER_STAR";
+			//M5
+			case "Third Master Star" -> "THIRD_MASTER_STAR";
+			case "Shadow Fury" -> "SHADOW_FURY";
+			//M6
+			case "Giant's Sword" -> "GIANTS_SWORD";
+			case "Fourth Master Star" -> "FOURTH_MASTER_STAR";
 			//M7
 			case "Necron Dye" -> "NECRON_DYE";
 			case "Dark Claymore" -> "DARK_CLAYMORE";
 			case "Necron's Handle", "Shiny Necron's Handle" -> "NECRON_HANDLE";
-			case "Enchanted Book (Thunderlord VII)" -> "ENCHANTED_BOOK";
 			case "Master Skull - Tier 5" -> "MASTER_SKULL_TIER_5";
 			case "Shadow Warp" -> "SHADOW_WARP_SCROLL";
 			case "Wither Shield" -> "WITHER_SHIELD_SCROLL";
 			case "Implosion" -> "IMPLOSION_SCROLL";
 			case "Fifth Master Star" -> "FIFTH_MASTER_STAR";
 
-			//M6
-			case "Giant's Sword" -> "GIANTS_SWORD";
-			case "Fourth Master Star" -> "FOURTH_MASTER_STAR";
+			//Slayer
+			case "Warden Heart" -> "WARDEN_HEART";
+			case "Primordial Eye" -> "PRIMORDIAL_EYE";
+			case "Judgement Core" -> "JUDGEMENT_CORE";
+			case "High Class Archfiend Dice" -> "HIGH_CLASS_ARCHFIEND_DICE";
 
-			//M5
-			case "Third Master Star" -> "THIRD_MASTER_STAR";
-			case "Shadow Fury" -> "SHADOW_FURY";
-
-			//M4
-			case "Second Master Star" -> "SECOND_MASTER_STAR";
-
-			//M3
-			case "First Master Star" -> "FIRST_MASTER_STAR";
-
-			//I like money
-			case "Recombobulator 3000" -> "RECOMBOBULATOR_3000";
+			//Fishing
+			case "Radioactive Vial" -> "RADIOACTIVE_VIAL";
+			case "Tiki Mask" -> "TIKI_MASK";
+			case "Titanoboa Shed" -> "TITANOBOA_SHED";
 
 			default -> "NONE";
 		};
