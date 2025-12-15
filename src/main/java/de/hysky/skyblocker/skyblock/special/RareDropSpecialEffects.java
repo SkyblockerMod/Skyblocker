@@ -15,15 +15,15 @@ import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RareDropEffect {
-	private static final Logger LOGGER = LoggerFactory.getLogger(RareDropEffect.class);
+public class RareDropSpecialEffects {
+	private static final Logger LOGGER = LoggerFactory.getLogger(RareDropSpecialEffects.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern DUNGEON_CHEST_PATTERN = Pattern.compile("^\\s{3,}(?!.*:)(?:RARE REWARD!\\s+)?(?<item>.+)$");
 	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|CRAZY RARE|INSANE RARE) DROP!\\s+(?<item>.+?)\\s+\\(\\+\\d+ ✯ Magic Find\\)$");
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.ALLOW_GAME.register(RareDropEffect::displayRareDropEffect);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(RareDropSpecialEffects::displayRareDropEffect);
 	}
 
 	private static boolean displayRareDropEffect(Component message, boolean overlay) {
