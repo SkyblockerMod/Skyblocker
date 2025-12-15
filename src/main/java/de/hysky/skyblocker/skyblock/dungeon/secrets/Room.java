@@ -9,6 +9,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Tickable;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -159,6 +160,7 @@ public class Room implements Tickable, Renderable {
 	}
 
 	public boolean isMatched() {
+		// This technically isn't very thread safe but should be fine
 		return matchState == MatchState.DOUBLE_CHECKING || matchState == MatchState.MATCHED;
 	}
 
@@ -442,16 +444,17 @@ public class Room implements Tickable, Renderable {
 		}
 
 		int matchingRoomsSize = possibleRooms.stream().map(Triple::getRight).mapToInt(Collection::size).sum();
-		if (matchingRoomsSize == 0) synchronized (this) {
+		if (matchingRoomsSize == 0) {
 			// If no rooms match, reset the fields and scan again after 50 ticks.
 			matchState = MatchState.FAILED;
 			assert checkedBlocks != null;
 			DungeonManager.LOGGER.warn("[Skyblocker Dungeon Secrets] No dungeon room matched after checking {} block(s) including double checking {} block(s)", checkedBlocks.size(), doubleCheckBlocks);
-			Scheduler.INSTANCE.schedule(() -> matchState = MatchState.MATCHING, 50);
-			reset();
+			RenderHelper.runOnRenderThread(() -> {
+				Scheduler.INSTANCE.schedule(() -> matchState = MatchState.MATCHING, 50);
+				reset();
+			});
 			return true;
-		}
-		else if (matchingRoomsSize == 1) {
+		} else if (matchingRoomsSize == 1) {
 			if (matchState == MatchState.MATCHING) {
 				// If one room matches, load the secrets for that room and set state to double-checking.
 				Triple<Direction, Vector2ic, List<String>> directionRoom = possibleRooms.stream().filter(directionRooms -> directionRooms.getRight().size() == 1).findAny().orElseThrow();
@@ -460,14 +463,14 @@ public class Room implements Tickable, Renderable {
 				physicalCornerPos = directionRoom.getMiddle();
 				assert checkedBlocks != null;
 				DungeonManager.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} matched after checking {} block(s), starting double checking", name, checkedBlocks.size());
-				roomMatched();
+				RenderHelper.runOnRenderThread(this::roomMatched);
 				return false;
 			} else if (matchState == MatchState.DOUBLE_CHECKING && ++doubleCheckBlocks >= 10) {
 				// If double-checked, set state to matched and discard the no longer needed fields.
 				matchState = MatchState.MATCHED;
-				DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this);
 				assert checkedBlocks != null;
 				DungeonManager.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} confirmed after checking {} block(s) including double checking {} block(s)", name, checkedBlocks.size(), doubleCheckBlocks);
+				RenderHelper.runOnRenderThread(() -> DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this));
 				discard();
 				return true;
 			}
@@ -498,7 +501,12 @@ public class Room implements Tickable, Renderable {
 	 */
 	@SuppressWarnings("JavadocReference")
 	private void roomMatched() {
-		assert name != null && direction != null && physicalCornerPos != null;
+		// Save fields and null check for thread safety
+		String name = this.name;
+		Direction direction = this.direction;
+		Vector2ic physicalCornerPos = this.physicalCornerPos;
+		if (name == null || direction == null || physicalCornerPos == null) return;
+
 		List<DungeonManager.RoomWaypoint> roomWaypoints = DungeonManager.getRoomWaypoints(name);
 		if (roomWaypoints != null) {
 			for (DungeonManager.RoomWaypoint waypoint : roomWaypoints) {
@@ -580,12 +588,10 @@ public class Room implements Tickable, Renderable {
 			renderable.extractRendering(collector);
 		}
 
-		synchronized (this) {
-			if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
-				for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
-					if (secretWaypoint.shouldRender()) {
-						secretWaypoint.extractRendering(collector);
-					}
+		if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
+			for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
+				if (secretWaypoint.shouldRender()) {
+					secretWaypoint.extractRendering(collector);
 				}
 			}
 		}
