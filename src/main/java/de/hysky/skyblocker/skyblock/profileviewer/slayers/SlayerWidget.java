@@ -32,7 +32,7 @@ public class SlayerWidget {
 	private final Identifier item;
 	private final ItemStack drop;
 	private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-	private static final Map<String, Identifier> HEAD_ICON = Map.ofEntries(
+	public static final Map<String, Identifier> HEAD_ICON = Map.ofEntries(
 			Map.entry("Zombie", SkyblockerMod.id("textures/gui/profile_viewer/zombie.png")),
 			Map.entry("Spider", SkyblockerMod.id("textures/gui/profile_viewer/spider.png")),
 			Map.entry("Wolf", SkyblockerMod.id("textures/gui/profile_viewer/wolf.png")),

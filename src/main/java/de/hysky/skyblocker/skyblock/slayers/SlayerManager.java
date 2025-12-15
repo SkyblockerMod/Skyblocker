@@ -150,7 +150,9 @@ public class SlayerManager {
 				if (slayerQuest == null ||
 						!bossName.equals(slayerQuest.slayerType.bossName) ||
 						!bossTier.equals(slayerQuest.slayerTier.name())) {
-					slayerQuest = new SlayerQuest(SlayerType.fromBossName(bossName), SlayerTier.valueOf(bossTier));
+					SlayerType slayerType = SlayerType.fromBossName(bossName);
+					assert slayerType != null;
+					slayerQuest = new SlayerQuest(slayerType, SlayerTier.valueOf(bossTier));
 				}
 			} else if (line.equals("Slay the boss!") && bossFight == null) {
 				bossSpawned = true;
@@ -407,7 +409,7 @@ public class SlayerManager {
 			this.xpRemaining = xpRemaining <= 0 && level < slayerType.maxLevel ? slayerType.levelMilestones[level] : xpRemaining;
 			if (updateCache) updateCache();
 
-			if (slayerTier.isUnknown() || this.xpRemaining <= 0) {
+			if (this.xpRemaining <= 0) {
 				bossesNeeded = -1;
 			} else {
 				int tier = slayerTier.ordinal();

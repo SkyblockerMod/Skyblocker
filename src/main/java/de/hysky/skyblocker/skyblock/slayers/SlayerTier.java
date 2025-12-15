@@ -5,7 +5,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
 
 public enum SlayerTier implements StringIdentifiable {
-	UNKNOWN("unknown", Formatting.WHITE),
 	I("I", Formatting.GREEN),
 	II("II", Formatting.YELLOW),
 	III("III", Formatting.RED),
@@ -19,10 +18,6 @@ public enum SlayerTier implements StringIdentifiable {
 	SlayerTier(String name, Formatting color) {
 		this.name = name;
 		this.color = color;
-	}
-
-	public boolean isUnknown() {
-		return this == UNKNOWN;
 	}
 
 	@Override

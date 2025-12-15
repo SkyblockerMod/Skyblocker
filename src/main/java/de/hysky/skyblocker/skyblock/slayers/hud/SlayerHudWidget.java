@@ -9,12 +9,14 @@ import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.TextureComponent;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.Objects;
 import java.util.Set;
 
 @RegisterWidget
@@ -24,7 +26,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 	private static SlayerHudWidget instance;
 
 	public SlayerHudWidget() {
-		super(Text.literal("Slayer").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), Formatting.DARK_PURPLE.getColorValue(), "hud_slayer");
+		super(Text.literal("Slayer").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), Objects.requireNonNull(Formatting.DARK_PURPLE.getColorValue()), "hud_slayer");
 		instance = this;
 		update();
 	}
@@ -61,34 +63,35 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen) {
-			SlayerType type = SlayerType.REVENANT;
-			SlayerTier tier = SlayerTier.V;
+		if (CLIENT.currentScreen instanceof WidgetsConfigurationScreen) {
+			SlayerType slayerType = SlayerType.REVENANT;
+			SlayerTier slayerTier = SlayerTier.V;
 
-			addSimpleIcoText(type.icon, "", tier.color, type.bossName + " " + tier);
+			Text slayerName = Text.literal(slayerType.bossName + " " + slayerTier).formatted(slayerTier.color);
+			addComponent(new TextureComponent(slayerName, slayerType.texture, 16, 16));
 			addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE, "100,000/400,000");
 			addComponent(Components.iconTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal("200").formatted(Formatting.LIGHT_PURPLE))));
 			return;
 		}
 
-		if (CLIENT.player == null || SlayerManager.getSlayerQuest() == null) return;
+		SlayerManager.SlayerQuest slayerQuest = SlayerManager.getSlayerQuest();
+		if (CLIENT.player == null || slayerQuest == null) return;
 
-		SlayerType type = SlayerManager.getSlayerType();
-		SlayerTier tier = SlayerManager.getSlayerTier();
-		int level = SlayerManager.getSlayerQuest().level;
-		int bossesNeeded = SlayerManager.getSlayerQuest().bossesNeeded;
+		SlayerType slayerType = slayerQuest.slayerType;
+		SlayerTier slayerTier = slayerQuest.slayerTier;
 
-		if (type == null || tier == null) return;
+		int level = slayerQuest.level;
+		int bossesNeeded = slayerQuest.bossesNeeded;
 
-		addSimpleIcoText(type.icon, "", tier.color, type.bossName + " " + tier);
-		if (level > 0) {
-			if (level == type.maxLevel) {
-				addComponent(Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));
-			} else {
-				int nextMilestone = type.levelMilestones[level];
-				int currentXP = nextMilestone - SlayerManager.getSlayerQuest().xpRemaining;
-				addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE, Formatters.INTEGER_NUMBERS.format(currentXP) + "/" + Formatters.INTEGER_NUMBERS.format(nextMilestone));
-			}
+		Text slayerName = Text.literal(slayerType.bossName + " " + slayerTier).formatted(slayerTier.color);
+		addComponent(new TextureComponent(slayerName, slayerType.texture, 16, 16));
+
+		if (level == slayerType.maxLevel) {
+			addComponent(Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));
+		} else {
+			int nextMilestone = slayerType.levelMilestones[level];
+			int currentXP = nextMilestone - slayerQuest.xpRemaining;
+			addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE, Formatters.INTEGER_NUMBERS.format(currentXP) + "/" + Formatters.INTEGER_NUMBERS.format(nextMilestone));
 		}
 
 		if (bossesNeeded > 0) {

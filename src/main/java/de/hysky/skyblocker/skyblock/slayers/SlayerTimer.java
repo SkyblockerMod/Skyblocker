@@ -35,7 +35,7 @@ public class SlayerTimer {
 
 		SlayerType slayerType = SlayerManager.getSlayerType();
 		SlayerTier slayerTier = SlayerManager.getSlayerTier();
-		if (slayerType == null || slayerTier == null || slayerType.isUnknown() || slayerTier.isUnknown()) return;
+		if (slayerType == null || slayerTier == null) return;
 
 		long newPBMills = Duration.between(bossFight.bossSpawnTime, Instant.now()).toMillis();
 		String newPB = formatTime(newPBMills);
