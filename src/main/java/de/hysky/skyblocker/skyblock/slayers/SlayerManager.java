@@ -33,7 +33,6 @@ import org.jetbrains.annotations.Nullable;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
@@ -190,12 +189,10 @@ public class SlayerManager {
 				}
 			}
 		}
-		if (!armorStand.isInRange(CLIENT.player, 15)) return;
-		Arrays.stream(SlayerType.values()).forEach(type -> type.minibossNames.forEach((name) -> {
-			if (armorStand.getName().getString().contains(name) && isInSlayerQuestType(type) && !isBossSpawned()) {
-				slayerQuest.onMiniboss(armorStand, type);
-			}
-		}));
+		if (!isBossSpawned() || !armorStand.isInRange(CLIENT.player, 15)) return;
+		if (slayerQuest.slayerType.isMiniboss(armorStand.getName().getString(), slayerQuest.slayerTier)) {
+			slayerQuest.onMiniboss(armorStand);
+		}
 	}
 
 	/**
@@ -426,11 +423,11 @@ public class SlayerManager {
 			}
 		}
 
-		private void onMiniboss(ArmorStandEntity armorStand, SlayerType type) {
+		private void onMiniboss(ArmorStandEntity armorStand) {
 			if (minibossesArmorStand.contains(armorStand)) return;
 			minibossesArmorStand.add(armorStand);
 
-			Entity miniboss = findClosestMobEntity(type.mobType, armorStand);
+			Entity miniboss = findClosestMobEntity(slayerType.mobType, armorStand);
 			if (miniboss == null) return;
 			minibosses.add(miniboss);
 
