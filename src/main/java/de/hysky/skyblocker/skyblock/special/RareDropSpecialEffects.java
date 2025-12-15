@@ -26,7 +26,7 @@ public class RareDropEffect {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(RareDropEffect::displayRareDropEffect);
 	}
 
-	private static boolean displayRareDropEffect(Text message, boolean overlay) {
+	private static boolean displayRareDropEffect(Component message, boolean overlay) {
 		if (Utils.isOnSkyblock()
 		&& SkyblockerConfigManager.get().general.specialEffects.rareDropEffects
 		&& !overlay) {
