@@ -6,6 +6,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
@@ -16,6 +17,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
@@ -28,6 +30,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.ChunkPos;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +45,7 @@ import java.util.regex.Pattern;
 public class TheEnd {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(TheEnd.class);
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("end.json");
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static final Pattern END_STONE_PROTECTOR_TREMOR = Pattern.compile("^You feel a tremor from beneath the earth!$");
 	private static final Pattern END_STONE_PROTECTOR_RISES = Pattern.compile("^The ground begins to shake as an End Stone Protector rises from below!$");
@@ -58,7 +62,7 @@ public class TheEnd {
 	private static final Set<UUID> HIT_ZEALOTS = new ObjectOpenHashSet<>();
 	public static final ProfiledData<EndStats> PROFILES_STATS = new ProfiledData<>(FILE, EndStats.CODEC);
 
-	public static ProtectorLocation currentProtectorLocation = null;
+	public static @Nullable ProtectorLocation currentProtectorLocation = null;
 	public static int stage = 0;
 
 	@Init
@@ -71,14 +75,12 @@ public class TheEnd {
 		});
 
 		ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
-			String lowerCase = Utils.getIslandArea().toLowerCase(Locale.ENGLISH);
-			if (Utils.isInTheEnd() || lowerCase.contains("the end") || lowerCase.contains("dragon's nest")) {
+			Area area = Utils.getArea();
+			if (Utils.isInTheEnd() || area.equals(Area.THE_END) || area.equals(Area.DRAGONS_NEST)) {
 				ChunkPos pos = chunk.getPos();
-				//
 				Box box = new Box(pos.getStartX(), 0, pos.getStartZ(), pos.getEndX() + 1, 1, pos.getEndZ() + 1);
 				for (ProtectorLocation protectorLocation : PROTECTOR_LOCATIONS) {
 					if (box.contains(protectorLocation.x(), 0.5, protectorLocation.z())) {
-						// MinecraftClient.getInstance().player.sendMessage(Text.literal("Checking: ").append(protectorLocation.name));//MinecraftClient.getInstance().player.sendMessage(Text.literal(pos.getStartX() + " " + pos.getStartZ() + " " + pos.getEndX() + " " + pos.getEndZ()));
 						if (isProtectorHere(world, protectorLocation)) break;
 					}
 				}
@@ -122,7 +124,7 @@ public class TheEnd {
 	}
 
 	private static void checkAllProtectorLocations() {
-		ClientWorld world = MinecraftClient.getInstance().world;
+		ClientWorld world = CLIENT.world;
 		if (world == null) return;
 		for (ProtectorLocation protectorLocation : PROTECTOR_LOCATIONS) {
 			if (!world.isChunkLoaded(protectorLocation.x() >> 4, protectorLocation.z() >> 4)) continue;
@@ -171,19 +173,18 @@ public class TheEnd {
 
 	public static boolean isZealot(EndermanEntity enderman) {
 		if (enderman.getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot")) return true; // Future-proof. If they someday decide to actually rename the entities
-		assert MinecraftClient.getInstance().world != null;
-		List<ArmorStandEntity> entities = MinecraftClient.getInstance().world.getEntitiesByClass(
+		assert CLIENT.world != null;
+		List<ArmorStandEntity> entities = CLIENT.world.getEntitiesByClass(
 				ArmorStandEntity.class,
-				enderman.getDimensions(null).getBoxAt(enderman.getPos()).expand(1),
+				enderman.getDimensions(enderman.getPose()).getBoxAt(enderman.getPos()).expand(1),
 				armorStandEntity -> armorStandEntity.getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot"));
-		if (entities.isEmpty()) {
-			return false;
-		}
-		return entities.getFirst().getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot");
+		return !entities.isEmpty();
 	}
 
 	public static boolean isSpecialZealot(EndermanEntity enderman) {
-		return isZealot(enderman) && enderman.getCarriedBlock() != null && enderman.getCarriedBlock().isOf(Blocks.END_PORTAL_FRAME);
+		// Filter out non-special zealots using the faster carried block check first
+		BlockState carriedBlock = enderman.getCarriedBlock();
+		return carriedBlock != null && carriedBlock.isOf(Blocks.END_PORTAL_FRAME) && isZealot(enderman);
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
