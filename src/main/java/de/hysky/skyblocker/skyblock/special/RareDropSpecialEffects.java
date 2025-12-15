@@ -40,8 +40,8 @@ public class RareDropSpecialEffects {
 
 				else if (magicFindMatcher.matches()) {
 					triggerDropEffect(magicFindMatcher.group("item"));
-					}
-				} catch (Exception e) { //In case there's a regex failure or something else bad happens
+				}
+			} catch (Exception e) { //In case there's a regex failure or something else bad happens
 					LOGGER.error("[Skyblocker Special Effects] An unexpected exception was encountered: ", e);
 				}
 			}
