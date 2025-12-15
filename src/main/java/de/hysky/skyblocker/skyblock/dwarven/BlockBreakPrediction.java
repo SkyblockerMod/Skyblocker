@@ -13,20 +13,21 @@ import de.hysky.skyblocker.utils.Utils;
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.NEURepositoryException;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.io.InputStream;
@@ -39,7 +40,7 @@ import java.util.regex.Pattern;
 
 public class BlockBreakPrediction {
 	private static final Map<String, Map<Block, Integer>> blockStrengths = new HashMap<>();
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern MINING_SPEED_PATTERN = Pattern.compile("Mining Speed: ⸕(\\d+)");
 
 	private static boolean newBlock = false;
@@ -55,17 +56,17 @@ public class BlockBreakPrediction {
 
 	}
 
-
-	private static ActionResult onBlockInteract(PlayerEntity playerEntity, World world, Hand hand, BlockPos blockPos, Direction direction) {
+	private static InteractionResult onBlockInteract(Player player, Level level, InteractionHand interactionHand, BlockPos blockPos, Direction direction) {
 		newBlock = true;
 		startAttackingTime = System.currentTimeMillis();
 		soundPlayed = false;
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
+
 
 	public static int getBlockBreakPrediction(BlockPos pos, int progression) {
 		if (CLIENT.player == null || !SkyblockerConfigManager.get().mining.BlockBreakPrediction.enabled) return progression;
-		if (CLIENT.crosshairTarget instanceof BlockHitResult hitResult) {
+		if (CLIENT.hitResult instanceof BlockHitResult hitResult) {
 			if (!hitResult.getBlockPos().equals(pos)) {
 				return progression;
 			}
@@ -80,7 +81,7 @@ public class BlockBreakPrediction {
 			long timeElapsed = System.currentTimeMillis() - startAttackingTime;
 			if (SkyblockerConfigManager.get().mining.BlockBreakPrediction.playSound && !soundPlayed && (int) ((timeElapsed * 10) / (currentBlockBreakTime)) == 10) {
 				soundPlayed = true;
-				CLIENT.player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 1f);
+				CLIENT.player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 100f, 1f);
 			}
 			return Math.min((int) ((timeElapsed * 10) / (currentBlockBreakTime)), 9);
 		}
@@ -97,7 +98,7 @@ public class BlockBreakPrediction {
 		Optional<Matcher> speed = PlayerListManager.getPlayerStringList().stream().map(MINING_SPEED_PATTERN::matcher).filter(Matcher::matches).findFirst();
 		//make sure the data is in tab and if not tell the user
 		if (speed.isEmpty()) {
-			CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("TODO tell user to enable mining speed stat")), false);
+			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("TODO tell user to enable mining speed stat")), false);
 			return -1;
 		}
 
@@ -106,8 +107,8 @@ public class BlockBreakPrediction {
 	}
 
 	private static long getBreakTime(BlockPos pos) {
-		if (CLIENT.world == null) return -1;
-		Block targetBlock = CLIENT.world.getBlockState(pos).getBlock();
+		if (CLIENT.level == null) return -1;
+		Block targetBlock = CLIENT.level.getBlockState(pos).getBlock();
 		if (!blockStrengths.containsKey(Utils.getLocationRaw()) || !blockStrengths.get(Utils.getLocationRaw()).containsKey(targetBlock)) return -1;
 		int blockStrength = blockStrengths.get(Utils.getLocationRaw()).get(targetBlock);
 		int miningSpeed = getCurrentMiningSpeed();
@@ -260,7 +261,7 @@ public class BlockBreakPrediction {
 		}
 
 		public static Block get(String id, int damage) {
-			return Registries.BLOCK.get(Identifier.of(TABLE.get(id + "," + damage)));
+			return BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(TABLE.get(id + "," + damage)));
 		}
 	}
 

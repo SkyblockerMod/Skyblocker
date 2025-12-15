@@ -1,6 +1,11 @@
 package de.hysky.skyblocker.mixins;
 
 import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dwarven.BlockBreakPrediction;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.state.BlockBreakingRenderState;
+import net.minecraft.core.BlockPos;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -69,10 +74,17 @@ public class LevelRendererMixin implements EntityRenderMarker {
 		GlowRenderer.getInstance().getGlowVertexConsumers().endOutlineBatch();
 	}
 
-	@Redirect(method = "fillBlockBreakingProgressRenderState", at = @At(value = "NEW", target = "(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/util/math/BlockPos;I)Lnet/minecraft/client/render/state/BreakingBlockRenderState;"))
-	private BreakingBlockRenderState skyblocker$addBlockBreakingProgressRenderState(ClientWorld world, BlockPos entityBlockPos, int breakProgress) {
-		//todo check setting
-		int pingModifiedProgress = BlockBreakPrediction.getBlockBreakPrediction(entityBlockPos, breakProgress);
-		return new BreakingBlockRenderState(world, entityBlockPos, pingModifiedProgress);
+	@Redirect(method = "extractBlockDestroyAnimation", at = @At(value = "NEW", target = "(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/core/BlockPos;I)Lnet/minecraft/client/renderer/state/BlockBreakingRenderState;"))
+	private BlockBreakingRenderState skyblocker$addBlockBreakingProgressRenderState(ClientLevel clientLevel, BlockPos blockPos, int i) {
+		if (SkyblockerConfigManager.get().mining.BlockBreakPrediction.enabled){
+			int pingModifiedProgress = BlockBreakPrediction.getBlockBreakPrediction(blockPos, i);
+			return new BlockBreakingRenderState(clientLevel, blockPos, pingModifiedProgress);
+
+		}
+		//if the setting is enabled do not modify anything
+		else {
+			return new BlockBreakingRenderState(clientLevel, blockPos, i);
+		}
+
 	}
 }
