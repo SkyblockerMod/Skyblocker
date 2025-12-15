@@ -1,5 +1,8 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
@@ -8,10 +11,12 @@ import de.hysky.skyblocker.skyblock.slayers.boss.vampire.ManiaIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.StakeIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.TwinClawsIndicator;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -25,11 +30,13 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,10 +49,12 @@ public class SlayerManager {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Atoned Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Bloodfiend");
 	private static final Pattern SLAYER_TIER_PATTERN = Pattern.compile("^(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend)\\s+(I|II|III|IV|V)$");
-	private static final Pattern PATTERN_XP_NEEDED = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
-	private static final Pattern PATTERN_LVL_UP = Pattern.compile("\\s*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9]\\s*");
+	private static final Pattern XP_NEEDED_PATTERN = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
+	private static final Pattern LVL_UP_PATTERN = Pattern.compile("\\s*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9]\\s*");
 	private static final Title BOSS_SPAWN = new Title(Text.translatable("skyblocker.slayer.bossSpawnAlert").formatted(Formatting.RED));
 	private static final Title MINIBOSS_SPAWN = new Title(Text.translatable("skyblocker.slayer.miniBossSpawnAlert").formatted(Formatting.RED));
+	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("slayers_data.json");
+	private static final ProfiledData<Object2ObjectOpenHashMap<SlayerType, SlayerInfo>> SLAYERS_DATA = new ProfiledData<>(FILE, SlayerInfo.CODEC);
 	private static @Nullable SlayerQuest slayerQuest;
 	private static @Nullable BossFight bossFight;
 
@@ -60,6 +69,7 @@ public class SlayerManager {
 
 	@Init
 	public static void init() {
+		SLAYERS_DATA.load();
 		ClientReceiveMessageEvents.ALLOW_GAME.register(SlayerManager::onChatMessage);
 		SkyblockEvents.MAYOR_CHANGE.register(SlayerManager::onMayorChange);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
@@ -104,42 +114,33 @@ public class SlayerManager {
 			}
 		}
 
-		if (slayerQuest == null) return true;
-
-		Matcher matcherNextLvl = PATTERN_XP_NEEDED.matcher(message);
-		if (matcherNextLvl.matches()) {
-			if (message.contains("LVL MAXED OUT")) {
-				slayerQuest.level = message.contains("Vampire") ? 5 : 9;
-				slayerQuest.xpRemaining = -1;
-				slayerQuest.bossesNeeded = -1;
-			} else {
-				String xpRemainingStr = matcherNextLvl.group(3);
-				if (xpRemainingStr != null) {
-					slayerQuest.level = Integer.parseInt(matcherNextLvl.group(2));
-					slayerQuest.xpRemaining = Integer.parseInt(xpRemainingStr.replace(",", "").trim());
-					calculateBossesNeeded();
+		if (slayerQuest != null) {
+			Matcher matcherNextLvl = XP_NEEDED_PATTERN.matcher(message);
+			if (matcherNextLvl.matches()) {
+				if (message.contains("LVL MAXED OUT")) {
+					int level = message.contains("Vampire") ? 5 : 9;
+					slayerQuest.update(level, -1, true);
+				} else {
+					String xpRemainingStr = matcherNextLvl.group(3);
+					if (xpRemainingStr != null) {
+						int level = Integer.parseInt(matcherNextLvl.group(2));
+						int xpRemaining = Integer.parseInt(xpRemainingStr.replace(",", "").trim());
+						slayerQuest.update(level, xpRemaining, true);
+					}
 				}
+			} else if (LVL_UP_PATTERN.matcher(message).matches()) {
+				int level = Integer.parseInt(message.replaceAll("(\\d+).+", "$1"));
+				slayerQuest.update(level, -1, true);
 			}
-		} else if (PATTERN_LVL_UP.matcher(message).matches()) {
-			slayerQuest.level = Integer.parseInt(message.replaceAll("(\\d+).+", "$1"));
 		}
 
 		return true;
 	}
 
-	private static void calculateBossesNeeded() {
-		assert slayerQuest != null;
-		int tier = slayerQuest.slayerTier.ordinal();
-		if (tier == 0) {
-			slayerQuest.bossesNeeded = -1;
-		} else {
-			int xpPerTier = (int) (slayerQuest.slayerType.xpPerTier[tier - 1] * slayerExpBuff);
-			slayerQuest.bossesNeeded = (int) Math.ceil((double) slayerQuest.xpRemaining / xpPerTier);
-		}
-	}
-
-	public static void getSlayerBossInfo() {
+	public static void checkSlayerQuest() {
 		boolean active = false;
+		boolean bossSpawned = false;
+
 		for (String line : Utils.STRING_SCOREBOARD) {
 			Matcher matcher = SLAYER_TIER_PATTERN.matcher(line);
 			if (matcher.find()) {
@@ -151,14 +152,17 @@ public class SlayerManager {
 						!bossTier.equals(slayerQuest.slayerTier.name())) {
 					slayerQuest = new SlayerQuest(SlayerType.fromBossName(bossName), SlayerTier.valueOf(bossTier));
 				}
-				//break
-				//Todo: look at this
-			} else if (line.equals("Slay the boss!") && !isBossSpawned()) {
-				bossFight = new BossFight(null);
+			} else if (line.equals("Slay the boss!") && bossFight == null) {
+				bossSpawned = true;
 			}
 		}
 
-		if (slayerQuest != null) slayerQuest.active = active;
+		if (slayerQuest != null) {
+			slayerQuest.active = active;
+			if (active && bossSpawned) {
+				bossFight = new BossFight(null);
+			}
+		}
 	}
 
 	/**
@@ -208,7 +212,7 @@ public class SlayerManager {
 	 * @implNote This method is not perfect. Possible improvements could be sort by x and z distance only (ignore y difference).
 	 */
 	@Nullable
-	public static <T extends Entity> T findClosestMobEntity(@Nullable EntityType<T> entityType, ArmorStandEntity armorStand) {
+	private static <T extends Entity> T findClosestMobEntity(@Nullable EntityType<T> entityType, ArmorStandEntity armorStand) {
 		if (entityType == null) return null;
 		List<T> mobEntities = armorStand.getEntityWorld().getEntitiesByType(entityType, armorStand.getBoundingBox().expand(0, 1.5f, 0), SlayerManager::isValidSlayerMob);
 		mobEntities.sort(Comparator.comparingDouble(armorStand::squaredDistanceTo));
@@ -237,7 +241,6 @@ public class SlayerManager {
 	 */
 	public static boolean shouldGlow(Entity entity, SlayersConfig.HighlightSlayerEntities highlightType) {
 		if (!isInSlayer()) return false;
-		//noinspection DataFlowIssue - slayerQuest is checked in isInSlayer()
 		if (SkyblockerConfigManager.get().slayers.highlightMinis == highlightType && isInSlayer() && getSlayerQuest().minibosses.contains(entity)) return true;
 		//noinspection DataFlowIssue - bossFight is checked in isBossSpawned()
 		return SkyblockerConfigManager.get().slayers.highlightBosses == highlightType && isBossSpawned() && getBossFight().boss == entity;
@@ -295,7 +298,7 @@ public class SlayerManager {
 	 * @return True if in a Slayer Quest of the given type; false otherwise.
 	 */
 	public static boolean isInSlayerQuestType(SlayerType slayerType) {
-		return slayerQuest != null && slayerQuest.slayerType.equals(slayerType);
+		return isInSlayer() && slayerQuest.slayerType.equals(slayerType);
 	}
 
 	/**
@@ -389,9 +392,36 @@ public class SlayerManager {
 		public int xpRemaining;
 		public int bossesNeeded;
 
-		public SlayerQuest(SlayerType slayerType, SlayerTier slayerTier) {
+		private SlayerQuest(SlayerType slayerType, SlayerTier slayerTier) {
 			this.slayerType = slayerType;
 			this.slayerTier = slayerTier;
+			var slayersData = SLAYERS_DATA.get();
+			if (slayersData != null && slayersData.containsKey(slayerType)) {
+				SlayerInfo slayerInfo = slayersData.get(slayerType);
+				update(slayerInfo.level, slayerInfo.xpRemaining, false);
+			}
+		}
+
+		private void update(int level, int xpRemaining, boolean updateCache) {
+			this.level = level;
+			this.xpRemaining = xpRemaining <= 0 && level < slayerType.maxLevel ? slayerType.levelMilestones[level] : xpRemaining;
+			if (updateCache) updateCache();
+
+			if (slayerTier.isUnknown() || this.xpRemaining <= 0) {
+				bossesNeeded = -1;
+			} else {
+				int tier = slayerTier.ordinal();
+				int xpPerTier = (int) (slayerType.xpPerTier[tier - 1] * slayerExpBuff);
+				bossesNeeded = (int) Math.ceil((double) this.xpRemaining / xpPerTier);
+			}
+		}
+
+		private void updateCache() {
+			var slayers = SLAYERS_DATA.computeIfAbsent(Object2ObjectOpenHashMap::new);
+			if (slayers != null) {
+				slayers.put(slayerType, new SlayerInfo(level, xpRemaining));
+				SLAYERS_DATA.save();
+			}
 		}
 
 		private void onMiniboss(ArmorStandEntity armorStand, SlayerType type) {
@@ -408,5 +438,15 @@ public class SlayerManager {
 				TitleContainer.addTitleAndPlaySound(title, 20);
 			}
 		}
+	}
+
+	public record SlayerInfo(int level, int xpRemaining) {
+		private static final Codec<SlayerInfo> SLAYER_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.INT.fieldOf("level").forGetter(SlayerInfo::level),
+				Codec.INT.fieldOf("xpRemaining").forGetter(SlayerInfo::xpRemaining)
+		).apply(instance, SlayerInfo::new));
+
+		private static final Codec<Object2ObjectOpenHashMap<SlayerType, SlayerInfo>> CODEC = Codec.unboundedMap(SlayerType.CODEC, SLAYER_CODEC)
+				.xmap(Object2ObjectOpenHashMap::new, Function.identity());
 	}
 }

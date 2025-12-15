@@ -22,7 +22,7 @@ import java.util.function.Function;
 
 public class SlayerTimer {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("slayer_personal_best.json");
-	private static final ProfiledData<Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>>> CACHED_SLAYER_STATS = new ProfiledData<>(FILE, SlayerInfo.SERIALIZATION_CODEC, true, true);
+	private static final ProfiledData<Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerPersonalBest>>> CACHED_SLAYER_STATS = new ProfiledData<>(FILE, SlayerPersonalBest.SERIALIZATION_CODEC);
 
 	@Init
 	public static void init() {
@@ -41,11 +41,11 @@ public class SlayerTimer {
 		String newPB = formatTime(newPBMills);
 
 		long currentPBMills = getPersonalBest(slayerType, slayerTier);
-		String currentPB = formatTime(currentPBMills);
 
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		assert player != null;
 		if (currentPBMills != -1 && currentPBMills > newPBMills) {
+			String currentPB = formatTime(currentPBMills);
 			player.sendMessage(Constants.PREFIX.get().append(
 					Text.translatable("skyblocker.slayer.slainTime", Text.literal(newPB).formatted(Formatting.YELLOW))
 							.append(" ")
@@ -68,33 +68,37 @@ public class SlayerTimer {
 	}
 
 	private static long getPersonalBest(SlayerType slayerType, SlayerTier slayerTier) {
-		Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>> profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
-		Object2ObjectOpenHashMap<SlayerTier, SlayerInfo> typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
+		var profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
+		if (profileData != null) {
+			var typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
+			SlayerPersonalBest currentBest = typeData.get(slayerTier);
+			//noinspection ConstantConditions
+			return currentBest != null ? currentBest.bestTimeMillis() : -1;
+		}
 
-		SlayerInfo currentBest = typeData.get(slayerTier);
-		return currentBest != null ? currentBest.bestTimeMillis() : -1;
+		return -1;
 	}
 
 	private static void updateBestTime(SlayerType slayerType, SlayerTier slayerTier, long timeElapsed) {
-		Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>> profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
-		Object2ObjectOpenHashMap<SlayerTier, SlayerInfo> typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
-		SlayerInfo newInfo = new SlayerInfo(timeElapsed, System.currentTimeMillis());
-
-		typeData.put(slayerTier, newInfo);
-		CACHED_SLAYER_STATS.save();
+		var profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
+		if (profileData != null) {
+			var typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
+			typeData.put(slayerTier, new SlayerPersonalBest(timeElapsed, System.currentTimeMillis()));
+			CACHED_SLAYER_STATS.save();
+		}
 	}
 
 	private static String formatTime(long millis) {
 		return String.format("%.2fs", millis / 1000.0);
 	}
 
-	private record SlayerInfo(long bestTimeMillis, long dateMillis) {
-		private static final Codec<SlayerInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.LONG.fieldOf("bestTimeMillis").forGetter(SlayerInfo::bestTimeMillis),
-				Codec.LONG.fieldOf("dateMillis").forGetter(SlayerInfo::dateMillis)
-		).apply(instance, SlayerInfo::new));
+	private record SlayerPersonalBest(long bestTimeMillis, long dateMillis) {
+		private static final Codec<SlayerPersonalBest> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.LONG.fieldOf("bestTimeMillis").forGetter(SlayerPersonalBest::bestTimeMillis),
+				Codec.LONG.fieldOf("dateMillis").forGetter(SlayerPersonalBest::dateMillis)
+		).apply(instance, SlayerPersonalBest::new));
 
-		private static final Codec<Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>>> SERIALIZATION_CODEC = Codec.unboundedMap(SlayerType.CODEC,
+		private static final Codec<Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerPersonalBest>>> SERIALIZATION_CODEC = Codec.unboundedMap(SlayerType.CODEC,
 				Codec.unboundedMap(SlayerTier.CODEC, CODEC).xmap(Object2ObjectOpenHashMap::new, Function.identity())
 		).xmap(Object2ObjectOpenHashMap::new, Function.identity());
 	}

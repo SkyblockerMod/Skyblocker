@@ -390,7 +390,7 @@ public class Utils {
 			STRING_SCOREBOARD.addAll(stringLines);
 			if (isOnSkyblock) {
 				Utils.updatePurse();
-				SlayerManager.getSlayerBossInfo();
+				SlayerManager.checkSlayerQuest();
 				updateArea();
 			}
 		} catch (NullPointerException e) {
