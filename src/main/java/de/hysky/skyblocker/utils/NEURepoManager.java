@@ -240,7 +240,7 @@ public class NEURepoManager {
 	public static @Nullable NEURepoFile file(String path) {
 		return NEU_REPO.file(path);
 	}
-	public static Stream<NEURepoFile> tree(@NotNull String path) throws NEURepositoryException {
+	public static Stream<NEURepoFile> tree(String path) throws NEURepositoryException {
 		return NEU_REPO.tree(path);
 	}
 

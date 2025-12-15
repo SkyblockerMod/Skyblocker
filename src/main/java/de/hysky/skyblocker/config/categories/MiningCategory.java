@@ -388,19 +388,19 @@ public class MiningCategory {
 										newValue -> config.mining.glacite.forceEnglishCorpseProfitTracker = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-                        .build())
+						.build())
 				//Block break prediction
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("skyblocker.config.mining.blockBreakPrediction"))
+						.name(Component.translatable("skyblocker.config.mining.blockBreakPrediction"))
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.mining.blockBreakPrediction.enabled"))
+								.name(Component.translatable("skyblocker.config.mining.blockBreakPrediction.enabled"))
 								.binding(defaults.mining.BlockBreakPrediction.enabled,
 										() -> config.mining.BlockBreakPrediction.enabled,
 										newValue -> config.mining.BlockBreakPrediction.enabled = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.mining.blockBreakPrediction.playSound"))
+								.name(Component.translatable("skyblocker.config.mining.blockBreakPrediction.playSound"))
 								.binding(defaults.mining.BlockBreakPrediction.playSound,
 										() -> config.mining.BlockBreakPrediction.playSound,
 										newValue -> config.mining.BlockBreakPrediction.playSound = newValue)
@@ -408,6 +408,6 @@ public class MiningCategory {
 								.build())
 
 						.build())
-                .build();
-    }
+				.build();
+	}
 }
