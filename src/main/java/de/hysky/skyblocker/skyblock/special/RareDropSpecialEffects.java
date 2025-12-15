@@ -15,30 +15,33 @@ import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DungeonsSpecialEffects {
-	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonsSpecialEffects.class);
+public class RareDropEffect {
+	private static final Logger LOGGER = LoggerFactory.getLogger(RareDropEffect.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final Pattern CROESUS_PATTERN = Pattern.compile("^\\s{3,}(?!.*:)(?:RARE REWARD!\\s+)?(?<item>.+)");
+	private static final Pattern DUNGEON_CHEST_PATTERN = Pattern.compile("^\\s{3,}(?!.*:)(?:RARE REWARD!\\s+)?(?<item>.+)$");
+	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|CRAZY RARE|INSANE RARE) DROP!\\s+(?<item>.+?)\\s+\\(\\+\\d+ ✯ Magic Find\\)$");
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonsSpecialEffects::displayRareDropEffect);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(RareDropEffect::displayRareDropEffect);
 	}
 
-	private static boolean displayRareDropEffect(Component message, boolean overlay) {
-		//We don't check if we're in dungeons because that check doesn't work in m7 which defeats the point of this
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.specialEffects.rareDungeonDropEffects && !overlay) {
-			try {
-				String stringForm = message.getString();
-				Matcher matcher = CROESUS_PATTERN.matcher(stringForm);
+	private static boolean displayRareDropEffect(Text message, boolean overlay) {
+		if (Utils.isOnSkyblock()
+		&& SkyblockerConfigManager.get().general.specialEffects.rareDropEffects
+		&& !overlay) {
 
-				if (matcher.matches()) {
-					ItemStack stack = getStackFromName(matcher.group("item"));
+		try {
+			String stringForm = message.getString();
+			Matcher dungeonMatcher = DUNGEON_CHEST_PATTERN.matcher(stringForm);
+			Matcher magicFindMatcher = MAGIC_FIND_PATTERN.matcher(stringForm);
 
-					if (stack != null && !stack.isEmpty()) {
-						CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
-						CLIENT.gameRenderer.displayItemActivation(stack);
-					}
+			if (dungeonMatcher.matches()) {
+				triggerDropEffect(dungeonMatcher.group("item"));
+			}
+
+			else if (magicFindMatcher.matches()) {
+				triggerDropEffect(magicFindMatcher.group("item"));
 				}
 			} catch (Exception e) { //In case there's a regex failure or something else bad happens
 				LOGGER.error("[Skyblocker Special Effects] An unexpected exception was encountered: ", e);
@@ -46,6 +49,14 @@ public class DungeonsSpecialEffects {
 		}
 
 		return true;
+	}
+
+	private static void triggerDropEffect(String itemName) {
+		ItemStack stack = getStackFromName(itemName);
+			if (stack != null && !stack.isEmpty()) {
+				CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
+				CLIENT.gameRenderer.displayItemActivation(stack);
+		}
 	}
 
 	private static ItemStack getStackFromName(String itemName) {
