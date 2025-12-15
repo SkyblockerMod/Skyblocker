@@ -5,13 +5,14 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 public class Components {
 	public static Component iconTextComponent() {
 		return iconTextComponent(null, null);
 	}
 
-	public static Component iconTextComponent(ItemStack icon, net.minecraft.network.chat.Component text) {
+	public static Component iconTextComponent(@Nullable ItemStack icon, net.minecraft.network.chat.@Nullable Component text) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons) {
 			return new IcoTextComponent(icon, text);
 		} else {
@@ -23,7 +24,7 @@ public class Components {
 		return iconFatTextComponent(null, null, null);
 	}
 
-	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component iconFatTextComponent(ItemStack icon, net.minecraft.network.chat.Component line1, net.minecraft.network.chat.Component line2) {
+	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component iconFatTextComponent(@Nullable ItemStack icon, net.minecraft.network.chat.@Nullable Component line1, net.minecraft.network.chat.@Nullable Component line2) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons) {
 			return new IcoFatTextComponent(icon, line1, line2);
 		} else {
