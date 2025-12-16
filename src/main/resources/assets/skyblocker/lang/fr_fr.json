@@ -1560,5 +1560,13 @@
     "skyblocker.helpers.hoppitysHunt.unableToShareEgg": "Impossible de partager cet oeuf.",
     "skyblocker.helpers.hoppitysHunt.newEggDiscovered": "%s à %s trouvé !",
     "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "Cliquez pour partager l'emplacement de cet œuf dans le chat !",
-    "skyblocker.helpers.hoppitysHunt.chocolateEgg": "Oeuf %s en Chocolat"
+    "skyblocker.helpers.hoppitysHunt.chocolateEgg": "Oeuf %s en Chocolat",
+    "key.skyblocker.valueBreadownPopup": "Ouvrir la Popup des Détails du Prix",
+    "skyblocker.config.dungeons.secretSync": "Synchronisation des Secrets",
+    "skyblocker.config.dungeons.secretSync.hideReceivedWaypoints": "Masquer les Marqueurs de Secret Reçus",
+    "skyblocker.config.dungeons.secretSync.receiveMatchedRooms": "Ajouter les Salles Synchronisées",
+    "skyblocker.config.dungeons.secretSync.receiveRoomSecretCount": "Utiliser le Compteur de Secrets de Salle Synchronisé",
+    "skyblocker.config.helpers.enableAnvilHelper.@Tooltip": "Affiche un avertissement quand des enchantements de niveaux différents sont combinés.",
+    "skyblocker.config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints": "Activer les Marqueurs de Clé de Redstone",
+    "skyblocker.config.helpers.enableAnvilHelper": "Activer l'Assistant pour l'Enclume"
 }
