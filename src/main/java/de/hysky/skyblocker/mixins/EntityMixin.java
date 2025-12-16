@@ -28,7 +28,7 @@ public abstract class EntityMixin {
 	private EntityType<?> type;
 
 	@Shadow
-	public abstract UUID getUuid();
+	protected UUID uuid;
 
 	@Shadow
 	public abstract boolean isInvisible();
@@ -45,7 +45,7 @@ public abstract class EntityMixin {
 				&& type == EntityType.ENDERMAN
 				&& entity.getType() == EntityType.ARMOR_STAND) {
 			Entity slayer = SlayerManager.getSlayerBoss();
-			if (slayer != null && slayer.getUuid().equals(getUuid()) && !LazerTimer.isActive()) {
+			if (slayer != null && slayer.getUuid().equals(uuid) && !LazerTimer.isActive()) {
 				LazerTimer.activate();
 			}
 		}
@@ -55,7 +55,8 @@ public abstract class EntityMixin {
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void onTick(CallbackInfo ci) {
 		if (type == EntityType.ENDERMAN && SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer && SlayerManager.isInSlayerType(SlayerType.VOIDGLOOM)) {
-			if (SlayerManager.getSlayerBoss() != null && getUuid().equals(SlayerManager.getSlayerBoss().getUuid()) && LazerTimer.isActive()) {
+			Entity boss = SlayerManager.getSlayerBoss();
+			if (boss != null && uuid.equals(boss.getUuid()) && LazerTimer.isActive()) {
 				LazerTimer.tick();
 			}
 		}
@@ -64,11 +65,9 @@ public abstract class EntityMixin {
 	@Inject(method = "onRemove", at = @At("TAIL"))
 	private void onRemove(Entity.RemovalReason reason, CallbackInfo ci) {
 		if (SkyblockerConfigManager.get().slayers.slainTime && SlayerManager.isBossSpawned()) {
-			if (SlayerManager.getSlayerBoss() != null && getUuid().equals(SlayerManager.getSlayerBoss().getUuid())) {
-				SlayerManager.BossFight bossFight = SlayerManager.getBossFight();
-				if (bossFight != null) {
-					SlayerTimer.onBossDeath(bossFight);
-				}
+			Entity boss = SlayerManager.getSlayerBoss();
+			if (boss != null && uuid.equals(boss.getUuid())) {
+				SlayerTimer.onBossDeath();
 			}
 		}
 	}

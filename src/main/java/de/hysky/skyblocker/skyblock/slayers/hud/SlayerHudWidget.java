@@ -79,7 +79,6 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 		SlayerType slayerType = slayerQuest.slayerType;
 		SlayerTier slayerTier = slayerQuest.slayerTier;
-
 		int level = slayerQuest.level;
 		int bossesNeeded = slayerQuest.bossesNeeded;
 
@@ -88,14 +87,14 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 		if (level == slayerType.maxLevel) {
 			addComponent(Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));
-		} else {
+		} else if (level >= 0) {
 			int nextMilestone = slayerType.levelMilestones[level];
 			int currentXP = nextMilestone - slayerQuest.xpRemaining;
 			addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE, Formatters.INTEGER_NUMBERS.format(currentXP) + "/" + Formatters.INTEGER_NUMBERS.format(nextMilestone));
-		}
 
-		if (bossesNeeded > 0) {
-			addComponent(Components.iconTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal(Formatters.INTEGER_NUMBERS.format(bossesNeeded)).formatted(Formatting.LIGHT_PURPLE))));
+			if (bossesNeeded > 0) {
+				addComponent(Components.iconTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal(Formatters.INTEGER_NUMBERS.format(bossesNeeded)).formatted(Formatting.LIGHT_PURPLE))));
+			}
 		}
 	}
 

@@ -60,12 +60,14 @@ public enum SlayerType implements StringIdentifiable {
 	}
 
 	public boolean isMiniboss(String name, SlayerTier slayerTier) {
-		return switch (slayerTier) {
-			case III -> t3Minibosses.contains(name);
-			case IV -> t4Minibosses.contains(name) || t3Minibosses.contains(name);
-			case V -> t5Minibosses.contains(name) || t4Minibosses.contains(name) || t3Minibosses.contains(name);
-			default -> false;
+		List<List<String>> minibossLists = switch (slayerTier) {
+			case III -> List.of(t3Minibosses);
+			case IV -> List.of(t3Minibosses, t4Minibosses);
+			case V -> List.of(t3Minibosses, t4Minibosses, t5Minibosses);
+			default -> List.of();
 		};
+
+		return minibossLists.stream().flatMap(List::stream).anyMatch(name::contains);
 	}
 
 	@Override

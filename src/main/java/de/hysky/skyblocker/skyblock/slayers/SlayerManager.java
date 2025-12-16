@@ -71,6 +71,7 @@ public class SlayerManager {
 		SLAYERS_DATA.load();
 		ClientReceiveMessageEvents.ALLOW_GAME.register(SlayerManager::onChatMessage);
 		SkyblockEvents.MAYOR_CHANGE.register(SlayerManager::onMayorChange);
+		SkyblockEvents.PROFILE_CHANGE.register((_prev, _profile) -> slayerQuest = null);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfigManager.get().slayers.vampireSlayer.steakStakeUpdateFrequency);
@@ -104,8 +105,8 @@ public class SlayerManager {
 				return true;
 			}
 			case "NICE! SLAYER BOSS SLAIN!", "SLAYER QUEST COMPLETE!" -> {
-				if (slayerQuest != null && bossFight != null) {
-					SlayerTimer.onBossDeath(bossFight);
+				if (slayerQuest != null) {
+					SlayerTimer.onBossDeath();
 					CallMaddox.onBossKilled();
 					bossFight = null;
 				}
@@ -143,7 +144,6 @@ public class SlayerManager {
 		for (String line : Utils.STRING_SCOREBOARD) {
 			Matcher matcher = SLAYER_TIER_PATTERN.matcher(line);
 			if (matcher.find()) {
-				active = true;
 				String bossName = matcher.group(1);
 				String bossTier = matcher.group(2);
 				if (slayerQuest == null ||
@@ -153,45 +153,49 @@ public class SlayerManager {
 					assert slayerType != null;
 					slayerQuest = new SlayerQuest(slayerType, SlayerTier.valueOf(bossTier));
 				}
-			} else if (line.equals("Slay the boss!") && bossFight == null) {
+				active = true;
+			} else if (line.equals("Slay the boss!")) {
 				bossSpawned = true;
 			}
 		}
 
 		if (slayerQuest != null) {
 			slayerQuest.active = active;
-			if (active && bossSpawned) {
-				bossFight = new BossFight(null);
-			}
+			if (active && bossSpawned) slayerQuest.onBossSpawn();
+			slayerQuest.bossSpawned = bossSpawned;
 		}
 	}
 
 	/**
-	 * Checks if the given armor stand is a slayer boss or miniboss and saves it to the corresponding field.
-	 * <p>This is the main mechanism for detecting slayer bosses and minibosses. All other features rely on information processed here.
+	 * Checks if the given armor stand is associated with a slayer boss or miniboss.
+	 * <p>For boss detection, it looks for armor stands that contain the player's name and matches nearby armor stands against known slayer name patterns.</p>
+	 * <p>For miniboss detection, it checks if the armor stand is within range and matches the current slayer type's minibosses.</p>
 	 *
-	 * @implNote The resulting mob entity (not the armor stand entity) might not be entirely accurate.
-	 * {@link #findClosestMobEntity(EntityType, ArmorStandEntity)} could be modified and run more than once to ensure the correct entity is found.
+	 * @param armorStand the armor stand entity to check
 	 */
 	public static void checkSlayerBoss(ArmorStandEntity armorStand) {
-		//noinspection DataFlowIssue - bossFight is checked in isBossSpawned()
-		if (slayerQuest == null || !armorStand.hasCustomName() || (isBossSpawned() && bossFight.boss != null)) return;
-		if (armorStand.getName().getString().contains(CLIENT.getSession().getUsername())) {
-			for (Entity otherArmorStands : getEntityArmorStands(armorStand, 1.5f)) {
-				Matcher matcher = SLAYER_PATTERN.matcher(otherArmorStands.getName().getString());
+		if (!isInSlayer() || bossFight != null || !armorStand.hasCustomName()) return;
+		String EntityName = armorStand.getName().getString();
+
+		// Slayer Boss
+		if (EntityName.contains(CLIENT.getSession().getUsername())) {
+			for (Entity armorStandEntity : getEntityArmorStands(armorStand, 1.5f)) {
+				Matcher matcher = SLAYER_PATTERN.matcher(armorStandEntity.getName().getString());
 				if (matcher.find()) {
-					if (bossFight != null && bossFight.boss == null) {
-						bossFight.findBoss((ArmorStandEntity) otherArmorStands);
-						return;
+					Entity boss = findClosestMobEntity(slayerQuest.slayerType.mobType, armorStand);
+					if (boss != null) {
+						bossFight = new BossFight((ArmorStandEntity) armorStandEntity, boss);
+						slayerQuest.onBossSpawn();
+						BossFight.alert();
 					}
-					bossFight = new BossFight((ArmorStandEntity) otherArmorStands);
 					return;
 				}
 			}
 		}
-		if (!isBossSpawned() || !armorStand.isInRange(CLIENT.player, 15)) return;
-		if (slayerQuest.slayerType.isMiniboss(armorStand.getName().getString(), slayerQuest.slayerTier)) {
-			slayerQuest.onMiniboss(armorStand);
+
+		// Slayer Miniboss
+		if (armorStand.isInRange(CLIENT.player, 15) && slayerQuest.slayerType.isMiniboss(EntityName, slayerQuest.slayerTier)) {
+			slayerQuest.onMinibossSpawn(armorStand);
 		}
 	}
 
@@ -227,7 +231,7 @@ public class SlayerManager {
 
 	/**
 	 * Use this func to add checks to prevent accidental highlights
-	 * i.e. Cavespider extends spider and thus will highlight the broodfather's head pet instead and
+	 * i.e. Cavespider extends spider and thus will highlight the broodfather's head pet instead
 	 */
 	private static boolean isValidSlayerMob(Entity entity) {
 		return entity.isAlive() && // entity is alive
@@ -240,23 +244,21 @@ public class SlayerManager {
 	 */
 	public static boolean shouldGlow(Entity entity, SlayersConfig.HighlightSlayerEntities highlightType) {
 		if (!isInSlayer()) return false;
-		if (SkyblockerConfigManager.get().slayers.highlightMinis == highlightType && isInSlayer() && getSlayerQuest().minibosses.contains(entity)) return true;
-		//noinspection DataFlowIssue - bossFight is checked in isBossSpawned()
-		return SkyblockerConfigManager.get().slayers.highlightBosses == highlightType && isBossSpawned() && getBossFight().boss == entity;
+		if (SkyblockerConfigManager.get().slayers.highlightMinis == highlightType && getSlayerQuest().minibosses.contains(entity)) return true;
+		return SkyblockerConfigManager.get().slayers.highlightBosses == highlightType && bossFight != null && getBossFight().boss == entity;
 	}
 
 	/**
 	 * Returns the highlight bounding box for the given slayer boss armor stand entity.
 	 * It's slightly larger and lower than the armor stand's bounding box.
 	 */
-	@Nullable
 	public static Box getSlayerMobBoundingBox(ArmorStandEntity armorStand) {
-		return switch (getSlayerType()) {
+		assert slayerQuest != null;
+		return switch (slayerQuest.slayerType) {
 			case SlayerType.REVENANT -> new Box(armorStand.getX() - 0.4, armorStand.getY() - 0.1, armorStand.getZ() - 0.4, armorStand.getX() + 0.4, armorStand.getY() - 2.2, armorStand.getZ() + 0.4);
 			case SlayerType.TARANTULA -> new Box(armorStand.getX() - 0.9, armorStand.getY() - 0.2, armorStand.getZ() - 0.9, armorStand.getX() + 0.9, armorStand.getY() - 1.2, armorStand.getZ() + 0.9);
 			case SlayerType.VOIDGLOOM -> new Box(armorStand.getX() - 0.4, armorStand.getY() - 0.2, armorStand.getZ() - 0.4, armorStand.getX() + 0.4, armorStand.getY() - 3, armorStand.getZ() + 0.4);
 			case SlayerType.SVEN -> new Box(armorStand.getX() - 0.5, armorStand.getY() - 0.1, armorStand.getZ() - 0.5, armorStand.getX() + 0.5, armorStand.getY() - 1, armorStand.getZ() + 0.5);
-			case null -> null;
 			default -> armorStand.getBoundingBox();
 		};
 	}
@@ -287,7 +289,7 @@ public class SlayerManager {
 	 * @return True if in a boss fight of the given Slayer type; false otherwise.
 	 */
 	public static boolean isInSlayerType(SlayerType slayerType) {
-		return isBossSpawned() && slayerQuest != null && slayerQuest.slayerType.equals(slayerType);
+		return isInSlayer() && bossFight != null && slayerQuest.slayerType.equals(slayerType);
 	}
 
 	/**
@@ -321,26 +323,6 @@ public class SlayerManager {
 	}
 
 	/**
-	 * Gets the type of the current Slayer Quest.
-	 *
-	 * @return The SlayerType of the current quest, or null if no quest is active.
-	 */
-	@Nullable
-	public static SlayerType getSlayerType() {
-		return slayerQuest != null ? slayerQuest.slayerType : null;
-	}
-
-	/**
-	 * Gets the tier of the current Slayer Quest.
-	 *
-	 * @return The SlayerTier of the current quest, or null if no quest is active.
-	 */
-	@Nullable
-	public static SlayerTier getSlayerTier() {
-		return slayerQuest != null ? slayerQuest.slayerTier : null;
-	}
-
-	/**
 	 * Gets the armor stand entity associated with the Slayer boss.
 	 *
 	 * @return The armor stand entity, or null if no boss fight is active.
@@ -361,23 +343,18 @@ public class SlayerManager {
 	}
 
 	public static class BossFight {
-		public @Nullable ArmorStandEntity bossArmorStand;
-		public @Nullable Entity boss;
-		public Instant bossSpawnTime;
-		public boolean sentTime = false;
+		public final ArmorStandEntity bossArmorStand;
+		public final Entity boss;
 
-		private BossFight(@Nullable ArmorStandEntity armorStand) {
-			findBoss(armorStand);
-			bossSpawnTime = Instant.now();
+		private BossFight(ArmorStandEntity bossArmorStand, Entity boss) {
+			this.bossArmorStand = bossArmorStand;
+			this.boss = boss;
+		}
+
+		private static void alert() {
 			if (SkyblockerConfigManager.get().slayers.bossSpawnAlert) {
 				TitleContainer.addTitleAndPlaySound(BOSS_SPAWN, 20);
 			}
-		}
-
-		public void findBoss(@Nullable ArmorStandEntity armorStand) {
-			bossArmorStand = armorStand;
-			//noinspection DataFlowIssue
-			boss = armorStand != null ? findClosestMobEntity(slayerQuest.slayerType.mobType, armorStand) : null;
 		}
 	}
 
@@ -391,6 +368,10 @@ public class SlayerManager {
 		public int xpRemaining;
 		public int bossesNeeded;
 
+		public @Nullable Instant bossSpawnTime;
+		public boolean bossSpawned;
+		public boolean sentTime;
+
 		private SlayerQuest(SlayerType slayerType, SlayerTier slayerTier) {
 			this.slayerType = slayerType;
 			this.slayerTier = slayerTier;
@@ -398,24 +379,12 @@ public class SlayerManager {
 			if (slayersData != null && slayersData.containsKey(slayerType)) {
 				SlayerInfo slayerInfo = slayersData.get(slayerType);
 				update(slayerInfo.level, slayerInfo.xpRemaining, false);
-			}
-		}
-
-		private void update(int level, int xpRemaining, boolean updateCache) {
-			this.level = level;
-			this.xpRemaining = xpRemaining <= 0 && level < slayerType.maxLevel ? slayerType.levelMilestones[level] : xpRemaining;
-			if (updateCache) updateCache();
-
-			if (this.xpRemaining <= 0) {
-				bossesNeeded = -1;
 			} else {
-				int tier = slayerTier.ordinal();
-				int xpPerTier = (int) (slayerType.xpPerTier[tier - 1] * slayerExpBuff);
-				bossesNeeded = (int) Math.ceil((double) this.xpRemaining / xpPerTier);
+				update(-1, -1, false);
 			}
 		}
 
-		private void updateCache() {
+		private void save() {
 			var slayers = SLAYERS_DATA.computeIfAbsent(Object2ObjectOpenHashMap::new);
 			if (slayers != null) {
 				slayers.put(slayerType, new SlayerInfo(level, xpRemaining));
@@ -423,7 +392,29 @@ public class SlayerManager {
 			}
 		}
 
-		private void onMiniboss(ArmorStandEntity armorStand) {
+		private void update(int level, int xpRemaining, boolean saveCache) {
+			this.level = level;
+			this.xpRemaining = xpRemaining <= 0 && level != -1 && level < slayerType.maxLevel ?
+					slayerType.levelMilestones[level + 1] - slayerType.levelMilestones[level] : xpRemaining;
+			if (saveCache) save();
+
+			if (this.xpRemaining <= 0) {
+				bossesNeeded = -1;
+			} else {
+				int xpPerTier = (int) (slayerType.xpPerTier[slayerTier.ordinal()] * slayerExpBuff);
+				bossesNeeded = (int) Math.ceil((double) this.xpRemaining / xpPerTier);
+			}
+		}
+
+		private void onBossSpawn() {
+			if (!bossSpawned) {
+				bossSpawnTime = Instant.now();
+				bossSpawned = true;
+				sentTime = false;
+			}
+		}
+
+		private void onMinibossSpawn(ArmorStandEntity armorStand) {
 			if (minibossesArmorStand.contains(armorStand)) return;
 			minibossesArmorStand.add(armorStand);
 

@@ -29,18 +29,16 @@ public class SlayerTimer {
 		CACHED_SLAYER_STATS.load();
 	}
 
-	public static void onBossDeath(SlayerManager.BossFight bossFight) {
-		if (!SkyblockerConfigManager.get().slayers.slainTime || bossFight.sentTime) return;
-		bossFight.sentTime = true;
+	public static void onBossDeath() {
+		if (!SkyblockerConfigManager.get().slayers.slainTime) return;
 
-		SlayerType slayerType = SlayerManager.getSlayerType();
-		SlayerTier slayerTier = SlayerManager.getSlayerTier();
-		if (slayerType == null || slayerTier == null) return;
+		SlayerManager.SlayerQuest slayerQuest = SlayerManager.getSlayerQuest();
+		if (slayerQuest == null || slayerQuest.sentTime || slayerQuest.bossSpawnTime == null) return;
+		slayerQuest.sentTime = true;
 
-		long newPBMills = Duration.between(bossFight.bossSpawnTime, Instant.now()).toMillis();
+		long currentPBMills = getPersonalBest(slayerQuest);
+		long newPBMills = Duration.between(slayerQuest.bossSpawnTime, Instant.now()).toMillis();
 		String newPB = formatTime(newPBMills);
-
-		long currentPBMills = getPersonalBest(slayerType, slayerTier);
 
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		assert player != null;
@@ -58,20 +56,20 @@ public class SlayerTimer {
 							.append(Text.literal(" ➜ ").formatted(Formatting.DARK_AQUA))
 							.append(Text.literal(newPB).formatted(Formatting.GREEN))), 100);
 
-			updateBestTime(slayerType, slayerTier, newPBMills);
+			updateBestTime(slayerQuest, newPBMills);
 		} else {
 			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(newPB).formatted(Formatting.YELLOW))), false);
 			if (currentPBMills == -1) {
-				updateBestTime(slayerType, slayerTier, newPBMills);
+				updateBestTime(slayerQuest, newPBMills);
 			}
 		}
 	}
 
-	private static long getPersonalBest(SlayerType slayerType, SlayerTier slayerTier) {
+	private static long getPersonalBest(SlayerManager.SlayerQuest slayerQuest) {
 		var profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
 		if (profileData != null) {
-			var typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
-			SlayerPersonalBest currentBest = typeData.get(slayerTier);
+			var typeData = profileData.computeIfAbsent(slayerQuest.slayerType, _type -> new Object2ObjectOpenHashMap<>());
+			SlayerPersonalBest currentBest = typeData.get(slayerQuest.slayerTier);
 			//noinspection ConstantConditions
 			return currentBest != null ? currentBest.bestTimeMillis() : -1;
 		}
@@ -79,11 +77,11 @@ public class SlayerTimer {
 		return -1;
 	}
 
-	private static void updateBestTime(SlayerType slayerType, SlayerTier slayerTier, long timeElapsed) {
+	private static void updateBestTime(SlayerManager.SlayerQuest slayerQuest, long timeElapsed) {
 		var profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
 		if (profileData != null) {
-			var typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
-			typeData.put(slayerTier, new SlayerPersonalBest(timeElapsed, System.currentTimeMillis()));
+			var typeData = profileData.computeIfAbsent(slayerQuest.slayerType, _type -> new Object2ObjectOpenHashMap<>());
+			typeData.put(slayerQuest.slayerTier, new SlayerPersonalBest(timeElapsed, System.currentTimeMillis()));
 			CACHED_SLAYER_STATS.save();
 		}
 	}
