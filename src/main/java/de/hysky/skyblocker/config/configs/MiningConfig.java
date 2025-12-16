@@ -14,7 +14,12 @@ public class MiningConfig {
 
 	public boolean redialOnBadSignal = true;
 
+	/**
+	 * TODO: Move into {@link PickobulusHelper} in next config version.
+	*/
 	public boolean enablePickobulusHelper = true;
+
+	public PickobulusHelper pickobulusHelper = new PickobulusHelper();
 
 	public DwarvenMines dwarvenMines = new DwarvenMines();
 
@@ -30,6 +35,12 @@ public class MiningConfig {
 	public CommissionWaypoints commissionWaypoints = new CommissionWaypoints();
 
 	public Glacite glacite = new Glacite();
+
+	public static class PickobulusHelper {
+		public boolean enablePickobulusHud = true;
+
+		public boolean hideHudOnCooldown = false;
+	}
 
 	public static class DwarvenMines {
 		public boolean solveFetchur = true;
