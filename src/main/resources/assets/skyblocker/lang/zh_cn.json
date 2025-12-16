@@ -1554,6 +1554,6 @@
     "skyblocker.config.dungeons.secretSync.receiveMatchedRooms": "添加已同步的房间",
     "skyblocker.config.dungeons.secretSync.receiveRoomSecretCount": "使用同步得到的房间秘密统计",
     "skyblocker.inventorySearch.searchInventory": "搜索物品栏",
-    "skyblocker.config.mining.enablePickobulusHelper": "Pickobulus助手",
-    "skyblocker.config.mining.enablePickobulusHelper.@Tooltip": "显示使用Pickobulus技能时可以开采的方块。"
+    "skyblocker.config.mining.pickobulusHelper": "Pickobulus助手",
+    "skyblocker.config.mining.pickobulusHelper.enable.@Tooltip": "显示使用Pickobulus技能时可以开采的方块。"
 }
