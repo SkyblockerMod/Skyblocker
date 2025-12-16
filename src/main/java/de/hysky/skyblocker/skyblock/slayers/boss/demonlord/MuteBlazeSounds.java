@@ -17,6 +17,7 @@ public class MuteBlazeSounds {
 	private static final Set<Identifier> MUTED_SOUNDS = Set.of(
 			SoundEvents.ENTITY_BLAZE_BURN.id(),
 			SoundEvents.ENTITY_BLAZE_AMBIENT.id(),
+			SoundEvents.ENTITY_BLAZE_HURT.id(),
 			SoundEvents.ENTITY_GHAST_SHOOT.id(),
 			SoundEvents.BLOCK_FIRE_AMBIENT.id(),
 			SoundEvents.BLOCK_LAVA_POP.id(),

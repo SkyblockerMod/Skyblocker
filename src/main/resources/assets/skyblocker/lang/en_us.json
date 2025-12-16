@@ -1020,6 +1020,9 @@
   "skyblocker.config.slayer.vampireSlayer.steakStakeUpdateFrequency": "Steak Stake Indicator Update Frequency (Ticks)",
   "skyblocker.config.slayer.vampireSlayer.steakStakeUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
 
+  "skyblocker.config.slayer.wolfSlayer": "Wolf Slayer",
+  "skyblocker.config.slayer.wolfSlayer.muteWolfSounds": "Mute Wolf Sounds",
+
   "skyblocker.config.title": "Skyblocker %s",
   "skyblocker.config.title.settings": "Settings",
 

@@ -284,6 +284,19 @@ public class SlayersCategory {
 								.build())
 						.build())
 
+				//Wolf Slayer
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.wolfSlayer"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.slayer.wolfSlayer.muteWolfSounds"))
+								.binding(defaults.slayers.wolfSlayer.muteWolfSounds,
+										() -> config.slayers.wolfSlayer.muteWolfSounds,
+										newValue -> config.slayers.wolfSlayer.muteWolfSounds = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
 				.build();
 	}
 }

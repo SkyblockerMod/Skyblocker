@@ -38,6 +38,8 @@ public class SlayersConfig {
 
 	public BlazeSlayer blazeSlayer = new BlazeSlayer();
 
+	public WolfSlayer wolfSlayer = new WolfSlayer();
+
 	public static class CallMaddox {
 		public boolean sendMessageOnFail = true;
 
@@ -97,5 +99,9 @@ public class SlayersConfig {
 				return I18n.translate("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode." + name());
 			}
 		}
+	}
+
+	public static class WolfSlayer {
+		public boolean muteWolfSounds = true;
 	}
 }
