@@ -60,18 +60,23 @@ public class PickobulusHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
+	public boolean shouldRender(Location location) {
+		return super.shouldRender(location) && PickobulusHelper.shouldRender();
+	}
+
+	@Override
 	public boolean isEnabledIn(Location location) {
-		return AVAILABLE_LOCATIONS.contains(location) && SkyblockerConfigManager.get().mining.enablePickobulusHelper && PickobulusHelper.shouldRender();
+		return AVAILABLE_LOCATIONS.contains(location) && SkyblockerConfigManager.get().mining.pickobulusHelper.enablePickobulusHud;
 	}
 
 	@Override
 	public Text getDisplayName() {
-		return Text.translatable("skyblocker.config.mining.enablePickobulusHelper");
+		return Text.translatable("skyblocker.config.mining.pickobulusHelper");
 	}
 
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!AVAILABLE_LOCATIONS.contains(location)) return;
-		SkyblockerConfigManager.get().mining.enablePickobulusHelper = enabled;
+		SkyblockerConfigManager.get().mining.pickobulusHelper.enablePickobulusHud = enabled;
 	}
 }
