@@ -72,6 +72,7 @@ public abstract class SearchableGridWidget extends ContainerWidget {
 		filteredWidgets.clear();
 		filteredWidgets.addAll(widgets);
 		recreateGrid();
+		widgetsContainer.refreshScroll();
 	}
 
 	protected abstract Collection<? extends ClickableWidget> filterWidgets(String input);
