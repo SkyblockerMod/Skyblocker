@@ -32,6 +32,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -52,6 +53,7 @@ public class WidgetManager {
 	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
 
 	private static final int VERSION = 2;
+	private static final String VERSION_KEY = "_version";
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
 	private static Config config = new Config(Map.of(), Map.of());
@@ -112,8 +114,8 @@ public class WidgetManager {
 	}
 
 	private static ScreenBuilder currentBuilder = new ScreenBuilder(new ScreenBuilder.ScreenConfig(), null); // placeholder
-	private static Location currentLocation;
-	private static ScreenLayer currentLayer;
+	private @Nullable static Location currentLocation;
+	private @Nullable static ScreenLayer currentLayer;
 
 	/**
 	 * Top level render method.
@@ -159,10 +161,16 @@ public class WidgetManager {
 
 	public static void loadConfig() {
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-			AtomicReference<String> error = new AtomicReference<>();
-			config = Config.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseReader(reader)).resultOrPartial(error::set).orElseThrow().getFirst();
+			AtomicReference<@Nullable String> error = new AtomicReference<>();
+			JsonElement input = JsonParser.parseReader(reader);
+			if (!(input instanceof JsonObject object) || !object.has(VERSION_KEY)) {
+				// Don't bother TRYING to load if it's the old format.
+				LOGGER.info("[Skyblocker] Old HUD config detected. Ignoring :(");
+				return;
+			}
+			config = Config.CODEC.decode(JsonOps.INSTANCE, input).resultOrPartial(error::set).orElseThrow().getFirst();
 			if (error.get() != null) { // separate it to not run when the config fully cannot load
-				LOGGER.error("Failed to load part of the config", new Exception(error.get()));
+				LOGGER.error("[Skyblocker] Failed to load part of the HUD config", new Exception(error.get()));
 				showErrorToast();
 			}
 			for (Object2ObjectMap.Entry<String, HudWidget> entry : WIDGET_INSTANCES.object2ObjectEntrySet()) {
@@ -173,11 +181,11 @@ public class WidgetManager {
 				try {
 					setWidgetOptions(widget, jsonObject);
 				} catch (Exception e) {
-					LOGGER.error("Failed to load config for {}", widget.getId(), e);
+					LOGGER.error("[Skyblocker] Failed to load HUD config for {}", widget.getId(), e);
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Failed to load config", e);
+			LOGGER.error("[Skyblocker] Failed to HUD load config", e);
 			showErrorToast();
 		}
 	}
@@ -217,7 +225,9 @@ public class WidgetManager {
 		config.widgetOptions().forEach(widgetOptions::putIfAbsent);
 		Config output = new Config(widgetOptions, perScreenConfig);
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
-			SkyblockerMod.GSON.toJson(Config.CODEC.encodeStart(JsonOps.INSTANCE, output).getOrThrow(), writer);
+			JsonElement element = Config.CODEC.encodeStart(JsonOps.INSTANCE, output).getOrThrow();
+			element.getAsJsonObject().addProperty(VERSION_KEY, VERSION);
+			SkyblockerMod.GSON.toJson(element, writer);
 			LOGGER.info("[Skyblocker] Saved hud widget config");
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to save hud widget config", e);
