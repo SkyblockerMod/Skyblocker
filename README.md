@@ -19,9 +19,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 ### Dungeon Features:
 - **Fancy Party Finder GUI**
 - **Secrets Waypoint Highlight:** Fully customizable
+- **Room and Secret Syncing**
 - **Fancy Minimap & Score**
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
+    - Room Name Labels
 - **Starred Mob Glow**
 - **Croesus Helper:**
     - Highlight not opened chests
@@ -36,10 +38,13 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Silverfish*
     - *Ice Fill*
     - *Boulder*
-    - *Simon Says*
-    - *Lights On*
     - *Teleport Maze*
-    - Terminal (F7/M7):
+    - Devices (F7/M7):
+        - *Simon Says*
+        - *Lights On*
+        - *Arrow Align*
+        - *Target Practice*
+    - Terminals (F7/M7):
         - *Order*
         - *Coloured Items*
         - *Item Name*
@@ -53,12 +58,15 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **F5/M5 Livid Color Highlight**
 - **F7/M7 Terminal/Device Waypoints/Highlight**
 - **Reparty:** Auto-rejoin and `/rp` command.
-- **AOTV & Pearl Secret Waypoints**
+- **Secret Waypoints**
+    - AOTV / Ender Pearl
+    - Dungeonbreaker / Stonk
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
 - **Salvage Helper**
+    - Donated to Museum Only option
 - **Sellable Dungeon Item Highlighter**
-- **Resourcepack recoloring textures in dungeons**
+- **Resource Pack recoloring textures in dungeons**
 - **Score title and sound**
 - **Mimic & Prince Messages**
 - **Prevent teammates glow during Livid**
@@ -103,6 +111,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Low arrow poison warning**
 - **Kuudra glow**
 - **Kuudra danger warning**
+- **Croesus/Vesuvius Helper**
+- **Chest Profit Calculator**
 
 ### Crimson Isles:
 - **Dojo helper**
@@ -171,6 +181,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Powder HUD**
 - **Ordered Waypoints**
     - Basic ordered waypoint commands
+- **Pickobulus Helper**
 
 ### Rift Features:
 - **Mirrorverse Waypoints**
@@ -304,11 +315,12 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Estimated Item Value*
     - *Skyblock ID*
     - *Bazaar Reorder Helper*
-- **Quick Navigation:** Fully customizable (Item selector) fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
+- **Quick Navigation:** Fully customizable fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
+    - Item Selector 
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
     - Crafting
     - Forge
-- **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
+- **Backpack Preview:** After clicking your backpack or ender chest once, you can hover over it and hold Shift to preview its contents.
 - **New Year Cakes Helper**
 - **Fancy Crafting Table**
 - **Info Screen**
@@ -320,6 +332,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Sack Message Prices**
 - **Bazaar order tracker**
 - **Builder's wand preview**
+- **Item Value Breakdown Popup**
 
 ### Barn Features:
 - **Barn Solver:**
@@ -355,10 +368,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Helper (Includes sound notifications)
     - Fishing rod timer (change color after 20 seconds)
     - Hide other rods
-    - Ingame fishing hook timer display
+    - In-game fishing hook timer display
 - **Mythological Ritual Helper**
     - Estimates Diana griffin burrow positions
-- **Chocolate factory Helper**
+- **Chocolate Factory Helper**
+- **Hoppity's Hunt Helper**
 - **Jerry timer**
 - **Wardrobe helper based on hotbar keybinds**
 - **Carnival Helpers**
@@ -368,6 +382,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Disable All Command**
 - **Abiphone Call Prompts**
     - Adds clickable messages in chat to quickly call Trevor the Trapper, Maddox, and Queen Mismyla
+- **Anvil Helper**
 
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
@@ -408,9 +423,9 @@ ___
 
 |            command             |                                       option                                       | comment                                                                                                                                                                                                                                                                                   |
 |:------------------------------:|:----------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|          /skyblocker           |                                                                                    | opens info screen                                                                                                                                                                                                                                                                         |
-|       /skyblocker config       |                                                                                    | open config menu (modMenu not needed)                                                                                                                                                                                                                                                     |
-|      /skyblocker options       |                                                                                    | open config menu (modMenu not needed)                                                                                                                                                                                                                                                     |
+|          /skyblocker           |                                                                                    | open info screen                                                                                                                                                                                                                                                                         |
+|       /skyblocker config       |                                                                                    | open config menu (Mod Menu not needed)                                                                                                                                                                                                                                                    |
+|      /skyblocker options       |                                                                                    | open config menu (Mod Menu not needed)                                                                                                                                                                                                                                                    |
 |        /skyblocker hud         |                       dwarven / dungeonmap / titleContainer                        | move dwarven, dungeonmap or titleContainer                                                                                                                                                                                                                                                |
 |     /skyblocker shortcuts      |                                                                                    | add/edit shortcuts                                                                                                                                                                                                                                                                        |
 |       /skyblocker custom       |                         renameItem /  armorTrim / dyeColor                         | Item and Armour customisation                                                                                                                                                                                                                                                             |
