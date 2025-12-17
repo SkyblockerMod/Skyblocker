@@ -5,6 +5,7 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 public class Components {
@@ -12,7 +13,7 @@ public class Components {
 		return iconTextComponent(null, null);
 	}
 
-	public static Component iconTextComponent(ItemStack icon, Text text) {
+	public static Component iconTextComponent(@Nullable ItemStack icon, @Nullable Text text) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons) {
 			return new IcoTextComponent(icon, text);
 		} else {
@@ -24,7 +25,7 @@ public class Components {
 		return iconFatTextComponent(null, null, null);
 	}
 
-	public static Component iconFatTextComponent(ItemStack icon, Text line1, Text line2) {
+	public static Component iconFatTextComponent(@Nullable ItemStack icon, @Nullable Text line1, @Nullable Text line2) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons) {
 			return new IcoFatTextComponent(icon, line1, line2);
 		} else {

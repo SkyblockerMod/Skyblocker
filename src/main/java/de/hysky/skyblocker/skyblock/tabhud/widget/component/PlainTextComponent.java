@@ -4,6 +4,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +15,14 @@ import java.util.List;
 public class PlainTextComponent extends Component {
 	private final List<Text> lines = new ArrayList<>();
 
-	public PlainTextComponent(Text txt) {
+	public PlainTextComponent(@Nullable Text txt) {
 		lines.add(txt == null ? Text.literal("No data").formatted(Formatting.GRAY) : txt);
 
 		this.width = PAD_L + txtRend.getWidth(lines.getFirst()); // looks off without padding
 		this.height = txtRend.fontHeight;
 	}
 
-	public PlainTextComponent(Text line1, Text line2) {
+	public PlainTextComponent(@Nullable Text line1, @Nullable Text line2) {
 		lines.add(line1 == null ? Text.literal("No data").formatted(Formatting.GRAY) : line1);
 		lines.add(line2 == null ? Text.literal("No data").formatted(Formatting.GRAY) : line2);
 

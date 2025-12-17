@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Component that consists of an icon and two lines of text
@@ -15,15 +16,16 @@ class IcoFatTextComponent extends Component {
 	private ItemStack ico;
 	private Text line1, line2;
 
-	IcoFatTextComponent(ItemStack ico, Text l1, Text l2) {
+	IcoFatTextComponent(@Nullable ItemStack ico, @Nullable Text l1, @Nullable Text l2) {
 		this.ico = (ico == null) ? Ico.BARRIER : ico;
-		this.line1 = l1;
-		this.line2 = l2;
 
 		if (l1 == null || l2 == null) {
 			this.ico = Ico.BARRIER;
 			this.line1 = Text.literal("No data").formatted(Formatting.GRAY);
 			this.line2 = Text.literal("No data").formatted(Formatting.GRAY);
+		} else {
+			this.line1 = l1;
+			this.line2 = l2;
 		}
 
 		this.width = ICO_DIM.get() + PAD_L + Math.max(txtRend.getWidth(this.line1), txtRend.getWidth(this.line2));
