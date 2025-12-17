@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import net.minecraft.client.resource.language.I18n;
 
 import java.awt.Color;
@@ -31,6 +32,8 @@ public class SlayersConfig {
 	public boolean slainTime = true;
 
 	public boolean enableHud = true;
+
+	public ChatFilterResult hideSlayerMinibossSpawn = ChatFilterResult.PASS;
 
 	public boolean highlightUnclaimedRewards = true;
 
@@ -92,6 +95,8 @@ public class SlayersConfig {
 		public boolean attunementHighlights = true;
 
 		public boolean muteBlazeSounds = true;
+
+		public ChatFilterResult hideHellionShield = ChatFilterResult.PASS;
 
 		public enum FirePillar {
 			OFF,

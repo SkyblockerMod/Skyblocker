@@ -7,6 +7,7 @@ import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.slayers.hud.SlayerHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
@@ -105,6 +106,13 @@ public class SlayersCategory {
 								() -> config.slayers.slainTime,
 								newValue -> config.slayers.slainTime = newValue)
 						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<ChatFilterResult>createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.hideSlayerMinibossSpawn"))
+						.binding(defaults.slayers.hideSlayerMinibossSpawn,
+								() -> config.slayers.hideSlayerMinibossSpawn,
+								newValue -> config.slayers.hideSlayerMinibossSpawn = newValue)
+						.controller(ConfigUtils.createEnumController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.highlightUnclaimedRewards"))
@@ -290,6 +298,13 @@ public class SlayersCategory {
 										() -> config.slayers.blazeSlayer.muteBlazeSounds,
 										newValue -> config.slayers.blazeSlayer.muteBlazeSounds = newValue)
 								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<ChatFilterResult>createBuilder()
+								.name(Text.translatable("skyblocker.config.slayer.blazeSlayer.hideHellionShield"))
+								.binding(defaults.slayers.blazeSlayer.hideHellionShield,
+										() -> config.slayers.blazeSlayer.hideHellionShield,
+										newValue -> config.slayers.blazeSlayer.hideHellionShield = newValue)
+								.controller(ConfigUtils.createEnumController())
 								.build())
 						.build())
 

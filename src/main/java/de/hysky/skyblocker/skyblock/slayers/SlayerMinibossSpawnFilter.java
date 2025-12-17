@@ -1,6 +1,7 @@
-package de.hysky.skyblocker.skyblock.chat.filters;
+package de.hysky.skyblocker.skyblock.slayers;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.chat.filters.SimpleChatFilter;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 
 public class SlayerMinibossSpawnFilter extends SimpleChatFilter {
@@ -10,6 +11,6 @@ public class SlayerMinibossSpawnFilter extends SimpleChatFilter {
 
 	@Override
 	protected ChatFilterResult state() {
-		return SkyblockerConfigManager.get().chat.hideSlayerMinibossSpawn;
+		return SkyblockerConfigManager.get().slayers.hideSlayerMinibossSpawn;
 	}
 }

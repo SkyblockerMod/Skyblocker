@@ -131,7 +131,6 @@
   "skyblocker.config.chat.filter.hideMoltenWave": "Hide Molten Wave Message",
   "skyblocker.config.chat.filter.hideShowOff": "Hide Show Off Messages",
   "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "Filters messages from the /show command",
-  "skyblocker.config.chat.filter.hideSlayerMinibossSpawn": "Hide Slayer Miniboss spawn message",
   "skyblocker.config.chat.filter.hideTeleportPad": "Hide Teleport Pad Messages",
   "skyblocker.config.chat.filter.hideToggleLottery": "Hide Lottery Messages outside Galatea",
   "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides Lottery HOTF perk messages while you're outside of Galatea.",
@@ -953,6 +952,7 @@
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.OFF": "Off",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.SOUND_AND_VISUAL": "Sound and Visual Indicator",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.VISUAL": "Visual Indicator",
+  "skyblocker.config.slayer.blazeSlayer.hideHellionShield": "Hide Hellion Shield Messages",
   "skyblocker.config.slayer.blazeSlayer.muteBlazeSounds": "Mute Blaze Sounds",
 
   "skyblocker.config.slayer.bossSpawnAlert": "Boss Spawn Alert",
@@ -970,10 +970,12 @@
   "skyblocker.config.slayer.enableHud.@Tooltip": "You may have to do 1 boss before all HUD elements show",
 
   "skyblocker.config.slayer.endermanSlayer": "Enderman Slayer",
-  "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs notification",
+  "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs Notification",
   "skyblocker.config.slayer.endermanSlayer.highlightBeacons": "Beacon Highlighting",
   "skyblocker.config.slayer.endermanSlayer.highlightNukekubiHeads": "Nukekubi Head Highlighting",
   "skyblocker.config.slayer.endermanSlayer.lazerTimer": "Lazer Timer",
+
+  "skyblocker.config.slayer.hideSlayerMinibossSpawn": "Hide Slayer Miniboss Spawn Messages",
 
   "skyblocker.config.slayer.highlightBosses": "Highlight Bosses",
   "skyblocker.config.slayer.highlightBosses.@Tooltip[0]": "\nOFF: Do not highlight Slayer Bosses.",
@@ -995,9 +997,9 @@
   "skyblocker.config.slayer.minibossSpawnAlert": "MiniBoss Spawn Alert",
   "skyblocker.config.slayer.minibossSpawnAlert.@Tooltip": "Displays a warning when a slayer miniboss spawns.",
 
-  "skyblocker.config.slayer.showMiniBossNameInAlert": "Show MiniBoss Name in spawn alert",
+  "skyblocker.config.slayer.showMiniBossNameInAlert": "Show MiniBoss Name in Spawn Alert",
 
-  "skyblocker.config.slayer.slainTime": "Slayer kill time",
+  "skyblocker.config.slayer.slainTime": "Slayer Kill Time",
   "skyblocker.config.slayer.slainTime.@Tooltip": "Sends the amount of time spent to kill the slayer.",
 
   "skyblocker.config.slayer.slayerHud": "Slayer HUD Config...",

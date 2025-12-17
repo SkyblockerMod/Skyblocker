@@ -41,8 +41,6 @@ public class ChatConfig {
 
 	public ChatFilterResult hideDungeonBreaker = ChatFilterResult.PASS;
 
-	public ChatFilterResult hideSlayerMinibossSpawn = ChatFilterResult.PASS;
-
 	public ChatRuleConfig chatRuleConfig = new ChatRuleConfig();
 
 	public static class ChatRuleConfig {

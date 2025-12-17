@@ -31,7 +31,6 @@ public class SlayerWidget {
 	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 	private final Identifier item;
 	private final ItemStack drop;
-	private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 	public static final Map<String, Identifier> HEAD_ICON = Map.ofEntries(
 			Map.entry("Zombie", SkyblockerMod.id("textures/gui/profile_viewer/zombie.png")),
 			Map.entry("Spider", SkyblockerMod.id("textures/gui/profile_viewer/spider.png")),
@@ -61,6 +60,7 @@ public class SlayerWidget {
 	}
 
 	public void render(DrawContext context, int mouseX, int mouseY, int x, int y) {
+		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
 		context.drawTexture(RenderPipelines.GUI_TEXTURED, this.item, x + 1, y + 3, 0, 0, 20, 20, 20, 20);
 		context.drawText(textRenderer, slayerName + " " + slayerLevel.level, x + 31, y + 5, Color.white.hashCode(), false);
