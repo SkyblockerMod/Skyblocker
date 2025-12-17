@@ -3,8 +3,6 @@ package de.hysky.skyblocker.skyblock.slayers.boss.demonlord;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -31,9 +29,7 @@ public class MuteBlazeSounds {
 	}
 
 	private static boolean onSound(SoundEvent sound) {
-		if (Utils.isInCrimson() &&
-				SkyblockerConfigManager.get().slayers.blazeSlayer.muteBlazeSounds &&
-				SlayerManager.isInSlayerQuestType(SlayerType.DEMONLORD)) {
+		if (Utils.isInCrimson() && SkyblockerConfigManager.get().slayers.blazeSlayer.muteBlazeSounds) {
 			return !MUTED_SOUNDS.contains(sound.id());
 		}
 		return true;

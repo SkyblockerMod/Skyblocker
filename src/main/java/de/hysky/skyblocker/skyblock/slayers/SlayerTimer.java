@@ -29,21 +29,22 @@ public class SlayerTimer {
 		CACHED_SLAYER_STATS.load();
 	}
 
-	public static void onBossDeath() {
+	public static void sendMessage() {
 		if (!SkyblockerConfigManager.get().slayers.slainTime) return;
 
 		SlayerManager.SlayerQuest slayerQuest = SlayerManager.getSlayerQuest();
-		if (slayerQuest == null || slayerQuest.sentTime || slayerQuest.bossSpawnTime == null) return;
-		slayerQuest.sentTime = true;
+		if (slayerQuest == null || slayerQuest.bossSpawnTime == null) return;
+		Instant bossDeathTime = slayerQuest.bossDeathTime != null ? slayerQuest.bossDeathTime : Instant.now();
 
 		long currentPBMills = getPersonalBest(slayerQuest);
-		long newPBMills = Duration.between(slayerQuest.bossSpawnTime, Instant.now()).toMillis();
+		long newPBMills = Duration.between(slayerQuest.bossSpawnTime, bossDeathTime).toMillis();
+
+		String currentPB = formatTime(currentPBMills);
 		String newPB = formatTime(newPBMills);
 
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		assert player != null;
 		if (currentPBMills != -1 && currentPBMills > newPBMills) {
-			String currentPB = formatTime(currentPBMills);
 			player.sendMessage(Constants.PREFIX.get().append(
 					Text.translatable("skyblocker.slayer.slainTime", Text.literal(newPB).formatted(Formatting.YELLOW))
 							.append(" ")

@@ -18,7 +18,7 @@ public class ManiaIndicator {
 	public static void updateMania() {
 		MinecraftClient client = MinecraftClient.getInstance();
 
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !SlayerManager.isInSlayerType(SlayerType.VAMPIRE) || client.player == null || client.world == null) {
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !SlayerManager.isFightingSlayerType(SlayerType.VAMPIRE) || client.player == null || client.world == null) {
 			TitleContainer.removeTitle(title);
 			return;
 		}

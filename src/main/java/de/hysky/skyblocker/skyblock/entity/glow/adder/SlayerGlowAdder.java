@@ -18,6 +18,7 @@ import net.minecraft.entity.mob.BlazeEntity;
 import net.minecraft.entity.mob.WitherSkeletonEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 
+@SuppressWarnings("unused")
 public class SlayerGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")
 	private static final SlayerGlowAdder INSTANCE = new SlayerGlowAdder();
@@ -28,10 +29,11 @@ public class SlayerGlowAdder extends MobGlowAdder {
 
 	@Override
 	public int computeColour(Entity entity) {
+		//TODO: custom glow color
 		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.GLOW)) {
 			return switch (entity) {
-				case ArmorStandEntity e when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(e);
-				case BlazeEntity e when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(e);
+				case ArmorStandEntity e when SlayerManager.isFightingSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(e);
+				case BlazeEntity e when SlayerManager.isFightingSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(e);
 				default -> DungeonGlowAdder.STARRED_COLOUR;
 			};
 		}
@@ -40,15 +42,15 @@ public class SlayerGlowAdder extends MobGlowAdder {
 			//Nukekubi Fixation Skulls
 			case ArmorStandEntity as when SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads && Utils.isInTheEnd() && as.isMarker() && isNukekubiHead(as) -> NUKEKUBI_COLOUR;
 			//Blaze Slayer's Demonic Minions
-			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerManager.isInSlayerType(SlayerType.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15 -> AttunementColors.getColor(e);
-			case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerManager.isInSlayerType(SlayerType.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15 -> AttunementColors.getColor(e);
+			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerManager.isFightingSlayerType(SlayerType.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15 -> AttunementColors.getColor(e);
+			case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerManager.isFightingSlayerType(SlayerType.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15 -> AttunementColors.getColor(e);
 			default -> NO_GLOW;
 		};
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return SlayerManager.isInSlayer();
+		return SlayerManager.isInSlayer() || SlayerManager.isFightingSlayer();
 	}
 
 	/**

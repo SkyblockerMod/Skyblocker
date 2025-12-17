@@ -3,8 +3,7 @@ package de.hysky.skyblocker.skyblock.slayers.boss.sven;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.skyblock.slayers.SlayerType;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.sound.SoundEvent;
 
 @SuppressWarnings("unused")
@@ -15,7 +14,7 @@ public class MuteWolfSounds {
 	}
 
 	private static boolean onSound(SoundEvent sound) {
-		if (SkyblockerConfigManager.get().slayers.wolfSlayer.muteWolfSounds && SlayerManager.isInSlayerQuestType(SlayerType.SVEN)) {
+		if ((Utils.isInPark() || Utils.isInHub()) && SkyblockerConfigManager.get().slayers.wolfSlayer.muteWolfSounds) {
 			return !sound.id().toString().contains("minecraft:entity.wolf.");
 		}
 		return true;

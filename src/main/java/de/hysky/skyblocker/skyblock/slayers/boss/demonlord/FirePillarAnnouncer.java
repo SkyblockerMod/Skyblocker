@@ -29,7 +29,7 @@ public class FirePillarAnnouncer {
 	 * @param entity The updated entity that is checked to be a fire pillar
 	 */
 	public static void checkFirePillar(Entity entity) {
-		if (Utils.isInCrimson() && SlayerManager.isInSlayerType(SlayerType.DEMONLORD)) {
+		if (Utils.isInCrimson() && SlayerManager.isFightingSlayerType(SlayerType.DEMONLORD)) {
 
 			String entityName = entity.getName().getString();
 			Matcher matcher = FIRE_PILLAR_PATTERN.matcher(entityName);

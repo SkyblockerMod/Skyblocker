@@ -12,7 +12,7 @@ public class StakeIndicator {
 	private static final Title title = new Title("skyblocker.rift.stakeNow", Formatting.RED);
 
 	public static void updateStake() {
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableSteakStakeIndicator || !SlayerManager.isInSlayerType(SlayerType.VAMPIRE)) {
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableSteakStakeIndicator || !SlayerManager.isFightingSlayerType(SlayerType.VAMPIRE)) {
 			TitleContainer.removeTitle(title);
 			return;
 		}

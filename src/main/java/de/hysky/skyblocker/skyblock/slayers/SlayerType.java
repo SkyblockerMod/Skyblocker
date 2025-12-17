@@ -7,10 +7,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import static de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayerWidget.HEAD_ICON;
 
@@ -23,7 +20,6 @@ public enum SlayerType implements StringIdentifiable {
 	VAMPIRE("vampire", EntityType.PLAYER, "Riftstalker Bloodfiend", HEAD_ICON.get("Vampire"), new int[]{10, 25, 60, 120, 150}, new int[]{20, 75, 240, 840, 2400}, List.of(), List.of(), List.of());
 
 	public static final Codec<SlayerType> CODEC = StringIdentifiable.createCodec(SlayerType::values);
-	private static final Map<String, SlayerType> BOSS_NAME_TO_TYPE = new HashMap<>();
 	public final String name;
 	public final EntityType<? extends Entity> mobType;
 	public final String bossName;
@@ -34,12 +30,6 @@ public enum SlayerType implements StringIdentifiable {
 	public final List<String> t3Minibosses;
 	public final List<String> t4Minibosses;
 	public final List<String> t5Minibosses;
-
-	static {
-		for (SlayerType type : values()) {
-			BOSS_NAME_TO_TYPE.put(type.bossName.toLowerCase(Locale.ENGLISH), type);
-		}
-	}
 
 	SlayerType(String name, EntityType<? extends Entity> mobType, String bossName, Identifier texture, int[] xpPerTier, int[] levelMilestones, List<String> t3Minibosses, List<String> t4Minibosses, List<String> t5Minibosses) {
 		this.name = name;
@@ -56,7 +46,15 @@ public enum SlayerType implements StringIdentifiable {
 
 	@Nullable
 	public static SlayerType fromBossName(String bossName) {
-		return BOSS_NAME_TO_TYPE.get(bossName.toLowerCase(Locale.ENGLISH));
+		return switch (bossName) {
+			case "Revenant Horror", "Atoned Horror" -> SlayerType.REVENANT;
+			case "Tarantula Broodfather" -> SlayerType.TARANTULA;
+			case "Sven Packmaster" -> SlayerType.SVEN;
+			case "Voidgloom Seraph" -> SlayerType.VOIDGLOOM;
+			case "Inferno Demonlord" -> SlayerType.DEMONLORD;
+			case "Riftstalker Bloodfiend", "Bloodfiend" -> SlayerType.VAMPIRE;
+			default -> null;
+		};
 	}
 
 	public boolean isMiniboss(String name, SlayerTier slayerTier) {

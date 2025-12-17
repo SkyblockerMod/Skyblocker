@@ -4,7 +4,6 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -20,10 +19,7 @@ public class LazerTimer {
 
 	public static void tick() {
 		remainingTime -= 0.05;
-
-		if (remainingTime <= 0 || !SlayerManager.isBossSpawned()) {
-			active = false;
-		}
+		active = remainingTime > 0;
 	}
 
 	public static void activate() {
@@ -36,10 +32,10 @@ public class LazerTimer {
 
 	private static void extractRendering(PrimitiveCollector collector) {
 		if (active) {
-			Entity boss = SlayerManager.getSlayerBoss();
-			if (boss != null) {
+			SlayerManager.BossFight bossFight = SlayerManager.getBossFight();
+			if (bossFight != null && bossFight.boss.getVehicle() != null) {
 				Text text = Text.literal(String.format("%.1fs", remainingTime)).formatted(Formatting.AQUA);
-				collector.submitText(text, boss.getEntityPos().add(0, 1.5, 0), 3, true);
+				collector.submitText(text, bossFight.boss.getEntityPos().add(0, 1.5, 0), 3, true);
 			}
 		}
 	}

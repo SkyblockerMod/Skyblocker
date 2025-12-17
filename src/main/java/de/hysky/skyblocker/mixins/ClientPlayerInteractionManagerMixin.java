@@ -3,7 +3,10 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.SwingAnimation;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
@@ -14,6 +17,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerInteractionManager.class)
@@ -34,5 +38,10 @@ public class ClientPlayerInteractionManagerMixin {
 	@Unique
 	private void swingHandWithoutPackets(PlayerEntity playerEntity, Hand hand) {
 		playerEntity.swingHand(hand, false); // The playerEntity override for swingHand is the other method with just the hand parameter, this one isn't overridden and doesn't lead to sending packets.
+	}
+
+	@Inject(method = "attackEntity", at = @At("TAIL"))
+	private void onAttackEntity(PlayerEntity player, Entity target, CallbackInfo ci) {
+		if (target instanceof LivingEntity) SlayerManager.onAttackEntity(target);
 	}
 }

@@ -14,7 +14,7 @@ public class TwinClawsIndicator {
 	private static boolean scheduled = false;
 
 	public static void updateIce() {
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableHolyIceIndicator || !SlayerManager.isInSlayerType(SlayerType.VAMPIRE)) {
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableHolyIceIndicator || !SlayerManager.isFightingSlayerType(SlayerType.VAMPIRE)) {
 			TitleContainer.removeTitle(title);
 			return;
 		}

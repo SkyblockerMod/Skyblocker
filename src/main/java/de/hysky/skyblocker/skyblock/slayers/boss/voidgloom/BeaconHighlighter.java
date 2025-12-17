@@ -38,7 +38,7 @@ public class BeaconHighlighter {
 	}
 
 	private static void onBlockStateUpdate(BlockPos pos, BlockState oldState, BlockState newState) {
-		if (Utils.isInTheEnd() && SlayerManager.isBossSpawned()) {
+		if (Utils.isInTheEnd() && SlayerManager.isFightingSlayer()) {
 			beaconPositions.remove(pos);
 
 			if (newState.isOf(Blocks.BEACON)) {
@@ -62,7 +62,7 @@ public class BeaconHighlighter {
 	 * is visible through walls.
 	 */
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons && SlayerManager.isInSlayerType(SlayerType.VOIDGLOOM)) {
+		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons && SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM)) {
 			for (BlockPos pos : beaconPositions) {
 				collector.submitFilledBox(pos, RED_COLOR_COMPONENTS, 0.5f, true);
 			}
