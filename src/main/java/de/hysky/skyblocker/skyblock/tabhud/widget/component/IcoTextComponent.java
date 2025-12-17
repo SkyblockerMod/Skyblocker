@@ -7,19 +7,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Component that consists of an icon and a line of text.
  */
 class IcoTextComponent extends Component {
 	private ItemStack ico;
-	private Text text;
+	private @Nullable Text text;
 
-	IcoTextComponent(ItemStack ico, Text txt) {
+	IcoTextComponent(@Nullable ItemStack ico, @Nullable Text txt) {
 		this.ico = (ico == null) ? Ico.BARRIER : ico;
-		this.text = txt;
 
-		if (txt == null) {
+		if (txt != null) {
+			this.text = txt;
+		} else {
 			this.ico = Ico.BARRIER;
 			this.text = Text.literal("No data").formatted(Formatting.GRAY);
 		}

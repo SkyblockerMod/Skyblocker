@@ -67,7 +67,7 @@ public class FarmingHud {
 
 				assert client.player != null;
 				ItemStack stack = client.player.getMainHandStack();
-				if (stack == null || tryGetCounter(stack, CounterType.CULTIVATING) && tryGetCounter(stack, CounterType.COUNTER)) {
+				if (tryGetCounter(stack, CounterType.CULTIVATING) && tryGetCounter(stack, CounterType.COUNTER)) {
 					counterType = CounterType.NONE;
 				}
 			}
