@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
+import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
@@ -8,6 +9,7 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.HudHelper;
@@ -29,15 +31,18 @@ import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class WidgetsConfigScreen extends Screen implements WidgetConfig {
+	private static final Logger LOGGER = LogUtils.getLogger();
 
 	@Init
 	public static void initCommands() {
@@ -61,12 +66,11 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	private @Nullable HudWidget hoveredWidget;
 	private @Nullable HudWidget selectedWidget;
 	/**
-	 * Where the user started dragging relative to the widget's position. Null if not dragging.
+	 * Where the user started dragging relative to the dragged widget's position. Null if not dragging.
 	 */
 	private @Nullable ScreenPosition dragRelative = null;
 	private boolean openPanelAfterDragging = false;
 	boolean autoAnchor = true;
-	boolean snapping = true;
 
 	private @Nullable SelectWidgetPrompt selectWidgetPrompt = null;
 
@@ -132,7 +136,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	@Override
 	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		super.renderBackground(context, mouseX, mouseY, deltaTicks);
-		Component text = Component.literal("Left click to add and move widgets, right click to edit stuff."); // TODO translatable
+		Component text = Component.literal("Right click to add widgets and edit things."); // TODO translatable
 		int textWidth = font.width(text);
 		context.drawString(font, text, (width - textWidth) / 2, (height - font.lineHeight) / 2, ARGB.white(0.8f), false);
 	}
@@ -185,13 +189,13 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 
 			PositionRule.Point parentPoint;
 			PositionRule.Point thisPoint;
-			if (autoAnchor && "screen".equals(oldRule.parent())) {
+			if (autoAnchor && oldRule.parent().isEmpty()) {
 				parentPoint = thisPoint = getPoint(selectedWidget, (int) mouseX - dragRelative.x(), (int) mouseY - dragRelative.y());
 			} else {
 				parentPoint = oldRule.parentPoint();
 				thisPoint = oldRule.thisPoint();
 			}
-			String newParent = oldRule.parent();
+			String newParent = null;
 			OptionalInt relativeX = OptionalInt.empty();
 			OptionalInt relativeY = OptionalInt.empty();
 			if (minecraft.hasShiftDown()) {
@@ -203,7 +207,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 				int distanceToCursor = Integer.MAX_VALUE;
 				for (HudWidget widget : builder.getWidgets()) {
 					if (widget == selectedWidget) continue;
-					if (widget.getPositionRule().parent().equals(selectedWidget.getId())) continue;
+					if (selectedWidget.getId().equals(widget.getPositionRule().parent().orElse(null))) continue;
 					ScreenRectangle otherRect = widget.getRectangle();
 					for (ScreenDirection direction : directions) {
 						ScreenRectangle otherSnapBox = getBorder(otherRect, direction);
@@ -245,7 +249,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 			}
 			ScreenPosition startPosition = WidgetPositioner.getStartPosition(newParent, getScreenWidth(), getScreenHeight(), parentPoint);
 			PositionRule newRule = new PositionRule(
-					newParent,
+					Optional.ofNullable(newParent),
 					parentPoint,
 					thisPoint,
 					relativeX.orElse((int) mouseX - dragRelative.x() - startPosition.x() + (int) (selectedWidget.getScaledWidth() * thisPoint.horizontalPoint().getPercentage())),
@@ -367,7 +371,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	public void tick() {
 		if (selectedWidget == null && sidePanelWidget.isOpen()) sidePanelWidget.close();
 		for (HudWidget widget : builder.getWidgets()) {
-			if (widget.getRectangle().intersects(new ScreenRectangle(0, 0, getScreenWidth(), getScreenHeight())) || !widget.getPositionRule().parent().equals("screen")) continue;
+			if (widget.getRectangle().intersects(new ScreenRectangle(0, 0, getScreenWidth(), getScreenHeight())) || widget.getPositionRule().parent().isPresent()) continue;
 			widget.setPositionRule(PositionRule.DEFAULT);
 			updateBuilderPositions();
 		}
@@ -413,7 +417,8 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		PositionRule deleted = widget.getPositionRule();
 		for (HudWidget hudWidget : builder.getWidgets()) {
 			PositionRule rule = hudWidget.getPositionRule();
-			if (rule.parent().equals(widget.getId())) {
+			if (rule.parent().isEmpty()) continue;
+			if (rule.parent().get().equals(widget.getId())) {
 				hudWidget.setPositionRule(new PositionRule(
 						deleted.parent(),
 						deleted.parentPoint(),
@@ -435,6 +440,10 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 
 	@Override
 	public HudWidget getEditedWidget() {
+		if (selectedWidget == null) {
+			LOGGER.warn("Trying to edit selected widget but nothing is selected?", new Throwable());
+			return new PlaceholderWidget("unknown"); // this shouldn't cause issues
+		}
 		return selectedWidget;
 	}
 

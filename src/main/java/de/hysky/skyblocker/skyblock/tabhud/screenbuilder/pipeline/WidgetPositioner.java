@@ -4,6 +4,7 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import org.joml.Vector2i;
+import org.jspecify.annotations.Nullable;
 
 
 public abstract class WidgetPositioner {
@@ -26,17 +27,16 @@ public abstract class WidgetPositioner {
 	public static void applyRuleToWidget(HudWidget widget, int screenWidth, int screenHeight) {
 		widget.renderingInformation.positioned = true;
 		PositionRule rule = widget.getPositionRule();
-		if (rule == null) return;
 
 		int startX;
 		int startY;
-		if (rule.parent().equals("screen")) {
+		if (rule.parent().isEmpty()) {
 			startX = (int) (rule.parentPoint().horizontalPoint().getPercentage() * screenWidth);
 			startY = (int) (rule.parentPoint().verticalPoint().getPercentage() * screenHeight);
 
 		} else {
-			HudWidget parentWidget = WidgetManager.WIDGET_INSTANCES.get(rule.parent());
-			if (parentWidget == null) return;
+			if (!WidgetManager.WIDGET_INSTANCES.containsKey(rule.parent().get())) return;
+			HudWidget parentWidget = WidgetManager.WIDGET_INSTANCES.get(rule.parent().get());
 			if (!parentWidget.renderingInformation.positioned) applyRuleToWidget(parentWidget, screenWidth, screenHeight);
 
 			// size 0 part 2
@@ -64,14 +64,14 @@ public abstract class WidgetPositioner {
 	 * Returns the start position (aka the starting point of {@code relativeX} ane {@code relativeY}) of a widget based on
 	 * the parent widget's position and size
 	 *
-	 * @param parent       The parent widget's internal ID
+	 * @param parent       The parent widget's internal ID, null if screen
 	 * @param screenWidth  The width of the screen
 	 * @param screenHeight The height of the screen
 	 * @param parentPoint  The point on the parent widget that the child widget should be positioned relative to
 	 * @return The start position of the child widget
 	 */
-	public static ScreenPosition getStartPosition(String parent, int screenWidth, int screenHeight, PositionRule.Point parentPoint) {
-		if (parent.equals("screen")) {
+	public static ScreenPosition getStartPosition(@Nullable String parent, int screenWidth, int screenHeight, PositionRule.Point parentPoint) {
+		if (parent == null) {
 			return new ScreenPosition(
 					(int) (parentPoint.horizontalPoint().getPercentage() * screenWidth),
 					(int) (parentPoint.verticalPoint().getPercentage() * screenHeight)
@@ -97,7 +97,7 @@ public abstract class WidgetPositioner {
 	 * @return The start position of the widget
 	 */
 	public static ScreenPosition getStartPosition(HudWidget widget, int screenWidth, int screenHeight) {
-		return getStartPosition(widget.getPositionRule().parent(), screenWidth, screenHeight, widget.getPositionRule().parentPoint());
+		return getStartPosition(widget.getPositionRule().parent().orElse(null), screenWidth, screenHeight, widget.getPositionRule().parentPoint());
 	}
 
 }

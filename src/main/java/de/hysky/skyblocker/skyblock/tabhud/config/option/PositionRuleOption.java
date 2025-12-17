@@ -152,10 +152,10 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 
 		private Component getParentName() {
 			PositionRule rule = valueGetter.get();
-			if (rule.parent().equals("screen")) {
+			if (rule.parent().isEmpty()) {
 				return Component.literal("Screen");
 			} else {
-				HudWidget widget = WidgetManager.getWidgetOrPlaceholder(rule.parent());
+				HudWidget widget = WidgetManager.getWidgetOrPlaceholder(rule.parent().get());
 				return widget.getInformation().displayName();
 			}
 		}
@@ -247,7 +247,7 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 			if (hoveredPoint != null) {
 				PositionRule oldRule = valueGetter.get();
 				// Get the x, y of the parent's point
-				ScreenPosition startPos = WidgetPositioner.getStartPosition(oldRule.parent(), widgetConfig.getScreenWidth(), widgetConfig.getScreenHeight(), parent ? hoveredPoint : oldRule.parentPoint());
+				ScreenPosition startPos = WidgetPositioner.getStartPosition(oldRule.parent().orElse(null), widgetConfig.getScreenWidth(), widgetConfig.getScreenHeight(), parent ? hoveredPoint : oldRule.parentPoint());
 				// Same but for the affected widget
 				PositionRule.Point thisPoint = parent ? oldRule.thisPoint() : hoveredPoint;
 				ScreenPosition endPos = new ScreenPosition(
