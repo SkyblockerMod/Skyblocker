@@ -34,6 +34,7 @@ public class StereoHarmonyHelper extends SimpleContainerSolver {
 			if (matcher != null) {
 				String pestName = matcher.group("name").trim();
 				String crop = GardenConstants.CROP_BY_PEST.get(pestName);
+				if (crop == null) continue;
 				boolean isPlaying = ItemUtils.getLoreLineIf(entry.getValue(), text -> text.equals("PLAYING")) != null;
 
 				if (Objects.equals(crop, CurrentJacobCrop.CURRENT_CROP_CONTEST)) {
