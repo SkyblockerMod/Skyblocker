@@ -6,6 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Component that consists of an icon and a line of text.
@@ -14,11 +15,12 @@ class IcoTextComponent extends Component {
 	private ItemStack ico;
 	private net.minecraft.network.chat.Component text;
 
-	IcoTextComponent(ItemStack ico, net.minecraft.network.chat.Component txt) {
+	IcoTextComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component txt) {
 		this.ico = (ico == null) ? Ico.BARRIER : ico;
-		this.text = txt;
 
-		if (txt == null) {
+		if (txt != null) {
+			this.text = txt;
+		} else {
 			this.ico = Ico.BARRIER;
 			this.text = net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY);
 		}

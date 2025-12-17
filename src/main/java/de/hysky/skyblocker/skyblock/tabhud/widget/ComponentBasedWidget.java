@@ -11,6 +11,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	private final int color;
 	private final net.minecraft.network.chat.Component title;
 	private final ArrayList<Component> components = new ArrayList<>();
-	private String lastError = null;
+	private @Nullable String lastError = null;
 
 	protected boolean drawBorder = true;
 	protected boolean drawTitle = true;
@@ -135,17 +136,17 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 * added as such:
 	 * [ico] [string] [textB.formatted(fmt)]
 	 */
-	public final void addSimpleIcoText(ItemStack ico, String string, ChatFormatting fmt, int idx) {
+	public final void addSimpleIcoText(@Nullable ItemStack ico, String string, ChatFormatting fmt, int idx) {
 		net.minecraft.network.chat.Component txt = simpleEntryText(idx, string, fmt);
 		this.addComponent(Components.iconTextComponent(ico, txt));
 	}
 
-	public final void addSimpleIcoText(ItemStack ico, String string, ChatFormatting fmt, String content) {
+	public final void addSimpleIcoText(@Nullable ItemStack ico, String string, ChatFormatting fmt, String content) {
 		net.minecraft.network.chat.Component txt = simpleEntryText(content, string, fmt);
 		this.addComponent(Components.iconTextComponent(ico, txt));
 	}
 
-	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, ChatFormatting formatting, String content) {
+	public final void addSimpleIconTranslatableText(@Nullable ItemStack icon, @Translatable String translationKey, ChatFormatting formatting, String content) {
 		net.minecraft.network.chat.Component text = simpleEntryTranslatableText(translationKey, content, formatting);
 		this.addComponent(Components.iconTextComponent(icon, text));
 	}
@@ -265,7 +266,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 * returned:
 	 * [entryName] [textB.formatted(contentFmt)]
 	 */
-	public static net.minecraft.network.chat.Component simpleEntryText(int idx, String entryName, ChatFormatting contentFmt) {
+	public static net.minecraft.network.chat.@Nullable Component simpleEntryText(int idx, String entryName, ChatFormatting contentFmt) {
 
 		String src = PlayerListManager.strAt(idx);
 

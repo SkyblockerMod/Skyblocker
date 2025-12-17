@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.CommonColors;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Component that consists of 1 or 2 lines of text.
@@ -12,14 +13,14 @@ import net.minecraft.util.CommonColors;
 public class PlainTextComponent extends Component {
 	private final List<net.minecraft.network.chat.Component> lines = new ArrayList<>();
 
-	public PlainTextComponent(net.minecraft.network.chat.Component txt) {
+	public PlainTextComponent(net.minecraft.network.chat.@Nullable Component txt) {
 		lines.add(txt == null ? net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY) : txt);
 
 		this.width = PAD_L + txtRend.width(lines.getFirst()); // looks off without padding
 		this.height = txtRend.lineHeight;
 	}
 
-	public PlainTextComponent(net.minecraft.network.chat.Component line1, net.minecraft.network.chat.Component line2) {
+	public PlainTextComponent(net.minecraft.network.chat.@Nullable Component line1, net.minecraft.network.chat.@Nullable Component line2) {
 		lines.add(line1 == null ? net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY) : line1);
 		lines.add(line2 == null ? net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY) : line2);
 

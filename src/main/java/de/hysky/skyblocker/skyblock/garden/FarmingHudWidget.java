@@ -20,6 +20,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class FarmingHudWidget extends ComponentBasedWidget {
@@ -37,6 +38,12 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 			Map.entry("THEORETICAL_HOE_CANE_1", "SUGAR_CANE"),
 			Map.entry("THEORETICAL_HOE_CANE_2", "SUGAR_CANE"),
 			Map.entry("THEORETICAL_HOE_CANE_3", "SUGAR_CANE"),
+			Map.entry("THEORETICAL_HOE_SUNFLOWER_1", "DOUBLE_PLANT"),
+			Map.entry("THEORETICAL_HOE_SUNFLOWER_2", "DOUBLE_PLANT"),
+			Map.entry("THEORETICAL_HOE_SUNFLOWER_3", "DOUBLE_PLANT"),
+			Map.entry("THEORETICAL_HOE_WILD_ROSE_1", "WILD_ROSE"),
+			Map.entry("THEORETICAL_HOE_WILD_ROSE_2", "WILD_ROSE"),
+			Map.entry("THEORETICAL_HOE_WILD_ROSE_3", "WILD_ROSE"),
 			Map.entry("THEORETICAL_HOE_WARTS_1", "NETHER_STALK"),
 			Map.entry("THEORETICAL_HOE_WARTS_2", "NETHER_STALK"),
 			Map.entry("THEORETICAL_HOE_WARTS_3", "NETHER_STALK"),
@@ -52,7 +59,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 			Map.entry("BASIC_GARDENING_HOE", ""),
 			Map.entry("ADVANCED_GARDENING_HOE", "")
 	);
-	private static FarmingHudWidget instance = null;
+	private static @Nullable FarmingHudWidget instance = null;
 
 	public static FarmingHudWidget getInstance() {
 		if (instance == null) instance = new FarmingHudWidget();
@@ -79,7 +86,6 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 			return;
 		}
 		ItemStack farmingToolStack = client.player.getMainHandItem();
-		if (farmingToolStack == null) return;
 		String itemId = farmingToolStack.getSkyblockId();
 		String cropItemId = FARMING_TOOLS.getOrDefault(itemId, "");
 		ItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
