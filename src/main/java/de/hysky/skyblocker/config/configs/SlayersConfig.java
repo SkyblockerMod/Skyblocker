@@ -103,5 +103,7 @@ public class SlayersConfig {
 
 	public static class WolfSlayer {
 		public boolean muteWolfSounds = true;
+
+		public boolean hideSvenPupNametag = true;
 	}
 }

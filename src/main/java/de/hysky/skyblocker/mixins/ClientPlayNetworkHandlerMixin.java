@@ -6,7 +6,6 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.events.PlaySoundEvents;
@@ -32,7 +31,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.client.network.ClientConnectionState;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.ItemEntity;
@@ -63,9 +61,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkHandler {
 	@Shadow
-	private ClientWorld world;
-
-	@Shadow
 	@Final
 	private static Logger LOGGER;
 
@@ -78,8 +73,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
 		SlayerManager.checkSlayerBoss(armorStandEntity);
-
-		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
+		FirePillarAnnouncer.checkFirePillar(entity);
 
 		CorpseFinder.checkIfCorpse(armorStandEntity);
 		HealthBars.healthBar(armorStandEntity);
@@ -92,7 +86,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
 		}
-
 
 		FishingHookDisplayHelper.onArmorStandSpawn(armorStandEntity);
 	}

@@ -29,6 +29,7 @@ public class FirePillarAnnouncer {
 	 * @param entity The updated entity that is checked to be a fire pillar
 	 */
 	public static void checkFirePillar(Entity entity) {
+		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown == SlayersConfig.BlazeSlayer.FirePillar.OFF) return;
 		if (Utils.isInCrimson() && SlayerManager.isFightingSlayerType(SlayerType.DEMONLORD)) {
 
 			String entityName = entity.getName().getString();

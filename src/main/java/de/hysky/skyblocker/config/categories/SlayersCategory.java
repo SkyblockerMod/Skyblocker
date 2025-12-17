@@ -295,6 +295,13 @@ public class SlayersCategory {
 										newValue -> config.slayers.wolfSlayer.muteWolfSounds = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.slayer.wolfSlayer.hideSvenPupNametag"))
+								.binding(defaults.slayers.wolfSlayer.hideSvenPupNametag,
+										() -> config.slayers.wolfSlayer.hideSvenPupNametag,
+										newValue -> config.slayers.wolfSlayer.hideSvenPupNametag = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				.build();

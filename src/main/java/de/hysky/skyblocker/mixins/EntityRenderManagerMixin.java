@@ -42,7 +42,11 @@ public class EntityRenderManagerMixin implements EntityRenderMarker {
 	}
 
 	@ModifyReturnValue(method = "shouldRender", at = @At("RETURN"))
-	private <E extends Entity> boolean skyblocker$dontRenderSoulweaverSkulls(boolean original, @Local(argsOnly = true) E entity) {
+	private <E extends Entity> boolean skyblocker$shouldRender(boolean original, @Local(argsOnly = true) E entity) {
+		// Don't render Sven Pup's Nametag
+		if (Utils.isInPark() && SkyblockerConfigManager.get().slayers.wolfSlayer.hideSvenPupNametag && entity.getName().getString().contains("Sven Pup")) return false;
+
+		// Don't render Soulweaver Skulls
 		return Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.hideSoulweaverSkulls && entity instanceof ArmorStandEntity armorStand && entity.isInvisible() && armorStand.hasStackEquipped(EquipmentSlot.HEAD) ? !ItemUtils.getHeadTexture(armorStand.getEquippedStack(EquipmentSlot.HEAD)).equals(HeadTextures.SOULWEAVER_HAUNTED_SKULL) : original;
 	}
 }
