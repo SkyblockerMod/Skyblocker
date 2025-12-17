@@ -56,7 +56,6 @@ public class VisitorHelper extends ClickableWidget {
 	private static final int ICON_SIZE = 16;
 	private static final int LINE_HEIGHT = 3;
 	private static final int PADDING = 4;
-	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 	private static final Object2LongMap<Text> copiedTimestamps = new Object2LongOpenHashMap<>();
 
 	// Used to prevent adding the visitor again after the player clicks accept or refuse.
@@ -155,14 +154,14 @@ public class VisitorHelper extends ClickableWidget {
 	private static ItemStack getCachedItem(String itemName) {
 		String cleanName = Formatting.strip(itemName);
 		return cachedItems.computeIfAbsent(cleanName, name -> {
-			if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return null;
+			if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return ItemUtils.getNamedPlaceholder(itemName);
 
 			return NEURepoManager.getItemByName(itemName)
 					.stream()
 					.findFirst()
 					.map(NEUItem::getSkyblockItemId)
 					.map(ItemRepository::getItemStack)
-					.orElse(BARRIER);
+					.orElseGet(() -> ItemUtils.getNamedPlaceholder(itemName));
 		});
 	}
 
@@ -205,15 +204,13 @@ public class VisitorHelper extends ClickableWidget {
 			int yPosition = y + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
 			ItemStack cachedStack = getCachedItem(itemName.getString());
-			if (cachedStack != null) {
-				context.getMatrices().pushMatrix();
-				context.getMatrices().translate(iconX, yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2);
-				context.getMatrices().scale(0.95f, 0.95f);
-				context.drawItem(cachedStack, 0, 0);
-				context.getMatrices().popMatrix();
-			}
+			context.getMatrices().pushMatrix();
+			context.getMatrices().translate(iconX, yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2);
+			context.getMatrices().scale(0.95f, 0.95f);
+			context.drawItem(cachedStack, 0, 0);
+			context.getMatrices().popMatrix();
 
-			MutableText name = cachedStack != null ? cachedStack.getName().copy() : itemName.copy();
+			MutableText name = cachedStack.getName().copy();
 			MutableText itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
 					? name.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
 					: name.append(" x" + totalAmount);

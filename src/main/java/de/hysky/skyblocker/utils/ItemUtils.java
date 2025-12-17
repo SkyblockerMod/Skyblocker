@@ -647,4 +647,13 @@ public final class ItemUtils {
 			return info.item().isPresent() && info.item().get().equals("PET_ITEM_TIER_BOOST") ? info.rarity().next() : info.rarity();
 		}
 	}
+
+	/**
+	 * Gets a placeholder Barrier {@link ItemStack}, used to display items that could not be found in the item repository.
+	 */
+	public static ItemStack getNamedPlaceholder(String itemName) {
+		ItemStack stack = new ItemStack(Items.BARRIER);
+		stack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(itemName));
+		return stack;
+	}
 }

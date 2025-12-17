@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.SeparatorComponent;
 import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -22,6 +23,7 @@ import net.minecraft.item.Items;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -62,13 +64,13 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	 * Searches the NEU REPO for the item linked to the name
 	 */
 	private static ItemStack getItem(String itemName) {
-		if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return new ItemStack(Items.BARRIER);
+		if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return ItemUtils.getNamedPlaceholder(itemName);
 		return NEURepoManager.getItemByName(itemName)
 				.stream()
 				.findFirst()
 				.map(NEUItem::getSkyblockItemId)
 				.map(ItemRepository::getItemStack)
-				.orElseGet(() -> new ItemStack(Items.BARRIER));
+				.orElseGet(() -> ItemUtils.getNamedPlaceholder(itemName));
 	}
 
 	/**
@@ -191,7 +193,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	 * @param entry ChangeData to check
 	 * @return formatted name from ChangeData
 	 */
-	private String checkNextItem(ChangeData entry) {
+	private @Nullable String checkNextItem(ChangeData entry) {
 		//check the item has not expired
 		if (entry.lastChange + SkyblockerConfigManager.get().uiAndVisuals.itemPickup.lifeTime * 1000L < System.currentTimeMillis()) {
 			return null;
