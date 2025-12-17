@@ -11,11 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SlayerBossBar {
-	private static final UUID UUID = java.util.UUID.randomUUID();
 	private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?[kM]?)(?=❤)");
-	private static final long UPDATE_INTERVAL = 400;
 	private static int bossMaxHealth = -1;
-	private static long lastUpdateTime = 0;
 	private static @Nullable ClientBossBar bossBar;
 
 	/**
@@ -28,11 +25,10 @@ public class SlayerBossBar {
 			return false;
 		}
 
-		ArmorStandEntity bossArmorStand = SlayerManager.getSlayerBossArmorStand();
-		assert bossArmorStand != null;
-
 		// Update boss max health
 		if (bossMaxHealth == -1) {
+			ArmorStandEntity bossArmorStand = SlayerManager.getSlayerBossArmorStand();
+			assert bossArmorStand != null;
 			Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(bossArmorStand.getName().getString());
 			if (maxHealthMatcher.find()) bossMaxHealth = convertToInt(maxHealthMatcher.group(0));
 		}
@@ -49,11 +45,7 @@ public class SlayerBossBar {
 		ArmorStandEntity slayer = SlayerManager.getSlayerBossArmorStand();
 		assert slayer != null;
 
-		if (bossBar == null) bossBar = new ClientBossBar(UUID, slayer.getDisplayName(), 1f, BossBar.Color.PURPLE, BossBar.Style.PROGRESS, false, false, false);
-
-		long currentTime = System.currentTimeMillis();
-		if (currentTime - lastUpdateTime < UPDATE_INTERVAL) return bossBar;
-		lastUpdateTime = currentTime;
+		if (bossBar == null) bossBar = new ClientBossBar(UUID.randomUUID(), slayer.getDisplayName(), 1f, BossBar.Color.PURPLE, BossBar.Style.PROGRESS, false, false, false);
 
 		// Update the boss bar with the current slayer's health
 		Matcher healthMatcher = HEALTH_PATTERN.matcher(slayer.getName().getString());
@@ -62,6 +54,10 @@ public class SlayerBossBar {
 			bossBar.setColor(BossBar.Color.PINK);
 			bossBar.setName(slayer.getDisplayName());
 			bossBar.setStyle(BossBar.Style.NOTCHED_10);
+		} else {
+			bossBar.setColor(BossBar.Color.RED);
+			bossBar.setStyle(BossBar.Style.PROGRESS);
+			bossBar.setName(slayer.getDisplayName());
 		}
 
 		return bossBar;

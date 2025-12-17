@@ -8,18 +8,21 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
 @SuppressWarnings("unused")
 public class BeaconHighlighter {
-	private static final ObjectOpenHashSet<BlockPos> beaconPositions = new ObjectOpenHashSet<>();
 	private static final float[] RED_COLOR_COMPONENTS = { 1.0f, 0.0f, 0.0f };
+	private static final long BEACON_DURATION_MS = 5000L;
+	private static final Object2LongOpenHashMap<BlockPos> BEACONS = new Object2LongOpenHashMap<>();
 
 	/**
 	 * Initializes the beacon highlighting system.
@@ -34,15 +37,15 @@ public class BeaconHighlighter {
 	}
 
 	private static void reset() {
-		beaconPositions.clear();
+		BEACONS.clear();
 	}
 
 	private static void onBlockStateUpdate(BlockPos pos, BlockState oldState, BlockState newState) {
 		if (Utils.isInTheEnd() && SlayerManager.isFightingSlayer()) {
-			beaconPositions.remove(pos);
+			BEACONS.removeLong(pos);
 
 			if (newState.isOf(Blocks.BEACON)) {
-				beaconPositions.add(pos.toImmutable());
+				BEACONS.put(pos.toImmutable(), System.currentTimeMillis());
 			}
 		}
 	}
@@ -63,8 +66,15 @@ public class BeaconHighlighter {
 	 */
 	private static void extractRendering(PrimitiveCollector collector) {
 		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons && SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM)) {
-			for (BlockPos pos : beaconPositions) {
-				collector.submitFilledBox(pos, RED_COLOR_COMPONENTS, 0.5f, true);
+			for (Object2LongMap.Entry<BlockPos> beacon : BEACONS.object2LongEntrySet()) {
+				collector.submitFilledBox(beacon.getKey(), RED_COLOR_COMPONENTS, 1f, true);
+
+				long elapsed = System.currentTimeMillis() - beacon.getLongValue();
+				float remainingSec = (BEACON_DURATION_MS - elapsed) / 1000f;
+				if (remainingSec >= 0) {
+					Text text = Text.literal(String.format("%.1fs", remainingSec)).formatted(Formatting.AQUA);
+					collector.submitText(text, beacon.getKey().up().toCenterPos(), 3, true);
+				}
 			}
 		}
 	}
