@@ -27,7 +27,6 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.Box;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -281,22 +280,6 @@ public class SlayerManager {
 	public static boolean shouldGlow(Entity entity, SlayersConfig.HighlightSlayerEntities highlightType) {
 		if (SkyblockerConfigManager.get().slayers.highlightMinis == highlightType && isInSlayer() && slayerQuest.minibosses.contains(entity)) return true;
 		return SkyblockerConfigManager.get().slayers.highlightBosses == highlightType && isSelectedBoss(entity.getUuid());
-	}
-
-	/**
-	 * Returns the highlight bounding box for the given slayer boss armor stand entity.
-	 * It's slightly larger and lower than the armor stand's bounding box.
-	 */
-	public static Box getSlayerMobBoundingBox(ArmorStandEntity armorStand) {
-		assert slayerQuest != null;
-		//todo: missing vampire and blaze?
-		return switch (slayerQuest.slayerType) {
-			case SlayerType.REVENANT -> new Box(armorStand.getX() - 0.4, armorStand.getY() - 0.1, armorStand.getZ() - 0.4, armorStand.getX() + 0.4, armorStand.getY() - 2.2, armorStand.getZ() + 0.4);
-			case SlayerType.TARANTULA -> new Box(armorStand.getX() - 0.9, armorStand.getY() - 0.2, armorStand.getZ() - 0.9, armorStand.getX() + 0.9, armorStand.getY() - 1.2, armorStand.getZ() + 0.9);
-			case SlayerType.VOIDGLOOM -> new Box(armorStand.getX() - 0.4, armorStand.getY() - 0.2, armorStand.getZ() - 0.4, armorStand.getX() + 0.4, armorStand.getY() - 3, armorStand.getZ() + 0.4);
-			case SlayerType.SVEN -> new Box(armorStand.getX() - 0.5, armorStand.getY() - 0.1, armorStand.getZ() - 0.5, armorStand.getX() + 0.5, armorStand.getY() - 1, armorStand.getZ() + 0.5);
-			default -> armorStand.getBoundingBox();
-		};
 	}
 
 	/**

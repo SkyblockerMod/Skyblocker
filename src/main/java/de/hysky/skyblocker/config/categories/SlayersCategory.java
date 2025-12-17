@@ -11,10 +11,13 @@ import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
+import net.azureaaron.dandelion.systems.controllers.ColourController;
 import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+
+import java.awt.Color;
 
 public class SlayersCategory {
 
@@ -38,12 +41,18 @@ public class SlayersCategory {
 						.name(Text.translatable("skyblocker.config.slayer.highlightBosses"))
 						.description(Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[0]"),
 								Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[1]"),
-								Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[2]"),
-								Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[3]"))
+								Text.translatable("skyblocker.config.slayer.highlightBosses.@Tooltip[2]"))
 						.binding(defaults.slayers.highlightBosses,
 								() -> config.slayers.highlightBosses,
 								newValue -> config.slayers.highlightBosses = newValue)
 						.controller(ConfigUtils.createEnumController())
+						.build())
+				.option(Option.<Color>createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.highlightColor"))
+						.binding(defaults.slayers.highlightColor,
+								() -> config.slayers.highlightColor,
+								newValue -> config.slayers.highlightColor = newValue)
+						.controller(ColourController.createBuilder().hasAlpha(true).build())
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.enableHud"))

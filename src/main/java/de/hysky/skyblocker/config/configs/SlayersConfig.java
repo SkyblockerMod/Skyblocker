@@ -2,10 +2,14 @@ package de.hysky.skyblocker.config.configs;
 
 import net.minecraft.client.resource.language.I18n;
 
+import java.awt.Color;
+
 public class SlayersConfig {
 	public HighlightSlayerEntities highlightMinis = HighlightSlayerEntities.GLOW;
 
 	public HighlightSlayerEntities highlightBosses = HighlightSlayerEntities.GLOW;
+
+	public Color highlightColor = new Color(0xFFFF4800, true);
 
 	public boolean displayBossbar = true;
 

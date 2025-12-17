@@ -2,10 +2,8 @@ package de.hysky.skyblocker.skyblock.entity;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.glow.adder.DungeonGlowAdder;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
@@ -33,7 +31,7 @@ public class MobBoundingBoxes {
 
 			return switch (entity) {
 				case PlayerEntity _p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
-				case PlayerEntity p when entity.getId() == LividColor.getCorrectLividId() -> LividColor.shouldDrawBoundingBox(name);
+				case PlayerEntity _p when entity.getId() == LividColor.getCorrectLividId() -> LividColor.shouldDrawBoundingBox(name);
 				case ArmorStandEntity _armorStand -> false;
 
 				// Regular Mobs
@@ -41,17 +39,20 @@ public class MobBoundingBoxes {
 			};
 		}
 
-		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.HITBOX)) {
-			return true;
-		}
-
 		return false;
 	}
 
 	public static float[] getBoxColor(Entity entity) {
 		int color = MobGlow.getMobGlow(entity);
+		return rgbToFloatArray(color);
+	}
 
-		return new float[] { ((color >> 16) & 0xFF) / 255f, ((color >> 8) & 0xFF) / 255f, (color & 0xFF) / 255f };
+	public static float[] rgbToFloatArray(int color) {
+		return new float[] {
+				((color >> 16) & 0xFF) / 255f,
+				((color >> 8) & 0xFF) / 255f,
+				(color & 0xFF) / 255f
+		};
 	}
 
 	public static void submitBox2BeRendered(Box box, float[] colorComponents) {

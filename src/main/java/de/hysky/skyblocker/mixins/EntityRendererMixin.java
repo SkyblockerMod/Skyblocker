@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
+import de.hysky.skyblocker.config.configs.SlayersConfig;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -53,13 +54,14 @@ public class EntityRendererMixin {
 	// This is meant to be separate from the previous injection for organizational purposes.
 	@Inject(method = "updateRenderState", at = @At(value = "TAIL"))
 	private void skyblocker$mobBoundingBox(CallbackInfo ci, @Local(argsOnly = true) Entity entity) {
-		boolean shouldShowBoundingBox = MobBoundingBoxes.shouldDrawMobBoundingBox(entity);
+		if (MobBoundingBoxes.shouldDrawMobBoundingBox(entity)) {
+			MobBoundingBoxes.submitBox2BeRendered(entity.getBoundingBox(), MobBoundingBoxes.getBoxColor(entity));
+			return;
+		}
 
-		if (shouldShowBoundingBox) {
-			MobBoundingBoxes.submitBox2BeRendered(
-					entity instanceof ArmorStandEntity e ? SlayerManager.getSlayerMobBoundingBox(e) : entity.getBoundingBox(),
-					MobBoundingBoxes.getBoxColor(entity)
-			);
+		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.HITBOX)) {
+			float[] color = MobBoundingBoxes.rgbToFloatArray(SkyblockerConfigManager.get().slayers.highlightColor.getRGB());
+			MobBoundingBoxes.submitBox2BeRendered(entity.getBoundingBox(), color);
 		}
 	}
 }
