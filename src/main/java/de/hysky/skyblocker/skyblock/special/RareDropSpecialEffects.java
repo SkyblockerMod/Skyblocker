@@ -82,9 +82,22 @@ public class RareDropSpecialEffects {
 			case "Fifth Master Star" -> "FIFTH_MASTER_STAR";
 
 			//Slayer
+			//Zombie
+			case "Scythe Blade" -> "SCYTHE_BLADE";
+			case "Shard Of The Shredded" -> "SHARD_OF_THE_SHREDDED";
+			case "Severed Hand" -> "SEVERED_HAND";
 			case "Warden Heart" -> "WARDEN_HEART";
+			//Spider
+			case "Shriveled Wasp" -> "SHRIVELED_WASP";
+			case "Digested Mosquito" -> "DIGESTED_MOSQUITO";
+			case "Ensnared Snail" -> "ENSNARED_SNAIL";
 			case "Primordial Eye" -> "PRIMORDIAL_EYE";
+			//Wolf
+			case "Overflux Capacitor" -> "OVERFLUX_CAPACITOR";
+			//Enderman
+			case "End Stone Idol" -> "END_STONE_IDOL";
 			case "Judgement Core" -> "JUDGEMENT_CORE";
+			//Blaze
 			case "High Class Archfiend Dice" -> "HIGH_CLASS_ARCHFIEND_DICE";
 
 			//Fishing
