@@ -1,30 +1,23 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
-import de.hysky.skyblocker.skyblock.tabhud.TabHud;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.PlayerTabOverlay;
-import net.minecraft.client.gui.contextualbar.ContextualBarRenderer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -34,8 +27,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.scores.Objective;
-import net.minecraft.world.scores.Scoreboard;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -128,56 +119,6 @@ public abstract class GuiMixin {
 		}
 	}
 
-	@WrapWithCondition(method = "renderHotbarAndDecorations", at = {
-					@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;renderBackground(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"),
-					@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;render(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V")
-			}, require = 2)
-	private boolean skyblocker$renderExperienceBar(ContextualBarRenderer bar, GuiGraphics context, DeltaTracker tickCounter) {
-		return shouldShowExperienceBar();
-	}
-
-	@WrapWithCondition(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;renderExperienceLevel(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Font;I)V"))
-	private boolean skyblocker$renderExperienceLevel(GuiGraphics context, Font textRenderer, int level) {
-		return shouldShowExperienceBar();
-	}
-
-	@Unique
-	private static boolean shouldShowExperienceBar() {
-		return !(Utils.isOnSkyblock() && FancyStatusBars.isEnabled() && FancyStatusBars.isExperienceFancyBarEnabled());
-	}
-
-	@Inject(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderHearts(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/entity/player/Player;IIIIFIIIZ)V", shift = At.Shift.AFTER), cancellable = true)
-	private void skyblocker$renderStatusBars(GuiGraphics context, CallbackInfo ci) {
-		if (Utils.isOnSkyblock() && FancyStatusBars.render(context, minecraft)) ci.cancel();
-	}
-
-	@Inject(method = "renderHearts", at = @At(value = "HEAD"), cancellable = true)
-	private void skyblocker$renderHealthBar(GuiGraphics context, Player player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking, CallbackInfo ci) {
-		if (!Utils.isOnSkyblock()) return;
-		if (FancyStatusBars.isEnabled() && FancyStatusBars.isHealthFancyBarEnabled()) ci.cancel();
-	}
-
-	@ModifyExpressionValue(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;guiHeight()I"))
-	private int skyblocker$moveHealthDown(int original) {
-		return Utils.isOnSkyblock() && FancyStatusBars.isEnabled() && !FancyStatusBars.isHealthFancyBarEnabled() && FancyStatusBars.isExperienceFancyBarEnabled() ? original + 6 : original;
-	}
-
-	@Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
-	private static void skyblocker$renderStatusBars(GuiGraphics context, Player player, int i, int j, int k, int x, CallbackInfo ci) {
-		if (Utils.isOnSkyblock() && FancyStatusBars.isEnabled()) ci.cancel();
-	}
-
-	@Inject(method = "renderVehicleHealth", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$renderMountHealth(CallbackInfo ci) {
-		if (Utils.isOnSkyblock() && FancyStatusBars.isEnabled())
-			ci.cancel();
-	}
-
-	@Inject(method = "renderEffects", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$dontRenderStatusEffects(CallbackInfo ci) {
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay) ci.cancel();
-	}
-
 	@ModifyExpressionValue(method = "renderCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getAttackStrengthScale(F)F"))
 	private float skyblocker$modifyAttackIndicatorCooldown(float cooldownProgress) {
 		if (Utils.isOnSkyblock() && minecraft.player != null) {
@@ -195,10 +136,5 @@ public abstract class GuiMixin {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().farming.garden.dicerTitlePrevent && title != null && DICER_TITLE_BLACKLIST.matcher(title.getString()).matches()) {
 			ci.cancel();
 		}
-	}
-
-	@WrapWithCondition(method = "renderTabList", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/PlayerTabOverlay;render(Lnet/minecraft/client/gui/GuiGraphics;ILnet/minecraft/world/scores/Scoreboard;Lnet/minecraft/world/scores/Objective;)V"))
-	private boolean skyblocker$shouldRenderHud(PlayerTabOverlay playerListHud, GuiGraphics context, int scaledWindowWidth, Scoreboard scoreboard, Objective objective) {
-		return !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.shouldRenderVanilla() || Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen;
 	}
 }
