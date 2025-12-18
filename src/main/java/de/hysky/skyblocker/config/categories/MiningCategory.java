@@ -401,6 +401,7 @@ public class MiningCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.blockBreakPrediction.playSound"))
+								.description(Component.translatable("skyblocker.config.mining.blockBreakPrediction.playSound.@Tooltip"))
 								.binding(defaults.mining.BlockBreakPrediction.playSound,
 										() -> config.mining.BlockBreakPrediction.playSound,
 										newValue -> config.mining.BlockBreakPrediction.playSound = newValue)
