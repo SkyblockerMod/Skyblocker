@@ -13,7 +13,6 @@ import de.hysky.skyblocker.utils.Utils;
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.NEURepositoryException;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -66,6 +65,7 @@ public class BlockBreakPrediction {
 
 	public static int getBlockBreakPrediction(BlockPos pos, int progression) {
 		if (CLIENT.player == null || !SkyblockerConfigManager.get().mining.BlockBreakPrediction.enabled) return progression;
+
 		if (CLIENT.hitResult instanceof BlockHitResult hitResult) {
 			if (!hitResult.getBlockPos().equals(pos)) {
 				return progression;
@@ -81,11 +81,11 @@ public class BlockBreakPrediction {
 			long timeElapsed = System.currentTimeMillis() - startAttackingTime;
 			if (SkyblockerConfigManager.get().mining.BlockBreakPrediction.playSound && !soundPlayed && (int) ((timeElapsed * 10) / (currentBlockBreakTime)) == 10) {
 				soundPlayed = true;
-				CLIENT.player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 100f, 1f);
+				CLIENT.player.playSound(SoundEvents.BLAZE_HURT, 100f, 1f);
+
 			}
 			return Math.min((int) ((timeElapsed * 10) / (currentBlockBreakTime)), 9);
 		}
-		System.out.println(progression);
 		return progression;
 
 	}
@@ -98,7 +98,7 @@ public class BlockBreakPrediction {
 		Optional<Matcher> speed = PlayerListManager.getPlayerStringList().stream().map(MINING_SPEED_PATTERN::matcher).filter(Matcher::matches).findFirst();
 		//make sure the data is in tab and if not tell the user
 		if (speed.isEmpty()) {
-			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("TODO tell user to enable mining speed stat")), false);
+			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.blockBreakPrediction.enableStatsMessage")), false);
 			return -1;
 		}
 
@@ -127,6 +127,7 @@ public class BlockBreakPrediction {
 	private static void loadBlockStrength() {
 		try {
 			List<NEURepoFile> blocks = NEURepoManager.tree("mining/blocks").toList();
+
 			for (NEURepoFile file : blocks) {
 				if (!file.isFile()) continue;
 				try (InputStream stream = file.stream()) {
@@ -261,7 +262,7 @@ public class BlockBreakPrediction {
 		}
 
 		public static Block get(String id, int damage) {
-			return BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(TABLE.get(id + "," + damage)));
+			return BuiltInRegistries.BLOCK.getValue(Identifier.parse(TABLE.get(id + "," + damage)));
 		}
 	}
 
