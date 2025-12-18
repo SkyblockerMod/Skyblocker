@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.BooleanSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.DefaultSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.EditableSlotEntry;
@@ -11,50 +10,33 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Consumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.tabs.Tab;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
 // TODO: recommend disabling spacing and enabling wrapping
-public class WidgetsListTab implements Tab {
-	private final WidgetsElementList widgetsElementList;
-	private final Button back;
-	private final Button previousPage;
-	private final Button nextPage;
-	private final Button thirdColumnButton;
-	private @Nullable ChestMenu handler;
-	private final Minecraft client;
+public class WidgetsListScreen extends Screen implements ContainerListener {
+	private WidgetsElementList widgetsElementList;
+	private Button back;
+	private Button previousPage;
+	private Button nextPage;
+	private Button thirdColumnButton;
+	private String titleLowercase;
+	private ChestMenu handler;
 	private boolean waitingForServer = false;
 
 	private final Int2ObjectMap<WidgetsListSlotEntry> entries = new Int2ObjectOpenHashMap<>();
-	private final List<WidgetEntry> customWidgetEntries = new ArrayList<>();
 	private boolean listNeedsUpdate = false;
-	private boolean shouldShowCustomWidgetEntries = false;
-
-
-	public void setCustomWidgetEntries(Collection<WidgetEntry> entries) {
-		this.customWidgetEntries.clear();
-		this.customWidgetEntries.addAll(entries);
-		listNeedsUpdate = true;
-	}
-
-	public List<WidgetEntry> getCustomWidgetEntries() {
-		return customWidgetEntries;
-	}
 
 	public boolean listNeedsUpdate() {
 		boolean b = listNeedsUpdate;
@@ -66,64 +48,41 @@ public class WidgetsListTab implements Tab {
 		return entries.int2ObjectEntrySet();
 	}
 
-	public WidgetsListTab(Minecraft client, @Nullable ChestMenu handler) {
-		widgetsElementList = new WidgetsElementList(this, client, 0, 0, 0);
-		this.client = client;
+	public WidgetsListScreen(ChestMenu handler, String titleLowercase) {
+		super(Component.literal("Widgets EntryList"));
 		this.handler = handler;
-		back = Button.builder(Component.translatable("gui.back"), button -> clickAndWaitForServer(48, 0))
-				.size(64, 15)
-				.build();
-		thirdColumnButton = Button.builder(Component.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))
-				.size(120, 15)
-				.build();
-		thirdColumnButton.setTooltip(Tooltip.create(Component.literal("It is recommended to have this enabled, to have more info be displayed!")));
-		previousPage = Button.builder(Component.translatable("book.page_button.previous"), button -> clickAndWaitForServer(45, 0))
-				.size(100, 15)
-				.build();
-		nextPage = Button.builder(Component.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
-				.size(100, 15)
-				.build();
-		if (handler == null) {
-			back.visible = false;
-			previousPage.visible = false;
-			nextPage.visible = false;
-			thirdColumnButton.visible = false;
-		}
+		this.titleLowercase = titleLowercase;
+		handler.addSlotListener(this);
 	}
 
 	@Override
-	public Component getTabTitle() {
+	public Component getTitle() {
 		return Component.literal("Widgets");
 	}
 
-	@Override
-	public void visitChildren(Consumer<AbstractWidget> consumer) {
-		consumer.accept(back);
-		consumer.accept(previousPage);
-		consumer.accept(nextPage);
-		consumer.accept(thirdColumnButton);
-		consumer.accept(widgetsElementList);
-	}
-
 	public void clickAndWaitForServer(int slot, int button) {
-		if (waitingForServer || handler == null) return;
-		if (client.gameMode == null || this.client.player == null) return;
-		client.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.PICKUP, this.client.player);
+		if (waitingForServer) return;
+		if (minecraft.gameMode == null || this.minecraft.player == null) return;
+		minecraft.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.PICKUP, this.minecraft.player);
+		// wacky fix for "this action is on cooldown"
+		if (slot == 50) Scheduler.INSTANCE.schedule(() -> this.waitingForServer = false, 4);
 		waitingForServer = true;
 	}
 
 	public void shiftClickAndWaitForServer(int slot, int button) {
-		if (waitingForServer || handler == null) return;
-		if (client.gameMode == null || this.client.player == null) return;
-		client.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.QUICK_MOVE, this.client.player);
+		if (waitingForServer) return;
+		if (minecraft.gameMode == null || this.minecraft.player == null) return;
+		minecraft.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.QUICK_MOVE, this.minecraft.player);
 		// When moving a widget down it gets stuck sometimes
 		Scheduler.INSTANCE.schedule(() -> this.waitingForServer = false, 4);
 		waitingForServer = true;
 	}
 
-	public void updateHandler(ChestMenu newHandler) {
+	public void updateHandler(ChestMenu newHandler, String titleLowercase) {
+		this.handler.removeSlotListener(this);
+		newHandler.addSlotListener(this);
 		this.handler = newHandler;
-		back.visible = handler != null;
+		this.titleLowercase = titleLowercase;
 		entries.clear();
 		listNeedsUpdate = true;
 	}
@@ -199,26 +158,85 @@ public class WidgetsListTab implements Tab {
 	}
 
 	@Override
-	public void doLayout(ScreenRectangle tabArea) {
-		back.setPosition(16, tabArea.top() + 4);
-		widgetsElementList.setY(tabArea.top());
-		widgetsElementList.setSize(tabArea.width(), tabArea.height() - 20);
+	protected void init() {
+		super.init();
+		widgetsElementList = new WidgetsElementList(this, minecraft, 0, 0, 0);
+		back = Button.builder(Component.literal("Back"), button -> clickAndWaitForServer(48, 0))
+				.size(64, 15)
+				.build();
+		thirdColumnButton = Button.builder(Component.translatable("gui.back"), button -> clickAndWaitForServer(50, 0))
+				.size(120, 15)
+				.build();
+		thirdColumnButton.setTooltip(Tooltip.create(Component.literal("It is recommended to have this enabled, to have more info be displayed!")));
+		previousPage = Button.builder(Component.translatable("book.page_button.previous"), button -> clickAndWaitForServer(45, 0))
+				.size(100, 15)
+				.build();
+		nextPage = Button.builder(Component.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
+				.size(100, 15)
+				.build();
+		addWidget(back); // element list was blocking the clicks for some reason
+		addRenderableWidget(widgetsElementList);
+		addRenderableOnly(back);
+		addRenderableWidget(thirdColumnButton);
+		addRenderableWidget(thirdColumnButton);
+		addRenderableWidget(previousPage);
+		addRenderableWidget(nextPage);
+		repositionElements();
+	}
+
+	@Override
+	protected void repositionElements() {
+		back.setPosition(16, 4);
+		widgetsElementList.setY(0);
+		widgetsElementList.setSize(width, height - 20);
 		widgetsElementList.refreshScrollAmount();
 		previousPage.setPosition(widgetsElementList.getRowLeft(), widgetsElementList.getBottom() + 4);
 		nextPage.setPosition(widgetsElementList.scrollBarX() - 100, widgetsElementList.getBottom() + 4);
 		thirdColumnButton.setPosition(widgetsElementList.scrollBarX() + 5, widgetsElementList.getBottom() + 4);
 	}
 
-	public boolean shouldShowCustomWidgetEntries() {
-		return shouldShowCustomWidgetEntries;
-	}
-
-	public void setShouldShowCustomWidgetEntries(boolean shouldShowCustomWidgetEntries) {
-		this.shouldShowCustomWidgetEntries = shouldShowCustomWidgetEntries;
+	@Override
+	public void onClose() {
+		assert this.minecraft != null;
+		assert this.minecraft.player != null;
+		this.minecraft.player.closeContainer();
+		super.onClose();
 	}
 
 	@Override
-	public Component getTabExtraNarration() {
-		return Component.empty();
+	public void removed() {
+		if (this.minecraft != null && this.minecraft.player != null) {
+			this.handler.removed(this.minecraft.player);
+		}
+		handler.removeSlotListener(this);
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		assert this.minecraft != null;
+		assert this.minecraft.player != null;
+		if (!this.minecraft.player.isAlive() || this.minecraft.player.isRemoved()) {
+			this.minecraft.player.closeContainer();
+		}
+	}
+
+	@Override
+	public void slotChanged(AbstractContainerMenu handler, int slotId, ItemStack stack) {
+		if (slotId == 13) {
+			if (stack.is(Items.HOPPER)) {
+				hopper(stack.skyblocker$getLoreStrings());
+			} else {
+				hopper(null);
+			}
+		}
+		if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRowCount() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50) {
+			onSlotChange(slotId, stack);
+		}
+	}
+
+	@Override
+	public void dataChanged(AbstractContainerMenu handler, int property, int value) {
+
 	}
 }

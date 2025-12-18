@@ -12,7 +12,7 @@ import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -199,6 +199,6 @@ public abstract class GuiMixin {
 
 	@WrapWithCondition(method = "renderTabList", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/PlayerTabOverlay;render(Lnet/minecraft/client/gui/GuiGraphics;ILnet/minecraft/world/scores/Scoreboard;Lnet/minecraft/world/scores/Objective;)V"))
 	private boolean skyblocker$shouldRenderHud(PlayerTabOverlay playerListHud, GuiGraphics context, int scaledWindowWidth, Scoreboard scoreboard, Objective objective) {
-		return !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.shouldRenderVanilla() || Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen;
+		return !Utils.isOnSkyblock() || TabHud.shouldRenderVanilla() || !WidgetManager.getScreenBuilder(Utils.getLocation(), WidgetManager.ScreenLayer.MAIN_TAB).hasFancyTabWidget;
 	}
 }

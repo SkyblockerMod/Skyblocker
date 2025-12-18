@@ -6,6 +6,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 
 public class TabHud {
@@ -27,6 +28,18 @@ public class TabHud {
 	}
 
 	public static boolean shouldRenderVanilla() {
-		return defaultTgl.isDown() != SkyblockerConfigManager.get().uiAndVisuals.tabHud.showVanillaTabByDefault;
+		return defaultTgl.isDown() != SkyblockerConfigManager.get().uiAndVisuals.hud.showVanillaTabByDefault;
+	}
+
+	public static float getScaleFactor() {
+		return SkyblockerConfigManager.get().uiAndVisuals.hud.hudScale / 100f;
+	}
+
+	public static int getHudWidth() {
+		return (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() / getScaleFactor());
+	}
+
+	public static int getHudHeight() {
+		return (int) (Minecraft.getInstance().getWindow().getGuiScaledHeight() / getScaleFactor());
 	}
 }

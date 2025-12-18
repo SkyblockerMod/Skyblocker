@@ -6,7 +6,6 @@ import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
@@ -15,7 +14,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
-import java.util.Set;
+import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -33,7 +32,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	}
 
 	public FishingHudWidget() {
-		super(Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), "hud_fishing");
+		super(Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), new Information("hud_fishing", Component.literal("Fishing Hud")));
 		instance = this;
 	}
 
@@ -43,25 +42,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	public Set<Location> availableLocations() {
-		return ALL_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		SkyblockerConfigManager.get().helpers.fishing.enableFishingHud = enabled;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return SkyblockerConfigManager.get().helpers.fishing.enableFishingHud;
-	}
-
-	@Override
-	public boolean shouldRender(Location location) {
-		if (!super.shouldRender(location)) {
-			return false;
-		}
+	public boolean shouldRender() {
 		// sea creature tracker
 		if (SkyblockerConfigManager.get().helpers.fishing.enableSeaCreatureCounter && SeaCreatureTracker.isCreaturesAlive()) {
 			if (Utils.getLocation() == Location.HUB && SkyblockerConfigManager.get().helpers.fishing.onlyShowHudInBarn) {
@@ -75,21 +56,13 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			return true;
 		}
 		//rod timer
-		if ((SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD) && FishingHookDisplayHelper.fishingHookArmorStand != null) {
-			return true;
-		}
-		return false;
+		return (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD) && FishingHookDisplayHelper.fishingHookArmorStand != null;
 	}
 
 	@Override
 	public void updateContent() {
-		if (Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen) {
-			addComponent(Components.progressComponent(Ico.SALMON_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty("3/5"), 60, ColorUtils.percentToColor(40)));
-			addComponent(Components.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), Component.nullToEmpty("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100));
-			return;
-		}
 		//creature counter
-		if (SkyblockerConfigManager.get().helpers.fishing.enableSeaCreatureCounter && SeaCreatureTracker.isCreaturesAlive()) {
+		if (SkyblockerConfigManager.get().helpers.fishing.enableSeaCreatureCounter && SeaCreatureTracker.isCreaturesAlive()) { // TODO inner options
 
 			ObjectFloatPair<Component> timer = SeaCreatureTracker.getTimerText(SeaCreatureTracker.getOldestSeaCreatureAge());
 			int seaCreatureCap = SeaCreatureTracker.getSeaCreatureCap();
@@ -120,8 +93,11 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return Component.literal("Fishing Hud");
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		return List.of(
+				Components.progressComponent(Ico.SALMON_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty("3/5"), 60, ColorUtils.percentToColor(40)),
+				Components.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), Component.nullToEmpty("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100) // TODO move to inner options
+		);
 	}
 
 	private static boolean isBarnFishing() {

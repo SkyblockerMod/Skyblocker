@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.end;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -15,6 +16,7 @@ import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
+import java.util.List;
 import java.util.Set;
 
 @RegisterWidget
@@ -28,29 +30,13 @@ public class EndHudWidget extends ComponentBasedWidget {
 	private static final ItemStack POPPY = Util.make(new ItemStack(Items.POPPY), stack -> stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
 
 	public EndHudWidget() {
-		super(TITLE, ChatFormatting.DARK_PURPLE.getColor(), "hud_end");
+		super(TITLE, ChatFormatting.DARK_PURPLE.getColor(), new Information("hud_end", Component.literal("End Hud"), AVAILABLE_LOCATIONS::contains));
 		instance = this;
 		this.update();
 	}
 
 	public static EndHudWidget getInstance() {
 		return instance;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return location.equals(Location.THE_END) && SkyblockerConfigManager.get().otherLocations.end.hudEnabled;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!location.equals(Location.THE_END)) return;
-		SkyblockerConfigManager.get().otherLocations.end.hudEnabled = enabled;
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
 	}
 
 	@Override
@@ -83,7 +69,7 @@ public class EndHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return Component.literal("End Hud");
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		return List.of(Components.iconTextComponent(Ico.BARRIER, Component.literal("TODO"))); // TODO
 	}
 }

@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.utils.Location;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -18,11 +19,12 @@ public class DungeonDownedWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public DungeonDownedWidget() {
-		super("Dungeon Downed", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Downed", TITLE, ChatFormatting.DARK_PURPLE.getColor(), Location.DUNGEON);
+		cacheForConfig = false;
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent() {
 		String down = PlayerListManager.strAt(21);
 		if (down == null) {
 			this.addComponent(Components.iconTextComponent());
@@ -41,4 +43,16 @@ public class DungeonDownedWidget extends TabHudWidget {
 		this.addSimpleIcoText(Ico.CLOCK, "Time:", ChatFormatting.GRAY, 22);
 		this.addSimpleIcoText(Ico.POTION, "Revive:", ChatFormatting.GRAY, 23);
 	}
+
+	@Override
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		return List.of(
+				Components.iconTextComponent(Ico.SKULL, simpleEntryText("NONE", "Downed: ", ChatFormatting.GRAY)),
+				Components.iconTextComponent(Ico.CLOCK, simpleEntryText("N/A", "Time:", ChatFormatting.GRAY)),
+				Components.iconTextComponent(Ico.POTION, simpleEntryText("N/A", "Revive:", ChatFormatting.GRAY))
+		);
+	}
+
+	@Override
+	protected void updateContent(List<Component> lines) {}
 }

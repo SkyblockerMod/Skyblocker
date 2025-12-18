@@ -5,17 +5,14 @@ import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEn
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
 public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsListEntry> {
@@ -24,23 +21,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	static final Identifier MOVE_DOWN_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down_highlighted");
 	static final Identifier MOVE_DOWN_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down");
 
-	static final WidgetsListEntry SEPARATOR = new WidgetsListEntry() {
-
-		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			context.drawCenteredString(Minecraft.getInstance().font, Component.nullToEmpty("- Skyblocker Widgets -"), this.getX() + this.getWidth() / 2, this.getY() + (this.getHeight() - 9) / 2, CommonColors.WHITE);
-		}
-
-		@Override
-		public List<? extends GuiEventListener> children() {
-			return List.of();
-		}
-
-		@Override
-		public void drawBorder(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {}
-	};
-
-	private final WidgetsListTab parent;
+	private final WidgetsListScreen parent;
 	private boolean rightUpArrowHovered = false;
 	private boolean rightDownArrowHovered = false;
 	private boolean leftUpArrowHovered = false;
@@ -48,7 +29,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 
 	private int editingPosition = -1;
 
-	public WidgetsElementList(WidgetsListTab parent, Minecraft minecraftClient, int width, int height, int y) {
+	public WidgetsElementList(WidgetsListScreen parent, Minecraft minecraftClient, int width, int height, int y) {
 		super(minecraftClient, width, height, y, 32);
 		this.parent = parent;
 	}
@@ -73,10 +54,6 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 					.sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))
 					.map(Map.Entry::getValue)
 					.forEach(this::addEntry);
-			if (!parent.getCustomWidgetEntries().isEmpty() && parent.shouldShowCustomWidgetEntries()) {
-				if (!children().isEmpty()) addEntry(SEPARATOR);
-				parent.getCustomWidgetEntries().forEach(this::addEntry);
-			}
 			refreshScrollAmount();
 		}
 		super.renderWidget(context, mouseX, mouseY, delta);

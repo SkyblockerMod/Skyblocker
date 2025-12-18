@@ -4,16 +4,12 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
-import de.hysky.skyblocker.skyblock.slayers.hud.SlayerHudWidget;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 public class SlayersCategory {
@@ -88,7 +84,7 @@ public class SlayersCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.enableHud"))
 						.prompt(Component.translatable("text.skyblocker.open"))
-						.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
+						.action(screen -> {})
 						.build())
 
 				.group(OptionGroup.createBuilder()
