@@ -15,8 +15,6 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.config.backup.ConfigBackupManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.KeyMapping;
@@ -56,10 +54,6 @@ public class SkyblockerMod implements ClientModInitializer {
 		ConfigBackupManager.init();
 
 		init();
-		HudElementRegistry.replaceElement(VanillaHudElements.STATUS_EFFECTS, hudElement -> {
-			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay) return (context, tickCounter) -> {};
-			return hudElement;
-		});
 		Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
 		Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
 		Scheduler.INSTANCE.scheduleCyclic(BackpackPreview::tick, 50);
