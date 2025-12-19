@@ -210,7 +210,7 @@ public class BlockBreakPrediction {
 		).apply(instance, BlockFile::new));
 	}
 
-	public record SkyblockBlock(String itemId, int damage, List<String> onlyIn) { //
+	public record SkyblockBlock(String itemId, int damage, List<String> onlyIn) {
 		private static final Codec<SkyblockBlock> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("itemId").forGetter(SkyblockBlock::itemId),
 				Codec.INT.fieldOf("damage").forGetter(SkyblockBlock::damage),
