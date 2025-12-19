@@ -1,17 +1,27 @@
-package de.hysky.skyblocker.skyblock.slayers;
+package de.hysky.skyblocker.skyblock.slayers.features;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerTier;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -20,6 +30,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.function.Function;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+
 public class SlayerTimer {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("slayer_personal_best.json");
 	private static final ProfiledData<Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerPersonalBest>>> CACHED_SLAYER_STATS = new ProfiledData<>(FILE, SlayerPersonalBest.SERIALIZATION_CODEC);
@@ -27,6 +39,38 @@ public class SlayerTimer {
 	@Init
 	public static void init() {
 		CACHED_SLAYER_STATS.load();
+		ClientCommandRegistrationCallback.EVENT.register(SlayerTimer::registerCommands);
+	}
+
+	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("slayers")
+				.then(literal("revenant").executes(context -> SlayerTimer.sendSlayerPersonalBest(context, SlayerType.REVENANT)))
+				.then(literal("tarantula").executes(context -> SlayerTimer.sendSlayerPersonalBest(context, SlayerType.TARANTULA)))
+				.then(literal("sven").executes(context -> SlayerTimer.sendSlayerPersonalBest(context, SlayerType.SVEN)))
+				.then(literal("voidgloom").executes(context -> SlayerTimer.sendSlayerPersonalBest(context, SlayerType.VOIDGLOOM)))
+				.then(literal("demonlord").executes(context -> SlayerTimer.sendSlayerPersonalBest(context, SlayerType.DEMONLORD)))
+				.then(literal("vampire").executes(context -> SlayerTimer.sendSlayerPersonalBest(context, SlayerType.VAMPIRE)))
+		));
+	}
+
+	private static int sendSlayerPersonalBest(CommandContext<FabricClientCommandSource> context, SlayerType slayerType) {
+		FabricClientCommandSource source = context.getSource();
+
+		SlayerTier[] tiers = SlayerTier.values();
+		for (int i = tiers.length - 1; i >= 0; i--) {
+			SlayerTier slayerTier = tiers[i];
+			long time = getPersonalBest(slayerType, slayerTier);
+
+			if (time != -1) {
+				MutableText bossText = Text.literal(slayerType.bossName + " " + slayerTier.name()).formatted(Formatting.DARK_PURPLE);
+				MutableText timeText = Text.literal(formatTime(time)).formatted(Formatting.AQUA);
+				source.sendFeedback(Constants.PREFIX.get().append(bossText.append(": ").append(timeText)));
+				return Command.SINGLE_SUCCESS;
+			}
+		}
+
+		source.sendFeedback(Constants.PREFIX.get().append("No personal best recorded for " + slayerType.bossName));
+		return 0;
 	}
 
 	public static void sendMessage() {
@@ -36,7 +80,7 @@ public class SlayerTimer {
 		if (slayerQuest == null || slayerQuest.bossSpawnTime == null) return;
 		Instant bossDeathTime = slayerQuest.bossDeathTime != null ? slayerQuest.bossDeathTime : Instant.now();
 
-		long currentPBMills = getPersonalBest(slayerQuest);
+		long currentPBMills = getPersonalBest(slayerQuest.slayerType, slayerQuest.slayerTier);
 		long newPBMills = Duration.between(slayerQuest.bossSpawnTime, bossDeathTime).toMillis();
 
 		String currentPB = formatTime(currentPBMills);
@@ -66,11 +110,11 @@ public class SlayerTimer {
 		}
 	}
 
-	private static long getPersonalBest(SlayerManager.SlayerQuest slayerQuest) {
+	private static long getPersonalBest(SlayerType slayerType, SlayerTier slayerTier) {
 		var profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
 		if (profileData != null) {
-			var typeData = profileData.computeIfAbsent(slayerQuest.slayerType, _type -> new Object2ObjectOpenHashMap<>());
-			SlayerPersonalBest currentBest = typeData.get(slayerQuest.slayerTier);
+			var typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
+			SlayerPersonalBest currentBest = typeData.get(slayerTier);
 			//noinspection ConstantConditions
 			return currentBest != null ? currentBest.bestTimeMillis() : -1;
 		}

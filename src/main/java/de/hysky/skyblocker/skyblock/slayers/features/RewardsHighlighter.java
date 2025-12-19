@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.slayers;
+package de.hysky.skyblocker.skyblock.slayers.features;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -25,7 +25,7 @@ public class RewardsHighlighter extends SimpleContainerSolver {
 		List<ColorHighlight> highlights = new ArrayList<>();
 		for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
 			ItemStack stack = entry.getValue();
-			if (stack != null && stack.contains(DataComponentTypes.LORE)) {
+			if (stack.contains(DataComponentTypes.LORE)) {
 				List<String> lastLine = stack.skyblocker$getLoreStrings();
 				if (!lastLine.isEmpty() && lastLine.getLast().equals("Click to claim rewards!")) {
 					highlights.add(ColorHighlight.green(entry.getIntKey()));

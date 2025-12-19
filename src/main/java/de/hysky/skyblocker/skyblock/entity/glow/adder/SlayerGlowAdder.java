@@ -14,12 +14,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.entity.mob.BlazeEntity;
 import net.minecraft.entity.mob.WitherSkeletonEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 
 @SuppressWarnings("unused")
 public class SlayerGlowAdder extends MobGlowAdder {
-	@SuppressWarnings("unused")
 	private static final SlayerGlowAdder INSTANCE = new SlayerGlowAdder();
 	private static final int NUKEKUBI_COLOUR = 0x990099;
 
@@ -31,8 +31,9 @@ public class SlayerGlowAdder extends MobGlowAdder {
 		// Blaze Slayer
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights &&
 				SlayerManager.isFightingSlayerType(SlayerType.DEMONLORD) &&
-				(SlayerManager.isSelectedBoss(entity.getUuid()) || entity instanceof WitherSkeletonEntity || entity instanceof ZombifiedPiglinEntity)) {
-			return AttunementColors.getColor((LivingEntity) entity);
+				(entity instanceof BlazeEntity || entity instanceof WitherSkeletonEntity || entity instanceof ZombifiedPiglinEntity)) {
+			Integer color = AttunementColors.getColor((LivingEntity) entity);
+			if (color != null) return color;
 		}
 
 		// Slayer Boss/Miniboss
@@ -51,7 +52,7 @@ public class SlayerGlowAdder extends MobGlowAdder {
 
 	@Override
 	public boolean isEnabled() {
-		return SlayerManager.isInSlayer() || SlayerManager.isFightingSlayer();
+		return SlayerManager.isInSlayerQuest() || SlayerManager.isFightingSlayer();
 	}
 
 	/**

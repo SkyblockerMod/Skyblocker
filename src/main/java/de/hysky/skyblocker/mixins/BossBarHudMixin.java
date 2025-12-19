@@ -28,12 +28,12 @@ public abstract class BossBarHudMixin {
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private void onRender(DrawContext context, CallbackInfo ci) {
 		if (SkyblockerConfigManager.get().slayers.displayBossbar && SlayerBossBar.shouldRenderBossBar()) {
-			ClientBossBar bar = SlayerBossBar.updateBossBar();
+			ClientBossBar bossBar = SlayerBossBar.updateBossBar();
 
-			int textWidth = this.client.textRenderer.getWidth(bar.getName());
-			context.drawTextWithShadow(this.client.textRenderer, bar.getName(), context.getScaledWindowWidth() / 2 - textWidth / 2, 3, Colors.WHITE);
+			int textWidth = this.client.textRenderer.getWidth(bossBar.getName());
+			context.drawTextWithShadow(this.client.textRenderer, bossBar.getName(), context.getScaledWindowWidth() / 2 - textWidth / 2, 3, Colors.WHITE);
 
-			this.renderBossBar(context, (context.getScaledWindowWidth() / 2) - 91, 12, bar);
+			this.renderBossBar(context, (context.getScaledWindowWidth() / 2) - 91, 12, bossBar);
 
 			ci.cancel();
 		}

@@ -1,10 +1,7 @@
-package de.hysky.skyblocker.skyblock.slayers.hud;
+package de.hysky.skyblocker.skyblock.slayers;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.skyblock.slayers.SlayerTier;
-import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
@@ -23,6 +20,7 @@ import java.util.Set;
 public class SlayerHudWidget extends ComponentBasedWidget {
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.CRIMSON_ISLE, Location.HUB, Location.SPIDERS_DEN, Location.THE_END, Location.THE_PARK, Location.THE_RIFT);
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final int TEXTURE_SIZE = 16;
 	private static SlayerHudWidget instance;
 
 	public SlayerHudWidget() {
@@ -58,7 +56,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public boolean shouldRender(Location location) {
-		return super.shouldRender(location) && SlayerManager.isInSlayer();
+		return super.shouldRender(location) && SlayerManager.isInSlayerQuest();
 	}
 
 	@Override
@@ -68,7 +66,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 			SlayerTier slayerTier = SlayerTier.V;
 
 			Text slayerName = Text.literal(slayerType.bossName + " " + slayerTier).formatted(slayerTier.color);
-			addComponent(new TextureComponent(slayerName, slayerType.texture, 16, 16));
+			addComponent(new TextureComponent(slayerName, slayerType.texture, TEXTURE_SIZE, TEXTURE_SIZE));
 			addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE, "100,000/400,000");
 			addComponent(Components.iconTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal("200").formatted(Formatting.LIGHT_PURPLE))));
 			return;
@@ -83,7 +81,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 		int bossesNeeded = slayerQuest.bossesNeeded;
 
 		Text slayerName = Text.literal(slayerType.bossName + " " + slayerTier).formatted(slayerTier.color);
-		addComponent(new TextureComponent(slayerName, slayerType.texture, 16, 16));
+		addComponent(new TextureComponent(slayerName, slayerType.texture, TEXTURE_SIZE, TEXTURE_SIZE));
 
 		if (level == slayerType.maxLevel) {
 			addComponent(Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));

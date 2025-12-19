@@ -42,6 +42,6 @@ public class ClientPlayerInteractionManagerMixin {
 
 	@Inject(method = "attackEntity", at = @At("TAIL"))
 	private void onAttackEntity(PlayerEntity player, Entity target, CallbackInfo ci) {
-		if (target instanceof LivingEntity) SlayerManager.onAttackEntity(target);
+		if (target instanceof LivingEntity) SlayerManager.onEntityAttack(target);
 	}
 }

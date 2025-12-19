@@ -20,9 +20,9 @@ import net.minecraft.util.math.BlockPos;
 
 @SuppressWarnings("unused")
 public class BeaconHighlighter {
+	private static final Object2LongOpenHashMap<BlockPos> BEACONS = new Object2LongOpenHashMap<>();
 	private static final float[] RED_COLOR_COMPONENTS = { 1.0f, 0.0f, 0.0f };
 	private static final long BEACON_DURATION_MS = 5000L;
-	private static final Object2LongOpenHashMap<BlockPos> BEACONS = new Object2LongOpenHashMap<>();
 
 	/**
 	 * Initializes the beacon highlighting system.
@@ -67,7 +67,7 @@ public class BeaconHighlighter {
 	private static void extractRendering(PrimitiveCollector collector) {
 		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons && SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM)) {
 			for (Object2LongMap.Entry<BlockPos> beacon : BEACONS.object2LongEntrySet()) {
-				collector.submitFilledBox(beacon.getKey(), RED_COLOR_COMPONENTS, 1f, true);
+				collector.submitFilledBox(beacon.getKey(), RED_COLOR_COMPONENTS, 0.6f, true);
 
 				long elapsed = System.currentTimeMillis() - beacon.getLongValue();
 				float remainingSec = (BEACON_DURATION_MS - elapsed) / 1000f;

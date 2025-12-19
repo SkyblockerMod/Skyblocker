@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.slayers;
 import net.minecraft.client.gui.hud.ClientBossBar;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -27,10 +28,17 @@ public class SlayerBossBar {
 
 		// Update boss max health
 		if (bossMaxHealth == -1) {
-			ArmorStandEntity bossArmorStand = SlayerManager.getSlayerBossArmorStand();
-			assert bossArmorStand != null;
-			Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(bossArmorStand.getName().getString());
-			if (maxHealthMatcher.find()) bossMaxHealth = convertToInt(maxHealthMatcher.group(0));
+			SlayerManager.BossFight bossFight = SlayerManager.getBossFight();
+			if (bossFight != null) {
+				String bossName = bossFight.armorStand.getName().getString();
+				Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(bossName);
+				if (maxHealthMatcher.find()) {
+					int currentHealth = convertToInt(maxHealthMatcher.group(0));
+					if (bossName.contains("Tarantula Broodfather V") && currentHealth == 0) bossName = "Conjoined Brood";
+					int maxHealth = bossFight.slayerType.getHealth(bossName, bossFight.slayerTier);
+					bossMaxHealth = Math.max(maxHealth, currentHealth);
+				}
+			}
 		}
 
 		return true;
@@ -42,22 +50,23 @@ public class SlayerBossBar {
 	 * @return The updated boss bar.
 	 */
 	public static ClientBossBar updateBossBar() {
-		ArmorStandEntity slayer = SlayerManager.getSlayerBossArmorStand();
-		assert slayer != null;
+		ArmorStandEntity slayerArmorStand = SlayerManager.getSlayerArmorStand();
+		assert slayerArmorStand != null;
+		Text name = slayerArmorStand.getName();
 
-		if (bossBar == null) bossBar = new ClientBossBar(UUID.randomUUID(), slayer.getDisplayName(), 1f, BossBar.Color.PURPLE, BossBar.Style.PROGRESS, false, false, false);
+		if (bossBar == null) bossBar = new ClientBossBar(UUID.randomUUID(), name, 1f, BossBar.Color.PURPLE, BossBar.Style.PROGRESS, false, false, false);
 
-		// Update the boss bar with the current slayer's health
-		Matcher healthMatcher = HEALTH_PATTERN.matcher(slayer.getName().getString());
+		// Update the boss bar with the current slayerArmorStand's health
+		Matcher healthMatcher = HEALTH_PATTERN.matcher(name.getString());
 		if (healthMatcher.find()) {
-			bossBar.setPercent(bossMaxHealth == -1 ? 1f : (float) convertToInt(healthMatcher.group(1)) / bossMaxHealth);
+			bossBar.setPercent(bossMaxHealth < 1 ? 1f : (float) convertToInt(healthMatcher.group(1)) / bossMaxHealth);
 			bossBar.setColor(BossBar.Color.PINK);
-			bossBar.setName(slayer.getDisplayName());
+			bossBar.setName(name);
 			bossBar.setStyle(BossBar.Style.NOTCHED_10);
 		} else {
 			bossBar.setColor(BossBar.Color.RED);
 			bossBar.setStyle(BossBar.Style.PROGRESS);
-			bossBar.setName(slayer.getDisplayName());
+			bossBar.setName(name);
 		}
 
 		return bossBar;

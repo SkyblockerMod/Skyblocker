@@ -10,6 +10,8 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.ManiaIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.StakeIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.TwinClawsIndicator;
+import de.hysky.skyblocker.skyblock.slayers.features.CallMaddox;
+import de.hysky.skyblocker.skyblock.slayers.features.SlayerTimer;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.mayor.MayorUtils;
@@ -22,8 +24,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.mob.CaveSpiderEntity;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -44,14 +44,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Holds all information related to slayer.
- * <p>{@link #onChatMessage(Text, boolean)} detects slayer messages and updates the state of the slayer quest.
- * {@link #checkSlayerBoss(ArmorStandEntity)} processes the given armor stand and detects if it is a slayer boss or miniboss.</p>
+ * Holds all information related to slayers.
+ *
+ * <p>This class keeps two pieces of state:<br>
+ * - {@link SlayerQuest}: the player's slayer quest<br>
+ * - {@link BossFight}: the boss the player is fighting
+ * </p>
+ *
+ * <p>Core methods:<br>
+ * - {@link #checkSlayerQuest()} reads the scoreboard to detect whether a quest is active and updates tier/progress.<br>
+ * - {@link #checkSlayerBoss(ArmorStandEntity)} inspects armorStands to detect the player's spawned boss or minibosses.<br>
+ * - {@link #onEntityAttack(Entity)} detects other players' bosses on hit, also serves as a fallback for the player's own boss.<br>
+ * - {@link #findBoss(Entity)} is the shared resolver that converts an armorStand or a mob into a {@link BossFight}
+ * </p>
  */
 public class SlayerManager {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Atoned Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Bloodfiend");
-	private static final Pattern SLAYER_TIER_PATTERN = Pattern.compile("^(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend)\\s+(I|II|III|IV|V)$");
+	private static final Pattern SLAYER_PATTERN = Pattern.compile("\\b(Revenant Horror|Atoned Horror|Tarantula Broodfather|Conjoined Brood|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend|Bloodfiend)(?:\\s+(V|IV|III|II|I))?\\b");
 	private static final Pattern XP_NEEDED_PATTERN = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
 	private static final Pattern LVL_UP_PATTERN = Pattern.compile("\\s*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9]\\s*");
 	private static final Title BOSS_SPAWN = new Title(Text.translatable("skyblocker.slayer.bossSpawnAlert").formatted(Formatting.RED));
@@ -64,53 +73,16 @@ public class SlayerManager {
 
 	private static float slayerExpBuff = 1.0f;
 
-	public static void sendTestMessage(String text) {
-		var player = MinecraftClient.getInstance().player;
-		if (player != null) {
-			player.sendMessage(Text.of("[Slayers] " + text), false);
-		}
-	}
-
 	@Init
 	public static void init() {
 		SLAYERS_DATA.load();
 		ClientReceiveMessageEvents.ALLOW_GAME.register(SlayerManager::onChatMessage);
 		SkyblockEvents.MAYOR_CHANGE.register(SlayerManager::onMayorChange);
 		SkyblockEvents.PROFILE_CHANGE.register((_prev, _profile) -> slayerQuest = null);
+		SkyblockEvents.LOCATION_CHANGE.register(_loc -> bossFight = null);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfigManager.get().slayers.vampireSlayer.steakStakeUpdateFrequency);
-	}
-
-	public static void onAttackEntity(Entity entity) {
-		if (ENTITIES_CACHE.contains(entity)) return;
-		ENTITIES_CACHE.add(entity);
-
-		// Return if player's slayer boss is detected
-		if (isInSlayer() && bossFight != null && bossFight.playerBoss) return;
-		if (Arrays.stream(SlayerType.values()).noneMatch(slayerType -> slayerType.mobType == entity.getType())) return;
-		if (!isValidSlayerMob(entity)) return;
-
-		ArmorStandEntity bossArmorStand = null;
-		SlayerType slayerType = null;
-		boolean playerBoss = false;
-
-		String player = CLIENT.getSession().getUsername();
-		for (Entity e : getEntityArmorStands(entity, 1.5f)) {
-			if (e instanceof ArmorStandEntity armorStandEntity) {
-				Matcher matcher = SLAYER_PATTERN.matcher(armorStandEntity.getName().getString());
-				if (matcher.find()) {
-					bossArmorStand = armorStandEntity;
-					slayerType = SlayerType.fromBossName(matcher.group(0));
-				} else if (armorStandEntity.getName().getString().contains(player)) {
-					playerBoss = true;
-				}
-			}
-		}
-
-		if (bossArmorStand != null && slayerType != null) {
-			bossFight = new BossFight(bossArmorStand, entity, playerBoss, slayerType);
-		}
 	}
 
 	private static void onMayorChange() {
@@ -170,12 +142,42 @@ public class SlayerManager {
 		return true;
 	}
 
+	/**
+	 * Called when the player attacks an entity.
+	 *
+	 * <p>Primarily used to detect other players' Slayer bosses when you hit them.</p>
+	 * <p>If the player is currently fighting their own boss, this method will not switch the selected boss to another
+	 * player's boss.</p>
+	 * <p>As a secondary role, it may also detect the player's own boss when {@link #checkSlayerBoss(ArmorStandEntity)}
+	 * missed it (e.g., the boss spawned far away).</p>
+	 *
+	 * @param entity the entity that was attacked
+	 */
+	public static void onEntityAttack(Entity entity) {
+		if (ENTITIES_CACHE.contains(entity)) return;
+		ENTITIES_CACHE.add(entity);
+
+		if (Arrays.stream(SlayerType.values()).noneMatch(slayer -> slayer.mobType == entity.getType())) return;
+
+		BossFight boss = findBoss(entity);
+		if (boss != null) {
+			if (!isSlayerArmorStandAlive() || (boss.playerBoss && bossFight != null && bossFight.boss != boss.boss)) {
+				bossFight = boss;
+			}
+		}
+	}
+
+	/**
+	 * Detects and updates the player's {@link SlayerQuest} from the scoreboard.
+	 *
+	 * <p>This method is responsible for determining whether a Slayer quest is active and updating it.</p>
+	 */
 	public static void checkSlayerQuest() {
 		boolean active = false;
 		boolean bossSpawned = false;
 
 		for (String line : Utils.STRING_SCOREBOARD) {
-			Matcher matcher = SLAYER_TIER_PATTERN.matcher(line);
+			Matcher matcher = SLAYER_PATTERN.matcher(line);
 			if (matcher.find()) {
 				String bossName = matcher.group(1);
 				String bossTier = matcher.group(2);
@@ -200,45 +202,126 @@ public class SlayerManager {
 	}
 
 	/**
-	 * Checks if the given armor stand is associated with a slayer boss or miniboss.
-	 * <p>For boss detection, it looks for armor stands that contain the player's name and matches nearby armor stands against known slayer name patterns.</p>
-	 * <p>For miniboss detection, it checks if the armor stand is within range and matches the current slayer type's minibosses.</p>
+	 * Detects the player's spawned Slayer boss and Slayer minibosses from armorStands.
 	 *
-	 * @param armorStand the armor stand entity to check
+	 * <p>This method is responsible for the player's own boss/miniboss detection (not other players' bosses). When a boss or
+	 * miniboss is detected, the quest/boss state is updated and alerts may be triggered.</p>
+	 *
+	 * @param armorStand an armor stand to inspect
 	 */
 	public static void checkSlayerBoss(ArmorStandEntity armorStand) {
-		if (!isInSlayer() || (bossFight != null && bossFight.playerBoss) || !armorStand.hasCustomName()) return;
-		String EntityName = armorStand.getName().getString();
+		if (!armorStand.hasCustomName() || !isInSlayerQuest() || isSlayerArmorStandAlive()) return;
+		String entityName = armorStand.getName().getString();
 
 		// Slayer Boss
-		if (EntityName.contains(CLIENT.getSession().getUsername())) {
-			for (Entity entity : getEntityArmorStands(armorStand, 1.5f)) {
-				if (entity instanceof ArmorStandEntity armorStandEntity) {
-					Matcher matcher = SLAYER_PATTERN.matcher(armorStandEntity.getName().getString());
-					if (matcher.find()) {
-						Entity boss = findClosestMobEntity(slayerQuest.slayerType.mobType, armorStand);
-						if (boss != null) {
-							bossFight = new BossFight(armorStandEntity, boss, true, slayerQuest.slayerType);
-							slayerQuest.onBossSpawn();
-							BossFight.alert();
-						}
-						return;
-					}
-				}
+		BossFight boss = findBoss(armorStand);
+		if (boss != null) {
+			bossFight = boss;
+			slayerQuest.onBossSpawn();
+			if (!slayerQuest.sentBossAlert) {
+				BossFight.alert();
+				slayerQuest.sentBossAlert = true;
 			}
+			return;
 		}
 
 		// Slayer Miniboss
-		if (armorStand.isInRange(CLIENT.player, 15) && slayerQuest.slayerType.isMiniboss(EntityName, slayerQuest.slayerTier)) {
+		if (armorStand.isInRange(CLIENT.player, 15) && slayerQuest.slayerType.isMiniboss(entityName, slayerQuest.slayerTier)) {
 			slayerQuest.onMinibossSpawn(armorStand);
 		}
 	}
 
 	/**
-	 * Gets nearby armor stands with custom names. Used to find other armor stands showing a different line of text above a slayer boss.
+	 * Resolves a {@link BossFight} from the given entity, or returns {@code null} if it is not related to a Slayer boss.
+	 *
+	 * <p>If {@code entity} is an armorStand and is the playerName armorStand, search for bossName.
+	 * if it's the bossName armorStand, search for playerName, in this case the bossFight is treated as owned by the player.</p>
+	 *
+	 * <p>If {@code entity} is a mob, search for bossName and playerName (Optional) armorStands.
+	 * if playerName is not found, the bossfight is treated as not owned by the player.</p>
+	 *
+	 * @param entity an armor stand or mob entity
+	 * @return the resolved {@link BossFight}, or {@code null} if none could be resolved
 	 */
-	public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {
-		return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.1F, expandY, 0.1F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
+	@Nullable
+	private static BossFight findBoss(Entity entity) {
+		String username = CLIENT.getSession().getUsername();
+
+		ArmorStandEntity bossStand = null;
+		Entity boss;
+		SlayerType slayerType = null;
+		SlayerTier slayerTier = null;
+		boolean playerBoss = false;
+
+		// If entity is ArmorStand, check if it's player's or boss's name armorStand
+		if (entity instanceof ArmorStandEntity armorStand) {
+			String entityName = armorStand.getName().getString();
+			Matcher entityMatcher = SLAYER_PATTERN.matcher(entityName);
+			boolean isPlayerStand = entityName.contains(username);
+			boolean isBossStand = entityMatcher.find() && isValidBossArmorStand(armorStand);
+
+			if (!isBossStand && !isPlayerStand) return null;
+
+			for (ArmorStandEntity stand : getEntityArmorStands(entity, 1.5f)) {
+				String standName = stand.getName().getString();
+
+				// If it's boss's name stand => search for player's name stand
+				if (isBossStand && standName.contains(username)) {
+					String bossName = entityMatcher.group(1);
+					slayerType = SlayerType.fromBossName(bossName);
+					slayerTier = SlayerTier.valueOf(entityMatcher.group(2), bossName);
+					bossStand = armorStand;
+					playerBoss = true;
+					break;
+				}
+
+				// If it's player's name stand => search for boss's name stand
+				if (isPlayerStand) {
+					Matcher matcher = SLAYER_PATTERN.matcher(standName);
+					if (matcher.find() && isValidBossArmorStand(stand)) {
+						String bossName = matcher.group(1);
+						slayerType = SlayerType.fromBossName(bossName);
+						slayerTier = SlayerTier.valueOf(matcher.group(2), bossName);
+						bossStand = stand;
+						playerBoss = true;
+						break;
+					}
+				}
+			}
+			boss = (slayerType != null) ? findClosestMobEntity(slayerType.mobType, armorStand) : null;
+		} else {
+			// Entity is Mob - find boss info from nearby armor stands
+			boss = entity;
+			for (ArmorStandEntity stand : getEntityArmorStands(entity, 1.5f)) {
+				String standName = stand.getName().getString();
+				Matcher matcher = SLAYER_PATTERN.matcher(standName);
+				if (matcher.find() && isValidBossArmorStand(stand)) {
+					bossStand = stand;
+					String bossName = matcher.group(1);
+					slayerType = SlayerType.fromBossName(bossName);
+					slayerTier = SlayerTier.valueOf(matcher.group(2), bossName);
+				} else if (standName.contains(username)) {
+					playerBoss = true;
+				}
+			}
+		}
+
+		return bossStand != null && boss != null && slayerType != null
+				? new BossFight(bossStand, boss, playerBoss, slayerType, slayerTier) : null;
+	}
+
+	/**
+	 * Gets nearby {@link ArmorStandEntity} instances with custom names around the given entity.
+	 *
+	 * @param entity  the entity to search around
+	 * @param expandY how much to expand the search bounding box vertically (Y axis)
+	 * @return a list of nearby custom-named armor stands
+	 */
+	public static List<ArmorStandEntity> getEntityArmorStands(Entity entity, float expandY) {
+		return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.1F, expandY, 0.1F), x -> x instanceof ArmorStandEntity && x.hasCustomName())
+				.stream()
+				.map(e -> (ArmorStandEntity) e)
+				.toList();
 	}
 
 	/**
@@ -250,9 +333,8 @@ public class SlayerManager {
 	 * @implNote This method is not perfect. Possible improvements could be sort by x and z distance only (ignore y difference).
 	 */
 	@Nullable
-	private static <T extends Entity> T findClosestMobEntity(@Nullable EntityType<T> entityType, ArmorStandEntity armorStand) {
-		if (entityType == null) return null;
-		List<T> mobEntities = armorStand.getEntityWorld().getEntitiesByType(entityType, armorStand.getBoundingBox().expand(0, 1.5f, 0), SlayerManager::isValidSlayerMob);
+	private static <T extends Entity> T findClosestMobEntity(EntityType<T> entityType, ArmorStandEntity armorStand) {
+		List<T> mobEntities = armorStand.getEntityWorld().getEntitiesByType(entityType, armorStand.getBoundingBox().expand(0, 1.5f, 0), Entity::isAlive);
 		mobEntities.sort(Comparator.comparingDouble(armorStand::squaredDistanceTo));
 
 		return switch (mobEntities.size()) {
@@ -265,41 +347,11 @@ public class SlayerManager {
 	}
 
 	/**
-	 * Use this func to add checks to prevent accidental highlights
-	 * i.e. Cavespider extends spider and thus will highlight the broodfather's head pet instead
-	 */
-	private static boolean isValidSlayerMob(Entity entity) {
-		return entity.isAlive() && // entity is alive
-				!(entity instanceof MobEntity mob && mob.isBaby()) && // entity is not a baby
-				!(entity instanceof CaveSpiderEntity); // entity is not a cave spider
-	}
-
-	/**
 	 * Returns whether the given entity is a slayer miniboss or boss and should be highlighted based on the given highlight type.
 	 */
 	public static boolean shouldGlow(Entity entity, SlayersConfig.HighlightSlayerEntities highlightType) {
-		if (SkyblockerConfigManager.get().slayers.highlightMinis == highlightType && isInSlayer() && slayerQuest.minibosses.contains(entity)) return true;
+		if (SkyblockerConfigManager.get().slayers.highlightMinis == highlightType && isInSlayerQuest() && slayerQuest.minibosses.contains(entity)) return true;
 		return SkyblockerConfigManager.get().slayers.highlightBosses == highlightType && isSelectedBoss(entity.getUuid());
-	}
-
-	/**
-	 * Checks if the player is currently in a Slayer Quest.
-	 * Note: This does not check whether a boss has spawned.
-	 *
-	 * @return True if the player is in a Slayer Quest; false otherwise.
-	 */
-	public static boolean isInSlayer() {
-		return slayerQuest != null && slayerQuest.active;
-	}
-
-	/**
-	 * Gets the current Boss Fight state.
-	 *
-	 * @return The BossFight instance, or null if no boss fight is active.
-	 */
-	@Nullable
-	public static BossFight getBossFight() {
-		return bossFight;
 	}
 
 	/**
@@ -313,38 +365,102 @@ public class SlayerManager {
 	}
 
 	/**
-	 * Gets the armor stand entity associated with the Slayer boss.
+	 * Gets the current Boss Fight state.
 	 *
-	 * @return The armor stand entity, or null if no boss fight is active.
+	 * @return The BossFight instance, or null if no boss fight is active.
 	 */
 	@Nullable
-	public static ArmorStandEntity getSlayerBossArmorStand() {
-		return bossFight != null ? bossFight.bossArmorStand : null;
+	public static BossFight getBossFight() {
+		return bossFight;
 	}
 
-	public static boolean isSelectedBoss(UUID uuid) {
-		return bossFight != null && bossFight.boss.getUuid().equals(uuid);
+	/**
+	 * Checks if the player is currently in a Slayer Quest.
+	 * Note: This does not check whether a boss has spawned.
+	 *
+	 * @return {@code true} if the player is in a Slayer Quest; {@code false} otherwise.
+	 */
+	public static boolean isInSlayerQuest() {
+		return slayerQuest != null && slayerQuest.active;
 	}
 
+	/**
+	 * Checks whether the player is currently fighting a Slayer boss.
+	 *
+	 *  @return {@code true} if a slayer boss fight is active and the boss is alive; {@code false} otherwise.
+	 */
 	public static boolean isFightingSlayer() {
-		return bossFight != null;
+		return bossFight != null && bossFight.boss.isAlive();
 	}
 
+	/**
+	 * Checks whether the player is currently fighting their own Slayer boss.
+	 *
+	 * @return {@code true} if the player is fighting their own slayer boss; {@code false} otherwise
+	 */
+	public static boolean isFightingOwnedSlayer() {
+		//noinspection DataFlowIssue
+		return isFightingSlayer() && bossFight.playerBoss;
+	}
+
+	/**
+	 * Checks whether the currently tracked Slayer boss fight matches the given {@link SlayerType}.
+	 *
+	 * @param slayerType the slayer type to match against the current boss fight
+	 * @return {@code true} if a boss fight is present and its slayer type matches; {@code false} otherwise
+	 */
 	public static boolean isFightingSlayerType(SlayerType slayerType) {
 		return bossFight != null && bossFight.slayerType.equals(slayerType);
 	}
 
+	/**
+	 * Checks whether the given UUID belongs to the currently tracked Slayer boss.
+	 *
+	 * @param uuid the UUID to compare against the currently tracked boss entity
+	 * @return {@code true} if a boss fight is present and the boss UUID matches; {@code false} otherwise
+	 */
+	public static boolean isSelectedBoss(UUID uuid) {
+		return bossFight != null && bossFight.boss.getUuid().equals(uuid);
+	}
+
+	/**
+	 * Gets the armor stand entity associated with the Slayer Boss.
+	 *
+	 * @return The armor stand entity, or null if no boss fight is active.
+	 */
+	@Nullable
+	public static ArmorStandEntity getSlayerArmorStand() {
+		//noinspection DataFlowIssue
+		return isFightingSlayer() ? bossFight.armorStand : null;
+	}
+
+	/**
+	 * Checks whether the armor stand associated with the currently tracked Slayer boss is still valid/alive.
+	 *
+	 * @return {@code true} if the tracked slayer boss armor stand is still valid; {@code false} otherwise
+	 */
+	public static boolean isSlayerArmorStandAlive() {
+		//noinspection DataFlowIssue
+		return isFightingOwnedSlayer() && isValidBossArmorStand(bossFight.armorStand);
+	}
+
+	public static boolean isValidBossArmorStand(ArmorStandEntity armorStandEntity) {
+		return armorStandEntity.isAlive() && !armorStandEntity.getName().getString().endsWith(" 0❤");
+	}
+
 	public static class BossFight {
-		public final ArmorStandEntity bossArmorStand;
+		public final ArmorStandEntity armorStand;
 		public final Entity boss;
 		public final boolean playerBoss;
 		public final SlayerType slayerType;
+		public final SlayerTier slayerTier;
 
-		private BossFight(ArmorStandEntity bossArmorStand, Entity boss, boolean playerBoss, SlayerType slayerType) {
-			this.bossArmorStand = bossArmorStand;
+		private BossFight(ArmorStandEntity armorStand, Entity boss, boolean playerBoss, SlayerType slayerType, SlayerTier slayerTier) {
+			this.armorStand = armorStand;
 			this.boss = boss;
 			this.playerBoss = playerBoss;
 			this.slayerType = slayerType;
+			this.slayerTier = slayerTier;
 		}
 
 		private static void alert() {
@@ -355,6 +471,7 @@ public class SlayerManager {
 
 		public static void remove() {
 			SlayerManager.bossFight = null;
+			ENTITIES_CACHE.clear();
 		}
 	}
 
@@ -371,6 +488,7 @@ public class SlayerManager {
 		public @Nullable Instant bossSpawnTime;
 		public @Nullable Instant bossDeathTime;
 		public boolean bossSpawned;
+		public boolean sentBossAlert;
 
 		private SlayerQuest(SlayerType slayerType, SlayerTier slayerTier) {
 			this.slayerType = slayerType;
@@ -393,6 +511,7 @@ public class SlayerManager {
 		}
 
 		private void update(int level, int xpRemaining, boolean saveCache) {
+			this.sentBossAlert = false;
 			this.level = level;
 			this.xpRemaining = xpRemaining <= 0 && level != -1 && level < slayerType.maxLevel ?
 					slayerType.levelMilestones[level + 1] - slayerType.levelMilestones[level] : xpRemaining;
@@ -418,7 +537,8 @@ public class SlayerManager {
 			if (minibossesArmorStand.contains(armorStand)) return;
 			minibossesArmorStand.add(armorStand);
 
-			Entity miniboss = findClosestMobEntity(slayerType.mobType, armorStand);
+			EntityType<?> minibossType = slayerType.getMinibossType(armorStand.getName().getString());
+			Entity miniboss = findClosestMobEntity(minibossType, armorStand);
 			if (miniboss == null) return;
 			minibosses.add(miniboss);
 

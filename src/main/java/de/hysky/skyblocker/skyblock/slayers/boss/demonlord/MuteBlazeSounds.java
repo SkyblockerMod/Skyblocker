@@ -29,7 +29,7 @@ public class MuteBlazeSounds {
 	}
 
 	private static boolean onSound(SoundEvent sound) {
-		if (Utils.isInCrimson() && SkyblockerConfigManager.get().slayers.blazeSlayer.muteBlazeSounds) {
+		if (SkyblockerConfigManager.get().slayers.blazeSlayer.muteBlazeSounds && Utils.isInCrimson()) {
 			return !MUTED_SOUNDS.contains(sound.id());
 		}
 		return true;

@@ -7,6 +7,7 @@ import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.util.Formatting;
 
 public class TwinClawsIndicator {
@@ -19,12 +20,12 @@ public class TwinClawsIndicator {
 			return;
 		}
 
-		Entity slayerEntity = SlayerManager.getSlayerBossArmorStand();
+		Entity slayerEntity = SlayerManager.getSlayerArmorStand();
 		if (slayerEntity == null) return;
 
 		boolean anyClaws = false;
-		for (Entity entity : SlayerManager.getEntityArmorStands(slayerEntity, 2.5f)) {
-			if (entity.getDisplayName().toString().contains("TWINCLAWS")) {
+		for (ArmorStandEntity armorStandEntity : SlayerManager.getEntityArmorStands(slayerEntity, 2.5f)) {
+			if (armorStandEntity.getName().toString().contains("TWINCLAWS")) {
 				anyClaws = true;
 				if (!TitleContainer.containsTitle(title) && !scheduled) {
 					scheduled = true;

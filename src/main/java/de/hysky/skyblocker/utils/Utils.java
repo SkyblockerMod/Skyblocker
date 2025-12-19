@@ -163,6 +163,10 @@ public class Utils {
 		return location == Location.CRIMSON_ISLE;
 	}
 
+	public static boolean isInSpidersDen() {
+		return location == Location.SPIDERS_DEN;
+	}
+
 	public static boolean isInFarm() {
 		return location == Location.THE_FARMING_ISLAND;
 	}

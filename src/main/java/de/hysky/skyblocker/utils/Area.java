@@ -14,6 +14,7 @@ public enum Area {
 	GLACITE_TUNNELS("Glacite Tunnels"),
 	GLACITE_MINESHAFTS("Glacite Mineshafts"),
 	GREAT_GLACITE_LAKE("Great Glacite Lake"),
+	BURNING_DESERT("Burning Desert"),
 	UNKNOWN("Unknown");
 
 	private final String name;

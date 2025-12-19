@@ -47,6 +47,8 @@ public class SlayersConfig {
 
 	public WolfSlayer wolfSlayer = new WolfSlayer();
 
+	public SpiderSlayer spiderSlayer = new SpiderSlayer();
+
 	public static class CallMaddox {
 		public boolean sendMessageOnFail = true;
 
@@ -114,5 +116,9 @@ public class SlayersConfig {
 		public boolean muteWolfSounds = true;
 
 		public boolean hideSvenPupNametag = true;
+	}
+
+	public static class SpiderSlayer {
+		public boolean muteSpiderSounds = true;
 	}
 }

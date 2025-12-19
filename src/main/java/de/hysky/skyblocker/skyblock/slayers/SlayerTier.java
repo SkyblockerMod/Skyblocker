@@ -20,6 +20,14 @@ public enum SlayerTier implements StringIdentifiable {
 		this.color = color;
 	}
 
+	public static SlayerTier valueOf(String name, String slayerName) {
+		// These don't have the tier in their names (armorStand), so name parameter is null
+		if (slayerName.contains("Conjoined Brood")) return SlayerTier.V;
+		if (slayerName.contains("Atoned Horror")) return SlayerTier.V;
+		if (slayerName.contains("Bloodfiend")) return SlayerTier.V;
+		return SlayerTier.valueOf(name);
+	}
+
 	@Override
 	public String asString() {
 		return name;

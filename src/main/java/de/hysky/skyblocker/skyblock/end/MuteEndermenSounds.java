@@ -26,7 +26,7 @@ public class MuteEndermenSounds {
 	}
 
 	private static boolean onSound(SoundEvent sound) {
-		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().otherLocations.end.muteEndermanSounds) {
+		if (SkyblockerConfigManager.get().otherLocations.end.muteEndermanSounds && Utils.isInTheEnd()) {
 			return !MUTED_SOUNDS.contains(sound.id());
 		}
 		return true;

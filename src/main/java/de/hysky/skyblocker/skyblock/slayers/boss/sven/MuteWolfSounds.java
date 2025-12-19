@@ -14,7 +14,7 @@ public class MuteWolfSounds {
 	}
 
 	private static boolean onSound(SoundEvent sound) {
-		if ((Utils.isInPark() || Utils.isInHub()) && SkyblockerConfigManager.get().slayers.wolfSlayer.muteWolfSounds) {
+		if (SkyblockerConfigManager.get().slayers.wolfSlayer.muteWolfSounds && (Utils.isInPark() || Utils.isInHub())) {
 			return !sound.id().toString().contains("minecraft:entity.wolf.");
 		}
 		return true;

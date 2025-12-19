@@ -959,7 +959,7 @@
   "skyblocker.config.slayer.bossSpawnAlert.@Tooltip": "Displays a warning when a slayer boss spawns",
 
   "skyblocker.config.slayer.bossbar": "Slayer Bossbar",
-  "skyblocker.config.slayer.bossbar.@Tooltip": "Displays a bossbar for your active slayer boss",
+  "skyblocker.config.slayer.bossbar.@Tooltip": "Displays a bossbar for the active slayer boss",
 
   "skyblocker.config.slayer.callMaddox": "Call Maddox",
   "skyblocker.config.slayer.callMaddox.sendMessageOnFail": "Send Message on Slayer Boss Failed",
@@ -967,7 +967,6 @@
   "skyblocker.config.slayer.callMaddox.sendMessageOnKill": "Send Message on Slayer Boss Kill",
 
   "skyblocker.config.slayer.enableHud": "Slayer HUD",
-  "skyblocker.config.slayer.enableHud.@Tooltip": "You may have to do 1 boss before all HUD elements show",
 
   "skyblocker.config.slayer.endermanSlayer": "Enderman Slayer",
   "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs Notification",
@@ -1003,6 +1002,10 @@
   "skyblocker.config.slayer.slainTime.@Tooltip": "Sends the amount of time spent to kill the slayer.",
 
   "skyblocker.config.slayer.slayerHud": "Slayer HUD Config...",
+
+  "skyblocker.config.slayer.spiderSlayer": "Spider Slayer",
+  "skyblocker.config.slayer.spiderSlayer.muteSpiderSounds": "Mute Spider Sounds",
+  "skyblocker.config.slayer.spiderSlayer.muteSpiderSounds@Tooltip": "Mutes Spider, Bat, Silverfish and Skeleton Sounds",
 
   "skyblocker.config.slayer.vampireSlayer": "Vampire Slayer",
   "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "Compact Effigy Waypoints",
@@ -1657,7 +1660,7 @@
   "skyblocker.slayer.callMaddox.message": "Click here to call Maddox the Slayer!",
   "skyblocker.slayer.hud.bossesNeeded": "Bosses until level up",
   "skyblocker.slayer.hud.levelMaxed": "MAXED OUT",
-  "skyblocker.slayer.hud.levelUpIn": "Level up in %s bosses",
+  "skyblocker.slayer.hud.levelUpIn": "Lvl up in %s bosses",
   "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss",
   "skyblocker.slayer.personalBest": "PERSONAL BEST!",
   "skyblocker.slayer.previousPersonalBest": "Your previous Personal Best was %s.",

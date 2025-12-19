@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -23,12 +24,12 @@ public class ManiaIndicator {
 			return;
 		}
 
-		Entity slayerEntity = SlayerManager.getSlayerBossArmorStand();
+		Entity slayerEntity = SlayerManager.getSlayerArmorStand();
 		if (slayerEntity == null) return;
 
 		boolean anyMania = false;
-		for (Entity entity : SlayerManager.getEntityArmorStands(slayerEntity, 2.5f)) {
-			if (entity.getDisplayName().toString().contains("MANIA")) {
+		for (ArmorStandEntity armorStandEntity : SlayerManager.getEntityArmorStands(slayerEntity, 2.5f)) {
+			if (armorStandEntity.getName().toString().contains("MANIA")) {
 				anyMania = true;
 				BlockPos pos = client.player.getBlockPos().down();
 				boolean isGreen = client.world.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;

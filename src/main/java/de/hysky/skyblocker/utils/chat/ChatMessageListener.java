@@ -19,7 +19,7 @@ import de.hysky.skyblocker.skyblock.chat.filters.MimicFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.MoltenWaveFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ShowOffFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.SkyMallFilter;
-import de.hysky.skyblocker.skyblock.slayers.SlayerMinibossSpawnFilter;
+import de.hysky.skyblocker.skyblock.slayers.features.SlayerMinibossSpawnFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.TeleportPadFilter;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
 import de.hysky.skyblocker.skyblock.dwarven.CallMismyla;

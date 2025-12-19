@@ -56,10 +56,9 @@ public abstract class EntityMixin {
 	@Inject(method = "onRemove", at = @At("TAIL"))
 	private void onRemove(Entity.RemovalReason reason, CallbackInfo ci) {
 		if (SlayerManager.isSelectedBoss(uuid)) {
-			if (SkyblockerConfigManager.get().slayers.slainTime && SlayerManager.isInSlayer()) {
+			if (SkyblockerConfigManager.get().slayers.slainTime && SlayerManager.isInSlayerQuest()) {
 				SlayerManager.SlayerQuest slayerQuest = SlayerManager.getSlayerQuest();
-				SlayerManager.BossFight bossFight = SlayerManager.getBossFight();
-				if (slayerQuest != null && slayerQuest.bossSpawned && bossFight != null && bossFight.playerBoss) {
+				if (slayerQuest != null && slayerQuest.bossSpawned && SlayerManager.isFightingOwnedSlayer()) {
 					slayerQuest.bossDeathTime = Instant.now();
 				}
 			}

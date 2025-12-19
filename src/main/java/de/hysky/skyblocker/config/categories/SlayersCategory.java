@@ -4,7 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
-import de.hysky.skyblocker.skyblock.slayers.hud.SlayerHudWidget;
+import de.hysky.skyblocker.skyblock.slayers.SlayerHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
@@ -57,7 +57,6 @@ public class SlayersCategory {
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
-						.description(Text.translatable("skyblocker.config.slayer.enableHud.@Tooltip"))
 						.binding(defaults.slayers.enableHud,
 								() -> config.slayers.enableHud,
 								newValue -> config.slayers.enableHud = newValue)
@@ -324,6 +323,20 @@ public class SlayersCategory {
 								.binding(defaults.slayers.wolfSlayer.hideSvenPupNametag,
 										() -> config.slayers.wolfSlayer.hideSvenPupNametag,
 										newValue -> config.slayers.wolfSlayer.hideSvenPupNametag = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
+				//Spider Slayer
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.spiderSlayer"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.slayer.spiderSlayer.muteSpiderSounds"))
+								.description(Text.translatable("skyblocker.config.slayer.spiderSlayer.muteSpiderSounds@Tooltip"))
+								.binding(defaults.slayers.spiderSlayer.muteSpiderSounds,
+										() -> config.slayers.spiderSlayer.muteSpiderSounds,
+										newValue -> config.slayers.spiderSlayer.muteSpiderSounds = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
