@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import org.joml.Matrix3x2f;
+import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.Color;
@@ -63,8 +64,8 @@ public class HudHelper {
 	 * @param vertices vertices of shape
 	 * @param color color of shape
 	 */
-	public static void drawCustomShape(DrawContext context, List<Vector2f> vertices, int color) {
-		context.state.addSimpleElement(new CustomShapeGuiElementRenderState(RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), vertices, color, context.scissorStack.peekLast()));
+	public static void drawCustomShape(GuiGraphics context, List<Vector2f> vertices, int color) {
+		context.guiRenderState.submitGuiElement(new CustomShapeGuiElementRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), vertices, color, context.scissorStack.peek()));
 	}
 
 	/**

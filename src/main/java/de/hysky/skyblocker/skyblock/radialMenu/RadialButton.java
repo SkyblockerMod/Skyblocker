@@ -97,7 +97,7 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 		SlotTextManager.renderSlotText(context, CLIENT.font, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
 
 		//render tooltip
-		if (hovered && (Screen.hasShiftDown() || SkyblockerConfigManager.get().uiAndVisuals.radialMenu.tooltipsWithoutShift)) {
+		if (hovered && (HudHelper.hasShiftDown() || SkyblockerConfigManager.get().uiAndVisuals.radialMenu.tooltipsWithoutShift)) {
 			// Backpack Preview
 			if (CLIENT.screen != null && CLIENT.screen.getTitle().getString().equals("Storage")) {
 				BackpackPreview.renderPreview(context, CLIENT.screen, linkedSlot, mouseX, mouseY);

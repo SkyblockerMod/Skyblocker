@@ -222,18 +222,18 @@ public class UIAndVisualsCategory {
 						.build()
 				)
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu"))
+						.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu.enabled"))
-								.description(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu.enabled.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu.enabled"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu.enabled.@Tooltip"))
 								.binding(defaults.uiAndVisuals.radialMenu.enabled,
 										() -> config.uiAndVisuals.radialMenu.enabled,
 										newValue -> config.uiAndVisuals.radialMenu.enabled = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu.tooltipsWithoutShift"))
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu.tooltipsWithoutShift"))
 								.binding(defaults.uiAndVisuals.radialMenu.tooltipsWithoutShift,
 										() -> config.uiAndVisuals.radialMenu.tooltipsWithoutShift,
 										newValue -> config.uiAndVisuals.radialMenu.tooltipsWithoutShift = newValue)

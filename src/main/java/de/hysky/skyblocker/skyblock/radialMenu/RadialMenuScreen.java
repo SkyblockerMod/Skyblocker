@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.radialMenu;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -118,28 +120,30 @@ public class RadialMenuScreen extends Screen implements ContainerListener {
 		buttonsHoveredIndex = (int) (angle / buttonArcSize);
 	}
 
+
+
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (buttonsHoveredIndex != -1 && buttonsHoveredIndex < buttons.size()) {
-			this.clickSlot(buttons.get(buttonsHoveredIndex).getLinkedSlot(), button);
+			this.clickSlot(buttons.get(buttonsHoveredIndex).getLinkedSlot(), click.button());
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		switch (keyCode) {
+	public boolean keyPressed(KeyEvent keyEvent) {
+		switch (keyEvent.key()) {
 			case GLFW.GLFW_KEY_RIGHT -> this.navigateDirection(ScreenDirection.RIGHT);
 			case GLFW.GLFW_KEY_LEFT -> this.navigateDirection(ScreenDirection.LEFT);
 			case GLFW.GLFW_KEY_DOWN -> this.navigateDirection(ScreenDirection.DOWN);
 			case GLFW.GLFW_KEY_UP -> this.navigateDirection(ScreenDirection.UP);
 			case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_SPACE -> this.clickSlot();
 			default -> {
-				if (CLIENT.options.keyUp.matches(keyCode, scanCode)) this.navigateDirection(ScreenDirection.UP);
-				else if (CLIENT.options.keyDown.matches(keyCode, scanCode)) this.navigateDirection(ScreenDirection.DOWN);
-				else if (CLIENT.options.keyLeft.matches(keyCode, scanCode)) this.navigateDirection(ScreenDirection.LEFT);
-				else if (CLIENT.options.keyRight.matches(keyCode, scanCode)) this.navigateDirection(ScreenDirection.RIGHT);
-				else return super.keyPressed(keyCode, scanCode, modifiers);
+				if (CLIENT.options.keyUp.matches(keyEvent)) this.navigateDirection(ScreenDirection.UP);
+				else if (CLIENT.options.keyDown.matches(keyEvent)) this.navigateDirection(ScreenDirection.DOWN);
+				else if (CLIENT.options.keyLeft.matches(keyEvent)) this.navigateDirection(ScreenDirection.LEFT);
+				else if (CLIENT.options.keyRight.matches(keyEvent)) this.navigateDirection(ScreenDirection.RIGHT);
+				else return super.keyPressed(keyEvent);
 			}
 		}
 		return false;
