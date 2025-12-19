@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarType;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
@@ -178,7 +179,8 @@ public class StatusBarTracker {
 	}
 
 	private static void updateHealth(int value, int max, int overflow) {
-		if (client.player != null) {
+		// Client doesn't exist in test environment.
+		if (!Debug.isTestEnvironment() && client.player != null) {
 			value = (int) (client.player.getHealth() * max / client.player.getMaxHealth());
 			overflow = (int) (client.player.getAbsorptionAmount() * max / client.player.getMaxHealth());
 		}
