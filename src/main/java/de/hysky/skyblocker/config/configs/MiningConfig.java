@@ -37,7 +37,7 @@ public class MiningConfig {
 
 	public Glacite glacite = new Glacite();
 
-	public BlockBreakPrediction BlockBreakPrediction = new BlockBreakPrediction();
+	public BlockBreakPrediction blockBreakPrediction = new BlockBreakPrediction();
 
 	public static class PickobulusHelper {
 		public boolean enablePickobulusHud = true;

@@ -83,7 +83,7 @@ public class LevelRendererMixin implements EntityRenderMarker {
 
 	@Redirect(method = "extractBlockDestroyAnimation", at = @At(value = "NEW", target = "(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/core/BlockPos;I)Lnet/minecraft/client/renderer/state/BlockBreakingRenderState;"))
 	private BlockBreakingRenderState skyblocker$addBlockBreakingProgressRenderState(ClientLevel clientLevel, BlockPos blockPos, int i) {
-		if (SkyblockerConfigManager.get().mining.BlockBreakPrediction.enabled) {
+		if (SkyblockerConfigManager.get().mining.blockBreakPrediction.enabled) {
 			int pingModifiedProgress = BlockBreakPrediction.getBlockBreakPrediction(blockPos, i);
 			return new BlockBreakingRenderState(clientLevel, blockPos, pingModifiedProgress);
 

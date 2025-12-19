@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import com.google.gson.JsonParser;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -9,12 +10,15 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.NEURepositoryException;
 import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,8 +34,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
 
 import java.io.InputStream;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +46,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BlockBreakPrediction {
-	private static final Map<String, Map<Block, Pair<Integer, Integer>>> blockStrengths = new HashMap<>();
+	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final EnumMap<Location, Map<Block, IntIntPair>> blockStrengths = new EnumMap<>(Location.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern MINING_SPEED_PATTERN = Pattern.compile("Mining Speed: ⸕(\\d+)");
 	private static final Pattern BREAKING_POWER_PATTERN = Pattern.compile("Breaking Power (\\d+)");
@@ -49,6 +56,7 @@ public class BlockBreakPrediction {
 	private static boolean soundPlayed = false;
 	private static long currentBlockBreakTime;
 	private static long startAttackingTime;
+	private static boolean sentWarningMessage = false;
 
 
 	@Init
@@ -67,16 +75,19 @@ public class BlockBreakPrediction {
 
 
 	public static int getBlockBreakPrediction(BlockPos pos, int progression) {
-		if (CLIENT.player == null || !SkyblockerConfigManager.get().mining.BlockBreakPrediction.enabled)
+		if (CLIENT.player == null || !SkyblockerConfigManager.get().mining.blockBreakPrediction.enabled)
 			return progression;
 
+		// only modify target block
 		if (CLIENT.hitResult instanceof BlockHitResult hitResult) {
 			if (!hitResult.getBlockPos().equals(pos)) {
 				return progression;
 			}
+		} else {
+			return progression;
 		}
 
-		//make sure it's the block the player is looking at
+		//find breaking time of new block
 		if (newBlock) {
 			newBlock = false;
 			//get the breaking power of the current tool
@@ -89,12 +100,12 @@ public class BlockBreakPrediction {
 			}
 
 		}
+
 		if (currentBlockBreakTime > 0) {
 			long timeElapsed = System.currentTimeMillis() - startAttackingTime;
-			if (SkyblockerConfigManager.get().mining.BlockBreakPrediction.playSound && !soundPlayed && (int) ((timeElapsed * 10) / (currentBlockBreakTime)) == 10) {
+			if (SkyblockerConfigManager.get().mining.blockBreakPrediction.playSound && !soundPlayed && (int) ((timeElapsed * 10) / (currentBlockBreakTime)) == 10) {
 				soundPlayed = true;
 				CLIENT.player.playSound(SoundEvents.BLAZE_HURT, 100f, 1f);
-
 			}
 			return Math.min((int) ((timeElapsed * 10) / (currentBlockBreakTime)), 9);
 		}
@@ -110,7 +121,10 @@ public class BlockBreakPrediction {
 		Optional<Matcher> speed = PlayerListManager.getPlayerStringList().stream().map(MINING_SPEED_PATTERN::matcher).filter(Matcher::matches).findFirst();
 		//make sure the data is in tab and if not tell the user
 		if (speed.isEmpty()) {
-			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.blockBreakPrediction.enableStatsMessage")), false);
+			if (!sentWarningMessage) {
+				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.blockBreakPrediction.enableStatsMessage")).withStyle(ChatFormatting.RED), false);
+				sentWarningMessage = true;
+			}
 			return -1;
 		}
 
@@ -121,9 +135,9 @@ public class BlockBreakPrediction {
 	private static long getBreakTime(BlockPos pos, int toolBreakingPower) {
 		if (CLIENT.level == null) return -1;
 		Block targetBlock = CLIENT.level.getBlockState(pos).getBlock();
-		if (!blockStrengths.containsKey(Utils.getLocationRaw()) || !blockStrengths.get(Utils.getLocationRaw()).containsKey(targetBlock))
+		if (!blockStrengths.containsKey(Utils.getLocation()) || !blockStrengths.get(Utils.getLocation()).containsKey(targetBlock))
 			return -1;
-		Pair<Integer, Integer> blockStrengthAndBreakingPower = blockStrengths.get(Utils.getLocationRaw()).get(targetBlock);
+		Pair<Integer, Integer> blockStrengthAndBreakingPower = blockStrengths.get(Utils.getLocation()).get(targetBlock);
 		//if block can not be broken do not calculate
 		if (blockStrengthAndBreakingPower.second() > toolBreakingPower) return -1;
 		int blockStrength = blockStrengthAndBreakingPower.first();
@@ -136,8 +150,8 @@ public class BlockBreakPrediction {
 
 	public static void addStrength(String location, Block blockId, int strength, int breakingPower) {
 		blockStrengths
-				.computeIfAbsent(location, k -> new HashMap<>())
-				.put(blockId, Pair.of(strength, breakingPower));
+				.computeIfAbsent(Location.from(location), k -> new HashMap<>())
+				.put(blockId, IntIntPair.of(strength, breakingPower));
 	}
 
 	private static void loadBlockStrength() {
@@ -148,13 +162,13 @@ public class BlockBreakPrediction {
 				if (!file.isFile()) continue;
 				try (InputStream stream = file.stream()) {
 					//get block id data
-					blockFile data = blockFile.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(new String(stream.readAllBytes()))).getOrThrow();
+					BlockFile data = BlockFile.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(new String(stream.readAllBytes()))).getOrThrow();
 					//add each block to lookup table for location
-					for (block blockType : data.blocks) {
-						for (String location : blockType.onlyIn) {
+					for (SkyblockBlock skyblockBlockType : data.SkyblockBlocks) {
+						for (String location : skyblockBlockType.onlyIn) {
 							//if its mithril edit it to the actual strength as that is not in the repo
 							if (data.name.equals("Mithril Ore")) {
-								Block block = LegacyLookup.get(blockType.itemId, blockType.damage);
+								Block block = LegacyLookup.get(skyblockBlockType.itemId, skyblockBlockType.damage);
 								if (block == Blocks.GRAY_WOOL || block == Blocks.CYAN_TERRACOTTA) {
 									addStrength(location, block, 500, data.breakingPower);
 								} else if (block == Blocks.LIGHT_BLUE_WOOL) {
@@ -165,40 +179,39 @@ public class BlockBreakPrediction {
 								continue;
 							}
 
-							addStrength(location, LegacyLookup.get(blockType.itemId, blockType.damage), data.blockStrength, data.breakingPower);
+							addStrength(location, LegacyLookup.get(skyblockBlockType.itemId, skyblockBlockType.damage), data.blockStrength, data.breakingPower);
 						}
 					}
 
 				} catch (Exception ex) {
-					ex.printStackTrace();
-					//LOGGER.error("[Skyblocker Attributes] Failed to load attributes!", ex);
+					LOGGER.error("[Skyblocker BlockBreakPredictions] Failed to load mining blocks!", ex);
 				}
 			}
 
 
 		} catch (NEURepositoryException exception) {
-			exception.printStackTrace();
+			LOGGER.error("[Skyblocker BlockBreakPredictions] Failed to load mining blocks!", exception);
 		}
 
 
 	}
 
-	public record blockFile(int blockStrength, int breakingPower, String name, List<block> blocks) {
-		public static final Codec<blockFile> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.INT.fieldOf("blockStrength").forGetter(blockFile::blockStrength),
-				Codec.INT.fieldOf("breakingPower").forGetter(blockFile::breakingPower),
-				Codec.STRING.fieldOf("name").forGetter(blockFile::name),
-				block.LIST_CODEC.fieldOf("blocks189").forGetter(blockFile::blocks)
-		).apply(instance, blockFile::new));
+	public record BlockFile(int blockStrength, int breakingPower, String name, List<SkyblockBlock> SkyblockBlocks) {
+		public static final Codec<BlockFile> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.INT.fieldOf("blockStrength").forGetter(BlockFile::blockStrength),
+				Codec.INT.fieldOf("breakingPower").forGetter(BlockFile::breakingPower),
+				Codec.STRING.fieldOf("name").forGetter(BlockFile::name),
+				SkyblockBlock.LIST_CODEC.fieldOf("blocks189").forGetter(BlockFile::SkyblockBlocks)
+		).apply(instance, BlockFile::new));
 	}
 
-	public record block(String itemId, int damage, List<String> onlyIn) { //
-		private static final Codec<block> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.STRING.fieldOf("itemId").forGetter(block::itemId),
-				Codec.INT.fieldOf("damage").forGetter(block::damage),
-				Codec.STRING.listOf().fieldOf("onlyIn").forGetter(block::onlyIn)
-		).apply(instance, block::new));
-		public static final Codec<List<block>> LIST_CODEC = CODEC.listOf();
+	public record SkyblockBlock(String itemId, int damage, List<String> onlyIn) { //
+		private static final Codec<SkyblockBlock> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.STRING.fieldOf("itemId").forGetter(SkyblockBlock::itemId),
+				Codec.INT.fieldOf("damage").forGetter(SkyblockBlock::damage),
+				Codec.STRING.listOf().fieldOf("onlyIn").forGetter(SkyblockBlock::onlyIn)
+		).apply(instance, SkyblockBlock::new));
+		public static final Codec<List<SkyblockBlock>> LIST_CODEC = CODEC.listOf();
 	}
 
 	// I don't like this code but don't see another way to do it, but it basically removes the point from loading it from the repo
