@@ -14,6 +14,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.adders.CatacombsLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.ChoosePetLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.CollectionAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.CommunityShopAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.EnchantmentAbbreviationAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.EnchantmentLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.EssenceShopAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.EvolvingItemAdder;
@@ -58,6 +59,7 @@ import java.util.stream.Stream;
 public class SlotTextManager {
 	private static final SlotTextAdder[] adders = new SlotTextAdder[]{
 			new EssenceShopAdder(),
+			new EnchantmentAbbreviationAdder(),
 			new EnchantmentLevelAdder(),
 			new MinionLevelAdder(),
 			new PetLevelAdder(),
