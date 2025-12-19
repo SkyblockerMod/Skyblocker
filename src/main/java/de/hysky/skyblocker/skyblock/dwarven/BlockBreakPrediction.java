@@ -184,7 +184,7 @@ public class BlockBreakPrediction {
 		public static final Codec<List<block>> LIST_CODEC = CODEC.listOf();
 	}
 
-	// I don't like this code but don't see another way to do it but it basicaly removes the point from loading it from the repo
+	// I don't like this code but don't see another way to do it, but it basically removes the point from loading it from the repo
 	public static class LegacyLookup {
 
 		public static final Map<String, String> TABLE = new HashMap<>();
