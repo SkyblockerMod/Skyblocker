@@ -153,9 +153,9 @@ public class BlockBreakPrediction {
 
 	}
 
-	public static void addStrength(String location, Block blockId, int strength, int breakingPower) {
+	public static void addStrength(Location location, Block blockId, int strength, int breakingPower) {
 		blockStrengths
-				.computeIfAbsent(Location.from(location), k -> new HashMap<>())
+				.computeIfAbsent(location, k -> new HashMap<>())
 				.put(blockId, IntIntPair.of(strength, breakingPower));
 	}
 
@@ -170,7 +170,7 @@ public class BlockBreakPrediction {
 					BlockFile data = BlockFile.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(new String(stream.readAllBytes()))).getOrThrow();
 					//add each block to lookup table for location
 					for (SkyblockBlock skyblockBlockType : data.SkyblockBlocks) {
-						for (String location : skyblockBlockType.onlyIn) {
+						for (Location location : skyblockBlockType.onlyIn) {
 							//if its mithril edit it to the actual strength as that is not in the repo
 							if (data.name.equals("Mithril Ore")) {
 								Block block = LegacyLookup.get(skyblockBlockType.itemId, skyblockBlockType.damage);
@@ -210,11 +210,11 @@ public class BlockBreakPrediction {
 		).apply(instance, BlockFile::new));
 	}
 
-	public record SkyblockBlock(String itemId, int damage, List<String> onlyIn) {
+	public record SkyblockBlock(String itemId, int damage, List<Location> onlyIn) {
 		private static final Codec<SkyblockBlock> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("itemId").forGetter(SkyblockBlock::itemId),
 				Codec.INT.fieldOf("damage").forGetter(SkyblockBlock::damage),
-				Codec.STRING.listOf().fieldOf("onlyIn").forGetter(SkyblockBlock::onlyIn)
+				Location.CODEC.listOf().fieldOf("onlyIn").forGetter(SkyblockBlock::onlyIn)
 		).apply(instance, SkyblockBlock::new));
 		public static final Codec<List<SkyblockBlock>> LIST_CODEC = CODEC.listOf();
 	}
