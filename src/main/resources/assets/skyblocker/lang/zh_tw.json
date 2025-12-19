@@ -1559,5 +1559,6 @@
     "skyblocker.config.mining.pickobulusHelper.hideOnCooldown": "冷卻時隱藏HUD",
     "skyblocker.config.mining.pickobulusHelper.enableHud": "啟用Pickobulus HUD",
     "skyblocker.config.mining.pickobulusHelper.hideOnCooldown.@Tooltip": "Pickobulus冷卻期間隱藏HUD。\n\n需要啟用「鎬子技能小部件」才能生效！",
-    "skyblocker.config.mining.pickobulusHelper.enableHud.@Tooltip": "顯示能夠開採的方塊數量，以及將獲得的粉末和pity值。"
+    "skyblocker.config.mining.pickobulusHelper.enableHud.@Tooltip": "顯示能夠開採的方塊數量，以及將獲得的粉末和pity值。",
+    "skyblocker.config.uiAndVisuals.slotText.enchantmentAbbreviation": "附魔名稱縮寫"
 }
