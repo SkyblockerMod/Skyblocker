@@ -41,25 +41,25 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	private float durabilityBarFill = -1;
 
 	@Unique
-	private String skyblockId;
+	private @Nullable String skyblockId;
 
 	@Unique
-	private String skyblockApiId;
+	private @Nullable String skyblockApiId;
 
 	@Unique
-	private String neuName;
+	private @Nullable String neuName;
 
 	@Unique
-	private String uuid;
+	private @Nullable String uuid;
 
 	@Unique
-	private List<String> loreString;
+	private @Nullable List<String> loreString;
 
 	@Unique
-	private PetInfo petInfo;
+	private @Nullable PetInfo petInfo;
 
 	@Unique
-	private SkyblockItemRarity skyblockRarity;
+	private @Nullable SkyblockItemRarity skyblockRarity;
 
 	@ModifyReturnValue(method = "getName", at = @At("RETURN"))
 	private Text skyblocker$customItemNames(Text original) {
@@ -118,9 +118,18 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	}
 
 	@Inject(method = "set*", at = @At("TAIL"))
-	private <T> void skyblocker$resetUuid(ComponentType<T> type, @Nullable T value, CallbackInfoReturnable<T> cir) {
-		if (type == DataComponentTypes.CUSTOM_DATA) uuid = null;
-		if (type == DataComponentTypes.LORE) loreString = null;
+	private <T> void skyblocker$resetFields(ComponentType<T> type, @Nullable T value, CallbackInfoReturnable<T> cir) {
+		if (type == DataComponentTypes.CUSTOM_DATA) {
+			uuid = null;
+			skyblockId = null;
+			skyblockApiId = null;
+			neuName = null;
+			petInfo = null;
+		}
+		if (type == DataComponentTypes.LORE) {
+			loreString = null;
+			skyblockRarity = null;
+		}
 	}
 
 	@Unique
