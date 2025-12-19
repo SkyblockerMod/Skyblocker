@@ -231,9 +231,9 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 
 	private Optional<Component> getAbbreviation(String enchantmentId) {
 		if (ENCHANTMENT_ABBREVIATIONS.containsKey(enchantmentId)) {
-			return Optional.of(Component.literal(ENCHANTMENT_ABBREVIATIONS.get(enchantmentId)).withColor(ChatFormatting.BLUE.getColor()));
+			return Optional.of(Component.literal(ENCHANTMENT_ABBREVIATIONS.get(enchantmentId)).withStyle(ChatFormatting.BLUE));
 		} else if (ULTIMATE_ENCHANTMENT_ABBREVIATIONS.containsKey(enchantmentId)) {
-			return Optional.of(Component.literal(ULTIMATE_ENCHANTMENT_ABBREVIATIONS.get(enchantmentId)).withColor(ChatFormatting.LIGHT_PURPLE.getColor()));
+			return Optional.of(Component.literal(ULTIMATE_ENCHANTMENT_ABBREVIATIONS.get(enchantmentId)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
 		return Optional.empty();
 	}
