@@ -83,13 +83,16 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (client.player == null) {
+		if (client.player == null || client.world == null) {
 			addComponent(new PlainTextComponent(Text.literal("Nothing to show :p")));
 			return;
 		}
 		ItemStack farmingToolStack = client.player.getMainHandStack();
 		String itemId = farmingToolStack.getSkyblockId();
 		String cropItemId = FARMING_TOOLS.getOrDefault(itemId, "");
+		if (cropItemId.equals("DOUBLE_PLANT") && client.world.getTimeOfDay() >= 12000) {
+			cropItemId = "MOONFLOWER";
+		}
 		ItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
 
 		String counterText = FarmingHud.counterText();
