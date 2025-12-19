@@ -8,10 +8,12 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.NEURepositoryException;
+import it.unimi.dsi.fastutil.Pair;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -38,9 +40,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BlockBreakPrediction {
-	private static final Map<String, Map<Block, Integer>> blockStrengths = new HashMap<>();
+	private static final Map<String, Map<Block, Pair<Integer, Integer>>> blockStrengths = new HashMap<>();
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern MINING_SPEED_PATTERN = Pattern.compile("Mining Speed: ⸕(\\d+)");
+	private static final Pattern BREAKING_POWER_PATTERN = Pattern.compile("Breaking Power (\\d+)");
 
 	private static boolean newBlock = false;
 	private static boolean soundPlayed = false;
@@ -64,7 +67,8 @@ public class BlockBreakPrediction {
 
 
 	public static int getBlockBreakPrediction(BlockPos pos, int progression) {
-		if (CLIENT.player == null || !SkyblockerConfigManager.get().mining.BlockBreakPrediction.enabled) return progression;
+		if (CLIENT.player == null || !SkyblockerConfigManager.get().mining.BlockBreakPrediction.enabled)
+			return progression;
 
 		if (CLIENT.hitResult instanceof BlockHitResult hitResult) {
 			if (!hitResult.getBlockPos().equals(pos)) {
@@ -75,7 +79,15 @@ public class BlockBreakPrediction {
 		//make sure it's the block the player is looking at
 		if (newBlock) {
 			newBlock = false;
-			currentBlockBreakTime = getBreakTime(pos);
+			//get the breaking power of the current tool
+			Matcher loreMatch = ItemUtils.getLoreLineIfMatch(CLIENT.player.getMainHandItem(), BREAKING_POWER_PATTERN);
+			if (loreMatch != null && loreMatch.matches()) {
+				int toolBreakingPower = NumberUtils.toInt(loreMatch.group(1));
+				currentBlockBreakTime = getBreakTime(pos, toolBreakingPower);
+			} else {
+				currentBlockBreakTime = -1;
+			}
+
 		}
 		if (currentBlockBreakTime > 0) {
 			long timeElapsed = System.currentTimeMillis() - startAttackingTime;
@@ -106,11 +118,15 @@ public class BlockBreakPrediction {
 		return NumberUtils.toInt(speed.get().group(1));
 	}
 
-	private static long getBreakTime(BlockPos pos) {
+	private static long getBreakTime(BlockPos pos, int toolBreakingPower) {
 		if (CLIENT.level == null) return -1;
 		Block targetBlock = CLIENT.level.getBlockState(pos).getBlock();
-		if (!blockStrengths.containsKey(Utils.getLocationRaw()) || !blockStrengths.get(Utils.getLocationRaw()).containsKey(targetBlock)) return -1;
-		int blockStrength = blockStrengths.get(Utils.getLocationRaw()).get(targetBlock);
+		if (!blockStrengths.containsKey(Utils.getLocationRaw()) || !blockStrengths.get(Utils.getLocationRaw()).containsKey(targetBlock))
+			return -1;
+		Pair<Integer, Integer> blockStrengthAndBreakingPower = blockStrengths.get(Utils.getLocationRaw()).get(targetBlock);
+		//if block can not be broken do not calculate
+		if (blockStrengthAndBreakingPower.second() > toolBreakingPower) return -1;
+		int blockStrength = blockStrengthAndBreakingPower.first();
 		int miningSpeed = getCurrentMiningSpeed();
 		//using equation mining time (ticks) = (block strength x 30) / mining speed
 
@@ -118,10 +134,10 @@ public class BlockBreakPrediction {
 
 	}
 
-	public static void addStrength(String location, Block blockId, int strength) {
+	public static void addStrength(String location, Block blockId, int strength, int breakingPower) {
 		blockStrengths
 				.computeIfAbsent(location, k -> new HashMap<>())
-				.put(blockId, strength);
+				.put(blockId, Pair.of(strength, breakingPower));
 	}
 
 	private static void loadBlockStrength() {
@@ -140,16 +156,16 @@ public class BlockBreakPrediction {
 							if (data.name.equals("Mithril Ore")) {
 								Block block = LegacyLookup.get(blockType.itemId, blockType.damage);
 								if (block == Blocks.GRAY_WOOL || block == Blocks.CYAN_TERRACOTTA) {
-									addStrength(location, block, 500);
+									addStrength(location, block, 500, data.breakingPower);
 								} else if (block == Blocks.LIGHT_BLUE_WOOL) {
-									addStrength(location, block, 1500);
+									addStrength(location, block, 1500, data.breakingPower);
 								} else {
-									addStrength(location, block, 800);
+									addStrength(location, block, 800, data.breakingPower);
 								}
 								continue;
 							}
 
-							addStrength(location, LegacyLookup.get(blockType.itemId, blockType.damage), data.blockStrength);
+							addStrength(location, LegacyLookup.get(blockType.itemId, blockType.damage), data.blockStrength, data.breakingPower);
 						}
 					}
 
@@ -167,9 +183,10 @@ public class BlockBreakPrediction {
 
 	}
 
-	public record blockFile(int blockStrength, String name, List<block> blocks) {
+	public record blockFile(int blockStrength, int breakingPower, String name, List<block> blocks) {
 		public static final Codec<blockFile> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.INT.fieldOf("blockStrength").forGetter(blockFile::blockStrength),
+				Codec.INT.fieldOf("breakingPower").forGetter(blockFile::breakingPower),
 				Codec.STRING.fieldOf("name").forGetter(blockFile::name),
 				block.LIST_CODEC.fieldOf("blocks189").forGetter(blockFile::blocks)
 		).apply(instance, blockFile::new));
