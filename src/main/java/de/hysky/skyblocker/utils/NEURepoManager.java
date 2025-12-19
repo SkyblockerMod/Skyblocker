@@ -7,7 +7,11 @@ import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import io.github.moulberry.repo.*;
+import io.github.moulberry.repo.NEUConstants;
+import io.github.moulberry.repo.NEURecipeCache;
+import io.github.moulberry.repo.NEURepoFile;
+import io.github.moulberry.repo.NEURepository;
+import io.github.moulberry.repo.NEURepositoryException;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
 import io.github.moulberry.repo.util.NEUId;
@@ -230,6 +234,7 @@ public class NEURepoManager {
 	public static @Nullable NEURepoFile file(String path) {
 		return NEU_REPO.file(path);
 	}
+
 	public static Stream<NEURepoFile> tree(String path) throws NEURepositoryException {
 		return NEU_REPO.tree(path);
 	}
