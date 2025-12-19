@@ -49,7 +49,11 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 			Map.entry("THEORETICAL_HOE_WARTS_2", "NETHER_STALK"),
 			Map.entry("THEORETICAL_HOE_WARTS_3", "NETHER_STALK"),
 			Map.entry("FUNGI_CUTTER", "RED_MUSHROOM"),
+			Map.entry("FUNGI_CUTTER_2", "RED_MUSHROOM"),
+			Map.entry("FUNGI_CUTTER_3", "RED_MUSHROOM"),
 			Map.entry("CACTUS_KNIFE", "CACTUS"),
+			Map.entry("CACTUS_KNIFE_2", "CACTUS"),
+			Map.entry("CACTUS_KNIFE_3", "CACTUS"),
 			Map.entry("MELON_DICER", "MELON"),
 			Map.entry("MELON_DICER_2", "MELON"),
 			Map.entry("MELON_DICER_3", "MELON"),
@@ -57,6 +61,8 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 			Map.entry("PUMPKIN_DICER_2", "PUMPKIN"),
 			Map.entry("PUMPKIN_DICER_3", "PUMPKIN"),
 			Map.entry("COCO_CHOPPER", "INK_SACK:3"),
+			Map.entry("COCO_CHOPPER_2", "INK_SACK:3"),
+			Map.entry("COCO_CHOPPER_3", "INK_SACK:3"),
 			Map.entry("BASIC_GARDENING_HOE", ""),
 			Map.entry("ADVANCED_GARDENING_HOE", "")
 	);
