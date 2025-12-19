@@ -221,7 +221,7 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		String name = stack.getHoverName().getString();
 		if (!name.equals("Enchanted Book")) return List.of();
 		CompoundTag enchantments = getEnchantments(stack);
-		if (enchantments == null ) return List.of();
+		if (enchantments == null) return List.of();
 		final String enchantmentId = enchantments.keySet().iterator().next();
 
 		return getAbbreviation(enchantmentId)
