@@ -7,8 +7,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class SwingAnimation {
 	public static boolean hasAbility(ItemStack stack) {
-		List<ItemAbility> abilities = ItemAbility.getAbilities(stack, (byte) 0);
-		if (abilities.isEmpty()) return false;
+		List<ItemAbility> abilities = stack.skyblocker$getAbilities();
 		for (ItemAbility ability : abilities) {
 			if (ability.activation() == ItemAbility.Activation.RIGHT_CLICK) return true;
 		}
