@@ -1191,6 +1191,7 @@
   "skyblocker.config.uiAndVisuals.slotText.collectionLevel": "Collection Level",
   "skyblocker.config.uiAndVisuals.slotText.communityShop": "Community Shop",
   "skyblocker.config.uiAndVisuals.slotText.communityShop.@Tooltip": "Displays the level of the upgrades in the community shop.",
+  "skyblocker.config.uiAndVisuals.slotText.enchantmentAbbreviation": "Enchantment Abbreviation",
   "skyblocker.config.uiAndVisuals.slotText.enchantmentLevel": "Enchantment Book Level",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop": "Essence Shop",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip": "Displays the levels and your current amount of essence while in essence shops.",
