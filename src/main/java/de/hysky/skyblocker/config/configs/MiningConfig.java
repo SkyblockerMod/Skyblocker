@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.config.configs;
 
+import net.minecraft.client.resources.language.I18n;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.resources.language.I18n;
 
 public class MiningConfig {
 	public boolean enableDrillFuel = true;
@@ -16,7 +17,7 @@ public class MiningConfig {
 
 	/**
 	 * TODO: Move into {@link PickobulusHelper} in next config version.
-	*/
+	 */
 	public boolean enablePickobulusHelper = true;
 
 	public PickobulusHelper pickobulusHelper = new PickobulusHelper();
@@ -43,7 +44,7 @@ public class MiningConfig {
 
 		public boolean hideHudOnCooldown = false;
 	}
-	
+
 
 	public static class DwarvenMines {
 		public boolean solveFetchur = true;
