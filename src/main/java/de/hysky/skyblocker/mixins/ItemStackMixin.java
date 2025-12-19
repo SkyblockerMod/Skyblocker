@@ -117,7 +117,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 	}
 
 	@Inject(method = "set*", at = @At("TAIL"))
-	private <T> void skyblocker$resetUuid(DataComponentType<T> type, @Nullable T value, CallbackInfoReturnable<T> cir) {
+	private <T> void skyblocker$resetFields(DataComponentType<T> type, @Nullable T value, CallbackInfoReturnable<T> cir) {
 		if (type == DataComponents.CUSTOM_DATA) {
 			uuid = null;
 			skyblockId = null;
