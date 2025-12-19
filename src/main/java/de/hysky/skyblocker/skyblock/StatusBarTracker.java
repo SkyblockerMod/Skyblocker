@@ -19,6 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,6 +30,7 @@ public class StatusBarTracker {
 	private static final Pattern MANA_USE = Pattern.compile("§b-([\\d,]+) Mana \\(§.*?\\) *");
 	private static final Pattern MANA_STATUS = Pattern.compile("§b(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|§3(?<overflow>[\\d,]+)ʬ) *");
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
+	private static final Pattern RIFT_TIME_STATUS = Pattern.compile("§a(?:[\\d,]+m)?[\\d,]+sф Left *");
 
 	private static final Minecraft client = Minecraft.getInstance();
 	private static Resource health = new Resource(100, 100, 0);
@@ -128,10 +130,13 @@ public class StatusBarTracker {
 	public static String update(String actionBar, boolean filterManaUse) {
 		var sb = new StringBuilder();
 
-		// Match health and don't add it to the string builder
-		// Append healing to the string builder if there is any healing
 		Matcher matcher = STATUS_HEALTH.matcher(actionBar);
-		if (matcher.find()) {
+		if (Utils.isInTheRift()) {
+			if (matcher.usePattern(RIFT_TIME_STATUS).find() && FancyStatusBars.isExperienceFancyBarEnabled()) matcher.appendReplacement(sb, "");
+		} else {
+			// Match health and don't add it to the string builder
+			// Append healing to the string builder if there is any healing
+			if (matcher.find()) {
 			updateHealth(matcher);
 			if (matcher.group("healing") != null) {
 				sb.append("§c❤");
@@ -140,12 +145,15 @@ public class StatusBarTracker {
 			else matcher.appendReplacement(sb, "$3");
 		}
 
-		// Match defense or mana use and don't add it to the string builder
-		if (matcher.usePattern(DEFENSE_STATUS).find()) {
-			defense = RegexUtils.parseIntFromMatcher(matcher, "defense");
-			if (FancyStatusBars.isBarEnabled(StatusBarType.DEFENSE)) matcher.appendReplacement(sb, "");
-			else matcher.appendReplacement(sb, "$0");
-		} else if (filterManaUse && matcher.usePattern(MANA_USE).find()) {
+			// Match defense or mana use and don't add it to the string builder
+			if (matcher.usePattern(DEFENSE_STATUS).find()) {
+				defense = RegexUtils.parseIntFromMatcher(matcher, "defense");
+				if (FancyStatusBars.isBarEnabled(StatusBarType.DEFENSE)) matcher.appendReplacement(sb, "");
+				else matcher.appendReplacement(sb, "$0");
+			}
+		}
+
+		if (filterManaUse && matcher.usePattern(MANA_USE).find()) {
 			matcher.appendReplacement(sb, "");
 		}
 
