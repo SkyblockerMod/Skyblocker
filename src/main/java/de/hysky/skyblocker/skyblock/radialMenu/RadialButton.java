@@ -4,15 +4,19 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.narration.NarrationPart;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
@@ -22,8 +26,8 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
-public class RadialButton implements Drawable, Element, Widget, Selectable {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+public class RadialButton implements Renderable, GuiEventListener, LayoutElement, NarratableEntry {
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 
 	private final float startAngle;
 	private final float arcLength;
@@ -45,7 +49,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 	}
 
 	public String getName() {
-		Text customName = icon.getCustomName();
+		Component customName = icon.getCustomName();
 		if (customName == null) return "null";
 		return icon.getCustomName().getString();
 	}
@@ -55,12 +59,12 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 	}
 
 	@Override
-	public ScreenRect getNavigationFocus() {
-		return Element.super.getNavigationFocus();
+	public ScreenRectangle getRectangle() {
+		return GuiEventListener.super.getRectangle();
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		//change color  and radius when hovered
 		boolean hovered = getHovered.getAsBoolean();
 		int color = hovered ? 0xFE000000 : 0x77000000; //darker when hovered
@@ -68,7 +72,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 		float external = hovered ? externalRadius + 5 : externalRadius;
 
 		//get bounding box
-		Vector2i center = new Vector2i(context.getScaledWindowWidth() / 2, context.getScaledWindowHeight() / 2);
+		Vector2i center = new Vector2i(context.guiWidth() / 2, context.guiHeight() / 2);
 		List<Vector2f> vertices = new ArrayList<>();
 		//first background rectangle
 		vertices.add(getPos(center, startAngle, internal));
@@ -88,18 +92,18 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 		float iconAngle = startAngle + (arcLength / 2);
 		Vector2f iconPos = getPos(center, iconAngle, (internal + external) / 2);
 		iconPos.sub(8, 8);
-		context.drawItem(icon, (int) iconPos.x, (int) iconPos.y);
-		context.drawStackOverlay(CLIENT.textRenderer, icon, (int) iconPos.x, (int) iconPos.y);
-		SlotTextManager.renderSlotText(context, CLIENT.textRenderer, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
+		context.renderItem(icon, (int) iconPos.x, (int) iconPos.y);
+		context.renderItemDecorations(CLIENT.font, icon, (int) iconPos.x, (int) iconPos.y);
+		SlotTextManager.renderSlotText(context, CLIENT.font, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
 
 		//render tooltip
 		if (hovered && (Screen.hasShiftDown() || SkyblockerConfigManager.get().uiAndVisuals.radialMenu.tooltipsWithoutShift)) {
 			// Backpack Preview
-			if (CLIENT.currentScreen != null && CLIENT.currentScreen.getTitle().getString().equals("Storage")) {
-				BackpackPreview.renderPreview(context, CLIENT.currentScreen, linkedSlot, mouseX, mouseY);
+			if (CLIENT.screen != null && CLIENT.screen.getTitle().getString().equals("Storage")) {
+				BackpackPreview.renderPreview(context, CLIENT.screen, linkedSlot, mouseX, mouseY);
 			} else {
 				//normal tooltips
-				context.drawItemTooltip(CLIENT.textRenderer, icon, mouseX, mouseY);
+				context.setTooltipForNextFrame(CLIENT.font, icon, mouseX, mouseY);
 			}
 		}
 	}
@@ -117,27 +121,27 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 	}
 
 	@Override
-	public SelectionType getType() {
+	public NarrationPriority narrationPriority() {
 		if (this.isFocused()) {
-			return Selectable.SelectionType.FOCUSED;
+			return NarratableEntry.NarrationPriority.FOCUSED;
 		} else {
-			return this.getHovered.getAsBoolean() ? Selectable.SelectionType.HOVERED : Selectable.SelectionType.NONE;
+			return this.getHovered.getAsBoolean() ? NarratableEntry.NarrationPriority.HOVERED : NarratableEntry.NarrationPriority.NONE;
 		}
 	}
 
 	@Override
-	public boolean isNarratable() {
-		return Selectable.super.isNarratable();
+	public boolean isActive() {
+		return NarratableEntry.super.isActive();
 	}
 
 	@Override
-	public Collection<? extends Selectable> getNarratedParts() {
-		return Selectable.super.getNarratedParts();
+	public Collection<? extends NarratableEntry> getNarratables() {
+		return NarratableEntry.super.getNarratables();
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder builder) {
-		builder.put(NarrationPart.TITLE, getName());
+	public void updateNarration(NarrationElementOutput builder) {
+		builder.add(NarratedElementType.TITLE, getName());
 	}
 
 	@Override
@@ -167,7 +171,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 	}
 
 	@Override
-	public void forEachChild(Consumer<ClickableWidget> consumer) {}
+	public void visitWidgets(Consumer<AbstractWidget> consumer) {}
 
 	@Override
 	public void setFocused(boolean focused) {

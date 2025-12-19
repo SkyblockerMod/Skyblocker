@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.radialMenu.menus;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class CollectionsMenu extends RegexMenu {
 	public CollectionsMenu() {

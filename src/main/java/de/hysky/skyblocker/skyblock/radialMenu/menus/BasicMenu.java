@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.radialMenu.menus;
 
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 
 public abstract class BasicMenu extends RadialMenu {
@@ -15,7 +15,7 @@ public abstract class BasicMenu extends RadialMenu {
 		this.id = id;
 	}
 
-	public Text getTitle(Text title) {
+	public Component getTitle(Component title) {
 		return title;
 	}
 

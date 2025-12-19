@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.radialMenu.menus;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class HuntingMenu extends BasicMenu {
 
@@ -11,8 +11,8 @@ public class HuntingMenu extends BasicMenu {
 	}
 
 	@Override
-	public Text getTitle(Text title) {
-		return Text.of("Hunting Toolkit");
+	public Component getTitle(Component title) {
+		return Component.nullToEmpty("Hunting Toolkit");
 	}
 
 	@Override

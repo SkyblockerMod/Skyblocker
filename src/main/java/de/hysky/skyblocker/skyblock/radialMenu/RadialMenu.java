@@ -4,8 +4,8 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.azureaaron.dandelion.systems.Option;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class RadialMenu {
 
@@ -13,7 +13,7 @@ public abstract class RadialMenu {
 	 * @param title the original window title
 	 * @return the title to show in the radial menu
 	 */
-	protected abstract Text getTitle(Text title);
+	protected abstract Component getTitle(Component title);
 
 	/**
 	 * Works out if this radial menu should be shown for a given screen title
@@ -60,7 +60,7 @@ public abstract class RadialMenu {
 
 	public Option<Boolean> getOption(SkyblockerConfig config) {
 		return Option.<Boolean>createBuilder()
-				.name(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu." + getConfigId()))
+				.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu." + getConfigId()))
 				.binding(false,
 						() -> config.uiAndVisuals.radialMenu.enabledMenus.getOrDefault(getConfigId(), false),
 						newValue -> config.uiAndVisuals.radialMenu.enabledMenus.put(getConfigId(), newValue.booleanValue()))

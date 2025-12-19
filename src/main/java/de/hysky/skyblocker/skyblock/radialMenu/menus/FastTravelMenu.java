@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.radialMenu.menus;
 
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 
 public class FastTravelMenu extends RegexMenu {
