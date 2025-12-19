@@ -33,6 +33,15 @@ public class MiningCategory {
 
 				//Uncategorized Options
 				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.mining.enablePickaxeAbility"))
+						.description(Component.translatable("skyblocker.config.mining.enablePickaxeAbility.@Tooltip"))
+						.binding(defaults.mining.enablePickaxeAbility,
+								() -> config.mining.enablePickaxeAbility,
+								newValue -> config.mining.enablePickaxeAbility = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+
+				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.mining.enableDrillFuel"))
 						.description(Component.translatable("skyblocker.config.mining.enableDrillFuel.@Tooltip"))
 						.binding(defaults.mining.enableDrillFuel,

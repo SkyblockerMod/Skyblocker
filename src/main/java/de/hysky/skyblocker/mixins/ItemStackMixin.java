@@ -12,7 +12,6 @@ import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -23,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -39,6 +39,9 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerStack {
 	@Unique
 	private float durabilityBarFill = -1;
+
+	@Unique
+	private boolean shouldTryToProcessDurabilityFill = false;
 
 	@Unique
 	private @Nullable String skyblockId;
@@ -102,6 +105,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 
 	@ModifyReturnValue(method = "isBarVisible", at = @At("RETURN"))
 	private boolean modifyItemBarVisible(boolean original) {
+		shouldTryToProcessDurabilityFill = true;
 		return original || durabilityBarFill >= 0f;
 	}
 
@@ -137,7 +141,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 
 	@Unique
 	private boolean skyblocker$shouldProcess() { // Durability bar renders atop of tooltips in ProfileViewer so disable on this screen
-		return !(Minecraft.getInstance() != null && Minecraft.getInstance().screen instanceof ProfileViewerScreen) && Utils.isOnSkyblock() && SkyblockerConfigManager.get().mining.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
+		return shouldTryToProcessDurabilityFill && !(Minecraft.getInstance().screen instanceof ProfileViewerScreen) && Utils.isOnSkyblock() && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
 	}
 
 	@Unique
@@ -147,14 +151,14 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 			return;
 		}
 		// Calculate the durability
-		IntIntPair durability = ItemUtils.getDurability((ItemStack) (Object) this);
+		OptionalDouble durability = ItemUtils.getDurability((ItemStack) (Object) this);
 		// Return if calculating the durability failed
-		if (durability == null) {
+		if (durability.isEmpty()) {
 			durabilityBarFill = -1;
 			return;
 		}
 		// Saves the calculated durability
-		durabilityBarFill = (float) durability.firstInt() / durability.secondInt();
+		durabilityBarFill = (float) durability.getAsDouble();
 	}
 
 	@SuppressWarnings("deprecation")

@@ -849,7 +849,10 @@
   "skyblocker.config.mining.dwarvenMines.solvePuzzler": "Solve Puzzler Puzzle",
 
   "skyblocker.config.mining.enableDrillFuel": "Enable Drill Fuel",
-  "skyblocker.config.mining.enableDrillFuel.@Tooltip": "Shows remaining fuel with the durability bar.\nShows the remaining blocks for Pickonimbus.",
+  "skyblocker.config.mining.enableDrillFuel.@Tooltip": "Shows remaining fuel with the durability bar.\nShows the remaining blocks for Pickonimbus.\nTakes priority over Enable Pickaxe Ability",
+
+  "skyblocker.config.mining.enablePickaxeAbility": "Enable Pickaxe Ability",
+  "skyblocker.config.mining.enablePickaxeAbility.@Tooltip": "Shows pickaxe ability cooldowns with the durability bar.",
 
   "skyblocker.config.mining.glacite": "Glacite Tunnels",
   "skyblocker.config.mining.glacite.autoShareCorpses": "Automatically Share Found Corpses In Chat",

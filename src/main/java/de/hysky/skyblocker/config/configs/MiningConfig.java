@@ -6,6 +6,8 @@ import java.util.List;
 import net.minecraft.client.resources.language.I18n;
 
 public class MiningConfig {
+	public boolean enablePickaxeAbility = false;
+
 	public boolean enableDrillFuel = true;
 
 	public boolean commissionHighlight = true;

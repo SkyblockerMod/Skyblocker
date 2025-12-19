@@ -11,7 +11,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.skyblock.dwarven.PickaxeAbility;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
 import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
@@ -22,7 +24,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -378,30 +379,39 @@ public final class ItemUtils {
 	}
 
 	public static boolean hasCustomDurability(ItemStack stack) {
-		CompoundTag customData = getCustomData(stack);
-		return !customData.isEmpty() && (customData.contains("drill_fuel") || customData.getStringOr(ID, "").equals("PICKONIMBUS"));
+		if (SkyblockerConfigManager.get().mining.enableDrillFuel) {
+			CompoundTag customData = getCustomData(stack);
+			return !customData.isEmpty() && (customData.contains("drill_fuel") || stack.getSkyblockId().equals("PICKONIMBUS"));
+		} else if (SkyblockerConfigManager.get().mining.enablePickaxeAbility) {
+			return PickaxeAbility.canHavePickaxeAbility(stack);
+		}
+		return false;
 	}
 
-	public static @Nullable IntIntPair getDurability(ItemStack stack) {
-		CompoundTag customData = getCustomData(stack);
-		if (customData.isEmpty()) return null;
+	public static OptionalDouble getDurability(ItemStack stack) {
+		if (SkyblockerConfigManager.get().mining.enableDrillFuel) {
+			CompoundTag customData = getCustomData(stack);
+			if (customData.isEmpty()) return OptionalDouble.empty();
 
-		// TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level
-		// TODO Cache the max durability and only update the current durability on inventory tick
+			// TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level
+			// TODO Cache the max durability and only update the current durability on inventory tick
 
-		if (stack.getSkyblockId().equals("PICKONIMBUS")) {
-			int pickonimbusDurability = customData.getIntOr("pickonimbus_durability", 0);
+			if (stack.getSkyblockId().equals("PICKONIMBUS")) {
+				int pickonimbusDurability = customData.getIntOr("pickonimbus_durability", 0);
 
-			return IntIntPair.of(customData.contains("pickonimbus_durability") ? pickonimbusDurability : 2000, 2000);
+				return OptionalDouble.of((customData.contains("pickonimbus_durability") ? pickonimbusDurability : 2000) / 2000d);
+			}
+
+			String drillFuel = ChatFormatting.stripFormatting(getLoreLineIf(stack, FUEL_PREDICATE));
+			if (drillFuel != null) {
+				String[] drillFuelStrings = NOT_DURABILITY.matcher(drillFuel).replaceAll("").trim().split("/");
+				return OptionalDouble.of(Integer.parseInt(drillFuelStrings[0]) / (Integer.parseInt(drillFuelStrings[1]) * 1000d));
+			}
+		} else if (SkyblockerConfigManager.get().mining.enablePickaxeAbility) {
+			return PickaxeAbility.getCooldownPercentage();
 		}
 
-		String drillFuel = ChatFormatting.stripFormatting(getLoreLineIf(stack, FUEL_PREDICATE));
-		if (drillFuel != null) {
-			String[] drillFuelStrings = NOT_DURABILITY.matcher(drillFuel).replaceAll("").trim().split("/");
-			return IntIntPair.of(Integer.parseInt(drillFuelStrings[0]), Integer.parseInt(drillFuelStrings[1]) * 1000);
-		}
-
-		return null;
+		return OptionalDouble.empty();
 	}
 
 	/**
