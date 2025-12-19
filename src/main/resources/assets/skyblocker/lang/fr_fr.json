@@ -1581,5 +1581,6 @@
     "skyblocker.valueBreakdownPopup.coins": "%s pièces",
     "skyblocker.valueBreakdownPopup.total": "Total : %s",
     "skyblocker.inventorySearch.searchInventory": "Rechercher dans l'inventaire",
-    "skyblocker.valueBreakdownPopup.totalPricePercent": "%s%% du prix total"
+    "skyblocker.valueBreakdownPopup.totalPricePercent": "%s%% du prix total",
+    "skyblocker.config.uiAndVisuals.slotText.enchantmentAbbreviation": "Abbréviation des Enchantements"
 }
