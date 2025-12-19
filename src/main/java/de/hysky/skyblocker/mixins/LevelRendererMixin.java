@@ -92,7 +92,7 @@ public class LevelRendererMixin implements EntityRenderMarker {
 		}
 		//if the setting is enabled do not modify anything
 		else {
-			return new BlockBreakingRenderState(clientLevel, blockPos, i);
+			return original.call(clientLevel, blockPos, i);
 		}
 
 	}
