@@ -93,7 +93,7 @@ public class VisitorHelper extends ClickableWidget {
 	private static void updateVisitors(ScreenHandler handler) {
 		if (!processVisitor) return;
 		ItemStack visitorHead = handler.getSlot(13).getStack();
-		if (visitorHead == null || !visitorHead.contains(DataComponentTypes.LORE) || ItemUtils.getLoreLineIf(visitorHead, t -> t.contains("Times Visited")) == null) return;
+		if (visitorHead.isEmpty() || !visitorHead.contains(DataComponentTypes.LORE) || ItemUtils.getLoreLineIf(visitorHead, t -> t.contains("Times Visited")) == null) return;
 
 		Text visitorName = visitorHead.getName();
 		if (activeVisitors.stream().map(Visitor::name).anyMatch(visitorName::equals)) return;
@@ -113,7 +113,7 @@ public class VisitorHelper extends ClickableWidget {
 	 */
 	private static void extractRequiredItems(ScreenHandler handler, Visitor visitor) {
 		ItemStack acceptButton = handler.getSlot(29).getStack();
-		if (acceptButton == null || ItemUtils.getLoreLineIf(acceptButton, t -> t.contains("Items Required")) == null) return;
+		if (acceptButton.isEmpty() || ItemUtils.getLoreLineIf(acceptButton, t -> t.contains("Items Required")) == null) return;
 
 		ItemUtils.getLore(acceptButton).stream()
 				.map(Text::getString)
@@ -226,7 +226,7 @@ public class VisitorHelper extends ClickableWidget {
 
 			index++;
 		}
-		setHeight((groupedItems.size() + activeVisitors.size()) * (LINE_HEIGHT + MinecraftClient.getInstance().textRenderer.fontHeight) + PADDING * 2);
+		setHeight(index * (LINE_HEIGHT + MinecraftClient.getInstance().textRenderer.fontHeight) + PADDING * 2);
 		setWidth(newWidth + PADDING * 2);
 		exclusionZoneWidth = getWidth();
 		exclusionZoneHeight = getHeight();

@@ -14,7 +14,7 @@ import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 public class StereoHarmonyHelper extends SimpleContainerSolver {
-	private static final Pattern PEST_NAME_PATTERN = Pattern.compile("^When playing, (?<name>.+) Pests are(?: more)*");
+	private static final Pattern PEST_NAME_PATTERN = Pattern.compile("^When playing, (?<name>.+) Pests.*");
 	public static final StereoHarmonyHelper INSTANCE = new StereoHarmonyHelper();
 
 	private StereoHarmonyHelper() {
