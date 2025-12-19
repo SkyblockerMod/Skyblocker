@@ -1,10 +1,17 @@
 package de.hysky.skyblocker.mixins;
 
 import org.jspecify.annotations.Nullable;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dwarven.BlockBreakPrediction;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.utils.render.GlowRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.BlockBreakingRenderState;
+import net.minecraft.client.renderer.state.LevelRenderState;
 import net.minecraft.core.BlockPos;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -76,7 +83,7 @@ public class LevelRendererMixin implements EntityRenderMarker {
 
 	@Redirect(method = "extractBlockDestroyAnimation", at = @At(value = "NEW", target = "(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/core/BlockPos;I)Lnet/minecraft/client/renderer/state/BlockBreakingRenderState;"))
 	private BlockBreakingRenderState skyblocker$addBlockBreakingProgressRenderState(ClientLevel clientLevel, BlockPos blockPos, int i) {
-		if (SkyblockerConfigManager.get().mining.BlockBreakPrediction.enabled){
+		if (SkyblockerConfigManager.get().mining.BlockBreakPrediction.enabled) {
 			int pingModifiedProgress = BlockBreakPrediction.getBlockBreakPrediction(blockPos, i);
 			return new BlockBreakingRenderState(clientLevel, blockPos, pingModifiedProgress);
 
