@@ -19,6 +19,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
+
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -76,7 +78,7 @@ public class StatusBarTracker {
 	}
 
 	private static void tick() {
-		if (client == null || client.player == null || !Utils.isOnSkyblock()) return;
+		if (client.player == null || !Utils.isOnSkyblock()) return;
 		ticks++;
 		updateHealth(health.value, health.max, health.overflow);
 		updateSpeed();
@@ -126,7 +128,7 @@ public class StatusBarTracker {
 		}
 	}
 
-	public static String update(String actionBar, boolean filterManaUse) {
+	public static @Nullable String update(String actionBar, boolean filterManaUse) {
 		var sb = new StringBuilder();
 
 		Matcher matcher = STATUS_HEALTH.matcher(actionBar);
@@ -176,7 +178,7 @@ public class StatusBarTracker {
 	}
 
 	private static void updateHealth(int value, int max, int overflow) {
-		if (client != null && client.player != null) {
+		if (client.player != null) {
 			value = (int) (client.player.getHealth() * max / client.player.getMaxHealth());
 			overflow = (int) (client.player.getAbsorptionAmount() * max / client.player.getMaxHealth());
 		}
