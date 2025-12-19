@@ -12,6 +12,7 @@ import io.github.moulberry.repo.NEURecipeCache;
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.NEURepository;
 import io.github.moulberry.repo.data.ItemOverlays;
+import io.github.moulberry.repo.NEURepositoryException;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
 import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
@@ -240,6 +241,7 @@ public class NEURepoManager {
 	public static @Nullable NEURepoFile file(String path) {
 		return NEU_REPO.file(path);
 	}
+
 	public static Stream<NEURepoFile> tree(String path) throws NEURepositoryException {
 		return NEU_REPO.tree(path);
 	}
