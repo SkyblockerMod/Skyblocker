@@ -5,7 +5,7 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

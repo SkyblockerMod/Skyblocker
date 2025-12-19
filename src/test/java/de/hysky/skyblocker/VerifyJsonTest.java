@@ -1,6 +1,10 @@
 package de.hysky.skyblocker;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard;
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;

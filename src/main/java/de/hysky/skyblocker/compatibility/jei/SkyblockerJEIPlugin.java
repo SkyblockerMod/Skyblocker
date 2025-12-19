@@ -21,7 +21,7 @@ import mezz.jei.library.plugins.vanilla.crafting.CraftingCategoryExtension;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.math.Rect2i;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.*;
+import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 

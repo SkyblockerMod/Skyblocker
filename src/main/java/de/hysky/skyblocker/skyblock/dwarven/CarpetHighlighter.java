@@ -19,7 +19,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Highlights unbreakable carpets within ore veins in the Dwarven Mines.

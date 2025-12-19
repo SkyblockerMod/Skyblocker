@@ -23,7 +23,16 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.*;
+import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.AQUAMARINE_CRYSTAL;
+import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.CITRINE_CRYSTAL;
+import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.ENCHANTMENT_ICE_COLD_1;
+import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.GLACITE_POWDER;
+import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.JASPER_CRYSTAL;
+import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.ONYX_CRYSTAL;
+import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.OPAL_CRYSTAL;
+import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.PERIDOT_CRYSTAL;
+import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.PRICELESS_ITEMS;
+import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.RUBY_CRYSTAL;
 
 public class CorpseList extends ElementListWidget<CorpseList.AbstractEntry> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CorpseList.class);

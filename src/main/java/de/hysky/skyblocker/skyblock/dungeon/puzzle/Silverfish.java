@@ -21,7 +21,13 @@ import net.minecraft.util.math.Vec3d;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 

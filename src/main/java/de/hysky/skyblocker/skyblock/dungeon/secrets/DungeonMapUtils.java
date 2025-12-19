@@ -18,7 +18,11 @@ import org.joml.Vector2dc;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.Set;
 
 public class DungeonMapUtils {
 	public static final byte BLACK_COLOR = MapColor.BLACK.getRenderColorByte(MapColor.Brightness.LOWEST);

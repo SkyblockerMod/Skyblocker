@@ -11,7 +11,11 @@ import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.joml.Vector2ic;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class DebugRoom extends Room {
 	private final List<Waypoint> checkedBlocks = Collections.synchronizedList(new ArrayList<>());

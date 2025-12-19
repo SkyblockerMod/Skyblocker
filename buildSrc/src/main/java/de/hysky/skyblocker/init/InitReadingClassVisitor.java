@@ -1,11 +1,14 @@
 package de.hysky.skyblocker.init;
 
+import de.hysky.skyblocker.MethodReference;
 import org.jetbrains.annotations.NotNull;
-import org.objectweb.asm.*;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 import java.util.Map;
-
-import de.hysky.skyblocker.MethodReference;
 
 public class InitReadingClassVisitor extends ClassVisitor {
 	private final Map<MethodReference, Integer> methodSignatures;

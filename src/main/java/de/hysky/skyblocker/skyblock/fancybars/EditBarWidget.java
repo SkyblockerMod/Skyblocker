@@ -16,12 +16,11 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
+import org.joml.Matrix3x2fStack;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 import java.util.function.Consumer;
-
-import org.joml.Matrix3x2fStack;
 
 public class EditBarWidget extends ContainerWidget {
 

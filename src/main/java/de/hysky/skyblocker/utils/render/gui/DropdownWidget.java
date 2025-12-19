@@ -9,12 +9,10 @@ import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 
-import java.awt.*;
 import java.util.List;
 import java.util.function.Consumer;
-
-import net.minecraft.util.Colors;
 
 public class DropdownWidget<T> extends ContainerWidget {
 	private static final MinecraftClient client = MinecraftClient.getInstance();

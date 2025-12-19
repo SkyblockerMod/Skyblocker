@@ -3,16 +3,19 @@ package de.hysky.skyblocker.skyblock.fancybars;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
@@ -25,7 +28,7 @@ import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.function.Consumer;
 
 public class StatusBar implements Widget, Drawable, Element, Selectable {

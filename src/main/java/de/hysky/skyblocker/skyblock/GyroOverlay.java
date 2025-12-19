@@ -12,7 +12,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Locale;
 
 

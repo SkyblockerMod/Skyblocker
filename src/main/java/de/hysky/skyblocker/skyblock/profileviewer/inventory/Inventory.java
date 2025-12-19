@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
 import com.google.gson.JsonObject;
-
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
@@ -20,7 +19,7 @@ import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

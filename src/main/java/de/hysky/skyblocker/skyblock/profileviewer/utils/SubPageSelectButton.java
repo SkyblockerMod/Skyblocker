@@ -12,7 +12,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class SubPageSelectButton extends ClickableWidget {
 	private final ProfileViewerPage page;

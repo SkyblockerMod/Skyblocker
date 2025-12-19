@@ -14,7 +14,7 @@ import net.azureaaron.dandelion.systems.controllers.ColourController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class HuntingCategory {
 

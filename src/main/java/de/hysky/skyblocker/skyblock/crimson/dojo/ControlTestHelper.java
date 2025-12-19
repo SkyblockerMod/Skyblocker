@@ -8,7 +8,7 @@ import net.minecraft.entity.mob.WitherSkeletonEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class ControlTestHelper {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();

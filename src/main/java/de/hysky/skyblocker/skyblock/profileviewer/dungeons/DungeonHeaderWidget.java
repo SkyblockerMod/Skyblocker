@@ -9,7 +9,7 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
-import java.awt.*;
+import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.Locale;
 

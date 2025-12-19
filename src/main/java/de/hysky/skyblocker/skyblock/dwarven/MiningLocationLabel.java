@@ -8,7 +8,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class MiningLocationLabel extends DistancedNamedWaypoint {
 	private final Category category;

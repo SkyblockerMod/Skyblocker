@@ -23,7 +23,13 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.*;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MAX_X;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MAX_Y;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MIN_X;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MIN_Y;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_Z;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.LeverType;
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.WATER_ENTRANCE_POSITION;
 
 public class WaterboardPreviewer extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WaterboardPreviewer.class);

@@ -2,7 +2,6 @@ package de.hysky.skyblocker.utils.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTextureView;
-
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
 import de.hysky.skyblocker.utils.render.state.CameraRenderState;
@@ -10,7 +9,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.texture.TextureSetup;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
@@ -18,7 +18,6 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.profiler.Profilers;
 import net.minecraft.util.shape.VoxelShape;
-
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 

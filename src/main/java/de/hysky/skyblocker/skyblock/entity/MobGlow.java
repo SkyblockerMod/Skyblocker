@@ -10,7 +10,8 @@ import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MobGlow {
 	public static final int NO_GLOW = 0;

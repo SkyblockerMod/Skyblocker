@@ -2,7 +2,7 @@ package de.hysky.skyblocker.config.configs;
 
 import net.minecraft.client.resource.language.I18n;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 

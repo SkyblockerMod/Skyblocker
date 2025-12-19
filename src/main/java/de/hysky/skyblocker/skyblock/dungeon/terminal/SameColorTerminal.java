@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Solver for the "Change all to same color!" terminal.
