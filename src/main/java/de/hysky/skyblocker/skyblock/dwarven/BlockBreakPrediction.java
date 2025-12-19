@@ -75,7 +75,7 @@ public class BlockBreakPrediction {
 
 
 	public static int getBlockBreakPrediction(BlockPos pos, int progression) {
-		if (CLIENT.player == null || !SkyblockerConfigManager.get().mining.blockBreakPrediction.enabled)
+		if (CLIENT.player == null || CLIENT.gameMode == null || !SkyblockerConfigManager.get().mining.blockBreakPrediction.enabled)
 			return progression;
 
 		// only modify target block
@@ -99,6 +99,11 @@ public class BlockBreakPrediction {
 				currentBlockBreakTime = -1;
 			}
 
+		}
+
+		//reset if player stops mining the block
+		if (!CLIENT.gameMode.isDestroying()) {
+			currentBlockBreakTime = -1;
 		}
 
 		if (currentBlockBreakTime > 0) {
