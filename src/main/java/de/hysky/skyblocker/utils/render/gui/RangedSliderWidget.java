@@ -111,7 +111,11 @@ public class RangedSliderWidget extends SliderWidget {
 		}
 
 		public Builder optionFormatter(Text optionName, NumberFormat formatter) {
-			return formatter(d -> ScreenTexts.composeGenericOptionText(optionName, Text.literal(formatter.format(d))));
+			return optionFormatter(optionName, d -> Text.literal(formatter.format(d)));
+		}
+
+		public Builder optionFormatter(Text optionName, Double2ObjectFunction<Text> formatter) {
+			return formatter(d -> ScreenTexts.composeGenericOptionText(optionName, formatter.apply(d)));
 		}
 
 		public Builder formatter(Double2ObjectFunction<Text> formatter) {
