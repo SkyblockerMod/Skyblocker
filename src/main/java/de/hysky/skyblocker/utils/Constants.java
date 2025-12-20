@@ -40,6 +40,22 @@ public interface Constants {
 					.append(Text.literal("r").withColor(0x1CBBFF))
 					.append(Text.literal("] ").formatted(Formatting.GRAY));
 		}
+		if (time.getMonthValue() == 12 && (time.getDayOfMonth() == 24 || time.getDayOfMonth() == 25)) {
+			return Text.empty().append(Text.literal("[").formatted(Formatting.GRAY))
+					.append(Text.literal("J").withColor(0x00FF4C))
+					.append(Text.literal("o").withColor(0x02FA60))
+					.append(Text.literal("l").withColor(0x04F574))
+					.append(Text.literal("l").withColor(0x07EF88))
+					.append(Text.literal("y").withColor(0x09EA9C))
+					.append(Text.literal("b").withColor(0x0BE5AF))
+					.append(Text.literal("l").withColor(0x0DE0C3))
+					.append(Text.literal("o").withColor(0x10DAD7))
+					.append(Text.literal("c").withColor(0x12D5EB))
+					.append(Text.literal("k").withColor(0x14D0FF))
+					.append(Text.literal("e").withColor(0x16CBFF))
+					.append(Text.literal("r").withColor(0x18C6FF))
+					.append(Text.literal("] ").formatted(Formatting.GRAY));
+		}
 
 		return Text.empty()
 				.append(Text.literal("[").formatted(Formatting.GRAY))
