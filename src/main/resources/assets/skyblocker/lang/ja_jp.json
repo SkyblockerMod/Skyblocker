@@ -720,5 +720,6 @@
     "skyblocker.config.chat.filter.hideDungeonBreaker": "Dungeonbreakerメッセージを隠す",
     "skyblocker.config.chat.filter.hideMimicKill": "Mimicが殺されたメッセージを隠す",
     "skyblocker.config.chat.filter.hideDicer": "Dicerメッセージを隠す",
-    "skyblocker.config.chat.filter.chatFilterResult.FILTER": "有効"
+    "skyblocker.config.chat.filter.chatFilterResult.FILTER": "有効",
+    "skyblocker.config.mining.pickobulusHelper.enableHud": "Pickobulus HUDを有効にする"
 }
