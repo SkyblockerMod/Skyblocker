@@ -71,7 +71,7 @@ public class Renderer {
 	/**
 	 * Returns the appropriate {@code BufferBuilder} that should be used with the given pipeline, texture view, and line width.
 	 */
-	private static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, boolean translucent) {
+	public static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, boolean translucent) {
 		if (!EXCLUDED_FROM_BATCHING.contains(pipeline)) {
 			return setupBatched(pipeline, textureSetup, translucent);
 		} else {

@@ -110,7 +110,11 @@ public class RangedSliderWidget extends AbstractSliderButton {
 		}
 
 		public Builder optionFormatter(Component optionName, NumberFormat formatter) {
-			return formatter(d -> CommonComponents.optionNameValue(optionName, Component.literal(formatter.format(d))));
+			return optionFormatter(optionName, d -> Component.literal(formatter.format(d)));
+		}
+
+		public Builder optionFormatter(Component optionName, Double2ObjectFunction<Component> formatter) {
+			return formatter(d -> CommonComponents.optionNameValue(optionName, formatter.apply(d)));
 		}
 
 		public Builder formatter(Double2ObjectFunction<Component> formatter) {

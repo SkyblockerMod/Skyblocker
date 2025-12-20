@@ -20,6 +20,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class FarmingHudWidget extends ComponentBasedWidget {
@@ -38,11 +39,21 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 			Map.entry("THEORETICAL_HOE_CANE_1", "SUGAR_CANE"),
 			Map.entry("THEORETICAL_HOE_CANE_2", "SUGAR_CANE"),
 			Map.entry("THEORETICAL_HOE_CANE_3", "SUGAR_CANE"),
+			Map.entry("THEORETICAL_HOE_SUNFLOWER_1", "DOUBLE_PLANT"),
+			Map.entry("THEORETICAL_HOE_SUNFLOWER_2", "DOUBLE_PLANT"),
+			Map.entry("THEORETICAL_HOE_SUNFLOWER_3", "DOUBLE_PLANT"),
+			Map.entry("THEORETICAL_HOE_WILD_ROSE_1", "WILD_ROSE"),
+			Map.entry("THEORETICAL_HOE_WILD_ROSE_2", "WILD_ROSE"),
+			Map.entry("THEORETICAL_HOE_WILD_ROSE_3", "WILD_ROSE"),
 			Map.entry("THEORETICAL_HOE_WARTS_1", "NETHER_STALK"),
 			Map.entry("THEORETICAL_HOE_WARTS_2", "NETHER_STALK"),
 			Map.entry("THEORETICAL_HOE_WARTS_3", "NETHER_STALK"),
 			Map.entry("FUNGI_CUTTER", "RED_MUSHROOM"),
+			Map.entry("FUNGI_CUTTER_2", "RED_MUSHROOM"),
+			Map.entry("FUNGI_CUTTER_3", "RED_MUSHROOM"),
 			Map.entry("CACTUS_KNIFE", "CACTUS"),
+			Map.entry("CACTUS_KNIFE_2", "CACTUS"),
+			Map.entry("CACTUS_KNIFE_3", "CACTUS"),
 			Map.entry("MELON_DICER", "MELON"),
 			Map.entry("MELON_DICER_2", "MELON"),
 			Map.entry("MELON_DICER_3", "MELON"),
@@ -50,10 +61,12 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 			Map.entry("PUMPKIN_DICER_2", "PUMPKIN"),
 			Map.entry("PUMPKIN_DICER_3", "PUMPKIN"),
 			Map.entry("COCO_CHOPPER", "INK_SACK:3"),
+			Map.entry("COCO_CHOPPER_2", "INK_SACK:3"),
+			Map.entry("COCO_CHOPPER_3", "INK_SACK:3"),
 			Map.entry("BASIC_GARDENING_HOE", ""),
 			Map.entry("ADVANCED_GARDENING_HOE", "")
 	);
-	private static FarmingHudWidget instance = null;
+	private static @Nullable FarmingHudWidget instance = null;
 
 	public static FarmingHudWidget getInstance() {
 		if (instance == null) instance = new FarmingHudWidget();
@@ -75,14 +88,16 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (client.player == null) {
+		if (client.player == null || client.level == null) {
 			addComponent(new PlainTextComponent(Component.literal("Nothing to show :p")));
 			return;
 		}
 		ItemStack farmingToolStack = client.player.getMainHandItem();
-		if (farmingToolStack == null) return;
 		String itemId = farmingToolStack.getSkyblockId();
 		String cropItemId = FARMING_TOOLS.getOrDefault(itemId, "");
+		if (cropItemId.equals("DOUBLE_PLANT") && client.level.getDayTime() >= 12000) {
+			cropItemId = "MOONFLOWER";
+		}
 		ItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
 
 		String counterText = FarmingHud.counterText();

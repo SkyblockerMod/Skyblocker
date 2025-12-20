@@ -167,7 +167,7 @@ public class Trivia extends DungeonPuzzle {
 		answers.put("What is the name of the person that upgrades pets?", List.of("Kat"));
 		answers.put("What is the name of the lady of the Nether?", List.of("Elle"));
 		answers.put("Which villager in the Village gives you a Rogue Sword?", List.of("Jamie"));
-		answers.put("How many unique minions are there?", List.of("59 Minions"));
+		answers.put("How many unique minions are there?", List.of("60 Minions"));
 		answers.put("Which of these enemies does not spawn in the Spider's Den?", List.of("Zombie Spider", "Cave Spider", "Wither Skeleton", "Dashing Spooder", "Broodfather", "Night Spider"));
 		answers.put("Which of these monsters only spawns at night?", List.of("Zombie Villager", "Ghast"));
 		answers.put("Which of these is not a dragon in The End?", List.of("Zoomer Dragon", "Weak Dragon", "Stonk Dragon", "Holy Dragon", "Boomer Dragon", "Booger Dragon", "Older Dragon", "Elder Dragon", "Stable Dragon", "Professor Dragon"));

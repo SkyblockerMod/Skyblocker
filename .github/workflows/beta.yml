@@ -7,6 +7,7 @@ on:
     branches:
       - master
       - bleeding-edge
+      - '**-backport'
     paths-ignore:
       - 'src/main/resources/assets/skyblocker/lang/**'
       - 'CHANGELOG.md'
