@@ -4,7 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
 
 @SuppressWarnings("unused")
 public class MuteWolfSounds {
@@ -15,7 +15,7 @@ public class MuteWolfSounds {
 
 	private static boolean onSound(SoundEvent sound) {
 		if (SkyblockerConfigManager.get().slayers.wolfSlayer.muteWolfSounds && (Utils.isInPark() || Utils.isInHub())) {
-			return !sound.id().toString().contains("minecraft:entity.wolf.");
+			return !sound.location().toString().contains("minecraft:entity.wolf.");
 		}
 		return true;
 	}

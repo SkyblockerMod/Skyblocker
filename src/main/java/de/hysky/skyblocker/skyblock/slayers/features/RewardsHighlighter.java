@@ -4,8 +4,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class RewardsHighlighter extends SimpleContainerSolver {
 		List<ColorHighlight> highlights = new ArrayList<>();
 		for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
 			ItemStack stack = entry.getValue();
-			if (stack.contains(DataComponentTypes.LORE)) {
+			if (stack.has(DataComponents.LORE)) {
 				List<String> lastLine = stack.skyblocker$getLoreStrings();
 				if (!lastLine.isEmpty() && lastLine.getLast().equals("Click to claim rewards!")) {
 					highlights.add(ColorHighlight.green(entry.getIntKey()));

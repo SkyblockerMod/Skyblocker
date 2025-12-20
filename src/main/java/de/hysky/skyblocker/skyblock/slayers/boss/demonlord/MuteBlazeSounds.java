@@ -4,23 +4,23 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 
 import java.util.Set;
 
 @SuppressWarnings("unused")
 public class MuteBlazeSounds {
 	private static final Set<Identifier> MUTED_SOUNDS = Set.of(
-			SoundEvents.ENTITY_BLAZE_BURN.id(),
-			SoundEvents.ENTITY_BLAZE_AMBIENT.id(),
-			SoundEvents.ENTITY_BLAZE_HURT.id(),
-			SoundEvents.ENTITY_GHAST_SHOOT.id(),
-			SoundEvents.BLOCK_FIRE_AMBIENT.id(),
-			SoundEvents.BLOCK_LAVA_POP.id(),
-			SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER.id(),
-			SoundEvents.ENTITY_LIGHTNING_BOLT_IMPACT.id()
+			SoundEvents.BLAZE_BURN.location(),
+			SoundEvents.BLAZE_AMBIENT.location(),
+			SoundEvents.BLAZE_HURT.location(),
+			SoundEvents.GHAST_SHOOT.location(),
+			SoundEvents.FIRE_AMBIENT.location(),
+			SoundEvents.LAVA_POP.location(),
+			SoundEvents.LIGHTNING_BOLT_THUNDER.location(),
+			SoundEvents.LIGHTNING_BOLT_IMPACT.location()
 	);
 
 	@Init
@@ -30,7 +30,7 @@ public class MuteBlazeSounds {
 
 	private static boolean onSound(SoundEvent sound) {
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.muteBlazeSounds && Utils.isInCrimson()) {
-			return !MUTED_SOUNDS.contains(sound.id());
+			return !MUTED_SOUNDS.contains(sound.location());
 		}
 		return true;
 	}

@@ -7,10 +7,9 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.LazerTimer;
 import de.hysky.skyblocker.utils.Utils;
-import org.jspecify.annotations.Nullable;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,9 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.time.Instant;
 import java.util.UUID;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
@@ -57,7 +53,7 @@ public abstract class EntityMixin {
 				SlayerManager.isSelectedBoss(uuid) && LazerTimer.isActive()) LazerTimer.tick();
 	}
 
-	@Inject(method = "onRemove", at = @At("TAIL"))
+	@Inject(method = "onRemoval", at = @At("TAIL"))
 	private void onRemove(Entity.RemovalReason reason, CallbackInfo ci) {
 		if (SlayerManager.isSelectedBoss(uuid)) {
 			if (SkyblockerConfigManager.get().slayers.slainTime && SlayerManager.isInSlayerQuest()) {

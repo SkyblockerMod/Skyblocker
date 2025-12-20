@@ -12,10 +12,10 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.util.Formatting;
 import net.minecraft.world.level.block.state.BlockState;
 
 @SuppressWarnings("unused")
@@ -72,8 +72,8 @@ public class BeaconHighlighter {
 				long elapsed = System.currentTimeMillis() - beacon.getLongValue();
 				float remainingSec = (BEACON_DURATION_MS - elapsed) / 1000f;
 				if (remainingSec >= 0) {
-					Text text = Text.literal(String.format("%.1fs", remainingSec)).formatted(Formatting.AQUA);
-					collector.submitText(text, beacon.getKey().up().toCenterPos(), 3, true);
+					Component text = Component.literal(String.format("%.1fs", remainingSec)).withStyle(ChatFormatting.AQUA);
+					collector.submitText(text, beacon.getKey().above().getCenter(), 3, true);
 				}
 			}
 		}

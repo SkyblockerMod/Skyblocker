@@ -18,12 +18,12 @@ import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 import java.nio.file.Path;
 import java.time.Duration;
@@ -42,7 +42,7 @@ public class SlayerTimer {
 		ClientCommandRegistrationCallback.EVENT.register(SlayerTimer::registerCommands);
 	}
 
-	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext commandBuildContext) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("slayers")
 				.then(literal("revenant").executes(context -> SlayerTimer.sendSlayerPersonalBest(context, SlayerType.REVENANT)))
 				.then(literal("tarantula").executes(context -> SlayerTimer.sendSlayerPersonalBest(context, SlayerType.TARANTULA)))
@@ -62,8 +62,8 @@ public class SlayerTimer {
 			long time = getPersonalBest(slayerType, slayerTier);
 
 			if (time != -1) {
-				MutableText bossText = Text.literal(slayerType.bossName + " " + slayerTier.name()).formatted(Formatting.DARK_PURPLE);
-				MutableText timeText = Text.literal(formatTime(time)).formatted(Formatting.AQUA);
+				MutableComponent bossText = Component.literal(slayerType.bossName + " " + slayerTier.name()).withStyle(ChatFormatting.DARK_PURPLE);
+				MutableComponent timeText = Component.literal(formatTime(time)).withStyle(ChatFormatting.AQUA);
 				source.sendFeedback(Constants.PREFIX.get().append(bossText.append(": ").append(timeText)));
 				return Command.SINGLE_SUCCESS;
 			}
@@ -86,24 +86,24 @@ public class SlayerTimer {
 		String currentPB = formatTime(currentPBMills);
 		String newPB = formatTime(newPBMills);
 
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
+		LocalPlayer player = Minecraft.getInstance().player;
 		assert player != null;
 		if (currentPBMills != -1 && currentPBMills > newPBMills) {
-			player.sendMessage(Constants.PREFIX.get().append(
-					Text.translatable("skyblocker.slayer.slainTime", Text.literal(newPB).formatted(Formatting.YELLOW))
+			player.displayClientMessage(Constants.PREFIX.get().append(
+					Component.translatable("skyblocker.slayer.slainTime", Component.literal(newPB).withStyle(ChatFormatting.YELLOW))
 							.append(" ")
-							.append(Text.translatable("skyblocker.slayer.personalBest").formatted(Formatting.LIGHT_PURPLE))), false);
-			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.previousPersonalBest", Text.literal(currentPB).formatted(Formatting.YELLOW))), false);
+							.append(Component.translatable("skyblocker.slayer.personalBest").withStyle(ChatFormatting.LIGHT_PURPLE))), false);
+			player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.slayer.previousPersonalBest", Component.literal(currentPB).withStyle(ChatFormatting.YELLOW))), false);
 
-			TitleContainer.addTitleAndPlaySound(new Title("skyblocker.slayer.personalBest", Formatting.AQUA), 100);
+			TitleContainer.addTitleAndPlaySound(new Title("skyblocker.slayer.personalBest", ChatFormatting.AQUA), 100);
 			TitleContainer.addTitle(new Title(
-					Text.literal(currentPB).formatted(Formatting.YELLOW)
-							.append(Text.literal(" ➜ ").formatted(Formatting.DARK_AQUA))
-							.append(Text.literal(newPB).formatted(Formatting.GREEN))), 100);
+					Component.literal(currentPB).withStyle(ChatFormatting.YELLOW)
+							.append(Component.literal(" ➜ ").withStyle(ChatFormatting.DARK_AQUA))
+							.append(Component.literal(newPB).withStyle(ChatFormatting.GREEN))), 100);
 
 			updateBestTime(slayerQuest, newPBMills);
 		} else {
-			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(newPB).formatted(Formatting.YELLOW))), false);
+			player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.slayer.slainTime", Component.literal(newPB).withStyle(ChatFormatting.YELLOW))), false);
 			if (currentPBMills == -1) {
 				updateBestTime(slayerQuest, newPBMills);
 			}

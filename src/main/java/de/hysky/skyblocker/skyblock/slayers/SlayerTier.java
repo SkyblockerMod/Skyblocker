@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.slayers;
 import com.mojang.serialization.Codec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum SlayerTier implements StringRepresentable {
 	I("I", ChatFormatting.GREEN),

@@ -49,23 +49,23 @@ public class SlayersCategory {
 						.controller(ConfigUtils.createEnumController())
 						.build())
 				.option(Option.<Color>createBuilder()
-						.name(Text.translatable("skyblocker.config.slayer.highlightColor"))
+						.name(Component.translatable("skyblocker.config.slayer.highlightColor"))
 						.binding(defaults.slayers.highlightColor,
 								() -> config.slayers.highlightColor,
 								newValue -> config.slayers.highlightColor = newValue)
 						.controller(ColourController.createBuilder().hasAlpha(true).build())
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
+						.name(Component.translatable("skyblocker.config.slayer.enableHud"))
 						.binding(defaults.slayers.enableHud,
 								() -> config.slayers.enableHud,
 								newValue -> config.slayers.enableHud = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(ButtonOption.createBuilder()
-						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
-						.prompt(Text.translatable("text.skyblocker.open"))
-						.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
+						.name(Component.translatable("skyblocker.config.slayer.enableHud"))
+						.prompt(Component.translatable("text.skyblocker.open"))
+						.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.bossbar"))
@@ -92,7 +92,7 @@ public class SlayersCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("skyblocker.config.slayer.showMiniBossNameInAlert"))
+						.name(Component.translatable("skyblocker.config.slayer.showMiniBossNameInAlert"))
 						.binding(defaults.slayers.showMiniBossNameInAlert,
 								() -> config.slayers.showMiniBossNameInAlert,
 								newValue -> config.slayers.showMiniBossNameInAlert = newValue)
@@ -107,7 +107,7 @@ public class SlayersCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<ChatFilterResult>createBuilder()
-						.name(Text.translatable("skyblocker.config.slayer.hideSlayerMinibossSpawn"))
+						.name(Component.translatable("skyblocker.config.slayer.hideSlayerMinibossSpawn"))
 						.binding(defaults.slayers.hideSlayerMinibossSpawn,
 								() -> config.slayers.hideSlayerMinibossSpawn,
 								newValue -> config.slayers.hideSlayerMinibossSpawn = newValue)
@@ -115,7 +115,7 @@ public class SlayersCategory {
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.highlightUnclaimedRewards"))
-						.description(Component.translatable("skyblocker.config.slayer.highlightUnclaimedRewards@Tooltip"))
+						.description(Component.translatable("skyblocker.config.slayer.highlightUnclaimedRewards.@Tooltip"))
 						.binding(defaults.slayers.highlightUnclaimedRewards,
 								() -> config.slayers.highlightUnclaimedRewards,
 								newValue -> config.slayers.highlightUnclaimedRewards = newValue)
@@ -292,15 +292,15 @@ public class SlayersCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.slayer.blazeSlayer.muteBlazeSounds"))
-								.description(Text.translatable("skyblocker.config.slayer.blazeSlayer.muteBlazeSounds@Tooltip"))
+								.name(Component.translatable("skyblocker.config.slayer.blazeSlayer.muteBlazeSounds"))
+								.description(Component.translatable("skyblocker.config.slayer.blazeSlayer.muteBlazeSounds.@Tooltip"))
 								.binding(defaults.slayers.blazeSlayer.muteBlazeSounds,
 										() -> config.slayers.blazeSlayer.muteBlazeSounds,
 										newValue -> config.slayers.blazeSlayer.muteBlazeSounds = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<ChatFilterResult>createBuilder()
-								.name(Text.translatable("skyblocker.config.slayer.blazeSlayer.hideHellionShield"))
+								.name(Component.translatable("skyblocker.config.slayer.blazeSlayer.hideHellionShield"))
 								.binding(defaults.slayers.blazeSlayer.hideHellionShield,
 										() -> config.slayers.blazeSlayer.hideHellionShield,
 										newValue -> config.slayers.blazeSlayer.hideHellionShield = newValue)
@@ -310,17 +310,17 @@ public class SlayersCategory {
 
 				//Wolf Slayer
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("skyblocker.config.slayer.wolfSlayer"))
+						.name(Component.translatable("skyblocker.config.slayer.wolfSlayer"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.slayer.wolfSlayer.muteWolfSounds"))
+								.name(Component.translatable("skyblocker.config.slayer.wolfSlayer.muteWolfSounds"))
 								.binding(defaults.slayers.wolfSlayer.muteWolfSounds,
 										() -> config.slayers.wolfSlayer.muteWolfSounds,
 										newValue -> config.slayers.wolfSlayer.muteWolfSounds = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.slayer.wolfSlayer.hideSvenPupNametag"))
+								.name(Component.translatable("skyblocker.config.slayer.wolfSlayer.hideSvenPupNametag"))
 								.binding(defaults.slayers.wolfSlayer.hideSvenPupNametag,
 										() -> config.slayers.wolfSlayer.hideSvenPupNametag,
 										newValue -> config.slayers.wolfSlayer.hideSvenPupNametag = newValue)
@@ -330,11 +330,11 @@ public class SlayersCategory {
 
 				//Spider Slayer
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("skyblocker.config.slayer.spiderSlayer"))
+						.name(Component.translatable("skyblocker.config.slayer.spiderSlayer"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.slayer.spiderSlayer.muteSpiderSounds"))
-								.description(Text.translatable("skyblocker.config.slayer.spiderSlayer.muteSpiderSounds@Tooltip"))
+								.name(Component.translatable("skyblocker.config.slayer.spiderSlayer.muteSpiderSounds"))
+								.description(Component.translatable("skyblocker.config.slayer.spiderSlayer.muteSpiderSounds.@Tooltip"))
 								.binding(defaults.slayers.spiderSlayer.muteSpiderSounds,
 										() -> config.slayers.spiderSlayer.muteSpiderSounds,
 										newValue -> config.slayers.spiderSlayer.muteSpiderSounds = newValue)

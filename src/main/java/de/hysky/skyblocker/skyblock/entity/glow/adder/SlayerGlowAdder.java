@@ -10,10 +10,9 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.AttunementColors;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
@@ -32,7 +31,7 @@ public class SlayerGlowAdder extends MobGlowAdder {
 		// Blaze Slayer
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights &&
 				SlayerManager.isFightingSlayerType(SlayerType.DEMONLORD) &&
-				(entity instanceof BlazeEntity || entity instanceof WitherSkeletonEntity || entity instanceof ZombifiedPiglinEntity)) {
+				(entity instanceof Blaze || entity instanceof WitherSkeleton || entity instanceof ZombifiedPiglin)) {
 			Integer color = AttunementColors.getColor((LivingEntity) entity);
 			if (color != null) return color;
 		}
@@ -45,8 +44,7 @@ public class SlayerGlowAdder extends MobGlowAdder {
 		// Nukebuki Skulls
 		if (SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads &&
 				SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM) &&
-				entity instanceof ArmorStandEntity as &&
-				as.isMarker() && isNukekubiHead(as)) return NUKEKUBI_COLOUR;
+				entity instanceof ArmorStand as && as.isMarker() && isNukekubiHead(as)) return NUKEKUBI_COLOUR;
 
 		return MobGlow.NO_GLOW;
 	}

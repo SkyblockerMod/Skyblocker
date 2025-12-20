@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
-import net.minecraft.client.gui.hud.ClientBossBar;
-import net.minecraft.entity.boss.BossBar;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.gui.components.LerpingBossEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.BossEvent;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class SlayerBossBar {
 	private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?[kM]?)(?=❤)");
 	private static int bossMaxHealth = -1;
-	private static @Nullable ClientBossBar bossBar;
+	private static @Nullable LerpingBossEvent bossBar;
 
 	/**
 	 * Determines if the boss bar should be rendered and updates the max health of the boss.
@@ -48,25 +48,25 @@ public class SlayerBossBar {
 	 *
 	 * @return The updated boss bar.
 	 */
-	public static ClientBossBar updateBossBar() {
-		ArmorStandEntity slayerArmorStand = SlayerManager.getSlayerArmorStand();
+	public static LerpingBossEvent updateBossBar() {
+		ArmorStand slayerArmorStand = SlayerManager.getSlayerArmorStand();
 		assert slayerArmorStand != null;
-		Text name = slayerArmorStand.getName();
+		Component name = slayerArmorStand.getName();
 
-		if (bossBar == null) bossBar = new ClientBossBar(UUID.randomUUID(), name, 1f, BossBar.Color.PURPLE, BossBar.Style.PROGRESS, false, false, false);
+		if (bossBar == null) bossBar = new LerpingBossEvent(UUID.randomUUID(), name, 1f, BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS, false, false, false);
 
 		// Update the boss bar with the current slayerArmorStand's health
 		Matcher healthMatcher = HEALTH_PATTERN.matcher(name.getString());
 		if (healthMatcher.find()) {
 			int health = convertToInt(healthMatcher.group(1));
 			if (health > bossMaxHealth) bossMaxHealth = health;
-			bossBar.setPercent(bossMaxHealth < 1 ? 1f : (float) health / bossMaxHealth);
-			bossBar.setColor(BossBar.Color.PINK);
+			bossBar.setProgress(bossMaxHealth < 1 ? 1f : (float) health / bossMaxHealth);
+			bossBar.setColor(BossEvent.BossBarColor.PINK);
 			bossBar.setName(name);
-			bossBar.setStyle(BossBar.Style.NOTCHED_10);
+			bossBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_10);
 		} else {
-			bossBar.setColor(BossBar.Color.RED);
-			bossBar.setStyle(BossBar.Style.PROGRESS);
+			bossBar.setColor(BossEvent.BossBarColor.RED);
+			bossBar.setOverlay(BossEvent.BossBarOverlay.PROGRESS);
 			bossBar.setName(name);
 		}
 

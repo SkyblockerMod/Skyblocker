@@ -48,7 +48,7 @@ public class MobBoundingBoxes {
 	}
 
 	public static float[] rgbToFloatArray(int color) {
-		return new float[] {
+		return new float[]{
 				((color >> 16) & 0xFF) / 255f,
 				((color >> 8) & 0xFF) / 255f,
 				(color & 0xFF) / 255f

@@ -6,11 +6,9 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.util.Formatting;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class TwinClawsIndicator {
 	private static final Title title = new Title("skyblocker.rift.iceNow", ChatFormatting.AQUA);
@@ -26,7 +24,7 @@ public class TwinClawsIndicator {
 		if (slayerEntity == null) return;
 
 		boolean anyClaws = false;
-		for (ArmorStandEntity armorStandEntity : SlayerManager.getEntityArmorStands(slayerEntity, 2.5f)) {
+		for (ArmorStand armorStandEntity : SlayerManager.getEntityArmorStands(slayerEntity, 2.5f)) {
 			if (armorStandEntity.getName().toString().contains("TWINCLAWS")) {
 				anyClaws = true;
 				if (!TitleContainer.containsTitle(title) && !scheduled) {

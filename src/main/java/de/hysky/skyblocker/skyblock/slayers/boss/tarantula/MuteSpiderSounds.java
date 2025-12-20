@@ -6,27 +6,27 @@ import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 
 import java.util.Set;
 
 @SuppressWarnings("unused")
 public class MuteSpiderSounds {
 	private static final Set<Identifier> MUTED_SOUNDS = Set.of(
-			SoundEvents.ENTITY_SPIDER_AMBIENT.id(),
-			SoundEvents.ENTITY_SPIDER_DEATH.id(),
-			SoundEvents.ENTITY_SPIDER_HURT.id(),
-			SoundEvents.ENTITY_SPIDER_STEP.id(),
-			SoundEvents.ENTITY_BAT_HURT.id(),
-			SoundEvents.ENTITY_SILVERFISH_HURT.id(),
-			SoundEvents.ENTITY_SILVERFISH_DEATH.id(),
-			SoundEvents.ENTITY_SILVERFISH_AMBIENT.id(),
-			SoundEvents.ENTITY_SKELETON_AMBIENT.id(),
-			SoundEvents.ENTITY_SKELETON_DEATH.id(),
-			SoundEvents.ENTITY_SKELETON_HURT.id(),
-			SoundEvents.ENTITY_SKELETON_STEP.id()
+			SoundEvents.SPIDER_AMBIENT.location(),
+			SoundEvents.SPIDER_DEATH.location(),
+			SoundEvents.SPIDER_HURT.location(),
+			SoundEvents.SPIDER_STEP.location(),
+			SoundEvents.BAT_HURT.location(),
+			SoundEvents.SILVERFISH_HURT.location(),
+			SoundEvents.SILVERFISH_DEATH.location(),
+			SoundEvents.SILVERFISH_AMBIENT.location(),
+			SoundEvents.SKELETON_AMBIENT.location(),
+			SoundEvents.SKELETON_DEATH.location(),
+			SoundEvents.SKELETON_HURT.location(),
+			SoundEvents.SKELETON_STEP.location()
 	);
 
 	@Init
@@ -38,7 +38,7 @@ public class MuteSpiderSounds {
 		if (SkyblockerConfigManager.get().slayers.spiderSlayer.muteSpiderSounds && (Utils.isInSpidersDen() || Utils.isInCrimson())) {
 			// To keep blaze slayer skeleton daemon sounds
 			if (!SlayerManager.isFightingSlayerType(SlayerType.DEMONLORD)) {
-				return !MUTED_SOUNDS.contains(sound.id());
+				return !MUTED_SOUNDS.contains(sound.location());
 			}
 		}
 		return true;
