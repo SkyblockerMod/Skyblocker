@@ -412,6 +412,18 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		}
 	}
 
+	@Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/item/ItemStack;III)V", shift  = At.Shift.BY, by = 1))
+	private void skyblocker$drawOnItemAfter(CallbackInfo ci, @Local(argsOnly = true) GuiGraphics context, @Local(argsOnly = true) Slot slot) {
+		// Hunting toolkit indicator
+		if (!slot.getItem().getSkyblockId().equals("HUNTING_TOOLKIT")) {
+			String joinedTooltip = String.join("", slot.getItem().skyblocker$getLoreStrings());
+			if (joinedTooltip.contains("Part of the Hunting Toolkit!")) {
+				context.drawString(font, "❒", slot.x, slot.y, 0xFFFF5555, true);
+			}
+		}
+	}
+
+
 	@Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V"))
 	private void skyblocker$drawSlotText(CallbackInfo ci, @Local(argsOnly = true) GuiGraphics context, @Local(argsOnly = true) Slot slot) {
 		if (Utils.isOnSkyblock()) {
