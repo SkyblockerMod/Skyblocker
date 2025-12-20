@@ -581,8 +581,8 @@
   "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "Works anywhere, even in vanilla! Edit shortcuts with \"/skyblocker shortcuts\". At least one of the following options must be enabled for this to take effect.",
 
   "skyblocker.config.general.specialEffects": "Special Effects",
-  "skyblocker.config.general.specialEffects.rareDungeonDropEffects": "Rare Dungeon Drop Effects",
-  "skyblocker.config.general.specialEffects.rareDungeonDropEffects.@Tooltip": "Adds a special visual effect triggered upon obtaining rare dungeon loot!",
+  "skyblocker.config.general.specialEffects.rareDropEffects": "Rare Drop Effects",
+  "skyblocker.config.general.specialEffects.rareDropEffects.@Tooltip": "Adds a special visual effect triggered upon obtaining rare loot!",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects": "Rare Dye Drop Effects",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "Adds a special visual effect triggered upon dropping a rare dye!",
 
