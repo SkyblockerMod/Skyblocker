@@ -161,8 +161,10 @@ public class SlayerManager {
 
 		BossFight boss = findBoss(entity);
 		if (boss != null) {
-			if (!isSlayerArmorStandAlive() || (boss.playerBoss && bossFight != null && bossFight.boss != boss.boss)) {
+			if (!isSlayerArmorStandAlive() || (boss.playerBoss && bossFight != null && bossFight.armorStand != boss.armorStand)) {
 				bossFight = boss;
+				ENTITIES_CACHE.clear();
+				ENTITIES_CACHE.add(entity);
 			}
 		}
 	}

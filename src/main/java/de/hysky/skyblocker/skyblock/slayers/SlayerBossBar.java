@@ -34,7 +34,6 @@ public class SlayerBossBar {
 				Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(bossName);
 				if (maxHealthMatcher.find()) {
 					int currentHealth = convertToInt(maxHealthMatcher.group(0));
-					if (bossName.contains("Tarantula Broodfather V") && currentHealth == 0) bossName = "Conjoined Brood";
 					int maxHealth = bossFight.slayerType.getHealth(bossName, bossFight.slayerTier);
 					bossMaxHealth = Math.max(maxHealth, currentHealth);
 				}
@@ -59,7 +58,9 @@ public class SlayerBossBar {
 		// Update the boss bar with the current slayerArmorStand's health
 		Matcher healthMatcher = HEALTH_PATTERN.matcher(name.getString());
 		if (healthMatcher.find()) {
-			bossBar.setPercent(bossMaxHealth < 1 ? 1f : (float) convertToInt(healthMatcher.group(1)) / bossMaxHealth);
+			int health = convertToInt(healthMatcher.group(1));
+			if (health > bossMaxHealth) bossMaxHealth = health;
+			bossBar.setPercent(bossMaxHealth < 1 ? 1f : (float) health / bossMaxHealth);
 			bossBar.setColor(BossBar.Color.PINK);
 			bossBar.setName(name);
 			bossBar.setStyle(BossBar.Style.NOTCHED_10);

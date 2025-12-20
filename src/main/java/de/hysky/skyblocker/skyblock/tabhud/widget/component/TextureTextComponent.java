@@ -7,13 +7,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
-public class TextureComponent extends Component {
+public class TextureTextComponent extends Component {
 	private final Identifier texture;
 	private final Text text;
 	private final int textureWidth;
 	private final int textureHeight;
 
-	public TextureComponent(Text text, Identifier texture, int textureWidth, int textureHeight) {
+	public TextureTextComponent(Text text, Identifier texture, int textureWidth, int textureHeight) {
 		this.text = text;
 		this.texture = texture;
 		this.textureWidth = textureWidth;

@@ -954,6 +954,7 @@
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.VISUAL": "Visual Indicator",
   "skyblocker.config.slayer.blazeSlayer.hideHellionShield": "Hide Hellion Shield Messages",
   "skyblocker.config.slayer.blazeSlayer.muteBlazeSounds": "Mute Blaze Sounds",
+  "skyblocker.config.slayer.blazeSlayer.muteBlazeSounds@Tooltip": "Mutes Blaze, Fire, Lava, Fireball and Lightning Bolt Sounds",
 
   "skyblocker.config.slayer.bossSpawnAlert": "Boss Spawn Alert",
   "skyblocker.config.slayer.bossSpawnAlert.@Tooltip": "Displays a warning when a slayer boss spawns",
@@ -1660,7 +1661,7 @@
   "skyblocker.slayer.callMaddox.message": "Click here to call Maddox the Slayer!",
   "skyblocker.slayer.hud.bossesNeeded": "Bosses until level up",
   "skyblocker.slayer.hud.levelMaxed": "MAXED OUT",
-  "skyblocker.slayer.hud.levelUpIn": "Lvl up in %s bosses",
+  "skyblocker.slayer.hud.levelUpIn": "Level up in %s bosses",
   "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss",
   "skyblocker.slayer.personalBest": "PERSONAL BEST!",
   "skyblocker.slayer.previousPersonalBest": "Your previous Personal Best was %s.",

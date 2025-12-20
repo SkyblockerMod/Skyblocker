@@ -293,6 +293,7 @@ public class SlayersCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.slayer.blazeSlayer.muteBlazeSounds"))
+								.description(Text.translatable("skyblocker.config.slayer.blazeSlayer.muteBlazeSounds@Tooltip"))
 								.binding(defaults.slayers.blazeSlayer.muteBlazeSounds,
 										() -> config.slayers.blazeSlayer.muteBlazeSounds,
 										newValue -> config.slayers.blazeSlayer.muteBlazeSounds = newValue)

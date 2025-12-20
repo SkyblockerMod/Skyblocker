@@ -113,12 +113,12 @@ public class SlayersConfig {
 	}
 
 	public static class WolfSlayer {
-		public boolean muteWolfSounds = true;
+		public boolean muteWolfSounds = false;
 
 		public boolean hideSvenPupNametag = true;
 	}
 
 	public static class SpiderSlayer {
-		public boolean muteSpiderSounds = true;
+		public boolean muteSpiderSounds = false;
 	}
 }

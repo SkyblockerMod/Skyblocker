@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.TextureComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.TextureTextComponent;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
@@ -66,7 +66,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 			SlayerTier slayerTier = SlayerTier.V;
 
 			Text slayerName = Text.literal(slayerType.bossName + " " + slayerTier).formatted(slayerTier.color);
-			addComponent(new TextureComponent(slayerName, slayerType.texture, TEXTURE_SIZE, TEXTURE_SIZE));
+			addComponent(new TextureTextComponent(slayerName, slayerType.texture, TEXTURE_SIZE, TEXTURE_SIZE));
 			addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE, "100,000/400,000");
 			addComponent(Components.iconTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal("200").formatted(Formatting.LIGHT_PURPLE))));
 			return;
@@ -81,7 +81,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 		int bossesNeeded = slayerQuest.bossesNeeded;
 
 		Text slayerName = Text.literal(slayerType.bossName + " " + slayerTier).formatted(slayerTier.color);
-		addComponent(new TextureComponent(slayerName, slayerType.texture, TEXTURE_SIZE, TEXTURE_SIZE));
+		addComponent(new TextureTextComponent(slayerName, slayerType.texture, TEXTURE_SIZE, TEXTURE_SIZE));
 
 		if (level == slayerType.maxLevel) {
 			addComponent(Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));

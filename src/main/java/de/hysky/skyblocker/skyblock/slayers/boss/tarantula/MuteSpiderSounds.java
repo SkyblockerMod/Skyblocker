@@ -3,7 +3,8 @@ package de.hysky.skyblocker.skyblock.slayers.boss.tarantula;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
-import de.hysky.skyblocker.utils.Area;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -34,8 +35,11 @@ public class MuteSpiderSounds {
 	}
 
 	private static boolean onSound(SoundEvent sound) {
-		if (SkyblockerConfigManager.get().slayers.spiderSlayer.muteSpiderSounds && (Utils.isInSpidersDen() || Utils.getArea() == Area.BURNING_DESERT)) {
-			return !MUTED_SOUNDS.contains(sound.id());
+		if (SkyblockerConfigManager.get().slayers.spiderSlayer.muteSpiderSounds && (Utils.isInSpidersDen() || Utils.isInCrimson())) {
+			// To keep blaze slayer skeleton daemon sounds
+			if (!SlayerManager.isFightingSlayerType(SlayerType.DEMONLORD)) {
+				return !MUTED_SOUNDS.contains(sound.id());
+			}
 		}
 		return true;
 	}

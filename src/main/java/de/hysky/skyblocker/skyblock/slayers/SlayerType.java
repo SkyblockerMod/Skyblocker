@@ -17,7 +17,7 @@ public enum SlayerType implements StringIdentifiable {
 	SVEN("sven", EntityType.WOLF, "Sven Packmaster", HEAD_ICON.get("Wolf"), new int[]{2_000, 40_000, 750_000, 2_000_000}, new int[]{5, 25, 100, 500, 1500}, new int[]{10, 30, 250, 1500, 5000, 20000, 100000, 400000, 1000000}, List.of("Pack Enforcer"), List.of("Sven Follower", "Sven Alpha"), List.of()),
 	VOIDGLOOM("voidgloom", EntityType.ENDERMAN, "Voidgloom Seraph", HEAD_ICON.get("Enderman"), new int[]{300_000, 12_000_000, 50_000_000, 210_000_000}, new int[]{5, 25, 100, 500, 1500}, new int[]{10, 30, 250, 1500, 5000, 20000, 100000, 400000, 1000000}, List.of("Voidling Devotee"), List.of("Voidling Radical", "Voidcrazed Maniac"), List.of()),
 	DEMONLORD("demonlord", EntityType.BLAZE, "Inferno Demonlord", HEAD_ICON.get("Blaze"), new int[]{2_500_000, 10_000_000, 45_000_000, 150_000_000}, new int[]{5, 25, 100, 500, 1500}, new int[]{10, 30, 250, 1500, 5000, 20000, 100000, 400000, 1000000}, List.of("Flare Demon"), List.of("Kindleheart Demon", "Burningsoul Demon"), List.of()),
-	VAMPIRE("vampire", EntityType.PLAYER, "Riftstalker Bloodfiend", HEAD_ICON.get("Vampire"), new int[]{625, 1_100, 1_800, 2_400}, new int[]{10, 25, 60, 120, 150}, new int[]{20, 75, 240, 840, 2400}, List.of(), List.of(), List.of());
+	VAMPIRE("vampire", EntityType.PLAYER, "Riftstalker Bloodfiend", HEAD_ICON.get("Vampire"), new int[]{625, 1_100, 1_800, 2_400, 3_000}, new int[]{10, 25, 60, 120, 150}, new int[]{20, 75, 240, 840, 2400}, List.of(), List.of(), List.of());
 
 	public static final Codec<SlayerType> CODEC = StringIdentifiable.createCodec(SlayerType::values);
 	public final String name;
