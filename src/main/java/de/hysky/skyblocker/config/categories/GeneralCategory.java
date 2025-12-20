@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.SkyblockerScreen;
 import de.hysky.skyblocker.UpdateNotifications;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.backup.ConfigBackupScreen;
@@ -414,6 +415,7 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.specialEffects.rareDropEffects"))
 								.description(Component.translatable("skyblocker.config.general.specialEffects.rareDropEffects.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_5_11_0)
 								.binding(defaults.general.specialEffects.rareDropEffects,
 										() -> config.general.specialEffects.rareDropEffects,
 										newValue -> config.general.specialEffects.rareDropEffects = newValue)
