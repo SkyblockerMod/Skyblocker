@@ -6,20 +6,19 @@ import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 
 public class SlayerWidget {
 	private final String slayerName;
@@ -59,27 +58,27 @@ public class SlayerWidget {
 		} catch (Exception ignored) {}
 	}
 
-	public void render(DrawContext context, int mouseX, int mouseY, int x, int y) {
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, this.item, x + 1, y + 3, 0, 0, 20, 20, 20, 20);
-		context.drawText(textRenderer, slayerName + " " + slayerLevel.level, x + 31, y + 5, Color.white.hashCode(), false);
+	public void render(GuiGraphics context, int mouseX, int mouseY, int x, int y) {
+		Font textRenderer = MinecraftClient.getInstance().textRenderer;
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+		context.blit(RenderPipelines.GUI_TEXTURED, this.item, x + 1, y + 3, 0, 0, 20, 20, 20, 20);
+		context.drawString(textRenderer, slayerName + " " + slayerLevel.level, x + 31, y + 5, Color.white.hashCode(), false);
 
 		int col2 = x + 113;
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, col2, y, 0, 0, 109, 26, 109, 26);
-		context.drawItem(this.drop, col2 + 3, y + 5);
-		context.drawText(textRenderer, "§aKills: §r" + findTotalKills(), col2 + 30, y + 4, Color.white.hashCode(), true);
-		context.drawText(textRenderer, findTopTierKills(), findTopTierKills().equals("No Data") ? col2 + 30 : col2 + 29, y + 15, Color.white.hashCode(), true);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, col2, y, 0, 0, 109, 26, 109, 26);
+		context.renderItem(this.drop, col2 + 3, y + 5);
+		context.drawString(textRenderer, "§aKills: §r" + findTotalKills(), col2 + 30, y + 4, Color.white.hashCode(), true);
+		context.drawString(textRenderer, findTopTierKills(), findTopTierKills().equals("No Data") ? col2 + 30 : col2 + 29, y + 15, Color.white.hashCode(), true);
 
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
 		Color fillColor = slayerLevel.fill == 1 ? Color.MAGENTA : Color.green;
 		HudHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * slayerLevel.fill), 6, fillColor);
 
 		if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22) {
-			List<Text> tooltipText = new ArrayList<>();
-			tooltipText.add(Text.literal(this.slayerName).formatted(Formatting.GREEN));
-			tooltipText.add(Text.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.slayerLevel.xp)).formatted(Formatting.GOLD));
-			context.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
+			List<Component> tooltipText = new ArrayList<>();
+			tooltipText.add(Component.literal(this.slayerName).withStyle(ChatFormatting.GREEN));
+			tooltipText.add(Component.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.slayerLevel.xp)).withStyle(ChatFormatting.GOLD));
+			context.setComponentTooltipForNextFrame(textRenderer, tooltipText, mouseX, mouseY);
 		}
 	}
 

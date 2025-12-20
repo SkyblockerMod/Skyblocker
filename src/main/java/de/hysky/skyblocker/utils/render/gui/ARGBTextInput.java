@@ -1,31 +1,31 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
 import java.util.Locale;
 import java.util.OptionalInt;
 import java.util.function.IntConsumer;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.CommonColors;
 
-public class ARGBTextInput extends ClickableWidget {
+public class ARGBTextInput extends AbstractWidget {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	private static final Formatting[] FORMATTINGS = new Formatting[] {Formatting.WHITE, Formatting.RED, Formatting.GREEN, Formatting.BLUE};
+	private static final ChatFormatting[] FORMATTINGS = new ChatFormatting[] {ChatFormatting.WHITE, ChatFormatting.RED, ChatFormatting.GREEN, ChatFormatting.BLUE};
 	private static final String HEXADECIMAL_CHARS = "0123456789aAbBcCdDeEfF";
 
 	/**
@@ -33,7 +33,7 @@ public class ARGBTextInput extends ClickableWidget {
 	 */
 	private final int length;
 	private final boolean drawBackground;
-	private final TextRenderer textRenderer;
+	private final Font textRenderer;
 	/**
 	 * Whether the alpha channel can be changed
 	 */
@@ -60,8 +60,8 @@ public class ARGBTextInput extends ClickableWidget {
 	 *
 	 * @see ARGBTextInput#setOnChange(IntConsumer)
 	 */
-	public ARGBTextInput(int x, int y, TextRenderer textRenderer, boolean drawBackground, boolean hasAlpha) {
-		super(x, y, textRenderer.getWidth(hasAlpha ? "AAAAAAAA" : "AAAAAA") + (drawBackground ? 6 : 0), 10 + (drawBackground ? 4 : 0), Text.of("ARGBTextInput"));
+	public ARGBTextInput(int x, int y, Font textRenderer, boolean drawBackground, boolean hasAlpha) {
+		super(x, y, textRenderer.width(hasAlpha ? "AAAAAAAA" : "AAAAAA") + (drawBackground ? 6 : 0), 10 + (drawBackground ? 4 : 0), Component.nullToEmpty("ARGBTextInput"));
 		this.drawBackground = drawBackground;
 		this.textRenderer = textRenderer;
 		this.length = hasAlpha ? 8 : 6;
@@ -83,7 +83,7 @@ public class ARGBTextInput extends ClickableWidget {
 	 *
 	 * @see ARGBTextInput#setOnChange(IntConsumer)
 	 */
-	public ARGBTextInput(int x, int y, TextRenderer textRenderer, boolean drawBackground) {
+	public ARGBTextInput(int x, int y, Font textRenderer, boolean drawBackground) {
 		this(x, y, textRenderer, drawBackground, false);
 	}
 
@@ -101,7 +101,7 @@ public class ARGBTextInput extends ClickableWidget {
 	 * @return the color, or white if something somehow went wrong
 	 */
 	public int getARGBColor() {
-		return getOptionalARGBColor(input).orElse(Colors.WHITE);
+		return getOptionalARGBColor(input).orElse(CommonColors.WHITE);
 	}
 
 	public void setARGBColor(int argb) {
@@ -118,14 +118,14 @@ public class ARGBTextInput extends ClickableWidget {
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		int selectionStart = textRenderer.getWidth(input.substring(0, index));
-		int selectionEnd = textRenderer.getWidth(input.substring(0, index + 1));
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		int selectionStart = textRenderer.width(input.substring(0, index));
+		int selectionEnd = textRenderer.width(input.substring(0, index + 1));
 		int textX = getX() + (drawBackground ? 3 : 0);
-		int textY = getY() + (getHeight() - textRenderer.fontHeight) / 2;
+		int textY = getY() + (getHeight() - textRenderer.lineHeight) / 2;
 		if (drawBackground) {
-			context.fill(getX(), getY(), getRight(), getBottom(), isFocused() ? Colors.WHITE : Colors.GRAY);
-			context.fill(getX() + 1, getY() + 1, getRight() - 1, getBottom() - 1, Colors.BLACK);
+			context.fill(getX(), getY(), getRight(), getBottom(), isFocused() ? CommonColors.WHITE : CommonColors.GRAY);
+			context.fill(getX() + 1, getY() + 1, getRight() - 1, getBottom() - 1, CommonColors.BLACK);
 		}
 
 		if (isFocused()) {
@@ -133,42 +133,42 @@ public class ARGBTextInput extends ClickableWidget {
 					textX + selectionStart,
 					textY,
 					textX + selectionEnd,
-					textY + textRenderer.fontHeight,
+					textY + textRenderer.lineHeight,
 					0xFF_00_BB_FF
 			);
 			context.fill(
 					textX + selectionStart,
-					textY + textRenderer.fontHeight - 1,
+					textY + textRenderer.lineHeight - 1,
 					textX + selectionEnd,
-					textY + textRenderer.fontHeight,
-					Colors.WHITE
+					textY + textRenderer.lineHeight,
+					CommonColors.WHITE
 			);
 		}
-		context.drawText(
+		context.drawString(
 				textRenderer,
 				visitor -> {
 					int start = hasAlpha ? 0 : 1;
 					for (int i = 0; i < input.length(); i++) {
-						if (!visitor.accept(i, isSelected() ? Style.EMPTY.withFormatting(FORMATTINGS[i / 2 + start]) : Style.EMPTY, input.charAt(i))) return false;
+						if (!visitor.accept(i, isHoveredOrFocused() ? Style.EMPTY.applyFormat(FORMATTINGS[i / 2 + start]) : Style.EMPTY, input.charAt(i))) return false;
 					}
 					return true;
 				},
 				textX,
 				textY,
-				Colors.WHITE,
+				CommonColors.WHITE,
 				true
 		);
 
 		if (this.isHovered()) {
-			context.setCursor(StandardCursors.IBEAM);
+			context.requestCursor(CursorTypes.IBEAM);
 		}
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	@Override
-	public boolean keyPressed(KeyInput keyInput) {
+	public boolean keyPressed(KeyEvent keyInput) {
 		if (!isFocused()) return false;
 		boolean bl = switch (keyInput.key()) {
 			case GLFW.GLFW_KEY_DELETE -> {
@@ -199,10 +199,10 @@ public class ARGBTextInput extends ClickableWidget {
 			return true;
 		} else {
 			if (keyInput.isCopy()) {
-				MinecraftClient.getInstance().keyboard.setClipboard(input);
+				Minecraft.getInstance().keyboardHandler.setClipboard(input);
 				return true;
 			} else if (keyInput.isPaste()) {
-				String clipboard = MinecraftClient.getInstance().keyboard.getClipboard();
+				String clipboard = Minecraft.getInstance().keyboardHandler.getClipboard();
 				if (clipboard.startsWith("#")) clipboard = clipboard.substring(1);
 				String s = clipboard.substring(0, Math.min(hasAlpha ? 8 : 6, clipboard.length()));
 				getOptionalARGBColor(s.toUpperCase(Locale.ENGLISH)).ifPresent(color -> {
@@ -217,10 +217,10 @@ public class ARGBTextInput extends ClickableWidget {
 	}
 
 	@Override
-	public boolean charTyped(CharInput input) {
+	public boolean charTyped(CharacterEvent input) {
 		if (!isFocused()) return false;
-		if (HEXADECIMAL_CHARS.contains(input.asString())) {
-			this.input = new StringBuilder(this.input).replace(index, index+1, input.asString().toUpperCase(Locale.ENGLISH)).toString();
+		if (HEXADECIMAL_CHARS.contains(input.codepointAsString())) {
+			this.input = new StringBuilder(this.input).replace(index, index+1, input.codepointAsString().toUpperCase(Locale.ENGLISH)).toString();
 			index = Math.min(length - 1, index + 1);
 			callOnChange();
 			return true;
@@ -236,13 +236,13 @@ public class ARGBTextInput extends ClickableWidget {
 	}
 
 	@Override
-	public void onClick(Click click, boolean doubled) {
+	public void onClick(MouseButtonEvent click, boolean doubled) {
 		super.onClick(click, doubled);
 		index = findClickedChar((int) click.x());
 	}
 
 	@Override
-	protected void onDrag(Click click, double deltaX, double deltaY) {
+	protected void onDrag(MouseButtonEvent click, double deltaX, double deltaY) {
 		super.onDrag(click, deltaX, deltaY);
 		index = findClickedChar((int) click.x());
 	}
@@ -274,7 +274,7 @@ public class ARGBTextInput extends ClickableWidget {
 	}
 
 	private int findClickedChar(int mouseX) {
-		return Math.clamp(textRenderer.trimToWidth(input, mouseX - getX() - (drawBackground ? 3 : 0)).length(), 0, length - 1);
+		return Math.clamp(textRenderer.plainSubstrByWidth(input, mouseX - getX() - (drawBackground ? 3 : 0)).length(), 0, length - 1);
 	}
 
 

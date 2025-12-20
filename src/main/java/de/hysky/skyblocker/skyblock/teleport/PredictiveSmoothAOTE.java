@@ -13,49 +13,48 @@ import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CarpetBlock;
-import net.minecraft.block.FlowerPotBlock;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.Perspective;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.RaycastContext;
-import net.minecraft.world.World;
-
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CarpetBlock;
+import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PredictiveSmoothAOTE {
 	public static final Identifier SMOOTH_AOTE_BEFORE_PHASE = SkyblockerMod.id("smooth_aote");
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
 	private static final long MAX_TELEPORT_TIME = 2500; //2.5 seconds
 
 	private static long startTime;
-	private static Vec3d startPos;
-	private static Vec3d cameraStartPos;
-	private static Vec3d teleportVector;
+	private static Vec3 startPos;
+	private static Vec3 cameraStartPos;
+	private static Vec3 teleportVector;
 	private static long lastPing;
 	private static long currentTeleportPing;
 	private static int teleportsAhead;
@@ -100,8 +99,8 @@ public class PredictiveSmoothAOTE {
 	 * @param baseRange  the base range for the device without tuner
 	 * @return the range with tuner
 	 */
-	private static int extractTunedCustomData(NbtCompound customData, int baseRange) {
-		return customData != null && customData.contains("tuned_transmission") ? baseRange + customData.getInt("tuned_transmission", 0) : baseRange;
+	private static int extractTunedCustomData(CompoundTag customData, int baseRange) {
+		return customData != null && customData.contains("tuned_transmission") ? baseRange + customData.getIntOr("tuned_transmission", 0) : baseRange;
 	}
 
 	/**
@@ -112,12 +111,12 @@ public class PredictiveSmoothAOTE {
 	 * @param hand         held item
 	 * @return pass
 	 */
-	private static ActionResult onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
+	private static InteractionResult onItemInteract(Player playerEntity, Level world, InteractionHand hand) {
 		if (CLIENT.player == null) {
 			return null;
 		}
 		calculateTeleportUse(hand);
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
 	/**
@@ -129,20 +128,20 @@ public class PredictiveSmoothAOTE {
 	 * @param blockHitResult target block
 	 * @return always pass
 	 */
-	private static ActionResult onBlockInteract(PlayerEntity playerEntity, World world, Hand hand, BlockHitResult blockHitResult) {
-		ItemStack itemStack = playerEntity.getStackInHand(hand);
+	private static InteractionResult onBlockInteract(Player playerEntity, Level world, InteractionHand hand, BlockHitResult blockHitResult) {
+		ItemStack itemStack = playerEntity.getItemInHand(hand);
 		if (isShovel(itemStack) && canShovelActOnBlock(world.getBlockState(blockHitResult.getBlockPos()).getBlock())) {
 			calculateTeleportUse(hand);
 		}
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
 	private static boolean isShovel(ItemStack itemStack) {
-		return itemStack.isOf(Items.WOODEN_SHOVEL) ||
-				itemStack.isOf(Items.STONE_SHOVEL) ||
-				itemStack.isOf(Items.IRON_SHOVEL) ||
-				itemStack.isOf(Items.GOLDEN_SHOVEL) ||
-				itemStack.isOf(Items.DIAMOND_SHOVEL);
+		return itemStack.is(Items.WOODEN_SHOVEL) ||
+				itemStack.is(Items.STONE_SHOVEL) ||
+				itemStack.is(Items.IRON_SHOVEL) ||
+				itemStack.is(Items.GOLDEN_SHOVEL) ||
+				itemStack.is(Items.DIAMOND_SHOVEL);
 	}
 
 	/**
@@ -164,9 +163,9 @@ public class PredictiveSmoothAOTE {
 	 * @param hand what the player is holding
 	 */
 
-	private static void calculateTeleportUse(Hand hand) {
+	private static void calculateTeleportUse(InteractionHand hand) {
 		//stop checking if player does not exist
-		if (CLIENT.player == null || CLIENT.world == null) {
+		if (CLIENT.player == null || CLIENT.level == null) {
 			return;
 		}
 
@@ -179,7 +178,7 @@ public class PredictiveSmoothAOTE {
 		}
 
 		// make sure the camera is not in 3rd person
-		if (CLIENT.options.getPerspective() != Perspective.FIRST_PERSON) {
+		if (CLIENT.options.getCameraType() != CameraType.FIRST_PERSON) {
 			return;
 		}
 
@@ -189,9 +188,9 @@ public class PredictiveSmoothAOTE {
 		}
 
 		//work out if the player is holding a teleporting item that is enabled and if so how far the item will take them
-		ItemStack heldItem = CLIENT.player.getMainHandStack();
+		ItemStack heldItem = CLIENT.player.getMainHandItem();
 		String itemId = heldItem.getSkyblockId();
-		NbtCompound customData = ItemUtils.getCustomData(heldItem);
+		CompoundTag customData = ItemUtils.getCustomData(heldItem);
 
 		int distance = getItemDistance(itemId, customData);
 		if (distance == -1) {
@@ -211,8 +210,8 @@ public class PredictiveSmoothAOTE {
 		//work out start pos of warp and set start time. if there is an active warp going on make the end of that the start of the next one
 		if (teleportsAhead == 0 || startPos == null || teleportVector == null) {
 			//start of teleport sequence
-			startPos = CLIENT.player.getEntityPos().add(0, Utils.getEyeHeight(CLIENT.player), 0); // the eye poss should not be affected by crouching
-			cameraStartPos = CLIENT.player.getEyePos();
+			startPos = CLIENT.player.position().add(0, Utils.getEyeHeight(CLIENT.player), 0); // the eye poss should not be affected by crouching
+			cameraStartPos = CLIENT.player.getEyePosition();
 			lastTeleportTime = System.currentTimeMillis();
 			// update the ping used for the teleport
 			currentTeleportPing = lastPing;
@@ -229,9 +228,9 @@ public class PredictiveSmoothAOTE {
 
 		// calculate the vector the player will follow for the teleport
 		//get direction
-		float pitch = CLIENT.player.getPitch();
-		float yaw = CLIENT.player.getYaw();
-		Vec3d look = CLIENT.player.getRotationVector(pitch, yaw);
+		float pitch = CLIENT.player.getXRot();
+		float yaw = CLIENT.player.getYRot();
+		Vec3 look = CLIENT.player.calculateViewVector(pitch, yaw);
 
 		//make sure the player is not talking to an npc. And if they are cancel the teleport
 		if (startPos == null) return;
@@ -249,8 +248,8 @@ public class PredictiveSmoothAOTE {
 		}
 
 		//compensate for hypixel round to center of block (to x.5 y.(eye height - 1), z.5)
-		Vec3d predictedEnd = startPos.add(teleportVector);
-		Vec3d offsetVec = new Vec3d(predictedEnd.x - roundToCenter(predictedEnd.x), predictedEnd.y - (Math.ceil(predictedEnd.y) + Utils.getEyeHeight(CLIENT.player) - 1), predictedEnd.z - roundToCenter(predictedEnd.z));
+		Vec3 predictedEnd = startPos.add(teleportVector);
+		Vec3 offsetVec = new Vec3(predictedEnd.x - roundToCenter(predictedEnd.x), predictedEnd.y - (Math.ceil(predictedEnd.y) + Utils.getEyeHeight(CLIENT.player) - 1), predictedEnd.z - roundToCenter(predictedEnd.z));
 		teleportVector = teleportVector.subtract(offsetVec);
 		//add 1 to teleports ahead
 		teleportsAhead += 1;
@@ -263,7 +262,7 @@ public class PredictiveSmoothAOTE {
 	 * @param customData custom data of item to check
 	 * @return distance the item teleports or -1 if not valid
 	 */
-	protected static int getItemDistance(String itemId, NbtCompound customData) {
+	protected static int getItemDistance(String itemId, CompoundTag customData) {
 		int distance;
 		switch (itemId) {
 			case "ASPECT_OF_THE_LEECH_1" -> {
@@ -282,7 +281,7 @@ public class PredictiveSmoothAOTE {
 				return -1;
 			}
 			case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
-				if (CLIENT.options.sneakKey.isPressed() && customData.getInt("ethermerge", 0) == 1) {
+				if (CLIENT.options.keyShift.isDown() && customData.getIntOr("ethermerge", 0) == 1) {
 					if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
 						distance = extractTunedCustomData(customData, 57);
 						break;
@@ -330,32 +329,32 @@ public class PredictiveSmoothAOTE {
 	 * @param look        players looking direction
 	 * @return if an NPC is targeted
 	 */
-	private static Boolean isTargetingNPC(PlayerEntity player, double maxDistance, Vec3d startPos, Vec3d look) {
+	private static Boolean isTargetingNPC(Player player, double maxDistance, Vec3 startPos, Vec3 look) {
 		if (startPos == null) return false;
 		// Calculate end position for raycast
-		Vec3d endPos = startPos.add(look.multiply(maxDistance));
+		Vec3 endPos = startPos.add(look.scale(maxDistance));
 
 		// First: Raycast for blocks (to check obstructions)
-		World world = player.getEntityWorld();
-		RaycastContext context = new RaycastContext(startPos, endPos, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player);
-		double blockHitDistance = world.raycast(context).getPos().distanceTo(startPos);
+		Level world = player.level();
+		ClipContext context = new ClipContext(startPos, endPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player);
+		double blockHitDistance = world.clip(context).getLocation().distanceTo(startPos);
 
 		// Second: Raycast for entities (within valid range)
-		Box searchBox = player
+		AABB searchBox = player
 				.getBoundingBox()
-				.stretch(look.multiply(maxDistance)) // Extend box in look direction
-				.expand(1); // Margin for safety
+				.expandTowards(look.scale(maxDistance)) // Extend box in look direction
+				.inflate(1); // Margin for safety
 
-		EntityHitResult entityHit = ProjectileUtil.raycast(player, startPos, endPos, searchBox, entity ->
+		EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(player, startPos, endPos, searchBox, entity ->
 						!entity.isSpectator() && entity != player,
-				MathHelper.square(blockHitDistance) // Max distance (squared)
+				Mth.square(blockHitDistance) // Max distance (squared)
 		);
 		//if not looking at any entity return false
 		if (entityHit == null) return false;
 
 		//look for armorstand saying click to see if it's A npc or not
 		Entity entity = entityHit.getEntity();
-		List<ArmorStandEntity> armorStands = MobGlow.getArmorStands(entity);
+		List<ArmorStand> armorStands = MobGlow.getArmorStands(entity);
 
 		return armorStands.stream().anyMatch(armorStand -> armorStand.getName().getString().equals("CLICK"));
 	}
@@ -417,14 +416,14 @@ public class PredictiveSmoothAOTE {
 	 * @param distance maximum distance
 	 * @return teleport vector
 	 */
-	protected static Vec3d raycast(int distance, Vec3d direction, Vec3d startPos, boolean isEtherwarp) {
-		if (CLIENT.world == null || direction == null || startPos == null) {
+	protected static Vec3 raycast(int distance, Vec3 direction, Vec3 startPos, boolean isEtherwarp) {
+		if (CLIENT.level == null || direction == null || startPos == null) {
 			return null;
 		}
 
 		//based on which way the ray is going get the needed vector for checking diagonals
-		BlockPos xDiagonalOffset = direction.getX() > 0 ? new BlockPos(1, 0, 0) : new BlockPos(-1, 0, 0);
-		BlockPos zDiagonalOffset = direction.getZ() > 0 ? new BlockPos(0, 0, 1) : new BlockPos(0, 0, -1);
+		BlockPos xDiagonalOffset = direction.x() > 0 ? new BlockPos(1, 0, 0) : new BlockPos(-1, 0, 0);
+		BlockPos zDiagonalOffset = direction.z() > 0 ? new BlockPos(0, 0, 1) : new BlockPos(0, 0, -1);
 
 
 		//initialise the closest floor value outside of possible values
@@ -432,9 +431,9 @@ public class PredictiveSmoothAOTE {
 
 		//loop though each block of a teleport checking each block if there are blocks in the way
 		for (double offset = 0; offset <= distance; offset++) {
-			Vec3d pos = startPos.add(direction.multiply(offset));
+			Vec3 pos = startPos.add(direction.scale(offset));
 
-			BlockPos checkPos = BlockPos.ofFloored(pos);
+			BlockPos checkPos = BlockPos.containing(pos);
 
 			//check if there is a block at the check location
 			if (!canTeleportThrough(checkPos)) {
@@ -442,45 +441,45 @@ public class PredictiveSmoothAOTE {
 					// no teleport can happen
 					return null;
 				}
-				if (isEtherwarp) return direction.multiply(offset - 1).add(direction);
-				return direction.multiply(offset - 1);
+				if (isEtherwarp) return direction.scale(offset - 1).add(direction);
+				return direction.scale(offset - 1);
 			}
 
 			//check if the block at head height is free
-			if (!canTeleportThrough(checkPos.up()) && !isEtherwarp) {
+			if (!canTeleportThrough(checkPos.above()) && !isEtherwarp) {
 				if (offset == 0) {
 					//cancel the check if starting height is too low
-					Vec3d justAhead = startPos.add(direction.multiply(0.2));
-					if ((justAhead.getY() - Math.floor(justAhead.getY())) <= 0.495) {
+					Vec3 justAhead = startPos.add(direction.scale(0.2));
+					if ((justAhead.y() - Math.floor(justAhead.y())) <= 0.495) {
 						continue;
 					}
 					// no teleport can happen
 					return null;
 				}
-				return direction.multiply(offset - 1);
+				return direction.scale(offset - 1);
 			}
 
 			//check for diagonal walls for some reason this check is directional, and you can go through from some directions. This seems to emulate this as best as possible
-			if (offset != 0 && direction.getX() < 0 && (isBlockFloor(checkPos.east())) && (isBlockFloor(BlockPos.ofFloored(pos.subtract(direction)).add(zDiagonalOffset)))) {
-				return direction.multiply(offset - 1);
+			if (offset != 0 && direction.x() < 0 && (isBlockFloor(checkPos.east())) && (isBlockFloor(BlockPos.containing(pos.subtract(direction)).offset(zDiagonalOffset)))) {
+				return direction.scale(offset - 1);
 			}
-			if (offset != 0 && direction.getZ() < 0 && direction.getX() < 0 && (isBlockFloor(checkPos.south())) && (isBlockFloor(BlockPos.ofFloored(pos.subtract(direction)).add(xDiagonalOffset)))) {
-				return direction.multiply(offset - 1);
+			if (offset != 0 && direction.z() < 0 && direction.x() < 0 && (isBlockFloor(checkPos.south())) && (isBlockFloor(BlockPos.containing(pos.subtract(direction)).offset(xDiagonalOffset)))) {
+				return direction.scale(offset - 1);
 			}
 
 			//if the player is close to the floor (including diagonally) save Y and when player goes bellow this y finish teleport
-			if ((isBlockFloor(checkPos.down()) || (isBlockFloor(checkPos.down().add(xDiagonalOffset)) && isBlockFloor(checkPos.down().add(zDiagonalOffset)))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
+			if ((isBlockFloor(checkPos.below()) || (isBlockFloor(checkPos.below().offset(xDiagonalOffset)) && isBlockFloor(checkPos.below().offset(zDiagonalOffset)))) && (pos.y() - Math.floor(pos.y())) < 0.31) {
 				closeFloorY = checkPos.getY() - 1;
 			}
 
 			//if the checking Y is same as closeY finish
 			if (closeFloorY == checkPos.getY()) {
-				return direction.multiply(offset - 1);
+				return direction.scale(offset - 1);
 			}
 		}
 
 		//return full distance if no collision found
-		return direction.multiply(distance);
+		return direction.scale(distance);
 	}
 
 	/**
@@ -491,18 +490,18 @@ public class PredictiveSmoothAOTE {
 	 * @return if a block location can be teleported though
 	 */
 	private static Boolean canTeleportThrough(BlockPos blockPos) {
-		if (CLIENT.world == null) {
+		if (CLIENT.level == null) {
 			return false;
 		}
 
-		BlockState blockState = CLIENT.world.getBlockState(blockPos);
+		BlockState blockState = CLIENT.level.getBlockState(blockPos);
 		if (blockState.isAir()) {
 			return true;
 		}
 		Block block = blockState.getBlock();
-		VoxelShape shape = blockState.getCollisionShape(CLIENT.world, blockPos);
+		VoxelShape shape = blockState.getCollisionShape(CLIENT.level, blockPos);
 
-		return shape.isEmpty() || block instanceof CarpetBlock || block instanceof FlowerPotBlock || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3);
+		return shape.isEmpty() || block instanceof CarpetBlock || block instanceof FlowerPotBlock || (block.equals(Blocks.SNOW) && blockState.getValue(BlockStateProperties.LAYERS) <= 3);
 	}
 
 	/**
@@ -512,16 +511,16 @@ public class PredictiveSmoothAOTE {
 	 * @return if it's a floor block
 	 */
 	private static Boolean isBlockFloor(BlockPos blockPos) {
-		if (CLIENT.world == null) {
+		if (CLIENT.level == null) {
 			return false;
 		}
 
-		BlockState blockState = CLIENT.world.getBlockState(blockPos);
-		VoxelShape shape = blockState.getCollisionShape(CLIENT.world, blockPos);
+		BlockState blockState = CLIENT.level.getBlockState(blockPos);
+		VoxelShape shape = blockState.getCollisionShape(CLIENT.level, blockPos);
 		if (shape.isEmpty()) {
 			return false;
 		}
-		return shape.getBoundingBox().maxY >= 1 || blockState.getBlock() == Blocks.MUD; //every thing 1 or above counts but there is some added extras like mud
+		return shape.bounds().maxY >= 1 || blockState.getBlock() == Blocks.MUD; //every thing 1 or above counts but there is some added extras like mud
 	}
 
 	/**
@@ -530,7 +529,7 @@ public class PredictiveSmoothAOTE {
 	 * @return the camera position for the interpolated pos
 	 */
 
-	public static Vec3d getInterpolatedPos() {
+	public static Vec3 getInterpolatedPos() {
 		if (CLIENT.player == null || teleportVector == null || startPos == null || teleportDisabled) {
 			return null;
 		}
@@ -554,7 +553,7 @@ public class PredictiveSmoothAOTE {
 			return null;
 		}
 
-		return cameraStartPos.add(teleportVector.multiply(percentage));
+		return cameraStartPos.add(teleportVector.scale(percentage));
 	}
 
 	public static void updatePing(long ping) {

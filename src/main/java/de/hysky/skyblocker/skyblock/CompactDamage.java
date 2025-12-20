@@ -2,16 +2,16 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.OkLabColor;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.entity.decoration.ArmorStand;
 
 
 public class CompactDamage {
@@ -22,15 +22,15 @@ public class CompactDamage {
 	private CompactDamage() {
 	}
 
-	public static void compactDamage(ArmorStandEntity entity) {
+	public static void compactDamage(ArmorStand entity) {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.compactDamage.enabled) return;
 		if (!entity.isInvisible() || !entity.hasCustomName() || !entity.isCustomNameVisible()) return;
-		Text customName = entity.getCustomName();
+		Component customName = entity.getCustomName();
 		if (customName == null) return;
 
 		Matcher matcher = DAMAGE_PATTERN.matcher(customName.getString());
 		if (!matcher.matches()) return;
-		List<Text> siblings = customName.getSiblings();
+		List<Component> siblings = customName.getSiblings();
 		if (siblings.isEmpty()) return;
 
 		boolean isCrit = !matcher.group(1).isEmpty();
@@ -38,7 +38,7 @@ public class CompactDamage {
 		TextColor textColor;
 
 		if (siblings.size() == 1) { // Plain non-crit, no modifier damage
-			Text text = siblings.getFirst();
+			Component text = siblings.getFirst();
 			dmg = text.getString().replace(",", "");
 			textColor = text.getStyle().getColor();
 		} else { // Multi-styled damage
@@ -50,28 +50,28 @@ public class CompactDamage {
 			// There can be other additional siblings added after the second crit sibling.
 			dmg = siblings.subList(symbolsToRemoveFront, siblings.size() - symbolsToRemoveEnd)
 					.stream()
-					.map(Text::getString)
+					.map(Component::getString)
 					.reduce("", String::concat) //Concatenate all the siblings to get the dmg number
 					.replace(",", "");
 		}
 		if (!NumberUtils.isParsable(dmg)) return; //Sanity check
 
-		MutableText prettierCustomName = Text.empty();
+		MutableComponent prettierCustomName = Component.empty();
 		if (!isCrit) {
 			String prettifiedDmg = prettifyDamageNumber(Long.parseLong(dmg));
 			int color;
 			if (textColor != null) {
-				if (textColor == TextColor.fromFormatting(Formatting.GRAY)) {
+				if (textColor == TextColor.fromLegacyFormat(ChatFormatting.GRAY)) {
 					color = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF;
-				} else color = textColor.getRgb();
+				} else color = textColor.getValue();
 			} else color = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF;
-			prettierCustomName = Text.literal(prettifiedDmg).setStyle(customName.getStyle()).withColor(color);
+			prettierCustomName = Component.literal(prettifiedDmg).setStyle(customName.getStyle()).withColor(color);
 		} else {
 			String dmgSymbol = matcher.group(1);
 			String prettifiedDmg = dmgSymbol + prettifyDamageNumber(Long.parseLong(dmg)) + dmgSymbol;
 			int length = prettifiedDmg.length();
 			for (int i = 0; i < length; i++) {
-				prettierCustomName.append(Text.literal(prettifiedDmg.substring(i, i + 1)).withColor(
+				prettierCustomName.append(Component.literal(prettifiedDmg.substring(i, i + 1)).withColor(
 						OkLabColor.interpolate(
 								SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientStart.getRGB() & 0x00FFFFFF,
 								SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientEnd.getRGB() & 0x00FFFFFF,
@@ -82,7 +82,7 @@ public class CompactDamage {
 			prettierCustomName.setStyle(customName.getStyle());
 		}
 		// Readd the additional symbol, if present
-		if (!matcher.group(2).isEmpty()) prettierCustomName.append(Text.literal(matcher.group(2)).setStyle(siblings.getLast().getStyle()));
+		if (!matcher.group(2).isEmpty()) prettierCustomName.append(Component.literal(matcher.group(2)).setStyle(siblings.getLast().getStyle()));
 		entity.setCustomName(prettierCustomName);
 	}
 

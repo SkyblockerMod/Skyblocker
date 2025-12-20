@@ -1,41 +1,41 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 
 import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 
 public class OverlayScreen extends Screen {
 
-	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.ofVanilla("icon/search");
-	protected static final Identifier DELETE_ICON_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/pending_invite/reject.png");
-	private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("social_interactions/background");
+	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
+	protected static final Identifier DELETE_ICON_TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/pending_invite/reject.png");
+	private static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("social_interactions/background");
 	private static final int rowHeight = 20;
 	private static final int specialButtonSize = rowHeight;
-	private TextFieldWidget searchField;
-	private ButtonWidget finishedButton;
-	private ButtonWidget maxPetButton;
-	private ButtonWidget dungeonStarButton;
-	private ButtonWidget[] suggestionButtons;
-	private ButtonWidget[] historyButtons;
-	private ButtonWidget[] deleteButtons;
+	private EditBox searchField;
+	private Button finishedButton;
+	private Button maxPetButton;
+	private Button dungeonStarButton;
+	private Button[] suggestionButtons;
+	private Button[] historyButtons;
+	private Button[] deleteButtons;
 
 	public OverlayScreen() {
-		super(Text.empty());
+		super(Component.empty());
 	}
 
 	/**
@@ -49,86 +49,86 @@ public class OverlayScreen extends Screen {
 		int startY = (int) ((int) (this.height * 0.5) - (rowHeight * (1 + SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.maxSuggestions + 0.75 + SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.historyLength)) / 2);
 
 		// Search field
-		this.searchField = new TextFieldWidget(textRenderer, startX, startY, rowWidth - rowHeight, rowHeight, Text.translatable("gui.recipebook.search_hint"));
-		searchField.setText(SearchOverManager.search);
-		searchField.setChangedListener(SearchOverManager::updateSearch);
+		this.searchField = new EditBox(font, startX, startY, rowWidth - rowHeight, rowHeight, Component.translatable("gui.recipebook.search_hint"));
+		searchField.setValue(SearchOverManager.search);
+		searchField.setResponder(SearchOverManager::updateSearch);
 		searchField.setMaxLength(30);
 
 		// finish buttons
-		finishedButton = ButtonWidget.builder(Text.literal(""), a -> close())
-				.position(startX + rowWidth - rowHeight, startY)
+		finishedButton = Button.builder(Component.literal(""), a -> onClose())
+				.pos(startX + rowWidth - rowHeight, startY)
 				.size(specialButtonSize, specialButtonSize).build();
 
 		// suggested item buttons
 		int totalSuggestions = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.maxSuggestions;
-		this.suggestionButtons = new ButtonWidget[totalSuggestions];
-		DirectionalLayoutWidget suggestionLayoutWidget = new DirectionalLayoutWidget(startX, startY + rowHeight, DirectionalLayoutWidget.DisplayAxis.VERTICAL);
+		this.suggestionButtons = new Button[totalSuggestions];
+		LinearLayout suggestionLayoutWidget = new LinearLayout(startX, startY + rowHeight, LinearLayout.Orientation.VERTICAL);
 		for (int i = 0; i < totalSuggestions; i++) {
-			suggestionButtons[i] = ButtonWidget.builder(Text.empty(), a -> {
+			suggestionButtons[i] = Button.builder(Component.empty(), a -> {
 				SearchOverManager.updateSearch(a.getMessage().getString());
-				close();
+				onClose();
 			}).size(rowWidth, rowHeight).build();
-			suggestionLayoutWidget.add(suggestionButtons[i]);
+			suggestionLayoutWidget.addChild(suggestionButtons[i]);
 			suggestionButtons[i].visible = false;
 		}
 
 		// history item buttons
 		int historyOffset = (int) (rowHeight * (totalSuggestions + 1.75));
 		int historyLength = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.historyLength;
-		this.historyButtons = new ButtonWidget[historyLength];
-		this.deleteButtons = new ButtonWidget[historyLength];
-		GridWidget historyGridWidget = new GridWidget(startX, startY + historyOffset);
-		GridWidget.Adder historyAdder = historyGridWidget.createAdder(2);
+		this.historyButtons = new Button[historyLength];
+		this.deleteButtons = new Button[historyLength];
+		GridLayout historyGridWidget = new GridLayout(startX, startY + historyOffset);
+		GridLayout.RowHelper historyAdder = historyGridWidget.createRowHelper(2);
 		for (int i = 0; i < historyLength; i++) {
-			historyButtons[i] = ButtonWidget.builder(Text.empty(), (a) -> {
+			historyButtons[i] = Button.builder(Component.empty(), (a) -> {
 				SearchOverManager.search = a.getMessage().getString();
 				SearchOverManager.updateSearch(a.getMessage().getString());
-				close();
+				onClose();
 			}).size(rowWidth - rowHeight, rowHeight).build();
 			historyButtons[i].visible = false;
-			historyAdder.add(historyButtons[i]);
+			historyAdder.addChild(historyButtons[i]);
 
 			final int slotId = i;
-			deleteButtons[i] = ButtonWidget.builder(Text.empty(), (a) -> removeHistoryItem(slotId)).size(specialButtonSize, specialButtonSize)
-					.tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.searchOverlay.deleteTooltip"))).build();
+			deleteButtons[i] = Button.builder(Component.empty(), (a) -> removeHistoryItem(slotId)).size(specialButtonSize, specialButtonSize)
+					.tooltip(Tooltip.create(Component.translatable("skyblocker.config.general.searchOverlay.deleteTooltip"))).build();
 			deleteButtons[i].visible = false;
-			historyAdder.add(deleteButtons[i]);
+			historyAdder.addChild(deleteButtons[i]);
 		}
 		updateHistoryButtons();
 
 		//auction only elements
 		if (SearchOverManager.location == SearchOverManager.SearchLocation.AUCTION) {
 			//max pet level button
-			maxPetButton = ButtonWidget.builder(Text.literal(""), a -> {
+			maxPetButton = Button.builder(Component.literal(""), a -> {
 						SearchOverManager.maxPetLevel = !SearchOverManager.maxPetLevel;
 						updateMaxPetText();
 					})
-					.tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.searchOverlay.maxPet.@Tooltip")))
-					.position(startX, startY - rowHeight - 8)
+					.tooltip(Tooltip.create(Component.translatable("skyblocker.config.general.searchOverlay.maxPet.@Tooltip")))
+					.pos(startX, startY - rowHeight - 8)
 					.size(rowWidth / 2, rowHeight).build();
 			updateMaxPetText();
 
 			//dungeon star input
-			dungeonStarButton = ButtonWidget.builder(Text.literal("✪"), a -> updateStars())
-					.tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.searchOverlay.starsTooltip")))
-					.position(startX + (int) (rowWidth * 0.5), startY - rowHeight - 8)
+			dungeonStarButton = Button.builder(Component.literal("✪"), a -> updateStars())
+					.tooltip(Tooltip.create(Component.translatable("skyblocker.config.general.searchOverlay.starsTooltip")))
+					.pos(startX + (int) (rowWidth * 0.5), startY - rowHeight - 8)
 					.size(rowWidth / 2, rowHeight).build();
 
 			updateStars();
 		}
 
-		suggestionLayoutWidget.refreshPositions();
-		historyGridWidget.refreshPositions();
+		suggestionLayoutWidget.arrangeElements();
+		historyGridWidget.arrangeElements();
 
 		//add drawables in order to make tab navigation sensible
-		addDrawableChild(searchField);
-		suggestionLayoutWidget.forEachChild(this::addDrawableChild);
-		historyGridWidget.forEachChild(this::addDrawableChild);
-		addDrawableChild(finishedButton);
+		addRenderableWidget(searchField);
+		suggestionLayoutWidget.visitWidgets(this::addRenderableWidget);
+		historyGridWidget.visitWidgets(this::addRenderableWidget);
+		addRenderableWidget(finishedButton);
 
 		if (SearchOverManager.location == SearchOverManager.SearchLocation.AUCTION) {
-			addDrawableChild(maxPetButton);
-			addDrawableChild(dungeonStarButton);
+			addRenderableWidget(maxPetButton);
+			addRenderableWidget(dungeonStarButton);
 		}
 
 		//focus the search box
@@ -140,9 +140,9 @@ public class OverlayScreen extends Screen {
 	 * @return super
 	 */
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
-		if (dungeonStarButton != null && dungeonStarButton.isHovered() && client != null) {
-			double actualTextWidth = client.textRenderer.getWidth(dungeonStarButton.getMessage());
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+		if (dungeonStarButton != null && dungeonStarButton.isHovered() && minecraft != null) {
+			double actualTextWidth = minecraft.font.width(dungeonStarButton.getMessage());
 			double textOffset = (dungeonStarButton.getWidth() - actualTextWidth) / 2;
 			double offset = click.x() - (dungeonStarButton.getX() + textOffset);
 			int starCount = (int) ((offset / actualTextWidth) * 10);
@@ -163,9 +163,9 @@ public class OverlayScreen extends Screen {
 	 */
 	private void updateMaxPetText() {
 		if (SearchOverManager.maxPetLevel) {
-			maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ✔")).formatted(Formatting.GREEN));
+			maxPetButton.setMessage(Component.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Component.literal(" ✔")).withStyle(ChatFormatting.GREEN));
 		} else {
-			maxPetButton.setMessage(Text.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Text.literal(" ❌")).formatted(Formatting.RED));
+			maxPetButton.setMessage(Component.translatable("skyblocker.config.general.searchOverlay.maxPet").append(Component.literal(" ❌")).withStyle(ChatFormatting.RED));
 		}
 	}
 
@@ -173,12 +173,12 @@ public class OverlayScreen extends Screen {
 	 * Updates stars in dungeon star input to represent the current star value
 	 */
 	private void updateStars() {
-		MutableText stars = Text.empty();
+		MutableComponent stars = Component.empty();
 		for (int i = 0; i < SearchOverManager.dungeonStars; i++) {
-			stars.append(Text.literal("✪").formatted(i < 5 ? Formatting.YELLOW : Formatting.RED));
+			stars.append(Component.literal("✪").withStyle(i < 5 ? ChatFormatting.YELLOW : ChatFormatting.RED));
 		}
 		for (int i = SearchOverManager.dungeonStars; i < 10; i++) {
-			stars.append(Text.literal("✪"));
+			stars.append(Component.literal("✪"));
 		}
 		dungeonStarButton.setMessage(stars);
 	}
@@ -198,7 +198,7 @@ public class OverlayScreen extends Screen {
 				continue;
 			}
 
-			historyButtons[i].setMessage(Text.literal(text));
+			historyButtons[i].setMessage(Component.literal(text));
 			historyButtons[i].visible = true;
 			deleteButtons[i].visible = true;
 		}
@@ -212,26 +212,26 @@ public class OverlayScreen extends Screen {
 	 * @param delta delta
 	 */
 	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.renderBackground(context, mouseX, mouseY, delta);
 		//find max height
 		int maxHeight = rowHeight * (1 + suggestionButtons.length + historyButtons.length);
 		if (historyButtons.length > 0) { //add space for history label if it could exist
 			maxHeight += (int) (rowHeight * 0.75);
 		}
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, searchField.getX() - 8, searchField.getY() - 8, (int) (this.width * 0.4) + 16, maxHeight + 16);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, searchField.getX() - 8, searchField.getY() - 8, (int) (this.width * 0.4) + 16, maxHeight + 16);
 	}
 
 	/**
 	 * Renders the search icon, label for the history and item Stacks for item names
 	 */
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 		int renderOffset = (rowHeight - 16) / 2;
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, finishedButton.getX() + renderOffset, finishedButton.getY() + renderOffset, 16, 16);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, finishedButton.getX() + renderOffset, finishedButton.getY() + renderOffset, 16, 16);
 		if (historyButtons.length > 0 && historyButtons[0] != null) {
-			context.drawText(textRenderer, Text.translatable("skyblocker.config.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
+			context.drawString(font, Component.translatable("skyblocker.config.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
 		}
 
 		//draw item stacks and tooltip to buttons
@@ -242,24 +242,24 @@ public class OverlayScreen extends Screen {
 			drawItemAndTooltip(context, mouseX, mouseY, SearchOverManager.getHistoryId(i), historyButtons[i], renderOffset);
 		}
 
-		for (ButtonWidget deleteButton : deleteButtons) {
+		for (Button deleteButton : deleteButtons) {
 			if (!deleteButton.visible) break;
-			context.drawTexture(RenderPipelines.GUI_TEXTURED, DELETE_ICON_TEXTURE, deleteButton.getX() + renderOffset, deleteButton.getY() + renderOffset, 0, 0, 16, 16, 16, 16);
+			context.blit(RenderPipelines.GUI_TEXTURED, DELETE_ICON_TEXTURE, deleteButton.getX() + renderOffset, deleteButton.getY() + renderOffset, 0, 0, 16, 16, 16, 16);
 		}
 	}
 
 	/**
 	 * Draws the item and tooltip for the given button
 	 */
-	private void drawItemAndTooltip(DrawContext context, int mouseX, int mouseY, String id, ButtonWidget button, int renderOffset) {
+	private void drawItemAndTooltip(GuiGraphics context, int mouseX, int mouseY, String id, Button button, int renderOffset) {
 		if (id == null || id.isEmpty()) return;
 		ItemStack item = getItemStack(id);
 		if (item == null) return;
-		context.drawItem(item, button.getX() + renderOffset, button.getY() + renderOffset);
+		context.renderItem(item, button.getX() + renderOffset, button.getY() + renderOffset);
 
 		// Draw tooltip
 		if (button.isMouseOver(mouseX, mouseY)) {
-			context.drawItemTooltip(textRenderer, item, mouseX, mouseY);
+			context.setTooltipForNextFrame(font, item, mouseX, mouseY);
 		}
 	}
 
@@ -278,7 +278,7 @@ public class OverlayScreen extends Screen {
 				boolean isNewText = !text.equals(suggestionButtons[i].getMessage().getString());
 				if (!isNewText) continue;
 
-				suggestionButtons[i].setMessage(Text.literal(text));
+				suggestionButtons[i].setMessage(Component.literal(text));
 			} else {
 				suggestionButtons[i].visible = false;
 			}
@@ -289,21 +289,21 @@ public class OverlayScreen extends Screen {
 	 * When a key is pressed. If enter key pressed and search box selected close
 	 */
 	@Override
-	public boolean keyPressed(KeyInput input) {
-		if (input.isEnter() && searchField.isActive()) {
-			close();
+	public boolean keyPressed(KeyEvent input) {
+		if (input.isConfirmation() && searchField.canConsumeInput()) {
+			onClose();
 			return true;
 		}
 		if (input.isEscape()) {
 			SearchOverManager.search = "";
-			close();
+			onClose();
 			return true;
 		}
 		return super.keyPressed(input);
 	}
 
 	@Override
-	public boolean shouldPause() {
+	public boolean isPauseScreen() {
 		return false;
 	}
 
@@ -311,10 +311,10 @@ public class OverlayScreen extends Screen {
 	 * Closes the overlay screen and gets the manager to send a packet update about the sign
 	 */
 	@Override
-	public void close() {
-		assert this.client != null;
-		assert this.client.player != null;
+	public void onClose() {
+		assert this.minecraft != null;
+		assert this.minecraft.player != null;
 		SearchOverManager.pushSearch();
-		super.close();
+		super.onClose();
 	}
 }

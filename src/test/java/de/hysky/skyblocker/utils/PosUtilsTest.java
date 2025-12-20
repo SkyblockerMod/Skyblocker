@@ -2,7 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

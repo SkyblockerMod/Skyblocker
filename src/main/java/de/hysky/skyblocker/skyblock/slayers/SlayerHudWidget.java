@@ -9,12 +9,10 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.TextureTextComponent;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
-import java.util.Objects;
 import java.util.Set;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 @RegisterWidget
 public class SlayerHudWidget extends ComponentBasedWidget {
@@ -22,9 +20,10 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final int TEXTURE_SIZE = 16;
 	private static SlayerHudWidget instance;
+	private final Minecraft client = Minecraft.getInstance();
 
 	public SlayerHudWidget() {
-		super(Text.literal("Slayer").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), Objects.requireNonNull(Formatting.DARK_PURPLE.getColorValue()), "hud_slayer");
+		super(Component.literal("Slayer").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD), ChatFormatting.DARK_PURPLE.getColor(), "hud_slayer");
 		instance = this;
 		update();
 	}
@@ -97,7 +96,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.literal("Slayer Hud");
+	public Component getDisplayName() {
+		return Component.literal("Slayer Hud");
 	}
 }

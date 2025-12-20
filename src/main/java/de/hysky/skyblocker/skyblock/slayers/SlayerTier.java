@@ -1,22 +1,22 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.Nullable;
 
-public enum SlayerTier implements StringIdentifiable {
-	I("I", Formatting.GREEN),
-	II("II", Formatting.YELLOW),
-	III("III", Formatting.RED),
-	IV("IV", Formatting.DARK_RED),
-	V("V", Formatting.DARK_PURPLE);
+public enum SlayerTier implements StringRepresentable {
+	I("I", ChatFormatting.GREEN),
+	II("II", ChatFormatting.YELLOW),
+	III("III", ChatFormatting.RED),
+	IV("IV", ChatFormatting.DARK_RED),
+	V("V", ChatFormatting.DARK_PURPLE);
 
-	public static final Codec<SlayerTier> CODEC = StringIdentifiable.createCodec(SlayerTier::values);
+	public static final Codec<SlayerTier> CODEC = StringRepresentable.fromEnum(SlayerTier::values);
 	public final String name;
-	public final Formatting color;
+	public final ChatFormatting color;
 
-	SlayerTier(String name, Formatting color) {
+	SlayerTier(String name, ChatFormatting color) {
 		this.name = name;
 		this.color = color;
 	}
@@ -31,7 +31,7 @@ public enum SlayerTier implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return name;
 	}
 }

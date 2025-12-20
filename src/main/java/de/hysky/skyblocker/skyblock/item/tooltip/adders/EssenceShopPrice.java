@@ -8,18 +8,17 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.OptionalDouble;
 import java.util.OptionalLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class EssenceShopPrice extends SimpleTooltipAdder {
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("Cost (?<amount>[\\d,]+) (?<type>[A-Za-z]+) Essence");
@@ -46,7 +45,7 @@ public class EssenceShopPrice extends SimpleTooltipAdder {
 
 	//Todo: maybe move the price value right after the essence amount ex: "1,500 Wither Essence (645k coins)"
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		String lore = ItemUtils.concatenateLore(lines);
 		Matcher essenceMatcher = ESSENCE_PATTERN.matcher(lore);
 		OptionalLong cost = RegexUtils.findLongFromMatcher(essenceMatcher);
@@ -56,12 +55,12 @@ public class EssenceShopPrice extends SimpleTooltipAdder {
 		long priceData = ESSENCE_PRICES.getLong(type.toUpperCase(Locale.ROOT));
 		if (priceData == 0) return; //Default value for getLong is 0 if no value exists for that key
 
-		lines.add(Text.empty()
-				.append(Text.literal("Essence Cost:      ").formatted(Formatting.AQUA))
-				.append(Text.literal(Formatters.INTEGER_NUMBERS.format(priceData * cost.getAsLong()) + " coins").formatted(Formatting.DARK_AQUA))
-				.append(Text.literal(" (").formatted(Formatting.GRAY))
-				.append(Text.literal(Formatters.INTEGER_NUMBERS.format(priceData) + " each").formatted(Formatting.GRAY))
-				.append(Text.literal(")").formatted(Formatting.GRAY))
+		lines.add(Component.empty()
+				.append(Component.literal("Essence Cost:      ").withStyle(ChatFormatting.AQUA))
+				.append(Component.literal(Formatters.INTEGER_NUMBERS.format(priceData * cost.getAsLong()) + " coins").withStyle(ChatFormatting.DARK_AQUA))
+				.append(Component.literal(" (").withStyle(ChatFormatting.GRAY))
+				.append(Component.literal(Formatters.INTEGER_NUMBERS.format(priceData) + " each").withStyle(ChatFormatting.GRAY))
+				.append(Component.literal(")").withStyle(ChatFormatting.GRAY))
 		);
 	}
 

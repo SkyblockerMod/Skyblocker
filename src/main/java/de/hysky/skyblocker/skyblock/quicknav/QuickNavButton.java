@@ -3,40 +3,38 @@ package de.hysky.skyblocker.skyblock.quicknav;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.PopupBackgroundAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.PopupScreenAccessor;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.navigation.GuiNavigation;
-import net.minecraft.client.gui.navigation.GuiNavigationPath;
-import net.minecraft.client.gui.screen.PopupScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ComponentPath;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.PopupScreen;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.item.ItemStack;
 import java.time.Duration;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Environment(value = EnvType.CLIENT)
-public class QuickNavButton extends ClickableWidget {
+public class QuickNavButton extends AbstractWidget {
 	private static final long TOGGLE_DURATION = 1000;
 
 	private final int index;
@@ -69,8 +67,8 @@ public class QuickNavButton extends ClickableWidget {
 		this.renderInFront = renderInFront;
 	}
 
-	public int getAlpha() {
-		return alpha;
+	public float getAlpha() {
+		return alpha / 255f;
 	}
 
 	/**
@@ -83,7 +81,7 @@ public class QuickNavButton extends ClickableWidget {
 	 * @param tooltip the tooltip to show when hovered
 	 */
 	public QuickNavButton(int index, boolean toggled, String command, ItemStack icon, String tooltip) {
-		super(0, 0, 26, 32, Text.empty());
+		super(0, 0, 26, 32, Component.empty());
 		this.index = index;
 		this.toggled = toggled;
 		this.command = command;
@@ -95,19 +93,19 @@ public class QuickNavButton extends ClickableWidget {
 		}
 		Tooltip tip;
 		try {
-			setTooltip(tip = Tooltip.of(TextCodecs.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class)).getOrThrow().getFirst()));
+			setTooltip(tip = Tooltip.create(ComponentSerialization.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class)).getOrThrow().getFirst()));
 		} catch (Exception e) {
-			setTooltip(tip = Tooltip.of(Text.literal(tooltip)));
+			setTooltip(tip = Tooltip.create(Component.literal(tooltip)));
 		}
 		this.tooltip = tip;
 		setTooltipDelay(Duration.ofMillis(100));
 	}
 
 	private void updateCoordinates() {
-		Screen screen = MinecraftClient.getInstance().currentScreen;
+		Screen screen = Minecraft.getInstance().screen;
 		while (screen instanceof PopupScreen || screen instanceof AbstractPopupScreen) {
 			if (screen instanceof PopupScreen) {
-				if (!(screen instanceof PopupBackgroundAccessor popup)) {
+				if (!(screen instanceof PopupScreenAccessor popup)) {
 					throw new IllegalStateException(
 							"Current PopupScreen does not support AccessorPopupBackground"
 					);
@@ -117,13 +115,13 @@ public class QuickNavButton extends ClickableWidget {
 				screen = abstractPopupScreen.backgroundScreen;
 			}
 		}
-		if (screen instanceof HandledScreen<?> handledScreen) {
-			var accessibleScreen = (HandledScreenAccessor) handledScreen;
+		if (screen instanceof AbstractContainerScreen<?> handledScreen) {
+			var accessibleScreen = (AbstractContainerScreenAccessor) handledScreen;
 			int x = accessibleScreen.getX();
 			int y = accessibleScreen.getY();
-			int h = accessibleScreen.getBackgroundHeight();
-			if (handledScreen instanceof GenericContainerScreen) h--; // they messed up the height on these.
-			int w = accessibleScreen.getBackgroundWidth();
+			int h = accessibleScreen.getImageHeight();
+			if (handledScreen instanceof ContainerScreen) h--; // they messed up the height on these.
+			int w = accessibleScreen.getImageWidth();
 			this.setX(x + this.index % 7 * 25 + w / 2 - 176 / 2);
 			this.setY(this.index < 7 ? y - 28 : y + h - 4);
 		}
@@ -134,12 +132,12 @@ public class QuickNavButton extends ClickableWidget {
 	 * it sets the toggled state to true and sends a message with the command after cooldown.
 	 */
 	@Override
-	public void onClick(Click click, boolean doubled) {
+	public void onClick(MouseButtonEvent click, boolean doubled) {
 		if (!this.temporaryToggled) {
 			this.temporaryToggled = true;
 			this.toggleTime = System.currentTimeMillis();
 			if (command == null || command.isEmpty()) {
-				MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.literal("Quick Nav button index " + (index + 1) + " has no command!").formatted(Formatting.RED)), false);
+				Minecraft.getInstance().player.displayClientMessage(Constants.PREFIX.get().append(Component.literal("Quick Nav button index " + (index + 1) + " has no command!").withStyle(ChatFormatting.RED)), false);
 			} else {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
 			}
@@ -152,8 +150,7 @@ public class QuickNavButton extends ClickableWidget {
 	 * manually drawn and the click logic is manual as well. If that ever changes, this should be adjusted to match the new vanilla behaviour.
 	 */
 	@Override
-	@Nullable
-	public GuiNavigationPath getNavigationPath(GuiNavigation navigation) {
+	public @Nullable ComponentPath nextFocusPath(FocusNavigationEvent navigation) {
 		return null;
 	}
 
@@ -168,7 +165,7 @@ public class QuickNavButton extends ClickableWidget {
 	 * @param mouseY  the y-coordinate of the mouse cursor
 	 */
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		this.updateCoordinates();
 
 		// Note that this changes the return value of `toggled()`, so do not call it after this point.
@@ -182,19 +179,17 @@ public class QuickNavButton extends ClickableWidget {
 		}
 
 		// Construct the texture identifier based on the index and toggled state
-		Identifier tabTexture = Identifier.ofVanilla("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (renderInFront ? "selected" : "unselected") + "_" + (index % 7 + 1));
+		Identifier tabTexture = Identifier.withDefaultNamespace("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (renderInFront ? "selected" : "unselected") + "_" + (index % 7 + 1));
 
 		// Render the button texture, always with full alpha if it's not rendering in front
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, tabTexture, this.getX(), this.getY(), this.width, this.height, renderInFront ? ColorHelper.withAlpha(alpha, -1) : -1);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, tabTexture, this.getX(), this.getY(), this.width, this.height, renderInFront ? ARGB.color(alpha, -1) : -1);
 		// Render the button icon
 		int yOffset = this.index < 7 ? 1 : -1;
-		context.drawItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
+		context.renderItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
 
-		if (this.isHovered()) {
-			context.setCursor(StandardCursors.POINTING_HAND);
-		}
+		this.handleCursor(context);
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 }

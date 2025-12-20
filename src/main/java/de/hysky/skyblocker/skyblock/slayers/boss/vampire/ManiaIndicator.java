@@ -12,14 +12,20 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.Blocks;
 
 public class ManiaIndicator {
-	private static final Title title = new Title("skyblocker.rift.mania", Formatting.RED);
+	private static final Title title = new Title("skyblocker.rift.mania", ChatFormatting.RED);
 
 	public static void updateMania() {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !SlayerManager.isFightingSlayerType(SlayerType.VAMPIRE) || client.player == null || client.world == null) {
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !SlayerManager.isFightingSlayerType(SlayerType.VAMPIRE) || client.player == null || client.level == null) {
 			TitleContainer.removeTitle(title);
 			return;
 		}
@@ -31,9 +37,9 @@ public class ManiaIndicator {
 		for (ArmorStandEntity armorStandEntity : SlayerManager.getEntityArmorStands(slayerEntity, 2.5f)) {
 			if (armorStandEntity.getName().toString().contains("MANIA")) {
 				anyMania = true;
-				BlockPos pos = client.player.getBlockPos().down();
-				boolean isGreen = client.world.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;
-				title.setText(Text.translatable("skyblocker.rift.mania").formatted(isGreen ? Formatting.GREEN : Formatting.RED));
+				BlockPos pos = client.player.blockPosition().below();
+				boolean isGreen = client.level.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;
+				title.setText(Component.translatable("skyblocker.rift.mania").withStyle(isGreen ? ChatFormatting.GREEN : ChatFormatting.RED));
 				TitleContainer.addTitleAndPlaySound(title);
 			}
 		}

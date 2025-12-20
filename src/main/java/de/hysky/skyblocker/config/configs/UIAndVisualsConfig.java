@@ -6,16 +6,15 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.util.Formatting;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.resources.language.I18n;
 
 public class UIAndVisualsConfig {
 
@@ -88,9 +87,9 @@ public class UIAndVisualsConfig {
 	public static class ChestValue {
 		public boolean enableChestValue = true;
 
-		public Formatting color = Formatting.DARK_GREEN;
+		public ChatFormatting color = ChatFormatting.DARK_GREEN;
 
-		public Formatting incompleteColor = Formatting.BLUE;
+		public ChatFormatting incompleteColor = ChatFormatting.BLUE;
 	}
 
 	public static class ItemCooldown {
@@ -120,7 +119,7 @@ public class UIAndVisualsConfig {
 
 			@Override
 			public String toString() {
-				return I18n.translate("skyblocker.config.uiAndVisuals.inventorySearch.state." + this.name());
+				return I18n.get("skyblocker.config.uiAndVisuals.inventorySearch.state." + this.name());
 			}
 
 			public boolean isEnabled() {
@@ -154,7 +153,7 @@ public class UIAndVisualsConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.uiAndVisuals.titleContainer.direction." + name());
+			return I18n.get("skyblocker.config.uiAndVisuals.titleContainer.direction." + name());
 		}
 	}
 
@@ -163,7 +162,7 @@ public class UIAndVisualsConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.uiAndVisuals.titleContainer.alignment." + name());
+			return I18n.get("skyblocker.config.uiAndVisuals.titleContainer.alignment." + name());
 		}
 	}
 
@@ -221,22 +220,22 @@ public class UIAndVisualsConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.uiAndVisuals.tabHud.style." + name());
+			return I18n.get("skyblocker.config.uiAndVisuals.tabHud.style." + name());
 		}
 	}
 
 	public enum NameSorting {
 		DEFAULT,
-		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
-		SKYBLOCK_LEVEL(Comparator.<PlayerListEntry>comparingInt(ple -> matchPlayerName(ple.getDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
+		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
+		SKYBLOCK_LEVEL(Comparator.<PlayerInfo>comparingInt(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
 
-		public final Comparator<PlayerListEntry> comparator;
+		public final Comparator<PlayerInfo> comparator;
 
 		NameSorting() {
 			this(null);
 		}
 
-		NameSorting(Comparator<PlayerListEntry> comparator) {
+		NameSorting(Comparator<PlayerInfo> comparator) {
 			this.comparator = comparator;
 		}
 

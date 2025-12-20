@@ -6,22 +6,22 @@ import de.hysky.skyblocker.skyblock.crimson.dojo.DisciplineTestHelper;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
 
 public class ZombieShootout {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final float[] RED = { 1, 0, 0 };
-	private static final Box SHOOTING_BOX = Box.enclosing(new BlockPos(-100, 70, 15), new BlockPos(-102, 75, 13));
+	private static final AABB SHOOTING_BOX = AABB.encapsulatingFullBlocks(new BlockPos(-100, 70, 15), new BlockPos(-102, 75, 13));
 	private static final BlockPos[] LAMPS = {
 			new BlockPos(-96, 76, 31),
 			new BlockPos(-99, 77, 32),
@@ -43,21 +43,21 @@ public class ZombieShootout {
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (isInZombieShootout() && CLIENT.world != null) {
+		if (isInZombieShootout() && CLIENT.level != null) {
 			for (BlockPos pos : LAMPS) {
-				BlockState state = CLIENT.world.getBlockState(pos);
+				BlockState state = CLIENT.level.getBlockState(pos);
 				Block block = state.getBlock();
 
-				if (block.equals(Blocks.REDSTONE_LAMP) && state.contains(Properties.LIT) && state.get(Properties.LIT)) {
+				if (block.equals(Blocks.REDSTONE_LAMP) && state.hasProperty(BlockStateProperties.LIT) && state.getValue(BlockStateProperties.LIT)) {
 					collector.submitOutlinedBox(pos, RED, 5f, false);
 				}
 			}
 		}
 	}
 
-	public static int getZombieGlowColor(ZombieEntity zombie) {
-		if (!zombie.getEquippedStack(EquipmentSlot.CHEST).isEmpty()) {
-			Item item = zombie.getEquippedStack(EquipmentSlot.CHEST).getItem();
+	public static int getZombieGlowColor(Zombie zombie) {
+		if (!zombie.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
+			Item item = zombie.getItemBySlot(EquipmentSlot.CHEST).getItem();
 
 			return switch (item) {
 				case Item i when i == Items.DIAMOND_CHESTPLATE -> DisciplineTestHelper.SWORD_TO_COLOR_LOOKUP.get("DIAMOND_SWORD");
@@ -74,7 +74,7 @@ public class ZombieShootout {
 
 	public static boolean isInZombieShootout() {
 		if (ChivalrousCarnival.isInCarnival() && SkyblockerConfigManager.get().helpers.carnival.zombieShootoutHelper && CLIENT.player != null) {
-			BlockPos pos = CLIENT.player.getBlockPos();
+			BlockPos pos = CLIENT.player.blockPosition();
 
 			return SHOOTING_BOX.contains(pos.getX(), pos.getY(), pos.getZ());
 		}

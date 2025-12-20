@@ -9,10 +9,10 @@ import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Box;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 
 public class MobBoundingBoxes {
 	/**
@@ -30,9 +30,9 @@ public class MobBoundingBoxes {
 			String name = entity.getName().getString();
 
 			return switch (entity) {
-				case PlayerEntity _p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
-				case PlayerEntity _p when entity.getId() == LividColor.getCorrectLividId() -> LividColor.shouldDrawBoundingBox(name);
-				case ArmorStandEntity _armorStand -> false;
+				case Player _p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
+				case Player _p when entity.getId() == LividColor.getCorrectLividId() -> LividColor.shouldDrawBoundingBox(name);
+				case ArmorStand _armorStand -> false;
 
 				// Regular Mobs
 				default -> SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes && DungeonGlowAdder.isStarred(entity);
@@ -55,7 +55,7 @@ public class MobBoundingBoxes {
 		};
 	}
 
-	public static void submitBox2BeRendered(Box box, float[] colorComponents) {
+	public static void submitBox2BeRendered(AABB box, float[] colorComponents) {
 		BOXES_2_RENDER.add(new RenderableBox(box, colorComponents));
 	}
 
@@ -67,7 +67,7 @@ public class MobBoundingBoxes {
 		BOXES_2_RENDER.clear();
 	}
 
-	private record RenderableBox(Box box, float[] colorComponents) implements Renderable {
+	private record RenderableBox(AABB box, float[] colorComponents) implements Renderable {
 
 		@Override
 		public void extractRendering(PrimitiveCollector collector) {

@@ -735,9 +735,9 @@
   "skyblocker.config.hunting.huntingMobs.silencePhantoms": "Silence Phantoms",
   "skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while on Galatea.",
 
-  "skyblocker.config.hunting.lassoHud": "Lasso Hud",
+  "skyblocker.config.hunting.lassoHud": "Lasso HUD",
   "skyblocker.config.hunting.lassoHud.enabled": "Enabled",
-  "skyblocker.config.hunting.lassoHud.enabled.@Tooltip": "Shows lasso countdown in the hud.",
+  "skyblocker.config.hunting.lassoHud.enabled.@Tooltip": "Shows lasso countdown in the HUD.",
   "skyblocker.config.hunting.lassoHud.hud.screen": "Lasso HUD config...",
   "skyblocker.config.hunting.lassoHud.now": "NOW!!",
   "skyblocker.config.hunting.lassoHud.reel": "Reel",
@@ -842,9 +842,6 @@
   "skyblocker.config.mining.enableDrillFuel": "Enable Drill Fuel",
   "skyblocker.config.mining.enableDrillFuel.@Tooltip": "Shows remaining fuel with the durability bar.\nShows the remaining blocks for Pickonimbus.",
 
-  "skyblocker.config.mining.enablePickobulusHelper": "Pickobulus Helper",
-  "skyblocker.config.mining.enablePickobulusHelper.@Tooltip": "Shows the blocks that will be mined when using the Pickobulus ability.",
-
   "skyblocker.config.mining.glacite": "Glacite Tunnels",
   "skyblocker.config.mining.glacite.autoShareCorpses": "Automatically Share Found Corpses In Chat",
   "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Sends a message in party chat with the location of the found corpse when you find one.",
@@ -865,6 +862,14 @@
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound": "No fossil found",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns": "Possible Patterns: ",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.probability": "Probability: ",
+
+  "skyblocker.config.mining.pickobulusHelper": "Pickobulus Helper",
+  "skyblocker.config.mining.pickobulusHelper.enable": "Enable Pickobulus Helper",
+  "skyblocker.config.mining.pickobulusHelper.enable.@Tooltip": "Highlights the blocks that will be mined when using the Pickobulus ability.",
+  "skyblocker.config.mining.pickobulusHelper.enableHud": "Enable Pickobulus HUD",
+  "skyblocker.config.mining.pickobulusHelper.enableHud.@Tooltip": "Shows how many blocks will be mined, as well as the powder and pity that will be received.",
+  "skyblocker.config.mining.pickobulusHelper.hideOnCooldown": "Hide HUD On Cooldown",
+  "skyblocker.config.mining.pickobulusHelper.hideOnCooldown.@Tooltip": "Hides the HUD while Pickobulus is on cooldown.\n\nRequires enabling the 'Pickaxe Ability Widget' to work!",
 
   "skyblocker.config.mining.redialOnBadSignal": "Enable Redial on Bad Signal",
   "skyblocker.config.mining.redialOnBadSignal.@Tooltip": "Sends a message in chat that can be clicked to redial when a call to the contact fails due to \"bad signal\".\n\nThis might happen when you call Fred for now.",
@@ -1203,6 +1208,7 @@
   "skyblocker.config.uiAndVisuals.slotText.collectionLevel": "Collection Level",
   "skyblocker.config.uiAndVisuals.slotText.communityShop": "Community Shop",
   "skyblocker.config.uiAndVisuals.slotText.communityShop.@Tooltip": "Displays the level of the upgrades in the community shop.",
+  "skyblocker.config.uiAndVisuals.slotText.enchantmentAbbreviation": "Enchantment Abbreviation",
   "skyblocker.config.uiAndVisuals.slotText.enchantmentLevel": "Enchantment Book Level",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop": "Essence Shop",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip": "Displays the levels and your current amount of essence while in essence shops.",

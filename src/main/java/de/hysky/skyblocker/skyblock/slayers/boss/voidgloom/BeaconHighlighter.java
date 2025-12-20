@@ -12,11 +12,11 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.text.Text;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 @SuppressWarnings("unused")
 public class BeaconHighlighter {
@@ -44,13 +44,13 @@ public class BeaconHighlighter {
 		if (Utils.isInTheEnd() && SlayerManager.isFightingSlayer()) {
 			BEACONS.removeLong(pos);
 
-			if (newState.isOf(Blocks.BEACON)) {
-				BEACONS.put(pos.toImmutable(), System.currentTimeMillis());
+			if (newState.is(Blocks.BEACON)) {
+				BEACONS.put(pos.immutable(), System.currentTimeMillis());
 			}
 		}
 	}
 
-	private static boolean onMessage(Text text, boolean overlay) {
+	private static boolean onMessage(Component text, boolean overlay) {
 		if (Utils.isInTheEnd() && !overlay) {
 			String message = text.getString();
 

@@ -8,11 +8,11 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -59,7 +59,7 @@ public class DungeonPlayerManager {
 	/**
 	 * @implNote If a player is currently a ghost, this will return {@link DungeonClass#UNKNOWN}.
 	 */
-	public static DungeonClass getClassFromPlayer(PlayerEntity player) {
+	public static DungeonClass getClassFromPlayer(Player player) {
 		return getClassFromPlayer(player.getGameProfile().name());
 	}
 
@@ -98,7 +98,7 @@ public class DungeonPlayerManager {
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	private static boolean onPlayerGhost(Text text, boolean overlay) {
+	private static boolean onPlayerGhost(Component text, boolean overlay) {
 		if (!dungeonLoaded) return true;
 
 		Matcher matcher = PLAYER_GHOST_PATTERN.matcher(text.getString());
@@ -106,8 +106,8 @@ public class DungeonPlayerManager {
 
 		String name = matcher.group("name");
 		if (name.equals("You")) {
-			assert MinecraftClient.getInstance().player != null;
-			name = MinecraftClient.getInstance().player.getName().getString();
+			assert Minecraft.getInstance().player != null;
+			name = Minecraft.getInstance().player.getName().getString();
 		}
 		getPlayer(name).ifPresentOrElse(DungeonPlayer::ghost, () -> DungeonManager.LOGGER.error("[Skyblocker Dungeon Player Manager] Received ghost message for player '{}' but player was not found in the player list: {}", matcher.group("name"), Arrays.toString(players)));
 
@@ -132,17 +132,17 @@ public class DungeonPlayerManager {
 			update(dungeonClass);
 
 			// Pre-fetches game profiles for rendering skins in the leap overlay and fancy dungeon map.
-			CompletableFuture.runAsync(() -> MinecraftClient.getInstance().getApiServices().sessionService().fetchProfile(uuid, false));
+			CompletableFuture.runAsync(() -> Minecraft.getInstance().services().sessionService().fetchProfile(uuid, false));
 		}
 
 		private static @Nullable UUID findPlayerUuid(String name) {
-			assert MinecraftClient.getInstance().world != null;
-			return StreamSupport.stream(MinecraftClient.getInstance().world.getEntities().spliterator(), false)
-					.filter(PlayerEntity.class::isInstance)
-					.map(PlayerEntity.class::cast)
+			assert Minecraft.getInstance().level != null;
+			return StreamSupport.stream(Minecraft.getInstance().level.entitiesForRendering().spliterator(), false)
+					.filter(Player.class::isInstance)
+					.map(Player.class::cast)
 					.filter(player -> player.getGameProfile().name().equals(name))
 					.findAny()
-					.map(PlayerEntity::getUuid)
+					.map(Player::getUUID)
 					.orElse(null);
 		}
 

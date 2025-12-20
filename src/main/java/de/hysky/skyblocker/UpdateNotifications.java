@@ -16,13 +16,13 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 
@@ -37,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class UpdateNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final String BASE_URL = "https://api.modrinth.com/v2/project/y6DuFGwJ/version?loaders=[%22fabric%22]";
 	private static final Version MOD_VERSION = SkyblockerMod.SKYBLOCKER_MOD.getMetadata().getVersion();
 	private static final Path CONFIG_PATH = SkyblockerMod.CONFIG_DIR.resolve("update_notifications.json");
@@ -45,7 +45,7 @@ public class UpdateNotifications {
 	protected static final Comparator<Version> COMPARATOR = Version::compareTo;
 	@VisibleForTesting
 	protected static final Codec<SemanticVersion> SEM_VER_CODEC = Codec.STRING.comapFlatMap(UpdateNotifications::parseVersion, SemanticVersion::toString);
-	private static final SystemToast.Type TOAST_TYPE = new SystemToast.Type(10000L);
+	private static final SystemToast.SystemToastId TOAST_TYPE = new SystemToast.SystemToastId(10000L);
 
 	public static final JsonData<Config> config = new JsonData<>(CONFIG_PATH, Config.CODEC, Config.DEFAULT);
 	private static boolean sentUpdateNotification;
@@ -89,13 +89,13 @@ public class UpdateNotifications {
 				if (newestVersion.isPresent() && CLIENT.player != null && !shouldDiscard(version, newestVersion.get().version())) {
 					MrVersion newVersion = newestVersion.get();
 					String downloadLink = "https://modrinth.com/mod/skyblocker-liap/version/" + newVersion.id();
-					Text versionText = Text.literal(newVersion.name()).styled(style -> style
-							.withFormatting(Formatting.GRAY)
-							.withUnderline(true)
+					Component versionText = Component.literal(newVersion.name()).withStyle(style -> style
+							.applyFormat(ChatFormatting.GRAY)
+							.withUnderlined(true)
 							.withClickEvent(new ClickEvent.OpenUrl(URI.create(downloadLink))));
 
-					CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)), false);
-					SystemToast.add(CLIENT.getToastManager(), TOAST_TYPE, Text.translatable("skyblocker.updateNotifications.newUpdateToast.title"), Text.stringifiedTranslatable("skyblocker.updateNotifications.newUpdateToast.description", newVersion.version()));
+					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)), false);
+					SystemToast.add(CLIENT.getToastManager(), TOAST_TYPE, Component.translatable("skyblocker.updateNotifications.newUpdateToast.title"), Component.translatableEscape("skyblocker.updateNotifications.newUpdateToast.description", newVersion.version()));
 				}
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Update Notifications] Failed to determine if an update is available or not!", e);
@@ -186,20 +186,20 @@ public class UpdateNotifications {
 		private static final Codec<List<MrVersion>> LIST_CODEC = CODEC.listOf();
 	}
 
-	public enum Channel implements StringIdentifiable {
+	public enum Channel implements StringRepresentable {
 		RELEASE,
 		BETA,
 		ALPHA;
 
-		private static final Codec<Channel> CODEC = StringIdentifiable.createBasicCodec(Channel::values);
+		private static final Codec<Channel> CODEC = StringRepresentable.fromValues(Channel::values);
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.updateNotifications.updateChannel.channel." + name());
+			return I18n.get("skyblocker.config.general.updateNotifications.updateChannel.channel." + name());
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name().toLowerCase(Locale.ENGLISH);
 		}
 	}

@@ -4,8 +4,9 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 
 public class LazerTimer {
 	private static long lastPhaseTime;
@@ -34,8 +35,8 @@ public class LazerTimer {
 		if (active) {
 			SlayerManager.BossFight bossFight = SlayerManager.getBossFight();
 			if (bossFight != null && bossFight.boss.getVehicle() != null) {
-				Text text = Text.literal(String.format("%.1fs", remainingTime)).formatted(Formatting.AQUA);
-				collector.submitText(text, bossFight.boss.getEntityPos().add(0, 1.5, 0), 3, true);
+				Component text = Component.literal(String.format("%.1fs", remainingTime)).withStyle(ChatFormatting.AQUA);
+				collector.submitText(text, bossFight.boss.position().add(0, 1.5, 0), 3, true);
 			}
 		}
 	}

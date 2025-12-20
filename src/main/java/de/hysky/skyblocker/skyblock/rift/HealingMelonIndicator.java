@@ -4,19 +4,19 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 
 public class HealingMelonIndicator {
-	private static final Title title = new Title("skyblocker.rift.healNow", Formatting.DARK_RED);
+	private static final Title title = new Title("skyblocker.rift.healNow", ChatFormatting.DARK_RED);
 
 	public static void updateHealth() {
 		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableHealingMelonIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getIslandArea().contains("Stillgore Château")) {
 			TitleContainer.removeTitle(title);
 			return;
 		}
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
+		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null && player.getHealth() <= SkyblockerConfigManager.get().slayers.vampireSlayer.healingMelonHealthThreshold * 2F) {
 			TitleContainer.addTitleAndPlaySound(title);
 		} else {

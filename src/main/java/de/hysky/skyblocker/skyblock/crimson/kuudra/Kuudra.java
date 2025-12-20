@@ -21,11 +21,11 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class Kuudra {
 	public static final int KUUDRA_MAGMA_CUBE_SIZE = 30;
@@ -39,7 +39,7 @@ public class Kuudra {
 	public static void init() {
 		DATA.load();
 		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
-			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
+			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
 				String title = screen.getTitle().getString();
 				Matcher factionShopMatcher = FACTION_SHOP_PATTERN.matcher(title);
 
@@ -69,15 +69,15 @@ public class Kuudra {
 		return DATA.containsKey() ? DATA.get() : KuudraProfileData.EMPTY;
 	}
 
-	private static void checkKuudraKeyShop(GenericContainerScreen screen, Matcher factionShopMatcher) {
+	private static void checkKuudraKeyShop(ContainerScreen screen, Matcher factionShopMatcher) {
 		// We determine the faction based off what shop the player is using since you can only shop for keys
 		// at your faction's emissary, plus we hit two birds with one stone (getting faction and key prices).
 		//
 		// This should always match if the code is at this point
 		CrimsonFaction faction = CrimsonFaction.valueOf(factionShopMatcher.group("faction").toUpperCase(Locale.ENGLISH));
-		List<ItemStack> kuudraKeyItems = screen.getScreenHandler().slots.stream()
-				.filter(Slot::hasStack)
-				.map(Slot::getStack)
+		List<ItemStack> kuudraKeyItems = screen.getMenu().slots.stream()
+				.filter(Slot::hasItem)
+				.map(Slot::getItem)
 				.filter(stack -> KuudraProfileData.EMPTY.kuudraKeyPrices().containsKey(stack.getSkyblockId()))
 				.toList();
 		// Add all default entries to the map to ensure each key has a price in case the coins regex fails to match
@@ -106,10 +106,10 @@ public class Kuudra {
 		}
 	}
 
-	private static void checkForKuudraPet(GenericContainerScreen screen) {
-		for (Slot slot : screen.getScreenHandler().slots) {
-			if (slot.hasStack()) {
-				PetInfo currentPet = slot.getStack().getPetInfo();
+	private static void checkForKuudraPet(ContainerScreen screen) {
+		for (Slot slot : screen.getMenu().slots) {
+			if (slot.hasItem()) {
+				PetInfo currentPet = slot.getItem().getPetInfo();
 				KuudraProfileData storedData = getKuudraProfileData();
 
 				// Ignore non-pet items
@@ -130,9 +130,9 @@ public class Kuudra {
 		}
 	}
 
-	private static boolean onMessage(Text text, boolean overlay) {
+	private static boolean onMessage(Component text, boolean overlay) {
 		if (Utils.isInKuudra() && !overlay) {
-			String message = Formatting.strip(text.getString());
+			String message = ChatFormatting.stripFormatting(text.getString());
 
 			if (message.equals("[NPC] Elle: ARGH! All of the supplies fell into the lava! You need to retrieve them quickly!")) {
 				phase = KuudraPhase.RETRIEVE_SUPPLIES;

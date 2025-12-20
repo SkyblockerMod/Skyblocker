@@ -10,13 +10,14 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.AttunementColors;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.mob.BlazeEntity;
-import net.minecraft.entity.mob.WitherSkeletonEntity;
-import net.minecraft.entity.mob.ZombifiedPiglinEntity;
+import de.hysky.skyblocker.utils.Utils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.Blaze;
+import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
+import net.minecraft.world.entity.monster.zombie.ZombifiedPiglin;
 
 @SuppressWarnings("unused")
 public class SlayerGlowAdder extends MobGlowAdder {
@@ -58,7 +59,7 @@ public class SlayerGlowAdder extends MobGlowAdder {
 	/**
 	 * Compares the armor items of an armor stand to the Nukekubi head texture to determine if it is a Nukekubi head.
 	 */
-	private static boolean isNukekubiHead(ArmorStandEntity entity) {
-		return entity.hasStackEquipped(EquipmentSlot.HEAD) && ItemUtils.getHeadTexture(entity.getEquippedStack(EquipmentSlot.HEAD)).equals(HeadTextures.NUKEKUBI);
+	private static boolean isNukekubiHead(ArmorStand entity) {
+		return entity.hasItemInSlot(EquipmentSlot.HEAD) && ItemUtils.getHeadTexture(entity.getItemBySlot(EquipmentSlot.HEAD)).equals(HeadTextures.NUKEKUBI);
 	}
 }
