@@ -2,8 +2,7 @@ package de.hysky.skyblocker.compatibility.rei.info;
 
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
 import me.shedaniel.rei.api.common.entry.EntryStack;
-import net.minecraft.item.ItemStack;
-
+import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Optional;
 

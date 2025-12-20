@@ -6,12 +6,12 @@ import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.display.DisplaySerializer;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
-
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Optional;
+
+import org.jspecify.annotations.Nullable;
 
 public class SkyblockInfoDisplay implements Display {
 	private final ItemStack displayItem;

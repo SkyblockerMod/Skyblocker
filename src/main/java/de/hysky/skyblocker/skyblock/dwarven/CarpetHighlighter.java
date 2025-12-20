@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import java.awt.Color;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
@@ -12,14 +14,12 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CarpetBlock;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-
-import java.awt.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CarpetBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Highlights unbreakable carpets within ore veins in the Dwarven Mines.
@@ -27,7 +27,7 @@ import java.awt.*;
 public final class CarpetHighlighter implements Renderable, Resettable {
 	public static final CarpetHighlighter INSTANCE = new CarpetHighlighter();
 
-	private static final Vec3d CARPET_BOUNDING_BOX = Boxes.getLengthVec(CarpetBlock.SHAPE.getBoundingBox());
+	private static final Vec3 CARPET_BOUNDING_BOX = Boxes.getLengthVec(CarpetBlock.SHAPE.bounds());
 	private static final int SEARCH_RADIUS = 15;
 	private static final int TICK_INTERVAL = 15;
 	private static final ObjectAVLTreeSet<BlockPos> CARPET_LOCATIONS = new ObjectAVLTreeSet<>();
@@ -47,7 +47,7 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 	public void extractRendering(PrimitiveCollector collector) {
 		if (!isLocationValid || !SkyblockerConfigManager.get().mining.dwarvenMines.enableCarpetHighlighter) return;
 		for (BlockPos carpetLocation : CARPET_LOCATIONS) {
-			collector.submitFilledBox(Vec3d.of(carpetLocation), CARPET_BOUNDING_BOX, colorComponents, colorComponents[3], false);
+			collector.submitFilledBox(Vec3.atLowerCornerOf(carpetLocation), CARPET_BOUNDING_BOX, colorComponents, colorComponents[3], false);
 		}
 	}
 
@@ -56,12 +56,12 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 	}
 
 	public void tick() {
-		if (!isLocationValid || !SkyblockerConfigManager.get().mining.dwarvenMines.enableCarpetHighlighter || MinecraftClient.getInstance().world == null || MinecraftClient.getInstance().player == null) return;
-		Iterable<BlockPos> iterable = BlockPos.iterateOutwards(MinecraftClient.getInstance().player.getBlockPos(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
+		if (!isLocationValid || !SkyblockerConfigManager.get().mining.dwarvenMines.enableCarpetHighlighter || Minecraft.getInstance().level == null || Minecraft.getInstance().player == null) return;
+		Iterable<BlockPos> iterable = BlockPos.withinManhattan(Minecraft.getInstance().player.blockPosition(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
 		for (BlockPos blockPos : iterable) {
 			//The iterator contains a BlockPos.Mutable that it changes the position of to iterate over blocks,
 			// so it has to be converted to an immutable BlockPos or the position will change based on the player's position && the search radius
-			if (checkForCarpet(blockPos)) CARPET_LOCATIONS.add(blockPos.toImmutable());
+			if (checkForCarpet(blockPos)) CARPET_LOCATIONS.add(blockPos.immutable());
 		}
 	}
 
@@ -73,17 +73,17 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 	 */
 	private boolean checkForCarpet(BlockPos blockPos) {
 		@SuppressWarnings("DataFlowIssue") // Null check is already done in the run method
-		BlockState actualBlock = MinecraftClient.getInstance().world.getBlockState(blockPos);
+		BlockState actualBlock = Minecraft.getInstance().level.getBlockState(blockPos);
 		// Gray/light blue - mithril
 		// Light gray - tungsten
 		// There are other colors for some ores in the royal mines,
 		// but since the actual ores don't include wool blocks
 		// they're not easily confused as ores so they are not accounted for here
-		if (!(actualBlock.isOf(Blocks.GRAY_CARPET) ||
-				actualBlock.isOf(Blocks.LIGHT_BLUE_CARPET) ||
-				actualBlock.isOf(Blocks.LIGHT_GRAY_CARPET))) return false;
-		BlockState blockBelow = MinecraftClient.getInstance().world.getBlockState(blockPos.down());
-		return blockBelow.isOf(Blocks.SEA_LANTERN);
+		if (!(actualBlock.is(Blocks.GRAY_CARPET) ||
+				actualBlock.is(Blocks.LIGHT_BLUE_CARPET) ||
+				actualBlock.is(Blocks.LIGHT_GRAY_CARPET))) return false;
+		BlockState blockBelow = Minecraft.getInstance().level.getBlockState(blockPos.below());
+		return blockBelow.is(Blocks.SEA_LANTERN);
 	}
 
 	/**

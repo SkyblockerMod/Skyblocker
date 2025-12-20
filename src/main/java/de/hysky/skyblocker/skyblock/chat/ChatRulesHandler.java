@@ -13,12 +13,11 @@ import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.nio.file.Path;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ChatRulesHandler {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chat_rules.json");
 	private static final Codec<Map<String, List<ChatRule>>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, ChatRule.LIST_CODEC);
 	/**
@@ -53,25 +52,25 @@ public class ChatRulesHandler {
 	static List<ChatRule> getDefaultChatRules() {
 		return new ArrayList<>(List.of(
 				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, false, false, "", null),
-				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, false, true, "&1Ability", SoundEvents.ENTITY_ARROW_HIT_PLAYER)
+				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, false, true, "&1Ability", SoundEvents.ARROW_HIT_PLAYER)
 		));
 	}
 
 	/**
 	 * Checks each rule in {@link ChatRulesHandler#chatRuleList} to see if they are a match for the message and if so change outputs based on the options set in the {@link ChatRule}.
 	 */
-	private static boolean checkMessage(Text message, boolean overlay) {
+	private static boolean checkMessage(Component message, boolean overlay) {
 		if (overlay || !Utils.isOnSkyblock()) return true;
 		List<ChatRule> rules = chatRuleList.getData();
 		if (!chatRuleList.isLoaded() || rules.isEmpty()) return true;
-		String plain = Formatting.strip(message.getString());
+		String plain = ChatFormatting.stripFormatting(message.getString());
 
 		for (ChatRule rule : rules) {
 			ChatRule.Match match = rule.isMatch(plain);
 			if (!match.matches()) continue;
 
 			// Get a replacement message
-			Text newMessage;
+			Component newMessage;
 			if (!rule.getReplaceMessage().isBlank()) {
 				newMessage = formatText(match.insertCaptureGroups(rule.getReplaceMessage()));
 			} else {
@@ -84,7 +83,7 @@ public class ChatRulesHandler {
 
 			// Show in action bar
 			if (rule.getShowActionBar() && CLIENT.player != null) {
-				CLIENT.player.sendMessage(newMessage, true);
+				CLIENT.player.displayClientMessage(newMessage, true);
 			}
 
 			// Show replacement message in chat
@@ -110,13 +109,12 @@ public class ChatRulesHandler {
 	 * @param codedString the string with color codes in
 	 * @return formatted text
 	 */
-	@NotNull
-	protected static MutableText formatText(@NotNull String codedString) {
+	protected static MutableComponent formatText(String codedString) {
 		// These are done in order of precedence, so § is checked first, then &.
 		// This is to ensure that there are no accidental formatting issues due to an actual use of '&' with a valid color code.
 		if (codedString.contains("§")) return TextTransformer.fromLegacy(codedString, '§', false);
 		if (codedString.contains("&")) return TextTransformer.fromLegacy(codedString, '&', false);
-		return Text.literal(codedString);
+		return Component.literal(codedString);
 	}
 
 	public static void saveChatRules() {

@@ -10,20 +10,20 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemTooltip {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ItemTooltip.class.getName());
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static final Minecraft client = Minecraft.getInstance();
 	public static final java.util.function.Supplier<GeneralConfig.ItemTooltip> config = () -> SkyblockerConfigManager.get().general.itemTooltip;
 	private static volatile boolean sentNullWarning = false;
 
@@ -38,7 +38,7 @@ public class ItemTooltip {
 
 	public static void nullWarning() {
 		if (!sentNullWarning && client.player != null) {
-			LOGGER.warn(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemTooltip.nullMessage")).getString());
+			LOGGER.warn(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemTooltip.nullMessage")).getString());
 			sentNullWarning = true;
 		}
 	}
@@ -49,7 +49,7 @@ public class ItemTooltip {
 	 * @param price the price of a single item
 	 * @param count the number of items being priced
 	 */
-	public static Text getCoinsMessage(double price, int count) {
+	public static Component getCoinsMessage(double price, int count) {
 		return getCoinsMessage(price, count, false);
 	}
 
@@ -58,20 +58,20 @@ public class ItemTooltip {
 	 *
 	 * @param preCounted Whether the count is already factored into the price. False if the price is per item, true if the price is the total price for the given count.
 	 */
-	public static Text getCoinsMessage(double price, int count, boolean preCounted) {
+	public static Component getCoinsMessage(double price, int count, boolean preCounted) {
 		// Format the price string once
 		String priceString = String.format(Locale.ENGLISH, "%1$,.1f", preCounted ? price / count : price);
 
 		// If count is 1, return a simple message
 		if (count == 1) {
-			return Text.literal(priceString + " Coins").formatted(Formatting.DARK_AQUA);
+			return Component.literal(priceString + " Coins").withStyle(ChatFormatting.DARK_AQUA);
 		}
 
 		// If count is greater than 1, include the "each" information
 		String priceStringTotal = String.format(Locale.ENGLISH, "%1$,.1f", preCounted ? price : price * count);
 
-		return Text.literal(priceStringTotal + " Coins ").formatted(Formatting.DARK_AQUA)
-				.append(Text.literal("(" + priceString + " each)").formatted(Formatting.GRAY));
+		return Component.literal(priceStringTotal + " Coins ").withStyle(ChatFormatting.DARK_AQUA)
+				.append(Component.literal("(" + priceString + " each)").withStyle(ChatFormatting.GRAY));
 	}
 
 	// If these options is true beforehand, the client will get first data of these options while loading.

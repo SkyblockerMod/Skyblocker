@@ -4,23 +4,23 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
 import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAOTE;
-import net.minecraft.client.render.Camera;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.Camera;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Camera.class)
 public class CameraMixin {
 
-    @ModifyReturnValue(method = "getPos", at = @At("RETURN"))
-    private Vec3d skyblocker$onCameraUpdate(Vec3d original) {
+	@ModifyReturnValue(method = "position", at = @At("RETURN"))
+	private Vec3 skyblocker$onCameraUpdate(Vec3 original) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.predictive) {
-			Vec3d pos = PredictiveSmoothAOTE.getInterpolatedPos();
+			Vec3 pos = PredictiveSmoothAOTE.getInterpolatedPos();
 			if (pos != null) {
 				return pos;
 			}
 		} else {
-			Vec3d pos = ResponsiveSmoothAOTE.getInterpolatedPos();
+			Vec3 pos = ResponsiveSmoothAOTE.getInterpolatedPos();
 			if (pos != null) {
 				return pos;
 			}
@@ -29,5 +29,5 @@ public class CameraMixin {
 
 
 		return original;
-    }
+	}
 }

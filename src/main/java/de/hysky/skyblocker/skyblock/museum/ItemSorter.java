@@ -2,16 +2,15 @@ package de.hysky.skyblocker.skyblock.museum;
 
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class ItemSorter {
 	private SortMode currentSortMode = SortMode.LOWEST_BIN;
@@ -114,30 +113,30 @@ public class ItemSorter {
 	}
 
 	public Tooltip getTooltip() {
-		Text tooltip = Text.translatable("skyblocker.museum.hud.sorter").append("\n\n").formatted(Formatting.GREEN)
+		Component tooltip = Component.translatable("skyblocker.museum.hud.sorter").append("\n\n").withStyle(ChatFormatting.GREEN)
 				.append(getSortText(SortMode.LOWEST_BIN))
 				.append(getSortText(SortMode.CRAFT_COST))
 				.append(getSortText(SortMode.COINS_PER_XP))
-				.append("\n").append(Text.translatable("skyblocker.museum.hud.sorter.switch").formatted(Formatting.YELLOW));
-		return Tooltip.of(tooltip);
+				.append("\n").append(Component.translatable("skyblocker.museum.hud.sorter.switch").withStyle(ChatFormatting.YELLOW));
+		return Tooltip.create(tooltip);
 	}
 
-	private Text getSortText(SortMode mode) {
+	private Component getSortText(SortMode mode) {
 		boolean isCurrent = mode == currentSortMode;
-		return Text.literal((isCurrent ? "➤ " : "  ")).append(mode.getDisplayName()).append("\n")
-				.formatted(isCurrent ? Formatting.AQUA : Formatting.GRAY);
+		return Component.literal((isCurrent ? "➤ " : "  ")).append(mode.getDisplayName()).append("\n")
+				.withStyle(isCurrent ? ChatFormatting.AQUA : ChatFormatting.GRAY);
 	}
 
 	public enum SortMode {
-		LOWEST_BIN(new ItemStack(Items.GOLD_INGOT), SORT_BY_LOWESTBIN, Text.translatable("skyblocker.museum.hud.sorter.lBin")),
-		CRAFT_COST(new ItemStack(Items.CRAFTING_TABLE), SORT_BY_CRAFTCOST, Text.translatable("skyblocker.museum.hud.sorter.craftCost")),
-		COINS_PER_XP(new ItemStack(Items.EXPERIENCE_BOTTLE), SORT_BY_XP_PER_COIN, Text.translatable("skyblocker.museum.hud.sorter.ratio"));
+		LOWEST_BIN(new ItemStack(Items.GOLD_INGOT), SORT_BY_LOWESTBIN, Component.translatable("skyblocker.museum.hud.sorter.lBin")),
+		CRAFT_COST(new ItemStack(Items.CRAFTING_TABLE), SORT_BY_CRAFTCOST, Component.translatable("skyblocker.museum.hud.sorter.craftCost")),
+		COINS_PER_XP(new ItemStack(Items.EXPERIENCE_BOTTLE), SORT_BY_XP_PER_COIN, Component.translatable("skyblocker.museum.hud.sorter.ratio"));
 
 		private final ItemStack associatedItem;
 		private final Consumer<List<Donation>> sortFunction;
-		private final Text displayName;
+		private final Component displayName;
 
-		SortMode(ItemStack item, Consumer<List<Donation>> function, Text displayName) {
+		SortMode(ItemStack item, Consumer<List<Donation>> function, Component displayName) {
 			this.associatedItem = item;
 			this.sortFunction = function;
 			this.displayName = displayName;
@@ -147,7 +146,7 @@ public class ItemSorter {
 			return associatedItem;
 		}
 
-		public Text getDisplayName() {
+		public Component getDisplayName() {
 			return displayName;
 		}
 

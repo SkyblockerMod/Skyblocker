@@ -9,22 +9,30 @@ import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
 import de.hysky.skyblocker.skyblock.dwarven.profittrackers.AbstractProfitTracker;
-import de.hysky.skyblocker.utils.*;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
-import it.unimi.dsi.fastutil.objects.*;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,8 +70,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	private ObjectArrayList<CorpseLoot> currentProfileRewards = new ObjectArrayList<>();
 	private final ProfiledData<ObjectArrayList<CorpseLoot>> allRewards = new ProfiledData<>(getRewardFilePath("corpse-profits.json"), CorpseLoot.CODEC.listOf().xmap(ObjectArrayList::new, Function.identity()));
 	private boolean insideRewardMessage = false;
-	@Nullable
-	private CorpseLoot lastCorpseLoot = null;
+	private @Nullable CorpseLoot lastCorpseLoot = null;
 
 	private CorpseProfitTracker() {} // Singleton
 
@@ -73,7 +80,6 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 
 		INSTANCE.allRewards.init();
 
-		SkyblockEvents.PROFILE_INIT.register(INSTANCE::onProfileInit);
 		SkyblockEvents.PROFILE_CHANGE.register(INSTANCE::onProfileChange);
 
 		// @formatter:off // Don't you hate it when your format style for chained method calls makes a chain like this incredibly ugly?
@@ -85,12 +91,12 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 							// Optional argument.
 							.then(argument("summaryView", BoolArgumentType.bool())
 								.executes(ctx -> {
-									Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().currentScreen, BoolArgumentType.getBool(ctx, "summaryView")));
+									Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().screen, BoolArgumentType.getBool(ctx, "summaryView")));
 									return Command.SINGLE_SUCCESS;
 								})
 							)
 							.executes(ctx -> {
-								Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().currentScreen));
+								Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().screen));
 								return Command.SINGLE_SUCCESS;
 							})
 						)
@@ -98,7 +104,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 							.executes(ctx -> {
 								INSTANCE.currentProfileRewards.clear();
 								INSTANCE.allRewards.save();
-								ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.corpseTracker.historyReset").formatted(Formatting.GREEN)));
+								ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.corpseTracker.historyReset").withStyle(ChatFormatting.GREEN)));
 								return Command.SINGLE_SUCCESS;
 							})
 						)
@@ -109,10 +115,6 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	}
 
 	private void onProfileChange(String prevProfileId, String newProfileId) {
-		onProfileInit(newProfileId);
-	}
-
-	private void onProfileInit(String profileId) {
 		if (!isEnabled()) return;
 		currentProfileRewards = allRewards.computeIfAbsent(ObjectArrayList::new);
 		recalculateAll();
@@ -123,8 +125,8 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	private boolean onChatMessage(Text text, boolean overlay) {
-		if (Utils.getLocation() != Location.GLACITE_MINESHAFT || !INSTANCE.isEnabled() || overlay) return true;
+	private boolean onChatMessage(Component text, boolean overlay) {
+		if (Utils.getLocation() != Location.GLACITE_MINESHAFTS || !INSTANCE.isEnabled() || overlay) return true;
 		String message = text.getString();
 
 		// Reward messages end with a separator like so
@@ -135,27 +137,27 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			}
 			currentProfileRewards.add(lastCorpseLoot);
 			if (!lastCorpseLoot.isPriceDataComplete()) {
-				MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
-						Constants.PREFIX.get().append(Text.translatable("skyblocker.corpseTracker.somethingWentWrong").formatted(Formatting.GOLD))
+				Minecraft.getInstance().gui.getChat().addMessage(
+						Constants.PREFIX.get().append(Component.translatable("skyblocker.corpseTracker.somethingWentWrong").withStyle(ChatFormatting.GOLD))
 				);
 			} else {	// if forceEnglishCorpseProfitTracker is FALSE - use normal translation
 				if (!SkyblockerConfigManager.get().mining.glacite.forceEnglishCorpseProfitTracker) {
-					MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
+					Minecraft.getInstance().gui.getChat().addMessage(
 							Constants.PREFIX.get()
-									.append(Text.translatable("skyblocker.corpseTracker.corpseProfit", Text.literal(Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit()))
-											.formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED)))
-									.styled(style ->
-											style.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
+									.append(Component.translatable("skyblocker.corpseTracker.corpseProfit", Component.literal(Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit()))
+											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED)))
+									.withStyle(style ->
+											style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.corpseTracker.hoverText").withStyle(ChatFormatting.GREEN)))
 													.withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
 									)
 					);
 				} else {	// else, if forceEnglishCorpseProfitTracker is TRUE - force English translation
-					MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
+					Minecraft.getInstance().gui.getChat().addMessage(
 							Constants.PREFIX.get()
-									.append(Text.literal(String.format(CORPSE_PROFIT_MESSAGE, Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit())))
-											.formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED))
-									.styled(style ->
-											style.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
+									.append(Component.literal(String.format(CORPSE_PROFIT_MESSAGE, Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit())))
+											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED))
+									.withStyle(style ->
+											style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.corpseTracker.hoverText").withStyle(ChatFormatting.GREEN)))
 													.withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
 									)
 					);

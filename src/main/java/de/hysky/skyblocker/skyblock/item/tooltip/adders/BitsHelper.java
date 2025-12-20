@@ -10,20 +10,28 @@ import de.hysky.skyblocker.utils.container.TooltipAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectLongImmutablePair;
+import it.unimi.dsi.fastutil.objects.ObjectLongPair;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -171,7 +179,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		String lore = ItemUtils.concatenateLore(lines);
 		Matcher bitsMatcher = BITS_PATTERN.matcher(lore);
 		long coinsPerBit = 0L;
@@ -189,13 +197,13 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 
 			coinsPerBit = Math.round(itemCost / bitsCost);
 		} else {
-			String outerKey = stack.getName().getString();
+			String outerKey = stack.getHoverName().getString();
 			ObjectLongPair<String> innerMap, innerMapGreen;
 
 			BestItemsResult bestItemsResult = calculateBestItems(getSlots());
 			bestSlotIndexSelling = bestItemsResult.bestSlotIndexSelling;
 			bestSlotIndexAll = bestItemsResult.bestSlotIndexAll;
-			if (bestSlotIndexSelling != -1 && bestSlotIndexSelling == focusedSlot.getIndex()) isGreen = true;
+			if (bestSlotIndexSelling != -1 && bestSlotIndexSelling == focusedSlot.getContainerSlot()) isGreen = true;
 			innerMap = categoryOutput.get(outerKey);
 			innerMapGreen = categoryOutput.get(outerKey + "GREEN");
 
@@ -211,25 +219,25 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 		}
 		ItemStack foundItemStack = ItemRepository.getItemStack(itemID);
 		if (itemID.isEmpty()) {   // a bit dirty, but basically if itemID is empty then it is normal item and NOT category
-			lines.add(Text.empty()
-					.append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
-					.append(Text.literal(Formatters.INTEGER_NUMBERS.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
+			lines.add(Component.empty()
+					.append(Component.literal("Bits Cost: ").withStyle(ChatFormatting.AQUA))
+					.append(Component.literal(Formatters.INTEGER_NUMBERS.format(coinsPerBit) + " Coins per bit").withStyle(ChatFormatting.DARK_AQUA)));
 		} else if (foundItemStack != null && isGreen) {
-			lines.add(Text.empty()
-					.append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
-					.append(Text.literal(Formatters.INTEGER_NUMBERS.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
-			lines.add(Text.literal("From " + foundItemStack.getName().getString()).formatted(Formatting.GREEN));
+			lines.add(Component.empty()
+					.append(Component.literal("Bits Cost: ").withStyle(ChatFormatting.AQUA))
+					.append(Component.literal(Formatters.INTEGER_NUMBERS.format(coinsPerBit) + " Coins per bit").withStyle(ChatFormatting.DARK_AQUA)));
+			lines.add(Component.literal("From " + foundItemStack.getHoverName().getString()).withStyle(ChatFormatting.GREEN));
 		} else if (foundItemStack != null) {
-			lines.add(Text.empty()
-					.append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
-					.append(Text.literal(Formatters.INTEGER_NUMBERS.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
-			lines.add(Text.literal("From " + foundItemStack.getName().getString()).formatted(Formatting.DARK_AQUA));
+			lines.add(Component.empty()
+					.append(Component.literal("Bits Cost: ").withStyle(ChatFormatting.AQUA))
+					.append(Component.literal(Formatters.INTEGER_NUMBERS.format(coinsPerBit) + " Coins per bit").withStyle(ChatFormatting.DARK_AQUA)));
+			lines.add(Component.literal("From " + foundItemStack.getHoverName().getString()).withStyle(ChatFormatting.DARK_AQUA));
 		} else {    // if below so it won't clog logs with that cursed enchanted book
-			if (!stack.getName().getString().equals("Stacking Enchants")) LOGGER.warn(LOGS_PREFIX + "ItemStack not found for {}", itemID);
-			lines.add(Text.empty()
-					.append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
-					.append(Text.literal(Formatters.INTEGER_NUMBERS.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
-			lines.add(Text.literal("From " + itemID).formatted(Formatting.DARK_AQUA));
+			if (!stack.getHoverName().getString().equals("Stacking Enchants")) LOGGER.warn(LOGS_PREFIX + "ItemStack not found for {}", itemID);
+			lines.add(Component.empty()
+					.append(Component.literal("Bits Cost: ").withStyle(ChatFormatting.AQUA))
+					.append(Component.literal(Formatters.INTEGER_NUMBERS.format(coinsPerBit) + " Coins per bit").withStyle(ChatFormatting.DARK_AQUA)));
+			lines.add(Component.literal("From " + itemID).withStyle(ChatFormatting.DARK_AQUA));
 		}
 	}
 
@@ -238,17 +246,17 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	 * upd: there is, using `focusedSlot.inventory`, but I don't wanna touch code that already works just fine
 	 */
 	private Int2ObjectMap<ItemStack> getSlots() {
-		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.currentScreen instanceof HandledScreen<?> screen) {
-			ScreenHandler handler = screen.getScreenHandler();
+		Minecraft client = Minecraft.getInstance();
+		if (client.screen instanceof AbstractContainerScreen<?> screen) {
+			AbstractContainerMenu handler = screen.getMenu();
 
 			Int2ObjectMap<ItemStack> slots = new Int2ObjectOpenHashMap<>();
 			for (int i = 0; i < handler.slots.size(); i++) {
-				slots.put(i, handler.getSlot(i).getStack());
+				slots.put(i, handler.getSlot(i).getItem());
 			}
 			if (!megamindInLogs) {
 				LOGGER.info(LOGS_PREFIX + """
-						            No slots?
+									No slots?
 						⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝
 						⠸⡸⠜⠕⠕⠁⢁⢇⢏⢽⢺⣪⡳⡝⣎⣏⢯⢞⡿⣟⣷⣳⢯⡷⣽⢽⢯⣳⣫⠇
 						⠀⠀⢀⢀⢄⢬⢪⡪⡎⣆⡈⠚⠜⠕⠇⠗⠝⢕⢯⢫⣞⣯⣿⣻⡽⣏⢗⣗⠏⠀
@@ -330,7 +338,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	private ObjectLongImmutablePair<String> calculateBestInCategory(ItemStack stack) {
 		long bestCoinsPerBitSelling = 0L;
 		long bestCoinsPerBitAll = 0L;
-		String catName = stack.getName().getString();
+		String catName = stack.getHoverName().getString();
 		categoryOutput.put(catName, ObjectLongImmutablePair.of("", 0L));
 		categoryOutput.put(catName + "GREEN", ObjectLongImmutablePair.of("", 0L));
 		Object2LongMap<String> categoryResults = processCategory(stack);
@@ -353,7 +361,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	}
 
 	private Object2LongMap<String> processCategory(ItemStack stack) {
-		String categoryName = stack.getName().getString();
+		String categoryName = stack.getHoverName().getString();
 
 		if (CATEGORIES.containsKey(categoryName)) {
 			Object2LongMap<String> results = new Object2LongOpenHashMap<>();

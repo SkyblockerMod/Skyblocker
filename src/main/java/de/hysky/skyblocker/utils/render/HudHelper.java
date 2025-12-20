@@ -1,54 +1,54 @@
 package de.hysky.skyblocker.utils.render;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import de.hysky.skyblocker.compatibility.ModernUICompatibility;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.OutlinedTextGuiElementRenderState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.PlayerSkinDrawer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.render.entity.equipment.EquipmentModel;
-import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
-import net.minecraft.client.texture.PlayerSkinCache;
-import net.minecraft.client.texture.TextureSetup;
-import net.minecraft.client.util.DefaultSkinHelper;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.entity.player.SkinTextures;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.equipment.EquipmentAsset;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.client.renderer.PlayerSkinRenderCache;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
+import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ResolvableProfile;
+import net.minecraft.world.item.equipment.EquipmentAsset;
 import org.joml.Matrix3x2f;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Optional;
 import java.util.UUID;
 
 public class HudHelper {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 
-	public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, int argb) {
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, x, y, width, height, argb);
+	public static void renderNineSliceColored(GuiGraphics context, Identifier texture, int x, int y, int width, int height, int argb) {
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, width, height, argb);
 	}
 
-	public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
-		renderNineSliceColored(context, texture, x, y, width, height, ColorHelper.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
+	public static void renderNineSliceColored(GuiGraphics context, Identifier texture, int x, int y, int width, int height, Color color) {
+		renderNineSliceColored(context, texture, x, y, width, height, ARGB.color(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
 	}
 
-	public static void drawHorizontalGradient(DrawContext context, float startX, float startY, float endX, float endY, int colorStart, int colorEnd) {
-		context.state.addSimpleElement(new HorizontalGradientGuiElementRenderState(RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), (int) startX, (int) startY, (int) endX, (int) endY, colorStart, colorEnd, context.scissorStack.peekLast()));
+	public static void drawHorizontalGradient(GuiGraphics context, float startX, float startY, float endX, float endY, int colorStart, int colorEnd) {
+		context.guiRenderState.submitGuiElement(new HorizontalGradientGuiElementRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), (int) startX, (int) startY, (int) endX, (int) endY, colorStart, colorEnd, context.scissorStack.peek()));
 	}
 
 	// FIXME replace with stroked rectangles?
-	public static void drawBorder(DrawContext context, int x, int y, int width, int height, int color) {
+	public static void drawBorder(GuiGraphics context, int x, int y, int width, int height, int color) {
 		context.fill(x, y, x + width, y + 1, color);
 		context.fill(x, y + height - 1, x + width, y + height, color);
 		context.fill(x, y + 1, x + 1, y + height - 1, color);
@@ -59,43 +59,44 @@ public class HudHelper {
 	 * Draws a player head without blocking or a default head if profile is not available immediately.
 	 * This fetches the profile so it will be available for future calls to this method.
 	 */
-	public static void drawPlayerHead(DrawContext context, int x, int y, int size, UUID uuid) {
-		SkinTextures texture = CLIENT.getPlayerSkinCache().getFuture(ProfileComponent.ofDynamic(uuid))
+	public static void drawPlayerHead(GuiGraphics context, int x, int y, int size, UUID uuid) {
+		PlayerSkin texture = CLIENT.playerSkinRenderCache().lookup(ResolvableProfile.createUnresolved(uuid))
 				.getNow(Optional.empty())
-				.map(PlayerSkinCache.Entry::getTextures)
-				.orElseGet(() -> DefaultSkinHelper.getSkinTextures(uuid));
-		PlayerSkinDrawer.draw(context, texture, x, y, size);
+				.map(PlayerSkinRenderCache.RenderInfo::playerSkin)
+				.orElseGet(() -> DefaultPlayerSkin.get(uuid));
+		PlayerFaceRenderer.draw(context, texture, x, y, size);
 	}
 
-	public static <S> void drawEquipment(DrawContext context, EquipmentRenderer equipmentRenderer, EquipmentModel.LayerType layerType, RegistryKey<EquipmentAsset> assetKey, Model<S> model, S state, ItemStack stack, int x1, int y1, int x2, int y2, float rotation, float scale, float offset) {
-		EquipmentGuiElementRenderState<S> renderState = new EquipmentGuiElementRenderState<>(equipmentRenderer, layerType, assetKey, model, state, stack, x1, y1, x2, y2, rotation, scale, offset, context.scissorStack.peekLast());
+	public static <S> void drawEquipment(GuiGraphics context, EquipmentLayerRenderer equipmentRenderer, EquipmentClientInfo.LayerType layerType, ResourceKey<EquipmentAsset> assetKey, Model<S> model, S state, ItemStack stack, int x1, int y1, int x2, int y2, float rotation, float scale, float offset) {
+		EquipmentGuiElementRenderState<S> renderState = new EquipmentGuiElementRenderState<>(equipmentRenderer, layerType, assetKey, model, state, stack, x1, y1, x2, y2, rotation, scale, offset, context.scissorStack.peek());
 
-		context.state.addSpecialElement(renderState);
+		context.guiRenderState.submitPicturesInPictureState(renderState);
 	}
 
-	public static void drawOutlinedText(DrawContext context, Text text, int x, int y, int color, int outlineColor) {
-		OrderedText orderedText = text.asOrderedText();
-		drawOutlinedText(context, orderedText, ModernUICompatibility.MODERNUI_ENABLED ? Text.literal(text.getString()).asOrderedText() : orderedText, x, y, color, outlineColor);
+	public static void drawOutlinedText(GuiGraphics context, Component text, int x, int y, int color, int outlineColor) {
+		FormattedCharSequence orderedText = text.getVisualOrderText();
+		drawOutlinedText(context, orderedText, ModernUICompatibility.MODERNUI_ENABLED ? Component.literal(text.getString()).getVisualOrderText() : orderedText, x, y, color, outlineColor);
 	}
 
-	public static void drawOutlinedText(DrawContext context, OrderedText text, int x, int y, int color, int outlineColor) {
+	public static void drawOutlinedText(GuiGraphics context, FormattedCharSequence text, int x, int y, int color, int outlineColor) {
 		drawOutlinedText(context, text, text, x, y, color, outlineColor);
 	}
 
-	private static void drawOutlinedText(DrawContext context, OrderedText text, OrderedText outlineText, int x, int y, int color, int outlineColor) {
+	private static void drawOutlinedText(GuiGraphics context, FormattedCharSequence text, FormattedCharSequence outlineText, int x, int y, int color, int outlineColor) {
 		if (CaxtonCompatibility.drawOutlinedText(context, text, x, y, color, outlineColor)) return;
 		if (ModernUICompatibility.drawOutlinedText(context, text, outlineText, x, y, color, outlineColor)) return;
 
-		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text, new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, context.scissorStack.peekLast());
-		context.state.addText(renderState);
+		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.font, text, new Matrix3x2f(context.pose()), x, y, color, outlineColor, false, false, context.scissorStack.peek());
+		context.guiRenderState.submitText(renderState);
 	}
 
 	public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
 		return x >= x1 && x <= x2 && y >= y1 && y <= y2;
 	}
 
-	// Temp fix for this?
+	// 1.21.10 Port: Temp fix for this?
+	// 1.21.11 Port: "nothing is more permanent than a temporary solution"
 	public static boolean hasShiftDown() {
-		return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
+		return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
 	}
 }

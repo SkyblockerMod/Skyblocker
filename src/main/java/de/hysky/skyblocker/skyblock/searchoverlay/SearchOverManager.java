@@ -23,20 +23,26 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 import org.apache.commons.lang3.function.Consumers;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,7 +50,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.arg
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class SearchOverManager {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Search Overlay");
 
 	private static final String PET_NAME_START = "[Lvl {LVL}] ";
@@ -77,7 +83,7 @@ public class SearchOverManager {
 		NEURepoManager.runAsyncAfterLoad(SearchOverManager::loadItems);
 	}
 
-	private static void registerSearchCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	private static void registerSearchCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableCommands) {
 			dispatcher.register(literal("ahs").executes(context -> startCommand(true, "")));
 			dispatcher.register(literal("bzs").executes(context -> startCommand(false, "")));
@@ -106,7 +112,7 @@ public class SearchOverManager {
 			updateSearch(itemName);
 		}
 
-		CLIENT.send(() -> CLIENT.setScreen(new OverlayScreen()));
+		CLIENT.schedule(() -> CLIENT.setScreen(new OverlayScreen()));
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -136,7 +142,7 @@ public class SearchOverManager {
 					NEUItem neuItem = NEURepoManager.getItemByNeuId(neuId);
 					if (neuItem == null) continue;
 
-					String name = Formatting.strip(neuItem.getLore().getFirst());
+					String name = ChatFormatting.stripFormatting(neuItem.getLore().getFirst());
 					bazaarItems.add(name);
 					namesToNeuId.put(name, neuId);
 					continue;
@@ -150,7 +156,7 @@ public class SearchOverManager {
 				//look up id for name
 				NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
 				if (neuItem != null) {
-					String name = Formatting.strip(neuItem.getDisplayName());
+					String name = ChatFormatting.stripFormatting(neuItem.getDisplayName());
 					bazaarItems.add(name);
 					namesToNeuId.put(name, id);
 				}
@@ -171,7 +177,7 @@ public class SearchOverManager {
 				id = id.split("[+-]")[0];
 				NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
 				if (neuItem != null) {
-					String name = Formatting.strip(neuItem.getDisplayName());
+					String name = ChatFormatting.stripFormatting(neuItem.getDisplayName());
 					//add names that are pets to the list of pets to work with the lvl 100 button
 					if (name != null && name.startsWith(PET_NAME_START)) {
 						name = name.replace(PET_NAME_START, "");
@@ -202,13 +208,13 @@ public class SearchOverManager {
 	 * @param sign  the sign that is being edited
 	 * @param front if it's the front of the sign
 	 */
-	public static void updateSign(@NotNull SignBlockEntity sign, boolean front, SearchLocation location) {
+	public static void updateSign(SignBlockEntity sign, boolean front, SearchLocation location) {
 		signFront = front;
 		SearchOverManager.sign = sign;
 		isCommand = false;
 		SearchOverManager.location = location;
 		if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.keepPreviousSearches) {
-			Text[] messages = SearchOverManager.sign.getText(signFront).getMessages(CLIENT.shouldFilterText());
+			Component[] messages = SearchOverManager.sign.getText(signFront).getMessages(CLIENT.isTextFilteringEnabled());
 			search = messages[0].getString();
 			if (!messages[1].getString().isEmpty()) {
 				if (!search.endsWith(" ")) {
@@ -251,8 +257,8 @@ public class SearchOverManager {
 				.filter(MuseumItemCache::hasItemInMuseum)
 				.map(ItemRepository::getItemStack)
 				.filter(Objects::nonNull)
-				.map(ItemStack::getName)
-				.map(Text::getString);
+				.map(ItemStack::getHoverName)
+				.map(Component::getString);
 
 		// Get armor set name
 		Stream<String> sets = types.get(true).stream()
@@ -479,8 +485,8 @@ public class SearchOverManager {
 
 		// send packet to update sign
 		if (CLIENT.player != null && sign != null) {
-			Text[] messages = sign.getText(signFront).getMessages(CLIENT.shouldFilterText());
-			CLIENT.player.networkHandler.sendPacket(new UpdateSignC2SPacket(sign.getPos(), signFront,
+			Component[] messages = sign.getText(signFront).getMessages(CLIENT.isTextFilteringEnabled());
+			CLIENT.player.connection.send(new ServerboundSignUpdatePacket(sign.getBlockPos(), signFront,
 					split.left(),
 					split.right(),
 					messages[2].getString(),

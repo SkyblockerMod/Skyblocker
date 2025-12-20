@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.util;
 
 import com.mojang.authlib.GameProfile;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
+import de.hysky.skyblocker.mixins.accessors.PlayerTabOverlayAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
@@ -13,23 +13,29 @@ import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 
 /**
  * This class may be used to get data from the player list. It doesn't get its
@@ -37,7 +43,6 @@ import java.util.regex.Pattern;
  * is holding periodically. The list is sorted like in the vanilla game.
  */
 public class PlayerListManager {
-
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
 	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("\\s*(Players \\(\\d+\\)|Island|Coop \\(\\d+\\))\\s*");
 	private static final Pattern INFO_COLUMN_PATTERN = Pattern.compile("\\s*Info\\s*");
@@ -46,16 +51,15 @@ public class PlayerListManager {
 	/**
 	 * The player list in tab.
 	 */
-	private static List<PlayerListEntry> playerList = new ArrayList<>(); // Initialize to prevent npe.
+	private static @Nullable List<PlayerInfo> playerList = new ArrayList<>(); // Initialize to prevent npe.
 
 	/**
-	 * The player list in tab, but a list of strings instead of {@link PlayerListEntry}s.
+	 * The player list in tab, but a list of strings instead of {@link PlayerInfo}s.
 	 *
 	 * @implNote All leading and trailing whitespace is removed from the strings.
 	 */
 	private static List<String> playerStringList = new ArrayList<>();
-	@Nullable
-	private static String footer;
+	private static @Nullable String footer;
 	public static final Map<String, TabHudWidget> tabWidgetInstances = new Object2ObjectOpenHashMap<>();
 	public static final List<TabHudWidget> tabWidgetsToShow = new ObjectArrayList<>(5);
 
@@ -72,20 +76,20 @@ public class PlayerListManager {
 			return;
 		}
 
-		ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
+		ClientPacketListener networkHandler = Minecraft.getInstance().getConnection();
 
 		// check is needed, else game crashes on server leave
 		if (networkHandler != null) {
-			playerList = networkHandler.getPlayerList()
-			                           .stream()
-			                           .sorted(PlayerListHudAccessor.getOrdering())
-			                           .toList();
+			playerList = networkHandler.getOnlinePlayers()
+									.stream()
+									.sorted(PlayerTabOverlayAccessor.getOrdering())
+									.toList();
 			playerStringList = playerList.stream()
-			                             .map(PlayerListEntry::getDisplayName)
-			                             .filter(Objects::nonNull)
-			                             .map(Text::getString)
-			                             .map(String::strip)
-			                             .toList();
+										.map(PlayerInfo::getTabListDisplayName)
+										.filter(Objects::nonNull)
+										.map(Component::getString)
+										.map(String::strip)
+										.toList();
 		}
 
 		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
@@ -93,7 +97,7 @@ public class PlayerListManager {
 			return;
 		}
 
-		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen widgetsConfigurationScreen && widgetsConfigurationScreen.isPreviewVisible()) return;
+		if (Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen widgetsConfigurationScreen && widgetsConfigurationScreen.isPreviewVisible()) return;
 
 		if (Utils.isInDungeons()) updateDungeons(null);
 		else updateWidgetsFrom(playerList);
@@ -104,13 +108,14 @@ public class PlayerListManager {
 	 *
 	 * @param lines used for the config screen
 	 */
-	public static void updateDungeons(List<Text> lines) {
+	public static void updateDungeons(@Nullable List<Component> lines) {
 		if (lines != null) {
 			// This is so wack I hate this
+			// I hate this too
 			playerList = new ArrayList<>();
 			for (int i = 0; i < lines.size(); i++) {
-				playerList.add(new PlayerListEntry(new GameProfile(UUID.randomUUID(), String.valueOf(i)), false));
-				playerList.getLast().setDisplayName(lines.get(i));
+				playerList.add(new PlayerInfo(new GameProfile(UUID.randomUUID(), String.valueOf(i)), false));
+				playerList.getLast().setTabListDisplayName(lines.get(i));
 			}
 		}
 
@@ -132,7 +137,7 @@ public class PlayerListManager {
 	 *
 	 * @param lines in-game TAB
 	 */
-	public static void updateWidgetsFrom(List<PlayerListEntry> lines) {
+	public static void updateWidgetsFrom(List<PlayerInfo> lines) {
 		final Predicate<String> playersColumnPredicate = PLAYERS_COLUMN_PATTERN.asMatchPredicate();
 		final Predicate<String> infoColumnPredicate = INFO_COLUMN_PATTERN.asMatchPredicate();
 
@@ -142,11 +147,11 @@ public class PlayerListManager {
 		IntObjectPair<String> hypixelWidgetName = IntObjectPair.of(0xFFFF00, "");
 		// These two lists should match each other.
 		// playerListEntries is only used for the player list widget
-		List<Text> contents = new ArrayList<>();
-		List<PlayerListEntry> playerListEntries = new ArrayList<>();
+		List<Component> contents = new ArrayList<>();
+		List<PlayerInfo> playerListEntries = new ArrayList<>();
 
-		for (PlayerListEntry playerListEntry : lines) {
-			Text displayName = playerListEntry.getDisplayName();
+		for (PlayerInfo playerListEntry : lines) {
+			Component displayName = playerListEntry.getTabListDisplayName();
 			if (displayName == null) continue;
 			String string = displayName.getString();
 
@@ -157,7 +162,7 @@ public class PlayerListManager {
 					if (!doingPlayers) {
 						doingPlayers = true;
 						// noinspection DataFlowIssue
-						hypixelWidgetName = IntObjectPair.of(Formatting.AQUA.getColorValue(), "Players");
+						hypixelWidgetName = IntObjectPair.of(ChatFormatting.AQUA.getColor(), "Players");
 					}
 					continue;
 				}
@@ -178,7 +183,7 @@ public class PlayerListManager {
 					if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents, playerListEntries));
 					contents.clear();
 					playerListEntries.clear();
-					Pair<IntObjectPair<String>, ? extends Text> nameAndInfo = getNameAndInfo(displayName);
+					Pair<IntObjectPair<String>, ? extends Component> nameAndInfo = getNameAndInfo(displayName);
 					hypixelWidgetName = nameAndInfo.left();
 					if (!nameAndInfo.right().getString().isBlank()) {
 						contents.add(trim(nameAndInfo.right()));
@@ -197,8 +202,8 @@ public class PlayerListManager {
 		}
 	}
 
-	private static Text trim(Text text) {
-		List<Text> trimmedParts = new ArrayList<>();
+	private static Component trim(Component text) {
+		List<Component> trimmedParts = new ArrayList<>();
 		AtomicBoolean leadingSpaceFound = new AtomicBoolean(false);
 
 		// leading spaces
@@ -209,32 +214,32 @@ public class PlayerListManager {
 				if (!trimmed.isBlank()) leadingSpaceFound.set(true);
 				else return Optional.empty();
 			}
-			trimmedParts.add(Text.literal(trimmed).setStyle(style));
+			trimmedParts.add(Component.literal(trimmed).setStyle(style));
 			return Optional.empty();
 		}, Style.EMPTY);
 
 		// trailing spaces
 		for (int i = 0; i < trimmedParts.size(); i++) {
-			Text last = trimmedParts.removeLast();
+			Component last = trimmedParts.removeLast();
 			String trimmed = last.getString().stripTrailing();
 			if (!trimmed.isBlank()) {
-				trimmedParts.add(Text.literal(trimmed).setStyle(last.getStyle()));
+				trimmedParts.add(Component.literal(trimmed).setStyle(last.getStyle()));
 				break;
 			}
 		}
 
-		MutableText out = Text.empty();
+		MutableComponent out = Component.empty();
 		trimmedParts.forEach(out::append);
 
 		return out;
 	}
 
-	private static TabHudWidget getTabHudWidget(IntObjectPair<String> hypixelWidgetName, List<Text> lines, @Nullable List<PlayerListEntry> playerListEntries) {
+	private static TabHudWidget getTabHudWidget(IntObjectPair<String> hypixelWidgetName, List<Component> lines, @Nullable List<PlayerInfo> playerListEntries) {
 		TabHudWidget tabHudWidget;
 		if (tabWidgetInstances.containsKey(hypixelWidgetName.right())) {
 			tabHudWidget = tabWidgetInstances.get(hypixelWidgetName.right());
 		} else {
-			tabHudWidget = new DefaultTabHudWidget(hypixelWidgetName.right(), Text.literal(hypixelWidgetName.right()).formatted(Formatting.BOLD), hypixelWidgetName.firstInt());
+			tabHudWidget = new DefaultTabHudWidget(hypixelWidgetName.right(), Component.literal(hypixelWidgetName.right()).withStyle(ChatFormatting.BOLD), hypixelWidgetName.firstInt());
 			WidgetManager.addWidgetInstance(tabHudWidget);
 		}
 		tabHudWidget.updateFromTab(lines, playerListEntries);
@@ -242,7 +247,7 @@ public class PlayerListManager {
 		return tabHudWidget;
 	}
 
-	private static TabHudWidget getTabHudWidget(String hypixelWidgetName, List<Text> lines) {
+	private static TabHudWidget getTabHudWidget(String hypixelWidgetName, List<Component> lines) {
 		return getTabHudWidget(IntObjectPair.of(0xFFFF0000, hypixelWidgetName), lines, null);
 	}
 
@@ -254,20 +259,20 @@ public class PlayerListManager {
 	 * <li> a text with the extra info sometimes shown on the right of the : </li>
 	 * </ul>
 	 */
-	private static Pair<IntObjectPair<String>, ? extends Text> getNameAndInfo(Text text) {
-		ObjectObjectMutablePair<String, MutableText> toReturn = new ObjectObjectMutablePair<>("", Text.empty());
+	private static Pair<IntObjectPair<String>, ? extends Component> getNameAndInfo(Component text) {
+		ObjectObjectMutablePair<String, MutableComponent> toReturn = new ObjectObjectMutablePair<>("", Component.empty());
 		AtomicBoolean inInfo = new AtomicBoolean(false);
 		AtomicInteger colorOutput = new AtomicInteger(0xFFFF00);
 		text.visit((style, asString) -> {
 			if (inInfo.get()) {
-				toReturn.right().append(Text.literal(asString).fillStyle(style));
+				toReturn.right().append(Component.literal(asString).withStyle(style));
 			} else {
 				if (asString.contains(":")) {
 					inInfo.set(true);
 					String[] split = asString.split(":", 2);
 					toReturn.left(toReturn.left() + split[0]);
-					toReturn.right().append(Text.literal(split[1]).fillStyle(style));
-					if (style.getColor() != null) colorOutput.set(style.getColor().getRgb());
+					toReturn.right().append(Component.literal(split[1]).withStyle(style));
+					if (style.getColor() != null) colorOutput.set(style.getColor().getValue());
 				} else {
 					toReturn.left(toReturn.left() + asString);
 				}
@@ -281,7 +286,7 @@ public class PlayerListManager {
 	/**
 	 * @return the cached player list
 	 */
-	public static List<PlayerListEntry> getPlayerList() {
+	public static @Nullable List<PlayerInfo> getPlayerList() {
 		return playerList;
 	}
 
@@ -292,7 +297,7 @@ public class PlayerListManager {
 		return playerStringList;
 	}
 
-	public static void updateFooter(Text f) {
+	public static void updateFooter(@Nullable Component f) {
 		if (f == null) {
 			footer = null;
 		} else {
@@ -303,8 +308,7 @@ public class PlayerListManager {
 		}
 	}
 
-	@Nullable
-	public static String getFooter() {
+	public static @Nullable String getFooter() {
 		return footer;
 	}
 
@@ -314,7 +318,7 @@ public class PlayerListManager {
 	 *
 	 * @return the matcher if p fully matches, else null
 	 */
-	public static Matcher regexAt(int idx, Pattern p) {
+	public static @Nullable Matcher regexAt(int idx, Pattern p) {
 
 		String str = PlayerListManager.strAt(idx);
 
@@ -337,7 +341,7 @@ public class PlayerListManager {
 	 * @return the string or null, if the display name is null, empty or whitespace
 	 * only
 	 */
-	public static String strAt(int idx) {
+	public static @Nullable String strAt(int idx) {
 
 		if (playerList == null) {
 			return null;
@@ -347,7 +351,7 @@ public class PlayerListManager {
 			return null;
 		}
 
-		Text txt = playerList.get(idx).getDisplayName();
+		Component txt = playerList.get(idx).getTabListDisplayName();
 		if (txt == null) {
 			return null;
 		}
@@ -366,7 +370,7 @@ public class PlayerListManager {
 	 * widget and the rift widgets, might not work correctly without
 	 * modification for other stuff. you've been warned!
 	 */
-	public static Text textAt(int idx) {
+	public static @Nullable Component textAt(int idx) {
 
 		if (playerList == null) {
 			return null;
@@ -376,18 +380,18 @@ public class PlayerListManager {
 			return null;
 		}
 
-		Text txt = playerList.get(idx).getDisplayName();
+		Component txt = playerList.get(idx).getTabListDisplayName();
 		if (txt == null) {
 			return null;
 		}
 
 		// Rebuild the text object to remove leading space thats in all faction quest
 		// stuff (also removes trailing space just in case)
-		MutableText newText = Text.empty();
+		MutableComponent newText = Component.empty();
 		int size = txt.getSiblings().size();
 
 		for (int i = 0; i < size; i++) {
-			Text current = txt.getSiblings().get(i);
+			Component current = txt.getSiblings().get(i);
 			String textToAppend = current.getString();
 
 			// Trim leading & trailing space - this can only be done at the start and end
@@ -397,7 +401,7 @@ public class PlayerListManager {
 			if (i == size - 1)
 				textToAppend = textToAppend.stripTrailing();
 
-			newText.append(Text.literal(textToAppend).setStyle(current.getStyle()));
+			newText.append(Component.literal(textToAppend).setStyle(current.getStyle()));
 		}
 
 		// Avoid returning an empty component - Rift advertisements needed this
@@ -414,7 +418,7 @@ public class PlayerListManager {
 	 *
 	 * @return the PlayerListEntry at that index
 	 */
-	public static PlayerListEntry getRaw(int idx) {
+	public static PlayerInfo getRaw(int idx) {
 		return playerList.get(idx);
 	}
 
@@ -423,12 +427,12 @@ public class PlayerListManager {
 	}
 
 	private static final class DefaultTabHudWidget extends TabHudWidget {
-		private DefaultTabHudWidget(String hypixelWidgetName, MutableText title, int color) {
+		private DefaultTabHudWidget(String hypixelWidgetName, MutableComponent title, int color) {
 			super(hypixelWidgetName, title, color);
 		}
 
 		@Override
-		protected void updateContent(List<Text> lines) {
+		protected void updateContent(List<Component> lines) {
 			lines.forEach(text -> addComponent(new PlainTextComponent(text)));
 		}
 	}

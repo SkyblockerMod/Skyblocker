@@ -12,19 +12,18 @@ import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.Wardrobe
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Colors;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.HashSet;
 import java.util.Set;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
 
 public class ProfileViewerTextWidget {
 	private static final int ROW_GAP = 9;
@@ -34,7 +33,7 @@ public class ProfileViewerTextWidget {
 	private double PURSE = 0;
 	private double BANK = 0;
 	private double NETWORTH = 0;
-	private List<Text> networthTooltip = List.of();
+	private List<Component> networthTooltip = List.of();
 
 	public ProfileViewerTextWidget(JsonObject hypixelProfile, JsonObject playerProfile) {
 		try {
@@ -104,11 +103,11 @@ public class ProfileViewerTextWidget {
 
 		List<ItemValue> list = new ArrayList<>(top);
 		list.sort(Comparator.comparingDouble(ItemValue::price).reversed());
-		List<Text> tooltip = new ArrayList<>();
-		tooltip.add(Text.literal("Top Items:").formatted(Formatting.GOLD));
+		List<Component> tooltip = new ArrayList<>();
+		tooltip.add(Component.literal("Top Items:").withStyle(ChatFormatting.GOLD));
 		for (ItemValue iv : list) {
-			tooltip.add(Text.literal(iv.name + ": ")
-					.append(Text.literal(ProfileViewerUtils.numLetterFormat(iv.price)).formatted(Formatting.YELLOW)));
+			tooltip.add(Component.literal(iv.name + ": ")
+					.append(Component.literal(ProfileViewerUtils.numLetterFormat(iv.price)).withStyle(ChatFormatting.YELLOW)));
 		}
 		this.networthTooltip = tooltip;
 
@@ -118,33 +117,33 @@ public class ProfileViewerTextWidget {
 	private double addItemNetworth(PriorityQueue<ItemValue> top, ItemStack stack) {
 		double p = NetworthCalculator.getItemNetworth(stack).price();
 		if (p > 0) {
-			top.offer(new ItemValue(stack.getName().getString(), p));
+			top.offer(new ItemValue(stack.getHoverName().getString(), p));
 			if (top.size() > 10) top.poll();
 		}
 		return p;
 	}
 
-	public void render(DrawContext context, TextRenderer textRenderer, int root_x, int root_y, int mouseX, int mouseY) {
+	public void render(GuiGraphics context, Font textRenderer, int root_x, int root_y, int mouseX, int mouseY) {
 		// Profile Icon
-		Matrix3x2fStack matrices = context.getMatrices();
+		Matrix3x2fStack matrices = context.pose();
 		matrices.pushMatrix();
 		matrices.scale(0.75f, 0.75f);
 		int rootAdjustedX = (int) ((root_x) / 0.75f);
 		int rootAdjustedY = (int) ((root_y) / 0.75f);
-		context.drawItem(Ico.PAINTING, rootAdjustedX, rootAdjustedY);
+		context.renderItem(Ico.PAINTING, rootAdjustedX, rootAdjustedY);
 		matrices.popMatrix();
 
-		context.drawText(textRenderer, "§n" + PROFILE_NAME, root_x + 14, root_y + 3, Colors.WHITE, true);
-		context.drawText(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 6 + ROW_GAP, Colors.WHITE, true);
-		context.drawText(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 6 + ROW_GAP * 2, Colors.WHITE, true);
-		context.drawText(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 6 + ROW_GAP * 3, Colors.WHITE, true);
+		context.drawString(textRenderer, "§n" + PROFILE_NAME, root_x + 14, root_y + 3, CommonColors.WHITE, true);
+		context.drawString(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 6 + ROW_GAP, CommonColors.WHITE, true);
+		context.drawString(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 6 + ROW_GAP * 2, CommonColors.WHITE, true);
+		context.drawString(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 6 + ROW_GAP * 3, CommonColors.WHITE, true);
 		String nwString = "§6NW:§r " + ProfileViewerUtils.numLetterFormat(NETWORTH);
 		int nwX = root_x + 2;
 		int nwY = root_y + 6 + ROW_GAP * 4;
-		context.drawText(textRenderer, nwString, nwX, nwY, Colors.WHITE, true);
-		if (mouseX >= nwX && mouseX <= nwX + textRenderer.getWidth(nwString)
-				&& mouseY >= nwY && mouseY <= nwY + textRenderer.fontHeight) {
-			context.drawTooltip(textRenderer, networthTooltip, mouseX, mouseY);
+		context.drawString(textRenderer, nwString, nwX, nwY, CommonColors.WHITE, true);
+		if (mouseX >= nwX && mouseX <= nwX + textRenderer.width(nwString)
+				&& mouseY >= nwY && mouseY <= nwY + textRenderer.lineHeight) {
+			context.setComponentTooltipForNextFrame(textRenderer, networthTooltip, mouseX, mouseY);
 		}
 	}
 

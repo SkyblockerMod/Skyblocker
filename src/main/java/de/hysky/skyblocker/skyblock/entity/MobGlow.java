@@ -1,18 +1,19 @@
 package de.hysky.skyblocker.skyblock.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hysky.skyblocker.annotations.Init;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
-
-import java.util.*;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 public class MobGlow {
 	public static final int NO_GLOW = EntityRenderState.NO_OUTLINE;
@@ -88,18 +89,18 @@ public class MobGlow {
 	 * @return the name string of the entities  label
 	 */
 	public static String getArmorStandName(Entity entity) {
-		List<ArmorStandEntity> armorStands = getArmorStands(entity);
+		List<ArmorStand> armorStands = getArmorStands(entity);
 		if (armorStands.isEmpty()) {
 			return "";
 		}
 		return armorStands.getFirst().getName().getString();
 	}
 
-	public static List<ArmorStandEntity> getArmorStands(Entity entity) {
-		return getArmorStands(entity.getEntityWorld(), entity.getBoundingBox());
+	public static List<ArmorStand> getArmorStands(Entity entity) {
+		return getArmorStands(entity.level(), entity.getBoundingBox());
 	}
 
-	public static List<ArmorStandEntity> getArmorStands(World world, Box box) {
-		return world.getEntitiesByClass(ArmorStandEntity.class, box.expand(0, 2, 0), EntityPredicates.NOT_MOUNTED);
+	public static List<ArmorStand> getArmorStands(Level world, AABB box) {
+		return world.getEntitiesOfClass(ArmorStand.class, box.inflate(0, 2, 0), EntitySelector.ENTITY_NOT_BEING_RIDDEN);
 	}
 }

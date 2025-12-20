@@ -8,95 +8,94 @@ import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.mob.GuardianEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.Box;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.Guardian;
+import net.minecraft.world.phys.AABB;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GuardianHealth {
-    private static final Box bossRoom = new Box(34, 65, -32, -32, 100, 36);
-    private static final Pattern guardianRegex = Pattern.compile("^(.*?) Guardian (.*?)([A-Za-z])❤$");
-    private static final Pattern professorRegex = Pattern.compile("^﴾ (The Professor) (.*?)([A-za-z])❤ ﴿$");
-    private static boolean inBoss;
+	private static final AABB bossRoom = new AABB(34, 65, -32, -32, 100, 36);
+	private static final Pattern guardianRegex = Pattern.compile("^(.*?) Guardian (.*?)([A-Za-z])❤$");
+	private static final Pattern professorRegex = Pattern.compile("^﴾ (The Professor) (.*?)([A-za-z])❤ ﴿$");
+	private static boolean inBoss;
 
-    @Init
-    public static void init() {
-        ClientReceiveMessageEvents.ALLOW_GAME.register(GuardianHealth::onChatMessage);
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> GuardianHealth.reset());
-        WorldRenderExtractionCallback.EVENT.register(GuardianHealth::extractRendering);
-    }
+	@Init
+	public static void init() {
+		ClientReceiveMessageEvents.ALLOW_GAME.register(GuardianHealth::onChatMessage);
+		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> GuardianHealth.reset());
+		WorldRenderExtractionCallback.EVENT.register(GuardianHealth::extractRendering);
+	}
 
-    private static void extractRendering(PrimitiveCollector collector) {
-        if (!SkyblockerConfigManager.get().dungeons.theProfessor.floor3GuardianHealthDisplay) return;
+	private static void extractRendering(PrimitiveCollector collector) {
+		if (!SkyblockerConfigManager.get().dungeons.theProfessor.floor3GuardianHealthDisplay) return;
 
-        MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 
-        if (Utils.isInDungeons() && inBoss && client.player != null && client.world != null) {
-            List<GuardianEntity> guardians =
-                    client.world.getEntitiesByClass(
-                            GuardianEntity.class, bossRoom, guardianEntity -> true);
+		if (Utils.isInDungeons() && inBoss && client.player != null && client.level != null) {
+			List<Guardian> guardians =
+					client.level.getEntitiesOfClass(
+							Guardian.class, bossRoom, guardianEntity -> true);
 
-            for (GuardianEntity guardian : guardians) {
-                List<ArmorStandEntity> armorStands =
-                        client.world.getEntitiesByType(
-                                EntityType.ARMOR_STAND,
-                                guardian.getBoundingBox().expand(0, 1, 0),
-                                GuardianHealth::isGuardianName);
+			for (Guardian guardian : guardians) {
+				List<ArmorStand> armorStands =
+						client.level.getEntities(
+								EntityType.ARMOR_STAND,
+								guardian.getBoundingBox().inflate(0, 1, 0),
+								GuardianHealth::isGuardianName);
 
-                for (ArmorStandEntity armorStand : armorStands) {
+				for (ArmorStand armorStand : armorStands) {
 					if (armorStand.getDisplayName() == null) continue;
-                    String display = armorStand.getDisplayName().getString();
-                    boolean professor = display.contains("The Professor");
-                    Matcher matcher =
-                            professor
-                                    ? professorRegex.matcher(display)
-                                    : guardianRegex.matcher(display);
-                    if (!matcher.matches()) continue;
+					String display = armorStand.getDisplayName().getString();
+					boolean professor = display.contains("The Professor");
+					Matcher matcher =
+							professor
+									? professorRegex.matcher(display)
+									: guardianRegex.matcher(display);
+					if (!matcher.matches()) continue;
 
-                    String health = matcher.group(2);
-                    String quantity = matcher.group(3);
+					String health = matcher.group(2);
+					String quantity = matcher.group(3);
 
-                    double distance = RenderHelper.getCamera().getPos().distanceTo(guardian.getLerpedPos(RenderHelper.getTickCounter().getTickProgress(false)));
+					double distance = RenderHelper.getCamera().position().distanceTo(guardian.getPosition(RenderHelper.getTickCounter().getGameTimeDeltaPartialTick(false)));
 
-                    collector.submitText(
-                            Text.literal(health + quantity).formatted(Formatting.GREEN),
-                            guardian.getLerpedPos(RenderHelper.getTickCounter().getTickProgress(false)),
-                            (float) (1 + (distance / 10)),
-                            true);
-                }
-            }
-        }
-    }
+					collector.submitText(
+							Component.literal(health + quantity).withStyle(ChatFormatting.GREEN),
+							guardian.getPosition(RenderHelper.getTickCounter().getGameTimeDeltaPartialTick(false)),
+							(float) (1 + (distance / 10)),
+							true);
+				}
+			}
+		}
+	}
 
-    private static void reset() {
-        inBoss = false;
-    }
+	private static void reset() {
+		inBoss = false;
+	}
 
-    private static boolean onChatMessage(Text text, boolean overlay) {
-        if (Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.theProfessor.floor3GuardianHealthDisplay && !inBoss) {
-            String unformatted = Formatting.strip(text.getString());
+	private static boolean onChatMessage(Component text, boolean overlay) {
+		if (Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.theProfessor.floor3GuardianHealthDisplay && !inBoss) {
+			String unformatted = ChatFormatting.stripFormatting(text.getString());
 
-            inBoss = unformatted.equals("[BOSS] The Professor: I was burdened with terrible news recently...");
-        }
+			inBoss = unformatted.equals("[BOSS] The Professor: I was burdened with terrible news recently...");
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    private static boolean isGuardianName(ArmorStandEntity entity) {
+	private static boolean isGuardianName(ArmorStand entity) {
 		if (entity.getDisplayName() == null) return false;
-        String display = entity.getDisplayName().getString();
+		String display = entity.getDisplayName().getString();
 
-        if (display.contains("The Professor")) {
-            return professorRegex.matcher(display).matches();
-        }
+		if (display.contains("The Professor")) {
+			return professorRegex.matcher(display).matches();
+		}
 
-        return !display.equals("Armor Stand") && guardianRegex.matcher(display).matches();
-    }
+		return !display.equals("Armor Stand") && guardianRegex.matcher(display).matches();
+	}
 }

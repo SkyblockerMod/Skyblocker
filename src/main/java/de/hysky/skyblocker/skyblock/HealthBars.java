@@ -13,18 +13,18 @@ import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
 
 public class HealthBars {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HealthBars.class);
-	private static final Identifier HEALTH_BAR_BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_background.png");
-	private static final Identifier HEALTH_BAR_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_progress.png");
+	private static final Identifier HEALTH_BAR_BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/boss_bar/white_background.png");
+	private static final Identifier HEALTH_BAR_TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/boss_bar/white_progress.png");
 	protected static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)/(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)❤");
 	protected static final Pattern HEALTH_ONLY_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)❤");
 	/**
@@ -42,8 +42,8 @@ public class HealthBars {
 	 */
 	private static final List<String> DISALLOWED_DUNGEON_MOBS = List.of("Blaze", "The Professor", "Guardian");
 
-	private static final Object2FloatOpenHashMap<ArmorStandEntity> healthValues = new Object2FloatOpenHashMap<>();
-	private static final Object2LongOpenHashMap<ArmorStandEntity> mobStartingHealth = new Object2LongOpenHashMap<>();
+	private static final Object2FloatOpenHashMap<ArmorStand> healthValues = new Object2FloatOpenHashMap<>();
+	private static final Object2LongOpenHashMap<ArmorStand> mobStartingHealth = new Object2LongOpenHashMap<>();
 
 	@Init
 	public static void init() {
@@ -62,8 +62,8 @@ public class HealthBars {
 	 *
 	 * @param entity dying entity
 	 */
-	public static void onEntityDespawn(Entity entity, ClientWorld clientWorld) {
-		if (entity instanceof ArmorStandEntity armorStandEntity) {
+	public static void onEntityDespawn(Entity entity, ClientLevel clientWorld) {
+		if (entity instanceof ArmorStand armorStandEntity) {
 			healthValues.removeFloat(armorStandEntity);
 			mobStartingHealth.removeLong(armorStandEntity);
 		}
@@ -84,13 +84,13 @@ public class HealthBars {
 	 *
 	 * @param armorStand updated armorstand
 	 */
-	public static void healthBar(ArmorStandEntity armorStand) {
+	public static void healthBar(ArmorStand armorStand) {
 		if (!armorStand.isInvisible() || !armorStand.hasCustomName() || !armorStand.isCustomNameVisible() || !SkyblockerConfigManager.get().uiAndVisuals.healthBars.enabled) {
 			return;
 		}
 
 		//check if armor stand is dead and remove it from list
-		if (armorStand.isDead()) {
+		if (armorStand.isDeadOrDying()) {
 			healthValues.removeFloat(armorStand);
 			mobStartingHealth.removeLong(armorStand);
 			return;
@@ -119,13 +119,13 @@ public class HealthBars {
 		//if both disabled no need to edit name
 		if (!removeValue && !removeMax) return;
 		if (isDisallowedMob(armorStand.getCustomName().getString())) return;
-		MutableText cleanedText = Text.empty();
-		List<Text> parts = armorStand.getCustomName().getSiblings();
+		MutableComponent cleanedText = Component.empty();
+		List<Component> parts = armorStand.getCustomName().getSiblings();
 		//loop though name and add every part to a new text skipping over the hidden health values
 		int healthStartIndex = -1;
 		for (int i = 0; i < parts.size(); i++) {
 			//remove value from name
-			if (i < parts.size() - 4 && StringUtils.join(parts.subList(i + 1, i + 5).stream().map(Text::getString).toArray(), "").equals(healthMatcher.group(0))) {
+			if (i < parts.size() - 4 && StringUtils.join(parts.subList(i + 1, i + 5).stream().map(Component::getString).toArray(), "").equals(healthMatcher.group(0))) {
 				healthStartIndex = i;
 			}
 			if (healthStartIndex != -1) {
@@ -169,7 +169,7 @@ public class HealthBars {
 	 *
 	 * @param armorStand armorstand to check the name of
 	 */
-	private static void healthOnlyCheck(ArmorStandEntity armorStand) {
+	private static void healthOnlyCheck(ArmorStand armorStand) {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.applyToHealthOnlyMobs || armorStand.getCustomName() == null) {
 			return;
 		}
@@ -195,12 +195,12 @@ public class HealthBars {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.removeHealthFromName) return;
 		if (isDisallowedMob(armorStand.getCustomName().getString())) return;
 
-		MutableText cleanedText = Text.empty();
-		List<Text> parts = armorStand.getCustomName().getSiblings();
+		MutableComponent cleanedText = Component.empty();
+		List<Component> parts = armorStand.getCustomName().getSiblings();
 		//loop though name and add every part to a new text skipping over the health value
 		for (int i = 0; i < parts.size(); i++) {
 			//skip space before value, value and heart from name
-			if (i < parts.size() - 2 && parts.subList(i + 1, i + 3).stream().map(Text::getString).collect(Collectors.joining()).equals(healthOnlyMatcher.group(0))) {
+			if (i < parts.size() - 2 && parts.subList(i + 1, i + 3).stream().map(Component::getString).collect(Collectors.joining()).equals(healthOnlyMatcher.group(0))) {
 				//skip the heart
 				i += 2;
 				continue;
@@ -224,28 +224,28 @@ public class HealthBars {
 		Color emptyColor = SkyblockerConfigManager.get().uiAndVisuals.healthBars.emptyBarColor;
 		boolean hideFullHealth = SkyblockerConfigManager.get().uiAndVisuals.healthBars.hideFullHealth;
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.healthBars.scale;
-		float tickDelta = RenderHelper.getTickCounter().getTickProgress(false);
+		float tickDelta = RenderHelper.getTickCounter().getGameTimeDeltaPartialTick(false);
 		float width = scale;
 		float height = scale * 0.1f;
 
-		for (Object2FloatMap.Entry<ArmorStandEntity> healthValue : healthValues.object2FloatEntrySet()) {
+		for (Object2FloatMap.Entry<ArmorStand> healthValue : healthValues.object2FloatEntrySet()) {
 			//if the health bar is full and the setting is enabled to hide it stop rendering it
 			float health = healthValue.getFloatValue();
 			if (hideFullHealth && health == 1) {
 				continue;
 			}
 
-			ArmorStandEntity armorStand = healthValue.getKey();
+			ArmorStand armorStand = healthValue.getKey();
 			//only render health bar if name is visible
-			if (!armorStand.shouldRenderName()) {
+			if (!armorStand.shouldShowName()) {
 				return;
 			}
 			//gets the mixed color of the health bar
 			int mixedColor = ColorUtils.interpolate(health, emptyColor.getRGB(), halfColor.getRGB(), fullColor.getRGB());
 			float[] components = ColorUtils.getFloatComponents(mixedColor);
 			// Render the health bar texture with scaling based on health percentage
-			collector.submitTexturedQuad(armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, components, 1f, true);
-			collector.submitTexturedQuad(armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, -0.003f), HEALTH_BAR_TEXTURE, components, 1f, true);
+			collector.submitTexturedQuad(armorStand.getEyePosition(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, components, 1f, true);
+			collector.submitTexturedQuad(armorStand.getEyePosition(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3(width * -0.5f, 0, -0.003f), HEALTH_BAR_TEXTURE, components, 1f, true);
 		}
 	}
 }

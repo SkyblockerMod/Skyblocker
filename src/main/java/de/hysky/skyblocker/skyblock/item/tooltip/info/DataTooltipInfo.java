@@ -5,7 +5,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
@@ -18,14 +18,12 @@ import de.hysky.skyblocker.utils.Http;
 public final class DataTooltipInfo<T> extends SimpleTooltipInfo implements DataTooltipInfoType<T> {
 	private final String address;
 	private final Codec<T> codec;
-	@Nullable
-	private T data;
+	private @Nullable T data;
 	private final boolean cacheable;
 	private long hash;
 	private final BiPredicate<T, String> contains;
 	private final Predicate<GeneralConfig.ItemTooltip> dataEnabled;
-	@Nullable
-	private final Consumer<T>[] callbacks;
+	private final @Nullable Consumer<T>[] callbacks;
 
 	@SafeVarargs
 	protected DataTooltipInfo(String address, Codec<T> codec, boolean cacheable, BiPredicate<T, String> contains, Predicate<GeneralConfig.ItemTooltip> tooltipEnabled, Predicate<GeneralConfig.ItemTooltip> dataEnabled, Consumer<T>... callbacks) {

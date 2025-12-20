@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.utils;
 
 import java.util.concurrent.TimeUnit;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +13,6 @@ import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
 
 import de.hysky.skyblocker.utils.Http.ApiResponse;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.session.Session;
 
 /*
  * Contains only basic helpers for using Http APIs
@@ -40,10 +39,10 @@ public class ApiUtils {
 	}
 
 	private static String name2UuidInternal(String name, int retries) {
-		Session session = MinecraftClient.getInstance().getSession();
+		User session = Minecraft.getInstance().getUser();
 
-		if (session.getUsername().equalsIgnoreCase(name)) {
-			return UndashedUuid.toString(session.getUuidOrNull());
+		if (session.getName().equalsIgnoreCase(name)) {
+			return UndashedUuid.toString(session.getProfileId());
 		}
 
 		try (ApiResponse response = Http.sendName2UuidRequest(name)) {

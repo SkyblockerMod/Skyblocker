@@ -17,10 +17,9 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 import java.nio.file.Path;
 
 /**
@@ -29,56 +28,56 @@ import java.nio.file.Path;
  * this class.
  */
 public class SkyblockerMod implements ClientModInitializer {
-    public static final String NAMESPACE = "skyblocker";
-    public static final ModContainer SKYBLOCKER_MOD = FabricLoader.getInstance().getModContainer(NAMESPACE).orElseThrow();
-    public static final String VERSION = SKYBLOCKER_MOD.getMetadata().getVersion().getFriendlyString();
-    public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(NAMESPACE);
-    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    public static final Gson GSON_COMPACT = new GsonBuilder().create();
-    public static final KeyBinding.Category KEYBINDING_CATEGORY = KeyBinding.Category.create(id("main"));
+	public static final String NAMESPACE = "skyblocker";
+	public static final ModContainer SKYBLOCKER_MOD = FabricLoader.getInstance().getModContainer(NAMESPACE).orElseThrow();
+	public static final String VERSION = SKYBLOCKER_MOD.getMetadata().getVersion().getFriendlyString();
+	public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(NAMESPACE);
+	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	public static final Gson GSON_COMPACT = new GsonBuilder().create();
+	public static final KeyMapping.Category KEYBINDING_CATEGORY = KeyMapping.Category.register(id("main"));
 
 	public static Identifier id(String path) {
-		return Identifier.of(NAMESPACE, path);
+		return Identifier.fromNamespaceAndPath(NAMESPACE, path);
 	}
 
-    /**
-     * Register {@link #tick(MinecraftClient)} to
-     * {@link ClientTickEvents#END_CLIENT_TICK}, initialize all features, and
-     * schedule tick events.
-     */
-    @Override
-    public void onInitializeClient() {
-        ClientTickEvents.END_CLIENT_TICK.register(this::tick);
-        ConfigDataFixer.apply();
-        SkyblockerConfigManager.init();
-        ConfigNullFieldsFix.init(); //DO NOT INIT ANY CLASS THAT USES CONFIG FIELDS BEFORE THIS!
-        ConfigBackupManager.init();
+	/**
+	 * Register {@link #tick(Minecraft)} to
+	 * {@link ClientTickEvents#END_CLIENT_TICK}, initialize all features, and
+	 * schedule tick events.
+	 */
+	@Override
+	public void onInitializeClient() {
+		ClientTickEvents.END_CLIENT_TICK.register(this::tick);
+		ConfigDataFixer.apply();
+		SkyblockerConfigManager.init();
+		ConfigNullFieldsFix.init(); //DO NOT INIT ANY CLASS THAT USES CONFIG FIELDS BEFORE THIS!
+		ConfigBackupManager.init();
 
-        init();
-        Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
-        Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
-        Scheduler.INSTANCE.scheduleCyclic(BackpackPreview::tick, 50);
-        Scheduler.INSTANCE.scheduleCyclic(PlayerListManager::updateList, 20);
-    }
+		init();
+		Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
+		Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
+		Scheduler.INSTANCE.scheduleCyclic(BackpackPreview::tick, 50);
+		Scheduler.INSTANCE.scheduleCyclic(PlayerListManager::updateList, 20);
+	}
 
-    /**
-     * Ticks the scheduler. Called once at the end of every client tick through
-     * {@link ClientTickEvents#END_CLIENT_TICK}.
-     *
-     * @param client the Minecraft client.
-     */
-    private void tick(MinecraftClient client) {
-        Scheduler.INSTANCE.tick();
-        MessageScheduler.INSTANCE.tick();
-    }
+	/**
+	 * Ticks the scheduler. Called once at the end of every client tick through
+	 * {@link ClientTickEvents#END_CLIENT_TICK}.
+	 *
+	 * @param client the Minecraft client.
+	 */
+	private void tick(Minecraft client) {
+		Scheduler.INSTANCE.tick();
+		MessageScheduler.INSTANCE.tick();
+	}
 
-    /**
-     * This method is responsible for initializing all classes.
-     * To have your class initialized you must annotate its initializer method with the {@code @Init} annotation.
-     * At compile time, ASM completely overwrites the content of this method, so adding a call here will do nothing.
-     *
-     * @see Init
-     */
-    private static void init() {
-    }
+	/**
+	 * This method is responsible for initializing all classes.
+	 * To have your class initialized you must annotate its initializer method with the {@code @Init} annotation.
+	 * At compile time, ASM completely overwrites the content of this method, so adding a call here will do nothing.
+	 *
+	 * @see Init
+	 */
+	private static void init() {
+	}
 }

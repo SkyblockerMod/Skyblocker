@@ -1,8 +1,11 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
@@ -13,10 +16,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 	public HuntingBoxPriceTooltip(int priority) {
@@ -24,8 +23,8 @@ public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		if (focusedSlot == null || focusedSlot.id > 53) return;
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
+		if (focusedSlot == null || focusedSlot.index > 53) return;
 		Attribute attribute = Attributes.getAttributeFromItemName(stack);
 
 		if (attribute != null && TooltipInfoType.BAZAAR.hasOrNullWarning(attribute.apiId())) {
@@ -34,11 +33,11 @@ public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 			boolean holdingShift = HudHelper.hasShiftDown();
 			String shardText = count > 1 ? "Shards" : "Shard";
 
-			lines.add(Text.literal(shardText + " Sell Price: ")
-					  .formatted(Formatting.GOLD)
-					  .append(product.sellPrice().isEmpty()
-							  ? Text.literal("No data").formatted(Formatting.RED)
-							  : ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble() * count, holdingShift ? count : 1, true)));
+			lines.add(Component.literal(shardText + " Sell Price: ")
+					.withStyle(ChatFormatting.GOLD)
+					.append(product.sellPrice().isEmpty()
+							? Component.literal("No data").withStyle(ChatFormatting.RED)
+							: ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble() * count, holdingShift ? count : 1, true)));
 		}
 	}
 

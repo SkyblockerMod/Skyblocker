@@ -9,8 +9,7 @@ import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.azureaaron.networth.NetworthResult;
-import net.minecraft.item.ItemStack;
-
+import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.regex.Pattern;
 

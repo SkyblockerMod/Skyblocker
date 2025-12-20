@@ -4,7 +4,22 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.barn.CallTrevor;
 import de.hysky.skyblocker.skyblock.barn.HungryHiker;
 import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
-import de.hysky.skyblocker.skyblock.chat.filters.*;
+import de.hysky.skyblocker.skyblock.chat.filters.AbilityFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.AdFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.AoteFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.AutopetFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.ComboFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.DeathFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.DicerFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.DungeonBreakerFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.HealFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.ImplosionFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.LotteryFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.MimicFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.MoltenWaveFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.ShowOffFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.SkyMallFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.TeleportPadFilter;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
 import de.hysky.skyblocker.skyblock.dwarven.CallMismyla;
 import de.hysky.skyblocker.skyblock.dwarven.RedialOnBadSignal;
@@ -15,10 +30,10 @@ import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 
 @FunctionalInterface
 public interface ChatMessageListener {
@@ -81,7 +96,7 @@ public interface ChatMessageListener {
 				return true;
 			}
 
-			ChatFilterResult result = EVENT.invoker().onMessage(message, Formatting.strip(message.getString()));
+			ChatFilterResult result = EVENT.invoker().onMessage(message, ChatFormatting.stripFormatting(message.getString()));
 
 			switch (result) {
 				case ACTION_BAR -> {
@@ -89,10 +104,10 @@ public interface ChatMessageListener {
 						return true;
 					}
 
-					ClientPlayerEntity player = MinecraftClient.getInstance().player;
+					LocalPlayer player = Minecraft.getInstance().player;
 
 					if (player != null) {
-						player.sendMessage(message, true);
+						player.displayClientMessage(message, true);
 
 						return false;
 					}
@@ -106,5 +121,5 @@ public interface ChatMessageListener {
 		});
 	}
 
-	ChatFilterResult onMessage(Text message, String asString);
+	ChatFilterResult onMessage(Component message, String asString);
 }
