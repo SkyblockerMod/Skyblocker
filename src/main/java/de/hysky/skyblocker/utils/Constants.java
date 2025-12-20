@@ -39,6 +39,22 @@ public interface Constants {
 					.append(Component.literal("r").withColor(0x1CBBFF))
 					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
 		}
+		if (time.getMonthValue() == 12 && (time.getDayOfMonth() == 24 || time.getDayOfMonth() == 25)) {
+			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
+					.append(Component.literal("J").withColor(0x00FF4C))
+					.append(Component.literal("o").withColor(0x02FA60))
+					.append(Component.literal("l").withColor(0x04F574))
+					.append(Component.literal("l").withColor(0x07EF88))
+					.append(Component.literal("y").withColor(0x09EA9C))
+					.append(Component.literal("b").withColor(0x0BE5AF))
+					.append(Component.literal("l").withColor(0x0DE0C3))
+					.append(Component.literal("o").withColor(0x10DAD7))
+					.append(Component.literal("c").withColor(0x12D5EB))
+					.append(Component.literal("k").withColor(0x14D0FF))
+					.append(Component.literal("e").withColor(0x16CBFF))
+					.append(Component.literal("r").withColor(0x18C6FF))
+					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
+		}
 
 		return Component.empty()
 				.append(Component.literal("[").withStyle(ChatFormatting.GRAY))
