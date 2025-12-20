@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import net.minecraft.client.gui.navigation.GuiNavigation;
+import net.minecraft.client.gui.navigation.GuiNavigationPath;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -7,6 +9,7 @@ import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.ThreePartsLayoutWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 public class ChatRulesConfigScreen extends Screen {
 	private ChatRulesConfigListWidget chatRulesConfigListWidget;
@@ -16,6 +19,11 @@ public class ChatRulesConfigScreen extends Screen {
 	public ChatRulesConfigScreen(Screen parent) {
 		super(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"));
 		this.parent = parent;
+	}
+
+	@Override
+	public @Nullable GuiNavigationPath getNavigationPath(GuiNavigation navigation) {
+		return null;
 	}
 
 	@Override
