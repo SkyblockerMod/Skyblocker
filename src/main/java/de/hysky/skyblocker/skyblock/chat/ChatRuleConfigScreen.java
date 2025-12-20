@@ -298,7 +298,7 @@ public class ChatRuleConfigScreen extends Screen {
 					}
 				}
 				int codePoint = fullText.codePointAt(i);
-				if (i >= start) {
+				if (i >= start && i < start + s.length()) {
 					visitor.accept(i, style, codePoint);
 				}
 			}
