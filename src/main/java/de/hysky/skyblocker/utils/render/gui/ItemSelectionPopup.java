@@ -1,11 +1,7 @@
-package de.hysky.skyblocker.config.screens.quicknav;
+package de.hysky.skyblocker.utils.render.gui;
 
-import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
-import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
-import de.hysky.skyblocker.utils.render.gui.SearchableGridWidget;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -20,15 +16,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class ItemSelectionScreen extends AbstractPopupScreen {
+/**
+ * A popup allowing the user to select a skyblock item.
+ */
+public class ItemSelectionPopup extends AbstractPopupScreen {
 
 	private final List<Pair<String, String>> skullIcons = List.of(
 			Pair.of("Accessory Bag", "1a11a7f11bcd5784903c5201d08261c4df8379109d6e611c1cd3ededf031afed"),
@@ -72,32 +71,37 @@ public class ItemSelectionScreen extends AbstractPopupScreen {
 			Pair.of("Base Camp", "2461ec3bd654f62ca9a393a32629e21b4e497c877d3f3380bcf2db0e20fc0244")
 	);
 
-	private final QuickNavigationConfig.ItemData target;
+	private final Consumer<@Nullable ItemStack> onDone;
 	private @Nullable ItemWidget selectedItem = null;
 
 	private final GridWidget gridWidget = new GridWidget();
-	private ButtonWidget doneButton;
+	private @Nullable ButtonWidget doneButton;
 
-	public ItemSelectionScreen(Screen backgroundScreen, QuickNavigationConfig.ItemData target) {
+	/**
+	 * @param backgroundScreen The screen to display in the background.
+	 * @param onDone The action to perform with the selected item after the popup has been closed. {@code null} is passed if "cancel" has been pressed.
+	 */
+	public ItemSelectionPopup(Screen backgroundScreen, Consumer<@Nullable ItemStack> onDone) {
 		super(Text.literal("Select Item"), backgroundScreen);
-		this.target = target;
+		this.onDone = onDone;
 	}
 
-	private void setSelectedItem(@NotNull ItemWidget selectedItem) {
+	private void setSelectedItem(ItemWidget selectedItem) {
 		this.selectedItem = selectedItem;
-		doneButton.active = true;
+		if (doneButton != null) doneButton.active = true;
 	}
 
 	@Override
 	protected void init() {
 		GridWidget.Adder adder = gridWidget.createAdder(2);
 		addDrawableChild(adder.add(new ItemList(300, (int) (height * 0.8f)), 2));
-		addDrawableChild(adder.add(ButtonWidget.builder(ScreenTexts.CANCEL, b -> close()).build()));
-		doneButton = ButtonWidget.builder(ScreenTexts.DONE, b -> {
-			if (selectedItem == null) return;
-			target.item = selectedItem.item.getItem();
-			target.components = ItemStackComponentizationFixer.componentsAsString(selectedItem.item);
+		addDrawableChild(adder.add(ButtonWidget.builder(ScreenTexts.CANCEL, b -> {
 			close();
+			onDone.accept(null);
+		}).build()));
+		doneButton = ButtonWidget.builder(ScreenTexts.DONE, b -> {
+			close();
+			onDone.accept(selectedItem == null ? null : selectedItem.item);
 		}).build();
 		doneButton.active = false;
 		addDrawableChild(adder.add(doneButton));

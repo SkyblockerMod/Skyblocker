@@ -34,7 +34,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 	public void updateEntries() {
 		clearEntries();
 		addEntry(new LabelsEntry());
-		for (int i = 0; i < ChatRulesHandler.chatRuleList.getData().size(); i++) {
+		for (int i = 0; i < ChatRulesHandler.CHAT_RULE_LIST.getData().size(); i++) {
 			addEntry(new ChatRuleEntry(i));
 		}
 	}
@@ -48,8 +48,8 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 		hasChanged = true;
 		int newIndex = Math.max(children().indexOf(getSelectedOrNull()), 0);
 
-		ChatRulesHandler.chatRuleList.getData().add(newIndex, new ChatRule());
-		children().add(newIndex + 1, new ChatRuleEntry(newIndex));
+		ChatRulesHandler.CHAT_RULE_LIST.getData().add(newIndex, new ChatRule());
+		updateEntries();
 		if (newIndex + 1 >= this.children().size()) return;
 		AbstractChatRuleEntry entry = this.children().get(newIndex + 1);
 		// I hate this
@@ -132,7 +132,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
 		private ChatRuleEntry(int chatRuleIndex) {
 			this.chatRuleIndex = chatRuleIndex;
-			this.chatRule = ChatRulesHandler.chatRuleList.getData().get(chatRuleIndex);
+			this.chatRule = ChatRulesHandler.CHAT_RULE_LIST.getData().get(chatRuleIndex);
 
 			layout = new DirectionalLayoutWidget(0, 0, DirectionalLayoutWidget.DisplayAxis.HORIZONTAL);
 			layout.getMainPositioner().marginRight(10);
@@ -156,6 +156,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 				return Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.false").withColor(Color.RED.getRGB());
 			}
 		}
+
 		private void toggleEnabled(ButtonWidget button) {
 			hasChanged = true;
 			chatRule.setEnabled(!chatRule.getEnabled());
@@ -164,7 +165,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
 		private void deleteEntry(boolean confirmedAction) {
 			if (confirmedAction) {
-				ChatRulesHandler.chatRuleList.getData().remove(chatRuleIndex);
+				ChatRulesHandler.CHAT_RULE_LIST.getData().remove(chatRuleIndex);
 				removeEntry(this);
 			}
 
@@ -188,7 +189,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
 		@Override
 		public boolean hasChanged() {
-			return chatRule.getEnabled() != ChatRulesHandler.chatRuleList.getData().get(chatRuleIndex).getEnabled();
+			return chatRule.getEnabled() != ChatRulesHandler.CHAT_RULE_LIST.getData().get(chatRuleIndex).getEnabled();
 		}
 
 		@Override

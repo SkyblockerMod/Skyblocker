@@ -60,16 +60,11 @@ public class ItemStackComponentizationFixer {
 		}).filter(Objects::nonNull).toArray());
 	}
 
-	/**
-	 * Constructs an {@link ItemStack} from an {@code itemId}, with item components in string format as returned by {@link #componentsAsString(ItemStack)}, and with a specified stack count.
-	 *
-	 * @return an {@link ItemStack} or {@link ItemStack#EMPTY} if there was an exception thrown.
-	 */
-	public static ItemStack fromComponentsString(String itemId, int count, String componentsString) {
+	public static ItemStack fromItemString(String itemString, int count) {
 		ItemStringReader reader = new ItemStringReader(Utils.getRegistryWrapperLookup());
 
 		try {
-			ItemResult result = reader.consume(new StringReader(itemId + componentsString));
+			ItemResult result = reader.consume(new StringReader(itemString));
 			ItemStack stack = new ItemStack(result.item(), count);
 
 			//Vanilla skips validation with /give so we will too
@@ -79,6 +74,15 @@ public class ItemStackComponentizationFixer {
 		} catch (Exception ignored) {}
 
 		return ItemStack.EMPTY;
+	}
+
+	/**
+	 * Constructs an {@link ItemStack} from an {@code itemId}, with item components in string format as returned by {@link #componentsAsString(ItemStack)}, and with a specified stack count.
+	 *
+	 * @return an {@link ItemStack} or {@link ItemStack#EMPTY} if there was an exception thrown.
+	 */
+	public static ItemStack fromComponentsString(String itemId, int count, String componentsString) {
+		return fromItemString(itemId + componentsString, count);
 	}
 
 }
