@@ -501,6 +501,8 @@
   "skyblocker.config.general.itemList.filter.items": "Items",
   "skyblocker.config.general.itemList.filter.mayors": "Mayors",
   "skyblocker.config.general.itemList.filter.npcs": "NPCs",
+  "skyblocker.config.general.itemInfoDisplay.huntingToolkitIndicator": "Hunting Toolkit Indicator",
+  "skyblocker.config.general.itemInfoDisplay.huntingToolkitIndicator.@Tooltip": "Displays a red marker for tools that are in a hunting toolkit",
 
   "skyblocker.config.general.itemProtection": "Item Protection",
   "skyblocker.config.general.itemProtection.displayChatNotification": "Display Chat Notifications",

@@ -78,11 +78,13 @@ public abstract class GuiMixin {
 	@Inject(method = "renderItemHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;IILnet/minecraft/client/DeltaTracker;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/item/ItemStack;I)V", ordinal = 0, shift  = At.Shift.BY, by = 1))
 	public void skyblocker$renderHotbarItemHuntingToolkitIndicator(CallbackInfo ci, @Local(argsOnly = true) GuiGraphics context, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local Player player) {
 		// Hunting toolkit indicator
-		ItemStack stack = player.getInventory().getNonEquipmentItems().get(index);
-		if (!stack.getSkyblockId().equals("HUNTING_TOOLKIT")) {
-			String joinedTooltip = String.join("", stack.skyblocker$getLoreStrings());
-			if (joinedTooltip.contains("Part of the Hunting Toolkit!")) {
-				context.drawString(getFont(), "❒", x, y, 0xFFFF5555, true);
+		if (SkyblockerConfigManager.get().general.itemInfoDisplay.huntingToolkitIndicator) {
+			ItemStack stack = player.getInventory().getNonEquipmentItems().get(index);
+			if (!stack.getSkyblockId().equals("HUNTING_TOOLKIT")) {
+				String joinedTooltip = String.join("", stack.skyblocker$getLoreStrings());
+				if (joinedTooltip.contains("Part of the Hunting Toolkit!")) {
+					context.drawString(getFont(), "❒", x, y, 0xFFFF5555, true);
+				}
 			}
 		}
 	}
