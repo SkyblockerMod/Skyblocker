@@ -1,36 +1,43 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Identifier;
+import de.hysky.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
+
+import java.util.function.Function;
 
 public class VanillaStyleManaBar {
-	private int lastManaValue;
-	private int manaValueBlinkStart;
+	private static int lastManaValue;
+	private static int manaValueBlinkStart;
 
-	private int lastOverflowValue;
-	private int overflowValueBlinkStart;
+	private static int lastOverflowValue;
+	private static int overflowValueBlinkStart;
 
-	private int blinkEndTick;
+	private static long blinkEndTime;
 
-	private static final Identifier CONTAINER_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/container");
-	private static final Identifier MANA_FULL_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/mana_full");
-	private static final Identifier MANA_HALF_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/mana_half");
-	private static final Identifier OVERFLOW_FULL_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/overflow_full");
-	private static final Identifier OVERFLOW_HALF_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/overflow_half");
-	private static final Identifier OVERFLOW_DARK_FULL_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/overflow_dark_full");
-	private static final Identifier OVERFLOW_DARK_HALF_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/overflow_dark_half");
-	private static final Identifier CONTAINER_BLINK_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/container_blink");
-	private static final Identifier MANA_FULL_BLINK_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/mana_full_blink");
-	private static final Identifier MANA_HALF_BLINK_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/mana_half_blink");
-	private static final Identifier OVERFLOW_FULL_BLINK_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/overflow_full_blink");
-	private static final Identifier OVERFLOW_HALF_BLINK_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/overflow_half_blink");
-	private static final Identifier OVERFLOW_DARK_FULL_BLINK_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/overflow_dark_full_blink");
-	private static final Identifier OVERFLOW_DARK_HALF_BLINK_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "bars/vanilla_mana/overflow_dark_half_blink");
-
+	private static final Identifier CONTAINER_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/container");
+	private static final Identifier MANA_FULL_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_full");
+	private static final Identifier MANA_HALF_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_half");
+	private static final Identifier OVERFLOW_FULL_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_full");
+	private static final Identifier OVERFLOW_HALF_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_half");
+	private static final Identifier OVERFLOW_DARK_FULL_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_full");
+	private static final Identifier OVERFLOW_DARK_HALF_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_half");
+	private static final Identifier CONTAINER_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/container_blink");
+	private static final Identifier MANA_FULL_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_full_blink");
+	private static final Identifier MANA_HALF_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_half_blink");
+	private static final Identifier OVERFLOW_FULL_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_full_blink");
+	private static final Identifier OVERFLOW_HALF_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_half_blink");
+	private static final Identifier OVERFLOW_DARK_FULL_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_full_blink");
+	private static final Identifier OVERFLOW_DARK_HALF_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_half_blink");
 
 	enum NotchType {
 		CONTAINER,
@@ -39,8 +46,25 @@ public class VanillaStyleManaBar {
 		OVERFLOW_DARK
 	}
 
-	private void drawNotch(DrawContext context, int top, int right, int column, int row, NotchType notchtype, boolean isHalf, boolean isBlinking) {
-		int right_offset = right - column * 8 - 9;
+	@Init
+	public static void init() {
+		Function<HudElement, HudElement> hideIfVanillaStyleManaBarEnabled = hudElement -> {
+			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar)
+				return (context, tickCounter) -> {};
+			return hudElement;
+		};
+
+		HudElementRegistry.replaceElement(VanillaHudElements.FOOD_BAR, hideIfVanillaStyleManaBarEnabled);
+		HudElementRegistry.replaceElement(VanillaHudElements.MOUNT_HEALTH, hideIfVanillaStyleManaBarEnabled);
+
+		HudElementRegistry.attachElementAfter(VanillaHudElements.FOOD_BAR, SkyblockerMod.id("vanilla_style_mana_bar"), (context, tickCounter) -> {
+			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar) render(context);
+		});
+	}
+
+	private static void drawNotch(GuiGraphics context, int column, int row, NotchType notchtype, boolean isHalf, boolean isBlinking) {
+		int top = context.guiHeight() - 39;       // Top of mana bar area
+		int right = context.guiWidth() / 2 + 91;  // Rightmost point of mana bar area
 
 		Identifier texture = switch (notchtype) {
 			case CONTAINER -> isBlinking ? CONTAINER_BLINK_TEXTURE : CONTAINER_TEXTURE;
@@ -49,29 +73,32 @@ public class VanillaStyleManaBar {
 			case OVERFLOW_DARK -> !isHalf ? (isBlinking ? OVERFLOW_DARK_FULL_BLINK_TEXTURE : OVERFLOW_DARK_FULL_TEXTURE) : (isBlinking ? OVERFLOW_DARK_HALF_BLINK_TEXTURE : OVERFLOW_DARK_HALF_TEXTURE);
 		};
 
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, right_offset, top - row * 10, 9, 9);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, texture, right - column * 8 - 9, top - row * 10, 9, 9);
 	}
 
-	public boolean render(DrawContext context, int top, int right, int ticks) {
-		if (!SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar) return false;
+	public static boolean render(GuiGraphics context) {
 		StatusBarTracker.Resource mana = StatusBarTracker.getMana();
 
 		// Detect loss of mana to start blinking
+		long currentTime = Util.getMillis();
+		final long BLINK_TIME_LENGTH = 1000;
+		final long BLINK_FREQUENCY = 300;
 		if (lastManaValue + lastOverflowValue > mana.value() + mana.overflow() && mana.value() != mana.max()) {
-			boolean justStartedBlinking = blinkEndTick <= ticks;
+			boolean justStartedBlinking = blinkEndTime <= currentTime;
 			if (justStartedBlinking) {
 				manaValueBlinkStart = lastManaValue;
 				overflowValueBlinkStart = lastOverflowValue;
 			}
-			// If already blinking, keep blinkEndTick%6 the same to maintain current blink animation frame
-			if (blinkEndTick >= ticks) {
-				blinkEndTick = (ticks + 20) / 6 * 6 + blinkEndTick % 6;
+			// Increment blink end time
+			// If already blinking, keep blinkEndTick%BLINK_FREQUENCY the same to maintain current blink animation frame, otherwise increment normally
+			if (blinkEndTime >= currentTime) {
+				blinkEndTime = ((currentTime + BLINK_TIME_LENGTH) / BLINK_FREQUENCY * BLINK_FREQUENCY) + blinkEndTime % BLINK_FREQUENCY;
 			} else {
-				blinkEndTick = ticks + 20;
+				blinkEndTime = currentTime + BLINK_TIME_LENGTH;
 			}
 		}
-		boolean blinking = blinkEndTick > ticks && (blinkEndTick - ticks) / 3 % 2 == 1;
-		if (blinkEndTick <= ticks) {
+		boolean blinking = blinkEndTime > currentTime && (blinkEndTime - currentTime) / (BLINK_FREQUENCY/2) % 2 == 1;
+		if (blinkEndTime <= currentTime) {
 			manaValueBlinkStart = 0;
 			overflowValueBlinkStart = 0;
 		}
@@ -80,7 +107,7 @@ public class VanillaStyleManaBar {
 		lastOverflowValue = mana.overflow();
 
 		// Notches are each of the mana icons, 20 for 2 bars
-		int MANA_NOTCH_COUNT = 20;
+		final int MANA_NOTCH_COUNT = 20;
 		int manaHalfNotches = mana.value() * MANA_NOTCH_COUNT * 2 / mana.max();
 		int manaNotches = (int) Math.ceil(manaHalfNotches / 2.0);
 		int manaBlinkHalfNotches = manaValueBlinkStart * MANA_NOTCH_COUNT * 2 / mana.max();
@@ -103,15 +130,15 @@ public class VanillaStyleManaBar {
 			boolean overflowBlinkNotch = i < overflowBlinkNotches;
 			boolean overflowBlinkNotchIsHalf = overflowBlinkNotch && overflowBlinkNotches - 1 == i && overflowBlinkHalfNotches % 2 == 1;
 
-			drawNotch(context, top, right, column, row, NotchType.CONTAINER, false, blinking);
+			drawNotch(context, column, row, NotchType.CONTAINER, false, blinking);
 			if (manaNotches > 0) { // There is normal mana left, display normal mana
-				if (overflowNotch) drawNotch(context, top, right, column, row, NotchType.OVERFLOW_DARK, overflowNotchIsHalf, blinking);
-				if (manaBlinkNotch && blinking) drawNotch(context, top, right, column, row, NotchType.MANA, manaBlinkNotchIsHalf, true);
-				if (manaNotch) drawNotch(context, top, right, column, row, NotchType.MANA, manaNotchIsHalf, false);
+				if (overflowNotch) drawNotch(context, column, row, NotchType.OVERFLOW_DARK, overflowNotchIsHalf, blinking);
+				if (manaBlinkNotch && blinking) drawNotch(context, column, row, NotchType.MANA, manaBlinkNotchIsHalf, true);
+				if (manaNotch) drawNotch(context, column, row, NotchType.MANA, manaNotchIsHalf, false);
 			} else { // There is no normal mana left, display overflow mana
-				if (manaBlinkNotch && blinking) drawNotch(context, top, right, column, row, NotchType.MANA, manaBlinkNotchIsHalf, true);
-				if (overflowBlinkNotch && blinking) drawNotch(context, top, right, column, row, NotchType.OVERFLOW, overflowBlinkNotchIsHalf, true);
-				if (overflowNotch) drawNotch(context, top, right, column, row, NotchType.OVERFLOW, overflowNotchIsHalf, false);
+				if (manaBlinkNotch && blinking) drawNotch(context, column, row, NotchType.MANA, manaBlinkNotchIsHalf, true);
+				if (overflowBlinkNotch && blinking) drawNotch(context, column, row, NotchType.OVERFLOW, overflowBlinkNotchIsHalf, true);
+				if (overflowNotch) drawNotch(context, column, row, NotchType.OVERFLOW, overflowNotchIsHalf, false);
 			}
 		}
 

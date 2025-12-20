@@ -402,7 +402,6 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.bars.enableVanillaStyleManaBar = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
 								.prompt(Component.translatable("text.skyblocker.open"))

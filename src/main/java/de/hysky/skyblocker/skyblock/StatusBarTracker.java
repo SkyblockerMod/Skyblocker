@@ -113,10 +113,10 @@ public class StatusBarTracker {
 	}
 
 	private static Component onOverlayMessage(Component text, boolean overlay) {
-		if (!overlay || !Utils.isOnSkyblock() ||  Utils.isInTheRift()) {
+		if (!overlay || !Utils.isOnSkyblock()) {
 			return text;
 		}
-		if (!SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift()) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift()) {
 			return Component.nullToEmpty(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
 		} else {
 			//still update values for other parts of the mod to use
@@ -131,13 +131,14 @@ public class StatusBarTracker {
 		// Match health and don't add it to the string builder
 		// Append healing to the string builder if there is any healing
 		Matcher matcher = STATUS_HEALTH.matcher(actionBar);
-		if (!matcher.find()) return actionBar;
-		updateHealth(matcher);
-		if (matcher.group("healing") != null) {
-			sb.append("§c❤");
+		if (matcher.find()) {
+			updateHealth(matcher);
+			if (matcher.group("healing") != null) {
+				sb.append("§c❤");
+			}
+			if (!FancyStatusBars.isHealthFancyBarEnabled()) matcher.appendReplacement(sb, "$0");
+			else matcher.appendReplacement(sb, "$3");
 		}
-		if (!FancyStatusBars.isHealthFancyBarEnabled()) matcher.appendReplacement(sb, "$0");
-		else matcher.appendReplacement(sb, "$3");
 
 		// Match defense or mana use and don't add it to the string builder
 		if (matcher.usePattern(DEFENSE_STATUS).find()) {
