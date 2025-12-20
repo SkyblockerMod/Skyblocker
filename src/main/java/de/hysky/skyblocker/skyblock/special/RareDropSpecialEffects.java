@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,13 +52,13 @@ public class RareDropSpecialEffects {
 
 	private static void triggerDropEffect(String itemName) {
 		ItemStack stack = getStackFromName(itemName);
-			if (stack != null && !stack.isEmpty()) {
-				CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
-				CLIENT.gameRenderer.displayItemActivation(stack);
+		if (stack != null && !stack.isEmpty()) {
+			CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
+			CLIENT.gameRenderer.displayItemActivation(stack);
 		}
 	}
 
-	private static ItemStack getStackFromName(String itemName) {
+	private static @Nullable ItemStack getStackFromName(String itemName) {
 		String itemId = switch (itemName) {
 			//Dungeon
 			case "Recombobulator 3000" -> "RECOMBOBULATOR_3000";
