@@ -1554,5 +1554,11 @@
     "skyblocker.config.dungeons.secretSync.receiveMatchedRooms": "添加已同步的房間",
     "skyblocker.inventorySearch.searchInventory": "搜尋物品欄",
     "skyblocker.config.mining.pickobulusHelper": "Pickobulus助手",
-    "skyblocker.config.mining.pickobulusHelper.enable.@Tooltip": "顯示使用Pickobulus技能時可以開采的方塊。"
+    "skyblocker.config.mining.pickobulusHelper.enable.@Tooltip": "顯示使用Pickobulus技能時可以開采的方塊。",
+    "skyblocker.config.mining.pickobulusHelper.enable": "啟用Pickobulus助手",
+    "skyblocker.config.mining.pickobulusHelper.hideOnCooldown": "冷卻時隱藏HUD",
+    "skyblocker.config.mining.pickobulusHelper.enableHud": "啟用Pickobulus HUD",
+    "skyblocker.config.mining.pickobulusHelper.hideOnCooldown.@Tooltip": "Pickobulus冷卻期間隱藏HUD。\n\n需要啟用「鎬子技能小部件」才能生效！",
+    "skyblocker.config.mining.pickobulusHelper.enableHud.@Tooltip": "顯示能夠開採的方塊數量，以及將獲得的粉末和pity值。",
+    "skyblocker.config.uiAndVisuals.slotText.enchantmentAbbreviation": "附魔名稱縮寫"
 }

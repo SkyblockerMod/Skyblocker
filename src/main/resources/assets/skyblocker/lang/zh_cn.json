@@ -1555,5 +1555,11 @@
     "skyblocker.config.dungeons.secretSync.receiveRoomSecretCount": "使用同步得到的房间秘密统计",
     "skyblocker.inventorySearch.searchInventory": "搜索物品栏",
     "skyblocker.config.mining.pickobulusHelper": "Pickobulus助手",
-    "skyblocker.config.mining.pickobulusHelper.enable.@Tooltip": "显示使用Pickobulus技能时可以开采的方块。"
+    "skyblocker.config.mining.pickobulusHelper.enable.@Tooltip": "显示使用Pickobulus技能时可以开采的方块。",
+    "skyblocker.config.mining.pickobulusHelper.enable": "启用Pickobulus助手",
+    "skyblocker.config.mining.pickobulusHelper.enableHud": "启用Pickobulus HUD",
+    "skyblocker.config.mining.pickobulusHelper.enableHud.@Tooltip": "显示能够开采的方块数量，以及将获得的粉末和pity值。",
+    "skyblocker.config.mining.pickobulusHelper.hideOnCooldown": "冷却时隐藏HUD",
+    "skyblocker.config.mining.pickobulusHelper.hideOnCooldown.@Tooltip": "Pickobulus冷却期间隐藏HUD。\n\n需要启用“镐子技能小部件”才能生效！",
+    "skyblocker.config.uiAndVisuals.slotText.enchantmentAbbreviation": "附魔名称缩写"
 }
