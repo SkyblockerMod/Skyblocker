@@ -23,9 +23,6 @@
   * Fixes a mod compatability issue
 
 ## What's Changed
-* 1.21.11 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1927
-* The Great Mojmap Switch by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1933
-* fix indentation in mixins json by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1936
 * Fix Sacks Item Value by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1935
 * Pickobulus fixes by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1937
 * Zealot lag fix by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1939
