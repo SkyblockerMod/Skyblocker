@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.GuiGraphics;
@@ -49,17 +50,23 @@ public class VanillaStyleManaBar {
 	@Init
 	public static void init() {
 		Function<HudElement, HudElement> hideIfVanillaStyleManaBarEnabled = hudElement -> {
-			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar)
+			if (isEnabled())
 				return (context, tickCounter) -> {};
 			return hudElement;
 		};
 
 		HudElementRegistry.replaceElement(VanillaHudElements.FOOD_BAR, hideIfVanillaStyleManaBarEnabled);
 		HudElementRegistry.replaceElement(VanillaHudElements.MOUNT_HEALTH, hideIfVanillaStyleManaBarEnabled);
-
 		HudElementRegistry.attachElementAfter(VanillaHudElements.FOOD_BAR, SkyblockerMod.id("vanilla_style_mana_bar"), (context, tickCounter) -> {
 			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar) render(context);
 		});
+
+		HudStatusBarHeightRegistry.addRight(VanillaHudElements.FOOD_BAR, (player) -> isEnabled() ? 0 : 10);
+		HudStatusBarHeightRegistry.addRight(SkyblockerMod.id("vanilla_style_mana_bar"), (player) -> isEnabled() ? 20 : 0);
+	}
+
+	private static boolean isEnabled() {
+		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar;
 	}
 
 	private static void drawNotch(GuiGraphics context, int column, int row, NotchType notchtype, boolean isHalf, boolean isBlinking) {
