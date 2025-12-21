@@ -32,8 +32,8 @@ public class SlayerGlowAdder extends MobGlowAdder {
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights &&
 				SlayerManager.isFightingSlayerType(SlayerType.DEMONLORD) &&
 				(entity instanceof Blaze || entity instanceof WitherSkeleton || entity instanceof ZombifiedPiglin)) {
-			Integer color = AttunementColors.getColor((LivingEntity) entity);
-			if (color != null) return color;
+			int color = AttunementColors.getColor((LivingEntity) entity);
+			if (color != MobGlow.NO_GLOW) return color;
 		}
 
 		// Slayer Boss/Miniboss

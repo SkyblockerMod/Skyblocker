@@ -6,15 +6,14 @@ import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 
-import java.util.Set;
-
 @SuppressWarnings("unused")
 public class MuteSpiderSounds {
-	private static final Set<Identifier> MUTED_SOUNDS = Set.of(
+	private static final ObjectSet<Identifier> MUTED_SOUNDS = ObjectSet.of(
 			SoundEvents.SPIDER_AMBIENT.location(),
 			SoundEvents.SPIDER_DEATH.location(),
 			SoundEvents.SPIDER_HURT.location(),

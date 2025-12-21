@@ -4,15 +4,14 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 
-import java.util.Set;
-
 @SuppressWarnings("unused")
 public class MuteEndermenSounds {
-	private static final Set<Identifier> MUTED_SOUNDS = Set.of(
+	private static final ObjectSet<Identifier> MUTED_SOUNDS = ObjectSet.of(
 			SoundEvents.ENDERMAN_AMBIENT.location(),
 			SoundEvents.ENDERMAN_DEATH.location(),
 			SoundEvents.ENDERMAN_HURT.location(),

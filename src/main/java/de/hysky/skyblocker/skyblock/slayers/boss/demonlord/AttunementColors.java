@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.slayers.boss.demonlord;
 
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import org.jspecify.annotations.Nullable;
 
 import java.awt.Color;
 import java.util.regex.Matcher;
@@ -15,8 +15,7 @@ public class AttunementColors {
 	/**
 	 * Fetches highlight colour based on the Inferno Demonlord, or its demons', Hellion Shield Attunement
 	 */
-	@Nullable
-	public static Integer getColor(LivingEntity entity) {
+	public static int getColor(LivingEntity entity) {
 		for (ArmorStand armorStandEntity : SlayerManager.getEntityArmorStands(entity, 2.5f)) {
 			Matcher matcher = COLOR_PATTERN.matcher(armorStandEntity.getName().getString());
 			if (matcher.find()) {
@@ -26,10 +25,10 @@ public class AttunementColors {
 					case "CRYSTAL" -> Color.CYAN.getRGB();
 					case "AURIC" -> Color.YELLOW.getRGB();
 					case "IMMUNE" -> Color.RED.getRGB();
-					default -> null;
+					default -> MobGlow.NO_GLOW;
 				};
 			}
 		}
-		return null;
+		return MobGlow.NO_GLOW;
 	}
 }
