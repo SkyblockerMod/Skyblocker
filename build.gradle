@@ -217,9 +217,9 @@ loom {
 	decompilers {
 		vineflower {
 			options.put(
-				// Makes lambda names easy to find for Mixins
-				"mark-corresponding-synthetics", "1"
-			)
+					// Makes lambda names easy to find for Mixins
+					"mark-corresponding-synthetics", "1"
+					)
 		}
 	}
 }
