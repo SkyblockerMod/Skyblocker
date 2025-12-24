@@ -69,6 +69,8 @@ public class VanillaStyleManaBar {
 			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar) render(context);
 		});
 
+		HudStatusBarHeightRegistry.addRight(VanillaHudElements.FOOD_BAR, (player) -> isEnabled() ? 0 : 10);
+		HudStatusBarHeightRegistry.addRight(VanillaHudElements.MOUNT_HEALTH, (player) -> isEnabled() ? 0 : 10);
 		HudStatusBarHeightRegistry.addRight(MANABAR_MOUNT_HUD_ID, (player) -> isEnabled() ? 20 : 0);
 	}
 
