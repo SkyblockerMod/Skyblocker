@@ -63,10 +63,10 @@ public class VanillaStyleManaBar {
 		HudElementRegistry.replaceElement(VanillaHudElements.MOUNT_HEALTH, hideIfVanillaStyleManaBarEnabled);
 
 		HudElementRegistry.attachElementBefore(VanillaHudElements.FOOD_BAR, MANABAR_FOOD_HUD_ID, (context, tickCounter) -> {
-			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar) render(context);
+			if (isEnabled()) render(context);
 		});
 		HudElementRegistry.attachElementBefore(VanillaHudElements.MOUNT_HEALTH, MANABAR_MOUNT_HUD_ID, (context, tickCounter) -> {
-			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar) render(context);
+			if (isEnabled()) render(context);
 		});
 
 		HudStatusBarHeightRegistry.addRight(VanillaHudElements.FOOD_BAR, (player) -> isEnabled() ? 0 : 10);
@@ -75,7 +75,7 @@ public class VanillaStyleManaBar {
 	}
 
 	private static boolean isEnabled() {
-		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar;
+		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar  && !FancyStatusBars.isEnabled();
 	}
 
 	private static void drawNotch(GuiGraphics context, int column, int row, NotchType notchtype, boolean isHalf, boolean isBlinking) {
