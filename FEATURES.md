@@ -239,7 +239,10 @@
         - *Location*
 - **Ender Nodes Helper**
 - **Powder mining tracker**
-- **Special Effects for rare dye drops**
+- **Special Effects for rare drops**
+    - Dye drops
+    - Dungeons drops
+    - Slayer drops
 - **Entity health bars**
 - **Fishing HUD**
 - **Museum HUD**

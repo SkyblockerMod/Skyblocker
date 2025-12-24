@@ -76,6 +76,7 @@ public class MiningCategory {
 				//Pickobulus Helper
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.mining.pickobulusHelper"))
+						.tags(CommonTags.ADDED_IN_5_11_0)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.enable"))
 								.description(Component.translatable("skyblocker.config.mining.pickobulusHelper.enable.@Tooltip"))
@@ -88,6 +89,7 @@ public class MiningCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.enableHud"))
 								.description(Component.translatable("skyblocker.config.mining.pickobulusHelper.enableHud.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_5_11_0)
 								.binding(defaults.mining.pickobulusHelper.enablePickobulusHud,
 										() -> config.mining.pickobulusHelper.enablePickobulusHud,
 										newValue -> config.mining.pickobulusHelper.enablePickobulusHud = newValue)
@@ -96,6 +98,7 @@ public class MiningCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.hideOnCooldown"))
 								.description(Component.translatable("skyblocker.config.mining.pickobulusHelper.hideOnCooldown.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_5_11_0)
 								.binding(defaults.mining.pickobulusHelper.hideHudOnCooldown,
 										() -> config.mining.pickobulusHelper.hideHudOnCooldown,
 										newValue -> config.mining.pickobulusHelper.hideHudOnCooldown = newValue)
