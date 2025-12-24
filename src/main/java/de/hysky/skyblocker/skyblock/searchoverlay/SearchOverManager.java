@@ -14,6 +14,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.museum.Donation;
 import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import de.hysky.skyblocker.utils.BazaarProduct;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
@@ -97,10 +98,12 @@ public class SearchOverManager {
 		}
 
 		if (!Debug.debugEnabled()) return;
-		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("debug")).then(literal("reloadSearchOverManager")).executes(ctx -> {
+		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("debug").then(literal("reloadSearchOverManager").executes(ctx -> {
+			ctx.getSource().sendFeedback(Constants.PREFIX.get().append("§bReloading Search Overlay Manager items data"));
 			SearchOverManager.loadItems();
+			ctx.getSource().sendFeedback(Constants.PREFIX.get().append("§bReloaded Search Overlay Manager items data"));
 			return Command.SINGLE_SUCCESS;
-		}));
+		}))));
 	}
 
 	private static int startCommand(boolean isAuction, String itemName) {
@@ -168,9 +171,8 @@ public class SearchOverManager {
 		//get auction items
 		try {
 			Set<@NEUId String> essenceCosts = NEURepoManager.getConstants().getEssenceCost().getCosts().keySet();
-			if (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
-				TooltipInfoType.THREE_DAY_AVERAGE.run();
-			}
+			if (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) TooltipInfoType.THREE_DAY_AVERAGE.run();
+
 			for (Object2DoubleMap.Entry<String> entry : TooltipInfoType.THREE_DAY_AVERAGE.getData().object2DoubleEntrySet()) {
 				String id = entry.getKey();
 				//look up in NEU repo.
