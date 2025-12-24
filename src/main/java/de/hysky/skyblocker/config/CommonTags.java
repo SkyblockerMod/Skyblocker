@@ -5,4 +5,5 @@ import net.minecraft.text.Text;
 public final class CommonTags {
 	public static final Text ADDED_IN_5_9_0 = Text.of("v5.9.0");
 	public static final Text ADDED_IN_5_10_0 = Text.of("v5.10.0");
+	public static final Text ADDED_IN_5_11_0 = Text.of("v5.11.0");
 }

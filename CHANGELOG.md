@@ -1,3 +1,53 @@
+# Release 5.11.0
+
+## Highlight
+* Add support for new Garden tools and crops
+* Greatly improve Chat Rules
+  * Output messages can now show as toast notifications
+  * Output messages are now separate from the replacement message
+  * Formatting in output messages now shows in the preview
+  * All existing chat rules will carry over, but some may need to be changed.
+  * Chat Rules can now be accessed with `/skyblocker chatRules`
+* Add special effects for rare slayer items
+* Add an option to hide Pickobulus Helper when Pickobulus is on cooldown
+* Add a separate option for the Pickobulus Hud Widget
+* Add a separate toggle for Enchantment Abbreviations
+* Update Minion Quiz Question Answer
+* Update Enchantment Abbreviations
+* Fix Sacks Item Value
+* Fix Pickobulus Helper not working in Glacite Mineshafts
+* Fix Special Zealot glow lag
+* Fix Barrier placeholders not showing the proper item name
+* Fix Dungeons special effects not showing sometimes on items from Croesus
+* Use Fabric Events for Fancy Status Bars
+  * Fixes a mod compatability issue
+
+## What's Changed
+* Fix Sacks Item Value by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1935
+* Pickobulus fixes by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1937
+* Zealot lag fix by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1939
+* Pickobulus HUD Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1950
+* Refresh SearchableGridWidget scroll when searching by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1953
+* 0.24.0 Farming Stuff by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1948
+* Build Beta on Push For Backport Branches by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1952
+* Fix Barrier Placeholders by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1949
+* use HudElementRegistry instead of mixins by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1954
+* Update enchantment abbreviations pt. 2 by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/1947
+* Separate Enchantment Level and Abbreviation Adders by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1956
+* hide empty quick craft slots by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1931
+* Minor Farming Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1955
+* Add rosewater flask by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1960
+* annotate ItemStackMixin and reset fields on component change by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1958
+* missing farming tools by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1962
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1951
+* Chat rules improvements by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1829
+* Update DungeonsSpecialEffects.java by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1943
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.10.0+1.21.10...v5.11.0+1.21.10
+
+___
+
 # Release 5.10.0
 
 ## Highlight
