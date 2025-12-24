@@ -25,6 +25,10 @@ public class VanillaStyleManaBar {
 
 	private static long blinkEndTime;
 
+	// Two versions of the same bar, one that renders when the hunger bar is visible and one for the mount health bar
+	private static final Identifier MANABAR_FOOD_HUD_ID = SkyblockerMod.id("vanilla_style_mana_bar_food");
+	private static final Identifier MANABAR_MOUNT_HUD_ID = SkyblockerMod.id("vanilla_style_mana_bar_mount");
+
 	private static final Identifier CONTAINER_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/container");
 	private static final Identifier MANA_FULL_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_full");
 	private static final Identifier MANA_HALF_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_half");
@@ -57,12 +61,15 @@ public class VanillaStyleManaBar {
 
 		HudElementRegistry.replaceElement(VanillaHudElements.FOOD_BAR, hideIfVanillaStyleManaBarEnabled);
 		HudElementRegistry.replaceElement(VanillaHudElements.MOUNT_HEALTH, hideIfVanillaStyleManaBarEnabled);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.FOOD_BAR, SkyblockerMod.id("vanilla_style_mana_bar"), (context, tickCounter) -> {
+
+		HudElementRegistry.attachElementBefore(VanillaHudElements.FOOD_BAR, MANABAR_FOOD_HUD_ID, (context, tickCounter) -> {
+			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar) render(context);
+		});
+		HudElementRegistry.attachElementBefore(VanillaHudElements.MOUNT_HEALTH, MANABAR_MOUNT_HUD_ID, (context, tickCounter) -> {
 			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar) render(context);
 		});
 
-		HudStatusBarHeightRegistry.addRight(VanillaHudElements.FOOD_BAR, (player) -> isEnabled() ? 0 : 10);
-		HudStatusBarHeightRegistry.addRight(SkyblockerMod.id("vanilla_style_mana_bar"), (player) -> isEnabled() ? 20 : 0);
+		HudStatusBarHeightRegistry.addRight(MANABAR_MOUNT_HUD_ID, (player) -> isEnabled() ? 20 : 0);
 	}
 
 	private static boolean isEnabled() {
