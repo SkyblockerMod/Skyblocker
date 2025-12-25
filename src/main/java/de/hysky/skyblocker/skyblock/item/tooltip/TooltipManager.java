@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarOrderTracker;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
@@ -33,12 +33,12 @@ import de.hysky.skyblocker.utils.container.ContainerMatcher;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -83,8 +83,8 @@ public class TooltipManager {
 	@Init
 	public static void init() {
 		ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
-			if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen<?> handledScreen) {
-				addToTooltip(((HandledScreenAccessor) handledScreen).getFocusedSlot(), stack, lines);
+			if (Minecraft.getInstance().screen instanceof AbstractContainerScreen<?> handledScreen) {
+				addToTooltip(((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot(), stack, lines);
 			} else {
 				addToTooltip(null, stack, lines);
 			}
@@ -113,10 +113,8 @@ public class TooltipManager {
 	 * @param stack       The stack to render the tooltip for.
 	 * @param lines       The tooltip lines of the focused item. This includes the display name, as it's a part of the tooltip (at index 0).
 	 * @return The lines list itself after all adders have added their text.
-	 * @deprecated This method is public only for the sake of the mixin. Don't call directly, not that there is any point to it.
 	 */
-	@Deprecated
-	public static List<Text> addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+	private static List<Component> addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		if (!Utils.isOnSkyblock()) return lines;
 		for (TooltipAdder adder : currentScreenAdders) {
 			adder.addToTooltip(focusedSlot, stack, lines);

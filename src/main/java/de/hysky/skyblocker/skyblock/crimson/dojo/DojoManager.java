@@ -13,23 +13,22 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
-import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
+import net.minecraft.network.protocol.ping.ServerboundPingRequestPacket;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.EntityHitResult;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -37,7 +36,7 @@ import java.util.regex.Pattern;
 
 public class DojoManager {
 
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final String START_MESSAGE = "[NPC] Master Tao: Ahhh, here we go! Let's get you into the Arena.";
 	private static final Pattern TEST_OF_PATTERN = Pattern.compile("\\s+Test of (\\w+) OBJECTIVES");
 	private static final String CHALLENGE_FINISHED_REGEX = "\\s+CHALLENGE ((COMPLETED)|(FAILED))";
@@ -100,11 +99,11 @@ public class DojoManager {
 	 * @param text    message
 	 * @param overlay is overlay
 	 */
-	private static boolean onMessage(Text text, Boolean overlay) {
+	private static boolean onMessage(Component text, Boolean overlay) {
 		if (!Utils.isInCrimson() || overlay) {
 			return true;
 		}
-		if (Objects.equals(Formatting.strip(text.getString()), START_MESSAGE)) {
+		if (Objects.equals(ChatFormatting.stripFormatting(text.getString()), START_MESSAGE)) {
 			inArena = true;
 			//update the players ping
 			getPing();
@@ -134,9 +133,9 @@ public class DojoManager {
 	}
 
 	private static void getPing() {
-		ClientPlayNetworkHandler networkHandler = CLIENT.getNetworkHandler();
+		ClientPacketListener networkHandler = CLIENT.getConnection();
 		if (networkHandler != null) {
-			networkHandler.sendPacket(new QueryPingC2SPacket(Util.getMeasuringTimeMs()));
+			networkHandler.send(new ServerboundPingRequestPacket(Util.getMillis()));
 		}
 	}
 
@@ -200,18 +199,18 @@ public class DojoManager {
 			return;
 		}
 		switch (currentChallenge) {
-			case MASTERY -> MasteryTestHelper.onBlockUpdate(pos.toImmutable(), newState);
-			case SWIFTNESS -> SwiftnessTestHelper.onBlockUpdate(pos.toImmutable(), newState);
+			case MASTERY -> MasteryTestHelper.onBlockUpdate(pos.immutable(), newState);
+			case SWIFTNESS -> SwiftnessTestHelper.onBlockUpdate(pos.immutable(), newState);
 		}
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private static void onEntitySpawn(Entity entity, ClientWorld clientWorld) {
+	private static void onEntitySpawn(Entity entity, ClientLevel clientWorld) {
 		if (!Utils.isInCrimson() || !inArena || CLIENT == null || CLIENT.player == null) {
 			return;
 		}
 		// Check if within 50 blocks and 5 blocks vertically
-		if (!entity.isInRange(CLIENT.player, 50, 5)) {
+		if (!entity.closerThan(CLIENT.player, 50, 5)) {
 			return;
 		}
 		switch (currentChallenge) {
@@ -222,7 +221,7 @@ public class DojoManager {
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private static void onEntityDespawn(Entity entity, ClientWorld clientWorld) {
+	private static void onEntityDespawn(Entity entity, ClientLevel clientWorld) {
 		if (!Utils.isInCrimson() || !inArena) {
 			return;
 		}
@@ -232,17 +231,17 @@ public class DojoManager {
 		}
 	}
 
-	private static ActionResult onEntityAttacked(PlayerEntity playerEntity, World world, Hand hand, Entity entity, EntityHitResult entityHitResult) {
+	private static InteractionResult onEntityAttacked(Player playerEntity, Level world, InteractionHand hand, Entity entity, EntityHitResult entityHitResult) {
 		if (!Utils.isInCrimson() || !inArena) {
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		}
 		if (currentChallenge == DojoChallenges.FORCE) {
 			ForceTestHelper.onEntityAttacked(entity);
 		}
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
-	private static void onParticle(ParticleS2CPacket packet) {
+	private static void onParticle(ClientboundLevelParticlesPacket packet) {
 		if (!Utils.isInCrimson() || !inArena) {
 			return;
 		}

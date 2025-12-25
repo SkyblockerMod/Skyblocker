@@ -16,10 +16,6 @@ import io.github.moulberry.repo.data.NEURecipe;
 import io.github.moulberry.repo.data.NEUTradeRecipe;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +23,10 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class CraftPriceTooltip extends SimpleTooltipAdder {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(CraftPriceTooltip.class.getName());
@@ -38,7 +38,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSloFt, ItemStack stack, List<Text> lines) {
+	public void addToTooltip(@Nullable Slot focusedSloFt, ItemStack stack, List<Component> lines) {
 		if (TooltipInfoType.LOWEST_BINS.getData() == null || TooltipInfoType.BAZAAR.getData() == null) {
 			ItemTooltip.nullWarning();
 			return;
@@ -57,7 +57,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 			int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreStrings()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
 			recipe.getAllOutputs().stream().findFirst().ifPresent(outputIngredient ->
-					lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)
+					lines.add(Component.literal(String.format("%-20s", "Crafting Price:")).withStyle(ChatFormatting.GOLD)
 								.append(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), count))));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: {}", stack.getNeuName(), e);

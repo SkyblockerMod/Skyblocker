@@ -7,20 +7,19 @@ import de.hysky.skyblocker.config.configs.HelperConfig;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FishingHookDisplayHelper {
-	protected static ArmorStandEntity fishingHookArmorStand;
-	private static final Identifier FISHING_HOOK_DISPLAY = SkyblockerMod.id("fishing_hook_display");
+	protected static ArmorStand fishingHookArmorStand;
+	private static final ResourceLocation FISHING_HOOK_DISPLAY = SkyblockerMod.id("fishing_hook_display");
 	static Pattern pattern = Pattern.compile("\\d.\\d");
 
 	@Init
@@ -29,7 +28,7 @@ public class FishingHookDisplayHelper {
 		HudElementRegistry.attachElementAfter(VanillaHudElements.TITLE_AND_SUBTITLE, FISHING_HOOK_DISPLAY, FishingHookDisplayHelper::render);
 	}
 
-	public static void render(DrawContext context, RenderTickCounter tickDelta) {
+	public static void render(GuiGraphics context, DeltaTracker tickDelta) {
 		if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.OFF) return;
 
 
@@ -40,24 +39,24 @@ public class FishingHookDisplayHelper {
 		}
 
 
-		MinecraftClient client = MinecraftClient.getInstance();
-		ClientPlayerEntity player = client.player;
-		if (player == null || player.fishHook == null || fishingHookArmorStand == null) return;
+		Minecraft client = Minecraft.getInstance();
+		LocalPlayer player = client.player;
+		if (player == null || player.fishing == null || fishingHookArmorStand == null) return;
 
 		// render on the crosshair if enabled
 		if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.CROSSHAIR) {
-			Text armorStandName = fishingHookArmorStand.getName();
+			Component armorStandName = fishingHookArmorStand.getName();
 
-			int screenWidth = client.getWindow().getScaledWidth();
-			int screenHeight = client.getWindow().getScaledHeight();
+			int screenWidth = client.getWindow().getGuiScaledWidth();
+			int screenHeight = client.getWindow().getGuiScaledHeight();
 			int x = screenWidth / 2; // Center horizontally
 			int y = screenHeight / 2; // Position near the top
 
 			// Scale the text by 3x
-			context.getMatrices().pushMatrix();
-			context.getMatrices().scale(3.0F, 3.0F);
-			context.drawCenteredTextWithShadow(client.textRenderer, armorStandName, (int) (x / 3.0F), (int) (y / 3.0F), 0xFFFFFF00);
-			context.getMatrices().popMatrix();
+			context.pose().pushMatrix();
+			context.pose().scale(3.0F, 3.0F);
+			context.drawCenteredString(client.font, armorStandName, (int) (x / 3.0F), (int) (y / 3.0F), 0xFFFFFF00);
+			context.pose().popMatrix();
 		}
 		//else update the tab
 		else {
@@ -65,14 +64,14 @@ public class FishingHookDisplayHelper {
 		}
 	}
 
-	public static void onArmorStandSpawn(ArmorStandEntity armorStand) {
+	public static void onArmorStandSpawn(ArmorStand armorStand) {
 		if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.OFF) return;
 		if (fishingHookArmorStand != null) return;
 
-		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.player == null || client.player.fishHook == null) return;
+		Minecraft client = Minecraft.getInstance();
+		if (client.player == null || client.player.fishing == null) return;
 		// Check the distance between the armor stand and the player's fishing hook
-		double distance = armorStand.getEntityPos().distanceTo(client.player.fishHook.getEntityPos());
+		double distance = armorStand.position().distanceTo(client.player.fishing.position());
 		if (distance > 0.1) return; // Checks for a minimum distance of 0.1 blocks
 
 		Matcher matcher = pattern.matcher(armorStand.getName().getString());

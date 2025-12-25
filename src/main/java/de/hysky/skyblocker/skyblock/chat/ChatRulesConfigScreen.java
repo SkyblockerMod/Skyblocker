@@ -1,67 +1,67 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.ThreePartsLayoutWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 
 public class ChatRulesConfigScreen extends Screen {
 	private ChatRulesConfigListWidget chatRulesConfigListWidget;
-	private ThreePartsLayoutWidget layout;
+	private HeaderAndFooterLayout layout;
 	private final Screen parent;
 
 	public ChatRulesConfigScreen(Screen parent) {
-		super(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"));
+		super(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"));
 		this.parent = parent;
 	}
 
 	@Override
 	protected void init() {
-		layout = new ThreePartsLayoutWidget(this);
-		layout.addHeader(this.title, textRenderer);
-		chatRulesConfigListWidget = layout.addBody(new ChatRulesConfigListWidget(client, this, width, layout.getContentHeight(), layout.getHeaderHeight()));
-		DirectionalLayoutWidget footerLayout = layout.addFooter(new DirectionalLayoutWidget(0, 0, DirectionalLayoutWidget.DisplayAxis.HORIZONTAL));
-		footerLayout.getMainPositioner().marginX(5).marginY(2);
-		footerLayout.add(ButtonWidget.builder(ScreenTexts.CANCEL, button -> {
-			if (client != null) close();
+		layout = new HeaderAndFooterLayout(this);
+		layout.addTitleHeader(this.title, font);
+		chatRulesConfigListWidget = layout.addToContents(new ChatRulesConfigListWidget(minecraft, this, width, layout.getContentHeight(), layout.getHeaderHeight()));
+		LinearLayout footerLayout = layout.addToFooter(new LinearLayout(0, 0, LinearLayout.Orientation.HORIZONTAL));
+		footerLayout.defaultCellSetting().paddingHorizontal(5).paddingVertical(2);
+		footerLayout.addChild(Button.builder(CommonComponents.GUI_CANCEL, button -> {
+			if (minecraft != null) onClose();
 		}).build());
-		footerLayout.add(ButtonWidget.builder(Text.translatable("skyblocker.config.chat.chatRules.screen.new"),
+		footerLayout.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.new"),
 				buttonNew -> chatRulesConfigListWidget.addRuleAfterSelected()
 		).build());
-		footerLayout.add(ButtonWidget.builder(ScreenTexts.DONE, button -> {
+		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE, button -> {
 			chatRulesConfigListWidget.saveRules();
-			if (client != null) {
-				close();
+			if (minecraft != null) {
+				onClose();
 			}
 		}).build());
 
-		layout.refreshPositions();
-		layout.forEachChild(this::addDrawableChild);
+		layout.arrangeElements();
+		layout.visitWidgets(this::addRenderableWidget);
 	}
 
 	@Override
-	protected void refreshWidgetPositions() {
-		layout.refreshPositions();
-		chatRulesConfigListWidget.setDimensionsAndPosition(width, layout.getContentHeight(), 0, layout.getHeaderHeight());
-		chatRulesConfigListWidget.refreshScroll();
+	protected void repositionElements() {
+		layout.arrangeElements();
+		chatRulesConfigListWidget.setRectangle(width, layout.getContentHeight(), 0, layout.getHeaderHeight());
+		chatRulesConfigListWidget.refreshScrollAmount();
 	}
 
 	@Override
-	public void close() {
-		assert client != null;
+	public void onClose() {
+		assert minecraft != null;
 		if (!chatRulesConfigListWidget.hasChanges()) {
-			this.client.setScreen(parent);
+			this.minecraft.setScreen(parent);
 			return;
 		}
-		client.setScreen(new ConfirmScreen(confirmedAction -> {
+		minecraft.setScreen(new ConfirmScreen(confirmedAction -> {
 			if (confirmedAction) {
-				this.client.setScreen(parent);
+				this.minecraft.setScreen(parent);
 			} else {
-				client.setScreen(this);
+				minecraft.setScreen(this);
 			}
-		}, Text.translatable("text.skyblocker.quit_config"), Text.translatable("text.skyblocker.quit_config_sure"), Text.translatable("text.skyblocker.quit_discard"), ScreenTexts.CANCEL));
+		}, Component.translatable("text.skyblocker.quit_config"), Component.translatable("text.skyblocker.quit_config_sure"), Component.translatable("text.skyblocker.quit_discard"), CommonComponents.GUI_CANCEL));
 	}
 }

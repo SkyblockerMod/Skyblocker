@@ -39,6 +39,13 @@
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
+        <module name="IllegalImport">
+            <property name="illegalClasses" value="org.jspecify.annotations.Nullable"/>
+            <property name="illegalClasses" value="org.jetbrains.annotations.NotNull"/>
+            <property name="illegalClasses" value="org.jetbrains.annotations.NotNullByDefault"/>
+            <!-- Since everything is @NullMarked this should not be used, prefer Objects#requireNonNull -->
+            <property name="illegalClasses" value="org.jspecify.annotations.NonNull"/>
+        </module>
 
         <module name="SeparatorWrap">
             <property name="tokens" value="DOT,ELLIPSIS,AT"/>

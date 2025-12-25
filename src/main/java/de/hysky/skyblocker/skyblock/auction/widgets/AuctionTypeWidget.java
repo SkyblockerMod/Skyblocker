@@ -2,8 +2,8 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class AuctionTypeWidget extends SliderWidget<AuctionTypeWidget.Option> {
 
@@ -13,7 +13,7 @@ public class AuctionTypeWidget extends SliderWidget<AuctionTypeWidget.Option> {
 	 * @param slotClick IDK figure it out
 	 */
 	public AuctionTypeWidget(int x, int y, SlotClickHandler slotClick) {
-		super(x, y, 17, 17, Text.literal("Auction Type Widget"), slotClick, Option.ALL);
+		super(x, y, 17, 17, Component.literal("Auction Type Widget"), slotClick, Option.ALL);
 	}
 
 	public enum Option implements SliderWidget.OptionInfo {
@@ -21,10 +21,10 @@ public class AuctionTypeWidget extends SliderWidget<AuctionTypeWidget.Option> {
 		BIN("bin.png"),
 		AUC("auctions.png");
 
-		private final Identifier texture;
+		private final ResourceLocation texture;
 		private static final String prefix = "textures/gui/auctions_gui/auction_type_widget/";
-		private static final Identifier HOVER_TEXTURE = SkyblockerMod.id(prefix + "hover.png");
-		private static final Identifier BACK_TEXTURE = SkyblockerMod.id(prefix + "back.png");
+		private static final ResourceLocation HOVER_TEXTURE = SkyblockerMod.id(prefix + "hover.png");
+		private static final ResourceLocation BACK_TEXTURE = SkyblockerMod.id(prefix + "back.png");
 
 		Option(String textureName) {
 			texture = SkyblockerMod.id(prefix + textureName);
@@ -52,17 +52,17 @@ public class AuctionTypeWidget extends SliderWidget<AuctionTypeWidget.Option> {
 		}
 
 		@Override
-		public Identifier getOptionTexture() {
+		public ResourceLocation getOptionTexture() {
 			return texture;
 		}
 
 		@Override
-		public Identifier getBackTexture() {
+		public ResourceLocation getBackTexture() {
 			return BACK_TEXTURE;
 		}
 
 		@Override
-		public Identifier getHoverTexture() {
+		public ResourceLocation getHoverTexture() {
 			return HOVER_TEXTURE;
 		}
 	}

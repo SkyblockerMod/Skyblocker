@@ -20,26 +20,25 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.util.TriState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
-import net.minecraft.particle.ParticleType;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -58,9 +57,8 @@ public class MythologicalRitual {
 
 	private static long lastEchoTime;
 	private static final Map<BlockPos, GriffinBurrow> griffinBurrows = new HashMap<>();
-	@Nullable
-	private static BlockPos lastDugBurrowPos;
-	private static GriffinBurrow previousBurrow = new GriffinBurrow(BlockPos.ORIGIN);
+	private static @Nullable BlockPos lastDugBurrowPos;
+	private static GriffinBurrow previousBurrow = new GriffinBurrow(BlockPos.ZERO);
 
 	@Init
 	public static void init() {
@@ -86,12 +84,12 @@ public class MythologicalRitual {
 
 		// Put a root burrow so echo detection works without a previous burrow
 		previousBurrow.confirmed = TriState.DEFAULT;
-		griffinBurrows.put(BlockPos.ORIGIN, previousBurrow);
+		griffinBurrows.put(BlockPos.ZERO, previousBurrow);
 	}
 
-	private static void onParticle(ParticleS2CPacket packet) {
+	private static void onParticle(ClientboundLevelParticlesPacket packet) {
 		if (isActive()) {
-			switch (packet.getParameters().getType()) {
+			switch (packet.getParticle().getType()) {
 				case ParticleType<?> type when ParticleTypes.CRIT.equals(type) || ParticleTypes.ENCHANT.equals(type) -> handleBurrowParticle(packet);
 				case ParticleType<?> type when ParticleTypes.DUST.equals(type) -> handleNextBurrowParticle(packet);
 				case ParticleType<?> type when ParticleTypes.DRIPPING_LAVA.equals(type) && packet.getCount() == 2 -> handleEchoBurrowParticle(packet);
@@ -103,14 +101,14 @@ public class MythologicalRitual {
 	/**
 	 * Updates the crit and enchant particle counts and initializes the burrow if both counts are greater or equal to 5.
 	 */
-	private static void handleBurrowParticle(ParticleS2CPacket packet) {
-		BlockPos pos = BlockPos.ofFloored(packet.getX(), packet.getY(), packet.getZ()).down();
-		if (MinecraftClient.getInstance().world == null || !MinecraftClient.getInstance().world.getBlockState(pos).isOf(Blocks.GRASS_BLOCK)) {
+	private static void handleBurrowParticle(ClientboundLevelParticlesPacket packet) {
+		BlockPos pos = BlockPos.containing(packet.getX(), packet.getY(), packet.getZ()).below();
+		if (Minecraft.getInstance().level == null || !Minecraft.getInstance().level.getBlockState(pos).is(Blocks.GRASS_BLOCK)) {
 			return;
 		}
 		GriffinBurrow burrow = griffinBurrows.computeIfAbsent(pos, GriffinBurrow::new);
-		if (ParticleTypes.CRIT.equals(packet.getParameters().getType())) burrow.critParticle++;
-		if (ParticleTypes.ENCHANT.equals(packet.getParameters().getType())) burrow.enchantParticle++;
+		if (ParticleTypes.CRIT.equals(packet.getParticle().getType())) burrow.critParticle++;
+		if (ParticleTypes.ENCHANT.equals(packet.getParticle().getType())) burrow.enchantParticle++;
 		if (burrow.critParticle >= 5 && burrow.enchantParticle >= 5 && burrow.confirmed == TriState.FALSE) {
 			griffinBurrows.get(pos).init();
 		}
@@ -119,9 +117,9 @@ public class MythologicalRitual {
 	/**
 	 * Updates the regression of the burrow (if a burrow exists), tries to {@link #estimateNextBurrow(GriffinBurrow) estimate the next burrow}, and updates the line in the direction of the next burrow.
 	 */
-	private static void handleNextBurrowParticle(ParticleS2CPacket packet) {
-		BlockPos pos = BlockPos.ofFloored(packet.getX(), packet.getY(), packet.getZ());
-		GriffinBurrow burrow = griffinBurrows.get(pos.down(2));
+	private static void handleNextBurrowParticle(ClientboundLevelParticlesPacket packet) {
+		BlockPos pos = BlockPos.containing(packet.getX(), packet.getY(), packet.getZ());
+		GriffinBurrow burrow = griffinBurrows.get(pos.below(2));
 		if (burrow == null) {
 			return;
 		}
@@ -130,7 +128,7 @@ public class MythologicalRitual {
 		if (Double.isNaN(slope)) {
 			return;
 		}
-		Vec3d nextBurrowDirection = new Vec3d(100, 0, slope * 100).normalize();
+		Vec3 nextBurrowDirection = new Vec3(100, 0, slope * 100).normalize();
 
 		// Save the line of the next burrow and try to estimate the next burrow
 		Vector2D pos2D = new Vector2D(pos.getX() + 0.5, pos.getZ() + 0.5);
@@ -139,24 +137,24 @@ public class MythologicalRitual {
 
 		// Fill line in the direction of the next burrow
 		if (burrow.nextBurrowLine == null) {
-			burrow.nextBurrowLine = new Vec3d[1001];
+			burrow.nextBurrowLine = new Vec3[1001];
 		}
-		fillLine(burrow.nextBurrowLine, Vec3d.ofCenter(pos.up()), nextBurrowDirection);
+		fillLine(burrow.nextBurrowLine, Vec3.atCenterOf(pos.above()), nextBurrowDirection);
 	}
 
 	/**
 	 * Saves the echo particle in {@link GriffinBurrow#echoBurrowDirection}, if the player used echo within 10 seconds.
 	 * Tries to {@link #estimateNextBurrow(GriffinBurrow) estimate the next burrow} and updates the line through the two echo burrow particles if there is already a particle saved in {@link GriffinBurrow#echoBurrowDirection}.
 	 */
-	private static void handleEchoBurrowParticle(ParticleS2CPacket packet) {
+	private static void handleEchoBurrowParticle(ClientboundLevelParticlesPacket packet) {
 		if (System.currentTimeMillis() > lastEchoTime + 10_000) {
 			return;
 		}
 		if (previousBurrow.echoBurrowDirection == null) {
-			previousBurrow.echoBurrowDirection = new Vec3d[2];
+			previousBurrow.echoBurrowDirection = new Vec3[2];
 		}
 		previousBurrow.echoBurrowDirection[0] = previousBurrow.echoBurrowDirection[1];
-		previousBurrow.echoBurrowDirection[1] = new Vec3d(packet.getX(), packet.getY(), packet.getZ());
+		previousBurrow.echoBurrowDirection[1] = new Vec3(packet.getX(), packet.getY(), packet.getZ());
 		if (previousBurrow.echoBurrowDirection[0] == null || previousBurrow.echoBurrowDirection[1] == null) {
 			return;
 		}
@@ -168,9 +166,9 @@ public class MythologicalRitual {
 		estimateNextBurrow(previousBurrow);
 
 		// Fill line in the direction of the echo burrow
-		Vec3d echoBurrowDirection = previousBurrow.echoBurrowDirection[1].subtract(previousBurrow.echoBurrowDirection[0]).normalize();
+		Vec3 echoBurrowDirection = previousBurrow.echoBurrowDirection[1].subtract(previousBurrow.echoBurrowDirection[0]).normalize();
 		if (previousBurrow.echoBurrowLine == null) {
-			previousBurrow.echoBurrowLine = new Vec3d[1001];
+			previousBurrow.echoBurrowLine = new Vec3[1001];
 		}
 		fillLine(previousBurrow.echoBurrowLine, previousBurrow.echoBurrowDirection[0], echoBurrowDirection);
 	}
@@ -189,16 +187,16 @@ public class MythologicalRitual {
 		if (intersection == null) {
 			return;
 		}
-		burrow.nextBurrowEstimatedPos = BlockPos.ofFloored(intersection.getX(), 5, intersection.getY());
+		burrow.nextBurrowEstimatedPos = BlockPos.containing(intersection.getX(), 5, intersection.getY());
 	}
 
 	/**
-	 * Fills the {@link Vec3d} array to form a line centered on {@code start} with step sizes of {@code direction}
+	 * Fills the {@link Vec3} array to form a line centered on {@code start} with step sizes of {@code direction}
 	 * @param line The line to fill
 	 * @param start The center of the line
 	 * @param direction The step size of the line
 	 */
-	static void fillLine(Vec3d[] line, Vec3d start, Vec3d direction) {
+	static void fillLine(Vec3[] line, Vec3 start, Vec3 direction) {
 		assert line.length % 2 == 1;
 		int middle = line.length / 2;
 		line[middle] = start;
@@ -229,32 +227,31 @@ public class MythologicalRitual {
 		}
 	}
 
-	public static ActionResult onAttackBlock(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) {
+	public static InteractionResult onAttackBlock(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
 		return onInteractBlock(pos);
 	}
 
-	public static ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+	public static InteractionResult onUseBlock(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
 		return onInteractBlock(hitResult.getBlockPos());
 	}
 
-	@NotNull
-	private static ActionResult onInteractBlock(BlockPos pos) {
+	private static InteractionResult onInteractBlock(BlockPos pos) {
 		if (isActive() && griffinBurrows.containsKey(pos)) {
 			lastDugBurrowPos = pos;
 		}
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
-	public static ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {
-		ItemStack stack = player.getStackInHand(hand);
+	public static InteractionResult onUseItem(Player player, Level world, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
 		if (isActive() && SPADES.contains(stack.getSkyblockId())) {
 			lastEchoTime = System.currentTimeMillis();
 		}
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	public static boolean onChatMessage(Text message, boolean overlay) {
+	public static boolean onChatMessage(Component message, boolean overlay) {
 		if (isActive() && GRIFFIN_BURROW_DUG.matcher(message.getString()).matches()) {
 			previousBurrow.confirmed = TriState.FALSE;
 			if (lastDugBurrowPos == null) return true;
@@ -272,11 +269,11 @@ public class MythologicalRitual {
 	private static void reset() {
 		griffinBurrows.clear();
 		lastDugBurrowPos = null;
-		previousBurrow = new GriffinBurrow(BlockPos.ORIGIN);
+		previousBurrow = new GriffinBurrow(BlockPos.ZERO);
 
 		// Put a root burrow so echo detection works without a previous burrow
 		previousBurrow.confirmed = TriState.DEFAULT;
-		griffinBurrows.put(BlockPos.ORIGIN, previousBurrow);
+		griffinBurrows.put(BlockPos.ZERO, previousBurrow);
 	}
 
 	private static class GriffinBurrow extends Waypoint {
@@ -290,27 +287,21 @@ public class MythologicalRitual {
 		 */
 		private TriState confirmed = TriState.FALSE;
 		private final SimpleRegression regression = new SimpleRegression();
-		@Nullable
-		private Vec3d[] nextBurrowLine;
+		private @Nullable Vec3[] nextBurrowLine;
 		/**
 		 * The positions of the last two echo burrow particles.
 		 */
-		@Nullable
-		private Vec3d[] echoBurrowDirection;
-		@Nullable
-		private Vec3d[] echoBurrowLine;
-		@Nullable
-		private BlockPos nextBurrowEstimatedPos;
+		private @Nullable Vec3[] echoBurrowDirection;
+		private @Nullable Vec3[] echoBurrowLine;
+		private @Nullable BlockPos nextBurrowEstimatedPos;
 		/**
 		 * The line in the direction of the next burrow estimated by the previous burrow particles.
 		 */
-		@Nullable
-		private Line nextBurrowLineEstimation;
+		private @Nullable Line nextBurrowLineEstimation;
 		/**
 		 * The line in the direction of the next burrow estimated by the echo ability.
 		 */
-		@Nullable
-		private Line echoBurrowLineEstimation;
+		private @Nullable Line echoBurrowLineEstimation;
 
 		private GriffinBurrow(BlockPos pos) {
 			super(pos, Type.WAYPOINT, ORANGE_COLOR_COMPONENTS, 0.25F);

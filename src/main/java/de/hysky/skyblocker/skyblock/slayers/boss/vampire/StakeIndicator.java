@@ -5,11 +5,11 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.entity.Entity;
 
 public class StakeIndicator {
-	private static final Title title = new Title("skyblocker.rift.stakeNow", Formatting.RED);
+	private static final Title title = new Title("skyblocker.rift.stakeNow", ChatFormatting.RED);
 
 	public static void updateStake() {
 		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableSteakStakeIndicator || !SlayerManager.isInSlayerType(SlayerType.VAMPIRE)) {

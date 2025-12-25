@@ -3,13 +3,6 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import io.github.moulberry.repo.data.NEUForgeRecipe;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
@@ -17,9 +10,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
 
 public class SkyblockForgeRecipe implements SkyblockRecipe {
-	public static final Identifier ID = SkyblockerMod.id("skyblock_forge");
+	public static final ResourceLocation ID = SkyblockerMod.id("skyblock_forge");
 
 	private final List<ItemStack> inputs;
 	private final ItemStack output;
@@ -85,22 +85,22 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public Text getExtraText() {
-		return Text.empty();
+	public Component getExtraText() {
+		return Component.empty();
 	}
 
 	@Override
-	public Identifier getCategoryIdentifier() {
+	public ResourceLocation getCategoryIdentifier() {
 		return ID;
 	}
 
-	public Identifier getRecipeIdentifier() {
-		return Identifier.of("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
+	public ResourceLocation getRecipeIdentifier() {
+		return ResourceLocation.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
 	}
 
 	@Override
-	public @Nullable ScreenPos getArrowLocation(int width, int height) {
-		return new ScreenPos(width / 2, height / 2 - 9);
+	public @Nullable ScreenPosition getArrowLocation(int width, int height) {
+		return new ScreenPosition(width / 2, height / 2 - 9);
 	}
 
 	public String getDurationString() {
@@ -108,10 +108,10 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public void render(DrawContext context, int width, int height, double mouseX, double mouseY) {
+	public void render(GuiGraphics context, int width, int height, double mouseX, double mouseY) {
 		// Render the duration of the recipe in hours by dividing by 3600
-		ScreenPos arrowLocation = getArrowLocation(width, height);
+		ScreenPosition arrowLocation = getArrowLocation(width, height);
 		if (arrowLocation != null)
-			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, durationString, arrowLocation.x() + 12, arrowLocation.y() - 10, Colors.WHITE);
+			context.drawCenteredString(Minecraft.getInstance().font, durationString, arrowLocation.x() + 12, arrowLocation.y() - 10, CommonColors.WHITE);
 	}
 }

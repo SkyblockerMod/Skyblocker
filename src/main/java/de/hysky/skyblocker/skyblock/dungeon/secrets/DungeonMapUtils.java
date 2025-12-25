@@ -4,21 +4,19 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.Room.Type;
 
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import net.minecraft.block.MapColor;
-import net.minecraft.item.map.MapDecoration;
-import net.minecraft.item.map.MapDecorationTypes;
-import net.minecraft.item.map.MapState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Position;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Position;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.RoundingMode;
 import org.joml.Vector2d;
@@ -27,39 +25,39 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
 public class DungeonMapUtils {
-	public static final byte BLACK_COLOR = MapColor.BLACK.getRenderColorByte(MapColor.Brightness.LOWEST);
-	public static final byte WHITE_COLOR = MapColor.WHITE.getRenderColorByte(MapColor.Brightness.HIGH);
+	public static final byte BLACK_COLOR = MapColor.COLOR_BLACK.getPackedId(MapColor.Brightness.LOWEST);
+	public static final byte WHITE_COLOR = MapColor.SNOW.getPackedId(MapColor.Brightness.HIGH);
 	public static final byte GREEN_COLOR = 30;
 
-	public static byte getColor(MapState map, @Nullable Vector2ic pos) {
+	public static byte getColor(MapItemSavedData map, @Nullable Vector2ic pos) {
 		return pos == null ? -1 : getColor(map, pos.x(), pos.y());
 	}
 
-	public static byte getColor(MapState map, int x, int z) {
+	public static byte getColor(MapItemSavedData map, int x, int z) {
 		if (x < 0 || z < 0 || x >= 128 || z >= 128) {
 			return -1;
 		}
 		return map.colors[x + (z << 7)];
 	}
 
-	public static boolean isEntranceColor(MapState map, int x, int z) {
+	public static boolean isEntranceColor(MapItemSavedData map, int x, int z) {
 		return getColor(map, x, z) == Type.ENTRANCE.color;
 	}
 
-	public static boolean isEntranceColor(MapState map, @Nullable Vector2ic pos) {
+	public static boolean isEntranceColor(MapItemSavedData map, @Nullable Vector2ic pos) {
 		return getColor(map, pos) == Type.ENTRANCE.color;
 	}
 
-	private static @Nullable Vector2i getMapPlayerPos(MapState map) {
+	private static @Nullable Vector2i getMapPlayerPos(MapItemSavedData map) {
 		for (MapDecoration decoration : map.getDecorations()) {
 			if (decoration.type().value().equals(MapDecorationTypes.FRAME.value())) {
-				return new Vector2i((decoration.x() >> 1) + 64, (decoration.z() >> 1) + 64);
+				return new Vector2i((decoration.x() >> 1) + 64, (decoration.y() >> 1) + 64);
 			}
 		}
 		return null;
 	}
 
-	public static @Nullable ObjectIntPair<Vector2ic> getMapEntrancePosAndRoomSize(MapState map) {
+	public static @Nullable ObjectIntPair<Vector2ic> getMapEntrancePosAndRoomSize(MapItemSavedData map) {
 		Vector2ic mapPos = getMapPlayerPos(map);
 		if (mapPos == null) {
 			return null;
@@ -95,7 +93,7 @@ public class DungeonMapUtils {
 		return null;
 	}
 
-	private static ObjectIntPair<Vector2ic> getMapEntrancePosAndRoomSizeAt(MapState map, Vector2ic mapPosImmutable) {
+	private static ObjectIntPair<Vector2ic> getMapEntrancePosAndRoomSizeAt(MapItemSavedData map, Vector2ic mapPosImmutable) {
 		Vector2i mapPos = new Vector2i(mapPosImmutable);
 		// noinspection StatementWithEmptyBody
 		while (isEntranceColor(map, mapPos.sub(1, 0))) {
@@ -107,7 +105,7 @@ public class DungeonMapUtils {
 		return ObjectIntPair.of(mapPos.add(0, 1), getMapRoomSize(map, mapPos));
 	}
 
-	public static int getMapRoomSize(MapState map, Vector2ic mapEntrancePos) {
+	public static int getMapRoomSize(MapItemSavedData map, Vector2ic mapEntrancePos) {
 		int i = -1;
 		//noinspection StatementWithEmptyBody
 		while (isEntranceColor(map, mapEntrancePos.x() + ++i, mapEntrancePos.y())) {
@@ -127,7 +125,7 @@ public class DungeonMapUtils {
 	 * so subtracting the modulo will give the top left corner of the room shifted by {@code offset}.
 	 * Finally, {@code mapPos} is shifted back by {@code offset} to its intended position.
 	 */
-	public static @Nullable Vector2ic getMapRoomPos(MapState map, Vector2ic mapEntrancePos, int mapRoomSize) {
+	public static @Nullable Vector2ic getMapRoomPos(MapItemSavedData map, Vector2ic mapEntrancePos, int mapRoomSize) {
 		int mapRoomSizeWithGap = mapRoomSize + 4;
 		Vector2i mapPos = getMapPlayerPos(map);
 		if (mapPos == null) {
@@ -151,7 +149,7 @@ public class DungeonMapUtils {
 	}
 
 	public static Vector2dc getMapPosFromPhysical(Vector2ic physicalEntrancePos, Vector2ic mapEntrancePos, int mapRoomSize, Position physicalPos) {
-		return new Vector2d(physicalPos.getX(), physicalPos.getZ()).sub(physicalEntrancePos.x(), physicalEntrancePos.y()).div(32).mul(mapRoomSize + 4).add(mapEntrancePos.x(), mapEntrancePos.y());
+		return new Vector2d(physicalPos.x(), physicalPos.z()).sub(physicalEntrancePos.x(), physicalEntrancePos.y()).div(32).mul(mapRoomSize + 4).add(mapEntrancePos.x(), mapEntrancePos.y());
 	}
 
 	/**
@@ -169,8 +167,8 @@ public class DungeonMapUtils {
 	/**
 	 * @see #getPhysicalRoomPos(double, double)
 	 */
-	public static Vector2ic getPhysicalRoomPos(Vec3d pos) {
-		return getPhysicalRoomPos(pos.getX(), pos.getZ());
+	public static Vector2ic getPhysicalRoomPos(Vec3 pos) {
+		return getPhysicalRoomPos(pos.x(), pos.z());
 	}
 
 	/**
@@ -233,12 +231,12 @@ public class DungeonMapUtils {
 		};
 	}
 
-	public static Vec3d actualToRelative(Room.Direction direction, Vector2ic physicalCornerPos, Vec3d pos) {
+	public static Vec3 actualToRelative(Room.Direction direction, Vector2ic physicalCornerPos, Vec3 pos) {
 		return switch (direction) {
-			case NW -> new Vec3d(pos.getX() - physicalCornerPos.x(), pos.getY(), pos.getZ() - physicalCornerPos.y());
-			case NE -> new Vec3d(pos.getZ() - physicalCornerPos.y(), pos.getY(), -pos.getX() + physicalCornerPos.x());
-			case SW -> new Vec3d(-pos.getZ() + physicalCornerPos.y(), pos.getY(), pos.getX() - physicalCornerPos.x());
-			case SE -> new Vec3d(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
+			case NW -> new Vec3(pos.x() - physicalCornerPos.x(), pos.y(), pos.z() - physicalCornerPos.y());
+			case NE -> new Vec3(pos.z() - physicalCornerPos.y(), pos.y(), -pos.x() + physicalCornerPos.x());
+			case SW -> new Vec3(-pos.z() + physicalCornerPos.y(), pos.y(), pos.x() - physicalCornerPos.x());
+			case SE -> new Vec3(-pos.x() + physicalCornerPos.x(), pos.y(), -pos.z() + physicalCornerPos.y());
 		};
 	}
 
@@ -255,16 +253,16 @@ public class DungeonMapUtils {
 		};
 	}
 
-	public static Vec3d relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, Vec3d pos) {
+	public static Vec3 relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, Vec3 pos) {
 		return switch (direction) {
-			case NW -> new Vec3d(pos.getX() + physicalCornerPos.x(), pos.getY(), pos.getZ() + physicalCornerPos.y());
-			case NE -> new Vec3d(-pos.getZ() + physicalCornerPos.x(), pos.getY(), pos.getX() + physicalCornerPos.y());
-			case SW -> new Vec3d(pos.getZ() + physicalCornerPos.x(), pos.getY(), -pos.getX() + physicalCornerPos.y());
-			case SE -> new Vec3d(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
+			case NW -> new Vec3(pos.x() + physicalCornerPos.x(), pos.y(), pos.z() + physicalCornerPos.y());
+			case NE -> new Vec3(-pos.z() + physicalCornerPos.x(), pos.y(), pos.x() + physicalCornerPos.y());
+			case SW -> new Vec3(pos.z() + physicalCornerPos.x(), pos.y(), -pos.x() + physicalCornerPos.y());
+			case SE -> new Vec3(-pos.x() + physicalCornerPos.x(), pos.y(), -pos.z() + physicalCornerPos.y());
 		};
 	}
 
-	public static @Nullable Type getRoomType(MapState map, Vector2ic mapPos) {
+	public static @Nullable Type getRoomType(MapItemSavedData map, Vector2ic mapPos) {
 		return switch (getColor(map, mapPos)) {
 			case GREEN_COLOR -> Type.ENTRANCE;
 			case 63 -> Type.ROOM;
@@ -278,7 +276,7 @@ public class DungeonMapUtils {
 		};
 	}
 
-	public static Vector2ic[] getRoomSegments(MapState map, Vector2ic mapPos, int mapRoomSize, byte color) {
+	public static Vector2ic[] getRoomSegments(MapItemSavedData map, Vector2ic mapPos, int mapRoomSize, byte color) {
 		Set<Vector2ic> segments = new HashSet<>();
 		Queue<Vector2ic> queue = new ArrayDeque<>();
 		segments.add(mapPos);

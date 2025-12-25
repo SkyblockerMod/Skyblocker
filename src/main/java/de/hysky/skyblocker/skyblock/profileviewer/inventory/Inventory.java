@@ -8,27 +8,26 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.ItemLoader;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 
 public class Inventory implements ProfileViewerPage {
-	private static final Identifier TEXTURE = Identifier.of("textures/gui/container/generic_54.png");
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final TextRenderer textRenderer = CLIENT.textRenderer;
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse("textures/gui/container/generic_54.png");
+	private static final Minecraft CLIENT = Minecraft.getInstance();
+	private static final Font textRenderer = CLIENT.font;
 	private final IntIntPair dimensions;
 	private final int itemsPerPage;
 	private final List<ItemStack> containerList;
@@ -50,21 +49,21 @@ public class Inventory implements ProfileViewerPage {
 		this.totalPages = (int) Math.ceil((double) containerList.size() / itemsPerPage);
 	}
 
-	public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int rootYAdjusted = rootY + (26 - dimensions.leftInt() * 3);
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted, 0, 0, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7, 256, 256);
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted, 0, 0, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7, 256, 256);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
 
-		context.drawText(textRenderer,  I18n.translate("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
+		context.drawString(textRenderer,  I18n.get("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
 
 		if (containerList.size() > itemsPerPage) {
 			previousPage.setX(rootX + 44);
 			previousPage.setY(rootY + 136);
 			previousPage.render(context, mouseX, mouseY, delta);
 
-			context.drawCenteredTextWithShadow(textRenderer, "Page: " + (activePage + 1) + "/" + totalPages, rootX + 88, rootY + 140, Color.WHITE.getRGB());
+			context.drawCenteredString(textRenderer, "Page: " + (activePage + 1) + "/" + totalPages, rootX + 88, rootY + 140, Color.WHITE.getRGB());
 
 			nextPage.setX(rootX + 121);
 			nextPage.setY(rootY + 136);
@@ -73,7 +72,7 @@ public class Inventory implements ProfileViewerPage {
 
 		int startIndex = activePage * itemsPerPage;
 		int endIndex = Math.min(startIndex + itemsPerPage, containerList.size());
-		List<Text> tooltip = Collections.emptyList();
+		List<Component> tooltip = Collections.emptyList();
 		for (int i = 0; i < endIndex - startIndex; i++) {
 			ItemStack stack = containerList.get(startIndex + i);
 			if (stack.isEmpty()) continue;
@@ -87,19 +86,19 @@ public class Inventory implements ProfileViewerPage {
 			ItemBackgroundManager.drawBackgrounds(stack, context, x, y);
 
 			if (ItemProtection.isItemProtected(stack)) {
-				context.drawTexture(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
+				context.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
 			}
 
-			context.drawItem(stack, x, y);
-			context.drawStackOverlay(textRenderer, stack, x, y);
+			context.renderItem(stack, x, y);
+			context.renderItemDecorations(textRenderer, stack, x, y);
 			SlotTextManager.renderSlotText(context, textRenderer, null, stack, i, x, y);
 
 			if (mouseX > x - 2 && mouseX < x + 16 + 1 && mouseY > y - 2 && mouseY < y + 16 + 1) {
-				tooltip = stack.getTooltip(Item.TooltipContext.DEFAULT, CLIENT.player, CLIENT.options.advancedItemTooltips ? TooltipType.ADVANCED : TooltipType.BASIC);
+				tooltip = stack.getTooltipLines(Item.TooltipContext.EMPTY, CLIENT.player, CLIENT.options.advancedItemTooltips ? TooltipFlag.ADVANCED : TooltipFlag.NORMAL);
 			}
 		}
 
-		if (!tooltip.isEmpty()) context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
+		if (!tooltip.isEmpty()) context.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
 	}
 
 	public void nextPage() {
@@ -131,8 +130,8 @@ public class Inventory implements ProfileViewerPage {
 	}
 
 	@Override
-	public List<ClickableWidget> getButtons() {
-		List<ClickableWidget> buttons = new ArrayList<>();
+	public List<AbstractWidget> getButtons() {
+		List<AbstractWidget> buttons = new ArrayList<>();
 		buttons.add(nextPage);
 		buttons.add(previousPage);
 		return buttons;

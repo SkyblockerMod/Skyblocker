@@ -9,29 +9,28 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class SkillWidget {
 	private final String SKILL_NAME;
 	private final LevelFinder.LevelInfo SKILL_LEVEL;
 
-	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
-	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
+	private static final ResourceLocation BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+	private static final ResourceLocation BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
 	private final ItemStack stack;
-	private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+	private static final Font textRenderer = Minecraft.getInstance().font;
 	private static final Map<String, ItemStack> SKILL_LOGO = Map.ofEntries(
 			Map.entry("Combat", Ico.STONE_SWORD),
 			Map.entry("Farming", Ico.GOLDEN_HOE),
@@ -82,9 +81,9 @@ public class SkillWidget {
 
 	}
 
-	public void render(DrawContext context, int mouseX, int mouseY, int x, int y) {
-		context.drawItem(this.stack, x + 3, y + 2);
-		context.drawText(textRenderer, SKILL_NAME + " " + SKILL_LEVEL.level, x + 31, y + 2, Color.white.hashCode(), false);
+	public void render(GuiGraphics context, int mouseX, int mouseY, int x, int y) {
+		context.renderItem(this.stack, x + 3, y + 2);
+		context.drawString(textRenderer, SKILL_NAME + " " + SKILL_LEVEL.level, x + 31, y + 2, Color.white.hashCode(), false);
 
 		Color fillColor = Color.green;
 		if (SKILL_LEVEL.level >= SKILL_CAP.getInt(SKILL_NAME)) {
@@ -96,14 +95,14 @@ public class SkillWidget {
 			fillColor = Color.YELLOW;
 		}
 
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 12, 75, 6);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 12, 75, 6);
 		HudHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 12, (int) (75 * SKILL_LEVEL.fill), 6, fillColor);
 
 		if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 10 && mouseY < y + 19) {
-			List<Text> tooltipText = new ArrayList<>();
-			tooltipText.add(Text.literal(this.SKILL_NAME).formatted(Formatting.GREEN));
-			tooltipText.add(Text.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.SKILL_LEVEL.xp)).formatted(Formatting.GOLD));
-			context.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
+			List<Component> tooltipText = new ArrayList<>();
+			tooltipText.add(Component.literal(this.SKILL_NAME).withStyle(ChatFormatting.GREEN));
+			tooltipText.add(Component.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.SKILL_LEVEL.xp)).withStyle(ChatFormatting.GOLD));
+			context.setComponentTooltipForNextFrame(textRenderer, tooltipText, mouseX, mouseY);
 		}
 	}
 }

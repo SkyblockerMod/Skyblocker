@@ -4,11 +4,11 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.ShulkerEntity;
-import net.minecraft.entity.passive.AxolotlEntity;
-import net.minecraft.entity.passive.TurtleEntity;
-import net.minecraft.util.DyeColor;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.axolotl.Axolotl;
+import net.minecraft.world.entity.monster.Shulker;
+import net.minecraft.world.item.DyeColor;
 
 public class GalateaGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")
@@ -23,9 +23,9 @@ public class GalateaGlowAdder extends MobGlowAdder {
 	public int computeColour(Entity entity) {
 
 		return switch (entity) {
-			case ShulkerEntity shulker when shulker.getColor() == DyeColor.GREEN && SkyblockerConfigManager.get().hunting.huntingMobs.highlightHideonleaf -> SkyblockerConfigManager.get().hunting.huntingMobs.hideonleafGlowColor.getRGB();
-			case TurtleEntity turtle when SkyblockerConfigManager.get().hunting.huntingMobs.highlightShellwise -> SkyblockerConfigManager.get().hunting.huntingMobs.shellwiseGlowColor.getRGB();
-			case AxolotlEntity ax when SkyblockerConfigManager.get().hunting.huntingMobs.highlightCoralot -> SkyblockerConfigManager.get().hunting.huntingMobs.coralotGlowColor.getRGB();
+			case Shulker shulker when shulker.getColor() == DyeColor.GREEN && SkyblockerConfigManager.get().hunting.huntingMobs.highlightHideonleaf -> SkyblockerConfigManager.get().hunting.huntingMobs.hideonleafGlowColor.getRGB();
+			case Turtle turtle when SkyblockerConfigManager.get().hunting.huntingMobs.highlightShellwise -> SkyblockerConfigManager.get().hunting.huntingMobs.shellwiseGlowColor.getRGB();
+			case Axolotl ax when SkyblockerConfigManager.get().hunting.huntingMobs.highlightCoralot -> SkyblockerConfigManager.get().hunting.huntingMobs.coralotGlowColor.getRGB();
 			default -> NO_GLOW;
 		};
 	}

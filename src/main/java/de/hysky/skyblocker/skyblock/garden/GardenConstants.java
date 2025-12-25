@@ -2,8 +2,7 @@ package de.hysky.skyblocker.skyblock.garden;
 
 import static java.util.Map.entry;
 import java.util.Map;
-
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;

@@ -6,9 +6,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.Uuids;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -26,7 +25,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param file  The file to load/save the data from/to.
 	 * @param codec The codec to use for serializing/deserializing the data.
 	 */
-	public ProfiledData(@NotNull Path file, @NotNull Codec<T> codec) {
+	public ProfiledData(Path file, Codec<T> codec) {
 		this(file, codec, false);
 	}
 
@@ -34,11 +33,11 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param file       The file to load/save the data from/to.
 	 * @param codec      The codec to use for serializing/deserializing the data.
 	 * @param compressed Whether the {@link JsonOps#COMPRESSED} should be used.
-	 *                   When compressed, {@link StringIdentifiable#createCodec(Supplier)} will use the ordinals instead of {@link StringIdentifiable#asString()}.
+	 *                   When compressed, {@link StringRepresentable#fromEnum(Supplier)} will use the ordinals instead of {@link StringRepresentable#getSerializedName()}.
 	 *                   When compressed, codecs built with {@link RecordCodecBuilder} will be serialized as a list instead of a map.
 	 *                   {@link JsonOps#COMPRESSED} is required for maps with non-string keys.
 	 */
-	public ProfiledData(@NotNull Path file, @NotNull Codec<T> codec, boolean compressed) {
+	public ProfiledData(Path file, Codec<T> codec, boolean compressed) {
 		this(file, codec, compressed, true, false);
 	}
 
@@ -49,7 +48,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param saveAsync Whether the data should be saved asynchronously. Default false.
 	 *                  Do not save async if saving is done with {@link ClientLifecycleEvents#CLIENT_STOPPING}.
 	 */
-	public ProfiledData(@NotNull Path file, @NotNull Codec<T> codec, boolean loadAsync, boolean saveAsync) {
+	public ProfiledData(Path file, Codec<T> codec, boolean loadAsync, boolean saveAsync) {
 		this(file, codec, false, loadAsync, saveAsync);
 	}
 
@@ -57,17 +56,17 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param file       The file to load/save the data from/to.
 	 * @param codec      The codec to use for serializing/deserializing the data.
 	 * @param compressed Whether the {@link JsonOps#COMPRESSED} should be used.
-	 *                   When compressed, {@link StringIdentifiable#createCodec(Supplier)} will use the ordinals instead of {@link StringIdentifiable#asString()}.
+	 *                   When compressed, {@link StringRepresentable#fromEnum(Supplier)} will use the ordinals instead of {@link StringRepresentable#getSerializedName()}.
 	 *                   When compressed, codecs built with {@link RecordCodecBuilder} will be serialized as a list instead of a map.
 	 *                   {@link JsonOps#COMPRESSED} is required for maps with non-string keys.
 	 * @param loadAsync  Whether the data should be loaded asynchronously. Default true.
 	 * @param saveAsync  Whether the data should be saved asynchronously. Default false.
 	 *                   Do not save async if saving is done with {@link ClientLifecycleEvents#CLIENT_STOPPING}.
 	 */
-	public ProfiledData(@NotNull Path file, @NotNull Codec<T> codec, boolean compressed, boolean loadAsync, boolean saveAsync) {
+	public ProfiledData(Path file, Codec<T> codec, boolean compressed, boolean loadAsync, boolean saveAsync) {
 		super(file,
 				// Mojang's internal Codec implementation uses ImmutableMaps so we'll just xmap those away and type safety while we're at it :')
-				Codec.unboundedMap(Uuids.CODEC,
+				Codec.unboundedMap(UUIDUtil.AUTHLIB_CODEC,
 						Codec.unboundedMap(Codec.STRING, codec).xmap(Object2ObjectOpenHashMap::new, Function.identity())
 				).xmap(Object2ObjectOpenHashMap::new, Function.identity()),
 				new Object2ObjectOpenHashMap<>(),
@@ -92,7 +91,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param profileId The profile ID of the player.
 	 * @return true if the data contains the given UUID and profile ID, false otherwise.
 	 */
-	public boolean containsKey(@NotNull UUID uuid, @NotNull String profileId) {
+	public boolean containsKey(UUID uuid, String profileId) {
 		return getPlayerData(uuid).containsKey(profileId);
 	}
 
@@ -101,8 +100,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 *
 	 * @return The value, or null if not found.
 	 */
-	@Nullable
-	public T get() {
+	public @Nullable T get() {
 		return get(Utils.getUuid(), Utils.getProfileId());
 	}
 
@@ -113,8 +111,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param profileId The profile ID of the player.
 	 * @return The value, or null if not found.
 	 */
-	@Nullable
-	public T get(@NotNull UUID uuid, @NotNull String profileId) {
+	public @Nullable T get(UUID uuid, String profileId) {
 		return getPlayerData(uuid).get(profileId);
 	}
 
@@ -124,8 +121,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param value The value to put.
 	 * @return The previous value, or null if not found.
 	 */
-	@Nullable
-	public T put(@NotNull T value) {
+	public @Nullable T put(T value) {
 		return put(Utils.getUuid(), Utils.getProfileId(), value);
 	}
 
@@ -137,8 +133,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param value     The value to put.
 	 * @return The previous value, or null if not found.
 	 */
-	@Nullable
-	public T put(@NotNull UUID uuid, @NotNull String profileId, @NotNull T value) {
+	public @Nullable T put(UUID uuid, String profileId, T value) {
 		return getPlayerData(uuid).put(profileId, value);
 	}
 
@@ -148,8 +143,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param value The value to put.
 	 * @return The previous value, or null if not found.
 	 */
-	@Nullable
-	public T putIfAbsent(@NotNull T value) {
+	public @Nullable T putIfAbsent(T value) {
 		return putIfAbsent(Utils.getUuid(), Utils.getProfileId(), value);
 	}
 
@@ -161,8 +155,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param value     The value to put.
 	 * @return The previous value, or null if not found.
 	 */
-	@Nullable
-	public T putIfAbsent(@NotNull UUID uuid, @NotNull String profileId, @NotNull T value) {
+	public @Nullable T putIfAbsent(UUID uuid, String profileId, T value) {
 		return getPlayerData(uuid).putIfAbsent(profileId, value);
 	}
 
@@ -172,8 +165,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param valueSupplier The supplier to compute the value.
 	 * @return The computed value, or null if not found.
 	 */
-	@Nullable
-	public T computeIfAbsent(@NotNull Supplier<T> valueSupplier) {
+	public @Nullable T computeIfAbsent(Supplier<T> valueSupplier) {
 		return computeIfAbsent(Utils.getUuid(), Utils.getProfileId(), valueSupplier);
 	}
 
@@ -185,8 +177,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param valueSupplier The supplier to compute the value.
 	 * @return The computed value, or null if not found.
 	 */
-	@Nullable
-	public T computeIfAbsent(@NotNull UUID uuid, @NotNull String profileId, @NotNull Supplier<T> valueSupplier) {
+	public @Nullable T computeIfAbsent(UUID uuid, String profileId, Supplier<T> valueSupplier) {
 		return getPlayerData(uuid).computeIfAbsent(profileId, _profileId -> valueSupplier.get());
 	}
 
@@ -195,8 +186,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 *
 	 * @return The removed value, or null if not found.
 	 */
-	@Nullable
-	public T remove() {
+	public @Nullable T remove() {
 		return remove(Utils.getUuid(), Utils.getProfileId());
 	}
 
@@ -207,8 +197,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param profileId The profile ID of the player.
 	 * @return The removed value, or null if not found.
 	 */
-	@Nullable
-	public T remove(@NotNull UUID uuid, @NotNull String profileId) {
+	public @Nullable T remove(UUID uuid, String profileId) {
 		return getPlayerData(uuid).remove(profileId);
 	}
 
@@ -218,8 +207,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param uuid The UUID of the player.
 	 * @return The player data map.
 	 */
-	@NotNull
-	private Map<String, T> getPlayerData(@NotNull UUID uuid) {
+	private Map<String, T> getPlayerData(UUID uuid) {
 		return getData().computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
 	}
 }

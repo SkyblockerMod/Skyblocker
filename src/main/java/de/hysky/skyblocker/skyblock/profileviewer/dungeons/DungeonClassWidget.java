@@ -6,20 +6,19 @@ import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class DungeonClassWidget {
 	private final String className;
@@ -29,12 +28,12 @@ public class DungeonClassWidget {
 	private final ItemStack stack;
 	private boolean active = false;
 
-	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
-	private static final Identifier ACTIVE_TEXTURE = SkyblockerMod.id("textures/gui/item_protection.png");
-	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
-	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
+	private static final ResourceLocation TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
+	private static final ResourceLocation ACTIVE_TEXTURE = SkyblockerMod.id("textures/gui/item_protection.png");
+	private static final ResourceLocation BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+	private static final ResourceLocation BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
-	private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+	private static final Font textRenderer = Minecraft.getInstance().font;
 	private static final Map<String, ItemStack> CLASS_ICON = Map.ofEntries(
 			Map.entry("Healer", Ico.S_POTION),
 			Map.entry("Mage", Ico.B_ROD),
@@ -55,21 +54,21 @@ public class DungeonClassWidget {
 		}
 	}
 
-	public void render(DrawContext context, int mouseX, int mouseY, int x, int y) {
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-		context.drawItem(stack, x + 3, y + 5);
-		if (active) context.drawTexture(RenderPipelines.GUI_TEXTURED, ACTIVE_TEXTURE, x + 3, y + 5, 0, 0, 16, 16, 16, 16);
+	public void render(GuiGraphics context, int mouseX, int mouseY, int x, int y) {
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+		context.renderItem(stack, x + 3, y + 5);
+		if (active) context.blit(RenderPipelines.GUI_TEXTURED, ACTIVE_TEXTURE, x + 3, y + 5, 0, 0, 16, 16, 16, 16);
 
-		context.drawText(textRenderer, className + " " + classLevel.level, x + 31, y + 5, Color.WHITE.getRGB(), false);
+		context.drawString(textRenderer, className + " " + classLevel.level, x + 31, y + 5, Color.WHITE.getRGB(), false);
 		Color fillColor = classLevel.level >= CLASS_CAP ? Color.MAGENTA : Color.GREEN;
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
 		HudHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * classLevel.fill), 6, fillColor);
 
 		if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22) {
-			List<Text> tooltipText = new ArrayList<>();
-			tooltipText.add(Text.literal(this.className).formatted(Formatting.GREEN));
-			tooltipText.add(Text.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.classLevel.xp)).formatted(Formatting.GOLD));
-			context.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
+			List<Component> tooltipText = new ArrayList<>();
+			tooltipText.add(Component.literal(this.className).withStyle(ChatFormatting.GREEN));
+			tooltipText.add(Component.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.classLevel.xp)).withStyle(ChatFormatting.GOLD));
+			context.setComponentTooltipForNextFrame(textRenderer, tooltipText, mouseX, mouseY);
 		}
 	}
 }

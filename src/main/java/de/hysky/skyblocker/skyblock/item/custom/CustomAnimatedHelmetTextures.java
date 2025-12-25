@@ -27,12 +27,12 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.item.component.ResolvableProfile;
 
 public class CustomAnimatedHelmetTextures {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Object2ObjectOpenHashMap<String, AnimatedHead> ANIMATED_HEADS = new Object2ObjectOpenHashMap<>();
 	private static final Object2ObjectOpenHashMap<AnimatedHead, AnimatedHeadStateTracker> STATE_TRACKERS = new Object2ObjectOpenHashMap<>();
 	private static int ticks = 0;
@@ -70,8 +70,7 @@ public class CustomAnimatedHelmetTextures {
 		return WordUtils.capitalizeFully(id.replace('_', ' '));
 	}
 
-	@Nullable
-	public static ProfileComponent animateHeadTexture(String id) {
+	public static @Nullable ResolvableProfile animateHeadTexture(String id) {
 		AnimatedHead head = ANIMATED_HEADS.get(id);
 
 		if (head != null) {
@@ -93,8 +92,8 @@ public class CustomAnimatedHelmetTextures {
 	/**
 	 * @param tickThreshold The amount of ticks between each frame.
 	 */
-	private record AnimatedHead(int tickThreshold, List<ProfileComponent> frames) {
-		private static final Codec<ProfileComponent> FRAME_CODEC = Codec.STRING.xmap(AnimatedHead::fromString, AnimatedHead::toString);
+	private record AnimatedHead(int tickThreshold, List<ResolvableProfile> frames) {
+		private static final Codec<ResolvableProfile> FRAME_CODEC = Codec.STRING.xmap(AnimatedHead::fromString, AnimatedHead::toString);
 		// The ticks value must always be positive since it is used as a divisor and the ticks should not be negative anyways.
 		// However, there seems to be an entry that violates this (seems to be a testing thing) so we will just do a max to make it at least 1.
 		// In the future this could instead use Codecs#POSITIVE_INT.
@@ -107,26 +106,26 @@ public class CustomAnimatedHelmetTextures {
 		/**
 		 * Decodes the profile from the texture string. Formatted as {@code <uuid>:<texture>}.
 		 */
-		private static ProfileComponent fromString(String string) {
+		private static ResolvableProfile fromString(String string) {
 			String[] split = string.split(":");
 			UUID uuid = UUID.fromString(split[0]);
 			PropertyMap propertyMap = ItemUtils.propertyMapWithTexture(split[1]);
 
-			return ProfileComponent.ofStatic(new GameProfile(uuid, "custom", propertyMap));
+			return ResolvableProfile.createResolved(new GameProfile(uuid, "custom", propertyMap));
 		}
 
 		/**
 		 * Not really necessary but ensures compliance with Codec's contracts.
 		 */
-		private static String toString(ProfileComponent profile) {
-			return profile.getGameProfile().id() + ":" + profile.getGameProfile().properties().get("textures").iterator().next().value();
+		private static String toString(ResolvableProfile profile) {
+			return profile.partialProfile().id() + ":" + profile.partialProfile().properties().get("textures").iterator().next().value();
 		}
 
 		/**
 		 * Requires that each animated head have at least a single frame to prevent any potential problems with iterating the list
 		 * since the animation code expects that.
 		 */
-		private static DataResult<List<ProfileComponent>> validateFrames(List<ProfileComponent> frames) {
+		private static DataResult<List<ResolvableProfile>> validateFrames(List<ResolvableProfile> frames) {
 			return !frames.isEmpty() ? DataResult.success(frames) : DataResult.error(() -> "Expected at least a single frame for an animated head but there was none!");
 		}
 	}
@@ -137,7 +136,7 @@ public class CustomAnimatedHelmetTextures {
 		/**
 		 * The current frame/texture to show, this will always be non-null.
 		 */
-		private ProfileComponent currentFrame;
+		private ResolvableProfile currentFrame;
 
 		private AnimatedHeadStateTracker(AnimatedHead head) {
 			this.head = head;
@@ -155,7 +154,7 @@ public class CustomAnimatedHelmetTextures {
 			this.currentFrame = EnumUtils.cycle(this.head.frames(), advancedIndex);
 		}
 
-		private ProfileComponent getCurrentFrame() {
+		private ResolvableProfile getCurrentFrame() {
 			return Objects.requireNonNull(this.currentFrame);
 		}
 	}

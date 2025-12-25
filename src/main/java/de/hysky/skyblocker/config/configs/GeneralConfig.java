@@ -8,12 +8,11 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class GeneralConfig {
 	public boolean enableTips = true;
@@ -48,7 +47,7 @@ public class GeneralConfig {
 	//well... turns out its 9 now
 	public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
 
-	public Object2ObjectOpenHashMap<String, Text> customItemNames = new Object2ObjectOpenHashMap<>();
+	public Object2ObjectOpenHashMap<String, Component> customItemNames = new Object2ObjectOpenHashMap<>();
 
 	public Object2IntOpenHashMap<String> customDyeColors = new Object2IntOpenHashMap<>();
 
@@ -60,9 +59,9 @@ public class GeneralConfig {
 
 	public Object2BooleanOpenHashMap<String> customGlint = new Object2BooleanOpenHashMap<>();
 
-	public Object2ObjectOpenHashMap<String, Identifier> customItemModel = new Object2ObjectOpenHashMap<>();
+	public Object2ObjectOpenHashMap<String, ResourceLocation> customItemModel = new Object2ObjectOpenHashMap<>();
 
-	public Object2ObjectOpenHashMap<String, Identifier> customArmorModel = new Object2ObjectOpenHashMap<>();
+	public Object2ObjectOpenHashMap<String, ResourceLocation> customArmorModel = new Object2ObjectOpenHashMap<>();
 
 	public Object2ObjectOpenHashMap<String, String> customAnimatedHelmetTextures = new Object2ObjectOpenHashMap<>();
 
@@ -132,7 +131,7 @@ public class GeneralConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.itemTooltip.avg." + name());
+			return I18n.get("skyblocker.config.general.itemTooltip.avg." + name());
 		}
 	}
 
@@ -141,7 +140,7 @@ public class GeneralConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.itemTooltip.craft." + name());
+			return I18n.get("skyblocker.config.general.itemTooltip.craft." + name());
 		}
 
 		public String getOrder() {
@@ -181,15 +180,15 @@ public class GeneralConfig {
 		CIRCULAR(SkyblockerMod.id("item_background_circular")),
 		SQUARE(SkyblockerMod.id("item_background_square"));
 
-		public final Identifier tex;
+		public final ResourceLocation tex;
 
-		ItemBackgroundStyle(Identifier tex) {
+		ItemBackgroundStyle(ResourceLocation tex) {
 			this.tex = tex;
 		}
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style." + name());
+			return I18n.get("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style." + name());
 		}
 	}
 
@@ -205,15 +204,15 @@ public class GeneralConfig {
 		CLASSIC(SkyblockerMod.id("textures/gui/slot_lock.png")),
 		FANCY(SkyblockerMod.id("textures/gui/fancy_slot_lock.png"));
 
-		public final Identifier tex;
+		public final ResourceLocation tex;
 
-		SlotLockStyle(Identifier tex) {
+		SlotLockStyle(ResourceLocation tex) {
 			this.tex = tex;
 		}
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.itemProtection.slotLockStyle.style." + name());
+			return I18n.get("skyblocker.config.general.itemProtection.slotLockStyle.style." + name());
 		}
 	}
 

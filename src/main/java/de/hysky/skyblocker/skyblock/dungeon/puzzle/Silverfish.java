@@ -11,13 +11,12 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.mob.SilverfishEntity;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
@@ -69,17 +68,17 @@ public class Silverfish extends DungeonPuzzle {
 	}
 
 	@Override
-	public void tick(MinecraftClient client) {
-		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveSilverfish || client.world == null || !DungeonManager.isCurrentRoomMatched()) {
+	public void tick(Minecraft client) {
+		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveSilverfish || client.level == null || !DungeonManager.isCurrentRoomMatched()) {
 			return;
 		}
 		Room room = DungeonManager.getCurrentRoom();
 
 		boolean boardChanged = false;
-		BlockPos.Mutable pos = new BlockPos.Mutable(23, 67, 24);
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(23, 67, 24);
 		for (int row = 0; row < silverfishBoard.length; pos.move(silverfishBoard[row].length, 0, -1), row++) {
 			for (int col = 0; col < silverfishBoard[row].length; pos.move(Direction.WEST), col++) {
-				boolean isBlock = !client.world.getBlockState(room.relativeToActual(pos)).isAir();
+				boolean isBlock = !client.level.getBlockState(room.relativeToActual(pos)).isAir();
 				if (silverfishBoard[row][col] != isBlock) {
 					silverfishBoard[row][col] = isBlock;
 					boardChanged = true;
@@ -87,11 +86,11 @@ public class Silverfish extends DungeonPuzzle {
 			}
 		}
 
-		List<SilverfishEntity> entities = client.world.getEntitiesByClass(SilverfishEntity.class, Box.of(Vec3d.ofCenter(room.relativeToActual(new BlockPos(15, 66, 16))), 16, 16, 16), silverfishEntity -> true);
+		List<net.minecraft.world.entity.monster.Silverfish> entities = client.level.getEntitiesOfClass(net.minecraft.world.entity.monster.Silverfish.class, AABB.ofSize(Vec3.atCenterOf(room.relativeToActual(new BlockPos(15, 66, 16))), 16, 16, 16), silverfishEntity -> true);
 		if (entities.isEmpty()) {
 			return;
 		}
-		BlockPos newSilverfishBlockPos = room.actualToRelative(entities.getFirst().getBlockPos());
+		BlockPos newSilverfishBlockPos = room.actualToRelative(entities.getFirst().blockPosition());
 		Vector2ic newSilverfishPos = new Vector2i(24 - newSilverfishBlockPos.getZ(), 23 - newSilverfishBlockPos.getX());
 		if (newSilverfishPos.x() < 0 || newSilverfishPos.x() >= 17 || newSilverfishPos.y() < 0 || newSilverfishPos.y() >= 17) {
 			return;
@@ -167,11 +166,11 @@ public class Silverfish extends DungeonPuzzle {
 			return;
 		}
 		Room room = DungeonManager.getCurrentRoom();
-		BlockPos.Mutable pos = new BlockPos.Mutable();
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		for (int i = 0; i < silverfishPath.size() - 1; i++) {
-			Vec3d start = Vec3d.ofCenter(room.relativeToActual(pos.set(23 - silverfishPath.get(i).y(), 67, 24 - silverfishPath.get(i).x())));
-			Vec3d end = Vec3d.ofCenter(room.relativeToActual(pos.set(23 - silverfishPath.get(i + 1).y(), 67, 24 - silverfishPath.get(i + 1).x())));
-			collector.submitLinesFromPoints(new Vec3d[]{start, end}, RED_COLOR_COMPONENTS, 1f, 5f, true);
+			Vec3 start = Vec3.atCenterOf(room.relativeToActual(pos.set(23 - silverfishPath.get(i).y(), 67, 24 - silverfishPath.get(i).x())));
+			Vec3 end = Vec3.atCenterOf(room.relativeToActual(pos.set(23 - silverfishPath.get(i + 1).y(), 67, 24 - silverfishPath.get(i + 1).x())));
+			collector.submitLinesFromPoints(new Vec3[]{start, end}, RED_COLOR_COMPONENTS, 1f, 5f, true);
 		}
 	}
 

@@ -1,31 +1,30 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 
-class IdentifierTextField extends TextFieldWidget {
-	private final Consumer<@Nullable Identifier> callback;
-	private @NotNull String lastValid = "";
+class IdentifierTextField extends EditBox {
+	private final Consumer<@Nullable ResourceLocation> callback;
+	private String lastValid = "";
 	private boolean valid = false;
 
-	IdentifierTextField(int width, int height, Consumer<@Nullable Identifier> callback) {
-		super(MinecraftClient.getInstance().textRenderer, width, height, Text.empty());
-		super.setChangedListener(this::onChanged);
+	IdentifierTextField(int width, int height, Consumer<@Nullable ResourceLocation> callback) {
+		super(Minecraft.getInstance().font, width, height, Component.empty());
+		super.setResponder(this::onChanged);
 		this.callback = callback;
-		addFormatter((string, _firstCharacterIndex) -> OrderedText.styledForwardsVisitedString(string, valid ? Style.EMPTY : Style.EMPTY.withFormatting(Formatting.RED)));
+		addFormatter((string, _firstCharacterIndex) -> FormattedCharSequence.forward(string, valid ? Style.EMPTY : Style.EMPTY.applyFormat(ChatFormatting.RED)));
 	}
 
 	private void onChanged(String s) {
-		Identifier identifier = Identifier.tryParse(s);
+		ResourceLocation identifier = ResourceLocation.tryParse(s);
 		valid = true;
 		if (s.isBlank()) {
 			callback.accept(null);
@@ -39,8 +38,8 @@ class IdentifierTextField extends TextFieldWidget {
 	@Override
 	public void setFocused(boolean focused) {
 		super.setFocused(focused);
-		if (!focused && !lastValid.equals(getText())) {
-			setText(lastValid);
+		if (!focused && !lastValid.equals(getValue())) {
+			setValue(lastValid);
 		}
 	}
 }

@@ -2,9 +2,9 @@ package de.hysky.skyblocker.utils.waypoint;
 
 import de.hysky.skyblocker.skyblock.waypoint.Waypoints;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.Bootstrap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -212,22 +212,22 @@ public class WaypointsTest {
 
 	@BeforeAll
 	public static void setup() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 	}
 
 	@Test
 	void testFromSkytilsBase64() {
 		String waypointGroupsSkytilsBase64 = "eyJjYXRlZ29yaWVzIjpbeyJuYW1lIjoiY2F0ZWdvcnkiLCJ3YXlwb2ludHMiOlt7Im5hbWUiOiJ3YXlwb2ludCIsIngiOjAsInkiOjAsInoiOjAsImVuYWJsZWQiOmZhbHNlLCJjb2xvciI6LTg3MjM4MjIwOSwiYWRkZWRBdCI6MX0seyJuYW1lIjoxLCJ4IjotMSwieSI6MCwieiI6MSwiZW5hYmxlZCI6dHJ1ZSwiY29sb3IiOjAsImFkZGVkQXQiOjF9XSwiaXNsYW5kIjoiaHViIn1dfQ==";
 		List<WaypointGroup> waypointGroups = Waypoints.fromSkytils(waypointGroupsSkytilsBase64, Location.UNKNOWN);
-		List<WaypointGroup> expectedWaypointGroups = List.of(new WaypointGroup("category", Location.HUB, List.of(new NamedWaypoint(BlockPos.ORIGIN, "waypoint", new float[]{0f, 0.5019608f, 1f}, 0.8f, false), new NamedWaypoint(new BlockPos(-1, 0, 1), "1", new float[]{0f, 0f, 0f}, true))));
+		List<WaypointGroup> expectedWaypointGroups = List.of(new WaypointGroup("category", Location.HUB, List.of(new NamedWaypoint(BlockPos.ZERO, "waypoint", new float[]{0f, 0.5019608f, 1f}, 0.8f, false), new NamedWaypoint(new BlockPos(-1, 0, 1), "1", new float[]{0f, 0f, 0f}, true))));
 
 		Assertions.assertEquals(expectedWaypointGroups, waypointGroups);
 	}
 
 	@Test
 	void testToSkytilsBase64() {
-		List<WaypointGroup> waypointGroups = List.of(new WaypointGroup("category", Location.HUB, List.of(new NamedWaypoint(BlockPos.ORIGIN, "waypoint", new float[]{0f, 0.5f, 1f}, 0.8f, false), new NamedWaypoint(new BlockPos(-1, 0, 1), "1", new float[]{0f, 0f, 0f}, true))));
+		List<WaypointGroup> waypointGroups = List.of(new WaypointGroup("category", Location.HUB, List.of(new NamedWaypoint(BlockPos.ZERO, "waypoint", new float[]{0f, 0.5f, 1f}, 0.8f, false), new NamedWaypoint(new BlockPos(-1, 0, 1), "1", new float[]{0f, 0f, 0f}, true))));
 		String waypointGroupsSkytilsBase64 = Waypoints.toSkytilsBase64(waypointGroups);
 		String expectedWaypointGroupsSkytilsBase64 = "eyJjYXRlZ29yaWVzIjpbeyJuYW1lIjoiY2F0ZWdvcnkiLCJpc2xhbmQiOiJodWIiLCJ3YXlwb2ludHMiOlt7Im5hbWUiOiJ3YXlwb2ludCIsImNvbG9yIjotODcyMzgyNDY1LCJlbmFibGVkIjpmYWxzZSwieCI6MCwieSI6MCwieiI6MH0seyJuYW1lIjoiMSIsImNvbG9yIjoyMTMwNzA2NDMyLCJlbmFibGVkIjp0cnVlLCJ4IjotMSwieSI6MCwieiI6MX1dfV19";
 

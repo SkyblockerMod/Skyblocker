@@ -1,22 +1,21 @@
 package de.hysky.skyblocker.skyblock.profileviewer;
 
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import java.util.Map;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
-public class ProfileViewerNavButton extends ClickableWidget {
-	private static final Identifier BUTTON_TEXTURES_TOGGLED = Identifier.of("container/creative_inventory/tab_top_selected_2");
-	private static final Identifier BUTTON_TEXTURES = Identifier.of("container/creative_inventory/tab_top_unselected_2");
+public class ProfileViewerNavButton extends AbstractWidget {
+	private static final ResourceLocation BUTTON_TEXTURES_TOGGLED = ResourceLocation.parse("container/creative_inventory/tab_top_selected_2");
+	private static final ResourceLocation BUTTON_TEXTURES = ResourceLocation.parse("container/creative_inventory/tab_top_unselected_2");
 	private boolean toggled;
 	private final int index;
 	private final ProfileViewerScreen screen;
@@ -32,7 +31,7 @@ public class ProfileViewerNavButton extends ClickableWidget {
 	);
 
 	public ProfileViewerNavButton(ProfileViewerScreen screen, String tabName, int index, boolean toggled) {
-		super(-100, -100, 28, 32, Text.empty());
+		super(-100, -100, 28, 32, Component.empty());
 		this.screen = screen;
 		this.toggled = toggled;
 		this.index = index;
@@ -40,22 +39,22 @@ public class ProfileViewerNavButton extends ClickableWidget {
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, toggled ? BUTTON_TEXTURES_TOGGLED : BUTTON_TEXTURES, this.getX(), this.getY(), this.width, this.height - ((this.toggled) ? 0 : 4));
-		context.drawItem(this.icon, this.getX() + 6, this.getY() + (this.toggled ? 7 : 9));
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, toggled ? BUTTON_TEXTURES_TOGGLED : BUTTON_TEXTURES, this.getX(), this.getY(), this.width, this.height - ((this.toggled) ? 0 : 4));
+		context.renderItem(this.icon, this.getX() + 6, this.getY() + (this.toggled ? 7 : 9));
 
 		if (this.isHovered()) {
-			context.setCursor(StandardCursors.POINTING_HAND);
+			context.requestCursor(CursorTypes.POINTING_HAND);
 		}
 	}
 
 	@Override
-	public void onClick(Click click, boolean doubled) {
+	public void onClick(MouseButtonEvent click, boolean doubled) {
 		screen.onNavButtonClick(this);
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	public void setToggled(boolean toggled) {
 		this.toggled = toggled;

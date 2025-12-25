@@ -22,26 +22,26 @@ import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,16 +120,16 @@ Time starts when the water lever is turned on and stops when the last door opens
 public class WaterboardOneFlow extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WaterboardOneFlow.class);
 	public static final WaterboardOneFlow INSTANCE = new WaterboardOneFlow();
-	private static final Identifier WATER_TIMES = SkyblockerMod.id("dungeons/watertimes.json");
-	private static final Text WAIT_TEXT = Text.literal("WAIT").formatted(Formatting.RED, Formatting.BOLD);
-	private static final Text CLICK_TEXT = Text.literal("CLICK").formatted(Formatting.GREEN, Formatting.BOLD);
+	private static final ResourceLocation WATER_TIMES = SkyblockerMod.id("dungeons/watertimes.json");
+	private static final Component WAIT_TEXT = Component.literal("WAIT").withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
+	private static final Component CLICK_TEXT = Component.literal("CLICK").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 	private static JsonObject SOLUTIONS;
 
 	private boolean timerEnabled;
 	private final List<Mark> marks = new ArrayList<>();
-	private ClientWorld world;
+	private ClientLevel world;
 	private Room room;
-	private ClientPlayerEntity player;
+	private LocalPlayer player;
 
 	private int variant;
 	private String doors;
@@ -198,20 +198,20 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 							return Command.SINGLE_SUCCESS;
 						}
 
-						Vec3d camera = INSTANCE.room.actualToRelative(INSTANCE.player.getEyePos());
-						Vec3d look = INSTANCE.room.actualToRelative(INSTANCE.player.getEyePos()
-								.add(INSTANCE.player.getRotationVector())).subtract(camera);
-						double t = (BOARD_Z + 0.5 - camera.getZ()) / look.getZ();
-						Vec3d vec = camera.add(look.multiply(t));
-						double x = MathHelper.floor(vec.x);
-						double y = MathHelper.floor(vec.y);
-						double z = MathHelper.floor(vec.z);
+						Vec3 camera = INSTANCE.room.actualToRelative(INSTANCE.player.getEyePosition());
+						Vec3 look = INSTANCE.room.actualToRelative(INSTANCE.player.getEyePosition()
+								.add(INSTANCE.player.getLookAngle())).subtract(camera);
+						double t = (BOARD_Z + 0.5 - camera.z()) / look.z();
+						Vec3 vec = camera.add(look.scale(t));
+						double x = Mth.floor(vec.x);
+						double y = Mth.floor(vec.y);
+						double z = Mth.floor(vec.z);
 
 						if (x < BOARD_MIN_X || x > BOARD_MAX_X || y < BOARD_MIN_Y || y > BOARD_MAX_Y || z != BOARD_Z) {
 							context.getSource().sendError(Constants.PREFIX.get().append("Mark is not inside the board"));
 							return Command.SINGLE_SUCCESS;
 						}
-						BlockPos pos = BlockPos.ofFloored(INSTANCE.room.relativeToActual(vec));
+						BlockPos pos = BlockPos.containing(INSTANCE.room.relativeToActual(vec));
 
 						if (!INSTANCE.world.getBlockState(pos).isAir()) {
 							context.getSource().sendError(Constants.PREFIX.get().append("Marks can only be placed on air"));
@@ -236,7 +236,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		}
 	}
 
-	private static void loadSolutions(MinecraftClient client) {
+	private static void loadSolutions(Minecraft client) {
 		try (BufferedReader reader = client.getResourceManager().openAsReader(WATER_TIMES)) {
 			SOLUTIONS = JsonParser.parseReader(reader).getAsJsonObject();
 		} catch (Exception e) {
@@ -245,16 +245,16 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	}
 
 	@Override
-	public void tick(MinecraftClient client) {
+	public void tick(Minecraft client) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow ||
 				!shouldSolve() ||
-				client.world == null ||
+				client.level == null ||
 				client.player == null ||
 				!DungeonManager.isCurrentRoomMatched()) {
 			return;
 		}
 
-		world = client.world;
+		world = client.level;
 		room = DungeonManager.getCurrentRoom();
 		player = client.player;
 
@@ -270,20 +270,20 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 			finished = true;
 			if (timerEnabled) {
 				double elapsed = (System.currentTimeMillis() - waterStartMillis) / 1000.0;
-				player.sendMessage(Constants.PREFIX.get().append("Puzzle solved in ")
-						.append(Text.literal(String.format("%.2f", elapsed)).formatted(Formatting.GREEN))
-						.append(Formatting.RESET.toString()).append(" seconds."), false);
+				player.displayClientMessage(Constants.PREFIX.get().append("Puzzle solved in ")
+						.append(Component.literal(String.format("%.2f", elapsed)).withStyle(ChatFormatting.GREEN))
+						.append(ChatFormatting.RESET.toString()).append(" seconds."), false);
 			}
 		}
 
 		if (waterStartMillis > 0) {
 			for (Mark mark : marks) {
-				if (!mark.reached && world.getBlockState(mark.pos).isOf(Blocks.WATER)) {
+				if (!mark.reached && world.getBlockState(mark.pos).is(Blocks.WATER)) {
 					mark.reached = true;
 					double elapsed = (System.currentTimeMillis() - waterStartMillis) / 1000.0;
-					player.sendMessage(Constants.PREFIX.get().append(String.format("Mark %d reached in ", mark.index))
-							.append(Text.literal(String.format("%.2f", elapsed)).formatted(Formatting.GREEN))
-							.append(Formatting.RESET.toString()).append(" seconds."), false);
+					player.displayClientMessage(Constants.PREFIX.get().append(String.format("Mark %d reached in ", mark.index))
+							.append(Component.literal(String.format("%.2f", elapsed)).withStyle(ChatFormatting.GREEN))
+							.append(ChatFormatting.RESET.toString()).append(" seconds."), false);
 				}
 			}
 		}
@@ -305,14 +305,14 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				finished = true;
 				return;
 			} else if (doors.length() != 3) {
-				player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.puzzle.waterboard.invalidDoors")), false);
+				player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.puzzle.waterboard.invalidDoors")), false);
 				finished = true;
 				return;
 			}
 		}
 
 		if (!checkWater()) {
-			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.puzzle.waterboard.waterFound")), false);
+			player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.puzzle.waterboard.waterFound")), false);
 			finished = true;
 			return;
 		}
@@ -337,9 +337,9 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		// toggleable blocks at the entrance. They are a block lower on the first layout.
 
 		Set<LeverType> firstSwitches = new HashSet<>();
-		Box firstSwitchBlocks = Box.enclosing(room.relativeToActual(WATER_ENTRANCE_POSITION.add(-1, -1, 0)),
-				room.relativeToActual(WATER_ENTRANCE_POSITION.add(1, 0, 1)));
-		for (BlockState state : world.getStatesInBox(firstSwitchBlocks).toList()) {
+		AABB firstSwitchBlocks = AABB.encapsulatingFullBlocks(room.relativeToActual(WATER_ENTRANCE_POSITION.offset(-1, -1, 0)),
+				room.relativeToActual(WATER_ENTRANCE_POSITION.offset(1, 0, 1)));
+		for (BlockState state : world.getBlockStates(firstSwitchBlocks).toList()) {
 			LeverType leverType = LeverType.fromBlock(state.getBlock());
 			if (leverType != null) {
 				firstSwitches.add(leverType);
@@ -357,7 +357,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		}
 
 		LOGGER.error("[Skyblocker Waterboard] Unknown waterboard layout. Detected switches: [{}]",
-				String.join(", ", firstSwitches.stream().map(LeverType::asString).toList()));
+				String.join(", ", firstSwitches.stream().map(LeverType::getSerializedName).toList()));
 
 		return 0;
 	}
@@ -365,7 +365,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	private String findDoors() {
 		// Determine which doors are closed
 		StringBuilder doorBuilder = new StringBuilder();
-		BlockPos.Mutable doorPos = new BlockPos.Mutable(15, 57, 19);
+		BlockPos.MutableBlockPos doorPos = new BlockPos.MutableBlockPos(15, 57, 19);
 		for (int i = 0; i < 5; i++) {
 			if (!world.getBlockState(room.relativeToActual(doorPos)).isAir()) {
 				doorBuilder.append(i);
@@ -381,7 +381,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 			for (int y = BOARD_MIN_Y; y <= BOARD_MAX_Y; y++) {
 				BlockPos pos = room.relativeToActual(new BlockPos(x, y, BOARD_Z));
 				BlockState state = world.getBlockState(pos);
-				if (state.isOf(Blocks.WATER)) {
+				if (state.is(Blocks.WATER)) {
 					return false;
 				}
 			}
@@ -422,7 +422,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		if (offset == null) {
 			return false;
 		}
-		return !world.getBlockState(room.relativeToActual(WATER_ENTRANCE_POSITION.add(offset))).isOf(leverType.block);
+		return !world.getBlockState(room.relativeToActual(WATER_ENTRANCE_POSITION.offset(offset))).is(leverType.block);
 	}
 
 	private boolean isPuzzleSolved() {
@@ -452,8 +452,8 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 			for (Mark mark : marks) {
 				float[] components = ColorUtils.getFloatComponents(mark.reached ? DyeColor.LIME : DyeColor.WHITE);
 				collector.submitFilledBox(mark.pos, components, 0.5f, true);
-				collector.submitText(Text.of(String.format("Mark %d", mark.index)),
-						mark.pos.toCenterPos().offset(Direction.UP, 0.2), true);
+				collector.submitText(Component.nullToEmpty(String.format("Mark %d", mark.index)),
+						mark.pos.getCenter().relative(Direction.UP, 0.2), true);
 			}
 
 			if (solution != null) {
@@ -468,12 +468,12 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				LeverType nextNextLever = sortedTimes.size() < 2 ? null : sortedTimes.get(1).left();
 
 				if (nextLever != null) {
-					collector.submitLineFromCursor(room.relativeToActual(nextLever.leverPos).toCenterPos(),
+					collector.submitLineFromCursor(room.relativeToActual(nextLever.leverPos).getCenter(),
 							ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 4f);
 					if (nextNextLever != null) {
-						collector.submitLinesFromPoints(new Vec3d[]{
-								room.relativeToActual(nextLever.leverPos).toCenterPos(),
-								room.relativeToActual(nextNextLever.leverPos).toCenterPos()
+						collector.submitLinesFromPoints(new Vec3[]{
+								room.relativeToActual(nextLever.leverPos).getCenter(),
+								room.relativeToActual(nextNextLever.leverPos).getCenter()
 						}, ColorUtils.getFloatComponents(DyeColor.WHITE), 1f, 2f, true);
 					}
 				}
@@ -491,7 +491,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 			for (int i = 0; i < leverData.getValue().size(); i++) {
 				double nextTime = leverData.getValue().getDouble(i);
 				long remainingTime = waterStartMillis + (long) (nextTime * 1000) - System.currentTimeMillis();
-				Text text;
+				Component text;
 
 				if (lever == LeverType.WATER && nextTime == 0.0 && nextLever != LeverType.WATER) {
 					// Solutions assume levers with a time of 0.0 are used before the water lever
@@ -500,17 +500,17 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 					text = CLICK_TEXT;
 				} else {
 					double timeToShow = waterStartMillis == 0 ? nextTime : remainingTime / 1000.0;
-					text = Text.literal(String.format("%.2f", timeToShow)).formatted(Formatting.YELLOW);
+					text = Component.literal(String.format("%.2f", timeToShow)).withStyle(ChatFormatting.YELLOW);
 				}
 
 				collector.submitText(text,
-						room.relativeToActual(lever.leverPos).toCenterPos()
-								.offset(Direction.UP, 0.5 * (i + 1)), true);
+						room.relativeToActual(lever.leverPos).getCenter()
+								.relative(Direction.UP, 0.5 * (i + 1)), true);
 			}
 		}
 	}
 
-	private ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult blockHitResult) {
+	private InteractionResult onUseBlock(Player player, Level world, InteractionHand hand, BlockHitResult blockHitResult) {
 		try {
 			if (SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow &&
 					solution != null && blockHitResult.getType() == HitResult.Type.BLOCK) {
@@ -533,7 +533,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waterboard] Exception in onUseBlock", e);
 		}
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
 	@Override

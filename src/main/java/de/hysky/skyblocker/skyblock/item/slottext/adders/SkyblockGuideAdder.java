@@ -2,15 +2,14 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class SkyblockGuideAdder extends SimpleSlotTextAdder {
 	private static final Pattern GUIDE_PATTERN = Pattern.compile("^(?<symbol>[✖✔])\\s*(?<text>.+)");
@@ -23,14 +22,14 @@ public class SkyblockGuideAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slotId < 18 || slotId > 44) return List.of();
-		Matcher match = GUIDE_PATTERN.matcher(stack.getName().getString());
+		Matcher match = GUIDE_PATTERN.matcher(stack.getHoverName().getString());
 		if (!match.matches()) return List.of();
 		String symbol = match.group("symbol");
-		Text text = symbol.equals("✖")
-				? Text.literal("✘").withColor(SlotText.LIGHT_RED)
-				: Text.literal("✔").withColor(SlotText.LIGHT_GREEN);
+		Component text = symbol.equals("✖")
+				? Component.literal("✘").withColor(SlotText.LIGHT_RED)
+				: Component.literal("✔").withColor(SlotText.LIGHT_GREEN);
 
 		return SlotText.bottomRightList(text);
 	}

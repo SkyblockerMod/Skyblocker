@@ -1,31 +1,30 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import net.minecraft.client.gui.widget.LayoutWidget;
-import net.minecraft.client.gui.widget.Widget;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import net.minecraft.client.gui.layouts.Layout;
+import net.minecraft.client.gui.layouts.LayoutElement;
 
-public class ToggleableLayoutWidget implements LayoutWidget {
-	private final Widget widget;
+public class ToggleableLayoutWidget implements Layout {
+	private final LayoutElement widget;
 	private final BooleanSupplier isEnabled;
 
 	private boolean enabled;
 
-	public ToggleableLayoutWidget(Widget widget, BooleanSupplier isEnabled) {
+	public ToggleableLayoutWidget(LayoutElement widget, BooleanSupplier isEnabled) {
 		this.widget = widget;
 		this.isEnabled = isEnabled;
 	}
 
 	@Override
-	public void forEachElement(Consumer<Widget> consumer) {
+	public void visitChildren(Consumer<LayoutElement> consumer) {
 		if (enabled) consumer.accept(widget);
 	}
 
 	@Override
-	public void refreshPositions() {
+	public void arrangeElements() {
 		enabled = this.isEnabled.getAsBoolean();
-		LayoutWidget.super.refreshPositions();
+		Layout.super.arrangeElements();
 	}
 
 	@Override

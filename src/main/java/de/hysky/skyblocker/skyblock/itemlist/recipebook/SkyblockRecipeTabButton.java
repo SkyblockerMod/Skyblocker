@@ -1,42 +1,42 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget;
-import net.minecraft.client.gui.widget.ToggleButtonWidget;
-import net.minecraft.item.ItemStack;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.StateSwitchingButton;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.world.item.ItemStack;
 
 /**
- * Based off {@link net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget}
+ * Based off {@link net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton}
  */
-public class SkyblockRecipeTabButton extends ToggleButtonWidget {
+public class SkyblockRecipeTabButton extends StateSwitchingButton {
 	protected final ItemStack icon;
 
 	protected SkyblockRecipeTabButton(ItemStack icon) {
 		super(0, 0, 35, 27, false);
 
 		this.icon = icon;
-		this.setTextures(RecipeGroupButtonWidget.TEXTURES);
+		this.initTextureValues(RecipeBookTabButton.SPRITES);
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		if (this.textures != null) {
+	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		if (this.sprites != null) {
 			int x = this.getX();
 
 			//Offset x
-			if (this.toggled) x -= 2;
+			if (this.isStateTriggered) x -= 2;
 
 			//Render main texture
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, this.textures.get(true, this.toggled), x, this.getY(), this.width, this.height);
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(true, this.isStateTriggered), x, this.getY(), this.width, this.height);
 
 			//Render item icon
-			int offset = this.toggled ? -2 : 0;
-			context.drawItemWithoutEntity(this.icon, this.getX() + 9 + offset, this.getY() + 5);
+			int offset = this.isStateTriggered ? -2 : 0;
+			context.renderFakeItem(this.icon, this.getX() + 9 + offset, this.getY() + 5);
 
 			if (this.isHovered()) {
-				context.setCursor(StandardCursors.POINTING_HAND);
+				context.requestCursor(CursorTypes.POINTING_HAND);
 			}
 		}
 	}

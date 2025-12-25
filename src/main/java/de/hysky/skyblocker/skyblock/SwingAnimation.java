@@ -1,9 +1,8 @@
 package de.hysky.skyblocker.skyblock;
 
-import net.minecraft.item.ItemStack;
-
 import java.util.Locale;
 import java.util.regex.Pattern;
+import net.minecraft.world.item.ItemStack;
 
 public class SwingAnimation {
 	private static final Pattern ABILITY = Pattern.compile("^(⦾\\s)?ability:\\s.*?right\\sclick$");

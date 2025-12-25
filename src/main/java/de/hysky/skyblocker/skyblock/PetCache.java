@@ -14,16 +14,15 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.azureaaron.networth.utils.PetConstants;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,14 +52,14 @@ public class PetCache {
 		CACHED_PETS.load();
 
 		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
-			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
+			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
 				if (genericContainerScreen.getTitle().getString().startsWith("Pets")) {
 					shouldLook4Pets = true;
 
 					ScreenEvents.afterTick(screen).register(screen1 -> {
 						if (shouldLook4Pets) {
-							for (Slot slot : genericContainerScreen.getScreenHandler().slots) {
-								ItemStack stack = slot.getStack();
+							for (Slot slot : genericContainerScreen.getMenu().slots) {
+								ItemStack stack = slot.getItem();
 
 								if (!stack.isEmpty() && ItemUtils.getLoreLineIf(stack, line -> line.equals("Click to despawn!")) != null) {
 									shouldLook4Pets = false;
@@ -80,7 +79,7 @@ public class PetCache {
 	public static void handlePetEquip(Slot slot, int slotId) {
 		//Ignore inventory clicks
 		if (slotId >= 0 && slotId <= 53) {
-			ItemStack stack = slot.getStack();
+			ItemStack stack = slot.getItem();
 
 			if (!stack.isEmpty()) parsePet(stack, true);
 		}
@@ -112,17 +111,17 @@ public class PetCache {
 	/**
 	 * Parses the Auto Pet messages to try and detect the active pet
 	 */
-	private static boolean onMessage(Text text, boolean overlay) {
+	private static boolean onMessage(Component text, boolean overlay) {
 		if (!Utils.isOnSkyblock() || overlay) return true;
 
-		String stringified = Formatting.strip(text.getString());
+		String stringified = ChatFormatting.stripFormatting(text.getString());
 		Matcher matcher = AUTOPET_PATTERN.matcher(stringified);
 
 		if (matcher.matches()) {
 			int level = RegexUtils.parseIntFromMatcher(matcher, "level");
 			String name = matcher.group("name");
 
-			OrderedText ordered = text.asOrderedText();
+			FormattedCharSequence ordered = text.getVisualOrderText();
 			int nameIndex = stringified.indexOf(name);
 			MutableInt codePointIndex = new MutableInt(0);
 			MutableInt color = new MutableInt(-1);
@@ -131,7 +130,7 @@ public class PetCache {
 			//The visitor automatically folds section symbols into regular Style instances so we don't need to care about those either :)
 			ordered.accept((index, style, codePoint) -> {
 				if (codePointIndex.intValue() == nameIndex) {
-					color.setValue(style.getColor().getRgb());
+					color.setValue(style.getColor().getValue());
 
 					return false;
 				}
@@ -151,17 +150,17 @@ public class PetCache {
 
 				//Find pet in NEU repo
 				ItemStack stack = ItemRepository.getItemsStream()
-						.filter(s -> s.getName().getString().contains("] " + name))
+						.filter(s -> s.getHoverName().getString().contains("] " + name))
 						.findFirst()
 						.orElse(ItemStack.EMPTY);
 
 				if (!stack.isEmpty()) {
 					//We need to change the item id of the stack in order for the pet info to parse properly cause the id in the custom data is the neu id
 					ItemStack copied = stack.copy();
-					NbtCompound customData = copied.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
+					CompoundTag customData = copied.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
 					customData.putString("id", "PET");
-					copied.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(customData));
+					copied.set(DataComponents.CUSTOM_DATA, CustomData.of(customData));
 
 					//If the pet from the NEU repo is missing the data then try to guess the type
 					String type = !copied.getPetInfo().isEmpty() ? copied.getPetInfo().type() : name.toUpperCase(Locale.ENGLISH).replace(" ", "_");
@@ -176,8 +175,7 @@ public class PetCache {
 		return true;
 	}
 
-	@Nullable
-	public static PetInfo getCurrentPet() {
+	public static @Nullable PetInfo getCurrentPet() {
 		return CACHED_PETS.get();
 	}
 }

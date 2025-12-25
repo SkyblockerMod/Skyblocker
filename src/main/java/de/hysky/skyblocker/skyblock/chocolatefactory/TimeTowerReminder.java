@@ -9,9 +9,9 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +61,9 @@ public class TimeTowerReminder {
 	}
 
 	private static void sendMessage() {
-		if (MinecraftClient.getInstance().player == null || !Utils.isOnSkyblock()) return;
+		if (Minecraft.getInstance().player == null || !Utils.isOnSkyblock()) return;
 		if (SkyblockerConfigManager.get().helpers.chocolateFactory.enableTimeTowerReminder) {
-			MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.chocolateFactory.sendTimeTowerReminderMessage").formatted(Formatting.RED)), false);
+			Minecraft.getInstance().player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.chocolateFactory.sendTimeTowerReminderMessage").withStyle(ChatFormatting.RED)), false);
 		}
 		File tempFile = SkyblockerMod.CONFIG_DIR.resolve(TIME_TOWER_FILE).toFile();
 		try {

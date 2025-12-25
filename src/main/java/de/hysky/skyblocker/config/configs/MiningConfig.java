@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.config.configs;
 
-import net.minecraft.client.resource.language.I18n;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.resources.language.I18n;
 
 public class MiningConfig {
 	public boolean enableDrillFuel = true;
@@ -140,7 +139,7 @@ public class MiningConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.mining.commissionWaypoints.mode." + name());
+			return I18n.get("skyblocker.config.mining.commissionWaypoints.mode." + name());
 		}
 	}
 

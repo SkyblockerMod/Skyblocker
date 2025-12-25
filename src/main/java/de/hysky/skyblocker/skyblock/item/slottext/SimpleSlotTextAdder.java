@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.item.slottext;
 import de.hysky.skyblocker.utils.container.RegexContainerMatcher;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
@@ -20,7 +19,7 @@ public abstract class SimpleSlotTextAdder extends RegexContainerMatcher implemen
 	 *
 	 * @see #SimpleSlotTextAdder(Pattern)
 	 */
-	protected SimpleSlotTextAdder(@NotNull @Language("RegExp") String titlePattern) {
+	protected SimpleSlotTextAdder(@Language("RegExp") String titlePattern) {
 		this(titlePattern, null);
 	}
 
@@ -29,7 +28,7 @@ public abstract class SimpleSlotTextAdder extends RegexContainerMatcher implemen
 	 *
 	 * @param titlePattern The pattern to match the screen title against.
 	 */
-	protected SimpleSlotTextAdder(@NotNull Pattern titlePattern) {
+	protected SimpleSlotTextAdder(Pattern titlePattern) {
 		this(titlePattern, null);
 	}
 
@@ -46,7 +45,7 @@ public abstract class SimpleSlotTextAdder extends RegexContainerMatcher implemen
 	 *
 	 * @see #SimpleSlotTextAdder(Pattern)
 	 */
-	protected SimpleSlotTextAdder(@NotNull @Language("RegExp") String titlePattern, @Nullable ConfigInformation configInformation) {
+	protected SimpleSlotTextAdder(@Language("RegExp") String titlePattern, @Nullable ConfigInformation configInformation) {
 		super(titlePattern);
 		this.configInformation = configInformation;
 	}
@@ -57,7 +56,7 @@ public abstract class SimpleSlotTextAdder extends RegexContainerMatcher implemen
 	 *
 	 * @param titlePattern The pattern to match the screen title against.
 	 */
-	protected SimpleSlotTextAdder(@NotNull Pattern titlePattern, @Nullable ConfigInformation configInformation) {
+	protected SimpleSlotTextAdder(Pattern titlePattern, @Nullable ConfigInformation configInformation) {
 		super(titlePattern);
 		this.configInformation = configInformation;
 	}
@@ -72,8 +71,7 @@ public abstract class SimpleSlotTextAdder extends RegexContainerMatcher implemen
 	}
 
 	@Override
-	@Nullable
-	public ConfigInformation getConfigInformation() {
+	public @Nullable ConfigInformation getConfigInformation() {
 		return configInformation;
 	}
 }

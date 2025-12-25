@@ -10,25 +10,25 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 public class PickobulusHelper {
 	private static final Set<Block> CONVERT_INTO_BEDROCK_BLOCKS = Set.of(
@@ -96,11 +96,10 @@ public class PickobulusHelper {
 			Blocks.BLACK_STAINED_GLASS_PANE
 	);
 	private static final float[] LIGHT_BLUE = ColorUtils.getFloatComponents(DyeColor.LIGHT_BLUE);
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 
 	private static boolean shouldRender;
-	@Nullable
-	private static Text errorMessage;
+	private static @Nullable Component errorMessage;
 	private static final BlockState[][][] blocks = new BlockState[8][8][8];
 	private static final Set<BlockPos> breakBlocks = new HashSet<>();
 	private static final int[] drops = new int[MiningDrop.values().length];
@@ -109,8 +108,7 @@ public class PickobulusHelper {
 		return shouldRender;
 	}
 
-	@Nullable
-	public static Text getErrorMessage() {
+	public static @Nullable Component getErrorMessage() {
 		return errorMessage;
 	}
 
@@ -136,8 +134,8 @@ public class PickobulusHelper {
 		breakBlocks.clear();
 		Arrays.fill(drops, 0);
 
-		if (CLIENT.player == null || CLIENT.world == null) {
-			errorMessage = Text.literal("Can't find player or world?").formatted(Formatting.RED);
+		if (CLIENT.player == null || CLIENT.level == null) {
+			errorMessage = Component.literal("Can't find player or world?").withStyle(ChatFormatting.RED);
 			return;
 		}
 
@@ -146,20 +144,20 @@ public class PickobulusHelper {
 		// Only process if the pickobulus ability info is in the player list, so pickobulus helper will still render if this info is not in the player list
 		if (pickobulusCooldownHud.isPresent() && !pickobulusCooldownHud.get().equals("Pickobulus: Available")) {
 			shouldRender = !SkyblockerConfigManager.get().mining.pickobulusHelper.hideHudOnCooldown;
-			errorMessage = Text.literal("Pickobulus is on cooldown: " + pickobulusCooldownHud.get().substring(12)).formatted(Formatting.RED);
+			errorMessage = Component.literal("Pickobulus is on cooldown: " + pickobulusCooldownHud.get().substring(12)).withStyle(ChatFormatting.RED);
 			return;
 		}
 
-		if (ItemUtils.getLoreLineContains(CLIENT.player.getMainHandStack(), "Ability: Pickobulus") == null) {
+		if (ItemUtils.getLoreLineContains(CLIENT.player.getMainHandItem(), "Ability: Pickobulus") == null) {
 			shouldRender = false;
-			errorMessage = Text.literal("Not holding a tool with pickobulus").formatted(Formatting.RED);
+			errorMessage = Component.literal("Not holding a tool with pickobulus").withStyle(ChatFormatting.RED);
 			return;
 		}
 
-		Vec3d start = CLIENT.player.getEntityPos().add(0, Utils.getEyeHeight(CLIENT.player) + 0.53625, 0); // Magic number according to https://youtu.be/5hdDrr6jk4E
-		BlockHitResult blockHitResult = CLIENT.world.raycast(new RaycastContext(start, start.add(CLIENT.player.getRotationVecClient().multiply(20)), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, CLIENT.player));
+		Vec3 start = CLIENT.player.position().add(0, Utils.getEyeHeight(CLIENT.player) + 0.53625, 0); // Magic number according to https://youtu.be/5hdDrr6jk4E
+		BlockHitResult blockHitResult = CLIENT.level.clip(new ClipContext(start, start.add(CLIENT.player.getForward().scale(20)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CLIENT.player));
 		if (blockHitResult.getType() != HitResult.Type.BLOCK) {
-			errorMessage = Text.literal("Not looking at a block").formatted(Formatting.RED);
+			errorMessage = Component.literal("Not looking at a block").withStyle(ChatFormatting.RED);
 			return;
 		}
 
@@ -167,12 +165,12 @@ public class PickobulusHelper {
 	}
 
 	private static void calculatePickobulus(BlockPos pos) {
-		assert CLIENT.world != null;
-		BlockPos.Mutable posMutable = pos.mutableCopy().move(-4, -4, -4);
+		assert CLIENT.level != null;
+		BlockPos.MutableBlockPos posMutable = pos.mutable().move(-4, -4, -4);
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				for (int k = 0; k < 8; k++) {
-					blocks[i][j][k] = CLIENT.world.getBlockState(posMutable);
+					blocks[i][j][k] = CLIENT.level.getBlockState(posMutable);
 					posMutable.move(Direction.SOUTH);
 				}
 				posMutable.move(0, 1, -8);
@@ -184,7 +182,7 @@ public class PickobulusHelper {
 			for (int j = 1; j < 7; j++) {
 				for (int k = 1; k < 7; k++) {
 					BlockState state = blocks[i][j][k];
-					if (state.isAir() || state.isOf(Blocks.BEDROCK)) continue;
+					if (state.isAir() || state.is(Blocks.BEDROCK)) continue;
 					boolean exposed = blocks[i - 1][j][k].isAir() || blocks[i + 1][j][k].isAir()
 									|| blocks[i][j - 1][k].isAir() || blocks[i][j + 1][k].isAir()
 									|| blocks[i][j][k - 1].isAir() || blocks[i][j][k + 1].isAir();
@@ -204,98 +202,98 @@ public class PickobulusHelper {
 	}
 
 	private static void handleBreakable(BlockPos pos, int i, int j, int k) {
-		blocks[i][j][k] = Blocks.AIR.getDefaultState();
-		breakBlocks.add(pos.add(i - 4, j - 4, k - 4));
+		blocks[i][j][k] = Blocks.AIR.defaultBlockState();
+		breakBlocks.add(pos.offset(i - 4, j - 4, k - 4));
 	}
 
 	private static void handleConvertIntoBedrock(BlockPos pos, BlockState state, int i, int j, int k) {
 		if (CONVERT_INTO_BEDROCK_BLOCKS.contains(state.getBlock()) || STAINED_GLASS_BLOCKS.contains(state.getBlock())) {
-			breakBlocks.add(pos.add(i - 4, j - 4, k - 4));
+			breakBlocks.add(pos.offset(i - 4, j - 4, k - 4));
 		}
 	}
 
 	private static void handleCrystalHollows(BlockPos pos, BlockState state, int i, int j, int k) {
 		if (STAINED_GLASS_BLOCKS.contains(state.getBlock())) {
 			drops[MiningDrop.GEMSTONES.ordinal()]++;
-		} else if (state.isOf(Blocks.PRISMARINE)) {
+		} else if (state.is(Blocks.PRISMARINE)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (state.isOf(Blocks.PRISMARINE_BRICKS)) {
+		} else if (state.is(Blocks.PRISMARINE_BRICKS)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (state.isOf(Blocks.DARK_PRISMARINE)) {
+		} else if (state.is(Blocks.DARK_PRISMARINE)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (state.isOf(Blocks.LIGHT_BLUE_WOOL)) {
+		} else if (state.is(Blocks.LIGHT_BLUE_WOOL)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 5;
-		} else if (state.isOf(Blocks.GRAY_WOOL)) {
+		} else if (state.is(Blocks.GRAY_WOOL)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()]++;
-		} else if (state.isOf(Blocks.CYAN_TERRACOTTA)) {
+		} else if (state.is(Blocks.CYAN_TERRACOTTA)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()]++;
 		}
 		handleBreakable(pos, i, j, k);
 	}
 
 	private static void handleGlaciteTunnels(BlockPos pos, BlockState state, int i, int j, int k) {
-		if (state.isOf(Blocks.PACKED_ICE)) {
+		if (state.is(Blocks.PACKED_ICE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.ICE.ordinal()]++;
-			blocks[i][j][k] = Blocks.AIR.getDefaultState();
+			blocks[i][j][k] = Blocks.AIR.defaultBlockState();
 		} else if (STAINED_GLASS_BLOCKS.contains(state.getBlock())) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.GEMSTONES.ordinal()]++;
-			blocks[i][j][k] = Blocks.AIR.getDefaultState();
-		} else if (state.isOf(Blocks.POLISHED_DIORITE)) {
+			blocks[i][j][k] = Blocks.AIR.defaultBlockState();
+		} else if (state.is(Blocks.POLISHED_DIORITE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 4;
 			drops[MiningDrop.TITANIUM.ordinal()]++;
-		} else if (state.isOf(Blocks.INFESTED_STONE)) {
+		} else if (state.is(Blocks.INFESTED_STONE)) {
 			drops[MiningDrop.HARDSTONE.ordinal()]++;
-		} else if (state.isOf(Blocks.LIGHT_GRAY_CARPET)) {
+		} else if (state.is(Blocks.LIGHT_GRAY_CARPET)) {
 			drops[MiningDrop.HARDSTONE.ordinal()]++;
-		} else if (state.isOf(Blocks.PRISMARINE)) {
+		} else if (state.is(Blocks.PRISMARINE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (state.isOf(Blocks.PRISMARINE_BRICKS)) {
+		} else if (state.is(Blocks.PRISMARINE_BRICKS)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (state.isOf(Blocks.DARK_PRISMARINE)) {
+		} else if (state.is(Blocks.DARK_PRISMARINE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (state.isOf(Blocks.LIGHT_BLUE_WOOL)) {
+		} else if (state.is(Blocks.LIGHT_BLUE_WOOL)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 5;
-		} else if (state.isOf(Blocks.GRAY_WOOL)) {
+		} else if (state.is(Blocks.GRAY_WOOL)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()]++;
-		} else if (state.isOf(Blocks.CYAN_TERRACOTTA)) {
+		} else if (state.is(Blocks.CYAN_TERRACOTTA)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()]++;
-		} else if (state.isOf(Blocks.BROWN_TERRACOTTA)) {
+		} else if (state.is(Blocks.BROWN_TERRACOTTA)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.UMBER.ordinal()]++;
-		} else if (state.isOf(Blocks.TERRACOTTA)) {
+		} else if (state.is(Blocks.TERRACOTTA)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.UMBER.ordinal()]++;
-		} else if (state.isOf(Blocks.SMOOTH_RED_SANDSTONE)) {
+		} else if (state.is(Blocks.SMOOTH_RED_SANDSTONE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.UMBER.ordinal()]++;
-		} else if (state.isOf(Blocks.INFESTED_COBBLESTONE)) {
+		} else if (state.is(Blocks.INFESTED_COBBLESTONE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.TUNGSTEN.ordinal()]++;
-		} else if (state.isOf(Blocks.CLAY)) {
+		} else if (state.is(Blocks.CLAY)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.TUNGSTEN.ordinal()]++;
 		} else {
 			return;
 		}
-		breakBlocks.add(pos.add(i - 4, j - 4, k - 4));
+		breakBlocks.add(pos.offset(i - 4, j - 4, k - 4));
 	}
 
 	private static void handleGlaciteMineshafts(BlockPos pos, BlockState state, int i, int j, int k) {
-		if (state.isOf(Blocks.STONE)) {
+		if (state.is(Blocks.STONE)) {
 			drops[MiningDrop.HARDSTONE.ordinal()]++;
 		}
 		handleBreakable(pos, i, j, k);

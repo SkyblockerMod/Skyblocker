@@ -8,44 +8,43 @@ import org.junit.jupiter.api.Test;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
-
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.server.Bootstrap;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public class ItemStackComponentizationFixerTest {
-	private final NbtCompound NBT = convertToNbt("{id:\"minecraft:diamond_sword\",Count:1,tag:{ExtraAttributes:{id:\"TEST\"}}}");
+	private final CompoundTag NBT = convertToNbt("{id:\"minecraft:diamond_sword\",Count:1,tag:{ExtraAttributes:{id:\"TEST\"}}}");
 	private final Gson GSON = new Gson();
 	private final ItemStack TEST_STACK = Util.make(new ItemStack(Items.DIAMOND_SWORD, 1), item -> {
-		ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(ItemEnchantmentsComponent.DEFAULT);
+		ItemEnchantments.Mutable builder = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
 
-		builder.add(Utils.getRegistryWrapperLookup().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
-		item.set(DataComponentTypes.ENCHANTMENTS, builder.build());
+		builder.upgrade(Utils.getRegistryWrapperLookup().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
+		item.set(DataComponents.ENCHANTMENTS, builder.toImmutable());
 	});
 
 	@BeforeAll
 	public static void setup() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 	}
 
 	@Test
 	void testNbtConversion() {
-		Assertions.assertNotEquals(NBT, new NbtCompound());
+		Assertions.assertNotEquals(NBT, new CompoundTag());
 	}
 
 	@Test
 	void testDataFixer() {
 		ItemStack fixedStack = ItemStackComponentizationFixer.fixUpItem(NBT);
-		JsonElement stackJson = ItemStack.CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(JsonOps.INSTANCE), fixedStack).getOrThrow();
+		JsonElement stackJson = ItemStack.CODEC.encodeStart(Utils.getRegistryWrapperLookup().createSerializationContext(JsonOps.INSTANCE), fixedStack).getOrThrow();
 
 		Assertions.assertEquals("{\"id\":\"minecraft:diamond_sword\",\"count\":1,\"components\":{\"minecraft:custom_data\":{\"ExtraAttributes\":{\"id\":\"TEST\"}}}}", GSON.toJson(stackJson));
 	}
@@ -62,7 +61,7 @@ public class ItemStackComponentizationFixerTest {
 		String componentString = "[minecraft:enchantments={\"minecraft:sharpness\":1}]";
 		ItemStack stack = ItemStackComponentizationFixer.fromComponentsString("minecraft:diamond_sword", 1, componentString);
 
-		Assertions.assertTrue(ItemStack.areItemsAndComponentsEqual(stack, TEST_STACK));
+		Assertions.assertTrue(ItemStack.isSameItemSameComponents(stack, TEST_STACK));
 	}
 
 	@Test
@@ -81,11 +80,11 @@ public class ItemStackComponentizationFixerTest {
 		Assertions.assertEquals("[minecraft:custom_data={ExtraAttributes:{id:\"TEST\"}}]", componentsString);
 	}
 
-	private static NbtCompound convertToNbt(String nbt) {
+	private static CompoundTag convertToNbt(String nbt) {
 		try {
-			return StringNbtReader.readCompound(nbt);
+			return TagParser.parseCompoundFully(nbt);
 		} catch (Exception e) {
-			return new NbtCompound();
+			return new CompoundTag();
 		}
 	}
 }

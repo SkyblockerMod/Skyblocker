@@ -1,32 +1,13 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomAnimatedHelmetTextures;
 import de.hysky.skyblocker.skyblock.item.custom.CustomHelmetTextures;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +15,30 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
 
-public class HeadSelectionWidget extends ContainerWidget {
-	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
+public class HeadSelectionWidget extends AbstractContainerWidget {
+	private static final ResourceLocation INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 
 	private final List<HeadButton> allButtons = new ArrayList<>();
 	private final List<HeadButton> visibleButtons = new ArrayList<>();
-	private final TextFieldWidget searchField;
+	private final EditBox searchField;
 	private final HeadButton noneButton;
 	private int buttonsPerRow = 1;
 
@@ -48,13 +46,12 @@ public class HeadSelectionWidget extends ContainerWidget {
 	/**
 	 * Null if a custom (animated or not) head wasn't selected.
 	 */
-	@Nullable
-	private HeadButton selectedButton;
+	private @Nullable HeadButton selectedButton;
 
 	public HeadSelectionWidget(int x, int y, int width, int height) {
-		super(x, y, width, height, Text.of("HeadSelection"));
-		this.searchField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, x + 3, y + 3, width - 6, 12, Text.translatable("gui.recipebook.search_hint"));
-		this.searchField.setChangedListener(this::filterButtons);
+		super(x, y, width, height, Component.nullToEmpty("HeadSelection"));
+		this.searchField = new EditBox(Minecraft.getInstance().font, x + 3, y + 3, width - 6, 12, Component.translatable("gui.recipebook.search_hint"));
+		this.searchField.setResponder(this::filterButtons);
 
 		for (CustomHelmetTextures.NamedTexture tex : CustomHelmetTextures.getTextures()) {
 			ItemStack head = ProfileViewerUtils.createSkull(tex.texture());
@@ -139,7 +136,7 @@ public class HeadSelectionWidget extends ContainerWidget {
 	}
 
 	private void filterButtons(String search) {
-		setScrollY(0);
+		setScrollAmount(0);
 		String s = search.toLowerCase(Locale.ENGLISH);
 		visibleButtons.clear();
 		visibleButtons.add(noneButton);
@@ -153,11 +150,11 @@ public class HeadSelectionWidget extends ContainerWidget {
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		int startY = searchField.getBottom() + 3;
 		int endY = getY() + getHeight() - 2;
-		int scrollY = (int) getScrollY();
-		List<Element> list = new ArrayList<>();
+		int scrollY = (int) scrollAmount();
+		List<GuiEventListener> list = new ArrayList<>();
 		for (HeadButton b : visibleButtons) {
 			int y = b.getY() - scrollY;
 			if (y + b.getHeight() > startY && y < endY) {
@@ -169,8 +166,8 @@ public class HeadSelectionWidget extends ContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
 
 		searchField.render(context, mouseX, mouseY, delta);
 
@@ -179,7 +176,7 @@ public class HeadSelectionWidget extends ContainerWidget {
 		int endX = getX() + getWidth() - 2;
 		int endY = getY() + getHeight() - 2;
 		context.enableScissor(startX, startY, endX, endY);
-		int scrollY = (int) getScrollY();
+		int scrollY = (int) scrollAmount();
 		HeadButton hovered = null;
 		for (HeadButton b : visibleButtons) {
 			int originalY = b.getY();
@@ -194,39 +191,39 @@ public class HeadSelectionWidget extends ContainerWidget {
 			}
 			b.setY(originalY);
 		}
-		drawScrollbar(context, mouseX, mouseY);
+		renderScrollbar(context, mouseX, mouseY);
 		context.disableScissor();
 
 		if (hovered != null && !hovered.name.isEmpty()) {
-			context.drawTooltip(MinecraftClient.getInstance().textRenderer, Text.of(hovered.name), mouseX, mouseY);
+			context.setTooltipForNextFrame(Minecraft.getInstance().font, Component.nullToEmpty(hovered.name), mouseX, mouseY);
 		}
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (searchField.mouseClicked(click, doubled)) {
 			setFocused(searchField);
 			return true;
 		}
 
-		double adjustedMouseY = click.y() + getScrollY();
-		if (overflows()) {
-			int scrollbarX = getScrollbarX();
+		double adjustedMouseY = click.y() + scrollAmount();
+		if (scrollbarVisible()) {
+			int scrollbarX = scrollBarX();
 			// Default scrollbar width is 6 pixels
 			if (click.x() >= scrollbarX && click.x() < scrollbarX + 6) {
-				int thumbY = getScrollbarThumbY();
-				int thumbHeight = getScrollbarThumbHeight();
+				int thumbY = scrollBarY();
+				int thumbHeight = scrollerHeight();
 				if (click.y() >= thumbY && click.y() < thumbY + thumbHeight) {
 					adjustedMouseY = click.y();
 				}
 			}
 		}
 
-		return super.mouseClicked(new Click(click.x(), adjustedMouseY, click.buttonInfo()), doubled);
+		return super.mouseClicked(new MouseButtonEvent(click.x(), adjustedMouseY, click.buttonInfo()), doubled);
 	}
 
 	@Override
-	public boolean charTyped(CharInput input) {
+	public boolean charTyped(CharacterEvent input) {
 		if (searchField.isFocused() && searchField.charTyped(input)) {
 			return true;
 		}
@@ -234,7 +231,7 @@ public class HeadSelectionWidget extends ContainerWidget {
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput input) {
+	public boolean keyPressed(KeyEvent input) {
 		if (searchField.isFocused() && searchField.keyPressed(input)) {
 			return true;
 		}
@@ -242,7 +239,7 @@ public class HeadSelectionWidget extends ContainerWidget {
 	}
 
 	@Override
-	protected int getContentsHeightWithPadding() {
+	protected int contentHeight() {
 		int rows = Math.ceilDiv(visibleButtons.size(), buttonsPerRow);
 		// 3px top padding + search bar height + 3px gap before the grid +
 		// button rows + 3px bottom padding
@@ -250,14 +247,14 @@ public class HeadSelectionWidget extends ContainerWidget {
 	}
 
 	@Override
-	protected double getDeltaYPerScroll() {
+	protected double scrollRate() {
 		return 10;
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
-	public void setCurrentItem(@NotNull ItemStack item) {
+	public void setCurrentItem(ItemStack item) {
 		this.currentItem = item;
 		String uuid = item.getUuid();
 
@@ -287,26 +284,24 @@ public class HeadSelectionWidget extends ContainerWidget {
 		this.selectedButton = intendedSelected;
 
 		updateButtons();
-		filterButtons(this.searchField.getText());
+		filterButtons(this.searchField.getValue());
 	}
 
-	private static class HeadButton extends ClickableWidget {
+	private static class HeadButton extends AbstractWidget {
 		private final String name;
 		/**
 		 * Only null if this is an animated head.
 		 */
-		@UnknownNullability
-		private final String texture;
+		private final @Nullable String texture;
 		/**
 		 * Only null if this is an animated head.
 		 */
-		@UnknownNullability
-		private final ItemStack head;
+		private final @Nullable ItemStack head;
 		private final Consumer<HeadButton> onPress;
 		private boolean selected = false;
 
-		HeadButton(String name, @UnknownNullability String texture, @UnknownNullability ItemStack head, Consumer<HeadButton> onPress) {
-			super(0, 0, 20, 20, Text.empty());
+		HeadButton(String name, @Nullable String texture, @Nullable ItemStack head, Consumer<HeadButton> onPress) {
+			super(0, 0, 20, 20, Component.empty());
 			this.name = name;
 			this.texture = texture;
 			this.head = head;
@@ -319,28 +314,28 @@ public class HeadSelectionWidget extends ContainerWidget {
 		 * Will never return null.
 		 */
 		protected ItemStack getHead() {
-			return this.head;
+			return Objects.requireNonNull(this.head);
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			context.drawItem(this.getHead(), getX() + 2, getY() + 2);
+		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+			context.renderItem(this.getHead(), getX() + 2, getY() + 2);
 			if (this.selected) {
 				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
 			}
 			if (this.isHovered()) {
 				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
-				context.setCursor(StandardCursors.POINTING_HAND);
+				context.requestCursor(CursorTypes.POINTING_HAND);
 			}
 		}
 
 		@Override
-		public void onClick(Click click, boolean doubled) {
+		public void onClick(MouseButtonEvent click, boolean doubled) {
 			this.onPress.accept(this);
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 	}
 
 	private static class AnimatedHeadButton extends HeadButton {
@@ -358,11 +353,11 @@ public class HeadSelectionWidget extends ContainerWidget {
 		 */
 		@Override
 		protected ItemStack getHead() {
-			ProfileComponent profile = CustomAnimatedHelmetTextures.animateHeadTexture(this.id);
+			ResolvableProfile profile = CustomAnimatedHelmetTextures.animateHeadTexture(this.id);
 
 			if (profile != null) {
 				ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-				stack.set(DataComponentTypes.PROFILE, profile);
+				stack.set(DataComponents.PROFILE, profile);
 
 				return stack;
 			}

@@ -18,7 +18,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
 import net.azureaaron.hmapi.data.rank.PackageRank;
 import net.azureaaron.hmapi.data.rank.RankType;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.SharedSuggestionProvider;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,15 +37,14 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.arg
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 /**
- * the mixin {@link de.hysky.skyblocker.mixins.CommandTreeS2CPacketMixin}
+ * the mixin {@link de.hysky.skyblocker.mixins.ClientboundCommandsPacketMixin}
  */
 public class WarpAutocomplete {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("warp_autocomplete.json");
 	private static final Logger LOGGER = LoggerFactory.getLogger(WarpAutocomplete.class);
 	private static final Codec<Object2BooleanMap<String>> MAP_CODEC = CodecUtils.object2BooleanMapCodec(Codec.STRING);
 
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> commandNode;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> commandNode;
 
 	@Init
 	public static void init() {
@@ -97,7 +96,7 @@ public class WarpAutocomplete {
 		commandNode = literal("warp")
 				.requires(fabricClientCommandSource -> Utils.isOnSkyblock())
 				.then(argument("destination", StringArgumentType.greedyString())
-						.suggests((context, builder) -> CommandSource.suggestMatching(getEligibleWarps(warps), builder))
+						.suggests((context, builder) -> SharedSuggestionProvider.suggest(getEligibleWarps(warps), builder))
 				).build();
 	}
 

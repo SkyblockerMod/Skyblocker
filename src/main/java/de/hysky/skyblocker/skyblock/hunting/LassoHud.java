@@ -6,20 +6,19 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.network.packet.s2c.play.EntityAttachS2CPacket;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.Set;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 
 @RegisterWidget
 public class LassoHud extends ComponentBasedWidget {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final String LASSO_COUNT_DOWN_NAME = "                    ";
 	private static final Set<Location> AVAILABLE_LOCATION = Set.of(Location.GALATEA);
 
@@ -36,16 +35,16 @@ public class LassoHud extends ComponentBasedWidget {
 	}
 
 	public LassoHud() {
-		super(Text.literal("Lasso").formatted(Formatting.DARK_AQUA, Formatting.BOLD), Formatting.DARK_AQUA.getColorValue(), "Lasso HUD");
+		super(Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), "Lasso HUD");
 		instance = this;
 	}
 
-	public static void onEntityUpdate(ArmorStandEntity entity) {
+	public static void onEntityUpdate(ArmorStand entity) {
 		//check to see if close to end of players lasso
-		if (!getInstance().isEnabledIn(Utils.getLocation()) || lassoEntity == null || entity.squaredDistanceTo(lassoEntity) > 10) return;
+		if (!getInstance().isEnabledIn(Utils.getLocation()) || lassoEntity == null || entity.distanceToSqr(lassoEntity) > 10) return;
 
 		//see if it's the name we are looking for
-		Text name = entity.getCustomName();
+		Component name = entity.getCustomName();
 		if (name != null) {
 			//percentage bar amor stand when it's not 0
 			if (name.getString().equals(LASSO_COUNT_DOWN_NAME) && name.getSiblings().size() == 2) {
@@ -55,16 +54,16 @@ public class LassoHud extends ComponentBasedWidget {
 		}
 	}
 
-	public static void onEntityAttach(EntityAttachS2CPacket packet) {
-		if (!getInstance().isEnabledIn(Utils.getLocation()) || CLIENT.world == null) return;
+	public static void onEntityAttach(ClientboundSetEntityLinkPacket packet) {
+		if (!getInstance().isEnabledIn(Utils.getLocation()) || CLIENT.level == null) return;
 		//see if lasso is coming from this player
-		if (CLIENT.world.getEntityById(packet.getHoldingEntityId()) instanceof PlayerEntity player) {
+		if (CLIENT.level.getEntity(packet.getDestId()) instanceof Player player) {
 			if (player.equals(CLIENT.player)) {
 				//save lasso end entity
-				lassoEntity = CLIENT.world.getEntityById(packet.getAttachedEntityId());
+				lassoEntity = CLIENT.level.getEntity(packet.getSourceId());
 
 				//get rarity of lasso used
-				String usedItemId = player.getMainHandStack().getSkyblockId();
+				String usedItemId = player.getMainHandItem().getSkyblockId();
 
 				reelValue = switch (usedItemId) {
 					case "ABYSMAL_LASSO" -> 2;
@@ -88,10 +87,10 @@ public class LassoHud extends ComponentBasedWidget {
 	public void updateContent() {
 		//if 0 percent now otherwise wait
 		if (percentage == 0) {
-			addComponent(Components.progressComponent(Items.LEAD.getDefaultStack(), Text.translatable("skyblocker.config.hunting.lassoHud.reel"), Text.translatable("skyblocker.config.hunting.lassoHud.now").formatted(Formatting.GREEN), percentage));
+			addComponent(Components.progressComponent(Items.LEAD.getDefaultInstance(), Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.now").withStyle(ChatFormatting.GREEN), percentage));
 			return;
 		}
-		addComponent(Components.progressComponent(Items.LEAD.getDefaultStack(), Text.translatable("skyblocker.config.hunting.lassoHud.reel"), Text.translatable("skyblocker.config.hunting.lassoHud.wait"), percentage));
+		addComponent(Components.progressComponent(Items.LEAD.getDefaultInstance(), Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.wait"), percentage));
 
 	}
 

@@ -16,7 +16,6 @@ import de.hysky.skyblocker.utils.ws.message.DungeonRoomSecretCountMessage;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
-import net.minecraft.client.MinecraftClient;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2ic;
 import org.slf4j.Logger;
@@ -27,9 +26,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
+import net.minecraft.client.Minecraft;
 
 public class SecretSync {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Supplier<DungeonsConfig.SecretSync> CONFIG = () -> SkyblockerConfigManager.get().dungeons.secretSync;
 
@@ -48,8 +48,7 @@ public class SecretSync {
 		return false;
 	}
 
-	@Nullable
-	public static Room getRoomByName(String roomName) {
+	public static @Nullable Room getRoomByName(String roomName) {
 		return DungeonManager.getRoomsStream().filter(Room::isMatched).filter(rm -> rm.getName().equals(roomName)).findAny().orElse(null);
 	}
 
@@ -57,7 +56,7 @@ public class SecretSync {
 		if (CLIENT.player == null || room.fromWebsocket) return;
 		List<Vector2ic> segments = room.getSegments().stream().toList();
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
-				new DungeonRoomMatchMessage(CLIENT.player.getUuid(), room.getType(), room.getShape(), room.getDirection(), room.getName(), segments));
+				new DungeonRoomMatchMessage(CLIENT.player.getUUID(), room.getType(), room.getShape(), room.getDirection(), room.getName(), segments));
 	}
 
 	public static void handleRoomMatch(DungeonRoomMatchMessage msg) {
@@ -88,7 +87,7 @@ public class SecretSync {
 	public static void syncSecretCount(Room room, boolean fromWS) {
 		if (CLIENT.player == null || fromWS) return;
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
-				new DungeonRoomSecretCountMessage(CLIENT.player.getUuid(), room.getName(), room.getFoundSecretCount()));
+				new DungeonRoomSecretCountMessage(CLIENT.player.getUUID(), room.getName(), room.getFoundSecretCount()));
 	}
 
 	public static void handleSecretCountUpdate(DungeonRoomSecretCountMessage msg) {
@@ -104,7 +103,7 @@ public class SecretSync {
 	public static void syncSecretFound(Room room, SecretWaypoint waypoint) {
 		if (CLIENT.player == null) return;
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
-				new DungeonRoomHideWaypointMessage(CLIENT.player.getUuid(), room.getName(), waypoint.hashCode()));
+				new DungeonRoomHideWaypointMessage(CLIENT.player.getUUID(), room.getName(), waypoint.hashCode()));
 	}
 
 	public static void handleHideWaypoint(DungeonRoomHideWaypointMessage msg) {
@@ -120,7 +119,7 @@ public class SecretSync {
 	public static void syncMimicKilled() {
 		if (CLIENT.player == null) return;
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
-				new DungeonMimicKilledMessage(CLIENT.player.getUuid()));
+				new DungeonMimicKilledMessage(CLIENT.player.getUUID()));
 	}
 
 	public static void handleMimicKilled(DungeonMimicKilledMessage msg) {
@@ -132,7 +131,7 @@ public class SecretSync {
 	public static void syncPrinceKilled() {
 		if (CLIENT.player == null) return;
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
-				new DungeonPrinceKilledMessage(CLIENT.player.getUuid()));
+				new DungeonPrinceKilledMessage(CLIENT.player.getUUID()));
 	}
 
 	public static void handlePrinceKilled(DungeonPrinceKilledMessage msg) {

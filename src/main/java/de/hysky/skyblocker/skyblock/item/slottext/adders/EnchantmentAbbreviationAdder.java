@@ -5,18 +5,18 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
@@ -207,33 +207,33 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		super(CONFIG_INFORMATION);
 	}
 
-	public static @Nullable NbtCompound getEnchantments(ItemStack stack) {
-		NbtCompound nbt = ItemUtils.getCustomData(stack);
+	public static @Nullable CompoundTag getEnchantments(ItemStack stack) {
+		CompoundTag nbt = ItemUtils.getCustomData(stack);
 		if (nbt.isEmpty() || !nbt.contains("enchantments")) return null;
-		NbtCompound enchantments = nbt.getCompoundOrEmpty("enchantments");
-		if (enchantments.getSize() != 1) return null; //Only makes sense to display the level when there's one enchant.
+		CompoundTag enchantments = nbt.getCompoundOrEmpty("enchantments");
+		if (enchantments.size() != 1) return null; //Only makes sense to display the level when there's one enchant.
 		return enchantments;
 	}
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
-		if (!stack.isOf(Items.ENCHANTED_BOOK)) return List.of();
-		String name = stack.getName().getString();
+		if (!stack.is(Items.ENCHANTED_BOOK)) return List.of();
+		String name = stack.getHoverName().getString();
 		if (!name.equals("Enchanted Book")) return List.of();
-		NbtCompound enchantments = getEnchantments(stack);
+		CompoundTag enchantments = getEnchantments(stack);
 		if (enchantments == null) return List.of();
-		final String enchantmentId = enchantments.getKeys().iterator().next();
+		final String enchantmentId = enchantments.keySet().iterator().next();
 
 		return getAbbreviation(enchantmentId)
 				.map(text -> List.of(SlotText.topRight(text)))
 				.orElseGet(List::of);
 	}
 
-	private Optional<Text> getAbbreviation(String enchantmentId) {
+	private Optional<Component> getAbbreviation(String enchantmentId) {
 		if (ENCHANTMENT_ABBREVIATIONS.containsKey(enchantmentId)) {
-			return Optional.of(Text.literal(ENCHANTMENT_ABBREVIATIONS.get(enchantmentId)).formatted(Formatting.BLUE));
+			return Optional.of(Component.literal(ENCHANTMENT_ABBREVIATIONS.get(enchantmentId)).withStyle(ChatFormatting.BLUE));
 		} else if (ULTIMATE_ENCHANTMENT_ABBREVIATIONS.containsKey(enchantmentId)) {
-			return Optional.of(Text.literal(ULTIMATE_ENCHANTMENT_ABBREVIATIONS.get(enchantmentId)).formatted(Formatting.LIGHT_PURPLE));
+			return Optional.of(Component.literal(ULTIMATE_ENCHANTMENT_ABBREVIATIONS.get(enchantmentId)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
 		return Optional.empty();
 	}

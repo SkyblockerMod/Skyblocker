@@ -2,7 +2,6 @@ package de.hysky.skyblocker.utils;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.SharedConstants;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -27,7 +26,7 @@ import java.util.zip.InflaterInputStream;
 public class Http {
 	private static final String NAME_2_UUID = "https://api.minecraftservices.com/minecraft/profile/lookup/name/";
 	private static final String HYPIXEL_PROXY = "https://hysky.de/api/hypixel/v2/";
-	public static final String USER_AGENT = "Skyblocker/" + SkyblockerMod.VERSION + " (" + SharedConstants.getGameVersion().name() + ")";
+	public static final String USER_AGENT = "Skyblocker/" + SkyblockerMod.VERSION + " (" + SharedConstants.getCurrentVersion().name() + ")";
 	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
 			.followRedirects(Redirect.NORMAL)
@@ -115,7 +114,7 @@ public class Http {
 	 *
 	 * @implNote the {@code v2} prefix is automatically added
 	 */
-	public static ApiResponse sendHypixelRequest(String endpoint, @NotNull String query) throws IOException, InterruptedException {
+	public static ApiResponse sendHypixelRequest(String endpoint, String query) throws IOException, InterruptedException {
 		return sendCacheableGetRequest(HYPIXEL_PROXY + endpoint + query, ApiAuthentication.getToken());
 	}
 

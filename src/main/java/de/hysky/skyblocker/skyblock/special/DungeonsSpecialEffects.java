@@ -2,10 +2,6 @@ package de.hysky.skyblocker.skyblock.special;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -16,11 +12,14 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class DungeonsSpecialEffects {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern DUNGEON_CHEST_PATTERN = Pattern.compile("^\\s{3,}(?!.*:)(?:RARE REWARD!\\s+)?(?<item>.+)$");
 
 	@Init
@@ -28,7 +27,7 @@ public class DungeonsSpecialEffects {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonsSpecialEffects::displayRareDropEffect);
 	}
 
-	private static boolean displayRareDropEffect(Text message, boolean overlay) {
+	private static boolean displayRareDropEffect(Component message, boolean overlay) {
 		if (!Utils.isOnSkyblock() || overlay || !SkyblockerConfigManager.get().general.specialEffects.rareDungeonDropEffects) {
 			return true;
 		}
@@ -41,8 +40,8 @@ public class DungeonsSpecialEffects {
 				ItemStack stack = getStackFromName(matcher.group("item"));
 
 				if (stack != null && !stack.isEmpty()) {
-					CLIENT.particleManager.addEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
-					CLIENT.gameRenderer.showFloatingItem(stack);
+					CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
+					CLIENT.gameRenderer.displayItemActivation(stack);
 				}
 			}
 		} catch (Exception e) { // In case there's a regex failure or something else bad happens

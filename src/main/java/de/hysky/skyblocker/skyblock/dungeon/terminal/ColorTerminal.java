@@ -6,21 +6,18 @@ import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +52,7 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
 		List<ColorHighlight> highlights = new ArrayList<>();
 		for (Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
 			ItemStack itemStack = slot.getValue();
-			if (!itemStack.hasGlint() && targetColor.equals(itemColor.get(itemStack.getItem()))) {
+			if (!itemStack.hasFoil() && targetColor.equals(itemColor.get(itemStack.getItem()))) {
 				highlights.add(ColorHighlight.green(slot.getIntKey()));
 			}
 		}
@@ -64,7 +61,7 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
 
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
-		if (stack.hasGlint() || !targetColor.equals(itemColor.get(stack.getItem()))) {
+		if (stack.hasFoil() || !targetColor.equals(itemColor.get(stack.getItem()))) {
 			return shouldBlockIncorrectClicks();
 		}
 
@@ -72,7 +69,7 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
 	}
 
 	@Override
-	public ItemStack modifyDisplayStack(int slotIndex, @NotNull ItemStack stack) {
+	public ItemStack modifyDisplayStack(int slotIndex, ItemStack stack) {
 		// rows * 9 = 54
 		// hide stacks if the target colour is null to prevent the wrong colour items flashing when hypixel closes & reopens the screen
 		return slotIndex >= 54 || (targetColor != null && targetColor.equals(itemColor.get(stack.getItem()))) ? stack : ItemStack.EMPTY;
@@ -81,14 +78,14 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
 	static {
 		colorFromName = new HashMap<>();
 		for (DyeColor color : DyeColor.values())
-			colorFromName.put(color.getId().toUpperCase(Locale.ENGLISH), color);
+			colorFromName.put(color.getName().toUpperCase(Locale.ENGLISH), color);
 		colorFromName.put("SILVER", DyeColor.LIGHT_GRAY);
 		colorFromName.put("LIGHT BLUE", DyeColor.LIGHT_BLUE);
 
 		itemColor = new HashMap<>();
 		for (DyeColor color : DyeColor.values())
 			for (String item : new String[]{"dye", "wool", "stained_glass", "terracotta"})
-				itemColor.put(Registries.ITEM.get(Identifier.ofVanilla(color.getId() + '_' + item)), color);
+				itemColor.put(BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(color.getName() + '_' + item)), color);
 		itemColor.put(Items.BONE_MEAL, DyeColor.WHITE);
 		itemColor.put(Items.LAPIS_LAZULI, DyeColor.BLUE);
 		itemColor.put(Items.COCOA_BEANS, DyeColor.BROWN);

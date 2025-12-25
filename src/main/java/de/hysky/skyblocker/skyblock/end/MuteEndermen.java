@@ -4,8 +4,8 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 
 public class MuteEndermen {
 
@@ -16,11 +16,11 @@ public class MuteEndermen {
 
 	private static boolean onSound(SoundEvent sound) {
 		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().otherLocations.end.muteEndermanSounds) {
-			if (sound.id().equals(SoundEvents.ENTITY_ENDERMAN_AMBIENT.id()) ||
-					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_DEATH.id()) ||
-					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_HURT.id()) ||
-					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_SCREAM.id()) ||
-					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_STARE.id())) {
+			if (sound.location().equals(SoundEvents.ENDERMAN_AMBIENT.location()) ||
+					sound.location().equals(SoundEvents.ENDERMAN_DEATH.location()) ||
+					sound.location().equals(SoundEvents.ENDERMAN_HURT.location()) ||
+					sound.location().equals(SoundEvents.ENDERMAN_SCREAM.location()) ||
+					sound.location().equals(SoundEvents.ENDERMAN_STARE.location())) {
 				return false;
 			}
 		}

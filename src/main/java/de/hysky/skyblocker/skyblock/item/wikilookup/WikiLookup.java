@@ -4,11 +4,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.function.Function;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import com.mojang.datafixers.util.Either;
 
@@ -34,7 +32,7 @@ public interface WikiLookup {
 	 * @param player The player entity.
 	 * @param useOfficial Use official will open Hypixel Wiki, other will open Fandom.
 	 */
-	void open(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial);
+	void open(ItemStack itemStack, Player player, boolean useOfficial);
 
 	/**
 	 * Called before open the wiki lookup.
@@ -42,7 +40,7 @@ public interface WikiLookup {
 	 * @param either Can be {@link Slot} or {@link ItemStack}.
 	 * @return {@code true} if it can look up wiki on the screen, {@code false} otherwise. Default is {@code true}.
 	 */
-	default boolean canSearch(@Nullable String title, @NotNull Either<Slot, ItemStack> either) {
+	default boolean canSearch(@Nullable String title, Either<Slot, ItemStack> either) {
 		ItemStack itemStack = WikiLookupManager.mapEitherToItemStack(either);
 		return !itemStack.isEmpty();
 	}

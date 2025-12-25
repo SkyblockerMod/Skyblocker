@@ -9,10 +9,6 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +16,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 
 public class MirrorverseWaypoints {
 	private static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
 	private static final Supplier<Waypoint.Type> WAYPOINT_TYPE = () -> Waypoint.Type.HIGHLIGHT;
-	private static final Identifier WAYPOINTS_JSON = SkyblockerMod.id("rift/mirrorverse_waypoints.json");
+	private static final ResourceLocation WAYPOINTS_JSON = SkyblockerMod.id("rift/mirrorverse_waypoints.json");
 	private static Waypoint[] LAVA_PATH_WAYPOINTS;
 	private static Waypoint[] UPSIDE_DOWN_WAYPOINTS;
 	private static Waypoint[] TURBULATOR_WAYPOINTS;
@@ -35,7 +35,7 @@ public class MirrorverseWaypoints {
 	/**
 	 * Loads the waypoint locations into memory
 	 */
-	static void load(MinecraftClient client) {
+	static void load(Minecraft client) {
 		waypointsLoaded = CompletableFuture.runAsync(() -> {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(WAYPOINTS_JSON)) {
 				JsonArray sections = JsonParser.parseReader(reader).getAsJsonObject().get("sections").getAsJsonArray();

@@ -1,12 +1,11 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import net.minecraft.util.Identifier;
-
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import net.minecraft.resources.ResourceLocation;
 
-public enum FilterOption implements Supplier<Identifier>, Predicate<String> {
+public enum FilterOption implements Supplier<ResourceLocation>, Predicate<String> {
 
 	ALL(query -> true, SkyblockerMod.id("textures/gui/filter/all.png")),
 	ENTITIES(query -> query.endsWith("(monster)") || query.endsWith("(miniboss)") || query.endsWith("(boss)")
@@ -20,9 +19,9 @@ public enum FilterOption implements Supplier<Identifier>, Predicate<String> {
 			SkyblockerMod.id("textures/gui/filter/items.png"));
 
 	private	final Predicate<String> matchingPredicate;
-	private final Identifier texture;
+	private final ResourceLocation texture;
 
-	FilterOption(Predicate<String> matchingPredicate, Identifier texture) {
+	FilterOption(Predicate<String> matchingPredicate, ResourceLocation texture) {
 		this.matchingPredicate = matchingPredicate;
 		this.texture = texture;
 	}
@@ -33,7 +32,7 @@ public enum FilterOption implements Supplier<Identifier>, Predicate<String> {
 	}
 
 	@Override
-	public Identifier get() {
+	public ResourceLocation get() {
 		return texture;
 	}
 }

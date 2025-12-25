@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.galatea;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
@@ -11,23 +10,21 @@ import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TunerSolver.class);
@@ -119,7 +116,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	}
 
 	@Override
-	public void start(GenericContainerScreen screen) {
+	public void start(ContainerScreen screen) {
 		resetState();
 		isInMenu = true;
 		ScreenEvents.afterTick(screen).register(s -> {
@@ -135,18 +132,18 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (!isEnabled()) {
 			return List.of();
 		}
 		if (slotId == 46 && colorSolved) {
-			return SlotText.bottomRightList(Text.literal(String.valueOf(colorClicks)).withColor(SlotText.LIGHT_GREEN));
+			return SlotText.bottomRightList(Component.literal(String.valueOf(colorClicks)).withColor(SlotText.LIGHT_GREEN));
 		}
 		if (slotId == 48 && speedSolved) {
-			return SlotText.bottomRightList(Text.literal(String.valueOf(speedClicks)).withColor(SlotText.LIGHT_GREEN));
+			return SlotText.bottomRightList(Component.literal(String.valueOf(speedClicks)).withColor(SlotText.LIGHT_GREEN));
 		}
 		if (slotId == 50 && pitchSolved) {
-			return SlotText.bottomRightList(Text.literal(String.valueOf(pitchClicks)).withColor(SlotText.LIGHT_GREEN));
+			return SlotText.bottomRightList(Component.literal(String.valueOf(pitchClicks)).withColor(SlotText.LIGHT_GREEN));
 		}
 		return List.of();
 	}
@@ -320,16 +317,16 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 		// Calculate clicks to match dye to target pane
 		int clicks = calculateClicks(dyeIndex, targetIndex);
 		LOGGER.info("Color solved: Dye={}, Target={}, Required clicks={}",
-				dyeStack.getName().getString(),
-				targetPane.getName().getString(),
+				dyeStack.getHoverName().getString(),
+				targetPane.getHoverName().getString(),
 				clicks >= 0 ? "+" + clicks : clicks);
 		return clicks;
 	}
 
-	private void onSound(PlaySoundS2CPacket packet) {
+	private void onSound(ClientboundSoundPacket packet) {
 		if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver
 				|| pitchSolved || !Utils.isInGalatea() || !isInMenu
-				|| !packet.getSound().value().id().equals(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value().id())) {
+				|| !packet.getSound().value().location().equals(SoundEvents.NOTE_BLOCK_BASS.value().location())) {
 			return;
 		}
 
@@ -383,10 +380,10 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	private static int readCurrentSpeed(Int2ObjectMap<ItemStack> slots) {
 		ItemStack speedStack = slots.get(48);
 		if (speedStack != null && !speedStack.isEmpty()) {
-			List<Text> lore = ItemUtils.getLore(speedStack);
+			List<String> lore = speedStack.skyblocker$getLoreStrings();
 			if (lore.size() >= 4) {
 				try {
-					String speedText = lore.get(3).getString();
+					String speedText = lore.get(3);
 					String[] parts = speedText.split(": ");
 					int currentSpeed = Integer.parseInt(parts[1].trim());
 					if (currentSpeed >= 1 && currentSpeed <= 5) {
@@ -402,9 +399,9 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	private static String readCurrentPitch(Int2ObjectMap<ItemStack> slots) {
 		ItemStack pitchStack = slots.get(50);
 		if (pitchStack != null && !pitchStack.isEmpty()) {
-			List<Text> lore = ItemUtils.getLore(pitchStack);
+			List<String> lore = pitchStack.skyblocker$getLoreStrings();
 			if (lore.size() >= 3) {
-				String pitchText = lore.get(2).getString();
+				String pitchText = lore.get(2);
 				if (pitchText.contains("Low")) return "Low";
 				if (pitchText.contains("Normal")) return "Normal";
 				if (pitchText.contains("High")) return "High";
@@ -514,13 +511,13 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 		return forward <= backward ? forward : -backward;
 	}
 
-	private static Int2ObjectMap<ItemStack> getSlots(GenericContainerScreen screen) {
+	private static Int2ObjectMap<ItemStack> getSlots(ContainerScreen screen) {
 		Int2ObjectMap<ItemStack> slots = new Int2ObjectOpenHashMap<>();
-		GenericContainerScreenHandler handler = screen.getScreenHandler();
-		int containerSize = handler.getRows() * 9;
+		ChestMenu handler = screen.getMenu();
+		int containerSize = handler.getRowCount() * 9;
 
 		for (Slot slot : handler.slots.subList(0, containerSize)) {
-			slots.put(slot.id, slot.getStack());
+			slots.put(slot.index, slot.getItem());
 		}
 		return slots;
 	}

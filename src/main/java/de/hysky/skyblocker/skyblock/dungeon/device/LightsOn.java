@@ -9,17 +9,17 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
 
 public class LightsOn {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final BlockPos TOP_LEFT = new BlockPos(62, 136, 142);
 	private static final BlockPos TOP_RIGHT = new BlockPos(58, 136, 142);
 	private static final BlockPos MIDDLE_TOP = new BlockPos(60, 135, 142);
@@ -42,11 +42,11 @@ public class LightsOn {
 		if (!shouldProcess()) return;
 
 		for (BlockPos lever : LEVERS) {
-			ClientWorld world = CLIENT.world;
+			ClientLevel world = CLIENT.level;
 			BlockState state = world.getBlockState(lever);
 
-			if (state.getBlock().equals(Blocks.LEVER) && state.contains(Properties.POWERED) && !state.get(Properties.POWERED)) {
-				Box box = RenderHelper.getBlockBoundingBox(world, state, lever);
+			if (state.getBlock().equals(Blocks.LEVER) && state.hasProperty(BlockStateProperties.POWERED) && !state.getValue(BlockStateProperties.POWERED)) {
+				AABB box = RenderHelper.getBlockBoundingBox(world, state, lever);
 
 				if (box != null) {
 					collector.submitFilledBox(box, RED, ALPHA, false);

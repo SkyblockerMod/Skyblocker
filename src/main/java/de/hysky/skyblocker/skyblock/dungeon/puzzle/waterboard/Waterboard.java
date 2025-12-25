@@ -1,15 +1,14 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard;
 
 import java.util.Locale;
-
+import net.minecraft.commands.arguments.StringRepresentableArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.command.argument.EnumArgumentType;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public class Waterboard {
@@ -21,7 +20,7 @@ public class Waterboard {
 	// The top center of the grid, between the first two toggleable blocks
 	public static final BlockPos WATER_ENTRANCE_POSITION = new BlockPos(15, 78, 26);
 
-	public enum LeverType implements StringIdentifiable {
+	public enum LeverType implements StringRepresentable {
 		COAL(Blocks.COAL_BLOCK, new BlockPos(20, 61, 10), DyeColor.RED, new BlockPos[]{
 				new BlockPos(0, -2, 0), new BlockPos(2, -1, 1),
 				null, new BlockPos(5, -1, 0)
@@ -48,7 +47,7 @@ public class Waterboard {
 		}),
 		WATER(Blocks.LAVA, new BlockPos(15, 60, 5), DyeColor.LIGHT_BLUE, null);
 
-		private static final Codec<LeverType> CODEC = StringIdentifiable.createCodec(LeverType::values);
+		private static final Codec<LeverType> CODEC = StringRepresentable.fromEnum(LeverType::values);
 
 		public final Block block;
 		public final BlockPos leverPos;
@@ -92,11 +91,11 @@ public class Waterboard {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name().toLowerCase(Locale.ENGLISH);
 		}
 
-		public static class LeverTypeArgumentType extends EnumArgumentType<LeverType> {
+		public static class LeverTypeArgumentType extends StringRepresentableArgument<LeverType> {
 			private LeverTypeArgumentType() {
 				super(CODEC, LeverType::values);
 			}

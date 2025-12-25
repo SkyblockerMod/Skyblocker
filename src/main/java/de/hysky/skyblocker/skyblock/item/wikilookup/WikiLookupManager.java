@@ -2,12 +2,10 @@ package de.hysky.skyblocker.skyblock.item.wikilookup;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-
-import net.minecraft.client.input.KeyInput;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
 
@@ -17,18 +15,18 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public final class WikiLookupManager {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	public static KeyBinding officialWikiLookup;
-	public static KeyBinding fandomWikiLookup;
+	public static KeyMapping officialWikiLookup;
+	public static KeyMapping fandomWikiLookup;
 
 	private static final WikiLookup[] LOOKUPS = new WikiLookup[] {
 			VisitorLookup.INSTANCE,
@@ -41,24 +39,24 @@ public final class WikiLookupManager {
 
 	@Init
 	public static void init() {
-		officialWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		officialWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyMapping(
 				"key.skyblocker.wikiLookup.official",
-				InputUtil.Type.KEYSYM,
+				InputConstants.Type.KEYSYM,
 				GLFW.GLFW_KEY_F4,
 				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 
-		fandomWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		fandomWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyMapping(
 				"key.skyblocker.wikiLookup.fandom",
-				InputUtil.Type.KEYSYM,
+				InputConstants.Type.KEYSYM,
 				GLFW.GLFW_KEY_F1,
 				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 	}
 
 	public static String getKeysText() {
-		String official = officialWikiLookup.isUnbound() ? null : officialWikiLookup.getBoundKeyLocalizedText().getString();
-		String fandom = fandomWikiLookup.isUnbound() ? null : fandomWikiLookup.getBoundKeyLocalizedText().getString();
+		String official = officialWikiLookup.isUnbound() ? null : officialWikiLookup.getTranslatedKeyMessage().getString();
+		String fandom = fandomWikiLookup.isUnbound() ? null : fandomWikiLookup.getTranslatedKeyMessage().getString();
 
 		if (official == null && fandom == null) return "";
 		if (official == null) return fandom.toUpperCase(Locale.ENGLISH);
@@ -67,14 +65,14 @@ public final class WikiLookupManager {
 		return (official + "/" + fandom).toUpperCase(Locale.ENGLISH);
 	}
 
-	public static boolean handleWikiLookup(@NotNull Either<Slot, ItemStack> either, PlayerEntity player, KeyInput input) {
+	public static boolean handleWikiLookup(Either<Slot, ItemStack> either, Player player, KeyEvent input) {
 		return handleWikiLookup(null, either, player, input);
 	}
 
-	public static boolean handleWikiLookup(@Nullable String title, @NotNull Either<Slot, ItemStack> either, PlayerEntity player, KeyInput input) {
+	public static boolean handleWikiLookup(@Nullable String title, Either<Slot, ItemStack> either, Player player, KeyEvent input) {
 		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
-			boolean official = officialWikiLookup.matchesKey(input);
-			if (official || fandomWikiLookup.matchesKey(input)) {
+			boolean official = officialWikiLookup.matches(input);
+			if (official || fandomWikiLookup.matches(input)) {
 				openWiki(title, either, player, official);
 				return true;
 			}
@@ -82,11 +80,11 @@ public final class WikiLookupManager {
 		return false;
 	}
 
-	public static void openWiki(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
+	public static void openWiki(ItemStack itemStack, Player player, boolean useOfficial) {
 		openWiki(null, Either.right(itemStack), player, useOfficial);
 	}
 
-	public static void openWiki(@Nullable String title, @NotNull Either<Slot, ItemStack> either, @NotNull PlayerEntity player, boolean useOfficial) {
+	public static void openWiki(@Nullable String title, Either<Slot, ItemStack> either, Player player, boolean useOfficial) {
 		for (WikiLookup lookup : LOOKUPS) {
 			if (lookup.canSearch(title, either)) {
 				ItemStack itemStack = mapEitherToItemStack(either);
@@ -96,20 +94,20 @@ public final class WikiLookupManager {
 		}
 	}
 
-	public static void openWikiLinkName(String name, @NotNull PlayerEntity player, boolean useOfficial) {
+	public static void openWikiLinkName(String name, Player player, boolean useOfficial) {
 		String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + name;
 		openWikiLink(wikiLink, player);
 	}
 
-	public static void openWikiLink(String wikiLink, PlayerEntity player) {
-		CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink)).exceptionally(e -> {
+	public static void openWikiLink(String wikiLink, Player player) {
+		CompletableFuture.runAsync(() -> Util.getPlatform().openUri(wikiLink)).exceptionally(e -> {
 			WikiLookupManager.LOGGER.error("[Skyblocker] Error while retrieving wiki article: {}", wikiLink, e);
-			player.sendMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
+			player.displayClientMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
 			return null;
 		});
 	}
 
 	public static ItemStack mapEitherToItemStack(Either<Slot, ItemStack> either) {
-		return either.right().orElseGet(() -> either.mapLeft(Slot::getStack).left().orElse(ItemStack.EMPTY));
+		return either.right().orElseGet(() -> either.mapLeft(Slot::getItem).left().orElse(ItemStack.EMPTY));
 	}
 }

@@ -3,13 +3,6 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtLong;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -22,6 +15,13 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class ObtainedDateTooltip extends SimpleTooltipAdder {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -38,23 +38,23 @@ public class ObtainedDateTooltip extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		String timestamp = getTimestamp(stack);
 		if (!timestamp.isEmpty()) {
-			lines.add(Text.empty()
-						.append(Text.literal(String.format("%-21s", "Obtained: ")).formatted(Formatting.LIGHT_PURPLE))
-						.append(Text.literal(timestamp).formatted(Formatting.RED)));
+			lines.add(Component.empty()
+						.append(Component.literal(String.format("%-21s", "Obtained: ")).withStyle(ChatFormatting.LIGHT_PURPLE))
+						.append(Component.literal(timestamp).withStyle(ChatFormatting.RED)));
 		}
 	}
 
 	private static TemporalAccessor getTimestampInternal(ItemStack stack) {
-		NbtCompound customData = ItemUtils.getCustomData(stack);
+		CompoundTag customData = ItemUtils.getCustomData(stack);
 
-		if (customData != null && customData.get("timestamp") instanceof NbtLong(long value)) {
+		if (customData != null && customData.get("timestamp") instanceof LongTag(long value)) {
 			return Instant.ofEpochMilli(value);
 		}
 
-		if (customData != null && customData.get("timestamp") instanceof NbtString(String value)) {
+		if (customData != null && customData.get("timestamp") instanceof StringTag(String value)) {
 			try {
 				return OLD_OBTAINED_DATE_FORMAT.parse(value);
 			} catch (DateTimeParseException e) {

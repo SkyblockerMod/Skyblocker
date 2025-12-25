@@ -73,37 +73,37 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.TextArgumentType;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.mob.AmbientEntity;
-import net.minecraft.entity.passive.BatEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.map.MapState;
-import net.minecraft.registry.Registry;
-import net.minecraft.resource.Resource;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.ComponentArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ambient.AmbientCreature;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 public class DungeonManager {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonManager.class);
 
 	@VisibleForTesting
@@ -120,7 +120,7 @@ public class DungeonManager {
 	/**
 	 * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
 	 *
-	 * @implNote Not using {@link Registry#getId(Object) Registry#getId(Block)} and {@link Blocks Blocks} since this is also used by {@link de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
+	 * @implNote Not using {@link Registry#getKey(Object) Registry#getId(Block)} and {@link Blocks Blocks} since this is also used by {@link de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
 	 */
 	@SuppressWarnings("JavadocReference")
 	protected static final Object2ByteMap<String> NUMERIC_ID = Object2ByteMaps.unmodifiable(new Object2ByteOpenHashMap<>(Map.ofEntries(
@@ -180,7 +180,7 @@ public class DungeonManager {
 	private static @Nullable Vector2ic physicalEntrancePos;
 	private static @Nullable Room currentRoom;
 	private static DungeonBoss boss = DungeonBoss.NONE;
-	private static @Nullable Box bloodRushDoorBox;
+	private static @Nullable AABB bloodRushDoorBox;
 	private static boolean bloodOpened;
 	private static boolean hasKey;
 	private static boolean runEnded;
@@ -300,7 +300,7 @@ public class DungeonManager {
 						return Command.SINGLE_SUCCESS;
 					}))
 					.then(literal("getCheckmarkColour").executes(context -> {
-						MapState state = getMapState(context.getSource().getClient());
+						MapItemSavedData state = getMapState(context.getSource().getClient());
 
 						if (currentRoom != null && state != null) {
 							int checkmarkColour = getRoomCheckmarkColour(context.getSource().getClient(), state, currentRoom);
@@ -330,7 +330,7 @@ public class DungeonManager {
 	private static void load() {
 		long startTime = System.currentTimeMillis();
 		List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
-		for (Map.Entry<Identifier, Resource> resourceEntry : CLIENT.getResourceManager().findResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".skeleton")).entrySet()) {
+		for (Map.Entry<ResourceLocation, Resource> resourceEntry : CLIENT.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".skeleton")).entrySet()) {
 			String[] path = resourceEntry.getKey().getPath().split("/");
 			if (path.length != 4) {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon room data, invalid resource identifier {}", resourceEntry.getKey());
@@ -351,7 +351,7 @@ public class DungeonManager {
 			}));
 		}
 
-		for (Map.Entry<Identifier, Resource> resourceEntry : CLIENT.getResourceManager().findResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".json")).entrySet()) {
+		for (Map.Entry<ResourceLocation, Resource> resourceEntry : CLIENT.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".json")).entrySet()) {
 			String[] path = resourceEntry.getKey().getPath().split("/");
 			if (path.length != 4) continue;
 			String dungeon = path[1];
@@ -390,7 +390,7 @@ public class DungeonManager {
 		LOGGER.info("[Skyblocker Dungeon Secrets] Started loading dungeon secrets in (blocked main thread for) {} ms", System.currentTimeMillis() - startTime);
 	}
 
-	private static void saveCustomWaypoints(MinecraftClient client) {
+	private static void saveCustomWaypoints(Minecraft client) {
 		try (BufferedWriter writer = Files.newBufferedWriter(CUSTOM_WAYPOINTS_DIR)) {
 			JsonObject customWaypointsJson = new JsonObject();
 			customWaypoints.rowMap().forEach((room, waypoints) ->
@@ -404,7 +404,7 @@ public class DungeonManager {
 	}
 
 	private static int[] readRoom(Resource resource) throws RuntimeException {
-		try (ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(resource.getInputStream()))) {
+		try (ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(resource.open()))) {
 			return (int[]) in.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			throw new RuntimeException(e);
@@ -421,9 +421,9 @@ public class DungeonManager {
 		}).executes(context -> {
 			int secretIndex = IntegerArgumentType.getInteger(context, "secretIndex");
 			if (markSecrets(secretIndex, found)) {
-				context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable(found ? "skyblocker.dungeons.secrets.markSecretFound" : "skyblocker.dungeons.secrets.markSecretMissing", secretIndex)));
+				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable(found ? "skyblocker.dungeons.secrets.markSecretFound" : "skyblocker.dungeons.secrets.markSecretMissing", secretIndex)));
 			} else {
-				context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable(found ? "skyblocker.dungeons.secrets.markSecretFoundUnable" : "skyblocker.dungeons.secrets.markSecretMissingUnable", secretIndex)));
+				context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable(found ? "skyblocker.dungeons.secrets.markSecretFoundUnable" : "skyblocker.dungeons.secrets.markSecretMissingUnable", secretIndex)));
 			}
 			return Command.SINGLE_SUCCESS;
 		});
@@ -434,9 +434,9 @@ public class DungeonManager {
 			if (isCurrentRoomMatched()) {
 				//noinspection DataFlowIssue - checked above
 				currentRoom.markAllSecrets(false);
-				context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.markSecretsMissing")));
+				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.markSecretsMissing")));
 			} else {
-				context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.markSecretsMissingUnable")));
+				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.markSecretsMissingUnable")));
 			}
 
 			return Command.SINGLE_SUCCESS;
@@ -444,14 +444,14 @@ public class DungeonManager {
 	}
 
 	private static int getRelativePos(CommandContext<FabricClientCommandSource> context) {
-		return getRelativePos(context.getSource(), context.getSource().getPlayer().getBlockPos());
+		return getRelativePos(context.getSource(), context.getSource().getPlayer().blockPosition());
 	}
 
 	private static int getRelativeTargetPos(CommandContext<FabricClientCommandSource> context) {
-		if (CLIENT.crosshairTarget instanceof BlockHitResult blockHitResult && blockHitResult.getType() == HitResult.Type.BLOCK) {
+		if (CLIENT.hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType() == HitResult.Type.BLOCK) {
 			return getRelativePos(context.getSource(), blockHitResult.getBlockPos());
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.noTarget")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.noTarget")));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -462,18 +462,18 @@ public class DungeonManager {
 			//noinspection DataFlowIssue - checked above
 			BlockPos relativePos = currentRoom.actualToRelative(pos);
 			//noinspection DataFlowIssue - checked above
-			source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.posMessage", currentRoom.getName(), currentRoom.getDirection().asString(), relativePos.getX(), relativePos.getY(), relativePos.getZ())));
+			source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.posMessage", currentRoom.getName(), currentRoom.getDirection().getSerializedName(), relativePos.getX(), relativePos.getY(), relativePos.getZ())));
 		} else {
-			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
+			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static RequiredArgumentBuilder<FabricClientCommandSource, ClientPosArgument> addCustomWaypointCommand(boolean relative, CommandRegistryAccess registryAccess) {
+	private static RequiredArgumentBuilder<FabricClientCommandSource, ClientPosArgument> addCustomWaypointCommand(boolean relative, CommandBuildContext registryAccess) {
 		return argument("pos", ClientBlockPosArgumentType.blockPos())
 				.then(argument("secretIndex", IntegerArgumentType.integer())
 						.then(argument("category", SecretWaypoint.Category.CategoryArgumentType.category())
-								.then(argument("name", TextArgumentType.text(registryAccess)).executes(context -> {
+								.then(argument("name", ComponentArgument.textComponent(registryAccess)).executes(context -> {
 									BlockPos pos = context.getArgument("pos", ClientPosArgument.class).toAbsoluteBlockPos(context.getSource());
 									return relative ? addCustomWaypointRelative(context, pos) : addCustomWaypoint(context, pos);
 								}))
@@ -486,7 +486,7 @@ public class DungeonManager {
 		if (isRoomMatched(room)) {
 			room.addCustomWaypoint(context, room.actualToRelative(pos));
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -496,7 +496,7 @@ public class DungeonManager {
 			//noinspection DataFlowIssue - checked above
 			currentRoom.addCustomWaypoint(context, pos);
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -514,7 +514,7 @@ public class DungeonManager {
 		if (isRoomMatched(room)) {
 			room.removeCustomWaypoint(context, room.actualToRelative(pos));
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -524,27 +524,27 @@ public class DungeonManager {
 			//noinspection DataFlowIssue - checked above
 			currentRoom.removeCustomWaypoint(context, pos);
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.notMatched")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, String> matchAgainstCommand() {
-		return argument("room", StringArgumentType.string()).suggests((context, builder) -> CommandSource.suggestMatching(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
+		return argument("room", StringArgumentType.string()).suggests((context, builder) -> SharedSuggestionProvider.suggest(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
 			if (!isClearingDungeon()) {
 				context.getSource().sendError(Constants.PREFIX.get().append("§cYou are not in a dungeon."));
 				return Command.SINGLE_SUCCESS;
 			}
-			if (CLIENT.player == null || CLIENT.world == null) {
+			if (CLIENT.player == null || CLIENT.level == null) {
 				context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get player or world."));
 				return Command.SINGLE_SUCCESS;
 			}
-			ItemStack stack = CLIENT.player.getInventory().getMainStacks().get(8);
-			if (!stack.isOf(Items.FILLED_MAP)) {
+			ItemStack stack = CLIENT.player.getInventory().getNonEquipmentItems().get(8);
+			if (!stack.is(Items.FILLED_MAP)) {
 				context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map."));
 				return Command.SINGLE_SUCCESS;
 			}
-			MapState map = FilledMapItem.getMapState(stack.get(DataComponentTypes.MAP_ID), CLIENT.world);
+			MapItemSavedData map = MapItem.getSavedData(stack.get(DataComponents.MAP_ID), CLIENT.level);
 			if (map == null) {
 				context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map state."));
 				return Command.SINGLE_SUCCESS;
@@ -569,16 +569,16 @@ public class DungeonManager {
 		}));
 	}
 
-	private static @Nullable Room newDebugRoom(String roomName, Room.Direction direction, PlayerEntity player, MapState map) {
+	private static @Nullable Room newDebugRoom(String roomName, Room.Direction direction, Player player, MapItemSavedData map) {
 		Room room = null;
 		int[] roomData;
 		// we will clean this up one day (no we won't)
 		if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.PUZZLE.shape).get(roomName)) != null) {
-			room = DebugRoom.ofSinglePossibleRoom(Room.Type.PUZZLE, DungeonMapUtils.getPhysicalRoomPos(player.getEntityPos()), roomName, roomData, direction);
+			room = DebugRoom.ofSinglePossibleRoom(Room.Type.PUZZLE, DungeonMapUtils.getPhysicalRoomPos(player.position()), roomName, roomData, direction);
 		} else if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.TRAP.shape).get(roomName)) != null) {
-			room = DebugRoom.ofSinglePossibleRoom(Room.Type.TRAP, DungeonMapUtils.getPhysicalRoomPos(player.getEntityPos()), roomName, roomData, direction);
+			room = DebugRoom.ofSinglePossibleRoom(Room.Type.TRAP, DungeonMapUtils.getPhysicalRoomPos(player.position()), roomName, roomData, direction);
 		} else if ((roomData = ROOMS_DATA.get("catacombs").get(Room.Shape.MINIBOSS.shape).get(roomName)) != null) {
-			room = DebugRoom.ofSinglePossibleRoom(Room.Type.MINIBOSS, DungeonMapUtils.getPhysicalRoomPos(player.getEntityPos()), roomName, roomData, direction);
+			room = DebugRoom.ofSinglePossibleRoom(Room.Type.MINIBOSS, DungeonMapUtils.getPhysicalRoomPos(player.position()), roomName, roomData, direction);
 		} else if ((roomData = ROOMS_DATA.get("catacombs").values().stream().map(Map::entrySet).flatMap(Collection::stream).filter(entry -> entry.getKey().equals(roomName)).findAny().map(Map.Entry::getValue).orElse(null)) != null) {
 			if (mapEntrancePos == null || physicalEntrancePos == null) return null;
 			Vector2ic mapRoomPos = DungeonMapUtils.getMapRoomPos(map, mapEntrancePos, mapRoomSize);
@@ -592,14 +592,14 @@ public class DungeonManager {
 	/**
 	 * Gets the Mort NPC's location. This allows us to precisely locate the dungeon entrance
 	 */
-	public static @Nullable Vec3d getMortArmorStandPos() {
-		if (CLIENT.world == null) return null;
+	public static @Nullable Vec3 getMortArmorStandPos() {
+		if (CLIENT.level == null) return null;
 
-		for (var entity : CLIENT.world.getEntities()) {
-			if (entity instanceof ArmorStandEntity armorStand) {
-				Text name = armorStand.getCustomName();
+		for (var entity : CLIENT.level.entitiesForRendering()) {
+			if (entity instanceof ArmorStand armorStand) {
+				Component name = armorStand.getCustomName();
 				if (name != null && name.getString().contains("Mort")) {
-					return armorStand.getEntityPos();
+					return armorStand.position();
 				}
 			}
 		}
@@ -623,11 +623,11 @@ public class DungeonManager {
 	 *     <li> Gets the room type based on the map color. </li>
 	 *     <li> If the room has not been created (when the physical northwest corner is not in {@link #rooms}):</li>
 	 *     <ul>
-	 *         <li> If the room type is {@link Room.Type.ROOM}, gets the northwest corner of all connected room segments with {@link DungeonMapUtils#getRoomSegments(MapState, Vector2ic, int, byte)}.  (For example, a 1x2 room has two room segments.) </li>
+	 *         <li> If the room type is {@link Room.Type.ROOM}, gets the northwest corner of all connected room segments with {@link DungeonMapUtils#getRoomSegments(MapItemSavedData, Vector2ic, int, byte)}.  (For example, a 1x2 room has two room segments.) </li>
 	 *         <li> Create a new room. </li>
 	 *     </ul>
 	 *     <li> Sets {@link #currentRoom} to the current room, either created from the previous step or from {@link #rooms}. </li>
-	 *     <li> Calls {@link Tickable#tick(MinecraftClient)} on {@link #currentRoom}. </li>
+	 *     <li> Calls {@link Tickable#tick(Minecraft)} on {@link #currentRoom}. </li>
 	 * </ul>
 	 */
 	@SuppressWarnings({"JavadocReference", "incomplete-switch"})
@@ -635,14 +635,14 @@ public class DungeonManager {
 		if (!Utils.isInDungeons() || isInBoss() || runEnded) {
 			return;
 		}
-		if (CLIENT.player == null || CLIENT.world == null) {
+		if (CLIENT.player == null || CLIENT.level == null) {
 			return;
 		}
 
 		if (physicalEntrancePos == null) {
 			//The check for the area should delay this until after the player's position has been set by the server (since the scoreboard should be sent after the player position)
 			//this is necessary otherwise the default position of (0, 0) or whatever will mess up the entrance calculation which will break all sorts of things
-			Vec3d mortPos = getMortArmorStandPos();
+			Vec3 mortPos = getMortArmorStandPos();
 			if (mortPos == null) {
 				LOGGER.warn("[Skyblocker Dungeon Secrets] Failed to find Mort armor stand, retrying...");
 				return;
@@ -652,7 +652,7 @@ public class DungeonManager {
 			DungeonEvents.DUNGEON_LOADED.invoker().onDungeonLoaded();
 		}
 
-		MapState map = getMapState(CLIENT);
+		MapItemSavedData map = getMapState(CLIENT);
 		if (map == null) {
 			return;
 		}
@@ -663,12 +663,12 @@ public class DungeonManager {
 			}
 			mapEntrancePos = mapEntrancePosAndSize.left();
 			mapRoomSize = mapEntrancePosAndSize.rightInt();
-			LOGGER.info("[Skyblocker Dungeon Secrets] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, CLIENT.player.getEntityPos(), physicalEntrancePos);
+			LOGGER.info("[Skyblocker Dungeon Secrets] Started dungeon with map room size {}, map entrance pos {}, player pos {}, and physical entrance pos {}", mapRoomSize, mapEntrancePos, CLIENT.player.position(), physicalEntrancePos);
 		}
 
 		getBloodRushDoorPos(map);
 
-		Vector2ic physicalPos = DungeonMapUtils.getPhysicalRoomPos(CLIENT.player.getEntityPos());
+		Vector2ic physicalPos = DungeonMapUtils.getPhysicalRoomPos(CLIENT.player.position());
 		Vector2ic mapPos = DungeonMapUtils.getMapPosFromPhysical(physicalEntrancePos, mapEntrancePos, mapRoomSize, physicalPos);
 		Room room = rooms.get(physicalPos);
 		if (room == null) {
@@ -696,8 +696,8 @@ public class DungeonManager {
 	}
 
 	private static void updateAllRoomCheckmarks() {
-		if (!Utils.isInDungeons() || isInBoss() || CLIENT.player == null || CLIENT.world == null) return;
-		MapState map = getMapState(CLIENT);
+		if (!Utils.isInDungeons() || isInBoss() || CLIENT.player == null || CLIENT.level == null) return;
+		MapItemSavedData map = getMapState(CLIENT);
 		if (map == null || mapEntrancePos == null) return;
 		DungeonManager.getRoomsStream().filter(Room::isMatched).forEach(room -> updateRoomCheckmark(room, map));
 	}
@@ -705,7 +705,7 @@ public class DungeonManager {
 	// Calculate the checkmark colour and mark all secrets as found if the checkmark is green
 	// We also wait for it being matched to ensure that we don't try to mark the room as completed if secret waypoints haven't yet loaded (since the room is still matching)
 	// Mark the secret count as outdated to ensure we have an accurate count
-	private static void updateRoomCheckmark(Room room, MapState map) {
+	private static void updateRoomCheckmark(Room room, MapItemSavedData map) {
 		if (room.getType() == Room.Type.ENTRANCE || room.greenChecked && room.whiteChecked) return;
 		if (!room.greenChecked && getRoomCheckmarkColour(CLIENT, map, room) == DungeonMapUtils.GREEN_COLOR) {
 			room.greenChecked = true;
@@ -778,7 +778,7 @@ public class DungeonManager {
 	 * To process key obtained messages, this method checks if door highlight is enabled and if the message matches a key obtained message.
 	 */
 	@SuppressWarnings("SameReturnValue")
-	private static boolean onChatMessage(Text text, boolean overlay) {
+	private static boolean onChatMessage(Component text, boolean overlay) {
 		if (!shouldProcess()) return true;
 		String message = text.getString();
 
@@ -825,18 +825,18 @@ public class DungeonManager {
 	}
 
 	/**
-	 * Calls {@link Room#onUseBlock(World, BlockHitResult)} on {@link #currentRoom} if {@link #isCurrentRoomMatched()}.
+	 * Calls {@link Room#onUseBlock(Level, BlockHitResult)} on {@link #currentRoom} if {@link #isCurrentRoomMatched()}.
 	 * Used to detect finding {@link SecretWaypoint.Category.CHEST} and {@link SecretWaypoint.Category.WITHER} secrets, as well as for hiding {@link SecretWaypoint.Category.LEVER} waypoints.
 	 *
-	 * @return {@link ActionResult#PASS}
+	 * @return {@link InteractionResult#PASS}
 	 */
 	@SuppressWarnings("JavadocReference")
-	private static ActionResult onUseBlock(World world, BlockHitResult hitResult) {
+	private static InteractionResult onUseBlock(Level world, BlockHitResult hitResult) {
 		if (isCurrentRoomMatched()) {
 			//noinspection DataFlowIssue - checked above
 			currentRoom.onUseBlock(world, hitResult.getBlockPos());
 		}
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
 	public static void onChestOpened(BlockPos pos) {
@@ -852,19 +852,19 @@ public class DungeonManager {
 	 */
 	@SuppressWarnings("JavadocReference")
 	public static void onItemPickup(ItemEntity itemEntity) {
-		Room room = getRoomAtPhysical(itemEntity.getEntityPos());
+		Room room = getRoomAtPhysical(itemEntity.position());
 		if (isRoomMatched(room)) {
 			room.onItemPickup(itemEntity);
 		}
 	}
 
 	/**
-	 * Calls {@link Room#onBatRemoved(BatEntity)} on the room the {@code bat} is in if that room {@link #isRoomMatched(Room)}.
+	 * Calls {@link Room#onBatRemoved(Bat)} on the room the {@code bat} is in if that room {@link #isRoomMatched(Room)}.
 	 * Used to detect finding {@link SecretWaypoint.Category.BAT} secrets.
 	 */
 	@SuppressWarnings("JavadocReference")
-	public static void onBatRemoved(AmbientEntity bat) {
-		Room room = getRoomAtPhysical(bat.getEntityPos());
+	public static void onBatRemoved(AmbientCreature bat) {
+		Room room = getRoomAtPhysical(bat.position());
 		if (isRoomMatched(room)) {
 			room.onBatRemoved(bat);
 		}
@@ -884,9 +884,9 @@ public class DungeonManager {
 	 * @param pos the physical position
 	 * @return the room at the given physical position, or null if there is no room at the given physical position
 	 * @see #rooms
-	 * @see DungeonMapUtils#getPhysicalRoomPos(Vec3d)
+	 * @see DungeonMapUtils#getPhysicalRoomPos(Vec3)
 	 */
-	private static @Nullable Room getRoomAtPhysical(Vec3d pos) {
+	private static @Nullable Room getRoomAtPhysical(Vec3 pos) {
 		return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
 	}
 
@@ -905,9 +905,9 @@ public class DungeonManager {
 	/**
 	 * Get the state of the map in the user's 9th slot.
 	 */
-	private static @Nullable MapState getMapState(MinecraftClient client) {
+	private static @Nullable MapItemSavedData getMapState(Minecraft client) {
 		if (client.player == null) return null;
-		return FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().getMainStacks().get(8)), client.world);
+		return MapItem.getSavedData(DungeonMap.getMapIdComponent(client.player.getInventory().getNonEquipmentItems().get(8)), client.level);
 	}
 
 	/**
@@ -967,7 +967,7 @@ public class DungeonManager {
 	 *
 	 * @implNote Relies on the minimap to check for doors
 	 */
-	private static void getBloodRushDoorPos(MapState map) {
+	private static void getBloodRushDoorPos(MapItemSavedData map) {
 		if (mapEntrancePos == null || physicalEntrancePos == null || mapRoomSize == 0) {
 			LOGGER.error("[Skyblocker Dungeon Secrets] Dungeon map info missing with map entrance pos {} and map room size {}", mapEntrancePos, mapRoomSize);
 			return;
@@ -982,7 +982,7 @@ public class DungeonManager {
 				// 119 is the black found on wither doors on the map, 18 is the blood door red
 				if (color == 119 || color == 18) {
 					Vector2ic doorPos = getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, new Vector2i(x - mapRoomSize / 2, y - mapRoomSize));
-					bloodRushDoorBox = new Box(doorPos.x() + 14, 69, doorPos.y() + 30, doorPos.x() + 17, 73, doorPos.y() + 33);
+					bloodRushDoorBox = new AABB(doorPos.x() + 14, 69, doorPos.y() + 30, doorPos.x() + 17, 73, doorPos.y() + 33);
 
 					return;
 				}
@@ -995,7 +995,7 @@ public class DungeonManager {
 
 				if (color == 119 || color == 18) {
 					Vector2ic doorPos = getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, new Vector2i(x - mapRoomSize, y - mapRoomSize / 2));
-					bloodRushDoorBox = new Box(doorPos.x() + 30, 69, doorPos.y() + 14, doorPos.x() + 33, 73, doorPos.y() + 17);
+					bloodRushDoorBox = new AABB(doorPos.x() + 30, 69, doorPos.y() + 14, doorPos.x() + 33, 73, doorPos.y() + 17);
 
 					return;
 				}
@@ -1007,7 +1007,7 @@ public class DungeonManager {
 	 * Returns the colour of a room's checkmark on the map. To find a room's checkmark: For each segment, we start from the top left corner of the segment,
 	 * go to the middle, then iterate downwards, and we should find the checkmark about a pixel or two down from there if the segment has the checkmark.
 	 */
-	private static int getRoomCheckmarkColour(MinecraftClient client, MapState mapState, Room room) {
+	private static int getRoomCheckmarkColour(Minecraft client, MapItemSavedData mapState, Room room) {
 		if (physicalEntrancePos == null || mapEntrancePos == null) return -1;
 		int halfRoomSize = mapRoomSize / 2;
 

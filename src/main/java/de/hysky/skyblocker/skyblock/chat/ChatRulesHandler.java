@@ -16,19 +16,19 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.toast.Toast;
-import net.minecraft.client.toast.ToastManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.client.gui.components.toasts.ToastManager;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.nio.file.Path;
@@ -37,7 +37,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class ChatRulesHandler {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chat_rules.json");
 
 	@VisibleForTesting
@@ -61,18 +61,18 @@ public class ChatRulesHandler {
 	static List<ChatRule> getDefaultChatRules() {
 		return new ArrayList<>(List.of(
 				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, null, null, null, null, null),
-				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, new ChatRule.AnnouncementMessage("&1Ability", 3000), null, SoundEvents.ENTITY_ARROW_HIT_PLAYER)
+				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, new ChatRule.AnnouncementMessage("&1Ability", 3000), null, SoundEvents.ARROW_HIT_PLAYER)
 		));
 	}
 
 	/**
 	 * Checks each rule in {@link ChatRulesHandler#CHAT_RULE_LIST} to see if they are a match for the message and if so change outputs based on the options set in the {@link ChatRule}.
 	 */
-	private static boolean checkMessage(Text message, boolean overlay) {
+	private static boolean checkMessage(Component message, boolean overlay) {
 		if (overlay || !Utils.isOnSkyblock()) return true;
 		List<ChatRule> rules = CHAT_RULE_LIST.getData();
 		if (!CHAT_RULE_LIST.isLoaded() || rules.isEmpty()) return true;
-		String plain = Formatting.strip(message.getString());
+		String plain = ChatFormatting.stripFormatting(message.getString());
 
 		for (ChatRule rule : rules) {
 			ChatRule.Match match = rule.isMatch(plain);
@@ -92,12 +92,12 @@ public class ChatRulesHandler {
 
 			// Show in action bar
 			if (rule.getActionBarMessage() != null && CLIENT.player != null) {
-				CLIENT.player.sendMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())), true);
+				CLIENT.player.displayClientMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())), true);
 			}
 
 			if (rule.getToastMessage() != null) {
 				ChatRule.ToastMessage toastMessage = rule.getToastMessage();
-				CLIENT.getToastManager().add(new ChatRulesToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon));
+				CLIENT.getToastManager().addToast(new ChatRulesToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon));
 			}
 
 			// Play sound
@@ -117,12 +117,12 @@ public class ChatRulesHandler {
 	 * @param codedString the string with color codes in
 	 * @return formatted text
 	 */
-	protected static MutableText formatText(String codedString) {
+	protected static MutableComponent formatText(String codedString) {
 		// These are done in order of precedence, so § is checked first, then &.
 		// This is to ensure that there are no accidental formatting issues due to an actual use of '&' with a valid color code.
 		if (codedString.contains("§")) return TextTransformer.fromLegacy(codedString, '§', false);
 		if (codedString.contains("&")) return TextTransformer.fromLegacy(codedString, '&', false);
-		return Text.literal(codedString);
+		return Component.literal(codedString);
 	}
 
 	public static void saveChatRules() {
@@ -130,27 +130,27 @@ public class ChatRulesHandler {
 	}
 
 	private static class ChatRulesToast implements Toast {
-		private static final Identifier TEXTURE = SkyblockerMod.id("notification");
+		private static final ResourceLocation TEXTURE = SkyblockerMod.id("notification");
 
 		private final long displayDuration;
 		private final ItemStack icon;
-		private final List<OrderedText> lines;
+		private final List<FormattedCharSequence> lines;
 		private final int width;
 		private Visibility visibility = Visibility.SHOW;
 
-		private ChatRulesToast(Text message, long displayDuration, ItemStack icon) {
-			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			this.lines = textRenderer.wrapLines(message, 200);
+		private ChatRulesToast(Component message, long displayDuration, ItemStack icon) {
+			Font textRenderer = Minecraft.getInstance().font;
+			this.lines = textRenderer.split(message, 200);
 			this.displayDuration = displayDuration;
 			this.icon = icon;
-			this.width = lines.stream().mapToInt(textRenderer::getWidth).max().orElse(200) + 30;
-			for (OrderedText line : lines) {
-				System.out.println(textRenderer.getWidth(line));
+			this.width = lines.stream().mapToInt(textRenderer::width).max().orElse(200) + 30;
+			for (FormattedCharSequence line : lines) {
+				System.out.println(textRenderer.width(line));
 			}
 		}
 
 		@Override
-		public Visibility getVisibility() {
+		public Visibility getWantedVisibility() {
 			return visibility;
 		}
 
@@ -160,21 +160,21 @@ public class ChatRulesHandler {
 		}
 
 		@Override
-		public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, getWidth(), getHeight());
-			context.drawItemWithoutEntity(icon, 4, 4);
+		public void render(GuiGraphics context, Font textRenderer, long startTime) {
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
+			context.renderFakeItem(icon, 4, 4);
 			for (int i = 0; i < lines.size(); i++) {
-				context.drawText(textRenderer, lines.get(i), 4 + 16 + 4, 8 + i * 12, -1, false);
+				context.drawString(textRenderer, lines.get(i), 4 + 16 + 4, 8 + i * 12, -1, false);
 			}
 		}
 
 		@Override
-		public int getHeight() {
+		public int height() {
 			return 8 + 4 + Math.max(lines.size(), 1) * 12;
 		}
 
 		@Override
-		public int getWidth() {
+		public int width() {
 			return width;
 		}
 	}

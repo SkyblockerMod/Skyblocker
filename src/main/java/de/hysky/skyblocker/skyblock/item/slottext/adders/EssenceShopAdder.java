@@ -5,15 +5,14 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class EssenceShopAdder extends SimpleSlotTextAdder {
 	private static final Pattern ESSENCELEVEL = Pattern.compile("^[\\w ]+ (?<level>[IVXLCDM]+)$");
@@ -31,9 +30,9 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slotId > 53) return List.of();
-		Matcher essenceLevelMatcher = ESSENCELEVEL.matcher(stack.getName().getString());
+		Matcher essenceLevelMatcher = ESSENCELEVEL.matcher(stack.getHoverName().getString());
 		Matcher essenceAmountMatcher = ItemUtils.getLoreLineIfMatch(stack, ESSENCE);
 
 		if (essenceLevelMatcher.matches()) {
@@ -42,12 +41,12 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
 			if (unlockedMatcher == null) {
 				level -= 1;
 			}
-			return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
+			return SlotText.bottomRightList(Component.literal(String.valueOf(level)).withColor(SlotText.CREAM));
 		}
 		if (essenceAmountMatcher == null) return List.of();
 		String essenceAmount = essenceAmountMatcher.group("essence").replace(",", "");
 		if (!essenceAmount.matches("-?\\d+")) return List.of();
 
-		return SlotText.bottomRightList(Text.literal(Formatters.SHORT_FLOAT_NUMBERS.format(Integer.parseInt(essenceAmount))).withColor(SlotText.CREAM));
+		return SlotText.bottomRightList(Component.literal(Formatters.SHORT_FLOAT_NUMBERS.format(Integer.parseInt(essenceAmount))).withColor(SlotText.CREAM));
 	}
 }

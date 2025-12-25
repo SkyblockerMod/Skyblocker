@@ -3,23 +3,22 @@ package de.hysky.skyblocker.skyblock.profileviewer.dungeons;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class DungeonFloorRunsWidget {
-	private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/dungeons_body.png");
+	private static final Font textRenderer = Minecraft.getInstance().font;
+	private static final ResourceLocation TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/dungeons_body.png");
 
 	private static final String[] DUNGEONS = {"catacombs", "master_catacombs"};
 	private JsonObject dungeonsStats;
@@ -30,9 +29,9 @@ public class DungeonFloorRunsWidget {
 		} catch (Exception ignored) {}
 	}
 
-	public void render(DrawContext context, int mouseX, int mouseY, int x, int y) {
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 110, 109, 110);
-		context.drawText(textRenderer, Text.literal("Floor Runs").formatted(Formatting.BOLD), x + 6, y + 4, Color.WHITE.getRGB(), true);
+	public void render(GuiGraphics context, int mouseX, int mouseY, int x, int y) {
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 110, 109, 110);
+		context.drawString(textRenderer, Component.literal("Floor Runs").withStyle(ChatFormatting.BOLD), x + 6, y + 4, Color.WHITE.getRGB(), true);
 
 		int columnX = x + 4;
 		int elementY = y + 15;
@@ -47,27 +46,27 @@ public class DungeonFloorRunsWidget {
 					if (entry.getKey().equals("total")) continue;
 
 					String textToRender = String.format((dungeon.equals("catacombs") ? "§aF" : "§cM") + "%s§r %s", entry.getKey(), entry.getValue().getAsInt());
-					context.drawText(textRenderer, textToRender, columnX + 2, elementY + 2, Color.WHITE.getRGB(), true);
+					context.drawString(textRenderer, textToRender, columnX + 2, elementY + 2, Color.WHITE.getRGB(), true);
 					if (!entry.getKey().equals("0") && mouseX >= columnX && mouseX <= columnX + 40 && mouseY >= elementY && mouseY <= elementY + 9) {
-						List<Text> tooltipText = new ArrayList<>();
-						tooltipText.add(Text.literal("Personal Bests").formatted(Formatting.BOLD, Formatting.LIGHT_PURPLE));
+						List<Component> tooltipText = new ArrayList<>();
+						tooltipText.add(Component.literal("Personal Bests").withStyle(ChatFormatting.BOLD, ChatFormatting.LIGHT_PURPLE));
 
 						JsonObject fastestTimes = dungeonsStats.getAsJsonObject(dungeon).getAsJsonObject("fastest_time_s");
 						if (fastestTimes != null && fastestTimes.has(entry.getKey())) {
-							tooltipText.add(Text.literal("S Run:  " + formatTime(fastestTimes.get(entry.getKey()).getAsLong())).formatted(Formatting.GOLD));
+							tooltipText.add(Component.literal("S Run:  " + formatTime(fastestTimes.get(entry.getKey()).getAsLong())).withStyle(ChatFormatting.GOLD));
 						}
 
 						fastestTimes = dungeonsStats.getAsJsonObject(dungeon).getAsJsonObject("fastest_time_s_plus");
 						if (fastestTimes != null && fastestTimes.has(entry.getKey())) {
-							tooltipText.add(Text.literal("S+ Run: " + formatTime(fastestTimes.get(entry.getKey()).getAsLong())).formatted(Formatting.GOLD));
+							tooltipText.add(Component.literal("S+ Run: " + formatTime(fastestTimes.get(entry.getKey()).getAsLong())).withStyle(ChatFormatting.GOLD));
 						}
 
 						fastestTimes = dungeonsStats.getAsJsonObject(dungeon).getAsJsonObject("fastest_time");
 						if (fastestTimes != null && fastestTimes.has(entry.getKey()) && tooltipText.size() == 1) {
-							tooltipText.add(Text.literal("Completion:  " + formatTime(fastestTimes.get(entry.getKey()).getAsLong())).formatted(Formatting.GOLD));
+							tooltipText.add(Component.literal("Completion:  " + formatTime(fastestTimes.get(entry.getKey()).getAsLong())).withStyle(ChatFormatting.GOLD));
 						}
 
-						context.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
+						context.setComponentTooltipForNextFrame(textRenderer, tooltipText, mouseX, mouseY);
 					}
 
 					elementY += 11;

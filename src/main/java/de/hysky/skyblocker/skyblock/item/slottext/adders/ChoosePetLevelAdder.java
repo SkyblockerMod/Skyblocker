@@ -3,17 +3,16 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class ChoosePetLevelAdder extends SimpleSlotTextAdder {
 	private static final Pattern AUTOPET_LEVEL_PATTERN = Pattern.compile("Equip: ⭐? ?\\[Lvl (\\d+)].*");
@@ -25,15 +24,15 @@ public class ChoosePetLevelAdder extends SimpleSlotTextAdder {
 	public ChoosePetLevelAdder() { super("^Choose Pet.*", CONFIG_INFORMATION); }
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		if (slotId < 18 || slotId > 44 || !stack.isOf(Items.PLAYER_HEAD)) return List.of();
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
+		if (slotId < 18 || slotId > 44 || !stack.is(Items.PLAYER_HEAD)) return List.of();
 		Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, AUTOPET_LEVEL_PATTERN);
 		if (matcher == null) {
-			matcher = LEVEL_PATTERN.matcher(stack.getName().getString());
+			matcher = LEVEL_PATTERN.matcher(stack.getHoverName().getString());
 			if (!matcher.matches()) return List.of();
 		}
 		String level = matcher.group(1);
 		if (!NumberUtils.isDigits(level) || "100".equals(level) || "200".equals(level)) return List.of();
-		return SlotText.bottomRightList(Text.literal(level).withColor(SlotText.CREAM));
+		return SlotText.bottomRightList(Component.literal(level).withColor(SlotText.CREAM));
 	}
 }

@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public interface PrimitiveCollector {
 
@@ -15,15 +15,15 @@ public interface PrimitiveCollector {
 
 	void submitFilledBox(BlockPos pos, float[] colourComponents, float alpha, boolean throughWalls);
 
-	void submitFilledBox(Vec3d pos, Vec3d dimensions, float[] colourComponents, float alpha, boolean throughWalls);
+	void submitFilledBox(Vec3 pos, Vec3 dimensions, float[] colourComponents, float alpha, boolean throughWalls);
 
-	void submitFilledBox(Box box, float[] colourComponents, float alpha, boolean throughWalls);
+	void submitFilledBox(AABB box, float[] colourComponents, float alpha, boolean throughWalls);
 
 	void submitOutlinedBox(BlockPos pos, float[] colourComponents, float lineWidth, boolean throughWalls);
 
-	void submitOutlinedBox(Box box, float[] colourComponents, float lineWidth, boolean throughWalls);
+	void submitOutlinedBox(AABB box, float[] colourComponents, float lineWidth, boolean throughWalls);
 
-	void submitOutlinedBox(Box box, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls);
+	void submitOutlinedBox(AABB box, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls);
 
 	/**
 	 * Submits lines to be drawn from point to point.<br><br>
@@ -35,11 +35,11 @@ public interface PrimitiveCollector {
 	 * @param points    The points from which to draw lines between
 	 * @param lineWidth The width of the lines
 	 */
-	void submitLinesFromPoints(Vec3d[] points, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls);
+	void submitLinesFromPoints(Vec3[] points, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls);
 
-	void submitLineFromCursor(Vec3d point, float[] colourComponents, float alpha, float lineWidth);
+	void submitLineFromCursor(Vec3 point, float[] colourComponents, float alpha, float lineWidth);
 
-	void submitQuad(Vec3d[] points, float[] colourComponents, float alpha, boolean throughWalls);
+	void submitQuad(Vec3[] points, float[] colourComponents, float alpha, boolean throughWalls);
 
 	/**
 	 * Submits a texture in world space facing the player (like a name tag).
@@ -53,15 +53,15 @@ public interface PrimitiveCollector {
 	 * @param texture       reference to texture to render
 	 * @param shaderColor   colour to apply to the texture (use white if none)
 	 */
-	void submitTexturedQuad(Vec3d pos, float width, float height, float textureWidth, float textureHeight, Vec3d renderOffset, Identifier texture, float[] shaderColour, float alpha, boolean throughWalls);
+	void submitTexturedQuad(Vec3 pos, float width, float height, float textureWidth, float textureHeight, Vec3 renderOffset, ResourceLocation texture, float[] shaderColour, float alpha, boolean throughWalls);
 
 	void submitBlockHologram(BlockPos pos, BlockState state);
 
-	void submitText(Text text, Vec3d pos, boolean throughWalls);
+	void submitText(Component text, Vec3 pos, boolean throughWalls);
 
-	void submitText(Text text, Vec3d pos, float scale, boolean throughWalls);
+	void submitText(Component text, Vec3 pos, float scale, boolean throughWalls);
 
-	void submitText(Text text, Vec3d pos, float scale, float yOffset, boolean throughWalls);
+	void submitText(Component text, Vec3 pos, float scale, float yOffset, boolean throughWalls);
 
 	/**
 	 * Submits a cylinder without the top or bottom faces.
@@ -71,7 +71,7 @@ public interface PrimitiveCollector {
 	 * @param height   The total height of the cylinder with {@code pos} as the midpoint.
 	 * @param segments The number of triangles used to approximate the circle.
 	 */
-	void submitCylinder(Vec3d centre, float radius, float height, int segments, int colour);
+	void submitCylinder(Vec3 centre, float radius, float height, int segments, int colour);
 
 	/**
 	 * Submits a circle filled in using the triangle fan draw mode.
@@ -80,7 +80,7 @@ public interface PrimitiveCollector {
 	 * @param radius   The radius of the circle.
 	 * @param segments The number of triangles used to approximate the circle.
 	 */
-	void submitFilledCircle(Vec3d centre, float radius, int segments, int colour);
+	void submitFilledCircle(Vec3 centre, float radius, int segments, int colour);
 
 	/**
 	 * Submits a circle sphere in using triangle strips.
@@ -90,7 +90,7 @@ public interface PrimitiveCollector {
 	 * @param rings    The number of rings to subdivide the sphere.
 	 * @param segments The number of triangles used to approximate the circle.
 	 */
-	void submitSphere(Vec3d centre, float radius, int segments, int rings, int colour);
+	void submitSphere(Vec3 centre, float radius, int segments, int rings, int colour);
 
 	/**
 	 * Submits a circle outline in using quads
@@ -100,5 +100,5 @@ public interface PrimitiveCollector {
 	 * @param thickness The thickness of the outline in blocks.
 	 * @param segments  The number of triangles used to approximate the circle.
 	 */
-	void submitOutlinedCircle(Vec3d centre, float radius, float thickness, int segments, int colour);
+	void submitOutlinedCircle(Vec3 centre, float radius, float thickness, int segments, int colour);
 }

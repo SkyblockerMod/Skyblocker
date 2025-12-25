@@ -18,13 +18,13 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.AbstractNbtNumber;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NumericTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,10 +41,10 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class FarmingHud {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
-	private static final Identifier FARMING_HUD = SkyblockerMod.id("farming_hud");
+	private static final ResourceLocation FARMING_HUD = SkyblockerMod.id("farming_hud");
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
 	private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?<percent>[\\d,]+(?:\\.\\d+)?%|[\\d,]+/[\\d,]+)\\)");
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static final Minecraft client = Minecraft.getInstance();
 	private static CounterType counterType = CounterType.NONE;
 	private static final Deque<LongLongPair> counter = new ArrayDeque<>();
 	private static final LongPriorityQueue blockBreaks = new LongArrayFIFOQueue();
@@ -66,7 +66,7 @@ public class FarmingHud {
 				}
 
 				assert client.player != null;
-				ItemStack stack = client.player.getMainHandStack();
+				ItemStack stack = client.player.getMainHandItem();
 				if (tryGetCounter(stack, CounterType.CULTIVATING) && tryGetCounter(stack, CounterType.COUNTER)) {
 					counterType = CounterType.NONE;
 				}
@@ -80,18 +80,18 @@ public class FarmingHud {
 		// Cactus blocks broken with the Cactus Knife do not register above
 		// The server replaces the blocks with air.
 		WorldEvents.BLOCK_STATE_UPDATE.register((pos, oldState, newState) -> {
-			if (client.player == null || client.world == null || !shouldRender()) return;
+			if (client.player == null || client.level == null || !shouldRender()) return;
 			if (oldState == null) return; // oldState is null if it gets broken on the client.
-			if (!newState.isAir() || !oldState.isOf(Blocks.CACTUS)) return; // Cactus was replaced with air
-			if (!client.world.getBlockState(pos.down()).isOf(Blocks.CACTUS)) return; // Don't count any blocks above one that was broken.
-			if (client.player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) > 64) return; // check if within 8 blocks of the player
-			if (!client.player.getMainHandStack().getNeuName().equals("CACTUS_KNIFE")) return;
+			if (!newState.isAir() || !oldState.is(Blocks.CACTUS)) return; // Cactus was replaced with air
+			if (!client.level.getBlockState(pos.below()).is(Blocks.CACTUS)) return; // Don't count any blocks above one that was broken.
+			if (client.player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > 64) return; // check if within 8 blocks of the player
+			if (!client.player.getMainHandItem().getNeuName().equals("CACTUS_KNIFE")) return;
 			blockBreaks.enqueue(System.currentTimeMillis());
 		});
 
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 			if (shouldRender() && overlay) {
-				Matcher matcher = FARMING_XP.matcher(Formatting.strip(message.getString()));
+				Matcher matcher = FARMING_XP.matcher(ChatFormatting.stripFormatting(message.getString()));
 				if (matcher.find()) {
 					try {
 						farmingXp.offer(FloatLongPair.of(NUMBER_FORMAT.parse(matcher.group("xp")).floatValue(), System.currentTimeMillis()));
@@ -109,9 +109,9 @@ public class FarmingHud {
 	}
 
 	private static boolean tryGetCounter(ItemStack stack, CounterType counterType) {
-		NbtCompound customData = ItemUtils.getCustomData(stack);
-		if (customData.isEmpty() || !(customData.get(counterType.nbtKey) instanceof AbstractNbtNumber)) return true;
-		long count = customData.getLong(counterType.nbtKey, 0);
+		CompoundTag customData = ItemUtils.getCustomData(stack);
+		if (customData.isEmpty() || !(customData.get(counterType.nbtKey) instanceof NumericTag)) return true;
+		long count = customData.getLongOr(counterType.nbtKey, 0);
 		if (FarmingHud.counterType != counterType) {
 			counter.clear();
 			FarmingHud.counterType = counterType;

@@ -2,7 +2,25 @@ package de.hysky.skyblocker.utils.render.primitive;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.state.BeaconRenderState;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
@@ -17,30 +35,11 @@ import de.hysky.skyblocker.utils.render.state.QuadRenderState;
 import de.hysky.skyblocker.utils.render.state.SphereRenderState;
 import de.hysky.skyblocker.utils.render.state.TextRenderState;
 import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.Frustum;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.block.entity.state.BeaconBlockEntityRenderState;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.render.state.WorldRenderState;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.Vec3d;
 
 public final class PrimitiveCollectorImpl implements PrimitiveCollector {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
-	private final WorldRenderState worldState;
+	private final LevelRenderState worldState;
 	private final Frustum frustum;
 	private List<VanillaSubmittable<?>> vanillaSubmittables = null;
 	private List<FilledBoxRenderState> filledBoxStates = null;
@@ -57,7 +56,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private List<OutlinedCircleRenderState> outlinedCircleStates = null;
 	private boolean frozen = false;
 
-	public PrimitiveCollectorImpl(WorldRenderState worldState, Frustum frustum) {
+	public PrimitiveCollectorImpl(LevelRenderState worldState, Frustum frustum) {
 		this.worldState = worldState;
 		this.frustum = frustum;
 	}
@@ -85,12 +84,12 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
-	public void submitFilledBox(Vec3d pos, Vec3d dimensions, float[] colourComponents, float alpha, boolean throughWalls) {
+	public void submitFilledBox(Vec3 pos, Vec3 dimensions, float[] colourComponents, float alpha, boolean throughWalls) {
 		submitFilledBox(pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colourComponents, alpha, throughWalls);
 	}
 
 	@Override
-	public void submitFilledBox(Box box, float[] colourComponents, float alpha, boolean throughWalls) {
+	public void submitFilledBox(AABB box, float[] colourComponents, float alpha, boolean throughWalls) {
 		submitFilledBox(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, colourComponents, alpha, throughWalls);
 	}
 
@@ -128,17 +127,17 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			return;
 		}
 
-		int colour = ColorHelper.fromFloats(1f, colourComponents[0], colourComponents[1], colourComponents[2]);
-		float length = (float) RenderHelper.getCamera().getPos().subtract(pos.toCenterPos()).horizontalLength();
-		BeaconBlockEntityRenderState state = new BeaconBlockEntityRenderState();
-		state.pos = pos;
-		state.blockState = Blocks.BEACON.getDefaultState();
-		state.type = BlockEntityType.BEACON;
-		state.lightmapCoordinates = LightmapTextureManager.MAX_LIGHT_COORDINATE;
-		state.crumblingOverlay = null;
-		state.beamRotationDegrees = CLIENT.world != null ? Math.floorMod(CLIENT.world.getTime(), 40) + CLIENT.getRenderTickCounter().getTickProgress(true) : 0f;
-		state.beamSegments.add(new BeaconBlockEntityRenderState.BeamSegment(colour, MAX_OVERWORLD_BUILD_HEIGHT));
-		state.beamScale = CLIENT.player != null && CLIENT.player.isUsingSpyglass() ? 1.0F : Math.max(1.0F, length / 96.0F);
+		int colour = ARGB.colorFromFloat(1f, colourComponents[0], colourComponents[1], colourComponents[2]);
+		float length = (float) RenderHelper.getCamera().getPosition().subtract(pos.getCenter()).horizontalDistance();
+		BeaconRenderState state = new BeaconRenderState();
+		state.blockPos = pos;
+		state.blockState = Blocks.BEACON.defaultBlockState();
+		state.blockEntityType = BlockEntityType.BEACON;
+		state.lightCoords = LightTexture.FULL_BRIGHT;
+		state.breakProgress = null;
+		state.animationTime = CLIENT.level != null ? Math.floorMod(CLIENT.level.getGameTime(), 40) + CLIENT.getDeltaTracker().getGameTimeDeltaPartialTick(true) : 0f;
+		state.sections.add(new BeaconRenderState.Section(colour, MAX_OVERWORLD_BUILD_HEIGHT));
+		state.beamRadiusScale = CLIENT.player != null && CLIENT.player.isScoping() ? 1.0F : Math.max(1.0F, length / 96.0F);
 
 		this.worldState.blockEntityRenderStates.add(state);
 	}
@@ -149,12 +148,12 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
-	public void submitOutlinedBox(Box box, float[] colourComponents, float lineWidth, boolean throughWalls) {
+	public void submitOutlinedBox(AABB box, float[] colourComponents, float lineWidth, boolean throughWalls) {
 		submitOutlinedBox(box, colourComponents, 1f, lineWidth, throughWalls);
 	}
 
 	@Override
-	public void submitOutlinedBox(Box box, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls) {
+	public void submitOutlinedBox(AABB box, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls) {
 		submitOutlinedBox(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, colourComponents, alpha, lineWidth, throughWalls);
 	}
 
@@ -186,7 +185,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
-	public void submitLinesFromPoints(Vec3d[] points, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls) {
+	public void submitLinesFromPoints(Vec3[] points, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls) {
 		ensureNotFrozen();
 
 		if (this.linesStates == null) {
@@ -204,7 +203,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
-	public void submitLineFromCursor(Vec3d point, float[] colourComponents, float alpha, float lineWidth) {
+	public void submitLineFromCursor(Vec3 point, float[] colourComponents, float alpha, float lineWidth) {
 		ensureNotFrozen();
 
 		if (this.cursorLineStates == null) {
@@ -221,7 +220,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
-	public void submitQuad(Vec3d[] points, float[] colourComponents, float alpha, boolean throughWalls) {
+	public void submitQuad(Vec3[] points, float[] colourComponents, float alpha, boolean throughWalls) {
 		ensureNotFrozen();
 
 		if (this.quadStates == null) {
@@ -238,7 +237,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
-	public void submitTexturedQuad(Vec3d pos, float width, float height, float textureWidth, float textureHeight, Vec3d renderOffset, Identifier texture, float[] shaderColour, float alpha, boolean throughWalls) {
+	public void submitTexturedQuad(Vec3 pos, float width, float height, float textureWidth, float textureHeight, Vec3 renderOffset, ResourceLocation texture, float[] shaderColour, float alpha, boolean throughWalls) {
 		ensureNotFrozen();
 
 		if (this.texturedQuadStates == null) {
@@ -280,30 +279,30 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
-	public void submitText(Text text, Vec3d pos, boolean throughWalls) {
+	public void submitText(Component text, Vec3 pos, boolean throughWalls) {
 		submitText(text, pos, 1, throughWalls);
 	}
 
 	@Override
-	public void submitText(Text text, Vec3d pos, float scale, boolean throughWalls) {
+	public void submitText(Component text, Vec3 pos, float scale, boolean throughWalls) {
 		submitText(text, pos, scale, 0, throughWalls);
 	}
 
 	@Override
-	public void submitText(Text text, Vec3d pos, float scale, float yOffset, boolean throughWalls) {
-		submitText(text.asOrderedText(), pos, scale, yOffset, throughWalls);
+	public void submitText(Component text, Vec3 pos, float scale, float yOffset, boolean throughWalls) {
+		submitText(text.getVisualOrderText(), pos, scale, yOffset, throughWalls);
 	}
 
-	private void submitText(OrderedText text, Vec3d pos, float scale, float yOffset, boolean throughWalls) {
+	private void submitText(FormattedCharSequence text, Vec3 pos, float scale, float yOffset, boolean throughWalls) {
 		ensureNotFrozen();
 
 		if (this.textStates == null) {
 			this.textStates = new ArrayList<>();
 		}
 
-		TextRenderer textRenderer = CLIENT.textRenderer;
-		float xOffset = -textRenderer.getWidth(text) / 2f;
-		TextRenderer.GlyphDrawable glyphs = textRenderer.prepare(text, xOffset, yOffset, Colors.WHITE, false, 0);
+		Font textRenderer = CLIENT.font;
+		float xOffset = -textRenderer.width(text) / 2f;
+		Font.PreparedText glyphs = textRenderer.prepareText(text, xOffset, yOffset, CommonColors.WHITE, false, 0);
 
 		TextRenderState state = new TextRenderState();
 		state.glyphs = glyphs;
@@ -316,7 +315,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
-	public void submitCylinder(Vec3d centre, float radius, float height, int segments, int colour) {
+	public void submitCylinder(Vec3 centre, float radius, float height, int segments, int colour) {
 		ensureNotFrozen();
 
 		if (this.cylinderStates == null) {
@@ -334,7 +333,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
-	public void submitFilledCircle(Vec3d centre, float radius, int segments, int colour) {
+	public void submitFilledCircle(Vec3 centre, float radius, int segments, int colour) {
 		ensureNotFrozen();
 
 		if (this.filledCircleStates == null) {
@@ -351,7 +350,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
-	public void submitSphere(Vec3d centre, float radius, int segments, int rings, int colour) {
+	public void submitSphere(Vec3 centre, float radius, int segments, int rings, int colour) {
 		ensureNotFrozen();
 
 		if (this.sphereStates == null) {
@@ -369,7 +368,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
-	public void submitOutlinedCircle(Vec3d centre, float radius, float thickness, int segments, int colour) {
+	public void submitOutlinedCircle(Vec3 centre, float radius, float thickness, int segments, int colour) {
 		ensureNotFrozen();
 
 		if (this.outlinedCircleStates == null) {
@@ -400,7 +399,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void dispatchVanillaSubmittables(WorldRenderState worldState, OrderedRenderCommandQueue commandQueue) {
+	public void dispatchVanillaSubmittables(LevelRenderState worldState, SubmitNodeCollector commandQueue) {
 		if (!this.frozen) {
 			throw new IllegalStateException("Cannot dispatch vanilla submittables until the collection phase has ended!");
 		}

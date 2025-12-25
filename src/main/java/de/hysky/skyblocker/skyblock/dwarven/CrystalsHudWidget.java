@@ -5,25 +5,24 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
-
 import org.joml.Matrix3x2fStack;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
 import java.util.List;
 import java.util.Set;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 @RegisterWidget
 public class CrystalsHudWidget extends HudWidget {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	protected static final Identifier MAP_TEXTURE = SkyblockerMod.id("textures/gui/crystals_map.png");
-	private static final Identifier MAP_ICON = Identifier.ofVanilla("textures/map/decorations/player.png");
+	private static final Minecraft CLIENT = Minecraft.getInstance();
+	protected static final ResourceLocation MAP_TEXTURE = SkyblockerMod.id("textures/gui/crystals_map.png");
+	private static final ResourceLocation MAP_ICON = ResourceLocation.withDefaultNamespace("textures/map/decorations/player.png");
 	private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Unknown");
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.CRYSTAL_HOLLOWS);
 
@@ -61,7 +60,7 @@ public class CrystalsHudWidget extends HudWidget {
 	 * Converts yaw to the cardinal directions that a player marker can be rotated towards on a map.
 	 * The rotations of a marker follow this order: N, NNE, NE, ENE, E, ESE, SE, SSE, S, SSW, SW, WSW, W, WNW, NW, NNW.
 	 * <br><br>
-	 * Based off code from {@link net.minecraft.client.render.MapRenderer}
+	 * Based off code from {@link net.minecraft.client.renderer.MapRenderer}
 	 */
 	private static float yaw2Cardinal(float yaw) {
 		yaw += 180; //flip direction
@@ -87,7 +86,7 @@ public class CrystalsHudWidget extends HudWidget {
 	}
 
 	public void update() {
-		if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().mining.crystalsHud.enabled) return;
+		if (CLIENT.player == null || CLIENT.getConnection() == null || !SkyblockerConfigManager.get().mining.crystalsHud.enabled) return;
 
 
 		//get if the player is in the crystals
@@ -96,26 +95,26 @@ public class CrystalsHudWidget extends HudWidget {
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		float scale = SkyblockerConfigManager.get().mining.crystalsHud.mapScaling;
 
 		//make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)
 		//and set position and scale
-		Matrix3x2fStack matrices = context.getMatrices();
+		Matrix3x2fStack matrices = context.pose();
 		matrices.pushMatrix();
 		matrices.translate(x, y);
 		matrices.scale(scale, scale);
 		w = h = (int) (62 * scale);
 
 		//draw map texture
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, MAP_TEXTURE, 0, 0, 0, 0, 62, 62, 62, 62);
+		context.blit(RenderPipelines.GUI_TEXTURED, MAP_TEXTURE, 0, 0, 0, 0, 62, 62, 62, 62);
 
 		//if enabled add waypoint locations to map
 		if (SkyblockerConfigManager.get().mining.crystalsHud.showLocations) {
 			for (MiningLocationLabel waypoint : CrystalsLocationsManager.activeWaypoints.values()) {
 
 			MiningLocationLabel.Category category = waypoint.category();
-				Vector2ic renderPos = transformLocation(waypoint.centerPos.getX(), waypoint.centerPos.getZ());
+				Vector2ic renderPos = transformLocation(waypoint.centerPos.x(), waypoint.centerPos.z());
 				int locationSize = SkyblockerConfigManager.get().mining.crystalsHud.locationSize;
 
 				if (SMALL_LOCATIONS.contains(category.getName())) { //if small location half the location size
@@ -128,14 +127,14 @@ public class CrystalsHudWidget extends HudWidget {
 		}
 
 		//draw player on map
-		if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
+		if (CLIENT.player == null || CLIENT.getConnection() == null) {
 			matrices.popMatrix();
 			return;
 		}
 		//get player location
 		double playerX = CLIENT.player.getX();
 		double playerZ = CLIENT.player.getZ();
-		float playerRotation = CLIENT.player.getYaw(); //TODO make the transitions more rough?
+		float playerRotation = CLIENT.player.getYRot(); //TODO make the transitions more rough?
 		Vector2ic renderPos = transformLocation(playerX, playerZ);
 
 		int renderX = renderPos.x() - 2;
@@ -144,15 +143,15 @@ public class CrystalsHudWidget extends HudWidget {
 		//position, scale and rotate the player marker
 		matrices.translate(renderX, renderY);
 		matrices.scale(0.75f, 0.75f);
-		matrices.rotateAbout(MathHelper.RADIANS_PER_DEGREE * yaw2Cardinal(playerRotation), 2.5f, 3.5f);
+		matrices.rotateAbout(Mth.DEG_TO_RAD * yaw2Cardinal(playerRotation), 2.5f, 3.5f);
 
 		//draw marker on map
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
+		context.blit(RenderPipelines.GUI_TEXTURED, MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
 		matrices.popMatrix();
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.of("Crystals HUD");
+	public Component getDisplayName() {
+		return Component.nullToEmpty("Crystals HUD");
 	}
 }

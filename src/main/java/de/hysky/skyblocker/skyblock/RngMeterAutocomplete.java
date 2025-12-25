@@ -22,16 +22,14 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.SharedSuggestionProvider;
 
 public class RngMeterAutocomplete {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Codec<Map<String, List<String>>> CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf());
 	private static Map<String, List<String>> rngMeters = new HashMap<>();
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> longCommand;
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> shortCommand;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> longCommand;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> shortCommand;
 
 	@Init
 	public static void init() {
@@ -52,9 +50,9 @@ public class RngMeterAutocomplete {
 		return literal(command)
 				.requires(source -> Utils.isOnSkyblock())
 				.then(argument("type", StringArgumentType.string())
-						.suggests((context, builder) -> CommandSource.suggestMatching(rngMeters.keySet(), builder))
+						.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.keySet(), builder))
 						.then(argument("subtype", StringArgumentType.string())
-								.suggests((context, builder) -> CommandSource.suggestMatching(rngMeters.getOrDefault(StringArgumentType.getString(context, "type"), List.of()), builder)))
+								.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.getOrDefault(StringArgumentType.getString(context, "type"), List.of()), builder)))
 				).build();
 	}
 }

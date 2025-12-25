@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -21,12 +22,10 @@ import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.Window;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.StringIdentifiable;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 
@@ -45,8 +44,8 @@ import java.util.stream.Collectors;
 
 public class WidgetManager {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Identifier FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
-	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
+	private static final ResourceLocation FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
+	private static final ResourceLocation FANCY_TAB = SkyblockerMod.id("fancy_tab");
 
 	private static final int VERSION = 2;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
@@ -81,17 +80,17 @@ public class WidgetManager {
 		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false));
 	}
 
-	private static void render(DrawContext context, boolean hud) {
+	private static void render(GuiGraphics context, boolean hud) {
 		if (!Utils.isOnSkyblock()) return;
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 
-		if (client.currentScreen instanceof WidgetsConfigurationScreen) return;
+		if (client.screen instanceof WidgetsConfigurationScreen) return;
 		Window window = client.getWindow();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
-		Matrix3x2fStack matrices = context.getMatrices();
+		Matrix3x2fStack matrices = context.pose();
 		matrices.pushMatrix();
 		matrices.scale(scale, scale);
-		WidgetManager.render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale), hud);
+		WidgetManager.render(context, (int) (window.getGuiScaledWidth() / scale), (int) (window.getGuiScaledHeight() / scale), hud);
 		matrices.popMatrix();
 	}
 
@@ -101,12 +100,12 @@ public class WidgetManager {
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
-	private static void render(DrawContext context, int w, int h, boolean hud) {
-		MinecraftClient client = MinecraftClient.getInstance();
+	private static void render(GuiGraphics context, int w, int h, boolean hud) {
+		Minecraft client = Minecraft.getInstance();
 		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
-		if (client.options.playerListKey.isPressed()) {
+		if (client.options.keyPlayerList.isDown()) {
 			if (hud || TabHud.shouldRenderVanilla()) return;
-			if (TabHud.toggleSecondary.isPressed()) {
+			if (TabHud.toggleSecondary.isDown()) {
 				screenBuilder.run(context, w, h, ScreenLayer.SECONDARY_TAB);
 			} else {
 				screenBuilder.run(context, w, h, ScreenLayer.MAIN_TAB);
@@ -221,7 +220,7 @@ public class WidgetManager {
 	/**
 	 * @implNote !! The 3 first ones shouldn't be moved, ordinal is used in some places
 	 */
-	public enum ScreenLayer implements StringIdentifiable {
+	public enum ScreenLayer implements StringRepresentable {
 		MAIN_TAB,
 		SECONDARY_TAB,
 		HUD,
@@ -230,7 +229,7 @@ public class WidgetManager {
 		 */
 		DEFAULT;
 
-		public static final Codec<ScreenLayer> CODEC = StringIdentifiable.createCodec(ScreenLayer::values);
+		public static final Codec<ScreenLayer> CODEC = StringRepresentable.fromEnum(ScreenLayer::values);
 
 		@Override
 		public String toString() {
@@ -243,7 +242,7 @@ public class WidgetManager {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name();
 		}
 	}

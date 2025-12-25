@@ -12,7 +12,6 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
@@ -20,18 +19,17 @@ import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tab.TabManager;
-import net.minecraft.client.gui.widget.TabNavigationWidget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.tabs.TabManager;
+import net.minecraft.client.gui.components.tabs.TabNavigationBar;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -41,10 +39,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerListener {
+public class WidgetsConfigurationScreen extends Screen implements ContainerListener {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	private @Nullable GenericContainerScreenHandler handler;
+	private @Nullable ChestMenu handler;
 	private String titleLowercase;
 	public final boolean noHandler;
 	private WidgetManager.ScreenLayer widgetsLayer = null;
@@ -83,8 +81,8 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	}
 
 	// Tabs and stuff
-	private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
-	private TabNavigationWidget tabNavigation;
+	private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
+	private TabNavigationBar tabNavigation;
 	private WidgetsListTab widgetsListTab;
 
 	private boolean switchingToPopup = false;
@@ -114,13 +112,13 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	 * @param handler        the container handler
 	 * @param titleLowercase the title in lowercase
 	 */
-	private WidgetsConfigurationScreen(@Nullable GenericContainerScreenHandler handler, String titleLowercase, Location targetLocation, @Nullable WidgetManager.ScreenLayer widgetLayerToGoTo) {
-		super(Text.literal("Widgets Configuration"));
+	private WidgetsConfigurationScreen(@Nullable ChestMenu handler, String titleLowercase, Location targetLocation, WidgetManager.@Nullable ScreenLayer widgetLayerToGoTo) {
+		super(Component.literal("Widgets Configuration"));
 		this.handler = handler;
 		this.titleLowercase = titleLowercase;
 		this.noHandler = handler == null;
 		if (!noHandler) {
-			this.handler.addListener(this);
+			this.handler.addSlotListener(this);
 			parseLocation();
 		} else {
 			currentLocation = targetLocation;
@@ -135,7 +133,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	 * @param handler        the container handler
 	 * @param titleLowercase the title in lowercase, to figure out where you are
 	 */
-	public WidgetsConfigurationScreen(@NotNull GenericContainerScreenHandler handler, String titleLowercase) {
+	public WidgetsConfigurationScreen(ChestMenu handler, String titleLowercase) {
 		this(handler, titleLowercase, Location.UNKNOWN, null);
 	}
 
@@ -163,40 +161,40 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
 	@Override
 	protected void init() {
-		previewTab = new PreviewTab(this.client, this, noHandler ? PreviewTab.Mode.EDITABLE_LOCATION : PreviewTab.Mode.NORMAL);
-		PreviewTab previewDungeons = new PreviewTab(this.client, this, PreviewTab.Mode.DUNGEON);
+		previewTab = new PreviewTab(this.minecraft, this, noHandler ? PreviewTab.Mode.EDITABLE_LOCATION : PreviewTab.Mode.NORMAL);
+		PreviewTab previewDungeons = new PreviewTab(this.minecraft, this, PreviewTab.Mode.DUNGEON);
 		if (noHandler) {
 			previewTab.goToLayer(widgetsLayer);
 		}
-		widgetsListTab = new WidgetsListTab(this.client, this.handler);
-		this.tabNavigation = TabNavigationWidget.builder(this.tabManager, this.width)
-				.tabs(this.widgetsListTab, this.previewTab, previewDungeons)
+		widgetsListTab = new WidgetsListTab(this.minecraft, this.handler);
+		this.tabNavigation = TabNavigationBar.builder(this.tabManager, this.width)
+				.addTabs(this.widgetsListTab, this.previewTab, previewDungeons)
 				.build();
 		widgetsListTab.setShouldShowCustomWidgetEntries(titleLowercase.startsWith("widgets ") || noHandler);
 		updateCustomWidgets();
 
 		this.tabNavigation.selectTab(0, false);
 		switchingToPopup = false;
-		this.addDrawableChild(tabNavigation);
-		this.refreshWidgetPositions();
+		this.addRenderableWidget(tabNavigation);
+		this.repositionElements();
 	}
 
 	@Override
-	protected void refreshWidgetPositions() {
+	protected void repositionElements() {
 		if (this.tabNavigation != null) {
 			this.tabNavigation.setWidth(this.width);
-			this.tabNavigation.init();
-			int i = this.tabNavigation.getNavigationFocus().getBottom();
-			ScreenRect screenRect = new ScreenRect(0, i, this.width, this.height - i - 5);
+			this.tabNavigation.arrangeElements();
+			int i = this.tabNavigation.getRectangle().bottom();
+			ScreenRectangle screenRect = new ScreenRectangle(0, i, this.width, this.height - i - 5);
 			this.tabManager.setTabArea(screenRect);
 		}
 	}
 
-	public void updateHandler(@NotNull GenericContainerScreenHandler newHandler, String titleLowercase) {
+	public void updateHandler(ChestMenu newHandler, String titleLowercase) {
 		if (handler == null) return;
-		handler.removeListener(this);
+		handler.removeSlotListener(this);
 		handler = newHandler;
-		handler.addListener(this);
+		handler.addSlotListener(this);
 		this.titleLowercase = titleLowercase;
 		parseLocation();
 		widgetsListTab.updateHandler(handler);
@@ -237,30 +235,30 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		}
 	}
 
-	public @Nullable GenericContainerScreenHandler getHandler() {
+	public @Nullable ChestMenu getHandler() {
 		return handler;
 	}
 
 	private @Nullable ItemStack slotThirteenBacklog = null;
 
 	@Override
-	public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
+	public void slotChanged(AbstractContainerMenu handler, int slotId, ItemStack stack) {
 		if (this.handler == null) return;
 		if (slotId == 4) {
-			tabPreview = stack.isOf(Items.PLAYER_HEAD);
+			tabPreview = stack.is(Items.PLAYER_HEAD);
 		}
 		if (widgetsListTab == null) {
 			if (slotId == 13) slotThirteenBacklog = stack.copy();
 			return;
 		}
 		if (slotId == 13) {
-			if (stack.isOf(Items.HOPPER)) {
-				widgetsListTab.hopper(ItemUtils.getLore(stack));
+			if (stack.is(Items.HOPPER)) {
+				widgetsListTab.hopper(stack.skyblocker$getLoreStrings());
 			} else {
 				widgetsListTab.hopper(null);
 			}
 		}
-		if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRows() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50) {
+		if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRowCount() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50) {
 			widgetsListTab.onSlotChange(slotId, stack);
 		}
 	}
@@ -272,10 +270,10 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		boolean needReposition = false;
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
 		int padding = 2;
-		ScreenRect screenRect = new ScreenRect(padding, padding, (int) (width / scale) - padding * 2, (int) (height / scale) - padding * 2);
+		ScreenRectangle screenRect = new ScreenRectangle(padding, padding, (int) (width / scale) - padding * 2, (int) (height / scale) - padding * 2);
 		for (HudWidget widget : widgets) {
 			PositionRule rule = builder.getPositionRule(widget.getInternalID());
-			if (rule != null && !widget.getNavigationFocus().intersects(screenRect)) {
+			if (rule != null && !widget.getRectangle().intersects(screenRect)) {
 				needReposition = true;
 				builder.setPositionRule(widget.getInternalID(), new PositionRule(
 						"screen",
@@ -296,50 +294,50 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		getBackOnTheScreenYouScallywagsAngryEmoji();
 		if (noHandler) return;
 		if (slotThirteenBacklog != null && widgetsListTab != null) {
-			widgetsListTab.hopper(ItemUtils.getLore(slotThirteenBacklog));
+			widgetsListTab.hopper(slotThirteenBacklog.skyblocker$getLoreStrings());
 			slotThirteenBacklog = null;
 		}
-		assert this.client != null;
-		assert this.client.player != null;
-		if (!this.client.player.isAlive() || this.client.player.isRemoved()) {
-			this.client.player.closeHandledScreen();
+		assert this.minecraft != null;
+		assert this.minecraft.player != null;
+		if (!this.minecraft.player.isAlive() || this.minecraft.player.isRemoved()) {
+			this.minecraft.player.closeContainer();
 		}
 	}
 
 	@Override
-	public void close() {
-		assert this.client != null;
+	public void onClose() {
+		assert this.minecraft != null;
 		if (handler != null) {
-			assert this.client.player != null;
-			this.client.player.closeHandledScreen();
-			super.close();
+			assert this.minecraft.player != null;
+			this.minecraft.player.closeContainer();
+			super.onClose();
 		} else {
-			client.setScreen(parent);
+			minecraft.setScreen(parent);
 		}
 	}
 
 	@Override
-	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {}
+	public void dataChanged(AbstractContainerMenu handler, int property, int value) {}
 
 	@Override
 	public void removed() {
 		if (handler == null) return;
-		if (!switchingToPopup && this.client != null && this.client.player != null) {
-			this.handler.onClosed(this.client.player);
+		if (!switchingToPopup && this.minecraft != null && this.minecraft.player != null) {
+			this.handler.removed(this.minecraft.player);
 		}
-		handler.removeListener(this);
+		handler.removeSlotListener(this);
 		Scheduler.INSTANCE.schedule(PlayerListManager::updateList, 1);
 		SkyblockerConfigManager.save();
 	}
 
 	@Override
-	public boolean shouldPause() {
+	public boolean isPauseScreen() {
 		return false;
 	}
 
 	public DropdownWidget<Location> createLocationDropdown(Consumer<Location> onLocationChanged) {
 		List<Location> locations = Arrays.asList(ArrayUtils.removeElements(Location.values(), Location.UNKNOWN, Location.DUNGEON));  // there's already a tab for dungeons
-		return new DropdownWidget<>(client, 0, 0, 50, 50, locations, location -> {
+		return new DropdownWidget<>(minecraft, 0, 0, 50, 50, locations, location -> {
 			setCurrentLocation(location);
 			onLocationChanged.accept(location);
 		},

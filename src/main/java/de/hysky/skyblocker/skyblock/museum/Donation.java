@@ -51,8 +51,7 @@ public class Donation {
 		this.priceData = new PriceData(this);
 	}
 
-	@Nullable
-	public ObjectDoublePair<String> getDiscount() {
+	public @Nullable ObjectDoublePair<String> getDiscount() {
 		return discount;
 	}
 

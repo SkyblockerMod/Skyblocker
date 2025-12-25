@@ -7,8 +7,8 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -28,7 +28,7 @@ public class RoomDataTest implements FabricClientGameTest {
 		clientGameTestContext.runOnClient(this::testMain);
 	}
 
-	public void testMain(MinecraftClient client) {
+	public void testMain(Minecraft client) {
 		List<String> skeletonFiles = getRoomFilesByType(client, ".skeleton");
 		List<String> roomFiles = getRoomFilesByType(client, ".json");
 		LOGGER.info("Found {} .skeleton files and {} .json files!", skeletonFiles.size(), roomFiles.size());
@@ -67,9 +67,9 @@ public class RoomDataTest implements FabricClientGameTest {
 	/**
 	 * Ensures every room .json is parsable
 	 */
-	public boolean checkRoomJson(MinecraftClient client) {
+	public boolean checkRoomJson(Minecraft client) {
 		boolean isValid = true;
-		for (Identifier filePath : getRoomJson(client)) {
+		for (ResourceLocation filePath : getRoomJson(client)) {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(filePath)) {
 				DungeonManager.RoomData.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
 			} catch (Exception ex) {
@@ -99,14 +99,14 @@ public class RoomDataTest implements FabricClientGameTest {
 		}
 	}
 
-	List<String> getRoomFilesByType(MinecraftClient client, String fileType) {
-		return client.getResourceManager().findResources(DUNGEONS_PATH, id -> id.getPath().endsWith(fileType))
+	List<String> getRoomFilesByType(Minecraft client, String fileType) {
+		return client.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(fileType))
 				.keySet().stream().map(identifier -> identifier.getPath().split("/"))
 				.filter(path -> path.length == 4).map(path -> path[3].replace(fileType, "")).toList();
 	}
 
-	List<Identifier> getRoomJson(MinecraftClient client) {
-		return client.getResourceManager().findResources(DUNGEONS_PATH, id ->
+	List<ResourceLocation> getRoomJson(Minecraft client) {
+		return client.getResourceManager().listResources(DUNGEONS_PATH, id ->
 				id.getPath().split("/").length == 4 && id.getPath().endsWith(".json")).keySet().stream().toList();
 	}
 }

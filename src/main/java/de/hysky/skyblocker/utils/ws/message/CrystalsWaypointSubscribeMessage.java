@@ -2,8 +2,7 @@ package de.hysky.skyblocker.utils.ws.message;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 
 public record CrystalsWaypointSubscribeMessage(long timestamp) implements Message<CrystalsWaypointSubscribeMessage> {
 	private static final Codec<CrystalsWaypointSubscribeMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -12,9 +11,9 @@ public record CrystalsWaypointSubscribeMessage(long timestamp) implements Messag
 	/** 26 Minecraft days in ticks */
 	private static final int TWENTY_SIX_DAYS = 24000 * 26;
 
-	public static CrystalsWaypointSubscribeMessage create(ClientWorld world) {
+	public static CrystalsWaypointSubscribeMessage create(ClientLevel world) {
 		//Current timestamp as seconds + ((26 mc days - mc time) / ticks per second)
-		long closeTime = (System.currentTimeMillis() / 1000L) + ((TWENTY_SIX_DAYS - world.getTimeOfDay()) / 20L);
+		long closeTime = (System.currentTimeMillis() / 1000L) + ((TWENTY_SIX_DAYS - world.getDayTime()) / 20L);
 
 		return new CrystalsWaypointSubscribeMessage(closeTime);
 	}

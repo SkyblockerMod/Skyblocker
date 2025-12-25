@@ -1,14 +1,13 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.client.gui.ScreenRect;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 
 public class BarPositioner {
 
@@ -21,7 +20,7 @@ public class BarPositioner {
 	}
 
 
-	public int getRowCount(@NotNull BarAnchor barAnchor) {
+	public int getRowCount(BarAnchor barAnchor) {
 		return map.get(barAnchor).size();
 	}
 
@@ -30,7 +29,7 @@ public class BarPositioner {
 	 *
 	 * @param barAnchor the anchor
 	 */
-	public void addRow(@NotNull BarAnchor barAnchor) {
+	public void addRow(BarAnchor barAnchor) {
 		map.get(barAnchor).add(new LinkedList<>());
 	}
 
@@ -40,7 +39,7 @@ public class BarPositioner {
 	 * @param barAnchor the anchor
 	 * @param row       row index
 	 */
-	public void addRow(@NotNull BarAnchor barAnchor, int row) {
+	public void addRow(BarAnchor barAnchor, int row) {
 		LinkedList<LinkedList<StatusBar>> rows = map.get(barAnchor);
 		for (int i = row; i < rows.size(); i++) {
 			for (StatusBar bar : rows.get(i)) {
@@ -57,7 +56,7 @@ public class BarPositioner {
 	 * @param row       the row
 	 * @param bar       the bar to add
 	 */
-	public void addBar(@NotNull BarAnchor barAnchor, int row, StatusBar bar) {
+	public void addBar(BarAnchor barAnchor, int row, StatusBar bar) {
 		LinkedList<StatusBar> statusBars = map.get(barAnchor).get(row);
 		statusBars.add(bar);
 		bar.gridY = row;
@@ -73,7 +72,7 @@ public class BarPositioner {
 	 * @param x         the index in the row
 	 * @param bar       the bar to add
 	 */
-	public void addBar(@NotNull BarAnchor barAnchor, int row, int x, StatusBar bar) {
+	public void addBar(BarAnchor barAnchor, int row, int x, StatusBar bar) {
 		LinkedList<StatusBar> statusBars = map.get(barAnchor).get(row);
 		for (int i = x; i < statusBars.size(); i++) {
 			statusBars.get(i).gridX++;
@@ -91,7 +90,7 @@ public class BarPositioner {
 	 * @param row       dah row
 	 * @param x         dah x
 	 */
-	public void removeBar(@NotNull BarAnchor barAnchor, int row, int x) {
+	public void removeBar(BarAnchor barAnchor, int row, int x) {
 		LinkedList<StatusBar> statusBars = map.get(barAnchor).get(row);
 		StatusBar remove = statusBars.remove(x);
 		remove.anchor = null;
@@ -108,7 +107,7 @@ public class BarPositioner {
 	 * @param row       dah row
 	 * @param bar       dah bar
 	 */
-	public void removeBar(@NotNull BarAnchor barAnchor, int row, StatusBar bar) {
+	public void removeBar(BarAnchor barAnchor, int row, StatusBar bar) {
 		LinkedList<StatusBar> barRow = map.get(barAnchor).get(row);
 		int x = barRow.indexOf(bar);
 		if (x < 0) return; // probably a bad idea
@@ -127,7 +126,7 @@ public class BarPositioner {
 	 * @param barAnchor the anchor
 	 * @param row       the row to remove
 	 */
-	public void removeRow(@NotNull BarAnchor barAnchor, int row) {
+	public void removeRow(BarAnchor barAnchor, int row) {
 		LinkedList<StatusBar> barRow = map.get(barAnchor).get(row);
 		if (!barRow.isEmpty())
 			throw new IllegalStateException("Can't remove a non-empty row (" + barAnchor + "," + row + ")");
@@ -140,15 +139,15 @@ public class BarPositioner {
 	}
 
 
-	public LinkedList<StatusBar> getRow(@NotNull BarAnchor barAnchor, int row) {
+	public LinkedList<StatusBar> getRow(BarAnchor barAnchor, int row) {
 		return map.get(barAnchor).get(row);
 	}
 
-	public StatusBar getBar(@NotNull BarAnchor barAnchor, int row, int x) {
+	public StatusBar getBar(BarAnchor barAnchor, int row, int x) {
 		return map.get(barAnchor).get(row).get(x);
 	}
 
-	public boolean hasNeighbor(@NotNull BarAnchor barAnchor, int row, int x, boolean right) {
+	public boolean hasNeighbor(BarAnchor barAnchor, int row, int x, boolean right) {
 		LinkedList<StatusBar> statusBars = map.get(barAnchor).get(row);
 		if (barAnchor.isRight()) {
 			return (right && x < statusBars.size() - 1) || (!right && x > 0);
@@ -164,40 +163,40 @@ public class BarPositioner {
 
 	public enum BarAnchor {
 		HOTBAR_LEFT(true, false,
-				(scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 - 91 - 2, scaledHeight - 5),
+				(scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 - 91 - 2, scaledHeight - 5),
 				SizeRule.freeSize(25, 2, 6)),
 
 		HOTBAR_RIGHT(true, true,
-				(scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 + 91 + 2, scaledHeight - 5),
+				(scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 + 91 + 2, scaledHeight - 5),
 				SizeRule.freeSize(25, 2, 6)),
 
 		HOTBAR_TOP(true, true,
-				(scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 - 91, scaledHeight - (FancyStatusBars.isExperienceFancyBarEnabled() ? 23 : 35)),
+				(scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 - 91, scaledHeight - (FancyStatusBars.isExperienceFancyBarEnabled() ? 23 : 35)),
 				SizeRule.targetSize(12, 182, 2),
-				anchorPosition -> new ScreenRect(anchorPosition.x(), anchorPosition.y() - 20, 182, 20)),
+				anchorPosition -> new ScreenRectangle(anchorPosition.x(), anchorPosition.y() - 20, 182, 20)),
 
 		SCREEN_TOP_LEFT(false, true,
-				((scaledWidth, scaledHeight) -> new ScreenPos(5, 5)),
+				((scaledWidth, scaledHeight) -> new ScreenPosition(5, 5)),
 				SizeRule.freeSize(25, 2, 6)
 		),
 		SCREEN_TOP_RIGHT(false, false,
-				((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth - 5, 5)),
+				((scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth - 5, 5)),
 				SizeRule.freeSize(25, 2, 6)
 		),
 		SCREEN_BOTTOM_LEFT(true, true,
-				((scaledWidth, scaledHeight) -> new ScreenPos(5, scaledHeight - 5)),
+				((scaledWidth, scaledHeight) -> new ScreenPosition(5, scaledHeight - 5)),
 				SizeRule.freeSize(25, 2, 6)
 		),
 		SCREEN_BOTTOM_RIGHT(true, false,
-				((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth - 5, scaledHeight - 5)),
+				((scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth - 5, scaledHeight - 5)),
 				SizeRule.freeSize(25, 2, 6)
 		),
 		SCREEN_CENTER_LEFT(false, false,
-				((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 - 8, scaledHeight / 2 - 4)),
+				((scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 - 8, scaledHeight / 2 - 4)),
 				SizeRule.freeSize(15, 3, 8)
 		),
 		SCREEN_CENTER_RIGHT(false, true,
-				((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 + 8, scaledHeight / 2 - 4)),
+				((scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 + 8, scaledHeight / 2 - 4)),
 				SizeRule.freeSize(15, 3, 8)
 		);
 
@@ -224,14 +223,14 @@ public class BarPositioner {
 
 		BarAnchor(boolean up, boolean right, AnchorPositionProvider positionProvider, SizeRule sizeRule) {
 			this(up, right, positionProvider, sizeRule,
-					anchorPosition -> new ScreenRect(anchorPosition.x() - (right ? 0 : 20), anchorPosition.y() - (up ? 20 : 0), 20, 20));
+					anchorPosition -> new ScreenRectangle(anchorPosition.x() - (right ? 0 : 20), anchorPosition.y() - (up ? 20 : 0), 20, 20));
 		}
 
-		public ScreenPos getAnchorPosition(int scaledWidth, int scaledHeight) {
+		public ScreenPosition getAnchorPosition(int scaledWidth, int scaledHeight) {
 			return positionProvider.getPosition(scaledWidth, scaledHeight);
 		}
 
-		public ScreenRect getAnchorHitbox(ScreenPos anchorPosition) {
+		public ScreenRectangle getAnchorHitbox(ScreenPosition anchorPosition) {
 			return hitboxProvider.getHitbox(anchorPosition);
 		}
 
@@ -315,7 +314,7 @@ public class BarPositioner {
 	@FunctionalInterface
 	interface AnchorPositionProvider {
 
-		ScreenPos getPosition(int scaledWidth, int scaledHeight);
+		ScreenPosition getPosition(int scaledWidth, int scaledHeight);
 	}
 
 	@FunctionalInterface
@@ -327,6 +326,6 @@ public class BarPositioner {
 		 * @param anchorPosition the position of the anchor
 		 * @return the rectangle that represents the hitbox
 		 */
-		ScreenRect getHitbox(ScreenPos anchorPosition);
+		ScreenRectangle getHitbox(ScreenPosition anchorPosition);
 	}
 }

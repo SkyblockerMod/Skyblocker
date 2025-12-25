@@ -9,11 +9,10 @@ import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,12 +23,12 @@ import org.joml.Matrix3x2fStack;
  */
 public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDisplay> {
 
-	private final Identifier identifier;
-	private final Text title;
+	private final ResourceLocation identifier;
+	private final Component title;
 	private final ItemStack icon;
 	private final int height;
 
-	public SkyblockRecipeCategory(Identifier identifier, Text title, ItemStack icon, int height) {
+	public SkyblockRecipeCategory(ResourceLocation identifier, Component title, ItemStack icon, int height) {
 		this.identifier = identifier;
 		this.title = title;
 		this.icon = icon;
@@ -47,7 +46,7 @@ public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDis
 	}
 
 	@Override
-	public Text getTitle() {
+	public Component getTitle() {
 		return title;
 	}
 
@@ -80,13 +79,13 @@ public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDis
 					.entry(EntryStacks.of(outputSlot.stack())));
 		}
 		out.add(Widgets.createDrawableWidget((context, mouseX, mouseY, delta) -> {
-			Matrix3x2fStack matrices = context.getMatrices();
+			Matrix3x2fStack matrices = context.pose();
 			matrices.pushMatrix();
 			matrices.translate(bounds.getX(), bounds.getY());
 			recipe.render(context, bounds.getWidth(), bounds.getHeight(), mouseX - bounds.getX(), mouseY - bounds.getY());
 			matrices.popMatrix();
 		}));
-		ScreenPos arrowLocation = recipe.getArrowLocation(bounds.getWidth(), bounds.getHeight());
+		ScreenPosition arrowLocation = recipe.getArrowLocation(bounds.getWidth(), bounds.getHeight());
 		if (arrowLocation != null)
 			out.add(Widgets.createArrow(new Point(arrowLocation.x() + bounds.getX(), arrowLocation.y() + bounds.getY())));
 		out.add(Widgets.createLabel(new Point(bounds.getCenterX(), bounds.getCenterY() + 24), recipe.getExtraText()));

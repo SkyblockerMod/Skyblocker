@@ -1,17 +1,17 @@
 package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.input.MouseInput;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 // This is kinda excessive, but I thought it was a good idea
-public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends ClickableWidget {
+public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends AbstractWidget {
 	private final SlotClickHandler clickSlot;
 	private int button = 0;
 	private int slotId = -1;
@@ -29,7 +29,7 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
 	 * @param clickSlot     the parent AuctionsBrowser
 	 * @param defaultOption the default option <strong>should be the one at ordinal 0</strong>
 	 */
-	public SliderWidget(int x, int y, int width, int height, Text message, SlotClickHandler clickSlot, E defaultOption) {
+	public SliderWidget(int x, int y, int width, int height, Component message, SlotClickHandler clickSlot, E defaultOption) {
 		super(x, y, width, height, message);
 		this.clickSlot = clickSlot;
 		this.current = defaultOption;
@@ -37,7 +37,7 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		if (posProgress < current.getOffset()) {
 			posProgress += delta * 5;
 			if (posProgress > current.getOffset()) posProgress = current.getOffset();
@@ -47,8 +47,8 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
 		}
 
 
-		context.getMatrices().pushMatrix();
-		context.getMatrices().translate(getX(), getY());
+		context.pose().pushMatrix();
+		context.pose().translate(getX(), getY());
 
 		int x = current.isVertical() ? 0 : Math.round(posProgress);
 		int y = current.isVertical() ? Math.round(posProgress) : 0;
@@ -56,24 +56,24 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
 		int optionWidth = current.getOptionSize()[0];
 		int optionHeight = current.getOptionSize()[1];
 
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, current.getBackTexture(), 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, current.getOptionTexture(), x, y, 0, 0, optionWidth, optionHeight, optionWidth, optionHeight);
+		context.blit(RenderPipelines.GUI_TEXTURED, current.getBackTexture(), 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
+		context.blit(RenderPipelines.GUI_TEXTURED, current.getOptionTexture(), x, y, 0, 0, optionWidth, optionHeight, optionWidth, optionHeight);
 		if (isHovered()) {
-			context.drawTexture(RenderPipelines.GUI_TEXTURED, current.getHoverTexture(), x, y, 0, 0, optionWidth, optionHeight, optionWidth, optionHeight);
+			context.blit(RenderPipelines.GUI_TEXTURED, current.getHoverTexture(), x, y, 0, 0, optionWidth, optionHeight, optionWidth, optionHeight);
 
 		}
-		context.getMatrices().popMatrix();
+		context.pose().popMatrix();
 	}
 
 	@Override
-	public void onClick(Click click, boolean doubled) {
+	public void onClick(MouseButtonEvent click, boolean doubled) {
 		if (slotId == -1) return;
 		clickSlot.click(slotId, button);
 		super.onClick(click, doubled);
 	}
 
 	@Override
-	protected boolean isValidClickButton(MouseInput input) {
+	protected boolean isValidClickButton(MouseButtonInfo input) {
 		this.button = input.button();
 		return super.isValidClickButton(input) || button == 1;
 	}
@@ -87,7 +87,7 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+	protected void updateWidgetNarration(NarrationElementOutput builder) {
 	}
 
 	public interface OptionInfo {
@@ -100,11 +100,11 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
 
 		int[] getOptionSize();
 
-		Identifier getOptionTexture();
+		ResourceLocation getOptionTexture();
 
-		Identifier getBackTexture();
+		ResourceLocation getBackTexture();
 
-		Identifier getHoverTexture();
+		ResourceLocation getHoverTexture();
 
 	}
 }
