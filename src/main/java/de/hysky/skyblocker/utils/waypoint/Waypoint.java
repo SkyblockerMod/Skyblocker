@@ -3,14 +3,13 @@ package de.hysky.skyblocker.utils.waypoint;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Supplier;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.StringRepresentable;
 
 /**
  * Represents a waypoint with a position, type, color, alpha, line width, through walls, and enabled state.
@@ -88,7 +87,7 @@ public class Waypoint implements Renderable {
 	 * Subclasses should override this method to return a new instance of the subclass with the specified y pos.
 	 */
 	public Waypoint withY(int y) {
-		return new Waypoint(pos.withY(y), typeSupplier, colorComponents, alpha, lineWidth, throughWalls, enabled);
+		return new Waypoint(pos.atY(y), typeSupplier, colorComponents, alpha, lineWidth, throughWalls, enabled);
 	}
 
 	/**
@@ -232,23 +231,23 @@ public class Waypoint implements Renderable {
 		return super.equals(obj) || obj instanceof Waypoint other && pos.equals(other.pos) && typeSupplier.get() == other.typeSupplier.get() && Arrays.equals(colorComponents, other.colorComponents) && alpha == other.alpha && lineWidth == other.lineWidth && throughWalls == other.throughWalls && enabled == other.enabled;
 	}
 
-	public enum Type implements StringIdentifiable {
+	public enum Type implements StringRepresentable {
 		WAYPOINT,
 		OUTLINED_WAYPOINT,
 		HIGHLIGHT,
 		OUTLINED_HIGHLIGHT,
 		OUTLINE;
 
-		public static final Codec<Type> CODEC = StringIdentifiable.createCodec(Type::values);
+		public static final Codec<Type> CODEC = StringRepresentable.fromEnum(Type::values);
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name().toLowerCase(Locale.ENGLISH);
 		}
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.waypoints.type." + name());
+			return I18n.get("skyblocker.waypoints.type." + name());
 		}
 
 		public Type withoutBeacon() {

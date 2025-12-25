@@ -10,15 +10,6 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.constants.PetNumbers;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.Rarity;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -27,6 +18,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.component.ResolvableProfile;
 
 import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.numLetterFormat;
 
@@ -39,7 +38,7 @@ public class Pet {
 	private final SkyblockItemRarity tier;
 	private final Optional<String> heldItem;
 	private final Optional<String> skin;
-	private final Optional<ProfileComponent> skinTexture;
+	private final Optional<ResolvableProfile> skinTexture;
 	private final int level;
 	private final double perecentageToLevel;
 	private final long levelXP;
@@ -77,13 +76,13 @@ public class Pet {
 		return tier.ordinal();
 	}
 
-	private Optional<ProfileComponent> calculateSkinTexture() {
+	private Optional<ResolvableProfile> calculateSkinTexture() {
 		if (this.skin.isPresent()) {
 			ItemStack item = ItemRepository.getItemStack("PET_SKIN_" + this.skin.get());
 
 			if (item == null || item.isEmpty()) return Optional.empty();
 
-			ProfileComponent profile = item.get(DataComponentTypes.PROFILE);
+			ResolvableProfile profile = item.get(DataComponents.PROFILE);
 
 			return profile != null ? Optional.of(profile) : Optional.empty();
 		}
@@ -128,35 +127,35 @@ public class Pet {
 		// Copy to avoid mutating the original stack
 		petStack = petStack.copy();
 
-		List<Text> formattedLore = !(name.equals("GOLDEN_DRAGON") && level < 101) ?  processLore(item.getLore(), heldItem) : buildGoldenDragonEggLore(item.getLore());
+		List<Component> formattedLore = !(name.equals("GOLDEN_DRAGON") && level < 101) ?  processLore(item.getLore(), heldItem) : buildGoldenDragonEggLore(item.getLore());
 
 		// Calculate and display XP for level
 		Style style = Style.EMPTY.withItalic(false);
 		if (level != 100 && level != 200) {
 			String progress = "Progress to Level " + this.level + ": §e" + fixDecimals(this.perecentageToLevel * 100, true) + "%";
-			formattedLore.add(formattedLore.size() - 1, Text.literal(progress).setStyle(style).formatted(Formatting.GRAY));
+			formattedLore.add(formattedLore.size() - 1, Component.literal(progress).setStyle(style).withStyle(ChatFormatting.GRAY));
 			String string = "§2§m ".repeat((int) Math.round(perecentageToLevel * 30)) + "§f§m ".repeat(30 - (int) Math.round(perecentageToLevel * 30));
-			formattedLore.add(formattedLore.size() - 1, Text.literal(string + "§r§e " + numLetterFormat(levelXP) + "§6/§e" + numLetterFormat(nextLevelXP)).setStyle(style));
-			formattedLore.add(formattedLore.size() - 1, Text.empty());
+			formattedLore.add(formattedLore.size() - 1, Component.literal(string + "§r§e " + numLetterFormat(levelXP) + "§6/§e" + numLetterFormat(nextLevelXP)).setStyle(style));
+			formattedLore.add(formattedLore.size() - 1, Component.empty());
 		} else {
-			formattedLore.add(formattedLore.size() - 1, Text.literal("MAX LEVEL").setStyle(style).formatted(Formatting.AQUA, Formatting.BOLD));
-			formattedLore.add(formattedLore.size() - 1, Text.literal("▸ " + Formatters.INTEGER_NUMBERS.format((long) xp) + " XP").setStyle(style).formatted(Formatting.DARK_GRAY));
-			formattedLore.add(formattedLore.size() - 1, Text.empty());
+			formattedLore.add(formattedLore.size() - 1, Component.literal("MAX LEVEL").setStyle(style).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD));
+			formattedLore.add(formattedLore.size() - 1, Component.literal("▸ " + Formatters.INTEGER_NUMBERS.format((long) xp) + " XP").setStyle(style).withStyle(ChatFormatting.DARK_GRAY));
+			formattedLore.add(formattedLore.size() - 1, Component.empty());
 		}
 
 		// Skin Head Texture
 		if (skinTexture.isPresent() && skin.isPresent()) {
 			NEUItem skinItem = NEURepoManager.getItemByNeuId("PET_SKIN_" + skin.get());
-			if (skinItem != null) formattedLore.set(0, Text.of(formattedLore.getFirst().getString() + ", " + Formatting.strip(skinItem.getDisplayName())));
-			petStack.set(DataComponentTypes.PROFILE, skinTexture.get());
+			if (skinItem != null) formattedLore.set(0, Component.nullToEmpty(formattedLore.getFirst().getString() + ", " + ChatFormatting.stripFormatting(skinItem.getDisplayName())));
+			petStack.set(DataComponents.PROFILE, skinTexture.get());
 		}
 
-		if ((boosted())) formattedLore.set(formattedLore.size() - 1, Text.literal(getRarity().next().toString()).setStyle(style).formatted(Formatting.BOLD, getRarity().next().formatting));
+		if ((boosted())) formattedLore.set(formattedLore.size() - 1, Component.literal(getRarity().next().toString()).setStyle(style).withStyle(ChatFormatting.BOLD, getRarity().next().formatting));
 
 		// Update the lore and name
-		petStack.set(DataComponentTypes.LORE, new LoreComponent(formattedLore));
-		String displayName = Formatting.strip(item.getDisplayName()).replace("[Lvl {LVL}]", "§7[Lvl " + this.level + "]§r");
-		petStack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(displayName).setStyle(style).formatted((boosted() ? getRarity().next() : getRarity()).formatting));
+		petStack.set(DataComponents.LORE, new ItemLore(formattedLore));
+		String displayName = ChatFormatting.stripFormatting(item.getDisplayName()).replace("[Lvl {LVL}]", "§7[Lvl " + this.level + "]§r");
+		petStack.set(DataComponents.CUSTOM_NAME, Component.literal(displayName).setStyle(style).withStyle((boosted() ? getRarity().next() : getRarity()).formatting));
 		return petStack;
 	}
 
@@ -167,11 +166,11 @@ public class Pet {
 	 * @param heldItem the pet's held item, if any
 	 * @return Formatted lore with injected stats inserted into the tooltip
 	 */
-	private List<Text> processLore(List<String> lore, ItemStack heldItem) {
+	private List<Component> processLore(List<String> lore, ItemStack heldItem) {
 		Map<String, Map<Rarity, PetNumbers>> petNums = NEURepoManager.getConstants().getPetNumbers();
 		Rarity rarity = Rarity.values()[getTier()];
 		PetNumbers data = petNums.get(getName()).get(rarity);
-		List<Text> formattedLore = new ArrayList<>();
+		List<Component> formattedLore = new ArrayList<>();
 
 		for (String line : lore) {
 			if (line.contains("Right-click to add this") || line.contains("pet menu!")) continue;
@@ -195,13 +194,13 @@ public class Pet {
 				formattedLine = formattedLine.replace(placeholder, statValue);
 			}
 
-			formattedLore.add(Text.of(formattedLine));
+			formattedLore.add(Component.nullToEmpty(formattedLine));
 		}
 
 
 		if (heldItem != null) {
-			formattedLore.set(formattedLore.size() - 2, Text.of("§r§6Held Item: " + heldItem.getName().getString()));
-			formattedLore.add(formattedLore.size() - 1, Text.empty());
+			formattedLore.set(formattedLore.size() - 2, Component.nullToEmpty("§r§6Held Item: " + heldItem.getHoverName().getString()));
+			formattedLore.add(formattedLore.size() - 1, Component.empty());
 		}
 
 		return formattedLore;
@@ -212,18 +211,18 @@ public class Pet {
 	 * @param lore the existing lore
 	 * @return Fully formatted GoldenDragonEgg Lore
 	 */
-	private List<Text> buildGoldenDragonEggLore(List<String> lore) {
-		List<Text> formattedLore = new ArrayList<>();
+	private List<Component> buildGoldenDragonEggLore(List<String> lore) {
+		List<Component> formattedLore = new ArrayList<>();
 		Style style = Style.EMPTY.withItalic(false);
 
-		formattedLore.add(Text.of(lore.getFirst()));
-		formattedLore.add(Text.empty());
-		formattedLore.add(Text.literal("Perks:").setStyle(style).formatted(Formatting.GRAY));
-		formattedLore.add(Text.literal("???").setStyle(style).formatted(Formatting.RED, Formatting.BOLD));
-		formattedLore.add(Text.empty());
-		formattedLore.add(Text.literal("Hatches at level §b100").setStyle(style).formatted(Formatting.GRAY));
-		formattedLore.add(Text.empty());
-		formattedLore.add(Text.of(lore.getLast()));
+		formattedLore.add(Component.nullToEmpty(lore.getFirst()));
+		formattedLore.add(Component.empty());
+		formattedLore.add(Component.literal("Perks:").setStyle(style).withStyle(ChatFormatting.GRAY));
+		formattedLore.add(Component.literal("???").setStyle(style).withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
+		formattedLore.add(Component.empty());
+		formattedLore.add(Component.literal("Hatches at level §b100").setStyle(style).withStyle(ChatFormatting.GRAY));
+		formattedLore.add(Component.empty());
+		formattedLore.add(Component.nullToEmpty(lore.getLast()));
 
 		return formattedLore;
 	}
@@ -240,7 +239,7 @@ public class Pet {
 
 	private ItemStack getErrorStack() {
 		ItemStack errIcon = new ItemStack(Items.BARRIER);
-		errIcon.set(DataComponentTypes.CUSTOM_NAME, Text.of(this.getName()));
+		errIcon.set(DataComponents.CUSTOM_NAME, Component.nullToEmpty(this.getName()));
 		return errIcon;
 	}
 }

@@ -1,24 +1,22 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-
+import de.hysky.skyblocker.skyblock.dungeon.partyfinder.OptionDropdownWidget.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 
-import de.hysky.skyblocker.utils.ItemUtils;
-
-public class FinderSettingsContainer extends ContainerWidget {
+public class FinderSettingsContainer extends AbstractContainerWidget {
 	private boolean isInitialized = false;
 	private OptionDropdownWidget floorSelector;
 	private OptionDropdownWidget dungeonTypeSelector;
@@ -27,18 +25,18 @@ public class FinderSettingsContainer extends ContainerWidget {
 	private RangedValueWidget classLevelRange;
 	private RangedValueWidget dungeonLevelRange;
 
-	private ContainerWidget currentlyOpenedOption = null;
+	private AbstractContainerWidget currentlyOpenedOption = null;
 
-	private final List<ContainerWidget> initializedWidgets = new ArrayList<>();
+	private final List<AbstractContainerWidget> initializedWidgets = new ArrayList<>();
 
 
 	public FinderSettingsContainer(int x, int y, int height) {
-		super(x, y, 336, height, Text.empty());
+		super(x, y, 336, height, Component.empty());
 	}
 
 	@Override
-	public void setDimensionsAndPosition(int width, int height, int x, int y) {
-		super.setDimensionsAndPosition(width, height, x, y);
+	public void setRectangle(int width, int height, int x, int y) {
+		super.setRectangle(width, height, x, y);
 		if (this.floorSelector != null) floorSelector.setPosition(x + width / 4 - 70, y + 20);
 		if (this.dungeonTypeSelector != null) dungeonTypeSelector.setPosition(x + 3 * width / 4 - 70, y + 20);
 		if (this.sortGroupsSelector != null) sortGroupsSelector.setPosition(x + width / 2 - 70, y + 120);
@@ -55,49 +53,49 @@ public class FinderSettingsContainer extends ContainerWidget {
 	 */
 	public boolean handle(PartyFinderScreen screen, String inventoryName) {
 		String nameLowerCase = inventoryName.toLowerCase(Locale.ENGLISH);
-		GenericContainerScreenHandler handler = screen.getHandler();
+		ChestMenu handler = screen.getHandler();
 		if (!isInitialized) {
 			if (!nameLowerCase.contains("search settings")) return false;
 			isInitialized = true;
 			//System.out.println("initializing");
 			for (Slot slot : handler.slots) {
-				if (slot.id > handler.getRows() * 9 - 1) break;
-				if (!slot.hasStack()) continue;
-				ItemStack stack = slot.getStack();
+				if (slot.index > handler.getRowCount() * 9 - 1) break;
+				if (!slot.hasItem()) continue;
+				ItemStack stack = slot.getItem();
 				//System.out.println(stack.toString());
-				String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
+				String name = stack.getHoverName().getString().toLowerCase(Locale.ENGLISH);
 				if (name.contains("floor")) {
 
 					//System.out.println("Floor selector created");
-					this.floorSelector = new OptionDropdownWidget(screen, stack.getName(), getX() + getWidth() / 4 - 70, getY() + 20, 140, 170, slot.id);
+					this.floorSelector = new OptionDropdownWidget(screen, stack.getHoverName(), getX() + getWidth() / 4 - 70, getY() + 20, 140, 170, slot.index);
 					if (!setSelectedElementFromTooltip(slot, stack, floorSelector)) return false;
 
 					initializedWidgets.add(floorSelector);
 
 				} else if (name.contains("dungeon type")) {
 
-					this.dungeonTypeSelector = new OptionDropdownWidget(screen, stack.getName(), getX() + (3 * getWidth()) / 4 - 70, getY() + 20, 140, 100, slot.id);
+					this.dungeonTypeSelector = new OptionDropdownWidget(screen, stack.getHoverName(), getX() + (3 * getWidth()) / 4 - 70, getY() + 20, 140, 100, slot.index);
 					if (!setSelectedElementFromTooltip(slot, stack, dungeonTypeSelector)) return false;
 
 					initializedWidgets.add(dungeonTypeSelector);
 
 				} else if (name.contains("groups")) {
 
-					this.sortGroupsSelector = new OptionDropdownWidget(screen, stack.getName(), getX() + getWidth() / 2 - 70, getY() + 120, 140, 100, slot.id);
+					this.sortGroupsSelector = new OptionDropdownWidget(screen, stack.getHoverName(), getX() + getWidth() / 2 - 70, getY() + 120, 140, 100, slot.index);
 					if (!setSelectedElementFromTooltip(slot, stack, sortGroupsSelector)) return false;
 
 					initializedWidgets.add(sortGroupsSelector);
 
 				} else if (name.contains("class level")) {
 
-					this.classLevelRange = new RangedValueWidget(screen, stack.getName(), getX() + getWidth() / 4 - 50, getY() + 70, 100, slot.id);
+					this.classLevelRange = new RangedValueWidget(screen, stack.getHoverName(), getX() + getWidth() / 4 - 50, getY() + 70, 100, slot.index);
 					if (!setRangeFromTooltip(stack, classLevelRange)) return false;
 
 					initializedWidgets.add(classLevelRange);
 
 				} else if (name.contains("dungeon level")) {
 
-					this.dungeonLevelRange = new RangedValueWidget(screen, stack.getName(), getX() + 3 * (getWidth()) / 4 - 50, getY() + 70, 100, slot.id);
+					this.dungeonLevelRange = new RangedValueWidget(screen, stack.getHoverName(), getX() + 3 * (getWidth()) / 4 - 50, getY() + 70, 100, slot.index);
 					if (!setRangeFromTooltip(stack, dungeonLevelRange)) return false;
 
 					initializedWidgets.add(dungeonLevelRange);
@@ -115,10 +113,10 @@ public class FinderSettingsContainer extends ContainerWidget {
 			screen.partyFinderButton.active = true;
 			currentlyOpenedOption = null;
 
-			for (int i = (handler.getRows() - 1) * 9; i < handler.getRows() * 9; i++) {
+			for (int i = (handler.getRowCount() - 1) * 9; i < handler.getRowCount() * 9; i++) {
 				Slot slot = handler.slots.get(i);
-				if (slot.hasStack() && slot.getStack().isOf(Items.ARROW)) {
-					screen.partyButtonSlotId = slot.id;
+				if (slot.hasItem() && slot.getItem().is(Items.ARROW)) {
+					screen.partyButtonSlotId = slot.index;
 				}
 			}
 			return true;
@@ -145,12 +143,12 @@ public class FinderSettingsContainer extends ContainerWidget {
 		return false;
 	}
 
-	private int findBackSlotId(GenericContainerScreenHandler handler) {
+	private int findBackSlotId(ChestMenu handler) {
 		int backId = -1;
-		for (int i = (handler.getRows() - 1) * 9; i < handler.getRows() * 9; i++) {
+		for (int i = (handler.getRowCount() - 1) * 9; i < handler.getRowCount() * 9; i++) {
 			Slot slot = handler.slots.get(i);
-			if (slot.hasStack() && slot.getStack().isOf(Items.ARROW)) {
-				backId = slot.id;
+			if (slot.hasItem() && slot.getItem().is(Items.ARROW)) {
+				backId = slot.index;
 				break;
 			}
 		}
@@ -161,10 +159,10 @@ public class FinderSettingsContainer extends ContainerWidget {
 	 * @return true if all goes well
 	 */
 	private boolean setRangeFromTooltip(ItemStack stack, RangedValueWidget widget) {
-		for (Text text : ItemUtils.getLore(stack)) {
-			String textLowerCase = text.getString().toLowerCase(Locale.ENGLISH);
+		for (String text : stack.skyblocker$getLoreStrings()) {
+			String textLowerCase = text.toLowerCase(Locale.ENGLISH);
 			if (textLowerCase.contains("selected:")) {
-				String[] split = text.getString().split(":");
+				String[] split = text.split(":");
 				if (split.length < 2) return false;
 				String[] minAndMax = split[1].split("-");
 				if (minAndMax.length < 2) return false;
@@ -186,13 +184,13 @@ public class FinderSettingsContainer extends ContainerWidget {
 	 * @return true if all goes well
 	 */
 	private boolean setSelectedElementFromTooltip(Slot slot, ItemStack stack, OptionDropdownWidget dropdownWidget) {
-		for (Text text : ItemUtils.getLore(stack)) {
-			String textLowerCase = text.getString().toLowerCase(Locale.ENGLISH);
+		for (String text : stack.skyblocker$getLoreStrings()) {
+			String textLowerCase = text.toLowerCase(Locale.ENGLISH);
 			if (textLowerCase.contains("selected:")) {
-				String[] split = text.getString().split(":");
+				String[] split = text.split(":");
 				if (split.length < 2) return false;
 				String floorName = split[1].trim();
-				dropdownWidget.setSelectedOption(dropdownWidget.new Option(floorName, stack, slot.id));
+				dropdownWidget.setSelectedOption(dropdownWidget.new Option(floorName, stack, slot.index));
 				return true;
 			}
 		}
@@ -222,29 +220,29 @@ public class FinderSettingsContainer extends ContainerWidget {
 		return true;
 	}
 
-	private void updateDropdownOptionWidget(GenericContainerScreenHandler handler, OptionDropdownWidget dropdownWidget) {
+	private void updateDropdownOptionWidget(ChestMenu handler, OptionDropdownWidget dropdownWidget) {
 		currentlyOpenedOption = dropdownWidget;
 		List<OptionDropdownWidget.Option> entries = new ArrayList<>();
 		for (Slot slot : handler.slots) {
-			if (slot.id > (handler.getRows() - 1) * 9 - 1) break;
-			if (slot.hasStack() && !slot.getStack().isOf(Items.BLACK_STAINED_GLASS_PANE)) {
-				entries.add(dropdownWidget.new Option(slot.getStack().getName().getString(), slot.getStack(), slot.id));
+			if (slot.index > (handler.getRowCount() - 1) * 9 - 1) break;
+			if (slot.hasItem() && !slot.getItem().is(Items.BLACK_STAINED_GLASS_PANE)) {
+				entries.add(dropdownWidget.new Option(slot.getItem().getHoverName().getString(), slot.getItem(), slot.index));
 			}
 		}
 		int backId = findBackSlotId(handler);
 		dropdownWidget.open(entries, backId);
 	}
 
-	private void updateRangedValue(GenericContainerScreenHandler handler, RangedValueWidget valueWidget) {
+	private void updateRangedValue(ChestMenu handler, RangedValueWidget valueWidget) {
 		currentlyOpenedOption = valueWidget;
 		int min = -1;
 		int max = -1;
 		for (Slot slot : handler.slots) {
-			if (slot.id > (handler.getRows() - 1) * 9 - 1) break;
-			if (slot.hasStack() && slot.getStack().getName().getString().toLowerCase(Locale.ENGLISH).contains("min")) {
-				min = slot.id;
-			} else if (slot.hasStack() && slot.getStack().getName().getString().toLowerCase(Locale.ENGLISH).contains("max")) {
-				max = slot.id;
+			if (slot.index > (handler.getRowCount() - 1) * 9 - 1) break;
+			if (slot.hasItem() && slot.getItem().getHoverName().getString().toLowerCase(Locale.ENGLISH).contains("min")) {
+				min = slot.index;
+			} else if (slot.hasItem() && slot.getItem().getHoverName().getString().toLowerCase(Locale.ENGLISH).contains("max")) {
+				max = slot.index;
 			}
 		}
 		int backId = findBackSlotId(handler);
@@ -261,7 +259,7 @@ public class FinderSettingsContainer extends ContainerWidget {
 		if (sortGroupsSelector != null) this.sortGroupsSelector.visible = visible;
 	}
 
-	public boolean canInteract(ContainerWidget widget) {
+	public boolean canInteract(AbstractContainerWidget widget) {
 		return currentlyOpenedOption == null || currentlyOpenedOption == widget;
 	}
 
@@ -270,7 +268,7 @@ public class FinderSettingsContainer extends ContainerWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (hasOpenOption()) {
 			return currentlyOpenedOption.mouseClicked(click, doubled);
 		}
@@ -278,7 +276,7 @@ public class FinderSettingsContainer extends ContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		if (!visible || !isInitialized) return;
 		this.classLevelRange.render(context, mouseX, mouseY, delta);
 		this.dungeonLevelRange.render(context, mouseX, mouseY, delta);
@@ -290,20 +288,20 @@ public class FinderSettingsContainer extends ContainerWidget {
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		return initializedWidgets;
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	@Override
-	protected int getContentsHeightWithPadding() {
+	protected int contentHeight() {
 		return 0;
 	}
 
 	@Override
-	protected double getDeltaYPerScroll() {
+	protected double scrollRate() {
 		return 0;
 	}
 }

@@ -3,11 +3,10 @@ package de.hysky.skyblocker.skyblock.profileviewer.slayers;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
-import net.minecraft.client.gui.DrawContext;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class SlayersPage implements ProfileViewerPage {
 	private static final String[] SLAYERS = {"Zombie", "Spider", "Wolf", "Enderman", "Vampire", "Blaze"};
@@ -25,7 +24,7 @@ public class SlayersPage implements ProfileViewerPage {
 		}
 	}
 
-	public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		for (int i = 0; i < slayerWidgets.size(); i++) {
 			slayerWidgets.get(i).render(context, mouseX, mouseY, rootX, rootY + i * ROW_GAP);
 		}

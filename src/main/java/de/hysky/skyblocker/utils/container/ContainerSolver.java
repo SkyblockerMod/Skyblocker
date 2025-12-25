@@ -3,13 +3,12 @@ package de.hysky.skyblocker.utils.container;
 import de.hysky.skyblocker.utils.Resettable;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * A solver for a container without the inventory slots included.
@@ -19,7 +18,7 @@ import java.util.List;
 public interface ContainerSolver extends ContainerMatcher, Resettable {
 	List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots);
 
-	default void start(GenericContainerScreen screen) {}
+	default void start(ContainerScreen screen) {}
 
 	@Override
 	default void reset() {}
@@ -31,11 +30,11 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 
 	default boolean isSolverSlot(Slot slot, Screen screen) {
 		if (this instanceof ContainerAndInventorySolver) return true;
-		if (screen instanceof GenericContainerScreen generic) {
-			return slot.id < generic.getScreenHandler().getRows() * 9;
+		if (screen instanceof ContainerScreen generic) {
+			return slot.index < generic.getMenu().getRowCount() * 9;
 		}
-		assert MinecraftClient.getInstance().player != null;
-		return slot.inventory != MinecraftClient.getInstance().player.getInventory();
+		assert Minecraft.getInstance().player != null;
+		return slot.container != Minecraft.getInstance().player.getInventory();
 	}
 
 	/**
