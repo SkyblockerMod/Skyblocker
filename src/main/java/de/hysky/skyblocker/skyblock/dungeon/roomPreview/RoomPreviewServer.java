@@ -6,29 +6,30 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.resource.DataConfiguration;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.structure.StructurePlacementData;
-import net.minecraft.structure.StructureTemplate;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.GameMode;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.border.WorldBorder;
-import net.minecraft.world.gen.GeneratorOptions;
-import net.minecraft.world.gen.WorldPresets;
-import net.minecraft.world.gen.chunk.FlatChunkGenerator;
-import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
-import net.minecraft.world.level.LevelInfo;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.LevelSettings;
+import net.minecraft.world.level.WorldDataConfiguration;
+import net.minecraft.world.level.border.WorldBorder;
+import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.levelgen.FlatLevelSource;
+import net.minecraft.world.level.levelgen.WorldOptions;
+import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
+import net.minecraft.world.level.levelgen.presets.WorldPresets;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -38,12 +39,12 @@ import java.util.Optional;
 
 
 public class RoomPreviewServer {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final String SAVE_NAME = "skyblocker-room-preview";
 
 	public static boolean isActive = false;
 	static String selectedRoom = "";
-	static List<Text> errorMessages = new ArrayList<>();
+	static List<Component> errorMessages = new ArrayList<>();
 
 	@Init
 	public static void init() {
@@ -52,20 +53,20 @@ public class RoomPreviewServer {
 		ServerLifecycleEvents.SERVER_STOPPING.register((server) -> RoomPreviewServer.reset());
 	}
 
-	public static void onPlayerJoin(ServerPlayerEntity player) {
+	public static void onPlayerJoin(ServerPlayer player) {
 		if (!isActive) return;
 		Scheduler.INSTANCE.schedule(RoomPreview::onJoin, 5);
 		applyNightVision(player);
-		player.sendMessage(Constants.PREFIX.get().append(Text.literal("Welcome to the Room Preview world. You can fly around, modify your custom secret waypoints, and more!")));
-		for (Text msg : errorMessages) {
-			player.sendMessage(msg);
+		player.sendSystemMessage(Constants.PREFIX.get().append(Component.literal("Welcome to the Room Preview world. You can fly around, modify your custom secret waypoints, and more!")));
+		for (Component msg : errorMessages) {
+			player.sendSystemMessage(msg);
 		}
 		errorMessages.clear();
 	}
 
-	public static void applyNightVision(ServerPlayerEntity player) {
+	public static void applyNightVision(ServerPlayer player) {
 		if (!isActive) return;
-		player.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 999999999, 1, false, false));
+		player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 999999999, 1, false, false));
 	}
 
 	private static void reset() {
@@ -74,50 +75,50 @@ public class RoomPreviewServer {
 	}
 
 	public static void createServer() {
-		File previousSave = CLIENT.getLevelStorage().resolve(SAVE_NAME).toFile();
+		File previousSave = CLIENT.getLevelSource().getLevelPath(SAVE_NAME).toFile();
 		FileUtils.deleteQuietly(previousSave);
 
-		GameRules gameRules = new GameRules(DataConfiguration.SAFE_MODE.enabledFeatures());
-		gameRules.get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null);
-		gameRules.get(GameRules.RANDOM_TICK_SPEED).set(0, null);
+		GameRules gameRules = new GameRules(WorldDataConfiguration.DEFAULT.enabledFeatures());
+		gameRules.set(GameRules.ADVANCE_TIME, false, null);
+		gameRules.set(GameRules.RANDOM_TICK_SPEED, 0, null);
 
-		CLIENT.createIntegratedServerLoader().createAndStart(SAVE_NAME,
-				new LevelInfo(SAVE_NAME, GameMode.SPECTATOR, false, Difficulty.PEACEFUL, true, gameRules, DataConfiguration.SAFE_MODE),
-				new GeneratorOptions("skyblocker".hashCode(), false, false),
+		CLIENT.createWorldOpenFlows().createFreshLevel(SAVE_NAME,
+				new LevelSettings(SAVE_NAME, GameType.SPECTATOR, false, Difficulty.PEACEFUL, true, gameRules, WorldDataConfiguration.DEFAULT),
+				new WorldOptions("skyblocker".hashCode(), false, false),
 				(lookup) -> {
-					var preset = WorldPresets.createTestOptions(lookup);
-					var config = new FlatChunkGeneratorConfig(Optional.empty(), lookup.getOrThrow(RegistryKeys.BIOME).getOrThrow(RegistryKey.of(RegistryKeys.BIOME, Identifier.ofVanilla("the_void"))), List.of());
-					return preset.with(lookup, new FlatChunkGenerator(config));
+					var preset = WorldPresets.createFlatWorldDimensions(lookup);
+					var config = new FlatLevelGeneratorSettings(Optional.empty(), lookup.lookupOrThrow(Registries.BIOME).getOrThrow(ResourceKey.create(Registries.BIOME, Identifier.withDefaultNamespace("the_void"))), List.of());
+					return preset.replaceOverworldGenerator(lookup, new FlatLevelSource(config));
 				},
-				null
+				new TitleScreen()
 		);
 
-		IntegratedServer server = CLIENT.getServer();
+		IntegratedServer server = CLIENT.getSingleplayerServer();
 		if (server == null) return;
 		isActive = true;
 	}
 
-	public static void addErrorMessage(Text errorText) {
+	public static void addErrorMessage(Component errorText) {
 		errorMessages.add(Constants.PREFIX.get().append(errorText));
 	}
 
 	public static void loadRoom(String type, String roomName) {
-		IntegratedServer server = CLIENT.getServer();
+		IntegratedServer server = CLIENT.getSingleplayerServer();
 		if (server == null) return;
 		Optional<int[]> blockData = DungeonManager.getRoomBlockData(type, roomName);
 		if (blockData.isEmpty()) {
-			addErrorMessage(Text.literal("Failed to load room: invalid room!").formatted(Formatting.RED));
+			addErrorMessage(Component.literal("Failed to load room: invalid room!").withStyle(ChatFormatting.RED));
 			return;
 		}
 
 		selectedRoom = roomName;
-		StructureTemplate template = server.getStructureTemplateManager().createTemplate(RoomStructure.getCompound(blockData.get()));
+		StructureTemplate template = server.getStructureManager().readStructure(RoomStructure.getCompound(blockData.get()));
 		server.execute(() ->
-				template.place(server.getOverworld(), BlockPos.ORIGIN, BlockPos.ORIGIN, new StructurePlacementData(), server.getOverworld().random, 0));
+				template.placeInWorld(server.overworld(), BlockPos.ZERO, BlockPos.ZERO, new StructurePlaceSettings(), server.overworld().random, 0));
 
 		// Add a world border to partially prevent falling out of the world
 		server.execute(() -> {
-			WorldBorder border = server.getOverworld().getWorldBorder();
+			WorldBorder border = server.overworld().getWorldBorder();
 			border.setCenter(((double) template.getSize().getX() + 1) / 2, ((double) template.getSize().getZ() + 1) / 2);
 			border.setSize(Math.max(template.getSize().getX(), template.getSize().getZ()));
 		});

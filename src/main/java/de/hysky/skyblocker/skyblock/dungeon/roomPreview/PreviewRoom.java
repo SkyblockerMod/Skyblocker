@@ -5,12 +5,12 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretWaypoint;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import org.joml.Vector2i;
 
 import java.util.List;
@@ -55,9 +55,9 @@ public class PreviewRoom extends Room {
 	}
 
 	protected void showSecretInWorld(SecretWaypoint waypoint) {
-		IntegratedServer server = MinecraftClient.getInstance().getServer();
+		IntegratedServer server = Minecraft.getInstance().getSingleplayerServer();
 		if (server == null) return;
-		ServerWorld world = server.getOverworld();
+		ServerLevel world = server.overworld();
 
 		Block block = switch (waypoint.category) {
 			case ENTRANCE, STONK, AOTV, PEARL, PRINCE, DEFAULT -> null;
@@ -71,6 +71,6 @@ public class PreviewRoom extends Room {
 		};
 
 		if (block == null) return;
-		server.execute(() -> world.setBlockState(waypoint.pos, block.getDefaultState()));
+		server.execute(() -> world.setBlockAndUpdate(waypoint.pos, block.defaultBlockState()));
 	}
 }

@@ -1051,12 +1051,12 @@ public class DungeonManager {
 	}
 
 	public static CompletableFuture<Suggestions> suggestRoomTypes(CommandContext<FabricClientCommandSource> ctx, SuggestionsBuilder suggestionsBuilder) {
-		return CommandSource.suggestMatching(ROOMS_DATA.get("catacombs").keySet(), suggestionsBuilder);
+		return SharedSuggestionProvider.suggest(ROOMS_DATA.get("catacombs").keySet(), suggestionsBuilder);
 	}
 
 	public static CompletableFuture<Suggestions> suggestRooms(String roomType, SuggestionsBuilder suggestionsBuilder) {
 		if (ROOMS_DATA.get("catacombs").get(roomType) == null) return Suggestions.empty();
-		return CommandSource.suggestMatching(ROOMS_DATA.get("catacombs").get(roomType).keySet(), suggestionsBuilder);
+		return SharedSuggestionProvider.suggest(ROOMS_DATA.get("catacombs").get(roomType).keySet(), suggestionsBuilder);
 	}
 
 	@VisibleForTesting

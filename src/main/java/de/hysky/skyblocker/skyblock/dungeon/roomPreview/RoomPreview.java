@@ -13,15 +13,15 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
 public class RoomPreview {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 
 	private static boolean isActive = false;
 	private static @Nullable Room previewRoom = null;
@@ -39,12 +39,12 @@ public class RoomPreview {
 
 	private static int startPreview(CommandContext<FabricClientCommandSource> ctx) {
 		if (DungeonManager.getRoomBlockData(ctx.getArgument("type", String.class), ctx.getArgument("room", String.class)).isEmpty()) {
-			ctx.getSource().sendFeedback(Text.literal("Invalid room!").formatted(Formatting.RED));
+			ctx.getSource().sendFeedback(Component.literal("Invalid room!").withStyle(ChatFormatting.RED));
 			return -1;
 		}
 
-		CLIENT.disconnect(Text.empty());
-		if (CLIENT.isIntegratedServerRunning() && CLIENT.getServer() != null) CLIENT.getServer().stop(true);
+		CLIENT.disconnectFromWorld(Component.empty());
+		if (CLIENT.hasSingleplayerServer() && CLIENT.getSingleplayerServer() != null) CLIENT.getSingleplayerServer().stopServer();
 		RoomPreviewServer.createServer();
 		RoomPreviewServer.loadRoom(ctx.getArgument("type", String.class), ctx.getArgument("room", String.class));
 		return Command.SINGLE_SUCCESS;
