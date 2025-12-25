@@ -2,12 +2,11 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
-
 import java.util.Objects;
 import java.util.Set;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 
 public abstract class HudWidget extends AbstractWidget {
 	/**
@@ -57,7 +56,7 @@ public abstract class HudWidget extends AbstractWidget {
 	public abstract boolean isEnabledIn(Location location);
 
 	/**
-	 * Perform all your logic here. Or in the {@link #renderWidget(DrawContext, int, int, float)} method if you feel like it.
+	 * Perform all your logic here. Or in the {@link #renderWidget(GuiGraphics, int, int, float)} method if you feel like it.
 	 * But this will be called much less often. See usages of it.
 	 *
 	 * @see #shouldUpdateBeforeRendering()
@@ -73,14 +72,14 @@ public abstract class HudWidget extends AbstractWidget {
 		return false;
 	}
 
-	protected abstract void renderWidget(DrawContext context, int mouseX, int mouseY, float delta);
+	protected abstract void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta);
 
-	public final void render(DrawContext context) {
-		render(context, -1, -1, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
+	public final void render(GuiGraphics context) {
+		render(context, -1, -1, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks());
 	}
 
 	@Override
-	public final void render(DrawContext context, int mouseX, int mouseY, float delta) {
+	public final void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		renderWidget(context, mouseX, mouseY, delta);
 	}
 
@@ -106,8 +105,8 @@ public abstract class HudWidget extends AbstractWidget {
 		return internalID;
 	}
 
-	public Text getDisplayName() {
-		return Text.of(getInternalID());
+	public Component getDisplayName() {
+		return Component.nullToEmpty(getInternalID());
 	}
 
 	// Positioner shenanigans

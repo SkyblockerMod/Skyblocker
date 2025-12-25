@@ -5,7 +5,7 @@ import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
+import de.hysky.skyblocker.mixins.accessors.ChatListenerAccessor;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.purse.PurseChangeCause;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -25,17 +25,21 @@ import net.azureaaron.hmapi.network.packet.v1.s2c.PlayerInfoS2CPacket;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.registry.BuiltinRegistries;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.scoreboard.*;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.registries.VanillaRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.scores.DisplaySlot;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.ScoreHolder;
+import net.minecraft.world.scores.Scoreboard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,34 +63,29 @@ public class Utils {
 	public static final String PROFILE_ID_PREFIX = "Profile ID: ";
 	private static final String PROFILE_ID_SUGGEST_PREFIX = "CLICK THIS TO SUGGEST IT IN CHAT";
 	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
-	private static final RegistryWrapper.WrapperLookup LOOKUP = BuiltinRegistries.createWrapperLookup();
+	private static final HolderLookup.Provider LOOKUP = VanillaRegistries.createLookup();
 	private static boolean isOnHypixel = false;
 	private static boolean isOnSkyblock = false;
 
 	/**
 	 * The player's rank.
 	 */
-	@NotNull
 	private static RankType rank = PackageRank.NONE;
 	/**
 	 * Current Skyblock location (from the Mod API)
 	 */
-	@NotNull
 	private static Location location = Location.UNKNOWN;
 	/**
 	 * Current Skyblock island area.
 	 */
-	@NotNull
 	private static Area area = Area.UNKNOWN;
 	/**
 	 * The profile name parsed from the player list.
 	 */
-	@NotNull
 	private static String profile = "";
 	/**
 	 * The profile id parsed from the chat.
 	 */
-	@NotNull
 	private static String profileId = "";
 	/**
 	 * The server from which we last received the profile id message from.
@@ -97,22 +96,17 @@ public class Utils {
 	 * The following fields store data returned from the Mod API: {@link #environment}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
 	 */
 	@SuppressWarnings("JavadocDeclaration")
-	@NotNull
 	private static Environment environment = Environment.PRODUCTION;
-	@NotNull
 	private static String server = "";
-	@NotNull
 	private static String gameType = "";
-	@NotNull
 	private static String locationRaw = "";
-	@NotNull
 	private static String map = "";
 	public static double purse = 0;
 
 	/**
 	 * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
 	 */
-	public static final ObjectArrayList<Text> TEXT_SCOREBOARD = new ObjectArrayList<>();
+	public static final ObjectArrayList<Component> TEXT_SCOREBOARD = new ObjectArrayList<>();
 	public static final ObjectArrayList<String> STRING_SCOREBOARD = new ObjectArrayList<>();
 
 	public static boolean isOnHypixel() {
@@ -132,7 +126,7 @@ public class Utils {
 	}
 
 	public static boolean isInDwarvenMines() {
-		return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFT;
+		return location == Location.DWARVEN_MINES || location == Location.GLACITE_MINESHAFTS;
 	}
 
 	public static boolean isInTheRift() {
@@ -177,12 +171,10 @@ public class Utils {
 	/**
 	 * @return the profile parsed from the player list.
 	 */
-	@NotNull
 	public static String getProfile() {
 		return profile;
 	}
 
-	@NotNull
 	public static String getProfileId() {
 		return profileId;
 	}
@@ -190,7 +182,6 @@ public class Utils {
 	/**
 	 * @return the location parsed from the Mod API.
 	 */
-	@NotNull
 	public static Location getLocation() {
 		return location;
 	}
@@ -200,7 +191,6 @@ public class Utils {
 	 *
 	 * @return the area parsed from the scoreboard.
 	 */
-	@NotNull
 	public static Area getArea() {
 		return area;
 	}
@@ -210,7 +200,6 @@ public class Utils {
 	 *
 	 * @return the current environment parsed from the Mod API.
 	 */
-	@NotNull
 	public static Environment getEnvironment() {
 		return environment;
 	}
@@ -218,7 +207,6 @@ public class Utils {
 	/**
 	 * @return the server parsed from the Mod API.
 	 */
-	@NotNull
 	public static String getServer() {
 		return server;
 	}
@@ -226,7 +214,6 @@ public class Utils {
 	/**
 	 * @return the game type parsed from the Mod API.
 	 */
-	@NotNull
 	public static String getGameType() {
 		return gameType;
 	}
@@ -234,7 +221,6 @@ public class Utils {
 	/**
 	 * @return the raw location from the Mod API.
 	 */
-	@NotNull
 	public static String getLocationRaw() {
 		return locationRaw;
 	}
@@ -242,7 +228,6 @@ public class Utils {
 	/**
 	 * @return the map parsed from the Mod API.
 	 */
-	@NotNull
 	public static String getMap() {
 		return map;
 	}
@@ -250,7 +235,6 @@ public class Utils {
 	/**
 	 * @return the player's rank
 	 */
-	@NotNull
 	public static RankType getRank() {
 		return rank;
 	}
@@ -271,7 +255,7 @@ public class Utils {
 	 * Updates all the fields stored in this class from the sidebar, and player list.
 	 */
 	public static void update() {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		updateScoreboard(client);
 		updatePlayerPresence(client);
 		updateFromPlayerList(client);
@@ -280,9 +264,9 @@ public class Utils {
 	/**
 	 * Updates {@link #isOnSkyblock} if in a development environment and {@link #isOnHypixel} in all environments.
 	 */
-	private static void updatePlayerPresence(MinecraftClient client) {
+	private static void updatePlayerPresence(Minecraft client) {
 		FabricLoader fabricLoader = FabricLoader.getInstance();
-		if (client.world == null || client.isInSingleplayer()) {
+		if (client.level == null || client.isLocalServer()) {
 			if (fabricLoader.isDevelopmentEnvironment()) { // Pretend we're always in skyblock when in dev
 				isOnSkyblock = true;
 			}
@@ -297,13 +281,17 @@ public class Utils {
 		}
 	}
 
-	private static boolean isConnectedToHypixel(MinecraftClient client) {
-		String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase(Locale.ENGLISH) : "";
-		String serverBrand = (client.player != null && client.player.networkHandler != null && client.player.networkHandler.getBrand() != null) ? client.player.networkHandler.getBrand() : "";
+	private static boolean isConnectedToHypixel(Minecraft client) {
+		String serverAddress = (client.getCurrentServer() != null) ? client.getCurrentServer().ip.toLowerCase(Locale.ENGLISH) : "";
+		String serverBrand = (client.player != null && client.player.connection != null && client.player.connection.serverBrand() != null) ? client.player.connection.serverBrand() : "";
 
 		return (!serverAddress.isEmpty() && serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS)) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
 	}
 
+	/**
+	 * @deprecated use type safe {@link #getArea()}.
+	 */
+	@Deprecated
 	public static String getIslandArea() {
 		try {
 			for (String sidebarLine : STRING_SCOREBOARD) {
@@ -337,30 +325,30 @@ public class Utils {
 		return bits;
 	}
 
-	private static void updateScoreboard(MinecraftClient client) {
+	private static void updateScoreboard(Minecraft client) {
 		try {
 			TEXT_SCOREBOARD.clear();
 			STRING_SCOREBOARD.clear();
 
-			ClientWorld world = client.world;
+			ClientLevel world = client.level;
 			if (world == null) return;
 
 			Scoreboard scoreboard = world.getScoreboard();
-			ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
-			ObjectArrayList<Text> textLines = new ObjectArrayList<>();
+			Objective objective = scoreboard.getDisplayObjective(DisplaySlot.BY_ID.apply(1));
+			ObjectArrayList<Component> textLines = new ObjectArrayList<>();
 			ObjectArrayList<String> stringLines = new ObjectArrayList<>();
 
-			for (ScoreHolder scoreHolder : scoreboard.getKnownScoreHolders()) {
+			for (ScoreHolder scoreHolder : scoreboard.getTrackedPlayers()) {
 				//Limit to just objectives displayed in the scoreboard (specifically sidebar objective)
-				if (scoreboard.getScoreHolderObjectives(scoreHolder).containsKey(objective)) {
-					Team team = scoreboard.getScoreHolderTeam(scoreHolder.getNameForScoreboard());
+				if (scoreboard.listPlayerScores(scoreHolder).containsKey(objective)) {
+					PlayerTeam team = scoreboard.getPlayersTeam(scoreHolder.getScoreboardName());
 
 					if (team != null) {
-						Text textLine = Text.empty().append(team.getPrefix().copy()).append(team.getSuffix().copy());
-						String strLine = team.getPrefix().getString() + team.getSuffix().getString();
+						Component textLine = Component.empty().append(team.getPlayerPrefix().copy()).append(team.getPlayerSuffix().copy());
+						String strLine = team.getPlayerPrefix().getString() + team.getPlayerSuffix().getString();
 
 						if (!strLine.trim().isEmpty()) {
-							String formatted = Formatting.strip(strLine);
+							String formatted = ChatFormatting.stripFormatting(strLine);
 
 							textLines.add(textLine);
 							stringLines.add(formatted);
@@ -371,7 +359,7 @@ public class Utils {
 
 			if (objective != null) {
 				stringLines.add(objective.getDisplayName().getString());
-				textLines.add(Text.empty().append(objective.getDisplayName().copy()));
+				textLines.add(Component.empty().append(objective.getDisplayName().copy()));
 
 				Collections.reverse(stringLines);
 				Collections.reverse(textLines);
@@ -414,15 +402,15 @@ public class Utils {
 		});
 	}
 
-	private static void updateFromPlayerList(MinecraftClient client) {
-		if (client.getNetworkHandler() == null) {
+	private static void updateFromPlayerList(Minecraft client) {
+		if (client.getConnection() == null) {
 			return;
 		}
-		for (PlayerListEntry playerListEntry : client.getNetworkHandler().getPlayerList()) {
-			if (playerListEntry.getDisplayName() == null) {
+		for (PlayerInfo playerListEntry : client.getConnection().getOnlinePlayers()) {
+			if (playerListEntry.getTabListDisplayName() == null) {
 				continue;
 			}
-			String name = playerListEntry.getDisplayName().getString();
+			String name = playerListEntry.getTabListDisplayName().getString();
 			if (name.startsWith(PROFILE_PREFIX)) {
 				profile = name.substring(PROFILE_PREFIX.length());
 			}
@@ -478,10 +466,10 @@ public class Utils {
 				location = Location.UNKNOWN;
 				map = "";
 
-				ClientPlayerEntity player = MinecraftClient.getInstance().player;
+				LocalPlayer player = Minecraft.getInstance().player;
 
 				if (player != null) {
-					player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.utils.locationUpdateError").formatted(Formatting.RED)), false);
+					player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.utils.locationUpdateError").withStyle(ChatFormatting.RED)), false);
 				}
 
 				LOGGER.error("[Skyblocker] Failed to update your current location! Some features of the mod may not work correctly :( - Error: {}", error);
@@ -549,7 +537,7 @@ public class Utils {
 	 *
 	 * @return not display the message in chat if the command is sent by the mod
 	 */
-	public static boolean onChatMessage(Text text, boolean overlay) {
+	public static boolean onChatMessage(Component text, boolean overlay) {
 		if (overlay) return true;
 		String message = text.getString();
 
@@ -568,7 +556,7 @@ public class Utils {
 				if (!prevProfileId.equals(profileId)) {
 					SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
 				}
-			} else if (Formatting.strip(message).startsWith(PROFILE_ID_SUGGEST_PREFIX)) {
+			} else if (ChatFormatting.stripFormatting(message).startsWith(PROFILE_ID_SUGGEST_PREFIX)) {
 				int suggestions = profileSuggestionMessages;
 				profileSuggestionMessages++;
 
@@ -584,16 +572,16 @@ public class Utils {
 	 * <p>
 	 * Bypasses MessageHandler#onGameMessage
 	 */
-	public static void sendMessageToBypassEvents(Text message) {
-		MinecraftClient client = MinecraftClient.getInstance();
+	public static void sendMessageToBypassEvents(Component message) {
+		Minecraft client = Minecraft.getInstance();
 
-		client.inGameHud.getChatHud().addMessage(message);
-		((MessageHandlerAccessor) client.getMessageHandler()).invokeAddToChatLog(message, Instant.now());
-		client.getNarratorManager().narrateSystemMessage(message);
+		client.gui.getChat().addMessage(message);
+		((ChatListenerAccessor) client.getChatListener()).invokeLogSystemMessage(message, Instant.now());
+		client.getNarrator().saySystemQueued(message);
 	}
 
 	public static UUID getUuid() {
-		return MinecraftClient.getInstance().getSession().getUuidOrNull();
+		return Minecraft.getInstance().getUser().getProfileId();
 	}
 
 	public static String getUndashedUuid() {
@@ -603,10 +591,10 @@ public class Utils {
 	/**
 	 * Tries to get the dynamic registry manager instance currently in use or else returns {@link #LOOKUP}
 	 */
-	public static RegistryWrapper.WrapperLookup getRegistryWrapperLookup() {
-		MinecraftClient client = MinecraftClient.getInstance();
+	public static HolderLookup.Provider getRegistryWrapperLookup() {
+		Minecraft client = Minecraft.getInstance();
 		// Null check on client for tests
-		return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : LOOKUP;
+		return client != null && client.getConnection() != null && client.getConnection().registryAccess() != null ? client.getConnection().registryAccess() : LOOKUP;
 	}
 
 	/**
@@ -621,5 +609,16 @@ public class Utils {
 		} catch (NumberFormatException e) {
 			return OptionalInt.empty();
 		}
+	}
+
+	/**
+	 * Get players eye height from the servers point of view based on it's minecraft version
+	 *
+	 * @return offset from players pos to their eyes
+	 */
+	public static float getEyeHeight(Player player) {
+		if (player == null || !player.isShiftKeyDown()) return 1.62f;
+		//sneaking height is different depending on server
+		return getLocation().isModern() ? 1.27f : 1.54f;
 	}
 }

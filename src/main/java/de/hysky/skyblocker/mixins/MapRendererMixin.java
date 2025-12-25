@@ -4,16 +4,16 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.render.MapRenderer;
-import net.minecraft.item.map.MapDecoration;
-import net.minecraft.item.map.MapDecorationType;
-import net.minecraft.item.map.MapDecorationTypes;
+import net.minecraft.client.renderer.MapRenderer;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(MapRenderer.class)
 public class MapRendererMixin {
-	@ModifyExpressionValue(method = "createDecoration", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/map/MapDecoration;isAlwaysRendered()Z"))
+	@ModifyExpressionValue(method = "extractDecorationRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/saveddata/maps/MapDecoration;renderOnFrame()Z"))
 	private boolean preventDecorationInDungeons(boolean alwaysRendered, @Local(argsOnly = true) MapDecoration decoration) {
 		// Allow alwaysRendered if
 		// 1. not in dungeons and map is disabled OR

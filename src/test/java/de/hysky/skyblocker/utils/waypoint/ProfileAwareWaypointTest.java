@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.utils.waypoint;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ProfileAwareWaypointTest {
 	@Test
 	void testShouldRender() {
-		ProfileAwareWaypoint waypoint = new ProfileAwareWaypoint(BlockPos.ORIGIN, null, null, null);
+		ProfileAwareWaypoint waypoint = new ProfileAwareWaypoint(BlockPos.ZERO, null, null, null);
 		waypoint.setFound("profile");
 		Assertions.assertTrue(waypoint.shouldRender());
 		waypoint.setFound("");
@@ -18,7 +18,7 @@ public class ProfileAwareWaypointTest {
 
 	@Test
 	void testGetRenderColorComponents() {
-		ProfileAwareWaypoint waypoint = new ProfileAwareWaypoint(BlockPos.ORIGIN, null, new float[]{0f, 0.5f, 1f}, new float[]{1f, 0.5f, 0f});
+		ProfileAwareWaypoint waypoint = new ProfileAwareWaypoint(BlockPos.ZERO, null, new float[]{0f, 0.5f, 1f}, new float[]{1f, 0.5f, 0f});
 		waypoint.setFound("profile");
 		float[] colorComponents = waypoint.getRenderColorComponents();
 		Assertions.assertEquals(0f, colorComponents[0]);

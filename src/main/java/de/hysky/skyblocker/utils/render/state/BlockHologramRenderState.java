@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.render.state;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class BlockHologramRenderState {
 	public BlockPos pos;

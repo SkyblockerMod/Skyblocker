@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.utils.container;
 
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
@@ -15,7 +14,7 @@ public abstract class SimpleContainerSolver extends RegexContainerMatcher implem
 	 *
 	 * @see #SimpleContainerSolver(Pattern)
 	 */
-	protected SimpleContainerSolver(@NotNull @Language("RegExp") String titlePattern) {
+	protected SimpleContainerSolver(@Language("RegExp") String titlePattern) {
 		super(titlePattern);
 	}
 
@@ -24,14 +23,14 @@ public abstract class SimpleContainerSolver extends RegexContainerMatcher implem
 	 *
 	 * @param titlePattern The pattern to match the screen title against.
 	 */
-	protected SimpleContainerSolver(@NotNull Pattern titlePattern) {
+	protected SimpleContainerSolver(Pattern titlePattern) {
 		super(titlePattern);
 	}
 
 	// A container solver that applies to every screen doesn't make sense,
 	// so we don't provide a constructor for that and force getTitlePattern to be @NotNull
 	@Override
-	public @NotNull Pattern getTitlePattern() {
+	public Pattern getTitlePattern() {
 		assert super.getTitlePattern() != null;
 		return super.getTitlePattern();
 	}

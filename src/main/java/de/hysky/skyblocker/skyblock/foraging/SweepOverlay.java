@@ -8,32 +8,35 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
-import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.ArrayDeque;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 public class SweepOverlay {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SweepOverlay.class);
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static float[] colorComponents;
 	private static final int MAX_WOOD_CAP = 35;
 	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile("Sweep:\\s*(?:∮|§[0-9a-fk-or])*(\\d+)");
@@ -88,11 +91,11 @@ public class SweepOverlay {
 	 */
 	private static void extractRendering(PrimitiveCollector collector) {
 		var config = SkyblockerConfigManager.get().foraging.sweepOverlay;
-		if (!isValidLocation() || !config.enableSweepOverlay || CLIENT.player == null || CLIENT.world == null) {
+		if (!isValidLocation() || !config.enableSweepOverlay || CLIENT.player == null || CLIENT.level == null) {
 			return;
 		}
 
-		ItemStack heldItem = CLIENT.player.getMainHandStack();
+		ItemStack heldItem = CLIENT.player.getMainHandItem();
 		String itemId = heldItem.getSkyblockId();
 		boolean isValidAxe = VALID_AXES.contains(itemId);
 		boolean isThrowableAxe = THROWABLE_AXES.contains(itemId);
@@ -103,19 +106,19 @@ public class SweepOverlay {
 		BlockHitResult blockHitResult = null;
 		boolean isThrown = false;
 
-		if (isValidAxe && CLIENT.crosshairTarget != null && CLIENT.crosshairTarget.getType() == HitResult.Type.BLOCK
-				&& CLIENT.crosshairTarget instanceof BlockHitResult hitResult) {
+		if (isValidAxe && CLIENT.hitResult != null && CLIENT.hitResult.getType() == HitResult.Type.BLOCK
+				&& CLIENT.hitResult instanceof BlockHitResult hitResult) {
 			blockHitResult = hitResult;
 		} else if (isThrowableAxe && config.enableThrownAbilityOverlay && !ItemCooldowns.isOnCooldown(heldItem)) {
 			// Cast a ray up to 50 blocks for throwable axes
 			// #todo gravity prediction
-			Vec3d start = CLIENT.player.getCameraPosVec(1.0f);
-			Vec3d look = CLIENT.player.getRotationVec(1.0f);
-			Vec3d end = start.add(look.multiply(50.0));
-			RaycastContext context = new RaycastContext(
-					start, end, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, CLIENT.player
+			Vec3 start = CLIENT.player.getEyePosition(1.0f);
+			Vec3 look = CLIENT.player.getViewVector(1.0f);
+			Vec3 end = start.add(look.scale(50.0));
+			ClipContext context = new ClipContext(
+					start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CLIENT.player
 			);
-			HitResult hitResult = CLIENT.world.raycast(context);
+			HitResult hitResult = CLIENT.level.clip(context);
 			if (hitResult.getType() == HitResult.Type.BLOCK && hitResult instanceof BlockHitResult rayHitResult) {
 				blockHitResult = rayHitResult;
 				isThrown = true;
@@ -123,7 +126,7 @@ public class SweepOverlay {
 		}
 
 		if (blockHitResult != null) {
-			BlockState state = CLIENT.world.getBlockState(blockHitResult.getBlockPos());
+			BlockState state = CLIENT.level.getBlockState(blockHitResult.getBlockPos());
 			if (isLog(state)) {
 				submitConnectedLogs(collector, blockHitResult, state, isThrown);
 			}
@@ -138,15 +141,15 @@ public class SweepOverlay {
 	 */
 	private static boolean isLog(BlockState state) {
 		if (Utils.isInGalatea()) {
-			return state.isOf(Blocks.STRIPPED_SPRUCE_LOG)
-					|| state.isOf(Blocks.STRIPPED_SPRUCE_WOOD)
-					|| state.isOf(Blocks.MANGROVE_LOG)
-					|| state.isOf(Blocks.MANGROVE_WOOD);
+			return state.is(Blocks.STRIPPED_SPRUCE_LOG)
+					|| state.is(Blocks.STRIPPED_SPRUCE_WOOD)
+					|| state.is(Blocks.MANGROVE_LOG)
+					|| state.is(Blocks.MANGROVE_WOOD);
 		} else if (Utils.isInHub()) {
-			return state.isOf(Blocks.OAK_LOG) || state.isOf(Blocks.OAK_WOOD);
+			return state.is(Blocks.OAK_LOG) || state.is(Blocks.OAK_WOOD);
 		}
 
-		return state.isIn(BlockTags.LOGS);
+		return state.is(BlockTags.LOGS);
 	}
 
 	/**
@@ -177,9 +180,9 @@ public class SweepOverlay {
 			}
 		}
 		if (!sweepStatNoticeShown && (Utils.isInPark() || Utils.isInGalatea()) && CLIENT.player != null) {
-			CLIENT.player.sendMessage(Constants.PREFIX.get().append(
-							Text.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
-									.formatted(Formatting.RED)),
+			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(
+							Component.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
+									.withStyle(ChatFormatting.RED)),
 					false);
 			sweepStatNoticeShown = true;
 		}
@@ -223,7 +226,7 @@ public class SweepOverlay {
 	 */
 	private static void submitConnectedLogs(PrimitiveCollector collector, BlockHitResult blockHitResult, BlockState state, boolean isThrown) {
 		BlockPos startPos = blockHitResult.getBlockPos();
-		World world = CLIENT.world;
+		Level world = CLIENT.level;
 		float sweepStat = getSweepStat();
 		if (sweepStat <= 0) return;
 
@@ -259,7 +262,7 @@ public class SweepOverlay {
 			collector.submitFilledBox(pos, renderColor, renderColor[3], false);
 
 			for (BlockPos offset : NEIGHBOR_OFFSETS) {
-				BlockPos neighbor = pos.add(offset);
+				BlockPos neighbor = pos.offset(offset);
 				if (visited.contains(neighbor) || queue.contains(neighbor)) continue;
 
 				if (isLog(world.getBlockState(neighbor))) {

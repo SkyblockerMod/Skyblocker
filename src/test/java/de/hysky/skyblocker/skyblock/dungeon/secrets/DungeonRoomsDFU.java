@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import net.minecraft.datafixer.fix.ItemIdFix;
-import net.minecraft.datafixer.fix.ItemInstanceTheFlatteningFix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,10 +10,18 @@ import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
+import net.minecraft.util.datafix.fixes.ItemIdFix;
+import net.minecraft.util.datafix.fixes.ItemStackTheFlatteningFix;
 
 /**
  * Utility class to convert the old dungeon rooms data from Dungeon Rooms Mod to a new format.
@@ -127,9 +133,9 @@ public class DungeonRoomsDFU {
 		}
 		short oldId = (short) (oldBlock & 0xFFFF);
 		// Get the new id for the block.
-		String newId = ItemInstanceTheFlatteningFix.getItem(ItemIdFix.fromId(oldId / 100), oldId % 100);
+		String newId = ItemStackTheFlatteningFix.updateItem(ItemIdFix.getItem(oldId / 100), oldId % 100);
 		if (newId == null) {
-			newId = ItemIdFix.fromId(oldId / 100);
+			newId = ItemIdFix.getItem(oldId / 100);
 		}
 		return x << 24 | y << 16 | z << 8 | DungeonManager.NUMERIC_ID.getByte(newId);
 	}

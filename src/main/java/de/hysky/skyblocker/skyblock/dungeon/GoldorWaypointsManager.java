@@ -18,14 +18,14 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,13 +75,13 @@ public class GoldorWaypointsManager {
 		ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
 	}
 
-	private static void load(MinecraftClient client) {
+	private static void load(Minecraft client) {
 		CompletableFuture<Void> terminals = loadWaypoints(client, SkyblockerMod.id("dungeons/goldorwaypoints.json"));
 
 		terminals.whenComplete((_result, _throwable) -> loaded = true);
 	}
 
-	private static CompletableFuture<Void> loadWaypoints(MinecraftClient client, Identifier file) {
+	private static CompletableFuture<Void> loadWaypoints(Minecraft client, Identifier file) {
 		return CompletableFuture.supplyAsync(() -> {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(file)) {
 				JsonArray arr = JsonParser.parseReader(reader).getAsJsonArray();
@@ -118,14 +118,14 @@ public class GoldorWaypointsManager {
 	 * @param playerName The name of the player to check against
 	 */
 	private static void removeNearestWaypoint(List<GoldorWaypoint> waypoints, String playerName) {
-		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.world == null) return;
+		Minecraft client = Minecraft.getInstance();
+		if (client.level == null) return;
 
 		// Get the position of the player with the given name
-		Optional<Vec3d> posOptional = client.world.getPlayers().stream().filter(player -> player.getGameProfile().name().equals(playerName)).findAny().map(Entity::getEntityPos);
+		Optional<Vec3> posOptional = client.level.players().stream().filter(player -> player.getGameProfile().name().equals(playerName)).findAny().map(Entity::position);
 
 		// Find the nearest waypoint to the player and hide it
-		posOptional.flatMap(pos -> waypoints.stream().filter(GoldorWaypoint::shouldRender).min(Comparator.comparingDouble(waypoint -> waypoint.centerPos.squaredDistanceTo(pos)))).ifPresent(Waypoint::setFound);
+		posOptional.flatMap(pos -> waypoints.stream().filter(GoldorWaypoint::shouldRender).min(Comparator.comparingDouble(waypoint -> waypoint.centerPos.distanceToSqr(pos)))).ifPresent(Waypoint::setFound);
 		TerminalHud.INSTANCE.update();
 	}
 
@@ -163,7 +163,7 @@ public class GoldorWaypointsManager {
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	private static boolean onChatMessage(Text text, boolean overlay) {
+	private static boolean onChatMessage(Component text, boolean overlay) {
 		if (overlay || !shouldProcess()) return true;
 		String message = text.getString();
 
@@ -241,7 +241,7 @@ public class GoldorWaypointsManager {
 		public static final Codec<GoldorWaypoint> CODEC = RecordCodecBuilder.create(i -> i.group(
 				WaypointTargetKind.CODEC.fieldOf("kind").forGetter(w -> w.kind),
 				Codec.INT.fieldOf("phase").forGetter(customWaypoint -> customWaypoint.phase),
-				TextCodecs.CODEC.fieldOf("name").forGetter(NamedWaypoint::getName),
+				ComponentSerialization.CODEC.fieldOf("name").forGetter(NamedWaypoint::getName),
 				BlockPos.CODEC.fieldOf("pos").forGetter(customWaypoint -> customWaypoint.pos)
 		).apply(i, GoldorWaypoint::new));
 
@@ -250,7 +250,7 @@ public class GoldorWaypointsManager {
 		final WaypointTargetKind kind;
 		final int phase;
 
-		GoldorWaypoint(WaypointTargetKind kind, int phase, Text name, BlockPos pos) {
+		GoldorWaypoint(WaypointTargetKind kind, int phase, Component name, BlockPos pos) {
 			super(pos, name, TYPE_SUPPLIER, kind.colorComponents, 0.25F, true);
 			this.kind = kind;
 			this.phase = phase;
@@ -259,12 +259,12 @@ public class GoldorWaypointsManager {
 		/**
 		 * The different classes of waypoints
 		 */
-		enum WaypointTargetKind implements StringIdentifiable {
+		enum WaypointTargetKind implements StringRepresentable {
 			TERMINAL(0, 255, 0),
 			DEVICE(0, 0, 255),
 			LEVER(255, 255, 0);
 
-			private static final Codec<WaypointTargetKind> CODEC = StringIdentifiable.createBasicCodec(WaypointTargetKind::values);
+			private static final Codec<WaypointTargetKind> CODEC = StringRepresentable.fromValues(WaypointTargetKind::values);
 			private final float[] colorComponents;
 
 			WaypointTargetKind(int r, int g, int b) {
@@ -272,7 +272,7 @@ public class GoldorWaypointsManager {
 			}
 
 			@Override
-			public String asString() {
+			public String getSerializedName() {
 				return name().toLowerCase(Locale.ENGLISH);
 			}
 		}

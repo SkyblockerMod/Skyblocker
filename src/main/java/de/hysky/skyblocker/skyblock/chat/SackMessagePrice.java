@@ -8,18 +8,21 @@ import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.RegexUtils;
 import io.github.moulberry.repo.data.NEUItem;
-import it.unimi.dsi.fastutil.objects.*;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.HoverEvent.ShowText;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.PlainTextContent.Literal;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent.ShowText;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.contents.PlainTextContents.LiteralContents;
+import org.apache.commons.lang3.Strings;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,18 +45,18 @@ public class SackMessagePrice {
 	}
 
 	// This can probably be split into a few methods, but it'll require so much argument passing that it's going to be a mess anyhow.
-	private static Text onMessage(Text original, boolean overlay) {
+	private static Component onMessage(Component original, boolean overlay) {
 		if (overlay) return original;
 
 		String string = original.getString();
 		if (!string.startsWith("[Sacks] ")) return original;
 
-		MutableText copy = deepCopy(original); // We need to copy the original since it's completely immutable when constructed from a packet.
+		MutableComponent copy = deepCopy(original); // We need to copy the original since it's completely immutable when constructed from a packet.
 
-		ObjectArrayList<List<Text>> listList = getHoverEventSiblings(copy); // We use the copied one here so that any changes to the lists do not mutate the original
+		ObjectArrayList<List<Component>> listList = getHoverEventSiblings(copy); // We use the copied one here so that any changes to the lists do not mutate the original
 		if (listList.isEmpty()) return original;
 
-		for (List<Text> textList : listList) {
+		for (List<Component> textList : listList) {
 			Object2IntMap<String> items = parseItems(textList);
 			if (items.isEmpty()) {
 				LOGGER.warn("No items found in sack message: `{}`", original.getString());
@@ -89,34 +92,34 @@ public class SackMessagePrice {
 					}
 				}
 			}
-			textList.add(ScreenTexts.LINE_BREAK);
+			textList.add(CommonComponents.NEW_LINE);
 			textList.add(LineSmoothener.createSmoothLine());
-			textList.add(ScreenTexts.LINE_BREAK);
+			textList.add(CommonComponents.NEW_LINE);
 
-			textList.add(Text.empty()
-							.append(Text.literal("NPC Sell Price: ").formatted(Formatting.YELLOW))
+			textList.add(Component.empty()
+							.append(Component.literal("NPC Sell Price: ").withStyle(ChatFormatting.YELLOW))
 							.append(npcPrice > 0
 									? ItemTooltip.getCoinsMessage(npcPrice, 1)
-									: Text.literal("No data").formatted(Formatting.RED)));
-			textList.add(ScreenTexts.LINE_BREAK);
-			textList.add(Text.empty()
-							.append(Text.literal("Bazaar Buy Price: ").formatted(Formatting.GOLD))
+									: Component.literal("No data").withStyle(ChatFormatting.RED)));
+			textList.add(CommonComponents.NEW_LINE);
+			textList.add(Component.empty()
+							.append(Component.literal("Bazaar Buy Price: ").withStyle(ChatFormatting.GOLD))
 							.append(bazaarBuyPrice > 0
 									? ItemTooltip.getCoinsMessage(bazaarBuyPrice, 1)
-									: Text.literal("No data").formatted(Formatting.RED)));
-			textList.add(ScreenTexts.LINE_BREAK);
-			textList.add(Text.empty()
-							.append(Text.literal("Bazaar Sell Price: ").formatted(Formatting.GOLD))
+									: Component.literal("No data").withStyle(ChatFormatting.RED)));
+			textList.add(CommonComponents.NEW_LINE);
+			textList.add(Component.empty()
+							.append(Component.literal("Bazaar Sell Price: ").withStyle(ChatFormatting.GOLD))
 							.append(bazaarSellPrice > 0
 									? ItemTooltip.getCoinsMessage(bazaarSellPrice, 1)
-									: Text.literal("No data").formatted(Formatting.RED)));
+									: Component.literal("No data").withStyle(ChatFormatting.RED)));
 		}
 
 		return copy;
 	}
 
 	/**
-	 * Recursively creates a deep copy of a {@link Text} object.
+	 * Recursively creates a deep copy of a {@link Component} object.
 	 *
 	 * @param text The text to copy
 	 * @return A deep copy of the text, with the same content and style, but no references to the original text
@@ -124,25 +127,24 @@ public class SackMessagePrice {
 	 * 		However, there's a special case for hover events, which are cloned to ensure that the hover text is also a deep copy, and that's enough for our use case.
 	 * 		If you need a true deep copy, do not copy this directly and expect it to work.
 	 */
-	private static MutableText deepCopy(Text text) {
-		MutableText copy = text.copyContentOnly();
+	private static MutableComponent deepCopy(Component text) {
+		MutableComponent copy = text.plainCopy();
 
-		if (text.getStyle().getHoverEvent() instanceof ShowText(Text showText)) {
+		if (text.getStyle().getHoverEvent() instanceof ShowText(Component showText)) {
 			// DO NOT simplify to `text.getStyle().withHoverEvent(new ShowText(showText);`,
 			// Style.withHoverEvent(hoverEvent) checks if the given value is equal to the current one, and since our text clone is equal by value, it will not create a new style.
 			// This means the original hover event will still be used which is immutable, and our list modifications will fail with an UnsupportedOperationException in #onMessage.
-			copy.setStyle(Style.EMPTY.withHoverEvent(new ShowText(deepCopy(showText))).withParent(text.getStyle()));
+			copy.setStyle(Style.EMPTY.withHoverEvent(new ShowText(deepCopy(showText))).applyTo(text.getStyle()));
 		} else copy.setStyle(text.getStyle());
 
-		for (Text sibling : text.getSiblings()) {
+		for (Component sibling : text.getSiblings()) {
 			copy.append(deepCopy(sibling));
 		}
 
 		return copy;
 	}
 
-	@Nullable
-	private static String getNeuId(@NotNull String itemName) {
+	private static @Nullable String getNeuId(String itemName) {
 		return NEURepoManager.getItemByName(itemName)
 				.stream()
 				.findFirst()
@@ -153,13 +155,12 @@ public class SackMessagePrice {
 				});
 	}
 
-	@NotNull
-	private static ObjectArrayList<List<Text>> getHoverEventSiblings(@NotNull Text text) {
-		ObjectArrayList<List<Text>> listList = new ObjectArrayList<>();
-		for (Text sibling : text.getSiblings()) {
-			if (sibling.getStyle().getHoverEvent() instanceof ShowText(Text hoverText)
-					&& hoverText.getContent() instanceof Literal(String rootContent) // Only match the root content since we only need the root content.
-					&& StringUtils.startsWithAny(rootContent, "Added items:", "Removed items:")) {
+	private static ObjectArrayList<List<Component>> getHoverEventSiblings(Component text) {
+		ObjectArrayList<List<Component>> listList = new ObjectArrayList<>();
+		for (Component sibling : text.getSiblings()) {
+			if (sibling.getStyle().getHoverEvent() instanceof ShowText(Component hoverText)
+					&& hoverText.getContents() instanceof LiteralContents(String rootContent) // Only match the root content since we only need the root content.
+					&& Strings.CS.startsWithAny(rootContent, "Added items:", "Removed items:")) {
 				listList.add(hoverText.getSiblings());
 			}
 		}
@@ -172,8 +173,7 @@ public class SackMessagePrice {
 	 * @return A map of item names to their counts.
 	 */
 	@SuppressWarnings("ConstantValue") // It's much easier to read this way.
-	@NotNull
-	private static Object2IntArrayMap<String> parseItems(@NotNull List<Text> texts) {
+	private static Object2IntArrayMap<String> parseItems(List<Component> texts) {
 		/*
 			The hover message's structure is as follows:
 			- Added items:
@@ -189,8 +189,8 @@ public class SackMessagePrice {
 		Object2IntArrayMap<String> items = new Object2IntArrayMap<>();
 		Integer lastCount = null;
 		String lastItemName = null;
-		for (Text text : texts) {
-			if (text.getContent() instanceof Literal(String content)) { // Only match the root content since we only need the root content.
+		for (Component text : texts) {
+			if (text.getContents() instanceof LiteralContents(String content)) { // Only match the root content since we only need the root content.
 				if (content.equals("\n\n")) break; // End of items list, we can stop parsing here - NOTE: This has to come before the isBlank check, otherwise it will be skipped.
 				if (content.isBlank()) continue; // This includes \n lines, which we don't want to try and parse as item names or counts
 

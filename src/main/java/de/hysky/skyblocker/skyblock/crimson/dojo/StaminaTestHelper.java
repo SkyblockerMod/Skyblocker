@@ -2,28 +2,27 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3i;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public class StaminaTestHelper {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final int WALL_THRESHOLD_VALUE = 13;
 	private static final int WALL_HEIGHT = 5;
 	private static final float[] INCOMING_COLOR = new float[]{0f, 1f, 0f, 0f};
 	private static final float[] OUTGOING_COLOR = new float[]{1f, 0.64f, 0f, 0f};
 
-	private static final List<Box> wallHoles = new ArrayList<>();
-	private static final List<Box> lastHoles = new ArrayList<>();
-	private static final Map<Box, HoleDirection> holeDirections = new HashMap<>();
+	private static final List<AABB> wallHoles = new ArrayList<>();
+	private static final List<AABB> lastHoles = new ArrayList<>();
+	private static final Map<AABB, HoleDirection> holeDirections = new HashMap<>();
 	private static BlockPos middleBase;
 
 	private enum HoleDirection {
@@ -51,19 +50,19 @@ public class StaminaTestHelper {
 			return;
 		}
 		//find walls
-		List<Box> walls = findWalls(currentBottomWallLocations);
+		List<AABB> walls = findWalls(currentBottomWallLocations);
 
 		//find air then holes and add whole to list
 		lastHoles.clear();
 		lastHoles.addAll(wallHoles);
 		wallHoles.clear();
-		for (Box wall : walls) {
+		for (AABB wall : walls) {
 			wallHoles.addAll(findHolesInBox(wall));
 		}
 		// get direction for the holes
-		Map<Box, HoleDirection> lastHoleDirections = new HashMap<>(holeDirections);
+		Map<AABB, HoleDirection> lastHoleDirections = new HashMap<>(holeDirections);
 		holeDirections.clear();
-		for (Box hole : wallHoles) {
+		for (AABB hole : wallHoles) {
 			HoleDirection holeDirection = getWholeDirection(hole);
 			if (holeDirection == HoleDirection.UNCHANGED) {
 				holeDirections.put(hole, lastHoleDirections.get(hole));
@@ -79,18 +78,18 @@ public class StaminaTestHelper {
 	 * @return list of blocks that make up the bottom of the walls
 	 */
 	private static List<BlockPos> findWallBlocks() {
-		if (CLIENT == null || CLIENT.player == null || CLIENT.world == null) {
+		if (CLIENT == null || CLIENT.player == null || CLIENT.level == null) {
 			return null;
 		}
-		BlockPos playerPos = CLIENT.player.getBlockPos();
+		BlockPos playerPos = CLIENT.player.blockPosition();
 		//find the center first before starting to look for walls
 		if (middleBase == null) {
 			for (int x = playerPos.getX() - 10; x < playerPos.getX() + 10; x++) {
 				for (int y = playerPos.getY() - 5; y < playerPos.getY(); y++) {
 					for (int z = playerPos.getZ() - 10; z < playerPos.getZ() + 10; z++) {
 						BlockPos pos = new BlockPos(x, y, z);
-						BlockState state = CLIENT.world.getBlockState(pos);
-						if (state.isOf(Blocks.CHISELED_STONE_BRICKS)) {
+						BlockState state = CLIENT.level.getBlockState(pos);
+						if (state.is(Blocks.CHISELED_STONE_BRICKS)) {
 							middleBase = pos;
 							return null;
 						}
@@ -103,7 +102,7 @@ public class StaminaTestHelper {
 		for (int x = middleBase.getX() - 15; x < middleBase.getX() + 15; x++) {
 			for (int z = middleBase.getZ() - 15; z < middleBase.getZ() + 15; z++) {
 				BlockPos pos = new BlockPos(x, middleBase.getY() + 1, z);
-				BlockState state = CLIENT.world.getBlockState(pos);
+				BlockState state = CLIENT.level.getBlockState(pos);
 				//find the bottom of walls
 				if (!state.isAir()) {
 					currentBottomWallLocations.add(pos);
@@ -113,7 +112,7 @@ public class StaminaTestHelper {
 		return currentBottomWallLocations;
 	}
 
-	private static List<Box> findWalls(List<BlockPos> currentBottomWallLocations) {
+	private static List<AABB> findWalls(List<BlockPos> currentBottomWallLocations) {
 		Int2ObjectOpenHashMap<List<BlockPos>> possibleWallsX = new Int2ObjectOpenHashMap<>();
 		Int2ObjectOpenHashMap<List<BlockPos>> possibleWallsZ = new Int2ObjectOpenHashMap<>();
 		for (BlockPos block : currentBottomWallLocations) {
@@ -146,7 +145,7 @@ public class StaminaTestHelper {
 		}
 
 		//final find the maximum values for each wall to output a box for them
-		List<Box> wallBoxes = new ArrayList<>();
+		List<AABB> wallBoxes = new ArrayList<>();
 		for (List<BlockPos> wall : walls) {
 			BlockPos minPos = wall.getFirst();
 			BlockPos maxPos = wall.getFirst();
@@ -168,19 +167,19 @@ public class StaminaTestHelper {
 			//expand wall to top
 			maxPos = new BlockPos(maxPos.getX(), maxPos.getY() + WALL_HEIGHT, maxPos.getZ());
 
-			wallBoxes.add(Box.enclosing(minPos, maxPos));
+			wallBoxes.add(AABB.encapsulatingFullBlocks(minPos, maxPos));
 		}
 
 		return wallBoxes;
 	}
 
-	private static List<Box> findHolesInBox(Box box) {
-		List<Box> holes = new ArrayList<>();
-		if (CLIENT == null || CLIENT.player == null || CLIENT.world == null) {
+	private static List<AABB> findHolesInBox(AABB box) {
+		List<AABB> holes = new ArrayList<>();
+		if (CLIENT == null || CLIENT.player == null || CLIENT.level == null) {
 			return holes;
 		}
 		//get the direction vector
-		Vec3i wallDirection = box.getLengthX() == 1 ? new Vec3i(0, 0, 1) : new Vec3i(1, 0, 0);
+		Vec3i wallDirection = box.getXsize() == 1 ? new Vec3i(0, 0, 1) : new Vec3i(1, 0, 0);
 		//find the corners of boxes (only need 3)
 		List<BlockPos> topLeft = new ArrayList<>();
 		List<BlockPos> topRight = new ArrayList<>();
@@ -189,15 +188,15 @@ public class StaminaTestHelper {
 			for (int x = (int) box.minX; x < box.maxX; x++) {
 				for (int y = (int) box.minY; y < box.maxY; y++) {
 					BlockPos pos = new BlockPos(x, y, z);
-					BlockState state = CLIENT.world.getBlockState(pos);
+					BlockState state = CLIENT.level.getBlockState(pos);
 					if (!state.isAir()) {
 						//do not check non-air
 						continue;
 					}
-					boolean top = y == box.maxY - 1 || !CLIENT.world.getBlockState(pos.add(0, 1, 0)).isAir();
-					boolean bottom = !CLIENT.world.getBlockState(pos.add(0, -1, 0)).isAir();
-					boolean left = !CLIENT.world.getBlockState(pos.add(wallDirection)).isAir();
-					boolean right = !CLIENT.world.getBlockState(pos.subtract(wallDirection)).isAir();
+					boolean top = y == box.maxY - 1 || !CLIENT.level.getBlockState(pos.offset(0, 1, 0)).isAir();
+					boolean bottom = !CLIENT.level.getBlockState(pos.offset(0, -1, 0)).isAir();
+					boolean left = !CLIENT.level.getBlockState(pos.offset(wallDirection)).isAir();
+					boolean right = !CLIENT.level.getBlockState(pos.subtract(wallDirection)).isAir();
 					if (top) {
 						if (left) {
 							topLeft.add(pos);
@@ -219,32 +218,32 @@ public class StaminaTestHelper {
 				//if corners can not be found end looking
 				break;
 			}
-			Box hole = Box.enclosing(topLeft.get(i), topRight.get(i));
-			hole = hole.stretch(0, bottomLeft.get(i).getY() - topLeft.get(i).getY(), 0);
+			AABB hole = AABB.encapsulatingFullBlocks(topLeft.get(i), topRight.get(i));
+			hole = hole.expandTowards(0, bottomLeft.get(i).getY() - topLeft.get(i).getY(), 0);
 			holes.add(hole);
 		}
 		return holes;
 	}
 
-	private static HoleDirection getWholeDirection(Box hole) {
+	private static HoleDirection getWholeDirection(AABB hole) {
 		//the value has not changed since last time
 		if (lastHoles.contains(hole)) {
 			return HoleDirection.UNCHANGED;
 		}
 		//check each direction to work out which way the whole is going
-		Box posX = hole.offset(1, 0, 0);
+		AABB posX = hole.move(1, 0, 0);
 		if (lastHoles.contains(posX)) {
 			return HoleDirection.POSITIVE_X;
 		}
-		Box negX = hole.offset(-1, 0, 0);
+		AABB negX = hole.move(-1, 0, 0);
 		if (lastHoles.contains(negX)) {
 			return HoleDirection.NEGATIVE_X;
 		}
-		Box posZ = hole.offset(0, 0, 1);
+		AABB posZ = hole.move(0, 0, 1);
 		if (lastHoles.contains(posZ)) {
 			return HoleDirection.POSITIVE_Z;
 		}
-		Box negZ = hole.offset(0, 0, -1);
+		AABB negZ = hole.move(0, 0, -1);
 		if (lastHoles.contains(negZ)) {
 			return HoleDirection.NEGATIVE_Z;
 		}
@@ -257,14 +256,14 @@ public class StaminaTestHelper {
 		if (wallHoles.isEmpty() || CLIENT == null || CLIENT.player == null) {
 			return;
 		}
-		BlockPos playerPos = CLIENT.player.getBlockPos();
-		for (Box hole : wallHoles) {
+		BlockPos playerPos = CLIENT.player.blockPosition();
+		for (AABB hole : wallHoles) {
 			float[] color = isHoleIncoming(hole, holeDirections.get(hole), playerPos) ? INCOMING_COLOR : OUTGOING_COLOR;
 			collector.submitFilledBox(hole, color, 0.3f, false);
 		}
 	}
 
-	private static boolean isHoleIncoming(Box holePos, HoleDirection holeDirection, BlockPos playerPos) {
+	private static boolean isHoleIncoming(AABB holePos, HoleDirection holeDirection, BlockPos playerPos) {
 		return switch (holeDirection) {
 			case POSITIVE_X -> playerPos.getX() < holePos.minX;
 			case POSITIVE_Z -> playerPos.getZ() < holePos.minZ;

@@ -11,20 +11,21 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * Helper for camping Blood Mobs in the dungeon Blood Room.
@@ -77,12 +78,12 @@ public class BloodCampHelper {
 	private static final float[] BOX_COLOR = {1f, 0f, 0f};
 	private static final float[] LINE_COLOR = {1f, 1f, 0f};
 
-	private static final Set<ZombieEntity> WATCHERS = new HashSet<>();
-	private static final Map<ArmorStandEntity, TrackedMob> MOBS = new HashMap<>();
+	private static final Set<Zombie> WATCHERS = new HashSet<>();
+	private static final Map<ArmorStand, TrackedMob> MOBS = new HashMap<>();
 	/**
 	 * Newly loaded zombies to check for watcher status after a tick.
 	 */
-	private static final Object2IntMap<ZombieEntity> PENDING_WATCHERS = new Object2IntOpenHashMap<>();
+	private static final Object2IntMap<Zombie> PENDING_WATCHERS = new Object2IntOpenHashMap<>();
 	/**
 	 * Counts how many mobs have started moving and received a predicted position.
 	 * Used to determine which mobs are part of the first wave.
@@ -99,19 +100,19 @@ public class BloodCampHelper {
 		ClientPlayConnectionEvents.DISCONNECT.register((h, c) -> reset());
 	}
 
-	private static void onEntityLoad(Entity entity, ClientWorld world) {
+	private static void onEntityLoad(Entity entity, ClientLevel world) {
 		if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().dungeons.bloodCampHelper) return;
-		if (entity instanceof ZombieEntity zombie) {
+		if (entity instanceof Zombie zombie) {
 			PENDING_WATCHERS.put(zombie, 1);
 		}
 	}
 
-	private static void onEntityUnload(Entity entity, ClientWorld world) {
+	private static void onEntityUnload(Entity entity, ClientLevel world) {
 		if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().dungeons.bloodCampHelper) return;
-		if (entity instanceof ZombieEntity zombie) {
+		if (entity instanceof Zombie zombie) {
 			WATCHERS.remove(zombie);
 			PENDING_WATCHERS.removeInt(zombie);
-		} else if (entity instanceof ArmorStandEntity stand) {
+		} else if (entity instanceof ArmorStand stand) {
 			MOBS.remove(stand);
 		}
 	}
@@ -124,9 +125,9 @@ public class BloodCampHelper {
 		PENDING_WATCHERS.replaceAll((z, ticks) -> ticks - 1);
 		PENDING_WATCHERS.object2IntEntrySet().removeIf(e -> {
 			if (e.getIntValue() <= 0) {
-				ZombieEntity zombie = e.getKey();
-				if (zombie.hasStackEquipped(EquipmentSlot.HEAD)) {
-					String texture = ItemUtils.getHeadTexture(zombie.getEquippedStack(EquipmentSlot.HEAD));
+				Zombie zombie = e.getKey();
+				if (zombie.hasItemInSlot(EquipmentSlot.HEAD)) {
+					String texture = ItemUtils.getHeadTexture(zombie.getItemBySlot(EquipmentSlot.HEAD));
 					if (WATCHER_SKINS.contains(texture)) {
 						WATCHERS.add(zombie);
 					}
@@ -137,15 +138,15 @@ public class BloodCampHelper {
 		});
 
 		WATCHERS.removeIf(watcher -> !watcher.isAlive());
-		for (ZombieEntity watcher : WATCHERS) {
+		for (Zombie watcher : WATCHERS) {
 			if (!watcher.isAlive()) continue;
-			var stands = watcher.getEntityWorld().getEntitiesByClass(
-					ArmorStandEntity.class,
-					watcher.getBoundingBox().expand(2),
-					stand -> stand.hasStackEquipped(EquipmentSlot.HEAD) && !MOBS.containsKey(stand)
+			var stands = watcher.level().getEntitiesOfClass(
+					ArmorStand.class,
+					watcher.getBoundingBox().inflate(2),
+					stand -> stand.hasItemInSlot(EquipmentSlot.HEAD) && !MOBS.containsKey(stand)
 			);
-			for (ArmorStandEntity stand : stands) {
-				String texture = ItemUtils.getHeadTexture(stand.getEquippedStack(EquipmentSlot.HEAD));
+			for (ArmorStand stand : stands) {
+				String texture = ItemUtils.getHeadTexture(stand.getItemBySlot(EquipmentSlot.HEAD));
 				if (BLOOD_MOB_SKINS.contains(texture)) {
 					MOBS.put(stand, new TrackedMob(stand));
 				}
@@ -154,7 +155,7 @@ public class BloodCampHelper {
 
 		MOBS.entrySet().removeIf(e -> !e.getKey().isAlive());
 		for (TrackedMob mob : MOBS.values()) {
-			mob.update(mob.entity.getEntityPos(), now);
+			mob.update(mob.entity.position(), now);
 		}
 	}
 
@@ -162,9 +163,9 @@ public class BloodCampHelper {
 		if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().dungeons.bloodCampHelper) return;
 		for (TrackedMob mob : MOBS.values()) {
 			if (mob.predictedPos != null) {
-				collector.submitOutlinedBox(mob.entity.getBoundingBox().offset(0f, 2f, 0f), LINE_COLOR, 2, true);
-				collector.submitLinesFromPoints(new Vec3d[]{mob.entity.getEntityPos().add(0f, 2f, 0f), mob.predictedPos.add(0f, 2f, 0f)}, LINE_COLOR, 0.5f, 2f, true);
-				Box box = new Box(mob.predictedPos.x - 0.5, mob.predictedPos.y + 2, mob.predictedPos.z - 0.5,
+				collector.submitOutlinedBox(mob.entity.getBoundingBox().move(0f, 2f, 0f), LINE_COLOR, 2, true);
+				collector.submitLinesFromPoints(new Vec3[]{mob.entity.position().add(0f, 2f, 0f), mob.predictedPos.add(0f, 2f, 0f)}, LINE_COLOR, 0.5f, 2f, true);
+				AABB box = new AABB(mob.predictedPos.x - 0.5, mob.predictedPos.y + 2, mob.predictedPos.z - 0.5,
 						mob.predictedPos.x + 0.5, mob.predictedPos.y + 4, mob.predictedPos.z + 0.5);
 				collector.submitOutlinedBox(box, BOX_COLOR, 5, true);
 			}
@@ -179,30 +180,30 @@ public class BloodCampHelper {
 	}
 
 	private static class TrackedMob {
-		final ArmorStandEntity entity;
-		final Vec3d startPos;
+		final ArmorStand entity;
+		final Vec3 startPos;
 		long startTime = -1;
-		Vec3d lastPos;
+		Vec3 lastPos;
 		long lastTime;
 		boolean firstWave;
 		static final int DELTA_SAMPLES = 5;
-		final Deque<Vec3d> deltas = new ArrayDeque<>();
+		final Deque<Vec3> deltas = new ArrayDeque<>();
 		boolean inMotion = false;
-		Vec3d predictedPos;
+		@Nullable Vec3 predictedPos;
 
-		TrackedMob(ArmorStandEntity entity) {
+		TrackedMob(ArmorStand entity) {
 			this.entity = entity;
-			this.startPos = entity.getEntityPos();
+			this.startPos = entity.position();
 			this.lastPos = this.startPos;
 			this.lastTime = System.currentTimeMillis();
 		}
 
-		void update(Vec3d currentPos, long now) {
+		void update(Vec3 currentPos, long now) {
 			long dt = now - lastTime;
 			lastTime = now;
-			Vec3d delta = currentPos.subtract(lastPos);
+			Vec3 delta = currentPos.subtract(lastPos);
 			lastPos = currentPos;
-			inMotion = delta.lengthSquared() > 0 && dt > 0;
+			inMotion = delta.lengthSqr() > 0 && dt > 0;
 			if (inMotion) {
 				if (startTime < 0) {
 					startTime = now - dt;
@@ -213,17 +214,17 @@ public class BloodCampHelper {
 				deltas.addLast(delta);
 			}
 			if (deltas.size() == DELTA_SAMPLES && predictedPos == null) {
-				Vec3d totalDelta = Vec3d.ZERO;
-				for (Vec3d d : deltas) {
+				Vec3 totalDelta = Vec3.ZERO;
+				for (Vec3 d : deltas) {
 					totalDelta = totalDelta.add(d);
 				}
-				Vec3d dir = totalDelta.normalize();
+				Vec3 dir = totalDelta.normalize();
 
 				firstWave = mobsPredicted < 4;
 				mobsPredicted++;
 
 				double distance = firstWave ? 15.6 + 0.5 : 11.4 + 0.5;
-				predictedPos = startPos.add(dir.multiply(distance));
+				predictedPos = startPos.add(dir.scale(distance));
 			}
 		}
 	}

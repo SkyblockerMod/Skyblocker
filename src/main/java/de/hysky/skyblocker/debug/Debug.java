@@ -8,8 +8,8 @@ import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.InGameHudInvoker;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.GuiInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -23,22 +23,21 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtHelper;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.storage.NbtWriteView;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
-import net.minecraft.util.ErrorReporter;
-import net.minecraft.world.biome.Biome;
-
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.storage.TagValueOutput;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.MixinEnvironment;
@@ -72,8 +71,8 @@ public class Debug {
 	public static void init() {
 		if (!debugEnabled()) return;
 		SnapshotDebug.init();
-		KeyBinding dumpNearbyEntitiesKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
-		KeyBinding dumpHoveredItemKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
+		KeyMapping dumpNearbyEntitiesKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
+		KeyMapping dumpHoveredItemKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				literal(SkyblockerMod.NAMESPACE).then(literal("debug")
 						.then(dumpPlayersCommand())
@@ -89,32 +88,32 @@ public class Debug {
 				)
 		));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (client.player == null || client.world == null) return;
-			if (dumpNearbyEntitiesKey.wasPressed() && !keyDown) {
-				client.world.getOtherEntities(client.player, client.player.getBoundingBox().expand(SkyblockerConfigManager.get().debug.dumpRange))
+			if (client.player == null || client.level == null) return;
+			if (dumpNearbyEntitiesKey.consumeClick() && !keyDown) {
+				client.level.getEntities(client.player, client.player.getBoundingBox().inflate(SkyblockerConfigManager.get().debug.dumpRange))
 						.stream()
 						.map(entity -> {
-							NbtWriteView writeView = NbtWriteView.create(new ErrorReporter.Logging(LOGGER), Utils.getRegistryWrapperLookup());
-							entity.writeData(writeView);
+							TagValueOutput writeView = TagValueOutput.createWithContext(new ProblemReporter.ScopedCollector(LOGGER), Utils.getRegistryWrapperLookup());
+							entity.saveWithoutId(writeView);
 
-							return writeView.getNbt();
+							return writeView.buildResult();
 						})
-						.map(NbtHelper::toPrettyPrintedText)
-						.forEach(text -> client.player.sendMessage(text, false));
+						.map(NbtUtils::toPrettyComponent)
+						.forEach(text -> client.player.displayClientMessage(text, false));
 				keyDown = true;
-			} else if (!dumpNearbyEntitiesKey.wasPressed() && keyDown) {
+			} else if (!dumpNearbyEntitiesKey.consumeClick() && keyDown) {
 				keyDown = false;
 			}
 		});
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-			if (!(screen instanceof HandledScreen<?> handledScreen)) return;
+			if (!(screen instanceof AbstractContainerScreen<?> handledScreen)) return;
 			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, keyInput) -> {
-				Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
-				if (dumpHoveredItemKey.matchesKey(keyInput) && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
-					if (!keyInput.hasShift()) {
-						client.player.sendMessage(Constants.PREFIX.get().append("Hovered Item: ").append(SkyblockerConfigManager.get().debug.dumpFormat.format(focusedSlot.getStack())), false);
+				Slot focusedSlot = ((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot();
+				if (dumpHoveredItemKey.matches(keyInput) && client.player != null && focusedSlot != null && focusedSlot.hasItem()) {
+					if (!keyInput.hasShiftDown()) {
+						client.player.displayClientMessage(Constants.PREFIX.get().append("Hovered Item: ").append(SkyblockerConfigManager.get().debug.dumpFormat.format(focusedSlot.getItem())), false);
 					} else {
-						client.player.sendMessage(Constants.PREFIX.get().append("Held Item NW Calcs: ").append(Text.literal(SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getStack()).calculations()).getOrThrow()))), false);
+						client.player.displayClientMessage(Constants.PREFIX.get().append("Held Item NW Calcs: ").append(Component.literal(SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getItem()).calculations()).getOrThrow()))), false);
 					}
 				}
 			});
@@ -124,7 +123,7 @@ public class Debug {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> dumpPlayersCommand() {
 		return literal("dumpPlayers")
 				.executes(context -> {
-					context.getSource().getWorld().getPlayers().forEach(player -> context.getSource().sendFeedback(Text.of("'" + player.getName().getString() + "'")));
+					context.getSource().getWorld().players().forEach(player -> context.getSource().sendFeedback(Component.nullToEmpty("'" + player.getName().getString() + "'")));
 					return Command.SINGLE_SUCCESS;
 				});
 	}
@@ -133,7 +132,7 @@ public class Debug {
 		return literal("toggleShowingInvisibleArmorStands")
 				.executes(context -> {
 					SkyblockerConfigManager.update(config -> config.debug.showInvisibleArmorStands = !config.debug.showInvisibleArmorStands);
-					context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.debug.toggledShowingInvisibleArmorStands", SkyblockerConfigManager.get().debug.showInvisibleArmorStands)));
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.debug.toggledShowingInvisibleArmorStands", SkyblockerConfigManager.get().debug.showInvisibleArmorStands)));
 					return Command.SINGLE_SUCCESS;
 				});
 	}
@@ -142,7 +141,7 @@ public class Debug {
 		return literal("toggleWebSocketDebug")
 				.executes(context -> {
 					SkyblockerConfigManager.update(config -> config.debug.webSocketDebug = !SkyblockerConfigManager.get().debug.webSocketDebug);
-					context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.debug.toggledWebSocketDebug", SkyblockerConfigManager.get().debug.webSocketDebug)));
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.debug.toggledWebSocketDebug", SkyblockerConfigManager.get().debug.webSocketDebug)));
 					return Command.SINGLE_SUCCESS;
 				});
 	}
@@ -150,13 +149,13 @@ public class Debug {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> dumpArmorStandHeadTextures() {
 		return literal("dumpArmorStandHeadTextures")
 				.executes(context -> {
-					List<ArmorStandEntity> armorStands = context.getSource().getWorld().getEntitiesByClass(ArmorStandEntity.class, context.getSource().getPlayer().getBoundingBox().expand(8d), EntityPredicates.NOT_MOUNTED);
+					List<ArmorStand> armorStands = context.getSource().getWorld().getEntitiesOfClass(ArmorStand.class, context.getSource().getPlayer().getBoundingBox().inflate(8d), EntitySelector.ENTITY_NOT_BEING_RIDDEN);
 
-					for (ArmorStandEntity armorStand : armorStands) {
+					for (ArmorStand armorStand : armorStands) {
 						Iterable<ItemStack> equippedItems = ItemUtils.getArmor(armorStand);
 
 						for (ItemStack stack : equippedItems) {
-							ItemUtils.getHeadTextureOptional(stack).ifPresent(texture -> context.getSource().sendFeedback(Text.of(texture)));
+							ItemUtils.getHeadTextureOptional(stack).ifPresent(texture -> context.getSource().sendFeedback(Component.nullToEmpty(texture)));
 						}
 					}
 
@@ -168,14 +167,14 @@ public class Debug {
 		return literal("dumpBiome")
 				.executes(context -> {
 					FabricClientCommandSource source = context.getSource();
-					RegistryEntry<Biome> biome = source.getWorld().getBiome(source.getPlayer().getBlockPos());
+					Holder<Biome> biome = source.getWorld().getBiome(source.getPlayer().blockPosition());
 
 					if (biome != null && biome.value() != null) {
-						String biomeData = Biome.CODEC.encodeStart(JsonOps.INSTANCE, biome.value())
+						String biomeData = Biome.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, biome.value())
 								.map(JsonElement::toString)
 								.setPartial("")
 								.getPartialOrThrow();
-						source.sendFeedback(Constants.PREFIX.get().append(Text.literal(String.format("Biome ID: %s, Data: %s", biome.getIdAsString(), biomeData))));
+						source.sendFeedback(Constants.PREFIX.get().append(Component.literal(String.format("Biome ID: %s, Data: %s", biome.getRegisteredName(), biomeData))));
 					}
 
 					return Command.SINGLE_SUCCESS;
@@ -186,10 +185,10 @@ public class Debug {
 		return literal("dumpActionBar")
 				.executes(context -> {
 					FabricClientCommandSource source = context.getSource();
-					Text actionBar = ((InGameHudInvoker) (source.getClient().inGameHud)).getOverlayMessage();
+					Component actionBar = ((GuiInvoker) (source.getClient().gui)).getOverlayMessageString();
 
 					if (actionBar != null) {
-						Text pretty = NbtHelper.toPrettyPrintedText(TextCodecs.CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(NbtOps.INSTANCE), actionBar).getOrThrow());
+						Component pretty = NbtUtils.toPrettyComponent(ComponentSerialization.CODEC.encodeStart(Utils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), actionBar).getOrThrow());
 						source.sendFeedback(Constants.PREFIX.get().append("Action Bar: ").append(pretty));
 					}
 
@@ -209,17 +208,17 @@ public class Debug {
 	public enum DumpFormat {
 		JSON {
 			@Override
-			public Text format(ItemStack stack) {
-				return Text.literal(SkyblockerMod.GSON_COMPACT.toJson(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(JsonOps.INSTANCE), stack).getOrThrow()));
+			public Component format(ItemStack stack) {
+				return Component.literal(SkyblockerMod.GSON_COMPACT.toJson(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(Utils.getRegistryWrapperLookup().createSerializationContext(JsonOps.INSTANCE), stack).getOrThrow()));
 			}
 		},
 		SNBT {
 			@Override
-			public Text format(ItemStack stack) {
-				return NbtHelper.toPrettyPrintedText(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(MinecraftClient.getInstance().player.getRegistryManager().getOps(NbtOps.INSTANCE), stack).getOrThrow());
+			public Component format(ItemStack stack) {
+				return NbtUtils.toPrettyComponent(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(Minecraft.getInstance().player.registryAccess().createSerializationContext(NbtOps.INSTANCE), stack).getOrThrow());
 			}
 		};
 
-		public abstract Text format(ItemStack stack);
+		public abstract Component format(ItemStack stack);
 	}
 }

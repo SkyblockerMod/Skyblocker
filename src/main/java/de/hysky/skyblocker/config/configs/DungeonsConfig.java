@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.util.Formatting;
-
 import java.awt.Color;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 
 public class DungeonsConfig {
 	public boolean fancyPartyFinder = false;
@@ -54,6 +53,8 @@ public class DungeonsConfig {
 	public TerminalHud terminalHud = new TerminalHud();
 
 	public SecretWaypoints secretWaypoints = new SecretWaypoints();
+
+	public SecretSync secretSync = new SecretSync();
 
 	public MimicMessage mimicMessage = new MimicMessage();
 
@@ -213,6 +214,8 @@ public class DungeonsConfig {
 
 		public boolean enableWitherWaypoints = true;
 
+		public boolean enableRedstoneKeyWaypoints = true;
+
 		public boolean enableLeverWaypoints = true;
 
 		public boolean enableFairySoulWaypoints = true;
@@ -226,6 +229,14 @@ public class DungeonsConfig {
 		public boolean enablePrinceWaypoints = true;
 
 		public boolean enableDefaultWaypoints = true;
+	}
+
+	public static class SecretSync {
+		public boolean receiveRoomMatch = true;
+
+		public boolean receiveRoomSecretCount = true;
+
+		public boolean hideReceivedWaypoints = true;
 	}
 
 	public static class MimicMessage {
@@ -254,7 +265,7 @@ public class DungeonsConfig {
 
 			@Override
 			public String toString() {
-				return I18n.translate("skyblocker.config.dungeons.doorHighlight.doorHighlightType.type." + name());
+				return I18n.get("skyblocker.config.dungeons.doorHighlight.doorHighlightType.type." + name());
 			}
 		}
 	}
@@ -302,13 +313,13 @@ public class DungeonsConfig {
 
 		public int neutralThreshold = 1000;
 
-		public Formatting neutralColor = Formatting.DARK_GRAY;
+		public ChatFormatting neutralColor = ChatFormatting.DARK_GRAY;
 
-		public Formatting profitColor = Formatting.DARK_GREEN;
+		public ChatFormatting profitColor = ChatFormatting.DARK_GREEN;
 
-		public Formatting lossColor = Formatting.RED;
+		public ChatFormatting lossColor = ChatFormatting.RED;
 
-		public Formatting incompleteColor = Formatting.BLUE;
+		public ChatFormatting incompleteColor = ChatFormatting.BLUE;
 	}
 
 }

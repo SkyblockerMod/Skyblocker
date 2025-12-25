@@ -1,3 +1,106 @@
+# Release 5.11.0
+
+## Highlight
+* Add support for new Garden tools and crops
+* Greatly improve Chat Rules
+  * Output messages can now show as toast notifications
+  * Output messages are now separate from the replacement message
+  * Formatting in output messages now shows in the preview
+  * All existing chat rules will carry over, but some may need to be changed.
+  * Chat Rules can now be accessed with `/skyblocker chatRules`
+* Add special effects for rare slayer items
+* Add an option to hide Pickobulus Helper when Pickobulus is on cooldown
+* Add a separate option for the Pickobulus Hud Widget
+* Add a separate toggle for Enchantment Abbreviations
+* Update Minion Quiz Question Answer
+* Update Enchantment Abbreviations
+* Fix Sacks Item Value
+* Fix Pickobulus Helper not working in Glacite Mineshafts
+* Fix Special Zealot glow lag
+* Fix Barrier placeholders not showing the proper item name
+* Fix Dungeons special effects not showing sometimes on items from Croesus
+* Use Fabric Events for Fancy Status Bars
+  * Fixes a mod compatability issue
+
+## What's Changed
+* Fix Sacks Item Value by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1935
+* Pickobulus fixes by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1937
+* Zealot lag fix by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1939
+* Pickobulus HUD Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1950
+* Refresh SearchableGridWidget scroll when searching by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1953
+* 0.24.0 Farming Stuff by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1948
+* Build Beta on Push For Backport Branches by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1952
+* Fix Barrier Placeholders by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1949
+* use HudElementRegistry instead of mixins by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1954
+* Update enchantment abbreviations pt. 2 by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/1947
+* Separate Enchantment Level and Abbreviation Adders by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1956
+* hide empty quick craft slots by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1931
+* Minor Farming Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1955
+* Add rosewater flask by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1960
+* annotate ItemStackMixin and reset fields on component change by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1958
+* missing farming tools by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1962
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1951
+* Chat rules improvements by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1829
+* Update DungeonsSpecialEffects.java by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1943
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.10.0+1.21.10...v5.11.0+1.21.10
+
+___
+
+# Release 5.10.0
+
+## Highlight
+* Add Room and Secret Syncing
+  * Rooms opened and secrets found by other players will sync to everybody in the run with Skyblocker.
+* Add Item Value Breakdown Popup
+  * Press I while hovering over an item to view a breakdown of its value.
+* Add Anvil Helper
+* Add Pickobulus Helper
+* Add support for Greenhouse crops
+* Improve Etherwarp Teleport Overlay
+* Update Enchant Abbreviations
+* Fix Inventory Search bugs
+* Fix Redstone Key Secrets
+* Fix Trap Room names
+* Fix Slayer XP Buff perk not stacking with Aura's Work Smarter perk
+* Fix Moby Duck not being a protected consumable
+* Fix rarely saving original item names as custom names
+* Fix Null Pointer Exception with PlainTextComponents
+* Fix Builder's Wand Block Preview Bug
+
+## What's Changed
+* Avoid Star Imports .editorconfig by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1902
+* Minor Config Description Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1908
+* Fix builder wand block preview bug by @TheTerrariaGuy in https://github.com/SkyblockerMod/Skyblocker/pull/1897
+* More Mayor Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1903
+* do not save original item name as a custom name by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1909
+* Cache lore strings by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1893
+* Account for Slayer XP Buff Minister Perk by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1913
+* value breakdown popup by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1793
+* Add anvil helper by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1916
+* Redstone Key Secret Fix by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1891
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1898
+* rename keybind translation keys by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1905
+* Add greenhouse crops by @IllagerCaptain in https://github.com/SkyblockerMod/Skyblocker/pull/1921
+* Inventory Search Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1918
+* Update enchantment abbreviations by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/1917
+* Use Chest Animation For Chest Secret Detection by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1873
+* Slightly Improve Etherwarp Teleport Overlay by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1662
+* Structure Template <-> Skeleton File Converter by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1675
+* Add Dungeon Secret Sync over WS by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1874
+* Add Pickobulus Helper by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1894
+* Rename Trap Rooms by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1928
+* Fix some Null warnings in Dungeon package by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1911
+* Fix null pointer exception when PlainTextComponent constructors are called with null text. by @Nengyi-Jonathan-Jiang in https://github.com/SkyblockerMod/Skyblocker/pull/1929
+
+## New Contributors
+* @TheTerrariaGuy made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1897
+* @Nengyi-Jonathan-Jiang made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1929
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.9.1+1.21.10...v5.10.0+1.21.10
+___
+
 # Release 5.9.1
 
 ## Highlight

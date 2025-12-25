@@ -1,23 +1,22 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
+import java.awt.Color;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.WitherSkeletonEntity;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-
-import java.awt.*;
 
 public class ControlTestHelper {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 
-	private static WitherSkeletonEntity correctWitherSkeleton;
-	private static Vec3d lastPos;
+	private static WitherSkeleton correctWitherSkeleton;
+	private static Vec3 lastPos;
 	private static long lastUpdate;
-	private static Vec3d pingOffset;
-	private static Vec3d lastPingOffset;
+	private static Vec3 pingOffset;
+	private static Vec3 lastPingOffset;
 
 	protected static void reset() {
 		correctWitherSkeleton = null;
@@ -33,7 +32,7 @@ public class ControlTestHelper {
 	 * @param entity spawned entity
 	 */
 	protected static void onEntitySpawn(Entity entity) {
-		if (entity instanceof WitherSkeletonEntity witherSkeleton && correctWitherSkeleton == null) {
+		if (entity instanceof WitherSkeleton witherSkeleton && correctWitherSkeleton == null) {
 			correctWitherSkeleton = witherSkeleton;
 		}
 	}
@@ -48,11 +47,11 @@ public class ControlTestHelper {
 				lastPingOffset = pingOffset;
 				double ping = DojoManager.ping / 1000d;
 				//find distance between last position and current position of skeleton
-				Vec3d movementVector = correctWitherSkeleton.getEntityPos().subtract(lastPos).multiply(1, 0.1, 1);
+				Vec3 movementVector = correctWitherSkeleton.position().subtract(lastPos).multiply(1, 0.1, 1);
 				//adjust the vector to current ping (multiply by 1 + time in second until the next update offset by the players ping)
-				pingOffset = movementVector.multiply(1 + 3 / 20d + ping);
+				pingOffset = movementVector.scale(1 + 3 / 20d + ping);
 			}
-			lastPos = correctWitherSkeleton.getEntityPos();
+			lastPos = correctWitherSkeleton.position();
 			lastUpdate = System.currentTimeMillis();
 		}
 	}
@@ -64,12 +63,12 @@ public class ControlTestHelper {
 	 */
 	protected static void extractRendering(PrimitiveCollector collector) {
 		if (CLIENT.player != null && correctWitherSkeleton != null && pingOffset != null && lastPingOffset != null) {
-			float tickDelta = RenderHelper.getTickCounter().getTickProgress(false);
+			float tickDelta = RenderHelper.getTickCounter().getGameTimeDeltaPartialTick(false);
 			//how long until net update
 			double updatePercent = (double) (System.currentTimeMillis() - lastUpdate) / 150;
-			Vec3d aimPos = correctWitherSkeleton.getCameraPosVec(tickDelta).add(pingOffset.multiply(updatePercent)).add(lastPingOffset.multiply(1 - updatePercent));
-			Box targetBox = new Box(aimPos.add(-0.5, -0.5, -0.5), aimPos.add(0.5, 0.5, 0.5));
-			boolean playerLookingAtBox = targetBox.raycast(CLIENT.player.getCameraPosVec(tickDelta), CLIENT.player.getCameraPosVec(tickDelta).add(CLIENT.player.getRotationVec(tickDelta).multiply(30))).isPresent();
+			Vec3 aimPos = correctWitherSkeleton.getEyePosition(tickDelta).add(pingOffset.scale(updatePercent)).add(lastPingOffset.scale(1 - updatePercent));
+			AABB targetBox = new AABB(aimPos.add(-0.5, -0.5, -0.5), aimPos.add(0.5, 0.5, 0.5));
+			boolean playerLookingAtBox = targetBox.clip(CLIENT.player.getEyePosition(tickDelta), CLIENT.player.getEyePosition(tickDelta).add(CLIENT.player.getViewVector(tickDelta).scale(30))).isPresent();
 			float[] boxColor = playerLookingAtBox ? Color.GREEN.getColorComponents(new float[]{0, 0, 0}) : Color.LIGHT_GRAY.getColorComponents(new float[]{0, 0, 0});
 			collector.submitOutlinedBox(targetBox, boxColor, 3, true);
 		}

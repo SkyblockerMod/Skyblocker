@@ -4,24 +4,26 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.LayoutSettings;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 
-public class TrimSelectionWidget extends ContainerWidget {
+public class TrimSelectionWidget extends AbstractContainerWidget {
 	private static final int PADDING = 3;
 
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
@@ -30,37 +32,37 @@ public class TrimSelectionWidget extends ContainerWidget {
 
 	private final List<TrimElementButton.Pattern> patternButtons = new ArrayList<>();
 	private final List<TrimElementButton> materialButtons = new ArrayList<>();
-	private SimplePositioningWidget layout;
-	private final List<ClickableWidget> children = new ArrayList<>();
+	private FrameLayout layout;
+	private final List<AbstractWidget> children = new ArrayList<>();
 
 	private ItemStack currentItem = null;
 	private Identifier selectedPattern = null;
 	private Identifier selectedMaterial = null;
 
 	public TrimSelectionWidget(int x, int y, int width, int height) {
-		super(x, y, width, height, Text.of("Trim Selection"));
+		super(x, y, width, height, Component.nullToEmpty("Trim Selection"));
 
 		// Patterns
 		TrimElementButton.Pattern patternNoneButton = new TrimElementButton.Pattern(null, null, this::onClickPattern);
-		patternNoneButton.setMessage(Text.translatable("gui.none"));
+		patternNoneButton.setMessage(Component.translatable("gui.none"));
 		patternButtons.add(patternNoneButton);
 
-		Utils.getRegistryWrapperLookup().getOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries()
+		Utils.getRegistryWrapperLookup().lookupOrThrow(Registries.TRIM_PATTERN).listElements()
 				// Sort them in alphabetical order
 				.sorted(Comparator.comparing(reference -> reference.value().description().getString()))
 				.map(reference -> new TrimElementButton.Pattern(
-						reference.registryKey().getValue(),
+						reference.key().identifier(),
 						reference.value(),
 						this::onClickPattern
 				)).forEachOrdered(patternButtons::add);
 		children.addAll(patternButtons);
 
 		// Materials
-		Utils.getRegistryWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries()
+		Utils.getRegistryWrapperLookup().lookupOrThrow(Registries.TRIM_MATERIAL).listElements()
 				// Sort them in alphabetical order
 				.sorted(Comparator.comparing(reference -> reference.value().description().getString()))
 				.map(reference -> new TrimElementButton.Material(
-						reference.registryKey().getValue(),
+						reference.key().identifier(),
 						reference.value(),
 						this::onClickMaterial
 				)).forEachOrdered(materialButtons::add);
@@ -91,23 +93,23 @@ public class TrimSelectionWidget extends ContainerWidget {
 		}
 
 		// Set button positions
-		GridWidget patternsGrid = new GridWidget();
-		GridWidget.Adder patternAdder = patternsGrid.createAdder(patternButtonsPerRow);
-		patternButtons.forEach(patternAdder::add);
+		GridLayout patternsGrid = new GridLayout();
+		GridLayout.RowHelper patternAdder = patternsGrid.createRowHelper(patternButtonsPerRow);
+		patternButtons.forEach(patternAdder::addChild);
 
-		GridWidget materialsGrid = new GridWidget();
+		GridLayout materialsGrid = new GridLayout();
 		for (int i = 0; i < materialButtons.size(); i++) {
 			TrimElementButton button = materialButtons.get(i);
 			int row = i / materialButtonsPerRow;
 			int column = materialButtonsPerRow - (i % materialButtonsPerRow) - 1;
-			materialsGrid.add(button, row, column);
+			materialsGrid.addChild(button, row, column);
 		}
 
-		layout = new SimplePositioningWidget(width - PADDING * 2 - (overflow ? 6 : 0), height - PADDING * 2);
-		layout.getMainPositioner().alignTop();
-		layout.add(patternsGrid, Positioner::alignLeft);
-		layout.add(materialsGrid, Positioner::alignRight);
-		layout.refreshPositions();
+		layout = new FrameLayout(width - PADDING * 2 - (overflow ? 6 : 0), height - PADDING * 2);
+		layout.defaultChildLayoutSetting().alignVerticallyTop();
+		layout.addChild(patternsGrid, LayoutSettings::alignHorizontallyLeft);
+		layout.addChild(materialsGrid, LayoutSettings::alignHorizontallyRight);
+		layout.arrangeElements();
 	}
 
 	private void onClickPattern(TrimElementButton button) {
@@ -140,12 +142,12 @@ public class TrimSelectionWidget extends ContainerWidget {
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		return children;
 	}
 
 	@Override
-	protected int getContentsHeightWithPadding() {
+	protected int contentHeight() {
 		// 3 pixels of padding on top and bottom
 		return layout.getHeight() + PADDING * 2;
 	}
@@ -175,37 +177,37 @@ public class TrimSelectionWidget extends ContainerWidget {
 	}
 
 	@Override
-	protected double getDeltaYPerScroll() {
+	protected double scrollRate() {
 		return 10;
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
-		return super.mouseClicked(new Click(click.x(), click.y() + this.getScrollY(), click.buttonInfo()), doubled);
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+		return super.mouseClicked(new MouseButtonEvent(click.x(), click.y() + this.scrollAmount(), click.buttonInfo()), doubled);
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
 		context.enableScissor(getX() + 2, getY() + 2, getX() + getWidth() - 2, getY() + getHeight() - 2);
 
-		int scrollY = (int) this.getScrollY();
-		for (ClickableWidget widget : this.children) {
+		int scrollY = (int) this.scrollAmount();
+		for (AbstractWidget widget : this.children) {
 			widget.setY(widget.getY() - scrollY);
 			widget.render(context, mouseX, mouseY, delta);
 			widget.setY(widget.getY() + scrollY);
 		}
 
-		drawScrollbar(context, mouseX, mouseY);
+		renderScrollbar(context, mouseX, mouseY);
 		context.disableScissor();
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+	protected void updateWidgetNarration(NarrationElementOutput builder) {
 
 	}
 
-	public void setCurrentItem(@NotNull ItemStack currentItem) {
+	public void setCurrentItem(ItemStack currentItem) {
 		this.currentItem = currentItem;
 		Map<String, CustomArmorTrims.ArmorTrimId> trims = SkyblockerConfigManager.get().general.customArmorTrims;
 		String itemUuid = currentItem.getUuid();

@@ -9,16 +9,15 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-
-import java.awt.*;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MetalDetector {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final float[] LIGHT_GRAY = {192 / 255f, 192 / 255f, 192 / 255f};
 	private static final Pattern TREASURE_PATTERN = Pattern.compile("(§3§lTREASURE: §b)(\\d+\\.?\\d?)m");
 	private static final Pattern KEEPER_PATTERN = Pattern.compile("Keeper of (\\w+)");
@@ -84,7 +83,7 @@ public class MetalDetector {
 
 	protected static Vec3i minesCenter = null;
 	private static double previousDistance;
-	private static Vec3d previousPlayerPos;
+	private static Vec3 previousPlayerPos;
 	protected static boolean newTreasure = true;
 	private static boolean startedLooking = false;
 	protected static List<Vec3i> possibleBlocks = new ArrayList<>();
@@ -102,7 +101,7 @@ public class MetalDetector {
 	 * @param text    the message sent to the player
 	 * @param overlay if the message is an overlay message
 	 */
-	private static boolean getDistanceMessage(Text text, boolean overlay) {
+	private static boolean getDistanceMessage(Component text, boolean overlay) {
 		if (!overlay || !SkyblockerConfigManager.get().mining.crystalHollows.metalDetectorHelper || !Utils.isInCrystalHollows() || !(Utils.getIslandArea().substring(2).equals("Mines of Divan")) || CLIENT.player == null) {
 			checkChestFound(text);
 			return true;
@@ -114,13 +113,13 @@ public class MetalDetector {
 		}
 		//find new values
 		double distance = Double.parseDouble(treasureDistanceMature.group(2));
-		Vec3d playerPos = CLIENT.player.getEntityPos();
+		Vec3 playerPos = CLIENT.player.position();
 		int previousPossibleBlockCount = possibleBlocks.size();
 
 		//send message when starting looking about how to use mod
 		if (!startedLooking) {
 			startedLooking = true;
-			CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.startTip")), false);
+			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.startTip")), false);
 		}
 
 		//find the center of the mines if possible to speed up search
@@ -136,9 +135,9 @@ public class MetalDetector {
 		//if the amount of possible blocks has changed output that to the user
 		if (possibleBlocks.size() != previousPossibleBlockCount) {
 			if (possibleBlocks.size() == 1) {
-				CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.foundTreasureMessage").formatted(Formatting.GREEN)), false);
+				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.foundTreasureMessage").withStyle(ChatFormatting.GREEN)), false);
 			} else {
-				CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possibleTreasureLocationsMessage").append(Text.of(String.valueOf(possibleBlocks.size())))), false);
+				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possibleTreasureLocationsMessage").append(Component.nullToEmpty(String.valueOf(possibleBlocks.size())))), false);
 			}
 		}
 
@@ -154,7 +153,7 @@ public class MetalDetector {
 	 *
 	 * @param text the message sent to the player
 	 */
-	private static void checkChestFound(Text text) {
+	private static void checkChestFound(Component text) {
 		if (!Utils.isInCrystalHollows() || !(Utils.getIslandArea().substring(2).equals("Mines of Divan")) || CLIENT.player == null) {
 			return;
 		}
@@ -171,14 +170,14 @@ public class MetalDetector {
 	 * @param distance  the distance the treasure is from the player squared
 	 * @param playerPos the position of the player
 	 */
-	protected static void updatePossibleBlocks(double distance, Vec3d playerPos) {
+	protected static void updatePossibleBlocks(double distance, Vec3 playerPos) {
 		if (newTreasure) {
 			possibleBlocks = new ArrayList<>();
 			newTreasure = false;
 			if (minesCenter != null) { //if center of the mines is known use the predefined offsets to filter the locations
 				for (Vec3i knownOffset : knownChestOffsets) {
-					Vec3i checkPos = minesCenter.add(knownOffset).add(0, 1, 0);
-					if (Math.abs(playerPos.distanceTo(Vec3d.of(checkPos)) - distance) < 0.25) {
+					Vec3i checkPos = minesCenter.offset(knownOffset).offset(0, 1, 0);
+					if (Math.abs(playerPos.distanceTo(Vec3.atLowerCornerOf(checkPos)) - distance) < 0.25) {
 						possibleBlocks.add(checkPos);
 					}
 				}
@@ -186,7 +185,7 @@ public class MetalDetector {
 				for (int x = (int) -distance; x <= distance; x++) {
 					for (int z = (int) -distance; z <= distance; z++) {
 						Vec3i checkPos = new Vec3i((int) playerPos.x + x, (int) playerPos.y, (int) playerPos.z + z);
-						if (Math.abs(playerPos.distanceTo(Vec3d.of(checkPos)) - distance) < 0.25) {
+						if (Math.abs(playerPos.distanceTo(Vec3.atLowerCornerOf(checkPos)) - distance) < 0.25) {
 							possibleBlocks.add(checkPos);
 						}
 					}
@@ -194,14 +193,14 @@ public class MetalDetector {
 			}
 
 		} else {
-			possibleBlocks.removeIf(location -> Math.abs(playerPos.distanceTo(Vec3d.of(location)) - distance) >= 0.25);
+			possibleBlocks.removeIf(location -> Math.abs(playerPos.distanceTo(Vec3.atLowerCornerOf(location)) - distance) >= 0.25);
 		}
 
 		//if possible blocks is of length 0 something has failed reset and try again
 		if (possibleBlocks.isEmpty()) {
 			newTreasure = true;
 			if (CLIENT.player != null) {
-				CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.somethingWentWrongMessage").formatted(Formatting.RED)), false);
+				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.somethingWentWrongMessage").withStyle(ChatFormatting.RED)), false);
 			}
 		}
 	}
@@ -210,20 +209,20 @@ public class MetalDetector {
 	 * Uses the labels for the keepers names to find the central point of the mines of divan so the known offsets can be used.
 	 */
 	private static void findCenterOfMines() {
-		if (CLIENT.player == null || CLIENT.world == null) {
+		if (CLIENT.player == null || CLIENT.level == null) {
 			return;
 		}
-		Box searchBox = CLIENT.player.getBoundingBox().expand(500d);
-		List<ArmorStandEntity> armorStands = CLIENT.world.getEntitiesByClass(ArmorStandEntity.class, searchBox, ArmorStandEntity::hasCustomName);
+		AABB searchBox = CLIENT.player.getBoundingBox().inflate(500d);
+		List<ArmorStand> armorStands = CLIENT.level.getEntitiesOfClass(ArmorStand.class, searchBox, ArmorStand::hasCustomName);
 
-		for (ArmorStandEntity armorStand : armorStands) {
+		for (ArmorStand armorStand : armorStands) {
 			String name = armorStand.getName().getString();
 			Matcher nameMatcher = KEEPER_PATTERN.matcher(name);
 
 			if (nameMatcher.matches()) {
 				Vec3i offset = keeperOffsets.get(nameMatcher.group(1));
-				minesCenter = armorStand.getBlockPos().add(offset);
-				CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.foundCenter").formatted(Formatting.GREEN)), false);
+				minesCenter = armorStand.blockPosition().offset(offset);
+				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.foundCenter").withStyle(ChatFormatting.GREEN)), false);
 				return;
 			}
 		}
@@ -246,15 +245,15 @@ public class MetalDetector {
 		}
 		//only one location render just that and guiding line to it
 		if (possibleBlocks.size() == 1) {
-			Vec3i block = possibleBlocks.getFirst().add(0, -1, 0); //the block you are taken to is one block above the chest
-			NamedWaypoint waypoint = new NamedWaypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.treasure").getString(), Color.yellow.getColorComponents(null));
+			Vec3i block = possibleBlocks.getFirst().offset(0, -1, 0); //the block you are taken to is one block above the chest
+			NamedWaypoint waypoint = new NamedWaypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.treasure").getString(), Color.yellow.getColorComponents(null));
 			waypoint.extractRendering(collector);
-			collector.submitLineFromCursor(Vec3d.ofCenter(block), LIGHT_GRAY, 1f, 5f);
+			collector.submitLineFromCursor(Vec3.atCenterOf(block), LIGHT_GRAY, 1f, 5f);
 			return;
 		}
 
 		for (Vec3i block : possibleBlocks) {
-			NamedWaypoint waypoint = new NamedWaypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible").getString(), Color.white.getColorComponents(null));
+			NamedWaypoint waypoint = new NamedWaypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible").getString(), Color.white.getColorComponents(null));
 			waypoint.extractRendering(collector);
 		}
 	}

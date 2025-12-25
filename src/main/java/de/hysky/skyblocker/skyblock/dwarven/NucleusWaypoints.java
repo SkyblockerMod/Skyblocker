@@ -3,16 +3,16 @@ package de.hysky.skyblocker.skyblock.dwarven;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.text.Style;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.item.DyeColor;
 
 public class NucleusWaypoints {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NucleusWaypoints.class);
@@ -48,9 +48,9 @@ public class NucleusWaypoints {
 					int rgb = waypoint.color.getFireworkColor();
 					TextColor textColor = TextColor.fromRgb(rgb);
 
-					MutableText text = Text.literal(waypoint.name).setStyle(Style.EMPTY.withColor(textColor));
+					MutableComponent text = Component.literal(waypoint.name).setStyle(Style.EMPTY.withColor(textColor));
 
-					collector.submitText(text, waypoint.position.toCenterPos().add(0, 5, 0), 8, true);
+					collector.submitText(text, waypoint.position.getCenter().add(0, 5, 0), 8, true);
 				}
 			}
 		} catch (Exception e) {

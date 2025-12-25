@@ -6,64 +6,65 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.*;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-
-import java.awt.*;
+import java.awt.Color;
 import java.util.function.Supplier;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
+import net.minecraft.client.gui.layouts.LayoutSettings;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 
 public class WaypointsOptionScreen extends Screen {
 	private static final Supplier<UIAndVisualsConfig.Waypoints> WAYPOINTS = () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints;
 
-	private final @NotNull Screen parent;
-	private final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
+	private final Screen parent;
+	private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
 
-	protected WaypointsOptionScreen(@NotNull Screen parent) {
-		super(Text.translatable("skyblocker.waypoints.waypointsOptions"));
+	protected WaypointsOptionScreen(Screen parent) {
+		super(Component.translatable("skyblocker.waypoints.waypointsOptions"));
 		this.parent = parent;
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-		GridWidget grid = new GridWidget().setSpacing(2);
-		layout.addBody(grid);
-		GridWidget.Adder adder = grid.createAdder(2);
+		GridLayout grid = new GridLayout().spacing(2);
+		layout.addToContents(grid);
+		GridLayout.RowHelper adder = grid.createRowHelper(2);
 		UIAndVisualsConfig.Waypoints waypoints = WAYPOINTS.get();
-		adder.add(CyclingButtonWidget
-				.onOffBuilder(ScreenTexts.YES, ScreenTexts.OFF)
-						.initially(waypoints.renderLine)
-				.build(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"), (button, value) -> waypoints.renderLine = value)
+		adder.addChild(CycleButton
+				.booleanBuilder(CommonComponents.GUI_YES, CommonComponents.OPTION_OFF, waypoints.renderLine)
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"), (button, value) -> waypoints.renderLine = value)
 		);
-		adder.add(CyclingButtonWidget
-				.onOffBuilder(ScreenTexts.YES, ScreenTexts.OFF)
-						.initially(waypoints.allowSkippingWaypoints)
-				.tooltip(ignored -> Tooltip.of(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip")))
-				.build(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints"), (button, value) -> waypoints.allowSkippingWaypoints = value)
+		adder.addChild(CycleButton
+				.booleanBuilder(CommonComponents.GUI_YES, CommonComponents.OPTION_OFF, waypoints.allowSkippingWaypoints)
+				.withTooltip(ignored -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip")))
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints"), (button, value) -> waypoints.allowSkippingWaypoints = value)
 		);
-		adder.add(CyclingButtonWidget
-				.onOffBuilder(ScreenTexts.YES, ScreenTexts.OFF)
-				.initially(waypoints.allowGoingBackwards)
-				.tooltip(ignored -> Tooltip.of(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip")))
-				.build(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards"), (button, value) -> waypoints.allowGoingBackwards = value)
+		adder.addChild(CycleButton
+				.booleanBuilder(CommonComponents.GUI_YES, CommonComponents.OPTION_OFF, waypoints.allowGoingBackwards)
+				.withTooltip(ignored -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip")))
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards"), (button, value) -> waypoints.allowGoingBackwards = value)
 		);
-		adder.add(RangedSliderWidget.builder()
-				.optionFormatter(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.lineWidth"), Formatters.FLOAT_NUMBERS)
+		adder.addChild(RangedSliderWidget.builder()
+				.optionFormatter(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.lineWidth"), Formatters.FLOAT_NUMBERS)
 				.callback(value -> waypoints.lineWidth = (float) value)
 				.minMax(1, 15)
 						.defaultValue(waypoints.lineWidth)
 				.step(0.5)
 				.build()
 		);
-		adder.add(new TextWidget(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.lineColor"), textRenderer), 2, Positioner.create().alignHorizontalCenter().marginTop(4));
-		DirectionalLayoutWidget colorLayout = DirectionalLayoutWidget.horizontal();
-		adder.add(colorLayout, 2, Positioner.create().alignHorizontalCenter());
-		ColorPickerWidget colorPickerWidget = colorLayout.add(new ColorPickerWidget(0, 0, 200, 100, true));
-		ARGBTextInput argbTextInput = colorLayout.add(new ARGBTextInput(0, 0, textRenderer, true, true));
+		adder.addChild(new StringWidget(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.lineColor"), font), 2, LayoutSettings.defaults().alignHorizontallyCenter().paddingTop(4));
+		LinearLayout colorLayout = LinearLayout.horizontal();
+		adder.addChild(colorLayout, 2, LayoutSettings.defaults().alignHorizontallyCenter());
+		ColorPickerWidget colorPickerWidget = colorLayout.addChild(new ColorPickerWidget(0, 0, 200, 100, true));
+		ARGBTextInput argbTextInput = colorLayout.addChild(new ARGBTextInput(0, 0, font, true, true));
 		colorPickerWidget.setOnColorChange((color, mouseRelease) -> {
 			argbTextInput.setARGBColor(color);
 			if (mouseRelease) waypoints.lineColor = new Color(color, true);
@@ -74,20 +75,20 @@ public class WaypointsOptionScreen extends Screen {
 		});
 		colorPickerWidget.setARGBColor(waypoints.lineColor.getRGB());
 		argbTextInput.setARGBColor(waypoints.lineColor.getRGB());
-		layout.addHeader(new TextWidget(getTitle(), textRenderer));
-		layout.addFooter(ButtonWidget.builder(ScreenTexts.DONE, b -> close()).build());
-		refreshWidgetPositions();
-		layout.forEachChild(this::addDrawableChild);
+		layout.addToHeader(new StringWidget(getTitle(), font));
+		layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, b -> onClose()).build());
+		repositionElements();
+		layout.visitWidgets(this::addRenderableWidget);
 	}
 
 	@Override
-	protected void refreshWidgetPositions() {
-		layout.refreshPositions();
+	protected void repositionElements() {
+		layout.arrangeElements();
 	}
 
 	@Override
-	public void close() {
-		client.setScreen(parent);
+	public void onClose() {
+		minecraft.setScreen(parent);
 		SkyblockerConfigManager.update(c -> {});
 	}
 }

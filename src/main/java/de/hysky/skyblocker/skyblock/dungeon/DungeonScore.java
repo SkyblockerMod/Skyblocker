@@ -6,7 +6,9 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretSync;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -17,12 +19,13 @@ import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,8 +61,10 @@ public class DungeonScore {
 	private static final String MIMIC_MESSAGE = "Mimic dead!";
 	private static final String PRINCE_MESSAGE = "Prince dead!";
 
-	private static FloorRequirement floorRequirement;
-	private static String currentFloor;
+	private static boolean isMayorPaul = false;
+
+	private static FloorRequirement floorRequirement = FloorRequirement.NONE;
+	private static String currentFloor = "";
 	private static boolean isCurrentFloorEntrance;
 	private static boolean floorHasMimics;
 	private static boolean sentCrypts;
@@ -68,7 +73,6 @@ public class DungeonScore {
 	private static boolean mimicKilled;
 	private static boolean princeKilled;
 	private static boolean dungeonStarted;
-	private static boolean isMayorPaul;
 	private static boolean firstDeathHasSpiritPet;
 	private static boolean bloodRoomCompleted;
 	private static long startingTime;
@@ -94,10 +98,11 @@ public class DungeonScore {
 
 			return true;
 		});
+		SkyblockEvents.MAYOR_CHANGE.register(() -> isMayorPaul = MayorUtils.getActivePerks().contains("EZPZ"));
 	}
 
 	public static void tick() {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		if (!Utils.isInDungeons() || client.player == null) {
 			reset();
 			return;
@@ -110,11 +115,11 @@ public class DungeonScore {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270"), true);
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore270Title) {
-				client.inGameHud.setDefaultTitleFade();
-				client.inGameHud.setTitle(Text.of(SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270")));
+				client.gui.resetTitleTimes();
+				client.gui.setTitle(Component.nullToEmpty(SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270")));
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore270Sound) {
-				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+				client.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
 			}
 			sent270 = true;
 		}
@@ -132,18 +137,18 @@ public class DungeonScore {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300"), true);
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore300Title) {
-				client.inGameHud.setDefaultTitleFade();
-				client.inGameHud.setTitle(Text.of(SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300")));
+				client.gui.resetTitleTimes();
+				client.gui.setTitle(Component.nullToEmpty(SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300")));
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore300Sound) {
-				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+				client.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
 			}
 			sent300 = true;
 		}
 	}
 
 	private static void reset() {
-		floorRequirement = null;
+		floorRequirement = FloorRequirement.NONE;
 		currentFloor = "";
 		isCurrentFloorEntrance = false;
 		floorHasMimics = false;
@@ -153,7 +158,6 @@ public class DungeonScore {
 		mimicKilled = false;
 		princeKilled = false;
 		dungeonStarted = false;
-		isMayorPaul = false;
 		firstDeathHasSpiritPet = false;
 		bloodRoomCompleted = false;
 		startingTime = 0L;
@@ -167,7 +171,6 @@ public class DungeonScore {
 		setCurrentFloor();
 		dungeonStarted = true;
 		puzzleCount = getPuzzleCount();
-		isMayorPaul = MayorUtils.getActivePerks().contains("EZPZ");
 		startingTime = System.currentTimeMillis();
 		floorRequirement = FloorRequirement.valueOf(currentFloor);
 		floorHasMimics = MIMIC_FLOORS_PATTERN.matcher(currentFloor).matches();
@@ -216,7 +219,7 @@ public class DungeonScore {
 	}
 
 	public static boolean isEntityMimic(Entity entity) {
-		if (!Utils.isInDungeons() || !floorHasMimics || !(entity instanceof ZombieEntity zombie) || !zombie.isBaby()) return false;
+		if (!Utils.isInDungeons() || !floorHasMimics || !(entity instanceof Zombie zombie) || !zombie.isBaby()) return false;
 		try {
 			List<ItemStack> armor = ItemUtils.getArmor(zombie);
 			return armor.stream().allMatch(ItemStack::isEmpty);
@@ -230,6 +233,7 @@ public class DungeonScore {
 		if (mimicKilled) return;
 		if (!isEntityMimic(entity)) return;
 		if (MIMIC_MESSAGE_CONFIG.get().sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + MIMIC_MESSAGE, true);
+		SecretSync.syncMimicKilled();
 		mimicKilled = true;
 	}
 
@@ -237,10 +241,13 @@ public class DungeonScore {
 		mimicKilled = true;
 	}
 
-	private static void onPrinceKill(boolean fromHypixel) {
+	public static void onPrinceKill(boolean fromHypixel) {
 		if (princeKilled) return;
 		//Ensure that we don't send a prince kill message if a teammate does
-		if (PRINCE_MESSAGE_CONFIG.get().sendPrinceMessage && fromHypixel) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + PRINCE_MESSAGE, true);
+		if (fromHypixel) {
+			if (PRINCE_MESSAGE_CONFIG.get().sendPrinceMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + PRINCE_MESSAGE, true);
+			SecretSync.syncPrinceKilled();
+		}
 		princeKilled = true;
 	}
 
@@ -309,7 +316,7 @@ public class DungeonScore {
 		return matcher != null ? Integer.parseInt(matcher.group("crypts")) : 0;
 	}
 
-	private static boolean hasSpiritPet(JsonObject player, String name) {
+	private static boolean hasSpiritPet(@Nullable JsonObject player, String name) {
 		if (player == null) {
 			LOGGER.error("[Skyblocker] Spirit pet lookup by name failed! (likely due to an earlier error!) Name: {}", name);
 			return false;
@@ -329,13 +336,14 @@ public class DungeonScore {
 	}
 
 	private static void checkMessageForDeaths(String message) {
+		//noinspection UnnecessaryUnicodeEscape
 		if (!message.startsWith("\u2620", 1)) return;
 		Matcher matcher = DEATHS_PATTERN.matcher(message);
 		if (!matcher.matches()) return;
 		deathCount++;
 		if (deathCount > 1) return;
 		final String whoDied = matcher.group("whodied").transform(s -> {
-			if (s.equals("You")) return MinecraftClient.getInstance().getSession().getUsername(); //This will be wrong if the dead player is called 'You' but that's unlikely
+			if (s.equals("You")) return Minecraft.getInstance().getUser().getName(); //This will be wrong if the dead player is called 'You' but that's unlikely
 			else return s;
 		});
 		ProfileUtils.fetchProfileMember(whoDied).thenAccept(player -> firstDeathHasSpiritPet = hasSpiritPet(player, whoDied));
@@ -393,7 +401,8 @@ public class DungeonScore {
 		M4(100, 480),
 		M5(100, 480),
 		M6(100, 600),
-		M7(100, 840);
+		M7(100, 840),
+		NONE(0, 0);
 
 		private final int percentage;
 		private final int timeLimit;

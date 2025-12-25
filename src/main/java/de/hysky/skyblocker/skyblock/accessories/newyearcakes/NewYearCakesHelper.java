@@ -9,13 +9,16 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,7 +35,7 @@ public class NewYearCakesHelper extends SimpleContainerSolver {
 	}
 
 	public static int getCakeYear(ItemStack stack) {
-		return getCakeYear(NEW_YEAR_CAKE, stack.getName().getString());
+		return getCakeYear(NEW_YEAR_CAKE, stack.getHoverName().getString());
 	}
 
 	public static int getCakeYear(Pattern pattern, String name) {
@@ -57,7 +60,7 @@ public class NewYearCakesHelper extends SimpleContainerSolver {
 		return cakes.computeIfAbsent(Utils.getProfile(), _profile -> new IntOpenHashSet()).add(year);
 	}
 
-	private boolean onChatMessage(Text message, boolean overlay) {
+	private boolean onChatMessage(Component message, boolean overlay) {
 		if (isEnabled()) {
 			addCake(getCakeYear(NEW_YEAR_CAKE_PURCHASE, message.getString()));
 		}

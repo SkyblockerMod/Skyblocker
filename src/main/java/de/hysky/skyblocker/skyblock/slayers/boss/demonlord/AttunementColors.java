@@ -2,12 +2,11 @@ package de.hysky.skyblocker.skyblock.slayers.boss.demonlord;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-
-import java.awt.*;
+import java.awt.Color;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 public class AttunementColors {
 	private static final Pattern COLOR_PATTERN = Pattern.compile("ASHEN|SPIRIT|CRYSTAL|AURIC");

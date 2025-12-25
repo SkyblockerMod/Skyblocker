@@ -4,13 +4,15 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import it.unimi.dsi.fastutil.objects.*;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public class GeneralConfig {
 	public boolean enableTips = true;
@@ -45,7 +47,7 @@ public class GeneralConfig {
 	//well... turns out its 9 now
 	public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
 
-	public Object2ObjectOpenHashMap<String, Text> customItemNames = new Object2ObjectOpenHashMap<>();
+	public Object2ObjectOpenHashMap<String, Component> customItemNames = new Object2ObjectOpenHashMap<>();
 
 	public Object2IntOpenHashMap<String> customDyeColors = new Object2IntOpenHashMap<>();
 
@@ -129,7 +131,7 @@ public class GeneralConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.itemTooltip.avg." + name());
+			return I18n.get("skyblocker.config.general.itemTooltip.avg." + name());
 		}
 	}
 
@@ -138,7 +140,7 @@ public class GeneralConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.itemTooltip.craft." + name());
+			return I18n.get("skyblocker.config.general.itemTooltip.craft." + name());
 		}
 
 		public String getOrder() {
@@ -186,7 +188,7 @@ public class GeneralConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style." + name());
+			return I18n.get("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style." + name());
 		}
 	}
 
@@ -210,7 +212,7 @@ public class GeneralConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.itemProtection.slotLockStyle.style." + name());
+			return I18n.get("skyblocker.config.general.itemProtection.slotLockStyle.style." + name());
 		}
 	}
 
@@ -223,6 +225,8 @@ public class GeneralConfig {
 
 	public static class SpecialEffects {
 		public boolean rareDungeonDropEffects = true;
+
+		public boolean rareDropEffects = true;
 
 		public boolean rareDyeDropEffects = true;
 	}

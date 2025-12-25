@@ -4,9 +4,10 @@ import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 
-import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 public class Donation {
 	private final String category;
@@ -51,8 +52,7 @@ public class Donation {
 		this.priceData = new PriceData(this);
 	}
 
-	@Nullable
-	public ObjectDoublePair<String> getDiscount() {
+	public @Nullable ObjectDoublePair<String> getDiscount() {
 		return discount;
 	}
 

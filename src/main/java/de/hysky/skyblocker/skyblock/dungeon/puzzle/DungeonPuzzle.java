@@ -11,7 +11,6 @@ import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.render.Renderable;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -19,7 +18,6 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public abstract class DungeonPuzzle implements Tickable, Renderable, Resettable {
 	protected final String puzzleName;
-	@NotNull
 	private final Set<String> roomNames;
 	private boolean shouldSolve;
 
@@ -27,7 +25,7 @@ public abstract class DungeonPuzzle implements Tickable, Renderable, Resettable 
 		this(puzzleName, Set.of(roomName));
 	}
 
-	public DungeonPuzzle(String puzzleName, @NotNull Set<String> roomNames) {
+	public DungeonPuzzle(String puzzleName, Set<String> roomNames) {
 		this.puzzleName = puzzleName;
 		this.roomNames = roomNames;
 		DungeonEvents.PUZZLE_MATCHED.register(room -> {

@@ -5,13 +5,16 @@ import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.math.BlockPos;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.joml.Vector2ic;
-
-import java.util.*;
 
 public class DebugRoom extends Room {
 	private final List<Waypoint> checkedBlocks = Collections.synchronizedList(new ArrayList<>());
@@ -34,8 +37,8 @@ public class DebugRoom extends Room {
 	}
 
 	@Override
-	protected boolean checkBlock(ClientWorld world, BlockPos pos) {
-		byte id = DungeonManager.NUMERIC_ID.getByte(Registries.BLOCK.getId(world.getBlockState(pos).getBlock()).toString());
+	protected boolean checkBlock(ClientLevel world, BlockPos pos) {
+		byte id = DungeonManager.NUMERIC_ID.getByte(BuiltInRegistries.BLOCK.getKey(world.getBlockState(pos).getBlock()).toString());
 		if (id == 0) {
 			return false;
 		}

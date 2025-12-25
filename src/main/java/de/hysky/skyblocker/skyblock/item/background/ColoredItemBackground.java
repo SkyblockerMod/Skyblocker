@@ -2,14 +2,13 @@ package de.hysky.skyblocker.skyblock.item.background;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Atlases;
-
 import java.util.function.Supplier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.data.AtlasIds;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Base class for rendering colored backgrounds behind Minecraft items.
@@ -21,12 +20,12 @@ import java.util.function.Supplier;
 public abstract class ColoredItemBackground<T> {
 
 	private final Int2ReferenceOpenHashMap<T> cache = new Int2ReferenceOpenHashMap<>();
-	private final Supplier<Sprite> sprite;
+	private final Supplier<TextureAtlasSprite> sprite;
 
 	protected ColoredItemBackground() {
-		this.sprite = () -> MinecraftClient.getInstance()
+		this.sprite = () -> Minecraft.getInstance()
 				.getAtlasManager()
-				.getAtlasTexture(Atlases.GUI)
+				.getAtlasOrThrow(AtlasIds.GUI)
 				.getSprite(SkyblockerConfigManager.get().general.itemInfoDisplay.itemBackgroundStyle.tex);
 	}
 
@@ -59,7 +58,7 @@ public abstract class ColoredItemBackground<T> {
 	 * @param y        Slot y position
 	 * @param colorKey The color key, e.g. an enum or RGB integer
 	 */
-	protected abstract void draw(DrawContext context, int x, int y, T colorKey);
+	protected abstract void draw(GuiGraphics context, int x, int y, T colorKey);
 
 	/**
 	 * Whether this background renderer is enabled.
@@ -79,7 +78,7 @@ public abstract class ColoredItemBackground<T> {
 	 * @param x       The slot's x position
 	 * @param y       The slot's y position
 	 */
-	public final void tryDraw(ItemStack stack, DrawContext context, int x, int y) {
+	public final void tryDraw(ItemStack stack, GuiGraphics context, int x, int y) {
 		T value = getColorKey(stack, cache);
 		if (value != null) {
 			draw(context, x, y, value);
@@ -98,7 +97,7 @@ public abstract class ColoredItemBackground<T> {
 	 *
 	 * @return The sprite to render with
 	 */
-	protected final Sprite getSprite() {
+	protected final TextureAtlasSprite getSprite() {
 		return sprite.get();
 	}
 }

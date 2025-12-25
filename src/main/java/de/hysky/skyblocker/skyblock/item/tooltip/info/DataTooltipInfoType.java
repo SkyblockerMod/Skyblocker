@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.info;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
 
@@ -12,8 +12,7 @@ public interface DataTooltipInfoType<T> extends TooltipInfoType, Runnable {
 	 */
 	boolean isDataEnabled();
 
-	@Nullable
-	T getData();
+	@Nullable T getData();
 
 	Codec<T> getCodec();
 

@@ -24,33 +24,37 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.network.OtherClientPlayerEntity;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.command.CommandSource;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerModelPart;
-import net.minecraft.entity.player.SkinTextures;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerModelPart;
+import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.world.item.component.ResolvableProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import static net.minecraft.client.gui.screen.ingame.InventoryScreen.drawEntity;
+import static net.minecraft.client.gui.screens.inventory.InventoryScreen.renderEntityInInventoryFollowsMouse;
 
 public class ProfileViewerScreen extends Screen {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ProfileViewerScreen.class);
-	private static final Text TITLE = Text.of("Skyblocker Profile Viewer");
+	private static final Component TITLE = Component.nullToEmpty("Skyblocker Profile Viewer");
 	private static final String HYPIXEL_COLLECTIONS = "https://api.hypixel.net/v2/resources/skyblock/collections";
 	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/base_plate.png");
 	private static final int GUI_WIDTH = 322;
@@ -68,7 +72,7 @@ public class ProfileViewerScreen extends Screen {
 	private static final String[] PAGE_NAMES = {"Skills", "Slayers", "Dungeons", "Inventories", "Collections"};
 	private final ProfileViewerPage[] profileViewerPages = new ProfileViewerPage[PAGE_NAMES.length];
 	private final List<ProfileViewerNavButton> profileViewerNavButtons = new ArrayList<>();
-	private OtherClientPlayerEntity entity;
+	private RemotePlayer entity;
 	private ProfileViewerTextWidget textWidget;
 
 	public ProfileViewerScreen(String username) {
@@ -94,13 +98,13 @@ public class ProfileViewerScreen extends Screen {
 		CompletableFuture.allOf(skillsFuture, slayersFuture, dungeonsFuture, inventoriesFuture, collectionsFuture)
 				.thenRun(() -> {
 					synchronized (this) {
-						clearAndInit();
+						rebuildWidgets();
 					}
 				});
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		synchronized (this) {
 			super.render(context, mouseX, mouseY, delta);
 		}
@@ -108,7 +112,7 @@ public class ProfileViewerScreen extends Screen {
 		int rootX = width / 2 - GUI_WIDTH / 2;
 		int rootY = height / 2 - GUI_HEIGHT / 2 + 5;
 
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootY, 0, 0, GUI_WIDTH, GUI_HEIGHT, GUI_WIDTH, GUI_HEIGHT);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootY, 0, 0, GUI_WIDTH, GUI_HEIGHT, GUI_WIDTH, GUI_HEIGHT);
 		for (ProfileViewerNavButton button : profileViewerNavButtons) {
 			button.setX(rootX + button.getIndex() * 28 + 4);
 			button.setY(rootY - 28);
@@ -116,21 +120,21 @@ public class ProfileViewerScreen extends Screen {
 		}
 
 
-		if (textWidget != null) textWidget.render(context, textRenderer, rootX + 8, rootY + 120, mouseX, mouseY);
+		if (textWidget != null) textWidget.render(context, font, rootX + 8, rootY + 120, mouseX, mouseY);
 		drawPlayerEntity(context, playerName != null ? playerName : "Loading...", rootX, rootY, mouseX, mouseY);
 
 		if (profileViewerPages[activePage] != null) {
 			profileViewerPages[activePage].markWidgetsAsVisible();
 			profileViewerPages[activePage].render(context, mouseX, mouseY, delta, rootX + 93, rootY + 7);
 		} else {
-			context.drawCenteredTextWithShadow(textRenderer, profileNotFound ? errorMessage : "Loading...", rootX + 200, rootY + 80, Color.WHITE.getRGB());
+			context.drawCenteredString(font, profileNotFound ? errorMessage : "Loading...", rootX + 200, rootY + 80, Color.WHITE.getRGB());
 		}
 	}
 
-	private void drawPlayerEntity(DrawContext context, String username, int rootX, int rootY, int mouseX, int mouseY) {
+	private void drawPlayerEntity(GuiGraphics context, String username, int rootX, int rootY, int mouseX, int mouseY) {
 		if (entity != null)
-			drawEntity(context, rootX + 9, rootY + 16, rootX + 89, rootY + 124, 42, 0.0625F, mouseX, mouseY, entity);
-		context.drawCenteredTextWithShadow(textRenderer, username.length() > 15 ? username.substring(0, 15) : username, rootX + 47, rootY + 14, Color.WHITE.getRGB());
+			renderEntityInInventoryFollowsMouse(context, rootX + 9, rootY + 16, rootX + 89, rootY + 124, 42, 0.0625F, mouseX, mouseY, entity);
+		context.drawCenteredString(font, username.length() > 15 ? username.substring(0, 15) : username, rootX + 47, rootY + 14, Color.WHITE.getRGB());
 	}
 
 	private CompletableFuture<Void> fetchPlayerData(String username) {
@@ -165,22 +169,22 @@ public class ProfileViewerScreen extends Screen {
 			UUID uuid = UndashedUuid.fromStringLenient(stringifiedUuid);
 
 			//The fetch by name method can sometimes fail in weird cases and return a fake offline player
-			MinecraftClient.getInstance().getPlayerSkinCache().getFuture(ProfileComponent.ofDynamic(uuid)).thenAccept(entry -> {
-				this.playerName = entry.get().getProfile().name();
-				entity = new OtherClientPlayerEntity(MinecraftClient.getInstance().world, entry.get().getProfile()) {
+			Minecraft.getInstance().playerSkinRenderCache().lookup(ResolvableProfile.createUnresolved(uuid)).thenAccept(entry -> {
+				this.playerName = entry.get().gameProfile().name();
+				entity = new RemotePlayer(Minecraft.getInstance().level, entry.get().gameProfile()) {
 					@Override
-					public SkinTextures getSkin() {
-						PlayerListEntry playerListEntry = new PlayerListEntry(entry.get().getProfile(), false);
-						return playerListEntry.getSkinTextures();
+					public PlayerSkin getSkin() {
+						PlayerInfo playerListEntry = new PlayerInfo(entry.get().gameProfile(), false);
+						return playerListEntry.getSkin();
 					}
 
 					@Override
-					public boolean isModelPartVisible(PlayerModelPart modelPart) {
+					public boolean isModelPartShown(PlayerModelPart modelPart) {
 						return !(modelPart.equals(PlayerModelPart.CAPE));
 					}
 
 					@Override
-					public boolean isInvisibleTo(PlayerEntity player) {
+					public boolean isInvisibleTo(Player player) {
 						return true;
 					}
 				};
@@ -208,11 +212,11 @@ public class ProfileViewerScreen extends Screen {
 
 	@Override
 	public void init() {
-		profileViewerNavButtons.forEach(this::addDrawableChild);
+		profileViewerNavButtons.forEach(this::addRenderableWidget);
 		for (ProfileViewerPage profileViewerPage : profileViewerPages) {
 			if (profileViewerPage != null && profileViewerPage.getButtons() != null) {
-				for (ClickableWidget button : profileViewerPage.getButtons()) {
-					if (button != null) addDrawableChild(button);
+				for (AbstractWidget button : profileViewerPage.getButtons()) {
+					if (button != null) addRenderableWidget(button);
 				}
 			}
 		}
@@ -225,10 +229,10 @@ public class ProfileViewerScreen extends Screen {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			LiteralArgumentBuilder<FabricClientCommandSource> literalArgumentBuilder = ClientCommandManager.literal("pv")
 					.then(ClientCommandManager.argument("username", StringArgumentType.string())
-							.suggests((source, builder) -> CommandSource.suggestMatching(getPlayerSuggestions(source.getSource()), builder))
+							.suggests((source, builder) -> SharedSuggestionProvider.suggest(getPlayerSuggestions(source.getSource()), builder))
 							.executes(Scheduler.queueOpenScreenFactoryCommand(context -> new ProfileViewerScreen(StringArgumentType.getString(context, "username"))))
 					)
-					.executes(Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(MinecraftClient.getInstance().getSession().getUsername())));
+					.executes(Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(Minecraft.getInstance().getUser().getName())));
 			dispatcher.register(literalArgumentBuilder);
 			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(literalArgumentBuilder));
 		});
@@ -275,6 +279,6 @@ public class ProfileViewerScreen extends Screen {
 	 * Ensures that "dummy" players aren't included in command suggestions
 	 */
 	private static String[] getPlayerSuggestions(FabricClientCommandSource source) {
-		return source.getPlayerNames().stream().filter(playerName -> playerName.matches("[A-Za-z0-9_]+")).toArray(String[]::new);
+		return source.getOnlinePlayerNames().stream().filter(playerName -> playerName.matches("[A-Za-z0-9_]+")).toArray(String[]::new);
 	}
 }

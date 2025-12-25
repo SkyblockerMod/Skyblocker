@@ -9,35 +9,35 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.ToggleButtonWidget;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MuseumManager extends ClickableWidget implements HoveredItemStackProvider {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final TextRenderer TEXT_RENDERER = CLIENT.textRenderer;
-	private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/recipe_book.png");
+import org.jspecify.annotations.Nullable;
+
+public class MuseumManager extends AbstractWidget implements HoveredItemStackProvider {
+	private static final Minecraft CLIENT = Minecraft.getInstance();
+	private static final Font TEXT_RENDERER = CLIENT.font;
+	private static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("textures/gui/recipe_book.png");
 	public static final int BACKGROUND_WIDTH = 147;
 	public static final int BACKGROUND_HEIGHT = 160;
 	public static final int SPACING = 2;
@@ -48,33 +48,31 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 	private static String searchQuery = "";
 	private static int currentPage = 0;
 	private static List<Donation> donations = new ArrayList<>();
-	private final ToggleButtonWidget nextPageButton;
-	private final ToggleButtonWidget prevPageButton;
-	private final TextFieldWidget searchField;
+	private final ImageButton nextPageButton;
+	private final ImageButton prevPageButton;
+	private final EditBox searchField;
 	private final List<Donation> filteredDonations = new ArrayList<>();
 	private final List<String> excludedDonationIds = new ArrayList<>();
 	private final List<DonationButton> donationButtons = Lists.newArrayListWithCapacity(BUTTONS_PER_PAGE);
-	private final ButtonWidget filterButton;
-	private final ButtonWidget sortButton;
+	private final Button filterButton;
+	private final Button sortButton;
 	private DonationButton hoveredDonationButton;
 	private int pageCount = 0;
 
 	public MuseumManager(Screen screen, int x, int y, int backgroundWidth) {
-		super(x + backgroundWidth + SPACING, y, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, Text.empty());
+		super(x + backgroundWidth + SPACING, y, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, Component.empty());
 
 		// Initialize search field
-		this.searchField = new TextFieldWidget(TEXT_RENDERER, getX() + 25, getY() + 11, 69, 20, Text.empty());
+		this.searchField = new EditBox(TEXT_RENDERER, getX() + 25, getY() + 11, 69, 20, Component.empty());
 		this.searchField.setMaxLength(60);
 		this.searchField.setVisible(true);
-		this.searchField.setEditableColor(Colors.WHITE);
-		this.searchField.setText(searchQuery);
-		this.searchField.setPlaceholder(Text.translatable("gui.recipebook.search_hint").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
+		this.searchField.setTextColor(CommonColors.WHITE);
+		this.searchField.setValue(searchQuery);
+		this.searchField.setHint(Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
 
 		// Initialize page navigation buttons
-		this.nextPageButton = new ToggleButtonWidget(getX() + 93, getY() + 133, 12, 17, false);
-		this.nextPageButton.setTextures(RecipeBookResults.PAGE_FORWARD_TEXTURES);
-		this.prevPageButton = new ToggleButtonWidget(getX() + 38, getY() + 133, 12, 17, true);
-		this.prevPageButton.setTextures(RecipeBookResults.PAGE_BACKWARD_TEXTURES);
+		this.nextPageButton = new ImageButton(getX() + 93, getY() + 133, 12, 17, RecipeBookPage.PAGE_FORWARD_SPRITES, _ignored -> {});
+		this.prevPageButton = new ImageButton(getX() + 38, getY() + 133, 12, 17, RecipeBookPage.PAGE_BACKWARD_SPRITES, _ignored -> {});
 
 		donations = MuseumItemCache.getDonations();
 
@@ -85,19 +83,19 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 		}
 
 		// Initialize sort button
-		this.sortButton = ButtonWidget.builder(Text.empty(), button -> {
+		this.sortButton = Button.builder(Component.empty(), button -> {
 					ITEM_SORTER.cycleSortMode(filteredDonations);
 					button.setTooltip(ITEM_SORTER.getTooltip());
 					currentPage = 0;
 					updateButtons();
 				})
 				.tooltip(ITEM_SORTER.getTooltip())
-				.position(getX() + 95, getY() + 11)
+				.pos(getX() + 95, getY() + 11)
 				.size(BUTTON_SIZE, BUTTON_SIZE)
 				.build();
 
 		// Initialize filter button
-		this.filterButton = ButtonWidget.builder(Text.empty(), button -> {
+		this.filterButton = Button.builder(Component.empty(), button -> {
 					ITEM_FILTER.cycleFilterMode(donations, filteredDonations);
 					ITEM_SORTER.applySort(filteredDonations);
 					button.setTooltip(ITEM_FILTER.getTooltip());
@@ -105,7 +103,7 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 					updateButtons();
 				})
 				.tooltip(ITEM_FILTER.getTooltip())
-				.position(getX() + 116, getY() + 11)
+				.pos(getX() + 116, getY() + 11)
 				.size(BUTTON_SIZE, BUTTON_SIZE)
 				.build();
 
@@ -167,19 +165,19 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 	 * @param resetPage Whether to reset to the first page.
 	 */
 	public void updateSearchResults(boolean resetPage) {
-		searchQuery = this.searchField.getText();
+		searchQuery = this.searchField.getValue();
 		excludedDonationIds.clear();
 		for (Donation item : donations) {
 			StringBuilder searchableContent = new StringBuilder();
 			ItemStack itemStack = ItemRepository.getItemStack(item.getId());
 			if (itemStack != null) {
-				searchableContent.append(itemStack.getName().getString())
+				searchableContent.append(itemStack.getHoverName().getString())
 						.append(ItemUtils.getConcatenatedLore(itemStack));
 			}
 			if (item.getSet() != null && !item.getSet().isEmpty()) {
 				for (ObjectObjectMutablePair<String, PriceData> piece : item.getSet()) {
 					ItemStack pieceStack = ItemRepository.getItemStack(piece.left());
-					if (pieceStack != null) searchableContent.append(pieceStack.getName().getString())
+					if (pieceStack != null) searchableContent.append(pieceStack.getHoverName().getString())
 							.append(ItemUtils.getConcatenatedLore(pieceStack));
 				}
 			}
@@ -192,9 +190,9 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		// Render the background texture for the widget
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
+		context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
 		searchField.render(context, mouseX, mouseY, delta);
 
 		if (this.sortButton.active) {
@@ -202,7 +200,7 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 			int iconY = this.sortButton.getY() + (this.sortButton.getHeight() - 16) / 2;
 			ItemStack stack = ITEM_SORTER.getCurrentSortingItem();
 			sortButton.render(context, mouseX, mouseY, delta);
-			context.drawItemWithoutEntity(stack, iconX, iconY);
+			context.renderFakeItem(stack, iconX, iconY);
 		}
 
 		if (this.filterButton.active) {
@@ -210,16 +208,16 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 			int iconY = this.filterButton.getY() + (this.filterButton.getHeight() - 16) / 2;
 			ItemStack stack = ITEM_FILTER.getCurrentFilterItem();
 			filterButton.render(context, mouseX, mouseY, delta);
-			context.drawItemWithoutEntity(stack, iconX, iconY);
+			context.renderFakeItem(stack, iconX, iconY);
 		}
 
 		if (ItemRepository.filesImported()) {
 			// Render page count if multiple pages exist
 			if (this.pageCount > 1) {
-				Text text = Text.translatable("gui.recipebook.page", currentPage + 1, this.pageCount);
-				int width = TEXT_RENDERER.getWidth(text);
+				Component text = Component.translatable("gui.recipebook.page", currentPage + 1, this.pageCount);
+				int width = TEXT_RENDERER.width(text);
 
-				context.drawText(TEXT_RENDERER, text, getX() - width / 2 + 73, getY() + 137, -1, false);
+				context.drawString(TEXT_RENDERER, text, getX() - width / 2 + 73, getY() + 137, -1, false);
 			}
 
 			// Render donation buttons
@@ -236,19 +234,19 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 
 			drawTooltip(context, mouseX, mouseY);
 		} else {
-			context.drawCenteredTextWithShadow(TEXT_RENDERER, "Loading...", getX() + (BACKGROUND_WIDTH / 2), getY() + (BACKGROUND_HEIGHT / 2), Colors.WHITE);
+			context.drawCenteredString(TEXT_RENDERER, "Loading...", getX() + (BACKGROUND_WIDTH / 2), getY() + (BACKGROUND_HEIGHT / 2), CommonColors.WHITE);
 		}
 	}
 
-	public void drawTooltip(DrawContext context, int x, int y) {
+	public void drawTooltip(GuiGraphics context, int x, int y) {
 		// Draw the tooltip of the hovered result button if one is hovered over
 		if (this.hoveredDonationButton != null) {
-			context.drawTooltip(TEXT_RENDERER, hoveredDonationButton.getItemTooltip(), x, y, null);
+			context.setComponentTooltipForNextFrame(TEXT_RENDERER, hoveredDonationButton.getItemTooltip(), x, y, null);
 		}
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (this.searchField.mouseClicked(click, doubled)) {
 			this.searchField.setFocused(true);
 			return true;
@@ -272,7 +270,7 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 	}
 
 	@Override
-	public boolean charTyped(CharInput input) {
+	public boolean charTyped(CharacterEvent input) {
 		if (this.searchField.charTyped(input)) {
 			updateSearchResults(true);
 			return true;
@@ -281,8 +279,8 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput input) {
-		if ((this.searchField.isActive() && CLIENT.options.inventoryKey.matchesKey(input))
+	public boolean keyPressed(KeyEvent input) {
+		if ((this.searchField.canConsumeInput() && CLIENT.options.keyInventory.matches(input))
 				|| this.searchField.keyPressed(input)) {
 			updateSearchResults(true);
 			return true;
@@ -292,7 +290,7 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 			ItemStack hoveredStack = hoveredDonationButton.getDisplayStack();
 			if (hoveredStack == null) return false;
 			if (WikiLookupManager.handleWikiLookup(Either.right(hoveredStack), CLIENT.player, input)) return true;
-			if (ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(input)) {
+			if (ItemPrice.ITEM_PRICE_LOOKUP.matches(input)) {
 				ItemPrice.itemPriceLookup(CLIENT.player, hoveredStack);
 				return true;
 			}
@@ -301,7 +299,7 @@ public class MuseumManager extends ClickableWidget implements HoveredItemStackPr
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	@Override
 	public @Nullable ItemStack getFocusedItem() {
