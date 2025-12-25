@@ -130,6 +130,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 	}
 
 	@Unique
+	@Override
 	public void skyblocker$getAndCacheDurability() {
 		if (!skyblocker$shouldProcess()) {
 			durabilityBarFill = -1;
