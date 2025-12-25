@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
+import de.hysky.skyblocker.skyblock.item.ItemStackUpdateDurability;
 import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -17,5 +18,6 @@ public class AbstractContainerMenuMixin {
 			InventorySearch.refreshSlot(slot);
 		}
 		ItemPickupWidget.getInstance().onItemPickup(slot, stack);
+		((ItemStackUpdateDurability) (Object) stack).skyblocker$getAndCacheDurability();
 	}
 }

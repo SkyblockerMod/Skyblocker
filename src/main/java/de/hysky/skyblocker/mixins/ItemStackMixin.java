@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.ItemStackUpdateDurability;
 import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
@@ -35,7 +36,7 @@ import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 @Mixin(ItemStack.class)
-public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerStack {
+public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerStack, ItemStackUpdateDurability {
 	@Unique
 	private float durabilityBarFill = -1;
 
@@ -88,14 +89,6 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 		}
 	}
 
-	/**
-	 * Updates the durability of this item stack every tick when in the inventory.
-	 */
-	@Inject(method = "inventoryTick", at = @At("TAIL"))
-	private void skyblocker$updateDamage(CallbackInfo ci) {
-		skyblocker$getAndCacheDurability();
-	}
-
 	@ModifyReturnValue(method = "isBarVisible", at = @At("RETURN"))
 	private boolean modifyItemBarVisible(boolean original) {
 		return original || durabilityBarFill >= 0f;
@@ -137,7 +130,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 	}
 
 	@Unique
-	private void skyblocker$getAndCacheDurability() {
+	public void skyblocker$getAndCacheDurability() {
 		if (!skyblocker$shouldProcess()) {
 			durabilityBarFill = -1;
 			return;
