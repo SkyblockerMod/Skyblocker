@@ -480,6 +480,8 @@
   "skyblocker.config.general.hitbox.oldMushroomHitbox": "Enable 1.8 mushroom hitbox",
 
   "skyblocker.config.general.itemInfoDisplay": "Item Info Display",
+  "skyblocker.config.general.itemInfoDisplay.huntingToolkitIndicator": "Hunting Toolkit Indicator",
+  "skyblocker.config.general.itemInfoDisplay.huntingToolkitIndicator.@Tooltip": "Displays a red marker for tools that are in a hunting toolkit",
   "skyblocker.config.general.itemInfoDisplay.itemBackgroundOpacity": "Item Background Overlay Opacity",
   "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle": "Item Background Overlay Style",
   "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.@Tooltip": "Choose between a circular or a square background style!",
@@ -491,8 +493,6 @@
   "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds.@Tooltip": "Displays a colored background behind a Jacob's Farming Contest entry. The color represents the medal earned during the contest.",
   "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds": "Legacy Attribute Background",
   "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds.@Tooltip": "Highlights items with attributes by adding a red background.",
-  "skyblocker.config.general.itemInfoDisplay.huntingToolkitIndicator": "Hunting Toolkit Indicator",
-  "skyblocker.config.general.itemInfoDisplay.huntingToolkitIndicator.@Tooltip": "Displays a red marker for tools that are in a hunting toolkit",
 
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableCollapsibleEntries": "Enable Collapsible Entry Groups",
