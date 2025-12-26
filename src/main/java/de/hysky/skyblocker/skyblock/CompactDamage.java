@@ -92,17 +92,26 @@ public class CompactDamage {
 	/// For example:
 	/// 123,456,789 (precision 3) -> 123M
 	/// 12,345 (precision 4) -> 1.234k
-	private static String prettifyDamageNumber(int damage, int precision) {
+	private static String prettifyDamageNumber(final int damage, final int maxPrecision) {
+		int targetDamage = damage;
+		int targetPrecision = maxPrecision;
 		// First, round `damage` to `precision` places
 		// Otherwise inputs like `999,999, 3` will display as `1000k` instead of `1.00m`
-		int usedPrecision = baseTenDigits(damage);
-		int powerToRoundTo = powersOfTen[usedPrecision - precision];
-		damage = (int) (Math.round((double) damage / powerToRoundTo) * powerToRoundTo);
 
-		if (damage < 1_000) return String.valueOf(damage);
-		if (damage < 1_000_000) return formatToPrecision(damage / 1_000.0, precision) + "k";
-		if (damage < 1_000_000_000) return formatToPrecision(damage / 1_000_000.0, precision) + "m";
-		return formatToPrecision(damage / 1_000_000_000.0, precision) + "b";
+		int usedPrecision = baseTenDigits(targetDamage);
+		if (usedPrecision > targetPrecision) {
+			int powerToRoundTo = powersOfTen[usedPrecision - maxPrecision];
+			targetDamage = (int) (Math.round((double) targetDamage / powerToRoundTo) * powerToRoundTo);
+		} else if (targetPrecision > usedPrecision) {
+			// We don't want to ever display more decimal points than needed. For example,
+			// 999_999 with precision 7 should still display as 999.999k, not 999.9990k
+			targetPrecision = usedPrecision;
+		}
+
+		if (targetDamage < 1_000) return String.valueOf(targetDamage);
+		if (targetDamage < 1_000_000) return formatToPrecision(targetDamage / 1_000.0, targetPrecision) + "k";
+		if (targetDamage < 1_000_000_000) return formatToPrecision(targetDamage / 1_000_000.0, targetPrecision) + "m";
+		return formatToPrecision(targetDamage / 1_000_000_000.0, targetPrecision) + "b";
 	}
 
 	private static String formatToPrecision(double number, int precision) {
@@ -156,12 +165,17 @@ public class CompactDamage {
 		expectEqual("9000", formatToPrecision(9001d, 3));
 		expectEqual("9001", formatToPrecision(9001d, 4));
 
+		expectEqual("999", prettifyDamageNumber(999, 9));
 		expectEqual("100", prettifyDamageNumber(95, 1));
 		expectEqual("95", prettifyDamageNumber(95, 2));
 		expectEqual("300", prettifyDamageNumber(253, 1));
 		expectEqual("1.0k", prettifyDamageNumber(996, 2));
 		expectEqual("68.68k", prettifyDamageNumber(68_682, 4));
 		expectEqual("1.00m", prettifyDamageNumber(999_999, 3));
+		expectEqual("999.999k", prettifyDamageNumber(999_999, 7));
+		expectEqual("999.999k", prettifyDamageNumber(999_999, 1000));
+		expectEqual("99.999999m", prettifyDamageNumber(99_999_999, 1000));
+		expectEqual("100.0000m", prettifyDamageNumber(99_999_999, 7));
 	}
 
 	private static void expectEqual(Object expected, Object actual) {
