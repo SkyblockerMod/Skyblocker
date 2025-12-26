@@ -181,6 +181,7 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_bobbin_time", "BT");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_chimera", "CH");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_combo", "CO");
+		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_crop_fever", "CF");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_reiterate", "DU"); // Duplex
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_fatal_tempo", "FT");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_first_impression", "FI");
