@@ -518,6 +518,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableWeirdTransmission"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip"))
 								.binding(defaults.uiAndVisuals.teleportOverlay.enableWeirdTransmission,
 										() -> config.uiAndVisuals.teleportOverlay.enableWeirdTransmission,
 										newValue -> config.uiAndVisuals.teleportOverlay.enableWeirdTransmission = newValue)
@@ -525,6 +526,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableInstantTransmission"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission.@Tooltip"))
 								.binding(defaults.uiAndVisuals.teleportOverlay.enableInstantTransmission,
 										() -> config.uiAndVisuals.teleportOverlay.enableInstantTransmission,
 										newValue -> config.uiAndVisuals.teleportOverlay.enableInstantTransmission = newValue)
@@ -532,6 +534,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableEtherTransmission"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip"))
 								.binding(defaults.uiAndVisuals.teleportOverlay.enableEtherTransmission,
 										() -> config.uiAndVisuals.teleportOverlay.enableEtherTransmission,
 										newValue -> config.uiAndVisuals.teleportOverlay.enableEtherTransmission = newValue)
@@ -539,6 +542,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip"))
 								.binding(defaults.uiAndVisuals.teleportOverlay.enableSinrecallTransmission,
 										() -> config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission,
 										newValue -> config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission = newValue)
@@ -546,6 +550,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableWitherImpact"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip"))
 								.binding(defaults.uiAndVisuals.teleportOverlay.enableWitherImpact,
 										() -> config.uiAndVisuals.teleportOverlay.enableWitherImpact,
 										newValue -> config.uiAndVisuals.teleportOverlay.enableWitherImpact = newValue)
