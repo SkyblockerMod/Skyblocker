@@ -395,6 +395,13 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.bars.enableBars = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableBarsRift"))
+								.binding(defaults.uiAndVisuals.bars.enableBarsRift,
+										() -> config.uiAndVisuals.bars.enableBarsRift,
+										newValue -> config.uiAndVisuals.bars.enableBarsRift = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
