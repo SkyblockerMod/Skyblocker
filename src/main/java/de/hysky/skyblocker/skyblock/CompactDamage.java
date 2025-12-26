@@ -7,6 +7,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -57,8 +58,9 @@ public class CompactDamage {
 		if (!NumberUtils.isParsable(dmg)) return; //Sanity check
 
 		MutableComponent prettierCustomName = Component.empty();
+		int precision = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.precision;
 		if (!isCrit) {
-			String prettifiedDmg = prettifyDamageNumber(Long.parseLong(dmg));
+			String prettifiedDmg = prettifyDamageNumber(Integer.parseInt(dmg), precision);
 			int color;
 			if (textColor != null) {
 				if (textColor == TextColor.fromLegacyFormat(ChatFormatting.GRAY)) {
@@ -68,7 +70,7 @@ public class CompactDamage {
 			prettierCustomName = Component.literal(prettifiedDmg).setStyle(customName.getStyle()).withColor(color);
 		} else {
 			String dmgSymbol = matcher.group(1);
-			String prettifiedDmg = dmgSymbol + prettifyDamageNumber(Long.parseLong(dmg)) + dmgSymbol;
+			String prettifiedDmg = dmgSymbol + prettifyDamageNumber(Integer.parseInt(dmg), precision) + dmgSymbol;
 			int length = prettifiedDmg.length();
 			for (int i = 0; i < length; i++) {
 				prettierCustomName.append(Component.literal(prettifiedDmg.substring(i, i + 1)).withColor(
@@ -86,15 +88,85 @@ public class CompactDamage {
 		entity.setCustomName(prettierCustomName);
 	}
 
-	private static String prettifyDamageNumber(long damage) {
+	/// We want precision to signify the *number of significant digits*, not the number of digits after the decimal.
+	/// For example:
+	/// 123,456,789 (precision 3) -> 123M
+	/// 12,345 (precision 4) -> 1.234k
+	private static String prettifyDamageNumber(int damage, int precision) {
+		// First, round `damage` to `precision` places
+		// Otherwise inputs like `999,999, 3` will display as `1000k` instead of `1.00m`
+		int usedPrecision = baseTenDigits(damage);
+		int powerToRoundTo = powersOfTen[usedPrecision - precision];
+		damage = (int) (Math.round((double) damage / powerToRoundTo) * powerToRoundTo);
+
 		if (damage < 1_000) return String.valueOf(damage);
-		if (damage < 1_000_000) return format(damage / 1_000.0) + "k";
-		if (damage < 1_000_000_000) return format(damage / 1_000_000.0) + "M";
-		if (damage < 1_000_000_000_000L) return format(damage / 1_000_000_000.0) + "B";
-		return format(damage / 1_000_000_000_000.0) + "T"; //This will probably never be reached
+		if (damage < 1_000_000) return formatToPrecision(damage / 1_000.0, precision) + "k";
+		if (damage < 1_000_000_000) return formatToPrecision(damage / 1_000_000.0, precision) + "m";
+		return formatToPrecision(damage / 1_000_000_000.0, precision) + "b";
 	}
 
-	private static String format(double number) {
-		return ("%." + SkyblockerConfigManager.get().uiAndVisuals.compactDamage.precision + "f").formatted(number);
+	private static String formatToPrecision(double number, int precision) {
+		int usedPrecision = baseTenDigits((int) number);
+		int remainingPrecision = precision - usedPrecision;
+		if (remainingPrecision <= 0) {
+			int powerToRoundTo = powersOfTen[usedPrecision - precision];
+			return String.valueOf((int) (Math.round(number / powerToRoundTo) * powerToRoundTo));
+		}
+		return ("%." + remainingPrecision + "f").formatted(number);
+	}
+
+	private static int baseTwoDigits(int x) {
+		return 32 - Integer.numberOfLeadingZeros(x);
+	}
+
+	private static final int[] guesses = new int[]{
+			0, 0, 0, 0, 1, 1, 1, 2, 2, 2,
+			3, 3, 3, 3, 4, 4, 4, 5, 5, 5,
+			6, 6, 6, 6, 7, 7, 7, 8, 8, 8,
+			9, 9, 9
+	};
+
+	private static final int[] powersOfTen = new int[]{
+			1, 10, 100, 1000, 10000, 100000,
+			1000000, 10000000, 100000000, 1000000000,
+	};
+
+	/// Equivalent to floor(log10(x)) + 1
+	/// https://stackoverflow.com/a/25934909
+	private static int baseTenDigits(int x) {
+		int guess = guesses[baseTwoDigits(x)];
+		return guess + ((x >= powersOfTen[guess]) ? 1 : 0);
+	}
+
+	public static void main(String[] args) {
+		expectEqual(1, baseTenDigits(4));
+		// mathematically determined to be the funniest & most popular number
+		expectEqual(2, baseTenDigits(68));
+		expectEqual(2, baseTenDigits(99));
+		expectEqual(3, baseTenDigits(100));
+		expectEqual(3, baseTenDigits(101));
+		expectEqual(8, baseTenDigits(99_999_999));
+		expectEqual(9, baseTenDigits(100_000_000));
+		expectEqual(9, baseTenDigits(100_000_001));
+
+		expectEqual("103.6", formatToPrecision(103.632d, 4));
+		expectEqual("103.600", formatToPrecision(103.6001d, 6));
+		expectEqual("9000.001", formatToPrecision(9000.00149d, 7));
+		expectEqual("9000", formatToPrecision(9000.00149d, 3));
+		expectEqual("9000", formatToPrecision(9001d, 3));
+		expectEqual("9001", formatToPrecision(9001d, 4));
+
+		expectEqual("100", prettifyDamageNumber(95, 1));
+		expectEqual("95", prettifyDamageNumber(95, 2));
+		expectEqual("300", prettifyDamageNumber(253, 1));
+		expectEqual("1.0k", prettifyDamageNumber(996, 2));
+		expectEqual("68.68k", prettifyDamageNumber(68_682, 4));
+		expectEqual("1.00m", prettifyDamageNumber(999_999, 3));
+	}
+
+	private static void expectEqual(Object expected, Object actual) {
+		if (!expected.equals(actual)) {
+			throw new AssertionError("Expected " + expected + ", got " + actual);
+		}
 	}
 }
