@@ -44,13 +44,14 @@ public class CompactDamageTest {
 		return entity;
 	}
 
-	private static Component getCompactText(ArmorStand entity) {
+	private static Component getCompactText(ArmorStand entity, int maxPrecision) {
+		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.precision = maxPrecision;
 		CompactDamage.compactDamage(entity);
 		return entity.getCustomName();
 	}
 
-	private static void testCompact(Component inputText, Component expectedText) {
-		Component outputText = getCompactText(createEntityWithName(inputText));
+	private static void testCompact(Component inputText, int maxPrecision, Component expectedText) {
+		Component outputText = getCompactText(createEntityWithName(inputText), maxPrecision);
 		Assertions.assertEquals(expectedText, outputText);
 	}
 
@@ -90,19 +91,28 @@ public class CompactDamageTest {
 
 	@Test
 	public void testBasicNoCrit() {
-		testCompact(makeInputText("3,825", false), Component.literal("3.8k").withColor(CommonColors.WHITE));
+		testCompact(makeInputText("3,825", false), 4, Component.literal("3.825k").withColor(CommonColors.WHITE));
+		testCompact(makeInputText("3,825", false), 6, Component.literal("3.825k").withColor(CommonColors.WHITE));
+		testCompact(makeInputText("9,995", false), 3, Component.literal("10.0k").withColor(CommonColors.WHITE));
 	}
 
 	@Test
 	public void testBasicCrit() {
-		testCompact(makeInputText("7,214", true), splitString("✧7.2k✧"));
+		testCompact(makeInputText("7,214", true), 4, splitString("✧7.214k✧"));
+		testCompact(makeInputText("3,825", true), 4, splitString("✧3.825k✧"));
+		testCompact(makeInputText("9,995", true), 3, splitString("✧10.0k✧"));
+
 	}
 
 	@Test
 	public void testModifiersNoCrit() {
 		for (var pair : MODIFIERS.entrySet()) {
 			testCompact(makeInputText("133,972", false, pair.getKey(), pair.getValue()),
-					Component.literal("134.0k").withColor(CommonColors.WHITE).append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
+					3,
+					Component.literal("134k").withColor(CommonColors.WHITE).append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
+			testCompact(makeInputText("99,972", false, pair.getKey(), pair.getValue()),
+					9,
+					Component.literal("99.972k").withColor(CommonColors.WHITE).append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
 		}
 	}
 
@@ -110,7 +120,11 @@ public class CompactDamageTest {
 	public void testModifiersCrit() {
 		for (var pair : MODIFIERS.entrySet()) {
 			testCompact(makeInputText("4,949", true, pair.getKey(), pair.getValue()),
-					splitString("✧4.9k✧").append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
+					3,
+					splitString("✧4.95k✧").append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
+			testCompact(makeInputText("491,529", true, pair.getKey(), pair.getValue()),
+					2,
+					splitString("✧490k✧").append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
 		}
 	}
 }

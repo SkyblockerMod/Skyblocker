@@ -405,7 +405,7 @@ public class UIAndVisualsConfig {
 	public static class CompactDamage {
 		public boolean enabled = true;
 
-		public int precision = 1;
+		public int precision = 4;
 
 		public Color normalDamageColor = new Color(0xFFFFFF);
 

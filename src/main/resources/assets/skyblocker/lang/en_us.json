@@ -1066,7 +1066,7 @@
   "skyblocker.config.uiAndVisuals.compactDamage.enabled": "Enabled",
   "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "Normal Damage Color",
   "skyblocker.config.uiAndVisuals.compactDamage.precision": "Precision",
-  "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip": "The number of digits to display after the decimal point.",
+  "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip": "The number of significant digits.",
 
   "skyblocker.config.uiAndVisuals.compactorDeletorPreview": "Enable Compactor/Deletor Preview",
 
