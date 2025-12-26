@@ -32,6 +32,9 @@ public abstract class AbstractContainerMenuMixin {
 	private void skyblocker$initializeContents(int stateId, List<ItemStack> list, ItemStack itemStack, CallbackInfo ci) {
 		for (int j = 0; j < list.size(); j++) {
 			((ItemStackUpdateDurability) (Object) this.slots.get(j).getItem()).skyblocker$getAndCacheDurability();
+			if (InventorySearch.isSearching()) {
+				InventorySearch.refreshSlot(j);
+			}
 		}
 		((ItemStackUpdateDurability) (Object) this.carried).skyblocker$getAndCacheDurability();
 	}
@@ -42,6 +45,9 @@ public abstract class AbstractContainerMenuMixin {
 		// I'm way too lazy to figure how to only update the slots that were moved, soo...
 		for (int k = 0; k < this.slots.size(); k++) {
 			((ItemStackUpdateDurability) (Object) this.slots.get(k).getItem()).skyblocker$getAndCacheDurability();
+			if (InventorySearch.isSearching()) {
+				InventorySearch.refreshSlot(k);
+			}
 		}
 		((ItemStackUpdateDurability) (Object) this.carried).skyblocker$getAndCacheDurability();
 	}
