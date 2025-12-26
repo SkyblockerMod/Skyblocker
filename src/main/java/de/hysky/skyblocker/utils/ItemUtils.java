@@ -80,7 +80,7 @@ public final class ItemUtils {
 	private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
 	private static final Pattern GEMSTONES_SACK_AMOUNT_PATTERN = Pattern.compile(" Amount: ([\\d,]+)");
 	private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
-	private static final Pattern HUNTING_BOX_COUNT_PATTERN = Pattern.compile("Owned: (?<shards>\\d+) Shards?");
+	private static final Pattern HUNTING_BOX_COUNT_PATTERN = Pattern.compile("Owned: (?<shards>[\\d,]+) Shards?");
 	private static final short LOG_INTERVAL = 1000;
 	private static long lastLog = Util.getMillis();
 
