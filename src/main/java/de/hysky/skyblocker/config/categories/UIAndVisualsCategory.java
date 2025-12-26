@@ -789,7 +789,7 @@ public class UIAndVisualsCategory {
 								.binding(defaults.uiAndVisuals.compactDamage.precision,
 										() -> config.uiAndVisuals.compactDamage.precision,
 										newValue -> config.uiAndVisuals.compactDamage.precision = newValue)
-								.controller(IntegerController.createBuilder().range(1, 3).slider(1).build())
+								.controller(IntegerController.createBuilder().range(3, 10).slider(1).build())
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor"))
