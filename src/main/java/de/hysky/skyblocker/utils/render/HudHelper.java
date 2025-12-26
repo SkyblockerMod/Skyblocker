@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.render;
 import com.mojang.blaze3d.platform.InputConstants;
 import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import de.hysky.skyblocker.compatibility.ModernUICompatibility;
+import de.hysky.skyblocker.utils.render.gui.state.CustomShapeGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.OutlinedTextGuiElementRenderState;
@@ -26,11 +27,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import org.joml.Matrix3x2f;
+import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.Color;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 public class HudHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -53,6 +56,16 @@ public class HudHelper {
 		context.fill(x, y + height - 1, x + width, y + height, color);
 		context.fill(x, y + 1, x + 1, y + height - 1, color);
 		context.fill(x + width - 1, y + 1, x + width, y + height - 1, color);
+	}
+
+	/**
+	 * Draws shape with given vertices. Note the vertices must be in the right or for this to work properly this function does not sort them for you.
+	 * @param context draw context
+	 * @param vertices vertices of shape
+	 * @param color color of shape
+	 */
+	public static void drawCustomShape(GuiGraphics context, List<Vector2f> vertices, int color) {
+		context.guiRenderState.submitGuiElement(new CustomShapeGuiElementRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), vertices, color, context.scissorStack.peek()));
 	}
 
 	/**
