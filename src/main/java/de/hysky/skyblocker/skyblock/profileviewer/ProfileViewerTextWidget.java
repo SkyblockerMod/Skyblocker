@@ -212,7 +212,7 @@ public class ProfileViewerTextWidget {
 				}
 			}
 			
-		} catch (Exception ignored /*most other ex's are ignored, so I guess this one too ig?*/) { 
+		} catch (Exception ignored /*most other ex's are ignored, so I guess this one too?*/) { 
 			return -1;
 		}
 		return magicalPower;
