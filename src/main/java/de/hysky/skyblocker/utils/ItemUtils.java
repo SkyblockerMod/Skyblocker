@@ -29,6 +29,8 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentPatch;
@@ -227,6 +229,20 @@ public final class ItemUtils {
 			case "MIDAS_STAFF" -> {
 				if (customData.getIntOr("winning_bid", 0) >= 100000000) {
 					return id + "_100M";
+				}
+			}
+			case "" -> {
+				Minecraft client = Minecraft.getInstance();
+				if (client.screen instanceof ContainerScreen && client.screen.getTitle().getString().startsWith("Superpairs")) {
+					ItemLore lore = itemStack.get(DataComponents.LORE);
+					if (lore == null) return id;
+					List<Component> lines = lore.lines();
+					if (lines.size() < 3) return id;
+					String[] parts = lines.get(2).getString().toUpperCase(Locale.ENGLISH).split(" ");
+					if (RomanNumerals.isValidRomanNumeral(parts[parts.length - 1])) {
+						parts[parts.length - 1] = String.valueOf(RomanNumerals.romanToDecimal(parts[parts.length - 1]));
+					}
+					return "ENCHANTMENT_" + String.join("_", parts);
 				}
 			}
 		}
