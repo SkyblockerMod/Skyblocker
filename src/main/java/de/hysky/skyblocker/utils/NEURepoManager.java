@@ -11,8 +11,10 @@ import io.github.moulberry.repo.NEUConstants;
 import io.github.moulberry.repo.NEURecipeCache;
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.NEURepository;
+import io.github.moulberry.repo.data.ItemOverlays;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
+import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
 import io.github.moulberry.repo.util.NEUId;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -67,6 +69,10 @@ public class NEURepoManager {
 	 * @see #getUsages()
 	 */
 	private static final NEURecipeCache RECIPE_CACHE = NEURecipeCache.forRepo(NEU_REPO);
+	/**
+	 * @see #getStackOverlays(int)
+	 */
+	private static final ItemOverlays STACK_OVERLAYS = ItemOverlays.forRepo(NEU_REPO);
 	/**
 	 * Store after load runnables so we can execute them after each time the repository is (re)loaded.
 	 */
@@ -239,5 +245,9 @@ public class NEURepoManager {
 
 	public static Map<@NEUId String, Set<NEURecipe>> getUsages() {
 		return RECIPE_CACHE.getUsages();
+	}
+
+	public static Map<@NEUId String, ItemOverlayFile> getStackOverlays(int maxSupportedDataVersion) {
+		return STACK_OVERLAYS.getMostUpToDateCompatibleWith(maxSupportedDataVersion);
 	}
 }
