@@ -45,7 +45,6 @@ public class MiningConfig {
 		public boolean hideHudOnCooldown = false;
 	}
 
-
 	public static class DwarvenMines {
 		public boolean solveFetchur = true;
 
