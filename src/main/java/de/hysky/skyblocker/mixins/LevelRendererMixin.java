@@ -61,7 +61,7 @@ public class LevelRendererMixin {
 			return new BlockBreakingRenderState(clientLevel, blockPos, pingModifiedProgress);
 
 		}
-		//if the setting is enabled do not modify anything
+		//if the setting is not enabled do not modify anything
 		else {
 			return original.call(clientLevel, blockPos, i);
 		}
