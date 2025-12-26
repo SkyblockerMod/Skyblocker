@@ -40,6 +40,35 @@ public enum SkyblockItemRarity implements StringRepresentable {
 		this.b = (color & 0xFF) / 255f;
 	}
 
+	/**
+	 * @return The amount of magic power an accessory with this rarity would give.
+	 */
+	public int getMP() {
+		return switch (this) {
+			case COMMON, SPECIAL -> 3;
+			case UNCOMMON, VERY_SPECIAL -> 5;
+			case RARE -> 8;
+			case EPIC -> 12;
+			case LEGENDARY -> 16;
+			case MYTHIC -> 22;
+			default -> 1;
+		};
+	}
+
+	public SkyblockItemRarity recombobulate() {
+		return switch (this) {
+			case COMMON -> UNCOMMON;
+			case UNCOMMON -> RARE;
+			case RARE -> EPIC;
+			case EPIC -> LEGENDARY;
+			case LEGENDARY -> MYTHIC;
+			case MYTHIC -> DIVINE;
+			case DIVINE -> SPECIAL;
+			case SPECIAL, VERY_SPECIAL, ULTIMATE -> VERY_SPECIAL;
+			default -> UNKNOWN;
+		};
+	}
+
 	@Override
 	public String getSerializedName() {
 		return name();
