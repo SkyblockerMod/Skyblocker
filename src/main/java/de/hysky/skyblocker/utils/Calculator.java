@@ -2,15 +2,12 @@ package de.hysky.skyblocker.utils;
 
 import com.demonwav.mcdev.annotations.Translatable;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongMaps;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.io.Serial;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.util.StringRepresentable;
@@ -149,15 +146,15 @@ public class Calculator {
 	}
 
 	private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([sekmbtq]?)");
-	private static final Object2LongMap<String> MAGNITUDE_VALUES = Object2LongMaps.unmodifiable(new Object2LongOpenHashMap<>(Map.of(
-			"s", 64L,
-			"e", 160L,
-			"k", 1_000L,
-			"m", 1_000_000L,
-			"b", 1_000_000_000L,
-			"t", 1_000_000_000_000L,
-			"q", 1_000_000_000_000_000L
-	)));
+	private static final Object2LongMap<String> MAGNITUDE_VALUES = Object2LongMap.ofEntries(
+			Object2LongMap.entry("s", 64L),
+			Object2LongMap.entry("e", 160L),
+			Object2LongMap.entry("k", 1_000L),
+			Object2LongMap.entry("m", 1_000_000L),
+			Object2LongMap.entry("b", 1_000_000_000L),
+			Object2LongMap.entry("t", 1_000_000_000_000L),
+			Object2LongMap.entry("q", 1_000_000_000_000_000L)
+	);
 
 	private static List<AbstractToken<?>> lex(String input) throws CalculatorException {
 		List<AbstractToken<?>> tokens = new ArrayList<>();

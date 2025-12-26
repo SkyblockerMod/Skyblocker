@@ -8,7 +8,6 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,24 +44,24 @@ public class SkillWidget {
 			Map.entry("Runecraft", Ico.MAGMA_CREAM),
 			Map.entry("Social", Ico.EMERALD)
 	);
-	private static final Object2IntMap<String> SKILL_CAP = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(Map.ofEntries(
-			Map.entry("Combat", 60),
-			Map.entry("Farming", 60),
-			Map.entry("Mining", 60),
-			Map.entry("Foraging", 50),
-			Map.entry("Fishing", 50),
-			Map.entry("Enchanting", 60),
-			Map.entry("Alchemy", 50),
-			Map.entry("Taming", 60),
-			Map.entry("Carpentry", 50),
-			Map.entry("Catacombs", 50),
-			Map.entry("Runecraft", 25),
-			Map.entry("Social", 25)
-	)));
-	private static final Object2IntMap<String> SOFT_SKILL_CAP = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(Map.of(
-			"Taming", 50,
-			"Farming", 50
-	)));
+	private static final Object2IntMap<String> SKILL_CAP = Object2IntMap.ofEntries(
+			Object2IntMap.entry("Combat", 60),
+			Object2IntMap.entry("Farming", 60),
+			Object2IntMap.entry("Mining", 60),
+			Object2IntMap.entry("Foraging", 50),
+			Object2IntMap.entry("Fishing", 50),
+			Object2IntMap.entry("Enchanting", 60),
+			Object2IntMap.entry("Alchemy", 50),
+			Object2IntMap.entry("Taming", 60),
+			Object2IntMap.entry("Carpentry", 50),
+			Object2IntMap.entry("Catacombs", 50),
+			Object2IntMap.entry("Runecraft", 25),
+			Object2IntMap.entry("Social", 25)
+	);
+	private static final Object2IntMap<String> SOFT_SKILL_CAP = Object2IntMap.ofEntries(
+			Object2IntMap.entry("Taming", 50),
+			Object2IntMap.entry("Farming", 50)
+	);
 
 	private static final Object2IntMap<String> INFINITE = Object2IntMaps.singleton("Catacombs", 0);
 

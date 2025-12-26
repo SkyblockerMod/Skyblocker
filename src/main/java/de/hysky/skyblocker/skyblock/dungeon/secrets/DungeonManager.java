@@ -64,8 +64,6 @@ import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
-import it.unimi.dsi.fastutil.objects.Object2ByteMaps;
-import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -123,29 +121,29 @@ public class DungeonManager {
 	 * @implNote Not using {@link Registry#getKey(Object) Registry#getId(Block)} and {@link Blocks Blocks} since this is also used by {@link de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
 	 */
 	@SuppressWarnings("JavadocReference")
-	protected static final Object2ByteMap<String> NUMERIC_ID = Object2ByteMaps.unmodifiable(new Object2ByteOpenHashMap<>(Map.ofEntries(
-			Map.entry("minecraft:stone", (byte) 1),
-			Map.entry("minecraft:diorite", (byte) 2),
-			Map.entry("minecraft:polished_diorite", (byte) 3),
-			Map.entry("minecraft:andesite", (byte) 4),
-			Map.entry("minecraft:polished_andesite", (byte) 5),
-			Map.entry("minecraft:grass_block", (byte) 6),
-			Map.entry("minecraft:dirt", (byte) 7),
-			Map.entry("minecraft:coarse_dirt", (byte) 8),
-			Map.entry("minecraft:cobblestone", (byte) 9),
-			Map.entry("minecraft:bedrock", (byte) 10),
-			Map.entry("minecraft:oak_leaves", (byte) 11),
-			Map.entry("minecraft:gray_wool", (byte) 12),
-			Map.entry("minecraft:double_stone_slab", (byte) 13),
-			Map.entry("minecraft:mossy_cobblestone", (byte) 14),
-			Map.entry("minecraft:clay", (byte) 15),
-			Map.entry("minecraft:stone_bricks", (byte) 16),
-			Map.entry("minecraft:mossy_stone_bricks", (byte) 17),
-			Map.entry("minecraft:chiseled_stone_bricks", (byte) 18),
-			Map.entry("minecraft:gray_terracotta", (byte) 19),
-			Map.entry("minecraft:cyan_terracotta", (byte) 20),
-			Map.entry("minecraft:black_terracotta", (byte) 21)
-	)));
+	protected static final Object2ByteMap<String> NUMERIC_ID = Object2ByteMap.ofEntries(
+			Object2ByteMap.entry("minecraft:stone", (byte) 1),
+			Object2ByteMap.entry("minecraft:diorite", (byte) 2),
+			Object2ByteMap.entry("minecraft:polished_diorite", (byte) 3),
+			Object2ByteMap.entry("minecraft:andesite", (byte) 4),
+			Object2ByteMap.entry("minecraft:polished_andesite", (byte) 5),
+			Object2ByteMap.entry("minecraft:grass_block", (byte) 6),
+			Object2ByteMap.entry("minecraft:dirt", (byte) 7),
+			Object2ByteMap.entry("minecraft:coarse_dirt", (byte) 8),
+			Object2ByteMap.entry("minecraft:cobblestone", (byte) 9),
+			Object2ByteMap.entry("minecraft:bedrock", (byte) 10),
+			Object2ByteMap.entry("minecraft:oak_leaves", (byte) 11),
+			Object2ByteMap.entry("minecraft:gray_wool", (byte) 12),
+			Object2ByteMap.entry("minecraft:double_stone_slab", (byte) 13),
+			Object2ByteMap.entry("minecraft:mossy_cobblestone", (byte) 14),
+			Object2ByteMap.entry("minecraft:clay", (byte) 15),
+			Object2ByteMap.entry("minecraft:stone_bricks", (byte) 16),
+			Object2ByteMap.entry("minecraft:mossy_stone_bricks", (byte) 17),
+			Object2ByteMap.entry("minecraft:chiseled_stone_bricks", (byte) 18),
+			Object2ByteMap.entry("minecraft:gray_terracotta", (byte) 19),
+			Object2ByteMap.entry("minecraft:cyan_terracotta", (byte) 20),
+			Object2ByteMap.entry("minecraft:black_terracotta", (byte) 21)
+	);
 	/**
 	 * Block data for dungeon rooms. See {@link de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU} for format details and how it's generated.
 	 * All access to this map must check {@link #isRoomsLoaded()} to prevent concurrent modification.
