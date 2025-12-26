@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -41,14 +42,11 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PredictiveSmoothAOTE {
 	public static final Identifier SMOOTH_AOTE_BEFORE_PHASE = SkyblockerMod.id("smooth_aote");
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 
-	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
 	private static final long MAX_TELEPORT_TIME = 2500; //2.5 seconds
 
 	private static long startTime;
@@ -198,9 +196,9 @@ public class PredictiveSmoothAOTE {
 		}
 
 		//make sure the player has enough mana to do the teleport
-		Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
-		if (manaNeeded != null && manaNeeded.matches()) {
-			int manaCost = Integer.parseInt(manaNeeded.group(1));
+		List<ItemAbility> abilities = heldItem.skyblocker$getAbilities();
+		if (!abilities.isEmpty() && abilities.getFirst().manaCost().isPresent()) {
+			int manaCost = abilities.getFirst().manaCost().getAsInt();
 			int predictedMana = StatusBarTracker.getMana().value();
 			if (predictedMana < manaCost) {
 				return;
