@@ -21,7 +21,8 @@ public class DyeSpecialEffects {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	@VisibleForTesting
-	protected static final Pattern DROP_PATTERN = Pattern.compile("WOW! (?:\\[[A-Z+]+\\] )?(?<player>[A-Za-z0-9_]+) found (?<dye>[A-Za-z ]+ Dye)(?: #[\\d,]+)?!");
+	// WOW! (?:\[[A-Z+]+] )?(?<player>[A-Za-z0-9_]+) found (?:a|an) (?<dye>[A-Za-z ]+ Dye)(?: #[\d,]+)?!
+	protected static final Pattern DROP_PATTERN = Pattern.compile("WOW! (?:\\[[A-Z+]+] )?(?<player>[A-Za-z0-9_]+) found (?:a|an) (?<dye>[A-Za-z ]+ Dye)(?: #[\\d,]+)?!");
 
 	@Init
 	public static void init() {
