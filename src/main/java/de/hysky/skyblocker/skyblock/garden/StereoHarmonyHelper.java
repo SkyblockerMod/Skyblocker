@@ -33,7 +33,7 @@ public class StereoHarmonyHelper extends SimpleContainerSolver {
 		List<ColorHighlight> highlights = new ArrayList<>();
 		for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
 			//noinspection DataFlowIssue - stripFormatting will not return null (!null to !null)
-			Matcher matcher = RegexListUtils.findInList(entry.getValue().skyblocker$getLoreStrings(), ChatFormatting::stripFormatting, PEST_NAME_PATTERN);
+			Matcher matcher = RegexListUtils.matchInList(entry.getValue().skyblocker$getLoreStrings(), ChatFormatting::stripFormatting, PEST_NAME_PATTERN);
 
 			if (matcher != null) {
 				String pestName = matcher.group("name").trim();
