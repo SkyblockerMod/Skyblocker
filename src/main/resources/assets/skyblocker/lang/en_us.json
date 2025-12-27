@@ -726,7 +726,8 @@
   "skyblocker.config.helpers.jerry.sendJerryTimerMessage": "Jerry cooldown is over!",
 
   "skyblocker.config.helpers.mythologicalRitual": "Mythological Ritual Helper",
-  "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "Enable Griffin Burrow helper for Diana's Mythological Ritual event.",
+  "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "Enable Mythological Ritual Helper",
+  "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper.@Tooltip": "Adds waypoints for nearby Griffin Burrows during Diana's Mythological Ritual event.",
 
   "skyblocker.config.hunting": "Hunting",
 
