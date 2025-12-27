@@ -98,6 +98,7 @@ public class HelperCategory {
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper"))
+								.description(Component.translatable("skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper.@Tooltip"))
 								.binding(defaults.helpers.mythologicalRitual.enableMythologicalRitualHelper,
 										() -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper,
 										newValue -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper = newValue)
