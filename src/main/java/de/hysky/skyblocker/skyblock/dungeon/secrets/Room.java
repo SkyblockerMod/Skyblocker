@@ -141,6 +141,7 @@ public class Room implements Tickable, Renderable {
 		roomMatched();
 		matchState = MatchState.MATCHED;
 		DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this);
+		discard();
 	}
 
 	public Type getType() {
@@ -457,6 +458,7 @@ public class Room implements Tickable, Renderable {
 		} else if (matchingRoomsSize == 1) {
 			if (matchState == MatchState.MATCHING) {
 				// If one room matches, load the secrets for that room and set state to double-checking.
+				matchState = MatchState.DOUBLE_CHECKING;
 				Triple<Direction, Vector2ic, List<String>> directionRoom = possibleRooms.stream().filter(directionRooms -> directionRooms.getRight().size() == 1).findAny().orElseThrow();
 				name = directionRoom.getRight().getFirst();
 				direction = directionRoom.getLeft();
@@ -470,8 +472,10 @@ public class Room implements Tickable, Renderable {
 				matchState = MatchState.MATCHED;
 				assert checkedBlocks != null;
 				DungeonManager.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} confirmed after checking {} block(s) including double checking {} block(s)", name, checkedBlocks.size(), doubleCheckBlocks);
-				RenderHelper.runOnRenderThread(() -> DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this));
-				discard();
+				RenderHelper.runOnRenderThread(() -> {
+					DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this);
+					discard();
+				});
 				return true;
 			}
 			return false;
@@ -521,7 +525,6 @@ public class Room implements Tickable, Renderable {
 			}
 		}
 		DungeonManager.getCustomWaypoints(name).values().forEach(this::addCustomWaypoint);
-		matchState = MatchState.DOUBLE_CHECKING;
 	}
 
 	/**
