@@ -19,6 +19,10 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
+import static de.hysky.skyblocker.skyblock.CompactDamage.baseTenDigits;
+import static de.hysky.skyblocker.skyblock.CompactDamage.formatToPrecision;
+import static de.hysky.skyblocker.skyblock.CompactDamage.prettifyDamageNumber;
+
 public class CompactDamageTest {
 	Map<String, ChatFormatting> MODIFIERS = Util.make(new HashMap<>(), map -> {
 		map.put("❤", ChatFormatting.LIGHT_PURPLE);
@@ -126,5 +130,44 @@ public class CompactDamageTest {
 					2,
 					splitString("✧490k✧").append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
 		}
+	}
+
+	@Test
+	public void testBaseTenDigits() {
+		Assertions.assertEquals(1, baseTenDigits(4));
+		// mathematically determined to be the funniest & most popular number
+		Assertions.assertEquals(2, baseTenDigits(68));
+		Assertions.assertEquals(2, baseTenDigits(99));
+		Assertions.assertEquals(3, baseTenDigits(100));
+		Assertions.assertEquals(3, baseTenDigits(101));
+		Assertions.assertEquals(8, baseTenDigits(99_999_999));
+		Assertions.assertEquals(9, baseTenDigits(100_000_000));
+		Assertions.assertEquals(9, baseTenDigits(100_000_001));
+
+	}
+
+	@Test
+	public void testFormatToPrecision() {
+		Assertions.assertEquals("103.6", formatToPrecision(103.632d, 4));
+		Assertions.assertEquals("103.600", formatToPrecision(103.6001d, 6));
+		Assertions.assertEquals("9000.001", formatToPrecision(9000.00149d, 7));
+		Assertions.assertEquals("9000", formatToPrecision(9000.00149d, 3));
+		Assertions.assertEquals("9000", formatToPrecision(9001d, 3));
+		Assertions.assertEquals("9001", formatToPrecision(9001d, 4));
+	}
+
+	@Test
+	public void testPrettify() {
+		Assertions.assertEquals("999", prettifyDamageNumber(999, 9));
+		Assertions.assertEquals("100", prettifyDamageNumber(95, 1));
+		Assertions.assertEquals("95", prettifyDamageNumber(95, 2));
+		Assertions.assertEquals("300", prettifyDamageNumber(253, 1));
+		Assertions.assertEquals("1.0k", prettifyDamageNumber(996, 2));
+		Assertions.assertEquals("68.68k", prettifyDamageNumber(68_682, 4));
+		Assertions.assertEquals("1.00m", prettifyDamageNumber(999_999, 3));
+		Assertions.assertEquals("999.999k", prettifyDamageNumber(999_999, 7));
+		Assertions.assertEquals("999.999k", prettifyDamageNumber(999_999, 1000));
+		Assertions.assertEquals("99.999999m", prettifyDamageNumber(99_999_999, 1000));
+		Assertions.assertEquals("100.0000m", prettifyDamageNumber(99_999_999, 7));
 	}
 }

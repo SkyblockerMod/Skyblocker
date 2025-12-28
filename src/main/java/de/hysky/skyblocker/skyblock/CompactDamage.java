@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import org.jetbrains.annotations.VisibleForTesting;
 
 
 public class CompactDamage {
@@ -92,7 +93,8 @@ public class CompactDamage {
 	/// For example:
 	/// 123,456,789 (precision 3) -> 123M
 	/// 12,345 (precision 4) -> 1.234k
-	private static String prettifyDamageNumber(final int damage, final int maxPrecision) {
+	@VisibleForTesting
+	static String prettifyDamageNumber(final int damage, final int maxPrecision) {
 		int targetDamage = damage;
 		int targetPrecision = maxPrecision;
 		// First, round `damage` to `precision` places
@@ -114,7 +116,8 @@ public class CompactDamage {
 		return formatToPrecision(targetDamage / 1_000_000_000.0, targetPrecision) + "b";
 	}
 
-	private static String formatToPrecision(double number, int precision) {
+	@VisibleForTesting
+	static String formatToPrecision(double number, int precision) {
 		int usedPrecision = baseTenDigits((int) number);
 		int remainingPrecision = precision - usedPrecision;
 		if (remainingPrecision <= 0) {
@@ -142,45 +145,9 @@ public class CompactDamage {
 
 	/// Equivalent to floor(log10(x)) + 1
 	/// https://stackoverflow.com/a/25934909
-	private static int baseTenDigits(int x) {
+	@VisibleForTesting
+	static int baseTenDigits(int x) {
 		int guess = guesses[baseTwoDigits(x)];
 		return guess + ((x >= powersOfTen[guess]) ? 1 : 0);
-	}
-
-	public static void main(String[] args) {
-		expectEqual(1, baseTenDigits(4));
-		// mathematically determined to be the funniest & most popular number
-		expectEqual(2, baseTenDigits(68));
-		expectEqual(2, baseTenDigits(99));
-		expectEqual(3, baseTenDigits(100));
-		expectEqual(3, baseTenDigits(101));
-		expectEqual(8, baseTenDigits(99_999_999));
-		expectEqual(9, baseTenDigits(100_000_000));
-		expectEqual(9, baseTenDigits(100_000_001));
-
-		expectEqual("103.6", formatToPrecision(103.632d, 4));
-		expectEqual("103.600", formatToPrecision(103.6001d, 6));
-		expectEqual("9000.001", formatToPrecision(9000.00149d, 7));
-		expectEqual("9000", formatToPrecision(9000.00149d, 3));
-		expectEqual("9000", formatToPrecision(9001d, 3));
-		expectEqual("9001", formatToPrecision(9001d, 4));
-
-		expectEqual("999", prettifyDamageNumber(999, 9));
-		expectEqual("100", prettifyDamageNumber(95, 1));
-		expectEqual("95", prettifyDamageNumber(95, 2));
-		expectEqual("300", prettifyDamageNumber(253, 1));
-		expectEqual("1.0k", prettifyDamageNumber(996, 2));
-		expectEqual("68.68k", prettifyDamageNumber(68_682, 4));
-		expectEqual("1.00m", prettifyDamageNumber(999_999, 3));
-		expectEqual("999.999k", prettifyDamageNumber(999_999, 7));
-		expectEqual("999.999k", prettifyDamageNumber(999_999, 1000));
-		expectEqual("99.999999m", prettifyDamageNumber(99_999_999, 1000));
-		expectEqual("100.0000m", prettifyDamageNumber(99_999_999, 7));
-	}
-
-	private static void expectEqual(Object expected, Object actual) {
-		if (!expected.equals(actual)) {
-			throw new AssertionError("Expected " + expected + ", got " + actual);
-		}
 	}
 }
