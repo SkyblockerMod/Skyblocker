@@ -1106,7 +1106,7 @@
     "skyblocker.gardenPlots": "花园地皮",
     "skyblocker.gardenPlots.plot": "地皮 - %s",
     "skyblocker.config.dungeons.spiritLeapOverlay": "Spirit Leap覆盖层",
-    "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "阻止玩家使用尚未完成进阶的Bottles of Jyrre、Dark Cacao Truffles和Discrite等物品。",
+    "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "阻止玩家使用尚未完成进阶的Bottles of Jyrre、Dark Cacao Truffles、Discrite、Moby Ducks、Rosewater Flasks。",
     "skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip": "为发光的红石灯加上边框，并根据僵尸的类型附加对应颜色的发光效果。",
     "skyblocker.config.mining.crystalHollows.enablePowderTracker": "启用挖粉追踪器",
     "skyblocker.config.mining.crystalHollows.enablePowderTracker.@Tooltip": "追踪你在水晶洞窟挖粉时从宝箱获得的奖励。",
