@@ -47,7 +47,7 @@ public class CompactDamage {
 
 		MutableComponent prettierCustomName = Component.empty();
 
-		String prettifiedDmg = prettifyDamageNumber(Integer.parseInt(dmg), config.precision);
+		String prettifiedDmg = prettifyDamageNumber(Long.parseLong(dmg), config.precision);
 
 		if (isCrit) {
 			String dmgSymbol = matcher.group(1);
@@ -82,26 +82,29 @@ public class CompactDamage {
 	/// 123,456,789 (precision 3) -> 123M
 	/// 12,345 (precision 4) -> 1.234k
 	@VisibleForTesting
-	static String prettifyDamageNumber(final int damage, final int maxPrecision) {
-		int targetDamage = damage;
+	static String prettifyDamageNumber(final long damage, final int maxPrecision) {
+		long targetDamage = damage;
 		int targetPrecision = maxPrecision;
 		// First, round `damage` to `precision` places
 		// Otherwise inputs like `999,999, 3` will display as `1000k` instead of `1.00m`
 
 		int usedPrecision = baseTenDigits(targetDamage);
 		if (usedPrecision > targetPrecision) {
-			int powerToRoundTo = powersOfTen[usedPrecision - maxPrecision];
-			targetDamage = (int) (Math.round((double) targetDamage / powerToRoundTo) * powerToRoundTo);
+			double powerToRoundTo = powersOfTen[usedPrecision - maxPrecision];
+			targetDamage = (long) (Math.round((double) targetDamage / powerToRoundTo) * powerToRoundTo);
 		} else if (targetPrecision > usedPrecision) {
 			// We don't want to ever display more decimal points than needed. For example,
 			// 999_999 with precision 7 should still display as 999.999k, not 999.9990k
 			targetPrecision = usedPrecision;
 		}
 
-		if (targetDamage < 1_000) return String.valueOf(targetDamage);
-		if (targetDamage < 1_000_000) return formatToPrecision(targetDamage / 1_000.0, targetPrecision) + "k";
-		if (targetDamage < 1_000_000_000) return formatToPrecision(targetDamage / 1_000_000.0, targetPrecision) + "m";
-		return formatToPrecision(targetDamage / 1_000_000_000.0, targetPrecision) + "b";
+		if (targetDamage < 1_000L) return String.valueOf(targetDamage);
+		if (targetDamage < 1_000_000L) return formatToPrecision(targetDamage / 1_000.0, targetPrecision) + "k";
+		if (targetDamage < 1_000_000_000L) return formatToPrecision(targetDamage / 1_000_000.0, targetPrecision) + "m";
+		if (targetDamage < 1_000_000_000_000L) return formatToPrecision(targetDamage / 1_000_000_000.0, targetPrecision) + "b";
+		if (targetDamage < 1_000_000_000_000_000L) return formatToPrecision(targetDamage / 1_000_000_000_000.0, targetPrecision) + "t";
+		// surely this will never happen :clueless:
+		return formatToPrecision(targetDamage / 1_000_000_000_000_000.0, targetPrecision) + "q";
 	}
 
 	@VisibleForTesting
@@ -109,32 +112,45 @@ public class CompactDamage {
 		int usedPrecision = baseTenDigits((int) number);
 		int remainingPrecision = precision - usedPrecision;
 		if (remainingPrecision <= 0) {
-			int powerToRoundTo = powersOfTen[usedPrecision - precision];
-			return String.valueOf((int) (Math.round(number / powerToRoundTo) * powerToRoundTo));
+			long powerToRoundTo = powersOfTen[usedPrecision - precision];
+			return String.valueOf((Math.round(number / powerToRoundTo) * powerToRoundTo));
 		}
 		return ("%." + remainingPrecision + "f").formatted(number);
 	}
 
-	private static int baseTwoDigits(int x) {
-		return 32 - Integer.numberOfLeadingZeros(x);
+	private static int baseTwoDigits(long x) {
+		return 64 - Long.numberOfLeadingZeros(x);
 	}
 
+	/// A lowball guess for the number of base 10 digits, given the number of base 2 digits
+	/// Off by 1 at most
+	/// The guess for an n-digit base 2 number is the correct answer for the smallest number with
+	/// n digits in base 2.
 	private static final int[] guesses = new int[]{
-			0, 0, 0, 0, 1, 1, 1, 2, 2, 2,
-			3, 3, 3, 3, 4, 4, 4, 5, 5, 5,
-			6, 6, 6, 6, 7, 7, 7, 8, 8, 8,
-			9, 9, 9
+			0,  1,  1,  1,  1,  2,  2,  2,
+			3,  3,  3,  4,  4,  4,  4,  5,
+			5,  5,  6,  6,  6,  7,  7,  7,
+			7,  8,  8,  8,  9,  9,  9,  10,
+			10, 10, 10, 11, 11, 11, 12, 12,
+			12, 13, 13, 13, 13, 14, 14, 14,
+			15, 15, 15, 16, 16, 16, 16, 17,
+			17, 17, 18, 18, 18, 19, 19, 19,
 	};
 
-	private static final int[] powersOfTen = new int[]{
-			1, 10, 100, 1000, 10000, 100000,
-			1000000, 10000000, 100000000, 1000000000,
+	private static final long[] powersOfTen = new long[]{
+			1L,                   10L,                100L,
+			1000L,                10000L,             100000L,
+			1000000L,             10000000L,          100000000L,
+			1000000000L,          10000000000L,       100000000000L,
+			1000000000000L,       10000000000000L,    100000000000000L,
+			1000000000000000L,    10000000000000000L, 100000000000000000L,
+			1000000000000000000L,
 	};
 
 	/// Equivalent to floor(log10(x)) + 1
 	/// https://stackoverflow.com/a/25934909
 	@VisibleForTesting
-	static int baseTenDigits(int x) {
+	static int baseTenDigits(long x) {
 		int guess = guesses[baseTwoDigits(x)];
 		return guess + ((x >= powersOfTen[guess]) ? 1 : 0);
 	}

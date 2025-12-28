@@ -98,6 +98,7 @@ public class CompactDamageTest {
 		testCompact(makeInputText("3,825", false), 4, Component.literal("3.825k").withColor(CommonColors.WHITE));
 		testCompact(makeInputText("3,825", false), 6, Component.literal("3.825k").withColor(CommonColors.WHITE));
 		testCompact(makeInputText("9,995", false), 3, Component.literal("10.0k").withColor(CommonColors.WHITE));
+		testCompact(makeInputText("179,481,824,995", false), 6, Component.literal("179.482b").withColor(CommonColors.WHITE));
 	}
 
 	@Test
@@ -105,6 +106,7 @@ public class CompactDamageTest {
 		testCompact(makeInputText("7,214", true), 4, splitString("✧7.214k✧"));
 		testCompact(makeInputText("3,825", true), 4, splitString("✧3.825k✧"));
 		testCompact(makeInputText("9,995", true), 3, splitString("✧10.0k✧"));
+		testCompact(makeInputText("179,481,824,995", true), 6, splitString("✧179.482b✧"));
 
 	}
 
@@ -117,6 +119,9 @@ public class CompactDamageTest {
 			testCompact(makeInputText("99,972", false, pair.getKey(), pair.getValue()),
 					9,
 					Component.literal("99.972k").withColor(CommonColors.WHITE).append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
+			testCompact(makeInputText("179,999,999,995", false, pair.getKey(), pair.getValue()),
+					9,
+					Component.literal("180.000000b").withColor(CommonColors.WHITE).append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
 		}
 	}
 
@@ -129,6 +134,9 @@ public class CompactDamageTest {
 			testCompact(makeInputText("491,529", true, pair.getKey(), pair.getValue()),
 					2,
 					splitString("✧490k✧").append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
+			testCompact(makeInputText("35,518,885,661,733", true, pair.getKey(), pair.getValue()),
+					6,
+					splitString("✧35.5189t✧").append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
 		}
 	}
 
