@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
+import de.hysky.skyblocker.utils.Boxes;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -52,12 +53,12 @@ public class EntityRendererMixin {
 
 	// This is meant to be separate from the previous injection for organizational purposes.
 	@Inject(method = "extractRenderState", at = @At(value = "TAIL"))
-	private void skyblocker$mobBoundingBox(CallbackInfo ci, @Local(argsOnly = true) Entity entity) {
+	private void skyblocker$mobBoundingBox(CallbackInfo ci, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) float partialTick) {
 		boolean shouldShowBoundingBox = MobBoundingBoxes.shouldDrawMobBoundingBox(entity);
 
 		if (shouldShowBoundingBox) {
 			MobBoundingBoxes.submitBox2BeRendered(
-					entity instanceof ArmorStand e ? SlayerManager.getSlayerMobBoundingBox(e) : entity.getBoundingBox(),
+					entity instanceof ArmorStand e ? SlayerManager.getSlayerMobBoundingBox(e, partialTick) : Boxes.lerpEntityBoundingBox(entity, partialTick),
 					MobBoundingBoxes.getBoxColor(entity)
 			);
 		}
