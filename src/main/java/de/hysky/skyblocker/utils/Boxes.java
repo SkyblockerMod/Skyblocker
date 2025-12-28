@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils;
 
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -54,5 +55,24 @@ public class Boxes {
 				getAxisLength(box, Axis.X) * (x - 1) / 2d,
 				getAxisLength(box, Axis.Y) * (y - 1) / 2d,
 				getAxisLength(box, Axis.Z) * (z - 1) / 2d);
+	}
+
+	public static AABB lerpEntityBoundingBox(Entity entity, float partialTick) {
+		// These names are so incredibly bad. Why is the function that returns the lerped
+		// position called "getPosition" when the function that returns the non-lerped position
+		// is just called "position"? Find me a single person that can tell me how the two
+		// functions differ just by reading their names. A real human being sat down and picked
+		// these names. Seriously.
+
+		// Compute how much more the entity has to move backwards from its current position to reach its interpolated position
+		// (old - new) * (1 - partialTick)
+
+		// faster than recalculating a hitbox from the entity's current pose. very balzingaly fast
+		final float remainingTick = 1 - partialTick;
+		final Vec3 backwardsDeltaMovement = entity.oldPosition()
+				.subtract(entity.position())
+				.multiply(remainingTick, remainingTick, remainingTick);
+		// Subtract this vector from the entity hitbox
+		return entity.getBoundingBox().move(backwardsDeltaMovement);
 	}
 }
