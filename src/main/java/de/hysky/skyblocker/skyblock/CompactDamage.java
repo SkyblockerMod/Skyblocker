@@ -19,8 +19,8 @@ import org.jetbrains.annotations.VisibleForTesting;
 
 public class CompactDamage {
 	// Capture Group 1: Crit, Overload Crit
-	// Capture Group 2: Ring of Love, Tara Armor, End Stone Sword
-	private static final Pattern DAMAGE_PATTERN = Pattern.compile("([✧✯]?)[\\d,]+[✧✯]?([❤+⚔]?)");
+	// Capture Group 2: Ring of Love, Tara Armor, End Stone Sword, Voodoo Doll, Guardian Pet
+	private static final Pattern DAMAGE_PATTERN = Pattern.compile("([✧✯]?)[\\d,]+[✧✯]?([❤+⚔☄♞]?)");
 
 	private CompactDamage() {
 	}
