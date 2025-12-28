@@ -56,6 +56,8 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private List<OutlinedCircleRenderState> outlinedCircleStates = null;
 	private boolean frozen = false;
 
+	private static final double DELTA = 0.0005;
+
 	public PrimitiveCollectorImpl(LevelRenderState worldState, Frustum frustum) {
 		this.worldState = worldState;
 		this.frustum = frustum;
@@ -144,7 +146,8 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 
 	@Override
 	public void submitOutlinedBox(BlockPos pos, float[] colourComponents, float lineWidth, boolean throughWalls) {
-		submitOutlinedBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1, colourComponents, 1f, lineWidth, throughWalls);
+		// Only this function needs a delta, in order to fix z-fighting with the block outline
+		submitOutlinedBox(pos.getX() - DELTA, pos.getY() - DELTA, pos.getZ() - DELTA, pos.getX() + 1 + DELTA, pos.getY() + 1 + DELTA, pos.getZ() + 1 + DELTA, colourComponents, 1f, lineWidth, throughWalls);
 	}
 
 	@Override
