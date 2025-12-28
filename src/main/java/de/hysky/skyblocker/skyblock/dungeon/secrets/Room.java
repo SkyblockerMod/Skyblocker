@@ -505,7 +505,10 @@ public class Room implements Tickable, Renderable {
 		String name = this.name;
 		Direction direction = this.direction;
 		Vector2ic physicalCornerPos = this.physicalCornerPos;
-		if (name == null || direction == null || physicalCornerPos == null) return;
+		if (name == null || direction == null || physicalCornerPos == null) {
+			DungeonManager.LOGGER.warn("[Skyblocker Dungeon Secrets] Room matched called with invalid fields: matchState={}, name={}, direction={}, physicalCornerPos={}", matchState, name, direction, physicalCornerPos);
+			return;
+		}
 
 		List<DungeonManager.RoomWaypoint> roomWaypoints = DungeonManager.getRoomWaypoints(name);
 		if (roomWaypoints != null) {
