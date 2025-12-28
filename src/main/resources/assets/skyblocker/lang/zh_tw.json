@@ -1104,7 +1104,7 @@
     "skyblocker.gardenPlots.spawn": "傳送至花園出生點",
     "skyblocker.gardenPlots.setSpawn": "設定花園出生點",
     "skyblocker.config.dungeons.spiritLeapOverlay": "Spirit Leap覆蓋層",
-    "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "阻止玩家使用尚未完成進階的Bottles of Jyrre、Dark Cacao Truffles和Discrite等物品。",
+    "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "阻止玩家使用尚未完成進階的Bottles of Jyrre、Dark Cacao Truffles、Discrite、Moby Ducks、Rosewater Flasks。",
     "skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip": "為發光的紅石燈加上邊框，並根據殭屍的類型附加對應顏色的發光效果。",
     "skyblocker.gardenPlots.plot": "地皮 - %s",
     "key.skyblocker.debug.dumpNearbyEntities": "轉儲附近實體",
