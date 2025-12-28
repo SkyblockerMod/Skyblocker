@@ -1126,7 +1126,7 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.duplicateOperatorError": "Unexpected duplicate operator",
   "skyblocker.config.uiAndVisuals.inputCalculator.emptyEquationError": "Equation is empty",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "Enable Sign Calculator",
-  "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\n purse/P = current purse value",
+  "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n  T = 1,000,000,000,000\n  Q = 1,000,000,000,000,000\n\n purse/P = current purse value",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidCharacterError": "Invalid character '%s'",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError": "Invalid input %s for function '%s'",
