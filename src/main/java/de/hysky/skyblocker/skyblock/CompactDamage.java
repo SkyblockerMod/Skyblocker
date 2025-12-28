@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.OkLabColor;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -25,66 +26,53 @@ public class CompactDamage {
 	}
 
 	public static void compactDamage(ArmorStand entity) {
-		if (!SkyblockerConfigManager.get().uiAndVisuals.compactDamage.enabled) return;
+		UIAndVisualsConfig.CompactDamage config = SkyblockerConfigManager.get().uiAndVisuals.compactDamage;
+
+		if (!config.enabled) return;
 		if (!entity.isInvisible() || !entity.hasCustomName() || !entity.isCustomNameVisible()) return;
+
 		Component customName = entity.getCustomName();
 		if (customName == null) return;
 
-		Matcher matcher = DAMAGE_PATTERN.matcher(customName.getString());
+		String customNameString = customName.getString();
+		Matcher matcher = DAMAGE_PATTERN.matcher(customNameString);
 		if (!matcher.matches()) return;
 		List<Component> siblings = customName.getSiblings();
 		if (siblings.isEmpty()) return;
 
-		boolean isCrit = !matcher.group(1).isEmpty();
-		String dmg;
-		TextColor textColor;
-
-		if (siblings.size() == 1) { // Plain non-crit, no modifier damage
-			Component text = siblings.getFirst();
-			dmg = text.getString().replace(",", "");
-			textColor = text.getStyle().getColor();
-		} else { // Multi-styled damage
-			int symbolsToRemoveFront = isCrit ? 1 : 0;
-			int symbolsToRemoveEnd = matcher.group(2).isEmpty() ? symbolsToRemoveFront : symbolsToRemoveFront + 1;
-			textColor = siblings.get(symbolsToRemoveFront).getStyle().getColor();
-
-			// If there are crit symbols: they are the first sibling before/after the damage.
-			// There can be other additional siblings added after the second crit sibling.
-			dmg = siblings.subList(symbolsToRemoveFront, siblings.size() - symbolsToRemoveEnd)
-					.stream()
-					.map(Component::getString)
-					.reduce("", String::concat) //Concatenate all the siblings to get the dmg number
-					.replace(",", "");
-		}
+		final boolean isCrit = !matcher.group(1).isEmpty();
+		final String dmg = customNameString.replaceAll("\\D", "");
 		if (!NumberUtils.isParsable(dmg)) return; //Sanity check
+		final TextColor textColor = siblings.getFirst().getStyle().getColor();
 
 		MutableComponent prettierCustomName = Component.empty();
-		int precision = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.precision;
-		if (!isCrit) {
-			String prettifiedDmg = prettifyDamageNumber(Integer.parseInt(dmg), precision);
-			int color;
-			if (textColor != null) {
-				if (textColor == TextColor.fromLegacyFormat(ChatFormatting.GRAY)) {
-					color = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF;
-				} else color = textColor.getValue();
-			} else color = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF;
-			prettierCustomName = Component.literal(prettifiedDmg).setStyle(customName.getStyle()).withColor(color);
-		} else {
+
+		String prettifiedDmg = prettifyDamageNumber(Integer.parseInt(dmg), config.precision);
+
+		if (isCrit) {
 			String dmgSymbol = matcher.group(1);
-			String prettifiedDmg = dmgSymbol + prettifyDamageNumber(Integer.parseInt(dmg), precision) + dmgSymbol;
+			prettifiedDmg = dmgSymbol + prettifiedDmg + dmgSymbol;
 			int length = prettifiedDmg.length();
 			for (int i = 0; i < length; i++) {
 				prettierCustomName.append(Component.literal(prettifiedDmg.substring(i, i + 1)).withColor(
 						OkLabColor.interpolate(
-								SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientStart.getRGB() & 0x00FFFFFF,
-								SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientEnd.getRGB() & 0x00FFFFFF,
+								config.critDamageGradientStart.getRGB() & 0x00_FF_FF_FF,
+								config.critDamageGradientEnd.getRGB() & 0x00_FF_FF_FF,
 								i / (length - 1.0f)
 						)
 				));
 			}
 			prettierCustomName.setStyle(customName.getStyle());
+		} else {
+			int color;
+			if (textColor == null || textColor == TextColor.fromLegacyFormat(ChatFormatting.GRAY)) {
+				color = config.normalDamageColor.getRGB() & 0x00_FF_FF_FF;
+			} else {
+				color = textColor.getValue();
+			}
+			prettierCustomName = Component.literal(prettifiedDmg).setStyle(customName.getStyle()).withColor(color);
 		}
-		// Readd the additional symbol, if present
+		// Add the additional symbol back, if present
 		if (!matcher.group(2).isEmpty()) prettierCustomName.append(Component.literal(matcher.group(2)).setStyle(siblings.getLast().getStyle()));
 		entity.setCustomName(prettierCustomName);
 	}
