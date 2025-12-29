@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -48,7 +49,7 @@ public class JoinInstanceAutocomplete {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to load joininstance list", e);
 			}
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	private static LiteralCommandNode<FabricClientCommandSource> buildCommand(String command, java.util.function.Predicate<String> filter) {

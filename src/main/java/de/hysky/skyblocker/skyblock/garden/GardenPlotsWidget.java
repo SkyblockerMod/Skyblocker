@@ -55,6 +55,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 public class GardenPlotsWidget extends AbstractContainerWidget {
 
@@ -133,14 +134,14 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 		SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
 			if (!prevProfileId.isEmpty())
-				CompletableFuture.runAsync(() -> save(prevProfileId)).thenRun(() -> load(profileId));
+				CompletableFuture.runAsync(() -> save(prevProfileId), Executors.newVirtualThreadPerTaskExecutor()).thenRun(() -> load(profileId));
 			else load(profileId);
 		}));
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client1 -> {
 			String profileId = Utils.getProfileId();
 			if (!profileId.isBlank()) {
-				CompletableFuture.runAsync(() -> save(profileId));
+				CompletableFuture.runAsync(() -> save(profileId), Executors.newVirtualThreadPerTaskExecutor());
 			}
 		});
 	}
@@ -186,7 +187,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			}
 			return new GardenPlot[25];
 			// Schedule on main thread to avoid any async weirdness
-		}).thenAccept(newPlots -> Minecraft.getInstance().execute(() -> System.arraycopy(newPlots, 0, gardenPlots, 0, Math.min(newPlots.length, 25))));
+		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(newPlots -> Minecraft.getInstance().execute(() -> System.arraycopy(newPlots, 0, gardenPlots, 0, Math.min(newPlots.length, 25))));
 	}
 
 	/////////////////////////////

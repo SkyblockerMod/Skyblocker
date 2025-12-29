@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
 public class MayorUtils {
@@ -86,7 +87,7 @@ public class MayorUtils {
 			} catch (Exception e) {
 				throw new RuntimeException(e); //Wrap the exception to be handled by the exceptionally block
 			}
-		}).exceptionally(throwable -> {
+		}, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(throwable -> {
 			LOGGER.error("[Skyblocker] Failed to get mayor status!", throwable.getCause());
 			if (mayorTickRetryAttempts < 5) {
 				int minutes = 5 << mayorTickRetryAttempts; //5, 10, 20, 40, 80 minutes
@@ -144,7 +145,7 @@ public class MayorUtils {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to load mayor perk overrides.", e);
 			}
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	private record PerkOverride(String perk, long from, long to) {
