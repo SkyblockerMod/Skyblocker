@@ -30,6 +30,8 @@ import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentHolder;
@@ -38,6 +40,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -176,6 +179,11 @@ public final class ItemUtils {
 			return "SHINY_" + id;
 		}
 
+		// Some repo items have their IDs set to their internal names
+		if (id.contains(";") && !NEURepoManager.isLoading()) {
+			return NEURepoManager.getConstants().getBazaarStocks().getBazaarStockOrDefault(id);
+		}
+
 		switch (id) {
 			case "ENCHANTED_BOOK" -> {
 				if (customData.contains("enchantments")) {
@@ -238,11 +246,14 @@ public final class ItemUtils {
 					if (lore == null) return id;
 					List<Component> lines = lore.lines();
 					if (lines.size() < 3) return id;
-					String[] parts = lines.get(2).getString().toUpperCase(Locale.ENGLISH).split(" ");
-					if (RomanNumerals.isValidRomanNumeral(parts[parts.length - 1])) {
-						parts[parts.length - 1] = String.valueOf(RomanNumerals.romanToDecimal(parts[parts.length - 1]));
-					}
-					return "ENCHANTMENT_" + String.join("_", parts);
+					return EnchantedBookUtils.getApiIdByName(lines.get(2));
+				}
+
+				if (itemStack instanceof ItemStack realStack) {
+					if (!realStack.is(Items.ENCHANTED_BOOK)) return id;
+					Component stackName = itemStack.get(DataComponents.CUSTOM_NAME);
+					if (stackName == null) return id;
+					return EnchantedBookUtils.getApiIdByName(stackName);
 				}
 			}
 		}
@@ -627,6 +638,19 @@ public final class ItemUtils {
 		Matcher matcher = ItemUtils.getLoreLineIfContainsMatch(stack, HUNTING_BOX_COUNT_PATTERN);
 
 		return matcher != null ? RegexUtils.parseOptionalIntFromMatcher(matcher, "shards") : OptionalInt.empty();
+	}
+
+	/**
+	 * Gets the proper item count for Enchanted Books in Superpairs.
+	 * For all other items, returns empty.
+	 */
+	public static OptionalInt getItemCountInSuperpairs(ItemStack stack) {
+		Screen currentScreen = Minecraft.getInstance().screen;
+		if (currentScreen instanceof AbstractContainerScreen<?> container && container.getTitle().getString().contains("Superpairs")) {
+			if (!stack.getHoverName().getString().contains("Enchanted Book")) return OptionalInt.empty();
+			return OptionalInt.of(1);
+		}
+		return OptionalInt.empty();
 	}
 
 	/**
