@@ -37,7 +37,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.CommonColors;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.component.ResolvableProfile;
 
@@ -336,7 +335,7 @@ public class SkyblockerCreditsScreen extends Screen {
 		private static final Codec<Author> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("name").forGetter(Author::name),
 				UUIDUtil.STRING_CODEC.fieldOf("uuid").forGetter(Author::uuid),
-				ExtraCodecs.STRING_RGB_COLOR.optionalFieldOf("colour", CommonColors.WHITE).forGetter(Author::colour)
+				CodecUtils.STRING_RGB_COLOR.optionalFieldOf("colour", CommonColors.WHITE).forGetter(Author::colour)
 				).apply(instance, Author::new));
 
 		public Component asText() {
