@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -87,7 +88,7 @@ public class GoldorWaypointsManager {
 
 				return List.<GoldorWaypoint>of();
 			}
-		}).thenAccept(list -> list.forEach(waypoint -> {
+		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(list -> list.forEach(waypoint -> {
 			switch (waypoint.kind) {
 				case TERMINAL -> TERMINALS.add(waypoint);
 				case DEVICE -> DEVICES.add(waypoint);

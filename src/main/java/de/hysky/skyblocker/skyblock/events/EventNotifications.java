@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 
 public class EventNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -94,7 +95,7 @@ public class EventNotifications {
 				LOGGER.error("[Skyblocker] Failed to download events list", e);
 			}
 			return List.<JsonObject>of();
-		}).thenAccept(eventsList -> {
+		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(eventsList -> {
 			events.clear();
 			for (JsonObject object : eventsList) {
 				if (object.get("timestamp").getAsLong() + object.get("duration").getAsInt() < currentTime) continue;

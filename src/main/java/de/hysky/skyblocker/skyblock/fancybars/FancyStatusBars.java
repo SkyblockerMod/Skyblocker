@@ -41,6 +41,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 public class FancyStatusBars {
@@ -122,7 +123,7 @@ public class FancyStatusBars {
 		initBarPosition(statusBars.get(StatusBarType.SPEED), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
 		initBarPosition(statusBars.get(StatusBarType.AIR), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
 
-		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
+		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(object -> {
 			if (object != null) {
 				for (String s : object.keySet()) {
 					StatusBarType type = StatusBarType.from(s);

@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +47,7 @@ public class ProfileUtils {
 			}
 
 			return null;
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	/**
@@ -57,7 +58,7 @@ public class ProfileUtils {
 			String uuid = ApiUtils.name2Uuid(name);
 
 			return !uuid.isEmpty() ? UUID_TO_PROFILES_CACHE.getUnchecked(uuid) : null;
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	private static @Nullable JsonObject fetchProfilesInternal(String uuid) {

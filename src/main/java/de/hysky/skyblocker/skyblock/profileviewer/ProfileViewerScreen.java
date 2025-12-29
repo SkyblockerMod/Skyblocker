@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 import static net.minecraft.client.gui.screens.inventory.InventoryScreen.renderEntityInInventoryFollowsMouse;
 
@@ -196,7 +197,7 @@ public class ProfileViewerScreen extends Screen {
 				this.profileNotFound = true;
 				return null;
 			}).join();
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 
 		return CompletableFuture.allOf(profileFuture, playerFuture);
 	}
@@ -264,7 +265,7 @@ public class ProfileViewerScreen extends Screen {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
 			}
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	public static Map<String, String[]> getCollections() {
