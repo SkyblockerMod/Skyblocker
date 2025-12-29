@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
@@ -33,7 +33,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.objects.PlayerSprite;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.CommonColors;
@@ -44,9 +44,9 @@ import net.minecraft.world.item.component.ResolvableProfile;
 public class SkyblockerCreditsScreen extends Screen {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Component TITLE = Component.literal("Skyblocker Credits");
-	private static final Identifier CREDITS_FILE = SkyblockerMod.id("credits.json");
-	private static final Identifier LOGO = SkyblockerMod.id("logo.png");
-	private static final Identifier VIGNETTE = Identifier.withDefaultNamespace("textures/misc/credits_vignette.png");
+	private static final ResourceLocation CREDITS_FILE = SkyblockerMod.id("credits.json");
+	private static final ResourceLocation LOGO = SkyblockerMod.id("logo.png");
+	private static final ResourceLocation VIGNETTE = ResourceLocation.withDefaultNamespace("textures/misc/credits_vignette.png");
 	private static final Music SKYBLOCKER_CREDITS_MUSIC = new Music(SoundEvents.MUSIC_DISC_CREATOR, 0, 0, true);
 	private static final Component SECTION_HEADING = Component.literal("================").withStyle(ChatFormatting.WHITE);
 	private static final float SPEEDUP_FACTOR = 5f;

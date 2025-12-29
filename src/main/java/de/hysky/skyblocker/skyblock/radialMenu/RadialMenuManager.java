@@ -15,7 +15,7 @@ import de.hysky.skyblocker.skyblock.radialMenu.menus.SkillsMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.SkyblockMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.Storage;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.WardrobeMenu;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
