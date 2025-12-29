@@ -31,7 +31,6 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentHolder;
@@ -239,8 +238,8 @@ public final class ItemUtils {
 				}
 			}
 			case "" -> {
-				Minecraft client = Minecraft.getInstance();
-				if (client.screen instanceof ContainerScreen && client.screen.getTitle().getString().startsWith("Superpairs")) {
+				Screen currentScreen = Minecraft.getInstance().screen;
+				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().startsWith("Superpairs")) {
 					ItemLore lore = itemStack.get(DataComponents.LORE);
 					if (lore == null) return id;
 					List<Component> lines = lore.lines();
@@ -248,6 +247,7 @@ public final class ItemUtils {
 					return EnchantedBookUtils.getApiIdByName(lines.get(2));
 				}
 
+				// Get proper id for books in the Bazaar
 				if (itemStack instanceof ItemStack realStack) {
 					if (!realStack.is(Items.ENCHANTED_BOOK)) return id;
 					Component stackName = itemStack.get(DataComponents.CUSTOM_NAME);
@@ -645,7 +645,7 @@ public final class ItemUtils {
 	 */
 	public static OptionalInt getItemCountInSuperpairs(ItemStack stack) {
 		Screen currentScreen = Minecraft.getInstance().screen;
-		if (currentScreen instanceof AbstractContainerScreen<?> container && container.getTitle().getString().contains("Superpairs")) {
+		if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().startsWith("Superpairs")) {
 			if (!stack.getHoverName().getString().contains("Enchanted Book")) return OptionalInt.empty();
 			return OptionalInt.of(1);
 		}
