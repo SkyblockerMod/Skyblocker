@@ -1572,5 +1572,19 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration.@Tooltip": "弹窗在屏幕上停留的时间。",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon": "弹窗图标：",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.formatting": "所有输出消息都可以使用格式化代码进行格式化（使用&）",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.@Tooltip": "输入用作图标的物品，格式与 /give 命令相同。"
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.@Tooltip": "输入用作图标的物品，格式与 /give 命令相同。",
+    "skyblocker.config.uiAndVisuals.radialMenu": "环形菜单",
+    "skyblocker.config.uiAndVisuals.radialMenu.enabled": "已启用",
+    "skyblocker.config.uiAndVisuals.radialMenu.bank": "银行",
+    "skyblocker.config.uiAndVisuals.radialMenu.collections": "收集",
+    "skyblocker.config.uiAndVisuals.radialMenu.enabled.@Tooltip": "启用或禁用所有环形菜单",
+    "skyblocker.config.uiAndVisuals.radialMenu.fastTravel": "快速旅行",
+    "skyblocker.config.uiAndVisuals.radialMenu.hideButton": "隐藏",
+    "skyblocker.config.uiAndVisuals.radialMenu.general": "一般菜单",
+    "skyblocker.config.uiAndVisuals.radialMenu.hideButton.@Tooltip": "显示普通的物品栏视图",
+    "skyblocker.config.uiAndVisuals.radialMenu.huntingToolkit": "狩猎工具包",
+    "skyblocker.config.uiAndVisuals.radialMenu.storage": "存储",
+    "skyblocker.config.uiAndVisuals.radialMenu.sacks": "包裹",
+    "skyblocker.config.uiAndVisuals.radialMenu.wardrobe": "衣柜",
+    "skyblocker.config.uiAndVisuals.radialMenu.tooltipsWithoutShift": "在不使用Shift的情况下显示工具提示"
 }
