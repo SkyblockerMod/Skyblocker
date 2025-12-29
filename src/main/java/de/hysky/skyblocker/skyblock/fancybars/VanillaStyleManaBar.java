@@ -26,6 +26,7 @@ public class VanillaStyleManaBar {
 	private static long blinkEndTime;
 
 	// Two versions of the same bar, one that renders when the hunger bar is visible and one for the mount health bar
+	// Ideally we would only need one bar, but since there is not currently a way to override vanilla render conditions this will work
 	private static final Identifier MANABAR_FOOD_HUD_ID = SkyblockerMod.id("vanilla_style_mana_bar_food");
 	private static final Identifier MANABAR_MOUNT_HUD_ID = SkyblockerMod.id("vanilla_style_mana_bar_mount");
 
@@ -69,8 +70,12 @@ public class VanillaStyleManaBar {
 			if (isEnabled()) render(context);
 		});
 
+		// 10 pixels is the spacing for a single bar, the mana bar always has 2 bars so has a height of 20 pixels
 		HudStatusBarHeightRegistry.addRight(VanillaHudElements.FOOD_BAR, (player) -> isEnabled() ? 0 : 10);
 		HudStatusBarHeightRegistry.addRight(VanillaHudElements.MOUNT_HEALTH, (player) -> isEnabled() ? 0 : 10);
+		// Only height for one bar needs to be registered, since the height for both bars is always enabled even when not visible.
+		// This could be changed if we had a condition like "isEnabled() && isHungerBarVisible()" for each individual bar,
+		// but as far as I am aware that condition is not easily available
 		HudStatusBarHeightRegistry.addRight(MANABAR_MOUNT_HUD_ID, (player) -> isEnabled() ? 20 : 0);
 	}
 
