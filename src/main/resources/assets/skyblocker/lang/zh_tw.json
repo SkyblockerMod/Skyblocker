@@ -1571,5 +1571,19 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.@Tooltip": "輸入用作圖標的物品，格式與 /give 指令相同。",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.iconPreview.@Tooltip": "點擊打開Skyblock物品選擇器。",
     "skyblocker.config.general.specialEffects.rareDropEffects": "稀有RNG掉落特效",
-    "skyblocker.config.general.specialEffects.rareDropEffects.@Tooltip": "掉落RNG等稀有物品時顯示特殊視覺效果！"
+    "skyblocker.config.general.specialEffects.rareDropEffects.@Tooltip": "掉落RNG等稀有物品時顯示特殊視覺效果！",
+    "skyblocker.config.uiAndVisuals.radialMenu": "環形選單",
+    "skyblocker.config.uiAndVisuals.radialMenu.bank": "銀行",
+    "skyblocker.config.uiAndVisuals.radialMenu.collections": "收集",
+    "skyblocker.config.uiAndVisuals.radialMenu.enabled": "已啟用",
+    "skyblocker.config.uiAndVisuals.radialMenu.enabled.@Tooltip": "啟用或停用所有環形選單",
+    "skyblocker.config.uiAndVisuals.radialMenu.fastTravel": "快速旅行",
+    "skyblocker.config.uiAndVisuals.radialMenu.general": "一般選單",
+    "skyblocker.config.uiAndVisuals.radialMenu.hideButton": "隱藏",
+    "skyblocker.config.uiAndVisuals.radialMenu.hideButton.@Tooltip": "顯示普通的物品欄視圖",
+    "skyblocker.config.uiAndVisuals.radialMenu.huntingToolkit": "狩獵工具包",
+    "skyblocker.config.uiAndVisuals.radialMenu.sacks": "包裹",
+    "skyblocker.config.uiAndVisuals.radialMenu.storage": "存儲",
+    "skyblocker.config.uiAndVisuals.radialMenu.tooltipsWithoutShift": "在不使用Shift的情況下顯示工具提示",
+    "skyblocker.config.uiAndVisuals.radialMenu.wardrobe": "衣櫃"
 }
