@@ -1132,6 +1132,8 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError": "Invalid input %s for function '%s'",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidMagnitudeError": "Invalid magnitude '%s'",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError": "Invalid number '%s'",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError2": "Number literals cannot start with a separator",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError3": "Number literals cannot contain a leading decimal point",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError": "Invalid operator '%s'",
   "skyblocker.config.uiAndVisuals.inputCalculator.missingValueError": "Missing value around operator",
   "skyblocker.config.uiAndVisuals.inputCalculator.moduloByZeroError": "Cannot modulo %s by 0",
