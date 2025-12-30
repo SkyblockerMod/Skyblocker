@@ -595,7 +595,7 @@
     "skyblocker.config.uiAndVisuals.compactDamage": "简洁的伤害数值",
     "skyblocker.config.uiAndVisuals.compactDamage.enabled": "已启用",
     "skyblocker.config.uiAndVisuals.compactDamage.precision": "精确度",
-    "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip": "小数点后的位数。",
+    "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip": "有效的位数。",
     "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "常规伤害颜色",
     "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "暴击伤害渐变颜色的起始色",
     "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "仅当信息以“=”开头时才显示计算器。",
