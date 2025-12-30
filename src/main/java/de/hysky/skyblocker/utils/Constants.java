@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -37,9 +36,7 @@ public interface Constants {
 					.append(Component.literal("e").withColor(0x1AC1FF))
 					.append(Component.literal("r").withColor(0x1CBBFF))
 					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
-		}
-		LocalDate time = LocalDate.now();
-		if (time.getMonthValue() == 12 && (time.getDayOfMonth() == 24 || time.getDayOfMonth() == 25)) {
+		} else if (FunUtils.shouldEnableChristmasFun()) {
 			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
 					.append(Component.literal("J").withColor(0x00FF4C))
 					.append(Component.literal("o").withColor(0x02FA60))
