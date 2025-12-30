@@ -11,6 +11,8 @@ import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
@@ -38,6 +40,10 @@ import java.awt.Color;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class UIAndVisualsCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
@@ -213,6 +219,27 @@ public class UIAndVisualsCategory {
 								.label(Component.translatable("skyblocker.config.uiAndVisuals.slotText.separator"))
 								.build())
 						.options(createSlotTextToggles(config))
+						.build()
+				)
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu.enabled"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu.enabled.@Tooltip"))
+								.binding(defaults.uiAndVisuals.radialMenu.enabled,
+										() -> config.uiAndVisuals.radialMenu.enabled,
+										newValue -> config.uiAndVisuals.radialMenu.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu.tooltipsWithoutShift"))
+								.binding(defaults.uiAndVisuals.radialMenu.tooltipsWithoutShift,
+										() -> config.uiAndVisuals.radialMenu.tooltipsWithoutShift,
+										newValue -> config.uiAndVisuals.radialMenu.tooltipsWithoutShift = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.options(createRadialToggles(config))
 						.build()
 				)
 
@@ -518,6 +545,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableWeirdTransmission"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip"))
 								.binding(defaults.uiAndVisuals.teleportOverlay.enableWeirdTransmission,
 										() -> config.uiAndVisuals.teleportOverlay.enableWeirdTransmission,
 										newValue -> config.uiAndVisuals.teleportOverlay.enableWeirdTransmission = newValue)
@@ -525,6 +553,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableInstantTransmission"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission.@Tooltip"))
 								.binding(defaults.uiAndVisuals.teleportOverlay.enableInstantTransmission,
 										() -> config.uiAndVisuals.teleportOverlay.enableInstantTransmission,
 										newValue -> config.uiAndVisuals.teleportOverlay.enableInstantTransmission = newValue)
@@ -532,6 +561,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableEtherTransmission"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip"))
 								.binding(defaults.uiAndVisuals.teleportOverlay.enableEtherTransmission,
 										() -> config.uiAndVisuals.teleportOverlay.enableEtherTransmission,
 										newValue -> config.uiAndVisuals.teleportOverlay.enableEtherTransmission = newValue)
@@ -539,6 +569,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip"))
 								.binding(defaults.uiAndVisuals.teleportOverlay.enableSinrecallTransmission,
 										() -> config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission,
 										newValue -> config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission = newValue)
@@ -546,6 +577,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableWitherImpact"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip"))
 								.binding(defaults.uiAndVisuals.teleportOverlay.enableWitherImpact,
 										() -> config.uiAndVisuals.teleportOverlay.enableWitherImpact,
 										newValue -> config.uiAndVisuals.teleportOverlay.enableWitherImpact = newValue)
@@ -789,7 +821,7 @@ public class UIAndVisualsCategory {
 								.binding(defaults.uiAndVisuals.compactDamage.precision,
 										() -> config.uiAndVisuals.compactDamage.precision,
 										newValue -> config.uiAndVisuals.compactDamage.precision = newValue)
-								.controller(IntegerController.createBuilder().range(1, 3).slider(1).build())
+								.controller(IntegerController.createBuilder().range(3, 10).slider(1).build())
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor"))
@@ -966,5 +998,16 @@ public class UIAndVisualsCategory {
 		return SlotTextManager.getAdderStream().map(SlotTextAdder::getConfigInformation).filter(Objects::nonNull).distinct()
 				.map(configInfo -> configInfo.getOption(config))
 				.sorted(Comparator.comparing(option -> option.name().getString())).toList();
+	}
+
+	private static List<Option<Boolean>> createRadialToggles(SkyblockerConfig config) {
+		return RadialMenuManager.getMenuStream().filter(distinctByKey(RadialMenu::getConfigId))
+				.map(configInfo -> configInfo.getOption(config))
+				.sorted(Comparator.comparing(option -> option.name().getString())).toList();
+	}
+	//
+	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+		Set<Object> seen = ConcurrentHashMap.newKeySet();
+		return t -> seen.add(keyExtractor.apply(t));
 	}
 }

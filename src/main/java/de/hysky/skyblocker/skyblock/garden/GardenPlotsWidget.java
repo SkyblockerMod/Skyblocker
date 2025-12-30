@@ -15,8 +15,6 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.ItemButtonWidget;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntMaps;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -56,7 +54,6 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class GardenPlotsWidget extends AbstractContainerWidget {
@@ -68,32 +65,32 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	// STATIC SHENANIGANS
 	//////////////////////////
 
-	public static final Int2IntMap GARDEN_PLOT_TO_SLOT = Int2IntMaps.unmodifiable(new Int2IntOpenHashMap(Map.ofEntries(
-			Map.entry(1, 7),
-			Map.entry(2, 11),
-			Map.entry(3, 13),
-			Map.entry(4, 17),
-			Map.entry(5, 6),
-			Map.entry(6, 8),
-			Map.entry(7, 16),
-			Map.entry(8, 18),
-			Map.entry(9, 2),
-			Map.entry(10, 10),
-			Map.entry(11, 14),
-			Map.entry(12, 22),
-			Map.entry(13, 1),
-			Map.entry(14, 3),
-			Map.entry(15, 5),
-			Map.entry(16, 9),
-			Map.entry(17, 15),
-			Map.entry(18, 19),
-			Map.entry(19, 21),
-			Map.entry(20, 23),
-			Map.entry(21, 0),
-			Map.entry(22, 4),
-			Map.entry(23, 20),
-			Map.entry(24, 24)
-	)));
+	public static final Int2IntMap GARDEN_PLOT_TO_SLOT = Int2IntMap.ofEntries(
+			Int2IntMap.entry(1, 7),
+			Int2IntMap.entry(2, 11),
+			Int2IntMap.entry(3, 13),
+			Int2IntMap.entry(4, 17),
+			Int2IntMap.entry(5, 6),
+			Int2IntMap.entry(6, 8),
+			Int2IntMap.entry(7, 16),
+			Int2IntMap.entry(8, 18),
+			Int2IntMap.entry(9, 2),
+			Int2IntMap.entry(10, 10),
+			Int2IntMap.entry(11, 14),
+			Int2IntMap.entry(12, 22),
+			Int2IntMap.entry(13, 1),
+			Int2IntMap.entry(14, 3),
+			Int2IntMap.entry(15, 5),
+			Int2IntMap.entry(16, 9),
+			Int2IntMap.entry(17, 15),
+			Int2IntMap.entry(18, 19),
+			Int2IntMap.entry(19, 21),
+			Int2IntMap.entry(20, 23),
+			Int2IntMap.entry(21, 0),
+			Int2IntMap.entry(22, 4),
+			Int2IntMap.entry(23, 20),
+			Int2IntMap.entry(24, 24)
+	);
 
 	private static final GardenPlot[] gardenPlots = new GardenPlot[25];
 
