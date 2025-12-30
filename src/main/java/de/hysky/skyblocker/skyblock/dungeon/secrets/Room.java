@@ -832,7 +832,7 @@ public class Room implements Tickable, Renderable {
 	}
 
 	public enum ClearState {
-		GREEN_CHECKMARK, WHITE_CHECKMARK, FAILED, UNCLEARED
+		GREEN_CHECKED, WHITE_CHECKED, FAILED, UNCLEARED
 	}
 
 	protected enum MatchState {

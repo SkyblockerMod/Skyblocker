@@ -687,7 +687,7 @@ public class DungeonManager {
 
 		if (currentRoom == null) return;
 
-		if (currentRoom.isMatched() && currentRoom.clearState != Room.ClearState.GREEN_CHECKMARK) {
+		if (currentRoom.isMatched() && currentRoom.clearState != Room.ClearState.GREEN_CHECKED) {
 			updateRoomCheckmark(currentRoom, map);
 		}
 
@@ -705,16 +705,16 @@ public class DungeonManager {
 	// We also wait for it being matched to ensure that we don't try to mark the room as completed if secret waypoints haven't yet loaded (since the room is still matching)
 	// Mark the secret count as outdated to ensure we have an accurate count
 	private static void updateRoomCheckmark(Room room, MapItemSavedData map) {
-		if (room.clearState == Room.ClearState.GREEN_CHECKMARK) return;
+		if (room.clearState == Room.ClearState.GREEN_CHECKED) return;
 		switch (getRoomCheckmarkColour(map, room)) {
 			case DungeonMapUtils.GREEN_COLOR -> {
-				room.clearState = Room.ClearState.GREEN_CHECKMARK;
+				room.clearState = Room.ClearState.GREEN_CHECKED;
 				room.secretCountOutdated = true;
 				room.markAllSecrets(true);
 			}
 			case DungeonMapUtils.WHITE_COLOR -> {
-				if (room.clearState == Room.ClearState.WHITE_CHECKMARK) return;
-				room.clearState = Room.ClearState.WHITE_CHECKMARK;
+				if (room.clearState == Room.ClearState.WHITE_CHECKED) return;
+				room.clearState = Room.ClearState.WHITE_CHECKED;
 				room.secretCountOutdated = true;
 			}
 			case DungeonMapUtils.RED_COLOR -> room.clearState = Room.ClearState.FAILED;
