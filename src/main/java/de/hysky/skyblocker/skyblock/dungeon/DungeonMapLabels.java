@@ -81,10 +81,11 @@ public class DungeonMapLabels {
 		if (roomInfo == null) return;
 		String roomName = roomInfo.name();
 
-		int color = switch (room) {
-			case Room r when r.greenChecked -> CommonColors.GREEN;
-			case Room r when r.whiteChecked -> CommonColors.WHITE;
-			default -> CommonColors.GRAY;
+		int color = switch (room.clearState) {
+			case Room.ClearState.GREEN_CHECKMARK -> CommonColors.GREEN;
+			case Room.ClearState.WHITE_CHECKMARK -> CommonColors.WHITE;
+			case Room.ClearState.UNCLEARED -> CommonColors.GRAY;
+			case Room.ClearState.FAILED -> CommonColors.RED;
 		};
 
 		float width = getMaxWidth(room, mapRoomSize) / LABEL_SCALE;

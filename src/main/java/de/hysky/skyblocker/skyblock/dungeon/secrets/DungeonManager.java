@@ -301,10 +301,11 @@ public class DungeonManager {
 						MapItemSavedData state = getMapState(context.getSource().getClient());
 
 						if (currentRoom != null && state != null) {
-							int checkmarkColour = getRoomCheckmarkColour(context.getSource().getClient(), state, currentRoom);
-							String result = switch ((Integer) checkmarkColour) {
-								case Integer i when i == DungeonMapUtils.WHITE_COLOR -> "White";
-								case Integer i when i == DungeonMapUtils.GREEN_COLOR -> "Green";
+							int checkmarkColour = getRoomCheckmarkColour(state, currentRoom);
+							String result = switch (checkmarkColour) {
+								case DungeonMapUtils.GREEN_COLOR -> "Green";
+								case DungeonMapUtils.WHITE_COLOR -> "White";
+								case DungeonMapUtils.RED_COLOR -> "Red";
 								default -> "Unknown";
 							};
 
@@ -686,7 +687,7 @@ public class DungeonManager {
 
 		if (currentRoom == null) return;
 
-		if (currentRoom.isMatched() && (!currentRoom.greenChecked || !currentRoom.whiteChecked)) {
+		if (currentRoom.isMatched() && currentRoom.clearState != Room.ClearState.GREEN_CHECKMARK) {
 			updateRoomCheckmark(currentRoom, map);
 		}
 
@@ -704,15 +705,20 @@ public class DungeonManager {
 	// We also wait for it being matched to ensure that we don't try to mark the room as completed if secret waypoints haven't yet loaded (since the room is still matching)
 	// Mark the secret count as outdated to ensure we have an accurate count
 	private static void updateRoomCheckmark(Room room, MapItemSavedData map) {
-		if (room.getType() == Room.Type.ENTRANCE || room.greenChecked && room.whiteChecked) return;
-		if (!room.greenChecked && getRoomCheckmarkColour(CLIENT, map, room) == DungeonMapUtils.GREEN_COLOR) {
-			room.greenChecked = true;
-			room.whiteChecked = true;
-			room.secretCountOutdated = true;
-			room.markAllSecrets(true);
-		} else if (!room.whiteChecked && getRoomCheckmarkColour(CLIENT, map, room) == DungeonMapUtils.WHITE_COLOR) {
-			room.whiteChecked = true;
-			room.secretCountOutdated = true;
+		if (room.clearState == Room.ClearState.GREEN_CHECKMARK) return;
+		switch (getRoomCheckmarkColour(map, room)) {
+			case DungeonMapUtils.GREEN_COLOR -> {
+				room.clearState = Room.ClearState.GREEN_CHECKMARK;
+				room.secretCountOutdated = true;
+				room.markAllSecrets(true);
+			}
+			case DungeonMapUtils.WHITE_COLOR -> {
+				if (room.clearState == Room.ClearState.WHITE_CHECKMARK) return;
+				room.clearState = Room.ClearState.WHITE_CHECKMARK;
+				room.secretCountOutdated = true;
+			}
+			case DungeonMapUtils.RED_COLOR -> room.clearState = Room.ClearState.FAILED;
+			default -> room.clearState = Room.ClearState.UNCLEARED;
 		}
 	}
 
@@ -1005,7 +1011,7 @@ public class DungeonManager {
 	 * Returns the colour of a room's checkmark on the map. To find a room's checkmark: For each segment, we start from the top left corner of the segment,
 	 * go to the middle, then iterate downwards, and we should find the checkmark about a pixel or two down from there if the segment has the checkmark.
 	 */
-	private static int getRoomCheckmarkColour(Minecraft client, MapItemSavedData mapState, Room room) {
+	private static int getRoomCheckmarkColour(MapItemSavedData mapState, Room room) {
 		if (physicalEntrancePos == null || mapEntrancePos == null) return -1;
 		int halfRoomSize = mapRoomSize / 2;
 
@@ -1020,7 +1026,7 @@ public class DungeonManager {
 				int colour = DungeonMapUtils.getColor(mapState, new Vector2i(middle.x(), middle.y() + offset));
 
 				//Return if we found the colour of the checkmark
-				if (colour == DungeonMapUtils.WHITE_COLOR || colour == DungeonMapUtils.GREEN_COLOR) return colour;
+				if (colour == DungeonMapUtils.WHITE_COLOR || colour == DungeonMapUtils.GREEN_COLOR || colour == DungeonMapUtils.RED_COLOR) return colour;
 			}
 		}
 
