@@ -100,11 +100,11 @@ public class CompactDamage {
 
 		if (targetDamage < 1_000L) return String.valueOf(targetDamage);
 		if (targetDamage < 1_000_000L) return formatToPrecision(targetDamage / 1_000.0, targetPrecision) + "k";
-		if (targetDamage < 1_000_000_000L) return formatToPrecision(targetDamage / 1_000_000.0, targetPrecision) + "m";
-		if (targetDamage < 1_000_000_000_000L) return formatToPrecision(targetDamage / 1_000_000_000.0, targetPrecision) + "b";
-		if (targetDamage < 1_000_000_000_000_000L) return formatToPrecision(targetDamage / 1_000_000_000_000.0, targetPrecision) + "t";
+		if (targetDamage < 1_000_000_000L) return formatToPrecision(targetDamage / 1_000_000.0, targetPrecision) + "M";
+		if (targetDamage < 1_000_000_000_000L) return formatToPrecision(targetDamage / 1_000_000_000.0, targetPrecision) + "B";
+		if (targetDamage < 1_000_000_000_000_000L) return formatToPrecision(targetDamage / 1_000_000_000_000.0, targetPrecision) + "T";
 		// surely this will never happen :clueless:
-		return formatToPrecision(targetDamage / 1_000_000_000_000_000.0, targetPrecision) + "q";
+		return formatToPrecision(targetDamage / 1_000_000_000_000_000.0, targetPrecision) + "Q";
 	}
 
 	@VisibleForTesting
