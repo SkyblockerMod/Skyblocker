@@ -443,6 +443,7 @@
 
   "skyblocker.config.foraging.galatea": "Galatea",
   "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Enable Forest Node Helper",
+  "skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip": "Highlights Forest Nodes in orange.",
   "skyblocker.config.foraging.galatea.enableLushlilacHighlighter": "Enable Lushlilac Highlighter",
   "skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip": "Highlights Lushlilacs in magenta to assist in locating them.",
   "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter": "Enable Sea Lumies Highlighter",
@@ -499,7 +500,7 @@
   "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds": "Jacob's Contest Medal Background",
   "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds.@Tooltip": "Displays a colored background behind a Jacob's Farming Contest entry. The color represents the medal earned during the contest.",
   "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds": "Legacy Attribute Background",
-  "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds.@Tooltip": "Highlights items with attributes by adding a red background.",
+  "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds.@Tooltip": "Highlights items with legacy attributes by adding a red background. You can convert them to shards after the 0.23 Foraging Update in the Attribute Transfer interface.",
 
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableCollapsibleEntries": "Enable Collapsible Entry Groups",
@@ -1117,6 +1118,7 @@
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",
 
   "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "Hide Status Effect Overlay",
+  "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay.@Tooltip": "Hide Vanilla potion effect animations from various buff items in Skyblock.",
 
   "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.badNotationError": "Equation is not in RPN",
@@ -1207,6 +1209,7 @@
   "skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip": "Adds a little paint brush icon in your inventory next to the player model to open the Armor Customization screen.",
 
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
+  "skyblocker.config.uiAndVisuals.showEquipmentInInventory.@Tooltip": "This display is a cache of the /stats interface and is not updated in real time.\nThe slots are clickable and equivalent to /stats.",
 
   "skyblocker.config.uiAndVisuals.slotText": "Slot Text",
   "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level.",
