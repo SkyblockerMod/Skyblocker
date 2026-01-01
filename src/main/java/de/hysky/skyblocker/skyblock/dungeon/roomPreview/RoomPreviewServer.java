@@ -61,7 +61,7 @@ public class RoomPreviewServer {
 		if (!isActive) return;
 		Scheduler.INSTANCE.schedule(RoomPreview::onJoin, 5);
 		applyNightVision(player);
-		player.sendSystemMessage(Constants.PREFIX.get().append(Component.literal("Welcome to the Room Preview world! You are currently viewing %s.\nYou can fly around, modify your custom secret waypoints, and more!".formatted(selectedRoom))));
+		player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.roomPreview.joinMessage", selectedRoom)));
 		for (Component msg : errorMessages) {
 			player.sendSystemMessage(msg);
 		}
