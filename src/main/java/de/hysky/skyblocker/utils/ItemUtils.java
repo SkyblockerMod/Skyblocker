@@ -646,8 +646,7 @@ public final class ItemUtils {
 	public static OptionalInt getItemCountInSuperpairs(ItemStack stack) {
 		Screen currentScreen = Minecraft.getInstance().screen;
 		if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().startsWith("Superpairs")) {
-			if (!stack.getHoverName().getString().contains("Enchanted Book")) return OptionalInt.empty();
-			return OptionalInt.of(1);
+			if (stack.getHoverName().getString().contains("Enchanted Book")) return OptionalInt.of(1);
 		}
 		return OptionalInt.empty();
 	}
