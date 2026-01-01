@@ -6,7 +6,6 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,24 +14,15 @@ public class RoomStructure {
 		return createCompound(createBlockList(blocks));
 	}
 
-	static List<SkeletonBlock> createBlockList(int[] blocks) {
-		List<SkeletonBlock> blockData = new ArrayList<>(blocks.length);
-		for (int blockNum : blocks) {
-			blockData.add(new SkeletonBlock(
-					(blockNum >> 24) & 255,
-					(blockNum >> 16) & 255,
-					(blockNum >> 8) & 255,
-					(byte) (blockNum & 255)
-			));
-		}
-		return blockData;
+	public static List<SkeletonBlock> createBlockList(int[] blocks) {
+		return Arrays.stream(blocks).mapToObj(SkeletonBlock::from).toList();
 	}
 
 	/**
-	 * Manually creates a structure .nbt file from the skeleton blocks.
+	 * Manually creates a structure NBT Compound from the skeleton blocks.
 	 * A structure template is an CompoundTag of "size", "palette", and "blocks"
 	 */
-	static CompoundTag createCompound(List<SkeletonBlock> blockData) {
+	public static CompoundTag createCompound(List<SkeletonBlock> blockData) {
 		CompoundTag structure = new CompoundTag();
 
 		// Structure Size
@@ -94,7 +84,4 @@ public class RoomStructure {
 		sizeList.add(IntTag.valueOf(maxZ - minZ));
 		return sizeList;
 	}
-
-	// Simple data class to store all the block info.
-	public record SkeletonBlock(int x, int y, int z, byte blockType) {}
 }
