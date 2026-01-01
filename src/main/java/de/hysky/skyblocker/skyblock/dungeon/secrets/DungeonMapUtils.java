@@ -26,8 +26,9 @@ import org.joml.Vector2ic;
 
 public class DungeonMapUtils {
 	public static final byte BLACK_COLOR = MapColor.COLOR_BLACK.getPackedId(MapColor.Brightness.LOWEST);
-	public static final byte WHITE_COLOR = MapColor.SNOW.getPackedId(MapColor.Brightness.HIGH);
-	public static final byte GREEN_COLOR = 30;
+	public static final byte RED_COLOR = 18; // MapColor.FIRE.getPackedId(MapColor.Brightness.HIGH)
+	public static final byte WHITE_COLOR = 34; // MapColor.SNOW.getPackedId(MapColor.Brightness.HIGH)
+	public static final byte GREEN_COLOR = 30; // MapColor.PLANT.getPackedId(MapColor.Brightness.HIGH)
 
 	public static byte getColor(MapItemSavedData map, @Nullable Vector2ic pos) {
 		return pos == null ? -1 : getColor(map, pos.x(), pos.y());
