@@ -51,9 +51,7 @@ public class PreviewRoom extends Room {
 		}
 
 		Map<BlockPos, SecretWaypoint> customWaypoints = DungeonManager.getCustomWaypoints(RoomPreviewServer.selectedRoom);
-		customWaypoints.forEach((pos, secretWaypoint) -> {
-			secretWaypoints.put(secretWaypoint.secretIndex, pos, secretWaypoint);
-		});
+		customWaypoints.forEach((pos, secretWaypoint) -> secretWaypoints.put(secretWaypoint.secretIndex, pos, secretWaypoint));
 	}
 
 	protected void showSecretInLevel(SecretWaypoint waypoint) {
