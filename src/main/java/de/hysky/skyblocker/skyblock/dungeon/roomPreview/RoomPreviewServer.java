@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.roomPreview;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Constants;
@@ -12,9 +13,11 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -50,6 +53,7 @@ public class RoomPreviewServer {
 	public static void init() {
 		ServerPlayerEvents.JOIN.register(RoomPreviewServer::onPlayerJoin);
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldP, newP, alive) -> applyNightVision(newP));
+		ServerLifecycleEvents.SERVER_STARTED.register(RoomPreviewServer::checkServer);
 		ServerLifecycleEvents.SERVER_STOPPING.register((server) -> RoomPreviewServer.reset());
 	}
 
@@ -57,7 +61,7 @@ public class RoomPreviewServer {
 		if (!isActive) return;
 		Scheduler.INSTANCE.schedule(RoomPreview::onJoin, 5);
 		applyNightVision(player);
-		player.sendSystemMessage(Constants.PREFIX.get().append(Component.literal("Welcome to the Room Preview world. You can fly around, modify your custom secret waypoints, and more!")));
+		player.sendSystemMessage(Constants.PREFIX.get().append(Component.literal("Welcome to the Room Preview world! You are currently viewing %s.\nYou can fly around, modify your custom secret waypoints, and more!".formatted(selectedRoom))));
 		for (Component msg : errorMessages) {
 			player.sendSystemMessage(msg);
 		}
@@ -67,6 +71,16 @@ public class RoomPreviewServer {
 	public static void applyNightVision(ServerPlayer player) {
 		if (!isActive) return;
 		player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 999999999, 1, false, false));
+	}
+
+	private static void checkServer(MinecraftServer server) {
+		if (isActive) return;
+		if (!server.getWorldData().getLevelName().equals(SAVE_NAME)) return;
+
+		CompoundTag previewData = server.getCommandStorage().get(SkyblockerMod.id(SAVE_NAME));
+		if (previewData.isEmpty()) return;
+		isActive = server.getCommandStorage().get(SkyblockerMod.id(SAVE_NAME)).getBooleanOr("isActive", false);
+		selectedRoom = server.getCommandStorage().get(SkyblockerMod.id(SAVE_NAME)).getStringOr("selectedRoom", "");
 	}
 
 	private static void reset() {
@@ -82,6 +96,7 @@ public class RoomPreviewServer {
 		gameRules.set(GameRules.ADVANCE_TIME, false, null);
 		gameRules.set(GameRules.RANDOM_TICK_SPEED, 0, null);
 
+		isActive = true;
 		CLIENT.createWorldOpenFlows().createFreshLevel(SAVE_NAME,
 				new LevelSettings(SAVE_NAME, GameType.SPECTATOR, false, Difficulty.PEACEFUL, true, gameRules, WorldDataConfiguration.DEFAULT),
 				new WorldOptions("skyblocker".hashCode(), false, false),
@@ -94,8 +109,7 @@ public class RoomPreviewServer {
 		);
 
 		IntegratedServer server = CLIENT.getSingleplayerServer();
-		if (server == null) return;
-		isActive = true;
+		if (server == null) isActive = false;
 	}
 
 	public static void addErrorMessage(Component errorText) {
@@ -121,6 +135,14 @@ public class RoomPreviewServer {
 			WorldBorder border = server.overworld().getWorldBorder();
 			border.setCenter(((double) template.getSize().getX() + 1) / 2, ((double) template.getSize().getZ() + 1) / 2);
 			border.setSize(Math.max(template.getSize().getX(), template.getSize().getZ()));
+		});
+
+		// Save room preview data
+		server.execute(() -> {
+			CompoundTag previewData = new CompoundTag();
+			previewData.putBoolean("isActive", true);
+			previewData.putString("selectedRoom", roomName);
+			server.getCommandStorage().set(SkyblockerMod.id(SAVE_NAME), previewData);
 		});
 	}
 }
