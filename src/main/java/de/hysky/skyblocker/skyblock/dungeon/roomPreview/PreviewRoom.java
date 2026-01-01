@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Vector2i;
 
 import java.util.List;
@@ -41,10 +42,11 @@ public class PreviewRoom extends Room {
 				String secretName = waypoint.secretName();
 				Matcher secretIndexMatcher = SECRET_INDEX.matcher(secretName);
 				int secretIndex = secretIndexMatcher.find() ? Integer.parseInt(secretIndexMatcher.group(1)) : 0;
+				//noinspection DataFlowIssue - won't be null, it is set in the constructor.
 				BlockPos pos = DungeonMapUtils.relativeToActual(getDirection(), getPhysicalCornerPos(), waypoint);
 				SecretWaypoint secretWaypoint = new SecretWaypoint(secretIndex, waypoint.category(), secretName, pos);
 				secretWaypoints.put(secretIndex, pos, secretWaypoint);
-				showSecretInWorld(secretWaypoint);
+				showSecretInLevel(secretWaypoint);
 			});
 		}
 
@@ -54,10 +56,10 @@ public class PreviewRoom extends Room {
 		});
 	}
 
-	protected void showSecretInWorld(SecretWaypoint waypoint) {
+	protected void showSecretInLevel(SecretWaypoint waypoint) {
 		IntegratedServer server = Minecraft.getInstance().getSingleplayerServer();
 		if (server == null) return;
-		ServerLevel world = server.overworld();
+		ServerLevel level = server.overworld();
 
 		Block block = switch (waypoint.category) {
 			case ENTRANCE, STONK, AOTV, PEARL, PRINCE, DEFAULT -> null;
@@ -71,6 +73,10 @@ public class PreviewRoom extends Room {
 		};
 
 		if (block == null) return;
-		server.execute(() -> world.setBlockAndUpdate(waypoint.pos, block.defaultBlockState()));
+		BlockState state = block.defaultBlockState();
+		server.execute(() -> {
+			level.setBlockAndUpdate(waypoint.pos, state);
+			level.updateNeighboursOnBlockSet(waypoint.pos, state);
+		});
 	}
 }
