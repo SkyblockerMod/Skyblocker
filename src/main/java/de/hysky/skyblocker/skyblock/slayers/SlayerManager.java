@@ -25,6 +25,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.spider.CaveSpider;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -274,12 +275,14 @@ public class SlayerManager {
 	 * Returns the highlight bounding box for the given slayer boss armor stand entity.
 	 * It's slightly larger and lower than the armor stand's bounding box.
 	 */
-	public static @Nullable AABB getSlayerMobBoundingBox(ArmorStand armorStand) {
+	public static @Nullable AABB getSlayerMobBoundingBox(ArmorStand armorStand, float partialTick) {
+		// lowkey we should figure out where the actual boss entity is, because the armor stand lags behind
+		Vec3 lerpedPos = armorStand.getPosition(partialTick);
 		return switch (getSlayerType()) {
-			case SlayerType.REVENANT -> new AABB(armorStand.getX() - 0.4, armorStand.getY() - 0.1, armorStand.getZ() - 0.4, armorStand.getX() + 0.4, armorStand.getY() - 2.2, armorStand.getZ() + 0.4);
-			case SlayerType.TARANTULA -> new AABB(armorStand.getX() - 0.9, armorStand.getY() - 0.2, armorStand.getZ() - 0.9, armorStand.getX() + 0.9, armorStand.getY() - 1.2, armorStand.getZ() + 0.9);
-			case SlayerType.VOIDGLOOM -> new AABB(armorStand.getX() - 0.4, armorStand.getY() - 0.2, armorStand.getZ() - 0.4, armorStand.getX() + 0.4, armorStand.getY() - 3, armorStand.getZ() + 0.4);
-			case SlayerType.SVEN -> new AABB(armorStand.getX() - 0.5, armorStand.getY() - 0.1, armorStand.getZ() - 0.5, armorStand.getX() + 0.5, armorStand.getY() - 1, armorStand.getZ() + 0.5);
+			case SlayerType.REVENANT -> new AABB(lerpedPos.x - 0.4, lerpedPos.y - 0.1, lerpedPos.z - 0.4, lerpedPos.x + 0.4, lerpedPos.y - 2.2, lerpedPos.z + 0.4);
+			case SlayerType.TARANTULA -> new AABB(lerpedPos.x - 0.9, lerpedPos.y - 0.2, lerpedPos.z - 0.9, lerpedPos.x + 0.9, lerpedPos.y - 1.2, lerpedPos.z + 0.9);
+			case SlayerType.VOIDGLOOM -> new AABB(lerpedPos.x - 0.4, lerpedPos.y - 0.2, lerpedPos.z - 0.4, lerpedPos.x + 0.4, lerpedPos.y - 3, lerpedPos.z + 0.4);
+			case SlayerType.SVEN -> new AABB(lerpedPos.x - 0.5, lerpedPos.y - 0.1, lerpedPos.z - 0.5, lerpedPos.x + 0.5, lerpedPos.y - 1, lerpedPos.z + 0.5);
 			case null -> null;
 			default -> armorStand.getBoundingBox();
 		};

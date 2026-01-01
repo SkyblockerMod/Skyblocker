@@ -61,12 +61,9 @@ public class Room implements Tickable, Renderable {
 	private final Type type;
 	final Set<Vector2ic> segments;
 	/**
-	 * Used to allow rooms to have their secrets unmarked after the map detects the green checkmark.
-	 * This should not be used for rendering as it would break the above case and having the prince waypoints show until a prince is killed.
+	 * The current state of the room as it appears on the map.
 	 */
-	public boolean greenChecked = false;
-
-	public boolean whiteChecked = false;
+	public ClearState clearState = ClearState.UNCLEARED;
 
 	protected int secretsFound = 0;
 
@@ -832,6 +829,10 @@ public class Room implements Tickable, Renderable {
 				return context.getArgument(name, Direction.class);
 			}
 		}
+	}
+
+	public enum ClearState {
+		GREEN_CHECKED, WHITE_CHECKED, FAILED, UNCLEARED
 	}
 
 	protected enum MatchState {

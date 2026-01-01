@@ -515,7 +515,7 @@
   "skyblocker.config.general.itemProtection.displayChatNotification": "Display Chat Notifications",
   "skyblocker.config.general.itemProtection.displayChatNotification.@Tooltip": "Displays a chat notification when toggling the protection state of an item.",
   "skyblocker.config.general.itemProtection.protectValuableConsumables": "Protect Valuable Consumables",
-  "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "Prevents consuming items such as Bottles of Jyrre, Dark Cacao Truffles, and Discrite before they have evolved.",
+  "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "Prevents consuming items such as Bottles of Jyrre, Dark Cacao Truffles, Discrite, Moby Ducks, and Rosewater Flasks before they have evolved.",
   "skyblocker.config.general.itemProtection.slotLockStyle": "Slot Lock Icon Style",
   "skyblocker.config.general.itemProtection.slotLockStyle.@Tooltip": "Choose between the fancy or the classic slot lock icon.",
   "skyblocker.config.general.itemProtection.slotLockStyle.style.CLASSIC": "Classic",
@@ -727,6 +727,7 @@
 
   "skyblocker.config.helpers.mythologicalRitual": "Mythological Ritual Helper",
   "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "Enable Mythological Ritual Helper",
+  "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper.@Tooltip": "Adds waypoints for nearby Griffin Burrows during Diana's Mythological Ritual event.",
 
   "skyblocker.config.hunting": "Hunting",
 
@@ -1066,7 +1067,7 @@
   "skyblocker.config.uiAndVisuals.compactDamage.enabled": "Enabled",
   "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "Normal Damage Color",
   "skyblocker.config.uiAndVisuals.compactDamage.precision": "Precision",
-  "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip": "The number of digits to display after the decimal point.",
+  "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip": "The number of significant digits.",
 
   "skyblocker.config.uiAndVisuals.compactorDeletorPreview": "Enable Compactor/Deletor Preview",
 
@@ -1167,6 +1168,21 @@
 
   "skyblocker.config.uiAndVisuals.nightVisionStrength": "Night Vision Strength",
   "skyblocker.config.uiAndVisuals.nightVisionStrength.@Tooltip": "Determines the strength of the Night Vision effect.",
+
+  "skyblocker.config.uiAndVisuals.radialMenu": "Radial Menus",
+  "skyblocker.config.uiAndVisuals.radialMenu.bank": "Bank",
+  "skyblocker.config.uiAndVisuals.radialMenu.collections": "Collections",
+  "skyblocker.config.uiAndVisuals.radialMenu.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.radialMenu.enabled.@Tooltip": "Enable or disable all radial menus",
+  "skyblocker.config.uiAndVisuals.radialMenu.fastTravel": "Fast Travel",
+  "skyblocker.config.uiAndVisuals.radialMenu.general": "General Menus",
+  "skyblocker.config.uiAndVisuals.radialMenu.hideButton": "Hide",
+  "skyblocker.config.uiAndVisuals.radialMenu.hideButton.@Tooltip": "Show normal inventory view",
+  "skyblocker.config.uiAndVisuals.radialMenu.huntingToolkit": "Hunting Toolkit",
+  "skyblocker.config.uiAndVisuals.radialMenu.sacks": "Sacks",
+  "skyblocker.config.uiAndVisuals.radialMenu.storage": "Storage",
+  "skyblocker.config.uiAndVisuals.radialMenu.tooltipsWithoutShift": "Show Tooltips Without Shift",
+  "skyblocker.config.uiAndVisuals.radialMenu.wardrobe": "Wardrobe",
 
   "skyblocker.config.uiAndVisuals.searchOverlay": "AH/BZ Search Overlay",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
