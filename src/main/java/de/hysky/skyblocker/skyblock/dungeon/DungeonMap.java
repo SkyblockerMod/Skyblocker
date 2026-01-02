@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.MapRenderer;
 import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -81,6 +82,7 @@ public class DungeonMap {
 	 */
 	public static @Nullable UUID render(GuiGraphics context, int x, int y, float scale, boolean fancy, int mouseX, int mouseY, @Nullable UUID enlarge) {
 		Minecraft client = Minecraft.getInstance();
+		DungeonsConfig.DungeonMap dungeonMap = SkyblockerConfigManager.get().dungeons.dungeonMap;
 		if (client.player == null || client.level == null) return null;
 
 		MapId mapId = getMapIdComponent(client.player.getInventory().getNonEquipmentItems().get(8));
@@ -93,6 +95,10 @@ public class DungeonMap {
 		context.pose().pushMatrix();
 		context.pose().translate(x, y);
 		context.pose().scale(scale, scale);
+
+		if (dungeonMap.backgroundBlur) HudHelper.submitBlurredRectangle(context, 0, 0, 128, 128, 5);
+		if (dungeonMap.showOutline) HudHelper.drawBorder(context, 0, 0, 128, 128, CommonColors.LIGHT_GRAY);
+
 		context.submitMapRenderState(MAP_RENDER_STATE);
 
 		DungeonMapLabels.renderRoomNames(context);

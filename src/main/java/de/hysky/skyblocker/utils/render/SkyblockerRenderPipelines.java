@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.render;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -51,6 +52,13 @@ public class SkyblockerRenderPipelines {
 			.withLocation(SkyblockerMod.id("pipeline/circle_lines"))
 			.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, Mode.QUADS)
 			.withCull(false)
+			.build());
+	public static final RenderPipeline BLURRED_RECTANGLE = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.GUI_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+			.withLocation(SkyblockerMod.id("pipeline/blurred_rectangle"))
+			.withVertexShader("core/position_color")
+			.withFragmentShader(SkyblockerMod.id("core/box_blur"))
+			.withSampler("Sampler0")
+			.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
 			.build());
 
 	/**
