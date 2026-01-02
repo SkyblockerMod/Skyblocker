@@ -591,7 +591,7 @@
     "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals": "仅当“=”时显示。",
     "skyblocker.config.uiAndVisuals.inputCalculator": "输入计算器",
     "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "启用告示牌计算器",
-    "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "使你可以在输入诸如拍卖价格之类的值时进行计算。\n 单位：\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\npurse/P = 当前钱包中的硬币数",
+    "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "使你可以在输入诸如拍卖价格之类的值时进行计算。\n 单位：\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n  T = 1,000,000,000,000\n  Q = 1,000,000,000,000,000\n\npurse/P = 当前钱包中的硬币数",
     "skyblocker.config.uiAndVisuals.compactDamage": "简洁的伤害数值",
     "skyblocker.config.uiAndVisuals.compactDamage.enabled": "已启用",
     "skyblocker.config.uiAndVisuals.compactDamage.precision": "精确度",
@@ -1224,7 +1224,7 @@
     "skyblocker.config.foraging.galatea.enableLushlilacHighlighter": "启用Lushlilac高亮",
     "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter": "启用Sea Lumies高亮",
     "skyblocker.config.helpers.fishing.fishingHookDisplay": "鱼钩显示",
-    "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds.@Tooltip": "为拥有旧版属性的物品添加红色背景颜色。",
+    "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds.@Tooltip": "为拥有旧版属性的物品添加红色背景颜色。在0.23 Foraging更新后你可以在Attribute Transfer界面将它们转化为Shard。",
     "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds": "旧版属性背景色",
     "skyblocker.bars.config.showOverflow": "显示Overflow",
     "skyblocker.bars.config.showMax": "显示最大值",
@@ -1589,5 +1589,11 @@
     "skyblocker.config.uiAndVisuals.radialMenu.tooltipsWithoutShift": "在不使用Shift的情况下显示工具提示",
     "skyblocker.config.dungeons.map.showOutline": "显示边框",
     "skyblocker.config.dungeons.map.backgroundBlur": "背景模糊",
-    "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper.@Tooltip": "在Diana的Mythological Ritual活动期间为附近的Griffin洞穴添加路径点。"
+    "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper.@Tooltip": "在Diana的Mythological Ritual活动期间为附近的Griffin洞穴添加路径点。",
+    "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay.@Tooltip": "隐藏Skyblock各种增益物品带来的原版药水效果动画。",
+    "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBar": "启用原版风格Mana属性条",
+    "skyblocker.config.uiAndVisuals.showEquipmentInInventory.@Tooltip": "此显示效果是/stats界面的缓存，并非实时更新。\n槽位是可点击的，等效于/stats命令。",
+    "skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip": "以橙色高亮显示森林节点。",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError2": "数字文本不能以分隔符开头",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError3": "数字文本不能包含前导小数点"
 }
