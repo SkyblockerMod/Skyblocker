@@ -15,14 +15,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 @RegisterWidget
 public class CrystalsHudWidget extends HudWidget {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	protected static final ResourceLocation MAP_TEXTURE = SkyblockerMod.id("textures/gui/crystals_map.png");
-	private static final ResourceLocation MAP_ICON = ResourceLocation.withDefaultNamespace("textures/map/decorations/player.png");
+	protected static final Identifier MAP_TEXTURE = SkyblockerMod.id("textures/gui/crystals_map.png");
+	private static final Identifier MAP_ICON = Identifier.withDefaultNamespace("textures/map/decorations/player.png");
 	private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Unknown");
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.CRYSTAL_HOLLOWS);
 

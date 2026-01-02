@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ public class DungeonMapConfigScreen extends Screen {
 	private int mapY = SkyblockerConfigManager.get().dungeons.dungeonMap.mapY;
 	private int scoreX = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX;
 	private int scoreY = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY;
-	private static final ResourceLocation EXAMPLE_MAP = SkyblockerMod.id("textures/gui/example_dungeon_map.png");
+	private static final Identifier EXAMPLE_MAP = SkyblockerMod.id("textures/gui/example_dungeon_map.png");
 	private final @Nullable Screen parent;
 
 	protected DungeonMapConfigScreen() {

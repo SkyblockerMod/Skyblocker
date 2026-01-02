@@ -17,19 +17,19 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.Bounds;
 import java.util.Map;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 
 /**
  * EMI integration
  */
 public class SkyblockerEMIPlugin implements EmiPlugin {
-	public static final ResourceLocation SIMPLIFIED_TEXTURES = SkyblockerMod.id("textures/gui/emi_icons.png");
+	public static final Identifier SIMPLIFIED_TEXTURES = SkyblockerMod.id("textures/gui/emi_icons.png");
 
 	public static final EmiRecipeCategory SKYBLOCK_CRAFTING = new EmiRecipeCategory(SkyblockCraftingRecipe.ID, EmiStack.of(Items.CRAFTING_TABLE), new EmiTexture(SIMPLIFIED_TEXTURES, 0, 0, 16, 16));
 	public static final EmiRecipeCategory SKYBLOCK_FORGE = new EmiRecipeCategory(SkyblockForgeRecipe.ID, EmiStack.of(Items.LAVA_BUCKET), new EmiTexture(SIMPLIFIED_TEXTURES, 16, 0, 16, 16));
 
-	protected static final Map<ResourceLocation, EmiRecipeCategory> IDENTIFIER_CATEGORY_MAP = Map.of(
+	protected static final Map<Identifier, EmiRecipeCategory> IDENTIFIER_CATEGORY_MAP = Map.of(
 			SkyblockCraftingRecipe.ID, SKYBLOCK_CRAFTING,
 			SkyblockForgeRecipe.ID, SKYBLOCK_FORGE
 	);

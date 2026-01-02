@@ -12,14 +12,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FishingHookDisplayHelper {
 	protected static ArmorStand fishingHookArmorStand;
-	private static final ResourceLocation FISHING_HOOK_DISPLAY = SkyblockerMod.id("fishing_hook_display");
+	private static final Identifier FISHING_HOOK_DISPLAY = SkyblockerMod.id("fishing_hook_display");
 	static Pattern pattern = Pattern.compile("\\d.\\d");
 
 	@Init

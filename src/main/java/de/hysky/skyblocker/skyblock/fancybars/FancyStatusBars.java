@@ -19,7 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -45,7 +45,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 public class FancyStatusBars {
-	private static final ResourceLocation HUD_LAYER = SkyblockerMod.id("fancy_status_bars");
+	private static final Identifier HUD_LAYER = SkyblockerMod.id("fancy_status_bars");
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("status_bars.json");
 	private static final Logger LOGGER = LoggerFactory.getLogger(FancyStatusBars.class);
 

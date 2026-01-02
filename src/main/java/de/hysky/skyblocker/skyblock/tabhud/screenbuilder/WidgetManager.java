@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
@@ -44,8 +44,8 @@ import java.util.stream.Collectors;
 
 public class WidgetManager {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final ResourceLocation FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
-	private static final ResourceLocation FANCY_TAB = SkyblockerMod.id("fancy_tab");
+	private static final Identifier FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
+	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
 
 	private static final int VERSION = 2;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");

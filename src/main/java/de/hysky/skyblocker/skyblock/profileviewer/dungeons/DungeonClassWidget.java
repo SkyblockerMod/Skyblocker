@@ -17,7 +17,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class DungeonClassWidget {
@@ -28,10 +28,10 @@ public class DungeonClassWidget {
 	private final ItemStack stack;
 	private boolean active = false;
 
-	private static final ResourceLocation TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
-	private static final ResourceLocation ACTIVE_TEXTURE = SkyblockerMod.id("textures/gui/item_protection.png");
-	private static final ResourceLocation BAR_FILL = SkyblockerMod.id("bars/bar_fill");
-	private static final ResourceLocation BAR_BACK = SkyblockerMod.id("bars/bar_back");
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
+	private static final Identifier ACTIVE_TEXTURE = SkyblockerMod.id("textures/gui/item_protection.png");
+	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
 	private static final Font textRenderer = Minecraft.getInstance().font;
 	private static final Map<String, ItemStack> CLASS_ICON = Map.ofEntries(

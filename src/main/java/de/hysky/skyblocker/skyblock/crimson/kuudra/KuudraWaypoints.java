@@ -31,7 +31,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Giant;
@@ -70,7 +70,7 @@ public class KuudraWaypoints {
 		CompletableFuture.allOf(safeSpots, pearls).whenComplete((_result, _throwable) -> loaded = true);
 	}
 
-	private static CompletableFuture<Void> loadWaypoints(Minecraft client, ResourceLocation file, ObjectArrayList<Waypoint> list, float[] colorComponents) {
+	private static CompletableFuture<Void> loadWaypoints(Minecraft client, Identifier file, ObjectArrayList<Waypoint> list, float[] colorComponents) {
 		return CompletableFuture.supplyAsync(() -> {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(file)) {
 				return CODEC.apply(colorComponents).parse(JsonOps.INSTANCE, getWaypoints(reader)).getOrThrow();

@@ -18,7 +18,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import java.nio.file.Path;
 
 /**
@@ -35,8 +35,8 @@ public class SkyblockerMod implements ClientModInitializer {
 	public static final Gson GSON_COMPACT = new GsonBuilder().create();
 	public static final KeyMapping.Category KEYBINDING_CATEGORY = KeyMapping.Category.register(id("main"));
 
-	public static ResourceLocation id(String path) {
-		return ResourceLocation.fromNamespaceAndPath(NAMESPACE, path);
+	public static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath(NAMESPACE, path);
 	}
 
 	/**

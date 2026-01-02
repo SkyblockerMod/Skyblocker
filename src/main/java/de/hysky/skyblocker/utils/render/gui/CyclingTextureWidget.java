@@ -14,22 +14,22 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * A widget designed for cycling through a set of textures, represented by an enum.
  *
- * @param <T> The type of the enum entries, which must be an {@link Enum} and implement {@link Supplier}{@code <}{@link ResourceLocation}{@code >}.
+ * @param <T> The type of the enum entries, which must be an {@link Enum} and implement {@link Supplier}{@code <}{@link Identifier}{@code >}.
  */
-public class CyclingTextureWidget<T extends Enum<T> & Supplier<ResourceLocation>> extends AbstractWidget {
+public class CyclingTextureWidget<T extends Enum<T> & Supplier<Identifier>> extends AbstractWidget {
 
 	private Function<T, Component> textSupplier = t -> Component.nullToEmpty(t.name());
 	private Function<T, Tooltip> tooltipSupplier = t -> Tooltip.create(Component.translationArg(textSupplier.apply(t)));
 	private Consumer<T> onCycle = t -> {};
 	private T current;
 
-	private static final WidgetSprites BUTTON = new WidgetSprites(ResourceLocation.withDefaultNamespace("widget/button"),
-			ResourceLocation.withDefaultNamespace("widget/button_disabled"), ResourceLocation.withDefaultNamespace("widget/button_highlighted"));
+	private static final WidgetSprites BUTTON = new WidgetSprites(Identifier.withDefaultNamespace("widget/button"),
+			Identifier.withDefaultNamespace("widget/button_disabled"), Identifier.withDefaultNamespace("widget/button_highlighted"));
 
 	public CyclingTextureWidget(int x, int y, int width, int height, T initial) {
 		super(x, y, width, height, Component.empty());

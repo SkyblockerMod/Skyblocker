@@ -35,7 +35,7 @@ import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
@@ -47,7 +47,7 @@ import net.minecraft.world.item.equipment.Equippable;
 public class ColorSelectionWidget extends AbstractContainerWidget implements Closeable {
 	private static final int PADDING = 3;
 
-	private static final ResourceLocation INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 	private static final Component RESET_COLOR_TEXT = Component.translatable("skyblocker.customization.armor.resetColor");
 	private static final Component CANNOT_CUSTOMIZE_COLOR_TEXT = Component.translatable("skyblocker.customization.armor.cannotCustomizeColor");
 	private static final Component ANIMATED_TEXT = Component.translatable("skyblocker.customization.armor.animated");

@@ -12,10 +12,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class DungeonScoreHUD {
-	private static final ResourceLocation DUNGEON_SCORE = SkyblockerMod.id("dungeon_score");
+	private static final Identifier DUNGEON_SCORE = SkyblockerMod.id("dungeon_score");
 
 	private DungeonScoreHUD() {
 	}

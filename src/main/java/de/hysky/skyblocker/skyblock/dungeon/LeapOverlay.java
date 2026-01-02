@@ -34,7 +34,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -48,8 +48,8 @@ import net.minecraft.world.item.component.ResolvableProfile;
 public class LeapOverlay extends Screen implements ContainerListener {
 	public static final String TITLE = "Spirit Leap";
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final ResourceLocation BUTTON = SkyblockerMod.id("button/button");
-	private static final ResourceLocation BUTTON_HIGHLIGHTED = SkyblockerMod.id("button/button_highlighted");
+	private static final Identifier BUTTON = SkyblockerMod.id("button/button");
+	private static final Identifier BUTTON_HIGHLIGHTED = SkyblockerMod.id("button/button_highlighted");
 	private static final Supplier<DungeonsConfig.SpiritLeapOverlay> CONFIG = () -> SkyblockerConfigManager.get().dungeons.leapOverlay;
 	private static final int BUTTON_SPACING = 8;
 	private static final int BUTTON_WIDTH = 130;
@@ -209,7 +209,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 
 		@Override
 		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-			ResourceLocation texture = this.isHoveredOrFocused() || reference.uuid().equals(LeapOverlay.this.hovered) ? BUTTON_HIGHLIGHTED : BUTTON;
+			Identifier texture = this.isHoveredOrFocused() || reference.uuid().equals(LeapOverlay.this.hovered) ? BUTTON_HIGHLIGHTED : BUTTON;
 			context.blitSprite(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
 			Matrix3x2fStack matrices = context.pose();

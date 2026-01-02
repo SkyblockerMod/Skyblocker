@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils.render.state;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 
 public class TexturedQuadRenderState {
@@ -10,7 +10,7 @@ public class TexturedQuadRenderState {
 	public float textureWidth;
 	public float textureHeight;
 	public Vec3 renderOffset;
-	public ResourceLocation texture;
+	public Identifier texture;
 	public float[] shaderColour;
 	public float alpha;
 	public boolean throughWalls;

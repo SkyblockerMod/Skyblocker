@@ -19,15 +19,15 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class SkillWidget {
 	private final String SKILL_NAME;
 	private final LevelFinder.LevelInfo SKILL_LEVEL;
 
-	private static final ResourceLocation BAR_FILL = SkyblockerMod.id("bars/bar_fill");
-	private static final ResourceLocation BAR_BACK = SkyblockerMod.id("bars/bar_back");
+	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
 	private final ItemStack stack;
 	private static final Font textRenderer = Minecraft.getInstance().font;

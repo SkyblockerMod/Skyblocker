@@ -14,12 +14,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 
 public class SkyblockForgeRecipe implements SkyblockRecipe {
-	public static final ResourceLocation ID = SkyblockerMod.id("skyblock_forge");
+	public static final Identifier ID = SkyblockerMod.id("skyblock_forge");
 
 	private final List<ItemStack> inputs;
 	private final ItemStack output;
@@ -90,12 +90,12 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public ResourceLocation getCategoryIdentifier() {
+	public Identifier getCategoryIdentifier() {
 		return ID;
 	}
 
-	public ResourceLocation getRecipeIdentifier() {
-		return ResourceLocation.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
+	public Identifier getRecipeIdentifier() {
+		return Identifier.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 // This is kinda excessive, but I thought it was a good idea
 public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends AbstractWidget {
@@ -100,11 +100,11 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends A
 
 		int[] getOptionSize();
 
-		ResourceLocation getOptionTexture();
+		Identifier getOptionTexture();
 
-		ResourceLocation getBackTexture();
+		Identifier getBackTexture();
 
-		ResourceLocation getHoverTexture();
+		Identifier getHoverTexture();
 
 	}
 }

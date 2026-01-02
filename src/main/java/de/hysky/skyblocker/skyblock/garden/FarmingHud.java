@@ -22,7 +22,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NumericTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class FarmingHud {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
-	private static final ResourceLocation FARMING_HUD = SkyblockerMod.id("farming_hud");
+	private static final Identifier FARMING_HUD = SkyblockerMod.id("farming_hud");
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
 	private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?<percent>[\\d,]+(?:\\.\\d+)?%|[\\d,]+/[\\d,]+)\\)");
 	private static final Minecraft client = Minecraft.getInstance();

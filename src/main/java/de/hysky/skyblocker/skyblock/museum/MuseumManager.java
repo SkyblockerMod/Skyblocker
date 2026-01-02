@@ -25,7 +25,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +37,7 @@ import java.util.Locale;
 public class MuseumManager extends AbstractWidget implements HoveredItemStackProvider {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Font TEXT_RENDERER = CLIENT.font;
-	private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/recipe_book.png");
+	private static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("textures/gui/recipe_book.png");
 	public static final int BACKGROUND_WIDTH = 147;
 	public static final int BACKGROUND_HEIGHT = 160;
 	public static final int SPACING = 2;

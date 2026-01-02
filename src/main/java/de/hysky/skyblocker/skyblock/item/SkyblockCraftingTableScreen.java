@@ -12,7 +12,7 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -20,14 +20,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class SkyblockCraftingTableScreen extends AbstractContainerScreen<SkyblockCraftingTableScreenHandler> {
-	private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/container/crafting_table.png");
+	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/crafting_table.png");
 	protected static final WidgetSprites MORE_CRAFTS_TEXTURES = new WidgetSprites(
 			SkyblockerMod.id("quick_craft/more_button"),
 			SkyblockerMod.id("quick_craft/more_button_disabled"),
 			SkyblockerMod.id("quick_craft/more_button_highlighted")
 	);
 
-	protected static final ResourceLocation QUICK_CRAFT = SkyblockerMod.id("textures/gui/sprites/quick_craft/quick_craft_overlay.png");
+	protected static final Identifier QUICK_CRAFT = SkyblockerMod.id("textures/gui/sprites/quick_craft/quick_craft_overlay.png");
 	private final SkyblockRecipeBookWidget recipeBook = new SkyblockRecipeBookWidget(menu);
 	private boolean narrow;
 	private ImageButton moreCraftsButton;

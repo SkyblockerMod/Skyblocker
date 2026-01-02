@@ -11,7 +11,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +23,12 @@ import org.joml.Matrix3x2fStack;
  */
 public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDisplay> {
 
-	private final ResourceLocation identifier;
+	private final Identifier identifier;
 	private final Component title;
 	private final ItemStack icon;
 	private final int height;
 
-	public SkyblockRecipeCategory(ResourceLocation identifier, Component title, ItemStack icon, int height) {
+	public SkyblockRecipeCategory(Identifier identifier, Component title, ItemStack icon, int height) {
 		this.identifier = identifier;
 		this.title = title;
 		this.icon = icon;

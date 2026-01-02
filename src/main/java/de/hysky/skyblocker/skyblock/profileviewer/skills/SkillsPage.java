@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SkillsPage implements ProfileViewerPage {
-	private static final ResourceLocation TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
 	private static final String[] SKILLS = {"Combat", "Mining", "Farming", "Foraging", "Fishing", "Enchanting", "Alchemy", "Taming", "Carpentry", "Catacombs", "Runecraft", "Social"};
 	private static final int ROW_GAP = 28;
 

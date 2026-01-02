@@ -29,17 +29,17 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.StringRepresentable;
 
 public class StatusBar implements LayoutElement, Renderable, GuiEventListener, NarratableEntry {
-	private static final ResourceLocation BAR_FILL = SkyblockerMod.id("bars/bar_fill");
-	private static final ResourceLocation BAR_BACK = SkyblockerMod.id("bars/bar_back");
+	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
 	public static final int ICON_SIZE = 9;
 
-	private final ResourceLocation icon;
+	private final Identifier icon;
 	private final StatusBarType type;
 	private Color[] colors;
 	private @Nullable Color textColor;

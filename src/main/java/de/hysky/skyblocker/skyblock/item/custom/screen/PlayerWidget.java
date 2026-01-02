@@ -10,13 +10,13 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class PlayerWidget extends AbstractWidget {
-	private static final ResourceLocation INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 	private static final float FLIP_ROTATION = (float) Math.PI;
 	private final AbstractClientPlayer player;
 

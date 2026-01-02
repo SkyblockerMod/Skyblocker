@@ -14,16 +14,16 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 
 public class OverlayScreen extends Screen {
 
-	protected static final ResourceLocation SEARCH_ICON_TEXTURE = ResourceLocation.withDefaultNamespace("icon/search");
-	protected static final ResourceLocation DELETE_ICON_TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/sprites/pending_invite/reject.png");
-	private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.withDefaultNamespace("social_interactions/background");
+	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
+	protected static final Identifier DELETE_ICON_TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/pending_invite/reject.png");
+	private static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("social_interactions/background");
 	private static final int rowHeight = 20;
 	private static final int specialButtonSize = rowHeight;
 	private EditBox searchField;

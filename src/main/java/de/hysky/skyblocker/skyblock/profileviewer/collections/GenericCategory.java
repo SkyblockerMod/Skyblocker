@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -34,7 +34,7 @@ public class GenericCategory implements ProfileViewerPage {
 	private final String category;
 	private final LinkedList<ItemStack> collections = new LinkedList<>();
 	private static final Font textRenderer = Minecraft.getInstance().font;
-	private static final ResourceLocation BUTTON_TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled.png");
+	private static final Identifier BUTTON_TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled.png");
 	private static final int COLUMN_GAP = 26;
 	private static final int ROW_GAP = 34;
 	private static final int COLUMNS = 7;

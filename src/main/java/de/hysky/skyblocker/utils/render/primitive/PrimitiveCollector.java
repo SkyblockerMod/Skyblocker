@@ -2,7 +2,7 @@ package de.hysky.skyblocker.utils.render.primitive;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -53,7 +53,7 @@ public interface PrimitiveCollector {
 	 * @param texture       reference to texture to render
 	 * @param shaderColor   colour to apply to the texture (use white if none)
 	 */
-	void submitTexturedQuad(Vec3 pos, float width, float height, float textureWidth, float textureHeight, Vec3 renderOffset, ResourceLocation texture, float[] shaderColour, float alpha, boolean throughWalls);
+	void submitTexturedQuad(Vec3 pos, float width, float height, float textureWidth, float textureHeight, Vec3 renderOffset, Identifier texture, float[] shaderColour, float alpha, boolean throughWalls);
 
 	void submitBlockHologram(BlockPos pos, BlockState state);
 

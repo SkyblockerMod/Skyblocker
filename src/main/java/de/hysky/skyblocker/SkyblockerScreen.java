@@ -20,7 +20,7 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import java.time.LocalDate;
 
@@ -29,7 +29,7 @@ public class SkyblockerScreen extends Screen {
 	private static final int BUTTON_WIDTH = 210;
 	private static final int HALF_BUTTON_WIDTH = 101; //Same as (210 - 8) / 2
 	private static final Component TITLE;
-	private static final ResourceLocation ICON;
+	private static final Identifier ICON;
 	private static final Component CONFIGURATION_TEXT = Component.translatable("text.skyblocker.config");
 	private static final Component SOURCE_TEXT = Component.translatable("text.skyblocker.source");
 	private static final Component REPORT_BUGS_TEXT = Component.translatable("menu.reportBugs");
@@ -115,9 +115,9 @@ public class SkyblockerScreen extends Screen {
 	}
 
 	private static class IconTextWidget extends StringWidget {
-		private final ResourceLocation icon;
+		private final Identifier icon;
 
-		IconTextWidget(Component message, Font textRenderer, ResourceLocation icon) {
+		IconTextWidget(Component message, Font textRenderer, Identifier icon) {
 			super(message, textRenderer);
 			this.icon = icon;
 		}

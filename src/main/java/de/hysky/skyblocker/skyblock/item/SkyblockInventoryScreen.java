@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
@@ -60,8 +60,8 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	private static final Codec<ItemStack[]> CODEC = ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf(4, 8) // min size at 4 for backwards compat
 			.xmap(itemStacks -> itemStacks.toArray(ItemStack[]::new), List::of).fieldOf("items").codec();
 
-	private static final ResourceLocation SLOT_TEXTURE = ResourceLocation.withDefaultNamespace("container/slot");
-	private static final ResourceLocation EMPTY_SLOT = SkyblockerMod.id("equipment/empty_icon");
+	private static final Identifier SLOT_TEXTURE = Identifier.withDefaultNamespace("container/slot");
+	private static final Identifier EMPTY_SLOT = SkyblockerMod.id("equipment/empty_icon");
 	private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
 
 	private final Slot[] equipmentSlots = new Slot[4];

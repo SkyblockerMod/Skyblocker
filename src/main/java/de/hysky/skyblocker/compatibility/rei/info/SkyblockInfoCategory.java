@@ -23,7 +23,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 	private static final int RED_ERROR_COLOR = 0xFFFF5555;
 	private static final EntryStack<ItemStack> ICON = EntryStacks.of(new ItemStack(Items.CHEST));
 
-	public static final ResourceLocation IDENTIFIER = SkyblockerMod.id("skyblock_info");
+	public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_info");
 
 	@Override
 	public CategoryIdentifier<? extends SkyblockInfoDisplay> getCategoryIdentifier() {

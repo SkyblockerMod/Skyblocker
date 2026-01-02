@@ -20,7 +20,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +28,7 @@ import net.minecraft.world.item.Items;
 
 public class ItemSelectPopup extends AbstractPopupScreen {
 
-	private static final ResourceLocation BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/inventory_item_selection.png");
+	private static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/inventory_item_selection.png");
 	private static final int TEXTURE_WIDTH = 176;
 	private static final int TEXTURE_HEIGHT = 132;
 	private final Consumer<ItemStack> callback;
@@ -87,8 +87,8 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 	}
 
 	private class ItemWidget extends AbstractWidget {
-		private static final ResourceLocation SLOT_HIGHLIGHT_BACK_TEXTURE = ResourceLocation.withDefaultNamespace("container/slot_highlight_back");
-		private static final ResourceLocation SLOT_HIGHLIGHT_FRONT_TEXTURE = ResourceLocation.withDefaultNamespace("container/slot_highlight_front");
+		private static final Identifier SLOT_HIGHLIGHT_BACK_TEXTURE = Identifier.withDefaultNamespace("container/slot_highlight_back");
+		private static final Identifier SLOT_HIGHLIGHT_FRONT_TEXTURE = Identifier.withDefaultNamespace("container/slot_highlight_front");
 
 		private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 		private final ItemStack item;

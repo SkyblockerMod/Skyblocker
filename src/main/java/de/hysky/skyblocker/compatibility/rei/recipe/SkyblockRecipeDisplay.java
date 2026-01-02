@@ -6,7 +6,7 @@ import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.display.DisplaySerializer;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.Optional;
  */
 public class SkyblockRecipeDisplay implements Display {
 
-	private final ResourceLocation category;
+	private final Identifier category;
 	private final SkyblockRecipe recipe;
 
 	public SkyblockRecipeDisplay(SkyblockRecipe recipe) {
@@ -45,7 +45,7 @@ public class SkyblockRecipeDisplay implements Display {
 	}
 
 	@Override
-	public Optional<ResourceLocation> getDisplayLocation() {
+	public Optional<Identifier> getDisplayLocation() {
 		return Optional.empty();
 	}
 

@@ -27,7 +27,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
 @Mixin(Gui.class)
 public abstract class GuiMixin {
 	@Unique
-	private static final Supplier<ResourceLocation> SLOT_LOCK_ICON = () -> SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex;
+	private static final Supplier<Identifier> SLOT_LOCK_ICON = () -> SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex;
 	@Unique
 	private static final Pattern DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
 

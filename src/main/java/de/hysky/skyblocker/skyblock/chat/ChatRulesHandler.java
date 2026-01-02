@@ -25,7 +25,7 @@ import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
@@ -130,7 +130,7 @@ public class ChatRulesHandler {
 	}
 
 	private static class ChatRulesToast implements Toast {
-		private static final ResourceLocation TEXTURE = SkyblockerMod.id("notification");
+		private static final Identifier TEXTURE = SkyblockerMod.id("notification");
 
 		private final long displayDuration;
 		private final ItemStack icon;

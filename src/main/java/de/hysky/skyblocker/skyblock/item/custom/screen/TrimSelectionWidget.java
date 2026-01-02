@@ -20,13 +20,13 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class TrimSelectionWidget extends AbstractContainerWidget {
 	private static final int PADDING = 3;
 
-	private static final ResourceLocation INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 	private static final int MAX_BUTTONS_PER_ROW_PATTERN = 7;
 	private static final int MAX_BUTTONS_PER_ROW_MATERIAL = 6;
 
@@ -36,8 +36,8 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 	private final List<AbstractWidget> children = new ArrayList<>();
 
 	private ItemStack currentItem = null;
-	private ResourceLocation selectedPattern = null;
-	private ResourceLocation selectedMaterial = null;
+	private Identifier selectedPattern = null;
+	private Identifier selectedMaterial = null;
 
 	public TrimSelectionWidget(int x, int y, int width, int height) {
 		super(x, y, width, height, Component.nullToEmpty("Trim Selection"));

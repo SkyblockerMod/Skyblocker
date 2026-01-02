@@ -11,13 +11,13 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GlaciteColdOverlay {
-	private static final ResourceLocation POWDER_SNOW_OUTLINE = ResourceLocation.withDefaultNamespace("textures/misc/powder_snow_outline.png");
+	private static final Identifier POWDER_SNOW_OUTLINE = Identifier.withDefaultNamespace("textures/misc/powder_snow_outline.png");
 	private static final Pattern COLD_PATTERN = Pattern.compile("Cold: -(\\d+)❄");
 	private static int cold = 0;
 	private static long resetTime = System.currentTimeMillis();
@@ -61,7 +61,7 @@ public class GlaciteColdOverlay {
 	/**
 	 * @see Gui#renderTextureOverlay as this is a carbon copy of it
 	 */
-	private static void renderOverlay(GuiGraphics context, ResourceLocation texture, float opacity) {
+	private static void renderOverlay(GuiGraphics context, Identifier texture, float opacity) {
 		int white = ARGB.white(opacity);
 		context.blit(
 			RenderPipelines.GUI_TEXTURED,

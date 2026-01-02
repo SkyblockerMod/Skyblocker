@@ -7,14 +7,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * A more bare-bones version of Vanilla's Popup Screen. Meant to be extended.
  */
 public class AbstractPopupScreen extends Screen {
-	private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.withDefaultNamespace("popup/background");
+	private static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("popup/background");
 	public final Screen backgroundScreen;
 
 	protected AbstractPopupScreen(Component title, Screen backgroundScreen) {

@@ -12,7 +12,7 @@ import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
@@ -55,7 +55,7 @@ public interface DataComponentHolderMixin {
 					return (T) glint;
 				}
 			} else if (dataComponentType == DataComponents.ITEM_MODEL) {
-				ResourceLocation id = SkyblockerConfigManager.get().general.customItemModel.get(itemUuid);
+				Identifier id = SkyblockerConfigManager.get().general.customItemModel.get(itemUuid);
 
 				if (id != null) {
 					return (T) id;

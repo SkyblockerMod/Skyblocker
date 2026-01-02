@@ -13,7 +13,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SkyblockEmiRecipe implements EmiRecipe {
 	private final Component craftText;
@@ -30,7 +30,7 @@ public class SkyblockEmiRecipe implements EmiRecipe {
 	}
 
 	@Override
-	public @Nullable ResourceLocation getId() {
+	public @Nullable Identifier getId() {
 		return recipe.getRecipeIdentifier();
 	}
 

@@ -31,7 +31,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 
@@ -215,13 +215,13 @@ public class CustomizeScreen extends Screen {
 								Optional<String> helmetTexture,
 								Optional<Component> itemName,
 								Optional<Boolean> glint,
-								Optional<ResourceLocation> itemModel,
-								Optional<ResourceLocation> armorModel
+								Optional<Identifier> itemModel,
+								Optional<Identifier> armorModel
 								) {}
 
 	private static class CustomizeButton extends AbstractWidget {
 		// thanks to @yuflow
-		private static final ResourceLocation TEXTURE = SkyblockerMod.id("armor_customization_screen/button");
+		private static final Identifier TEXTURE = SkyblockerMod.id("armor_customization_screen/button");
 
 		private CustomizeButton(int x, int y) {
 			super(x, y, 10, 10, Component.empty());

@@ -21,7 +21,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MapRenderer;
 import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +44,7 @@ import java.util.UUID;
 
 public class DungeonMap {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonMap.class);
-	private static final ResourceLocation DUNGEON_MAP = SkyblockerMod.id("dungeon_map");
+	private static final Identifier DUNGEON_MAP = SkyblockerMod.id("dungeon_map");
 	private static final MapId DEFAULT_MAP_ID_COMPONENT = new MapId(1024);
 	private static final MapRenderState MAP_RENDER_STATE = new MapRenderState();
 	private static @Nullable MapId cachedMapIdComponent = null;

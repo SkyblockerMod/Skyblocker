@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +14,7 @@ public class PlayerComponent extends Component {
 
 	private static final int SKIN_ICO_DIM = 8;
 	private final net.minecraft.network.chat.Component name;
-	private final ResourceLocation tex;
+	private final Identifier tex;
 
 	public PlayerComponent(PlayerInfo ple) {
 		this(ple, null);

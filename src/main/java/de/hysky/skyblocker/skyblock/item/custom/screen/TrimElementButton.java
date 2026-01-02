@@ -29,7 +29,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -43,18 +43,18 @@ import net.minecraft.world.item.equipment.trim.TrimPattern;
 
 public abstract sealed class TrimElementButton extends AbstractButton permits TrimElementButton.Pattern, TrimElementButton.Material {
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
-	protected final @Nullable ResourceLocation element;
+	protected final @Nullable Identifier element;
 	protected ItemStack stack;
 	private final Consumer<TrimElementButton> onPress;
 
-	public TrimElementButton(@Nullable ResourceLocation element, Component name, Consumer<TrimElementButton> onPress) {
+	public TrimElementButton(@Nullable Identifier element, Component name, Consumer<TrimElementButton> onPress) {
 		super(0, 0, 20, 20, name);
 		this.element = element;
 		this.onPress = onPress;
 		setTooltip(Tooltip.create(getMessage()));
 	}
 
-	public @Nullable ResourceLocation getElement() {
+	public @Nullable Identifier getElement() {
 		return element;
 	}
 
@@ -80,7 +80,7 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 		private Equippable equippableComponent;
 		private float rotation = DEFAULT_ROTATION;
 
-		public Pattern(@Nullable ResourceLocation element, @Nullable TrimPattern pattern, Consumer<TrimElementButton> onPress) {
+		public Pattern(@Nullable Identifier element, @Nullable TrimPattern pattern, Consumer<TrimElementButton> onPress) {
 			super(element, pattern == null ? Component.translatable("gui.none") : pattern.description(), onPress);
 			if (element == null) {
 				trim = null;
@@ -161,7 +161,7 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 	}
 
 	public static final class Material extends TrimElementButton {
-		public Material(ResourceLocation element, TrimMaterial material, Consumer<TrimElementButton> onPress) {
+		public Material(Identifier element, TrimMaterial material, Consumer<TrimElementButton> onPress) {
 			super(element, material.description(), onPress);
 
 			// Find item that provides given material

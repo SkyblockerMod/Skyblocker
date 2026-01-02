@@ -25,7 +25,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -37,7 +37,7 @@ import static de.hysky.skyblocker.skyblock.item.custom.screen.CustomizeScreen.CL
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
 public class ArmorTab extends GridLayoutTab implements Closeable {
-	private static final ResourceLocation INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 	private static final int PLAYER_WIDGET_WIDTH = 84;
 	private static final int PADDING = 10;
 
@@ -134,7 +134,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 		modelFieldContainer.visible = !isPlayerHead;
 		String uuid = item.getUuid();
 		if (SkyblockerConfigManager.get().general.customArmorModel.containsKey(uuid)) {
-			ResourceLocation identifier = SkyblockerConfigManager.get().general.customArmorModel.get(uuid);
+			Identifier identifier = SkyblockerConfigManager.get().general.customArmorModel.get(uuid);
 			String string = identifier.toString();
 			modelFieldContainer.field.setValue(string);
 		} else {
@@ -168,8 +168,8 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 
 	private class PieceSelectionWidget extends AbstractWidget {
 
-		private static final ResourceLocation HOTBAR_TEXTURE = SkyblockerMod.id("armor_customization_screen/mini_hotbar");
-		private static final ResourceLocation HOTBAR_SELECTION_TEXTURE = SkyblockerMod.id("hotbar_selection_full");
+		private static final Identifier HOTBAR_TEXTURE = SkyblockerMod.id("armor_customization_screen/mini_hotbar");
+		private static final Identifier HOTBAR_SELECTION_TEXTURE = SkyblockerMod.id("hotbar_selection_full");
 
 		private final boolean[] selectable;
 

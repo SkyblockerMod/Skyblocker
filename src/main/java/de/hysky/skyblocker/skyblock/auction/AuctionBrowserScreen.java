@@ -34,7 +34,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
@@ -46,11 +46,11 @@ import net.minecraft.world.item.Items;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);
-	private static final ResourceLocation TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/browser/background.png");
-	private static final ResourceLocation SCROLLER_TEXTURE = ResourceLocation.withDefaultNamespace("container/creative_inventory/scroller");
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/browser/background.png");
+	private static final Identifier SCROLLER_TEXTURE = Identifier.withDefaultNamespace("container/creative_inventory/scroller");
 
-	private static final ResourceLocation up_arrow_tex = SkyblockerMod.id("up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
-	private static final ResourceLocation down_arrow_tex = SkyblockerMod.id("down_arrow_even");
+	private static final Identifier up_arrow_tex = SkyblockerMod.id("up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
+	private static final Identifier down_arrow_tex = SkyblockerMod.id("down_arrow_even");
 	public static final Supplier<TextureAtlasSprite> UP_ARROW = () -> Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI).getSprite(up_arrow_tex);
 	public static final Supplier<TextureAtlasSprite> DOWN_ARROW = () -> Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI).getSprite(down_arrow_tex);
 

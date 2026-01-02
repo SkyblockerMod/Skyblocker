@@ -25,12 +25,12 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 
 public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implements Closeable {
 
-	private static final ResourceLocation GRADIENT_TEXTURE = SkyblockerMod.id("generated/dye_gradient");
+	private static final Identifier GRADIENT_TEXTURE = SkyblockerMod.id("generated/dye_gradient");
 
 	private static final int HORIZONTAL_MARGIN = 3;
 	private static final int VERTICAL_MARGIN = 1;

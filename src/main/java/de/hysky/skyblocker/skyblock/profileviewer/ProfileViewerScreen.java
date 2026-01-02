@@ -33,7 +33,7 @@ import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.player.PlayerSkin;
@@ -57,7 +57,7 @@ public class ProfileViewerScreen extends Screen {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ProfileViewerScreen.class);
 	private static final Component TITLE = Component.nullToEmpty("Skyblocker Profile Viewer");
 	private static final String HYPIXEL_COLLECTIONS = "https://api.hypixel.net/v2/resources/skyblock/collections";
-	private static final ResourceLocation TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/base_plate.png");
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/base_plate.png");
 	private static final int GUI_WIDTH = 322;
 	private static final int GUI_HEIGHT = 180;
 	private static Map<String, String[]> COLLECTIONS;

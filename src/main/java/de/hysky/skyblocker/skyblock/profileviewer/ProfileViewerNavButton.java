@@ -10,12 +10,12 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class ProfileViewerNavButton extends AbstractWidget {
-	private static final ResourceLocation BUTTON_TEXTURES_TOGGLED = ResourceLocation.parse("container/creative_inventory/tab_top_selected_2");
-	private static final ResourceLocation BUTTON_TEXTURES = ResourceLocation.parse("container/creative_inventory/tab_top_unselected_2");
+	private static final Identifier BUTTON_TEXTURES_TOGGLED = Identifier.parse("container/creative_inventory/tab_top_selected_2");
+	private static final Identifier BUTTON_TEXTURES = Identifier.parse("container/creative_inventory/tab_top_unselected_2");
 	private boolean toggled;
 	private final int index;
 	private final ProfileViewerScreen screen;

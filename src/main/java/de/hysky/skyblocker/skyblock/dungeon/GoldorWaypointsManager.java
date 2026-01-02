@@ -22,7 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
@@ -77,7 +77,7 @@ public class GoldorWaypointsManager {
 		terminals.whenComplete((_result, _throwable) -> loaded = true);
 	}
 
-	private static CompletableFuture<Void> loadWaypoints(Minecraft client, ResourceLocation file) {
+	private static CompletableFuture<Void> loadWaypoints(Minecraft client, Identifier file) {
 		return CompletableFuture.supplyAsync(() -> {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(file)) {
 				JsonArray arr = JsonParser.parseReader(reader).getAsJsonArray();

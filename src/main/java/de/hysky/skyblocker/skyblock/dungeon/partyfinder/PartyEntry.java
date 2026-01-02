@@ -27,7 +27,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -35,8 +35,8 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import org.joml.Matrix3x2fStack;
 
 public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
-	private static final ResourceLocation PARTY_CARD_TEXTURE = SkyblockerMod.id("textures/gui/party_card.png");
-	private static final ResourceLocation PARTY_CARD_TEXTURE_HOVER = SkyblockerMod.id("textures/gui/party_card_hover.png");
+	private static final Identifier PARTY_CARD_TEXTURE = SkyblockerMod.id("textures/gui/party_card.png");
+	private static final Identifier PARTY_CARD_TEXTURE_HOVER = SkyblockerMod.id("textures/gui/party_card_hover.png");
 	private static final Map<String, ResolvableProfile> SKULL_CACHE = new Object2ObjectOpenHashMap<>();
 	private static final Pattern NUMBERS_PATTERN = Pattern.compile("\\d+$");
 
@@ -49,7 +49,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 	String dungeon = "???";
 	String note = "";
 	PropertyMap floorSkullProperties = PropertyMap.EMPTY;
-	ResourceLocation partyLeaderSkin = DefaultPlayerSkin.getDefaultTexture();
+	Identifier partyLeaderSkin = DefaultPlayerSkin.getDefaultTexture();
 	Player[] partyMembers = new Player[4];
 
 	int minClassLevel = -1;
@@ -277,7 +277,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 		public final Component name;
 		public final String dungeonClass;
 		public final int classLevel;
-		public ResourceLocation skinTexture = DefaultPlayerSkin.getDefaultTexture();
+		public Identifier skinTexture = DefaultPlayerSkin.getDefaultTexture();
 
 		Player(Component name, String dungeonClass, int classLevel) {
 			this.name = name;

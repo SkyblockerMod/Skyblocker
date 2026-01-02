@@ -9,7 +9,7 @@ import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.input.InputQuirks;
 
 /**

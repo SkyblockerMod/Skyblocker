@@ -25,10 +25,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class StatusBarsConfigScreen extends Screen {
-	private static final ResourceLocation HOTBAR_TEXTURE = ResourceLocation.withDefaultNamespace("hud/hotbar");
+	private static final Identifier HOTBAR_TEXTURE = Identifier.withDefaultNamespace("hud/hotbar");
 	private static final int HOTBAR_WIDTH = 182;
 	private static final float RESIZE_THRESHOLD = 0.75f;
 	private static final int BAR_MINIMUM_WIDTH = 30;

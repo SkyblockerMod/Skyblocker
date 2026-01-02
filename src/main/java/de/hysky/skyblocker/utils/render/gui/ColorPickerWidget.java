@@ -11,7 +11,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
  * @implNote Does not render a background.
  */
 public class ColorPickerWidget extends AbstractWidget {
-	private static final ResourceLocation SV_THUMB_TEXTURE = SkyblockerMod.id("color_picker/sv_thumb");
+	private static final Identifier SV_THUMB_TEXTURE = SkyblockerMod.id("color_picker/sv_thumb");
 
 	private final int[] rainbowColors;
 	/**

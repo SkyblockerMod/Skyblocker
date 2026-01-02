@@ -22,7 +22,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.TriState;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix3x2fStack;
@@ -30,7 +30,7 @@ import org.joml.Matrix3x2fStack;
 import java.util.List;
 
 public class ItemTab extends GridLayoutTab {
-	private static final ResourceLocation INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 
 	private final CustomizeScreen parentScreen;
 	private final CustomizeNameWidget nameWidget;
@@ -103,7 +103,7 @@ public class ItemTab extends GridLayoutTab {
 		parentScreen.backupConfigs(itemStack);
 		nameWidget.setItem(itemStack);
 		if (SkyblockerConfigManager.get().general.customItemModel.containsKey(uuid)) {
-			ResourceLocation identifier = SkyblockerConfigManager.get().general.customItemModel.get(uuid);
+			Identifier identifier = SkyblockerConfigManager.get().general.customItemModel.get(uuid);
 			String string = identifier.toString();
 			modelField.setValue(string);
 		} else {

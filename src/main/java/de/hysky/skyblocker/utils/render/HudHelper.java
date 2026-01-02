@@ -28,7 +28,7 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.PlayerSkin;
@@ -51,11 +51,11 @@ public class HudHelper {
 	 */
 	private static final TexturePool BLIT_TEXTURE_POOL = TexturePool.create("Blit Pool", 4, GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_COPY_DST, TextureFormat.RGBA8);
 
-	public static void renderNineSliceColored(GuiGraphics context, ResourceLocation texture, int x, int y, int width, int height, int argb) {
+	public static void renderNineSliceColored(GuiGraphics context, Identifier texture, int x, int y, int width, int height, int argb) {
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, width, height, argb);
 	}
 
-	public static void renderNineSliceColored(GuiGraphics context, ResourceLocation texture, int x, int y, int width, int height, Color color) {
+	public static void renderNineSliceColored(GuiGraphics context, Identifier texture, int x, int y, int width, int height, Color color) {
 		renderNineSliceColored(context, texture, x, y, width, height, ARGB.color(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
 	}
 

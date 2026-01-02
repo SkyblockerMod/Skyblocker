@@ -19,13 +19,13 @@ import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 
 public class MirrorverseWaypoints {
 	private static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
 	private static final Supplier<Waypoint.Type> WAYPOINT_TYPE = () -> Waypoint.Type.HIGHLIGHT;
-	private static final ResourceLocation WAYPOINTS_JSON = SkyblockerMod.id("rift/mirrorverse_waypoints.json");
+	private static final Identifier WAYPOINTS_JSON = SkyblockerMod.id("rift/mirrorverse_waypoints.json");
 	private static Waypoint[] LAVA_PATH_WAYPOINTS;
 	private static Waypoint[] UPSIDE_DOWN_WAYPOINTS;
 	private static Waypoint[] TURBULATOR_WAYPOINTS;

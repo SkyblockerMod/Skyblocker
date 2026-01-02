@@ -8,7 +8,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -69,7 +69,7 @@ public class RoomDataTest implements FabricClientGameTest {
 	 */
 	public boolean checkRoomJson(Minecraft client) {
 		boolean isValid = true;
-		for (ResourceLocation filePath : getRoomJson(client)) {
+		for (Identifier filePath : getRoomJson(client)) {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(filePath)) {
 				DungeonManager.RoomData.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
 			} catch (Exception ex) {
@@ -105,7 +105,7 @@ public class RoomDataTest implements FabricClientGameTest {
 				.filter(path -> path.length == 4).map(path -> path[3].replace(fileType, "")).toList();
 	}
 
-	List<ResourceLocation> getRoomJson(Minecraft client) {
+	List<Identifier> getRoomJson(Minecraft client) {
 		return client.getResourceManager().listResources(DUNGEONS_PATH, id ->
 				id.getPath().split("/").length == 4 && id.getPath().endsWith(".json")).keySet().stream().toList();
 	}

@@ -14,11 +14,11 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class DungeonFloorRunsWidget {
 	private static final Font textRenderer = Minecraft.getInstance().font;
-	private static final ResourceLocation TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/dungeons_body.png");
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/dungeons_body.png");
 
 	private static final String[] DUNGEONS = {"catacombs", "master_catacombs"};
 	private JsonObject dungeonsStats;

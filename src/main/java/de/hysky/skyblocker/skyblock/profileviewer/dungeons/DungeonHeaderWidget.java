@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class DungeonHeaderWidget {
 	private LevelFinder.LevelInfo classLevel;
@@ -18,7 +18,7 @@ public class DungeonHeaderWidget {
 
 	private static final Font textRenderer = Minecraft.getInstance().font;
 	private static final DecimalFormat DF = new DecimalFormat("#.##");
-	private static final ResourceLocation TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/dungeons_header.png");
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/dungeons_header.png");
 
 	public DungeonHeaderWidget(JsonObject playerProfile, String[] classes) {
 		try {

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -85,7 +85,7 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
 		itemColor = new HashMap<>();
 		for (DyeColor color : DyeColor.values())
 			for (String item : new String[]{"dye", "wool", "stained_glass", "terracotta"})
-				itemColor.put(BuiltInRegistries.ITEM.getValue(ResourceLocation.withDefaultNamespace(color.getName() + '_' + item)), color);
+				itemColor.put(BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(color.getName() + '_' + item)), color);
 		itemColor.put(Items.BONE_MEAL, DyeColor.WHITE);
 		itemColor.put(Items.LAPIS_LAZULI, DyeColor.BLUE);
 		itemColor.put(Items.COCOA_BEANS, DyeColor.BROWN);

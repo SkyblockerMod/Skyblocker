@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class SkyblockNpcShopRecipe implements SkyblockRecipe {
-	public static final ResourceLocation ID = SkyblockerMod.id("skyblock_npc_shop");
+	public static final Identifier ID = SkyblockerMod.id("skyblock_npc_shop");
 	private static final int SLOT_SIZE = 18;
 	private static final int ARROW_LENGTH = 24;
 	private static final int ARROW_PADDING = 3;
@@ -119,12 +119,12 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public ResourceLocation getCategoryIdentifier() {
+	public Identifier getCategoryIdentifier() {
 		return ID;
 	}
 
 	@Override
-	public ResourceLocation getRecipeIdentifier() {
-		return ResourceLocation.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
+	public Identifier getRecipeIdentifier() {
+		return Identifier.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
 	}
 }

@@ -14,7 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
@@ -84,12 +84,12 @@ public interface SkyblockRecipe {
 	/**
 	 * Identifier used for REI, EMI. Also used in the recipe book for the name
 	 */
-	ResourceLocation getCategoryIdentifier();
+	Identifier getCategoryIdentifier();
 
 	/**
 	 * Used for EMI.
 	 */
-	ResourceLocation getRecipeIdentifier();
+	Identifier getRecipeIdentifier();
 
 	record RecipeSlot(int x, int y, ItemStack stack, boolean showBackground) {
 		public RecipeSlot(int x, int y, ItemStack stack) {

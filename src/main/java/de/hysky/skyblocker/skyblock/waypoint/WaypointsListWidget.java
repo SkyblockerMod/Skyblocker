@@ -30,7 +30,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.phys.BlockHitResult;
@@ -53,10 +53,10 @@ import it.unimi.dsi.fastutil.ints.IntConsumer;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsListWidget.AbstractWaypointEntry> {
-	private static final ResourceLocation DELETE_ICON = SkyblockerMod.id("trash_can");
+	private static final Identifier DELETE_ICON = SkyblockerMod.id("trash_can");
 	private static final int ICON_WIDTH = 12, ICON_HEIGHT = 15;
-	private static final ResourceLocation INSERT_TEXTURE = SkyblockerMod.id("insert_button");
-	private static final ResourceLocation INSERT_HIGHLIGHTED_TEXTURE = SkyblockerMod.id("insert_button_highlighted");
+	private static final Identifier INSERT_TEXTURE = SkyblockerMod.id("insert_button");
+	private static final Identifier INSERT_HIGHLIGHTED_TEXTURE = SkyblockerMod.id("insert_button_highlighted");
 
 	private final AbstractWaypointsScreen<?> screen;
 	private Location island;

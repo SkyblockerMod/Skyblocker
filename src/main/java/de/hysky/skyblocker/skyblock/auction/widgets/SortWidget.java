@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SortWidget extends SliderWidget<SortWidget.Option> {
 
@@ -22,16 +22,16 @@ public class SortWidget extends SliderWidget<SortWidget.Option> {
 		SOON("soon.png"),
 		RAND("rand.png");
 
-		private final ResourceLocation texture;
+		private final Identifier texture;
 		private static final String prefix = "textures/gui/auctions_gui/sort_widget/";
-		private static final ResourceLocation HOVER_TEXTURE = SkyblockerMod.id(prefix + "hover.png");
-		private static final ResourceLocation BACK_TEXTURE = SkyblockerMod.id(prefix + "back.png");
+		private static final Identifier HOVER_TEXTURE = SkyblockerMod.id(prefix + "hover.png");
+		private static final Identifier BACK_TEXTURE = SkyblockerMod.id(prefix + "back.png");
 
 		Option(String textureName) {
 			texture = SkyblockerMod.id(prefix + textureName);
 		}
 
-		public ResourceLocation getOptionTexture() {
+		public Identifier getOptionTexture() {
 			return texture;
 		}
 
@@ -57,12 +57,12 @@ public class SortWidget extends SliderWidget<SortWidget.Option> {
 		}
 
 		@Override
-		public ResourceLocation getBackTexture() {
+		public Identifier getBackTexture() {
 			return BACK_TEXTURE;
 		}
 
 		@Override
-		public ResourceLocation getHoverTexture() {
+		public Identifier getHoverTexture() {
 			return HOVER_TEXTURE;
 		}
 	}

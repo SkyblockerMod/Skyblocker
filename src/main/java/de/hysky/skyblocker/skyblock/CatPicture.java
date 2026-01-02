@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.state.LevelRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BlockStateDefinitions;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -28,7 +28,7 @@ import de.hysky.skyblocker.utils.Utils;
 public class CatPicture {
 	private static final Vec3 RENDER_POSITION = new Vec3(6, 72, -92);
 	//private static final Box CULLING_BOX = new Box(RENDER_POSITION.x, RENDER_POSITION.y, RENDER_POSITION.z, RENDER_POSITION.x + 1, RENDER_POSITION.y + 1, RENDER_POSITION.z + 1/16d);
-	private static final ResourceLocation TEXTURE = SkyblockerMod.id("textures/cat.png");
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/cat.png");
 
 	@Init
 	public static void init() {

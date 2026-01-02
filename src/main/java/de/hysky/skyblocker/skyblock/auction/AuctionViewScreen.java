@@ -26,7 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -34,7 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
-	protected static final ResourceLocation INVENTORY_LOCATION = SkyblockerMod.id("textures/gui/auctions_gui/browser/background_view.png");
+	protected static final Identifier INVENTORY_LOCATION = SkyblockerMod.id("textures/gui/auctions_gui/browser/background_view.png");
 
 	public static final int BACK_BUTTON_SLOT = 49;
 

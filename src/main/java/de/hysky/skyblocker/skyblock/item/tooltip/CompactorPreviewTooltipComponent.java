@@ -6,12 +6,12 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class CompactorPreviewTooltipComponent implements ClientTooltipComponent {
-	private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/container/generic_54.png");
-	private static final ResourceLocation DISABLED_SLOT = ResourceLocation.withDefaultNamespace("container/crafter/disabled_slot");
+	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
+	private static final Identifier DISABLED_SLOT = Identifier.withDefaultNamespace("container/crafter/disabled_slot");
 	private final Iterable<IntObjectPair<ItemStack>> items;
 	private final IntIntPair dimensions;
 	private final int columns;

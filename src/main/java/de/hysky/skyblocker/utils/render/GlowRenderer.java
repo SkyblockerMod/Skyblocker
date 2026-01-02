@@ -11,7 +11,7 @@ import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.hysky.skyblocker.mixins.accessors.OutlineBufferSourceAccessor;
 import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMaps;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OutlineBufferSource;

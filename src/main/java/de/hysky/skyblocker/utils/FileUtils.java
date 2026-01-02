@@ -39,7 +39,7 @@ public class FileUtils {
 	/**
 	 * Replaces any characters that do not match the regex: [^a-z0-9_.-]
 	 *
-	 * @implNote Designed to convert a file path to an {@link net.minecraft.resources.ResourceLocation}
+	 * @implNote Designed to convert a file path to an {@link net.minecraft.resources.Identifier}
 	 */
 	public static String normalizePath(Path path) {
 		return path.toString().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9_.-]", "");

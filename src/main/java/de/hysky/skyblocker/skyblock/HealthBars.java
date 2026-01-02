@@ -16,7 +16,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.Vec3;
@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
 
 public class HealthBars {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HealthBars.class);
-	private static final ResourceLocation HEALTH_BAR_BACKGROUND_TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/sprites/boss_bar/white_background.png");
-	private static final ResourceLocation HEALTH_BAR_TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/sprites/boss_bar/white_progress.png");
+	private static final Identifier HEALTH_BAR_BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/boss_bar/white_background.png");
+	private static final Identifier HEALTH_BAR_TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/boss_bar/white_progress.png");
 	protected static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)/(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)❤");
 	protected static final Pattern HEALTH_ONLY_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)❤");
 	/**

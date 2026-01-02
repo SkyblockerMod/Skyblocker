@@ -28,7 +28,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 
@@ -154,7 +154,7 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 		PopupContainer() {
 			super(0, 0, 0, 0, Component.empty());
 			this.closeButton = new ImageButton(14, 14, new WidgetSprites(
-					ResourceLocation.withDefaultNamespace("widget/cross_button"), ResourceLocation.withDefaultNamespace("widget/cross_button_highlighted")),
+					Identifier.withDefaultNamespace("widget/cross_button"), Identifier.withDefaultNamespace("widget/cross_button_highlighted")),
 					b -> visible = false,
 					Component.empty()
 					);

@@ -17,7 +17,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class SlayerWidget {
@@ -25,13 +25,13 @@ public class SlayerWidget {
 	private final LevelFinder.LevelInfo slayerLevel;
 	private JsonObject slayerData = null;
 
-	private static final ResourceLocation TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
-	private static final ResourceLocation BAR_FILL = SkyblockerMod.id("bars/bar_fill");
-	private static final ResourceLocation BAR_BACK = SkyblockerMod.id("bars/bar_back");
-	private final ResourceLocation item;
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
+	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
+	private final Identifier item;
 	private final ItemStack drop;
 	private static final Font textRenderer = Minecraft.getInstance().font;
-	private static final Map<String, ResourceLocation> HEAD_ICON = Map.ofEntries(
+	private static final Map<String, Identifier> HEAD_ICON = Map.ofEntries(
 			Map.entry("Zombie", SkyblockerMod.id("textures/gui/profile_viewer/zombie.png")),
 			Map.entry("Spider", SkyblockerMod.id("textures/gui/profile_viewer/spider.png")),
 			Map.entry("Wolf", SkyblockerMod.id("textures/gui/profile_viewer/wolf.png")),

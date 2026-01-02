@@ -12,7 +12,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class CyclingIconButtonWidget<T> extends AbstractButton {
 	private final Function<T, Icon> valueToIcon;
@@ -74,5 +74,5 @@ public class CyclingIconButtonWidget<T> extends AbstractButton {
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
-	public record Icon(ResourceLocation id, int width, int height) {}
+	public record Icon(Identifier id, int width, int height) {}
 }

@@ -17,7 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.world.item.ItemStack;
@@ -47,7 +47,7 @@ public class ItemStackComponentizationFixer {
 
 		return Arrays.toString(stack.getComponentsPatch().entrySet().stream().map(entry -> {
 			DataComponentType<?> componentType = entry.getKey();
-			ResourceLocation componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
+			Identifier componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
 			if (componentId == null) return null;
 
 			Optional<?> component = entry.getValue();

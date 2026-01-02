@@ -20,14 +20,14 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.trim.ArmorTrim;
@@ -75,12 +75,12 @@ public class CustomArmorTrims {
 				.then(ClientCommandManager.literal("custom")
 						.then(ClientCommandManager.literal("armorTrim")
 								.executes(context -> customizeTrim(context.getSource(), null, null))
-								.then(ClientCommandManager.argument("material", ResourceLocationArgument.id())
+								.then(ClientCommandManager.argument("material", IdentifierArgument.id())
 										.suggests(getIdSuggestionProvider(Registries.TRIM_MATERIAL))
-										.executes(context -> customizeTrim(context.getSource(), context.getArgument("material", ResourceLocation.class), null))
-										.then(ClientCommandManager.argument("pattern", ResourceLocationArgument.id())
+										.executes(context -> customizeTrim(context.getSource(), context.getArgument("material", Identifier.class), null))
+										.then(ClientCommandManager.argument("pattern", IdentifierArgument.id())
 												.suggests(getIdSuggestionProvider(Registries.TRIM_PATTERN))
-												.executes(context -> customizeTrim(context.getSource(), context.getArgument("material", ResourceLocation.class), context.getArgument("pattern", ResourceLocation.class))))))));
+												.executes(context -> customizeTrim(context.getSource(), context.getArgument("material", Identifier.class), context.getArgument("pattern", Identifier.class))))))));
 	}
 
 	private static SuggestionProvider<FabricClientCommandSource> getIdSuggestionProvider(ResourceKey<? extends Registry<?>> registryKey) {
@@ -88,7 +88,7 @@ public class CustomArmorTrims {
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	private static int customizeTrim(FabricClientCommandSource source, ResourceLocation material, ResourceLocation pattern) {
+	private static int customizeTrim(FabricClientCommandSource source, Identifier material, Identifier pattern) {
 		ItemStack heldItem = source.getPlayer().getMainHandItem();
 
 		if (Utils.isOnSkyblock() && heldItem != null) {
@@ -131,19 +131,19 @@ public class CustomArmorTrims {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public record ArmorTrimId(@SerialEntry ResourceLocation material, @SerialEntry ResourceLocation pattern) implements Pair<ResourceLocation, ResourceLocation> {
+	public record ArmorTrimId(@SerialEntry Identifier material, @SerialEntry Identifier pattern) implements Pair<Identifier, Identifier> {
 		public static final Codec<ArmorTrimId> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-						ResourceLocation.CODEC.fieldOf("material").forGetter(ArmorTrimId::material),
-						ResourceLocation.CODEC.fieldOf("pattern").forGetter(ArmorTrimId::pattern))
+						Identifier.CODEC.fieldOf("material").forGetter(ArmorTrimId::material),
+						Identifier.CODEC.fieldOf("pattern").forGetter(ArmorTrimId::pattern))
 				.apply(instance, ArmorTrimId::new));
 
 		@Override
-		public ResourceLocation left() {
+		public Identifier left() {
 			return material();
 		}
 
 		@Override
-		public ResourceLocation right() {
+		public Identifier right() {
 			return pattern();
 		}
 	}

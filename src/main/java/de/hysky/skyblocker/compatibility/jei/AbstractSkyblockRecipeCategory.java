@@ -16,7 +16,7 @@ import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.library.plugins.vanilla.crafting.CraftingRecipeCategory;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 
@@ -67,7 +67,7 @@ public abstract sealed class AbstractSkyblockRecipeCategory<T extends SkyblockRe
 	}
 
 	@Override
-	public ResourceLocation getRegistryName(T recipe) {
+	public Identifier getRegistryName(T recipe) {
 		return recipe.getRecipeIdentifier();
 	}
 }

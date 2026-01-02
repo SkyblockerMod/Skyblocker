@@ -13,7 +13,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
@@ -21,7 +21,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class TitleContainer {
-	private static final ResourceLocation TITLE_CONTAINER = SkyblockerMod.id("title_container");
+	private static final Identifier TITLE_CONTAINER = SkyblockerMod.id("title_container");
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	/**
 	 * The set of titles which will be rendered.

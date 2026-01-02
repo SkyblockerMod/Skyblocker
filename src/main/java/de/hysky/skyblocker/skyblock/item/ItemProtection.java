@@ -19,7 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class ItemProtection {
-	public static final ResourceLocation ITEM_PROTECTION_TEX = SkyblockerMod.id("textures/gui/item_protection.png");
+	public static final Identifier ITEM_PROTECTION_TEX = SkyblockerMod.id("textures/gui/item_protection.png");
 	public static KeyMapping itemProtection;
 
 	@Init

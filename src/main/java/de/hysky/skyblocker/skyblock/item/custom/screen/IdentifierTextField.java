@@ -8,15 +8,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 
 class IdentifierTextField extends EditBox {
-	private final Consumer<@Nullable ResourceLocation> callback;
+	private final Consumer<@Nullable Identifier> callback;
 	private String lastValid = "";
 	private boolean valid = false;
 
-	IdentifierTextField(int width, int height, Consumer<@Nullable ResourceLocation> callback) {
+	IdentifierTextField(int width, int height, Consumer<@Nullable Identifier> callback) {
 		super(Minecraft.getInstance().font, width, height, Component.empty());
 		super.setResponder(this::onChanged);
 		this.callback = callback;
@@ -24,7 +24,7 @@ class IdentifierTextField extends EditBox {
 	}
 
 	private void onChanged(String s) {
-		ResourceLocation identifier = ResourceLocation.tryParse(s);
+		Identifier identifier = Identifier.tryParse(s);
 		valid = true;
 		if (s.isBlank()) {
 			callback.accept(null);

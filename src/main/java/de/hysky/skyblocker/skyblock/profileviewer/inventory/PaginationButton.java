@@ -7,24 +7,24 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class PaginationButton extends AbstractWidget {
 	private final ProfileViewerPage screen;
 	private final boolean isNextButton;
-	private final ResourceLocation TEXTURE;
-	private final ResourceLocation HIGHLIGHT;
+	private final Identifier TEXTURE;
+	private final Identifier HIGHLIGHT;
 
 	public PaginationButton(ProfileViewerPage screen, int x, int y, boolean isNextButton) {
 		super(x, y, 12, 17, Component.empty());
 		this.screen = screen;
 		this.isNextButton = isNextButton;
 		if (isNextButton) {
-			TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/sprites/recipe_book/page_forward.png");
-			HIGHLIGHT = ResourceLocation.withDefaultNamespace("textures/gui/sprites/recipe_book/page_forward_highlighted.png");
+			TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/recipe_book/page_forward.png");
+			HIGHLIGHT = Identifier.withDefaultNamespace("textures/gui/sprites/recipe_book/page_forward_highlighted.png");
 		} else {
-			TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/sprites/recipe_book/page_backward.png");
-			HIGHLIGHT = ResourceLocation.withDefaultNamespace("textures/gui/sprites/recipe_book/page_backward_highlighted.png");
+			TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/recipe_book/page_backward.png");
+			HIGHLIGHT = Identifier.withDefaultNamespace("textures/gui/sprites/recipe_book/page_backward_highlighted.png");
 		}
 	}
 

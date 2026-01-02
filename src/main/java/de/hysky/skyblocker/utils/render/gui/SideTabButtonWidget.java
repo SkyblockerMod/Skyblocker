@@ -5,11 +5,11 @@ import net.minecraft.client.gui.components.StateSwitchingButton;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class SideTabButtonWidget extends StateSwitchingButton {
-	private static final WidgetSprites TEXTURES = new WidgetSprites(ResourceLocation.withDefaultNamespace("recipe_book/tab"), ResourceLocation.withDefaultNamespace("recipe_book/tab_selected"));
+	private static final WidgetSprites TEXTURES = new WidgetSprites(Identifier.withDefaultNamespace("recipe_book/tab"), Identifier.withDefaultNamespace("recipe_book/tab_selected"));
 	protected ItemStack icon;
 
 	public void setIcon(ItemStack icon) {
@@ -25,7 +25,7 @@ public class SideTabButtonWidget extends StateSwitchingButton {
 	@Override
 	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		if (sprites == null) return;
-		ResourceLocation identifier = sprites.get(true, this.isStateTriggered);
+		Identifier identifier = sprites.get(true, this.isStateTriggered);
 		int x = getX();
 		if (isStateTriggered) x -= 2;
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, identifier, x, this.getY(), this.width, this.height);

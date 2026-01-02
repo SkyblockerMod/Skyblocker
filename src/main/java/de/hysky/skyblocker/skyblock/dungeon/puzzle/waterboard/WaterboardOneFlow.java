@@ -29,7 +29,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -120,7 +120,7 @@ Time starts when the water lever is turned on and stops when the last door opens
 public class WaterboardOneFlow extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WaterboardOneFlow.class);
 	public static final WaterboardOneFlow INSTANCE = new WaterboardOneFlow();
-	private static final ResourceLocation WATER_TIMES = SkyblockerMod.id("dungeons/watertimes.json");
+	private static final Identifier WATER_TIMES = SkyblockerMod.id("dungeons/watertimes.json");
 	private static final Component WAIT_TEXT = Component.literal("WAIT").withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
 	private static final Component CLICK_TEXT = Component.literal("CLICK").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 	private static JsonObject SOLUTIONS;

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class GeneralConfig {
 	public boolean enableTips = true;
@@ -59,9 +59,9 @@ public class GeneralConfig {
 
 	public Object2BooleanOpenHashMap<String> customGlint = new Object2BooleanOpenHashMap<>();
 
-	public Object2ObjectOpenHashMap<String, ResourceLocation> customItemModel = new Object2ObjectOpenHashMap<>();
+	public Object2ObjectOpenHashMap<String, Identifier> customItemModel = new Object2ObjectOpenHashMap<>();
 
-	public Object2ObjectOpenHashMap<String, ResourceLocation> customArmorModel = new Object2ObjectOpenHashMap<>();
+	public Object2ObjectOpenHashMap<String, Identifier> customArmorModel = new Object2ObjectOpenHashMap<>();
 
 	public Object2ObjectOpenHashMap<String, String> customAnimatedHelmetTextures = new Object2ObjectOpenHashMap<>();
 
@@ -180,9 +180,9 @@ public class GeneralConfig {
 		CIRCULAR(SkyblockerMod.id("item_background_circular")),
 		SQUARE(SkyblockerMod.id("item_background_square"));
 
-		public final ResourceLocation tex;
+		public final Identifier tex;
 
-		ItemBackgroundStyle(ResourceLocation tex) {
+		ItemBackgroundStyle(Identifier tex) {
 			this.tex = tex;
 		}
 
@@ -204,9 +204,9 @@ public class GeneralConfig {
 		CLASSIC(SkyblockerMod.id("textures/gui/slot_lock.png")),
 		FANCY(SkyblockerMod.id("textures/gui/fancy_slot_lock.png"));
 
-		public final ResourceLocation tex;
+		public final Identifier tex;
 
-		SlotLockStyle(ResourceLocation tex) {
+		SlotLockStyle(Identifier tex) {
 			this.tex = tex;
 		}
 

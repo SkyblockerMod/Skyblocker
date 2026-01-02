@@ -14,15 +14,15 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.Nullable;
 
 public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsListEntry> {
-	static final ResourceLocation MOVE_UP_HIGHLIGHTED_TEXTURE = ResourceLocation.withDefaultNamespace("transferable_list/move_up_highlighted");
-	static final ResourceLocation MOVE_UP_TEXTURE = ResourceLocation.withDefaultNamespace("transferable_list/move_up");
-	static final ResourceLocation MOVE_DOWN_HIGHLIGHTED_TEXTURE = ResourceLocation.withDefaultNamespace("transferable_list/move_down_highlighted");
-	static final ResourceLocation MOVE_DOWN_TEXTURE = ResourceLocation.withDefaultNamespace("transferable_list/move_down");
+	static final Identifier MOVE_UP_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_up_highlighted");
+	static final Identifier MOVE_UP_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_up");
+	static final Identifier MOVE_DOWN_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down_highlighted");
+	static final Identifier MOVE_DOWN_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down");
 
 	static final WidgetsListEntry SEPARATOR = new WidgetsListEntry() {
 

@@ -31,7 +31,7 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
@@ -172,7 +172,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			//Draw the tooltip of the hovered result button if one is hovered over
 			if (this.hoveredResultButton != null && !this.hoveredResultButton.getDisplayStack().isEmpty()) {
 				ItemStack stack = this.hoveredResultButton.getDisplayStack();
-				ResourceLocation tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
+				Identifier tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
 
 				context.setComponentTooltipForNextFrame(this.client.font, SkyblockRecipeResultButton.getTooltip(stack), x, y, tooltipStyle);
 			} else if (this.hoveredText != null) {

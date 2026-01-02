@@ -14,13 +14,13 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.joml.Matrix3x2fStack;
 
 public class RarityWidget extends AbstractWidget {
 
-	private static final ResourceLocation HOVER_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/hover.png");
-	private static final ResourceLocation TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/background.png");
+	private static final Identifier HOVER_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/hover.png");
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/background.png");
 	private final SlotClickHandler onClick;
 	private int slotId = -1;
 

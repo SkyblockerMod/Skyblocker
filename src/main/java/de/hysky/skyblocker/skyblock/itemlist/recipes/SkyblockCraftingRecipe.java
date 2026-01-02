@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class SkyblockCraftingRecipe implements SkyblockRecipe {
-	public static final ResourceLocation ID = SkyblockerMod.id("skyblock_crafting");
+	public static final Identifier ID = SkyblockerMod.id("skyblock_crafting");
 
 	private final Component craftText;
 	private final List<ItemStack> grid = new ArrayList<>(9);
@@ -70,13 +70,13 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public ResourceLocation getCategoryIdentifier() {
+	public Identifier getCategoryIdentifier() {
 		return SkyblockCraftingRecipe.ID;
 	}
 
 	@Override
-	public ResourceLocation getRecipeIdentifier() {
-		return ResourceLocation.fromNamespaceAndPath("skyblock", getResult().getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + getResult().getCount());
+	public Identifier getRecipeIdentifier() {
+		return Identifier.fromNamespaceAndPath("skyblock", getResult().getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + getResult().getCount());
 
 	}
 
