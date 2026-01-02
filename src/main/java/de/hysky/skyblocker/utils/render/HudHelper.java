@@ -3,8 +3,6 @@ package de.hysky.skyblocker.utils.render;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.textures.TextureFormat;
@@ -130,13 +128,13 @@ public class HudHelper {
 		GpuTexture blitTexture = BLIT_TEXTURE_POOL.getTexture(index);
 		GpuTextureView blitTextureView = BLIT_TEXTURE_POOL.getTextureView(index);
 		// The sampler needs to be linear in order for the shader sampling interpolation trick to work properly
-		GpuSampler sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR);
+//		GpuSampler sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR);
 		// Pass the radius through the vertex colour - least painful way to do this
 		int vertexColour = ARGB.color(radius, 255, 255);
 
 		// Copy the main render target colour texture to our temporary one since you cannot read from and write to the same texture in a single draw.
 		RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(mainRenderTarget.getColorTexture(), blitTexture, 0, 0, 0, 0, 0, requiredWidth, requiredHeight);
-		((GuiGraphicsInvoker) graphics).invokeSubmitColoredRectangle(SkyblockerRenderPipelines.BLURRED_RECTANGLE, TextureSetup.singleTexture(blitTextureView, sampler), x0, y0, x1, y1, vertexColour, null);
+		((GuiGraphicsInvoker) graphics).invokeSubmitColoredRectangle(SkyblockerRenderPipelines.BLURRED_RECTANGLE, TextureSetup.singleTexture(blitTextureView), x0, y0, x1, y1, vertexColour, null);
 	}
 
 	public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
