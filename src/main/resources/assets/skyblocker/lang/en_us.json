@@ -75,13 +75,11 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.false": "False",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.filter": "Filter",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.filter.@Tooltip": "The string/regex to match a chat message to.",
-  "skyblocker.config.chat.chatRules.screen.ruleScreen.finish": "Finish",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.formatting": "All output messages can be formatted using formatting codes (using &)",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "Hide Message",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip": "Remove the message from chat.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase": "Ignore Case",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip": "If the filter is case-sensitive.",
-  "skyblocker.config.chat.chatRules.screen.ruleScreen.inputs": "Inputs:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.locations": "Edit Locations",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip": "Whitelist of locations where the filter will work.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen": "Chat Rule Location Config",
@@ -459,8 +457,6 @@
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Displays the amount of times you need to rotate the terracotta blocks. For positive rotations you right click while for negative rotations you left click.",
 
-  "skyblocker.config.foraging.hunting": "Hunting",
-
   "skyblocker.config.foraging.sweepOverlay": "Sweep Overlay",
   "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Enable Sweep Overlay",
   "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay.@Tooltip": "Highlights logs that will be destroyed from sweep.",
@@ -664,8 +660,6 @@
   "skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls.@Tooltip": "When enabled only fairy souls in a radius of 50 blocks are highlighted",
 
   "skyblocker.config.helpers.fishing": "Fishing Helper",
-  "skyblocker.config.helpers.fishing.changeTimerColor": "Change Timer At 20s",
-  "skyblocker.config.helpers.fishing.changeTimerColor.@Tooltip": "Changes timer to green after 20 seconds has passed",
   "skyblocker.config.helpers.fishing.enableFishingHelper": "Enable Fishing Helper",
   "skyblocker.config.helpers.fishing.enableFishingHelper.@Tooltip": "Displays title message when a fish is on the hook. This relies on Skyblock setting → Fishing Status Holograms being enabled.",
   "skyblocker.config.helpers.fishing.enableFishingHud": "Enable Fishing HUD",
@@ -676,8 +670,6 @@
   "skyblocker.config.helpers.fishing.fishingHookDisplay.CROSSHAIR": "On Crosshair",
   "skyblocker.config.helpers.fishing.fishingHookDisplay.HUD": "In HUD",
   "skyblocker.config.helpers.fishing.fishingHookDisplay.OFF": "Off",
-  "skyblocker.config.helpers.fishing.fishingTimerScale": "Fishing Timer Scale",
-  "skyblocker.config.helpers.fishing.fishingTimerScale.@Tooltip": "How big to display the fishing timer.",
   "skyblocker.config.helpers.fishing.hideOtherPlayers": "Hide Other Players Rods",
   "skyblocker.config.helpers.fishing.hideOtherPlayers.@Tooltip": "Hide other players' fishing rods from showing for you.",
   "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter": "Enable sea creature tracker",
@@ -839,8 +831,6 @@
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage": "Wishing compass used. Move to another location and use a second compass to triangulate the target",
 
   "skyblocker.config.mining.dwarvenHud": "Dwarven HUD",
-  "skyblocker.config.mining.dwarvenHud.enabledCommissions": "Enable Commissions",
-  "skyblocker.config.mining.dwarvenHud.enabledPowder": "Enable Powder",
   "skyblocker.config.mining.dwarvenHud.screen": "Dwarven HUD Config...",
 
   "skyblocker.config.mining.dwarvenMines": "Dwarven Mines",
@@ -1119,7 +1109,6 @@
   "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "Hide Status Effect Overlay",
 
   "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
-  "skyblocker.config.uiAndVisuals.inputCalculator.badNotationError": "Equation is not in RPN",
   "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter": "Close signs with enter",
   "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip": "Close the current open sign screen with the enter key",
   "skyblocker.config.uiAndVisuals.inputCalculator.divisionByZeroError": "Cannot divide %s by 0",
@@ -1376,7 +1365,6 @@
   "skyblocker.crimson.kuudra.noArrowPoison": "No Arrow Poison!",
 
   "skyblocker.customAnimatedDyes.added": "Set a custom animated dye for your currently held item!",
-  "skyblocker.customAnimatedDyes.invalidHex": "§cAn invalid HEX color code was supplied!",
   "skyblocker.customAnimatedDyes.neverHad": "This item doesn't have a custom animated dye set, but why not add one? ;)",
   "skyblocker.customAnimatedDyes.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom animated dye.",
   "skyblocker.customAnimatedDyes.notDyeable": "§cThis item isn't a dyeable armor piece!",
@@ -1392,7 +1380,6 @@
   "skyblocker.customArmorTrims.unableToSetTrim": "§cUnable to set a custom armor trim. Please check if you are in Skyblock and holding an item.",
 
   "skyblocker.customDyeColors.added": "§fSet a custom dye color for your currently held item!",
-  "skyblocker.customDyeColors.invalidHex": "§cInvalid HEX color code!",
   "skyblocker.customDyeColors.neverHad": "§fThis item doesn't have a custom dye color set, but why not add one? ;)",
   "skyblocker.customDyeColors.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom dye color!",
   "skyblocker.customDyeColors.notDyeable": "§cThis item isn't a dyeable armor piece!",
@@ -1453,7 +1440,6 @@
   "skyblocker.dungeons.secrets.markSecretsMissingUnable": "§cUnable to mark secrets in this room as missing.",
   "skyblocker.dungeons.secrets.noTarget": "§cNo target block found! (Are you pointing at a block in range?)",
   "skyblocker.dungeons.secrets.notMatched": "§cThe current room is not matched! (Are you in a dungeon room?)",
-  "skyblocker.dungeons.secrets.physicalEntranceNotFound": "§cDungeon Entrance Room coordinates not found. Please go back to the green Entrance Room.",
   "skyblocker.dungeons.secrets.posMessage": "§rRoom: %s, Direction: %s, X: %s, Y: %s, Z: %s",
   "skyblocker.dungeons.secretsTracker.failFeedback": "§cUnable to calculate the number of secrets everybody did this run!",
   "skyblocker.dungeons.secretsTracker.feedback": "%s§f found %s§f secrets. %s",
@@ -1569,7 +1555,6 @@
   "skyblocker.itemProtection.removed": "§fYour %s will §nno longer be protected§f :( - §lBeware of the dangers in doing this!",
   "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item. Please check if you are in Skyblock and holding an item.",
 
-  "skyblocker.itemTooltip.noData": "§cNo Data",
   "skyblocker.itemTooltip.nullMessage": "§cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
   "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
@@ -1675,7 +1660,6 @@
 
   "skyblocker.slayer.bossSpawnAlert": "Boss Spawned!",
   "skyblocker.slayer.callMaddox.message": "Click here to call Maddox the Slayer!",
-  "skyblocker.slayer.hud.bossesNeeded": "Bosses until level up",
   "skyblocker.slayer.hud.levelMaxed": "MAXED OUT",
   "skyblocker.slayer.hud.levelUpIn": "Level up in %s bosses",
   "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss",
@@ -1756,8 +1740,6 @@
   "skyblocker.waypoints.chat.display": "Click to display waypoint at x: %s y: %s z: %s",
   "skyblocker.waypoints.chat.displayed": "Displayed temporary waypoint at x: %s y: %s z: %s %s",
   "skyblocker.waypoints.config": "Waypoints Config",
-  "skyblocker.waypoints.deleteQuestion": "Are you sure you want to remove this waypoint?",
-  "skyblocker.waypoints.deleteWarning": "Waypoint '%s' will be lost forever! (A long time!)",
   "skyblocker.waypoints.exportError": "Error Exporting Waypoints",
   "skyblocker.waypoints.exportErrorText": "Failed to export waypoints. See logs for details.",
   "skyblocker.waypoints.exportSuccess": "Waypoints Exported",
@@ -1785,9 +1767,6 @@
   "skyblocker.waypoints.importWaypointsSnoopy.tooltip": "Import Waypoints from Clipboard (Snoopy Format)",
   "skyblocker.waypoints.new": "New Waypoint",
   "skyblocker.waypoints.newGroup": "New Waypoint Group",
-  "skyblocker.waypoints.ordered.import.skyblocker.fail": "§cFailed to import waypoints from the Skyblocker Ordered Waypoints format. Make sure to have the waypoint data copied to your clipboard!",
-  "skyblocker.waypoints.ordered.import.skyblocker.success": "Successfully imported waypoints from the Skyblocker Ordered Waypoints format!",
-  "skyblocker.waypoints.ordered.import.skyblocker.unknownFormatHeader": "§cThis import code doesn't look like its in the Skyblocker Ordered Waypoints format, double-check your clipboard to see if everything is correct.",
   "skyblocker.waypoints.otherOptions": "Other Options",
   "skyblocker.waypoints.share": "Import/Export",
   "skyblocker.waypoints.shareWaypoints": "Share Waypoints",
