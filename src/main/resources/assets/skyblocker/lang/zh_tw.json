@@ -589,7 +589,7 @@
     "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "阻止錯誤的點擊",
     "skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues.@Tooltip": "啟用後，在Skyblock中，外觀紋理中像素的Alpha值不再被剝離。\n\n這導致使用玩家頭的物品上的「填充」像素現在完全透明，儘管這在奇怪的情況下可能會產生一些副作用。",
     "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "啟用告示牌計算器",
-    "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "使你可以在輸入諸如拍賣價格之類的值時進行計算。\n  單位：\n   S = 64\n   E = 160\n   K = 1,000\n   M = 1,000,000\n   B = 1,000,000,000\n\npurse/P = 目前錢包中的硬幣數",
+    "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "使你可以在輸入諸如拍賣價格之類的值時進行計算。\n  單位：\n   S = 64\n   E = 160\n   K = 1,000\n   M = 1,000,000\n   B = 1,000,000,000\n  T = 1,000,000,000,000\n  Q = 1,000,000,000,000,000\n\npurse/P = 目前錢包中的硬幣數",
     "skyblocker.config.uiAndVisuals.inputCalculator": "輸入計算器",
     "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals": "僅當「=」時顯示。",
     "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "僅當訊息以「=」開頭時才顯示計算器。",
@@ -1187,7 +1187,7 @@
     "skyblocker.config.helpers.fishing.minimumNotificationRarity": "海怪稀有度提示訊息",
     "skyblocker.config.helpers.fishing.minimumNotificationRarity.@Tooltip": "要提醒的稀有海怪的最低稀有度。 （UNKNOWN=禁用）",
     "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds": "舊版屬性背景色",
-    "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds.@Tooltip": "為擁有舊版屬性的物品新增紅色背景顏色。",
+    "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds.@Tooltip": "為擁有舊版屬性的物品新增紅色背景顏色。在0.23 Foraging更新後你可以在Attribute Transfer介面將它們轉化為Shard。",
     "skyblocker.config.helpers.fishing.seaCreatureCap": "海怪上限",
     "skyblocker.config.hunting.huntingMobs.silencePhantoms": "靜音夜魅",
     "skyblocker.config.uiAndVisuals.slotText.attributeLevels.@Tooltip": "在屬性選單中顯示屬性的等級。",
@@ -1589,5 +1589,10 @@
     "skyblocker.config.dungeons.map.showOutline": "顯示邊框",
     "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper.@Tooltip": "在Diana的Mythological Ritual活動期間為附近的Griffin洞穴添加路徑點。",
     "skyblocker.config.dungeons.map.backgroundBlur": "背景模糊",
-    "skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip": "以橙色突出顯示森林節點。"
+    "skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip": "以橙色突出顯示森林節點。",
+    "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay.@Tooltip": "隱藏Skyblock各種增益物品帶來的原版藥水效果動畫。",
+    "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBar": "啟用原版風格Mana屬性條",
+    "skyblocker.config.uiAndVisuals.showEquipmentInInventory.@Tooltip": "此顯示效果是/stats界面的快取，並非實時更新。\n槽位是可點擊的，等效於/stats指令。",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError2": "數字文本不能以分隔符開頭",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError3": "數字文本不能包含前導小數點"
 }
