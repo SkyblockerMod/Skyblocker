@@ -427,6 +427,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBar"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.uiAndVisuals.bars.enableVanillaStyleManaBar,
 										() -> config.uiAndVisuals.bars.enableVanillaStyleManaBar,
 										newValue -> config.uiAndVisuals.bars.enableVanillaStyleManaBar = newValue)
