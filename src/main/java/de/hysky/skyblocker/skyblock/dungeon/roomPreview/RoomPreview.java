@@ -29,7 +29,7 @@ public class RoomPreview {
 
 	private static int startPreview(CommandContext<FabricClientCommandSource> ctx) {
 		if (DungeonManager.getRoomBlockData(ctx.getArgument("type", String.class), ctx.getArgument("room", String.class)).isEmpty()) {
-			ctx.getSource().sendFeedback(Component.literal("Invalid room!").withStyle(ChatFormatting.RED));
+			ctx.getSource().sendFeedback(Component.translatable("skyblocker.dungeons.roomPreview.invalidRoom").withStyle(ChatFormatting.RED));
 			return -1;
 		}
 

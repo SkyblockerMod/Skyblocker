@@ -121,7 +121,7 @@ public class RoomPreviewServer {
 		if (server == null) return;
 		Optional<int[]> blockData = DungeonManager.getRoomBlockData(type, roomName);
 		if (blockData.isEmpty()) {
-			addErrorMessage(Component.translatable("skyblocker.dungeons.roomPreview.failedToLoad.invalidRoom").withStyle(ChatFormatting.RED));
+			addErrorMessage(Component.translatable("skyblocker.dungeons.roomPreview.failedToLoad", Component.translatable("skyblocker.dungeons.roomPreview.invalidRoom")).withStyle(ChatFormatting.RED));
 			return;
 		}
 
