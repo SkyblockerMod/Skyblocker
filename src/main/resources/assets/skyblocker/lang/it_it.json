@@ -343,5 +343,22 @@
     "emi.category.skyblocker.skyblock_forge": "Forgia Nanica (Skyblock)",
     "key.category.skyblocker.main": "Skyblocker",
     "key.skyblocker.wikiLookup.fandom": "Ricerca Wiki Fandom",
-    "key.skyblocker.wikiLookup.official": "Ricerca Wiki Hypixel"
+    "key.skyblocker.wikiLookup.official": "Ricerca Wiki Hypixel",
+    "skyblocker.config.chat.chatRules": "Regole Chat Personalizzate",
+    "skyblocker.bars.config.showMax": "Mostra Massimo",
+    "skyblocker.bars.config.intelligence": "Intelligenza",
+    "skyblocker.bars.config.textPosition.CENTER": "Centra",
+    "skyblocker.bars.config.textPosition.BAR_CENTER": "Centra barra",
+    "skyblocker.config.chat.chatRules.announcementLength": "Tempo di Visualizzazione Predefinito degli Annunci",
+    "skyblocker.bars.config.hide": "Nascondi",
+    "skyblocker.bars.config.icon": "Icona",
+    "skyblocker.bars.config.showOverflow": "Mostra Overflow",
+    "skyblocker.bars.config.health": "Vita",
+    "skyblocker.bars.config.overflowColor": "Colore overflow",
+    "skyblocker.bars.config.textColor": "Colore testo",
+    "skyblocker.bars.config.mainColor": "Colore principale",
+    "skyblocker.bars.config.explanationTitle": "Cos'è questo?",
+    "skyblocker.chat.confirmationPromptNotification": "Premi ovunque sullo schermo entro 60 secondi per accettare la richiesta.",
+    "skyblocker.bars.config.speed": "Velocità",
+    "skyblocker.bars.config.text": "Testo"
 }
