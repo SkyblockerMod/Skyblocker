@@ -424,6 +424,13 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.bars.enableBars = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBar"))
+								.binding(defaults.uiAndVisuals.bars.enableVanillaStyleManaBar,
+										() -> config.uiAndVisuals.bars.enableVanillaStyleManaBar,
+										newValue -> config.uiAndVisuals.bars.enableVanillaStyleManaBar = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
