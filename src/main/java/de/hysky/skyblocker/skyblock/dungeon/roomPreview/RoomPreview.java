@@ -62,8 +62,7 @@ public class RoomPreview {
 
 	static void onJoin() {
 		previewRoom = new PreviewRoom(RoomPreviewServer.selectedRoom);
-		DungeonManager.setCurrentRoom(previewRoom);
-		DungeonManager.setRunEnded();
+		DungeonManager.startFromRoomPreview(previewRoom);
 		isActive = true;
 	}
 }

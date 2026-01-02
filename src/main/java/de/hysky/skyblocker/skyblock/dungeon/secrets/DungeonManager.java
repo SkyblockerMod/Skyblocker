@@ -1046,12 +1046,9 @@ public class DungeonManager {
 		return Optional.ofNullable(typeData.get(roomName));
 	}
 
-	public static void setCurrentRoom(Room room) {
+	public static void startFromRoomPreview(Room room) {
 		room.segments.forEach((segment) -> rooms.put(segment, room));
 		currentRoom = room;
-	}
-
-	public static void setRunEnded() {
 		runEnded = true;
 	}
 
