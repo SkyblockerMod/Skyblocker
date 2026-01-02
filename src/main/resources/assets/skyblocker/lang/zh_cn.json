@@ -1586,5 +1586,8 @@
     "skyblocker.config.uiAndVisuals.radialMenu.storage": "存储",
     "skyblocker.config.uiAndVisuals.radialMenu.sacks": "包裹",
     "skyblocker.config.uiAndVisuals.radialMenu.wardrobe": "衣柜",
-    "skyblocker.config.uiAndVisuals.radialMenu.tooltipsWithoutShift": "在不使用Shift的情况下显示工具提示"
+    "skyblocker.config.uiAndVisuals.radialMenu.tooltipsWithoutShift": "在不使用Shift的情况下显示工具提示",
+    "skyblocker.config.dungeons.map.showOutline": "显示边框",
+    "skyblocker.config.dungeons.map.backgroundBlur": "背景模糊",
+    "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper.@Tooltip": "在Diana的Mythological Ritual活动期间为附近的Griffin洞穴添加路径点。"
 }
