@@ -158,6 +158,7 @@ public class SlayerManager {
 	 * <p>As a secondary role, it may also detect the player's own boss when {@link #checkSlayerBoss(ArmorStand)}
 	 * missed it (e.g., the boss spawned far away).</p>
 	 */
+	@SuppressWarnings("SameReturnValue")
 	private static InteractionResult onEntityAttack(Player player, Level level, InteractionHand interactionHand, Entity entity, @Nullable EntityHitResult entityHitResult) {
 		if (ENTITIES_CACHE.contains(entity)) return InteractionResult.PASS;
 		ENTITIES_CACHE.add(entity);

@@ -17,10 +17,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {
@@ -48,14 +44,13 @@ public class EntityRendererMixin {
 	@Inject(method = "extractRenderState", at = @At(value = "TAIL"))
 	private void skyblocker$mobBoundingBox(CallbackInfo ci, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) float partialTick) {
 		if (MobBoundingBoxes.shouldDrawMobBoundingBox(entity)) {
-			MobBoundingBoxes.submitBox2BeRendered(entity.getBoundingBox(), MobBoundingBoxes.getBoxColor(entity));
+			MobBoundingBoxes.submitBox2BeRendered(Boxes.lerpEntityBoundingBox(entity, partialTick), MobBoundingBoxes.getBoxColor(entity));
 			return;
 		}
-		Boxes.lerpEntityBoundingBox(entity, partialTick)
 
 		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.HITBOX)) {
 			float[] color = MobBoundingBoxes.rgbToFloatArray(SkyblockerConfigManager.get().slayers.highlightColor.getRGB());
-			MobBoundingBoxes.submitBox2BeRendered(entity.getBoundingBox(), color);
+			MobBoundingBoxes.submitBox2BeRendered(Boxes.lerpEntityBoundingBox(entity, partialTick), color);
 		}
 	}
 }
