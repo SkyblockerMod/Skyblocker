@@ -1588,5 +1588,6 @@
     "skyblocker.config.uiAndVisuals.radialMenu.wardrobe": "衣櫃",
     "skyblocker.config.dungeons.map.showOutline": "顯示邊框",
     "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper.@Tooltip": "在Diana的Mythological Ritual活動期間為附近的Griffin洞穴添加路徑點。",
-    "skyblocker.config.dungeons.map.backgroundBlur": "背景模糊"
+    "skyblocker.config.dungeons.map.backgroundBlur": "背景模糊",
+    "skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip": "以橙色突出顯示森林節點。"
 }
