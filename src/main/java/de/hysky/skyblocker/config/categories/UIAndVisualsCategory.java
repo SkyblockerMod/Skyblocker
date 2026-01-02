@@ -226,6 +226,7 @@ public class UIAndVisualsCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu"))
 						.collapsed(true)
+						.tags(CommonTags.ADDED_IN_6_0_0)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu.enabled"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu.enabled.@Tooltip"))
