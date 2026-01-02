@@ -20,13 +20,19 @@ import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -54,7 +60,7 @@ import java.util.regex.Pattern;
  * <p>Core methods:<br>
  * - {@link #checkSlayerQuest()} reads the scoreboard to detect whether a quest is active and updates tier/progress.<br>
  * - {@link #checkSlayerBoss(ArmorStand)} inspects armorStands to detect the player's spawned boss or minibosses.<br>
- * - {@link #onAttack(Entity)} detects other players' bosses on hit, also serves as a fallback for the player's own boss.<br>
+ * - {@link #onEntityAttack(Player, Level, InteractionHand, Entity, EntityHitResult)} detects other players' bosses on hit, also serves as a fallback for the player's own boss.<br>
  * - {@link #findBoss(Entity)} is the shared resolver that converts an armorStand or a mob into a {@link BossFight}
  * </p>
  */
@@ -80,6 +86,7 @@ public class SlayerManager {
 		SkyblockEvents.MAYOR_CHANGE.register(SlayerManager::onMayorChange);
 		SkyblockEvents.PROFILE_CHANGE.register((_prev, _profile) -> slayerQuest = null);
 		SkyblockEvents.LOCATION_CHANGE.register(_loc -> bossFight = null);
+		AttackEntityCallback.EVENT.register(SlayerManager::onEntityAttack);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfigManager.get().slayers.vampireSlayer.steakStakeUpdateFrequency);
@@ -150,14 +157,12 @@ public class SlayerManager {
 	 * player's boss.</p>
 	 * <p>As a secondary role, it may also detect the player's own boss when {@link #checkSlayerBoss(ArmorStand)}
 	 * missed it (e.g., the boss spawned far away).</p>
-	 *
-	 * @param entity the entity that was attacked
 	 */
-	public static void onAttack(Entity entity) {
-		if (ENTITIES_CACHE.contains(entity)) return;
+	private static InteractionResult onEntityAttack(Player player, Level level, InteractionHand interactionHand, Entity entity, @Nullable EntityHitResult entityHitResult) {
+		if (ENTITIES_CACHE.contains(entity)) return InteractionResult.PASS;
 		ENTITIES_CACHE.add(entity);
 
-		if (Arrays.stream(SlayerType.values()).noneMatch(slayer -> slayer.mobType == entity.getType())) return;
+		if (Arrays.stream(SlayerType.values()).noneMatch(slayer -> slayer.mobType == entity.getType())) return InteractionResult.PASS;
 
 		BossFight boss = findBoss(entity);
 		if (boss != null) {
@@ -167,6 +172,8 @@ public class SlayerManager {
 				ENTITIES_CACHE.add(entity);
 			}
 		}
+
+		return InteractionResult.PASS;
 	}
 
 	/**

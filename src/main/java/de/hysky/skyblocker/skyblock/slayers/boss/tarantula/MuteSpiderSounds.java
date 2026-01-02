@@ -11,7 +11,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 
-@SuppressWarnings("unused")
 public class MuteSpiderSounds {
 	private static final ObjectSet<Identifier> MUTED_SOUNDS = ObjectSet.of(
 			SoundEvents.SPIDER_AMBIENT.location(),

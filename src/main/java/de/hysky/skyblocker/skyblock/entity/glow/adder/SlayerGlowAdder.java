@@ -18,8 +18,8 @@ import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
 import net.minecraft.world.entity.monster.zombie.ZombifiedPiglin;
 
-@SuppressWarnings("unused")
 public class SlayerGlowAdder extends MobGlowAdder {
+	@SuppressWarnings("unused")
 	private static final SlayerGlowAdder INSTANCE = new SlayerGlowAdder();
 	private static final int NUKEKUBI_COLOUR = 0x990099;
 

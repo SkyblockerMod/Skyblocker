@@ -18,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-@SuppressWarnings("unused")
 public class BeaconHighlighter {
 	private static final Object2LongOpenHashMap<BlockPos> BEACONS = new Object2LongOpenHashMap<>();
 	private static final float[] RED_COLOR_COMPONENTS = { 1.0f, 0.0f, 0.0f };

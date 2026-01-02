@@ -6,7 +6,6 @@ import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.sounds.SoundEvent;
 
-@SuppressWarnings("unused")
 public class MuteWolfSounds {
 	@Init
 	public static void init() {

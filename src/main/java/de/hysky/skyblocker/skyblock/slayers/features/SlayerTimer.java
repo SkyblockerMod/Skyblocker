@@ -69,7 +69,7 @@ public class SlayerTimer {
 			}
 		}
 
-		source.sendFeedback(Constants.PREFIX.get().append("No personal best recorded for " + slayerType.bossName));
+		source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.slayer.personalBestMissing", slayerType.bossName)));
 		return 0;
 	}
 

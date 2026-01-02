@@ -1671,6 +1671,7 @@
   "skyblocker.slayer.hud.levelUpIn": "Level up in %s bosses",
   "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss",
   "skyblocker.slayer.personalBest": "PERSONAL BEST!",
+  "skyblocker.slayer.personalBestMissing": "No personal best recorded for %s.",
   "skyblocker.slayer.previousPersonalBest": "Your previous Personal Best was %s.",
   "skyblocker.slayer.slainTime": "Slayer has been killed in %s!",
 
