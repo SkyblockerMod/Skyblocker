@@ -108,6 +108,7 @@ public class UIAndVisualsCategory {
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.hideStatusEffectOverlay"))
+						.description(Component.translatable("skyblocker.config.uiAndVisuals.hideStatusEffectOverlay.@Tooltip"))
 						.binding(defaults.uiAndVisuals.hideStatusEffectOverlay,
 								() -> config.uiAndVisuals.hideStatusEffectOverlay,
 								newValue -> config.uiAndVisuals.hideStatusEffectOverlay = newValue)
@@ -115,6 +116,7 @@ public class UIAndVisualsCategory {
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.showEquipmentInInventory"))
+						.description(Component.translatable("skyblocker.config.uiAndVisuals.showEquipmentInInventory.@Tooltip"))
 						.binding(defaults.uiAndVisuals.showEquipmentInInventory,
 								() -> config.uiAndVisuals.showEquipmentInInventory,
 								newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
