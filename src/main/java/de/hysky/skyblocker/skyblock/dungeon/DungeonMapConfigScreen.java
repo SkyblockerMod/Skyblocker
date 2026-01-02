@@ -7,9 +7,13 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.CommonColors;
+
+import org.jetbrains.annotations.Nullable;
+
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.HudHelper;
-import org.jetbrains.annotations.Nullable;
 
 public class DungeonMapConfigScreen extends Screen {
 
@@ -17,7 +21,7 @@ public class DungeonMapConfigScreen extends Screen {
 	private int mapY = SkyblockerConfigManager.get().dungeons.dungeonMap.mapY;
 	private int scoreX = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX;
 	private int scoreY = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY;
-	private static final ResourceLocation MAP_BACKGROUND = ResourceLocation.withDefaultNamespace("textures/map/map_background.png");
+	private static final ResourceLocation EXAMPLE_MAP = SkyblockerMod.id("textures/gui/example_dungeon_map.png");
 	private final @Nullable Screen parent;
 
 	protected DungeonMapConfigScreen() {
@@ -80,7 +84,9 @@ public class DungeonMapConfigScreen extends Screen {
 	public void renderHUDMap(GuiGraphics context, int x, int y) {
 		float scaling = SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling;
 		int size = (int) (128 * scaling);
-		context.blit(RenderPipelines.GUI_TEXTURED, MAP_BACKGROUND, x, y, 0, 0, size, size, size, size);
+		context.blit(RenderPipelines.GUI_TEXTURED, EXAMPLE_MAP, x, y, 0, 0, size, size, size, size);
+
+		if (SkyblockerConfigManager.get().dungeons.dungeonMap.showOutline) HudHelper.drawBorder(context, x, y, size, size, CommonColors.LIGHT_GRAY);
 	}
 
 	public void renderHUDScore(GuiGraphics context, int x, int y) {
