@@ -174,6 +174,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.map.showOutline"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.dungeons.dungeonMap.showOutline,
 										() -> config.dungeons.dungeonMap.showOutline,
 										newValue -> config.dungeons.dungeonMap.showOutline = newValue)
@@ -181,6 +182,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.map.backgroundBlur"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.dungeons.dungeonMap.backgroundBlur,
 										() -> config.dungeons.dungeonMap.backgroundBlur,
 										newValue -> config.dungeons.dungeonMap.backgroundBlur = newValue)
