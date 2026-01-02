@@ -12,6 +12,7 @@ import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.HealthBars;
+import de.hysky.skyblocker.skyblock.dungeon.terminal.GoldorWaypointsManager;
 import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapTexture;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
@@ -89,6 +90,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 		FishingHelper.checkIfFishWasCaught(armorStandEntity);
 		TreeBreakProgressHud.onEntityUpdate(armorStandEntity);
 		LassoHud.onEntityUpdate(armorStandEntity);
+		GoldorWaypointsManager.checkForTerminalNameTags(armorStandEntity);
 		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
 			CompactDamage.compactDamage(armorStandEntity);
 		} catch (Exception e) {
