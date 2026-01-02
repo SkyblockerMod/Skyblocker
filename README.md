@@ -265,6 +265,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Fishing HUD**
 - **Museum HUD**
 - **Gyrokinetic Wand Overlay**
+- **Radial Menus**
 
 ### User Interface Enhancements:
 - **Equipment in inventory**

@@ -247,6 +247,7 @@
 - **Fishing HUD**
 - **Museum HUD**
 - **Gyrokinetic Wand Overlay**
+- **Radial Menus**
 
 ### User Interface Enhancements:
 - **Equipment in inventory**
