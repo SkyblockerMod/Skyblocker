@@ -24,6 +24,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
     - Room Name Labels
+    - Configurable outline and background blur
 - **Starred Mob Glow**
 - **Croesus Helper:**
     - Highlight not opened chests
@@ -32,8 +33,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Three Weirdos*
     - *Blaze*
     - *Creeper Beams*
-    - *Quiz - Ouro the Omniscient*
-    - *Tic Tac Toe*
+    - *Quiz* (Ouro the Omniscient)
+    - *Tic-tac-toe*
     - *Waterboard* (one flow)
     - *Silverfish*
     - *Ice Fill*
@@ -266,6 +267,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Museum HUD**
 - **Gyrokinetic Wand Overlay**
 - **Radial Menus**
+- **Vanilla-like Mana Bar**
 
 ### User Interface Enhancements:
 - **Equipment in inventory**
@@ -320,7 +322,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Skyblock ID*
     - *Bazaar Reorder Helper*
 - **Quick Navigation:** Fully customizable fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
-    - Item Selector 
+    - Item Selector
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
     - Crafting
     - Forge

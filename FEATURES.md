@@ -6,6 +6,7 @@
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
     - Room Name Labels
+    - Configurable outline and background blur
 - **Starred Mob Glow**
 - **Croesus Helper:**
     - Highlight not opened chests
@@ -14,8 +15,8 @@
     - *Three Weirdos*
     - *Blaze*
     - *Creeper Beams*
-    - *Quiz - Ouro the Omniscient*
-    - *Tic Tac Toe*
+    - *Quiz* (Ouro the Omniscient)
+    - *Tic-tac-toe*
     - *Waterboard* (one flow)
     - *Silverfish*
     - *Ice Fill*
@@ -248,6 +249,7 @@
 - **Museum HUD**
 - **Gyrokinetic Wand Overlay**
 - **Radial Menus**
+- **Vanilla-like Mana Bar**
 
 ### User Interface Enhancements:
 - **Equipment in inventory**
