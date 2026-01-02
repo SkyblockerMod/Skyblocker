@@ -1,3 +1,49 @@
+# Release 6.0.0 (Beta #1)
+
+## Highlight
+* Update to 1.21.11
+* Improve Dungeon Map Look
+  * New background blur and outline options
+* Improve Compact Damage
+  * Precision is now based on significant digits instead of decimal places
+* Add '/skyblocker credits' screen
+* Add Radial Menus
+* Add Vanilla Style Mana Bar
+* Add abbreviation for the Crop Fever ultimate enchantment
+* Add support for item overlays from newer versions
+* Add support for commas in calculator
+* Adjust various config option descriptions
+* Make bounding box movement smoother
+* Make room labels red for failed puzzles
+* Fix dye drop special effects not working
+* Fix certain Sea Creatures not being detected
+* Fix Shard Sell Price not showing when having more than 999
+
+## What's Changed
+* 1.21.11 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1927
+* The Great Mojmap Switch by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1933
+* fix indentation in mixins json by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1936
+* Add abbreviation for crop fever ult enchant by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/1967
+* Add descriptions to Teleport Overlay Options by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1968
+* Remove formatting code by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1969
+* Fix parse separators in shard number by @layou233 in https://github.com/SkyblockerMod/Skyblocker/pull/1972
+* Add Radial Menus for Inventory Guis by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1566
+* use ofEntries method from fastutil update by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1965
+* Change Compact Damage precision to signify significant digits, not digits after the decimal by @InspectorBoat in https://github.com/SkyblockerMod/Skyblocker/pull/1978
+* Fix Stereo Harmony Helper not working with SkyHanni by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1980
+* Update Dye Drop Pattern by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1981
+* Improve searchability of Mythological Ritual Helper by @lunaynx in https://github.com/SkyblockerMod/Skyblocker/pull/1987
+* Lerp bounding boxes by @InspectorBoat in https://github.com/SkyblockerMod/Skyblocker/pull/1990
+* orange by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1998
+* Room Checkmark State Enum by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1997
+
+## New Contributors
+* @InspectorBoat made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1978
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.11.0+1.21.10...v6.0.0-beta.1+1.21.11
+
+___
+
 # Release 5.11.0
 
 ## Highlight
