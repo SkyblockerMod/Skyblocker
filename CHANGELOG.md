@@ -2,13 +2,13 @@
 
 ## Highlight
 * Update to 1.21.11
-* Add Radial Menus
-* Add '/skyblocker credits' screen
+* Improve Dungeon Map Look
+  * New background blur and outline options
 * Improve Compact Damage
   * Precision is now based on significant digits instead of decimal places
-* Improve Dungeon Map Look
-  * Add background blur and outline options
-  * Add better preview image
+* Add '/skyblocker credits' screen
+* Add Radial Menus
+* Add Vanilla Style Mana Bar
 * Add abbreviation for the Crop Fever ultimate enchantment
 * Add support for item overlays from newer versions
 * Add support for commas in calculator
@@ -18,7 +18,6 @@
 * Fix dye drop special effects not working
 * Fix certain Sea Creatures not being detected
 * Fix Shard Sell Price not showing when having more than 999
-* Fix Stereo Harmony Helper not working with older SkyHanni versions
 
 ## What's Changed
 * 1.21.11 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1927
