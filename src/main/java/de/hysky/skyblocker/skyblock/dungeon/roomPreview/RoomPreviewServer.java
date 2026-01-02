@@ -99,7 +99,7 @@ public class RoomPreviewServer {
 		isActive = true;
 		CLIENT.createWorldOpenFlows().createFreshLevel(SAVE_NAME,
 				new LevelSettings(SAVE_NAME, GameType.SPECTATOR, false, Difficulty.PEACEFUL, true, gameRules, WorldDataConfiguration.DEFAULT),
-				new WorldOptions("skyblocker".hashCode(), false, false),
+				new WorldOptions(SAVE_NAME.hashCode(), false, false),
 				(lookup) -> {
 					var preset = WorldPresets.createFlatWorldDimensions(lookup);
 					var config = new FlatLevelGeneratorSettings(Optional.empty(), lookup.lookupOrThrow(Registries.BIOME).getOrThrow(ResourceKey.create(Registries.BIOME, Identifier.withDefaultNamespace("the_void"))), List.of());
