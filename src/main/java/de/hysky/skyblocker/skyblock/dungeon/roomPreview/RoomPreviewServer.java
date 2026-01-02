@@ -61,7 +61,7 @@ public class RoomPreviewServer {
 		if (!isActive) return;
 		Scheduler.INSTANCE.schedule(RoomPreview::onJoin, 5);
 		applyNightVision(player);
-		player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.roomPreview.joinMessage", selectedRoom)));
+		player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.roomPreview.joinMessage", selectedRoom).getString()));
 		for (Component msg : errorMessages) {
 			player.sendSystemMessage(msg);
 		}
@@ -113,7 +113,7 @@ public class RoomPreviewServer {
 	}
 
 	public static void addErrorMessage(Component errorText) {
-		errorMessages.add(Constants.PREFIX.get().append(errorText));
+		errorMessages.add(Constants.PREFIX.get().append(errorText.getString()));
 	}
 
 	public static void loadRoom(String type, String roomName) {
