@@ -412,11 +412,11 @@ public class GeneralCategory {
 						.name(Component.translatable("skyblocker.config.general.specialEffects"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.general.specialEffects.rareDungeonDropEffects"))
-								.description(Component.translatable("skyblocker.config.general.specialEffects.rareDungeonDropEffects.@Tooltip"))
-								.binding(defaults.general.specialEffects.rareDungeonDropEffects,
-										() -> config.general.specialEffects.rareDungeonDropEffects,
-										newValue -> config.general.specialEffects.rareDungeonDropEffects = newValue)
+								.name(Component.translatable("skyblocker.config.general.specialEffects.rareDropEffects"))
+								.description(Component.translatable("skyblocker.config.general.specialEffects.rareDropEffects.@Tooltip"))
+								.binding(defaults.general.specialEffects.rareDropEffects,
+										() -> config.general.specialEffects.rareDropEffects,
+										newValue -> config.general.specialEffects.rareDropEffects = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
