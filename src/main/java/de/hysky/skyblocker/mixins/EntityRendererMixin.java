@@ -1,5 +1,11 @@
 package de.hysky.skyblocker.mixins;
 
+import de.hysky.skyblocker.utils.Boxes;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
@@ -40,11 +46,12 @@ public class EntityRendererMixin {
 
 	// This is meant to be separate from the previous injection for organizational purposes.
 	@Inject(method = "extractRenderState", at = @At(value = "TAIL"))
-	private void skyblocker$mobBoundingBox(CallbackInfo ci, @Local(argsOnly = true) Entity entity) {
+	private void skyblocker$mobBoundingBox(CallbackInfo ci, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) float partialTick) {
 		if (MobBoundingBoxes.shouldDrawMobBoundingBox(entity)) {
 			MobBoundingBoxes.submitBox2BeRendered(entity.getBoundingBox(), MobBoundingBoxes.getBoxColor(entity));
 			return;
 		}
+		Boxes.lerpEntityBoundingBox(entity, partialTick)
 
 		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.HITBOX)) {
 			float[] color = MobBoundingBoxes.rgbToFloatArray(SkyblockerConfigManager.get().slayers.highlightColor.getRGB());

@@ -213,6 +213,15 @@ loom {
 	mixin {
 		useLegacyMixinAp = false
 	}
+
+	decompilers {
+		vineflower {
+			options.put(
+					// Makes lambda names easy to find for Mixins
+					"mark-corresponding-synthetics", "1"
+					)
+		}
+	}
 }
 
 fabricApi {

@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 public class JsonData<T> {
@@ -99,7 +100,7 @@ public class JsonData<T> {
 
 	public CompletableFuture<Void> load() {
 		if (loadAsync) {
-			loaded = CompletableFuture.runAsync(this::loadInternal);
+			loaded = CompletableFuture.runAsync(this::loadInternal, Executors.newVirtualThreadPerTaskExecutor());
 		} else {
 			loadInternal();
 			loaded = CompletableFuture.completedFuture(null);
@@ -120,7 +121,7 @@ public class JsonData<T> {
 
 	public CompletableFuture<Void> save() {
 		if (saveAsync) {
-			return CompletableFuture.runAsync(this::saveInternal);
+			return CompletableFuture.runAsync(this::saveInternal, Executors.newVirtualThreadPerTaskExecutor());
 		} else {
 			saveInternal();
 			return CompletableFuture.completedFuture(null);

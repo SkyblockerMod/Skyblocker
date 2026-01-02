@@ -73,6 +73,10 @@ public class DungeonsConfig {
 
 		public boolean showRoomLabels = true;
 
+		public boolean showOutline = true;
+
+		public boolean backgroundBlur = false;
+
 		public float mapScaling = 1f;
 
 		public int mapX = 2;

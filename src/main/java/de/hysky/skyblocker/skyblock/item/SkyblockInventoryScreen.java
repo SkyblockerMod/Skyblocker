@@ -44,6 +44,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 /**
@@ -93,7 +94,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 			}
 			return EMPTY_EQUIPMENT.get();
 			// Schedule on main thread to avoid any async weirdness
-		}).thenAccept(itemStacks -> Minecraft.getInstance().execute(() -> {
+		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(itemStacks -> Minecraft.getInstance().execute(() -> {
 			System.arraycopy(itemStacks, 0, equipment, 0, Math.min(itemStacks.length, 4));
 			if (itemStacks.length <= 4) return;
 			System.arraycopy(itemStacks, 4, equipment_rift, 0, Math.clamp(itemStacks.length - 4, 0, 4));
@@ -109,14 +110,14 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	@Init
 	public static void initEquipment() {
 		SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
-			if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId)).thenRun(() -> load(profileId));
+			if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId), Executors.newVirtualThreadPerTaskExecutor()).thenRun(() -> load(profileId));
 			else load(profileId);
 		}));
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client1 -> {
 			String profileId = Utils.getProfileId();
 			if (!profileId.isBlank()) {
-				CompletableFuture.runAsync(() -> save(profileId));
+				CompletableFuture.runAsync(() -> save(profileId), Executors.newVirtualThreadPerTaskExecutor());
 			}
 		});
 	}

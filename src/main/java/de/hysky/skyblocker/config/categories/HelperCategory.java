@@ -11,11 +11,11 @@ import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import net.azureaaron.dandelion.systems.ButtonOption;
-import net.azureaaron.dandelion.systems.ConfigCategory;
-import net.azureaaron.dandelion.systems.Option;
-import net.azureaaron.dandelion.systems.OptionGroup;
-import net.azureaaron.dandelion.systems.controllers.IntegerController;
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
@@ -98,6 +98,7 @@ public class HelperCategory {
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper"))
+								.description(Component.translatable("skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper.@Tooltip"))
 								.binding(defaults.helpers.mythologicalRitual.enableMythologicalRitualHelper,
 										() -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper,
 										newValue -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper = newValue)

@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 public class RareDropSpecialEffects {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RareDropSpecialEffects.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final Pattern DUNGEON_CHEST_PATTERN = Pattern.compile("^\\s{3,}(?!.*:)(?:RARE REWARD!\\s+)?(?<item>.+)$");
 	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+(?<item>.+?)(?:\\s+\\(\\+\\d+%? ✯ Magic Find\\))?$");
 
 	@Init
@@ -32,14 +31,9 @@ public class RareDropSpecialEffects {
 
 			try {
 				String stringForm = message.getString();
-				Matcher dungeonMatcher = DUNGEON_CHEST_PATTERN.matcher(stringForm);
 				Matcher magicFindMatcher = MAGIC_FIND_PATTERN.matcher(stringForm);
 
-				if (dungeonMatcher.matches()) {
-					triggerDropEffect(dungeonMatcher.group("item"));
-				}
-
-				else if (magicFindMatcher.matches()) {
+				if (magicFindMatcher.matches()) {
 					triggerDropEffect(magicFindMatcher.group("item"));
 				}
 			} catch (Exception e) { //In case there's a regex failure or something else bad happens
@@ -53,35 +47,13 @@ public class RareDropSpecialEffects {
 	private static void triggerDropEffect(String itemName) {
 		ItemStack stack = getStackFromName(itemName);
 		if (stack != null && !stack.isEmpty()) {
-			CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
+			CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.SCRAPE, 30);
 			CLIENT.gameRenderer.displayItemActivation(stack);
 		}
 	}
 
 	private static @Nullable ItemStack getStackFromName(String itemName) {
 		String itemId = switch (itemName) {
-			//Dungeon
-			case "Recombobulator 3000" -> "RECOMBOBULATOR_3000";
-			//M3
-			case "First Master Star" -> "FIRST_MASTER_STAR";
-			//M4
-			case "Second Master Star" -> "SECOND_MASTER_STAR";
-			//M5
-			case "Third Master Star" -> "THIRD_MASTER_STAR";
-			case "Shadow Fury" -> "SHADOW_FURY";
-			//M6
-			case "Giant's Sword" -> "GIANTS_SWORD";
-			case "Fourth Master Star" -> "FOURTH_MASTER_STAR";
-			//M7
-			case "Necron Dye" -> "NECRON_DYE";
-			case "Dark Claymore" -> "DARK_CLAYMORE";
-			case "Necron's Handle", "Shiny Necron's Handle" -> "NECRON_HANDLE";
-			case "Master Skull - Tier 5" -> "MASTER_SKULL_TIER_5";
-			case "Shadow Warp" -> "SHADOW_WARP_SCROLL";
-			case "Wither Shield" -> "WITHER_SHIELD_SCROLL";
-			case "Implosion" -> "IMPLOSION_SCROLL";
-			case "Fifth Master Star" -> "FIFTH_MASTER_STAR";
-
 			//Slayer
 			//Zombie
 			case "Scythe Blade" -> "SCYTHE_BLADE";

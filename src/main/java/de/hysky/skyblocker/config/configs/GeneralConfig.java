@@ -224,12 +224,11 @@ public class GeneralConfig {
 	}
 
 	public static class SpecialEffects {
+		public boolean rareDungeonDropEffects = true;
+
 		public boolean rareDropEffects = true;
 
 		public boolean rareDyeDropEffects = true;
-
-		@Deprecated
-		public transient boolean rareDungeonDropEffects = true;
 	}
 
 	public static class Hitbox {

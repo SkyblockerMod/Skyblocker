@@ -6,6 +6,8 @@ import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 public class HuntingBoxHelper extends SimpleContainerSolver {
-	private static final Pattern OWNED_PATTERN = Pattern.compile("Owned: (\\d+) Shards?");
+	private static final Pattern OWNED_PATTERN = Pattern.compile("Owned: ([\\d,]+) Shards?");
 	private static final Pattern SYPHON_PATTERN = Pattern.compile("Syphon (\\d+) more to level up!");
 	private static final Logger LOGGER = LoggerFactory.getLogger(HuntingBoxHelper.class);
 
@@ -42,7 +42,7 @@ public class HuntingBoxHelper extends SimpleContainerSolver {
 				String text = line.getString();
 				if (owned == null) {
 					Matcher matcher = OWNED_PATTERN.matcher(text);
-					if (matcher.matches()) owned = matcher.group(1);
+					if (matcher.matches()) owned = matcher.group(1).replace(",", "");
 				} else {
 					Matcher matcher = SYPHON_PATTERN.matcher(text);
 					if (matcher.matches()) syphon = matcher.group(1);
