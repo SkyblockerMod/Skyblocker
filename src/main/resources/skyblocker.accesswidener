@@ -4,7 +4,7 @@ accessWidener v2 named
 accessible field net/minecraft/commands/arguments/coordinates/BlockPosArgument EXAMPLES Ljava/util/Collection;
 
 # Recipe Book
-accessible field net/minecraft/client/gui/screens/recipebook/RecipeButton SLOT_CRAFTABLE_SPRITE Lnet/minecraft/resources/ResourceLocation;
+accessible field net/minecraft/client/gui/screens/recipebook/RecipeButton SLOT_CRAFTABLE_SPRITE Lnet/minecraft/resources/Identifier;
 accessible field net/minecraft/client/gui/screens/recipebook/RecipeBookPage PAGE_FORWARD_SPRITES Lnet/minecraft/client/gui/components/WidgetSprites;
 accessible field net/minecraft/client/gui/screens/recipebook/RecipeBookPage PAGE_BACKWARD_SPRITES Lnet/minecraft/client/gui/components/WidgetSprites;
 accessible field net/minecraft/client/gui/screens/recipebook/RecipeBookTabButton SPRITES Lnet/minecraft/client/gui/components/WidgetSprites;

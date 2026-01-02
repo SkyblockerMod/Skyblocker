@@ -142,7 +142,10 @@ dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
-	mappings loom.officialMojangMappings()
+	mappings loom.layered {
+		officialMojangMappings()
+		mappings file("skyblocker-override.tiny")
+	}
 
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
