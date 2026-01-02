@@ -172,6 +172,20 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.dungeonMap.showRoomLabels = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.map.showOutline"))
+								.binding(defaults.dungeons.dungeonMap.showOutline,
+										() -> config.dungeons.dungeonMap.showOutline,
+										newValue -> config.dungeons.dungeonMap.showOutline = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.map.backgroundBlur"))
+								.binding(defaults.dungeons.dungeonMap.backgroundBlur,
+										() -> config.dungeons.dungeonMap.backgroundBlur,
+										newValue -> config.dungeons.dungeonMap.backgroundBlur = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.map.mapScaling"))
 								.binding(defaults.dungeons.dungeonMap.mapScaling,

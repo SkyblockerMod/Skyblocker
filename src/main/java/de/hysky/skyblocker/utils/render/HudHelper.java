@@ -1,8 +1,17 @@
 package de.hysky.skyblocker.utils.render;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.FilterMode;
+import com.mojang.blaze3d.textures.GpuSampler;
+import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.blaze3d.textures.TextureFormat;
+
 import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import de.hysky.skyblocker.compatibility.ModernUICompatibility;
+import de.hysky.skyblocker.mixins.accessors.GuiGraphicsInvoker;
 import de.hysky.skyblocker.utils.render.gui.state.CustomShapeGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
@@ -37,6 +46,10 @@ import java.util.List;
 
 public class HudHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
+	/**
+	 * Suitable for rendering two blurred rectangles at once
+	 */
+	private static final TexturePool BLIT_TEXTURE_POOL = TexturePool.create("Blit Pool", 4, GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_COPY_DST, TextureFormat.RGBA8);
 
 	public static void renderNineSliceColored(GuiGraphics context, Identifier texture, int x, int y, int width, int height, int argb) {
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, width, height, argb);
@@ -103,6 +116,29 @@ public class HudHelper {
 		context.guiRenderState.submitText(renderState);
 	}
 
+	/**
+	 * Submits a blurred rectangle to be rendered at the given position.
+	 *
+	 * @param radius The strength of the blur, must be positive.
+	 */
+	public static void submitBlurredRectangle(GuiGraphics graphics, int x0, int y0, int x1, int y1, int radius) {
+		RenderTarget mainRenderTarget = CLIENT.getMainRenderTarget();
+		int requiredWidth = mainRenderTarget.width;
+		int requiredHeight = mainRenderTarget.height;
+
+		int index = BLIT_TEXTURE_POOL.getNextAvailableIndex(requiredWidth, requiredHeight);
+		GpuTexture blitTexture = BLIT_TEXTURE_POOL.getTexture(index);
+		GpuTextureView blitTextureView = BLIT_TEXTURE_POOL.getTextureView(index);
+		// The sampler needs to be linear in order for the shader sampling interpolation trick to work properly
+		GpuSampler sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR);
+		// Pass the radius through the vertex colour - least painful way to do this
+		int vertexColour = ARGB.color(radius, 255, 255);
+
+		// Copy the main render target colour texture to our temporary one since you cannot read from and write to the same texture in a single draw.
+		RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(mainRenderTarget.getColorTexture(), blitTexture, 0, 0, 0, 0, 0, requiredWidth, requiredHeight);
+		((GuiGraphicsInvoker) graphics).invokeSubmitColoredRectangle(SkyblockerRenderPipelines.BLURRED_RECTANGLE, TextureSetup.singleTexture(blitTextureView, sampler), x0, y0, x1, y1, vertexColour, null);
+	}
+
 	public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
 		return x >= x1 && x <= x2 && y >= y1 && y <= y2;
 	}
@@ -111,5 +147,9 @@ public class HudHelper {
 	// 1.21.11 Port: "nothing is more permanent than a temporary solution"
 	public static boolean hasShiftDown() {
 		return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
+	}
+
+	public static void close() {
+		BLIT_TEXTURE_POOL.close();
 	}
 }

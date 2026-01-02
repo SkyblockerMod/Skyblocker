@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GlowRenderer;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.Renderer;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,6 +19,7 @@ public class GameRendererMixin {
 	private void skyblocker$onGameRendererClose(CallbackInfo ci) {
 		Renderer.close();
 		GlowRenderer.getInstance().close();
+		HudHelper.close();
 	}
 
 	@ModifyReturnValue(method = "getNightVisionScale", at = @At("RETURN"))
