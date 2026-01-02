@@ -11,8 +11,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistr
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.Util;
 
 import java.util.function.Function;
 
@@ -27,23 +27,23 @@ public class VanillaStyleManaBar {
 
 	// Two versions of the same bar, one that renders when the hunger bar is visible and one for the mount health bar
 	// Ideally we would only need one bar, but since there is not currently a way to override vanilla render conditions this will work
-	private static final Identifier MANABAR_FOOD_HUD_ID = SkyblockerMod.id("vanilla_style_mana_bar_food");
-	private static final Identifier MANABAR_MOUNT_HUD_ID = SkyblockerMod.id("vanilla_style_mana_bar_mount");
+	private static final ResourceLocation MANABAR_FOOD_HUD_ID = SkyblockerMod.id("vanilla_style_mana_bar_food");
+	private static final ResourceLocation MANABAR_MOUNT_HUD_ID = SkyblockerMod.id("vanilla_style_mana_bar_mount");
 
-	private static final Identifier CONTAINER_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/container");
-	private static final Identifier MANA_FULL_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_full");
-	private static final Identifier MANA_HALF_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_half");
-	private static final Identifier OVERFLOW_FULL_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_full");
-	private static final Identifier OVERFLOW_HALF_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_half");
-	private static final Identifier OVERFLOW_DARK_FULL_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_full");
-	private static final Identifier OVERFLOW_DARK_HALF_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_half");
-	private static final Identifier CONTAINER_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/container_blink");
-	private static final Identifier MANA_FULL_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_full_blink");
-	private static final Identifier MANA_HALF_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_half_blink");
-	private static final Identifier OVERFLOW_FULL_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_full_blink");
-	private static final Identifier OVERFLOW_HALF_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_half_blink");
-	private static final Identifier OVERFLOW_DARK_FULL_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_full_blink");
-	private static final Identifier OVERFLOW_DARK_HALF_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_half_blink");
+	private static final ResourceLocation CONTAINER_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/container");
+	private static final ResourceLocation MANA_FULL_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_full");
+	private static final ResourceLocation MANA_HALF_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_half");
+	private static final ResourceLocation OVERFLOW_FULL_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_full");
+	private static final ResourceLocation OVERFLOW_HALF_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_half");
+	private static final ResourceLocation OVERFLOW_DARK_FULL_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_full");
+	private static final ResourceLocation OVERFLOW_DARK_HALF_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_half");
+	private static final ResourceLocation CONTAINER_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/container_blink");
+	private static final ResourceLocation MANA_FULL_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_full_blink");
+	private static final ResourceLocation MANA_HALF_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/mana_half_blink");
+	private static final ResourceLocation OVERFLOW_FULL_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_full_blink");
+	private static final ResourceLocation OVERFLOW_HALF_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_half_blink");
+	private static final ResourceLocation OVERFLOW_DARK_FULL_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_full_blink");
+	private static final ResourceLocation OVERFLOW_DARK_HALF_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_half_blink");
 
 	enum NotchType {
 		CONTAINER,
@@ -87,7 +87,7 @@ public class VanillaStyleManaBar {
 		int top = context.guiHeight() - 39;       // Top of mana bar area
 		int right = context.guiWidth() / 2 + 91;  // Rightmost point of mana bar area
 
-		Identifier texture = switch (notchtype) {
+		ResourceLocation texture = switch (notchtype) {
 			case CONTAINER -> isBlinking ? CONTAINER_BLINK_TEXTURE : CONTAINER_TEXTURE;
 			case MANA -> !isHalf ? (isBlinking ? MANA_FULL_BLINK_TEXTURE : MANA_FULL_TEXTURE) : (isBlinking ? MANA_HALF_BLINK_TEXTURE : MANA_HALF_TEXTURE);
 			case OVERFLOW -> !isHalf ? (isBlinking ? OVERFLOW_FULL_BLINK_TEXTURE : OVERFLOW_FULL_TEXTURE) : (isBlinking ? OVERFLOW_HALF_BLINK_TEXTURE : OVERFLOW_HALF_TEXTURE);
