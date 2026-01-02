@@ -148,7 +148,7 @@ public class Calculator {
 		}
 	}
 
-	private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([sekmbtq]?)");
+	private static final Pattern NUMBER_PATTERN = Pattern.compile("([_,\\d]+\\.?[_,\\d]*)([sekmbtq]?)");
 	private static final Object2LongMap<String> MAGNITUDE_VALUES = Object2LongMaps.unmodifiable(new Object2LongOpenHashMap<>(Map.of(
 			"s", 64L,
 			"e", 160L,
@@ -193,6 +193,8 @@ public class Calculator {
 
 				case ')' -> new Token(TokenType.R_PARENTHESIS, ")");
 
+				case '_', ',' -> throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError2");
+				case '.' -> throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError3");
 				case '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' -> {
 					Matcher numberMatcher = NUMBER_PATTERN.matcher(input.substring(i));
 					if (!numberMatcher.find()) { //invalid value to lex
@@ -355,7 +357,7 @@ public class Calculator {
 		if (!numberMatcher.matches()) {
 			throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError", value.toLowerCase(Locale.ENGLISH));
 		}
-		double number = Double.parseDouble(numberMatcher.group(1));
+		double number = Double.parseDouble(numberMatcher.group(1).replaceAll("[_,]", ""));
 		String magnitude = numberMatcher.group(2);
 
 		if (!magnitude.isEmpty()) {

@@ -15,6 +15,15 @@ public class CalculatorTest {
 	}
 
 	@Test
+	void testSeparators() {
+		assertCalculation(11254123, "1_125_41,23");
+		assertCalculation(11254123.341, "1_125_41,23_.341");
+		assertCalculation(11254123., "1_125_41,23.");
+		// Trailing decimal supported, leading decimal not supported. Tempting, but KISS
+		assertThrows(".52");
+	}
+
+	@Test
 	void testShorthands() {
 		assertCalculation(1000, "1k");
 		assertCalculation(120, "0.12k");
