@@ -70,7 +70,7 @@ public class RoomPreviewServer {
 
 	public static void applyNightVision(ServerPlayer player) {
 		if (!isActive) return;
-		player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 999999999, 1, false, false));
+		player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, -1, 1, false, false));
 	}
 
 	private static void checkServer(MinecraftServer server) {
