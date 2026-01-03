@@ -11,8 +11,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
@@ -22,6 +20,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class FarmingHudWidget extends ComponentBasedWidget {

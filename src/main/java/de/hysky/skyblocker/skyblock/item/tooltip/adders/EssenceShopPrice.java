@@ -8,8 +8,6 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.OptionalDouble;
@@ -20,6 +18,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class EssenceShopPrice extends SimpleTooltipAdder {
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("Cost (?<amount>[\\d,]+) (?<type>[A-Za-z]+) Essence");

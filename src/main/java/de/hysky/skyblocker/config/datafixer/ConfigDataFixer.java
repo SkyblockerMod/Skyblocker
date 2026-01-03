@@ -13,7 +13,7 @@ import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 public class ConfigDataFixer {

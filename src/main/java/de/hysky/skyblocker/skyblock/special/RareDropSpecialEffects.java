@@ -9,7 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +37,10 @@ public class RareDropSpecialEffects {
 					triggerDropEffect(magicFindMatcher.group("item"));
 				}
 			} catch (Exception e) { //In case there's a regex failure or something else bad happens
-					LOGGER.error("[Skyblocker Special Effects] An unexpected exception was encountered: ", e);
-				}
+				LOGGER.error("[Skyblocker Special Effects] An unexpected exception was encountered: ", e);
 			}
+		}
+
 		return true;
 	}
 

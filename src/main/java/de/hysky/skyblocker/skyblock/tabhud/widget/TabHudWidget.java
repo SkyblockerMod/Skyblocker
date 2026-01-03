@@ -2,14 +2,13 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.utils.Location;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.MutableComponent;
+import org.jspecify.annotations.Nullable;
 
 public abstract class TabHudWidget extends ComponentBasedWidget {
 	private final String hypixelWidgetName;

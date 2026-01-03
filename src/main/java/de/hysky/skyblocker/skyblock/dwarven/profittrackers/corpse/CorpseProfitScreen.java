@@ -2,8 +2,6 @@ package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanImmutablePair;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
-import org.jetbrains.annotations.Nullable;
-
 import java.text.NumberFormat;
 import java.util.List;
 import net.minecraft.ChatFormatting;
@@ -16,6 +14,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+import org.jspecify.annotations.Nullable;
 
 public class CorpseProfitScreen extends Screen {
 	private static final int ENTRY_HEIGHT = 11;

@@ -1,8 +1,6 @@
 package de.hysky.skyblocker.skyblock.speedpreset;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -21,6 +19,7 @@ import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+import org.jspecify.annotations.Nullable;
 
 public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPresetListWidget.AbstractEntry> {
 

@@ -13,7 +13,7 @@ import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,6 @@ import net.minecraft.network.chat.Style;
  * is holding periodically. The list is sorted like in the vanilla game.
  */
 public class PlayerListManager {
-
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
 	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("\\s*(Players \\(\\d+\\)|Island|Coop \\(\\d+\\))\\s*");
 	private static final Pattern INFO_COLUMN_PATTERN = Pattern.compile("\\s*Info\\s*");

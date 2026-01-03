@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanPair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import com.mojang.blaze3d.platform.Window;
 import de.hysky.skyblocker.skyblock.fancybars.BarPositioner.BarLocation;

@@ -14,13 +14,7 @@ import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.InsertTextVi
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.SetStyleVisitor;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.render.HudHelper;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-
-import java.util.List;
-import java.util.function.Predicate;
 import net.minecraft.ChatFormatting;
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -47,7 +41,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.StringUtil;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 public class CustomizeNameWidget extends AbstractContainerWidget {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
@@ -338,8 +338,6 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 	}
 
 	private class FormattingButton extends AbstractButton {
-
-
 		private boolean enabled;
 		private final ChatFormatting format;
 		private final Predicate<Style> isEnabled;
@@ -383,7 +381,6 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 	}
 
 	private class ColorButton extends AbstractButton {
-
 		private final ChatFormatting color;
 		private final int intColor;
 

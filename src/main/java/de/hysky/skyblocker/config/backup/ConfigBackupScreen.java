@@ -5,7 +5,7 @@ import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.io.IOException;

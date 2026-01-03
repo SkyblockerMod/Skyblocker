@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.garden;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Used by {@link de.hysky.skyblocker.skyblock.entity.glow.adder.GardenGlowAdder} and {@link StereoHarmonyHelper}

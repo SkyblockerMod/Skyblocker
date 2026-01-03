@@ -8,13 +8,13 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.Nullable;
-
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.jspecify.annotations.Nullable;
 
 /*
 	This implementation doesn't have a default value parameter as there is no sensible default for the data structure.

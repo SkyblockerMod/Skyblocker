@@ -2,7 +2,7 @@ package de.hysky.skyblocker.utils.hoveredItem;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class HoveredItemStackUtils {
 

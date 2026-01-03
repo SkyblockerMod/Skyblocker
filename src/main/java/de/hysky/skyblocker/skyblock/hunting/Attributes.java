@@ -8,7 +8,7 @@ import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import io.github.moulberry.repo.NEURepoFile;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import de.hysky.skyblocker.annotations.Init;

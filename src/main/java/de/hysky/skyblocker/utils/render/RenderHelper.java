@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.utils.render;
 
+import org.jspecify.annotations.Nullable;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTextureView;
 
@@ -19,7 +21,6 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
 
 public class RenderHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -84,13 +85,11 @@ public class RenderHelper {
 	 * @param pos   The position of the block.
 	 * @return The bounding box of the block.
 	 */
-	@Nullable
-	public static AABB getBlockBoundingBox(ClientLevel world, BlockPos pos) {
+	public static @Nullable AABB getBlockBoundingBox(ClientLevel world, BlockPos pos) {
 		return getBlockBoundingBox(world, world.getBlockState(pos), pos);
 	}
 
-	@Nullable
-	public static AABB getBlockBoundingBox(ClientLevel world, BlockState state, BlockPos pos) {
+	public static @Nullable AABB getBlockBoundingBox(ClientLevel world, BlockState state, BlockPos pos) {
 		VoxelShape shape = state.getShape(world, pos).singleEncompassing();
 
 		return shape.isEmpty() ? null : shape.bounds().move(pos);

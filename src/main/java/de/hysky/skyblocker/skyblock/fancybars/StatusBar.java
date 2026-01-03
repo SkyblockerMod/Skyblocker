@@ -10,7 +10,7 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.awt.Color;
 import java.util.function.Consumer;

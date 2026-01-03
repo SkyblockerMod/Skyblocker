@@ -3,8 +3,6 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import io.github.moulberry.repo.data.NEUNpcShopRecipe;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +11,7 @@ import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 	public static final Identifier ID = SkyblockerMod.id("skyblock_npc_shop");

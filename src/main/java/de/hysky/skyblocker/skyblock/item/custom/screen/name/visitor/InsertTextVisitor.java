@@ -4,7 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.PlainTextContents;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class InsertTextVisitor extends BaseVisitor {
 	private final MutableComponent newText = MutableComponent.create(new PlainTextContents.LiteralContents(""));

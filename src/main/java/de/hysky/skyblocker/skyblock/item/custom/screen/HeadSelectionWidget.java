@@ -7,7 +7,7 @@ import de.hysky.skyblocker.skyblock.item.custom.CustomAnimatedHelmetTextures;
 import de.hysky.skyblocker.skyblock.item.custom.CustomHelmetTextures;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;

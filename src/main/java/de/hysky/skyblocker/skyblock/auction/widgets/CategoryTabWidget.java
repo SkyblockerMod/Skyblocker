@@ -25,7 +25,6 @@ public class CategoryTabWidget extends SideTabButtonWidget {
 		if (isMouseOver(mouseX, mouseY)) {
 			context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, icon.getTooltipLines(TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL), mouseX, mouseY);
 		}
-
 	}
 
 	public void setSlotId(int slotId) {

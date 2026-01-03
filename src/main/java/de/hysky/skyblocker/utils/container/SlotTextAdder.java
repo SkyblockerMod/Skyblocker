@@ -9,11 +9,11 @@ import net.azureaaron.dandelion.systems.Option;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import org.jspecify.annotations.Nullable;
 
 public interface SlotTextAdder extends ContainerMatcher {
 

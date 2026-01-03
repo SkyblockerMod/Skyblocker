@@ -5,14 +5,13 @@ import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.Utils;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
 public class SkillLevelAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(

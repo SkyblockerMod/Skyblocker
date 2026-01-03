@@ -7,9 +7,10 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import org.jspecify.annotations.Nullable;
+
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.Nullable;
 
 public class Waterboard {
 	public static final int BOARD_MIN_X = 6;

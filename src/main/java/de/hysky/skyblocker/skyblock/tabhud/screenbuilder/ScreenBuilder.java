@@ -10,8 +10,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +17,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
+import org.jspecify.annotations.Nullable;
 
 public class ScreenBuilder {
 	// TODO: eliminate this static field completely?

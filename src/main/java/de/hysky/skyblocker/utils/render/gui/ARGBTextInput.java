@@ -2,7 +2,7 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import com.mojang.logging.LogUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 

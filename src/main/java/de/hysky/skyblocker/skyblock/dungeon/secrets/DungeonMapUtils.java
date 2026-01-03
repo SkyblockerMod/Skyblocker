@@ -17,12 +17,12 @@ import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 import org.joml.RoundingMode;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
 
 public class DungeonMapUtils {
 	public static final byte BLACK_COLOR = MapColor.COLOR_BLACK.getPackedId(MapColor.Brightness.LOWEST);

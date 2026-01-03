@@ -16,8 +16,8 @@ import de.hysky.skyblocker.utils.ws.message.DungeonRoomSecretCountMessage;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Arrays;

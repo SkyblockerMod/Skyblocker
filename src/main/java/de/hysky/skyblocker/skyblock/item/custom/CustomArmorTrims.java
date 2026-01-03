@@ -11,7 +11,6 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -26,8 +25,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.trim.ArmorTrim;
@@ -131,7 +130,7 @@ public class CustomArmorTrims {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public record ArmorTrimId(@SerialEntry Identifier material, @SerialEntry Identifier pattern) implements Pair<Identifier, Identifier> {
+	public record ArmorTrimId(Identifier material, Identifier pattern) implements Pair<Identifier, Identifier> {
 		public static final Codec<ArmorTrimId> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 						Identifier.CODEC.fieldOf("material").forGetter(ArmorTrimId::material),
 						Identifier.CODEC.fieldOf("pattern").forGetter(ArmorTrimId::pattern))

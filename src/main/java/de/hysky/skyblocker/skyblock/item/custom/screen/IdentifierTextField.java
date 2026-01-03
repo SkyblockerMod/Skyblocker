@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -10,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
+import org.jspecify.annotations.Nullable;
 
 class IdentifierTextField extends EditBox {
 	private final Consumer<@Nullable Identifier> callback;

@@ -4,7 +4,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import net.minecraft.network.chat.Component;

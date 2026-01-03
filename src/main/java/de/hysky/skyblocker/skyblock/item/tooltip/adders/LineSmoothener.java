@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class LineSmoothener extends SimpleTooltipAdder {
 	//This is static to not create a new text object for each line in every item

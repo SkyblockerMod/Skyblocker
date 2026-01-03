@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;

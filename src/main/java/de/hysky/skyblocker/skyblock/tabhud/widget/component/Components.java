@@ -4,8 +4,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 public class Components {
 	public static Component iconTextComponent() {

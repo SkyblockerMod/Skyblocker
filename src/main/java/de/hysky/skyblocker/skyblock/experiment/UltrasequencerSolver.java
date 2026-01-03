@@ -14,7 +14,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class UltrasequencerSolver extends ExperimentSolver {
 	public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();

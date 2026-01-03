@@ -1,8 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
@@ -10,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
 public class SupercraftReminder extends SimpleTooltipAdder {
 	private static final byte SUPERCRAFT_SLOT = 32;

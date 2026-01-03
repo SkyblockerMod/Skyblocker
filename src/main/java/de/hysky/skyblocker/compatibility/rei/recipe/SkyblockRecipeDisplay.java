@@ -7,10 +7,10 @@ import me.shedaniel.rei.api.common.display.DisplaySerializer;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * Skyblock Crafting Recipe display class for REI

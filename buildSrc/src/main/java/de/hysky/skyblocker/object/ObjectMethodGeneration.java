@@ -2,7 +2,7 @@ package de.hysky.skyblocker.object;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.ClassReference;
 import de.hysky.skyblocker.FieldReference;

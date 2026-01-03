@@ -7,7 +7,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.render.HudHelper;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.Closeable;
@@ -29,9 +29,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 
 public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implements Closeable {
-
 	private static final Identifier GRADIENT_TEXTURE = SkyblockerMod.id("generated/dye_gradient");
-
 	private static final int HORIZONTAL_MARGIN = 3;
 	private static final int VERTICAL_MARGIN = 1;
 

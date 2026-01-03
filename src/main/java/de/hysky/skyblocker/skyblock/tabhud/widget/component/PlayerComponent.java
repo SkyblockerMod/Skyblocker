@@ -5,7 +5,7 @@ import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Component that consists of a player's skin icon and their name

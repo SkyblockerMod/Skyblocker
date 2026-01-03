@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import io.github.moulberry.repo.data.NEUIngredient;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

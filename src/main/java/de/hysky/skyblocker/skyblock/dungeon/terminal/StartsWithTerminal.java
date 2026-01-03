@@ -8,7 +8,6 @@ import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;

@@ -4,7 +4,7 @@ import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import org.apache.commons.text.WordUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

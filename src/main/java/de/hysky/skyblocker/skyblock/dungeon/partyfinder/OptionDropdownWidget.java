@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import net.minecraft.client.Minecraft;

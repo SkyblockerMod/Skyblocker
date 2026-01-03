@@ -11,8 +11,8 @@ import de.hysky.skyblocker.utils.CollectionUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.EnumSet;

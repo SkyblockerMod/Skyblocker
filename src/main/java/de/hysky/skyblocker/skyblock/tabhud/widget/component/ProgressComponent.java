@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.ColorUtils;
@@ -7,8 +9,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
-
 
 /**
  * Component that consists of an icon, some text and a progress bar.

@@ -4,8 +4,6 @@ import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.HudHelper;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Optional;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
@@ -16,8 +14,8 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
@@ -40,6 +38,7 @@ import net.minecraft.world.item.equipment.trim.ArmorTrim;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
 import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import net.minecraft.world.item.equipment.trim.TrimPattern;
+import org.jspecify.annotations.Nullable;
 
 public abstract sealed class TrimElementButton extends AbstractButton permits TrimElementButton.Pattern, TrimElementButton.Material {
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);

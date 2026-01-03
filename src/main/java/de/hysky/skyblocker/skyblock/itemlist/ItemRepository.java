@@ -17,7 +17,7 @@ import io.github.moulberry.repo.data.NEUNpcShopRecipe;
 import io.github.moulberry.repo.data.NEURecipe;
 import io.github.moulberry.repo.util.NEUId;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

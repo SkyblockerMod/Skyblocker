@@ -3,14 +3,15 @@ package de.hysky.skyblocker.utils;
 import ca.weblite.objc.Client;
 import com.ibm.icu.text.DateTimePatternGenerator;
 import de.hysky.skyblocker.debug.Debug;
+import net.minecraft.client.input.InputQuirks;
+import net.minecraft.util.Util;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import net.minecraft.util.Util;
-import net.minecraft.client.input.InputQuirks;
 
 /**
  * Provides useful constants for formatting numbers and dates. If you need to make slight tweaks to a formatter

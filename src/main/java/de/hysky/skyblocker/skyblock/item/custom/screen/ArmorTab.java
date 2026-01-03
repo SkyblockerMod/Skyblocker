@@ -167,7 +167,6 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 	}
 
 	private class PieceSelectionWidget extends AbstractWidget {
-
 		private static final Identifier HOTBAR_TEXTURE = SkyblockerMod.id("armor_customization_screen/mini_hotbar");
 		private static final Identifier HOTBAR_SELECTION_TEXTURE = SkyblockerMod.id("hotbar_selection_full");
 
@@ -305,8 +304,6 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 		}
 
 		@Override
-		protected void updateWidgetNarration(NarrationElementOutput builder) {
-
-		}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 	}
 }

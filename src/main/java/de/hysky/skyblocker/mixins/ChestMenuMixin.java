@@ -4,7 +4,7 @@ import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.List;

@@ -10,7 +10,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashSet;

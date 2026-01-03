@@ -84,7 +84,6 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 		this.recipeBook.renderTooltip(context, mouseX, mouseY, null);
 	}
 
-
 	@Override
 	protected void renderSlot(GuiGraphics context, Slot slot) {
 		ItemStack stack = slot.getItem();

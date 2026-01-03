@@ -6,8 +6,6 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import org.jetbrains.annotations.Nullable;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -25,6 +23,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
 public class UpcomingEventsTab implements RecipeTab {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

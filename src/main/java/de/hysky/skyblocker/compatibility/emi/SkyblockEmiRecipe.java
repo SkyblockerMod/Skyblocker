@@ -7,13 +7,12 @@ import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 public class SkyblockEmiRecipe implements EmiRecipe {
 	private final Component craftText;

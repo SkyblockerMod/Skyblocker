@@ -18,8 +18,6 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.render.gui.NoopInput;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +49,7 @@ import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.ScoreHolder;
 import net.minecraft.world.scores.Scoreboard;
 import net.minecraft.world.scores.criteria.ObjectiveCriteria;
+import org.jspecify.annotations.Nullable;
 
 public class PreviewTab implements Tab {
 	public static final int RIGHT_SIDE_WIDTH = 120;

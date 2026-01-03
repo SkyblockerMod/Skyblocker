@@ -6,7 +6,6 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
-
 import java.awt.Color;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.components.Button;

@@ -19,7 +19,7 @@ import net.azureaaron.hmapi.data.rank.PackageRank;
 import net.azureaaron.hmapi.data.rank.RankType;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.SharedSuggestionProvider;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

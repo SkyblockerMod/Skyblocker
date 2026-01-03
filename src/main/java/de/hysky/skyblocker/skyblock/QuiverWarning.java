@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -9,7 +11,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.Nullable;
 
 public class QuiverWarning {
 	private static @Nullable Type warning = null;

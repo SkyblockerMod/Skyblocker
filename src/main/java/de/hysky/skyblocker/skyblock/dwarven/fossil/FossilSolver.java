@@ -7,8 +7,6 @@ import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import org.jetbrains.annotations.Nullable;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+import org.jspecify.annotations.Nullable;
 
 import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.fossilName;
 import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.minimumTiles;

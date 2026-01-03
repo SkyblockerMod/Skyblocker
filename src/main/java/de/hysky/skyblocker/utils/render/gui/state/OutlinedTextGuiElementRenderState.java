@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui.state;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.mixins.accessors.FontAccessor;
 import net.minecraft.client.gui.Font;

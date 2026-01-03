@@ -2,10 +2,9 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.function.Function;
 import net.minecraft.client.gui.navigation.ScreenPosition;
+import org.jspecify.annotations.Nullable;
 
 public abstract class WidgetPositioner {
 	protected final int screenWidth;

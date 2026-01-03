@@ -8,7 +8,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
+
 import com.mojang.datafixers.util.Either;
 
 public class EventCalendarLookup implements WikiLookup {

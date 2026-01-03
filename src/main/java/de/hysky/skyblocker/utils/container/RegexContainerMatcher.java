@@ -2,7 +2,7 @@ package de.hysky.skyblocker.utils.container;
 
 import de.hysky.skyblocker.skyblock.ChestValue;
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

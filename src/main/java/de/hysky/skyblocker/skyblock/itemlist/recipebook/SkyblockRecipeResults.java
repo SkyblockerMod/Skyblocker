@@ -12,8 +12,8 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	private StateSwitchingButton nextPageButton;
 	private StateSwitchingButton prevPageButton;
 	private SkyblockRecipeResultButton hoveredResultButton;
-	private String lastSearchQuery = null;
+	private @Nullable String lastSearchQuery = null;
 	private final List<ItemStack> searchResults = new ArrayList<>();
 	/**
 	 * Text to be displayed as a tooltip.
@@ -118,8 +118,6 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 
 			if (resultButton.visible && resultButton.isHoveredOrFocused()) this.hoveredResultButton = resultButton;
 		}
-
-
 
 		//Render the page flip buttons
 		if (this.prevPageButton.active) this.prevPageButton.render(context, mouseX, mouseY, delta);

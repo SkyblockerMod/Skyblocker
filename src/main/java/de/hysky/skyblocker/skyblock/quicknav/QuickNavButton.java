@@ -32,7 +32,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 import java.time.Duration;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Environment(value = EnvType.CLIENT)
 public class QuickNavButton extends AbstractWidget {

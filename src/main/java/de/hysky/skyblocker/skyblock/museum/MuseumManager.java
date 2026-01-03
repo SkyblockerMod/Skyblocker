@@ -28,11 +28,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import org.jspecify.annotations.Nullable;
 
 public class MuseumManager extends AbstractWidget implements HoveredItemStackProvider {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

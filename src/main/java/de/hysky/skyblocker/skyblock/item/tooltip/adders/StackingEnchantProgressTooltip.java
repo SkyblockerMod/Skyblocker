@@ -7,8 +7,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.utils.Formatters;
-import org.jetbrains.annotations.Nullable;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;

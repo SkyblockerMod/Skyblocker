@@ -4,13 +4,12 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class PlayerListWidget extends TabHudWidget {

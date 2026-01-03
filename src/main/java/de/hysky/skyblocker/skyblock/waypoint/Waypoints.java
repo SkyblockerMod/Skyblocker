@@ -35,7 +35,7 @@ import net.minecraft.commands.arguments.StringRepresentableArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

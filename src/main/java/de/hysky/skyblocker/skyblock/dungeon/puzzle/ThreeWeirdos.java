@@ -17,11 +17,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
 
 public class ThreeWeirdos extends DungeonPuzzle {
 	@SuppressWarnings("unused")

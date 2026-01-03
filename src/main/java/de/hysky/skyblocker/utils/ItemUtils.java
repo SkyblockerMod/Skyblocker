@@ -29,7 +29,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
-import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentPatch;
@@ -38,6 +37,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
@@ -48,7 +48,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -382,8 +382,7 @@ public final class ItemUtils {
 		return !customData.isEmpty() && (customData.contains("drill_fuel") || customData.getStringOr(ID, "").equals("PICKONIMBUS"));
 	}
 
-	@Nullable
-	public static IntIntPair getDurability(ItemStack stack) {
+	public static @Nullable IntIntPair getDurability(ItemStack stack) {
 		CompoundTag customData = getCustomData(stack);
 		if (customData.isEmpty()) return null;
 
@@ -409,8 +408,7 @@ public final class ItemUtils {
 	 * Gets the first line of the lore that contains the specified substring.
 	 * @return The first line of the lore that contains the substring, or {@code null} if no line contains the substring.
 	 */
-	@Nullable
-	public static String getLoreLineContains(ItemStack stack, String substring) {
+	public static @Nullable String getLoreLineContains(ItemStack stack, String substring) {
 		for (String line : stack.skyblocker$getLoreStrings()) {
 			if (line.contains(substring)) {
 				return line;
@@ -424,8 +422,7 @@ public final class ItemUtils {
 	 * Gets the first line of the lore that matches the specified predicate.
 	 * @return The first line of the lore that matches the predicate, or {@code null} if no line matches.
 	 */
-	@Nullable
-	public static String getLoreLineIf(ItemStack stack, Predicate<String> predicate) {
+	public static @Nullable String getLoreLineIf(ItemStack stack, Predicate<String> predicate) {
 		for (String line : stack.skyblocker$getLoreStrings()) {
 			if (predicate.test(line)) {
 				return line;
@@ -439,8 +436,7 @@ public final class ItemUtils {
 	 * Gets the first line of the lore that matches the specified pattern, using {@link Matcher#matches()}.
 	 * @return A matcher that contains match results if the pattern was found in the lore, otherwise {@code null}.
 	 */
-	@Nullable
-	public static Matcher getLoreLineIfMatch(ItemStack stack, Pattern pattern) {
+	public static @Nullable Matcher getLoreLineIfMatch(ItemStack stack, Pattern pattern) {
 		return RegexListUtils.matchInList(stack.skyblocker$getLoreStrings(), pattern);
 	}
 
@@ -458,8 +454,7 @@ public final class ItemUtils {
 	 * @param stack the stack to search the lore of
 	 * @return A {@link Matcher matcher} that contains match results if the pattern was found in the lore, otherwise {@code null}.
 	 */
-	@Nullable
-	public static Matcher getLoreLineIfContainsMatch(ItemStack stack, Pattern pattern) {
+	public static @Nullable Matcher getLoreLineIfContainsMatch(ItemStack stack, Pattern pattern) {
 		return RegexListUtils.findInList(stack.skyblocker$getLoreStrings(), pattern);
 	}
 

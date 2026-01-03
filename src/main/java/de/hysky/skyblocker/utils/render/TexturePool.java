@@ -3,7 +3,7 @@ package de.hysky.skyblocker.utils.render;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;

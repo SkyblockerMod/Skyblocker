@@ -3,8 +3,6 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 import de.hysky.skyblocker.SkyblockerMod;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import io.github.moulberry.repo.data.NEUIngredient;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +10,7 @@ import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class SkyblockCraftingRecipe implements SkyblockRecipe {
 	public static final Identifier ID = SkyblockerMod.id("skyblock_crafting");

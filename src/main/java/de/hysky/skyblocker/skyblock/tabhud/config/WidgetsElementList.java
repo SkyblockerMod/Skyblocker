@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsListEntry> {
 	static final Identifier MOVE_UP_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_up_highlighted");

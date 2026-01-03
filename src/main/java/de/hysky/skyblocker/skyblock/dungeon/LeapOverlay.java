@@ -9,8 +9,8 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Comparator;

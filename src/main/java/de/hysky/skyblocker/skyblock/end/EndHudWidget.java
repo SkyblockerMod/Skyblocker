@@ -7,15 +7,15 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
-import java.util.Set;
 import net.minecraft.ChatFormatting;
-import net.minecraft.util.Util;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
+import java.util.Set;
 
 @RegisterWidget
 public class EndHudWidget extends ComponentBasedWidget {

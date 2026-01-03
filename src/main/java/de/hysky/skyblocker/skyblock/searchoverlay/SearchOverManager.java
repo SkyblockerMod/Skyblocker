@@ -32,7 +32,7 @@ import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import org.apache.commons.lang3.function.Consumers;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import org.apache.commons.text.WordUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.google.gson.JsonParser;

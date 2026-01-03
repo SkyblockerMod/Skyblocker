@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.utils;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility class for text operations.

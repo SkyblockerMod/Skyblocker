@@ -1,8 +1,6 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
 public enum SlayerType implements StringRepresentable {
 	REVENANT("revenant", EntityType.ZOMBIE, "Revenant Horror", new ItemStack(Items.ROTTEN_FLESH), new int[]{5, 25, 100, 500, 1500}, new int[]{5, 15, 200, 1000, 5000, 20000, 100000, 400000, 1000000}, List.of("Revenant Sycophant", "Revenant Champion", "Deformed Revenant", "Atoned Champion", "Atoned Revenant")),
