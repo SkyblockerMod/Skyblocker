@@ -8,17 +8,20 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class BeaconHighlighter {
-	private static final ObjectOpenHashSet<BlockPos> beaconPositions = new ObjectOpenHashSet<>();
+	private static final Object2LongOpenHashMap<BlockPos> BEACONS = new Object2LongOpenHashMap<>();
 	private static final float[] RED_COLOR_COMPONENTS = { 1.0f, 0.0f, 0.0f };
+	private static final long BEACON_DURATION_MS = 5000L;
 
 	/**
 	 * Initializes the beacon highlighting system.
@@ -33,15 +36,15 @@ public class BeaconHighlighter {
 	}
 
 	private static void reset() {
-		beaconPositions.clear();
+		BEACONS.clear();
 	}
 
 	private static void onBlockStateUpdate(BlockPos pos, BlockState oldState, BlockState newState) {
-		if (Utils.isInTheEnd() && SlayerManager.isBossSpawned()) {
-			beaconPositions.remove(pos);
+		if (Utils.isInTheEnd() && SlayerManager.isFightingSlayer()) {
+			BEACONS.removeLong(pos);
 
 			if (newState.is(Blocks.BEACON)) {
-				beaconPositions.add(pos.immutable());
+				BEACONS.put(pos.immutable(), System.currentTimeMillis());
 			}
 		}
 	}
@@ -61,9 +64,16 @@ public class BeaconHighlighter {
 	 * is visible through walls.
 	 */
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons && SlayerManager.isInSlayerType(SlayerType.VOIDGLOOM)) {
-			for (BlockPos pos : beaconPositions) {
-				collector.submitFilledBox(pos, RED_COLOR_COMPONENTS, 0.5f, true);
+		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons && SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM)) {
+			for (Object2LongMap.Entry<BlockPos> beacon : BEACONS.object2LongEntrySet()) {
+				collector.submitFilledBox(beacon.getKey(), RED_COLOR_COMPONENTS, 0.6f, true);
+
+				long elapsed = System.currentTimeMillis() - beacon.getLongValue();
+				float remainingSec = (BEACON_DURATION_MS - elapsed) / 1000f;
+				if (remainingSec >= 0) {
+					Component text = Component.literal(String.format("%.1fs", remainingSec)).withStyle(ChatFormatting.AQUA);
+					collector.submitText(text, beacon.getKey().above().getCenter(), 3, true);
+				}
 			}
 		}
 	}
