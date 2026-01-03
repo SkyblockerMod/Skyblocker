@@ -86,7 +86,7 @@ public class SlayersCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(ButtonOption.createBuilder()
-						.name(Component.translatable("skyblocker.config.slayer.enableHud"))
+						.name(Component.translatable("skyblocker.config.slayer.slayerHud"))
 						.prompt(Component.translatable("text.skyblocker.open"))
 						.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
 						.build())
