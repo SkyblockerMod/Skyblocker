@@ -533,6 +533,63 @@ public class DungeonsCategory {
 								.build())
 						.build())
 
+				// F7/M7 Terminal Hud
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.dungeons.terminalHud"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.enabled"))
+								.binding(defaults.dungeons.terminalHud.enableTerminalHud,
+										() -> config.dungeons.terminalHud.enableTerminalHud,
+										newValue -> config.dungeons.terminalHud.enableTerminalHud = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.showTerminalStatus"))
+								.description(Component.translatable("skyblocker.config.dungeons.terminalHud.showTerminalStatus.@Tooltip"))
+								.binding(defaults.dungeons.terminalHud.showTerminalStatus,
+										() -> config.dungeons.terminalHud.showTerminalStatus,
+										newValue -> config.dungeons.terminalHud.showTerminalStatus = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.determineInProgressStatus"))
+								.description(Component.translatable("skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip"))
+								.binding(defaults.dungeons.terminalHud.showPlayerAtTerminal,
+										() -> config.dungeons.terminalHud.showPlayerAtTerminal,
+										newValue -> config.dungeons.terminalHud.showPlayerAtTerminal = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.showTerminals"))
+								.binding(defaults.dungeons.terminalHud.showTerminals,
+										() -> config.dungeons.terminalHud.showTerminals,
+										newValue -> config.dungeons.terminalHud.showTerminals = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.showDevice"))
+								.binding(defaults.dungeons.terminalHud.showDevice,
+										() -> config.dungeons.terminalHud.showDevice,
+										newValue -> config.dungeons.terminalHud.showDevice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.showLevers"))
+								.binding(defaults.dungeons.terminalHud.showLevers,
+										() -> config.dungeons.terminalHud.showLevers,
+										newValue -> config.dungeons.terminalHud.showLevers = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.showGate"))
+								.binding(defaults.dungeons.terminalHud.showGate,
+										() -> config.dungeons.terminalHud.showGate,
+										newValue -> config.dungeons.terminalHud.showGate = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
 				// Dungeon Secret Waypoints
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.dungeons.secretWaypoints"))

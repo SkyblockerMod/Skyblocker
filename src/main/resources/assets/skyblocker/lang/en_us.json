@@ -377,6 +377,18 @@
   "skyblocker.config.dungeons.starredMobGlow": "Starred Mob Glow",
   "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.",
 
+  "skyblocker.config.dungeons.terminalHud": "Terminal HUD (F7/M7)",
+  "skyblocker.config.dungeons.terminalHud.determineInProgressStatus": "Enable 'In Progress' Status",
+  "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "Shows the username of the player closest to the task",
+  "skyblocker.config.dungeons.terminalHud.enabled": "Enable",
+  "skyblocker.config.dungeons.terminalHud.showCompletedTerminals": "Show Completed Terminals",
+  "skyblocker.config.dungeons.terminalHud.showDevice": "Show Device",
+  "skyblocker.config.dungeons.terminalHud.showGate": "Show Gate",
+  "skyblocker.config.dungeons.terminalHud.showLevers": "Show Levers",
+  "skyblocker.config.dungeons.terminalHud.showTerminalStatus": "Show Task Status",
+  "skyblocker.config.dungeons.terminalHud.showTerminalStatus.@Tooltip": "If disabled, only show incomplete tasks will be shown.",
+  "skyblocker.config.dungeons.terminalHud.showTerminals": "Show Terminals",
+
   "skyblocker.config.dungeons.terminals": "Terminal Solvers (F7/M7)",
   "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Block Incorrect Clicks",
   "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Colored",
@@ -1488,6 +1500,9 @@
   "skyblocker.dungeons.splits.thorn": "Thorn",
   "skyblocker.dungeons.splits.transformedProfessor": "Transformed Professor",
   "skyblocker.dungeons.splits.witherKing": "Wither King",
+  "skyblocker.dungeons.terminalHud.completeStatus": "Complete",
+  "skyblocker.dungeons.terminalHud.destroyedStatus": "DESTROYED",
+  "skyblocker.dungeons.terminalHud.incompleteStatus": "Incomplete",
 
   "skyblocker.dwarvenMines.metalDetectorHelper.foundCenter": "Found the center of mines, now working faster",
   "skyblocker.dwarvenMines.metalDetectorHelper.foundTreasureMessage": "Found treasure",

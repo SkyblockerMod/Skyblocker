@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -20,8 +19,7 @@ public interface Constants {
 	Pattern PLAYER_NAME = Pattern.compile("(?:\\[[0-9]+\\] )?(?:[" + Constants.LEVEL_EMBLEMS + "] )?(?:\\[[A-Z+]+\\] )?([A-Za-z0-9_]+)");
 
 	Supplier<MutableComponent> PREFIX = () -> {
-		LocalDate time = LocalDate.now();
-		if (time.getMonthValue() == 4 && time.getDayOfMonth() == 1) {
+		if (FunUtils.shouldEnableFun()) {
 			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
 					.append(Component.literal("S").withColor(0x00FF4C))
 					.append(Component.literal("k").withColor(0x02FA60))
@@ -38,8 +36,7 @@ public interface Constants {
 					.append(Component.literal("e").withColor(0x1AC1FF))
 					.append(Component.literal("r").withColor(0x1CBBFF))
 					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
-		}
-		if (time.getMonthValue() == 12 && (time.getDayOfMonth() == 24 || time.getDayOfMonth() == 25)) {
+		} else if (FunUtils.shouldEnableChristmasFun()) {
 			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
 					.append(Component.literal("J").withColor(0x00FF4C))
 					.append(Component.literal("o").withColor(0x02FA60))
