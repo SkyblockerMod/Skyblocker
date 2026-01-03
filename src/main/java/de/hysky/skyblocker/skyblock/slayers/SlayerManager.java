@@ -20,6 +20,7 @@ import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -85,7 +86,7 @@ public class SlayerManager {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(SlayerManager::onChatMessage);
 		SkyblockEvents.MAYOR_CHANGE.register(SlayerManager::onMayorChange);
 		SkyblockEvents.PROFILE_CHANGE.register((_prev, _profile) -> slayerQuest = null);
-		SkyblockEvents.LOCATION_CHANGE.register(_loc -> bossFight = null);
+		ClientPlayConnectionEvents.JOIN.register((_c, _p, _m) -> bossFight = null);
 		AttackEntityCallback.EVENT.register(SlayerManager::onEntityAttack);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);
