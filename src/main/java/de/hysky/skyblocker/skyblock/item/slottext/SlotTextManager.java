@@ -20,6 +20,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.adders.EssenceShopAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.EvolvingItemAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.HotfPerkLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.HotmPerkLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.HuntingToolkitIndicatorAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.MinionLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.NewYearCakeAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.PetLevelAdder;
@@ -89,7 +90,8 @@ public class SlotTextManager {
 			new SkyblockGuideAdder(),
 			SameColorTerminal.INSTANCE,
 			AttributeLevelHelper.INSTANCE,
-			new BestiaryLevelAdder()
+			new BestiaryLevelAdder(),
+			new HuntingToolkitIndicatorAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 	private static final KeyMapping keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));

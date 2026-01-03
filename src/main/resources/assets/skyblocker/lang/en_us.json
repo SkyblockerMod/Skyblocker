@@ -1234,6 +1234,8 @@
   "skyblocker.config.uiAndVisuals.slotText.evolvingItems.@Tooltip": "Displays the time held for Bottle of Jyrre, Moby Duck, Discrite, Dark Cacao Truffle, Training Weights.",
   "skyblocker.config.uiAndVisuals.slotText.hotfPerkLevel": "HOTF Perk Level",
   "skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel": "HOTM Perk Level",
+  "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator": "Hunting Toolkit Indicator",
+  "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator.@Tooltip": "Displays a red marker for tools that are in a hunting toolkit",
   "skyblocker.config.uiAndVisuals.slotText.minionLevel": "Minion Level",
   "skyblocker.config.uiAndVisuals.slotText.mode.DISABLED": "Disabled",
   "skyblocker.config.uiAndVisuals.slotText.mode.ENABLED": "Enabled",
