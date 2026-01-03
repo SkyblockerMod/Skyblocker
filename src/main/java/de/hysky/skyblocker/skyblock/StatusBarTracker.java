@@ -94,7 +94,7 @@ public class StatusBarTracker {
 		ItemStack handStack = client.player.getMainHandItem();
 		int manaCost = 0;
 		for (ItemAbility ability : handStack.skyblocker$getAbilities()) {
-			if (ability.activation() == ItemAbility.Activation.RIGHT_CLICK) {
+			if (ability.activation().isRightClick()) {
 				manaCost = ability.manaCost().orElse(0);
 				break;
 			}
