@@ -331,6 +331,7 @@ public class DungeonManager {
 		long startTime = System.currentTimeMillis();
 		List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
 		for (Map.Entry<Identifier, Resource> resourceEntry : CLIENT.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".skeleton")).entrySet()) {
+			checkResourceSource(resourceEntry.getKey(), resourceEntry.getValue());
 			String[] path = resourceEntry.getKey().getPath().split("/");
 			if (path.length != 4) {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon room data, invalid resource identifier {}", resourceEntry.getKey());
@@ -352,6 +353,7 @@ public class DungeonManager {
 		}
 
 		for (Map.Entry<Identifier, Resource> resourceEntry : CLIENT.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".json")).entrySet()) {
+			checkResourceSource(resourceEntry.getKey(), resourceEntry.getValue());
 			String[] path = resourceEntry.getKey().getPath().split("/");
 			if (path.length != 4) continue;
 			String dungeon = path[1];
@@ -1037,6 +1039,13 @@ public class DungeonManager {
 	@VisibleForTesting
 	public static int getLoadedRoomCount() {
 		return ROOMS_INFO.size();
+	}
+
+	// The dungeon .skeleton and room .json assets are critical to these features working correctly and they must remain in an unmodified form to prevent unexpected behaviour,
+	// if you need to change something in them for some reason please contact us and provide us with your use case so we can work something out.
+	// Note that modifying these resources was never supported to begin with.
+	private static void checkResourceSource(Identifier id, Resource resource) {
+		Utils.checkForIllegalResourceModification(id, resource, "[Skyblocker] Modifying the resource {} with resource packs is NOT SUPPORTED! This asset is important and must remain unmodified. Contact the Skyblocker devs for more info, ****THE GAME WILL NOW BE LOST****. Evil Resource Pack: {}");
 	}
 
 	public record RoomInfo(String name) {
