@@ -174,8 +174,6 @@ public class GeneralConfig {
 		public boolean jacobMedalBackgrounds = true;
 
 		public boolean legacyAttributeBackgrounds = true;
-
-		public boolean huntingToolkitIndicator = true;
 	}
 
 	public enum ItemBackgroundStyle {

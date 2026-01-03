@@ -359,14 +359,6 @@ public class GeneralCategory {
 										newValue -> config.general.itemInfoDisplay.legacyAttributeBackgrounds = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.general.itemInfoDisplay.huntingToolkitIndicator"))
-								.description(Component.translatable("skyblocker.config.general.itemInfoDisplay.huntingToolkitIndicator.@Tooltip"))
-								.binding(defaults.general.itemInfoDisplay.huntingToolkitIndicator,
-										() -> config.general.itemInfoDisplay.huntingToolkitIndicator,
-										newValue -> config.general.itemInfoDisplay.huntingToolkitIndicator = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
 						.build())
 
 				//Item Protection
