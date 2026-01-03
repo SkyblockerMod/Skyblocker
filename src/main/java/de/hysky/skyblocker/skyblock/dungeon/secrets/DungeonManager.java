@@ -648,6 +648,8 @@ public class DungeonManager {
 			if (mortPos == null) {
 				LOGGER.warn("[Skyblocker Dungeon Secrets] Failed to find Mort armor stand, retrying...");
 				return;
+			} else {
+				LOGGER.info("[Skyblocker Dungeon Secrets] Found Mort armor stand at position {}", mortPos);
 			}
 			physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(mortPos);
 			currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
