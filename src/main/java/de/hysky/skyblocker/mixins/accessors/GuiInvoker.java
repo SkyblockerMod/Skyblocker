@@ -13,8 +13,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface GuiInvoker {
 
 	@Accessor
-	@Nullable
-	Component getOverlayMessageString();
+	@Nullable Component getOverlayMessageString();
 
 	@Invoker("displayScoreboardSidebar")
 	void skyblocker$renderSidebar(GuiGraphics context, Objective objective);

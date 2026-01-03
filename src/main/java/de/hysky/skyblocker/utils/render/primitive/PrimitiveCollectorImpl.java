@@ -128,7 +128,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		int colour = ARGB.colorFromFloat(1f, colourComponents[0], colourComponents[1], colourComponents[2]);
-		float length = (float) RenderHelper.getCamera().getPosition().subtract(pos.getCenter()).horizontalDistance();
+		float length = (float) RenderHelper.getCamera().position().subtract(pos.getCenter()).horizontalDistance();
 		BeaconRenderState state = new BeaconRenderState();
 		state.blockPos = pos;
 		state.blockState = Blocks.BEACON.defaultBlockState();

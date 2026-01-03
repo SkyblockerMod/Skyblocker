@@ -144,7 +144,8 @@ public class HudHelper {
 		return x >= x1 && x <= x2 && y >= y1 && y <= y2;
 	}
 
-	// Temp fix for this?
+	// 1.21.10 Port: Temp fix for this?
+	// 1.21.11 Port: "nothing is more permanent than a temporary solution"
 	public static boolean hasShiftDown() {
 		return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
 	}

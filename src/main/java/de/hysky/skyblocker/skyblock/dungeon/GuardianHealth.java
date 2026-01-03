@@ -62,7 +62,7 @@ public class GuardianHealth {
 					String health = matcher.group(2);
 					String quantity = matcher.group(3);
 
-					double distance = RenderHelper.getCamera().getPosition().distanceTo(guardian.getPosition(RenderHelper.getTickCounter().getGameTimeDeltaPartialTick(false)));
+					double distance = RenderHelper.getCamera().position().distanceTo(guardian.getPosition(RenderHelper.getTickCounter().getGameTimeDeltaPartialTick(false)));
 
 					collector.submitText(
 							Component.literal(health + quantity).withStyle(ChatFormatting.GREEN),

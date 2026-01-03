@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 import java.awt.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.monster.WitherSkeleton;
+import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import de.hysky.skyblocker.utils.render.RenderHelper;

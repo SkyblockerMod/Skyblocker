@@ -23,7 +23,7 @@
     "EntityRendererMixin",
     "EquipmentLayerRendererMixin",
     "FishingHookMixin",
-    "FishingHookRendererMixin",
+    "RenderFishMixin",
     "FogRendererMixin",
     "GameRendererMixin",
     "GlCommandEncoderMixin",

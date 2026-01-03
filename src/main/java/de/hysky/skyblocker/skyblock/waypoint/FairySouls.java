@@ -160,7 +160,7 @@ public class FairySouls {
 		if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
 			for (Waypoint fairySoul : fairySouls.get(Utils.getLocationRaw()).values()) {
 				boolean fairySoulNotFound = fairySoul.shouldRender();
-				if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.distToCenterSqr(RenderHelper.getCamera().getPosition()) > 2500) {
+				if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.distToCenterSqr(RenderHelper.getCamera().position()) > 2500) {
 					continue;
 				}
 				fairySoul.extractRendering(collector);

@@ -12,7 +12,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 
 @Mixin(FishingHookRenderer.class)
-public abstract class FishingHookRendererMixin {
+public abstract class RenderFishMixin {
 
 	@ModifyReturnValue(method = "shouldRender", at = @At("RETURN"))
 	private boolean skyblocker$render(boolean original, @Local(argsOnly = true) FishingHook fishingBobberEntity) {

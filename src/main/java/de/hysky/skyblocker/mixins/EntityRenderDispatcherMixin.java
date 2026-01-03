@@ -25,8 +25,7 @@ public class EntityRenderDispatcherMixin implements EntityRenderMarker {
 	private EntityRenderState currentStateBeingRendered;
 
 	@Override
-	@Nullable
-	public EntityRenderState skyblocker$getEntityStateBeingRendered() {
+	public @Nullable EntityRenderState skyblocker$getEntityStateBeingRendered() {
 		return this.currentStateBeingRendered;
 	}
 

@@ -25,7 +25,7 @@ public class DistancedNamedWaypoint extends NamedWaypoint {
 	public void extractRendering(PrimitiveCollector collector) {
 		super.extractRendering(collector);
 		if (shouldRenderDistance()) {
-			double distance = RenderHelper.getCamera().getPosition().distanceTo(centerPos);
+			double distance = RenderHelper.getCamera().position().distanceTo(centerPos);
 			float scale = Math.max((float) distance / 10, 1);
 			collector.submitText(Component.literal(Math.round(distance) + "m").withStyle(ChatFormatting.YELLOW), centerPos.add(0, 1, 0), scale, Minecraft.getInstance().font.lineHeight + 1, true);
 		}

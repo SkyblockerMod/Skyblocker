@@ -51,7 +51,7 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 				// Sort them in alphabetical order
 				.sorted(Comparator.comparing(reference -> reference.value().description().getString()))
 				.map(reference -> new TrimElementButton.Pattern(
-						reference.key().location(),
+						reference.key().identifier(),
 						reference.value(),
 						this::onClickPattern
 				)).forEachOrdered(patternButtons::add);
@@ -62,7 +62,7 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 				// Sort them in alphabetical order
 				.sorted(Comparator.comparing(reference -> reference.value().description().getString()))
 				.map(reference -> new TrimElementButton.Material(
-						reference.key().location(),
+						reference.key().identifier(),
 						reference.value(),
 						this::onClickMaterial
 				)).forEachOrdered(materialButtons::add);

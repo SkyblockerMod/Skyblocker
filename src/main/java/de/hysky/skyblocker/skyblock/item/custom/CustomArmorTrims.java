@@ -58,7 +58,7 @@ public class CustomArmorTrims {
 				for (Reference<TrimPattern> pattern : wrapperLookup.lookupOrThrow(Registries.TRIM_PATTERN).listElements().toList()) {
 					ArmorTrim trim = new ArmorTrim(material, pattern);
 
-					TRIMS_CACHE.put(new ArmorTrimId(material.key().location(), pattern.key().location()), trim);
+					TRIMS_CACHE.put(new ArmorTrimId(material.key().identifier(), pattern.key().identifier()), trim);
 				}
 			}
 
