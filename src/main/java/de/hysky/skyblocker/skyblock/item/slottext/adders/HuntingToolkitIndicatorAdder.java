@@ -12,8 +12,8 @@ import java.util.List;
 public class HuntingToolkitIndicatorAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
 			"hunting_toolkit_indicator",
-			"skyblocker.config.general.itemInfoDisplay.huntingToolkitIndicator",
-			"skyblocker.config.general.itemInfoDisplay.huntingToolkitIndicator.@Tooltip");
+			"skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator",
+			"skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator.@Tooltip");
 
 	public HuntingToolkitIndicatorAdder() {
 		super(CONFIG_INFORMATION);
