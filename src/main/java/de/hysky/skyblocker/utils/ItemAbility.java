@@ -105,5 +105,13 @@ public record ItemAbility(String name, Activation activation, OptionalInt manaCo
 			}
 			return RIGHT_CLICK;
 		}
+
+		public boolean isRightClick() {
+			return this == Activation.SNEAK_RIGHT_CLICK || this == Activation.RIGHT_CLICK;
+		}
+
+		public boolean isLeftClick() {
+			return this == Activation.SNEAK_LEFT_CLICK || this == Activation.LEFT_CLICK;
+		}
 	}
 }

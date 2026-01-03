@@ -9,7 +9,7 @@ public class SwingAnimation {
 	public static boolean hasAbility(ItemStack stack) {
 		List<ItemAbility> abilities = stack.skyblocker$getAbilities();
 		for (ItemAbility ability : abilities) {
-			if (ability.activation() == ItemAbility.Activation.RIGHT_CLICK) return true;
+			if (ability.activation().isRightClick()) return true;
 		}
 		return false;
 	}
