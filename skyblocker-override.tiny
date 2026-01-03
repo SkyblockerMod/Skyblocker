@@ -1,4 +1,47 @@
 tiny	2	0	intermediary	named
-c	net/minecraft/class_2960	net/minecraft/resources/Identifier
 c	net/minecraft/class_2232	net/minecraft/commands/arguments/IdentifierArgument
+
+c	net/minecraft/class_9950	net/minecraft/client/model/player/PlayerModel
+c	net/minecraft/class_1921	net/minecraft/client/renderer/rendertype/RenderType
+c	net/minecraft/class_1921$class_4688	net/minecraft/client/renderer/rendertype/RenderType$CompositeState
+c	net/minecraft/class_1921$class_4750	net/minecraft/client/renderer/rendertype/RenderType$OutlineProperty
+c	net/minecraft/class_1921$class_4687	net/minecraft/client/renderer/rendertype/RenderType$CompositeRenderType
+c	net/minecraft/class_1921$class_4688$class_4689	net/minecraft/client/renderer/rendertype/RenderType$CompositeState$CompositeStateBuilder
+
+c	net/minecraft/class_2960	net/minecraft/resources/Identifier
+c	net/minecraft/class_5321	net/minecraft/resources/ResourceKey
+	m	()Lnet/minecraft/class_2960;	method_29177	identifier
+
 c	net/minecraft/class_156	net/minecraft/util/Util
+c	net/minecraft/class_156$1	net/minecraft/util/Util/1
+c	net/minecraft/class_156$2	net/minecraft/util/Util/2
+c	net/minecraft/class_156$3	net/minecraft/util/Util/3
+c	net/minecraft/class_156$4	net/minecraft/util/Util/4
+c	net/minecraft/class_156$5	net/minecraft/util/Util/5
+c	net/minecraft/class_156$6	net/minecraft/util/Util/6
+c	net/minecraft/class_156$7	net/minecraft/util/Util/7
+c	net/minecraft/class_156$8	net/minecraft/util/Util/8
+c	net/minecraft/class_156$9	net/minecraft/util/Util/9
+c	net/minecraft/class_156$10	net/minecraft/util/Util/10
+c	net/minecraft/class_156$11	net/minecraft/util/Util/11
+c	net/minecraft/class_156$class_158	net/minecraft/util/Util/OS
+c	net/minecraft/class_156$class_158$1	net/minecraft/util/Util/OS/1
+c	net/minecraft/class_156$class_158$2	net/minecraft/util/Util/OS/2
+
+c	net/minecraft/class_1481	net/minecraft/world/entity/animal/turtle/Turtle
+c	net/minecraft/class_1481$class_1482	net/minecraft/world/entity/animal/turtle/Turtle$TurtleBreedGoal
+c	net/minecraft/class_1481$class_1483	net/minecraft/world/entity/animal/turtle/Turtle$TurtleGoHomeGoal
+c	net/minecraft/class_1481$class_1484	net/minecraft/world/entity/animal/turtle/Turtle$TurtleGoToWaterGoal
+c	net/minecraft/class_1481$class_1485	net/minecraft/world/entity/animal/turtle/Turtle$TurtleLayEggGoal
+c	net/minecraft/class_1481$class_1486	net/minecraft/world/entity/animal/turtle/Turtle$TurtleMoveControl
+c	net/minecraft/class_1481$class_1487	net/minecraft/world/entity/animal/turtle/Turtle$TurtlePanicGoal
+c	net/minecraft/class_1481$class_1488	net/minecraft/world/entity/animal/turtle/Turtle$TurtlePathNavigation
+c	net/minecraft/class_1481$class_1489	net/minecraft/world/entity/animal/turtle/Turtle$TurtleRandomStrollGoal
+c	net/minecraft/class_1481$class_1491	net/minecraft/world/entity/animal/turtle/Turtle$TurtleTravelGoal
+
+c	net/minecraft/class_1639	net/minecraft/world/entity/monster/skeleton/WitherSkeleton
+c	net/minecraft/class_1549	net/minecraft/world/entity/monster/spider/CaveSpider
+c	net/minecraft/class_1642	net/minecraft/world/entity/monster/zombie/Zombie
+c	net/minecraft/class_1642$class_1643	net/minecraft/world/entity/monster/zombie/Zombie$ZombieAttackTurtleEggGoal
+c	net/minecraft/class_1642$class_1644	net/minecraft/world/entity/monster/zombie/Zombie$ZombieGroupData
+c	net/minecraft/class_1590	net/minecraft/world/entity/monster/zombie/ZombifiedPiglin
