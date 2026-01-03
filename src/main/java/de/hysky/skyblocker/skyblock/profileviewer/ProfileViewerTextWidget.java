@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.skyblock.profileviewer;
 
+
 import org.joml.Matrix3x2fStack;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.BackpackItemLoader;
@@ -14,12 +15,9 @@ import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.PetsInve
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.WardrobeInventoryItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -29,7 +27,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -87,36 +84,7 @@ public class ProfileViewerTextWidget {
 		}
 	}
 
-	private JsonObject loadParentData() {
-		File file = new File(Minecraft.getInstance().gameDirectory, "config/skyblocker/item-repo/constants/parents.json");
-
-		try (Reader reader = new FileReader(file)) {
-			JsonObject el = JsonParser.parseReader(reader).getAsJsonObject();
-			return el.getAsJsonObject();
-		} catch (IOException ignored) { }
-
-		return null;
-	}
-
-	private JsonObject loadUpgradeData() {
-		File file = new File(Minecraft.getInstance().gameDirectory, "config/skyblocker/item-repo/constants/misc.json");
-
-		try (Reader reader = new FileReader(file)) {
-			JsonObject el = JsonParser.parseReader(reader).getAsJsonObject();
-			return el.getAsJsonObject("talisman_upgrades");
-		} catch (IOException ignored) { }
-
-		return null;
-	}
-
 	public int getMagicalPower(JsonObject playerProfile) {
-		JsonObject upgradeList = loadUpgradeData();
-		JsonObject parentList = loadParentData();
-
-		if (upgradeList == null || parentList == null) {
-			return -1;
-		}
-
 		int magicalPower = 0;
 		HashMap<String, Integer> duplicates = new HashMap<>();
 		Boolean balloonCounted = false,
@@ -124,6 +92,11 @@ public class ProfileViewerTextWidget {
 				abicaseCounted = false;
 
 		try {
+			Gson gson = new Gson();
+			JsonObject upgradeList = gson.toJsonTree(NEURepoManager.getConstants().getMisc()).getAsJsonObject();
+			JsonObject parentList = gson.toJsonTree(NEURepoManager.getConstants().getParents()).getAsJsonObject();
+
+
 			// Rift-prism does not show up in 'talisman_bag'
 			if (playerProfile.has("rift") && playerProfile.getAsJsonObject("rift").has("access") && playerProfile.getAsJsonObject("rift").getAsJsonObject("access").has("consumed_prism")) {
 					magicalPower += 11;
@@ -211,8 +184,7 @@ public class ProfileViewerTextWidget {
 					}
 				}
 			}
-			
-		} catch (Exception ignored /*most other ex's are ignored, so I guess this one too?*/) { 
+		} catch (Exception ignored /*most other ex's are ignored, so I guess this one too?*/) {
 			return -1;
 		}
 		return magicalPower;
