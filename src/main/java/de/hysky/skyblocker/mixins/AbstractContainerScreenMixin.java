@@ -396,7 +396,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	}
 
 	@Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/item/ItemStack;III)V"))
-	private void skyblocker$drawOnItem(GuiGraphics context, Slot slot, CallbackInfo ci) {
+	private void skyblocker$drawOnItem(CallbackInfo ci, @Local(argsOnly = true) GuiGraphics context, @Local(argsOnly = true) Slot slot) {
 		if (Utils.isOnSkyblock()) {
 			ItemBackgroundManager.drawBackgrounds(slot.getItem(), context, slot.x, slot.y);
 		}
@@ -413,7 +413,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	}
 
 	@Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V"))
-	private void skyblocker$drawSlotText(GuiGraphics context, Slot slot, CallbackInfo ci) {
+	private void skyblocker$drawSlotText(CallbackInfo ci, @Local(argsOnly = true) GuiGraphics context, @Local(argsOnly = true) Slot slot) {
 		if (Utils.isOnSkyblock()) {
 			SlotTextManager.renderSlotText(context, font, slot);
 		}
