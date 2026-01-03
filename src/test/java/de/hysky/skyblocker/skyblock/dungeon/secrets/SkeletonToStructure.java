@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import de.hysky.skyblocker.skyblock.dungeon.roomPreview.RoomStructure;
-import de.hysky.skyblocker.skyblock.dungeon.roomPreview.SkeletonBlock;
+import de.hysky.skyblocker.skyblock.dungeon.preview.RoomStructure;
+import de.hysky.skyblocker.skyblock.dungeon.preview.SkeletonBlock;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import org.slf4j.Logger;

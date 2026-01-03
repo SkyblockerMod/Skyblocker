@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.dungeon.roomPreview;
+package de.hysky.skyblocker.skyblock.dungeon.preview;
 
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import net.minecraft.nbt.CompoundTag;

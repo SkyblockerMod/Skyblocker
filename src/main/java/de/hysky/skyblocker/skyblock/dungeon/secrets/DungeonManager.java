@@ -30,7 +30,7 @@ import java.util.zip.InflaterInputStream;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.skyblock.dungeon.roomPreview.RoomPreviewServer;
+import de.hysky.skyblocker.skyblock.dungeon.preview.RoomPreviewServer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Vector2i;

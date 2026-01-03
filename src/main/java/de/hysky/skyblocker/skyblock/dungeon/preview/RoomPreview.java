@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.dungeon.roomPreview;
+package de.hysky.skyblocker.skyblock.dungeon.preview;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
