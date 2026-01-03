@@ -29,6 +29,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentPatch;
@@ -174,6 +177,11 @@ public final class ItemUtils {
 			return "SHINY_" + id;
 		}
 
+		// Some repo items have their IDs set to their internal names
+		if (id.contains(";") && !NEURepoManager.isLoading()) {
+			return NEURepoManager.getConstants().getBazaarStocks().getBazaarStockOrDefault(id);
+		}
+
 		switch (id) {
 			case "ENCHANTED_BOOK" -> {
 				if (customData.contains("enchantments")) {
@@ -227,6 +235,24 @@ public final class ItemUtils {
 			case "MIDAS_STAFF" -> {
 				if (customData.getIntOr("winning_bid", 0) >= 100000000) {
 					return id + "_100M";
+				}
+			}
+			case "" -> {
+				Screen currentScreen = Minecraft.getInstance().screen;
+				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().startsWith("Superpairs")) {
+					ItemLore lore = itemStack.get(DataComponents.LORE);
+					if (lore == null) return id;
+					List<Component> lines = lore.lines();
+					if (lines.size() < 3) return id;
+					return EnchantedBookUtils.getApiIdByName(lines.get(2));
+				}
+
+				// Get proper id for books in the Bazaar
+				if (itemStack instanceof ItemStack realStack) {
+					if (!realStack.is(Items.ENCHANTED_BOOK)) return id;
+					Component stackName = itemStack.get(DataComponents.CUSTOM_NAME);
+					if (stackName == null) return id;
+					return EnchantedBookUtils.getApiIdByName(stackName);
 				}
 			}
 		}
@@ -611,6 +637,18 @@ public final class ItemUtils {
 		Matcher matcher = ItemUtils.getLoreLineIfContainsMatch(stack, HUNTING_BOX_COUNT_PATTERN);
 
 		return matcher != null ? RegexUtils.parseOptionalIntFromMatcher(matcher, "shards") : OptionalInt.empty();
+	}
+
+	/**
+	 * Gets the proper item count for Enchanted Books in Superpairs.
+	 * For all other items, returns empty.
+	 */
+	public static OptionalInt getItemCountInSuperpairs(ItemStack stack) {
+		Screen currentScreen = Minecraft.getInstance().screen;
+		if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().startsWith("Superpairs")) {
+			if (stack.getHoverName().getString().contains("Enchanted Book")) return OptionalInt.of(1);
+		}
+		return OptionalInt.empty();
 	}
 
 	/**
