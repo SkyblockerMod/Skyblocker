@@ -32,7 +32,7 @@ public class StatusBarTracker {
 	private static final Pattern MANA_USE = Pattern.compile("§b-([\\d,]+) Mana \\(§.*?\\) *");
 	private static final Pattern MANA_STATUS = Pattern.compile("§b(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|§3(?<overflow>[\\d,]+)ʬ) *");
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
-	private static final Pattern RIFT_TIME_STATUS = Pattern.compile("§a(?:[\\d,]+m)?[\\d,]+sф Left *");
+	private static final Pattern RIFT_TIME_STATUS = Pattern.compile("§[a7](?:[\\d,]+m)?[\\d,]+sф Left *");
 
 	private static final Minecraft client = Minecraft.getInstance();
 	private static Resource health = new Resource(100, 100, 0);

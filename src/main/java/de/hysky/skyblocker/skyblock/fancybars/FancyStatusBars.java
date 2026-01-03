@@ -378,7 +378,7 @@ public class FancyStatusBars {
 		}
 
 		if (Utils.isInTheRift()) {
-			statusBars.get(StatusBarType.HEALTH).updateValues(player.getHealth() / player.getMaxHealth() / 2, 0, (int) player.getHealth() / 2, player.getMaxHealth(), null);
+			statusBars.get(StatusBarType.HEALTH).updateValues(player.getHealth() / player.getMaxHealth(), 0, (int) player.getHealth() / 2, (int) player.getMaxHealth() / 2, null);
 			statusBars.get(StatusBarType.DEFENSE).visible = false;
 		} else {
 			StatusBarTracker.Resource health = StatusBarTracker.getHealth();
