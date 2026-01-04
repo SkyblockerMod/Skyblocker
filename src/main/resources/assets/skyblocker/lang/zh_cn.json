@@ -1595,5 +1595,7 @@
     "skyblocker.config.uiAndVisuals.showEquipmentInInventory.@Tooltip": "此显示效果是/stats界面的缓存，并非实时更新。\n槽位是可点击的，等效于/stats命令。",
     "skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip": "以橙色高亮显示森林节点。",
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError2": "数字文本不能以分隔符开头",
-    "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError3": "数字文本不能包含前导小数点"
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError3": "数字文本不能包含前导小数点",
+    "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator.@Tooltip": "为狩猎工具包中的工具显示红色标记",
+    "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator": "狩猎工具包指示器"
 }
