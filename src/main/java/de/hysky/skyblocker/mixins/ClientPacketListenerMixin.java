@@ -13,6 +13,7 @@ import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.HealthBars;
 import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapTexture;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.TeleportMaze;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -37,6 +38,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundEntityEventPacket;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
+import net.minecraft.network.protocol.game.ClientboundMapItemDataPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
@@ -173,6 +175,11 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 	@Inject(method = "handleParticleEvent", at = @At("RETURN"))
 	private void skyblocker$onParticle(ClientboundLevelParticlesPacket packet, CallbackInfo ci) {
 		ParticleEvents.FROM_SERVER.invoker().onParticleFromServer(packet);
+	}
+
+	@Inject(method = "handleMapItemData", at = @At("RETURN"))
+	private void skyblocker$onMapItemData(ClientboundMapItemDataPacket packet, CallbackInfo ci) {
+		DungeonMapTexture.onMapItemDataUpdate(packet.mapId());
 	}
 
 	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/DebugScreenOverlay;showNetworkCharts()Z"))
