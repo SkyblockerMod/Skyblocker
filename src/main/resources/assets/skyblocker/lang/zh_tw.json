@@ -1594,5 +1594,7 @@
     "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBar": "啟用原版風格Mana屬性條",
     "skyblocker.config.uiAndVisuals.showEquipmentInInventory.@Tooltip": "此顯示效果是/stats界面的快取，並非實時更新。\n槽位是可點擊的，等效於/stats指令。",
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError2": "數字文本不能以分隔符開頭",
-    "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError3": "數字文本不能包含前導小數點"
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError3": "數字文本不能包含前導小數點",
+    "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator": "狩獵工具包指示器",
+    "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator.@Tooltip": "為狩獵工具包中的工具顯示紅色標記"
 }
