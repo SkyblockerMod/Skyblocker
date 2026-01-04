@@ -58,7 +58,7 @@
     "skyblocker.bars.config.overflowColor": "Warna Luapan",
     "skyblocker.bars.config.mainColor": "Warna Utama",
     "skyblocker.api.token.noProfileKeys": "Gagal mendapatkan kunci profil Anda! Beberapa fitur mod mungkin tidak berfungsi untuk sementara waktu :( (Apakah game Anda sudah dibuka lebih dari 24 jam?). Untuk mengaktifkan kembali fitur-fitur ini, mulai ulang game.",
-    "skyblocker.config.chat.chatRules": "Peraturan Pesan",
+    "skyblocker.config.chat.chatRules": "Aturan Obrolan Khusus",
     "skyblocker.bars.config.hide": "Sembunyikan",
     "skyblocker.bars.config.textPosition.BAR_CENTER": "Pusat Bar",
     "emi.category.skyblocker.skyblock_npc_shop": "Toko NPC (Skyblock)",
