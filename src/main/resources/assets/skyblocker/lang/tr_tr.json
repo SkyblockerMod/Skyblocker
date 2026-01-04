@@ -249,6 +249,5 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.filter.@Tooltip": "Sohbet mesajıyla eşleşecek dize/düzen.",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "Mesajı Gizle:",
     "skyblocker.chat.confirmationPromptNotification": "İstemi kabul etmek için 60 saniye içinde ekranın herhangi bir yerine tıklayın.",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar.@Tooltip": "Eylem çubuğunda mesajı göster.",
     "skyblocker.config.chat.chatRules.screen": "Sohbet Kuralalrı Yapılandırma..."
 }
