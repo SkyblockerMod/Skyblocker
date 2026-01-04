@@ -38,10 +38,10 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 	static final List<String> SECRET_ITEMS = List.of("Candycomb", "Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
 	private static final Supplier<DungeonsConfig.SecretWaypoints> CONFIG = () -> SkyblockerConfigManager.get().dungeons.secretWaypoints;
 	static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
-	final int secretIndex;
-	final Category category;
+	public final int secretIndex;
+	public final Category category;
 
-	SecretWaypoint(int secretIndex, Category category, String name, BlockPos pos) {
+	public SecretWaypoint(int secretIndex, Category category, String name, BlockPos pos) {
 		this(secretIndex, category, Component.nullToEmpty(name), pos);
 	}
 
@@ -112,7 +112,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 		return new SecretWaypoint(secretIndex, category, name, room.relativeToActual(pos));
 	}
 
-	enum Category implements StringRepresentable {
+	public enum Category implements StringRepresentable {
 		ENTRANCE("entrance", secretWaypoints -> secretWaypoints.enableEntranceWaypoints, 0, 255, 0),
 		SUPERBOOM("superboom", secretWaypoints -> secretWaypoints.enableSuperboomWaypoints, 255, 0, 0),
 		CHEST("chest", secretWaypoints -> secretWaypoints.enableChestWaypoints, 2, 213, 250),

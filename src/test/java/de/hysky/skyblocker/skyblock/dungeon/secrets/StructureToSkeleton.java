@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import de.hysky.skyblocker.skyblock.dungeon.preview.SkeletonBlock;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
