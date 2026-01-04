@@ -22,9 +22,9 @@ public class RoomPreview {
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
 				dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("dungeons")
-						.then(ClientCommandManager.literal("previewRoom").then(argument("type", StringArgumentType.string()).suggests(DungeonManager::suggestRoomTypes)
+						.then(ClientCommandManager.literal("preview").then(ClientCommandManager.literal("loadRoom").then(argument("type", StringArgumentType.string()).suggests(DungeonManager::suggestRoomTypes)
 								.then(argument("room", StringArgumentType.string()).suggests((ctx, sB) -> DungeonManager.suggestRooms(ctx.getArgument("type", String.class), sB))
-										.executes(RoomPreview::startPreview)))))));
+										.executes(RoomPreview::startPreview))))))));
 	}
 
 	private static int startPreview(CommandContext<FabricClientCommandSource> ctx) {
