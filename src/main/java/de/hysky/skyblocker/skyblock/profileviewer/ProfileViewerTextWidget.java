@@ -3,8 +3,6 @@ package de.hysky.skyblocker.skyblock.profileviewer;
 
 import org.joml.Matrix3x2fStack;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
@@ -22,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.HashSet;
 import java.util.Set;
@@ -85,17 +84,15 @@ public class ProfileViewerTextWidget {
 	}
 
 	public int getMagicalPower(JsonObject playerProfile) {
+
 		int magicalPower = 0;
 		HashMap<String, Integer> duplicates = new HashMap<>();
 		Boolean balloonCounted = false,
 				partyCounted = false,
 				abicaseCounted = false;
-
 		try {
-			Gson gson = new Gson();
-			JsonObject upgradeList = gson.toJsonTree(NEURepoManager.getConstants().getMisc()).getAsJsonObject();
-			JsonObject parentList = gson.toJsonTree(NEURepoManager.getConstants().getParents()).getAsJsonObject();
-
+			Map<String, List<String>> upgradeList =	NEURepoManager.getConstants().getMisc().getTalismanUpgrades();
+			Map<String, List<String>> parentList = NEURepoManager.getConstants().getParents().getParents();
 
 			// Rift-prism does not show up in 'talisman_bag'
 			if (playerProfile.has("rift") && playerProfile.getAsJsonObject("rift").has("access") && playerProfile.getAsJsonObject("rift").getAsJsonObject("access").has("consumed_prism")) {
@@ -112,11 +109,10 @@ public class ProfileViewerTextWidget {
 
 					Boolean duplicate = false;
 
-					// If duplicate in 'misc.json/talisman_upgrades': skip item
-					if (upgradeList.has(item.getSkyblockApiId())) {
-						for (JsonElement el : upgradeList.getAsJsonArray(item.getSkyblockApiId())) {
-							String treeItem = el.toString().substring(1, el.toString().length() - 1);
-							if (duplicates.containsKey(treeItem)) {
+					// If duplicate in 'constants/misc.json/talisman_upgrades': skip item
+					if (upgradeList.containsKey(item.getSkyblockApiId())) {
+						for (String el : upgradeList.get(item.getSkyblockApiId())) {
+							if (duplicates.containsKey(el)) {
 								duplicate = true;
 								break;
 							}
@@ -127,13 +123,12 @@ public class ProfileViewerTextWidget {
 						continue;
 					}
 
-					// If duplicate in 'parents.json': remove MP value of parent item
-					if (parentList.has(item.getSkyblockApiId())) {
-						for (JsonElement el : parentList.getAsJsonArray(item.getSkyblockApiId())) {
-							String treeItem = el.toString().substring(1, el.toString().length() - 1);
-							if (duplicates.containsKey(treeItem)) {
-								magicalPower -= duplicates.get(treeItem);
-								duplicates.remove(treeItem);
+					// If duplicate in 'constants/parents.json': remove MP value of parent item
+					if (parentList.containsKey(item.getSkyblockApiId())) {
+						for (String el : parentList.get(item.getSkyblockApiId())) {
+							if (duplicates.containsKey(el)) {
+								magicalPower -= duplicates.get(el);
+								duplicates.remove(el);
 								break;
 							}
 						}
@@ -145,7 +140,7 @@ public class ProfileViewerTextWidget {
 						duplicates.remove(item.getSkyblockApiId());
 					}
 
-					// Phone contact MP
+					// Phone contacts
 					if (item.getSkyblockApiId().startsWith("ABICASE") && !abicaseCounted) {
 						if (playerProfile.has("nether_island_player_data")) {
 							JsonObject data = playerProfile.get("nether_island_player_data").getAsJsonObject();
@@ -184,7 +179,7 @@ public class ProfileViewerTextWidget {
 					}
 				}
 			}
-		} catch (Exception ignored /*most other ex's are ignored, so I guess this one too?*/) {
+		} catch (Exception ignored) {
 			return -1;
 		}
 		return magicalPower;
