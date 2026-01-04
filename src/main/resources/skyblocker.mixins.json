@@ -75,6 +75,7 @@
     "accessors.GuiInvoker",
     "accessors.InventoryScreenInvoker",
     "accessors.MapItemSavedDataAccessor",
+	"accessors.MapRendererInvoker",
     "accessors.MinecraftAccessor",
     "accessors.OutlineBufferSourceAccessor",
     "accessors.PlayerTabOverlayAccessor",

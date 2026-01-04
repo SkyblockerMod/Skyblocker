@@ -2,6 +2,7 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapTexture;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GlowRenderer;
 import de.hysky.skyblocker.utils.render.HudHelper;
@@ -20,6 +21,7 @@ public class GameRendererMixin {
 		Renderer.close();
 		GlowRenderer.getInstance().close();
 		HudHelper.close();
+		DungeonMapTexture.close();
 	}
 
 	@ModifyReturnValue(method = "getNightVisionScale", at = @At("RETURN"))
