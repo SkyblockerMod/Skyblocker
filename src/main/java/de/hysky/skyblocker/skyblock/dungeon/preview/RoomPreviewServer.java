@@ -34,6 +34,7 @@ import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.apache.commons.io.FileUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,9 +53,9 @@ public class RoomPreviewServer {
 	@Init
 	public static void init() {
 		ServerPlayerEvents.JOIN.register(RoomPreviewServer::onPlayerJoin);
-		ServerPlayerEvents.AFTER_RESPAWN.register((oldP, newP, alive) -> applyNightVision(newP));
+		ServerPlayerEvents.AFTER_RESPAWN.register((_oldP, newP, _alive) -> applyNightVision(newP));
 		ServerLifecycleEvents.SERVER_STARTED.register(RoomPreviewServer::checkServer);
-		ServerLifecycleEvents.SERVER_STOPPING.register((server) -> RoomPreviewServer.reset());
+		ServerLifecycleEvents.SERVER_STOPPING.register((_server) -> RoomPreviewServer.reset());
 	}
 
 	public static void onPlayerJoin(ServerPlayer player) {
@@ -86,6 +87,7 @@ public class RoomPreviewServer {
 	private static void reset() {
 		isActive = false;
 		selectedRoom = "";
+		errorMessages.clear();
 	}
 
 	public static void createServer() {
@@ -109,24 +111,29 @@ public class RoomPreviewServer {
 		);
 
 		IntegratedServer server = CLIENT.getSingleplayerServer();
-		if (server == null) isActive = false;
+		if (server == null) reset();
 	}
 
 	public static void addErrorMessage(Component errorText) {
 		errorMessages.add(Constants.PREFIX.get().append(errorText.getString()));
 	}
 
+	public static @Nullable StructureTemplate getStructureTemplate(IntegratedServer server, String type, String roomName) {
+		Optional<int[]> blockData = DungeonManager.getRoomBlockData(type, roomName);
+		return blockData.map(blocks -> server.getStructureManager().readStructure(RoomStructure.getCompound(blocks))).orElse(null);
+	}
+
 	public static void loadRoom(String type, String roomName) {
 		IntegratedServer server = CLIENT.getSingleplayerServer();
 		if (server == null) return;
-		Optional<int[]> blockData = DungeonManager.getRoomBlockData(type, roomName);
-		if (blockData.isEmpty()) {
+
+		selectedRoom = roomName;
+		StructureTemplate template = getStructureTemplate(server, type, roomName);
+		if (template == null) {
 			addErrorMessage(Component.translatable("skyblocker.dungeons.roomPreview.failedToLoad", Component.translatable("skyblocker.dungeons.roomPreview.invalidRoom")).withStyle(ChatFormatting.RED));
 			return;
 		}
 
-		selectedRoom = roomName;
-		StructureTemplate template = server.getStructureManager().readStructure(RoomStructure.getCompound(blockData.get()));
 		server.execute(() ->
 				template.placeInWorld(server.overworld(), BlockPos.ZERO, BlockPos.ZERO, new StructurePlaceSettings(), server.overworld().random, 0));
 
