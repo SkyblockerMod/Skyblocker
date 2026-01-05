@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -41,6 +42,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	};
 
 	private final WidgetsListTab parent;
+	private @Nullable Button backButton;
 	private boolean rightUpArrowHovered = false;
 	private boolean rightDownArrowHovered = false;
 	private boolean leftUpArrowHovered = false;
@@ -88,6 +90,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 		if (leftUpArrowHovered || leftDownArrowHovered) {
 			context.setTooltipForNextFrame(minecraft.font, Component.literal("Change selection"), mouseX, mouseY);
 		}
+		if (backButton != null) backButton.render(context, mouseX, mouseY, delta);
 	}
 
 	@Override
@@ -129,8 +132,13 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 		this.editingPosition = editingPosition;
 	}
 
+	public void setBackButton(Button backButton) {
+		this.backButton = backButton;
+	}
+
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+		if (backButton != null && backButton.mouseClicked(click, doubled)) return true;
 		if (editingPosition == -1) return super.mouseClicked(click, doubled);
 		if (rightUpArrowHovered) {
 			parent.shiftClickAndWaitForServer(13, 1);

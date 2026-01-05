@@ -75,6 +75,7 @@ public class WidgetsListTab implements Tab {
 		back = Button.builder(Component.translatable("gui.back"), button -> clickAndWaitForServer(48, 0))
 				.size(64, 15)
 				.build();
+		widgetsElementList.setBackButton(back);
 		thirdColumnButton = Button.builder(Component.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))
 				.size(120, 15)
 				.build();
