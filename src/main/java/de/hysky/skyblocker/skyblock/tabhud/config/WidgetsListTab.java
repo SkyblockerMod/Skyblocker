@@ -43,7 +43,6 @@ public class WidgetsListTab implements Tab {
 
 	private final Int2ObjectMap<WidgetsListSlotEntry> entries = new Int2ObjectOpenHashMap<>();
 	private final List<WidgetEntry> customWidgetEntries = new ArrayList<>();
-	private boolean listNeedsUpdate = false;
 	private boolean shouldShowCustomWidgetEntries = false;
 
 	private int resetSlotId = -1;
@@ -51,17 +50,11 @@ public class WidgetsListTab implements Tab {
 	public void setCustomWidgetEntries(Collection<WidgetEntry> entries) {
 		this.customWidgetEntries.clear();
 		this.customWidgetEntries.addAll(entries);
-		listNeedsUpdate = true;
+		widgetsElementList.updateList();
 	}
 
 	public List<WidgetEntry> getCustomWidgetEntries() {
 		return customWidgetEntries;
-	}
-
-	public boolean listNeedsUpdate() {
-		boolean b = listNeedsUpdate;
-		listNeedsUpdate = false;
-		return b;
 	}
 
 	public ObjectSet<Int2ObjectMap.Entry<WidgetsListSlotEntry>> getEntries() {
@@ -134,7 +127,7 @@ public class WidgetsListTab implements Tab {
 		this.handler = newHandler;
 		back.visible = handler != null;
 		entries.clear();
-		listNeedsUpdate = true;
+		widgetsElementList.updateList();
 	}
 
 	public void hopper(@Nullable List<String> hopperTooltip) {
@@ -159,7 +152,7 @@ public class WidgetsListTab implements Tab {
 
 	public void onSlotChange(int slot, ItemStack stack) {
 		waitingForServer = false;
-		listNeedsUpdate = true;
+		widgetsElementList.updateList();
 		switch (slot) {
 			case 45 -> {
 				widgetsElementList.setIsOnSecondPage(previousPage.visible = stack.is(Items.ARROW));

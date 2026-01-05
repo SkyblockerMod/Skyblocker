@@ -52,29 +52,23 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 
 	@Override
 	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		if (parent.listNeedsUpdate()) {
-			ArrayList<Int2ObjectMap.Entry<WidgetsListSlotEntry>> entries = new ArrayList<>(parent.getEntries());
-			clearEntries();
-			entries.stream()
-					.sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))
-					.map(Map.Entry::getValue)
-					.forEach(this::addEntry);
-			if (!parent.getCustomWidgetEntries().isEmpty() && parent.shouldShowCustomWidgetEntries()) {
-				if (!children().isEmpty()) addEntry(new SeparatorEntry());
-				parent.getCustomWidgetEntries().forEach(this::addEntry);
-			}
-			refreshScrollAmount();
-		}
 		super.renderWidget(context, mouseX, mouseY, delta);
 		WidgetsListEntry hoveredEntry = getHovered();
-		if (hoveredEntry != null) hoveredEntry.renderTooltip(context, hoveredEntry.getX(), hoveredEntry.getY(), hoveredEntry.getWidth(), hoveredEntry.getHeight(), mouseX, mouseY);
+		if (hoveredEntry != null) {
+			hoveredEntry.renderTooltip(context, hoveredEntry.getX(), hoveredEntry.getY(), hoveredEntry.getWidth(), hoveredEntry.getHeight(), mouseX, mouseY);
+		}
+
 		if (rightUpArrowHovered || rightDownArrowHovered) {
 			context.setTooltipForNextFrame(minecraft.font, Component.literal("Move widget"), mouseX, mouseY);
 		}
+
 		if (leftUpArrowHovered || leftDownArrowHovered) {
 			context.setTooltipForNextFrame(minecraft.font, Component.literal("Change selection"), mouseX, mouseY);
 		}
-		if (backButton != null) backButton.render(context, mouseX, mouseY, delta);
+
+		if (backButton != null) {
+			backButton.render(context, mouseX, mouseY, delta);
+		}
 	}
 
 	@Override
@@ -119,11 +113,25 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	public void setIsOnSecondPage(boolean isOnSecondPage) {
 		if (isOnSecondPage) {
 			editingPosition -= 21;
+			refreshScrollAmount();
 		}
 	}
 
 	public void setBackButton(Button backButton) {
 		this.backButton = backButton;
+	}
+
+	public void updateList() {
+		ArrayList<Int2ObjectMap.Entry<WidgetsListSlotEntry>> entries = new ArrayList<>(parent.getEntries());
+		clearEntries();
+		entries.stream()
+				.sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))
+				.map(Map.Entry::getValue)
+				.forEach(this::addEntry);
+		if (!parent.getCustomWidgetEntries().isEmpty() && parent.shouldShowCustomWidgetEntries()) {
+			if (!children().isEmpty()) addEntry(new SeparatorEntry());
+			parent.getCustomWidgetEntries().forEach(this::addEntry);
+		}
 	}
 
 	@Override
