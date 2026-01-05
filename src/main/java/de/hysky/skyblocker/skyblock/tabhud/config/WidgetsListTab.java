@@ -11,6 +11,7 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -48,6 +49,7 @@ public class WidgetsListTab implements Tab {
 	private boolean shouldShowCustomWidgetEntries = false;
 
 	private int resetSlotId = -1;
+	private boolean shouldResetScroll = false;
 
 	public void setCustomWidgetEntries(Collection<WidgetEntry> entries) {
 		this.customWidgetEntries.clear();
@@ -67,9 +69,10 @@ public class WidgetsListTab implements Tab {
 		widgetsElementList = new WidgetsElementList(this, client, 0, 0, 0);
 		this.client = client;
 		this.handler = handler;
-		back = Button.builder(Component.translatable("gui.back"), button -> clickAndWaitForServer(48, 0))
-				.size(64, 15)
-				.build();
+		back = Button.builder(Component.translatable("gui.back"), button -> {
+			clickAndWaitForServer(48, 0);
+			this.resetScrollOnLoad();
+		}).size(64, 15).build();
 		widgetsElementList.setBackButton(back);
 		thirdColumnButton = Button.builder(Component.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))
 				.size(120, 15)
@@ -109,6 +112,10 @@ public class WidgetsListTab implements Tab {
 		consumer.accept(widgetsElementList);
 	}
 
+	public void resetScrollOnLoad() {
+		this.shouldResetScroll = true;
+	}
+
 	public void clickAndWaitForServer(int slot, int button) {
 		if (waitingForServer || handler == null) return;
 		if (client.gameMode == null || this.client.player == null) return;
@@ -130,7 +137,7 @@ public class WidgetsListTab implements Tab {
 		back.visible = handler != null;
 		entries.clear();
 		widgetsElementList.updateList();
-		widgetsElementList.refreshScrollAmount();
+		if (this.shouldResetScroll) this.widgetsElementList.setScrollAmount(0);
 	}
 
 	public void hopper(@Nullable List<String> hopperTooltip) {
