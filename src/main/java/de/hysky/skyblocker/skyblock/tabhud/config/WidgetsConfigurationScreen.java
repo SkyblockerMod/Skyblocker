@@ -68,7 +68,9 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			Map.entry("crimson isle", Location.CRIMSON_ISLE),
 			Map.entry("kuudra", Location.KUUDRAS_HOLLOW),
 			Map.entry("the rift", Location.THE_RIFT),
-			Map.entry("jerry's workshop", Location.WINTER_ISLAND)
+			Map.entry("jerry's workshop", Location.WINTER_ISLAND),
+			Map.entry("galatea", Location.GALATEA),
+			Map.entry("backwater bayou", Location.BACKWATER_BAYOU)
 	);
 	private Location currentLocation = Utils.getLocation();
 
