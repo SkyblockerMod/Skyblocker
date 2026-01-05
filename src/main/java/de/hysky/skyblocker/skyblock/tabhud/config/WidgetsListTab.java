@@ -132,7 +132,7 @@ public class WidgetsListTab implements Tab {
 
 	public void hopper(@Nullable List<String> hopperTooltip) {
 		if (hopperTooltip == null) {
-			widgetsElementList.setEditingPosition(-1);
+			widgetsElementList.setEditingPosition(-1, false);
 			return;
 		}
 		int start = -1;
@@ -147,7 +147,7 @@ public class WidgetsListTab implements Tab {
 				break;
 			}
 		}
-		widgetsElementList.setEditingPosition(editing - start);
+		widgetsElementList.setEditingPosition(editing - start, true);
 	}
 
 	public void onSlotChange(int slot, ItemStack stack) {

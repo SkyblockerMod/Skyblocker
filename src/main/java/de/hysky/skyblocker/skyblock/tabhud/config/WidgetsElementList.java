@@ -31,6 +31,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	private boolean leftDownArrowHovered = false;
 
 	private int editingPosition = -1;
+	private boolean enableEditing = false;
 
 	public WidgetsElementList(WidgetsListTab parent, Minecraft minecraftClient, int width, int height, int y) {
 		super(minecraftClient, width, height, y, 32);
@@ -106,7 +107,8 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 		return 280;
 	}
 
-	public void setEditingPosition(int editingPosition) {
+	public void setEditingPosition(int editingPosition, boolean enableEditing) {
+		this.enableEditing = enableEditing;
 		this.editingPosition = editingPosition;
 	}
 
@@ -137,7 +139,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (backButton != null && backButton.mouseClicked(click, doubled)) return true;
-		if (editingPosition == -1) return super.mouseClicked(click, doubled);
+		if (!enableEditing) return super.mouseClicked(click, doubled);
 		if (rightUpArrowHovered) {
 			parent.shiftClickAndWaitForServer(13, 1);
 			return true;
