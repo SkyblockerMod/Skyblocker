@@ -30,7 +30,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	private boolean leftUpArrowHovered = false;
 	private boolean leftDownArrowHovered = false;
 
-	private int editingPosition = -1;
+	public static int editingPosition = -1;
 	private boolean enableEditing = false;
 
 	public WidgetsElementList(WidgetsListTab parent, Minecraft minecraftClient, int width, int height, int y) {
