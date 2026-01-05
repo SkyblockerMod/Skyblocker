@@ -40,6 +40,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 
 	@Override
 	public @Nullable WidgetsListEntry getSelected() {
+		if (!enableEditing) return super.getSelected();
 		if (editingPosition < 0 || editingPosition >= this.children().size()) return null;
 		WidgetsListEntry entry = this.children().get(editingPosition);
 		if (!(entry instanceof WidgetSlotEntry widgetSlotEntry) || widgetSlotEntry.getState() != WidgetSlotEntry.State.ENABLED) return null;
@@ -58,7 +59,11 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 		if (hoveredEntry != null) {
 			hoveredEntry.renderTooltip(context, hoveredEntry.getX(), hoveredEntry.getY(), hoveredEntry.getWidth(), hoveredEntry.getHeight(), mouseX, mouseY);
 		}
+		if (backButton != null) {
+			backButton.render(context, mouseX, mouseY, delta);
+		}
 
+		if (!enableEditing) return;
 		if (rightUpArrowHovered || rightDownArrowHovered) {
 			context.setTooltipForNextFrame(minecraft.font, Component.literal("Move widget"), mouseX, mouseY);
 		}
@@ -66,16 +71,12 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 		if (leftUpArrowHovered || leftDownArrowHovered) {
 			context.setTooltipForNextFrame(minecraft.font, Component.literal("Change selection"), mouseX, mouseY);
 		}
-
-		if (backButton != null) {
-			backButton.render(context, mouseX, mouseY, delta);
-		}
 	}
 
 	@Override
 	protected void renderItem(GuiGraphics context, int mouseX, int mouseY, float delta, WidgetsListEntry entry) {
 		super.renderItem(context, mouseX, mouseY, delta, entry);
-		if (this.getSelected() != entry) return;
+		if (!enableEditing || this.getSelected() != entry) return;
 
 		int x = entry.getX();
 		int y = entry.getY();
