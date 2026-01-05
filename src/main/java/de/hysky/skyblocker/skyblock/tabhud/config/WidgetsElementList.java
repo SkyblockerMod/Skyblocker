@@ -25,21 +25,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	static final Identifier MOVE_DOWN_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down_highlighted");
 	static final Identifier MOVE_DOWN_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down");
 
-	static final WidgetsListEntry SEPARATOR = new WidgetsListEntry() {
 
-		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			context.drawCenteredString(Minecraft.getInstance().font, Component.nullToEmpty("- Skyblocker Widgets -"), this.getX() + this.getWidth() / 2, this.getY() + (this.getHeight() - 9) / 2, CommonColors.WHITE);
-		}
-
-		@Override
-		public List<? extends GuiEventListener> children() {
-			return List.of();
-		}
-
-		@Override
-		public void drawBorder(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {}
-	};
 
 	private final WidgetsListTab parent;
 	private @Nullable Button backButton;
@@ -76,7 +62,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 					.map(Map.Entry::getValue)
 					.forEach(this::addEntry);
 			if (!parent.getCustomWidgetEntries().isEmpty() && parent.shouldShowCustomWidgetEntries()) {
-				if (!children().isEmpty()) addEntry(SEPARATOR);
+				if (!children().isEmpty()) addEntry(new SeparatorEntry());
 				parent.getCustomWidgetEntries().forEach(this::addEntry);
 			}
 			refreshScrollAmount();
