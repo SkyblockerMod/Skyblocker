@@ -45,8 +45,8 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	private @Nullable ChestMenu handler;
 	private String titleLowercase;
 	public final boolean noHandler;
-	private WidgetManager.ScreenLayer widgetsLayer = null;
-	private Screen parent = null;
+	private WidgetManager.@Nullable ScreenLayer widgetsLayer = null;
+	private @Nullable Screen parent = null;
 
 	private boolean tabPreview = false;
 	private PreviewTab previewTab;
@@ -84,8 +84,8 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 
 	// Tabs and stuff
 	private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
-	private TabNavigationBar tabNavigation;
-	private WidgetsListTab widgetsListTab;
+	private @Nullable TabNavigationBar tabNavigation;
+	private @Nullable WidgetsListTab widgetsListTab;
 
 	private boolean switchingToPopup = false;
 
@@ -299,7 +299,6 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			widgetsListTab.hopper(slotThirteenBacklog.skyblocker$getLoreStrings());
 			slotThirteenBacklog = null;
 		}
-		assert this.minecraft != null;
 		assert this.minecraft.player != null;
 		if (!this.minecraft.player.isAlive() || this.minecraft.player.isRemoved()) {
 			this.minecraft.player.closeContainer();
@@ -308,7 +307,6 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 
 	@Override
 	public void onClose() {
-		assert this.minecraft != null;
 		if (handler != null) {
 			assert this.minecraft.player != null;
 			this.minecraft.player.closeContainer();
@@ -324,7 +322,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	@Override
 	public void removed() {
 		if (handler == null) return;
-		if (!switchingToPopup && this.minecraft != null && this.minecraft.player != null) {
+		if (!switchingToPopup && this.minecraft.player != null) {
 			this.handler.removed(this.minecraft.player);
 		}
 		handler.removeSlotListener(this);

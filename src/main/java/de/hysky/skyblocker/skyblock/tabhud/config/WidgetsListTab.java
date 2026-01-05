@@ -98,7 +98,6 @@ public class WidgetsListTab implements Tab {
 
 	@Override
 	public void visitChildren(Consumer<AbstractWidget> consumer) {
-		consumer.accept(back);
 		consumer.accept(previousPage);
 		consumer.accept(nextPage);
 		consumer.accept(thirdColumnButton);
@@ -121,7 +120,7 @@ public class WidgetsListTab implements Tab {
 		waitingForServer = true;
 	}
 
-	public void updateHandler(ChestMenu newHandler) {
+	public void updateHandler(@Nullable ChestMenu newHandler) {
 		this.handler = newHandler;
 		back.visible = handler != null;
 		entries.clear();
@@ -179,7 +178,6 @@ public class WidgetsListTab implements Tab {
 			return;
 		}
 
-
 		String lowerCase = stack.getHoverName().getString().trim().toLowerCase(Locale.ENGLISH);
 		List<String> lore = stack.skyblocker$getLoreStrings();
 		String lastLowerCase = lore.getLast().toLowerCase(Locale.ENGLISH);
@@ -194,8 +192,8 @@ public class WidgetsListTab implements Tab {
 		} else {
 			entry = new DefaultSlotEntry(this, slot, stack);
 		}
-		entries.put(slot, entry);
 
+		entries.put(slot, entry);
 	}
 
 	@Override
