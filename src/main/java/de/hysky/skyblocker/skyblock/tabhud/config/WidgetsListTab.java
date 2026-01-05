@@ -128,6 +128,7 @@ public class WidgetsListTab implements Tab {
 		back.visible = handler != null;
 		entries.clear();
 		widgetsElementList.updateList();
+		widgetsElementList.refreshScrollAmount();
 	}
 
 	public void hopper(@Nullable List<String> hopperTooltip) {
