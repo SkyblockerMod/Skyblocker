@@ -162,7 +162,7 @@ public class WidgetsListTab implements Tab {
 		listNeedsUpdate = true;
 		switch (slot) {
 			case 45 -> {
-				previousPage.visible = stack.is(Items.ARROW);
+				widgetsElementList.setIsOnSecondPage(previousPage.visible = stack.is(Items.ARROW));
 				return;
 			}
 			case 51, 53 -> {

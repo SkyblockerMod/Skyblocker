@@ -22,4 +22,4 @@ public final class SeparatorEntry extends WidgetsListEntry {
 
 	@Override
 	public void drawBorder(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {}
-};
+}

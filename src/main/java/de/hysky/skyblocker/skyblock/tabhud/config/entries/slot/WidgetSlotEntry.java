@@ -74,7 +74,11 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 		}
 	}
 
-	enum State {
+	public State getState() {
+		return this.state;
+	}
+
+	public enum State {
 		ENABLED,
 		DISABLED,
 		LOCKED

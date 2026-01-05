@@ -1,22 +1,20 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
 public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsListEntry> {
@@ -24,8 +22,6 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	static final Identifier MOVE_UP_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_up");
 	static final Identifier MOVE_DOWN_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down_highlighted");
 	static final Identifier MOVE_DOWN_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down");
-
-
 
 	private final WidgetsListTab parent;
 	private @Nullable Button backButton;
@@ -44,7 +40,9 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	@Override
 	public @Nullable WidgetsListEntry getSelected() {
 		if (editingPosition < 0 || editingPosition >= this.children().size()) return null;
-		return this.children().get(editingPosition);
+		WidgetsListEntry entry = this.children().get(editingPosition);
+		if (!(entry instanceof WidgetSlotEntry widgetSlotEntry) || widgetSlotEntry.getState() != WidgetSlotEntry.State.ENABLED) return null;
+		return entry;
 	}
 
 	@Override
@@ -116,6 +114,12 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 
 	public void setEditingPosition(int editingPosition) {
 		this.editingPosition = editingPosition;
+	}
+
+	public void setIsOnSecondPage(boolean isOnSecondPage) {
+		if (isOnSecondPage) {
+			editingPosition -= 21;
+		}
 	}
 
 	public void setBackButton(Button backButton) {
