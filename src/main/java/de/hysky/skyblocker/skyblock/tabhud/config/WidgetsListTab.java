@@ -16,6 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -74,15 +76,15 @@ public class WidgetsListTab implements Tab {
 				.build();
 		thirdColumnButton.setTooltip(Tooltip.create(Component.literal("It is recommended to have this enabled, to have more info be displayed!")));
 		previousPage = Button.builder(Component.translatable("book.page_button.previous"), button -> clickAndWaitForServer(45, 0))
-				.size(100, 15)
+				.size(90, 15)
 				.build();
 		nextPage = Button.builder(Component.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
-				.size(100, 15)
+				.size(90, 15)
 				.build();
 		resetButton = Button.builder(Component.literal("Reset"), button -> {
 			if (resetSlotId == -1) return;
 			clickAndWaitForServer(resetSlotId, 0);
-		}).size(120, 15).build();
+		}).size(80, 15).build();
 
 		if (handler == null) {
 			back.visible = false;
@@ -162,7 +164,11 @@ public class WidgetsListTab implements Tab {
 			case 51, 53 -> {
 				if (slot == 53) nextPage.visible = stack.is(Items.ARROW);
 				if (stack.is(Items.PLAYER_HEAD)) {
-					resetButton.setMessage(stack.getHoverName());
+					Component buttonText = Component.literal("Reset ALL").withStyle(style -> style.withColor(ChatFormatting.RED).withUnderlined(true));
+					if (slot == 51) {
+						buttonText = Component.literal("Reset").withStyle(ChatFormatting.RED);
+					}
+					resetButton.setMessage(buttonText);
 					resetSlotId = slot;
 				}
 				return;
@@ -215,7 +221,7 @@ public class WidgetsListTab implements Tab {
 		thirdColumnButton.setPosition((tabArea.width() - thirdColumnButton.getWidth()) / 2, bottomButtonY);
 		previousPage.setPosition(thirdColumnButton.getX() - previousPage.getWidth() - 10, bottomButtonY);
 		nextPage.setPosition(thirdColumnButton.getRight() + 10, bottomButtonY);
-		resetButton.setPosition(tabArea.right() - resetButton.getWidth(), bottomButtonY);
+		resetButton.setPosition(tabArea.right() - resetButton.getWidth() - 4, bottomButtonY);
 	}
 
 	public boolean shouldShowCustomWidgetEntries() {
