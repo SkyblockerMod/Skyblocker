@@ -36,6 +36,7 @@ public class WidgetsListTab implements Tab {
 	private final Button previousPage;
 	private final Button nextPage;
 	private final Button thirdColumnButton;
+	private final Button resetButton;
 	private @Nullable ChestMenu handler;
 	private final Minecraft client;
 	private boolean waitingForServer = false;
@@ -45,6 +46,7 @@ public class WidgetsListTab implements Tab {
 	private boolean listNeedsUpdate = false;
 	private boolean shouldShowCustomWidgetEntries = false;
 
+	private int resetSlotId = -1;
 
 	public void setCustomWidgetEntries(Collection<WidgetEntry> entries) {
 		this.customWidgetEntries.clear();
@@ -83,11 +85,17 @@ public class WidgetsListTab implements Tab {
 		nextPage = Button.builder(Component.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
 				.size(100, 15)
 				.build();
+		resetButton = Button.builder(Component.literal("Reset"), button -> {
+			if (resetSlotId == -1) return;
+			clickAndWaitForServer(resetSlotId, 0);
+		}).size(120, 15).build();
+
 		if (handler == null) {
 			back.visible = false;
 			previousPage.visible = false;
 			nextPage.visible = false;
 			thirdColumnButton.visible = false;
+			resetButton.visible = false;
 		}
 	}
 
@@ -101,6 +109,7 @@ public class WidgetsListTab implements Tab {
 		consumer.accept(previousPage);
 		consumer.accept(nextPage);
 		consumer.accept(thirdColumnButton);
+		consumer.accept(resetButton);
 		consumer.accept(widgetsElementList);
 	}
 
@@ -155,8 +164,12 @@ public class WidgetsListTab implements Tab {
 				previousPage.visible = stack.is(Items.ARROW);
 				return;
 			}
-			case 53 -> {
-				nextPage.visible = stack.is(Items.ARROW);
+			case 51, 53 -> {
+				if (slot == 53) nextPage.visible = stack.is(Items.ARROW);
+				if (stack.is(Items.PLAYER_HEAD)) {
+					resetButton.setMessage(stack.getHoverName());
+					resetSlotId = slot;
+				}
 				return;
 			}
 			case 50 -> {
@@ -202,9 +215,12 @@ public class WidgetsListTab implements Tab {
 		widgetsElementList.setY(tabArea.top());
 		widgetsElementList.setSize(tabArea.width(), tabArea.height() - 20);
 		widgetsElementList.refreshScrollAmount();
-		previousPage.setPosition(widgetsElementList.getRowLeft(), widgetsElementList.getBottom() + 4);
-		nextPage.setPosition(widgetsElementList.scrollBarX() - 100, widgetsElementList.getBottom() + 4);
-		thirdColumnButton.setPosition(widgetsElementList.scrollBarX() + 5, widgetsElementList.getBottom() + 4);
+
+		int bottomButtonY = widgetsElementList.getBottom() + 4;
+		previousPage.setPosition(widgetsElementList.getRowLeft(), bottomButtonY);
+		nextPage.setPosition(widgetsElementList.scrollBarX() - 100, bottomButtonY);
+		thirdColumnButton.setPosition((tabArea.width() - thirdColumnButton.getWidth()) / 2, bottomButtonY);
+		resetButton.setPosition(tabArea.right() - resetButton.getWidth(), bottomButtonY);
 	}
 
 	public boolean shouldShowCustomWidgetEntries() {

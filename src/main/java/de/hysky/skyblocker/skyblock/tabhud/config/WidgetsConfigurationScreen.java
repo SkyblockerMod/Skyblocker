@@ -260,7 +260,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 				widgetsListTab.hopper(null);
 			}
 		}
-		if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRowCount() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50) {
+		if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRowCount() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50 || slotId == 51) {
 			widgetsListTab.onSlotChange(slotId, stack);
 		}
 	}
