@@ -284,5 +284,13 @@
     "skyblocker.config.chat.chatRules.screen": "Конфігурація правил чату...",
     "skyblocker.bars.config.health": "Здоров'я",
     "key.category.skyblocker.main": "Skyblocker",
-    "skyblocker.bars.config.explanation": "Вітаємо на екрані конфігурації панелей статусів!\n\nПеретягуйте панелі, щоб прив'язати їх до якорей (білих квадратів), інших панелей або деінде.\nНатискайте ПКМ на них, щоб змінювати їхні властивості.\nНавівши курсор між двома панелями (він повинен змінитися), можна змінювати їхній розмір.\n\nНалаштування зберігаються при виході."
+    "skyblocker.bars.config.explanation": "Вітаємо на екрані конфігурації панелей статусів!\n\nПеретягуйте панелі, щоб прив'язати їх до якорей (білих квадратів), інших панелей або деінде.\nНатискайте ПКМ на них, щоб змінювати їхні властивості.\nНавівши курсор між двома панелями (він повинен змінитися), можна змінювати їхній розмір.\n\nНалаштування зберігаються при виході.",
+    "skyblocker.config.dungeons.devices.solveSimonSays": "Розв'язувати «Саймон каже»",
+    "skyblocker.config.dungeons.devices.solveLightsOn": "Розв'язувати «Увімкнення світла»",
+    "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Підсвічує червоним правильні важелі.",
+    "skyblocker.config.dungeons.doorHighlight.doorHighlightType": "Тип підсвітки дверей",
+    "skyblocker.config.dungeons.doorHighlight": "Підсвітка дверей",
+    "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Підсвічує правильну кнопку зеленим, а наступну — жовтим.",
+    "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "Показує для кожної стріли кількість поворотів, які залишилися.",
+    "skyblocker.config.dungeons.devices.solveArrowAlign": "Розв'язувати «Наведення стріл»"
 }
