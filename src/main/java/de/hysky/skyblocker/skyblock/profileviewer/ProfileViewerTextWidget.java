@@ -87,8 +87,7 @@ public class ProfileViewerTextWidget {
 
 		int magicalPower = 0;
 		HashMap<String, Integer> duplicates = new HashMap<>();
-		Boolean balloonCounted = false,
-				partyCounted = false,
+		Boolean hatCounted = false,
 				abicaseCounted = false;
 		try {
 			Map<String, List<String>> upgradeList =	NEURepoManager.getConstants().getMisc().getTalismanUpgrades();
@@ -151,27 +150,20 @@ public class ProfileViewerTextWidget {
 						}
 					}
 
-					// Hatcessorie - upgrade/parent trees are weird, so we have to check manually
-					else if (item.getSkyblockApiId().startsWith("BALLOON_HAT")) {
-						if (balloonCounted) {
+					// Hatcessory - upgrade/parent trees are weird, so we have to check manually
+					else if (item.getSkyblockApiId().startsWith("BALLOON_HAT") || item.getSkyblockApiId().startsWith("PARTY_HAT")) {
+						if (hatCounted) {
 							continue;
 						}
 
-						balloonCounted = true;
-					}
-					else if (item.getSkyblockApiId().startsWith("PARTY_HAT")) {
-						if (partyCounted) {
-							continue;
-						}
-
-						partyCounted = true;
+						hatCounted = true;
 					}
 
 					// Hegemony gives double MP
 					else if (item.getSkyblockApiId().equals("HEGEMONY_ARTIFACT") && !duplicates.containsKey(item.getSkyblockApiId())) {
 						magicalPower += computeMagicalPower(item.getSkyblockRarity());
 					}
-
+					
 
 					if (!duplicates.containsKey(item.getSkyblockApiId())) {
 						magicalPower += computeMagicalPower(item.getSkyblockRarity());
@@ -269,24 +261,24 @@ public class ProfileViewerTextWidget {
 		matrices.scale(0.75f, 0.75f);
 		int rootAdjustedX = (int) ((root_x) / 0.75f);
 		int rootAdjustedY = (int) ((root_y) / 0.75f);
-		context.renderItem(Ico.PAINTING, rootAdjustedX, rootAdjustedY);
+		context.renderItem(Ico.PAINTING, rootAdjustedX, rootAdjustedY + 8);
 		matrices.popMatrix();
 
-		context.drawString(textRenderer, "§n" + PROFILE_NAME, root_x + 14, root_y + 3, CommonColors.WHITE, true);
-		context.drawString(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 6 + ROW_GAP, CommonColors.WHITE, true);
-		context.drawString(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 6 + ROW_GAP * 2, CommonColors.WHITE, true);
-		context.drawString(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 6 + ROW_GAP * 3, CommonColors.WHITE, true);
+		context.drawString(textRenderer, "§n" + PROFILE_NAME, root_x + 14, root_y + 7, CommonColors.WHITE, true);
+		context.drawString(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 9 + ROW_GAP, CommonColors.WHITE, true);
+		context.drawString(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 8 + ROW_GAP * 2, CommonColors.WHITE, true);
+		context.drawString(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 7 + ROW_GAP * 3, CommonColors.WHITE, true);
 		String nwString = "§6NW:§r " + ProfileViewerUtils.numLetterFormat(NETWORTH);
 
 		int nwX = root_x + 2;
-		int nwY = root_y + 6 + ROW_GAP * 4;
+		int nwY = root_y + 7 + ROW_GAP * 4;
 		context.drawString(textRenderer, nwString, nwX, nwY, CommonColors.WHITE, true);
 		if (mouseX >= nwX && mouseX <= nwX + textRenderer.width(nwString)
 				&& mouseY >= nwY && mouseY <= nwY + textRenderer.lineHeight) {
 			context.setComponentTooltipForNextFrame(textRenderer, networthTooltip, mouseX, mouseY);
 		}
 
-		context.drawString(textRenderer, "§6MP:§r " + MAGICAL_POWER, root_x + 2, root_y + 6 + ROW_GAP * 5, CommonColors.WHITE, true);
+		context.drawString(textRenderer, "§6MP:§r " + MAGICAL_POWER, root_x + 2, root_y + 7 + ROW_GAP * 5, CommonColors.WHITE, true);
 	}
 
 	private record ItemValue(String name, double price) {}
