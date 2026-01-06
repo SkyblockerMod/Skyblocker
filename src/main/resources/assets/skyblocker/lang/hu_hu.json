@@ -1591,5 +1591,21 @@
     "skyblocker.config.farming.garden.enableStereoHarmonyHelperForContest": "Stereó Harmónia Segítő Engedélyezése Jacob Versenyéhez",
     "skyblocker.config.chat.chatRules.screen": "Chatszabályok Beállítása...",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip": "Üzenet eltávolítása a chatről.",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase": "Kis- és nagybetűk különbözőek"
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase": "Kis- és nagybetűk különbözőek",
+    "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator": "Vadász Eszközkészlet Indikátor",
+    "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator.@Tooltip": "Piros jelzést mutat azokhoz az eszközökhöz, amik egy vadász eszközkészletben vannak",
+    "skyblocker.config.dungeons.terminalHud.determineInProgressStatus": "'Folyamatban' Státusz Engedélyezése",
+    "skyblocker.config.dungeons.terminalHud": "Terminál HUD (F7/M7)",
+    "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "Megmutatja a feladathoz legközelebb lévő játékos nevét",
+    "skyblocker.config.dungeons.terminalHud.enabled": "Engedélyezés",
+    "skyblocker.config.dungeons.terminalHud.showCompletedTerminals": "Teljesített Terminálok Mutatása",
+    "skyblocker.config.dungeons.terminalHud.showDevice": "Eszköz Mutatása",
+    "skyblocker.config.dungeons.terminalHud.showGate": "Kapu Mutatása",
+    "skyblocker.config.dungeons.terminalHud.showLevers": "Karok Mutatása",
+    "skyblocker.config.dungeons.terminalHud.showTerminalStatus": "Feladat Állapotának Mutatása",
+    "skyblocker.config.dungeons.terminalHud.showTerminalStatus.@Tooltip": "Kikapcsolva csak a nem befejezett feladatok lesznek mutatva.",
+    "skyblocker.config.dungeons.terminalHud.showTerminals": "Terminálok Mutatása",
+    "skyblocker.dungeons.terminalHud.destroyedStatus": "LEROMBOLVA",
+    "skyblocker.dungeons.terminalHud.completeStatus": "Befejezve",
+    "skyblocker.dungeons.terminalHud.incompleteStatus": "Teljesítetlen"
 }
