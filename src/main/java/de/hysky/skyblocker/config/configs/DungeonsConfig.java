@@ -180,6 +180,7 @@ public class DungeonsConfig {
 	}
 
 	public static class TerminalHud {
+		@Deprecated
 		public boolean enableTerminalHud = false;
 
 		public boolean showTerminalStatus = true;
