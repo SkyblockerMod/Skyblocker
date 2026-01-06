@@ -1,3 +1,99 @@
+# Release 6.0.0 (Beta #1)
+
+## Highlight
+* Update to 1.21.11
+* Improve Dungeon Map Look
+  * New background blur and outline options
+* Improve Compact Damage
+  * Precision is now based on significant digits instead of decimal places
+* Add '/skyblocker credits' screen
+* Add Radial Menus
+* Add Vanilla Style Mana Bar
+* Add abbreviation for the Crop Fever ultimate enchantment
+* Add support for item overlays from newer versions
+* Add support for commas in calculator
+* Adjust various config option descriptions
+* Make bounding box movement smoother
+* Make room labels red for failed puzzles
+* Fix dye drop special effects not working
+* Fix certain Sea Creatures not being detected
+* Fix Shard Sell Price not showing when having more than 999
+
+## What's Changed
+* 1.21.11 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1927
+* The Great Mojmap Switch by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1933
+* fix indentation in mixins json by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1936
+* Add abbreviation for crop fever ult enchant by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/1967
+* Add descriptions to Teleport Overlay Options by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1968
+* Remove formatting code by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1969
+* Fix parse separators in shard number by @layou233 in https://github.com/SkyblockerMod/Skyblocker/pull/1972
+* Add Radial Menus for Inventory Guis by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1566
+* use ofEntries method from fastutil update by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1965
+* Change Compact Damage precision to signify significant digits, not digits after the decimal by @InspectorBoat in https://github.com/SkyblockerMod/Skyblocker/pull/1978
+* Fix Stereo Harmony Helper not working with SkyHanni by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1980
+* Update Dye Drop Pattern by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1981
+* Improve searchability of Mythological Ritual Helper by @lunaynx in https://github.com/SkyblockerMod/Skyblocker/pull/1987
+* Lerp bounding boxes by @InspectorBoat in https://github.com/SkyblockerMod/Skyblocker/pull/1990
+* orange by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1998
+* Room Checkmark State Enum by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1997
+
+## New Contributors
+* @InspectorBoat made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1978
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.11.0+1.21.10...v6.0.0-beta.1+1.21.11
+
+___
+
+# Release 5.11.0
+
+## Highlight
+* Add support for new Garden tools and crops
+* Greatly improve Chat Rules
+  * Output messages can now show as toast notifications
+  * Output messages are now separate from the replacement message
+  * Formatting in output messages now shows in the preview
+  * All existing chat rules will carry over, but some may need to be changed.
+  * Chat Rules can now be accessed with `/skyblocker chatRules`
+* Add special effects for rare slayer items
+* Add an option to hide Pickobulus Helper when Pickobulus is on cooldown
+* Add a separate option for the Pickobulus Hud Widget
+* Add a separate toggle for Enchantment Abbreviations
+* Update Minion Quiz Question Answer
+* Update Enchantment Abbreviations
+* Fix Sacks Item Value
+* Fix Pickobulus Helper not working in Glacite Mineshafts
+* Fix Special Zealot glow lag
+* Fix Barrier placeholders not showing the proper item name
+* Fix Dungeons special effects not showing sometimes on items from Croesus
+* Use Fabric Events for Fancy Status Bars
+  * Fixes a mod compatability issue
+
+## What's Changed
+* Fix Sacks Item Value by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1935
+* Pickobulus fixes by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1937
+* Zealot lag fix by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1939
+* Pickobulus HUD Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1950
+* Refresh SearchableGridWidget scroll when searching by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1953
+* 0.24.0 Farming Stuff by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1948
+* Build Beta on Push For Backport Branches by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1952
+* Fix Barrier Placeholders by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1949
+* use HudElementRegistry instead of mixins by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1954
+* Update enchantment abbreviations pt. 2 by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/1947
+* Separate Enchantment Level and Abbreviation Adders by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1956
+* hide empty quick craft slots by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1931
+* Minor Farming Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1955
+* Add rosewater flask by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1960
+* annotate ItemStackMixin and reset fields on component change by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1958
+* missing farming tools by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1962
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1951
+* Chat rules improvements by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1829
+* Update DungeonsSpecialEffects.java by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1943
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.10.0+1.21.10...v5.11.0+1.21.10
+
+___
+
 # Release 5.10.0
 
 ## Highlight

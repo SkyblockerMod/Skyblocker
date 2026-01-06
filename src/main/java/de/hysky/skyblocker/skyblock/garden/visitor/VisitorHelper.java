@@ -95,7 +95,7 @@ public class VisitorHelper extends AbstractWidget {
 	private static void updateVisitors(AbstractContainerMenu handler) {
 		if (!processVisitor) return;
 		ItemStack visitorHead = handler.getSlot(13).getItem();
-		if (visitorHead == null || !visitorHead.has(DataComponents.LORE) || ItemUtils.getLoreLineIf(visitorHead, t -> t.contains("Times Visited")) == null) return;
+		if (visitorHead.isEmpty() || !visitorHead.has(DataComponents.LORE) || ItemUtils.getLoreLineIf(visitorHead, t -> t.contains("Times Visited")) == null) return;
 
 		Component visitorName = visitorHead.getHoverName();
 		if (activeVisitors.stream().map(Visitor::name).anyMatch(visitorName::equals)) return;
@@ -115,7 +115,7 @@ public class VisitorHelper extends AbstractWidget {
 	 */
 	private static void extractRequiredItems(AbstractContainerMenu handler, Visitor visitor) {
 		ItemStack acceptButton = handler.getSlot(29).getItem();
-		if (acceptButton == null || ItemUtils.getLoreLineIf(acceptButton, t -> t.contains("Items Required")) == null) return;
+		if (acceptButton.isEmpty() || ItemUtils.getLoreLineIf(acceptButton, t -> t.contains("Items Required")) == null) return;
 
 		acceptButton.skyblocker$getLoreStrings().stream()
 				.map(String::trim)
@@ -227,7 +227,7 @@ public class VisitorHelper extends AbstractWidget {
 
 			index++;
 		}
-		setHeight((groupedItems.size() + activeVisitors.size()) * (LINE_HEIGHT + Minecraft.getInstance().font.lineHeight) + PADDING * 2);
+		setHeight(index * (LINE_HEIGHT + Minecraft.getInstance().font.lineHeight) + PADDING * 2);
 		setWidth(newWidth + PADDING * 2);
 		exclusionZoneWidth = getWidth();
 		exclusionZoneHeight = getHeight();

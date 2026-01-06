@@ -226,6 +226,8 @@ public class GeneralConfig {
 	public static class SpecialEffects {
 		public boolean rareDungeonDropEffects = true;
 
+		public boolean rareDropEffects = true;
+
 		public boolean rareDyeDropEffects = true;
 	}
 

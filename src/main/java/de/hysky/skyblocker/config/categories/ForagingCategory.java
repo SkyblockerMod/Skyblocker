@@ -7,12 +7,12 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.foraging.SweepOverlay;
 import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
-import net.azureaaron.dandelion.systems.ConfigCategory;
-import net.azureaaron.dandelion.systems.Option;
-import net.azureaaron.dandelion.systems.OptionGroup;
-import net.azureaaron.dandelion.systems.ButtonOption;
-import net.azureaaron.dandelion.systems.controllers.ColourController;
-import net.azureaaron.dandelion.systems.controllers.IntegerController;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.controllers.ColourController;
+import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.network.chat.Component;
 
 public class ForagingCategory {
@@ -28,6 +28,7 @@ public class ForagingCategory {
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.galatea.enableForestNodeHelper"))
+								.description(Component.translatable("skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip"))
 								.binding(defaults.foraging.galatea.enableForestNodeHelper,
 										() -> config.foraging.galatea.enableForestNodeHelper,
 										newValue -> config.foraging.galatea.enableForestNodeHelper = newValue)

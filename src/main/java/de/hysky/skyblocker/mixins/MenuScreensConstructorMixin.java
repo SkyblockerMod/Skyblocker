@@ -9,6 +9,9 @@ import de.hysky.skyblocker.skyblock.dungeon.LeapOverlay;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreen;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuScreen;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListScreen;
 import de.hysky.skyblocker.utils.Utils;
 import java.util.Locale;
@@ -111,6 +114,15 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			case ChestMenu containerScreenHandler when Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.leapOverlay.enableLeapOverlay && nameLowercase.contains(LeapOverlay.TITLE.toLowerCase(Locale.ENGLISH)) -> {
 				client.player.containerMenu = containerScreenHandler;
 				client.setScreen(new LeapOverlay(containerScreenHandler));
+
+				ci.cancel();
+			}
+
+			// radial menus
+			case ChestMenu containerScreenHandler when RadialMenuManager.isMenuExistsFromTitle(nameLowercase) -> {
+				client.player.containerMenu = containerScreenHandler;
+				RadialMenu menuType = RadialMenuManager.getMenuFromTitle(nameLowercase);
+				client.setScreen(new RadialMenuScreen(containerScreenHandler, menuType, name));
 
 				ci.cancel();
 			}

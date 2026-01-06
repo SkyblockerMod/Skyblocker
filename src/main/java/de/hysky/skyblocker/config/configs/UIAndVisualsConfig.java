@@ -47,6 +47,8 @@ public class UIAndVisualsConfig {
 
 	public SlotText slotText = new SlotText();
 
+	public RadialMenu radialMenu = new RadialMenu();
+
 	public InventorySearchConfig inventorySearch = new InventorySearchConfig();
 
 	public TitleContainer titleContainer = new TitleContainer();
@@ -97,6 +99,16 @@ public class UIAndVisualsConfig {
 		public Object2BooleanOpenHashMap<String> textEnabled = new Object2BooleanOpenHashMap<>();
 
 		public boolean slotTextToggled = true;
+
+	}
+
+	public static class RadialMenu {
+		public boolean enabled = false;
+
+		public boolean tooltipsWithoutShift = false;
+
+		public Object2BooleanOpenHashMap<String> enabledMenus = new Object2BooleanOpenHashMap<>();
+
 
 	}
 
@@ -230,6 +242,8 @@ public class UIAndVisualsConfig {
 
 	public static class Bars {
 		public boolean enableBars = true;
+
+		public boolean enableVanillaStyleManaBar = false;
 
 		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
 
@@ -373,7 +387,7 @@ public class UIAndVisualsConfig {
 	public static class CompactDamage {
 		public boolean enabled = true;
 
-		public int precision = 1;
+		public int precision = 4;
 
 		public Color normalDamageColor = new Color(0xFFFFFF);
 

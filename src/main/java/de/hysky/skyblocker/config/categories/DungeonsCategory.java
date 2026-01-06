@@ -7,13 +7,13 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
 import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
-import net.azureaaron.dandelion.systems.ButtonOption;
-import net.azureaaron.dandelion.systems.ConfigCategory;
-import net.azureaaron.dandelion.systems.Option;
-import net.azureaaron.dandelion.systems.OptionGroup;
-import net.azureaaron.dandelion.systems.controllers.FloatController;
-import net.azureaaron.dandelion.systems.controllers.IntegerController;
-import net.azureaaron.dandelion.systems.controllers.StringController;
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.controllers.FloatController;
+import net.azureaaron.dandelion.api.controllers.IntegerController;
+import net.azureaaron.dandelion.api.controllers.StringController;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -170,6 +170,22 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.dungeonMap.showRoomLabels,
 										() -> config.dungeons.dungeonMap.showRoomLabels,
 										newValue -> config.dungeons.dungeonMap.showRoomLabels = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.map.showOutline"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
+								.binding(defaults.dungeons.dungeonMap.showOutline,
+										() -> config.dungeons.dungeonMap.showOutline,
+										newValue -> config.dungeons.dungeonMap.showOutline = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.map.backgroundBlur"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
+								.binding(defaults.dungeons.dungeonMap.backgroundBlur,
+										() -> config.dungeons.dungeonMap.backgroundBlur,
+										newValue -> config.dungeons.dungeonMap.backgroundBlur = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Float>createBuilder()
@@ -514,6 +530,63 @@ public class DungeonsCategory {
 										() -> config.dungeons.goldor.waypointType,
 										newValue -> config.dungeons.goldor.waypointType = newValue)
 								.controller(ConfigUtils.createEnumController())
+								.build())
+						.build())
+
+				// F7/M7 Terminal Hud
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.dungeons.terminalHud"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.enabled"))
+								.binding(defaults.dungeons.terminalHud.enableTerminalHud,
+										() -> config.dungeons.terminalHud.enableTerminalHud,
+										newValue -> config.dungeons.terminalHud.enableTerminalHud = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.showTerminalStatus"))
+								.description(Component.translatable("skyblocker.config.dungeons.terminalHud.showTerminalStatus.@Tooltip"))
+								.binding(defaults.dungeons.terminalHud.showTerminalStatus,
+										() -> config.dungeons.terminalHud.showTerminalStatus,
+										newValue -> config.dungeons.terminalHud.showTerminalStatus = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.determineInProgressStatus"))
+								.description(Component.translatable("skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip"))
+								.binding(defaults.dungeons.terminalHud.showPlayerAtTerminal,
+										() -> config.dungeons.terminalHud.showPlayerAtTerminal,
+										newValue -> config.dungeons.terminalHud.showPlayerAtTerminal = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.showTerminals"))
+								.binding(defaults.dungeons.terminalHud.showTerminals,
+										() -> config.dungeons.terminalHud.showTerminals,
+										newValue -> config.dungeons.terminalHud.showTerminals = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.showDevice"))
+								.binding(defaults.dungeons.terminalHud.showDevice,
+										() -> config.dungeons.terminalHud.showDevice,
+										newValue -> config.dungeons.terminalHud.showDevice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.showLevers"))
+								.binding(defaults.dungeons.terminalHud.showLevers,
+										() -> config.dungeons.terminalHud.showLevers,
+										newValue -> config.dungeons.terminalHud.showLevers = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.terminalHud.showGate"))
+								.binding(defaults.dungeons.terminalHud.showGate,
+										() -> config.dungeons.terminalHud.showGate,
+										newValue -> config.dungeons.terminalHud.showGate = newValue)
+								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
 

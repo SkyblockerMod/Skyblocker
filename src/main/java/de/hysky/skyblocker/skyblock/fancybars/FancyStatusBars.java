@@ -12,12 +12,18 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +41,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 public class FancyStatusBars {
+	private static final Identifier HUD_LAYER = SkyblockerMod.id("fancy_status_bars");
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("status_bars.json");
 	private static final Logger LOGGER = LoggerFactory.getLogger(FancyStatusBars.class);
 
@@ -59,6 +68,44 @@ public class FancyStatusBars {
 	@SuppressWarnings("deprecation")
 	@Init
 	public static void init() {
+		Function<HudElement, HudElement> hideIfFancyStatusBarsEnabled = hudElement -> {
+			if (Utils.isOnSkyblock() && isEnabled())
+				return (context, tickCounter) -> {};
+			return hudElement;
+		};
+
+		HudElementRegistry.replaceElement(VanillaHudElements.HEALTH_BAR, hudElement -> {
+			if (!Utils.isOnSkyblock() || !isEnabled()) return hudElement;
+			if (isHealthFancyBarEnabled()) {
+				return (context, tickCounter) -> {};
+			} else if (isExperienceFancyBarEnabled()) {
+				return (context, tickCounter) -> {
+					Matrix3x2fStack pose = context.pose();
+					pose.pushMatrix();
+					pose.translate(0, 6);
+					hudElement.render(context, tickCounter);
+					pose.popMatrix();
+				};
+			}
+			return hudElement;
+		});
+		HudElementRegistry.replaceElement(VanillaHudElements.EXPERIENCE_LEVEL, hudElement -> {
+			if (!Utils.isOnSkyblock() || !isEnabled() || !isExperienceFancyBarEnabled()) return hudElement;
+			return (context, tickCounter) -> {};
+		});
+		HudElementRegistry.replaceElement(VanillaHudElements.INFO_BAR, hudElement -> {
+			if (!Utils.isOnSkyblock() || !isEnabled() || !isExperienceFancyBarEnabled()) return hudElement;
+			return (context, tickCounter) -> {};
+		});
+		HudElementRegistry.replaceElement(VanillaHudElements.ARMOR_BAR, hideIfFancyStatusBarsEnabled);
+		HudElementRegistry.replaceElement(VanillaHudElements.MOUNT_HEALTH, hideIfFancyStatusBarsEnabled);
+		HudElementRegistry.replaceElement(VanillaHudElements.FOOD_BAR, hideIfFancyStatusBarsEnabled);
+		HudElementRegistry.replaceElement(VanillaHudElements.AIR_BAR, hideIfFancyStatusBarsEnabled);
+
+		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, HUD_LAYER, (context, tickCounter) -> {
+			if (Utils.isOnSkyblock()) render(context, Minecraft.getInstance());
+		});
+
 		statusBars.put(StatusBarType.HEALTH, StatusBarType.HEALTH.newStatusBar());
 		statusBars.put(StatusBarType.INTELLIGENCE, StatusBarType.INTELLIGENCE.newStatusBar());
 		statusBars.put(StatusBarType.DEFENSE, StatusBarType.DEFENSE.newStatusBar());
@@ -76,7 +123,7 @@ public class FancyStatusBars {
 		initBarPosition(statusBars.get(StatusBarType.SPEED), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
 		initBarPosition(statusBars.get(StatusBarType.AIR), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
 
-		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
+		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(object -> {
 			if (object != null) {
 				for (String s : object.keySet()) {
 					StatusBarType type = StatusBarType.from(s);
@@ -158,7 +205,7 @@ public class FancyStatusBars {
 		}
 	}
 
-	public static JsonObject loadBarConfig() {
+	public static @Nullable JsonObject loadBarConfig() {
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
 			return SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
 		} catch (NoSuchFileException e) {

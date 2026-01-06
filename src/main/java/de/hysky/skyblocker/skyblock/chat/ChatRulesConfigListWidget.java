@@ -34,7 +34,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 	public void updateEntries() {
 		clearEntries();
 		addEntry(new LabelsEntry());
-		for (int i = 0; i < ChatRulesHandler.chatRuleList.getData().size(); i++) {
+		for (int i = 0; i < ChatRulesHandler.CHAT_RULE_LIST.getData().size(); i++) {
 			addEntry(new ChatRuleEntry(i));
 		}
 	}
@@ -53,7 +53,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 		hasChanged = true;
 		int newIndex = Math.max(children().indexOf(getSelected()), 0);
 
-		ChatRulesHandler.chatRuleList.getData().add(newIndex, new ChatRule());
+		ChatRulesHandler.CHAT_RULE_LIST.getData().add(newIndex, new ChatRule());
 		updateEntries();
 		if (newIndex + 1 >= this.children().size()) return;
 		AbstractChatRuleEntry entry = this.children().get(newIndex + 1);
@@ -141,7 +141,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 
 		private ChatRuleEntry(int chatRuleIndex) {
 			this.chatRuleIndex = chatRuleIndex;
-			this.chatRule = ChatRulesHandler.chatRuleList.getData().get(chatRuleIndex);
+			this.chatRule = ChatRulesHandler.CHAT_RULE_LIST.getData().get(chatRuleIndex);
 
 			layout = new LinearLayout(0, 0, LinearLayout.Orientation.HORIZONTAL);
 			layout.defaultCellSetting().paddingRight(10);
@@ -174,7 +174,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 
 		private void deleteEntry(boolean confirmedAction) {
 			if (confirmedAction) {
-				ChatRulesHandler.chatRuleList.getData().remove(chatRuleIndex);
+				ChatRulesHandler.CHAT_RULE_LIST.getData().remove(chatRuleIndex);
 				removeEntry(this);
 			}
 
@@ -192,7 +192,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 
 		@Override
 		public boolean hasChanged() {
-			return chatRule.getEnabled() != ChatRulesHandler.chatRuleList.getData().get(chatRuleIndex).getEnabled();
+			return chatRule.getEnabled() != ChatRulesHandler.CHAT_RULE_LIST.getData().get(chatRuleIndex).getEnabled();
 		}
 
 		@Override

@@ -11,12 +11,12 @@ import de.hysky.skyblocker.config.screens.powdertracker.PowderFilterConfigScreen
 import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
 import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
-import net.azureaaron.dandelion.systems.ButtonOption;
-import net.azureaaron.dandelion.systems.ConfigCategory;
-import net.azureaaron.dandelion.systems.Option;
-import net.azureaaron.dandelion.systems.OptionGroup;
-import net.azureaaron.dandelion.systems.controllers.FloatController;
-import net.azureaaron.dandelion.systems.controllers.IntegerController;
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.controllers.FloatController;
+import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
@@ -72,6 +72,7 @@ public class MiningCategory {
 				//Pickobulus Helper
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.mining.pickobulusHelper"))
+						.tags(CommonTags.ADDED_IN_5_11_0)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.enable"))
 								.description(Component.translatable("skyblocker.config.mining.pickobulusHelper.enable.@Tooltip"))
@@ -84,6 +85,7 @@ public class MiningCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.enableHud"))
 								.description(Component.translatable("skyblocker.config.mining.pickobulusHelper.enableHud.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_5_11_0)
 								.binding(defaults.mining.pickobulusHelper.enablePickobulusHud,
 										() -> config.mining.pickobulusHelper.enablePickobulusHud,
 										newValue -> config.mining.pickobulusHelper.enablePickobulusHud = newValue)
@@ -92,6 +94,7 @@ public class MiningCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.hideOnCooldown"))
 								.description(Component.translatable("skyblocker.config.mining.pickobulusHelper.hideOnCooldown.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_5_11_0)
 								.binding(defaults.mining.pickobulusHelper.hideHudOnCooldown,
 										() -> config.mining.pickobulusHelper.hideHudOnCooldown,
 										newValue -> config.mining.pickobulusHelper.hideHudOnCooldown = newValue)

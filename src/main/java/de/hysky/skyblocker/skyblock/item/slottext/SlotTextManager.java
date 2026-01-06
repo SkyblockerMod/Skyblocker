@@ -14,11 +14,13 @@ import de.hysky.skyblocker.skyblock.item.slottext.adders.CatacombsLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.ChoosePetLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.CollectionAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.CommunityShopAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.EnchantmentAbbreviationAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.EnchantmentLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.EssenceShopAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.EvolvingItemAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.HotfPerkLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.HotmPerkLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.HuntingToolkitIndicatorAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.MinionLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.NewYearCakeAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.PetLevelAdder;
@@ -32,6 +34,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.adders.SkyblockLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.StatsTuningAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.YourEssenceAdder;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -58,6 +61,7 @@ import java.util.stream.Stream;
 public class SlotTextManager {
 	private static final SlotTextAdder[] adders = new SlotTextAdder[]{
 			new EssenceShopAdder(),
+			new EnchantmentAbbreviationAdder(),
 			new EnchantmentLevelAdder(),
 			new MinionLevelAdder(),
 			new PetLevelAdder(),
@@ -86,7 +90,8 @@ public class SlotTextManager {
 			new SkyblockGuideAdder(),
 			SameColorTerminal.INSTANCE,
 			AttributeLevelHelper.INSTANCE,
-			new BestiaryLevelAdder()
+			new BestiaryLevelAdder(),
+			new HuntingToolkitIndicatorAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 	private static final KeyMapping keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));
@@ -98,7 +103,7 @@ public class SlotTextManager {
 	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-			if ((screen instanceof AbstractContainerScreen<?> && Utils.isOnSkyblock()) || screen instanceof ProfileViewerScreen) {
+			if ((screen instanceof AbstractContainerScreen<?> && Utils.isOnSkyblock()) || screen instanceof ProfileViewerScreen || screen instanceof RadialMenuScreen) {
 				onScreenChange(screen);
 				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 			}

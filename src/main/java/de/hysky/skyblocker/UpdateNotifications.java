@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 public class UpdateNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -100,7 +101,7 @@ public class UpdateNotifications {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Update Notifications] Failed to determine if an update is available or not!", e);
 			}
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	private static DataResult<SemanticVersion> parseVersion(String version) {

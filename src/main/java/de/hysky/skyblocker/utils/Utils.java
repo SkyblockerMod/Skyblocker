@@ -2,7 +2,11 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.blaze3d.Blaze3D;
+import com.mojang.logging.LogUtils;
 import com.mojang.util.UndashedUuid;
+
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.ChatListenerAccessor;
@@ -33,6 +37,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.scores.DisplaySlot;
@@ -620,5 +626,17 @@ public class Utils {
 		if (player == null || !player.isShiftKeyDown()) return 1.62f;
 		//sneaking height is different depending on server
 		return getLocation().isModern() ? 1.27f : 1.54f;
+	}
+
+	/**
+	 * Used to prevent third-party resource packs from modifying resources they shouldn't be. This will "lose" the game.
+	 */
+	public static void checkForIllegalResourceModification(Identifier id, Resource resource, String error) {
+		if (!resource.sourcePackId().equals(SkyblockerMod.NAMESPACE)) {
+			LOGGER.error("!".repeat(50));
+			LOGGER.error(LogUtils.FATAL_MARKER, error, id, resource.sourcePackId());
+			LOGGER.error("!".repeat(50));
+			Blaze3D.youJustLostTheGame();
+		}
 	}
 }

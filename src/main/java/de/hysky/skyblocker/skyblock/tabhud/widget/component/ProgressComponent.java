@@ -54,14 +54,14 @@ class ProgressComponent extends Component {
 	}
 
 	/**
-	 * @see Components#progressComponent(ItemStack, Component, Component, float)
+	 * @see Components#progressComponent(ItemStack, net.minecraft.network.chat.Component, net.minecraft.network.chat.Component, float)
 	 */
 	ProgressComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component description, net.minecraft.network.chat.@Nullable Component bar, float percent) {
 		this(ico, description, bar, percent, ColorUtils.percentToColor(percent));
 	}
 
 	/**
-	 * @see Components#progressComponent(ItemStack, Component, float)
+	 * @see Components#progressComponent(ItemStack, net.minecraft.network.chat.Component, float)
 	 */
 	ProgressComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component description, float percent, int color) {
 		// make sure percentages always have two decimals
@@ -69,7 +69,7 @@ class ProgressComponent extends Component {
 	}
 
 	/**
-	 * @see Components#progressComponent(ItemStack, Component, float)
+	 * @see Components#progressComponent(ItemStack, net.minecraft.network.chat.Component, float)
 	 */
 	ProgressComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component description, float percent) {
 		this(ico, description, percent, ColorUtils.percentToColor(percent));
