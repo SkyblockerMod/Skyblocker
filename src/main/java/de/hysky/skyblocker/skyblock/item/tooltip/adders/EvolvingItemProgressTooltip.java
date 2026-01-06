@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.ChatFormatting;
@@ -11,10 +12,10 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
-public class EvolvingItemTooltip extends SimpleTooltipAdder {
+public class EvolvingItemProgressTooltip extends SimpleTooltipAdder {
 	final List<String> evolutionItems = List.of("DARK_CACAO_TRUFFLE", "MOBY_DUCK", "ROSEWATER_FLASK", "DISCRITE", "NEW_BOTTLE_OF_JYRRE", "TRAINING_WEIGHTS");
 
-	public EvolvingItemTooltip(int priority) {
+	public EvolvingItemProgressTooltip(int priority) {
 		super(priority);
 	}
 
@@ -46,6 +47,6 @@ public class EvolvingItemTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return SkyblockerConfigManager.get().general.itemTooltip.enableEvolvingItemProgress;
 	}
 }
