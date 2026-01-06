@@ -48,11 +48,14 @@ public class GoldorWaypointsManager {
 	private static final ObjectArrayList<GoldorWaypoint> DEVICES = new ObjectArrayList<>();
 	private static final ObjectArrayList<GoldorWaypoint> LEVERS = new ObjectArrayList<>();
 
+	private static final ObjectArrayList<GoldorWaypoint> ACTIVE_PHASE_WAYPOINTS = new ObjectArrayList<>();
+
 	private static final String TERMINALS_START = "[BOSS] Storm: I should have known that I stood no chance.";
 	private static final Pattern TERMINAL_ACTIVATED = Pattern.compile("^(?<name>\\w+) activated a terminal! \\(\\d/\\d\\)$");
 	private static final Pattern DEVICE_ACTIVATED = Pattern.compile("^(?<name>\\w+) completed a device! \\(\\d/\\d\\)$");
 	private static final Pattern LEVER_ACTIVATED = Pattern.compile("^(?<name>\\w+) activated a lever! \\(\\d/\\d\\)$");
 	private static final Pattern PHASE_COMPLETE = Pattern.compile("^(?<name>\\w+) (?:activated a (?:terminal|lever)|completed a device)! (?:\\(7/7\\)|\\(8/8\\))$");
+	private static final String GATE_DESTROYED = "The gate has been destroyed!";
 	private static final String CORE_ENTRANCE = "The Core entrance is opening!";
 	private static final Codec<List<GoldorWaypoint>> CODEC = GoldorWaypoint.CODEC.listOf();
 
@@ -60,6 +63,8 @@ public class GoldorWaypointsManager {
 	private static boolean loaded = false;
 	// If this should be processed
 	private static boolean active = false;
+	// If the current phase's gate is destroyed
+	private static boolean gateDestroyed = false;
 	// The current set of terminals, each phase is delimited by a gate
 	private static short currentPhase = 0;
 
@@ -102,8 +107,9 @@ public class GoldorWaypointsManager {
 	 *
 	 * @return true if we should process messages
 	 */
-	private static boolean shouldProcessMsgs() {
-		return (loaded && SkyblockerConfigManager.get().dungeons.goldor.enableGoldorWaypoints && Utils.isInDungeons() && DungeonManager.isInBoss() && DungeonManager.getBoss().isFloor(7));
+	private static boolean shouldProcess() {
+		if (!loaded || !Utils.isInDungeons() || !DungeonManager.isInBoss() || !DungeonManager.getBoss().isFloor(7)) return false;
+		return SkyblockerConfigManager.get().dungeons.goldor.enableGoldorWaypoints || SkyblockerConfigManager.get().dungeons.terminalHud.enableTerminalHud;
 	}
 
 	/**
@@ -121,6 +127,7 @@ public class GoldorWaypointsManager {
 
 		// Find the nearest waypoint to the player and hide it
 		posOptional.flatMap(pos -> waypoints.stream().filter(GoldorWaypoint::shouldRender).min(Comparator.comparingDouble(waypoint -> waypoint.centerPos.distanceToSqr(pos)))).ifPresent(Waypoint::setFound);
+		TerminalHud.INSTANCE.update();
 	}
 
 	/**
@@ -128,10 +135,12 @@ public class GoldorWaypointsManager {
 	 */
 	private static void reset() {
 		active = false;
+		gateDestroyed = false;
 		currentPhase = 0;
 		enableAll(TERMINALS);
 		enableAll(DEVICES);
 		enableAll(LEVERS);
+		ACTIVE_PHASE_WAYPOINTS.clear();
 	}
 
 	/**
@@ -154,13 +163,17 @@ public class GoldorWaypointsManager {
 		return matcher.matches() ? matcher.group("name") : null;
 	}
 
+	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Component text, boolean overlay) {
-		if (overlay || !shouldProcessMsgs()) return true;
+		if (overlay || !shouldProcess()) return true;
 		String message = text.getString();
 
 		if (active) {
 			if (PHASE_COMPLETE.matcher(message).matches()) {
 				currentPhase++;
+				gateDestroyed = false;
+				setPhaseWaypoints();
+				TerminalHud.INSTANCE.update();
 			} else {
 				String playerName;
 
@@ -172,37 +185,60 @@ public class GoldorWaypointsManager {
 					removeNearestWaypoint(LEVERS, playerName);
 				} else if (message.equals(CORE_ENTRANCE)) {
 					active = false;
+					ACTIVE_PHASE_WAYPOINTS.clear();
+				} else if (message.equals(GATE_DESTROYED)) {
+					gateDestroyed = true;
+					TerminalHud.INSTANCE.update();
 				}
 			}
-		} else {
-			if (message.equals(TERMINALS_START)) {
-				enableAll(TERMINALS);
-				enableAll(DEVICES);
-				enableAll(LEVERS);
-				active = true;
-			}
+		} else if (message.equals(TERMINALS_START)) {
+			reset();
+			setPhaseWaypoints();
+			active = true;
+			TerminalHud.INSTANCE.update();
 		}
 
 		return true;
 	}
 
+	private static void setPhaseWaypoints() {
+		ACTIVE_PHASE_WAYPOINTS.clear();
+		ACTIVE_PHASE_WAYPOINTS.addAll(TERMINALS.stream().filter(waypoint -> waypoint.phase == currentPhase).toList());
+		ACTIVE_PHASE_WAYPOINTS.addAll(DEVICES.stream().filter(waypoint -> waypoint.phase == currentPhase).toList());
+		ACTIVE_PHASE_WAYPOINTS.addAll(LEVERS.stream().filter(waypoint -> waypoint.phase == currentPhase).toList());
+	}
+
 	private static void extractRenderingForWaypoints(PrimitiveCollector collector, ObjectArrayList<GoldorWaypoint> waypoints) {
 		for (GoldorWaypoint waypoint : waypoints) {
-			if (waypoint.phase == currentPhase && waypoint.shouldRender()) {
+			if (waypoint.shouldRender()) {
 				waypoint.extractRendering(collector);
 			}
 		}
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (active) {
-			extractRenderingForWaypoints(collector, TERMINALS);
-			extractRenderingForWaypoints(collector, DEVICES);
-			extractRenderingForWaypoints(collector, LEVERS);
+		if (active && SkyblockerConfigManager.get().dungeons.goldor.enableGoldorWaypoints) {
+			extractRenderingForWaypoints(collector, ACTIVE_PHASE_WAYPOINTS);
 		}
 	}
 
-	private static class GoldorWaypoint extends NamedWaypoint {
+	public static boolean isActive() {
+		return active;
+	}
+
+	public static boolean isGateDestroyed() {
+		return gateDestroyed;
+	}
+
+	public static short getCurrentPhase() {
+		return currentPhase;
+	}
+
+	public static List<GoldorWaypoint> getPhaseWaypoints() {
+		return ACTIVE_PHASE_WAYPOINTS;
+	}
+
+	public static class GoldorWaypoint extends NamedWaypoint {
 		public static final Codec<GoldorWaypoint> CODEC = RecordCodecBuilder.create(i -> i.group(
 				WaypointTargetKind.CODEC.fieldOf("kind").forGetter(w -> w.kind),
 				Codec.INT.fieldOf("phase").forGetter(customWaypoint -> customWaypoint.phase),
