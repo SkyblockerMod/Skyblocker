@@ -169,7 +169,7 @@ public class BlockBreakPrediction {
 					//get block id data
 					BlockFile data = BlockFile.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(new String(stream.readAllBytes()))).getOrThrow();
 					//add each block to lookup table for location
-					for (SkyblockBlock skyblockBlockType : data.SkyblockBlocks) {
+					for (SkyblockBlock skyblockBlockType : data.skyblockBlocks) {
 						for (Location location : skyblockBlockType.onlyIn) {
 							//if its mithril edit it to the actual strength as that is not in the repo
 							if (data.name.equals("Mithril Ore")) {
@@ -201,12 +201,12 @@ public class BlockBreakPrediction {
 
 	}
 
-	public record BlockFile(int blockStrength, int breakingPower, String name, List<SkyblockBlock> SkyblockBlocks) {
+	public record BlockFile(int blockStrength, int breakingPower, String name, List<SkyblockBlock> skyblockBlocks) {
 		public static final Codec<BlockFile> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.INT.fieldOf("blockStrength").forGetter(BlockFile::blockStrength),
 				Codec.INT.fieldOf("breakingPower").forGetter(BlockFile::breakingPower),
 				Codec.STRING.fieldOf("name").forGetter(BlockFile::name),
-				SkyblockBlock.LIST_CODEC.fieldOf("blocks189").forGetter(BlockFile::SkyblockBlocks)
+				SkyblockBlock.LIST_CODEC.fieldOf("blocks189").forGetter(BlockFile::skyblockBlocks)
 		).apply(instance, BlockFile::new));
 	}
 
