@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils.mayor;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
@@ -12,12 +11,12 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import org.apache.http.client.HttpResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
 public class MayorUtils {
@@ -50,7 +49,6 @@ public class MayorUtils {
 			if (!mayorTickScheduled) {
 				tickMayorCache();
 				scheduleMayorTick();
-				loadMayorPerkOverrides();
 				mayorTickScheduled = true;
 			}
 		});
@@ -63,20 +61,33 @@ public class MayorUtils {
 		Scheduler.INSTANCE.schedule(MayorUtils::tickMayorCache, (int) (millisUntilNextMayorChange / 50) + 5 * 60 * 20); // 5 extra minutes to allow the cache to expire. This is a simpler than checking age and subtracting from max age and rescheduling again.
 	}
 
-	// TODO make this use Codecs
 	private static void tickMayorCache() {
+		loadMayorPerkOverrides();
+
 		CompletableFuture.supplyAsync(() -> {
 			try (Http.ApiResponse response = Http.sendCacheableGetRequest("https://hysky.de/api/skyblock/election", null)) {
-				if (!response.ok()) throw new HttpResponseException(response.statusCode(), response.content());
+				if (!response.ok()) {
+					throw new RuntimeException("Received bad http response: " + response.statusCode() + " " + response.content());
+				}
+
 				JsonObject json = JsonParser.parseString(response.content()).getAsJsonObject();
-				if (!json.get("success").getAsBoolean()) throw new RuntimeException("Request failed!"); //Can't find a more appropriate exception to throw here.
+
+				if (!json.get("success").getAsBoolean()) {
+					//Can't find a more appropriate exception to throw here.
+					throw new RuntimeException("Request failed!");
+				}
+
 				JsonObject mayorObject = json.getAsJsonObject("mayor");
-				if (mayorObject == null) throw new RuntimeException("No mayor object found in response!");
+
+				if (mayorObject == null) {
+					throw new RuntimeException("No mayor object found in response!");
+				}
+
 				return mayorObject;
 			} catch (Exception e) {
 				throw new RuntimeException(e); //Wrap the exception to be handled by the exceptionally block
 			}
-		}).exceptionally(throwable -> {
+		}, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(throwable -> {
 			LOGGER.error("[Skyblocker] Failed to get mayor status!", throwable.getCause());
 			if (mayorTickRetryAttempts < 5) {
 				int minutes = 5 << mayorTickRetryAttempts; //5, 10, 20, 40, 80 minutes
@@ -90,27 +101,24 @@ public class MayorUtils {
 		}).thenAccept(result -> {
 			if (!result.isEmpty()) {
 				try {
-					mayor = new Mayor(result.get("key").getAsString(),
-							result.get("name").getAsString(),
-							result.getAsJsonArray("perks")
-								.asList()
-								.stream()
-								.map(JsonElement::getAsJsonObject)
-								.map(object -> new Perk(object.get("name").getAsString(), object.get("description").getAsString()))
-								.toList());
+					mayor = Mayor.CODEC.parse(JsonOps.INSTANCE, result)
+							.setPartial(Mayor.EMPTY)
+							.resultOrPartial(error -> LOGGER.warn("[Skyblocker] Failed to parse mayor status from the API response. Error: {}", error))
+							.get();
 				} catch (Exception e) {
 					LOGGER.warn("[Skyblocker] Failed to parse mayor status from the API response.", e);
 					mayor = Mayor.EMPTY;
 				}
+
 				try {
 					JsonObject ministerObject = result.getAsJsonObject("minister");
-					if (ministerObject != null) { // Check if ministerObject is not null stops NPE caused by Derpy
-						JsonObject ministerPerk = ministerObject.getAsJsonObject("perk");
-						minister = new Minister(
-								ministerObject.get("key").getAsString(),
-								ministerObject.get("name").getAsString(),
-								new Perk(ministerPerk.get("name").getAsString(), ministerPerk.get("description").getAsString())
-						);
+
+					// Check if ministerObject is not null stops NPE caused by Derpy
+					if (ministerObject != null) {
+						minister = Minister.CODEC.parse(JsonOps.INSTANCE, ministerObject)
+								.setPartial(Minister.EMPTY)
+								.resultOrPartial(error -> LOGGER.warn("[Skyblocker] Failed to parse minister status from the API response. Error: {}", error))
+								.get();
 					} else {
 						LOGGER.info("[Skyblocker] No minister data found for the current mayor.");
 						minister = Minister.EMPTY;
@@ -137,7 +145,7 @@ public class MayorUtils {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to load mayor perk overrides.", e);
 			}
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	private record PerkOverride(String perk, long from, long to) {

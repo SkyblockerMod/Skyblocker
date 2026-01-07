@@ -7,7 +7,7 @@ import de.hysky.skyblocker.compatibility.rei.recipe.SkyblockRecipeCategory;
 import de.hysky.skyblocker.compatibility.rei.recipe.SkyblockRecipeDisplayGenerator;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
@@ -29,14 +29,13 @@ import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -55,9 +54,9 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.ID), EntryStacks.of(Items.ANVIL));
 		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockNpcShopRecipe.ID), EntryStacks.of(Items.GOLD_NUGGET));
 
-		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.ID, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
-		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.ID, Text.translatable("emi.category.skyblocker.skyblock_forge"), ItemUtils.getSkyblockerForgeStack(), 84));
-		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockNpcShopRecipe.ID, Text.translatable("emi.category.skyblocker.skyblock_npc_shop"), Items.GOLD_NUGGET.getDefaultStack(), 73));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.ID, Component.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.ID, Component.translatable("emi.category.skyblocker.skyblock_forge"), ItemUtils.getSkyblockerForgeStack(), 84));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockNpcShopRecipe.ID, Component.translatable("emi.category.skyblocker.skyblock_npc_shop"), Items.GOLD_NUGGET.getDefaultInstance(), 73));
 		categoryRegistry.add(new SkyblockInfoCategory());
 	}
 
@@ -108,13 +107,13 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 			}
 
 			// For Enchanted Books, change the name of the category to the enchant name
-			Text name;
-			if (parentItem.get().isOf(Items.ENCHANTED_BOOK)) {
-				String enchantName = ItemUtils.getLore(parentItem.get()).getFirst().getString();
+			Component name;
+			if (parentItem.get().is(Items.ENCHANTED_BOOK)) {
+				String enchantName = parentItem.get().skyblocker$getLoreStrings().getFirst();
 				enchantName = enchantName.substring(0, enchantName.lastIndexOf(' ')); // drop level
-				name = Text.literal(enchantName).formatted(parentId.startsWith("ULTIMATE") ? Formatting.LIGHT_PURPLE : Formatting.BLUE);
+				name = Component.literal(enchantName).withStyle(parentId.startsWith("ULTIMATE") ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.BLUE);
 			} else {
-				name = parentItem.get().getName();
+				name = parentItem.get().getHoverName();
 			}
 
 			registry.group(SkyblockerMod.id("rei_category/" + categoryPath), name, allItems);
@@ -124,16 +123,16 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 	@Override
 	public void registerExclusionZones(ExclusionZones zones) {
 		if (!Utils.isOnSkyblock()) return;
-		zones.register(GenericContainerScreen.class, containerScreen -> {
+		zones.register(ContainerScreen.class, containerScreen -> {
 			if (!SkyblockerConfigManager.get().uiAndVisuals.museumOverlay || !containerScreen.getTitle().getString().contains("Museum")) return List.of();
-			HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
-			return List.of(new Rectangle(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
+			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) containerScreen;
+			return List.of(new Rectangle(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
 		});
 
 		zones.register(InventoryScreen.class, screen -> {
 			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.isInGarden()) return List.of();
-			HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
-			return List.of(new Rectangle(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) screen;
+			return List.of(new Rectangle(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
 		});
 
 		zones.register(Screen.class, screen -> {

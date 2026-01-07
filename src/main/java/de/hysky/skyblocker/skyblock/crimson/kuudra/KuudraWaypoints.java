@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -28,13 +29,13 @@ import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.mob.GiantEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.Giant;
+import net.minecraft.world.phys.AABB;
 
 public class KuudraWaypoints {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -62,14 +63,14 @@ public class KuudraWaypoints {
 		Scheduler.INSTANCE.scheduleCyclic(KuudraWaypoints::tick, 20);
 	}
 
-	private static void load(MinecraftClient client) {
+	private static void load(Minecraft client) {
 		CompletableFuture<Void> safeSpots = loadWaypoints(client, SkyblockerMod.id("crimson/kuudra/safe_spot_waypoints.json"), SAFE_SPOT_WAYPOINTS, SAFE_SPOT_COLOR);
 		CompletableFuture<Void> pearls = loadWaypoints(client, SkyblockerMod.id("crimson/kuudra/pearl_waypoints.json"), PEARL_WAYPOINTS, PEARL_COLOR);
 
 		CompletableFuture.allOf(safeSpots, pearls).whenComplete((_result, _throwable) -> loaded = true);
 	}
 
-	private static CompletableFuture<Void> loadWaypoints(MinecraftClient client, Identifier file, ObjectArrayList<Waypoint> list, float[] colorComponents) {
+	private static CompletableFuture<Void> loadWaypoints(Minecraft client, Identifier file, ObjectArrayList<Waypoint> list, float[] colorComponents) {
 		return CompletableFuture.supplyAsync(() -> {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(file)) {
 				return CODEC.apply(colorComponents).parse(JsonOps.INSTANCE, getWaypoints(reader)).getOrThrow();
@@ -78,7 +79,7 @@ public class KuudraWaypoints {
 
 				return List.<Waypoint>of();
 			}
-		}).thenAccept(list::addAll);
+		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(list::addAll);
 	}
 
 	private static JsonElement getWaypoints(BufferedReader reader) {
@@ -86,25 +87,25 @@ public class KuudraWaypoints {
 	}
 
 	private static void tick() {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		CrimsonIsleConfig.Kuudra config = SkyblockerConfigManager.get().crimsonIsle.kuudra;
 
 		if (Utils.isInKuudra() && (config.supplyWaypoints || config.fuelWaypoints || config.ballistaBuildWaypoints) && client.player != null) {
-			Box searchBox = client.player.getBoundingBox().expand(500d);
+			AABB searchBox = client.player.getBoundingBox().inflate(500d);
 			ObjectArrayList<Waypoint> supplies = new ObjectArrayList<>();
 			ObjectArrayList<Waypoint> fuelCells = new ObjectArrayList<>();
 
-			if ((config.supplyWaypoints || config.fuelWaypoints) && client.world != null) {
-				List<GiantEntity> giants = client.world.getEntitiesByClass(GiantEntity.class, searchBox, giant -> giant.getY() < 67);
+			if ((config.supplyWaypoints || config.fuelWaypoints) && client.level != null) {
+				List<Giant> giants = client.level.getEntitiesOfClass(Giant.class, searchBox, giant -> giant.getY() < 67);
 
-				for (GiantEntity giant : giants) {
-					double yawOffset = giant.getYaw() + 115;
+				for (Giant giant : giants) {
+					double yawOffset = giant.getYRot() + 115;
 
-					double x = giant.getX() + 4.5 * Math.cos((yawOffset) * MathHelper.RADIANS_PER_DEGREE);
+					double x = giant.getX() + 4.5 * Math.cos((yawOffset) * Mth.DEG_TO_RAD);
 					double y = 75;
-					double z = giant.getZ() + 4.5 * Math.sin((yawOffset) * MathHelper.RADIANS_PER_DEGREE);
+					double z = giant.getZ() + 4.5 * Math.sin((yawOffset) * Mth.DEG_TO_RAD);
 
-					Waypoint waypoint = new Waypoint(BlockPos.ofFloored(x, y, z), SUPPLIES_AND_FUEL_TYPE, SUPPLIES_COLOR, false);
+					Waypoint waypoint = new Waypoint(BlockPos.containing(x, y, z), SUPPLIES_AND_FUEL_TYPE, SUPPLIES_COLOR, false);
 
 					if (Objects.requireNonNull(Kuudra.phase) == KuudraPhase.DPS) {
 						fuelCells.add(waypoint);
@@ -116,14 +117,14 @@ public class KuudraWaypoints {
 
 			ObjectArrayList<Waypoint> ballistaBuildSpots = new ObjectArrayList<>();
 
-			if (config.ballistaBuildWaypoints && client.world != null) {
-				List<ArmorStandEntity> armorStands = client.world.getEntitiesByClass(ArmorStandEntity.class, searchBox, ArmorStandEntity::hasCustomName);
+			if (config.ballistaBuildWaypoints && client.level != null) {
+				List<ArmorStand> armorStands = client.level.getEntitiesOfClass(ArmorStand.class, searchBox, ArmorStand::hasCustomName);
 
-				for (ArmorStandEntity armorStand : armorStands) {
+				for (ArmorStand armorStand : armorStands) {
 					String name = armorStand.getName().getString();
 
 					if (config.ballistaBuildWaypoints && name.contains("SNEAK + PUNCH")) {
-						ballistaBuildSpots.add(new Waypoint(armorStand.getBlockPos(), () -> Waypoint.Type.WAYPOINT, SUPPLIES_COLOR, false));
+						ballistaBuildSpots.add(new Waypoint(armorStand.blockPosition(), () -> Waypoint.Type.WAYPOINT, SUPPLIES_COLOR, false));
 					}
 				}
 			}

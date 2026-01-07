@@ -21,12 +21,12 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +41,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -62,7 +63,7 @@ public class Relics {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(Relics::onChatMessage);
 	}
 
-	private static void loadRelics(MinecraftClient client) {
+	private static void loadRelics(Minecraft client) {
 		relicsLoaded = CompletableFuture.runAsync(() -> {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(SkyblockerMod.id("spidersden/relics.json"))) {
 				for (Map.Entry<String, JsonElement> json : JsonParser.parseReader(reader).getAsJsonObject().asMap().entrySet()) {
@@ -92,10 +93,10 @@ public class Relics {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to load found relics", e);
 			}
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
-	private static void saveFoundRelics(MinecraftClient client) {
+	private static void saveFoundRelics(Minecraft client) {
 		Map<String, Set<BlockPos>> foundRelics = new HashMap<>();
 		for (ProfileAwareWaypoint relic : relics.values()) {
 			for (String profile : relic.foundProfiles) {
@@ -120,17 +121,17 @@ public class Relics {
 		}
 	}
 
-	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("relics")
 						.then(literal("markAllFound").executes(context -> {
 							relics.values().forEach(ProfileAwareWaypoint::setFound);
-							context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.relics.markAllFound")));
+							context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.relics.markAllFound")));
 							return 1;
 						}))
 						.then(literal("markAllMissing").executes(context -> {
 							relics.values().forEach(ProfileAwareWaypoint::setMissing);
-							context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.relics.markAllMissing")));
+							context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.relics.markAllMissing")));
 							return 1;
 						}))));
 	}
@@ -147,7 +148,7 @@ public class Relics {
 		}
 	}
 
-	private static boolean onChatMessage(Text text, boolean overlay) {
+	private static boolean onChatMessage(Component text, boolean overlay) {
 		String message = text.getString();
 		if (message.equals("You've already found this relic!") || message.startsWith("+10,000 Coins! (") && message.endsWith("/28 Relics)")) {
 			markClosestRelicFound();
@@ -158,15 +159,15 @@ public class Relics {
 
 	private static void markClosestRelicFound() {
 		if (!relicsLoaded.isDone()) return;
-		PlayerEntity player = MinecraftClient.getInstance().player;
+		Player player = Minecraft.getInstance().player;
 		if (player == null) {
 			LOGGER.warn("[Skyblocker] Failed to mark closest relic as found because player is null");
 			return;
 		}
 		relics.values().stream()
 				.filter(Waypoint::shouldRender)
-				.min(Comparator.comparingDouble(relic -> relic.pos.getSquaredDistance(player.getEntityPos())))
-				.filter(relic -> relic.pos.getSquaredDistance(player.getEntityPos()) <= 16)
+				.min(Comparator.comparingDouble(relic -> relic.pos.distToCenterSqr(player.position())))
+				.filter(relic -> relic.pos.distToCenterSqr(player.position()) <= 16)
 				.ifPresent(Waypoint::setFound);
 	}
 

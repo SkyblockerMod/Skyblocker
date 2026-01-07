@@ -1,14 +1,13 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import java.awt.Color;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.DyeColor;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
-import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.BlockPos;
 
 public class MiningLocationLabel extends DistancedNamedWaypoint {
 	private final Category category;
@@ -19,11 +18,11 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
 		this.category = category;
 	}
 
-	private static Text getName(Category category) {
+	private static Component getName(Category category) {
 		if (SkyblockerConfigManager.get().mining.commissionWaypoints.useColor) {
-			return Text.literal(category.getName()).withColor(category.getColor());
+			return Component.literal(category.getName()).withColor(category.getColor());
 		}
-		return Text.literal(category.getName());
+		return Component.literal(category.getName());
 	}
 
 	public Category category() {
@@ -162,11 +161,11 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
 	/**
 	 * enum for the different waypoints used int the crystals hud each with a {@link CrystalHollowsLocationsCategory#name} and associated {@link CrystalHollowsLocationsCategory#color}
 	 */
-	public enum CrystalHollowsLocationsCategory implements Category, StringIdentifiable {
+	public enum CrystalHollowsLocationsCategory implements Category, StringRepresentable {
 		UNKNOWN("Unknown", Color.WHITE, null), //used when a location is known but what's at the location is not known
-		JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor()), "[NPC] Kalhuiki Door Guardian:"),
+		JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getTextColor()), "[NPC] Kalhuiki Door Guardian:"),
 		MINES_OF_DIVAN("Mines of Divan", Color.GREEN, "    Jade Crystal"),
-		GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor()), "    Amber Crystal"),
+		GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getTextColor()), "    Amber Crystal"),
 		LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN, "    Sapphire Crystal"),
 		KHAZAD_DUM("Khazad-dûm", Color.YELLOW, "    Topaz Crystal"),
 		FAIRY_GROTTO("Fairy Grotto", Color.PINK, null),
@@ -176,7 +175,7 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
 		ODAWA("Odawa", Color.MAGENTA, "[NPC] Odawa:"),
 		KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY, null);
 
-		public static final Codec<CrystalHollowsLocationsCategory> CODEC = StringIdentifiable.createBasicCodec(CrystalHollowsLocationsCategory::values);
+		public static final Codec<CrystalHollowsLocationsCategory> CODEC = StringRepresentable.fromValues(CrystalHollowsLocationsCategory::values);
 
 		public final Color color;
 		private final String name;
@@ -203,7 +202,7 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name();
 		}
 	}

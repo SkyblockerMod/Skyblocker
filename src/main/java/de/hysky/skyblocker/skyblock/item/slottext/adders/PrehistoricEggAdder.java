@@ -3,15 +3,13 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
 public class PrehistoricEggAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
@@ -24,17 +22,17 @@ public class PrehistoricEggAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		if (!stack.isOf(Items.PLAYER_HEAD) || !stack.getSkyblockId().equals("PREHISTORIC_EGG")) return List.of();
-		NbtCompound nbt = ItemUtils.getCustomData(stack);
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
+		if (!stack.is(Items.PLAYER_HEAD) || !stack.getSkyblockId().equals("PREHISTORIC_EGG")) return List.of();
+		CompoundTag nbt = ItemUtils.getCustomData(stack);
 		if (!nbt.contains("blocks_walked")) return List.of();
-		int walked = nbt.getInt("blocks_walked", 0);
+		int walked = nbt.getIntOr("blocks_walked", 0);
 
 		String walkedStr;
 		if (walked < 1000) walkedStr = String.valueOf(walked);
 		else if (walked < 10000) walkedStr = String.format("%.1fk", walked/1000.0f);
 		else walkedStr = walked / 1000 + "k";
 
-		return SlotText.bottomLeftList(Text.literal(walkedStr).withColor(SlotText.CREAM));
+		return SlotText.bottomLeftList(Component.literal(walkedStr).withColor(SlotText.CREAM));
 	}
 }

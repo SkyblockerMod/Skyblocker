@@ -12,14 +12,13 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,7 +30,7 @@ public class StatusBarTracker {
 	private static final Pattern MANA_STATUS = Pattern.compile("§b(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|§3(?<overflow>[\\d,]+)ʬ) *");
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
 
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static final Minecraft client = Minecraft.getInstance();
 	private static Resource health = new Resource(100, 100, 0);
 	private static Resource mana = new Resource(100, 100, 0);
 	private static Resource speed = new Resource(100, 400, 0);
@@ -87,42 +86,43 @@ public class StatusBarTracker {
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	private static ActionResult interactItem(PlayerEntity player, World world, Hand hand) {
-		if (client.player == null) return ActionResult.PASS;
-		ItemStack handStack = client.player.getMainHandStack();
+	private static InteractionResult interactItem(Player player, Level world, InteractionHand hand) {
+		if (client.player == null) return InteractionResult.PASS;
+		ItemStack handStack = client.player.getMainHandItem();
 		int manaCost = 0;
 		boolean foundRightClick = false;
-		for (Text text : ItemUtils.getLore(handStack)) {
+		for (String text : handStack.skyblocker$getLoreStrings()) {
 			Matcher matcher;
-			if (foundRightClick && (matcher = MANA_LORE.matcher(text.getString())).matches()) {
+			if (foundRightClick && (matcher = MANA_LORE.matcher(text)).matches()) {
 				manaCost = RegexUtils.parseIntFromMatcher(matcher, 1);
 				break;
 			}
-			if (text.getString().trim().toLowerCase(Locale.ENGLISH).endsWith("right click")) {
+			if (text.trim().toLowerCase(Locale.ENGLISH).endsWith("right click")) {
 				foundRightClick = true;
 			}
 		}
 		if (manaCost > 0 && manaCost <= mana.value()) {
 			mana = new Resource(Math.max(mana.value() - manaCost, 0), mana.max(), mana.overflow());
 		}
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
-	private static boolean allowOverlayMessage(Text text, boolean overlay) {
+	private static boolean allowOverlayMessage(Component text, boolean overlay) {
 		onOverlayMessage(text, overlay);
 		return true;
 	}
 
-	private static Text onOverlayMessage(Text text, boolean overlay) {
-		if (!overlay || !Utils.isOnSkyblock() ||  Utils.isInTheRift()) {
+	private static Component onOverlayMessage(Component text, boolean overlay) {
+		if (!overlay || !Utils.isOnSkyblock()) {
 			return text;
 		}
-		if (!SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift()) {
+			return Component.nullToEmpty(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
+		} else {
 			//still update values for other parts of the mod to use
 			update(text.getString(), SkyblockerConfigManager.get().chat.hideMana);
 			return text;
 		}
-		return Text.of(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
 	}
 
 	public static String update(String actionBar, boolean filterManaUse) {
@@ -131,13 +131,14 @@ public class StatusBarTracker {
 		// Match health and don't add it to the string builder
 		// Append healing to the string builder if there is any healing
 		Matcher matcher = STATUS_HEALTH.matcher(actionBar);
-		if (!matcher.find()) return actionBar;
-		updateHealth(matcher);
-		if (matcher.group("healing") != null) {
-			sb.append("§c❤");
+		if (matcher.find()) {
+			updateHealth(matcher);
+			if (matcher.group("healing") != null) {
+				sb.append("§c❤");
+			}
+			if (!FancyStatusBars.isHealthFancyBarEnabled()) matcher.appendReplacement(sb, "$0");
+			else matcher.appendReplacement(sb, "$3");
 		}
-		if (!FancyStatusBars.isHealthFancyBarEnabled()) matcher.appendReplacement(sb, "$0");
-		else matcher.appendReplacement(sb, "$3");
 
 		// Match defense or mana use and don't add it to the string builder
 		if (matcher.usePattern(DEFENSE_STATUS).find()) {
@@ -188,17 +189,17 @@ public class StatusBarTracker {
 	private static void updateSpeed() {
 		// Black cat and racing helm are untested - I don't have the money to test atm, but no reason why they shouldn't work
 		assert client.player != null;
-		int value = (int) (client.player.isSprinting() ? (client.player.getMovementSpeed() / 1.3f) * 1000 : client.player.getMovementSpeed() * 1000);
+		int value = (int) (client.player.isSprinting() ? (client.player.getSpeed() / 1.3f) * 1000 : client.player.getSpeed() * 1000);
 		int max = 400; // hardcoded limit (except for with cactus knife, black cat, snail, racing helm, young drag)
-		if (client.player.getMainHandStack().getName().getString().contains("Cactus Knife") && Utils.getLocation() == Location.GARDEN) {
+		if (client.player.getMainHandItem().getHoverName().getString().contains("Cactus Knife") && Utils.getLocation() == Location.GARDEN) {
 			max = 500;
 		}
 		Iterable<ItemStack> armor = ItemUtils.getArmor(client.player);
 		int youngDragCount = 0;
 		for (ItemStack armorPiece : armor) {
-			if (armorPiece.getName().getString().contains("Racing Helmet")) {
+			if (armorPiece.getHoverName().getString().contains("Racing Helmet")) {
 				max = 500;
-			} else if (armorPiece.getName().getString().contains("Young Dragon")) {
+			} else if (armorPiece.getHoverName().getString().contains("Young Dragon")) {
 				youngDragCount++;
 			}
 		}
@@ -219,8 +220,8 @@ public class StatusBarTracker {
 
 	private static void updateAir() {
 		assert client.player != null;
-		int max = client.player.getMaxAir();
-		int value = Math.clamp(client.player.getAir(), 0, max);
+		int max = client.player.getMaxAirSupply();
+		int value = Math.clamp(client.player.getAirSupply(), 0, max);
 		air = new Resource(value, max, 0);
 	}
 

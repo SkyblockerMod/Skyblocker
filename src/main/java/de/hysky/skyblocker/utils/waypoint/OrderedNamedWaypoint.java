@@ -4,11 +4,10 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.function.Supplier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 
 public class OrderedNamedWaypoint extends NamedWaypoint {
 	private static final float[] RED_COLOR_COMPONENTS = {1f, 0f, 0f};
@@ -24,14 +23,14 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 	}
 
 	public OrderedNamedWaypoint(BlockPos pos, String name, float[] colorComponents) {
-		this(pos, Text.of(name), () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, true);
+		this(pos, Component.nullToEmpty(name), () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, true);
 	}
 
-	public OrderedNamedWaypoint(BlockPos pos, Text name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean shouldRender) {
+	public OrderedNamedWaypoint(BlockPos pos, Component name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean shouldRender) {
 		this(pos, name, typeSupplier, colorComponents, alpha, shouldRender, true);
 	}
 
-	public OrderedNamedWaypoint(BlockPos pos, Text name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean shouldRender, boolean throughWalls) {
+	public OrderedNamedWaypoint(BlockPos pos, Component name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean shouldRender, boolean throughWalls) {
 		super(pos, name, typeSupplier, colorComponents, alpha, shouldRender, throughWalls);
 	}
 
@@ -72,7 +71,7 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 
 	@Override
 	public OrderedNamedWaypoint withName(String name) {
-		return new OrderedNamedWaypoint(pos, Text.of(name), typeSupplier, colorComponents, alpha, isEnabled());
+		return new OrderedNamedWaypoint(pos, Component.nullToEmpty(name), typeSupplier, colorComponents, alpha, isEnabled());
 	}
 
 	@Override
@@ -99,8 +98,8 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 			collector.submitLineFromCursor(centerPos, components, components[3], waypoints.lineWidth);
 		}
 		if (shouldRenderName()) {
-			float scale = Math.max((float) RenderHelper.getCamera().getPos().distanceTo(centerPos) / 10, 1);
-			collector.submitText(Text.of(String.valueOf(index + 1)), centerPos.add(0, 1, 0), scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
+			float scale = Math.max((float) RenderHelper.getCamera().position().distanceTo(centerPos) / 10, 1);
+			collector.submitText(Component.nullToEmpty(String.valueOf(index + 1)), centerPos.add(0, 1, 0), scale, Minecraft.getInstance().font.lineHeight + 1, true);
 		}
 	}
 

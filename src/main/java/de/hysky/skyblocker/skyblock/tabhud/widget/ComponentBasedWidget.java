@@ -8,18 +8,18 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.option.GameOptions;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Abstract base class for a component based Widget.
@@ -30,16 +30,16 @@ import java.util.List;
 public abstract class ComponentBasedWidget extends HudWidget {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	private static final TextRenderer txtRend = MinecraftClient.getInstance().textRenderer;
+	private static final Font txtRend = Minecraft.getInstance().font;
 
-	private String lastError = null;
-	private static final List<Component> ERROR_COMPONENTS = List.of(new PlainTextComponent(Text.literal("An error occurred! Please check logs.").withColor(0xFFFF0000)));
+	private @Nullable String lastError = null;
+	private static final List<Component> ERROR_COMPONENTS = List.of(new PlainTextComponent(net.minecraft.network.chat.Component.literal("An error occurred! Please check logs.").withColor(0xFFFF0000)));
 
 	private final ArrayList<Component> components = new ArrayList<>();
 
 	private int prevW = 0, prevH = 0;
 
-	public static final int BORDER_SZE_N = txtRend.fontHeight + 2;
+	public static final int BORDER_SZE_N = txtRend.lineHeight + 2;
 	public static final int BORDER_SZE_S = 4;
 	public static final int BORDER_SZE_W = 4;
 	public static final int BORDER_SZE_E = 4;
@@ -48,7 +48,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	public static final int MINIMAL_COL_BG_BOX = 0x64000000;
 
 	private final int color;
-	private final Text title;
+	private final net.minecraft.network.chat.Component title;
 
 	/**
 	 * Most often than not this should be instantiated only once.
@@ -57,7 +57,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 * @param colorValue the colour
 	 * @param internalID the internal ID, for config, positioning depending on other widgets, all that good stuff
 	 */
-	public ComponentBasedWidget(MutableText title, Integer colorValue, String internalID) {
+	public ComponentBasedWidget(MutableComponent title, Integer colorValue, String internalID) {
 		super(internalID);
 		this.title = title;
 		this.color = 0xFF000000 | colorValue;
@@ -91,40 +91,40 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 * added as such:
 	 * [ico] [string] [textB.formatted(fmt)]
 	 */
-	public final void addSimpleIcoText(ItemStack ico, String string, Formatting fmt, int idx) {
-		Text txt = simpleEntryText(idx, string, fmt);
+	public final void addSimpleIcoText(@Nullable ItemStack ico, String string, ChatFormatting fmt, int idx) {
+		net.minecraft.network.chat.Component txt = simpleEntryText(idx, string, fmt);
 		this.addComponent(Components.iconTextComponent(ico, txt));
 	}
 
-	public final void addSimpleIcoText(ItemStack ico, String string, Formatting fmt, String content) {
-		Text txt = simpleEntryText(content, string, fmt);
+	public final void addSimpleIcoText(@Nullable ItemStack ico, String string, ChatFormatting fmt, String content) {
+		net.minecraft.network.chat.Component txt = simpleEntryText(content, string, fmt);
 		this.addComponent(Components.iconTextComponent(ico, txt));
 	}
 
-	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, Formatting formatting, String content) {
-		Text text = simpleEntryTranslatableText(translationKey, content, formatting);
+	public final void addSimpleIconTranslatableText(@Nullable ItemStack icon, @Translatable String translationKey, ChatFormatting formatting, String content) {
+		net.minecraft.network.chat.Component text = simpleEntryTranslatableText(translationKey, content, formatting);
 		this.addComponent(Components.iconTextComponent(icon, text));
 	}
 
-	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, Formatting formatting, Text content) {
-		Text text = simpleEntryTranslatableText(translationKey, content, formatting);
+	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, ChatFormatting formatting, net.minecraft.network.chat.Component content) {
+		net.minecraft.network.chat.Component text = simpleEntryTranslatableText(translationKey, content, formatting);
 		this.addComponent(Components.iconTextComponent(icon, text));
 	}
 
 	@Override
-	public final void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	public final void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
-			GameOptions options = MinecraftClient.getInstance().options;
-			int textBackgroundColor = options.getTextBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
+			Options options = Minecraft.getInstance().options;
+			int textBackgroundColor = options.getBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
 			context.fill(x + 1, y, x + w - 1, y + h, textBackgroundColor);
 			context.fill(x, y + 1, x + 1, y + h - 1, textBackgroundColor);
 			context.fill(x + w - 1, y + 1, x + w, y + h - 1, textBackgroundColor);
 		}
 
-		int strHeightHalf = txtRend.fontHeight / 2;
-		int strAreaWidth = txtRend.getWidth(title) + 4;
+		int strHeightHalf = txtRend.lineHeight / 2;
+		int strAreaWidth = txtRend.width(title) + 4;
 
-		context.drawText(txtRend, title, x + 8, y + 2, this.color, false);
+		context.drawString(txtRend, title, x + 8, y + 2, this.color, false);
 
 		// Only draw borders if not in minimal mode
 		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal()) {
@@ -162,18 +162,18 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		w += BORDER_SZE_E + BORDER_SZE_W;
 
 		// min width is dependent on title
-		w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + txtRend.getWidth(title) + 4 + 4 + 1);
+		w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + txtRend.width(title) + 4 + 4 + 1);
 		// update the positions so it doesn't wait for the next tick or something
 		if (h != prevH || w != prevW) ScreenBuilder.markDirty();
 		prevW = w;
 		prevH = h;
 	}
 
-	private void drawHLine(DrawContext context, int xpos, int ypos, int width) {
+	private void drawHLine(GuiGraphics context, int xpos, int ypos, int width) {
 		context.fill(xpos, ypos, xpos + width, ypos + 1, this.color);
 	}
 
-	private void drawVLine(DrawContext context, int xpos, int ypos, int height) {
+	private void drawVLine(GuiGraphics context, int xpos, int ypos, int height) {
 		context.fill(xpos, ypos, xpos + 1, ypos + height, this.color);
 	}
 
@@ -182,7 +182,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 * returned:
 	 * [entryName] [textB.formatted(contentFmt)]
 	 */
-	public static Text simpleEntryText(int idx, String entryName, Formatting contentFmt) {
+	public static net.minecraft.network.chat.@Nullable Component simpleEntryText(int idx, String entryName, ChatFormatting contentFmt) {
 
 		String src = PlayerListManager.strAt(idx);
 
@@ -202,15 +202,15 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	/**
 	 * @return [entryName] [entryContent.formatted(contentFmt)]
 	 */
-	public static Text simpleEntryText(String entryContent, String entryName, Formatting contentFmt) {
-		return Text.literal(entryName).append(Text.literal(entryContent).formatted(contentFmt));
+	public static net.minecraft.network.chat.Component simpleEntryText(String entryContent, String entryName, ChatFormatting contentFmt) {
+		return net.minecraft.network.chat.Component.literal(entryName).append(net.minecraft.network.chat.Component.literal(entryContent).withStyle(contentFmt));
 	}
 
-	public static Text simpleEntryTranslatableText(String translationKey, String content, Formatting contentFormatting) {
-		return Text.translatable(translationKey, Text.literal(content).formatted(contentFormatting));
+	public static net.minecraft.network.chat.Component simpleEntryTranslatableText(String translationKey, String content, ChatFormatting contentFormatting) {
+		return net.minecraft.network.chat.Component.translatable(translationKey, net.minecraft.network.chat.Component.literal(content).withStyle(contentFormatting));
 	}
 
-	public static Text simpleEntryTranslatableText(String translationKey, Text content, Formatting contentFormatting) {
-		return Text.translatable(translationKey, content.copy().formatted(contentFormatting));
+	public static net.minecraft.network.chat.Component simpleEntryTranslatableText(String translationKey, net.minecraft.network.chat.Component content, ChatFormatting contentFormatting) {
+		return net.minecraft.network.chat.Component.translatable(translationKey, content.copy().withStyle(contentFormatting));
 	}
 }

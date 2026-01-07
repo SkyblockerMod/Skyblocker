@@ -4,10 +4,9 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,12 +126,12 @@ public class SkyblockTime {
 		//LOGGER.info("[Skyblocker Time] Skyblock time updated to Year {}, Season {}, Month {}, Day {}, Hour {}", year, season, month, day, hour);
 	}
 
-	public static MutableText formatTime(double seconds) {
-		if (seconds <= 0) return Text.literal("Now").formatted(Formatting.GREEN);
-		return Text.literal(formatTimeString(seconds));
+	public static MutableComponent formatTime(double seconds) {
+		if (seconds <= 0) return Component.literal("Now").withStyle(ChatFormatting.GREEN);
+		return Component.literal(formatTimeString(seconds));
 	}
 
-	public static @NotNull String formatTimeString(double seconds) {
+	public static String formatTimeString(double seconds) {
 		seconds = Math.ceil(Math.max(seconds, 0));
 		StringBuilder builder = new StringBuilder();
 		if (seconds >= 86400) {

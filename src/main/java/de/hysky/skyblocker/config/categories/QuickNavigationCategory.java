@@ -4,28 +4,29 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
-import de.hysky.skyblocker.config.screens.quicknav.ItemSelectionScreen;
-import net.azureaaron.dandelion.systems.ButtonOption;
-import net.azureaaron.dandelion.systems.ConfigCategory;
-import net.azureaaron.dandelion.systems.Option;
-import net.azureaaron.dandelion.systems.OptionGroup;
-import net.azureaaron.dandelion.systems.controllers.IntegerController;
-import net.azureaaron.dandelion.systems.controllers.ItemController;
-import net.azureaaron.dandelion.systems.controllers.StringController;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.Item;
-import net.minecraft.text.Text;
+import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.controllers.IntegerController;
+import net.azureaaron.dandelion.api.controllers.ItemController;
+import net.azureaaron.dandelion.api.controllers.StringController;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 
 public class QuickNavigationCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.id(SkyblockerMod.id("config/quicknav"))
-				.name(Text.translatable("skyblocker.config.quickNav"))
+				.name(Component.translatable("skyblocker.config.quickNav"))
 
 				//Toggle
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("skyblocker.config.quickNav.enableQuickNav"))
-						.description(Text.translatable("skyblocker.config.quickNav.enableQuickNav.@Tooltip"))
+						.name(Component.translatable("skyblocker.config.quickNav.enableQuickNav"))
+						.description(Component.translatable("skyblocker.config.quickNav.enableQuickNav.@Tooltip"))
 						.binding(defaults.quickNav.enableQuickNav,
 								() -> config.quickNav.enableQuickNav,
 								newValue -> config.quickNav.enableQuickNav = newValue)
@@ -52,67 +53,71 @@ public class QuickNavigationCategory {
 
 	private static OptionGroup quickNavButton(QuickNavigationConfig.QuickNavItem defaultButton, QuickNavigationConfig.QuickNavItem button, int index) {
 		return OptionGroup.createBuilder()
-				.name(Text.translatable("skyblocker.config.quickNav.button", index))
+				.name(Component.translatable("skyblocker.config.quickNav.button", index))
 				.collapsed(true)
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("skyblocker.config.quickNav.button.render"))
+						.name(Component.translatable("skyblocker.config.quickNav.button.render"))
 						.binding(defaultButton.render,
 								() -> button.render,
 								newValue -> button.render = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("skyblocker.config.quickNav.button.doubleClick"))
+						.name(Component.translatable("skyblocker.config.quickNav.button.doubleClick"))
 						.binding(defaultButton.doubleClick,
 								() -> button.doubleClick,
 								newValue -> button.doubleClick = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(ButtonOption.createBuilder()
-						.name(Text.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem"))
-						.description(Text.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip"))
-						.action(screen -> MinecraftClient.getInstance().setScreen(new ItemSelectionScreen(screen, button.itemData)))
-						.prompt(Text.translatable("text.skyblocker.open"))
+						.name(Component.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem"))
+						.description(Component.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip"))
+						.action(screen -> Minecraft.getInstance().setScreen(new ItemSelectionPopup(screen, item -> {
+							if (item == null) return;
+							button.itemData.item = item.getItem();
+							button.itemData.components = ItemStackComponentizationFixer.componentsAsString(item);
+						})))
+						.prompt(Component.translatable("text.skyblocker.open"))
 						.build())
 				.option(Option.<Item>createBuilder()
-						.name(Text.translatable("skyblocker.config.quickNav.button.item.itemName"))
+						.name(Component.translatable("skyblocker.config.quickNav.button.item.itemName"))
 						.binding(defaultButton.itemData.item,
 								() -> button.itemData.item,
 								newValue -> button.itemData.item = newValue)
 						.controller(ItemController.createBuilder().build())
 						.build())
 				.option(Option.<Integer>createBuilder()
-						.name(Text.translatable("skyblocker.config.quickNav.button.item.count"))
+						.name(Component.translatable("skyblocker.config.quickNav.button.item.count"))
 						.binding(defaultButton.itemData.count,
 								() -> button.itemData.count,
 								newValue -> button.itemData.count = newValue)
 						.controller(IntegerController.createBuilder().range(1, 99).build())
 						.build())
 				.option(Option.<String>createBuilder()
-						.name(Text.translatable("skyblocker.config.quickNav.button.item.components"))
-						.description(Text.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip"))
+						.name(Component.translatable("skyblocker.config.quickNav.button.item.components"))
+						.description(Component.translatable("skyblocker.config.quickNav.button.item.components.@Tooltip"))
 						.binding(defaultButton.itemData.components,
 								() -> button.itemData.components,
 								newValue -> button.itemData.components = newValue)
 						.controller(StringController.createBuilder().build())
 						.build())
 				.option(Option.<String>createBuilder()
-						.name(Text.translatable("skyblocker.config.quickNav.button.uiTitle"))
+						.name(Component.translatable("skyblocker.config.quickNav.button.uiTitle"))
 						.binding(defaultButton.uiTitle,
 								() -> button.uiTitle,
 								newValue -> button.uiTitle = newValue)
 						.controller(StringController.createBuilder().build())
 						.build())
 				.option(Option.<String>createBuilder()
-						.name(Text.translatable("skyblocker.config.quickNav.button.tooltip"))
-						.description(Text.translatable("skyblocker.config.quickNav.button.tooltip.@Tooltip"))
+						.name(Component.translatable("skyblocker.config.quickNav.button.tooltip"))
+						.description(Component.translatable("skyblocker.config.quickNav.button.tooltip.@Tooltip"))
 						.binding(defaultButton.tooltip,
 								() -> button.tooltip,
 								newValue -> button.tooltip = newValue)
 						.controller(StringController.createBuilder().build())
 						.build())
 				.option(Option.<String>createBuilder()
-						.name(Text.translatable("skyblocker.config.quickNav.button.clickEvent"))
+						.name(Component.translatable("skyblocker.config.quickNav.button.clickEvent"))
 						.binding(defaultButton.clickEvent,
 								() -> button.clickEvent,
 								newValue -> button.clickEvent = newValue)

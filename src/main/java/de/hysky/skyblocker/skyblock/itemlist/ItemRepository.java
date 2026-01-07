@@ -16,13 +16,8 @@ import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEUNpcShopRecipe;
 import io.github.moulberry.repo.data.NEURecipe;
 import io.github.moulberry.repo.util.NEUId;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
-import net.minecraft.recipe.display.CuttingRecipeDisplay;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +30,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.SelectableRecipe;
 
 public class ItemRepository {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(ItemRepository.class);
@@ -76,13 +77,13 @@ public class ItemRepository {
 	 * This also reloads REI to include the Skyblock items when the items are done loading.
 	 */
 	private static void handleRecipeSynchronization() {
-		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.world == null || client.getNetworkHandler() == null) return;
+		Minecraft client = Minecraft.getInstance();
+		if (client.level == null || client.getConnection() == null) return;
 
-		SynchronizeRecipesS2CPacket packet = new SynchronizeRecipesS2CPacket(Map.of(), CuttingRecipeDisplay.Grouping.empty());
+		ClientboundUpdateRecipesPacket packet = new ClientboundUpdateRecipesPacket(Map.of(), SelectableRecipe.SingleInputSet.empty());
 		try {
 			client.execute(() -> {
-				client.getNetworkHandler().onSynchronizeRecipes(packet);
+				client.getConnection().handleUpdateRecipes(packet);
 
 				if (JEICompatibility.JEI_LOADED) {
 					SkyblockerJEIPlugin.trickJEIIntoLoadingRecipes();
@@ -113,7 +114,7 @@ public class ItemRepository {
 
 		afterImportTasks.forEach(task -> {
 			if (task.async) {
-				CompletableFuture.runAsync(task.runnable).exceptionally(e -> {
+				CompletableFuture.runAsync(task.runnable, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
 					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
 					return null;
 				});
@@ -132,7 +133,7 @@ public class ItemRepository {
 			ItemStack stack = ItemStackBuilder.fromNEUItem(item);
 			StackOverlays.applyOverlay(item, stack);
 
-			if (stack.isOf(Items.ENCHANTED_BOOK) && stack.getSkyblockId().contains(";")) {
+			if (stack.is(Items.ENCHANTED_BOOK) && stack.getSkyblockId().contains(";")) {
 				ItemUtils.getCustomData(stack).putString("id", "ENCHANTED_BOOK");
 			}
 
@@ -198,8 +199,7 @@ public class ItemRepository {
 	/**
 	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName()}.
 	 */
-	@Nullable
-	public static ItemStack getItemStack(String neuId) {
+	public static @Nullable ItemStack getItemStack(String neuId) {
 		return itemsImported ? itemsMap.get(neuId) : null;
 	}
 
@@ -257,7 +257,7 @@ public class ItemRepository {
 	public static void runAfterImport(Runnable runnable, boolean async) {
 		if (filesImported) {
 			if (async) {
-				CompletableFuture.runAsync(runnable).exceptionally(e -> {
+				CompletableFuture.runAsync(runnable, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
 					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
 					return null;
 				});

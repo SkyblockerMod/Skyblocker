@@ -8,18 +8,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
-
-import de.hysky.skyblocker.mixins.accessors.BufferManagerInvoker;
-import net.minecraft.client.gl.BufferManager;
-import net.minecraft.client.gl.GlCommandEncoder;
+import com.mojang.blaze3d.opengl.DirectStateAccess;
+import com.mojang.blaze3d.opengl.GlCommandEncoder;
+import de.hysky.skyblocker.mixins.accessors.DirectStateAccessInvoker;
 
 @Mixin(GlCommandEncoder.class)
 public class GlCommandEncoderMixin {
 
-	@WrapWithCondition(method = "writeToBuffer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/BufferManager;setBufferSubData(IILjava/nio/ByteBuffer;I)V"))
-	private static boolean aaronMod$replaceBufferData(BufferManager manager, int buffer, int offset, ByteBuffer data, int usage, @Local(argsOnly = true) GpuBufferSlice gpuBufferSlice) {
+	@WrapWithCondition(method = "writeToBuffer", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/DirectStateAccess;bufferSubData(IJLjava/nio/ByteBuffer;I)V"))
+	private static boolean skyblocker$replaceBufferData(DirectStateAccess manager, int buffer, long offset, ByteBuffer data, int usage, @Local(argsOnly = true) GpuBufferSlice gpuBufferSlice) {
 		if (offset == 0 && gpuBufferSlice.length() == gpuBufferSlice.buffer().size()) {
-			((BufferManagerInvoker) manager).invokeSetBufferData(buffer, data, gpuBufferSlice.buffer().usage());
+			((DirectStateAccessInvoker) manager).invokeBufferData(buffer, data, gpuBufferSlice.buffer().usage());
 
 			return false;
 		}
