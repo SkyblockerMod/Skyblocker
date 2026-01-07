@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
-import net.azureaaron.dandelion.api.ConfigType;
+import net.azureaaron.dandelion.platform.ConfigType;
 import net.minecraft.client.resources.language.I18n;
 
 public class MiscConfig {
