@@ -148,7 +148,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 		matrices.pushMatrix();
 		matrices.translate(leftPos, topPos);
 		// Search
-		context.enableScissor(leftPos + 7, topPos + 4, leftPos + 97, topPos + 16);
+		context.enableScissor(7, 4, 97, 16);
 		context.drawString(font, Component.literal(search).withStyle(Style.EMPTY.withUnderlined(onSearchField(mouseX, mouseY))), 9, 6, CommonColors.WHITE, true);
 		context.disableScissor();
 
