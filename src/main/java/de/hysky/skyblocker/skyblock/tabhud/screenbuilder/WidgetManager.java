@@ -9,6 +9,7 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigScreen;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
@@ -17,6 +18,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
 import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
@@ -38,6 +40,7 @@ import org.slf4j.Logger;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -57,6 +60,7 @@ public class WidgetManager {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
 	private static Config config = new Config(Map.of(), Map.of());
+	private static boolean showOldVersionMessage = false;
 
 	private static final Map<Location, Map<ScreenLayer, ScreenBuilder>> BUILDER_MAP = new EnumMap<>(Location.class);
 
@@ -88,6 +92,16 @@ public class WidgetManager {
 			}
 			loadConfig();
 
+		});
+
+		SkyblockEvents.JOIN.register(() -> {
+			if (showOldVersionMessage) {
+				if (Minecraft.getInstance().player == null) return;
+				Minecraft.getInstance().player.displayClientMessage(Constants.PREFIX.get().append(
+						"The HUD system has changed! Sadly your previous config couldn't be ported over due to complications... Check out /skyblocker hud!"
+				), false);
+				showOldVersionMessage = false;
+			}
 		});
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
@@ -165,6 +179,7 @@ public class WidgetManager {
 			JsonElement input = JsonParser.parseReader(reader);
 			if (!(input instanceof JsonObject object) || !object.has(VERSION_KEY)) {
 				// Don't bother TRYING to load if it's the old format.
+				showOldVersionMessage = true;
 				LOGGER.info("[Skyblocker] Old HUD config detected. Ignoring :(");
 				return;
 			}
@@ -184,6 +199,8 @@ public class WidgetManager {
 					LOGGER.error("[Skyblocker] Failed to load HUD config for {}", widget.getId(), e);
 				}
 			}
+		} catch (NoSuchFileException ignored) {
+
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to HUD load config", e);
 			showErrorToast();
