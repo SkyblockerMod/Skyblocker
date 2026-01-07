@@ -163,7 +163,6 @@ public class ProfileViewerTextWidget {
 					else if (item.getSkyblockApiId().equals("HEGEMONY_ARTIFACT") && !duplicates.containsKey(item.getSkyblockApiId())) {
 						magicalPower += computeMagicalPower(item.getSkyblockRarity());
 					}
-					
 
 					if (!duplicates.containsKey(item.getSkyblockApiId())) {
 						magicalPower += computeMagicalPower(item.getSkyblockRarity());
