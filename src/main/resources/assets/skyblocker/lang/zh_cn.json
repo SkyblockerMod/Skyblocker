@@ -1597,5 +1597,19 @@
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError2": "数字文本不能以分隔符开头",
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError3": "数字文本不能包含前导小数点",
     "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator.@Tooltip": "为狩猎工具包中的工具显示红色标记",
-    "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator": "狩猎工具包指示器"
+    "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator": "狩猎工具包指示器",
+    "skyblocker.config.dungeons.terminalHud.determineInProgressStatus": "启用“进行中”状态",
+    "skyblocker.config.dungeons.terminalHud.enabled": "启用",
+    "skyblocker.config.dungeons.terminalHud.showCompletedTerminals": "显示已完成的终端",
+    "skyblocker.config.dungeons.terminalHud.showDevice": "显示设备",
+    "skyblocker.config.dungeons.terminalHud.showGate": "显示大门",
+    "skyblocker.config.dungeons.terminalHud.showLevers": "显示拉杆",
+    "skyblocker.config.dungeons.terminalHud.showTerminalStatus": "显示任务状态",
+    "skyblocker.config.dungeons.terminalHud.showTerminalStatus.@Tooltip": "如果禁用，则仅显示未完成的任务。",
+    "skyblocker.config.dungeons.terminalHud.showTerminals": "显示终端",
+    "skyblocker.dungeons.terminalHud.completeStatus": "完成",
+    "skyblocker.dungeons.terminalHud.destroyedStatus": "已被破坏",
+    "skyblocker.dungeons.terminalHud.incompleteStatus": "未完成",
+    "skyblocker.config.dungeons.terminalHud": "终端HUD（F7/M7）",
+    "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "显示距离该任务最近的玩家用户名"
 }
