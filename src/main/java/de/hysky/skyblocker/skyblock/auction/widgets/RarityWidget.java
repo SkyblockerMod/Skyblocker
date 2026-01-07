@@ -5,7 +5,6 @@ import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import java.util.List;
 import java.util.Locale;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,6 +14,8 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import org.joml.Matrix3x2fStack;
 
 public class RarityWidget extends AbstractWidget {
@@ -86,8 +87,7 @@ public class RarityWidget extends AbstractWidget {
 	public void setText(List<Component> tooltip, String current) {
 		this.tooltip = tooltip;
 		this.current = current;
-		//noinspection DataFlowIssue
-		this.color = SkyblockItemRarity.containsName(current.toUpperCase(Locale.ENGLISH)).map(r -> r.color).orElse(ChatFormatting.GRAY.getColor()) | 0xFF000000;
+		this.color = ARGB.opaque(SkyblockItemRarity.containsName(current.toUpperCase(Locale.ENGLISH)).map(r -> r.color).orElse(CommonColors.GRAY));
 	}
 
 	@Override
