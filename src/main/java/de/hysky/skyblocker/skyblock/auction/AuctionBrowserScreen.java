@@ -46,7 +46,7 @@ import net.minecraft.world.item.Items;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);
-	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/browser/background.png");
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/browser.png");
 	private static final Identifier SCROLLER_TEXTURE = Identifier.withDefaultNamespace("container/creative_inventory/scroller");
 
 	private static final Identifier up_arrow_tex = SkyblockerMod.id("up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame

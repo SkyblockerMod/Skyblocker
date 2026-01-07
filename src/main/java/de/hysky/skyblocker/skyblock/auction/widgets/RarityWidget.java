@@ -19,8 +19,11 @@ import org.joml.Matrix3x2fStack;
 
 public class RarityWidget extends AbstractWidget {
 
-	private static final Identifier HOVER_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/hover.png");
-	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/background.png");
+	private static final Identifier LEFT_TEXTURE = SkyblockerMod.id("auctions_gui/rarity_widget/left");
+	private static final Identifier LEFT_HOVER_TEXTURE = SkyblockerMod.id("auctions_gui/rarity_widget/left_hover");
+	private static final Identifier RIGHT_TEXTURE = SkyblockerMod.id("auctions_gui/rarity_widget/right");
+	private static final Identifier RIGHT_HOVER_TEXTURE = SkyblockerMod.id("auctions_gui/rarity_widget/right_hover");
+	private static final Identifier BACKGROUND = SkyblockerMod.id("auctions_gui/rarity_widget/background");
 	private final SlotClickHandler onClick;
 	private int slotId = -1;
 
@@ -36,9 +39,9 @@ public class RarityWidget extends AbstractWidget {
 		matrices.translate(getX(), getY());
 		boolean onLeftArrow = isOnLeftArrow(mouseX);
 		boolean onRightArrow = isOnRightArrow(mouseX);
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 0, 0, 48, 11, 48, 11);
-		if (onLeftArrow) context.blit(RenderPipelines.GUI_TEXTURED, HOVER_TEXTURE, 0, 0, 0, 0, 6, 11, 6, 11);
-		if (onRightArrow) context.blit(RenderPipelines.GUI_TEXTURED, HOVER_TEXTURE, 42, 0, 0, 0, 6, 11, 6, 11);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, 6, 0, 36, 11);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, onLeftArrow ? LEFT_HOVER_TEXTURE : LEFT_TEXTURE, 0, 0, 6, 11);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, onRightArrow ? RIGHT_HOVER_TEXTURE : RIGHT_TEXTURE, 42, 0, 6, 11);
 
 		// Text
 		Font textRenderer = Minecraft.getInstance().font;
