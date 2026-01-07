@@ -429,8 +429,9 @@ public class SearchOverManager {
 	private static void addExtras() {
 		// pet level
 		if (maxPetLevel) {
-			if (auctionPets.contains(search.toLowerCase(Locale.ENGLISH))) {
-				if (search.equalsIgnoreCase("golden dragon") || search.equalsIgnoreCase("jade dragon")) {
+			String lcSearch = search.toLowerCase(Locale.ENGLISH);
+			if (auctionPets.contains(lcSearch)) {
+				if (lcSearch.endsWith("dragon") && !lcSearch.startsWith("ender")) {
 					search = "[Lvl 200] " + search;
 				} else {
 					search = "[Lvl 100] " + search;
