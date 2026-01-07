@@ -167,7 +167,7 @@ public class ChatRuleConfigScreen extends Screen {
 					chatRule.setCustomSound(value.orElse(null));
 					value.ifPresent(soundEvent -> minecraft.getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1.0F)));
 				})
-		);
+		).setTooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.@Tooltip")));
 
 		// Chat message
 		EditBox chatMessageInput = new EditBox(font, getWidth(2), 20, Component.empty());
@@ -265,6 +265,7 @@ public class ChatRuleConfigScreen extends Screen {
 			if (message == null) return;
 			message.icon = stack;
 		});
+		itemInput.setTooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.@Tooltip")));
 		itemInput.setValue(chatRule.getToastMessage() != null ? getItemString(chatRule.getToastMessage().icon) : "minecraft:painting");
 
 		// Duration slider
