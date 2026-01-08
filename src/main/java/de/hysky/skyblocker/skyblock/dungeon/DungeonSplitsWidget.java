@@ -188,7 +188,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	public DungeonSplitsWidget() {
 		super(net.minecraft.network.chat.Component.literal("Splits").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD),
-				ChatFormatting.GOLD.getColor(), "Dungeon Splits", 3, 0, false, AVAILABLE_LOCATIONS);
+				ChatFormatting.GOLD.getColor(), "dungeon_splits", 3, 0, false, AVAILABLE_LOCATIONS);
 		instance = this;
 
 		BEST_SPLITS.init();

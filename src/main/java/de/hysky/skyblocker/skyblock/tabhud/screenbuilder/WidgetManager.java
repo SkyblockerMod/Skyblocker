@@ -10,9 +10,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.galatea.SweepDetailsHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigScreen;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
@@ -21,6 +23,7 @@ import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -47,6 +50,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -96,11 +100,13 @@ public class WidgetManager {
 
 		SkyblockEvents.JOIN.register(() -> {
 			if (showOldVersionMessage) {
-				if (Minecraft.getInstance().player == null) return;
-				Minecraft.getInstance().player.displayClientMessage(Constants.PREFIX.get().append(
-						"The HUD system has changed! Sadly your previous config couldn't be ported over due to complications... Check out /skyblocker hud!"
-				), false);
-				showOldVersionMessage = false;
+				Scheduler.INSTANCE.schedule(() -> {
+					if (Minecraft.getInstance().player == null) return;
+					Minecraft.getInstance().player.displayClientMessage(Constants.PREFIX.get().append(
+							"The HUD system has changed! Sadly your previous config couldn't be ported over due to complications... Check out /skyblocker hud!"
+					), false);
+					showOldVersionMessage = false;
+				}, 10 * 20); // displays a bit too early and gets burried by tips and other stuff instantly, so we delay a bit
 			}
 		});
 
@@ -180,9 +186,11 @@ public class WidgetManager {
 			if (!(input instanceof JsonObject object) || !object.has(VERSION_KEY)) {
 				// Don't bother TRYING to load if it's the old format.
 				showOldVersionMessage = true;
+				fillDefaultConfig(0);
 				LOGGER.info("[Skyblocker] Old HUD config detected. Ignoring :(");
 				return;
 			}
+			if (object.get(VERSION_KEY).isJsonPrimitive()) fillDefaultConfig(object.get(VERSION_KEY).getAsInt());
 			config = Config.CODEC.decode(JsonOps.INSTANCE, input).resultOrPartial(error::set).orElseThrow().getFirst();
 			if (error.get() != null) { // separate it to not run when the config fully cannot load
 				LOGGER.error("[Skyblocker] Failed to load part of the HUD config", new Exception(error.get()));
@@ -200,10 +208,91 @@ public class WidgetManager {
 				}
 			}
 		} catch (NoSuchFileException ignored) {
-
+			// Fill default config
+			fillDefaultConfig(0);
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to HUD load config", e);
 			showErrorToast();
+		}
+	}
+
+	private static void fillDefaultConfig(int comingFromVersion) {
+		if (comingFromVersion <= 0) {
+			// Mining related stuff
+			HudWidget commissions = getWidgetOrPlaceholder("commissions");
+			HudWidget powders = getWidgetOrPlaceholder("powders");
+
+			powders.setPositionRule(new PositionRule(
+					"commissions",
+					new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT),
+					new PositionRule.Point(PositionRule.VerticalPoint.TOP, PositionRule.HorizontalPoint.LEFT),
+					0,
+					2
+			));
+			ScreenBuilder dwarvenHud = getScreenBuilder(Location.DWARVEN_MINES, ScreenLayer.HUD);
+			dwarvenHud.addWidget(commissions);
+			dwarvenHud.addWidget(powders);
+			dwarvenHud.updateConfig();
+
+			ScreenBuilder crystalHollows = getScreenBuilder(Location.CRYSTAL_HOLLOWS, ScreenLayer.HUD);
+			crystalHollows.addWidget(commissions);
+			crystalHollows.addWidget(powders);
+			HudWidget crystals = getWidgetOrPlaceholder("hud_crystals");
+			crystals.setPositionRule(new PositionRule(
+					Optional.empty(),
+					new PositionRule.Point(PositionRule.VerticalPoint.TOP, PositionRule.HorizontalPoint.RIGHT),
+					new PositionRule.Point(PositionRule.VerticalPoint.TOP, PositionRule.HorizontalPoint.RIGHT),
+					-5,
+					-5
+			));
+			crystalHollows.addWidget(crystals);
+			crystalHollows.updateConfig();
+
+			// Sweep details
+			HudWidget sweepDetails = getWidgetOrPlaceholder("sweep_details");
+			for (Location location : SweepDetailsHudWidget.LOCATIONS) {
+				ScreenBuilder builder = getScreenBuilder(location, ScreenLayer.HUD);
+				builder.addWidget(sweepDetails);
+				builder.updateConfig();
+			}
+
+			// Galatea
+			HudWidget treeProgress = getWidgetOrPlaceholder("hud_treeprogress");
+			treeProgress.setPositionRule(new PositionRule(
+					"sweep_details",
+					new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT),
+					new PositionRule.Point(PositionRule.VerticalPoint.TOP, PositionRule.HorizontalPoint.LEFT),
+					0,
+					2
+			));
+			ScreenBuilder galatea = getScreenBuilder(Location.GALATEA, ScreenLayer.HUD);
+			galatea.addWidget(treeProgress);
+			galatea.updateConfig();
+
+			// Garden
+			ScreenBuilder garden = getScreenBuilder(Location.GARDEN, ScreenLayer.HUD);
+			HudWidget farming = getWidgetOrPlaceholder("hud_farming");
+			garden.addWidget(farming);
+			garden.updateConfig();
+
+			// The end
+			ScreenBuilder end = getScreenBuilder(Location.GARDEN, ScreenLayer.HUD);
+			HudWidget endHud = getWidgetOrPlaceholder("hud_end");
+			end.addWidget(endHud);
+			end.updateConfig();
+
+			ScreenBuilder dungeons = getScreenBuilder(Location.DUNGEON, ScreenLayer.HUD);
+			HudWidget dungeonSplits = getWidgetOrPlaceholder("dungeon_splits");
+			dungeonSplits.setPositionRule(
+					new PositionRule(
+							Optional.empty(),
+							new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
+							new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
+							5,
+							0)
+			);
+			dungeons.addWidget(dungeonSplits);
+			dungeons.updateConfig();
 		}
 	}
 

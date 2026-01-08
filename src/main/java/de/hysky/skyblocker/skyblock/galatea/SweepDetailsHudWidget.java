@@ -34,7 +34,7 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.HUB, Location.THE_PARK);
 
 	public SweepDetailsHudWidget() {
-		super(Component.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails", LOCATIONS);
+		super(Component.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweep_details", LOCATIONS);
 		update();
 	}
 
