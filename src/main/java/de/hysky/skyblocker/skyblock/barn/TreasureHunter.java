@@ -4,6 +4,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -38,7 +40,7 @@ public class TreasureHunter extends ChatPatternListener {
 
 	private static void requestWaypoint(String location) {
 		String command = "/skyblocker waypoints individual " + location + " Treasure";
-		MutableComponent requestMessage = Constants.PREFIX.get().append(Component.translatable("skyblocker.config.chat.waypoints.display", java.util.Arrays.stream(location.split(" ")).mapToInt(Integer::parseInt).boxed().toArray()).withStyle(ChatFormatting.AQUA)
+		MutableComponent requestMessage = Constants.PREFIX.get().append(Component.translatable("skyblocker.waypoints.chat.display", Arrays.stream(location.split(" ")).mapToInt(Integer::parseInt).boxed().toArray()).withStyle(ChatFormatting.AQUA)
 				.withStyle(style -> style
 						.withClickEvent(new ClickEvent.RunCommand(command.trim()))
 				)
