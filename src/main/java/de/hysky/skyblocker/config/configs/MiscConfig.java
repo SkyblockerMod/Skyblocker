@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.config.configs;
 
-import net.azureaaron.dandelion.platform.ConfigType;
-import net.minecraft.client.resource.language.I18n;
+import net.azureaaron.dandelion.api.ConfigType;
+import net.minecraft.client.resources.language.I18n;
 
 public class MiscConfig {
 
@@ -26,7 +26,7 @@ public class MiscConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.misc.richPresence.info." + name());
+			return I18n.get("skyblocker.config.misc.richPresence.info." + name());
 		}
 	}
 }

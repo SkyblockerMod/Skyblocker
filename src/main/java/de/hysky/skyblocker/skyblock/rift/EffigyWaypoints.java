@@ -4,16 +4,16 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.item.DyeColor;
 
 public class EffigyWaypoints {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EffigyWaypoints.class);
@@ -38,15 +38,15 @@ public class EffigyWaypoints {
 				String line = Utils.STRING_SCOREBOARD.get(i);
 
 				if (line.contains("Effigies")) {
-					List<Text> effigiesText = new ArrayList<>();
-					List<Text> prefixAndSuffix = Utils.TEXT_SCOREBOARD.get(i).getSiblings();
+					List<Component> effigiesText = new ArrayList<>();
+					List<Component> prefixAndSuffix = Utils.TEXT_SCOREBOARD.get(i).getSiblings();
 
 					//Add contents of prefix and suffix to list
 					effigiesText.addAll(prefixAndSuffix.getFirst().getSiblings());
 					effigiesText.addAll(prefixAndSuffix.get(1).getSiblings());
 
 					for (int i2 = 1; i2 < effigiesText.size(); i2++) {
-						if (effigiesText.get(i2).getStyle().getColor().equals(TextColor.fromFormatting(Formatting.GRAY))) UNBROKEN_EFFIGIES.add(EFFIGIES.get(i2 - 1));
+						if (effigiesText.get(i2).getStyle().getColor().equals(TextColor.fromLegacyFormat(ChatFormatting.GRAY))) UNBROKEN_EFFIGIES.add(EFFIGIES.get(i2 - 1));
 					}
 				}
 			}
@@ -59,11 +59,11 @@ public class EffigyWaypoints {
 		if (SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints && Utils.getIslandArea().contains("Stillgore Château")) {
 			for (BlockPos effigy : UNBROKEN_EFFIGIES) {
 				if (SkyblockerConfigManager.get().slayers.vampireSlayer.compactEffigyWaypoints) {
-					collector.submitFilledBoxWithBeaconBeam(effigy.down(6), RED, 0.5F, true);
+					collector.submitFilledBoxWithBeaconBeam(effigy.below(6), RED, 0.5F, true);
 				} else {
 					collector.submitFilledBoxWithBeaconBeam(effigy, RED, 0.5F, true);
 					for (int i = 1; i < 6; i++) {
-						collector.submitFilledBox(effigy.down(i), RED, 0.5F - (0.075F * i), true);
+						collector.submitFilledBox(effigy.below(i), RED, 0.5F - (0.075F * i), true);
 					}
 				}
 			}

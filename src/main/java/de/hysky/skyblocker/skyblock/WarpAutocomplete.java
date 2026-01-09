@@ -18,8 +18,8 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
 import net.azureaaron.hmapi.data.rank.PackageRank;
 import net.azureaaron.hmapi.data.rank.RankType;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandSource;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.commands.SharedSuggestionProvider;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,21 +31,21 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 /**
- * the mixin {@link de.hysky.skyblocker.mixins.CommandTreeS2CPacketMixin}
+ * the mixin {@link de.hysky.skyblocker.mixins.ClientboundCommandsPacketMixin}
  */
 public class WarpAutocomplete {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("warp_autocomplete.json");
 	private static final Logger LOGGER = LoggerFactory.getLogger(WarpAutocomplete.class);
 	private static final Codec<Object2BooleanMap<String>> MAP_CODEC = CodecUtils.object2BooleanMapCodec(Codec.STRING);
 
-	@Nullable
-	public static LiteralCommandNode<FabricClientCommandSource> commandNode;
+	public static @Nullable LiteralCommandNode<FabricClientCommandSource> commandNode;
 
 	@Init
 	public static void init() {
@@ -58,7 +58,7 @@ public class WarpAutocomplete {
 				LOGGER.error("[Skyblocker] Failed to download warps list", e);
 			}
 			return Object2BooleanMaps.<String>emptyMap();
-		}).thenAccept(warps -> {
+		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(warps -> {
 					if (warps.isEmpty()) {
 						getWarpsFromFile();
 					} else {
@@ -71,7 +71,7 @@ public class WarpAutocomplete {
 							} catch (Exception e) {
 								LOGGER.error("[Skyblocker] Failed to save warps auto complete", e);
 							}
-						});
+						}, Executors.newVirtualThreadPerTaskExecutor());
 						createCommandNode(warps);
 					}
 				}
@@ -90,14 +90,14 @@ public class WarpAutocomplete {
 				return Object2BooleanMaps.<String>emptyMap();
 			}
 			return MAP_CODEC.parse(JsonOps.INSTANCE, object).result().orElse(Object2BooleanMaps.emptyMap());
-		}).thenAccept(WarpAutocomplete::createCommandNode);
+		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(WarpAutocomplete::createCommandNode);
 	}
 
 	private static void createCommandNode(Object2BooleanMap<String> warps) {
 		commandNode = literal("warp")
 				.requires(fabricClientCommandSource -> Utils.isOnSkyblock())
 				.then(argument("destination", StringArgumentType.greedyString())
-						.suggests((context, builder) -> CommandSource.suggestMatching(getEligibleWarps(warps), builder))
+						.suggests((context, builder) -> SharedSuggestionProvider.suggest(getEligibleWarps(warps), builder))
 				).build();
 	}
 

@@ -1,13 +1,11 @@
 package de.hysky.skyblocker.injected;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.render.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import org.jspecify.annotations.Nullable;
 
 public interface EntityRenderMarker {
 
-	@Nullable
-	default EntityRenderState skyblocker$getEntityStateBeingRendered() {
+	default @Nullable EntityRenderState skyblocker$getEntityStateBeingRendered() {
 		throw new UnsupportedOperationException("Implemented via Mixin");
 	}
 }

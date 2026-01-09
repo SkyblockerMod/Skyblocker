@@ -27,12 +27,12 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -76,13 +77,13 @@ public class MuseumItemCache {
 		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> onProfileChange());
 	}
 
-	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("museum")
 						.then(literal("resync")
 								.executes(context -> {
 									FabricClientCommandSource source = context.getSource();
-									Text text = Text.translatable(tryResync(source) ? "skyblocker.museum.attemptingResync" : "skyblocker.museum.cannotResync");
+									Component text = Component.translatable(tryResync(source) ? "skyblocker.museum.attemptingResync" : "skyblocker.museum.cannotResync");
 									source.sendFeedback(Constants.PREFIX.get().append(text));
 
 									return Command.SINGLE_SUCCESS;
@@ -244,14 +245,14 @@ public class MuseumItemCache {
 		return uncontributedItems;
 	}
 
-	public static void handleClick(Slot ignoredSlot, int slotId, DefaultedList<Slot> slots) {
+	public static void handleClick(Slot ignoredSlot, int slotId, NonNullList<Slot> slots) {
 		if (slotId == CONFIRM_DONATION_BUTTON_SLOT) {
 			String profileId = Utils.getProfileId();
 
 			if (!profileId.isEmpty()) {
 				//Slots 0 to 17 can have items, well not all but thats the general range
 				for (int i = 0; i < 17; i++) {
-					ItemStack stack = slots.get(i).getStack();
+					ItemStack stack = slots.get(i).getItem();
 
 					if (!stack.isEmpty()) {
 						String itemId = stack.getSkyblockId();
@@ -317,27 +318,27 @@ public class MuseumItemCache {
 						MUSEUM_ITEM_CACHE.put(uuid, profileId, new ProfileMuseumData(System.currentTimeMillis(), itemIds, CURRENT_DATA_VERSION));
 						MUSEUM_ITEM_CACHE.save();
 
-						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncSuccess")));
+						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncSuccess")));
 						LOGGER.info("[Skyblocker] Successfully updated museum item cache for profile {}", profileId);
 					} else {
 						//If the player's Museum API is disabled
 						putEmpty(uuid, profileId);
-						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncFailure")));
+						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure")));
 						LOGGER.warn(ERROR_LOG_TEMPLATE + " because the Museum API is disabled!", profileId);
 					}
 				} else {
 					//If the request returns a non 200 status code
 					putEmpty(uuid, profileId);
-					if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncFailure")));
+					if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure")));
 					LOGGER.error(ERROR_LOG_TEMPLATE + " because a non 200 status code was encountered! Response: {}", profileId, response);
 				}
 			} catch (Exception e) {
 				//If an exception was somehow thrown
 				putEmpty(uuid, profileId);
-				if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncFailure")));
+				if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure")));
 				LOGGER.error(ERROR_LOG_TEMPLATE, profileId, e);
 			}
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	private static void putEmpty(UUID uuid, String profileId) {

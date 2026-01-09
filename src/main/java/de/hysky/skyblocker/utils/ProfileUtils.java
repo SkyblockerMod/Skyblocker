@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.utils;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.google.common.cache.CacheBuilder;
@@ -28,7 +30,7 @@ public class ProfileUtils {
 	/**
 	 * Fetches the given player's profiles and returns the player's data from their currently selected profile.
 	 */
-	public static CompletableFuture<JsonObject> fetchProfileMember(String name) {
+	public static CompletableFuture<@Nullable JsonObject> fetchProfileMember(String name) {
 		return CompletableFuture.supplyAsync(() -> {
 			String uuid = ApiUtils.name2Uuid(name);
 
@@ -45,21 +47,21 @@ public class ProfileUtils {
 			}
 
 			return null;
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	/**
 	 * Fetches the all of the given player's skyblock profiles from the API and returns the JSON response.
 	 */
-	public static CompletableFuture<JsonObject> fetchFullProfile(String name) {
+	public static CompletableFuture<@Nullable JsonObject> fetchFullProfile(String name) {
 		return CompletableFuture.supplyAsync(() -> {
 			String uuid = ApiUtils.name2Uuid(name);
 
 			return !uuid.isEmpty() ? UUID_TO_PROFILES_CACHE.getUnchecked(uuid) : null;
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
-	private static JsonObject fetchProfilesInternal(String uuid) {
+	private static @Nullable JsonObject fetchProfilesInternal(String uuid) {
 		try (Http.ApiResponse response = Http.sendHypixelRequest("skyblock/profiles", "?uuid=" + uuid)) {
 			if (!response.ok()) {
 				throw new IllegalStateException(String.format("Failed to get profile for player: %s!, Status Code: %d, Response: %s", uuid, response.statusCode(), response.content()));

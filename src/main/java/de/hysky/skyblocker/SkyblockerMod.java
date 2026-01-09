@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.ConfigNullFieldsFix;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -17,10 +16,9 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 import java.nio.file.Path;
 
 /**
@@ -35,21 +33,20 @@ public class SkyblockerMod implements ClientModInitializer {
 	public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(NAMESPACE);
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	public static final Gson GSON_COMPACT = new GsonBuilder().create();
-	public static final KeyBinding.Category KEYBINDING_CATEGORY = KeyBinding.Category.create(id("main"));
+	public static final KeyMapping.Category KEYBINDING_CATEGORY = KeyMapping.Category.register(id("main"));
 
 	public static Identifier id(String path) {
-		return Identifier.of(NAMESPACE, path);
+		return Identifier.fromNamespaceAndPath(NAMESPACE, path);
 	}
 
 	/**
-	 * Register {@link #tick(MinecraftClient)} to
+	 * Register {@link #tick(Minecraft)} to
 	 * {@link ClientTickEvents#END_CLIENT_TICK}, initialize all features, and
 	 * schedule tick events.
 	 */
 	@Override
 	public void onInitializeClient() {
 		ClientTickEvents.END_CLIENT_TICK.register(this::tick);
-		ConfigDataFixer.apply();
 		SkyblockerConfigManager.init();
 		ConfigNullFieldsFix.init(); //DO NOT INIT ANY CLASS THAT USES CONFIG FIELDS BEFORE THIS!
 		ConfigBackupManager.init();
@@ -67,7 +64,7 @@ public class SkyblockerMod implements ClientModInitializer {
 	 *
 	 * @param client the Minecraft client.
 	 */
-	private void tick(MinecraftClient client) {
+	private void tick(Minecraft client) {
 		Scheduler.INSTANCE.tick();
 		MessageScheduler.INSTANCE.tick();
 	}

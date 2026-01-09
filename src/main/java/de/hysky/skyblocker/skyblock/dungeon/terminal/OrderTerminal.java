@@ -5,12 +5,11 @@ import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public final class OrderTerminal extends SimpleContainerSolver implements TerminalSolver {
 	private static final int PANES_NUM = 14;
@@ -60,7 +59,7 @@ public final class OrderTerminal extends SimpleContainerSolver implements Termin
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		if (stack == null || stack.isEmpty()) return false;
 
-		if (!stack.isOf(Items.RED_STAINED_GLASS_PANE) || stack.getCount() != currentNum + 1) {
+		if (!stack.is(Items.RED_STAINED_GLASS_PANE) || stack.getCount() != currentNum + 1) {
 			return shouldBlockIncorrectClicks();
 		}
 

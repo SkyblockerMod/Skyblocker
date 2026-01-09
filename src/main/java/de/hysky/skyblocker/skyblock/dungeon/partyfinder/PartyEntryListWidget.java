@@ -1,18 +1,17 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
 
-public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
+public class PartyEntryListWidget extends ContainerObjectSelectionList<PartyEntry> {
 	protected List<PartyEntry> partyEntries;
 
 	protected boolean isActive = true;
@@ -39,7 +38,7 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
 			}
 			""";
 
-	public PartyEntryListWidget(MinecraftClient minecraftClient, int width, int height, int y, int itemHeight) {
+	public PartyEntryListWidget(Minecraft minecraftClient, int width, int height, int y, int itemHeight) {
 		super(minecraftClient, width, height, y, itemHeight);
 	}
 
@@ -67,45 +66,46 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
 	public void setSearch(String s) {
 		search = s.toLowerCase(Locale.ENGLISH);
 		updateDisplay();
-		refreshScroll();
+		refreshScrollAmount();
 	}
 
 	@Override
-	protected int getScrollbarX() {
+	protected int scrollBarX() {
 		return this.width / 2 + getRowWidth() / 2 + 2;
 	}
 
 
-	public void setActive(boolean active) {
+	public void setWidgetActive(boolean active) {
 		isActive = active;
 	}
 
-	public boolean isActive() {
+	// Mojmap conversion: this is not meant to override isActive
+	public boolean isWidgetActive() {
 		return isActive;
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (!visible) return false;
 		return super.mouseClicked(click, doubled);
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		//context.drawGuiTexture(BACKGROUND_TEXTURE, x, top-8, getRowWidth()+16+6, bottom-top+16);
 
 		if (children().isEmpty()) {
-			Text string = Text.translatable("skyblocker.partyFinder.loadingError");
-			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			context.drawWrappedText(textRenderer, string, getRowLeft(), getY() + 10, getRowWidth(), 0xFFFFFFFF, false);
+			Component string = Component.translatable("skyblocker.partyFinder.loadingError");
+			Font textRenderer = Minecraft.getInstance().font;
+			context.drawWordWrap(textRenderer, string, getRowLeft(), getY() + 10, getRowWidth(), 0xFFFFFFFF, false);
 		} else super.renderWidget(context, mouseX, mouseY, delta);
 	}
 
 	@Override
-	protected void drawHeaderAndFooterSeparators(DrawContext context) {
+	protected void renderListSeparators(GuiGraphics context) {
 	}
 
 	@Override
-	protected void drawMenuListBackground(DrawContext context) {
+	protected void renderListBackground(GuiGraphics context) {
 	}
 }

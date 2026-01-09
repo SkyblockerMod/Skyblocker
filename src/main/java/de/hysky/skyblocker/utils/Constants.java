@@ -1,14 +1,12 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 /**
  * Holds generic static constants
@@ -20,40 +18,54 @@ public interface Constants {
 	 */
 	Pattern PLAYER_NAME = Pattern.compile("(?:\\[[0-9]+\\] )?(?:[" + Constants.LEVEL_EMBLEMS + "] )?(?:\\[[A-Z+]+\\] )?([A-Za-z0-9_]+)");
 
-	Supplier<MutableText> PREFIX = () -> {
-		LocalDate time = LocalDate.now();
-		if (time.getMonthValue() == 4 && time.getDayOfMonth() == 1) {
-			return Text.empty().append(Text.literal("[").formatted(Formatting.GRAY))
-					.append(Text.literal("S").withColor(0x00FF4C))
-					.append(Text.literal("k").withColor(0x02FA60))
-					.append(Text.literal("i").withColor(0x04F574))
-					.append(Text.literal("b").withColor(0x07EF88))
-					.append(Text.literal("i").withColor(0x09EA9C))
-					.append(Text.literal("d").withColor(0x0BE5AF))
-					.append(Text.literal("i").withColor(0x0DE0C3))
-					.append(Text.literal("b").withColor(0x10DAD7))
-					.append(Text.literal("l").withColor(0x12D5EB))
-					.append(Text.literal("o").withColor(0x14D0FF))
-					.append(Text.literal("c").withColor(0x16CBFF))
-					.append(Text.literal("k").withColor(0x18C6FF))
-					.append(Text.literal("e").withColor(0x1AC1FF))
-					.append(Text.literal("r").withColor(0x1CBBFF))
-					.append(Text.literal("] ").formatted(Formatting.GRAY));
+	Supplier<MutableComponent> PREFIX = () -> {
+		if (FunUtils.shouldEnableFun()) {
+			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
+					.append(Component.literal("S").withColor(0x00FF4C))
+					.append(Component.literal("k").withColor(0x02FA60))
+					.append(Component.literal("i").withColor(0x04F574))
+					.append(Component.literal("b").withColor(0x07EF88))
+					.append(Component.literal("i").withColor(0x09EA9C))
+					.append(Component.literal("d").withColor(0x0BE5AF))
+					.append(Component.literal("i").withColor(0x0DE0C3))
+					.append(Component.literal("b").withColor(0x10DAD7))
+					.append(Component.literal("l").withColor(0x12D5EB))
+					.append(Component.literal("o").withColor(0x14D0FF))
+					.append(Component.literal("c").withColor(0x16CBFF))
+					.append(Component.literal("k").withColor(0x18C6FF))
+					.append(Component.literal("e").withColor(0x1AC1FF))
+					.append(Component.literal("r").withColor(0x1CBBFF))
+					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
+		} else if (FunUtils.shouldEnableChristmasFun()) {
+			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
+					.append(Component.literal("J").withColor(0x00FF4C))
+					.append(Component.literal("o").withColor(0x02FA60))
+					.append(Component.literal("l").withColor(0x04F574))
+					.append(Component.literal("l").withColor(0x07EF88))
+					.append(Component.literal("y").withColor(0x09EA9C))
+					.append(Component.literal("b").withColor(0x0BE5AF))
+					.append(Component.literal("l").withColor(0x0DE0C3))
+					.append(Component.literal("o").withColor(0x10DAD7))
+					.append(Component.literal("c").withColor(0x12D5EB))
+					.append(Component.literal("k").withColor(0x14D0FF))
+					.append(Component.literal("e").withColor(0x16CBFF))
+					.append(Component.literal("r").withColor(0x18C6FF))
+					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
 		}
 
-		return Text.empty()
-				.append(Text.literal("[").formatted(Formatting.GRAY))
-				.append(Text.literal("S").withColor(0x00FF4C))
-				.append(Text.literal("k").withColor(0x02FA60))
-				.append(Text.literal("y").withColor(0x04F574))
-				.append(Text.literal("b").withColor(0x07EF88))
-				.append(Text.literal("l").withColor(0x09EA9C))
-				.append(Text.literal("o").withColor(0x0BE5AF))
-				.append(Text.literal("c").withColor(0x0DE0C3))
-				.append(Text.literal("k").withColor(0x10DAD7))
-				.append(Text.literal("e").withColor(0x12D5EB))
-				.append(Text.literal("r").withColor(0x14D0FF))
-				.append(Text.literal("] ").formatted(Formatting.GRAY));
+		return Component.empty()
+				.append(Component.literal("[").withStyle(ChatFormatting.GRAY))
+				.append(Component.literal("S").withColor(0x00FF4C))
+				.append(Component.literal("k").withColor(0x02FA60))
+				.append(Component.literal("y").withColor(0x04F574))
+				.append(Component.literal("b").withColor(0x07EF88))
+				.append(Component.literal("l").withColor(0x09EA9C))
+				.append(Component.literal("o").withColor(0x0BE5AF))
+				.append(Component.literal("c").withColor(0x0DE0C3))
+				.append(Component.literal("k").withColor(0x10DAD7))
+				.append(Component.literal("e").withColor(0x12D5EB))
+				.append(Component.literal("r").withColor(0x14D0FF))
+				.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
 	};
 
 

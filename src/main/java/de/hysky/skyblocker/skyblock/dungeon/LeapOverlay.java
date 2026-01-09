@@ -9,34 +9,8 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.client.gui.widget.GridWidget.Adder;
-import net.minecraft.client.gui.widget.SimplePositioningWidget;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Comparator;
@@ -45,28 +19,51 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Supplier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.GridLayout.RowHelper;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
 
-public class LeapOverlay extends Screen implements ScreenHandlerListener {
+public class LeapOverlay extends Screen implements ContainerListener {
 	public static final String TITLE = "Spirit Leap";
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Identifier BUTTON = SkyblockerMod.id("button/button");
 	private static final Identifier BUTTON_HIGHLIGHTED = SkyblockerMod.id("button/button_highlighted");
 	private static final Supplier<DungeonsConfig.SpiritLeapOverlay> CONFIG = () -> SkyblockerConfigManager.get().dungeons.leapOverlay;
 	private static final int BUTTON_SPACING = 8;
 	private static final int BUTTON_WIDTH = 130;
 	private static final int BUTTON_HEIGHT = 50;
-	private final GenericContainerScreenHandler handler;
+	private final ChestMenu handler;
 	private final SortedSet<PlayerReference> references = new TreeSet<>();
-	@Nullable
-	private UUID hovered;
+	private @Nullable UUID hovered;
 
-	public LeapOverlay(GenericContainerScreenHandler handler) {
-		super(Text.literal("Skyblocker Leap Overlay"));
+	public LeapOverlay(ChestMenu handler) {
+		super(Component.literal("Skyblocker Leap Overlay"));
 		this.handler = handler;
-		this.client = CLIENT; //Stops an NPE due to items being sent (and calling clearAndInit) before the main init method can initialize this field
 
 		//Listen for slot updates
-		handler.addListener(this);
+		handler.addSlotListener(this);
 	}
 
 	public static boolean shouldShowMap() {
@@ -75,32 +72,32 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 	@Override
 	protected void init() {
-		DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
-		layout.spacing(32).getMainPositioner().alignHorizontalCenter();
+		LinearLayout layout = LinearLayout.vertical();
+		layout.spacing(32).defaultCellSetting().alignHorizontallyCenter();
 
-		if (shouldShowMap()) layout.add(new MapWidget(0, 0));
+		if (shouldShowMap()) layout.addChild(new MapWidget(0, 0));
 
-		GridWidget gridWidget = new GridWidget().setSpacing(BUTTON_SPACING);
-		Adder adder = gridWidget.createAdder(2);
+		GridLayout gridWidget = new GridLayout().spacing(BUTTON_SPACING);
+		RowHelper adder = gridWidget.createRowHelper(2);
 		for (PlayerReference reference : references) {
-			adder.add(new PlayerButton(0, 0, (int) (BUTTON_WIDTH * CONFIG.get().scale), (int) (BUTTON_HEIGHT * CONFIG.get().scale), reference));
+			adder.addChild(new PlayerButton(0, 0, (int) (BUTTON_WIDTH * CONFIG.get().scale), (int) (BUTTON_HEIGHT * CONFIG.get().scale), reference));
 		}
-		layout.add(gridWidget);
+		layout.addChild(gridWidget);
 
-		layout.refreshPositions();
-		SimplePositioningWidget.setPos(layout, 0, 0, this.width, this.height);
-		layout.forEachChild(this::addDrawableChild);
+		layout.arrangeElements();
+		FrameLayout.centerInRectangle(layout, 0, 0, this.width, this.height);
+		layout.visitWidgets(this::addRenderableWidget);
 	}
 
 	@Override
-	public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
-		int containerSlots = this.handler.getRows() * 9;
+	public void slotChanged(AbstractContainerMenu handler, int slotId, ItemStack stack) {
+		int containerSlots = this.handler.getRowCount() * 9;
 
-		if (slotId < containerSlots && stack.isOf(Items.PLAYER_HEAD) && stack.contains(DataComponentTypes.PROFILE)) {
-			ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
-			UUID uuid = profile.getGameProfile().id();
+		if (slotId < containerSlots && stack.is(Items.PLAYER_HEAD) && stack.has(DataComponents.PROFILE)) {
+			ResolvableProfile profile = stack.get(DataComponents.PROFILE);
+			UUID uuid = profile.partialProfile().id();
 			//We take the name from the item because the name from the profile component can leave out _ characters for some reason?
-			String name = stack.getName().getString();
+			String name = stack.getHoverName().getString();
 			DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(name);
 			PlayerStatus status = switch (ItemUtils.getConcatenatedLore(stack).toLowerCase(Locale.ENGLISH)) {
 				case String s when s.contains("dead") -> PlayerStatus.DEAD;
@@ -108,25 +105,25 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 				default -> null;
 			};
 
-			updateReference(new PlayerReference(uuid, name, dungeonClass, status, handler.syncId, slotId));
+			updateReference(new PlayerReference(uuid, name, dungeonClass, status, handler.containerId, slotId));
 		}
 	}
 
 	@Override
-	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {}
+	public void dataChanged(AbstractContainerMenu handler, int property, int value) {}
 
 	private void updateReference(PlayerReference reference) {
 		references.remove(reference);
 		references.add(reference);
-		clearAndInit();
+		rebuildWidgets();
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput input) {
+	public boolean keyPressed(KeyEvent input) {
 		if (super.keyPressed(input)) {
 			return true;
-		} else if (this.client.options.inventoryKey.matchesKey(input)) {
-			this.close();
+		} else if (this.minecraft.options.keyInventory.matches(input)) {
+			this.onClose();
 			return true;
 		} else if (CONFIG.get().leapKeybinds) {
 			return switch (input.key()) {
@@ -155,41 +152,41 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	public void tick() {
 		super.tick();
 
-		if (!this.client.player.isAlive() || this.client.player.isRemoved()) {
-			this.client.player.closeHandledScreen();
+		if (!this.minecraft.player.isAlive() || this.minecraft.player.isRemoved()) {
+			this.minecraft.player.closeContainer();
 		}
 	}
 
 	@Override
-	public void close() {
-		this.client.player.closeHandledScreen();
-		super.close();
+	public void onClose() {
+		this.minecraft.player.closeContainer();
+		super.onClose();
 	}
 
 	@Override
 	public void removed() {
-		if (this.client != null && this.client.player != null) {
-			this.handler.onClosed(this.client.player);
-			this.handler.removeListener(this);
+		if (this.minecraft != null && this.minecraft.player != null) {
+			this.handler.removed(this.minecraft.player);
+			this.handler.removeSlotListener(this);
 		}
 	}
 
-	public class MapWidget extends ClickableWidget {
+	public class MapWidget extends AbstractWidget {
 		public MapWidget(int x, int y) {
-			super(x, y, (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), Text.translatable("skyblocker.config.dungeons.map.fancyMap"));
+			super(x, y, (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), Component.translatable("skyblocker.config.dungeons.map.fancyMap"));
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			LeapOverlay.this.hovered = DungeonMap.render(context, getX(), getY(), CONFIG.get().scale, true, mouseX - getX(), mouseY - getY(), hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
-			HudHelper.drawBorder(context, getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), Colors.WHITE);
+		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+			LeapOverlay.this.hovered = DungeonMap.render(context, getX(), getY(), CONFIG.get().scale, true, mouseX - getX(), mouseY - getY(), getChildAt(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
+			HudHelper.drawBorder(context, getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), CommonColors.WHITE);
 		}
 
 		@Override
-		public void onClick(Click click, boolean doubled) {
+		public void onClick(MouseButtonEvent click, boolean doubled) {
 			if (LeapOverlay.this.hovered == null) return;
 
-			assert client != null && client.player != null && client.interactionManager != null;
+			assert minecraft != null && minecraft.player != null && minecraft.gameMode != null;
 			references.stream()
 					.filter(ref -> ref.uuid().equals(LeapOverlay.this.hovered))
 					.findAny()
@@ -197,30 +194,30 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 	}
 
-	private class PlayerButton extends ButtonWidget {
+	private class PlayerButton extends Button {
 		private static final int BORDER_THICKNESS = 2;
 		private static final int HEAD_SIZE = 24;
 		private final PlayerReference reference;
 
 		private PlayerButton(int x, int y, int width, int height, PlayerReference reference) {
-			super(x, y, width, height, Text.empty(), b -> {}, ts -> Text.empty());
+			super(x, y, width, height, Component.empty(), b -> {}, ts -> Component.empty());
 			this.reference = reference;
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			Identifier texture = this.isSelected() || reference.uuid().equals(LeapOverlay.this.hovered) ? BUTTON_HIGHLIGHTED : BUTTON;
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+		protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
+			Identifier texture = this.isHoveredOrFocused() || reference.uuid().equals(LeapOverlay.this.hovered) ? BUTTON_HIGHLIGHTED : BUTTON;
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
-			Matrix3x2fStack matrices = context.getMatrices();
+			Matrix3x2fStack matrices = context.pose();
 			float scale = CONFIG.get().scale;
 			int baseX = this.getX() + BORDER_THICKNESS;
 			int centreX = this.getX() + (this.getWidth() >> 1);
 			int centreY = this.getY() + (this.getHeight() >> 1);
-			int halfFontHeight = (int) (CLIENT.textRenderer.fontHeight * scale) >> 1;
+			int halfFontHeight = (int) (CLIENT.font.lineHeight * scale) >> 1;
 
 			//Draw Player Head
 			HudHelper.drawPlayerHead(context, baseX + 4, centreY - ((int) (HEAD_SIZE * scale) >> 1), (int) (HEAD_SIZE * scale), reference.uuid());
@@ -229,14 +226,14 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			matrices.pushMatrix();
 			matrices.translate(centreX, this.getY() + halfFontHeight);
 			matrices.scale(scale, scale);
-			context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.dungeonClass().displayName(), 0, 0, reference.dungeonClass().color());
+			context.drawCenteredString(CLIENT.font, reference.dungeonClass().displayName(), 0, 0, reference.dungeonClass().color());
 			matrices.popMatrix();
 
 			//Draw name next to head
 			matrices.pushMatrix();
 			matrices.translate(baseX + HEAD_SIZE * scale + 8, centreY - halfFontHeight);
 			matrices.scale(scale, scale);
-			context.drawTextWithShadow(CLIENT.textRenderer, Text.literal(reference.name()), 0, 0, Colors.WHITE);
+			context.drawString(CLIENT.font, Component.literal(reference.name()), 0, 0, CommonColors.WHITE);
 			matrices.popMatrix();
 
 			if (reference.status() != null) {
@@ -244,7 +241,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 				matrices.pushMatrix();
 				matrices.translate(centreX, this.getY() + this.getHeight() - (halfFontHeight * 3));
 				matrices.scale(scale, scale);
-				context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.status().text.get(), 0, 0, Colors.WHITE);
+				context.drawCenteredString(CLIENT.font, reference.status().text.get(), 0, 0, CommonColors.WHITE);
 				matrices.popMatrix();
 
 				//Overlay
@@ -253,7 +250,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 
 		@Override
-		public void onClick(Click click, boolean doubled) {
+		public void onClick(MouseButtonEvent click, boolean doubled) {
 			reference.clickSlot();
 		}
 	}
@@ -275,12 +272,12 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 
 		@Override
-		public int compareTo(@NotNull LeapOverlay.PlayerReference o) {
+		public int compareTo(LeapOverlay.PlayerReference o) {
 			return COMPARATOR.compare(this, o);
 		}
 
 		private void clickSlot() {
-			CLIENT.interactionManager.clickSlot(this.syncId(), this.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, CLIENT.player);
+			CLIENT.gameMode.handleInventoryMouseClick(this.syncId(), this.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, ClickType.PICKUP, CLIENT.player);
 			if (CONFIG.get().enableLeapMessage) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + CONFIG.get().leapMessage.replaceAll("\\[name]", this.name), true);
 			}
@@ -288,13 +285,13 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	}
 
 	private enum PlayerStatus {
-		DEAD(() -> Text.translatable("text.skyblocker.dead").withColor(Colors.RED), ColorHelper.withAlpha(64, Colors.LIGHT_RED)),
-		OFFLINE(() -> Text.translatable("text.skyblocker.offline").withColor(Colors.GRAY), ColorHelper.withAlpha(64, Colors.LIGHT_GRAY));
+		DEAD(() -> Component.translatable("text.skyblocker.dead").withColor(CommonColors.RED), ARGB.color(64, CommonColors.SOFT_RED)),
+		OFFLINE(() -> Component.translatable("text.skyblocker.offline").withColor(CommonColors.GRAY), ARGB.color(64, CommonColors.LIGHT_GRAY));
 
-		private final Supplier<Text> text;
+		private final Supplier<Component> text;
 		private final int overlayColor;
 
-		PlayerStatus(Supplier<Text> text, int overlayColor) {
+		PlayerStatus(Supplier<Component> text, int overlayColor) {
 			this.text = text;
 			this.overlayColor = overlayColor;
 		}

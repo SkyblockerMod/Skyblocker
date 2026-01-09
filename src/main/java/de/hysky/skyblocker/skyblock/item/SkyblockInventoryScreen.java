@@ -7,7 +7,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
@@ -16,24 +16,24 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.Mouse;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.MouseHandler;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,11 +44,12 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 /**
  * <p>Adds equipment slots to the inventory screen and moves the offhand slot.</p>
- * <p>Opened here {@link de.hysky.skyblocker.mixins.MinecraftClientMixin#skyblocker$skyblockInventoryScreen MinecraftClientMixin#skyblocker$skyblockInventoryScreen}</p>
+ * <p>Opened here {@link de.hysky.skyblocker.mixins.MinecraftMixin#skyblocker$skyblockInventoryScreen MinecraftClientMixin#skyblocker$skyblockInventoryScreen}</p>
  * <p>Book button is moved here {@link de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker$moveButton InventoryScreenMixin#skyblocker$moveButton}</p>
  */
 public class SkyblockInventoryScreen extends InventoryScreen implements HoveredItemStackProvider {
@@ -59,7 +60,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	private static final Codec<ItemStack[]> CODEC = ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf(4, 8) // min size at 4 for backwards compat
 			.xmap(itemStacks -> itemStacks.toArray(ItemStack[]::new), List::of).fieldOf("items").codec();
 
-	private static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("container/slot");
+	private static final Identifier SLOT_TEXTURE = Identifier.withDefaultNamespace("container/slot");
 	private static final Identifier EMPTY_SLOT = SkyblockerMod.id("equipment/empty_icon");
 	private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
 
@@ -75,7 +76,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		Path resolve = FOLDER.resolve(profileId + ".nbt");
 
 		try {
-			NbtIo.write(CODEC.encodeStart(NbtOps.INSTANCE, ArrayUtils.addAll(equipment, equipment_rift)).getOrThrow(), new DataOutputStream(Files.newOutputStream(resolve)));
+			NbtIo.writeUnnamedTagWithFallback(CODEC.encodeStart(NbtOps.INSTANCE, ArrayUtils.addAll(equipment, equipment_rift)).getOrThrow(), new DataOutputStream(Files.newOutputStream(resolve)));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to save Equipment data", e);
 		}
@@ -93,7 +94,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 			}
 			return EMPTY_EQUIPMENT.get();
 			// Schedule on main thread to avoid any async weirdness
-		}).thenAccept(itemStacks -> MinecraftClient.getInstance().execute(() -> {
+		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(itemStacks -> Minecraft.getInstance().execute(() -> {
 			System.arraycopy(itemStacks, 0, equipment, 0, Math.min(itemStacks.length, 4));
 			if (itemStacks.length <= 4) return;
 			System.arraycopy(itemStacks, 4, equipment_rift, 0, Math.clamp(itemStacks.length - 4, 0, 4));
@@ -101,41 +102,41 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	}
 
 	@Override
-	public void onDisplayed() {
-		Slot slot = handler.slots.get(45);
+	public void added() {
+		Slot slot = menu.slots.get(45);
 		((SlotAccessor) slot).setX(slot.x + 21);
 	}
 
 	@Init
 	public static void initEquipment() {
 		SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
-			if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId)).thenRun(() -> load(profileId));
+			if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId), Executors.newVirtualThreadPerTaskExecutor()).thenRun(() -> load(profileId));
 			else load(profileId);
 		}));
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client1 -> {
 			String profileId = Utils.getProfileId();
 			if (!profileId.isBlank()) {
-				CompletableFuture.runAsync(() -> save(profileId));
+				CompletableFuture.runAsync(() -> save(profileId), Executors.newVirtualThreadPerTaskExecutor());
 			}
 		});
 	}
 
-	public SkyblockInventoryScreen(PlayerEntity player) {
+	public SkyblockInventoryScreen(Player player) {
 		super(player);
 		if (ResourcePackCompatibility.options.renameInventoryScreen().orElse(false)) {
-			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenEquipmentQuickNavSkyblocker" : "InventoryScreenEquipmentSkyblocker"));
+			((ScreenAccessor) this).setTitle(Component.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenEquipmentQuickNavSkyblocker" : "InventoryScreenEquipmentSkyblocker"));
 		}
-		SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift : equipment);
+		SimpleContainer inventory = new SimpleContainer(Utils.isInTheRift() ? equipment_rift : equipment);
 		for (int i = 0; i < 4; i++) {
 			equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
 		}
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		for (Slot equipmentSlot : equipmentSlots) {
-			if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, click.x(), click.y())) {
+			if (isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, click.x(), click.y())) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/equipment", true);
 				return true;
 			}
@@ -145,34 +146,34 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 
 	/**
 	 * Draws the equipment slots in the foreground layer after vanilla slots are drawn
-	 * in {@link net.minecraft.client.gui.screen.ingame.HandledScreen#render(DrawContext, int, int, float) HandledScreen#render(DrawContext, int, int, float)}.
+	 * in {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen#render(GuiGraphics, int, int, float) HandledScreen#render(DrawContext, int, int, float)}.
 	 */
 	@Override
-	protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics context, int mouseX, int mouseY) {
 		for (Slot equipmentSlot : equipmentSlots) {
-			boolean hovered = isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY);
+			boolean hovered = isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY);
 
-			if (hovered) context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HandledScreenAccessor.getSLOT_HIGHLIGHT_BACK_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
+			if (hovered) context.blitSprite(RenderPipelines.GUI_TEXTURED, AbstractContainerScreenAccessor.getSLOT_HIGHLIGHT_BACK_SPRITE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
 
-			drawSlot(context, equipmentSlot);
+			renderSlot(context, equipmentSlot, mouseX, mouseY);
 
-			if (hovered) context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HandledScreenAccessor.getSLOT_HIGHLIGHT_FRONT_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
+			if (hovered) context.blitSprite(RenderPipelines.GUI_TEXTURED, AbstractContainerScreenAccessor.getSLOT_HIGHLIGHT_FRONT_SPRITE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
 		}
 
-		super.drawForeground(context, mouseX, mouseY);
+		super.renderLabels(context, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
-		super.drawMouseoverTooltip(context, x, y);
+	protected void renderTooltip(GuiGraphics context, int x, int y) {
+		super.renderTooltip(context, x, y);
 
 		hoveredItem = null;
-		if (!handler.getCursorStack().isEmpty()) return;
+		if (!menu.getCarried().isEmpty()) return;
 
 		for (Slot equipmentSlot : equipmentSlots) {
-			if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, x, y) && equipmentSlot.hasStack()) {
-				ItemStack itemStack = equipmentSlot.getStack();
-				context.drawTooltip(this.textRenderer, this.getTooltipFromItem(itemStack), itemStack.getTooltipData(), x, y);
+			if (isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, x, y) && equipmentSlot.hasItem()) {
+				ItemStack itemStack = equipmentSlot.getItem();
+				context.setTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(itemStack), itemStack.getTooltipImage(), x, y);
 				hoveredItem = itemStack;
 			}
 		}
@@ -182,25 +183,25 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	public void removed() {
 		super.removed();
 		// put the handler back how it was, the handler is the same while the player is alive/in the same world
-		Slot slot = handler.slots.get(45);
+		Slot slot = menu.slots.get(45);
 		((SlotAccessor) slot).setX(slot.x - 21);
 	}
 
 	@Override
-	protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
-		super.drawBackground(context, delta, mouseX, mouseY);
+	protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
+		super.renderBg(context, delta, mouseX, mouseY);
 		for (int i = 0; i < 3; i++) {
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, x + 76, y + 7 + i * 18, 18, 18);
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, leftPos + 76, topPos + 7 + i * 18, 18, 18);
 		}
-		Slot slot = handler.slots.get(45);
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, x + slot.x - 1, y + slot.y - 1, 18, 18);
+		Slot slot = menu.slots.get(45);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, leftPos + slot.x - 1, topPos + slot.y - 1, 18, 18);
 	}
 
 	@Override
-	protected void drawSlot(DrawContext context, Slot slot) {
-		super.drawSlot(context, slot);
-		if (slot instanceof EquipmentSlot && !slot.hasStack()) {
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, EMPTY_SLOT, slot.x, slot.y, 16, 16);
+	protected void renderSlot(GuiGraphics context, Slot slot, int mouseX, int mouseY) {
+		super.renderSlot(context, slot, mouseX, mouseY);
+		if (slot instanceof EquipmentSlot && !slot.hasItem()) {
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, EMPTY_SLOT, slot.x, slot.y, 16, 16);
 		}
 	}
 
@@ -210,16 +211,16 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput input) {
-		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.isWindowFocused()) {
-			var mouse = client.mouse;
+	public boolean keyPressed(KeyEvent input) {
+		Minecraft client = Minecraft.getInstance();
+		if (client.isWindowActive()) {
+			var mouse = client.mouseHandler;
 			var window = client.getWindow();
-			var mouseX = Mouse.scaleX(window, mouse.getX());
-			var mouseY = Mouse.scaleY(window, mouse.getY());
+			var mouseX = MouseHandler.getScaledXPos(window, mouse.xpos());
+			var mouseY = MouseHandler.getScaledYPos(window, mouse.ypos());
 
 			for (Slot equipmentSlot : equipmentSlots) {
-				if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) {
+				if (isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) {
 					if (WikiLookupManager.handleWikiLookup(Either.left(equipmentSlot), client.player, input)) {
 						return true;
 					}
@@ -231,17 +232,17 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 
 	private static class EquipmentSlot extends Slot {
 
-		private EquipmentSlot(Inventory inventory, int index, int x, int y) {
+		private EquipmentSlot(Container inventory, int index, int x, int y) {
 			super(inventory, index, x, y);
 		}
 
 		@Override
-		public boolean canTakeItems(PlayerEntity playerEntity) {
+		public boolean mayPickup(Player playerEntity) {
 			return false;
 		}
 
 		@Override
-		public boolean canInsert(ItemStack stack) {
+		public boolean mayPlace(ItemStack stack) {
 			return false;
 		}
 	}

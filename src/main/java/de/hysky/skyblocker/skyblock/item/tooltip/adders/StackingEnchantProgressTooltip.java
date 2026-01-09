@@ -2,18 +2,18 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import java.util.List;
 import java.util.Set;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.utils.Formatters;
-import org.jetbrains.annotations.Nullable;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 public class StackingEnchantProgressTooltip extends SimpleTooltipAdder {
 	private static final Set<String> STACKING_ENCHANT_IDS = Set.of("expertise", "compact", "cultivating", "champion", "hecatomb", "absorb", "toxophilite");
@@ -30,15 +30,15 @@ public class StackingEnchantProgressTooltip extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		NbtCompound customData = ItemUtils.getCustomData(stack);
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
+		CompoundTag customData = ItemUtils.getCustomData(stack);
 
 		if (customData.contains("enchantments")) {
-			NbtCompound enchantments = customData.getCompoundOrEmpty("enchantments");
+			CompoundTag enchantments = customData.getCompoundOrEmpty("enchantments");
 			StackingEnchantInfo stackingEnchantInfo = null;
 			int stackingEnchantLevel = 0;
 
-			for (String enchantment : enchantments.getKeys()) {
+			for (String enchantment : enchantments.keySet()) {
 				if (STACKING_ENCHANT_IDS.contains(enchantment)) {
 					stackingEnchantInfo = switch (enchantment) {
 						case "expertise" -> EXPERTISE_INFO;
@@ -51,23 +51,23 @@ public class StackingEnchantProgressTooltip extends SimpleTooltipAdder {
 
 						default -> throw new IllegalStateException("Unexpected stacking enchant: " + enchantment);
 					};
-					stackingEnchantLevel = enchantments.getInt(enchantment, 0);
+					stackingEnchantLevel = enchantments.getIntOr(enchantment, 0);
 
 					break;
 				}
 			}
 
 			if (stackingEnchantInfo != null && stackingEnchantLevel > 0 && stackingEnchantLevel < 10) {
-				int progress = customData.getInt(stackingEnchantInfo.field(), 0);
+				int progress = customData.getIntOr(stackingEnchantInfo.field(), 0);
 				int needed = stackingEnchantInfo.ladder()[stackingEnchantLevel];
-				Text text = Text.empty()
-						.append(Text.literal(stackingEnchantInfo.name() + " ").formatted(Formatting.GRAY))
-						.append(Text.translatable("enchantment.level." + (stackingEnchantLevel + 1)).formatted(Formatting.GRAY))
-						.append(Text.literal(": ").formatted(Formatting.GRAY))
-						.append(Text.literal(Formatters.INTEGER_NUMBERS.format(progress)).formatted(Formatting.RED))
-						.append(Text.literal("/").formatted(Formatting.GRAY))
-						.append(Text.literal(Formatters.INTEGER_NUMBERS.format(needed)).formatted(Formatting.RED))
-						.append(Text.literal(" " + stackingEnchantInfo.unit()).formatted(Formatting.GRAY));
+				Component text = Component.empty()
+						.append(Component.literal(stackingEnchantInfo.name() + " ").withStyle(ChatFormatting.GRAY))
+						.append(Component.translatable("enchantment.level." + (stackingEnchantLevel + 1)).withStyle(ChatFormatting.GRAY))
+						.append(Component.literal(": ").withStyle(ChatFormatting.GRAY))
+						.append(Component.literal(Formatters.INTEGER_NUMBERS.format(progress)).withStyle(ChatFormatting.RED))
+						.append(Component.literal("/").withStyle(ChatFormatting.GRAY))
+						.append(Component.literal(Formatters.INTEGER_NUMBERS.format(needed)).withStyle(ChatFormatting.RED))
+						.append(Component.literal(" " + stackingEnchantInfo.unit()).withStyle(ChatFormatting.GRAY));
 
 				lines.add(text);
 			}

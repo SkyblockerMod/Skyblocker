@@ -7,10 +7,9 @@ import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.world.item.ItemStack;
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * The general class for all experiment solvers, implemented with a state machine.
@@ -19,7 +18,7 @@ public abstract sealed class ExperimentSolver extends SimpleContainerSolver impl
 	private State state = State.REMEMBER;
 	private final Int2ObjectMap<ItemStack> slots = new Int2ObjectOpenHashMap<>();
 
-	protected ExperimentSolver(@NotNull @Language("RegExp") String containerName) {
+	protected ExperimentSolver(@Language("RegExp") String containerName) {
 		super(containerName);
 	}
 
@@ -47,7 +46,7 @@ public abstract sealed class ExperimentSolver extends SimpleContainerSolver impl
 	}
 
 	@Override
-	public void start(GenericContainerScreen screen) {
+	public void start(ContainerScreen screen) {
 		state = State.REMEMBER;
 		//No reason to use the screen lambda argument given by `register` as it narrows down the type of our screen for no reason
 		ScreenEvents.afterTick(screen).register(ignored -> tick(screen));
@@ -59,13 +58,13 @@ public abstract sealed class ExperimentSolver extends SimpleContainerSolver impl
 		slots.clear();
 	}
 
-	protected abstract void tick(GenericContainerScreen screen);
+	protected abstract void tick(ContainerScreen screen);
 
 	/**
 	 * Display the actual item stacks if the solver is in the {@link State#SHOW} state.
 	 */
 	@Override
-	public ItemStack modifyDisplayStack(int slotIndex, @NotNull ItemStack stack) {
+	public ItemStack modifyDisplayStack(int slotIndex, ItemStack stack) {
 		if ((this instanceof SuperpairsSolver || this instanceof UltrasequencerSolver) && getState() == State.SHOW) {
 			ItemStack displayStack = getSlots().get(slotIndex);
 			return displayStack != null ? displayStack : stack;

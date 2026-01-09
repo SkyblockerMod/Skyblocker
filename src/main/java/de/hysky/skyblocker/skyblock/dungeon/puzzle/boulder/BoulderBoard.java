@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle.boulder;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 /**
  * Represents the game board for the Boulder puzzle, managing the grid of BoulderObjects.
@@ -59,7 +59,7 @@ public class BoulderBoard {
 	 */
 	public BlockPos getObject3DPosition(int x, int y) {
 		BoulderObject object = getObjectAtPosition(x, y);
-		return (object != null) ? object.get3DPosition().offset(Direction.Axis.Y, -1) : null;
+		return (object != null) ? object.get3DPosition().relative(Direction.Axis.Y, -1) : null;
 	}
 
 	/**

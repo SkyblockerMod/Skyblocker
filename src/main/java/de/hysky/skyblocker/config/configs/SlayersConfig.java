@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 public class SlayersConfig {
 	public HighlightSlayerEntities highlightMinis = HighlightSlayerEntities.GLOW;
@@ -14,7 +14,7 @@ public class SlayersConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.slayer.highlightBosses." + name());
+			return I18n.get("skyblocker.config.slayer.highlightBosses." + name());
 		}
 	}
 
@@ -87,7 +87,7 @@ public class SlayersConfig {
 
 			@Override
 			public String toString() {
-				return I18n.translate("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode." + name());
+				return I18n.get("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode." + name());
 			}
 		}
 	}

@@ -7,7 +7,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -15,36 +15,33 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.ItemButtonWidget;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntMaps;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.input.MouseInput;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,10 +54,10 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
-public class GardenPlotsWidget extends ContainerWidget {
+public class GardenPlotsWidget extends AbstractContainerWidget {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("Garden Plots");
 	private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("garden_plots");
@@ -69,50 +66,50 @@ public class GardenPlotsWidget extends ContainerWidget {
 	// STATIC SHENANIGANS
 	//////////////////////////
 
-	public static final Int2IntMap GARDEN_PLOT_TO_SLOT = Int2IntMaps.unmodifiable(new Int2IntOpenHashMap(Map.ofEntries(
-			Map.entry(1, 7),
-			Map.entry(2, 11),
-			Map.entry(3, 13),
-			Map.entry(4, 17),
-			Map.entry(5, 6),
-			Map.entry(6, 8),
-			Map.entry(7, 16),
-			Map.entry(8, 18),
-			Map.entry(9, 2),
-			Map.entry(10, 10),
-			Map.entry(11, 14),
-			Map.entry(12, 22),
-			Map.entry(13, 1),
-			Map.entry(14, 3),
-			Map.entry(15, 5),
-			Map.entry(16, 9),
-			Map.entry(17, 15),
-			Map.entry(18, 19),
-			Map.entry(19, 21),
-			Map.entry(20, 23),
-			Map.entry(21, 0),
-			Map.entry(22, 4),
-			Map.entry(23, 20),
-			Map.entry(24, 24)
-	)));
+	public static final Int2IntMap GARDEN_PLOT_TO_SLOT = Int2IntMap.ofEntries(
+			Int2IntMap.entry(1, 7),
+			Int2IntMap.entry(2, 11),
+			Int2IntMap.entry(3, 13),
+			Int2IntMap.entry(4, 17),
+			Int2IntMap.entry(5, 6),
+			Int2IntMap.entry(6, 8),
+			Int2IntMap.entry(7, 16),
+			Int2IntMap.entry(8, 18),
+			Int2IntMap.entry(9, 2),
+			Int2IntMap.entry(10, 10),
+			Int2IntMap.entry(11, 14),
+			Int2IntMap.entry(12, 22),
+			Int2IntMap.entry(13, 1),
+			Int2IntMap.entry(14, 3),
+			Int2IntMap.entry(15, 5),
+			Int2IntMap.entry(16, 9),
+			Int2IntMap.entry(17, 15),
+			Int2IntMap.entry(18, 19),
+			Int2IntMap.entry(19, 21),
+			Int2IntMap.entry(20, 23),
+			Int2IntMap.entry(21, 0),
+			Int2IntMap.entry(22, 4),
+			Int2IntMap.entry(23, 20),
+			Int2IntMap.entry(24, 24)
+	);
 
 	private static final GardenPlot[] gardenPlots = new GardenPlot[25];
 
 	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-			if (screen instanceof GenericContainerScreen containerScreen && screen.getTitle().getString().trim().equals("Configure Plots")) {
+			if (screen instanceof ContainerScreen containerScreen && screen.getTitle().getString().trim().equals("Configure Plots")) {
 				ScreenEvents.remove(screen).register(ignored -> {
-					GenericContainerScreenHandler screenHandler = containerScreen.getScreenHandler();
+					ChestMenu screenHandler = containerScreen.getMenu();
 					// Take plot icons and names
 					for (int row = 0; row < 5; row++) for (int i = row * 9 + 2; i < row * 9 + 7; i++) {
 						if (i == 22) continue; // Barn icon
 						Slot slot = screenHandler.slots.get(i);
-						ItemStack stack = slot.getStack();
-						if (stack.isEmpty() || stack.isOf(Items.RED_STAINED_GLASS_PANE) || stack.isOf(Items.OAK_BUTTON) || stack.isOf(Items.BLACK_STAINED_GLASS_PANE))
+						ItemStack stack = slot.getItem();
+						if (stack.isEmpty() || stack.is(Items.RED_STAINED_GLASS_PANE) || stack.is(Items.OAK_BUTTON) || stack.is(Items.BLACK_STAINED_GLASS_PANE))
 							continue;
 						// SkyHanni adds formatting codes to the plot names when using their custom plot icons.
-						String name = Formatting.strip(stack.getName().getString());
+						String name = ChatFormatting.stripFormatting(stack.getHoverName().getString());
 						String[] parts = name.split("-", 2);
 						if (parts.length < 2) {
 							LOGGER.warn("Invalid plot name: {}", name);
@@ -124,27 +121,27 @@ public class GardenPlotsWidget extends ContainerWidget {
 				});
 			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) {
 				GardenPlotsWidget widget = new GardenPlotsWidget(
-						((HandledScreenAccessor) inventoryScreen).getX() + ((HandledScreenAccessor) inventoryScreen).getBackgroundWidth() + 4,
-						((HandledScreenAccessor) inventoryScreen).getY());
+						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,
+						((AbstractContainerScreenAccessor) inventoryScreen).getY());
 				Screens.getButtons(inventoryScreen).add(widget);
 
 				inventoryScreen.registerRecipeBookToggleCallback(() -> widget.setPosition(
-						((HandledScreenAccessor) inventoryScreen).getX() + ((HandledScreenAccessor) inventoryScreen).getBackgroundWidth() + 4,
-						((HandledScreenAccessor) inventoryScreen).getY()
+						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,
+						((AbstractContainerScreenAccessor) inventoryScreen).getY()
 				));
 			}
 		});
 
 		SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
 			if (!prevProfileId.isEmpty())
-				CompletableFuture.runAsync(() -> save(prevProfileId)).thenRun(() -> load(profileId));
+				CompletableFuture.runAsync(() -> save(prevProfileId), Executors.newVirtualThreadPerTaskExecutor()).thenRun(() -> load(profileId));
 			else load(profileId);
 		}));
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client1 -> {
 			String profileId = Utils.getProfileId();
 			if (!profileId.isBlank()) {
-				CompletableFuture.runAsync(() -> save(profileId));
+				CompletableFuture.runAsync(() -> save(profileId), Executors.newVirtualThreadPerTaskExecutor());
 			}
 		});
 	}
@@ -163,7 +160,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 			Arrays.stream(gardenPlots).map(gardenPlot -> {
 				if (gardenPlot == null) return null;
 				JsonObject jsonObject = new JsonObject();
-				jsonObject.add("icon", Item.ENTRY_CODEC.encodeStart(JsonOps.INSTANCE, gardenPlot.item.getRegistryEntry()).getOrThrow());
+				jsonObject.add("icon", Item.CODEC.encodeStart(JsonOps.INSTANCE, gardenPlot.item.builtInRegistryHolder()).getOrThrow());
 				jsonObject.addProperty("name", gardenPlot.name);
 				return jsonObject;
 			}).forEach(elements::add);
@@ -181,7 +178,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 				return SkyblockerMod.GSON.fromJson(reader, JsonArray.class).asList().stream().map(jsonElement -> {
 							if (jsonElement == null || jsonElement.isJsonNull()) return null;
 							JsonObject jsonObject = jsonElement.getAsJsonObject();
-							return new GardenPlot(Item.ENTRY_CODEC.decode(JsonOps.INSTANCE, jsonObject.get("icon")).getOrThrow().getFirst().value(), jsonObject.get("name").getAsString());
+							return new GardenPlot(Item.CODEC.decode(JsonOps.INSTANCE, jsonObject.get("icon")).getOrThrow().getFirst().value(), jsonObject.get("name").getAsString());
 						}
 				).toArray(GardenPlot[]::new);
 			} catch (NoSuchFileException ignored) {
@@ -190,7 +187,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 			}
 			return new GardenPlot[25];
 			// Schedule on main thread to avoid any async weirdness
-		}).thenAccept(newPlots -> MinecraftClient.getInstance().execute(() -> System.arraycopy(newPlots, 0, gardenPlots, 0, Math.min(newPlots.length, 25))));
+		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(newPlots -> Minecraft.getInstance().execute(() -> System.arraycopy(newPlots, 0, gardenPlots, 0, Math.min(newPlots.length, 25))));
 	}
 
 	/////////////////////////////
@@ -198,8 +195,8 @@ public class GardenPlotsWidget extends ContainerWidget {
 	/////////////////////////////
 
 	private static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/garden_plots.png");
-	private static final MutableText GROSS_PEST_TEXT = Text.translatable("skyblocker.gardenPlots.pests").formatted(Formatting.RED, Formatting.BOLD);
-	private static final MutableText TP_TEXT = Text.translatable("skyblocker.gardenPlots.tp").formatted(Formatting.YELLOW, Formatting.BOLD);
+	private static final MutableComponent GROSS_PEST_TEXT = Component.translatable("skyblocker.gardenPlots.pests").withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
+	private static final MutableComponent TP_TEXT = Component.translatable("skyblocker.gardenPlots.tp").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD);
 
 	private final ItemStack[] items;
 	private int hoveredSlot = -1;
@@ -209,46 +206,46 @@ public class GardenPlotsWidget extends ContainerWidget {
 	private final ItemButtonWidget[] widgets;
 
 	public GardenPlotsWidget(int x, int y) {
-		super(x, y, 104, 132, Text.translatable("skyblocker.gardenPlots"));
+		super(x, y, 104, 132, Component.translatable("skyblocker.gardenPlots"));
 		items = Arrays.stream(gardenPlots).map(gardenPlot -> {
 			if (gardenPlot == null) return null;
 			ItemStack itemStack = new ItemStack(gardenPlot.item());
-			itemStack.set(DataComponentTypes.ITEM_NAME, Text.literal(gardenPlot.name()).formatted(Formatting.GREEN, Formatting.BOLD));
+			itemStack.set(DataComponents.ITEM_NAME, Component.literal(gardenPlot.name()).withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD));
 			return itemStack;
 		}).toArray(ItemStack[]::new);
 		items[12] = new ItemStack(Items.LODESTONE);
-		items[12].set(DataComponentTypes.ITEM_NAME, Text.literal("The Barn"));
+		items[12].set(DataComponents.ITEM_NAME, Component.literal("The Barn"));
 		updateInfestedFromTab();
 
 		// Inner widgets
 		ItemButtonWidget deskButton = new ItemButtonWidget(
 				getX() + 7, getBottom() - 24,
-				new ItemStack(Items.BOOK), Text.translatable("skyblocker.gardenPlots.openDesk"),
+				new ItemStack(Items.BOOK), Component.translatable("skyblocker.gardenPlots.openDesk"),
 				button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/desk", true)
 		);
 		ItemButtonWidget spawnButton = new ItemButtonWidget(
 				getRight() - 7 - 40 - 2, getBottom() - 24,
-				new ItemStack(Items.ENDER_EYE), Text.translatable("skyblocker.gardenPlots.spawn"),
+				new ItemStack(Items.ENDER_EYE), Component.translatable("skyblocker.gardenPlots.spawn"),
 				button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/warp garden", true)
 		);
 		ItemButtonWidget setSpawnButton = new ItemButtonWidget(
 				getRight() - 7 - 20, getBottom() - 24,
-				new ItemStack(Math.random() < 0.001 ? Items.PINK_BED : Items.RED_BED), Text.translatable("skyblocker.gardenPlots.setSpawn"),
+				new ItemStack(Math.random() < 0.001 ? Items.PINK_BED : Items.RED_BED), Component.translatable("skyblocker.gardenPlots.setSpawn"),
 				button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/setspawn", true)
 		);
 		widgets = new ItemButtonWidget[]{deskButton, spawnButton, setSpawnButton};
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		Matrix3x2fStack matrices = context.getMatrices();
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		Font textRenderer = Minecraft.getInstance().font;
+		Matrix3x2fStack matrices = context.pose();
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
+		context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
 
-		context.drawText(textRenderer, getMessage(), 8, 6, Colors.DARK_GRAY, false);
+		context.drawString(textRenderer, getMessage(), 8, 6, CommonColors.DARK_GRAY, false);
 
 		hoveredSlot = -1;
 		long timeMillis = System.currentTimeMillis();
@@ -266,38 +263,38 @@ public class GardenPlotsWidget extends ContainerWidget {
 				matrices.pushMatrix();
 				matrices.translate(slotX, slotY);
 				matrices.scale(1.125f, 1.125f);
-				context.drawItem(item, 0, 0);
+				context.renderItem(item, 0, 0);
 				matrices.popMatrix();
 				hoveredSlot = i;
 			} else
-				context.drawItem(item, slotX + 1, slotY + 1);
+				context.renderItem(item, slotX + 1, slotY + 1);
 
 			boolean infested = infectedPlots.contains(i);
 			if (infested && (timeMillis & 512) != 0) {
-				HudHelper.drawBorder(context, slotX + 1, slotY + 1, 16, 16, Colors.RED);
+				HudHelper.drawBorder(context, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
 			}
 
 			// tooltip
 			if (hovered) {
-				List<Text> tooltip = infested ?
+				List<Component> tooltip = infested ?
 						List.of(
-								Text.translatable("skyblocker.gardenPlots.plot", item.getName()),
+								Component.translatable("skyblocker.gardenPlots.plot", item.getHoverName()),
 								GROSS_PEST_TEXT,
-								Text.empty(),
+								Component.empty(),
 								TP_TEXT) :
 
 						i == 12 ?
 								List.of(
-										item.getName(),
-										Text.empty(),
+										item.getHoverName(),
+										Component.empty(),
 										TP_TEXT) :
 
 								List.of(
-										Text.translatable("skyblocker.gardenPlots.plot", item.getName()),
-										Text.empty(),
+										Component.translatable("skyblocker.gardenPlots.plot", item.getHoverName()),
+										Component.empty(),
 										TP_TEXT
 								);
-				context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
+				context.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
 			}
 		}
 
@@ -332,38 +329,38 @@ public class GardenPlotsWidget extends ContainerWidget {
 	}
 
 	@Override
-	public void onClick(Click click, boolean doubled) {
+	public void onClick(MouseButtonEvent click, boolean doubled) {
 		super.onClick(click, doubled);
 		if (hoveredSlot == -1) return;
 
-		if (SkyblockerConfigManager.get().farming.garden.closeScreenOnPlotClick && MinecraftClient.getInstance().currentScreen != null)
-			MinecraftClient.getInstance().currentScreen.close();
+		if (SkyblockerConfigManager.get().farming.garden.closeScreenOnPlotClick && Minecraft.getInstance().screen != null)
+			Minecraft.getInstance().screen.onClose();
 
 		if (hoveredSlot == 12) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/plottp barn", true);
 		else MessageScheduler.INSTANCE.sendMessageAfterCooldown("/plottp " + gardenPlots[hoveredSlot].name, true);
 	}
 
 	@Override
-	protected boolean isValidClickButton(MouseInput input) {
+	protected boolean isValidClickButton(MouseButtonInfo input) {
 		return super.isValidClickButton(input) && hoveredSlot != -1;
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+	protected void updateWidgetNarration(NarrationElementOutput builder) {
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		return List.of(widgets);
 	}
 
 	@Override
-	protected int getContentsHeightWithPadding() {
+	protected int contentHeight() {
 		return getHeight();
 	}
 
 	@Override
-	protected double getDeltaYPerScroll() {
+	protected double scrollRate() {
 		return 0;
 	}
 
@@ -388,7 +385,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (isMouseOver(click.x(), click.y()) && isValidClickButton(click.buttonInfo())) {
 			onClick(click, doubled);
 			return true;

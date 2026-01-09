@@ -6,9 +6,8 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.util.StringIdentifiable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.util.StringRepresentable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,28 +17,25 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 public class JsonData<T> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JsonData.class);
-	@NotNull
 	private final Path file;
-	@NotNull
 	private final Codec<T> codec;
 	private final boolean compressed; // Default: false
 	private final boolean loadAsync;  // Default: true
 	private final boolean saveAsync;  // Default: false
-	@NotNull
 	private T data; // Default: defaultValue
-	@Nullable
-	private CompletableFuture<Void> loaded;
+	private @Nullable CompletableFuture<Void> loaded;
 
 	/**
 	 * @param file         The file to load/save the data from/to.
 	 * @param codec        The codec to use for serializing/deserializing the data.
 	 * @param defaultValue The default value of {@link #data} to use in case the file does not exist yet.
 	 */
-	public JsonData(@NotNull Path file, @NotNull Codec<T> codec, @NotNull T defaultValue) {
+	public JsonData(Path file, Codec<T> codec, T defaultValue) {
 		this(file, codec, defaultValue, false);
 	}
 
@@ -50,7 +46,7 @@ public class JsonData<T> {
 	 * @param loadAsync    Whether the data should be loaded asynchronously.
 	 * @param saveAsync    Whether the data should be saved asynchronously.
 	 */
-	public JsonData(@NotNull Path file, @NotNull Codec<T> codec, @NotNull T defaultValue, boolean loadAsync, boolean saveAsync) {
+	public JsonData(Path file, Codec<T> codec, T defaultValue, boolean loadAsync, boolean saveAsync) {
 		this(file, codec, defaultValue, false, loadAsync, saveAsync);
 	}
 
@@ -59,11 +55,11 @@ public class JsonData<T> {
 	 * @param codec        The codec to use for serializing/deserializing the data.
 	 * @param defaultValue The default value of {@link #data} to use in case the file does not exist yet.
 	 * @param compressed   Whether the {@link JsonOps#COMPRESSED} should be used.
-	 *                     When compressed, {@link StringIdentifiable#createCodec(Supplier)} will use the ordinals instead of {@link StringIdentifiable#asString()}.
+	 *                     When compressed, {@link StringRepresentable#fromEnum(Supplier)} will use the ordinals instead of {@link StringRepresentable#getSerializedName()}.
 	 *                     When compressed, codecs built with {@link RecordCodecBuilder} will be serialized as a list instead of a map.
 	 *                     {@link JsonOps#COMPRESSED} is required for maps with non-string keys.
 	 */
-	public JsonData(@NotNull Path file, @NotNull Codec<T> codec, @NotNull T defaultValue, boolean compressed) {
+	public JsonData(Path file, Codec<T> codec, T defaultValue, boolean compressed) {
 		this(file, codec, defaultValue, compressed, true, false);
 	}
 
@@ -72,14 +68,14 @@ public class JsonData<T> {
 	 * @param codec        The codec to use for serializing/deserializing the data.
 	 * @param defaultValue The default value of {@link #data} to use in case the file does not exist c.
 	 * @param compressed   Whether the {@link JsonOps#COMPRESSED} should be used.
-	 *                     When compressed, {@link StringIdentifiable#createCodec(Supplier)} will use the ordinals instead of {@link StringIdentifiable#asString()}.
+	 *                     When compressed, {@link StringRepresentable#fromEnum(Supplier)} will use the ordinals instead of {@link StringRepresentable#getSerializedName()}.
 	 *                     When compressed, codecs built with {@link RecordCodecBuilder} will be serialized as a list instead of a map.
 	 *                     {@link JsonOps#COMPRESSED} is required for maps with non-string keys.
 	 * @param loadAsync    Whether the data should be loaded asynchronously.
 	 * @param saveAsync    Whether the data should be saved asynchronously.
 	 *                     Do not save async if saving is done with {@link ClientLifecycleEvents#CLIENT_STOPPING}.
 	 */
-	public JsonData(@NotNull Path file, @NotNull Codec<T> codec, @NotNull T defaultValue, boolean compressed, boolean loadAsync, boolean saveAsync) {
+	public JsonData(Path file, Codec<T> codec, T defaultValue, boolean compressed, boolean loadAsync, boolean saveAsync) {
 		this.file = file;
 		this.codec = codec;
 		this.data = defaultValue;
@@ -104,7 +100,7 @@ public class JsonData<T> {
 
 	public CompletableFuture<Void> load() {
 		if (loadAsync) {
-			loaded = CompletableFuture.runAsync(this::loadInternal);
+			loaded = CompletableFuture.runAsync(this::loadInternal, Executors.newVirtualThreadPerTaskExecutor());
 		} else {
 			loadInternal();
 			loaded = CompletableFuture.completedFuture(null);
@@ -125,7 +121,7 @@ public class JsonData<T> {
 
 	public CompletableFuture<Void> save() {
 		if (saveAsync) {
-			return CompletableFuture.runAsync(this::saveInternal);
+			return CompletableFuture.runAsync(this::saveInternal, Executors.newVirtualThreadPerTaskExecutor());
 		} else {
 			saveInternal();
 			return CompletableFuture.completedFuture(null);
@@ -165,7 +161,6 @@ public class JsonData<T> {
 		return loaded != null && loaded.isDone();
 	}
 
-	@NotNull
 	public T getData() {
 		if (loaded == null) {
 			LOGGER.error("[Skyblocker Json Data] Get data called when loading has not started for file `{}`. Returning default value.", file);
@@ -182,8 +177,7 @@ public class JsonData<T> {
 	 * @param data The new data to set.
 	 * @return The old data before setting the new one.
 	 */
-	@NotNull
-	public T setData(@NotNull T data) {
+	public T setData(T data) {
 		T oldData = this.data;
 		this.data = data;
 		return oldData;
