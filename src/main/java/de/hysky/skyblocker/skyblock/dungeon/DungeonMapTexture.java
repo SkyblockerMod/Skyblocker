@@ -8,6 +8,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.MapRendererInvoker;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldTerrainRenderContext;
 import net.minecraft.client.Minecraft;
@@ -16,6 +17,8 @@ import net.minecraft.client.renderer.MapRenderer;
 import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.material.MapColor;
@@ -36,6 +39,7 @@ public class DungeonMapTexture {
 			dungeonMapTexture = new DynamicTexture(() -> "Skyblocker Dungeon Map", MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE, true);
 			minecraft.getTextureManager().register(ID, dungeonMapTexture);
 		});
+		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> clearMapImage());
 		WorldRenderEvents.START_MAIN.register(DungeonMapTexture::uploadMapTexture);
 	}
 
@@ -78,6 +82,25 @@ public class DungeonMapTexture {
 		for (MapDecoration decoration : mapData.getDecorations()) {
 			MAP_RENDER_STATE.decorations.add(((MapRendererInvoker) mapRenderer).invokeExtractDecorationRenderState(decoration));
 		}
+	}
+
+	/**
+	 * Clears the map image by making all of its pixels transparent. Triggered when the player swaps worlds.
+	 */
+	private static void clearMapImage() {
+		if (dungeonMapTexture == null) return;
+		NativeImage pixels = dungeonMapTexture.getPixels();
+
+		if (pixels != null) {
+			for (int y = 0; y < MAP_TEXTURE_SIZE; y++) {
+				for (int x = 0; x < MAP_TEXTURE_SIZE; x++) {
+					// Make pixels transparent
+					pixels.setPixel(x, y, ARGB.transparent(CommonColors.BLACK));
+				}
+			}
+		}
+
+		requiresUpload = true;
 	}
 
 	/**
