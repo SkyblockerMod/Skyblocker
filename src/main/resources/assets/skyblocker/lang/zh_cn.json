@@ -1611,5 +1611,8 @@
     "skyblocker.dungeons.terminalHud.destroyedStatus": "已被破坏",
     "skyblocker.dungeons.terminalHud.incompleteStatus": "未完成",
     "skyblocker.config.dungeons.terminalHud": "终端HUD（F7/M7）",
-    "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "显示距离该任务最近的玩家用户名"
+    "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "显示距离该任务最近的玩家用户名",
+    "skyblocker.dungeons.roomPreview.joinMessage": "你当前正在查看%s。\n你可以四处飞行、修改自定义秘密路径点等等！",
+    "skyblocker.dungeons.roomPreview.invalidRoom": "无效的房间！",
+    "skyblocker.dungeons.roomPreview.failedToLoad": "加载房间失败：%s"
 }
