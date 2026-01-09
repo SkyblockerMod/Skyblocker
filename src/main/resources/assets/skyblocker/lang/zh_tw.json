@@ -1610,5 +1610,8 @@
     "skyblocker.dungeons.terminalHud.destroyedStatus": "已被破壞",
     "skyblocker.dungeons.terminalHud.incompleteStatus": "未完成",
     "skyblocker.config.dungeons.terminalHud": "終端HUD（F7/M7）",
-    "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "顯示距離該任務最近的玩家用戶名"
+    "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "顯示距離該任務最近的玩家用戶名",
+    "skyblocker.dungeons.roomPreview.failedToLoad": "加載房間失敗：%s",
+    "skyblocker.dungeons.roomPreview.invalidRoom": "無效的房間！",
+    "skyblocker.dungeons.roomPreview.joinMessage": "你目前正在查看%s。\n你可以四處飛行、修改自訂秘密路徑點等等！"
 }
