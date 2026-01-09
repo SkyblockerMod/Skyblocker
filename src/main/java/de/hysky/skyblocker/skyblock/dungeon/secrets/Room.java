@@ -54,7 +54,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Room implements Tickable, Renderable {
-	private static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
+	public static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
 	private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
 	private static final String CHEST_ALREADY_OPENED = "This chest has already been searched!";
 	protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
@@ -103,10 +103,10 @@ public class Room implements Tickable, Renderable {
 	 * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
 	 */
 	protected MatchState matchState = MatchState.MATCHING;
-	private final Table<Integer, BlockPos, SecretWaypoint> secretWaypoints = HashBasedTable.create();
-	private @Nullable String name;
-	private @Nullable Direction direction;
-	private @Nullable Vector2ic physicalCornerPos;
+	protected Table<Integer, BlockPos, SecretWaypoint> secretWaypoints = HashBasedTable.create();
+	protected @Nullable String name;
+	protected @Nullable Direction direction;
+	protected @Nullable Vector2ic physicalCornerPos;
 
 	protected List<Tickable> tickables = new ArrayList<>();
 	protected List<Renderable> renderables = new ArrayList<>();
@@ -210,7 +210,7 @@ public class Room implements Tickable, Renderable {
 		return possibleRooms;
 	}
 
-	private Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
+	protected Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return switch (shape) {
 			case ONE_BY_ONE, TWO_BY_TWO, PUZZLE, TRAP, MINIBOSS -> Direction.values();
 			case ONE_BY_TWO, ONE_BY_THREE, ONE_BY_FOUR -> {

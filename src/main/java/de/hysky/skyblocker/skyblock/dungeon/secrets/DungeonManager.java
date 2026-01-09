@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -29,6 +30,7 @@ import java.util.zip.InflaterInputStream;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.skyblock.dungeon.preview.RoomPreviewServer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Vector2i;
@@ -47,6 +49,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.serialization.JsonOps;
 
 import de.hysky.skyblocker.SkyblockerMod;
@@ -124,7 +128,7 @@ public class DungeonManager {
 	 * @implNote Not using {@link Registry#getKey(Object) Registry#getId(Block)} and {@link Blocks Blocks} since this is also used by {@link de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
 	 */
 	@SuppressWarnings("JavadocReference")
-	protected static final Object2ByteMap<String> NUMERIC_ID = Object2ByteMaps.unmodifiable(new Object2ByteOpenHashMap<>(Map.ofEntries(
+	public static final Object2ByteMap<String> NUMERIC_ID = Object2ByteMaps.unmodifiable(new Object2ByteOpenHashMap<>(Map.ofEntries(
 			Map.entry("minecraft:stone", (byte) 1),
 			Map.entry("minecraft:diorite", (byte) 2),
 			Map.entry("minecraft:polished_diorite", (byte) 3),
@@ -898,6 +902,7 @@ public class DungeonManager {
 	 * @see DungeonMapUtils#getPhysicalRoomPos(Vec3)
 	 */
 	private static @Nullable Room getRoomAtPhysical(Vec3 pos) {
+		if (RoomPreviewServer.isActive) return currentRoom;
 		return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
 	}
 
@@ -910,6 +915,7 @@ public class DungeonManager {
 	 * @see DungeonMapUtils#getPhysicalRoomPos(Vec3i)
 	 */
 	private static @Nullable Room getRoomAtPhysical(Vec3i pos) {
+		if (RoomPreviewServer.isActive) return currentRoom;
 		return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
 	}
 
@@ -954,7 +960,7 @@ public class DungeonManager {
 	 * @return whether room matching and dungeon secrets should be processed
 	 */
 	private static boolean shouldProcess() {
-		return Utils.isInDungeons();
+		return Utils.isInDungeons() || RoomPreviewServer.isActive;
 	}
 
 	/**
@@ -1038,6 +1044,27 @@ public class DungeonManager {
 		}
 
 		return -1;
+	}
+
+	public static Optional<int[]> getRoomBlockData(String roomType, String roomName) {
+		var typeData = DungeonManager.ROOMS_DATA.get("catacombs").get(roomType);
+		if (typeData == null) return Optional.empty();
+		return Optional.ofNullable(typeData.get(roomName));
+	}
+
+	public static void startFromRoomPreview(Room room) {
+		room.segments.forEach((segment) -> rooms.put(segment, room));
+		currentRoom = room;
+		runEnded = true;
+	}
+
+	public static CompletableFuture<Suggestions> suggestRoomTypes(CommandContext<FabricClientCommandSource> ctx, SuggestionsBuilder suggestionsBuilder) {
+		return SharedSuggestionProvider.suggest(ROOMS_DATA.get("catacombs").keySet(), suggestionsBuilder);
+	}
+
+	public static CompletableFuture<Suggestions> suggestRooms(String roomType, SuggestionsBuilder suggestionsBuilder) {
+		if (ROOMS_DATA.get("catacombs").get(roomType) == null) return Suggestions.empty();
+		return SharedSuggestionProvider.suggest(ROOMS_DATA.get("catacombs").get(roomType).keySet(), suggestionsBuilder);
 	}
 
 	@VisibleForTesting
