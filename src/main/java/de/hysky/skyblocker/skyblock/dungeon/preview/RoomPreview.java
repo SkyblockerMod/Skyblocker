@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -33,7 +34,7 @@ public class RoomPreview {
 			return -1;
 		}
 
-		CLIENT.disconnectFromWorld(Component.empty());
+		CLIENT.disconnectFromWorld(ClientLevel.DEFAULT_QUIT_MESSAGE);
 		if (CLIENT.hasSingleplayerServer() && CLIENT.getSingleplayerServer() != null) CLIENT.getSingleplayerServer().stopServer();
 		RoomPreviewServer.createServer();
 		RoomPreviewServer.loadRoom(ctx.getArgument("type", String.class), ctx.getArgument("room", String.class));

@@ -13,13 +13,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Vector2i;
+import org.joml.Vector2ic;
 
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
 public class PreviewRoom extends Room {
-	private static final Vector2i ORIGIN = new Vector2i(0, 0);
+	private static final Vector2ic ORIGIN = new Vector2i(0, 0);
 
 	public PreviewRoom(String name) {
 		super(Type.ROOM, ORIGIN);
