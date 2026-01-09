@@ -105,7 +105,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	@SuppressWarnings("JavadocReference")
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
-		if (getState() != State.SHOW) { return true; }  // Block early clicks when table is still loading
+		if (getState() != State.SHOW) { return shouldBlockIncorrectClicks(); }  // Block early clicks when table is still loading
 		if (slot != ultrasequencerNextSlot) { return shouldBlockIncorrectClicks(); }
 
 		int count = getSlots().get(ultrasequencerNextSlot).getCount() + 1;
