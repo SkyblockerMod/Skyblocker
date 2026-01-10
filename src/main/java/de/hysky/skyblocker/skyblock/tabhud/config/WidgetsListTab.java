@@ -22,6 +22,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -40,14 +41,15 @@ public class WidgetsListTab implements Tab {
 	private final Button nextPage;
 	private final Button thirdColumnButton;
 	private final Button resetButton;
-	private @Nullable ChestMenu handler;
+	private final StringWidget waitingForServerText;
 	private final Minecraft client;
-	private boolean waitingForServer = false;
 
 	private final Int2ObjectMap<WidgetsListSlotEntry> entries = new Int2ObjectOpenHashMap<>();
 	private final List<WidgetEntry> customWidgetEntries = new ArrayList<>();
-	private boolean shouldShowCustomWidgetEntries = false;
 
+	private @Nullable ChestMenu handler;
+	private boolean waitingForServer = false;
+	private boolean shouldShowCustomWidgetEntries = false;
 	private int resetSlotId = -1;
 	private boolean shouldResetScroll = false;
 
@@ -88,7 +90,8 @@ public class WidgetsListTab implements Tab {
 			if (resetSlotId == -1) return;
 			clickAndWaitForServer(resetSlotId, 0);
 		}).size(80, 15).build();
-
+		waitingForServerText = new StringWidget(Component.literal("Waiting for server..."), client.font);
+		waitingForServerText.setWidth(client.font.width(waitingForServerText.getMessage()));
 		if (handler == null) {
 			back.visible = false;
 			previousPage.visible = false;
@@ -110,6 +113,7 @@ public class WidgetsListTab implements Tab {
 		consumer.accept(thirdColumnButton);
 		consumer.accept(resetButton);
 		consumer.accept(widgetsElementList);
+		consumer.accept(waitingForServerText);
 	}
 
 	public void resetScrollOnLoad() {
@@ -121,6 +125,7 @@ public class WidgetsListTab implements Tab {
 		if (client.gameMode == null || this.client.player == null) return;
 		client.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.PICKUP, this.client.player);
 		waitingForServer = true;
+		waitingForServerText.visible = true;
 	}
 
 	public void shiftClickAndWaitForServer(int slot, int button) {
@@ -128,8 +133,12 @@ public class WidgetsListTab implements Tab {
 		if (client.gameMode == null || this.client.player == null) return;
 		client.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.QUICK_MOVE, this.client.player);
 		// When moving a widget down it gets stuck sometimes
-		Scheduler.INSTANCE.schedule(() -> this.waitingForServer = false, 4);
+		Scheduler.INSTANCE.schedule(() -> {
+			this.waitingForServer = false;
+			waitingForServerText.visible = false;
+		}, 4);
 		waitingForServer = true;
+		waitingForServerText.visible = true;
 	}
 
 	public void updateHandler(@Nullable ChestMenu newHandler) {
@@ -163,6 +172,7 @@ public class WidgetsListTab implements Tab {
 
 	public void onSlotChange(int slot, ItemStack stack) {
 		waitingForServer = false;
+		waitingForServerText.visible = false;
 		widgetsElementList.updateList();
 		switch (slot) {
 			case 45 -> {
@@ -233,6 +243,7 @@ public class WidgetsListTab implements Tab {
 		previousPage.setPosition(thirdColumnButton.getX() - previousPage.getWidth() - 5, bottomButtonY);
 		nextPage.setPosition(thirdColumnButton.getRight() + 5, bottomButtonY);
 		resetButton.setPosition(tabArea.right() - resetButton.getWidth() - 4, bottomButtonY);
+		waitingForServerText.setPosition(tabArea.width() - waitingForServerText.getWidth() - 5, tabArea.height() - client.font.lineHeight - 2);
 	}
 
 	public boolean shouldShowCustomWidgetEntries() {
