@@ -75,6 +75,8 @@ public class DungeonsConfig {
 
 		public boolean showRoomLabels = true;
 
+		public boolean hideCheckmarks = true;
+
 		public boolean showOutline = true;
 
 		public boolean backgroundBlur = false;

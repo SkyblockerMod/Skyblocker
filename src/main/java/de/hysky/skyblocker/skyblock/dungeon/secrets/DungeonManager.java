@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -306,7 +307,7 @@ public class DungeonManager {
 						MapItemSavedData state = getMapState(context.getSource().getClient());
 
 						if (currentRoom != null && state != null) {
-							int checkmarkColour = getRoomCheckmarkColour(state, currentRoom);
+							int checkmarkColour = getRoomCheckmarkColour(state, currentRoom, null);
 							String result = switch (checkmarkColour) {
 								case DungeonMapUtils.GREEN_COLOR -> "Green";
 								case DungeonMapUtils.WHITE_COLOR -> "White";
@@ -715,7 +716,7 @@ public class DungeonManager {
 	// Mark the secret count as outdated to ensure we have an accurate count
 	private static void updateRoomCheckmark(Room room, MapItemSavedData map) {
 		if (room.clearState == Room.ClearState.GREEN_CHECKED) return;
-		switch (getRoomCheckmarkColour(map, room)) {
+		switch (getRoomCheckmarkColour(map, room, null)) {
 			case DungeonMapUtils.GREEN_COLOR -> {
 				room.clearState = Room.ClearState.GREEN_CHECKED;
 				room.secretCountOutdated = true;
@@ -1021,8 +1022,12 @@ public class DungeonManager {
 	/**
 	 * Returns the colour of a room's checkmark on the map. To find a room's checkmark: For each segment, we start from the top left corner of the segment,
 	 * go to the middle, then iterate downwards, and we should find the checkmark about a pixel or two down from there if the segment has the checkmark.
+	 *
+	 * @param onCheckmarkFound Called with the position the checkmark was found at, used for hiding map checkmarks to avoid duplicating code.
+	 *
+	 * @see Room#clearState
 	 */
-	private static int getRoomCheckmarkColour(MapItemSavedData mapState, Room room) {
+	public static int getRoomCheckmarkColour(MapItemSavedData mapState, Room room, @Nullable Consumer<Vector2ic> onCheckmarkFound) {
 		if (physicalEntrancePos == null || mapEntrancePos == null) return -1;
 		int halfRoomSize = mapRoomSize / 2;
 
@@ -1034,14 +1039,25 @@ public class DungeonManager {
 
 			//In this case, the offset is the number of units offset from the Y value of the middle of the segment
 			for (int offset = 0; offset < halfRoomSize; offset++) {
-				int colour = DungeonMapUtils.getColor(mapState, new Vector2i(middle.x(), middle.y() + offset));
+				Vector2ic mapPos = new Vector2i(middle.x(), middle.y() + offset);
+				int colour = DungeonMapUtils.getColor(mapState, mapPos);
 
 				//Return if we found the colour of the checkmark
-				if (colour == DungeonMapUtils.WHITE_COLOR || colour == DungeonMapUtils.GREEN_COLOR || colour == DungeonMapUtils.RED_COLOR) return colour;
+				if (matchesCheckmarkColour(colour)) {
+					if (onCheckmarkFound != null) {
+						onCheckmarkFound.accept(mapPos);
+					}
+
+					return colour;
+				}
 			}
 		}
 
 		return -1;
+	}
+
+	public static boolean matchesCheckmarkColour(int colour) {
+		return colour == DungeonMapUtils.WHITE_COLOR || colour == DungeonMapUtils.GREEN_COLOR || colour == DungeonMapUtils.RED_COLOR;
 	}
 
 	public static Optional<int[]> getRoomBlockData(String roomType, String roomName) {
