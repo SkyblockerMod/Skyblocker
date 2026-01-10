@@ -179,7 +179,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 
 	@Inject(method = "handleMapItemData", at = @At("RETURN"))
 	private void skyblocker$onMapItemData(ClientboundMapItemDataPacket packet, CallbackInfo ci) {
-		DungeonMapTexture.onMapItemDataUpdate(packet.mapId());
+		DungeonMapTexture.onMapItemDataUpdate(packet.mapId(), packet.colorPatch().isPresent());
 	}
 
 	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/DebugScreenOverlay;showNetworkCharts()Z"))
