@@ -315,6 +315,14 @@ public class GeneralCategory {
 										newValue -> config.general.itemTooltip.enableStackingEnchantProgress = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableEvolvingItemProgress"))
+								.description(Component.translatable("skyblocker.config.general.itemTooltip.enableEvolvingItemProgress.@Tooltip"))
+								.binding(defaults.general.itemTooltip.enableEvolvingItemProgress,
+										() -> config.general.itemTooltip.enableEvolvingItemProgress,
+										newValue -> config.general.itemTooltip.enableEvolvingItemProgress = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//Item Info Display
