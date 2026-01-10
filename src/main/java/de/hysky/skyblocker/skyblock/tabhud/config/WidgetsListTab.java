@@ -137,6 +137,7 @@ public class WidgetsListTab implements Tab {
 		back.visible = handler != null;
 		entries.clear();
 		widgetsElementList.updateList();
+		resetButton.visible = false;
 		if (this.shouldResetScroll) this.widgetsElementList.setScrollAmount(0);
 	}
 
@@ -171,10 +172,13 @@ public class WidgetsListTab implements Tab {
 			case 51, 53 -> {
 				if (slot == 53) nextPage.visible = stack.is(Items.ARROW);
 				if (stack.is(Items.PLAYER_HEAD)) {
+					String stackName = stack.getHoverName().getString().toLowerCase(Locale.ENGLISH);
+					if (!stackName.startsWith("reset")) return;
 					Component buttonText = Component.literal("Reset ALL").withStyle(style -> style.withColor(ChatFormatting.RED).withUnderlined(true));
 					if (slot == 51) {
 						buttonText = Component.literal("Reset").withStyle(ChatFormatting.RED);
 					}
+					resetButton.visible = true;
 					resetButton.setMessage(buttonText);
 					resetSlotId = slot;
 				}
@@ -226,8 +230,8 @@ public class WidgetsListTab implements Tab {
 
 		int bottomButtonY = widgetsElementList.getBottom() + 4;
 		thirdColumnButton.setPosition((tabArea.width() - thirdColumnButton.getWidth()) / 2, bottomButtonY);
-		previousPage.setPosition(thirdColumnButton.getX() - previousPage.getWidth() - 10, bottomButtonY);
-		nextPage.setPosition(thirdColumnButton.getRight() + 10, bottomButtonY);
+		previousPage.setPosition(thirdColumnButton.getX() - previousPage.getWidth() - 5, bottomButtonY);
+		nextPage.setPosition(thirdColumnButton.getRight() + 5, bottomButtonY);
 		resetButton.setPosition(tabArea.right() - resetButton.getWidth() - 4, bottomButtonY);
 	}
 
