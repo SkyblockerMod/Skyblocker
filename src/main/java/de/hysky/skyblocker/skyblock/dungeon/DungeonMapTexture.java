@@ -1,12 +1,24 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.Set;
+
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 import org.jspecify.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.mixins.accessors.MapRendererInvoker;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
@@ -32,6 +44,10 @@ public class DungeonMapTexture {
 	private static @Nullable DynamicTexture dungeonMapTexture = null;
 	private static boolean requiresUpload = true;
 	private static final MapRenderState MAP_RENDER_STATE = Util.make(new MapRenderState(), state -> state.texture = ID);
+	private static final Set<Room.Type> IGNORED_ROOMS_FOR_CHECKMARK_HIDING = Set.of(Room.Type.ENTRANCE, Room.Type.BLOOD, Room.Type.FAIRY, Room.Type.UNKNOWN);
+	private static final Vector2ic[] NEIGHBOUR_OFFSETS = new Vector2ic[] {
+			new Vector2i(0, 1), new Vector2i(0, -1), new Vector2i(1, 0), new Vector2i(-1, 0)
+	};
 
 	@Init
 	public static void init() {
@@ -45,17 +61,19 @@ public class DungeonMapTexture {
 
 	public static void onMapItemDataUpdate(MapId mapId) {
 		if (DungeonMap.shouldProcess() && mapId.equals(DungeonMap.getMapIdComponent(null))) {
-			updateMapImage(mapId);
-			updateMapDecorations(mapId);
+			MapItemSavedData state = MapItem.getSavedData(mapId, Minecraft.getInstance().level);
+
+			updateMapImage(state);
+			hideCheckmarks(state);
+			updateMapDecorations(state);
 		}
 	}
 
 	/**
 	 * Copies the vanilla map image.
 	 */
-	private static void updateMapImage(MapId mapId) {
+	private static void updateMapImage(MapItemSavedData mapData) {
 		if (dungeonMapTexture == null) return;
-		MapItemSavedData state = MapItem.getSavedData(mapId, Minecraft.getInstance().level);
 		NativeImage pixels = dungeonMapTexture.getPixels();
 
 		if (pixels != null) {
@@ -63,7 +81,7 @@ public class DungeonMapTexture {
 				for (int x = 0; x < MAP_TEXTURE_SIZE; x++) {
 					int i = x + y * MAP_TEXTURE_SIZE;
 
-					pixels.setPixel(x, y, MapColor.getColorFromPackedId(state.colors[i]));
+					pixels.setPixel(x, y, MapColor.getColorFromPackedId(mapData.colors[i]));
 				}
 			}
 		}
@@ -71,10 +89,8 @@ public class DungeonMapTexture {
 		requiresUpload = true;
 	}
 
-	private static void updateMapDecorations(MapId mapId) {
-		Minecraft minecraft = Minecraft.getInstance();
-		MapRenderer mapRenderer = minecraft.getMapRenderer();
-		MapItemSavedData mapData = MapItem.getSavedData(mapId, minecraft.level);
+	private static void updateMapDecorations(MapItemSavedData mapData) {
+		MapRenderer mapRenderer = Minecraft.getInstance().getMapRenderer();
 
 		// In the future with the thread split the map render state probably shouldn't be reused
 		MAP_RENDER_STATE.decorations.clear();
@@ -82,6 +98,60 @@ public class DungeonMapTexture {
 		for (MapDecoration decoration : mapData.getDecorations()) {
 			MAP_RENDER_STATE.decorations.add(((MapRendererInvoker) mapRenderer).invokeExtractDecorationRenderState(decoration));
 		}
+	}
+
+	/**
+	 * Removes checkmark icons from known rooms
+	 */
+	private static void hideCheckmarks(MapItemSavedData mapData) {
+		DungeonsConfig.DungeonMap mapConfig = SkyblockerConfigManager.get().dungeons.dungeonMap;
+
+		// Dependent on room labels since removing checkmarks and having no indicator as to a room's completeness is very wrong
+		if (!mapConfig.showRoomLabels || !mapConfig.hideCheckmarks) return;
+
+		// Only hide checkmarks from known rooms since we have coloured labels for them
+		DungeonManager.getRoomsStream()
+				.filter(room -> !IGNORED_ROOMS_FOR_CHECKMARK_HIDING.contains(room.getType()))
+				.forEach(room -> {
+					DungeonManager.getRoomCheckmarkColour(mapData, room, checkmarkPixel -> {
+						Set<Vector2ic> checkmarkPixels = new HashSet<>();
+						Set<Vector2ic> visited = new HashSet<>();
+						Queue<Vector2ic> queue = new ArrayDeque<>();
+						queue.add(checkmarkPixel);
+
+						// Flood fill using Breadth-First Searching to find checkmark pixels
+						while (!queue.isEmpty()) {
+							Vector2ic current = queue.remove();
+							checkmarkPixels.add(current);
+
+							for (Vector2ic offset : NEIGHBOUR_OFFSETS) {
+								Vector2ic neighbour = new Vector2i(current).add(offset);
+
+								if (visited.contains(neighbour) || queue.contains(neighbour)) {
+									continue;
+								} else if (neighbour.x() >= 0 && neighbour.x() < MAP_TEXTURE_SIZE && neighbour.y() >= 0 && neighbour.y() < MAP_TEXTURE_SIZE && DungeonManager.matchesCheckmarkColour(DungeonMapUtils.getColor(mapData, neighbour))) {
+									visited.add(neighbour);
+									queue.add(neighbour);
+								}
+							}
+						}
+
+						setPixels(checkmarkPixels, MapColor.getColorFromPackedId(room.getType().color));
+					});
+				});
+	}
+
+	private static void setPixels(Set<Vector2ic> checkmarkPixels, int colour) {
+		if (dungeonMapTexture == null) return;
+		NativeImage pixels = dungeonMapTexture.getPixels();
+
+		if (pixels != null) {
+			for (Vector2ic pixel : checkmarkPixels) {
+				pixels.setPixel(pixel.x(), pixel.y(), colour);
+			}
+		}
+
+		requiresUpload = true;
 	}
 
 	/**

@@ -760,7 +760,7 @@ public class Room implements Tickable, Renderable {
 		BLOOD(MapColor.FIRE.getPackedId(MapColor.Brightness.HIGH), "Blood"),
 		UNKNOWN(MapColor.COLOR_GRAY.getPackedId(MapColor.Brightness.NORMAL), "Unknown");
 
-		final byte color;
+		public final byte color;
 		final String name;
 
 		public static final Codec<Type> CODEC = StringRepresentable.fromEnum(Type::values);

@@ -173,6 +173,14 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.map.hideCheckmarks"))
+								.description(Component.translatable("skyblocker.config.dungeons.map.hideCheckmarks.@Tooltip"))
+								.binding(defaults.dungeons.dungeonMap.hideCheckmarks,
+										() -> config.dungeons.dungeonMap.hideCheckmarks,
+										newValue -> config.dungeons.dungeonMap.hideCheckmarks = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.map.showOutline"))
 								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.dungeons.dungeonMap.showOutline,
