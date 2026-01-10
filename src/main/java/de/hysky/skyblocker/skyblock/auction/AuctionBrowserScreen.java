@@ -12,6 +12,8 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +48,7 @@ import net.minecraft.world.item.Items;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);
-	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/browser/background.png");
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/browser.png");
 	private static final Identifier SCROLLER_TEXTURE = Identifier.withDefaultNamespace("container/creative_inventory/scroller");
 
 	private static final Identifier up_arrow_tex = SkyblockerMod.id("up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
@@ -228,7 +230,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
 	@Override
 	public void onSlotChange(AuctionHouseScreenHandler handler, int slotId, ItemStack stack) {
-		if (minecraft == null || stack.isEmpty()) return;
+		if (stack.isEmpty()) return;
 		isWaitingForServer = false;
 
 		switch (slotId) {
@@ -257,10 +259,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 				String split = tooltip.get(ordinal + 1).getString().substring(2);
 				rarityWidget.setText(tooltip.subList(1, tooltip.size() - 3), split);
 			}
-			case RESET_BUTTON_SLOT -> {
-				if (resetFiltersButton != null)
-					resetFiltersButton.active = handler.getSlot(slotId).getItem().is(Items.ANVIL);
-			}
+			case RESET_BUTTON_SLOT -> resetFiltersButton.active = handler.getSlot(slotId).getItem().is(Items.ANVIL);
 			case SEARCH_BUTTON_SLOT -> {
 				List<String> tooltipSearch = stack.skyblocker$getLoreStrings();
 				for (String string : tooltipSearch) {
@@ -290,7 +289,8 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 						} else categoryTabWidget.unselect();
 					}
 				} else if (slotId > 9 && slotId < (handler.getRowCount() - 1) * 9 && slotId % 9 > 1 && slotId % 9 < 8) {
-					if (!SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN) return;
+					Object2DoubleMap<String> data = TooltipInfoType.THREE_DAY_AVERAGE.getData();
+					if (!SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN || data == null) return;
 					List<String> tooltip = stack.skyblocker$getLoreStrings();
 					for (int k = tooltip.size() - 1; k >= 0; k--) {
 						String string = tooltip.get(k);
@@ -298,13 +298,9 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 							String[] split = string.split(":");
 							if (split.length < 2) continue;
 							String coins = split[1].replace(",", "").replace("coins", "").trim();
-							try {
-								long parsed = Long.parseLong(coins);
-								double price = TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(stack.getNeuName());
-								isSlotHighlighted.put(slotId, price > parsed);
-							} catch (Exception e) {
-								LOGGER.error("[Skyblocker Fancy Auction House] Failed to parse BIN price", e);
-							}
+							long parsed = NumberUtils.toLong(coins, Long.MAX_VALUE);
+							double price = data.getDouble(stack.getNeuName());
+							isSlotHighlighted.put(slotId, price > parsed);
 						}
 					}
 				}
@@ -343,7 +339,6 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	private boolean nextPageVisible = false;
 
 	private void parsePage(ItemStack stack) {
-		assert minecraft != null;
 		try {
 			List<String> tooltip = stack.skyblocker$getLoreStrings();
 			String str = tooltip.getFirst().trim();
