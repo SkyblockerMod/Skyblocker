@@ -15,6 +15,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.mixins.accessors.MapRendererInvoker;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
@@ -57,6 +58,7 @@ public class DungeonMapTexture {
 			minecraft.getTextureManager().register(ID, dungeonMapTexture);
 		});
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> clearMapImage());
+		DungeonEvents.ROOM_MATCHED.register((_room) -> DungeonMapTexture.onMapItemDataUpdate(DungeonMap.getMapIdComponent(null), true));
 		WorldRenderEvents.START_MAIN.register(DungeonMapTexture::uploadMapTexture);
 	}
 
@@ -116,6 +118,7 @@ public class DungeonMapTexture {
 
 		// Only hide checkmarks from known rooms since we have coloured labels for them
 		DungeonManager.getRoomsStream()
+				.filter(Room::isMatched)
 				.filter(room -> !IGNORED_ROOMS_FOR_CHECKMARK_HIDING.contains(room.getType()))
 				.forEach(room -> {
 					DungeonManager.getRoomCheckmarkColour(mapData, room, checkmarkPixel -> {
