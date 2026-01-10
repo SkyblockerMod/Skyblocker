@@ -41,13 +41,12 @@ public class ScreenConfigPopup extends AbstractPopupScreen {
 			ScreenBuilder.FancyTabConfig fancyTab = builder.getConfig().fancyTab;
 			if (checkbox.selected() && fancyTab != null) { // shouldn't be null if it's checked but SQUIGGLY LINE
 
-				// TODO Translatable
-				layout.addChild(Button.builder(Component.literal("Positioner: " + fancyTab.positioner), button -> {
+				layout.addChild(Button.builder(Component.translatable("skyblocker.config.hud.fancyTab.positioner", fancyTab.positioner), button -> {
 					fancyTab.positioner = EnumUtils.cycle(fancyTab.positioner);
-					button.setMessage(Component.literal("Positioner: " + fancyTab.positioner));
+					button.setMessage(Component.translatable("skyblocker.config.hud.fancyTab.positioner", fancyTab.positioner));
 				}).build());
 
-				layout.addChild(new StringWidget(Component.literal("Hidden Widgets"), font), LayoutSettings::alignHorizontallyCenter);
+				layout.addChild(new StringWidget(Component.translatable("skyblocker.config.hud.fancyTab.hiddenWidgets"), font), LayoutSettings::alignHorizontallyCenter);
 				LinearLayout checkboxes = LinearLayout.vertical().spacing(1);
 				for (String s : PlayerListManager.getCurrentWidgets()) {
 					HudWidget widget = PlayerListManager.getTabWidget(s);
@@ -74,7 +73,7 @@ public class ScreenConfigPopup extends AbstractPopupScreen {
 	@Override
 	public void init() {
 		if (tab) {
-			checkbox = Checkbox.builder(Component.literal("Enable fancy tab"), font)
+			checkbox = Checkbox.builder(Component.translatable("skyblocker.config.hud.fancyTab.enable"), font)
 					.onValueChange((box, checked) -> {
 						builder.getConfig().getOrCreateFancyTab().enabled = checked;
 						updateLayout();

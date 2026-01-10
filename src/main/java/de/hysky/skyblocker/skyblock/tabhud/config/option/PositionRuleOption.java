@@ -12,6 +12,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
@@ -83,12 +84,11 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 			super(0, 0, 0, 0, Component.literal("hi"));
 			this.widgetConfig = config;
 			layout.defaultCellSetting().alignHorizontallyCenter();
-			// TODO translatable
-			parentButton = Button.builder(Component.literal("Parent: ").append(getParentName()), ignored -> config.promptSelectWidget(this::onWidgetSelected, false)).build();
+			parentButton = Button.builder(Component.translatable("skyblocker.config.hud.position.parent", getParentName()), ignored -> config.promptSelectWidget(this::onWidgetSelected, false)).build();
 			coordsDisplay = new StringWidget(Component.literal("hi"), Minecraft.getInstance().font);
 			coordsDisplay.setHeight(coordsDisplay.getHeight() + 6);
-			AnchorSelectionWidget parentPoint = new AnchorSelectionWidget(config, Component.literal("Parent Point"), true);
-			AnchorSelectionWidget thisPoint = new AnchorSelectionWidget(config, Component.literal("This Point"), false);
+			AnchorSelectionWidget parentPoint = new AnchorSelectionWidget(config, Component.translatable("skyblocker.config.hud.position.pointParent"), true);
+			AnchorSelectionWidget thisPoint = new AnchorSelectionWidget(config, Component.translatable("skyblocker.config.hud.position.pointThis"), false);
 			add(parentButton);
 			add(coordsDisplay);
 			add(parentPoint);
@@ -113,16 +113,16 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 			int otherAnchorY = selectedWidget == null ? 0 : selectedWidget.getY();
 
 			PositionRule newRule = new PositionRule(
-					selectedWidget == null ? "screen" : selectedWidget.getId(),
+					Optional.ofNullable(selectedWidget).map(HudWidget::getId),
 					PositionRule.Point.DEFAULT,
 					oldRule.thisPoint(),
 					thisAnchorX - otherAnchorX,
 					thisAnchorY - otherAnchorY
 			);
 			if (selectedWidget != null) {
-				parentButton.setMessage(Component.literal("Parent: ").append(selectedWidget.getInformation().displayName()));
+				parentButton.setMessage(Component.translatable("skyblocker.config.hud.position.parent", selectedWidget.getInformation().displayName()));
 			} else {
-				parentButton.setMessage(Component.literal("Parent: ").append("Screen"));
+				parentButton.setMessage(Component.translatable("skyblocker.config.hud.position.parent", Component.translatable("skyblocker.config.hud.position.parent.screen")));
 			}
 			valueSetter.accept(newRule);
 		}
@@ -153,7 +153,7 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 		private Component getParentName() {
 			PositionRule rule = valueGetter.get();
 			if (rule.parent().isEmpty()) {
-				return Component.literal("Screen");
+				return Component.translatable("skyblocker.config.hud.position.parent.screen");
 			} else {
 				HudWidget widget = WidgetManager.getWidgetOrPlaceholder(rule.parent().get());
 				return widget.getInformation().displayName();

@@ -10,12 +10,26 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.MultiLineTextWidget;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ClickType;
@@ -24,16 +38,28 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
-// TODO: recommend disabling spacing and enabling wrapping
+// TODO translatable i can't be bothered right now
 public class WidgetsListScreen extends Screen implements ContainerListener {
+	private static final int PADDING = 8;
+
 	private WidgetsElementList widgetsElementList;
 	private Button back;
 	private Button previousPage;
 	private Button nextPage;
 	private Button thirdColumnButton;
+	private MultiLineTextWidget infoText;
+
 	private String titleLowercase;
 	private ChestMenu handler;
 	private boolean waitingForServer = false;
+	private boolean overflowing = false;
+	private boolean previewVisible = false;
+	private boolean thirdColumnEnabled = false;
+
+	private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this, 25);
+	private final FrameLayout headerLayout = new FrameLayout(0, 25);
+	@SuppressWarnings("unchecked")
+	private final List<Component>[] previewColumns = new List[3];
 
 	private final Int2ObjectMap<WidgetsListSlotEntry> entries = new Int2ObjectOpenHashMap<>();
 	private boolean listNeedsUpdate = false;
@@ -49,15 +75,11 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 	}
 
 	public WidgetsListScreen(ChestMenu handler, String titleLowercase) {
-		super(Component.literal("Widgets EntryList"));
+		super(Component.literal("Widgets"));
 		this.handler = handler;
 		this.titleLowercase = titleLowercase;
 		handler.addSlotListener(this);
-	}
-
-	@Override
-	public Component getTitle() {
-		return Component.literal("Widgets");
+		Arrays.fill(previewColumns, List.of());
 	}
 
 	public void clickAndWaitForServer(int slot, int button) {
@@ -124,10 +146,15 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 				if (thirdColumnButton.visible) {
 					if (stack.is(Items.STONE_BUTTON))
 						thirdColumnButton.setMessage(Component.literal("Apply to all locations"));
-					else if (ItemUtils.getLoreLineIf(stack, s -> s.contains("DISABLED")) == null)
+					else if (ItemUtils.getLoreLineIf(stack, s -> s.contains("DISABLED")) == null) {
+						thirdColumnEnabled = true;
 						thirdColumnButton.setMessage(Component.literal("3rd Column: ").append(WidgetsListSlotEntry.ENABLED_TEXT));
-					else
+						updateInfoText();
+					} else {
+						thirdColumnEnabled = false;
 						thirdColumnButton.setMessage(Component.literal("3rd Column: ").append(WidgetsListSlotEntry.DISABLED_TEXT));
+						updateInfoText();
+					}
 				}
 				return;
 			}
@@ -160,44 +187,78 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 	@Override
 	protected void init() {
 		super.init();
-		widgetsElementList = new WidgetsElementList(this, minecraft, 0, 0, 0);
-		back = Button.builder(Component.literal("Back"), button -> clickAndWaitForServer(48, 0))
-				.size(64, 15)
-				.build();
-		thirdColumnButton = Button.builder(Component.translatable("gui.back"), button -> clickAndWaitForServer(50, 0))
+		layout.addToHeader(headerLayout);
+		widgetsElementList = layout.addToContents(new WidgetsElementList(this, minecraft, 0, 0, 0));
+		back = headerLayout.addChild(Button.builder(Component.translatable("gui.back"), button -> clickAndWaitForServer(48, 0))
+				.size(60, 15)
+				.build(), l -> l.alignHorizontallyLeft().paddingLeft(PADDING));
+		thirdColumnButton = headerLayout.addChild(Button.builder(Component.translatable("gui.back"), button -> clickAndWaitForServer(50, 0))
 				.size(120, 15)
-				.build();
+				.build(), l -> l.alignHorizontallyRight().paddingRight(PADDING));
+		infoText = headerLayout.addChild(new MultiLineTextWidget(Component.empty(), font).setCentered(true), l -> l.paddingVertical(4));
 		thirdColumnButton.setTooltip(Tooltip.create(Component.literal("It is recommended to have this enabled, to have more info be displayed!")));
-		previousPage = Button.builder(Component.translatable("book.page_button.previous"), button -> clickAndWaitForServer(45, 0))
+		LinearLayout footer = LinearLayout.horizontal();
+		previousPage = footer.addChild(Button.builder(Component.translatable("book.page_button.previous"), button -> clickAndWaitForServer(45, 0))
 				.size(100, 15)
-				.build();
-		nextPage = Button.builder(Component.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
+				.build());
+		nextPage = footer.addChild(Button.builder(Component.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
 				.size(100, 15)
-				.build();
-		addWidget(back); // element list was blocking the clicks for some reason
-		addRenderableWidget(widgetsElementList);
-		addRenderableOnly(back);
-		addRenderableWidget(thirdColumnButton);
-		addRenderableWidget(thirdColumnButton);
-		addRenderableWidget(previousPage);
-		addRenderableWidget(nextPage);
+				.build());
+		layout.visitWidgets(this::addRenderableWidget);
 		repositionElements();
 	}
 
 	@Override
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+		super.render(guiGraphics, mouseX, mouseY, delta);
+		if (minecraft.hasControlDown()) {
+			int max = Arrays.stream(previewColumns).flatMap(Collection::stream).mapToInt(font::width).max().orElse(0);
+			if (max <= 0) return;
+			int colWidth = Math.min(previewColumns.length * max, width - 20) / previewColumns.length;
+			int lineCount = 0;
+			for (List<Component> column : previewColumns) {
+				lineCount = Math.max(lineCount, column.size());
+			}
+			int columnSpacing = 4;
+			int totalWidth = colWidth * previewColumns.length + columnSpacing * (previewColumns.length - 1);
+			int totalHeight = lineCount * font.lineHeight;
+			int startX = (width - totalWidth) / 2;
+			int startY = (height - totalHeight) / 2;
+
+			guiGraphics.fill(startX - 5, startY - 5, startX + totalWidth + 5, startY + totalHeight + 5, 0xA0_00_00_00);
+			for (int i = 0; i < previewColumns.length; i++) {
+				int colX = startX + i * (colWidth + columnSpacing);
+				guiGraphics.fill(colX, startY, colX + colWidth, startY + totalHeight, 0x20FFFFFF);
+				List<Component> column = previewColumns[i];
+				if (column.isEmpty()) {
+					List<FormattedCharSequence> split = font.split(Component.literal("This column is being used to display online players.\nEnable the 3rd column to have widgets instead!"), colWidth);
+					for (int j = 0; j < split.size(); j++) {
+						guiGraphics.drawString(font, split.get(j), colX, startY + j * font.lineHeight, -1);
+					}
+				} else {
+					for (int j = 0; j < column.size(); j++) {
+						Component component = column.get(j);
+						FormattedCharSequence trimmed = font.width(component) >= colWidth ? StringWidget.clipText(component, font, colWidth) : component.getVisualOrderText();
+						guiGraphics.drawString(font, trimmed, colX, startY + j * font.lineHeight, -1);
+					}
+				}
+			}
+		}
+	}
+
+	@Override
 	protected void repositionElements() {
-		back.setPosition(16, 4);
-		widgetsElementList.setY(0);
-		widgetsElementList.setSize(width, height - 20);
-		widgetsElementList.refreshScrollAmount();
-		previousPage.setPosition(widgetsElementList.getRowLeft(), widgetsElementList.getBottom() + 4);
-		nextPage.setPosition(widgetsElementList.scrollBarX() - 100, widgetsElementList.getBottom() + 4);
-		thirdColumnButton.setPosition(widgetsElementList.scrollBarX() + 5, widgetsElementList.getBottom() + 4);
+		infoText.setMaxWidth(width - thirdColumnButton.getWidth() * 2 - PADDING * 3);
+		headerLayout.setMinWidth(width);
+		headerLayout.arrangeElements();
+		layout.setHeaderHeight(headerLayout.getHeight());
+		widgetsElementList.updateSize(width, layout);
+		layout.arrangeElements();
+		//infoText.setX((back.getRight() + thirdColumnButton.getX() - infoText.getWidth()) / 2);
 	}
 
 	@Override
 	public void onClose() {
-		assert this.minecraft != null;
 		assert this.minecraft.player != null;
 		this.minecraft.player.closeContainer();
 		super.onClose();
@@ -205,7 +266,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 
 	@Override
 	public void removed() {
-		if (this.minecraft != null && this.minecraft.player != null) {
+		if (this.minecraft.player != null) {
 			this.handler.removed(this.minecraft.player);
 		}
 		handler.removeSlotListener(this);
@@ -214,15 +275,53 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 	@Override
 	public void tick() {
 		super.tick();
-		assert this.minecraft != null;
 		assert this.minecraft.player != null;
 		if (!this.minecraft.player.isAlive() || this.minecraft.player.isRemoved()) {
 			this.minecraft.player.closeContainer();
 		}
 	}
 
+	private void updateInfoText() {
+		if (!previewVisible) {
+			infoText.setMessage(CommonComponents.EMPTY);
+			repositionElements();
+			return;
+		}
+		MutableComponent text = Component.literal("Hold CTRL to see a preview.");
+		if (overflowing) {
+			MutableComponent overflowWarning = Component.literal("It would seem you've run out of widget space in the player list! Some widgets are not being displayed correctly!").withStyle(ChatFormatting.RED).append("\n");
+			if (!thirdColumnEnabled) overflowWarning.append(Component.literal("Be sure to enabled the third column with the button to the right."));
+			overflowWarning.append(Component.literal("Enable wrapping and disable spacing on widgets to save on space."));
+			text.append("\n");
+			text.append(overflowWarning);
+		}
+		infoText.setMessage(text);
+		repositionElements();
+	}
+
 	@Override
 	public void slotChanged(AbstractContainerMenu handler, int slotId, ItemStack stack) {
+		if (slotId >= 3 && slotId <= 5) {
+			if (!stack.getHoverName().getString().endsWith("Widgets Preview")) {
+				previewVisible = false;
+				updateInfoText();
+				return;
+			} else {
+				previewVisible = true;
+			}
+			if (slotId == 5) {
+				List<Boolean> list = stack.skyblocker$getLoreStrings().stream()
+						.map(s -> s.substring(s.indexOf('⬛') + 1).isBlank())
+						.toList();
+				overflowing = list.size() >= 2 && !(list.getLast() && list.get(list.size() - 2));
+				updateInfoText();
+			}
+			//noinspection deprecation
+			previewColumns[slotId - 3] = ItemUtils.getLore(stack).stream()
+					.filter(c -> c.getString().startsWith("⬛"))
+					.toList();
+
+		}
 		if (slotId == 13) {
 			if (stack.is(Items.HOPPER)) {
 				hopper(stack.skyblocker$getLoreStrings());

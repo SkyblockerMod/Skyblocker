@@ -136,9 +136,19 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	@Override
 	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		super.renderBackground(context, mouseX, mouseY, deltaTicks);
-		Component text = Component.literal("Right click to add widgets and edit things."); // TODO translatable
+		Component text = Component.translatable("skyblocker.config.hud.screen.rightClick");
 		int textWidth = font.width(text);
 		context.drawString(font, text, (width - textWidth) / 2, (height - font.lineHeight) / 2, ARGB.white(0.8f), false);
+	}
+
+	@Override
+	protected void renderBlurredBackground(GuiGraphics guiGraphics) {
+		if (minecraft.level != null && !minecraft.hasControlDown()) super.renderBlurredBackground(guiGraphics);
+	}
+
+	@Override
+	protected void renderMenuBackground(GuiGraphics guiGraphics) {
+		if (minecraft.level != null && !minecraft.hasControlDown()) super.renderMenuBackground(guiGraphics);
 	}
 
 	@Override

@@ -744,6 +744,35 @@
   "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "Enable Mythological Ritual Helper",
   "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper.@Tooltip": "Adds waypoints for nearby Griffin Burrows during Diana's Mythological Ritual event.",
 
+  "skyblocker.config.hud.fancyTab.enable": "Enable Fancy Tab",
+  "skyblocker.config.hud.fancyTab.hiddenWidgets": "Hidden Widgets",
+  "skyblocker.config.hud.fancyTab.positioner": "Positioner: %s",
+
+  "skyblocker.config.hud.globalOptionsScreen.title": "Skyblock HUD and TAB options",
+
+  "skyblocker.config.hud.globalScale": "Global Scale",
+
+  "skyblocker.config.hud.helpText": "Use right click to add widgets and edit their options.\nYou can delete a widget by pressing the delete key.\n\nWidgets are per island. To have a widget show up everywhere select \"Everywhere\" in the first dropdown. Widget options apply to every location with a few exceptions.\n\nYou can hold SHIFT to snap to other widgets.",
+
+  "skyblocker.config.hud.location.everywhere": "Everywhere",
+
+  "skyblocker.config.hud.position.parent": "Parent: %s",
+  "skyblocker.config.hud.position.parent.screen": "Screen",
+  "skyblocker.config.hud.position.pointParent": "Parent Point",
+  "skyblocker.config.hud.position.pointThis": "This Point",
+
+  "skyblocker.config.hud.screen.rightClick": "Right click to add widgets and edit things.",
+
+  "skyblocker.config.hud.topBar.autoAnchor": "Auto Screen Anchor",
+  "skyblocker.config.hud.topBar.autoAnchor.@Tooltip": "Auto Screen Anchor",
+  "skyblocker.config.hud.topBar.help": "Help",
+  "skyblocker.config.hud.topBar.options": "Options",
+  "skyblocker.config.hud.topBar.options.@Tooltip": "Automatically change the anchor of the widget based on the position to avoid it going off screen when the screen is resized.",
+
+  "skyblocker.config.hud.widget.copy": "Create Copy",
+  "skyblocker.config.hud.widget.inherited": "This widget is inherited from the \"Everything\" screen, edit there for the change to take place everywhere or create a copy to have it only affect here.",
+  "skyblocker.config.hud.widget.remove": "Remove",
+
   "skyblocker.config.hunting": "Hunting",
 
   "skyblocker.config.hunting.huntingBoxHelper": "Enable Hunting Box Helper",

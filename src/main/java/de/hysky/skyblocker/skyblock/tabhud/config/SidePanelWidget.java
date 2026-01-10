@@ -107,16 +107,16 @@ class SidePanelWidget extends AbstractContainerWidget {
 				setMaxWidth(width, TextOverflow.SCROLLING);
 			}
 		});
-		add(Button.builder(Component.literal("Remove"), b -> config.removeWidget(hudWidget)).build()); // TODO translatable
+		add(Button.builder(Component.translatable("skyblocker.config.hud.widget.remove"), b -> config.removeWidget(hudWidget)).build());
 		layout.addChild(SpacerElement.height(10));
 
 		// Per screen options
 		MultiLineTextWidget textWidget = null;
 		if (hudWidget.renderingInformation.inherited) {
 			// TODO add a goto location button
-			textWidget = new MultiLineTextWidget(Component.literal("This widget is from a parent screen, edit it there or create a copy."), client.font);
+			textWidget = new MultiLineTextWidget(Component.translatable("skyblocker.config.hud.widget.inherited"), client.font);
 			add(textWidget);
-			add(Button.builder(Component.literal("Create Copy"), b -> { // TODO translatable
+			add(Button.builder(Component.translatable("skyblocker.config.hud.widget.copy"), b -> {
 				hudWidget.renderingInformation.inherited = false;
 				open(hudWidget, config, rightSide, x);
 			}).build());

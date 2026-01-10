@@ -34,24 +34,16 @@ class TopBarWidget extends AbstractContainerWidget {
 	private final Layout layout;
 	private final List<AbstractWidget> widgets;
 
-	// TODO translatable :)
 	TopBarWidget(int width, WidgetsConfigScreen parent) {
 		super(0, 0, width, HEIGHT, Component.literal("hi"));
 
 		layout = new Layout();
 
 		LinearLayout leftButtons = LinearLayout.horizontal();
-		StyledButtonWidget optionsButton = new StyledButtonWidget(60, HEIGHT, Component.literal("Options"), button -> parent.openPopup(GlobalOptionsScreen::new));
-		optionsButton.setTooltip(Tooltip.create(Component.literal("Global options that affect everywhere.")));
-		StyledButtonWidget helpButton = new StyledButtonWidget(60, HEIGHT, Component.literal("(?) Help"), button -> parent.openPopup(screen -> new PopupScreen.Builder(screen, Component.literal("Help"))
-				.setMessage(Component.literal("""
-						Use right click to add widgets and edit their options.
-						You can delete a widget by pressing the delete key.
-
-						Widgets are per island. To have a widget show up everywhere select "Everywhere" in the island dropdown (there's only 2 dropdowns you should be able to find it). Widget options apply to every location with a few exceptions.
-
-						You can hold SHIFT to snap to other widgets.
-						"""))
+		StyledButtonWidget optionsButton = new StyledButtonWidget(60, HEIGHT, Component.translatable("skyblocker.config.hud.topBar.options"), button -> parent.openPopup(GlobalOptionsScreen::new));
+		optionsButton.setTooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.topBar.options.@Tooltip")));
+		StyledButtonWidget helpButton = new StyledButtonWidget(60, HEIGHT, Component.literal("(?) ").append(Component.translatable("skyblocker.config.hud.topBar.help")), button -> parent.openPopup(screen -> new PopupScreen.Builder(screen, Component.literal("Help"))
+				.setMessage(Component.translatable("skyblocker.config.hud.helpText"))
 				.addButton(CommonComponents.GUI_OK, PopupScreen::onClose)
 				.build()));
 		leftButtons.addChild(optionsButton);
@@ -63,7 +55,7 @@ class TopBarWidget extends AbstractContainerWidget {
 		locations.remove(Location.UNKNOWN);
 		locations.addFirst(Location.UNKNOWN);
 		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, locations, parent::setCurrentLocation, Utils.getLocation());
-		locationDropdown.setFormatter(location -> location == Location.UNKNOWN ? Component.literal("Everywhere").withStyle(ChatFormatting.YELLOW) : Component.literal(location.toString()));
+		locationDropdown.setFormatter(location -> location == Location.UNKNOWN ? Component.translatable("skyblocker.config.hud.location.everywhere").withStyle(ChatFormatting.YELLOW) : Component.literal(location.toString()));
 		screenLayerDropdown = new CustomDropdownWidget<>(width / 2 + 5, 0, 100, 200, List.of(WidgetManager.ScreenLayer.values()), parent::setCurrentScreenLayer, WidgetManager.ScreenLayer.HUD);
 
 		LinearLayout dropdownsLayout = LinearLayout.horizontal().spacing(2);
@@ -74,9 +66,9 @@ class TopBarWidget extends AbstractContainerWidget {
 		/*ToggleButtonWidget snappingToggle = new ToggleButtonWidget(80, HEIGHT, Text.literal("Snapping"), b -> parent.snapping = b);
 		snappingToggle.setState(true);
 		snappingToggle.setTooltip(Tooltip.of(Text.literal("Automatically snap widgets to other widgets")));*/
-		ToggleButtonWidget autoAnchorToggle = new ToggleButtonWidget(100, HEIGHT, Component.literal("Auto Screen Anchor"), b -> parent.autoAnchor = b);
+		ToggleButtonWidget autoAnchorToggle = new ToggleButtonWidget(100, HEIGHT, Component.translatable("skyblocker.config.hud.topBar.autoAnchor"), b -> parent.autoAnchor = b);
 		autoAnchorToggle.setState(true);
-		autoAnchorToggle.setTooltip(Tooltip.create(Component.literal("Automatically change the anchor of the widget based on the position")));
+		autoAnchorToggle.setTooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.topBar.autoAnchor.@Tooltip")));
 
 		LinearLayout rightButtons = LinearLayout.horizontal();
 		//rightButtons.add(snappingToggle);

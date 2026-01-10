@@ -16,7 +16,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
-// TODO translatable
 class GlobalOptionsScreen extends Screen {
 	private final Supplier<UIAndVisualsConfig.HudConf> CONFIG = () -> SkyblockerConfigManager.get().uiAndVisuals.hud;
 	private final Tooltip STYLE_TOOLTIP = Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]").append("\n")
@@ -29,7 +28,7 @@ class GlobalOptionsScreen extends Screen {
 	private final Screen parent;
 
 	GlobalOptionsScreen(Screen parent) {
-		super(Component.literal("HUD and TAB options"));
+		super(Component.translatable("skyblocker.config.hud.globalOptionsScreen.title"));
 		this.parent = parent;
 	}
 
@@ -52,7 +51,7 @@ class GlobalOptionsScreen extends Screen {
 						(button, value) -> conf.style = value),
 				2);
 		body.addChild(RangedSliderWidget.builder()
-						.optionFormatter(Component.literal("Global Scale"), Formatters.INTEGER_NUMBERS) // FIXME add % when chat rules thing is merged
+						.optionFormatter(Component.translatable("skyblocker.config.hud.globalScale"), d -> Component.literal(Formatters.INTEGER_NUMBERS.format(d) + '%'))
 						.defaultValue(conf.hudScale)
 						.step(1)
 						.minMax(10, 200)
