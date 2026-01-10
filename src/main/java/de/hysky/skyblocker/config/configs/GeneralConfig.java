@@ -124,6 +124,8 @@ public class GeneralConfig {
 		public boolean enableEstimatedItemValue = true;
 
 		public boolean enableStackingEnchantProgress = true;
+
+		public boolean enableEvolvingItemProgress = true;
 	}
 
 	public enum Average {
