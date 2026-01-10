@@ -6,17 +6,13 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
-import de.hysky.skyblocker.skyblock.fishing.FishingHudWidget;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 public class HelperCategory {
@@ -184,7 +180,7 @@ public class HelperCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.hud.screen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, FishingHudWidget.getInstance().getInternalID(), screen)))
+								.action(screen -> {})
 								.build())
 						.option(Option.<HelperConfig.Fishing.FishingHookDisplay>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.fishingHookDisplay"))

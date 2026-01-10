@@ -4,6 +4,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import it.unimi.dsi.fastutil.objects.ObjectIntMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,29 +12,28 @@ import java.util.List;
 public class CenteredWidgetPositioner extends WidgetPositioner {
 
 	int totalWidth = 0;
+	int totalHeight = 0;
 
 	final int maxY;
 
 	// each column is a pair containing a list of widgets for the rows and an int for the width of the column
 	List<ObjectIntPair<List<HudWidget>>> columns = new ArrayList<>();
 
-	private final List<HudWidget> widgets = new ArrayList<>();
-
 
 	int currentY = 0;
 	int currentWidth = 0;
 
-	public CenteredWidgetPositioner(int screenWidth, int screenHeight) {
-		super(screenWidth, screenHeight);
+	public CenteredWidgetPositioner(float maxHeight, int screenHeight) {
+		super(maxHeight, screenHeight);
 		columns.add(new ObjectIntMutablePair<>(new ArrayList<>(), 0));
-		maxY = Math.min(400, (int) (screenHeight * 0.9f));
+		maxY = Math.min(400, (int) (screenHeight * maxHeight));
 	}
 
 	@Override
 	public void positionWidget(HudWidget hudWidget) {
-		widgets.add(hudWidget);
 
 		if (currentY + hudWidget.getHeight() > maxY) {
+			totalHeight = Math.max(totalHeight, currentY);
 			currentY = 0;
 			currentWidth = 0;
 			columns.add(new ObjectIntMutablePair<>(new ArrayList<>(), 0));
@@ -46,7 +46,7 @@ public class CenteredWidgetPositioner extends WidgetPositioner {
 	}
 
 	@Override
-	public void finalizePositioning() {
+	public Vector2i finalizePositioning() {
 		for (int i = 0; i < columns.size(); i++) {
 			ObjectIntPair<List<HudWidget>> listObjectIntPair = columns.get(i);
 			int columnWidth = listObjectIntPair.rightInt();
@@ -58,7 +58,7 @@ public class CenteredWidgetPositioner extends WidgetPositioner {
 				height += tabHudWidget.getHeight();
 			}
 			// set x and y of the widgets!
-			int offset = (screenHeight - height) / 2;
+			int offset = (totalHeight - height) / 2;
 			for (HudWidget tabHudWidget : column) {
 				tabHudWidget.setY(tabHudWidget.getY() + offset);
 				if (i < columns.size() / 2) {
@@ -69,11 +69,6 @@ public class CenteredWidgetPositioner extends WidgetPositioner {
 			}
 			totalWidth += columnWidth + ScreenConst.WIDGET_PAD;
 		}
-
-		// Center everything
-		int off = (screenWidth - totalWidth) / 2;
-		for (HudWidget tabHudWidget : widgets) {
-			tabHudWidget.setX(tabHudWidget.getX() + off);
-		}
+		return new Vector2i(totalWidth, totalHeight);
 	}
 }

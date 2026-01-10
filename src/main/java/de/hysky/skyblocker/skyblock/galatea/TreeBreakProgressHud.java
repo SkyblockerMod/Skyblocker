@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -18,72 +17,42 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 @RegisterWidget
 public class TreeBreakProgressHud extends ComponentBasedWidget {
-
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GALATEA);
-	private static TreeBreakProgressHud instance;
-	private static Int2ObjectMap<ArmorStand> armorstands = new Int2ObjectOpenHashMap<ArmorStand>();
+	private static final Int2ObjectMap<ArmorStand> ARMOR_STANDS = new Int2ObjectOpenHashMap<>();
 
 	static {
-			ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> armorstands.remove(entity.getId()));
+		ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> ARMOR_STANDS.remove(entity.getId()));
 	}
 	public TreeBreakProgressHud() {
-		super(Component.literal("Tree Break Progress").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), ChatFormatting.GREEN.getColor(), "hud_treeprogress");
-		instance = this;
+		super(Component.literal("Tree Break Progress").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), ChatFormatting.GREEN.getColor(), new Information("hud_treeprogress", Component.literal("Tree Break Progress HUD"), location -> location == Location.GALATEA));
 		update();
 	}
 
 
 	public static void onEntityUpdate(ArmorStand entity) {
 		if (entity.getCustomName() != null) {
-			armorstands.put(entity.getId(), entity);
+			ARMOR_STANDS.put(entity.getId(), entity);
 		}
 	}
+
 	@Override
 	public boolean shouldUpdateBeforeRendering() {
 		return true;
 	}
 
-	public static TreeBreakProgressHud getInstance() {
-		return instance;
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!availableLocations().contains(location))
-			return;
-		SkyblockerConfigManager.get().foraging.galatea.enableTreeBreakProgress = enabled;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return availableLocations().contains(location) && SkyblockerConfigManager.get().foraging.galatea.enableTreeBreakProgress;
-	}
-
-	@Override
-	public boolean shouldRender(Location location) {
-		return super.shouldRender(location) && isOwnTree(getClosestTree());
-	}
-
 	private ArmorStand getClosestTree() {
 		if (CLIENT.player == null) return null;
-		return armorstands.values().stream()
-			.filter(entity -> {
-				Component name = entity.getCustomName();
-				if (name == null) return false;
-				return name.getString().contains("FIG TREE") || name.getString().contains("MANGROVE TREE");
-			})
-			.min(Comparator.comparingDouble(e -> e.distanceToSqr(CLIENT.player)))
-			.orElse(null);
+		return ARMOR_STANDS.values().stream()
+				.filter(entity -> {
+					net.minecraft.network.chat.Component name = entity.getCustomName();
+					if (name == null) return false;
+					return name.getString().contains("FIG TREE") || name.getString().contains("MANGROVE TREE");
+				})
+				.min(Comparator.comparingDouble(e -> e.distanceToSqr(CLIENT.player)))
+				.orElse(null);
 	}
 
 	private boolean isOwnTree(ArmorStand tree) {
@@ -91,14 +60,14 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 		if (tree == null) return false;
 		Vec3 treePos = tree.position();
 
-		List<ArmorStand> groupedArmorStands = armorstands.values().stream()
-		.filter(e -> {
-			Vec3 pos = e.position();
-			return Math.abs(pos.x - treePos.x) < 0.1 &&
-				Math.abs(pos.y - treePos.y) < 2 &&
-				Math.abs(pos.z - treePos.z) < 0.1;
-		})
-		.toList();
+		List<ArmorStand> groupedArmorStands = ARMOR_STANDS.values().stream()
+				.filter(e -> {
+					Vec3 pos = e.position();
+					return Math.abs(pos.x - treePos.x) < 0.1 &&
+							Math.abs(pos.y - treePos.y) < 2 &&
+							Math.abs(pos.z - treePos.z) < 0.1;
+				})
+				.toList();
 		String playerName = CLIENT.player.getName().getString();
 
 		return groupedArmorStands.stream().anyMatch(armorStand -> {
@@ -112,11 +81,6 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 		ClientLevel world = CLIENT.level;
 		ArmorStand closest;
 
-		if (CLIENT.screen instanceof WidgetsConfigurationScreen) {
-			addSimpleIcoText(Ico.STRIPPED_SPRUCE_WOOD, "Fig Tree ", ChatFormatting.GREEN, "37%");
-			return;
-		}
-
 		if (CLIENT.player == null || world == null)
 			return;
 		closest = getClosestTree();
@@ -129,8 +93,13 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return Component.literal("Tree Break Progress HUD");
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		Component txt = simpleEntryText("37%", "Fig Tree ", ChatFormatting.GREEN);
+		return List.of(Components.iconTextComponent(Ico.STRIPPED_SPRUCE_WOOD, txt));
 	}
 
+	@Override
+	public boolean shouldRender() {
+		return super.shouldRender() && isOwnTree(getClosestTree());
+	}
 }

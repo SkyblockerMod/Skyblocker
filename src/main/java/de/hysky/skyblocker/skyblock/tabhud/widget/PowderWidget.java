@@ -5,6 +5,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -41,7 +42,7 @@ public class PowderWidget extends TabHudWidget {
 	private long lastUpdate = 0;
 
 	public PowderWidget() {
-		super("Powders", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Powders", TITLE, ChatFormatting.DARK_AQUA.getColor(), Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
 	}
 
 	@Override

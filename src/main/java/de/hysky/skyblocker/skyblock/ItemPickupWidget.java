@@ -4,13 +4,12 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.SeparatorComponent;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import io.github.moulberry.repo.data.NEUItem;
@@ -25,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Set;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -114,10 +113,6 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen) {
-			addSimpleIcoText(Ico.BONE, "Bone ", ChatFormatting.GREEN, "+64");
-			return;
-		}
 		// If the notifications should not be split, merge the counts.
 		boolean split = SkyblockerConfigManager.get().uiAndVisuals.itemPickup.splitNotifications;
 		if (!split) {
@@ -187,6 +182,11 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		}
 	}
 
+	@Override
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		return List.of(Components.iconTextComponent(Ico.BONE, Component.literal("Bone ").append(Component.literal("+64").withStyle(ChatFormatting.GREEN))));
+	}
+
 	/**
 	 * Checks if the ChangeData has expired and if not, returns the item name for the entry
 	 *
@@ -203,30 +203,8 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	public boolean shouldRender(Location location) {
-		if (super.shouldRender(location)) {
-			//render if enabled
-			if (SkyblockerConfigManager.get().uiAndVisuals.itemPickup.enabled) {
-				//render if there are items in history
-				return !addedCount.isEmpty() || !removedCount.isEmpty() || !addedSackCount.isEmpty() || !removedSackCount.isEmpty();
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return ALL_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		SkyblockerConfigManager.get().uiAndVisuals.itemPickup.enabled = enabled;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return SkyblockerConfigManager.get().uiAndVisuals.itemPickup.enabled;
+	public boolean shouldRender() {
+		return !addedCount.isEmpty() || !removedCount.isEmpty() || !addedSackCount.isEmpty() || !removedSackCount.isEmpty();
 	}
 
 	/**
