@@ -59,12 +59,16 @@ public class DungeonMapTexture {
 		WorldRenderEvents.START_MAIN.register(DungeonMapTexture::uploadMapTexture);
 	}
 
-	public static void onMapItemDataUpdate(MapId mapId) {
+	public static void onMapItemDataUpdate(MapId mapId, boolean updateMapTexture) {
 		if (DungeonMap.shouldProcess() && mapId.equals(DungeonMap.getMapIdComponent(null))) {
 			MapItemSavedData state = MapItem.getSavedData(mapId, Minecraft.getInstance().level);
 
-			updateMapImage(state);
-			hideCheckmarks(state);
+			// Only update the map texture when it changes (Hypixel only updates the texture when absolutely needed)
+			if (updateMapTexture) {
+				updateMapImage(state);
+				hideCheckmarks(state);
+			}
+
 			updateMapDecorations(state);
 		}
 	}
