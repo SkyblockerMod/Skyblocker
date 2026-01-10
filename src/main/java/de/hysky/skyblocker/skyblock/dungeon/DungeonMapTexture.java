@@ -19,6 +19,7 @@ import de.hysky.skyblocker.mixins.accessors.MapRendererInvoker;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
@@ -60,7 +61,7 @@ public class DungeonMapTexture {
 	}
 
 	public static void onMapItemDataUpdate(MapId mapId, boolean updateMapTexture) {
-		if (DungeonMap.shouldProcess() && mapId.equals(DungeonMap.getMapIdComponent(null))) {
+		if (Utils.isInDungeons() && !DungeonManager.isInBoss() && mapId.equals(DungeonMap.getMapIdComponent(null))) {
 			MapItemSavedData state = MapItem.getSavedData(mapId, Minecraft.getInstance().level);
 
 			// Only update the map texture when it changes (Hypixel only updates the texture when absolutely needed)
