@@ -354,7 +354,7 @@ public class DungeonScore {
 			Scheduler.INSTANCE.schedule(() -> {
 				bloodRoomCompleted = true;
 				tick();
-			}, 20*5+10);
+			}, 20 * 5 + 10);
 		}
 	}
 
