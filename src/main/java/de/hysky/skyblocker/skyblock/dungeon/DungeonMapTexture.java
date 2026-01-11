@@ -58,7 +58,7 @@ public class DungeonMapTexture {
 			minecraft.getTextureManager().register(ID, dungeonMapTexture);
 		});
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> clearMapImage());
-		DungeonEvents.ROOM_MATCHED.register((_room) -> DungeonMapTexture.onMapItemDataUpdate(DungeonMap.getMapIdComponent(null), true));
+		DungeonEvents.ROOM_MATCHED.register((_room) -> onMapItemDataUpdate(DungeonMap.getMapIdComponent(null), true));
 		WorldRenderEvents.START_MAIN.register(DungeonMapTexture::uploadMapTexture);
 	}
 
