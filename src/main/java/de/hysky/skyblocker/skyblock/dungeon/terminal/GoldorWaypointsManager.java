@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.dungeon;
+package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -25,6 +25,7 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,7 @@ public class GoldorWaypointsManager {
 	private static final ObjectArrayList<GoldorWaypoint> TERMINALS = new ObjectArrayList<>();
 	private static final ObjectArrayList<GoldorWaypoint> DEVICES = new ObjectArrayList<>();
 	private static final ObjectArrayList<GoldorWaypoint> LEVERS = new ObjectArrayList<>();
+	private static final ObjectArrayList<GoldorWaypoint> ALL_WAYPOINTS = new ObjectArrayList<>();
 
 	private static final ObjectArrayList<GoldorWaypoint> ACTIVE_PHASE_WAYPOINTS = new ObjectArrayList<>();
 
@@ -55,6 +57,8 @@ public class GoldorWaypointsManager {
 	private static final Pattern DEVICE_ACTIVATED = Pattern.compile("^(?<name>\\w+) completed a device! \\(\\d/\\d\\)$");
 	private static final Pattern LEVER_ACTIVATED = Pattern.compile("^(?<name>\\w+) activated a lever! \\(\\d/\\d\\)$");
 	private static final Pattern PHASE_COMPLETE = Pattern.compile("^(?<name>\\w+) (?:activated a (?:terminal|lever)|completed a device)! (?:\\(7/7\\)|\\(8/8\\))$");
+	private static final Pattern NAMETAG_INCOMPLETE = Pattern.compile("Inactive|Not Activated|Inactive Terminal");
+	private static final Pattern NAMETAG_COMPLETE = Pattern.compile("Active|Activated|Terminal Active");
 	private static final String GATE_DESTROYED = "The gate has been destroyed!";
 	private static final String CORE_ENTRANCE = "The Core entrance is opening!";
 	private static final Codec<List<GoldorWaypoint>> CODEC = GoldorWaypoint.CODEC.listOf();
@@ -79,7 +83,12 @@ public class GoldorWaypointsManager {
 	private static void load(Minecraft client) {
 		CompletableFuture<Void> terminals = loadWaypoints(client, SkyblockerMod.id("dungeons/goldorwaypoints.json"));
 
-		terminals.whenComplete((_result, _throwable) -> loaded = true);
+		terminals.whenComplete((_result, _throwable) -> {
+			loaded = true;
+			ALL_WAYPOINTS.addAll(TERMINALS);
+			ALL_WAYPOINTS.addAll(DEVICES);
+			ALL_WAYPOINTS.addAll(LEVERS);
+		});
 	}
 
 	private static CompletableFuture<Void> loadWaypoints(Minecraft client, Identifier file) {
@@ -113,20 +122,29 @@ public class GoldorWaypointsManager {
 	}
 
 	/**
-	 * Given a list of waypoints to operate on and a player name, hides the visible waypoint that is closest to the player
+	 * Util for getting a player's position
+	 */
+	private static Optional<Vec3> getPlayerPos(String playerName) {
+		Minecraft client = Minecraft.getInstance();
+		if (client.level == null) return Optional.empty();
+
+		return client.level.players().stream().filter(player -> player.getGameProfile().name().equals(playerName)).findAny().map(Entity::position);
+	}
+
+	/**
+	 * Given a list of waypoints to operate on and a position, enables/disables the waypoint that is closest to said pos.
 	 *
 	 * @param waypoints  The list of waypoints to operate on
-	 * @param playerName The name of the player to check against
+	 * @param position The position to query from
+	 * @param completed If the terminal should be marked as completed or missing (for corrections)
 	 */
-	private static void removeNearestWaypoint(List<GoldorWaypoint> waypoints, String playerName) {
+	private static void markClosestWaypoint(List<GoldorWaypoint> waypoints, Vec3 position, boolean completed) {
 		Minecraft client = Minecraft.getInstance();
 		if (client.level == null) return;
 
-		// Get the position of the player with the given name
-		Optional<Vec3> posOptional = client.level.players().stream().filter(player -> player.getGameProfile().name().equals(playerName)).findAny().map(Entity::position);
+		Optional<GoldorWaypoint> closest = waypoints.stream().min(Comparator.comparingDouble(waypoint -> waypoint.centerPos.distanceToSqr(position)));
 
-		// Find the nearest waypoint to the player and hide it
-		posOptional.flatMap(pos -> waypoints.stream().filter(GoldorWaypoint::shouldRender).min(Comparator.comparingDouble(waypoint -> waypoint.centerPos.distanceToSqr(pos)))).ifPresent(Waypoint::setFound);
+		closest.ifPresent(completed ? Waypoint::setFound : Waypoint::setMissing);
 		TerminalHud.INSTANCE.update();
 	}
 
@@ -178,11 +196,14 @@ public class GoldorWaypointsManager {
 				String playerName;
 
 				if ((playerName = getPlayerName(TERMINAL_ACTIVATED.matcher(message))) != null) {
-					removeNearestWaypoint(TERMINALS, playerName);
+					Optional<Vec3> playerPos = getPlayerPos(playerName);
+					playerPos.ifPresent(pos -> markClosestWaypoint(TERMINALS, pos, true));
 				} else if ((playerName = getPlayerName(DEVICE_ACTIVATED.matcher(message))) != null) {
-					removeNearestWaypoint(DEVICES, playerName);
+					Optional<Vec3> playerPos = getPlayerPos(playerName);
+					playerPos.ifPresent(pos -> markClosestWaypoint(DEVICES, pos, true));
 				} else if ((playerName = getPlayerName(LEVER_ACTIVATED.matcher(message))) != null) {
-					removeNearestWaypoint(LEVERS, playerName);
+					Optional<Vec3> playerPos = getPlayerPos(playerName);
+					playerPos.ifPresent(pos -> markClosestWaypoint(LEVERS, pos, true));
 				} else if (message.equals(CORE_ENTRANCE)) {
 					active = false;
 					ACTIVE_PHASE_WAYPOINTS.clear();
@@ -236,6 +257,45 @@ public class GoldorWaypointsManager {
 
 	public static List<GoldorWaypoint> getPhaseWaypoints() {
 		return ACTIVE_PHASE_WAYPOINTS;
+	}
+
+
+	/**
+	 * Corrects the waypoint states.
+	 * Each terminal/device has an associated display (Armor Stand), which shows when the player is close-ish
+	 * It is best to use player position-based detection, but correct eventual mistakes with this.
+	 * (player bounced in lava, landing closer to another term upon completion, or player is out of render distance doing something like i4)
+	 * <p>
+	 * As of this being added, here are the names matched :
+	 * # Devices (uses two displays, but only one of them is relevant
+	 * Inactive
+	 * Active
+	 * # Levers
+	 * Not Activated
+	 * Activated
+	 * # Terminals
+	 * Inactive Terminal
+	 * Terminal Active
+	 */
+	public static void checkForTerminalNameTags(ArmorStand armorStandEntity) {
+		if (!(DungeonManager.isInBoss() && DungeonManager.getBoss().isFloor(7))) {
+			return;
+		}
+
+		Component nameComponent = armorStandEntity.getCustomName();
+		if (nameComponent != null) {
+			String name = nameComponent.getString();
+
+			if (NAMETAG_INCOMPLETE.matcher(name).matches()) {
+				Vec3 pos = armorStandEntity.getEyePosition();
+
+				markClosestWaypoint(ALL_WAYPOINTS, pos, false);
+			} else if (NAMETAG_COMPLETE.matcher(name).matches()) {
+				Vec3 pos = armorStandEntity.getEyePosition();
+
+				markClosestWaypoint(ALL_WAYPOINTS, pos, true);
+			}
+		}
 	}
 
 	public static class GoldorWaypoint extends NamedWaypoint {
