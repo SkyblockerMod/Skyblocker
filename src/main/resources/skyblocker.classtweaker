@@ -1,4 +1,4 @@
-accessWidener v2 named
+classTweaker v1 named
 
 # Command Argument Types
 accessible field net/minecraft/commands/arguments/coordinates/BlockPosArgument EXAMPLES Ljava/util/Collection;
@@ -33,3 +33,11 @@ accessible field net/minecraft/client/gui/Font$PreparedTextBuilder y F
 # Custom Screens
 # Gets rid of a compiler error for Eclipse (I guess its more strict)
 accessible class net/minecraft/client/gui/components/AbstractSelectionList$Entry
+
+# Interface Injections
+inject-interface	net/minecraft/world/item/ItemStack	de/hysky/skyblocker/injected/SkyblockerStack
+inject-interface	net/minecraft/client/gui/screens/inventory/InventoryScreen	de/hysky/skyblocker/injected/RecipeBookHolder
+inject-interface	net/minecraft/client/renderer/entity/EntityRenderDispatcher	de/hysky/skyblocker/injected/EntityRenderMarker
+inject-interface	net/minecraft/client/renderer/SubmitNodeStorage$ItemSubmit	de/hysky/skyblocker/injected/CustomGlowState
+inject-interface	net/minecraft/client/renderer/SubmitNodeStorage$ModelPartSubmit	de/hysky/skyblocker/injected/CustomGlowState
+inject-interface	net/minecraft/client/renderer/SubmitNodeStorage$ModelSubmit	de/hysky/skyblocker/injected/CustomGlowState
