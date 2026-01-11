@@ -35,7 +35,7 @@ public class CompactDamageTest {
 		SharedConstants.tryDetectVersion();
 		Bootstrap.bootStrap();
 
-		// Make crits cyan
+		// Make crits black
 		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientStart = new Color(CommonColors.BLACK);
 		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientEnd = new Color(CommonColors.BLACK);
 	}
@@ -49,7 +49,7 @@ public class CompactDamageTest {
 	}
 
 	private static Component getCompactText(ArmorStand entity, int maxPrecision) {
-		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.precision = maxPrecision;
+		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.maxPrecision = maxPrecision;
 		CompactDamage.compactDamage(entity);
 		return entity.getCustomName();
 	}
