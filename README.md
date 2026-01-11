@@ -325,7 +325,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Estimated Item Value*
     - *Skyblock ID*
     - *Bazaar Reorder Helper*
-    - *Item Evolution Progress*
+    - *Evolution Item Progress*
 - **Quick Navigation:** Fully customizable fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
     - Item Selector
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
