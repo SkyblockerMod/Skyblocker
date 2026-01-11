@@ -419,6 +419,9 @@ public class UIAndVisualsConfig {
 	public static class CompactDamage {
 		public boolean enabled = true;
 
+		@Deprecated
+		public transient int precision = 1;
+
 		public int maxPrecision = 4;
 
 		public Color normalDamageColor = new Color(0xFFFFFF);
