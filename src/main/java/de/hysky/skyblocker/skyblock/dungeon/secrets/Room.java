@@ -9,6 +9,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Tickable;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -66,6 +67,7 @@ public class Room implements Tickable, Renderable {
 	 */
 	public ClearState clearState = ClearState.UNCLEARED;
 
+	private int maxSecrets = -1;
 	protected int secretsFound = 0;
 
 	public boolean secretCountOutdated = true;
@@ -522,6 +524,9 @@ public class Room implements Tickable, Renderable {
 			}
 		}
 		DungeonManager.getCustomWaypoints(name).values().forEach(this::addCustomWaypoint);
+
+		// Calculate max secrets based off room id, surely this isn't going to be wrong for some rooms
+		this.maxSecrets = Utils.parseInt(name.replaceAll("\\D", "")).orElse(-1);
 	}
 
 	/**
@@ -740,6 +745,10 @@ public class Room implements Tickable, Renderable {
 	protected void markAllSecrets(boolean found) {
 		//Prevent a crash if this runs before the room is matched or something
 		secretWaypoints.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
+	}
+
+	public int getMaxSecretCount() {
+		return maxSecrets;
 	}
 
 	protected int getSecretCount() {

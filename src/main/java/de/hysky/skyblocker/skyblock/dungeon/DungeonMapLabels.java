@@ -103,11 +103,11 @@ public class DungeonMapLabels {
 		RoomLabelType roomLabelType = SkyblockerConfigManager.get().dungeons.dungeonMap.roomLabelType;
 		return switch (roomLabelType) {
 			case RoomLabelType.ROOM_NAME -> Component.literal(roomName);
-			case RoomLabelType.SECRETS_FOUND -> Component.literal(String.valueOf(room.getFoundSecretCount()));
+			case RoomLabelType.SECRETS_FOUND -> Component.literal(room.getFoundSecretCount() + "/" + room.getMaxSecretCount());
 			case RoomLabelType.ROOM_NAME_AND_SECRETS_FOUND -> {
 				if (FunUtils.shouldEnableFun())
-					yield Component.literal(String.valueOf(room.getFoundSecretCount())).append("\n").append(roomName);
-				yield Component.literal(roomName).append("\n").append(String.valueOf(room.getFoundSecretCount()));
+					yield Component.literal(room.getFoundSecretCount() + "/" + room.getMaxSecretCount()).append("\n").append(roomName);
+				yield Component.literal(roomName).append("\n").append(room.getFoundSecretCount() + "/" + room.getMaxSecretCount());
 			}
 		};
 	}
