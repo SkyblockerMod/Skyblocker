@@ -427,6 +427,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableBarsRift"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.uiAndVisuals.bars.enableBarsRift,
 										() -> config.uiAndVisuals.bars.enableBarsRift,
 										newValue -> config.uiAndVisuals.bars.enableBarsRift = newValue)
@@ -435,6 +436,7 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.riftHealthHP"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.riftHealthHP.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.uiAndVisuals.bars.riftHealthHP,
 										() -> config.uiAndVisuals.bars.riftHealthHP,
 										newValue -> config.uiAndVisuals.bars.riftHealthHP = newValue)
@@ -844,6 +846,7 @@ public class UIAndVisualsCategory {
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.compactDamage.precision"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.uiAndVisuals.compactDamage.maxPrecision,
 										() -> config.uiAndVisuals.compactDamage.maxPrecision,
 										newValue -> config.uiAndVisuals.compactDamage.maxPrecision = newValue)
