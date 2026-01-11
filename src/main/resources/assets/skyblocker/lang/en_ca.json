@@ -105,5 +105,6 @@
     "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "Shellwise highlight colour picker",
     "skyblocker.customization.armor.modelOverride": "Armour Model Override",
     "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.CENTERED": "Centred",
-    "skyblocker.config.uiAndVisuals.waypoints.lineColor": "Line Colour"
+    "skyblocker.config.uiAndVisuals.waypoints.lineColor": "Line Colour",
+    "skyblocker.customization.armor": "Armour"
 }
