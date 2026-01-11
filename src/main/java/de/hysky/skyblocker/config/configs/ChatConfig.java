@@ -37,7 +37,8 @@ public class ChatConfig {
 
 	public boolean hideMana = false;
 
-	public ChatFilterResult hideDicer = ChatFilterResult.PASS;
+	@Deprecated
+	public transient ChatFilterResult hideDicer = ChatFilterResult.PASS;
 
 	public ChatFilterResult hideDungeonBreaker = ChatFilterResult.PASS;
 
