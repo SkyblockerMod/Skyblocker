@@ -829,9 +829,9 @@ public class UIAndVisualsCategory {
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.compactDamage.precision"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip"))
-								.binding(defaults.uiAndVisuals.compactDamage.precision,
-										() -> config.uiAndVisuals.compactDamage.precision,
-										newValue -> config.uiAndVisuals.compactDamage.precision = newValue)
+								.binding(defaults.uiAndVisuals.compactDamage.maxPrecision,
+										() -> config.uiAndVisuals.compactDamage.maxPrecision,
+										newValue -> config.uiAndVisuals.compactDamage.maxPrecision = newValue)
 								.controller(IntegerController.createBuilder().range(3, 10).slider(1).build())
 								.build())
 						.option(Option.<Color>createBuilder()
