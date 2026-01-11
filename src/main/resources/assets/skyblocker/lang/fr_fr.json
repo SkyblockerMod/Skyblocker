@@ -807,8 +807,6 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.crit": "Critique",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.none": "Aucun",
     "skyblocker.config.chat.chatRules.invalidRegex": "Votre règle de chat '%s' a un motif regex invalide et a été désactivée !",
-    "skyblocker.config.chat.filter.hideDicer": "Cache les messages de la capacité Dicer",
-    "skyblocker.config.chat.filter.hideDicer.@Tooltip": "Filtre les messages de la capacité Dicer du chat.",
     "skyblocker.config.helpers": "Assistants",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.amethyst": "Améthyste",
     "skyblocker.config.helpers.carnival.zombieShootoutHelper": "Assistant pour Tir aux Zombies",

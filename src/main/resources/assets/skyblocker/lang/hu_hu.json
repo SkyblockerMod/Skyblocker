@@ -836,8 +836,6 @@
     "skyblocker.dungeons.secrets.markSecretsMissing": "§rÖsszes titok ebben a szobában megjelölve hiányosként.",
     "skyblocker.dungeons.secrets.noTarget": "§cNem találhatóak céltáblák! (Hatótávon belüli blokkra célzol?)",
     "skyblocker.galatea.hud.sweepDetails.treeType": "%s Fa",
-    "skyblocker.config.chat.filter.hideDicer": "Dicer Üzenetek Elrejtése",
-    "skyblocker.config.chat.filter.hideDicer.@Tooltip": "Kiszűri a Dicer üzeneteket chatből.",
     "skyblocker.museum.hud.filter.armor": "Páncél",
     "skyblocker.partyFinder.loadingError": "Ha ezt több mint 5 másodpercig látod, akkor hiba történt...",
     "skyblocker.profileviewer.inventory.armor": "Páncél",
