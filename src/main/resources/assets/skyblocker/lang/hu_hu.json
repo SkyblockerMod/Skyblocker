@@ -1612,5 +1612,14 @@
     "skyblocker.config.general.itemTooltip.enableEvolvingItemProgress.@Tooltip": "Megmutatja a fejlődő tárgyak élettartamát és a fejlődéshez hátralévő időtartamot.",
     "skyblocker.dungeons.roomPreview.failedToLoad": "Az alábbi szobát nem sikerült betölteni: %s",
     "skyblocker.dungeons.roomPreview.invalidRoom": "Helytelen szoba!",
-    "skyblocker.dungeons.roomPreview.joinMessage": "Jelenleg ezt a szobát tekinted meg: %s.\nKörberepülhetsz, és többek között módosíthatod az egyedi titok helyjelölőidet is!"
+    "skyblocker.dungeons.roomPreview.joinMessage": "Jelenleg ezt a szobát tekinted meg: %s.\nKörberepülhetsz, és többek között módosíthatod az egyedi titok helyjelölőidet is!",
+    "skyblocker.config.dungeons.map.hideCheckmarks": "Pipák Elrejtése",
+    "skyblocker.config.dungeons.map.hideCheckmarks.@Tooltip": "Elrejti a címkézett szobák pipáit. Ehhez a \"Szobák Címkéinek Mutatása\" funkciót be kell kapcsolni.",
+    "skyblocker.customization.armor": "Páncél",
+    "skyblocker.customization.item": "Tárgy",
+    "skyblocker.config.dungeons.map.roomLabelType": "Szobák Címkéinek Szövege",
+    "skyblocker.config.dungeons.map.roomLabelType.@Tooltip": "Csak az általános és Csapda szobákhoz!",
+    "skyblocker.config.dungeons.map.roomLabelType.ROOM_NAME": "Szoba Neve",
+    "skyblocker.config.dungeons.map.roomLabelType.ROOM_NAME_AND_SECRETS_FOUND": "Szoba Neve & Megtalált Titkok",
+    "skyblocker.config.dungeons.map.roomLabelType.SECRETS_FOUND": "Megtalált Titkok"
 }
