@@ -434,6 +434,14 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.riftHealthHP"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.riftHealthHP.@Tooltip"))
+								.binding(defaults.uiAndVisuals.bars.riftHealthHP,
+										() -> config.uiAndVisuals.bars.riftHealthHP,
+										newValue -> config.uiAndVisuals.bars.riftHealthHP = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBar"))
 								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.uiAndVisuals.bars.enableVanillaStyleManaBar,
