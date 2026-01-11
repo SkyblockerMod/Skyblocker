@@ -288,7 +288,7 @@
   "skyblocker.config.dungeons.map.mapScaling": "Map Scaling",
   "skyblocker.config.dungeons.map.mapScreen": "Dungeon Map & Score Placement Config...",
   "skyblocker.config.dungeons.map.roomLabelType": "Room Label Text",
-  "skyblocker.config.dungeons.map.roomLabelType.@Tooltip": "Only applies for normal rooms!",
+  "skyblocker.config.dungeons.map.roomLabelType.@Tooltip": "Only applies for normal rooms and Trap room!",
   "skyblocker.config.dungeons.map.roomLabelType.ROOM_NAME": "Room Name",
   "skyblocker.config.dungeons.map.roomLabelType.ROOM_NAME_AND_SECRETS_FOUND": "Room Name & Secrets Found",
   "skyblocker.config.dungeons.map.roomLabelType.SECRETS_FOUND": "Secrets Found",

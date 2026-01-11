@@ -98,7 +98,7 @@ public class DungeonMapLabels {
 	}
 
 	private static Component getLabelForRoom(Room room, String roomName) {
-		if (room.getType() != Room.Type.ROOM) return Component.literal(roomName);
+		if (room.getType() != Room.Type.ROOM && room.getType() != Room.Type.TRAP) return Component.literal(roomName);
 
 		RoomLabelType roomLabelType = SkyblockerConfigManager.get().dungeons.dungeonMap.roomLabelType;
 		return switch (roomLabelType) {
