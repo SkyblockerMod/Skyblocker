@@ -120,7 +120,7 @@ public class StatusBarTracker {
 		if (!overlay || !Utils.isOnSkyblock()) {
 			return text;
 		}
-		if (SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars) {
+		if (FancyStatusBars.isEnabled()) {
 			return Component.nullToEmpty(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
 		} else {
 			//still update values for other parts of the mod to use
