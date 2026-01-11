@@ -337,7 +337,7 @@ public class DungeonManager {
 	private static void load() {
 		long startTime = System.currentTimeMillis();
 		List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
-		for (Map.Entry<Identifier, Resource> resourceEntry : CLIENT.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".skeleton")).entrySet()) {
+		for (Map.Entry<Identifier, Resource> resourceEntry : CLIENT.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".skeleton") && id.getNamespace().equals(SkyblockerMod.NAMESPACE)).entrySet()) {
 			checkResourceSource(resourceEntry.getKey(), resourceEntry.getValue());
 			String[] path = resourceEntry.getKey().getPath().split("/");
 			if (path.length != 4) {
@@ -359,7 +359,7 @@ public class DungeonManager {
 			}));
 		}
 
-		for (Map.Entry<Identifier, Resource> resourceEntry : CLIENT.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".json")).entrySet()) {
+		for (Map.Entry<Identifier, Resource> resourceEntry : CLIENT.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".json") && id.getNamespace().equals(SkyblockerMod.NAMESPACE)).entrySet()) {
 			checkResourceSource(resourceEntry.getKey(), resourceEntry.getValue());
 			String[] path = resourceEntry.getKey().getPath().split("/");
 			if (path.length != 4) continue;
