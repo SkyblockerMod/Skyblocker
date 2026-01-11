@@ -197,7 +197,7 @@ dependencies {
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/skyblocker.accesswidener")
+	accessWidenerPath = file("src/main/resources/skyblocker.classtweaker")
 
 	mixin {
 		useLegacyMixinAp = false
