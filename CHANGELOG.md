@@ -1,7 +1,7 @@
 # Release 6.0.0 (Beta #2)
 
 ## Highlight
-* Add an option to hide checkmarks on the Dungeon Map
+* Add an option to hide room checkmarks on the Dungeon Map
 * Add Room Label Types
     * Can pick between Room Name, Secrets Found, and Both
 * Add Dungeon Room Preview
@@ -12,7 +12,7 @@
 * Add Goldor Tasks HUD
 * Add Hunting Toolkit Indicator
 * Add Rosewater Flask evolution slot text
-* Add item evolution progress tooltip
+* Add evolution item progress tooltip
 * Add some missing tooltips/descriptions
 * Update compact damage precision option
     * If you changed this after Beta #1, you will have to set it again!
