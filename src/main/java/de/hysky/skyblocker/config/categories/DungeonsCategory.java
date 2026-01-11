@@ -6,6 +6,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
 import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
@@ -171,6 +172,14 @@ public class DungeonsCategory {
 										() -> config.dungeons.dungeonMap.showRoomLabels,
 										newValue -> config.dungeons.dungeonMap.showRoomLabels = newValue)
 								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<DungeonMapLabels.RoomLabelType>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.map.roomLabelType"))
+								.description(Component.translatable("skyblocker.config.dungeons.map.roomLabelType.@Tooltip"))
+								.binding(defaults.dungeons.dungeonMap.roomLabelType,
+										() -> config.dungeons.dungeonMap.roomLabelType,
+										newValue -> config.dungeons.dungeonMap.roomLabelType = newValue)
+								.controller(ConfigUtils.createEnumController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.map.hideCheckmarks"))
