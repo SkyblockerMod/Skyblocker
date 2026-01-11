@@ -57,6 +57,8 @@
 * Early clicks in Ultrasequencer can count when the mod thinks it doesn't by @Kazzyyyyyyyy in https://github.com/SkyblockerMod/Skyblocker/pull/1977
 * Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1974
 * allow status bars to display in the rift by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1957
+* don't read dungeon files from other namespaces by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2029
+* (rift status bars) round hearts to nearest 0.5 and add option to show HP by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2030
 
 ## New Contributors
 * @Kazzyyyyyyyy made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1977
