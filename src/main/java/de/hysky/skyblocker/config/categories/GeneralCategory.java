@@ -318,6 +318,7 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableEvolvingItemProgress"))
 								.description(Component.translatable("skyblocker.config.general.itemTooltip.enableEvolvingItemProgress.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.general.itemTooltip.enableEvolvingItemProgress,
 										() -> config.general.itemTooltip.enableEvolvingItemProgress,
 										newValue -> config.general.itemTooltip.enableEvolvingItemProgress = newValue)
