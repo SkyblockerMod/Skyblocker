@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import java.util.List;
 import java.util.Set;
 
+import de.hysky.skyblocker.utils.FunUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
@@ -103,7 +104,11 @@ public class DungeonMapLabels {
 		return switch (roomLabelType) {
 			case RoomLabelType.ROOM_NAME -> Component.literal(roomName);
 			case RoomLabelType.SECRETS_FOUND -> Component.literal(String.valueOf(room.getFoundSecretCount()));
-			case RoomLabelType.ROOM_NAME_AND_SECRETS_FOUND -> Component.literal(roomName).append("\n").append(String.valueOf(room.getFoundSecretCount()));
+			case RoomLabelType.ROOM_NAME_AND_SECRETS_FOUND -> {
+				if (FunUtils.shouldEnableFun())
+					yield Component.literal(String.valueOf(room.getFoundSecretCount())).append("\n").append(roomName);
+				yield Component.literal(roomName).append("\n").append(String.valueOf(room.getFoundSecretCount()));
+			}
 		};
 	}
 
