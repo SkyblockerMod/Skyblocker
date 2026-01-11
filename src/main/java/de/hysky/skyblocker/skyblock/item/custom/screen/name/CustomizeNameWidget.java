@@ -381,6 +381,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		@Override
 		protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 			this.renderDefaultSprite(context);
+			this.renderDefaultLabel(context.textRenderer());
 		}
 	}
 
