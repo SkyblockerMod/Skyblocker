@@ -1616,5 +1616,12 @@
     "skyblocker.dungeons.roomPreview.invalidRoom": "无效的房间！",
     "skyblocker.dungeons.roomPreview.failedToLoad": "加载房间失败：%s",
     "skyblocker.config.general.itemTooltip.enableEvolvingItemProgress": "启用可进化物品进度",
-    "skyblocker.config.general.itemTooltip.enableEvolvingItemProgress.@Tooltip": "显示可进化物品的时长以及进化所需的时间。"
+    "skyblocker.config.general.itemTooltip.enableEvolvingItemProgress.@Tooltip": "显示可进化物品的时长以及进化所需的时间。",
+    "skyblocker.config.dungeons.map.roomLabelType": "房间名称文本",
+    "skyblocker.config.dungeons.map.roomLabelType.ROOM_NAME": "房间名称",
+    "skyblocker.config.dungeons.map.roomLabelType.@Tooltip": "只适用于普通房间和陷阱房间！",
+    "skyblocker.config.dungeons.map.roomLabelType.ROOM_NAME_AND_SECRETS_FOUND": "房间名称&找到的秘密",
+    "skyblocker.config.dungeons.map.roomLabelType.SECRETS_FOUND": "找到的秘密",
+    "skyblocker.config.dungeons.map.hideCheckmarks": "隐藏勾号",
+    "skyblocker.config.dungeons.map.hideCheckmarks.@Tooltip": "隐藏有名称的房间的勾号。需要启用“显示房间名称”。"
 }
