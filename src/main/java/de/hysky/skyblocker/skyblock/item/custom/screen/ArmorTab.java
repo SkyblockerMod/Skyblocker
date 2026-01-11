@@ -64,7 +64,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 	};
 
 	public ArmorTab(CustomizeScreen parent) {
-		super(Component.literal("Armor"));
+		super(Component.translatable("skyblocker.customization.armor"));
 		this.parent = parent;
 		layout.rowSpacing(PADDING / 2).columnSpacing(PADDING);
 

@@ -1441,6 +1441,7 @@
   "skyblocker.customItemNames.screen.gradientStart": "Gradient Start",
   "skyblocker.customItemNames.screen.howToRemove": "Leave the name field empty to remove the custom name.",
 
+  "skyblocker.customization.armor": "Armor",
   "skyblocker.customization.armor.animated": "Animated",
   "skyblocker.customization.armor.cannotCustomizeColor": "Cannot customize this piece's color :(",
   "skyblocker.customization.armor.cycleBack": "Cycle Back",
@@ -1451,6 +1452,7 @@
   "skyblocker.customization.armor.modelOverride": "Armor Model Override",
   "skyblocker.customization.armor.modelOverride.tooltip": "Asset ID as seen in the equippable component.\n'leather', 'diamond', etc, or a custom one.",
   "skyblocker.customization.armor.resetColor": "Reset color",
+  "skyblocker.customization.item": "Item",
   "skyblocker.customization.item.cannotCustomize": "Cannot be customized",
   "skyblocker.customization.item.glint": "Glint: %s",
   "skyblocker.customization.item.glint.default": "Default",
