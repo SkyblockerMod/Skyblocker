@@ -436,6 +436,7 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.riftHealthHP"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.riftHealthHP.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.uiAndVisuals.bars.riftHealthHP,
 										() -> config.uiAndVisuals.bars.riftHealthHP,
 										newValue -> config.uiAndVisuals.bars.riftHealthHP = newValue)
