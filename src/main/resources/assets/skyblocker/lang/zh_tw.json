@@ -1622,5 +1622,7 @@
     "skyblocker.config.dungeons.map.hideCheckmarks.@Tooltip": "隱藏有名稱的房間的勾號。需要啟用“顯示房間名稱”。",
     "skyblocker.config.dungeons.map.roomLabelType.ROOM_NAME": "房間名稱",
     "skyblocker.config.dungeons.map.roomLabelType.ROOM_NAME_AND_SECRETS_FOUND": "房間名稱&找到的秘密",
-    "skyblocker.config.dungeons.map.roomLabelType.SECRETS_FOUND": "找到的秘密"
+    "skyblocker.config.dungeons.map.roomLabelType.SECRETS_FOUND": "找到的秘密",
+    "skyblocker.customization.armor": "護甲",
+    "skyblocker.customization.item": "物品"
 }
