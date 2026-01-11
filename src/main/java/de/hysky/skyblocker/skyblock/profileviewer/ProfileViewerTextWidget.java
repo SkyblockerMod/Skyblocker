@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.skyblock.profileviewer;
 
+
 import org.joml.Matrix3x2fStack;
 
 import com.google.gson.JsonObject;
 
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.BackpackItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.InventoryItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.ItemLoader;
@@ -11,19 +13,25 @@ import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.PetsInve
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.WardrobeInventoryItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.HashSet;
 import java.util.Set;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
+
 
 public class ProfileViewerTextWidget {
 	private static final int ROW_GAP = 9;
@@ -33,6 +41,7 @@ public class ProfileViewerTextWidget {
 	private double PURSE = 0;
 	private double BANK = 0;
 	private double NETWORTH = 0;
+	private int MAGICAL_POWER = 0;
 	private List<Component> networthTooltip = List.of();
 
 	public ProfileViewerTextWidget(JsonObject hypixelProfile, JsonObject playerProfile) {
@@ -44,6 +53,127 @@ public class ProfileViewerTextWidget {
 		} catch (Exception ignored) {}
 
 		this.NETWORTH = PURSE + BANK + getItemsNetworth(playerProfile);
+		this.MAGICAL_POWER = getMagicalPower(playerProfile);
+	}
+
+	private int computeMagicalPower(SkyblockItemRarity rarity) {
+		switch (rarity) {
+			case SPECIAL:
+			case COMMON:
+				return 3;
+
+			case VERY_SPECIAL:
+			case UNCOMMON:
+				return 5;
+
+			case RARE:
+				return 8;
+
+			case EPIC:
+				return 12;
+
+			case LEGENDARY:
+				return 16;
+
+			case MYTHIC:
+				return 22;
+
+			default:
+				return 0;
+		}
+	}
+
+	public int getMagicalPower(JsonObject playerProfile) {
+
+		int magicalPower = 0;
+		HashMap<String, Integer> duplicates = new HashMap<>();
+		Boolean hatCounted = false,
+				abicaseCounted = false;
+		try {
+			Map<String, List<String>> upgradeList =	NEURepoManager.getConstants().getMisc().getTalismanUpgrades();
+			Map<String, List<String>> parentList = NEURepoManager.getConstants().getParents().getParents();
+
+			// Rift-prism does not show up in 'talisman_bag'
+			if (playerProfile.has("rift") && playerProfile.getAsJsonObject("rift").has("access") && playerProfile.getAsJsonObject("rift").getAsJsonObject("access").has("consumed_prism")) {
+					magicalPower += 11;
+			}
+
+			JsonObject inventoryData = playerProfile.getAsJsonObject("inventory");
+			if (inventoryData.has("bag_contents") && inventoryData.getAsJsonObject("bag_contents").has("talisman_bag")) {
+				for (ItemStack item : new ItemLoader().loadItems(inventoryData.getAsJsonObject("bag_contents").getAsJsonObject("talisman_bag"))) {
+
+					if (item.getSkyblockApiId().equals("")) {
+						continue;
+					}
+
+					Boolean duplicate = false;
+
+					// If duplicate in 'constants/misc.json/talisman_upgrades': skip item
+					if (upgradeList.containsKey(item.getSkyblockApiId())) {
+						for (String el : upgradeList.get(item.getSkyblockApiId())) {
+							if (duplicates.containsKey(el)) {
+								duplicate = true;
+								break;
+							}
+						}
+					}
+
+					if (duplicate) {
+						continue;
+					}
+
+					// If duplicate in 'constants/parents.json': remove MP value of parent item
+					if (parentList.containsKey(item.getSkyblockApiId())) {
+						for (String el : parentList.get(item.getSkyblockApiId())) {
+							if (duplicates.containsKey(el)) {
+								magicalPower -= duplicates.get(el);
+								duplicates.remove(el);
+								break;
+							}
+						}
+					}
+
+					// If 'item' is a duplicate, but is recombobulated / higher rarity than the item in 'duplicates', remove MP value of lower tier item
+					if (duplicates.containsKey(item.getSkyblockApiId()) && duplicates.get(item.getSkyblockApiId()) < computeMagicalPower(item.getSkyblockRarity())) {
+						magicalPower -= duplicates.get(item.getSkyblockApiId());
+						duplicates.remove(item.getSkyblockApiId());
+					}
+
+					// Phone contacts
+					if (item.getSkyblockApiId().startsWith("ABICASE") && !abicaseCounted) {
+						if (playerProfile.has("nether_island_player_data")) {
+							JsonObject data = playerProfile.get("nether_island_player_data").getAsJsonObject();
+							if (data.has("abiphone") && data.get("abiphone").getAsJsonObject().has("active_contacts")) {
+								magicalPower += Math.floor(data.get("abiphone").getAsJsonObject().get("active_contacts").getAsJsonArray().size() / 2);
+								abicaseCounted = true;
+							}
+						}
+					}
+
+					// Hatcessory - upgrade/parent trees are weird, so we have to check manually
+					else if (item.getSkyblockApiId().startsWith("BALLOON_HAT") || item.getSkyblockApiId().startsWith("PARTY_HAT")) {
+						if (hatCounted) {
+							continue;
+						}
+
+						hatCounted = true;
+					}
+
+					// Hegemony gives double MP
+					else if (item.getSkyblockApiId().equals("HEGEMONY_ARTIFACT") && !duplicates.containsKey(item.getSkyblockApiId())) {
+						magicalPower += computeMagicalPower(item.getSkyblockRarity());
+					}
+
+					if (!duplicates.containsKey(item.getSkyblockApiId())) {
+						magicalPower += computeMagicalPower(item.getSkyblockRarity());
+						duplicates.put(item.getSkyblockApiId(), computeMagicalPower(item.getSkyblockRarity()));
+					}
+				}
+			}
+		} catch (Exception ignored) {
+			return -1;
+		}
+		return magicalPower;
 	}
 
 	private double getItemsNetworth(JsonObject playerProfile) {
@@ -130,21 +260,24 @@ public class ProfileViewerTextWidget {
 		matrices.scale(0.75f, 0.75f);
 		int rootAdjustedX = (int) ((root_x) / 0.75f);
 		int rootAdjustedY = (int) ((root_y) / 0.75f);
-		context.renderItem(Ico.PAINTING, rootAdjustedX, rootAdjustedY);
+		context.renderItem(Ico.PAINTING, rootAdjustedX, rootAdjustedY + 8);
 		matrices.popMatrix();
 
-		context.drawString(textRenderer, "§n" + PROFILE_NAME, root_x + 14, root_y + 3, CommonColors.WHITE, true);
-		context.drawString(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 6 + ROW_GAP, CommonColors.WHITE, true);
-		context.drawString(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 6 + ROW_GAP * 2, CommonColors.WHITE, true);
-		context.drawString(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 6 + ROW_GAP * 3, CommonColors.WHITE, true);
+		context.drawString(textRenderer, "§n" + PROFILE_NAME, root_x + 14, root_y + 7, CommonColors.WHITE, true);
+		context.drawString(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 9 + ROW_GAP, CommonColors.WHITE, true);
+		context.drawString(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 8 + ROW_GAP * 2, CommonColors.WHITE, true);
+		context.drawString(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 7 + ROW_GAP * 3, CommonColors.WHITE, true);
 		String nwString = "§6NW:§r " + ProfileViewerUtils.numLetterFormat(NETWORTH);
+
 		int nwX = root_x + 2;
-		int nwY = root_y + 6 + ROW_GAP * 4;
+		int nwY = root_y + 7 + ROW_GAP * 4;
 		context.drawString(textRenderer, nwString, nwX, nwY, CommonColors.WHITE, true);
 		if (mouseX >= nwX && mouseX <= nwX + textRenderer.width(nwString)
 				&& mouseY >= nwY && mouseY <= nwY + textRenderer.lineHeight) {
 			context.setComponentTooltipForNextFrame(textRenderer, networthTooltip, mouseX, mouseY);
 		}
+
+		context.drawString(textRenderer, "§6MP:§r " + MAGICAL_POWER, root_x + 2, root_y + 7 + ROW_GAP * 5, CommonColors.WHITE, true);
 	}
 
 	private record ItemValue(String name, double price) {}
