@@ -76,7 +76,7 @@ public class DungeonsConfig {
 
 		public boolean showRoomLabels = true;
 
-		public DungeonMapLabels.RoomLabelType roomLabelType = DungeonMapLabels.RoomLabelType.ROOM_NAME;
+		public DungeonMapLabels.RoomLabelType roomLabelType = DungeonMapLabels.RoomLabelType.ROOM_NAME_AND_SECRETS_FOUND;
 
 		public boolean hideCheckmarks = true;
 
