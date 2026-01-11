@@ -2,6 +2,7 @@ package de.hysky.skyblocker.injected;
 
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.utils.ItemAbility;
 
 import java.util.List;
 
@@ -24,6 +25,10 @@ public interface SkyblockerStack {
 	}
 
 	default List<String> skyblocker$getLoreStrings() {
+		return List.of();
+	}
+
+	default List<ItemAbility> skyblocker$getAbilities() {
 		return List.of();
 	}
 
