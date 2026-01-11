@@ -8,6 +8,7 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -378,7 +379,7 @@ public class FancyStatusBars {
 		}
 
 		if (Utils.isInTheRift()) {
-			statusBars.get(StatusBarType.HEALTH).updateValues(Math.round(player.getHealth()) / player.getMaxHealth(), 0, Math.round(player.getHealth() / 2), Math.round(player.getMaxHealth() / 2), null);
+			statusBars.get(StatusBarType.HEALTH).updateValues(/*Round to nearest tenth*/ Math.round(player.getHealth() * 10d) / player.getMaxHealth() / 10, 0, Formatters.FLOAT_NUMBERS.format(player.getHealth() / 2), Formatters.FLOAT_NUMBERS.format(player.getMaxHealth() / 2), null);
 			statusBars.get(StatusBarType.DEFENSE).visible = false;
 		} else {
 			StatusBarTracker.Resource health = StatusBarTracker.getHealth();
