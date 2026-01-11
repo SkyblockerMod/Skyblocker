@@ -91,6 +91,15 @@ public class HelperCategory {
 								newValue -> config.helpers.enableAnvilHelper = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				// Accessories Helper Widget
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.helpers.enableAccessoriesHelperWidget"))
+						.description(Component.translatable("skyblocker.config.helpers.enableAccessoriesHelperWidget.@Tooltip"))
+						.binding(defaults.helpers.enableAccessoriesHelperWidget,
+								() -> config.helpers.enableAccessoriesHelperWidget,
+								newValue -> config.helpers.enableAccessoriesHelperWidget = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 
 				//Mythological Ritual
 				.group(OptionGroup.createBuilder()
