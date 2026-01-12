@@ -92,7 +92,7 @@ public class BlockBreakPrediction {
 			newBlock = false;
 			//get the breaking power of the current tool
 			Matcher loreMatch = ItemUtils.getLoreLineIfMatch(CLIENT.player.getMainHandItem(), BREAKING_POWER_PATTERN);
-			if (loreMatch != null && loreMatch.matches()) {
+			if (loreMatch != null) {
 				int toolBreakingPower = NumberUtils.toInt(loreMatch.group(1));
 				currentBlockBreakTime = getBreakTime(pos, toolBreakingPower);
 			} else {
