@@ -784,7 +784,7 @@
   "skyblocker.config.mining": "Mining",
 
   "skyblocker.config.mining.blockBreakPrediction": "Client Side Block Breaking Animation",
-  "skyblocker.config.mining.blockBreakPrediction.enableStatsMessage": "Can't find the Mining Speed Stat in the player list. Please make sure it's enabled in the Stats Widget in /tab. For client side block breaking animations to work.",
+  "skyblocker.config.mining.blockBreakPrediction.enableStatsMessage": "Unable to find the Mining Speed stat in the player list. Please make sure it's enabled in the Stats Widget in /tab for client side block breaking animations to work.",
   "skyblocker.config.mining.blockBreakPrediction.enabled": "Enabled",
   "skyblocker.config.mining.blockBreakPrediction.playSound": "Play Sound",
   "skyblocker.config.mining.blockBreakPrediction.playSound.@Tooltip": "Play a blaze sound when the block should be broken",
