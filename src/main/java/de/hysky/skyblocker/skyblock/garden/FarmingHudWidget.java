@@ -4,6 +4,8 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.BooleanOption;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
@@ -11,6 +13,8 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.ChatFormatting;
@@ -20,7 +24,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class FarmingHudWidget extends ComponentBasedWidget {
@@ -65,18 +68,18 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 			Map.entry("BASIC_GARDENING_HOE", ""),
 			Map.entry("ADVANCED_GARDENING_HOE", "")
 	);
-	private static @Nullable FarmingHudWidget instance = null;
-
-	public static FarmingHudWidget getInstance() {
-		if (instance == null) instance = new FarmingHudWidget();
-		return instance;
-	}
 
 	private final Minecraft client = Minecraft.getInstance();
 
+	private boolean showCropsPerMinute = true;
+	private boolean showCoinsPerHour = true;
+	private boolean showBlocksPerSecond = true;
+	private boolean showFarmingLevel = true;
+	private boolean showFarmingXpPerHour = true;
+	private boolean showLookAngle = true;
+
 	public FarmingHudWidget() {
 		super(TITLE, ChatFormatting.YELLOW.getColor(), new Information("hud_farming", Component.literal("Farming HUD"), l -> l == Location.GARDEN)); // TODO translatable
-		instance = this;
 		update();
 	}
 
@@ -104,18 +107,19 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		if (FarmingHud.CounterType.NONE.matchesText(counterText)) counterNumber = "";
 		addSimpleIcoText(cropStack, counterText, ChatFormatting.YELLOW, counterNumber);
 		float cropsPerMinute = FarmingHud.cropsPerMinute();
-		addSimpleIconTranslatableText(cropStack, "skyblocker.config.farming.general.cropsPerMin", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
-		addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.config.farming.general.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
-		addSimpleIconTranslatableText(cropStack, "skyblocker.config.farming.general.blocksPerSec", ChatFormatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
-		//noinspection DataFlowIssue
-		addComponent(Components.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.config.farming.general.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
-		addSimpleIconTranslatableText(Ico.LIME_DYE, "skyblocker.config.farming.general.farmingXPPerHour", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
-
-		Entity cameraEntity = client.getCameraEntity();
-		Component yaw = cameraEntity == null ? Component.translatable("skyblocker.config.farming.general.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getYRot())));
-		Component pitch = cameraEntity == null ? Component.translatable("skyblocker.config.farming.general.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getXRot())));
-		addComponent(new PlainTextComponent(Component.translatable("skyblocker.config.farming.general.yaw", yaw).withStyle(ChatFormatting.GOLD)));
-		addComponent(new PlainTextComponent(Component.translatable("skyblocker.config.farming.general.pitch", pitch).withStyle(ChatFormatting.GOLD)));
+		if (showCropsPerMinute) addSimpleIconTranslatableText(cropStack, "skyblocker.config.farming.general.cropsPerMin", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
+		if (showCoinsPerHour) addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.config.farming.general.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
+		if (showBlocksPerSecond) addSimpleIconTranslatableText(cropStack, "skyblocker.config.farming.general.blocksPerSec", ChatFormatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
+		if (showFarmingLevel) //noinspection DataFlowIssue
+			addComponent(Components.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.config.farming.general.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
+		if (showFarmingXpPerHour) addSimpleIconTranslatableText(Ico.LIME_DYE, "skyblocker.config.farming.general.farmingXPPerHour", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
+		if (showLookAngle) {
+			Entity cameraEntity = client.getCameraEntity();
+			Component yaw = cameraEntity == null ? Component.translatable("skyblocker.config.farming.general.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getYRot())));
+			Component pitch = cameraEntity == null ? Component.translatable("skyblocker.config.farming.general.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getXRot())));
+			addComponent(new PlainTextComponent(Component.translatable("skyblocker.config.farming.general.yaw", yaw).withStyle(ChatFormatting.GOLD)));
+			addComponent(new PlainTextComponent(Component.translatable("skyblocker.config.farming.general.pitch", pitch).withStyle(ChatFormatting.GOLD)));
+		}
 		if (LowerSensitivity.isSensitivityLowered()) {
 			addComponent(new PlainTextComponent(Component.translatable("skyblocker.garden.hud.mouseLocked").withStyle(ChatFormatting.ITALIC)));
 		}
@@ -123,7 +127,30 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 
 	@Override
 	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
-		return List.of(Components.iconTextComponent(Ico.BARRIER, Component.literal("TODO"))); // TODO
+		Component questionYellow = Component.literal("?").withStyle(ChatFormatting.YELLOW);
+		Component questionGold = Component.literal("?").withStyle(ChatFormatting.GOLD);
+		List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> components = new ArrayList<>();
+		if (showCropsPerMinute) components.add(Components.iconTextComponent(Ico.IRON_HOE, Component.translatable("skyblocker.config.farming.general.cropsPerMin", questionYellow)));
+		if (showCoinsPerHour) components.add(Components.iconTextComponent(Ico.GOLD, Component.translatable("skyblocker.config.farming.general.coinsPerHour", questionGold)));
+		if (showBlocksPerSecond) components.add(Components.iconTextComponent(Ico.IRON_HOE, Component.translatable("skyblocker.config.farming.general.blocksPerSec", questionYellow)));
+		if (showFarmingLevel) components.add(Components.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.config.farming.general.farmingLevel"), 50, ChatFormatting.GOLD.getColor()));
+		if (showFarmingXpPerHour) components.add(Components.iconTextComponent(Ico.IRON_HOE, Component.translatable("skyblocker.config.farming.general.farmingXPPerHour", questionYellow)));
+		if (showLookAngle) {
+			components.add(Components.iconTextComponent(Ico.IRON_HOE, Component.translatable("skyblocker.config.farming.general.yaw", questionGold)));
+			components.add(Components.iconTextComponent(Ico.IRON_HOE, Component.translatable("skyblocker.config.farming.general.pitch", questionGold)));
+		}
+		return components;
+	}
+
+	@Override
+	public void getOptions(List<WidgetOption<?>> options) {
+		super.getOptions(options);
+		options.add(new BooleanOption("crops_per_minutes", Component.literal("Show Crops/min"), () -> showCropsPerMinute, b -> showCropsPerMinute = b, true));
+		options.add(new BooleanOption("coins_per_hour", Component.literal("Show Coins/h"), () -> showCoinsPerHour, b -> showCoinsPerHour = b, true));
+		options.add(new BooleanOption("blocks_per_second", Component.literal("Show Blocks/s"), () -> showBlocksPerSecond, b -> showBlocksPerSecond = b, true));
+		options.add(new BooleanOption("farming_level", Component.literal("Show Farming Level"), () -> showFarmingLevel, b -> showFarmingLevel = b, true));
+		options.add(new BooleanOption("farming_xp_per_hour", Component.literal("Show Farming XP Per Hour"), () -> showFarmingXpPerHour, b -> showFarmingXpPerHour = b, true));
+		options.add(new BooleanOption("look_angle", Component.literal("Show Look Angle"), () -> showLookAngle, b -> showLookAngle = b, true));
 	}
 
 	/**
