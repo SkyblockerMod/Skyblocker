@@ -30,8 +30,15 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Vec3 BARN_LOCATION = new Vec3(108, 89, -252);
 
+	private static FishingHudWidget instance;
+
+	public static FishingHudWidget getInstance() {
+		return instance;
+	}
+
 	public FishingHudWidget() {
 		super(Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), new Information(ID, Component.literal("Fishing Hud")));
+		instance = this;
 	}
 
 	private boolean seaCreatureCounter = true;
