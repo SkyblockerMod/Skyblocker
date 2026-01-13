@@ -38,7 +38,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	private static final Font txtRend = Minecraft.getInstance().font;
 
-	// TODO translatable
 	private static final List<Component> ERROR_COMPONENTS = List.of(new PlainTextComponent(net.minecraft.network.chat.Component.literal("An error occurred! Please check logs.").withColor(0xFFFF0000)));
 
 	public static final int BORDER_SZE_N = txtRend.lineHeight + 2;
@@ -164,7 +163,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	@Override
 	public void renderWidgetConfig(GuiGraphics context, float delta) {
-		// TODO do not pack every time maybe
 		List<Component> configComponents = getConfigComponents();
 		this.pack(configComponents);
 		this.renderInternal(context, configComponents);

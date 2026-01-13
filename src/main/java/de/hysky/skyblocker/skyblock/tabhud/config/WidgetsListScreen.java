@@ -38,7 +38,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
-// TODO translatable i can't be bothered right now
 public class WidgetsListScreen extends Screen implements ContainerListener {
 	private static final int PADDING = 8;
 
@@ -231,7 +230,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 				guiGraphics.fill(colX, startY, colX + colWidth, startY + totalHeight, 0x20FFFFFF);
 				List<Component> column = previewColumns[i];
 				if (column.isEmpty()) {
-					List<FormattedCharSequence> split = font.split(Component.literal("This column is being used to display online players.\nEnable the 3rd column to have widgets instead!"), colWidth);
+					List<FormattedCharSequence> split = font.split(Component.translatable("skyblocker.widgetsList.playerColumn"), colWidth);
 					for (int j = 0; j < split.size(); j++) {
 						guiGraphics.drawString(font, split.get(j), colX, startY + j * font.lineHeight, -1);
 					}
@@ -287,11 +286,11 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 			repositionElements();
 			return;
 		}
-		MutableComponent text = Component.literal("Hold CTRL to see a preview.");
+		MutableComponent text = Component.translatable("skyblocker.widgetsList.info.preview");
 		if (overflowing) {
-			MutableComponent overflowWarning = Component.literal("It would seem you've run out of widget space in the player list! Some widgets are not being displayed correctly!").withStyle(ChatFormatting.RED).append("\n");
-			if (!thirdColumnEnabled) overflowWarning.append(Component.literal("Be sure to enabled the third column with the button to the right."));
-			overflowWarning.append(Component.literal("Enable wrapping and disable spacing on widgets to save on space."));
+			MutableComponent overflowWarning = Component.translatable("skyblocker.widgetsList.info.overflowWarning").withStyle(ChatFormatting.RED).append("\n");
+			if (!thirdColumnEnabled) overflowWarning.append(Component.translatable("skyblocker.widgetsList.info.overflowWarning.columnTip"));
+			overflowWarning.append(Component.translatable("skyblocker.widgetsList.info.overflowWarning.wrappingSpacingTip"));
 			text.append("\n");
 			text.append(overflowWarning);
 		}

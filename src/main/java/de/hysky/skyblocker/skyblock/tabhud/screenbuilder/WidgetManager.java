@@ -297,7 +297,6 @@ public class WidgetManager {
 	}
 
 	private static void showErrorToast() {
-		// TODO translatable
 		SystemToast.add(Minecraft.getInstance().getToastManager(), new SystemToast.SystemToastId(), Component.literal("Error reading Skyblocker HUD Config"), Component.literal("Check your logs!"));
 	}
 

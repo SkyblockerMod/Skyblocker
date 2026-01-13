@@ -80,11 +80,9 @@ public class PlayerListManager {
 	}
 
 	public static List<Component> createErrorMessage(String widgetName) {
-		// TODO translatable
-		// TODO actually add the command
 		return List.of(
-				Component.literal("Missing data for ").append(Component.literal(widgetName).withStyle(ChatFormatting.YELLOW)).append(" widget!"),
-				Component.literal("Run ").append(Component.literal("/skyblocker tab").withStyle(ChatFormatting.GOLD)).append(" for more info.")
+				Component.translatable("skyblocker.hud.missingTabWidget[0]", Component.literal(widgetName).withStyle(ChatFormatting.YELLOW)),
+				Component.translatable("skyblocker.hud.missingTabWidget[1]")
 		);
 	}
 
