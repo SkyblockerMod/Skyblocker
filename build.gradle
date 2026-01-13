@@ -126,14 +126,6 @@ repositories {
 		}
 	}
 
-	maven {
-		url = "https://maven.notenoughupdates.org/releases"
-
-		content {
-			includeGroup "org.notenoughupdates.moulconfig"
-		}
-	}
-
 	//mavenLocal()
 }
 
@@ -152,14 +144,11 @@ dependencies {
 	// Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	// Dandelion
+	// Dandelion (also shades in MoulConfig)
 	include modImplementation("net.azureaaron:dandelion:${project.dandelion_version}")
 
 	// YACL
 	include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
-
-	// MoulConfig - Dandelion shades it in already
-	//modImplementation("org.notenoughupdates.moulconfig:${project.moulconfig_flavour}:${project.moulconfig_version}")
 
 	// HM API (Hypixel Mod API Library)
 	include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
@@ -208,7 +197,7 @@ dependencies {
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/skyblocker.accesswidener")
+	accessWidenerPath = file("src/main/resources/skyblocker.classtweaker")
 
 	mixin {
 		useLegacyMixinAp = false

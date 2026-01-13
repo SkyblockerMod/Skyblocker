@@ -18,9 +18,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -29,6 +31,7 @@ import java.util.zip.InflaterInputStream;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.skyblock.dungeon.preview.RoomPreviewServer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Vector2i;
@@ -47,6 +50,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.serialization.JsonOps;
 
 import de.hysky.skyblocker.SkyblockerMod;
@@ -122,7 +127,7 @@ public class DungeonManager {
 	 * @implNote Not using {@link Registry#getKey(Object) Registry#getId(Block)} and {@link Blocks Blocks} since this is also used by {@link de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonRoomsDFU DungeonRoomsDFU}, which runs outside of Minecraft.
 	 */
 	@SuppressWarnings("JavadocReference")
-	protected static final Object2ByteMap<String> NUMERIC_ID = Object2ByteMap.ofEntries(
+	public static final Object2ByteMap<String> NUMERIC_ID = Object2ByteMap.ofEntries(
 			Object2ByteMap.entry("minecraft:stone", (byte) 1),
 			Object2ByteMap.entry("minecraft:diorite", (byte) 2),
 			Object2ByteMap.entry("minecraft:polished_diorite", (byte) 3),
@@ -302,7 +307,7 @@ public class DungeonManager {
 						MapItemSavedData state = getMapState(context.getSource().getClient());
 
 						if (currentRoom != null && state != null) {
-							int checkmarkColour = getRoomCheckmarkColour(state, currentRoom);
+							int checkmarkColour = getRoomCheckmarkColour(state, currentRoom, null);
 							String result = switch (checkmarkColour) {
 								case DungeonMapUtils.GREEN_COLOR -> "Green";
 								case DungeonMapUtils.WHITE_COLOR -> "White";
@@ -330,7 +335,7 @@ public class DungeonManager {
 	private static void load() {
 		long startTime = System.currentTimeMillis();
 		List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
-		for (Map.Entry<Identifier, Resource> resourceEntry : CLIENT.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".skeleton")).entrySet()) {
+		for (Map.Entry<Identifier, Resource> resourceEntry : CLIENT.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".skeleton") && id.getNamespace().equals(SkyblockerMod.NAMESPACE)).entrySet()) {
 			checkResourceSource(resourceEntry.getKey(), resourceEntry.getValue());
 			String[] path = resourceEntry.getKey().getPath().split("/");
 			if (path.length != 4) {
@@ -352,7 +357,7 @@ public class DungeonManager {
 			}));
 		}
 
-		for (Map.Entry<Identifier, Resource> resourceEntry : CLIENT.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".json")).entrySet()) {
+		for (Map.Entry<Identifier, Resource> resourceEntry : CLIENT.getResourceManager().listResources(DUNGEONS_PATH, id -> id.getPath().endsWith(".json") && id.getNamespace().equals(SkyblockerMod.NAMESPACE)).entrySet()) {
 			checkResourceSource(resourceEntry.getKey(), resourceEntry.getValue());
 			String[] path = resourceEntry.getKey().getPath().split("/");
 			if (path.length != 4) continue;
@@ -708,14 +713,18 @@ public class DungeonManager {
 
 	// Calculate the checkmark colour and mark all secrets as found if the checkmark is green
 	// We also wait for it being matched to ensure that we don't try to mark the room as completed if secret waypoints haven't yet loaded (since the room is still matching)
-	// Mark the secret count as outdated to ensure we have an accurate count
+	// Mark the secret count as outdated to ensure we have an accurate count (white checkmarked rooms)
 	private static void updateRoomCheckmark(Room room, MapItemSavedData map) {
 		if (room.clearState == Room.ClearState.GREEN_CHECKED) return;
-		switch (getRoomCheckmarkColour(map, room)) {
+		switch (getRoomCheckmarkColour(map, room, null)) {
 			case DungeonMapUtils.GREEN_COLOR -> {
 				room.clearState = Room.ClearState.GREEN_CHECKED;
-				room.secretCountOutdated = true;
+				// All of the secrets in the room must've been found
+				room.secretCountOutdated = false;
+				room.secretsFound = room.getMaxSecretCount();
 				room.markAllSecrets(true);
+				// Pretend this was from the ws since all Skyblocker clients will do this on their own
+				DungeonEvents.SECRET_COUNT_UPDATED.invoker().onSecretCountUpdate(room, true);
 			}
 			case DungeonMapUtils.WHITE_COLOR -> {
 				if (room.clearState == Room.ClearState.WHITE_CHECKED) return;
@@ -896,6 +905,7 @@ public class DungeonManager {
 	 * @see DungeonMapUtils#getPhysicalRoomPos(Vec3)
 	 */
 	private static @Nullable Room getRoomAtPhysical(Vec3 pos) {
+		if (RoomPreviewServer.isActive) return currentRoom;
 		return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
 	}
 
@@ -908,6 +918,7 @@ public class DungeonManager {
 	 * @see DungeonMapUtils#getPhysicalRoomPos(Vec3i)
 	 */
 	private static @Nullable Room getRoomAtPhysical(Vec3i pos) {
+		if (RoomPreviewServer.isActive) return currentRoom;
 		return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
 	}
 
@@ -952,7 +963,7 @@ public class DungeonManager {
 	 * @return whether room matching and dungeon secrets should be processed
 	 */
 	private static boolean shouldProcess() {
-		return Utils.isInDungeons();
+		return Utils.isInDungeons() || RoomPreviewServer.isActive;
 	}
 
 	/**
@@ -1015,8 +1026,12 @@ public class DungeonManager {
 	/**
 	 * Returns the colour of a room's checkmark on the map. To find a room's checkmark: For each segment, we start from the top left corner of the segment,
 	 * go to the middle, then iterate downwards, and we should find the checkmark about a pixel or two down from there if the segment has the checkmark.
+	 *
+	 * @param onCheckmarkFound Called with the position the checkmark was found at, used for hiding map checkmarks to avoid duplicating code.
+	 *
+	 * @see Room#clearState
 	 */
-	private static int getRoomCheckmarkColour(MapItemSavedData mapState, Room room) {
+	public static int getRoomCheckmarkColour(MapItemSavedData mapState, Room room, @Nullable Consumer<Vector2ic> onCheckmarkFound) {
 		if (physicalEntrancePos == null || mapEntrancePos == null) return -1;
 		int halfRoomSize = mapRoomSize / 2;
 
@@ -1028,14 +1043,46 @@ public class DungeonManager {
 
 			//In this case, the offset is the number of units offset from the Y value of the middle of the segment
 			for (int offset = 0; offset < halfRoomSize; offset++) {
-				int colour = DungeonMapUtils.getColor(mapState, new Vector2i(middle.x(), middle.y() + offset));
+				Vector2ic mapPos = new Vector2i(middle.x(), middle.y() + offset);
+				int colour = DungeonMapUtils.getColor(mapState, mapPos);
 
 				//Return if we found the colour of the checkmark
-				if (colour == DungeonMapUtils.WHITE_COLOR || colour == DungeonMapUtils.GREEN_COLOR || colour == DungeonMapUtils.RED_COLOR) return colour;
+				if (matchesCheckmarkColour(colour)) {
+					if (onCheckmarkFound != null) {
+						onCheckmarkFound.accept(mapPos);
+					}
+
+					return colour;
+				}
 			}
 		}
 
 		return -1;
+	}
+
+	public static boolean matchesCheckmarkColour(int colour) {
+		return colour == DungeonMapUtils.WHITE_COLOR || colour == DungeonMapUtils.GREEN_COLOR || colour == DungeonMapUtils.RED_COLOR;
+	}
+
+	public static Optional<int[]> getRoomBlockData(String roomType, String roomName) {
+		var typeData = DungeonManager.ROOMS_DATA.get("catacombs").get(roomType);
+		if (typeData == null) return Optional.empty();
+		return Optional.ofNullable(typeData.get(roomName));
+	}
+
+	public static void startFromRoomPreview(Room room) {
+		room.segments.forEach((segment) -> rooms.put(segment, room));
+		currentRoom = room;
+		runEnded = true;
+	}
+
+	public static CompletableFuture<Suggestions> suggestRoomTypes(CommandContext<FabricClientCommandSource> ctx, SuggestionsBuilder suggestionsBuilder) {
+		return SharedSuggestionProvider.suggest(ROOMS_DATA.get("catacombs").keySet(), suggestionsBuilder);
+	}
+
+	public static CompletableFuture<Suggestions> suggestRooms(String roomType, SuggestionsBuilder suggestionsBuilder) {
+		if (ROOMS_DATA.get("catacombs").get(roomType) == null) return Suggestions.empty();
+		return SharedSuggestionProvider.suggest(ROOMS_DATA.get("catacombs").get(roomType).keySet(), suggestionsBuilder);
 	}
 
 	@VisibleForTesting

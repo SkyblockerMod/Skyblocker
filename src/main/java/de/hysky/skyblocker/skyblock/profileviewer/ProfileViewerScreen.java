@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -251,6 +252,9 @@ public class ProfileViewerScreen extends Screen {
 						String category = entry.getKey();
 						JsonObject itemsObject = entry.getValue().getAsJsonObject().getAsJsonObject("items");
 						String[] items = itemsObject.keySet().toArray(new String[0]);
+						// Sort collections alphabetically like in the menu
+						// Still not exact since some collections are sorted weirdly and some item ids aren't what you expect
+						Arrays.sort(items, String::compareToIgnoreCase);
 						collectionsMap.put(category, items);
 						itemsObject.entrySet().forEach(itemEntry -> {
 							IntImmutableList tierReqs = IntImmutableList.toList(itemEntry.getValue().getAsJsonObject().getAsJsonArray("tiers").asList().stream()

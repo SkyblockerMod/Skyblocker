@@ -243,6 +243,10 @@ public class UIAndVisualsConfig {
 	public static class Bars {
 		public boolean enableBars = true;
 
+		public boolean enableBarsRift = true;
+
+		public boolean riftHealthHP = false;
+
 		public boolean enableVanillaStyleManaBar = false;
 
 		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
@@ -387,7 +391,10 @@ public class UIAndVisualsConfig {
 	public static class CompactDamage {
 		public boolean enabled = true;
 
-		public int precision = 4;
+		@Deprecated
+		public transient int precision = 1;
+
+		public int maxPrecision = 4;
 
 		public Color normalDamageColor = new Color(0xFFFFFF);
 

@@ -152,14 +152,6 @@ public class ChatCategory {
 								.controller(ConfigUtils.createEnumController())
 								.build())
 						.option(Option.<ChatFilterResult>createBuilder()
-								.name(Component.translatable("skyblocker.config.chat.filter.hideDicer"))
-								.description(Component.translatable("skyblocker.config.chat.filter.hideDicer.@Tooltip"))
-								.binding(defaults.chat.hideDicer,
-										() -> config.chat.hideDicer,
-										newValue -> config.chat.hideDicer = newValue)
-								.controller(ConfigUtils.createEnumController())
-								.build())
-						.option(Option.<ChatFilterResult>createBuilder()
 								.name(Component.translatable("skyblocker.config.chat.filter.hideDungeonBreaker"))
 								.binding(defaults.chat.hideDungeonBreaker,
 										() -> config.chat.hideDungeonBreaker,

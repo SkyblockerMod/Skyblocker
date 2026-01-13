@@ -10,7 +10,6 @@ import de.hysky.skyblocker.skyblock.chat.filters.AoteFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.AutopetFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ComboFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.DeathFilter;
-import de.hysky.skyblocker.skyblock.chat.filters.DicerFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.DungeonBreakerFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.HealFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ImplosionFilter;
@@ -81,7 +80,6 @@ public interface ChatMessageListener {
 				new LotteryFilter(),
 				new MimicFilter(),
 				new DeathFilter(),
-				new DicerFilter(),
 				new DungeonBreakerFilter(),
 		};
 

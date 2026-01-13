@@ -1,3 +1,72 @@
+# Release 6.0.0 (Beta #2)
+
+## Highlight
+* Add an option to hide room checkmarks on the Dungeon Map
+* Add Room Label Types
+    * Can pick between Room Name, Secrets Found, and Both
+* Add Dungeon Room Preview
+    * Allows you to view the *skeleton* of a room in singleplayer
+    * Useful for adding and adjusting secret waypoints
+    * Try it out with `/skyblocker dungeons preview loadRoom <type> <roomName>`
+* Add Status Bars in the Rift
+* Add Goldor Tasks HUD
+* Add Hunting Toolkit Indicator
+* Add Rosewater Flask evolution slot text
+* Add evolution item progress tooltip
+* Add some missing tooltips/descriptions
+* Update compact damage precision option
+    * If you changed this after Beta #1, you will have to set it again!
+* Improve resourcepack compatability for Fancy AH textures
+* Fix Bazaar Price tooltip for Enchanted Books in Superpairs
+* Fix command key inputs being bound to control for Mac users on 1.21.11
+* Fix score fluctuating after blood room is completed
+* Fix the action bar moving with Beta #1
+* Fix search text not showing in Fancy AH
+* Fix Rose Dragon max level in AH Search Overlay
+* Fix clicks being blocked incorrectly in Ultrasequencer if the first item is clicked too early
+* Fix a rare crash with room matching
+* Fix Treasure Hunter waypoint message
+* Fix some grammar mistakes
+* Fix the labels for formatting buttons on the Rename Item screen on 1.21.11
+* Remove Dicer Filter
+
+## What's Changed
+* Forwardport some changes + Fix WaypointsTest by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2006
+* Fix Price Tooltip for Enchanted Books by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1945
+* Move calls in check block to main thread by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1946
+* Hunting Toolkit Indicator by @ADON15c in https://github.com/SkyblockerMod/Skyblocker/pull/1963
+* Goldor Tasks Hud by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1872
+* Fix search text not showing in Fancy AH by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2016
+* Fix Action Bar Moving by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2010
+* Add some missing tooltips/descriptions by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2002
+* Add rosewater flask growth stage slot text by @ADON15c in https://github.com/SkyblockerMod/Skyblocker/pull/2012
+* Fix Rose Dragon max level for Search Overlay by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2017
+* Fix Treasure Hunter waypoint message by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2018
+* Dungeon Room Preview by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2004
+* Fancy ah texture changes + some refactors by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2015
+* Evolution item progress tooltip by @ADON15c in https://github.com/SkyblockerMod/Skyblocker/pull/2013
+* Don't hide the checkmarks of unmatched rooms by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2023
+* fix lasso hud by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/2022
+* Fix CustomizeNameWidget Formatting Buttons  by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2021
+* Delay Blood Room Completion for Score Calculation by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2014
+* Rename Compact Damage Field by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2024
+* Add Room Label Types by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2025
+* Bring back duration controller by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2020
+* Fix Fancy AH high_hover by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2027
+* Remove Dicer Filter by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2008
+* Early clicks in Ultrasequencer can count when the mod thinks it doesn't by @Kazzyyyyyyyy in https://github.com/SkyblockerMod/Skyblocker/pull/1977
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1974
+* allow status bars to display in the rift by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1957
+* don't read dungeon files from other namespaces by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2029
+* (rift status bars) round hearts to nearest 0.5 and add option to show HP by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2030
+
+## New Contributors
+* @Kazzyyyyyyyy made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1977
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.0.0-beta.1+1.21.11...v6.0.0-beta.2+1.21.11
+
+___
+
 # Release 6.0.0 (Beta #1)
 
 ## Highlight

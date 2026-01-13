@@ -41,7 +41,7 @@ public class ItemTab extends GridLayoutTab {
 	private TriState glintState = TriState.DEFAULT;
 
 	public ItemTab(CustomizeScreen parentScreen) {
-		super(Component.literal("Item"));
+		super(Component.translatable("skyblocker.customization.item"));
 		layout.spacing(5);
 		this.parentScreen = parentScreen;
 		glintButton = Button.builder(Component.empty(), b -> {

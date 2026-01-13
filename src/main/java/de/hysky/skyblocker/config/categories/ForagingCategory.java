@@ -116,6 +116,7 @@ public class ForagingCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay"))
+								.description(Component.translatable("skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip"))
 								.binding(defaults.foraging.sweepOverlay.enableThrownAbilityOverlay,
 										() -> config.foraging.sweepOverlay.enableThrownAbilityOverlay,
 										newValue -> config.foraging.sweepOverlay.enableThrownAbilityOverlay = newValue)

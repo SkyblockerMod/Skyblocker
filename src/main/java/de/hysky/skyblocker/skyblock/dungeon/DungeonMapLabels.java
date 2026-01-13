@@ -3,14 +3,17 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import java.util.List;
 import java.util.Set;
 
+import de.hysky.skyblocker.utils.FunUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2dc;
 import org.joml.Vector2i;
@@ -89,9 +92,24 @@ public class DungeonMapLabels {
 		};
 
 		float width = getMaxWidth(room, mapRoomSize) / LABEL_SCALE;
-		Component text = Component.literal(roomName);
+		Component text = getLabelForRoom(room, roomName);
 		List<FormattedCharSequence> lines = textRenderer.split(text, (int) width);
 		LABELS.put(room.getName(), new RoomLabel(lines, (int) mapPos.x(), (int) mapPos.y(), color));
+	}
+
+	private static Component getLabelForRoom(Room room, String roomName) {
+		if (room.getType() != Room.Type.ROOM && room.getType() != Room.Type.TRAP) return Component.literal(roomName);
+
+		RoomLabelType roomLabelType = SkyblockerConfigManager.get().dungeons.dungeonMap.roomLabelType;
+		return switch (roomLabelType) {
+			case RoomLabelType.ROOM_NAME -> Component.literal(roomName);
+			case RoomLabelType.SECRETS_FOUND -> Component.literal(room.getFoundSecretCount() + "/" + room.getMaxSecretCount());
+			case RoomLabelType.ROOM_NAME_AND_SECRETS_FOUND -> {
+				if (FunUtils.shouldEnableFun())
+					yield Component.literal(room.getFoundSecretCount() + "/" + room.getMaxSecretCount()).append("\n").append(roomName);
+				yield Component.literal(roomName).append("\n").append(room.getFoundSecretCount() + "/" + room.getMaxSecretCount());
+			}
+		};
 	}
 
 	protected static void renderRoomNames(GuiGraphics context) {
@@ -192,4 +210,20 @@ public class DungeonMapLabels {
 	}
 
 	private record RoomLabel(List<FormattedCharSequence> textLines, int x, int y, int color) {}
+
+	public enum RoomLabelType implements StringRepresentable {
+		ROOM_NAME,
+		SECRETS_FOUND,
+		ROOM_NAME_AND_SECRETS_FOUND;
+
+		@Override
+		public String getSerializedName() {
+			return name();
+		}
+
+		@Override
+		public String toString() {
+			return I18n.get("skyblocker.config.dungeons.map.roomLabelType." + name());
+		}
+	}
 }

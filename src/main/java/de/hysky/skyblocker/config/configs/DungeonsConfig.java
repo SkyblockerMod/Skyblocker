@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import java.awt.Color;
 import net.minecraft.ChatFormatting;
@@ -74,6 +75,10 @@ public class DungeonsConfig {
 		public boolean showSelfHead = true;
 
 		public boolean showRoomLabels = true;
+
+		public DungeonMapLabels.RoomLabelType roomLabelType = DungeonMapLabels.RoomLabelType.ROOM_NAME_AND_SECRETS_FOUND;
+
+		public boolean hideCheckmarks = true;
 
 		public boolean showOutline = true;
 

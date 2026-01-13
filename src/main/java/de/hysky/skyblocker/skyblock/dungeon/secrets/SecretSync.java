@@ -6,6 +6,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
+import de.hysky.skyblocker.skyblock.dungeon.preview.RoomPreviewServer;
 import de.hysky.skyblocker.utils.ws.Service;
 import de.hysky.skyblocker.utils.ws.WsMessageHandler;
 import de.hysky.skyblocker.utils.ws.message.DungeonMimicKilledMessage;
@@ -101,7 +102,7 @@ public class SecretSync {
 	}
 
 	public static void syncSecretFound(Room room, SecretWaypoint waypoint) {
-		if (CLIENT.player == null) return;
+		if (CLIENT.player == null || RoomPreviewServer.isActive) return;
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
 				new DungeonRoomHideWaypointMessage(CLIENT.player.getUUID(), room.getName(), waypoint.hashCode()));
 	}
