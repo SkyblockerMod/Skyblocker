@@ -276,7 +276,7 @@ public class WidgetManager {
 			garden.updateConfig();
 
 			// The end
-			ScreenBuilder end = getScreenBuilder(Location.GARDEN, ScreenLayer.HUD);
+			ScreenBuilder end = getScreenBuilder(Location.THE_END, ScreenLayer.HUD);
 			HudWidget endHud = getWidgetOrPlaceholder("hud_end");
 			end.addWidget(endHud);
 			end.updateConfig();
