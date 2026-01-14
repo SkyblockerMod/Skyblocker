@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.fishing;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
@@ -105,7 +106,7 @@ public class SeaCreatureTracker {
 	 */
 	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Component text, boolean overlay) {
-		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHud || overlay) return true;
+		if (overlay || WidgetManager.isInCurrentScreen(FishingHudWidget.getInstance())) return true;
 		String message = ChatFormatting.stripFormatting(text.getString());
 		//see if it's a double hook
 		if (DOUBLE_HOOK_PATTERN.matcher(message).find()) {

@@ -13,7 +13,7 @@ public class Components {
 	}
 
 	public static Component iconTextComponent(@Nullable ItemStack icon, net.minecraft.network.chat.@Nullable Component text) {
-		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.hud.displayIcons) {
 			return new IcoTextComponent(icon, text);
 		} else {
 			return new PlainTextComponent(text);
@@ -25,7 +25,7 @@ public class Components {
 	}
 
 	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component iconFatTextComponent(@Nullable ItemStack icon, net.minecraft.network.chat.@Nullable Component line1, net.minecraft.network.chat.@Nullable Component line2) {
-		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.hud.displayIcons) {
 			return new IcoFatTextComponent(icon, line1, line2);
 		} else {
 			return new PlainTextComponent(line1, line2);
@@ -33,7 +33,7 @@ public class Components {
 	}
 
 	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component progressComponent() {
-		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
+		return switch (SkyblockerConfigManager.get().uiAndVisuals.hud.style) {
 			case FANCY -> new ProgressComponent();
 			case null, default -> iconTextComponent();
 		};
@@ -44,8 +44,8 @@ public class Components {
 	 *
 	 * @param percent the percentage from 0 to 100
 	 */
-	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component progressComponent(ItemStack icon, net.minecraft.network.chat.Component description, @Range(from = 0, to = 100) float percent) {
-		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
+	public static Component progressComponent(ItemStack icon, net.minecraft.network.chat.Component description, @Range(from = 0, to = 100) float percent) {
+		return switch (SkyblockerConfigManager.get().uiAndVisuals.hud.style) {
 			case FANCY -> new ProgressComponent(icon, description, percent);
 			case null, default -> iconTextComponent(icon, appendColon(description).append(net.minecraft.network.chat.Component.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
 		};
@@ -56,8 +56,8 @@ public class Components {
 	 *
 	 * @param percent the percentage from 0 to 100
 	 */
-	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component progressComponent(ItemStack icon, net.minecraft.network.chat.Component description, @Range(from = 0, to = 100) float percent, int color) {
-		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
+	public static Component progressComponent(ItemStack icon, net.minecraft.network.chat.Component description, @Range(from = 0, to = 100) float percent, int color) {
+		return switch (SkyblockerConfigManager.get().uiAndVisuals.hud.style) {
 			case FANCY -> new ProgressComponent(icon, description, percent, color);
 			case null, default -> iconTextComponent(icon, appendColon(description).append(net.minecraft.network.chat.Component.literal(percent + "%").withColor(color)));
 		};
@@ -68,8 +68,8 @@ public class Components {
 	 *
 	 * @param percent the percentage from 0 to 100
 	 */
-	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component progressComponent(ItemStack icon, net.minecraft.network.chat.Component description, net.minecraft.network.chat.Component bar, @Range(from = 0, to = 100) float percent) {
-		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
+	public static Component progressComponent(ItemStack icon, net.minecraft.network.chat.Component description, net.minecraft.network.chat.Component bar, @Range(from = 0, to = 100) float percent) {
+		return switch (SkyblockerConfigManager.get().uiAndVisuals.hud.style) {
 			case FANCY -> new ProgressComponent(icon, description, bar, percent);
 			case null, default -> iconTextComponent(icon, appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
 		};
@@ -80,8 +80,8 @@ public class Components {
 	 *
 	 * @param percent the percentage from 0 to 100
 	 */
-	public static de.hysky.skyblocker.skyblock.tabhud.widget.component.Component progressComponent(ItemStack icon, net.minecraft.network.chat.Component description, net.minecraft.network.chat.Component bar, @Range(from = 0, to = 100) float percent, int color) {
-		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
+	public static Component progressComponent(ItemStack icon, net.minecraft.network.chat.Component description, net.minecraft.network.chat.Component bar, @Range(from = 0, to = 100) float percent, int color) {
+		return switch (SkyblockerConfigManager.get().uiAndVisuals.hud.style) {
 			case FANCY -> new ProgressComponent(icon, description, bar, percent, color);
 			case null, default -> iconTextComponent(icon, appendColon(description).append(bar.copy().withColor(color)));
 		};

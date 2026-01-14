@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
+import de.hysky.skyblocker.utils.Location;
 import java.util.List;
 import java.util.regex.Matcher;
 import net.minecraft.ChatFormatting;
@@ -23,12 +24,13 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 	// title needs to be changeable here
 	public DungeonPlayerWidget(int player) {
-		super("Dungeon Player " + player, TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Dungeon Player " + player, TITLE, ChatFormatting.DARK_PURPLE.getColor(), new Information("dungeon_player_" + player, TITLE.plainCopy().append(" " + player), l -> l == Location.DUNGEON));
 		this.player = player;
+		cacheForConfig = false;
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent() {
 		int start = 1 + (player - 1) * 4;
 
 		if (PlayerListManager.strAt(start) == null) {
@@ -70,4 +72,17 @@ public class DungeonPlayerWidget extends TabHudWidget {
 		this.addSimpleIcoText(Ico.CLOCK, "Ult Cooldown:", ChatFormatting.GOLD, start + 1);
 		this.addSimpleIcoText(Ico.POTION, "Revives:", ChatFormatting.DARK_PURPLE, start + 2);
 	}
+
+	@Override
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		return List.of(
+				new PlainTextComponent(Component.literal("Name: ").append(Component.literal("Player " + player).withStyle(ChatFormatting.YELLOW))),
+				Components.iconTextComponent(DungeonClass.UNKNOWN.icon(), Component.literal("Class: ").append(Component.literal("Unknown")).withStyle(ChatFormatting.GRAY)),
+				Components.iconTextComponent(Ico.CLOCK, simpleEntryText("N/A", "Ult Cooldown:", ChatFormatting.GOLD)),
+				Components.iconTextComponent(Ico.POTION, simpleEntryText("N/A", "Revives:", ChatFormatting.DARK_PURPLE))
+		);
+	}
+
+	@Override
+	protected void updateContent(List<Component> lines) {}
 }

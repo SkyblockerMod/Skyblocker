@@ -2,10 +2,8 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TableWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -15,7 +13,6 @@ import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -24,6 +21,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -173,7 +171,7 @@ public class DungeonSplitsWidget extends TableWidget {
 	private static final ProfiledData<Object2ObjectMap<String, Object2LongMap<String>>> BEST_SPLITS =
 			new ProfiledData<>(BEST_FILE, BEST_CODEC, true, true);
 
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.DUNGEON);
+	private static final Set<Location> AVAILABLE_LOCATIONS = EnumSet.of(Location.DUNGEON);
 
 	private static DungeonSplitsWidget instance;
 
@@ -190,7 +188,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	public DungeonSplitsWidget() {
 		super(net.minecraft.network.chat.Component.literal("Splits").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD),
-				ChatFormatting.GOLD.getColor(), "Dungeon Splits", 3, 0, false);
+				ChatFormatting.GOLD.getColor(), "dungeon_splits", 3, 0, false, AVAILABLE_LOCATIONS);
 		instance = this;
 
 		BEST_SPLITS.init();
@@ -321,27 +319,9 @@ public class DungeonSplitsWidget extends TableWidget {
 	}
 
 	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (location != Location.DUNGEON) return;
-		SkyblockerConfigManager.get().dungeons.dungeonSplits = enabled;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return location == Location.DUNGEON && SkyblockerConfigManager.get().dungeons.dungeonSplits;
-	}
-
-	@Override
 	public void updateContent() {
-		if (!(Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen)) {
-			updateFloor();
-			loadFloorSplits();
-		}
+		updateFloor();
+		loadFloorSplits();
 
 		addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.literal("Floor: " + floor)));
 
@@ -349,6 +329,16 @@ public class DungeonSplitsWidget extends TableWidget {
 
 		long now = running ? System.currentTimeMillis() - startTime : (startTime == 0L ? 0L : elapsedTime);
 		addComponent(new PlainTextComponent(net.minecraft.network.chat.Component.literal(formatTime(now)).withStyle(timerColor)));
+	}
+
+	@Override
+	protected List<Component> getConfigComponents() {
+		List<Component> components = new ArrayList<>(3);
+		components.add(new PlainTextComponent(net.minecraft.network.chat.Component.literal("Floor: " + floor)));
+		components.addAll(super.getConfigComponents());
+		long now = running ? System.currentTimeMillis() - startTime : (startTime == 0L ? 0L : elapsedTime);
+		components.add(new PlainTextComponent(net.minecraft.network.chat.Component.literal(formatTime(now)).withStyle(timerColor)));
+		return components;
 	}
 
 	@Override
