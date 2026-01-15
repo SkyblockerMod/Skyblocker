@@ -100,7 +100,7 @@ public class SlayerManager {
 		if (overlay || !Utils.isOnSkyblock()) return true;
 		String message = text.getString();
 
-		switch (message.replaceFirst("^\\s+", "")) {
+		switch (message.stripLeading()) {
 			case "Your Slayer Quest has been cancelled!", "SLAYER QUEST FAILED!" -> {
 				slayerQuest = null;
 				bossFight = null;
@@ -128,6 +128,14 @@ public class SlayerManager {
 				bossFight = null;
 				return true;
 			}
+			case String s when s.startsWith("SLAYER MINI-BOSS") -> {
+				if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert) {
+					TitleContainer.addTitle(SlayerManager.MINIBOSS_SPAWN, 20);
+					assert CLIENT.player != null;
+					CLIENT.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
+				}
+			}
+			default -> {}
 		}
 
 		if (slayerQuest == null) return true;
@@ -420,11 +428,6 @@ public class SlayerManager {
 			Entity miniboss = findClosestMobEntity(type.mobType, armorStand);
 			if (miniboss == null) return;
 			minibosses.add(miniboss);
-			if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert) {
-				TitleContainer.addTitle(SlayerManager.MINIBOSS_SPAWN, 20);
-				assert CLIENT.player != null;
-				CLIENT.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
-			}
 		}
 	}
 }
