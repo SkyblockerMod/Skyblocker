@@ -67,7 +67,7 @@ public class FarmingHud {
 
 				assert client.player != null;
 				ItemStack stack = client.player.getMainHandItem();
-				if (tryGetCounter(stack, CounterType.CULTIVATING) && tryGetCounter(stack, CounterType.COUNTER)) {
+				if (tryGetCounter(stack, CounterType.CULTIVATING)) {
 					counterType = CounterType.NONE;
 				}
 			}
@@ -164,8 +164,7 @@ public class FarmingHud {
 	}
 
 	public enum CounterType {
-		NONE("", "No Counter"),
-		COUNTER("mined_crops", "Counter: "),
+		NONE("", "No Cultivating Counter"),
 		CULTIVATING("farmed_cultivating", "Cultivating Counter: ");
 
 		private final String nbtKey;
