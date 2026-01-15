@@ -12,6 +12,7 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.skyblock.ChestValue;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
 import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
@@ -247,12 +248,15 @@ public final class ItemUtils {
 					return EnchantedBookUtils.getApiIdByName(lines.get(2));
 				}
 
-				// Get proper id for books in the Bazaar
-				if (itemStack instanceof ItemStack realStack) {
-					if (!realStack.is(Items.ENCHANTED_BOOK)) return id;
-					Component stackName = itemStack.get(DataComponents.CUSTOM_NAME);
-					if (stackName == null) return id;
-					return EnchantedBookUtils.getApiIdByName(stackName);
+				if (itemStack instanceof ItemStack realStack && itemStack.has(DataComponents.CUSTOM_NAME)) {
+					Component stackName = itemStack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+					// Enchanted Books in the Bazaar
+					if (realStack.is(Items.ENCHANTED_BOOK)) return EnchantedBookUtils.getApiIdByName(stackName);
+					// Essences
+					if (realStack.is(Items.PLAYER_HEAD)) {
+						Matcher matcher = ChestValue.ESSENCE_PATTERN.matcher(stackName.getString());
+						if (matcher.find()) return "ESSENCE_" + matcher.group("type").toUpperCase(Locale.ENGLISH);
+					}
 				}
 			}
 		}
