@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils.data;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -121,7 +121,7 @@ public class JsonData<T> {
 		boolean createBackup = false;
 		try (BufferedReader reader = Files.newBufferedReader(file)) {
 			// Atomic operation to prevent concurrent modification
-			DataResult<T> parsed = codec.parse(compressed ? JsonOps.COMPRESSED : JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonObject.class));
+			DataResult<T> parsed = codec.parse(compressed ? JsonOps.COMPRESSED : JsonOps.INSTANCE, JsonParser.parseReader(reader));
 			parsed.resultOrPartial(s -> LOGGER.error("[Skyblocker Json Data] Failed to parse data from file: `{}`. {}", file, s))
 					.ifPresent(t -> data = t);
 			createBackup = parsed.isError();
