@@ -6,6 +6,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -51,6 +52,7 @@ public class FancyStatusBars {
 
 	public static BarPositioner barPositioner = new BarPositioner();
 	public static Map<StatusBarType, StatusBar> statusBars = new EnumMap<>(StatusBarType.class);
+	private static boolean updatePositionsNextFrame;
 
 	public static boolean isHealthFancyBarEnabled() {
 		return isBarEnabled(StatusBarType.HEALTH);
@@ -152,6 +154,8 @@ public class FancyStatusBars {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
 						.then(ClientCommandManager.literal("bars").executes(Scheduler.queueOpenScreenCommand(StatusBarsConfigScreen::new)))));
+
+		SkyblockEvents.LOCATION_CHANGE.register(location -> updatePositionsNextFrame = true);
 	}
 
 	/**
@@ -356,7 +360,7 @@ public class FancyStatusBars {
 	}
 
 	public static boolean isEnabled() {
-		return SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift();
+		return SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && (!Utils.isInTheRift() || SkyblockerConfigManager.get().uiAndVisuals.bars.enableBarsRift);
 	}
 
 	public static boolean render(GuiGraphics context, Minecraft client) {
@@ -373,15 +377,25 @@ public class FancyStatusBars {
 			statusBar.renderText(context);
 		}
 
-		StatusBarTracker.Resource health = StatusBarTracker.getHealth();
-		statusBars.get(StatusBarType.HEALTH).updateWithResource(health);
+		if (Utils.isInTheRift()) {
+			final int div = SkyblockerConfigManager.get().uiAndVisuals.bars.riftHealthHP ? 1 : 2;
+			statusBars.get(StatusBarType.HEALTH).updateValues(Math.round(player.getHealth()) / player.getMaxHealth(), 0, Math.round(player.getHealth()) / div, Math.round(player.getMaxHealth()) / div, null);
+			statusBars.get(StatusBarType.DEFENSE).visible = false;
+		} else {
+			StatusBarTracker.Resource health = StatusBarTracker.getHealth();
+			statusBars.get(StatusBarType.HEALTH).updateWithResource(health);
+			int defense = StatusBarTracker.getDefense();
+			StatusBar defenseBar = statusBars.get(StatusBarType.DEFENSE);
+			defenseBar.visible = true;
+			defenseBar.updateValues(defense / (defense + 100.f), 0, defense, null, null);
+		}
+
 		StatusBarTracker.Resource intelligence = StatusBarTracker.getMana();
 		if (SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.ACCURATE) {
 			float totalIntelligence = (float) intelligence.max() + intelligence.overflow();
 			statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / totalIntelligence + intelligence.overflow() / totalIntelligence, intelligence.overflow() / totalIntelligence, intelligence.value(), intelligence.max(), intelligence.overflow());
 		} else statusBars.get(StatusBarType.INTELLIGENCE).updateWithResource(intelligence);
-		int defense = StatusBarTracker.getDefense();
-		statusBars.get(StatusBarType.DEFENSE).updateValues(defense / (defense + 100.f), 0, defense, null, null);
+
 		StatusBarTracker.Resource speed = StatusBarTracker.getSpeed();
 		statusBars.get(StatusBarType.SPEED).updateWithResource(speed);
 		statusBars.get(StatusBarType.EXPERIENCE).updateValues(player.experienceProgress, 0, player.experienceLevel, null, null);
@@ -390,7 +404,11 @@ public class FancyStatusBars {
 		airBar.updateWithResource(air);
 		if (player.isUnderWater() != airBar.visible) {
 			airBar.visible = player.isUnderWater();
+			updatePositionsNextFrame = true;
+		}
+		if (updatePositionsNextFrame) {
 			updatePositions(false);
+			updatePositionsNextFrame = false;
 		}
 		return true;
 	}

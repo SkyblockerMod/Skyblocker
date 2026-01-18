@@ -47,7 +47,7 @@ public class CompactDamage {
 
 		MutableComponent prettierCustomName = Component.empty();
 
-		String prettifiedDmg = prettifyDamageNumber(Long.parseLong(dmg), config.precision);
+		String prettifiedDmg = prettifyDamageNumber(Long.parseLong(dmg), config.maxPrecision);
 
 		if (isCrit) {
 			String dmgSymbol = matcher.group(1);

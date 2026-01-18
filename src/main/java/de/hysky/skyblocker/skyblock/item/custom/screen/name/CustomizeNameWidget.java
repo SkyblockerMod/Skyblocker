@@ -381,6 +381,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		@Override
 		protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 			this.renderDefaultSprite(context);
+			this.renderDefaultLabel(context.textRenderer());
 		}
 	}
 
@@ -466,10 +467,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		public boolean keyPressed(KeyEvent input) {
 			boolean captured = true;
 			switch (input.key()) {
-				case GLFW.GLFW_KEY_LEFT -> moveCursor(true, input.hasShiftDown(), input.hasControlDown());
-				case GLFW.GLFW_KEY_RIGHT -> moveCursor(false, input.hasShiftDown(), input.hasControlDown());
-				case GLFW.GLFW_KEY_BACKSPACE -> erase(true, input.hasControlDown());
-				case GLFW.GLFW_KEY_DELETE -> erase(false, input.hasControlDown());
+				case GLFW.GLFW_KEY_LEFT -> moveCursor(true, input.hasShiftDown(), input.hasControlDownWithQuirk());
+				case GLFW.GLFW_KEY_RIGHT -> moveCursor(false, input.hasShiftDown(), input.hasControlDownWithQuirk());
+				case GLFW.GLFW_KEY_BACKSPACE -> erase(true, input.hasControlDownWithQuirk());
+				case GLFW.GLFW_KEY_DELETE -> erase(false, input.hasControlDownWithQuirk());
 				default -> captured = false;
 			}
 			if (captured) return true;

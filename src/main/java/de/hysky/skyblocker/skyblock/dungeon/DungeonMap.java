@@ -59,7 +59,7 @@ public class DungeonMap {
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 	}
 
-	protected static boolean shouldProcess() {
+	private static boolean shouldProcess() {
 		return Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss();
 	}
 

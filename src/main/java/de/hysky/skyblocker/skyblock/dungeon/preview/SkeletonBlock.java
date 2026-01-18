@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.dungeon.secrets;
+package de.hysky.skyblocker.skyblock.dungeon.preview;
 
 // Simple data class to store all the block info.
 public record SkeletonBlock(int x, int y, int z, byte blockType) {

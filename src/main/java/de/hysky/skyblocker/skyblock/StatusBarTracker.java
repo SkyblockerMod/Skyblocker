@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarType;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
@@ -19,6 +20,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
+
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,6 +32,7 @@ public class StatusBarTracker {
 	private static final Pattern MANA_USE = Pattern.compile("§b-([\\d,]+) Mana \\(§.*?\\) *");
 	private static final Pattern MANA_STATUS = Pattern.compile("§b(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|§3(?<overflow>[\\d,]+)ʬ) *");
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
+	private static final Pattern RIFT_TIME_STATUS = Pattern.compile("§[a7](?:[\\d,]+m)?[\\d,]+sф Left *");
 
 	private static final Minecraft client = Minecraft.getInstance();
 	private static Resource health = new Resource(100, 100, 0);
@@ -75,7 +79,7 @@ public class StatusBarTracker {
 	}
 
 	private static void tick() {
-		if (client == null || client.player == null || !Utils.isOnSkyblock()) return;
+		if (client.player == null || !Utils.isOnSkyblock()) return;
 		ticks++;
 		updateHealth(health.value, health.max, health.overflow);
 		updateSpeed();
@@ -116,7 +120,7 @@ public class StatusBarTracker {
 		if (!overlay || !Utils.isOnSkyblock()) {
 			return text;
 		}
-		if (SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift()) {
+		if (FancyStatusBars.isEnabled()) {
 			return Component.nullToEmpty(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
 		} else {
 			//still update values for other parts of the mod to use
@@ -125,13 +129,16 @@ public class StatusBarTracker {
 		}
 	}
 
-	public static String update(String actionBar, boolean filterManaUse) {
+	public static @Nullable String update(String actionBar, boolean filterManaUse) {
 		var sb = new StringBuilder();
 
-		// Match health and don't add it to the string builder
-		// Append healing to the string builder if there is any healing
 		Matcher matcher = STATUS_HEALTH.matcher(actionBar);
-		if (matcher.find()) {
+		if (Utils.isInTheRift()) {
+			if (matcher.usePattern(RIFT_TIME_STATUS).find() && FancyStatusBars.isExperienceFancyBarEnabled()) matcher.appendReplacement(sb, "");
+		} else {
+			// Match health and don't add it to the string builder
+			// Append healing to the string builder if there is any healing
+			if (matcher.find()) {
 			updateHealth(matcher);
 			if (matcher.group("healing") != null) {
 				sb.append("§c❤");
@@ -140,12 +147,15 @@ public class StatusBarTracker {
 			else matcher.appendReplacement(sb, "$3");
 		}
 
-		// Match defense or mana use and don't add it to the string builder
-		if (matcher.usePattern(DEFENSE_STATUS).find()) {
-			defense = RegexUtils.parseIntFromMatcher(matcher, "defense");
-			if (FancyStatusBars.isBarEnabled(StatusBarType.DEFENSE)) matcher.appendReplacement(sb, "");
-			else matcher.appendReplacement(sb, "$0");
-		} else if (filterManaUse && matcher.usePattern(MANA_USE).find()) {
+			// Match defense or mana use and don't add it to the string builder
+			if (matcher.usePattern(DEFENSE_STATUS).find()) {
+				defense = RegexUtils.parseIntFromMatcher(matcher, "defense");
+				if (FancyStatusBars.isBarEnabled(StatusBarType.DEFENSE)) matcher.appendReplacement(sb, "");
+				else matcher.appendReplacement(sb, "$0");
+			}
+		}
+
+		if (filterManaUse && matcher.usePattern(MANA_USE).find()) {
 			matcher.appendReplacement(sb, "");
 		}
 
@@ -169,7 +179,8 @@ public class StatusBarTracker {
 	}
 
 	private static void updateHealth(int value, int max, int overflow) {
-		if (client != null && client.player != null) {
+		// Client doesn't exist in test environment.
+		if (!Debug.isTestEnvironment() && client.player != null) {
 			value = (int) (client.player.getHealth() * max / client.player.getMaxHealth());
 			overflow = (int) (client.player.getAbsorptionAmount() * max / client.player.getMaxHealth());
 		}

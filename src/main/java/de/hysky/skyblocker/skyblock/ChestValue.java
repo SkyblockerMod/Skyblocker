@@ -157,7 +157,7 @@ public class ChestValue {
 						String type = matcher.group("type").toUpperCase(Locale.ENGLISH);
 						// Defaults to 1 due to the comment about the regex
 						int amount = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
-						DoubleBooleanPair priceData = ItemUtils.getItemPrice("ESSENCE_" + type);
+						DoubleBooleanPair priceData = ItemUtils.getItemPrice(skyblockApiId);
 
 						// Apply Kuudra Pet bonus
 						if (type.equals("CRIMSON")) {

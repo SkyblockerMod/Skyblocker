@@ -9,6 +9,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Tickable;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -54,7 +55,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Room implements Tickable, Renderable {
-	private static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
+	public static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
 	private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
 	private static final String CHEST_ALREADY_OPENED = "This chest has already been searched!";
 	protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
@@ -66,6 +67,7 @@ public class Room implements Tickable, Renderable {
 	 */
 	public ClearState clearState = ClearState.UNCLEARED;
 
+	private int maxSecrets = -1;
 	protected int secretsFound = 0;
 
 	public boolean secretCountOutdated = true;
@@ -103,10 +105,10 @@ public class Room implements Tickable, Renderable {
 	 * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
 	 */
 	protected MatchState matchState = MatchState.MATCHING;
-	private final Table<Integer, BlockPos, SecretWaypoint> secretWaypoints = HashBasedTable.create();
-	private @Nullable String name;
-	private @Nullable Direction direction;
-	private @Nullable Vector2ic physicalCornerPos;
+	protected Table<Integer, BlockPos, SecretWaypoint> secretWaypoints = HashBasedTable.create();
+	protected @Nullable String name;
+	protected @Nullable Direction direction;
+	protected @Nullable Vector2ic physicalCornerPos;
 
 	protected List<Tickable> tickables = new ArrayList<>();
 	protected List<Renderable> renderables = new ArrayList<>();
@@ -210,7 +212,7 @@ public class Room implements Tickable, Renderable {
 		return possibleRooms;
 	}
 
-	private Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
+	protected Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return switch (shape) {
 			case ONE_BY_ONE, TWO_BY_TWO, PUZZLE, TRAP, MINIBOSS -> Direction.values();
 			case ONE_BY_TWO, ONE_BY_THREE, ONE_BY_FOUR -> {
@@ -522,6 +524,9 @@ public class Room implements Tickable, Renderable {
 			}
 		}
 		DungeonManager.getCustomWaypoints(name).values().forEach(this::addCustomWaypoint);
+
+		// Calculate max secrets based off room id, surely this isn't going to be wrong for some rooms
+		this.maxSecrets = Utils.parseInt(name.replaceAll("\\D", "")).orElse(-1);
 	}
 
 	/**
@@ -742,6 +747,10 @@ public class Room implements Tickable, Renderable {
 		secretWaypoints.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
 	}
 
+	public int getMaxSecretCount() {
+		return maxSecrets;
+	}
+
 	protected int getSecretCount() {
 		return secretWaypoints.rowMap().size();
 	}
@@ -760,7 +769,7 @@ public class Room implements Tickable, Renderable {
 		BLOOD(MapColor.FIRE.getPackedId(MapColor.Brightness.HIGH), "Blood"),
 		UNKNOWN(MapColor.COLOR_GRAY.getPackedId(MapColor.Brightness.NORMAL), "Unknown");
 
-		final byte color;
+		public final byte color;
 		final String name;
 
 		public static final Codec<Type> CODEC = StringRepresentable.fromEnum(Type::values);
