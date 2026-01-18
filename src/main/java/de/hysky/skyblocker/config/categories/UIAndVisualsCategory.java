@@ -310,11 +310,7 @@ public class UIAndVisualsCategory {
 								.tags(Component.literal("gui"))
 								.prompt(Component.translatable("text.skyblocker.open"))
 								.action(screen -> {
-									if (Utils.isOnSkyblock() && config.uiAndVisuals.tabHud.tabHudEnabled) {
-										MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
-									} else {
-										Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, WidgetManager.ScreenLayer.MAIN_TAB, screen));
-									}
+									WidgetsConfigurationScreen.openWidgetsConfigScreen(screen);
 								})
 								.build())
 						.option(Option.<Integer>createBuilder()

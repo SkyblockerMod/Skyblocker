@@ -87,7 +87,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	private @Nullable TabNavigationBar tabNavigation;
 	private @Nullable WidgetsListTab widgetsListTab;
 
-	private boolean switchingToPopup = false;
+	public static boolean overrideWidgetsScreen = false;
 
 	/**
 	 * Register the /skyblocker hud command, which will open /widgets if on Skyblock and Fancy Tab Hud is enabled.
@@ -97,15 +97,20 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	public static void initCommands() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("hud").executes((ctx) -> {
-				if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
-					MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
-				} else {
-					Location currentLocation = Utils.isOnSkyblock() ? Utils.getLocation() : Location.HUB;
-					MessageScheduler.queueOpenScreen(new WidgetsConfigurationScreen(currentLocation, WidgetManager.ScreenLayer.MAIN_TAB, null));
-				}
+				openWidgetsConfigScreen(null);
 				return Command.SINGLE_SUCCESS;
 			})));
 		});
+	}
+
+	public static void openWidgetsConfigScreen(@Nullable Screen screen) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
+			overrideWidgetsScreen = true;
+			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
+		} else {
+			Location currentLocation = Utils.isOnSkyblock() ? Utils.getLocation() : Location.HUB;
+			MessageScheduler.queueOpenScreen(new WidgetsConfigurationScreen(currentLocation, WidgetManager.ScreenLayer.MAIN_TAB, screen));
+		}
 	}
 
 	/**
@@ -156,7 +161,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	 * @param targetLocation open the preview to this location
 	 * @param layerToGo      go to this layer
 	 */
-	public WidgetsConfigurationScreen(Location targetLocation, WidgetManager.ScreenLayer layerToGo, Screen parent) {
+	public WidgetsConfigurationScreen(Location targetLocation, WidgetManager.ScreenLayer layerToGo, @Nullable Screen parent) {
 		this(null, "", targetLocation, layerToGo);
 		this.parent = parent;
 	}
@@ -176,7 +181,6 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 		updateCustomWidgets();
 
 		this.tabNavigation.selectTab(0, false);
-		switchingToPopup = false;
 		this.addRenderableWidget(tabNavigation);
 		this.repositionElements();
 	}
@@ -322,7 +326,8 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	@Override
 	public void removed() {
 		if (handler == null) return;
-		if (!switchingToPopup && this.minecraft.player != null) {
+		overrideWidgetsScreen = false;
+		if (this.minecraft.player != null) {
 			this.handler.removed(this.minecraft.player);
 		}
 		handler.removeSlotListener(this);
