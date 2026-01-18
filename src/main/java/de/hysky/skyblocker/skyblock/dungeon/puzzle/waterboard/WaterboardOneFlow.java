@@ -127,7 +127,8 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	private static final Component CLICK_TEXT = Component.literal("CLICK").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 	private static JsonObject SOLUTIONS;
 
-	private boolean timerEnabled;
+	// TODO: set to false
+	private boolean timerEnabled = true;
 	private final List<Mark> marks = new ArrayList<>();
 	private @Nullable ClientLevel world;
 	private @Nullable Room room;
@@ -250,7 +251,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 
 	public void onServerTick() {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow || !shouldSolve()) return;
-		currentTimeMillis = System.currentTimeMillis();
+		currentTimeMillis += 50;
 	}
 
 	@Override
@@ -278,7 +279,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		if (!finished && isPuzzleSolved()) {
 			finished = true;
 			if (timerEnabled) {
-				double elapsed = (System.currentTimeMillis() - waterStartMillis) / 1000.0;
+				double elapsed = (currentTimeMillis - waterStartMillis) / 1000.0;
 				player.displayClientMessage(Constants.PREFIX.get().append("Puzzle solved in ")
 						.append(Component.literal(String.format("%.2f", elapsed)).withStyle(ChatFormatting.GREEN))
 						.append(ChatFormatting.RESET.toString()).append(" seconds."), false);
@@ -289,7 +290,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 			for (Mark mark : marks) {
 				if (!mark.reached && world.getBlockState(mark.pos).is(Blocks.WATER)) {
 					mark.reached = true;
-					double elapsed = (System.currentTimeMillis() - waterStartMillis) / 1000.0;
+					double elapsed = (currentTimeMillis - waterStartMillis) / 1000.0;
 					player.displayClientMessage(Constants.PREFIX.get().append(String.format("Mark %d reached in ", mark.index))
 							.append(Component.literal(String.format("%.2f", elapsed)).withStyle(ChatFormatting.GREEN))
 							.append(ChatFormatting.RESET.toString()).append(" seconds."), false);
@@ -534,7 +535,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 							times.removeFirst();
 						}
 						if (waterStartMillis == 0 && leverType == LeverType.WATER) {
-							waterStartMillis = System.currentTimeMillis();
+							waterStartMillis = currentTimeMillis;
 						}
 					}
 				}
