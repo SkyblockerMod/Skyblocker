@@ -3,15 +3,14 @@ root = true
 [*]
 charset = utf-8
 end_of_line = lf
+indent_style = tab
 insert_final_newline = true
 tab_width = 4
 
 [*.gradle]
-indent_style = tab
 ij_continuation_indent_size = 8
 
 [*.java]
-indent_style = tab
 max_line_length = off
 ij_continuation_indent_size = 8 # IntelliJ default
 # Imports
@@ -25,8 +24,11 @@ ij_java_keep_simple_lambdas_in_one_line = true
 ij_java_keep_simple_methods_in_one_line = true
 
 [*.{json,properties}]
-indent_style = space
 indent_size = 2
+
+[run/config/skyblocker/item-repo/**.json]
+indent_style = space
+insert_final_newline = false
 
 [.editorconfig]
 indent_style = space
