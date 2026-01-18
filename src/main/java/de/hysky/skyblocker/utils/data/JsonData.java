@@ -2,10 +2,15 @@ package de.hysky.skyblocker.utils.data;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -13,14 +18,17 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 public class JsonData<T> {
+	public static final SystemToast.SystemToastId ERROR_TOAST_ID = new SystemToast.SystemToastId(10_000L);
 	private static final Logger LOGGER = LoggerFactory.getLogger(JsonData.class);
 	private final Path file;
 	private final Codec<T> codec;
@@ -110,17 +118,36 @@ public class JsonData<T> {
 
 	// Note: JsonOps.COMPRESSED must be used if you're using maps with non-string keys
 	private void loadInternal() {
+		boolean createBackup = false;
 		try (BufferedReader reader = Files.newBufferedReader(file)) {
 			// Atomic operation to prevent concurrent modification
-			data = codec.parse(compressed ? JsonOps.COMPRESSED : JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonObject.class)).getOrThrow();
+			DataResult<T> parsed = codec.parse(compressed ? JsonOps.COMPRESSED : JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonObject.class));
+			parsed.resultOrPartial(s -> LOGGER.error("[Skyblocker Json Data] Failed to parse data from file: `{}`. {}", file, s))
+					.ifPresent(t -> data = t);
+			createBackup = parsed.isError();
 		} catch (NoSuchFileException ignored) {
 		} catch (Exception e) {
+			createBackup = true;
 			LOGGER.error("[Skyblocker Json Data] Failed to load data from file: `{}`", file, e);
+		}
+		if (createBackup) {
+			Minecraft.getInstance().getToastManager().addToast(SystemToast.multiline(
+					Minecraft.getInstance(), ERROR_TOAST_ID,
+					Component.literal("Skyblocker Config Error"),
+					Component.literal("Failed to load '" + FabricLoader.getInstance().getConfigDir().relativize(file) + "'")
+							.append("\n")
+							.append("See logs for details. A backup of the file has been made.")
+			));
+			try {
+				Files.copy(file, file.getParent().resolve(file.getFileName().toString() + ".bak"), StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException e) {
+				LOGGER.error("[Skyblocker Json Data] Failed to create backup for file: `{}`", file, e);
+			}
 		}
 	}
 
 	public CompletableFuture<Void> save() {
-		if (saveAsync) {
+		if (saveAsync && Minecraft.getInstance().isRunning()) { // Do not save async if we are closing the game
 			return CompletableFuture.runAsync(this::saveInternal, Executors.newVirtualThreadPerTaskExecutor());
 		} else {
 			saveInternal();
