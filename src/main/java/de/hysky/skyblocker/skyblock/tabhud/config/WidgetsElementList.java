@@ -65,7 +65,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 			backButton.render(context, mouseX, mouseY, delta);
 		}
 
-		if (!enableEditing) return;
+		if (!enableEditing || this.getSelected() == null) return;
 		if (rightUpArrowHovered || rightDownArrowHovered) {
 			context.setTooltipForNextFrame(minecraft.font, Component.literal("Move widget"), mouseX, mouseY);
 		}
@@ -144,7 +144,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (backButton != null && backButton.mouseClicked(click, doubled)) return true;
-		if (!enableEditing) return super.mouseClicked(click, doubled);
+		if (!enableEditing || this.getSelected() == null) return super.mouseClicked(click, doubled);
 		if (rightUpArrowHovered) {
 			parent.shiftClickAndWaitForServer(13, 1);
 			return true;
