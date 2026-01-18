@@ -116,6 +116,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 							.executes(ctx -> {
 								INSTANCE.currentProfileRewards.clear();
 								INSTANCE.allRewards.save();
+								INSTANCE.shownRewards.clear();
 								ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.powderTracker.historyReset").withStyle(ChatFormatting.GREEN)));
 								return Command.SINGLE_SUCCESS;
 							})
