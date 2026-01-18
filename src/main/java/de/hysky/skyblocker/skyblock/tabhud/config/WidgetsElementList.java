@@ -24,8 +24,8 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	static final Identifier MOVE_DOWN_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down_highlighted");
 	static final Identifier MOVE_DOWN_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down");
 
-	final int SELECT_COLOR = 0x762222FF;
-	final int MOVE_COLOR = 0x76FF2222;
+	final int SELECT_COLOR = 0x761111FF;
+	final int MOVE_COLOR = 0x76FF3333;
 
 	private final WidgetsListTab parent;
 	private @Nullable Button backButton;
@@ -86,13 +86,13 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 
 		int x = entry.getX();
 		int y = entry.getY();
-		int entryWidth = entry.getWidth();
 		int entryHeight = entry.getHeight();
+		int halfHeight = entryHeight / 2;
 
-		boolean rightXGood = mouseX >= x + entryWidth && mouseX < x + entryWidth + 15;
-		boolean leftXGood = mouseX >= x - 16 && mouseX < x - 1;
-		boolean isOnUp = mouseY >= y && mouseY < y + entryHeight / 2;
-		boolean isOnDown = mouseY >= y + entryHeight / 2 && mouseY < y + entryHeight;
+		boolean rightXGood = mouseX >= getRowRight() + 2 && mouseX < getRowRight() + 15;
+		boolean leftXGood = mouseX >= x - 15 && mouseX < x - 2;
+		boolean isOnUp = mouseY >= y + 5 && mouseY < y + halfHeight;
+		boolean isOnDown = mouseY >= y + halfHeight && mouseY < y + entryHeight - 5;
 		rightUpArrowHovered = rightXGood && isOnUp;
 		rightDownArrowHovered = rightXGood && isOnDown;
 		leftUpArrowHovered = leftXGood && isOnUp;
