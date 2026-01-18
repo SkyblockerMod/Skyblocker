@@ -13,6 +13,7 @@
     "CameraMixin",
     "ChestBlockEntityMixin",
     "ChestMenuMixin",
+    "ClientCommonPacketListenerImplMixin",
     "ClientLevelMixin",
     "ClientPacketListenerMixin",
     "ClientboundCommandsPacketMixin",
