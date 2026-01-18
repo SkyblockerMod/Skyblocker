@@ -4,9 +4,6 @@ import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -17,11 +14,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Map;
+
 public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsListEntry> {
 	static final Identifier MOVE_UP_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_up_highlighted");
 	static final Identifier MOVE_UP_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_up");
 	static final Identifier MOVE_DOWN_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down_highlighted");
 	static final Identifier MOVE_DOWN_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down");
+
+	final int SELECT_COLOR = 0x762222FF;
+	final int MOVE_COLOR = 0x76FF2222;
 
 	private final WidgetsListTab parent;
 	private @Nullable Button backButton;
@@ -93,9 +97,11 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 		rightDownArrowHovered = rightXGood && isOnDown;
 		leftUpArrowHovered = leftXGood && isOnUp;
 		leftDownArrowHovered = leftXGood && isOnDown;
+		context.fill(getRowRight()+1, y+5, getRowRight()+14, y+27, MOVE_COLOR);
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, rightUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, getRowRight() - 16, y, 32, 32);
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, rightDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, getRowRight() - 16, y, 32, 32);
 
+		context.fill(x-16, y+5, x-3, y+27, SELECT_COLOR);
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 33, y, 32, 32);
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 33, y, 32, 32);
 	}
