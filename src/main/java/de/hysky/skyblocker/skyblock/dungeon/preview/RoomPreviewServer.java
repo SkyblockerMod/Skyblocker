@@ -63,7 +63,7 @@ public class RoomPreviewServer {
 		applyNightVision(player);
 		player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.roomPreview.joinMessage", selectedRoom).getString()));
 
-		if (player.getUUID() == CLIENT.getUser().getProfileId()) {
+		if (player.getUUID().equals(CLIENT.getUser().getProfileId())) {
 			CLIENT.execute(() -> Scheduler.INSTANCE.schedule(RoomPreview::onJoin, 5));
 			for (Component msg : errorMessages) player.sendSystemMessage(msg);
 			errorMessages.clear();
