@@ -14,12 +14,15 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.monster.Silverfish;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
 
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.IceFill.boardToString;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 import java.util.ArrayDeque;
@@ -30,14 +33,17 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-public class Silverfish extends DungeonPuzzle {
-	public static final Silverfish INSTANCE = new Silverfish();
+/**
+ * Puzzle solver for the Silverfish "Ice Path" puzzle
+ */
+public class IcePath extends DungeonPuzzle {
+	public static final IcePath INSTANCE = new IcePath();
 	private static final float[] RED_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
 	final boolean[][] silverfishBoard = new boolean[17][17];
-	Vector2ic silverfishPos;
+	@Nullable Vector2ic silverfishPos;
 	final List<Vector2ic> silverfishPath = new ArrayList<>();
 
-	private Silverfish() {
+	private IcePath() {
 		super("silverfish", "ice-silverfish-room");
 	}
 
@@ -56,23 +62,13 @@ public class Silverfish extends DungeonPuzzle {
 		}
 	}
 
-	private static String boardToString(boolean[][] silverfishBoard) {
-		StringBuilder sb = new StringBuilder();
-		for (boolean[] row : silverfishBoard) {
-			sb.append("\n");
-			for (boolean cell : row) {
-				sb.append(cell ? '#' : '.');
-			}
-		}
-		return sb.toString();
-	}
-
 	@Override
 	public void tick(Minecraft client) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveSilverfish || client.level == null || !DungeonManager.isCurrentRoomMatched()) {
 			return;
 		}
 		Room room = DungeonManager.getCurrentRoom();
+		if (room == null) return;
 
 		boolean boardChanged = false;
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(23, 67, 24);
@@ -86,7 +82,7 @@ public class Silverfish extends DungeonPuzzle {
 			}
 		}
 
-		List<net.minecraft.world.entity.monster.Silverfish> entities = client.level.getEntitiesOfClass(net.minecraft.world.entity.monster.Silverfish.class, AABB.ofSize(Vec3.atCenterOf(room.relativeToActual(new BlockPos(15, 66, 16))), 16, 16, 16), silverfishEntity -> true);
+		List<Silverfish> entities = client.level.getEntitiesOfClass(Silverfish.class, AABB.ofSize(Vec3.atCenterOf(room.relativeToActual(new BlockPos(15, 66, 16))), 16, 16, 16), silverfishEntity -> true);
 		if (entities.isEmpty()) {
 			return;
 		}
@@ -166,6 +162,8 @@ public class Silverfish extends DungeonPuzzle {
 			return;
 		}
 		Room room = DungeonManager.getCurrentRoom();
+		if (room == null) return;
+
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		for (int i = 0; i < silverfishPath.size() - 1; i++) {
 			Vec3 start = Vec3.atCenterOf(room.relativeToActual(pos.set(23 - silverfishPath.get(i).y(), 67, 24 - silverfishPath.get(i).x())));
