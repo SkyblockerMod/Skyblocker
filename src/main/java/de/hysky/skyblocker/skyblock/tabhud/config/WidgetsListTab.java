@@ -89,7 +89,7 @@ public class WidgetsListTab implements Tab {
 		resetButton = Button.builder(Component.literal("Reset"), button -> {
 			if (resetSlotId == -1) return;
 			clickAndWaitForServer(resetSlotId, 0);
-		}).size(80, 15).build();
+		}).size(60, 15).build();
 		waitingForServerText = new StringWidget(Component.literal("Waiting for server..."), client.font);
 		waitingForServerText.setWidth(client.font.width(waitingForServerText.getMessage()));
 		if (handler == null) {
