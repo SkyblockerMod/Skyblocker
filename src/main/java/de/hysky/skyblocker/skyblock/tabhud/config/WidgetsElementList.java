@@ -30,8 +30,10 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	private boolean leftUpArrowHovered = false;
 	private boolean leftDownArrowHovered = false;
 
-	public static int editingPosition = -1;
 	private boolean enableEditing = false;
+	public static int editingPosition = -1;
+	public static int maxPosition = -1;
+	public static boolean isOnSecondPage = false;
 
 	public WidgetsElementList(WidgetsListTab parent, Minecraft minecraftClient, int width, int height, int y) {
 		super(minecraftClient, width, height, y, 32);
@@ -108,13 +110,15 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 		return 280;
 	}
 
-	public void setEditingPosition(int editingPosition, boolean enableEditing) {
-		this.enableEditing = enableEditing;
-		this.editingPosition = editingPosition;
+	public void setEditingPosition(boolean enable, int editing, int max) {
+		this.enableEditing = enable;
+		editingPosition = editing;
+		maxPosition = max;
 	}
 
-	public void setIsOnSecondPage(boolean isOnSecondPage) {
-		if (isOnSecondPage) {
+	public void setIsOnSecondPage(boolean secondPage) {
+		isOnSecondPage = secondPage;
+		if (secondPage) {
 			editingPosition -= 21;
 			refreshScrollAmount();
 		}

@@ -120,6 +120,10 @@ public class WidgetsListTab implements Tab {
 		this.shouldResetScroll = true;
 	}
 
+	public boolean isWaitingForServer() {
+		return waitingForServer;
+	}
+
 	public void clickAndWaitForServer(int slot, int button) {
 		if (waitingForServer || handler == null) return;
 		if (client.gameMode == null || this.client.player == null) return;
@@ -147,27 +151,32 @@ public class WidgetsListTab implements Tab {
 		entries.clear();
 		widgetsElementList.updateList();
 		resetButton.visible = false;
-		if (this.shouldResetScroll) this.widgetsElementList.setScrollAmount(0);
+		if (this.shouldResetScroll) {
+			this.shouldResetScroll = false;
+			this.widgetsElementList.setScrollAmount(0);
+		}
 	}
 
 	public void hopper(@Nullable List<String> hopperTooltip) {
 		if (hopperTooltip == null) {
-			widgetsElementList.setEditingPosition(-1, false);
+			widgetsElementList.setEditingPosition(false, -1, -1);
 			return;
 		}
 		int start = -1;
 		int editing = 1;
+		int end = -1;
+
 		for (int i = 0; i < hopperTooltip.size(); i++) {
 			String string = hopperTooltip.get(i);
-			if (start == -1 && string.contains("▶")) {
-				start = i;
+			if (string.contains("▶")) {
+				if (start == -1) start = i;
+				if (i > end) end = i;
 			}
 			if (string.contains("(EDITING)")) {
 				editing = i;
-				break;
 			}
 		}
-		widgetsElementList.setEditingPosition(editing - start, true);
+		widgetsElementList.setEditingPosition(true, editing - start, end - start);
 	}
 
 	public void onSlotChange(int slot, ItemStack stack) {

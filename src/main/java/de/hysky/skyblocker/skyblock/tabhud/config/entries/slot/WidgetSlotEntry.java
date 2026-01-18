@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigToast;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsElementList;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -76,33 +77,46 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 		}
 	}
 
+	private static void addToast(Component message) {
+		Minecraft.getInstance().getToastManager().addToast(new WidgetsConfigToast(message));
+	}
+
 	@Override
-	public boolean mouseClicked(MouseButtonEvent event, boolean bl) {
-		if (super.mouseClicked(event, bl)) return true;
-		if (state != State.ENABLED) {
-			// TODO: add toast saying it can't be reordered until it is ENABLED.
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubled) {
+		if (super.mouseClicked(event, doubled) || parent.isWaitingForServer()) return true;
+		boolean isSelect = event.button() == 0;
+		if (isSelect && state != State.ENABLED) {
+			addToast(Component.translatable("skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.mustEnableWidget"));
 			return false;
 		}
 
 		int relativePosition = slotId - 18 - 1;
 		relativePosition -= 2 * (relativePosition / 9);
-		if (relativePosition == 0)  {
-			// todo: add a toast saying this element can not be re-ordered
-			return false;
-		}
+
 		if (WidgetsElementList.editingPosition == relativePosition) return false;
+		if (isSelect && relativePosition == 0 && !WidgetsElementList.isOnSecondPage) {
+			addToast(Component.translatable("skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.unselectableWidget"));
+			return false;
+		} else if (!isSelect && relativePosition > WidgetsElementList.maxPosition) {
+			addToast(Component.translatable("skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.cannotMoveHere"));
+			return true;
+		}
 
 		boolean isGreater = WidgetsElementList.editingPosition > relativePosition;
-		if (event.button() == 0) {
+		if (isSelect) {
 			parent.clickAndWaitForServer(13, isGreater ? 1 : 0);
 		} else {
 			parent.shiftClickAndWaitForServer(13, isGreater ? 1 : 0);
 		}
 
 		final int remainingClicks = Math.abs(WidgetsElementList.editingPosition - relativePosition) - 1;
-		//noinspection IfStatementWithIdenticalBranches
 		if (remainingClicks == 0) return true;
-		// todo: add a toast showing remaining clicks
+
+		if (isSelect) {
+			addToast(Component.translatable("skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToSelect", remainingClicks));
+		} else {
+			addToast(Component.translatable("skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToMove", remainingClicks));
+		}
 		return true;
 	}
 
