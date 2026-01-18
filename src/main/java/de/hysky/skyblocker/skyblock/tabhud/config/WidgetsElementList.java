@@ -97,13 +97,13 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 		rightDownArrowHovered = rightXGood && isOnDown;
 		leftUpArrowHovered = leftXGood && isOnUp;
 		leftDownArrowHovered = leftXGood && isOnDown;
-		context.fill(getRowRight()+1, y+5, getRowRight()+14, y+27, MOVE_COLOR);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, rightUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, getRowRight() - 16, y, 32, 32);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, rightDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, getRowRight() - 16, y, 32, 32);
+		context.fill(getRowRight() + 2, y + 5, getRowRight() + 15, y + 27, MOVE_COLOR);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, rightUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, getRowRight() - 15, y, 32, 32);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, rightDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, getRowRight() - 15, y, 32, 32);
 
-		context.fill(x-16, y+5, x-3, y+27, SELECT_COLOR);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 33, y, 32, 32);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 33, y, 32, 32);
+		context.fill(x - 15, y + 5, x - 2, y + 27, SELECT_COLOR);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 32, y, 32, 32);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 32, y, 32, 32);
 	}
 
 	@Override
