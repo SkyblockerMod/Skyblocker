@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.config;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -42,10 +43,13 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.function.Consumers;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.lang.StackWalker.Option;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Consumer;
@@ -53,11 +57,11 @@ import java.util.function.UnaryOperator;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-import org.slf4j.Logger;
 
 public class SkyblockerConfigManager {
 	public static final int CONFIG_VERSION = 6;
 	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
 	private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 	private static final Path CONFIG_FILE = CONFIG_DIR.resolve("skyblocker.json");
 	private static final ConfigManager<SkyblockerConfig> CONFIG_MANAGER = ConfigManager.create(SkyblockerConfig.class, CONFIG_FILE, UnaryOperator.identity());
@@ -103,7 +107,7 @@ public class SkyblockerConfigManager {
 		CONFIG_MANAGER.save();
 	}
 
-	public static Screen createGUI(Screen parent) {
+	public static Screen createGUI(@Nullable Screen parent) {
 		return createGUI(parent, "");
 	}
 
@@ -150,8 +154,79 @@ public class SkyblockerConfigManager {
 	 * @return the command builder
 	 */
 	private static LiteralArgumentBuilder<FabricClientCommandSource> configLiteral(String name) {
-		return literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
-				.then(argument("option", StringArgumentType.greedyString()).executes((ctx) -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("option", String.class)))));
+		LiteralArgumentBuilder<FabricClientCommandSource> builder = literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
+				.then(literal("search").then(argument("option", StringArgumentType.greedyString()).executes((ctx) -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("option", String.class))))));
+		registerConfigEntriesCommand(builder);
+		return builder;
+	}
+
+	private static void registerConfigEntriesCommand(LiteralArgumentBuilder<FabricClientCommandSource> builder) {
+		try {
+			registerConfigEntriesCommand(builder, SkyblockerConfigManager.get());
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Config Manager] Failed to register config entries command!", e);
+		}
+	}
+
+	private static void registerConfigEntriesCommand(LiteralArgumentBuilder<FabricClientCommandSource> builder, Object object) throws IllegalAccessException {
+		for (Field field : object.getClass().getDeclaredFields()) {
+			if (Modifier.isStatic(field.getModifiers())) continue;
+			field.setAccessible(true);
+
+			LiteralArgumentBuilder<FabricClientCommandSource> entryBuilder = literal(field.getName());
+			Class<?> type = field.getType();
+			Object value = field.get(object);
+
+			if (type == boolean.class) {
+				entryBuilder.then(literal("true").executes(context -> {
+					SkyblockerConfigManager.update(config -> {
+						try {
+							field.setBoolean(object, true);
+						} catch (IllegalAccessException e) {
+							throw new RuntimeException(e);
+						}
+					});
+					return Command.SINGLE_SUCCESS;
+				})).then(literal("false").executes(context -> {
+					SkyblockerConfigManager.update(config -> {
+						try {
+							field.setBoolean(object, false);
+						} catch (IllegalAccessException e) {
+							throw new RuntimeException(e);
+						}
+					});
+					return Command.SINGLE_SUCCESS;
+				})).then(literal("toggle").executes(context -> {
+					SkyblockerConfigManager.update(config -> {
+						try {
+							field.setBoolean(object, !field.getBoolean(object));
+						} catch (IllegalAccessException e) {
+							throw new RuntimeException(e);
+						}
+					});
+					return Command.SINGLE_SUCCESS;
+				}));
+			} else if (value != null && SkyblockerConfigManager.isConfigClass(type)) {
+				registerConfigEntriesCommand(entryBuilder, value);
+			}
+
+			builder.then(entryBuilder);
+		}
+	}
+
+	/**
+	 * Returns {@code true} if the given class represents one of our config
+	 * classes. This prevents {@link de.hysky.skyblocker.DisableAll#disableBooleans(Object)} from touching
+	 * unrelated objects from other mods.
+	 */
+	@SuppressWarnings("JavadocReference")
+	public static boolean isConfigClass(Class<?> clazz) {
+		return !clazz.isPrimitive()
+			   && !clazz.isEnum()
+			   && !clazz.isRecord()
+			   && !clazz.equals(String.class)
+			   && !Number.class.isAssignableFrom(clazz)
+			   && clazz.getPackageName().startsWith(CONFIGS_PACKAGE);
 	}
 
 	public static void dataFix(Path configDir, Path backupDir) {
