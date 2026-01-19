@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.injected;
 
 import net.minecraft.network.chat.Component;
-
 import org.jspecify.annotations.Nullable;
 
 public interface SkyblockerEntity {
