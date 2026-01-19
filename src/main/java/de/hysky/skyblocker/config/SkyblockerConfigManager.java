@@ -52,6 +52,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -226,6 +228,8 @@ public class SkyblockerConfigManager {
 			   && !clazz.isRecord()
 			   && !clazz.equals(String.class)
 			   && !Number.class.isAssignableFrom(clazz)
+			   && !Map.class.isAssignableFrom(clazz)
+			   && !Collection.class.isAssignableFrom(clazz)
 			   && clazz.getPackageName().startsWith(CONFIGS_PACKAGE);
 	}
 
