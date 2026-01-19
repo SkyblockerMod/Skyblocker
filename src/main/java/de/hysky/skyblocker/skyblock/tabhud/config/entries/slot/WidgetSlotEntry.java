@@ -1,20 +1,21 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigToast;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsElementList;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
 import de.hysky.skyblocker.utils.ItemUtils;
-import java.util.List;
-import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
+import java.util.Locale;
 
 public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	private final Button editButton;
@@ -78,7 +79,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	private static void addToast(Component message) {
-		Minecraft.getInstance().getToastManager().addToast(new WidgetsConfigToast(message));
+		Minecraft.getInstance().getToastManager().addToast(new SystemToast(WidgetsListTab.SYSTEM_TOAST_ID, message, null));
 	}
 
 	@Override
