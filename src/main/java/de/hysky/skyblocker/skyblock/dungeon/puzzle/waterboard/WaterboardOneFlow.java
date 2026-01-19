@@ -561,6 +561,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		solution = null;
 		finished = false;
 		waterStartMillis = 0;
+		currentTimeMillis = 0;
 		for (Mark mark : marks) {
 			mark.reached = false;
 		}
