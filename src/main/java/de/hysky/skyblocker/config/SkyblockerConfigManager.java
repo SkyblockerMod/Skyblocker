@@ -224,13 +224,13 @@ public class SkyblockerConfigManager {
 	@SuppressWarnings("JavadocReference")
 	public static boolean isConfigClass(Class<?> clazz) {
 		return !clazz.isPrimitive()
-			   && !clazz.isEnum()
-			   && !clazz.isRecord()
-			   && !clazz.equals(String.class)
-			   && !Number.class.isAssignableFrom(clazz)
-			   && !Map.class.isAssignableFrom(clazz)
-			   && !Collection.class.isAssignableFrom(clazz)
-			   && clazz.getPackageName().startsWith(CONFIGS_PACKAGE);
+			&& !clazz.isEnum()
+			&& !clazz.isRecord()
+			&& !clazz.equals(String.class)
+			&& !Number.class.isAssignableFrom(clazz)
+			&& !Map.class.isAssignableFrom(clazz)
+			&& !Collection.class.isAssignableFrom(clazz)
+			&& clazz.getPackageName().startsWith(CONFIGS_PACKAGE);
 	}
 
 	public static void dataFix(Path configDir, Path backupDir) {
