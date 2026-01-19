@@ -439,6 +439,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 			Map.entry("Dusty Travel Scroll to the Kuudra Skull", "NETHER_FORTRESS_BOSS_TRAVEL_SCROLL"),
 			Map.entry("Mandraa", "MANDRAA"),
 			Map.entry("Kuudra Mandible", "KUUDRA_MANDIBLE"),
+			Map.entry("Kuudra Tentacle", "KUUDRA_TENTACLE"),
 			Map.entry("Burning Kuudra Core", "BURNING_KUUDRA_CORE"),
 			Map.entry("Wheel of Fate", "WHEEL_OF_FATE"),
 			Map.entry("Ananke Feather", "ANANKE_FEATHER"),
