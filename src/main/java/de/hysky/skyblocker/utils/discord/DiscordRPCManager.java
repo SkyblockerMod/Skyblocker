@@ -14,9 +14,6 @@ import org.slf4j.LoggerFactory;
 import java.text.DecimalFormat;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Manages the discord rich presence. Automatically connects to discord and displays a customizable activity when playing Skyblock.
@@ -27,15 +24,15 @@ public class DiscordRPCManager {
 	/**
 	 * The update task used to avoid multiple update tasks running simultaneously.
 	 */
-	private static final AtomicReference<CompletableFuture<Void>> updateTask = new AtomicReference<>();
-	private static final AtomicLong startTimeStamp = new AtomicLong();
-	private static final AtomicInteger cycleCount = new AtomicInteger();
+	public static CompletableFuture<Void> updateTask;
+	public static long startTimeStamp;
+	public static int cycleCount;
 
 	@Init
 	public static void init() {
 		SkyblockEvents.LEAVE.register(DiscordRPCManager::initAndUpdatePresence);
 		SkyblockEvents.JOIN.register(() -> {
-			startTimeStamp.set(System.currentTimeMillis());
+			startTimeStamp = System.currentTimeMillis();
 			initAndUpdatePresence(true);
 		});
 	}
@@ -48,7 +45,7 @@ public class DiscordRPCManager {
 		if (SkyblockerConfigManager.get().misc.richPresence.customMessage.isEmpty()) {
 			SkyblockerConfigManager.update(config -> config.misc.richPresence.customMessage = "Playing Skyblock");
 		}
-		if (SkyblockerConfigManager.get().misc.richPresence.cycleMode) cycleCount.updateAndGet(count -> (count + 1) % 3);
+		if (SkyblockerConfigManager.get().misc.richPresence.cycleMode) cycleCount = (cycleCount + 1) % 3;
 		initAndUpdatePresence();
 	}
 
@@ -76,9 +73,8 @@ public class DiscordRPCManager {
 	 *                       if {@link MiscConfig.RichPresence#enableRichPresence rich presence is disabled}.
 	 */
 	private static void initAndUpdatePresence(boolean initialization) {
-		CompletableFuture<Void> currentTask = updateTask.get();
-		if (currentTask == null || currentTask.isDone()) {
-			CompletableFuture<Void> newTask = CompletableFuture.runAsync(() -> {
+		if (updateTask == null || updateTask.isDone()) {
+			updateTask = CompletableFuture.runAsync(() -> {
 				if (SkyblockerConfigManager.get().misc.richPresence.enableRichPresence && Utils.isOnSkyblock()) {
 					if (!DiscordIPC.isConnected()) {
 						if (DiscordIPC.start(934607927837356052L, null)) {
@@ -98,14 +94,13 @@ public class DiscordRPCManager {
 					LOGGER.info("[Skyblocker] Discord RPC is currently disabled, will not connect");
 				}
 			}, Executors.newVirtualThreadPerTaskExecutor());
-			updateTask.set(newTask);
 		}
 	}
 
 	public static RichPresence buildPresence() {
 		RichPresence presence = new RichPresence();
 		presence.setLargeImage("skyblocker-default", null);
-		presence.setStart(startTimeStamp.get());
+		presence.setStart(startTimeStamp);
 		presence.setDetails(SkyblockerConfigManager.get().misc.richPresence.customMessage);
 		presence.setState(getInfo());
 		return presence;
@@ -120,7 +115,7 @@ public class DiscordRPCManager {
 				case LOCATION -> info = Utils.getIslandArea();
 			}
 		} else if (SkyblockerConfigManager.get().misc.richPresence.cycleMode) {
-			switch (cycleCount.get()) {
+			switch (cycleCount) {
 				case 0 -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
 				case 1 -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());
 				case 2 -> info = Utils.getIslandArea();

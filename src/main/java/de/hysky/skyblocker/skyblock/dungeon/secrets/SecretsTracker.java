@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import net.minecraft.client.Minecraft;
@@ -71,7 +70,7 @@ public class SecretsTracker {
 			case END -> CompletableFuture.runAsync(() -> {
 				TrackedRun thisRun = currentRun;
 				if (thisRun != null) {
-					ConcurrentHashMap<String, SecretData> secretsFound = new ConcurrentHashMap<>();
+					Object2ObjectOpenHashMap<String, SecretData> secretsFound = new Object2ObjectOpenHashMap<>();
 
 					//Update secret counts
 					for (Entry<String, SecretData> entry : thisRun.playersSecretData().entrySet()) {
@@ -149,12 +148,11 @@ public class SecretsTracker {
 	}
 
 	/**
-	 * This will either reflect the value at the start or the end depending on when this is called.
-	 * Uses ConcurrentHashMap to ensure thread-safe access from multiple async tasks.
+	 * This will either reflect the value at the start or the end depending on when this is called
 	 */
-	private record TrackedRun(ConcurrentHashMap<String, SecretData> playersSecretData) {
+	private record TrackedRun(Object2ObjectOpenHashMap<String, SecretData> playersSecretData) {
 		private TrackedRun() {
-			this(new ConcurrentHashMap<>());
+			this(new Object2ObjectOpenHashMap<>());
 		}
 	}
 
