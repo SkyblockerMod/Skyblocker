@@ -5,12 +5,11 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Component;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -22,7 +21,7 @@ public class NightVisionCommand {
 		ClientCommandRegistrationCallback.EVENT.register(NightVisionCommand::register);
 	}
 
-	private static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess access) {
+	private static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext access) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("nightVision")
 						.then(argument("strength", IntegerArgumentType.integer(0, 100))
@@ -32,9 +31,8 @@ public class NightVisionCommand {
 	}
 
 	private static int writeStrength(CommandContext<FabricClientCommandSource> context, int strength) {
-		SkyblockerConfigManager.get().uiAndVisuals.nightVisionStrength = strength;
-		context.getSource().sendFeedback(Text.translatable("skyblocker.nightVision.success", strength));
-		SkyblockerConfigManager.save();
+		SkyblockerConfigManager.update(config -> config.uiAndVisuals.nightVisionStrength = strength);
+		context.getSource().sendFeedback(Component.translatable("skyblocker.nightVision.success", strength));
 		return 1;
 	}
 }

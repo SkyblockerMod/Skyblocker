@@ -1,70 +1,58 @@
 package de.hysky.skyblocker.config;
 
-import dev.isxander.yacl3.api.ButtonOption;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.controller.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.option.KeybindsScreen;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
-
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.FileUtils;
-
-import java.nio.file.Path;
 import java.util.function.Function;
 
-public class ConfigUtils {
-	public static final ValueFormatter<Formatting> FORMATTING_FORMATTER = formatting -> Text.literal(StringUtils.capitalize(formatting.getName().replaceAll("_", " ")));
-	public static final ValueFormatter<Float> FLOAT_TWO_FORMATTER = value -> Text.literal(String.format("%,.2f", value).replaceAll("[\u00a0\u202F]", " "));
-	private static final Path IMAGE_DIRECTORY = ImageRepoLoader.REPO_DIRECTORY.resolve("Skyblocker-Assets-images");
+import org.apache.commons.lang3.StringUtils;
 
-	public static BooleanControllerBuilder createBooleanController(Option<Boolean> opt) {
-		return BooleanControllerBuilder.create(opt).yesNoFormatter().coloured(true);
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.controllers.BooleanController;
+import net.azureaaron.dandelion.api.controllers.BooleanController.BooleanStyle;
+import net.azureaaron.dandelion.api.controllers.ColourController;
+import net.azureaaron.dandelion.api.controllers.EnumController;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
+import net.minecraft.network.chat.Component;
+
+public class ConfigUtils {
+	public static final Function<ChatFormatting, Component> FORMATTING_FORMATTER = formatting -> Component.literal(StringUtils.capitalize(formatting.getName().replaceAll("_", " ")));
+
+	public static BooleanController createBooleanController() {
+		return BooleanController.createBuilder()
+				.coloured(true)
+				.booleanStyle(BooleanStyle.YES_NO)
+				.build();
+	}
+
+	public static ColourController createColourController(boolean hasAlpha) {
+		return ColourController.createBuilder()
+				.hasAlpha(hasAlpha)
+				.build();
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <E extends Enum<E>> EnumControllerBuilder<E> createEnumCyclingListController(Option<E> opt) {
-		return EnumControllerBuilder.create(opt).enumClass((Class<E>) opt.stateManager().get().getClass());
+	public static <T extends Enum<T>> EnumController<T> createEnumController() {
+		return (EnumController<T>) EnumController.createBuilder().build();
 	}
 
-	/**
-	 * Creates a factory for {@link EnumDropdownControllerBuilder}s with the given function for converting enum constants to texts.
-	 * Use this if a custom formatter function for an enum is needed.
-	 * Use it like this:
-	 * <pre>{@code Option.<MyEnum>createBuilder().controller(ConfigUtils.getEnumDropdownControllerFactory(MY_CUSTOM_ENUM_TO_TEXT_FUNCTION))}</pre>
-	 *
-	 * @param formatter The function used to convert enum constants to texts used for display, suggestion, and validation
-	 * @param <E>       the enum type
-	 * @return a factory for {@link EnumDropdownControllerBuilder}s
-	 */
-	public static <E extends Enum<E>> Function<Option<E>, ControllerBuilder<E>> getEnumDropdownControllerFactory(ValueFormatter<E> formatter) {
-		return opt -> EnumDropdownControllerBuilder.create(opt).formatValue(formatter);
+	@SuppressWarnings("unchecked")
+	public static <T extends Enum<T>> EnumController<T> createEnumController(Function<T, Component> formatter) {
+		return (EnumController<T>) EnumController.createBuilder().formatter(Function.class.cast(formatter)).build();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Enum<T>> EnumController<T> createEnumDropdownController(Function<T, Component> formatter) {
+		return (EnumController<T>) EnumController.createBuilder().dropdown(true).formatter(Function.class.cast(formatter)).build();
 	}
 
 	public static ButtonOption createShortcutToKeybindsScreen() {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		return ButtonOption.createBuilder()
-				.name(Text.translatable("skyblocker.config.shortcutToKeybindsSettings"))
-				.action((screen, opt) -> client.setScreen(new KeybindsScreen(screen, client.options)))
-				.text(Text.translatable("skyblocker.config.shortcutToKeybindsSettings.@Text"))
+				.name(Component.translatable("skyblocker.config.shortcutToKeybindsSettings"))
+				.action(screen -> client.setScreen(new KeyBindsScreen(screen, client.options)))
+				.prompt(Component.translatable("skyblocker.config.shortcutToKeybindsSettings.@Text"))
 				.build();
 	}
 
-	/**
-	 * Creates an {@link OptionDescription} with an image and text.
-	 */
-	@SafeVarargs
-	public static OptionDescription withImage(Path imagePath, @Nullable Text... texts) {
-		return OptionDescription.createBuilder()
-				.text(ArrayUtils.isNotEmpty(texts) ? texts : new Text[] {})
-				.image(IMAGE_DIRECTORY.resolve(imagePath), Identifier.of(SkyblockerMod.NAMESPACE, "config_image_" + FileUtils.normalizePath(imagePath)))
-				.build();
-	}
+	//FIXME Would probably be a good idea to add a utility method for creating a waypoint type option
 }

@@ -1,19 +1,5 @@
 package de.hysky.skyblocker;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-
-import org.jetbrains.annotations.VisibleForTesting;
-import org.slf4j.Logger;
-
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
@@ -24,62 +10,65 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.data.JsonData;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
-import net.minecraft.SharedConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+
+import java.net.URI;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 public class UpdateNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final String BASE_URL = "https://api.modrinth.com/v2/project/y6DuFGwJ/version?loaders=[%22fabric%22]&game_versions=";
+	private static final Minecraft CLIENT = Minecraft.getInstance();
+	private static final String BASE_URL = "https://api.modrinth.com/v2/project/y6DuFGwJ/version?loaders=[%22fabric%22]";
 	private static final Version MOD_VERSION = SkyblockerMod.SKYBLOCKER_MOD.getMetadata().getVersion();
-	private static final String MC_VERSION = SharedConstants.getGameVersion().getId();
 	private static final Path CONFIG_PATH = SkyblockerMod.CONFIG_DIR.resolve("update_notifications.json");
 	@VisibleForTesting
 	protected static final Comparator<Version> COMPARATOR = Version::compareTo;
 	@VisibleForTesting
 	protected static final Codec<SemanticVersion> SEM_VER_CODEC = Codec.STRING.comapFlatMap(UpdateNotifications::parseVersion, SemanticVersion::toString);
-	private static final SystemToast.Type TOAST_TYPE = new SystemToast.Type(10000L);
+	private static final SystemToast.SystemToastId TOAST_TYPE = new SystemToast.SystemToastId(10000L);
 
-	public static Config config = Config.DEFAULT;
+	public static final JsonData<Config> config = new JsonData<>(CONFIG_PATH, Config.CODEC, Config.DEFAULT);
 	private static boolean sentUpdateNotification;
+	private static CompletableFuture<Void> loaded;
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loadConfig());
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = config.init());
 		SkyblockEvents.JOIN.register(() -> {
-			if (config.enabled() && !sentUpdateNotification) checkForNewVersion();
+			if (!loaded.isDone()) {
+				loaded.thenRun(UpdateNotifications::tryCheckForNewVersion);
+			} else {
+				tryCheckForNewVersion();
+			}
 		});
 	}
 
-	private static void loadConfig() {
-		CompletableFuture.supplyAsync(() -> {
-			try (BufferedReader reader = Files.newBufferedReader(CONFIG_PATH)) {
-				return Config.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
-			} catch (NoSuchFileException ignored) {
-			} catch (Exception e) {
-				LOGGER.error("[Skyblocker Update Notifications] Failed to load config!", e);
-			}
-
-			return Config.DEFAULT;
-		}).thenAccept(loadedConfig -> config = loadedConfig);
-	}
-
-	private static void saveConfig() {
-		try (BufferedWriter writer = Files.newBufferedWriter(CONFIG_PATH)) {
-			SkyblockerMod.GSON.toJson(Config.CODEC.encodeStart(JsonOps.INSTANCE, config).getOrThrow(), writer);
-		} catch (Exception e) {
-			LOGGER.error("[Skyblocker Update Notifications] Failed to save config :(", e);
+	private static void tryCheckForNewVersion() {
+		if (config.getData().enabled() && !sentUpdateNotification) {
+			//Wait a minute since when you join Skyblock there's usually a bunch of chat messages that pop up
+			//so that this doesn't get buried
+			Scheduler.INSTANCE.schedule(UpdateNotifications::checkForNewVersion, 60 * 20);
 		}
 	}
 
@@ -87,32 +76,32 @@ public class UpdateNotifications {
 		CompletableFuture.runAsync(() -> {
 			try {
 				SemanticVersion version = (SemanticVersion) MOD_VERSION; //Would only fail because someone changed it themselves
-				String response = Http.sendGetRequest(BASE_URL + "[%22" + MC_VERSION + "%22]");
+				String response = Http.sendGetRequest(BASE_URL);
 				List<MrVersion> mrVersions = MrVersion.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
 
 				//Set it to true now so that we don't keep re-checking if the data should be discarded
 				sentUpdateNotification = true;
 
 				Optional<MrVersion> newestVersion = mrVersions.stream()
-						.filter(ver -> Arrays.stream(config.includedChannels()).anyMatch(channel -> channel == ver.channel()))
+						.filter(ver -> Arrays.stream(config.getData().includedChannels()).anyMatch(channel -> channel == ver.channel()))
 						.filter(mrv -> COMPARATOR.compare(mrv.version(), version) > 0)
 						.max(Comparator.comparing(MrVersion::version, COMPARATOR));
 
 				if (newestVersion.isPresent() && CLIENT.player != null && !shouldDiscard(version, newestVersion.get().version())) {
 					MrVersion newVersion = newestVersion.get();
 					String downloadLink = "https://modrinth.com/mod/skyblocker-liap/version/" + newVersion.id();
-					Text versionText = Text.literal(newVersion.name()).styled(style -> style
-							.withFormatting(Formatting.GRAY)
-							.withUnderline(true)
-							.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, downloadLink)));
+					Component versionText = Component.literal(newVersion.name()).withStyle(style -> style
+							.applyFormat(ChatFormatting.GRAY)
+							.withUnderlined(true)
+							.withClickEvent(new ClickEvent.OpenUrl(URI.create(downloadLink))));
 
-					CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)), false);
-					SystemToast.add(CLIENT.getToastManager(), TOAST_TYPE, Text.translatable("skyblocker.updateNotifications.newUpdateToast.title"), Text.stringifiedTranslatable("skyblocker.updateNotifications.newUpdateToast.description", newVersion.version()));
+					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)), false);
+					SystemToast.add(CLIENT.getToastManager(), TOAST_TYPE, Component.translatable("skyblocker.updateNotifications.newUpdateToast.title"), Component.translatableEscape("skyblocker.updateNotifications.newUpdateToast.description", newVersion.version()));
 				}
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Update Notifications] Failed to determine if an update is available or not!", e);
 			}
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	private static DataResult<SemanticVersion> parseVersion(String version) {
@@ -162,7 +151,9 @@ public class UpdateNotifications {
 	}
 
 	public record Config(boolean enabled, Channel channel) {
-		public static final Config DEFAULT = new Config(true, Channel.RELEASE);
+		//Set default channel to alpha since most people probably want whatever the latest version is
+		//and we work hard to polish all of our releases.
+		public static final Config DEFAULT = new Config(true, Channel.ALPHA);
 		private static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.BOOL.fieldOf("enabled").forGetter(Config::enabled),
 				Channel.CODEC.fieldOf("channel").forGetter(Config::channel))
@@ -196,21 +187,21 @@ public class UpdateNotifications {
 		private static final Codec<List<MrVersion>> LIST_CODEC = CODEC.listOf();
 	}
 
-	public enum Channel implements StringIdentifiable {
+	public enum Channel implements StringRepresentable {
 		RELEASE,
 		BETA,
 		ALPHA;
 
-		private static final Codec<Channel> CODEC = StringIdentifiable.createBasicCodec(Channel::values);
+		private static final Codec<Channel> CODEC = StringRepresentable.fromValues(Channel::values);
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.updateChannel.channel." + name());
+			return I18n.get("skyblocker.config.general.updateNotifications.updateChannel.channel." + name());
 		}
 
 		@Override
-		public String asString() {
-			return name().toLowerCase();
+		public String getSerializedName() {
+			return name().toLowerCase(Locale.ENGLISH);
 		}
 	}
 }

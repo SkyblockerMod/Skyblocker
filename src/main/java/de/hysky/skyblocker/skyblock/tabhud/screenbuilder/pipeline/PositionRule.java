@@ -2,18 +2,18 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 
 public record PositionRule(String parent, Point parentPoint, Point thisPoint, int relativeX, int relativeY,
-						   ScreenMaster.ScreenLayer screenLayer) {
-	public static final PositionRule DEFAULT = new PositionRule("screen", Point.DEFAULT, Point.DEFAULT, 5, 5, ScreenMaster.ScreenLayer.DEFAULT);
+						WidgetManager.ScreenLayer screenLayer) {
+	public static final PositionRule DEFAULT = new PositionRule("screen", Point.DEFAULT, Point.DEFAULT, 5, 5, WidgetManager.ScreenLayer.DEFAULT);
 	public static final Codec<PositionRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("parent").forGetter(PositionRule::parent),
 			Point.CODEC.fieldOf("parent_anchor").forGetter(PositionRule::parentPoint),
 			Point.CODEC.fieldOf("this_anchor").forGetter(PositionRule::thisPoint),
 			Codec.INT.fieldOf("relative_x").forGetter(PositionRule::relativeX),
 			Codec.INT.fieldOf("relative_y").forGetter(PositionRule::relativeY),
-			ScreenMaster.ScreenLayer.CODEC.fieldOf("layer").forGetter(PositionRule::screenLayer)
+			WidgetManager.ScreenLayer.CODEC.fieldOf("layer").forGetter(PositionRule::screenLayer)
 	).apply(instance, PositionRule::new));
 
 

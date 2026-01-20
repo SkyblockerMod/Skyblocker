@@ -2,8 +2,6 @@ package de.hysky.skyblocker.utils;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.SharedConstants;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,8 +16,11 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
+import java.util.concurrent.Executors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * @implNote All http requests are sent using HTTP 2
@@ -27,9 +28,10 @@ import java.util.zip.InflaterInputStream;
 public class Http {
 	private static final String NAME_2_UUID = "https://api.minecraftservices.com/minecraft/profile/lookup/name/";
 	private static final String HYPIXEL_PROXY = "https://hysky.de/api/hypixel/v2/";
-	public static final String USER_AGENT = "Skyblocker/" + SkyblockerMod.VERSION + " (" + SharedConstants.getGameVersion().getName() + ")";
+	public static final String USER_AGENT = "Skyblocker/" + SkyblockerMod.VERSION + " (" + SharedConstants.getCurrentVersion().name() + ")";
 	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
+			.executor(Executors.newVirtualThreadPerTaskExecutor())
 			.followRedirects(Redirect.NORMAL)
 			.build();
 
@@ -45,16 +47,16 @@ public class Http {
 		if (token != null) requestBuilder.header("Authorization", "Bearer " + token);
 
 		HttpRequest request = requestBuilder.build();
-
 		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
-		InputStream decodedInputStream = getDecodedInputStream(response);
 
-		String body = new String(decodedInputStream.readAllBytes());
-		HttpHeaders headers = response.headers();
+		try (InputStream decodedInputStream = getDecodedInputStream(response)) {
+			String body = new String(decodedInputStream.readAllBytes());
+			HttpHeaders headers = response.headers();
 
-		return new ApiResponse(body, response.statusCode(), getCacheStatuses(headers), getAge(headers));
+			return new ApiResponse(body, response.statusCode(), getCacheStatuses(headers), getAge(headers));
+		}
 	}
-	
+
 	public static InputStream downloadContent(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.GET()
@@ -69,7 +71,7 @@ public class Http {
 
 		return getDecodedInputStream(response);
 	}
-	
+
 	public static String sendGetRequest(String url) throws IOException, InterruptedException {
 		return sendCacheableGetRequest(url, null).content();
 	}
@@ -98,11 +100,10 @@ public class Http {
 				.build();
 
 		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
-		InputStream decodedInputStream = getDecodedInputStream(response);
 
-		String responseBody = new String(decodedInputStream.readAllBytes());
-
-		return responseBody;
+		try (InputStream decodedInputStream = getDecodedInputStream(response)) {
+			return new String(decodedInputStream.readAllBytes());
+		}
 	}
 
 	public static ApiResponse sendName2UuidRequest(String name) throws IOException, InterruptedException {
@@ -113,10 +114,10 @@ public class Http {
 	 * @param endpoint the endpoint - do not include any leading or trailing slashes
 	 * @param query the query string - use empty string if n/a
 	 * @return the requested data with zero pre-processing applied
-	 * 
+	 *
 	 * @implNote the {@code v2} prefix is automatically added
 	 */
-	public static ApiResponse sendHypixelRequest(String endpoint, @NotNull String query) throws IOException, InterruptedException {
+	public static ApiResponse sendHypixelRequest(String endpoint, String query) throws IOException, InterruptedException {
 		return sendCacheableGetRequest(HYPIXEL_PROXY + endpoint + query, ApiAuthentication.getToken());
 	}
 
@@ -149,7 +150,7 @@ public class Http {
 
 	/**
 	 * Returns the cache statuses of the resource. All possible cache status values conform to Cloudflare's.
-	 * 
+	 *
 	 * @see <a href="https://developers.cloudflare.com/cache/concepts/cache-responses/">Cloudflare Cache Docs</a>
 	 */
 	private static String[] getCacheStatuses(HttpHeaders headers) {

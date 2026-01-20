@@ -7,18 +7,17 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-
-import java.awt.*;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import java.awt.Color;
 import java.util.function.Consumer;
 
 /**
@@ -31,7 +30,7 @@ public class IndividualWaypoint extends NamedWaypoint {
 	@Init
 	public static void init() {
 		ClientTickEvents.END_CLIENT_TICK.register(IndividualWaypoint::onTick);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {if (waypoint != null) waypoint.render(context);});
+		WorldRenderExtractionCallback.EVENT.register(collector -> { if (waypoint != null) waypoint.extractRendering(collector); });
 		ClientPlayConnectionEvents.JOIN.register((ignore, ignore2, ignore3) -> waypoint = null);
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("waypoints").then(ClientCommandManager.literal("individual")
@@ -61,32 +60,37 @@ public class IndividualWaypoint extends NamedWaypoint {
 		));
 	}
 
-	public IndividualWaypoint(BlockPos pos, Text name, float[] colorComponents) {
+	public IndividualWaypoint(BlockPos pos, Component name, float[] colorComponents) {
 		super(pos, name, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, true);
 	}
 
-	private static int setWaypoint(Consumer<Text> feedback, int x, int y, int z, String area) {
+	private static int setWaypoint(Consumer<Component> feedback, int x, int y, int z, String area) {
 		setWaypoint(x, y, z, area);
-		feedback.accept(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.displayed", x, y, z, area)));
+		if (area != null && !area.isEmpty()) {
+			area = "| " + area;
+			feedback.accept(Constants.PREFIX.get().append(Component.translatable("skyblocker.waypoints.chat.displayed", x, y, z, area)));
+		} else {
+			feedback.accept(Constants.PREFIX.get().append(Component.translatable("skyblocker.waypoints.chat.displayed", x, y, z, "")));
+		}
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static void setWaypoint(int x, int y, int z, String area) {
 		String waypointName = area != null && !area.isEmpty() ? area : "Chat Waypoint";
 
-		Text waypointDisplay;
+		Component waypointDisplay;
 		if (waypointName.charAt(0) == '⏣') {
-			waypointDisplay = Text.literal("⏣").formatted(Formatting.DARK_PURPLE)
-					.append(Text.literal(waypointName.substring(1)).formatted(Formatting.AQUA));
+			waypointDisplay = Component.literal("⏣").withStyle(ChatFormatting.DARK_PURPLE)
+					.append(Component.literal(waypointName.substring(1)).withStyle(ChatFormatting.AQUA));
 		} else {
-			waypointDisplay = Text.literal(waypointName).formatted(Formatting.AQUA);
+			waypointDisplay = Component.literal(waypointName).withStyle(ChatFormatting.AQUA);
 		}
 
 		waypoint = new IndividualWaypoint(new BlockPos(x, y, z), waypointDisplay, ColorUtils.getFloatComponents(Color.GREEN.getRGB()));
 	}
 
-	private static void onTick(MinecraftClient client) {
-		if (waypoint != null && client.player != null && client.player.squaredDistanceTo(waypoint.centerPos) <= 8) {
+	private static void onTick(Minecraft client) {
+		if (waypoint != null && client.player != null && client.player.distanceToSqr(waypoint.centerPos) <= 36) {
 			waypoint = null;
 		}
 	}

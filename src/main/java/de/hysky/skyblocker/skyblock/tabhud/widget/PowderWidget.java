@@ -1,18 +1,17 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.utils.Formatters;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Util;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,13 +19,8 @@ import java.util.regex.Pattern;
 // (dwarven mines and crystal hollows)
 @RegisterWidget
 public class PowderWidget extends TabHudWidget {
-	private static final MutableText TITLE = Text.literal("Powders").formatted(Formatting.DARK_AQUA, Formatting.BOLD);
-	private static final DecimalFormat DECIMAL_FORMAT = (DecimalFormat) NumberFormat.getInstance(Locale.ENGLISH);
+	private static final MutableComponent TITLE = Component.literal("Powders").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD);
 	private static final short UPDATE_INTERVAL = 2000;
-
-	static {
-		DECIMAL_FORMAT.setPositivePrefix("+"); // Causes the positive sign to be displayed for positive numbers, while the negative sign is always displayed for negative numbers. This removes the need to prepend a + if positive.
-	}
 
 	// Patterns to match the playerlist lines against
 	private static final Pattern MITHRIL_PATTERN = Pattern.compile("Mithril: ([\\d,]+)");
@@ -47,15 +41,15 @@ public class PowderWidget extends TabHudWidget {
 	private long lastUpdate = 0;
 
 	public PowderWidget() {
-		super("Powders", TITLE, Formatting.DARK_AQUA.getColorValue());
+		super("Powders", TITLE, ChatFormatting.DARK_AQUA.getColor());
 	}
 
 	@Override
-	public void updateContent(List<Text> lines) {
+	public void updateContent(List<Component> lines) {
 		Matcher matcher = Pattern.compile("").matcher(""); // Placeholder pattern and input to construct a matcher that can be reused
-		long msAfterLastUpdate = Util.getMeasuringTimeMs() - lastUpdate;
+		long msAfterLastUpdate = Util.getMillis() - lastUpdate;
 
-		for (Text line : lines) {
+		for (Component line : lines) {
 			switch (matcher.reset(line.getString())) {
 				case Matcher m when m.usePattern(MITHRIL_PATTERN).matches() -> {
 					int mithril = parseAmount(m);
@@ -63,10 +57,10 @@ public class PowderWidget extends TabHudWidget {
 					if (mithril != lastMithril || msAfterLastUpdate > UPDATE_INTERVAL) {
 						lastMithrilDiff = mithril - lastMithril;
 						updated |= 0b1000;
-						addComponent(new IcoTextComponent(Ico.MITHRIL, getTextToDisplay(lastMithrilDiff, line, Formatting.DARK_GREEN)));
+						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), getTextToDisplay(lastMithrilDiff, line, ChatFormatting.DARK_GREEN)));
 						lastMithril = mithril;
 					} else {
-						addComponent(new IcoTextComponent(Ico.MITHRIL, getTextToDisplay(lastMithrilDiff, line, Formatting.DARK_GREEN)));
+						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), getTextToDisplay(lastMithrilDiff, line, ChatFormatting.DARK_GREEN)));
 					}
 					updated |= 0b001;
 				}
@@ -76,10 +70,10 @@ public class PowderWidget extends TabHudWidget {
 					if (gemstone != lastGemstone || msAfterLastUpdate > UPDATE_INTERVAL) {
 						lastGemstoneDiff = gemstone - lastGemstone;
 						updated |= 0b1000;
-						addComponent(new IcoTextComponent(Ico.AMETHYST_SHARD, getTextToDisplay(lastGemstoneDiff, line, Formatting.LIGHT_PURPLE)));
+						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), getTextToDisplay(lastGemstoneDiff, line, ChatFormatting.LIGHT_PURPLE)));
 						lastGemstone = gemstone;
 					} else {
-						addComponent(new IcoTextComponent(Ico.AMETHYST_SHARD, getTextToDisplay(lastGemstoneDiff, line, Formatting.LIGHT_PURPLE)));
+						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), getTextToDisplay(lastGemstoneDiff, line, ChatFormatting.LIGHT_PURPLE)));
 					}
 					updated |= 0b010;
 				}
@@ -89,10 +83,10 @@ public class PowderWidget extends TabHudWidget {
 					if (glacite != lastGlacite || msAfterLastUpdate > UPDATE_INTERVAL) {
 						lastGlaciteDiff = glacite - lastGlacite;
 						updated |= 0b1000;
-						addComponent(new IcoTextComponent(Ico.BLUE_ICE, getTextToDisplay(lastGlaciteDiff, line, Formatting.AQUA)));
+						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), getTextToDisplay(lastGlaciteDiff, line, ChatFormatting.AQUA)));
 						lastGlacite = glacite;
 					} else {
-						addComponent(new IcoTextComponent(Ico.BLUE_ICE, getTextToDisplay(lastGlaciteDiff, line, Formatting.AQUA)));
+						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), getTextToDisplay(lastGlaciteDiff, line, ChatFormatting.AQUA)));
 					}
 					updated |= 0b100;
 				}
@@ -100,7 +94,7 @@ public class PowderWidget extends TabHudWidget {
 			}
 			if ((updated & 0b111) == 0b111) break; // All powder counts have been updated, no need to continue
 		}
-		if ((updated & 0b1000) == 0b1000) lastUpdate = Util.getMeasuringTimeMs();
+		if ((updated & 0b1000) == 0b1000) lastUpdate = Util.getMillis();
 		updated = 0b0000; // Reset the bitfield for the next tick
 	}
 
@@ -108,12 +102,12 @@ public class PowderWidget extends TabHudWidget {
 		return NumberUtils.toInt(matcher.group(1).replace(",", ""));
 	}
 
-	private MutableText getAppendix(int diff, Formatting formatting) {
-		return Text.literal(" (" + DECIMAL_FORMAT.format(diff) + ")").formatted(formatting);
+	private MutableComponent getAppendix(int diff, ChatFormatting formatting) {
+		return Component.literal(" (" + Formatters.DIFF_NUMBERS.format(diff) + ")").withStyle(formatting);
 	}
 
 	// Decides whether the appendix should be appended to the line
-	private Text getTextToDisplay(int diff, Text line, Formatting formatting) {
+	private Component getTextToDisplay(int diff, Component line, ChatFormatting formatting) {
 		return diff != 0 ? line.copy().append(getAppendix(diff, formatting)) : line;
 	}
 }

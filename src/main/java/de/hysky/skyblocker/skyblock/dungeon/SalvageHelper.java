@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.ContainerAndInventorySolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -8,8 +9,7 @@ import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.azureaaron.networth.NetworthResult;
-import net.minecraft.item.ItemStack;
-
+import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -28,7 +28,8 @@ public class SalvageHelper extends SimpleContainerSolver implements ContainerAnd
 		return slots.int2ObjectEntrySet().stream()
 				.filter(entry -> ItemUtils.getLoreLineIfContainsMatch(entry.getValue(), DUNGEON_SALVAGABLE) != null)
 				.filter(entry -> isPriceWithinRange(entry.getValue()))
-				.map(entry -> ColorHighlight.green(entry.getIntKey()))
+				.filter(entry -> wasDonatedToMuseum(entry.getValue()))
+				.map(entry -> ColorHighlight.yellow(entry.getIntKey()))
 				.toList();
 	}
 
@@ -38,6 +39,13 @@ public class SalvageHelper extends SimpleContainerSolver implements ContainerAnd
 	private boolean isPriceWithinRange(ItemStack stack) {
 		NetworthResult result = NetworthCalculator.getItemNetworth(stack);
 		return result.price() > 0 && result.price() < 100_000;
+	}
+
+	private boolean wasDonatedToMuseum(ItemStack stack) {
+		if (!SkyblockerConfigManager.get().dungeons.onlyHighlightDonatedItems) return true;
+
+		String itemId = stack.getSkyblockId();
+		return MuseumItemCache.hasItemInMuseum(itemId);
 	}
 
 	@Override

@@ -1,0 +1,74 @@
+package de.hysky.skyblocker.skyblock.item.custom;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.ItemUtils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+import org.slf4j.Logger;
+
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
+
+/**
+ * Caches generated ProfileComponents for custom player head textures.
+ */
+public class CustomHelmetTextures {
+	private static final Logger LOGGER = LogUtils.getLogger();
+	public static final List<NamedTexture> TEXTURES = new ArrayList<>();
+	public static final Object2ObjectOpenHashMap<String, ResolvableProfile> PROFILE_CACHE = new Object2ObjectOpenHashMap<>();
+	private static final Pattern LEVEL_PATTERN = Pattern.compile("\\[Lvl[^\\]]*\\]");
+
+	@Init
+	public static void init() {
+		ItemRepository.runAsyncAfterImport(CustomHelmetTextures::loadTextures);
+	}
+
+	private static void loadTextures() {
+		try {
+			if (!ItemRepository.filesImported()) return;
+
+			TEXTURES.clear();
+			ObjectSet<String> seen = new ObjectOpenHashSet<>();
+			ItemRepository.getItemsStream()
+					.filter(stack -> stack.is(Items.PLAYER_HEAD))
+					.forEach(stack -> {
+						String texture = ItemUtils.getHeadTexture(stack);
+						if (texture.isEmpty() || !seen.add(texture)) return;
+						String name = cleanName(stack.getHoverName().getString());
+						TEXTURES.add(new NamedTexture(name, texture, stack.getNeuName()));
+					});
+
+			TEXTURES.sort(Comparator.comparing(NamedTexture::internalName));
+			LOGGER.info("[Skyblocker] Loaded and sorted {} helmet textures from repo", TEXTURES.size());
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker] Failed to load helmet textures from repo", e);
+		}
+	}
+
+	private static String cleanName(String name) {
+		return LEVEL_PATTERN.matcher(name).replaceAll("").trim();
+	}
+
+	public static List<NamedTexture> getTextures() {
+		return TEXTURES;
+	}
+
+	public static ResolvableProfile getProfile(String texture) {
+		return PROFILE_CACHE.computeIfAbsent(texture, (String t) ->
+				ResolvableProfile.createResolved(new GameProfile(UUID.nameUUIDFromBytes(t.getBytes(StandardCharsets.UTF_8)),
+						"custom",
+						ItemUtils.propertyMapWithTexture(t))));
+	}
+
+	public record NamedTexture(String name, String texture, String internalName) {}
+}

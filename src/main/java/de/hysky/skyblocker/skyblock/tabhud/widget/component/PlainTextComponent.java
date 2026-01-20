@@ -1,30 +1,39 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.CommonColors;
+import org.jspecify.annotations.Nullable;
 
 /**
- * Component that consists of a line of text.
+ * Component that consists of 1 or 2 lines of text.
  */
 public class PlainTextComponent extends Component {
+	private final List<net.minecraft.network.chat.Component> lines = new ArrayList<>();
 
-	private Text text;
+	public PlainTextComponent(net.minecraft.network.chat.@Nullable Component txt) {
+		lines.add(txt == null ? net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY) : txt);
 
-	public PlainTextComponent(Text txt) {
-		this.text = txt;
+		this.width = PAD_L + txtRend.width(lines.getFirst()); // looks off without padding
+		this.height = txtRend.lineHeight;
+	}
 
-		if (txt == null) {
-			this.text = Text.literal("No data").formatted(Formatting.GRAY);
-		}
+	public PlainTextComponent(net.minecraft.network.chat.@Nullable Component line1, net.minecraft.network.chat.@Nullable Component line2) {
+		lines.add(line1 == null ? net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY) : line1);
+		lines.add(line2 == null ? net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY) : line2);
 
-		this.width = PAD_S + txtRend.getWidth(this.text); // looks off without padding
-		this.height = txtRend.fontHeight;
+		this.width = PAD_L + Math.max(txtRend.width(lines.get(0)), txtRend.width(lines.get(1)));
+		this.height = (txtRend.lineHeight * 2) + PAD_S;
 	}
 
 	@Override
-	public void render(DrawContext context, int x, int y) {
-		context.drawText(txtRend, text, x + PAD_S, y, 0xffffffff, false);
+	public void render(GuiGraphics context, int x, int y) {
+		int yOffset = 0;
+		for (net.minecraft.network.chat.Component line : lines) {
+			context.drawString(txtRend, line, x + PAD_L, y + yOffset, CommonColors.WHITE, false);
+			yOffset += txtRend.lineHeight + PAD_S;
+		}
 	}
-
 }

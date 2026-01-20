@@ -1,198 +1,208 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.narration.NarrationPart;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
-
-import java.awt.*;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import java.awt.Color;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 
-public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
-    private final ChatRulesConfigScreen screen;
-    private boolean hasChanged;
+public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
+	private static final int ROW_HEIGHT = 26;
 
-    public ChatRulesConfigListWidget(MinecraftClient client, ChatRulesConfigScreen screen, int width, int height, int y, int itemHeight) {
-        super(client, width, height, y, itemHeight);
-        this.screen = screen;
-        this.hasChanged = false;
+	private final ChatRulesConfigScreen screen;
+	private boolean hasChanged;
 
-        //add labels
-        addEntry(new ChatRuleLabelsEntry());
-        //add entry fall all existing rules
-        for (int i = 0; i < ChatRulesHandler.chatRuleList.size(); i++){
-            addEntry(new ChatRuleConfigEntry(i));
-        }
-    }
+	public ChatRulesConfigListWidget(Minecraft client, ChatRulesConfigScreen screen, int width, int height, int y) {
+		super(client, width, height, y, ROW_HEIGHT);
+		this.screen = screen;
+		this.hasChanged = false;
 
-    @Override
-    public int getRowWidth() {
-        return super.getRowWidth() + 100;
-    }
+		updateEntries();
+	}
 
-    @Override
-    protected int getScrollbarX() {
-        return super.getScrollbarX() + 50;
-    }
-
-    protected void addRuleAfterSelected() {
-        hasChanged = true;
-        int newIndex = Math.max(children().indexOf(getSelectedOrNull()), 0);
-
-        ChatRulesHandler.chatRuleList.add(newIndex, new ChatRule());
-        children().add(newIndex + 1, new ChatRuleConfigEntry(newIndex));
-    }
+	public void updateEntries() {
+		clearEntries();
+		addEntry(new LabelsEntry());
+		for (int i = 0; i < ChatRulesHandler.CHAT_RULE_LIST.getData().size(); i++) {
+			addEntry(new ChatRuleEntry(i));
+		}
+	}
 
 	@Override
-    protected boolean removeEntry(AbstractChatRuleEntry entry) {
-        hasChanged = true;
-        return super.removeEntry(entry);
-    }
+	public int getRowWidth() {
+		return 320;
+	}
 
-    protected void saveRules() {
-        hasChanged = false;
-        ChatRulesHandler.saveChatRules();
-    }
+	@Override
+	protected boolean entriesCanBeSelected() {
+		return true;
+	}
 
-    protected boolean hasChanges() {
-        return (hasChanged || children().stream().filter(ChatRuleConfigEntry.class::isInstance).map(ChatRuleConfigEntry.class::cast).anyMatch(ChatRuleConfigEntry::isChange));
-    }
+	protected void addRuleAfterSelected() {
+		hasChanged = true;
+		int newIndex = Math.max(children().indexOf(getSelected()), 0);
 
-	protected abstract static class AbstractChatRuleEntry extends ElementListWidget.Entry<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
-    }
+		ChatRulesHandler.CHAT_RULE_LIST.getData().add(newIndex, new ChatRule());
+		updateEntries();
+		if (newIndex + 1 >= this.children().size()) return;
+		AbstractChatRuleEntry entry = this.children().get(newIndex + 1);
+		// I hate this
+		Scheduler.INSTANCE.schedule(() -> setSelected(entry), 0);
+	}
 
-    private class ChatRuleLabelsEntry extends AbstractChatRuleEntry {
+	@Override
+	protected void removeEntry(AbstractChatRuleEntry entry) {
+		super.removeEntry(entry);
+		hasChanged = true;
+	}
 
-        @Override
-        public List<? extends Selectable> selectableChildren() {
-            return List.of();
-        }
+	@Override
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+		if (super.mouseClicked(click, doubled)) return true;
+		setSelected(null);
+		return false;
+	}
 
-        @Override
-        public List<? extends Element> children() {
-            return List.of();
-        }
+	protected void saveRules() {
+		hasChanged = false;
+		ChatRulesHandler.saveChatRules();
+	}
 
-        @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleName"), width / 2 - 125, y + 5, 0xFFFFFFFF);
-            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleEnabled"), width / 2, y + 5, 0xFFFFFFFF);
-            context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.modify"), width / 2 + 100, y + 5, 0xFFFFFFFF);
-        }
-    }
+	protected boolean hasChanges() {
+		return (hasChanged || children().stream().anyMatch(AbstractChatRuleEntry::hasChanged));
+	}
 
-    private class ChatRuleConfigEntry extends AbstractChatRuleEntry {
-        //data
-        private final int chatRuleIndex;
-        private final ChatRule chatRule;
+	protected abstract static class AbstractChatRuleEntry extends ContainerObjectSelectionList.Entry<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
+		public boolean hasChanged() {
+			return false;
+		}
+	}
 
-        private final List<? extends Element> children;
+	private class LabelsEntry extends AbstractChatRuleEntry {
+		@Override
+		public List<? extends NarratableEntry> narratables() {
+			return List.of();
+		}
 
-        //widgets
-        private final ButtonWidget enabledButton;
-        private final ButtonWidget openConfigButton;
-        private final ButtonWidget deleteButton;
+		@Override
+		public List<? extends GuiEventListener> children() {
+			return List.of();
+		}
 
-        //text location
-        private final int nameX = width / 2 - 125;
-        //saved data
-        private double oldScrollAmount = 0;
+		@Override
+		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleName"), ChatRulesConfigListWidget.this.getWidth() / 2 - 100, this.getY() + 5, CommonColors.WHITE);
+			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleEnabled"), ChatRulesConfigListWidget.this.getWidth() / 2 - 10, this.getY() + 5, CommonColors.WHITE);
+			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.modify"), ChatRulesConfigListWidget.this.getWidth() / 2 + 77, this.getY() + 5, CommonColors.WHITE);
+			context.fill(getRowLeft(), getY() + 15, getRowRight(), getY() + 16, CommonColors.LIGHT_GRAY);
+		}
+	}
 
+	private class ChatRuleEntry extends AbstractChatRuleEntry {
+		// Data
+		private final int chatRuleIndex;
+		private final ChatRule chatRule;
 
-        public ChatRuleConfigEntry(int chatRuleIndex) {
-            this.chatRuleIndex = chatRuleIndex;
-            this.chatRule = ChatRulesHandler.chatRuleList.get(chatRuleIndex);
+		// Widgets
+		private final List<? extends GuiEventListener> children;
+		private final LinearLayout layout;
 
-            enabledButton = ButtonWidget.builder(enabledButtonText(), a -> toggleEnabled())
-                    .size(50, 20)
-                    .position(width / 2 - 25, 5)
-                    .build();
+		@Override
+		public void setX(int x) {
+			super.setX(x);
+			layout.setX(x + 125);
+			layout.arrangeElements();
+		}
 
-            openConfigButton = ButtonWidget.builder(Text.translatable("skyblocker.config.chat.chatRules.screen.editRule"),
-		                                           a -> client.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex)))
-                    .size(50, 20)
-                    .position(width / 2 + 45, 5)
-                    .tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.editRule.@Tooltip")))
-                    .build();
+		@Override
+		public void setY(int y) {
+			super.setY(y);
+			layout.setY(y);
+			layout.arrangeElements();
+		}
 
-            deleteButton = ButtonWidget.builder(Text.translatable("selectServer.delete"), a -> {
-                        oldScrollAmount = getScrollY();
-                        client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.config.chat.chatRules.screen.deleteQuestion"), Text.translatable("skyblocker.config.chat.chatRules.screen.deleteWarning", chatRule.getName()), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
-                    })
-                    .size(50, 20)
-                    .position(width / 2 + 105, 5)
-                    .build();
+		@Override
+		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+			super.mouseClicked(click, doubled);
+			setSelected(this);
+			return true;
+		}
 
-            children = List.of(enabledButton, openConfigButton, deleteButton);
-        }
+		private ChatRuleEntry(int chatRuleIndex) {
+			this.chatRuleIndex = chatRuleIndex;
+			this.chatRule = ChatRulesHandler.CHAT_RULE_LIST.getData().get(chatRuleIndex);
 
-        private Text enabledButtonText() {
-            if (chatRule.getEnabled()) {
-                return Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.true").withColor(Color.GREEN.getRGB());
-            } else {
-                return Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.false").withColor(Color.RED.getRGB());
-            }
-        }
-        private void toggleEnabled() {
-            hasChanged = true;
-            chatRule.setEnabled(!chatRule.getEnabled());
-            enabledButton.setMessage(enabledButtonText());
-        }
+			layout = new LinearLayout(0, 0, LinearLayout.Orientation.HORIZONTAL);
+			layout.defaultCellSetting().paddingRight(10);
+			layout.defaultCellSetting().paddingTop(3);
 
-        private void deleteEntry(boolean confirmedAction) {
-            if (confirmedAction) {
-                //delete this
-                ChatRulesHandler.chatRuleList.remove(chatRuleIndex);
-                removeEntry(this);
-            }
+			Button enabledButton = layout.addChild(Button.builder(enabledButtonText(), this::toggleEnabled).size(50, 20).build());
 
-            client.setScreen(screen);
-            setScrollY(oldScrollAmount);
-        }
+			Button openConfigButton = layout.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.editRule"), a -> minecraft.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex))).size(50, 20).tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.editRule.@Tooltip"))).build());
 
-        @Override
-        public List<? extends Selectable> selectableChildren() {
-            return List.of(new Selectable() {
-                @Override
-                public SelectionType getType() {
-                    return SelectionType.HOVERED;
-                }
+			Button deleteButton = layout.addChild(Button.builder(Component.translatable("selectServer.delete"), a ->
+				minecraft.setScreen(new ConfirmScreen(this::deleteEntry, Component.translatable("skyblocker.config.chat.chatRules.screen.deleteQuestion"), Component.translatable("skyblocker.config.chat.chatRules.screen.deleteWarning", chatRule.getName()), Component.translatable("selectServer.deleteButton"), CommonComponents.GUI_CANCEL))
+			).size(50, 20).build());
 
-                @Override
-                public void appendNarrations(NarrationMessageBuilder builder) {
-                    builder.put(NarrationPart.TITLE,chatRule.getName());
-                }
-            });
-        }
+			children = List.of(enabledButton, openConfigButton, deleteButton);
+		}
 
-        @Override
-        public List<? extends Element> children() {
-            return children;
-        }
+		private Component enabledButtonText() {
+			if (chatRule.getEnabled()) {
+				return Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.true").withColor(Color.GREEN.getRGB());
+			} else {
+				return Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.false").withColor(Color.RED.getRGB());
+			}
+		}
 
-        @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) { //todo get strings form en_us.json
-            //widgets
-            enabledButton.setY(y);
-            enabledButton.render(context, mouseX, mouseY, tickDelta);
-            openConfigButton.setY(y);
-            openConfigButton.render(context, mouseX, mouseY, tickDelta);
-            deleteButton.setY(y);
-            deleteButton.render(context, mouseX, mouseY, tickDelta);
-            //text
-            context.drawCenteredTextWithShadow(client.textRenderer, chatRule.getName(), nameX, y + 5, 0xFFFFFFFF);
-        }
+		private void toggleEnabled(Button button) {
+			hasChanged = true;
+			chatRule.setEnabled(!chatRule.getEnabled());
+			button.setMessage(enabledButtonText());
+		}
 
-        public boolean isChange() {
-            return chatRule.getEnabled() != ChatRulesHandler.chatRuleList.get(chatRuleIndex).getEnabled();
-        }
-    }
+		private void deleteEntry(boolean confirmedAction) {
+			if (confirmedAction) {
+				ChatRulesHandler.CHAT_RULE_LIST.getData().remove(chatRuleIndex);
+				removeEntry(this);
+			}
+
+			minecraft.setScreen(screen);
+			updateEntries();
+		}
+
+		@Override
+		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			// Widgets
+			layout.visitWidgets((child) -> child.render(context, mouseX, mouseY, deltaTicks));
+			// Text
+			context.drawCenteredString(minecraft.font, chatRule.getName(), getX() + 60, this.getY() + 8, CommonColors.WHITE);
+		}
+
+		@Override
+		public boolean hasChanged() {
+			return chatRule.getEnabled() != ChatRulesHandler.CHAT_RULE_LIST.getData().get(chatRuleIndex).getEnabled();
+		}
+
+		@Override
+		public List<? extends GuiEventListener> children() {
+			return children;
+		}
+
+		@Override
+		public List<? extends NarratableEntry> narratables() {
+			return List.of();
+		}
+	}
 }

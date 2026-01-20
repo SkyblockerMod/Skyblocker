@@ -1,54 +1,54 @@
 package de.hysky.skyblocker.config;
 
-import de.hysky.skyblocker.config.configs.*;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import de.hysky.skyblocker.config.configs.ChatConfig;
+import de.hysky.skyblocker.config.configs.CrimsonIsleConfig;
+import de.hysky.skyblocker.config.configs.DebugConfig;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
+import de.hysky.skyblocker.config.configs.FarmingConfig;
+import de.hysky.skyblocker.config.configs.ForagingConfig;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.config.configs.HuntingConfig;
+import de.hysky.skyblocker.config.configs.MiningConfig;
+import de.hysky.skyblocker.config.configs.MiscConfig;
+import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
+import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
+import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 
 public class SkyblockerConfig {
-    @SerialEntry
-    public int version = SkyblockerConfigManager.CONFIG_VERSION;
+	public int version = SkyblockerConfigManager.CONFIG_VERSION;
 
-    @SerialEntry
-    public GeneralConfig general = new GeneralConfig();
+	public GeneralConfig general = new GeneralConfig();
 
-    @SerialEntry
-    public UIAndVisualsConfig uiAndVisuals = new UIAndVisualsConfig();
+	public UIAndVisualsConfig uiAndVisuals = new UIAndVisualsConfig();
 
-    @SerialEntry
-    public HelperConfig helpers = new HelperConfig();
+	public HelperConfig helpers = new HelperConfig();
 
-    @SerialEntry
-    public DungeonsConfig dungeons = new DungeonsConfig();
+	public DungeonsConfig dungeons = new DungeonsConfig();
 
-    @SerialEntry
-    public ForagingConfig foraging = new ForagingConfig();
+	public ForagingConfig foraging = new ForagingConfig();
 
-    @SerialEntry
-    public CrimsonIsleConfig crimsonIsle = new CrimsonIsleConfig();
+	public CrimsonIsleConfig crimsonIsle = new CrimsonIsleConfig();
 
-    @SerialEntry
-    public MiningConfig mining = new MiningConfig();
+	public MiningConfig mining = new MiningConfig();
 
-    @SerialEntry
-    public FarmingConfig farming = new FarmingConfig();
+	public FarmingConfig farming = new FarmingConfig();
 
-    @SerialEntry
-    public OtherLocationsConfig otherLocations = new OtherLocationsConfig();
+	public HuntingConfig hunting = new HuntingConfig();
 
-    @SerialEntry
-    public SlayersConfig slayers = new SlayersConfig();
+	public OtherLocationsConfig otherLocations = new OtherLocationsConfig();
 
-    @SerialEntry
-    public ChatConfig chat = new ChatConfig();
+	public SlayersConfig slayers = new SlayersConfig();
 
-    @SerialEntry
-    public QuickNavigationConfig quickNav = new QuickNavigationConfig();
+	public ChatConfig chat = new ChatConfig();
 
-    @SerialEntry
-    public EventNotificationsConfig eventNotifications = new EventNotificationsConfig();
+	public QuickNavigationConfig quickNav = new QuickNavigationConfig();
 
-    @SerialEntry
-    public MiscConfig misc = new MiscConfig();
+	public EventNotificationsConfig eventNotifications = new EventNotificationsConfig();
 
-    @SerialEntry
-    public DebugConfig debug = new DebugConfig();
+	public MiscConfig misc = new MiscConfig();
+
+	public DebugConfig debug = new DebugConfig();
 }

@@ -8,57 +8,58 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import de.hysky.skyblocker.utils.render.gui.EmptyWidget;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.OptionGroup;
-import dev.isxander.yacl3.gui.YACLScreen;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 import java.util.Set;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.network.chat.Component;
 
 public class TitleContainerConfigScreen extends HudConfigScreen {
+	public static final float MIN_TITLE_SCALE = 30f;
+	public static final float MAX_TITLE_SCALE = 140f;
 	// ImmutableSet preserves insertion order
 	private static final Set<Title> EXAMPLES = ImmutableSet.of(
-			new Title(Text.literal("Test1").formatted(Formatting.RED)),
-			new Title(Text.literal("Test23").formatted(Formatting.AQUA)),
-			new Title(Text.literal("Testing1234").formatted(Formatting.DARK_GREEN))
+			new Title(Component.literal("Test1").withStyle(ChatFormatting.RED)),
+			new Title(Component.literal("Test23").withStyle(ChatFormatting.AQUA)),
+			new Title(Component.literal("Testing1234").withStyle(ChatFormatting.DARK_GREEN))
 	);
-	private boolean changedScale;
 
 	protected TitleContainerConfigScreen() {
 		this(null);
 	}
 
 	public TitleContainerConfigScreen(Screen parent) {
-		super(Text.of("Title Container HUD Config"), parent, new EmptyWidget());
+		super(Component.nullToEmpty("Title Container HUD Config"), parent, new EmptyWidget());
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-		// Load the config positions here since #getConfigPos is used for resetting. This loads the config pos after the supertype constructor calls HudConfigScreen#resetPos.
-		widgets.getFirst().setPosition(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y);
+		// Only load config positions if they are not default
+		if (SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x >= 0 && SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y >= 0) {
+			// Load the config positions here since #getConfigPos is used for resetting. This loads the config pos after HudConfigScreen#init calls HudConfigScreen#resetPos.
+			widgets.getFirst().setPosition(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y);
+		}
 		// Set the dimensions here or else Screen#textRenderer is null.
 		updateWidgetDimensions();
 	}
 
 	@Override
-	protected void renderWidget(DrawContext context, List<AbstractWidget> widgets, float delta) {
+	protected void renderWidget(GuiGraphics context, List<AbstractWidget> widgets, float delta) {
 		super.renderWidget(context, widgets, delta);
 		TitleContainer.render(context, EXAMPLES, widgets.getFirst().getX(), widgets.getFirst().getY(), delta);
 		UIAndVisualsConfig.Direction direction = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction;
 		UIAndVisualsConfig.Alignment alignment = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment;
-		context.drawCenteredTextWithShadow(textRenderer, "Press Q/E to change Alignment: " + alignment, width / 2, textRenderer.fontHeight * 2, Color.WHITE.getRGB());
-		context.drawCenteredTextWithShadow(textRenderer, "Press R to change Direction: " + direction, width / 2, textRenderer.fontHeight * 3 + 5, Color.WHITE.getRGB());
-		context.drawCenteredTextWithShadow(textRenderer, "Press +/- to change Scale", width / 2, textRenderer.fontHeight * 4 + 10, Color.WHITE.getRGB());
-		context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width / 2, textRenderer.fontHeight * 5 + 15, Color.GRAY.getRGB());
+		context.drawCenteredString(font, "Press Q/E to change Alignment: " + alignment, width / 2, font.lineHeight * 2, Color.WHITE.getRGB());
+		context.drawCenteredString(font, "Press R to change Direction: " + direction, width / 2, font.lineHeight * 3 + 5, Color.WHITE.getRGB());
+		context.drawCenteredString(font, "Press +/- to change Scale", width / 2, font.lineHeight * 4 + 10, Color.WHITE.getRGB());
+		context.drawCenteredString(font, "Right Click To Reset Position", width / 2, font.lineHeight * 5 + 15, Color.GRAY.getRGB());
 
 		int selectionWidth = getSelectionWidth();
 		int x1 = switch (alignment) {
@@ -70,10 +71,10 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 		int x2 = x1 + selectionWidth;
 		int y2 = y1 + getSelectionHeight();
 
-		context.drawHorizontalLine(x1, x2, y1, Color.RED.getRGB());
-		context.drawHorizontalLine(x1, x2, y2, Color.RED.getRGB());
-		context.drawVerticalLine(x1, y1, y2, Color.RED.getRGB());
-		context.drawVerticalLine(x2, y1, y2, Color.RED.getRGB());
+		context.hLine(x1, x2, y1, Color.RED.getRGB());
+		context.hLine(x1, x2, y2, Color.RED.getRGB());
+		context.vLine(x1, y1, y2, Color.RED.getRGB());
+		context.vLine(x2, y1, y2, Color.RED.getRGB());
 	}
 
 	private void updateWidgetDimensions() {
@@ -81,16 +82,16 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	private int getSelectionWidth() {
-		return TitleContainer.getWidth(textRenderer, EXAMPLES);
+		return TitleContainer.getWidth(font, EXAMPLES);
 	}
 
 	private int getSelectionHeight() {
-		return TitleContainer.getHeight(textRenderer, EXAMPLES);
+		return TitleContainer.getHeight(font, EXAMPLES);
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		switch (keyCode) {
+	public boolean keyPressed(KeyEvent input) {
+		switch (input.key()) {
 			case GLFW.GLFW_KEY_Q -> SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment = EnumUtils.cycle(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment);
 			case GLFW.GLFW_KEY_E -> SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment = EnumUtils.cycleBackwards(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment);
 			case GLFW.GLFW_KEY_R -> {
@@ -98,17 +99,17 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 				updateWidgetDimensions();
 			}
 			case GLFW.GLFW_KEY_EQUAL -> {
-				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.titleContainerScale += 10;
+				UIAndVisualsConfig.TitleContainer conf = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
+				conf.titleContainerScale = Math.min(MAX_TITLE_SCALE, conf.titleContainerScale + 10);
 				updateWidgetDimensions();
-				changedScale = true;
 			}
 			case GLFW.GLFW_KEY_MINUS -> {
-				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.titleContainerScale -= 10;
+				UIAndVisualsConfig.TitleContainer conf = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
+				conf.titleContainerScale = Math.max(MIN_TITLE_SCALE, conf.titleContainerScale - 10);
 				updateWidgetDimensions();
-				changedScale = true;
 			}
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(input);
 	}
 
 	@Override
@@ -127,17 +128,10 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected void savePos(SkyblockerConfig configManager, List<AbstractWidget> widgets) {
-		SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x = widgets.getFirst().getX();
-		SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y = widgets.getFirst().getY();
-
-		//TODO Come up with a better, less hacky solution for this in the future (:
-		if (changedScale && parent instanceof YACLScreen yaclScreen) {
-			ConfigCategory category = yaclScreen.config.categories().stream().filter(cat -> cat.name().getContent() instanceof TranslatableTextContent translatable && translatable.getKey().equals("skyblocker.config.uiAndVisuals")).findFirst().orElseThrow();
-			OptionGroup group = category.groups().stream().filter(grp -> grp.name().getContent() instanceof TranslatableTextContent translatable && translatable.getKey().equals("skyblocker.config.uiAndVisuals.titleContainer")).findFirst().orElseThrow();
-
-			// Refresh the value in the config with the bound value
-			group.options().getFirst().forgetPendingValue();
-		}
+	protected void savePos(SkyblockerConfig config, List<AbstractWidget> widgets) {
+		// Save to -1 if the widget is at the default position
+		List<IntIntMutablePair> defaultPos = getConfigPos(config);
+		config.uiAndVisuals.titleContainer.x = widgets.getFirst().getX() != defaultPos.getFirst().leftInt() ? widgets.getFirst().getX() : -1;
+		config.uiAndVisuals.titleContainer.y = widgets.getFirst().getY() != defaultPos.getFirst().rightInt() ? widgets.getFirst().getY() : -1;
 	}
 }

@@ -1,328 +1,336 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.SkyblockerMod;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.block.entity.SkullBlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.PlayerSkinDrawer;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.util.DefaultSkinHelper;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
+import org.joml.Matrix3x2fStack;
 
-public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
-    private static final Identifier PARTY_CARD_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
-    private static final Identifier PARTY_CARD_TEXTURE_HOVER = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card_hover.png");
-    public static final Text JOIN_TEXT = Text.translatable("skyblocker.partyFinder.join");
-    private static final Map<String, ProfileComponent> SKULL_CACHE = new Object2ObjectOpenHashMap<>();
-    protected final PartyFinderScreen screen;
-    protected final int slotID;
-    Player partyLeader;
-    String floor = "???";
-    String dungeon = "???";
-    String note = "";
-    PropertyMap floorSkullProperties = new PropertyMap();
-    Identifier partyLeaderSkin = DefaultSkinHelper.getTexture();
-    Player[] partyMembers = new Player[4];
+public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
+	private static final Identifier PARTY_CARD_TEXTURE = SkyblockerMod.id("textures/gui/party_card.png");
+	private static final Identifier PARTY_CARD_TEXTURE_HOVER = SkyblockerMod.id("textures/gui/party_card_hover.png");
+	private static final Map<String, ResolvableProfile> SKULL_CACHE = new Object2ObjectOpenHashMap<>();
+	private static final Pattern NUMBERS_PATTERN = Pattern.compile("\\d+$");
 
-    int minClassLevel = -1;
-    int minCatacombsLevel = -1;
+	public static final Component JOIN_TEXT = Component.translatable("skyblocker.partyFinder.join");
+	protected final PartyFinderScreen screen;
+	protected final int slotID;
 
-    public boolean isLocked() {
-        return isLocked;
-    }
+	Player partyLeader;
+	String floor = "???";
+	String dungeon = "???";
+	String note = "";
+	PropertyMap floorSkullProperties = PropertyMap.EMPTY;
+	Identifier partyLeaderSkin = DefaultPlayerSkin.getDefaultTexture();
+	Player[] partyMembers = new Player[4];
 
-    boolean isLocked = false;
-    Text lockReason = Text.empty();
+	int minClassLevel = -1;
+	int minCatacombsLevel = -1;
+
+	public boolean isLocked() {
+		return isLocked;
+	}
+
+	boolean isLocked = false;
+	Component lockReason = Component.empty();
 
 
-    public PartyEntry(List<Text> tooltips, PartyFinderScreen screen, int slotID) {
-        this.screen = screen;
-        this.slotID = slotID;
+	public PartyEntry(Component title, List<Component> tooltips, PartyFinderScreen screen, int slotID) {
+		this.screen = screen;
+		this.slotID = slotID;
 
-        Arrays.fill(partyMembers, null);
-        if (tooltips.isEmpty()) return;
-        //System.out.println(tooltips);
+		Arrays.fill(partyMembers, null);
+		if (tooltips.isEmpty()) return;
+		//System.out.println(tooltips);
 
-        MinecraftClient client = MinecraftClient.getInstance();
-        Text title = tooltips.getFirst();
-        String partyHost = title.getString().split("'s")[0];
+		Minecraft client = Minecraft.getInstance();
+		String partyHost = title.getString().split("'s")[0];
 
-        int membersIndex = -1;
-        for (int i = 0; i < tooltips.size(); i++) {
-            Text text = tooltips.get(i);
-            String tooltipText = Formatting.strip(text.getString());
-            assert tooltipText != null;
-            String lowerCase = tooltipText.toLowerCase();
-            //System.out.println("TOOLTIP"+i);
-            //System.out.println(text.getSiblings());
-            if (lowerCase.contains("members:") && membersIndex == -1) {
-                membersIndex = i + 1;
-            } else if (lowerCase.contains("class level")) {
-                Matcher matcher = Pattern.compile("\\d+$").matcher(lowerCase);
-                if (matcher.find()) minClassLevel = Integer.parseInt(matcher.group());
-            } else if (lowerCase.contains("dungeon level")) {
-                Matcher matcher = Pattern.compile("\\d+$").matcher(lowerCase);
-                if (matcher.find()) minCatacombsLevel = Integer.parseInt(matcher.group());
-            } else if (lowerCase.contains("floor:")) {
-                floor = tooltipText.split(":")[1].trim();
-                if (dungeon.equals("???")) continue;
-                if (PartyFinderScreen.floorIconsMaster == null || PartyFinderScreen.floorIconsNormal == null) continue;
-                if (dungeon.contains("Master Mode")) {
-                    try {
-                        floorSkullProperties = PartyFinderScreen.floorIconsMaster.getOrDefault(floor.toLowerCase(), new PropertyMap());
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    try {
-                    	floorSkullProperties = PartyFinderScreen.floorIconsNormal.getOrDefault(floor.toLowerCase(), new PropertyMap());
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+		int membersIndex = -1;
+		for (int i = 0; i < tooltips.size(); i++) {
+			Component text = tooltips.get(i);
+			String tooltipText = ChatFormatting.stripFormatting(text.getString());
+			assert tooltipText != null;
+			String lowerCase = tooltipText.toLowerCase(Locale.ENGLISH);
+			//System.out.println("TOOLTIP"+i);
+			//System.out.println(text.getSiblings());
 
-            } else if (lowerCase.contains("dungeon:")) {
-                dungeon = tooltipText.split(":")[1].trim();
-            } else if (!text.getSiblings().isEmpty() && Objects.equals(text.getSiblings().getFirst().getStyle().getColor(), TextColor.fromRgb(Formatting.RED.getColorValue())) && !lowerCase.startsWith(" ")) {
-                isLocked = true;
-                lockReason = text;
-            } else if (lowerCase.contains("note:")) {
-                String[] split = tooltipText.split(":");
+			if (lowerCase.contains("members:") && membersIndex == -1) {
+				membersIndex = i + 1;
+			} else if (lowerCase.contains("class level")) {
+				Matcher matcher = NUMBERS_PATTERN.matcher(lowerCase);
+				if (matcher.find()) minClassLevel = Integer.parseInt(matcher.group());
+			} else if (lowerCase.contains("dungeon level")) {
+				Matcher matcher = NUMBERS_PATTERN.matcher(lowerCase);
+				if (matcher.find()) minCatacombsLevel = Integer.parseInt(matcher.group());
+			} else if (lowerCase.contains("floor:")) {
+				floor = tooltipText.split(":")[1].trim();
+				if (dungeon.equals("???")) continue;
+				if (PartyFinderScreen.floorIconsMaster == null || PartyFinderScreen.floorIconsNormal == null) continue;
+				if (dungeon.contains("Master Mode")) {
+					try {
+						floorSkullProperties = PartyFinderScreen.floorIconsMaster.getOrDefault(floor.toLowerCase(Locale.ENGLISH), PropertyMap.EMPTY);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				} else {
+					try {
+						floorSkullProperties = PartyFinderScreen.floorIconsNormal.getOrDefault(floor.toLowerCase(Locale.ENGLISH), PropertyMap.EMPTY);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
 
-                //Note goes onto next line
-                if (split.length == 1) {
-                    String next = tooltips.get(i + 1).getString();
+			} else if (lowerCase.contains("dungeon:")) {
+				dungeon = tooltipText.split(":")[1].trim();
+			} else if (!text.getSiblings().isEmpty() && Objects.equals(text.getSiblings().getFirst().getStyle().getColor(), TextColor.fromRgb(ChatFormatting.RED.getColor())) && !lowerCase.startsWith(" ")) {
+				isLocked = true;
+				lockReason = text;
+			} else if (lowerCase.contains("note:")) {
+				String[] split = tooltipText.split(":", 2);
+				if (split.length == 2) {
+					note = split[1].trim();
+				} else {
+					note = "???";
+				}
+			}
+		}
 
-                    if (!next.isBlank() && (!next.contains("Class Level") || !next.contains("Dungeon Level"))) {
-                        note = next.trim();
-                    } else {
-                        note = "";
-                    }
-                } else {
-                    note = split[1].trim();
-                }
-            }
-        }
-        if (membersIndex != -1) {
-            for (int i = membersIndex, j = 0; i < membersIndex + 5; i++, j++) {
-                if (i >= tooltips.size()) continue;
+		if (membersIndex != -1) {
+			for (int i = membersIndex, j = 0; i < membersIndex + 5; i++, j++) {
+				if (i >= tooltips.size()) continue;
 
-                Text text = tooltips.get(i);
-                String memberText = text.getString();
-                if (!memberText.startsWith(" ")) continue; // Member thingamajigs start with a space
+				Component text = tooltips.get(i);
+				String memberText = text.getString();
+				if (!memberText.startsWith(" ")) continue; // Member thingamajigs start with a space
 
-                String[] parts = memberText.split(":", 2);
-                String playerNameTrim = parts[0].trim();
+				String[] parts = memberText.split(":", 2);
+				String playerNameTrim = parts[0].trim();
 
-                if (playerNameTrim.equals("Empty")) continue; // Don't care about these idiots lol
+				if (playerNameTrim.equals("Empty")) continue; // Don't care about these idiots lol
 
-                List<Text> siblings = text.getSiblings();
-                Style nameStyle = !siblings.isEmpty() ? siblings.get(Math.min(1, siblings.size() - 1)).getStyle() : text.getStyle();
-                Text playerName = Text.literal(playerNameTrim).setStyle(nameStyle);
-                String className = parts[1].trim().split(" ")[0];
-                int classLevel = -1;
-                Matcher matcher = Pattern.compile("\\((\\d+)\\)").matcher(parts[1]);
-                if (matcher.find()) classLevel = Integer.parseInt(matcher.group(1));
-                Player player = new Player(playerName, className, classLevel);
+				List<Component> siblings = text.getSiblings();
+				Style nameStyle = !siblings.isEmpty() ? siblings.get(Math.min(1, siblings.size() - 1)).getStyle() : text.getStyle();
+				Component playerName = Component.literal(playerNameTrim).setStyle(nameStyle);
+				String className = parts[1].trim().split(" ")[0];
+				int classLevel = -1;
+				Matcher matcher = Pattern.compile("\\((\\d+)\\)").matcher(parts[1]);
+				if (matcher.find()) classLevel = Integer.parseInt(matcher.group(1));
+				Player player = new Player(playerName, className, classLevel);
 
-                SkullBlockEntity.fetchProfileByName(playerNameTrim).thenAccept(
-                        gameProfile -> gameProfile.ifPresent(profile -> player.skinTexture = (client.getSkinProvider().getSkinTextures(profile).texture())));
+				client.playerSkinRenderCache().lookup(ResolvableProfile.createUnresolved(playerNameTrim)).thenAccept(
+						gameProfile -> gameProfile.ifPresent(entry -> player.skinTexture = entry.playerSkin().body().texturePath()));
 
-                if (playerNameTrim.equals(partyHost)) {
-                    partyLeader = player;
-                    j--;
-                } else if (j > 3) {
-                    partyLeader = player;
-                } else partyMembers[j] = player;
-            }
-        }
+				if (playerNameTrim.equals(partyHost)) {
+					partyLeader = player;
+					j--;
+				} else if (j > 3) {
+					partyLeader = player;
+				} else partyMembers[j] = player;
+			}
+		}
 
-        if (partyLeader == null) {
-            for (int i = partyMembers.length - 1; i >= 0; i--) {
-                if (partyMembers[i] != null) {
-                    partyLeader = partyMembers[i];
-                    partyMembers[i] = null;
-                    break;
-                }
-            }
-        }
-        if (partyLeader == null) {
-            partyLeader = new Player(Text.literal("Error"), "Error", -1);
-        }
+		if (partyLeader == null) {
+			for (int i = partyMembers.length - 1; i >= 0; i--) {
+				if (partyMembers[i] != null) {
+					partyLeader = partyMembers[i];
+					partyMembers[i] = null;
+					break;
+				}
+			}
+		}
+		if (partyLeader == null) {
+			partyLeader = new Player(Component.literal("Error"), "Error", -1);
+		}
 
-        SkullBlockEntity.fetchProfileByName(partyLeader.name.getString()).thenAccept(
-                gameProfile -> gameProfile.ifPresent(profile -> partyLeaderSkin = client.getSkinProvider().getSkinTextures(profile).texture()));
-    }
+		client.playerSkinRenderCache().lookup(ResolvableProfile.createUnresolved(partyLeader.name.getString())).thenAccept(
+				gameProfile -> gameProfile.ifPresent(entry -> partyLeaderSkin = entry.playerSkin().body().texturePath()));
+	}
 
-    @Override
-    public List<? extends Selectable> selectableChildren() {
-        return List.of();
-    }
+	@Override
+	public List<? extends NarratableEntry> narratables() {
+		return List.of();
+	}
 
-    @Override
-    public List<? extends Element> children() {
-        return List.of();
-    }
+	@Override
+	public List<? extends GuiEventListener> children() {
+		return List.of();
+	}
 
-    @Override
-    public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-        MatrixStack matrices = context.getMatrices();
-        matrices.push();
-        matrices.translate(x, y, 0);
+	@Override
+	public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		int x = this.getX();
+		int y = this.getY();
+		int entryWidth = this.getWidth();
+		int entryHeight = this.getHeight();
+		Matrix3x2fStack matrices = context.pose();
+		matrices.pushMatrix();
+		matrices.translate(x, y);
 
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        if (hovered && !isLocked) {
-            context.drawTexture(RenderLayer::getGuiTextured, PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
-            if (!(this instanceof YourParty)) context.drawText(textRenderer, JOIN_TEXT, 148, 6, 0xFFFFFFFF, false);
-        } else context.drawTexture(RenderLayer::getGuiTextured, PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
-        int mouseXLocal = mouseX - x;
-        int mouseYLocal = mouseY - y;
+		Font textRenderer = Minecraft.getInstance().font;
+		if (hovered && !isLocked) {
+			context.blit(RenderPipelines.GUI_TEXTURED, PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
+			if (!(this instanceof YourParty)) context.drawString(textRenderer, JOIN_TEXT, 148, 6, CommonColors.WHITE, false);
+		} else context.blit(RenderPipelines.GUI_TEXTURED, PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
+		int mouseXLocal = mouseX - x;
+		int mouseYLocal = mouseY - y;
 
-        context.drawText(textRenderer, this.partyLeader.toText(), 18, 6, 0xFFFFFFFF, true);
+		context.drawString(textRenderer, this.partyLeader.toText(), 18, 6, CommonColors.WHITE, true);
 
-        if (PartyFinderScreen.DEBUG) {
-            context.drawText(textRenderer, String.valueOf(slotID), 166, 6, 0xFFFFFFFF, true);
-            if (hovered) {
-                context.drawText(textRenderer, "H", 160, 6, 0xFFFFFFFF, true);
-            }
-        }
-        PlayerSkinDrawer.draw(context, partyLeaderSkin, 6, 6, 8, true, false, -1);
-        for (int i = 0; i < partyMembers.length; i++) {
-            Player partyMember = partyMembers[i];
-            if (partyMember == null) continue;
-            context.drawTextWithShadow(textRenderer, partyMember.toText(), 17 + 136 * (i % 2), 24 + 14 * (i / 2), 0xFFFFFFFF);
-            PlayerSkinDrawer.draw(context, partyMember.skinTexture, 6 + 136 * (i % 2), 24 + 14 * (i / 2), 8, true, false, -1);
-        }
+		if (PartyFinderScreen.DEBUG) {
+			context.drawString(textRenderer, String.valueOf(slotID), 166, 6, CommonColors.WHITE, true);
+			if (hovered) {
+				context.drawString(textRenderer, "H", 160, 6, CommonColors.WHITE, true);
+			}
+		}
+		PlayerFaceRenderer.draw(context, partyLeaderSkin, 6, 6, 8, true, false, -1);
+		for (int i = 0; i < partyMembers.length; i++) {
+			Player partyMember = partyMembers[i];
+			if (partyMember == null) continue;
+			context.drawString(textRenderer, partyMember.toText(), 17 + 136 * (i % 2), 24 + 14 * (i / 2), CommonColors.WHITE);
+			PlayerFaceRenderer.draw(context, partyMember.skinTexture, 6 + 136 * (i % 2), 24 + 14 * (i / 2), 8, true, false, -1);
+		}
 
-        if (minClassLevel > 0) {
-            context.drawTextWithShadow(textRenderer, Text.of("Class " + minClassLevel), 278, 25, 0xFFFFFFFF);
-            if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 22 && mouseYLocal <= 35) {
-                context.drawTooltip(textRenderer, Text.translatable("skyblocker.partyFinder.partyCard.minClassLevel", minClassLevel), mouseXLocal, mouseYLocal);
-            }
-        }
+		if (minClassLevel > 0) {
+			context.drawString(textRenderer, Component.nullToEmpty("Class " + minClassLevel), 278, 25, CommonColors.WHITE);
+			if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 22 && mouseYLocal <= 35) {
+				context.setTooltipForNextFrame(textRenderer, Component.translatable("skyblocker.partyFinder.partyCard.minClassLevel", minClassLevel), mouseX, mouseY);
+			}
+		}
 
-        if (minCatacombsLevel > 0) {
-            context.drawTextWithShadow(textRenderer, Text.of("Cata " + minCatacombsLevel), 278, 43, 0xFFFFFFFF);
-            if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 40 && mouseYLocal <= 53) {
-                context.drawTooltip(textRenderer, Text.translatable("skyblocker.partyFinder.partyCard.minDungeonLevel", minCatacombsLevel), mouseXLocal, mouseYLocal);
-            }
-        }
-        ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-        stack.set(DataComponentTypes.PROFILE, SKULL_CACHE.computeIfAbsent("SkyblockerCustomPFSkull" + dungeon + floor, name -> new ProfileComponent(Optional.of(name), Optional.of(UUID.randomUUID()), floorSkullProperties)));
-        context.drawItem(stack, 317, 3);
+		if (minCatacombsLevel > 0) {
+			context.drawString(textRenderer, Component.nullToEmpty("Cata " + minCatacombsLevel), 278, 43, CommonColors.WHITE);
+			if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 40 && mouseYLocal <= 53) {
+				context.setTooltipForNextFrame(textRenderer, Component.translatable("skyblocker.partyFinder.partyCard.minDungeonLevel", minCatacombsLevel), mouseX, mouseY);
+			}
+		}
+		ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
+		stack.set(DataComponents.PROFILE, SKULL_CACHE.computeIfAbsent("SkyblockerCustomPFSkull" + dungeon + floor, name -> ResolvableProfile.createResolved(new GameProfile(UUID.randomUUID(), name, floorSkullProperties))));
+		context.renderItem(stack, 317, 3);
 
-        int textWidth = textRenderer.getWidth(floor);
-        context.drawText(textRenderer, floor, 314 - textWidth, 7, 0xA0000000, false);
+		int textWidth = textRenderer.width(floor);
+		context.drawString(textRenderer, floor, 314 - textWidth, 7, 0xA0000000, false);
 
-        context.drawText(textRenderer, note, 5, 52, 0xFFFFFFFF, true);
+		context.drawString(textRenderer, note, 5, 52, CommonColors.WHITE, true);
 
-        if (isLocked) {
-            matrices.push();
-            matrices.translate(0, 0, 200f);
-            context.fill(0, 0, entryWidth, entryHeight, 0x90000000);
-            context.drawText(textRenderer, lockReason, entryWidth / 2 - textRenderer.getWidth(lockReason) / 2, entryHeight / 2 - textRenderer.fontHeight / 2, 0xFFFFFF, true);
-            matrices.pop();
-        }
+		if (isLocked) {
+			context.fill(0, 0, entryWidth, entryHeight, 0x90000000); // darken
+			matrices.pushMatrix();
+			matrices.translate((float) entryWidth / 2, (float) entryHeight / 2);
 
-        matrices.pop();
+			int lockWidth = textRenderer.width(lockReason) + 6; // 3 px padding on both sides
+			int textHeight = textRenderer.lineHeight;
 
-    }
+			// The locked text can sometimes overlap with player names, so a background is drawn to make keep it visible.
+			context.fill(-lockWidth / 2, -2, lockWidth / 2, textHeight, 0x7F000000); // Colors.BLACK with 1/2 alpha
+			context.drawCenteredString(textRenderer, lockReason, 0, 0, CommonColors.SOFT_RED);
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        //System.out.println("To be clicked" + slotID);
-        if (slotID == -1) {
-            PartyFinderScreen.LOGGER.error("[Skyblocker] Slot ID is null for " + partyLeader.name.getString() + "'s party");
-        }
-        if (button == 0 && !screen.isWaitingForServer() && slotID != -1) {
-            screen.clickAndWaitForServer(slotID);
-            return true;
-        }
-        return super.mouseClicked(mouseX, mouseY, button);
-    }
+			matrices.popMatrix();
+		}
 
-    public static class Player {
-        public final Text name;
-        public final String dungeonClass;
-        public final int classLevel;
-        public Identifier skinTexture = DefaultSkinHelper.getTexture();
+		matrices.popMatrix();
 
-        Player(Text name, String dungeonClass, int classLevel) {
-            this.name = name;
-            this.dungeonClass = dungeonClass;
-            this.classLevel = classLevel;
-        }
+	}
 
-        public Text toText() {
-            char dClass = dungeonClass.isEmpty() ? '?' : dungeonClass.charAt(0);
-            return name.copy().append(Text.literal(" " + dClass + " " + classLevel).formatted(Formatting.YELLOW));
-        }
-    }
+	@Override
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+		//System.out.println("To be clicked" + slotID);
+		if (slotID == -1) {
+			PartyFinderScreen.LOGGER.error("[Skyblocker] Slot ID is null for " + partyLeader.name.getString() + "'s party");
+		}
+		if (click.button() == 0 && !screen.isWaitingForServer() && slotID != -1) {
+			screen.clickAndWaitForServer(slotID);
+			return true;
+		}
+		return super.mouseClicked(click, doubled);
+	}
 
-    public static class NoParties extends PartyEntry {
+	public static class Player {
+		public final Component name;
+		public final String dungeonClass;
+		public final int classLevel;
+		public Identifier skinTexture = DefaultPlayerSkin.getDefaultTexture();
 
-        public NoParties() {
-            super(List.of(), null, -1);
-        }
+		Player(Component name, String dungeonClass, int classLevel) {
+			this.name = name;
+			this.dungeonClass = dungeonClass;
+			this.classLevel = classLevel;
+		}
 
-        @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            return false;
-        }
+		public Component toText() {
+			char dClass = dungeonClass.isEmpty() ? '?' : dungeonClass.charAt(0);
+			return name.copy().append(Component.literal(" " + dClass + " " + classLevel).withStyle(ChatFormatting.YELLOW));
+		}
+	}
 
-        @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-            context.drawCenteredTextWithShadow(textRenderer, Text.translatable("skyblocker.partyFinder.noParties"), x + entryWidth / 2, y + entryHeight / 2 - textRenderer.fontHeight / 2, 0xFFFFFFFF);
-        }
-    }
+	public static class NoParties extends PartyEntry {
 
-    public static class YourParty extends PartyEntry {
-        public static final Text DE_LIST_TEXT = Text.translatable("skyblocker.partyFinder.deList");
-        public static final Text YOUR_PARTY_TEXT = Text.translatable("skyblocker.partyFinder.yourParty");
+		public NoParties() {
+			super(Component.empty(), List.of(), null, -1);
+		}
 
-        public YourParty(List<Text> tooltips, PartyFinderScreen screen, int deListSlotId) {
-            super(tooltips, screen, deListSlotId);
-        }
+		@Override
+		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+			return false;
+		}
 
-        @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
+		@Override
+		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			Font textRenderer = Minecraft.getInstance().font;
+			context.drawCenteredString(textRenderer, Component.translatable("skyblocker.partyFinder.noParties"), this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2 - textRenderer.lineHeight / 2, CommonColors.WHITE);
+		}
+	}
 
-            MatrixStack matrices = context.getMatrices();
-            matrices.push();
-            matrices.translate(x, y, 0);
+	public static class YourParty extends PartyEntry {
+		public static final Component DE_LIST_TEXT = Component.translatable("skyblocker.partyFinder.deList");
+		public static final Component YOUR_PARTY_TEXT = Component.translatable("skyblocker.partyFinder.yourParty");
 
-            hovered = hovered & slotID != -1;
+		public YourParty(Component title, List<Component> tooltips, PartyFinderScreen screen, int deListSlotId) {
+			super(title, tooltips, screen, deListSlotId);
+		}
 
-            TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-            context.drawText(textRenderer, hovered ? DE_LIST_TEXT : YOUR_PARTY_TEXT, 148, 6, 0xFFFFFFFF, false);
+		@Override
+		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			super.renderContent(context, mouseX, mouseY, hovered, deltaTicks);
 
-            matrices.pop();
-        }
-    }
+			Matrix3x2fStack matrices = context.pose();
+			matrices.pushMatrix();
+			matrices.translate(this.getX(), this.getY());
+
+			hovered = hovered & slotID != -1;
+
+			Font textRenderer = Minecraft.getInstance().font;
+			context.drawString(textRenderer, hovered ? DE_LIST_TEXT : YOUR_PARTY_TEXT, 148, 6, CommonColors.WHITE, false);
+
+			matrices.popMatrix();
+		}
+	}
 }

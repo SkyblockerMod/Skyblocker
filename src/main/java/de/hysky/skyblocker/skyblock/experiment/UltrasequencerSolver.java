@@ -4,25 +4,23 @@ import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.block.StainedGlassPaneBlock;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.DyeColor;
-
 import java.util.List;
 import java.util.stream.IntStream;
-
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.StainedGlassPaneBlock;
+import org.jspecify.annotations.Nullable;
 
 public final class UltrasequencerSolver extends ExperimentSolver {
 	public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();
 	/**
 	 * The playable slots of Ultrasequencer in the Metaphysical level.
-	 * 
+	 * <p>
 	 * Even though the Supreme/Transcendent levels have less playable slots we filter out black glass panes later on
 	 * since black isn't in the color sequence.
 	 */
@@ -36,8 +34,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	 * Saves the {@link DyeColor} instance corresponding to the color of the pane showed in the screen as it changes each round.
 	 * Used for detecting when the round ends.
 	 */
-	@Nullable
-	private DyeColor lastColor;
+	private @Nullable DyeColor lastColor;
 
 	private UltrasequencerSolver() {
 		super("^Ultrasequencer \\(\\w+\\)$");
@@ -51,16 +48,16 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	/**
 	 * Saves the shown items to {@link #slots the slot map}.
 	 */
-	@SuppressWarnings({ "JavadocReference", "incomplete-switch" })
+	@SuppressWarnings({"JavadocReference", "incomplete-switch"})
 	@Override
-	protected void tick(GenericContainerScreen screen) {
+	protected void tick(ContainerScreen screen) {
 		switch (getState()) {
 			case REMEMBER -> {
-				Inventory inventory = screen.getScreenHandler().getInventory();
-				if (inventory.getStack(49).getName().getString().equals("Remember the pattern!")) {
+				Container inventory = screen.getMenu().getContainer();
+				if (inventory.getItem(49).getHoverName().getString().equals("Remember the pattern!")) {
 					for (int index = 9; index < 45; index++) {
-						ItemStack itemStack = inventory.getStack(index);
-						String name = itemStack.getName().getString();
+						ItemStack itemStack = inventory.getItem(index);
+						String name = itemStack.getHoverName().getString();
 						// Remember the item if its name is a number
 						if (name.matches("\\d+")) {
 							// Set the next slot to click to the item with the name "1"
@@ -76,7 +73,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 				}
 			}
 			case WAIT -> {
-				if (screen.getScreenHandler().getInventory().getStack(49).getName().getString().startsWith("Timer: ")) {
+				if (screen.getMenu().getContainer().getItem(49).getHoverName().getString().startsWith("Timer: ")) {
 					setState(State.SHOW);
 					//This doesn't trigger the markDirty method in this class as the pane color is already updated
 					//as the chain goes END -> REMEMBER -> WAIT
@@ -84,7 +81,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 				}
 			}
 			case END -> {
-				String name = screen.getScreenHandler().getInventory().getStack(49).getName().getString();
+				String name = screen.getMenu().getContainer().getItem(49).getHoverName().getString();
 				if (!name.startsWith("Timer: ")) {
 					if (name.equals("Remember the pattern!")) {
 						getSlots().clear();
@@ -107,16 +104,17 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	 */
 	@SuppressWarnings("JavadocReference")
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
-		if (getState() == State.SHOW && slot == ultrasequencerNextSlot) {
-			int count = getSlots().get(ultrasequencerNextSlot).getCount() + 1;
-			getSlots().int2ObjectEntrySet().stream()
-					.filter(entry -> entry.getValue().getCount() == count)
-					.findAny()
-					.map(Int2ObjectMap.Entry::getIntKey)
-					.ifPresent(nextSlot -> this.ultrasequencerNextSlot = nextSlot);
-		}
-		return super.onClickSlot(slot, stack, screenId);
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
+		if (getState() != State.SHOW) { return shouldBlockIncorrectClicks(); }  // Block early clicks when table is still loading
+		if (slot != ultrasequencerNextSlot) { return shouldBlockIncorrectClicks(); }
+
+		int count = getSlots().get(ultrasequencerNextSlot).getCount() + 1;
+		getSlots().int2ObjectEntrySet().stream()
+			.filter(entry -> entry.getValue().getCount() == count)
+			.findAny()
+			.map(Int2ObjectMap.Entry::getIntKey)
+			.ifPresent(nextSlot -> this.ultrasequencerNextSlot = nextSlot);
+		return super.onClickSlot(slot, stack, screenId, button);
 	}
 
 	/**
@@ -124,8 +122,8 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	 */
 	@Override
 	public void markDirty() {
-		if (MinecraftClient.getInstance().currentScreen instanceof GenericContainerScreen genericContainerScreen) {
-			List<Slot> slots = genericContainerScreen.getScreenHandler().slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9);
+		if (Minecraft.getInstance().screen instanceof ContainerScreen genericContainerScreen) {
+			List<Slot> slots = genericContainerScreen.getMenu().slots.subList(0, genericContainerScreen.getMenu().getRowCount() * 9);
 			Int2ObjectMap<ItemStack> slotMap = ContainerSolverManager.slotMap(slots);
 
 			for (int paneSlot : PANE_SLOTS) {

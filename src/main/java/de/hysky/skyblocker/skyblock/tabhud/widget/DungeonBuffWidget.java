@@ -3,32 +3,31 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 // this widget shows a list of obtained dungeon buffs
 @RegisterWidget
 public class DungeonBuffWidget extends TabHudWidget {
 
-	private static final MutableText TITLE = Text.literal("Dungeon Buffs").formatted(Formatting.DARK_PURPLE,
-			Formatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Dungeon Buffs").withStyle(ChatFormatting.DARK_PURPLE,
+			ChatFormatting.BOLD);
 
 	public DungeonBuffWidget() {
-		super("Dungeon Buffs", TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super("Dungeon Buffs", TITLE, ChatFormatting.DARK_PURPLE.getColor());
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
+	public void updateContent(List<Component> ignored) {
 
 		String footertext = PlayerListManager.getFooter();
 
 		if (footertext == null || !footertext.contains("Dungeon Buffs")) {
-			this.addComponent(new PlainTextComponent(Text.literal("No data").formatted(Formatting.GRAY)));
+			this.addComponent(new PlainTextComponent(Component.literal("No data").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
@@ -36,7 +35,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 		String[] lines = interesting.split("\n");
 
 		if (!lines[1].startsWith("Blessing")) {
-			this.addComponent(new PlainTextComponent(Text.literal("No buffs found!").formatted(Formatting.GRAY)));
+			this.addComponent(new PlainTextComponent(Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
@@ -51,20 +50,20 @@ public class DungeonBuffWidget extends TabHudWidget {
 				break;
 			}
 			int color = getBlessingColor(line);
-			this.addComponent(new PlainTextComponent(Text.literal(line).styled(style -> style.withColor(color))));
+			this.addComponent(new PlainTextComponent(Component.literal(line).withStyle(style -> style.withColor(color))));
 		}
 
 	}
 
 	@SuppressWarnings("DataFlowIssue")
 	public int getBlessingColor(String blessing) {
-		if (blessing.contains("Life")) return Formatting.LIGHT_PURPLE.getColorValue();
-		if (blessing.contains("Power")) return Formatting.RED.getColorValue();
-		if (blessing.contains("Stone")) return Formatting.GREEN.getColorValue();
-		if (blessing.contains("Time")) return 0xafb8c1;
-		if (blessing.contains("Wisdom")) return Formatting.AQUA.getColorValue();
+		if (blessing.contains("Life")) return ChatFormatting.LIGHT_PURPLE.getColor();
+		if (blessing.contains("Power")) return ChatFormatting.RED.getColor();
+		if (blessing.contains("Stone")) return ChatFormatting.GREEN.getColor();
+		if (blessing.contains("Time")) return 0xAFB8C1;
+		if (blessing.contains("Wisdom")) return ChatFormatting.AQUA.getColor();
 
-		return 0xffffff;
+		return 0xFFFFFF;
 	}
 
 }

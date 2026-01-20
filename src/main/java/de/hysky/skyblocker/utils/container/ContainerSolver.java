@@ -3,19 +3,22 @@ package de.hysky.skyblocker.utils.container;
 import de.hysky.skyblocker.utils.Resettable;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.item.ItemStack;
-
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * A solver for a container without the inventory slots included.
+ *
  * @see ContainerAndInventorySolver
  */
 public interface ContainerSolver extends ContainerMatcher, Resettable {
 	List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots);
 
-	default void start(GenericContainerScreen screen) {}
+	default void start(ContainerScreen screen) {}
 
 	@Override
 	default void reset() {}
@@ -25,11 +28,21 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 	 */
 	default void markDirty() {}
 
+	default boolean isSolverSlot(Slot slot, Screen screen) {
+		if (this instanceof ContainerAndInventorySolver) return true;
+		if (screen instanceof ContainerScreen generic) {
+			return slot.index < generic.getMenu().getRowCount() * 9;
+		}
+		assert Minecraft.getInstance().player != null;
+		return slot.container != Minecraft.getInstance().player.getInventory();
+	}
+
 	/**
 	 * Called when the slot is clicked.
+	 *
 	 * @return {@code true} if the click should be canceled, {@code false} otherwise. Defaults to {@code false} if not overridden.
 	 */
-	default boolean onClickSlot(int slot, ItemStack stack, int screenId) {
+	default boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		return false;
 	}
 

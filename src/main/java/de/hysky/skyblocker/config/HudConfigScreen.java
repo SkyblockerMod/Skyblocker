@@ -1,14 +1,14 @@
 package de.hysky.skyblocker.config;
 
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
-
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
 
 /**
  * A screen for configuring the positions of HUD widgets.
@@ -34,7 +34,7 @@ public abstract class HudConfigScreen extends Screen {
 	 * @param parent the parent screen
 	 * @param widget the widget to configure
 	 */
-	public HudConfigScreen(Text title, Screen parent, AbstractWidget widget) {
+	public HudConfigScreen(Component title, Screen parent, AbstractWidget widget) {
 		this(title, parent, List.of(widget));
 	}
 
@@ -45,62 +45,68 @@ public abstract class HudConfigScreen extends Screen {
 	 * @param parent  the parent screen
 	 * @param widgets the widgets to configure
 	 */
-	public HudConfigScreen(Text title, Screen parent, List<AbstractWidget> widgets) {
+	public HudConfigScreen(Component title, Screen parent, List<AbstractWidget> widgets) {
 		super(title);
 		this.parent = parent;
 		this.widgets = widgets;
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+		// Reset positions here, so width and height are available.
 		resetPos();
 	}
 
 	@Override
-	public final void render(DrawContext context, int mouseX, int mouseY, float delta) {
+	public final void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 		renderWidget(context, widgets, delta);
-		context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
+		context.drawCenteredString(font, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
 	}
 
 	/**
-	 * Renders the widgets using the default {@link AbstractWidget#render(DrawContext, int, int, float)} method. Override to change the behavior.
+	 * Renders the widgets using the default {@link AbstractWidget#render(GuiGraphics, int, int, float)} method. Override to change the behavior.
 	 *
 	 * @param context the context to render in
 	 * @param widgets the widgets to render
 	 */
-	protected void renderWidget(DrawContext context, List<AbstractWidget> widgets, float delta) {
+	protected void renderWidget(GuiGraphics context, List<AbstractWidget> widgets, float delta) {
 		for (AbstractWidget widget : widgets) {
 			widget.render(context, -1, -1, delta);
 		}
 	}
 
 	@Override
-	public final boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-		if (button == 0 && draggingWidget != null) {
-			draggingWidget.setX((int) Math.clamp(mouseX - mouseClickRelativeX, 0, this.width - draggingWidget.getWidth()) - getWidgetXOffset(draggingWidget));
-			draggingWidget.setY((int) Math.clamp(mouseY - mouseClickRelativeY, 0, this.height - draggingWidget.getHeight()));
+	public final boolean mouseDragged(MouseButtonEvent click, double offsetX, double offsetY) {
+		if (click.button() == 0 && draggingWidget != null) {
+			draggingWidget.setX((int) Math.clamp(click.x() - mouseClickRelativeX, 0, this.width - draggingWidget.getWidth()) - getWidgetXOffset(draggingWidget));
+			draggingWidget.setY((int) Math.clamp(click.y() - mouseClickRelativeY, 0, this.height - draggingWidget.getHeight()));
 		}
-		return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+		return super.mouseDragged(click, offsetX, offsetY);
 	}
 
 	@Override
-	public final boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (button == 0) {
+	public final boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+		if (click.button() == 0) {
 			for (AbstractWidget widget : widgets) {
-				if (RenderHelper.pointIsInArea(mouseX, mouseY, widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
+				if (HudHelper.pointIsInArea(click.x(), click.y(), widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
 					draggingWidget = widget;
-					mouseClickRelativeX = mouseX - widget.getX() - getWidgetXOffset(widget);
-					mouseClickRelativeY = mouseY - widget.getY();
+					mouseClickRelativeX = click.x() - widget.getX() - getWidgetXOffset(widget);
+					mouseClickRelativeY = click.y() - widget.getY();
 					break;
 				}
 			}
-		} else if (button == 1) {
+		} else if (click.button() == 1) {
 			resetPos();
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	@Override
-	public final boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public final boolean mouseReleased(MouseButtonEvent click) {
 		draggingWidget = null;
-		return super.mouseReleased(mouseX, mouseY, button);
+		return super.mouseReleased(click);
 	}
 
 	protected int getWidgetXOffset(AbstractWidget widget) {
@@ -132,21 +138,19 @@ public abstract class HudConfigScreen extends Screen {
 	protected abstract List<IntIntMutablePair> getConfigPos(SkyblockerConfig config);
 
 	@Override
-	public final void close() {
-		SkyblockerConfig skyblockerConfig = SkyblockerConfigManager.get();
-		savePos(skyblockerConfig, widgets);
-		SkyblockerConfigManager.save();
-
-		client.setScreen(parent);
+	public final void onClose() {
+		SkyblockerConfigManager.update(config -> savePos(config, widgets));
+		minecraft.setScreen(parent);
 	}
 
 	/**
 	 * Saves the passed positions to the config.
 	 * <p>
-	 * NOTE: The parent class will call {@link SkyblockerConfigManager#save()} right after this method
+	 * NOTE: The config manager will save the config right after this method is called.
 	 *
 	 * @param configManager the config so you don't have to get it
 	 * @param widgets       the widgets to save
+	 * @see SkyblockerConfigManager#update(java.util.function.Consumer)
 	 */
 	protected abstract void savePos(SkyblockerConfig configManager, List<AbstractWidget> widgets);
 }

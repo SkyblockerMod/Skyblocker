@@ -3,7 +3,8 @@ package de.hysky.skyblocker.utils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
 
 public class RomanNumerals {
 	private static final Int2ObjectMap<String> ROMAN_NUMERALS = Int2ObjectMaps.unmodifiable(new Int2ObjectLinkedOpenHashMap<>(
@@ -50,7 +51,7 @@ public class RomanNumerals {
 	 */
 	public static int romanToDecimal(String romanNumeral) {
 		if (romanNumeral == null || romanNumeral.isEmpty()) return 0;
-		romanNumeral = romanNumeral.trim().toUpperCase();
+		romanNumeral = romanNumeral.trim().toUpperCase(Locale.ENGLISH);
 		int decimal = 0;
 		int lastNumber = 0;
 		for (int i = romanNumeral.length() - 1; i >= 0; i--) {
@@ -69,7 +70,6 @@ public class RomanNumerals {
 	 * @param decimal The decimal number to convert.
 	 * @return The roman numeral, or an empty string if the number is out of range.
 	 */
-	@NotNull
 	public static String decimalToRoman(int decimal) {
 		if (decimal <= 0 || decimal >= 4000) return "";
 		StringBuilder roman = new StringBuilder();

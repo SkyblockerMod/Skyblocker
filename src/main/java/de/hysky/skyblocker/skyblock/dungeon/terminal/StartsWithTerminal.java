@@ -3,18 +3,18 @@ package de.hysky.skyblocker.skyblock.dungeon.terminal;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
-public final class StartsWithTerminal extends SimpleContainerSolver implements TerminalSolver {
+public final class StartsWithTerminal extends SimpleContainerSolver implements TerminalSolver, StackDisplayModifier {
 	private final Int2ObjectOpenHashMap<ItemState> trackedItemStates = new Int2ObjectOpenHashMap<>();
 	private int lastKnownScreenId = Integer.MIN_VALUE;
 
@@ -43,7 +43,7 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 			//We keep track of the clicks ourselves instead of using the enchantment glint because some items like nether stars have the glint override component by default
 			//so even if Hypixel tries to change that to the same thing it was before (true) it won't work and the solver would permanently consider the item to be clicked
 			//even if it hasn't been yet
-			if (!state.clicked() && stack.getName().getString().startsWith(prefix)) {
+			if (!state.clicked() && stack.getHoverName().getString().startsWith(prefix)) {
 				highlights.add(ColorHighlight.green(slot.getIntKey()));
 			}
 		}
@@ -51,9 +51,10 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 	}
 
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		//Some random glass pane was clicked or something
-		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return false;
+		//Block clicks for this because these slots are replaced with air items
+		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return shouldBlockIncorrectClicks();
 
 		ItemState state = trackedItemStates.get(slot);
 		String prefix = groups[0];
@@ -65,7 +66,7 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 
 		//While Hypixel does use a different syncId each time they open the screen we opt to use our own so as to avoid them potentially changing that
 		//and in turn breaking this logic
-		if (stack.getName().getString().startsWith(prefix) && !state.clicked() && lastKnownScreenId != screenId) {
+		if (stack.getHoverName().getString().startsWith(prefix) && !state.clicked() && lastKnownScreenId != screenId) {
 			trackedItemStates.put(slot, state.click());
 			lastKnownScreenId = screenId;
 		} else {
@@ -73,6 +74,12 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 		}
 
 		return false;
+	}
+
+	@Override
+	public ItemStack modifyDisplayStack(int slotIndex, ItemStack stack) {
+		// rows * 9 = 54
+		return slotIndex >= 54 || stack.getHoverName().getString().startsWith(groups[0]) ? stack : ItemStack.EMPTY;
 	}
 
 	//We only set up the state when all items aren't null or empty. This prevents the state from being reset due to unsent items or server lag spikes/bad TPS (fix ur servers Hypixel)

@@ -5,47 +5,44 @@ import com.google.gson.JsonParser;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Http.ApiResponse;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Tracks the amount of secrets players get every run
  */
 public class SecretsTracker {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecretsTracker.class);
-	private static final Pattern TEAM_SCORE_PATTERN = Pattern.compile(" +Team Score: [0-9]+ \\([A-z+]+\\)");
 
-	private static volatile TrackedRun currentRun = null;
-	private static volatile TrackedRun lastRun = null;
+	private static volatile @Nullable TrackedRun currentRun = null;
+	private static volatile @Nullable TrackedRun lastRun = null;
 	private static volatile long lastRunEnded = 0L;
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(SecretsTracker::onMessage);
 		DungeonEvents.DUNGEON_STARTED.register(() -> calculate(RunPhase.START));
+		DungeonEvents.DUNGEON_ENDED.register(() -> calculate(RunPhase.END));
 	}
 
 	private static void calculate(RunPhase phase) {
+		if (!SkyblockerConfigManager.get().dungeons.playerSecretsTracker) return;
 		switch (phase) {
 			case START -> CompletableFuture.runAsync(() -> {
 				TrackedRun newlyStartedRun = new TrackedRun();
@@ -58,8 +55,9 @@ public class SecretsTracker {
 					if (!playerName.isEmpty()) {
 
 						//If the player was a part of the last run, had non-empty secret data and that run ended less than 5 mins ago then copy the secret data over
-						if (lastRun != null && System.currentTimeMillis() <= lastRunEnded + 300_000 && lastRun.playersSecretData().getOrDefault(playerName, SecretData.EMPTY) != SecretData.EMPTY) {
-							newlyStartedRun.playersSecretData().put(playerName, lastRun.playersSecretData().get(playerName));
+						TrackedRun previousRun = lastRun;
+						if (previousRun != null && System.currentTimeMillis() <= lastRunEnded + 300_000 && previousRun.playersSecretData().getOrDefault(playerName, SecretData.EMPTY) != SecretData.EMPTY) {
+							newlyStartedRun.playersSecretData().put(playerName, previousRun.playersSecretData().get(playerName));
 						} else {
 							newlyStartedRun.playersSecretData().put(playerName, getPlayerSecrets(playerName));
 						}
@@ -67,15 +65,15 @@ public class SecretsTracker {
 				}
 
 				currentRun = newlyStartedRun;
-			});
+			}, Executors.newVirtualThreadPerTaskExecutor());
 
 			case END -> CompletableFuture.runAsync(() -> {
-				//In case the game crashes from something
-				if (currentRun != null) {
+				TrackedRun thisRun = currentRun;
+				if (thisRun != null) {
 					Object2ObjectOpenHashMap<String, SecretData> secretsFound = new Object2ObjectOpenHashMap<>();
 
 					//Update secret counts
-					for (Entry<String, SecretData> entry : currentRun.playersSecretData().entrySet()) {
+					for (Entry<String, SecretData> entry : thisRun.playersSecretData().entrySet()) {
 						String playerName = entry.getKey();
 						SecretData startingSecrets = entry.getValue();
 						SecretData secretsNow = getPlayerSecrets(playerName);
@@ -88,50 +86,40 @@ public class SecretsTracker {
 
 					//Print the results all in one go, so its clean and less of a chance of it being broken up
 					for (Map.Entry<String, SecretData> entry : secretsFound.entrySet()) {
-						sendResultMessage(entry.getKey(), entry.getValue(), true);
+						RenderHelper.runOnRenderThread(() -> sendResultMessage(entry.getKey(), entry.getValue()));
 					}
 
 					//Swap the current and last run as well as mark the run end time
 					lastRunEnded = System.currentTimeMillis();
-					lastRun = currentRun;
+					lastRun = thisRun;
 					currentRun = null;
 				} else {
-					sendResultMessage(null, null, false);
+					RenderHelper.runOnRenderThread(SecretsTracker::sendFailureMessage);
 				}
-			});
+			}, Executors.newVirtualThreadPerTaskExecutor());
 		}
 	}
 
-	private static void sendResultMessage(String player, SecretData secretData, boolean success) {
-		PlayerEntity playerEntity = MinecraftClient.getInstance().player;
-		if (playerEntity != null) {
-			if (success) {
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.feedback", Text.literal(player).append(" (" + DungeonPlayerManager.getClassFromPlayer(playerEntity).displayName() + ")").withColor(0xf57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))), false);
-			} else {
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.failFeedback")), false);
-			}
-		}
+	private static void sendResultMessage(String player, SecretData secretData) {
+		Player playerEntity = Minecraft.getInstance().player;
+		if (playerEntity == null) return;
+		playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.feedback", Component.literal(player).append(" (" + DungeonPlayerManager.getClassFromPlayer(player).displayName() + ")").withColor(0xF57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))), false);
 	}
 
-	private static Text getCacheText(boolean cached, int cacheAge) {
-		return Text.literal("\u2139").styled(style -> style.withColor(cached ? 0xeac864 : 0x218bff).withHoverEvent(
-				new HoverEvent(HoverEvent.Action.SHOW_TEXT, cached ? Text.translatable("skyblocker.api.cache.HIT", cacheAge) : Text.translatable("skyblocker.api.cache.MISS"))));
+	private static void sendFailureMessage() {
+		Player playerEntity = Minecraft.getInstance().player;
+		if (playerEntity == null) return;
+		playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.failFeedback")), false);
 	}
 
-	private static void onMessage(Text text, boolean overlay) {
-		if (Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.playerSecretsTracker && !overlay) {
-			String message = Formatting.strip(text.getString());
-
-			try {
-				if (TEAM_SCORE_PATTERN.matcher(message).matches()) calculate(RunPhase.END);
-			} catch (Exception e) {
-				LOGGER.error("[Skyblocker] Encountered an unknown error while trying to track player secrets!", e);
-			}
-		}
+	private static Component getCacheText(boolean cached, int cacheAge) {
+		//noinspection UnnecessaryUnicodeEscape
+		return Component.literal("\u2139").withStyle(style -> style.withColor(cached ? 0xEAC864 : 0x218BFF).withHoverEvent(
+				new HoverEvent.ShowText(cached ? Component.translatable("skyblocker.api.cache.HIT", cacheAge) : Component.translatable("skyblocker.api.cache.MISS"))));
 	}
 
 	private static String getPlayerNameAt(int index) {
-		Matcher matcher = PlayerListManager.regexAt(1 + (index - 1) * 4, DungeonPlayerWidget.PLAYER_PATTERN);
+		Matcher matcher = DungeonPlayerManager.getPlayerFromTab(index);
 
 		return matcher != null ? matcher.group("name") : "";
 	}
@@ -178,6 +166,6 @@ public class SecretsTracker {
 	}
 
 	private enum RunPhase {
-        START, END
+		START, END
 	}
 }

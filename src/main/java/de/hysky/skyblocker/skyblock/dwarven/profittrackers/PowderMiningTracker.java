@@ -5,26 +5,33 @@ import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ChatEvents;
-import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.*;
-import de.hysky.skyblocker.utils.profile.ProfiledData;
+import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.ProfiledData;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
-import it.unimi.dsi.fastutil.objects.*;
+import it.unimi.dsi.fastutil.objects.Object2IntAVLTreeMap;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+import it.unimi.dsi.fastutil.objects.ObjectSortedSet;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.ChatHud;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +46,6 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public final class PowderMiningTracker extends AbstractProfitTracker {
 	public static final PowderMiningTracker INSTANCE = new PowderMiningTracker();
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Powder Mining Tracker");
-	private static final Codec<Object2IntMap<String>> REWARDS_CODEC = CodecUtils.object2IntMapCodec(Codec.STRING);
 	private static final Object2ObjectArrayMap<String, String> NAME2ID_MAP = new Object2ObjectArrayMap<>(50);
 
 	/**
@@ -48,7 +54,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	 * If any items are filtered out, they are still added to this map but not to the {@link #shownRewards} map.
 	 * Once the filter is changed, the {@link #shownRewards} map is cleared and recalculated based on this map.
 	 * </p>
-	 * <p>This is similar to how {@link ChatHud#messages} and {@link ChatHud#visibleMessages} behave.</p>
+	 * <p>This is similar to how {@link ChatComponent#messages} and {@link ChatComponent#visibleMessages} behave.</p>
 	 *
 	 * @implNote This is a map of item IDs to the amount of that item obtained.
 	 */
@@ -57,12 +63,12 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 
 	// This constructor takes in a comparator that is triggered to decide where to add the element in the tree map
 	// This causes it to be sorted at all times. This is for rendering them in a sort of easy-to-read manner.
-	private final Object2IntAVLTreeMap<Text> shownRewards = new Object2IntAVLTreeMap<>(Comparator.<Text>comparingInt(text -> comparePriority(text.getString())).thenComparing(Text::getString));
+	private final Object2IntAVLTreeMap<Component> shownRewards = new Object2IntAVLTreeMap<>(Comparator.<Component>comparingInt(text -> comparePriority(text.getString())).thenComparing(c -> c.getString()));
 
 	/**
 	 * Holds the total reward maps for all accounts and profiles. {@link #currentProfileRewards} is a subset of this map, updated on profile change.
 	 */
-	private final ProfiledData<Object2IntMap<String>> allRewards = new ProfiledData<>(getRewardFilePath("powder-mining.json"), REWARDS_CODEC);
+	private final ProfiledData<Object2IntMap<String>> allRewards = new ProfiledData<>(getRewardFilePath("powder-mining.json"), CodecUtils.object2IntMapCodec(Codec.STRING));
 	private boolean insideChestMessage = false;
 	private double profit = 0;
 
@@ -75,8 +81,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 
 	@Init
 	public static void init() {
-		ChatEvents.RECEIVE_STRING.register(INSTANCE::onChatMessage);
-		HudRenderEvents.AFTER_MAIN_HUD.register(PowderMiningTracker::render);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(INSTANCE::onChatMessage);
 		ItemPriceUpdateEvent.ON_PRICE_UPDATE.register(INSTANCE::onPriceUpdate);
 
 		INSTANCE.allRewards.init();
@@ -89,21 +94,21 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 						.then(literal("list")
 							.executes(ctx -> {
 								if (INSTANCE.currentProfileRewards.isEmpty()) {
-									ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.powderTracker.emptyHistory").formatted(Formatting.RED)));
+									ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.powderTracker.emptyHistory").withStyle(ChatFormatting.RED)));
 									return Command.SINGLE_SUCCESS;
 								} else if (INSTANCE.shownRewards.isEmpty()) {
-									ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.powderTracker.rewardsFilteredOut").formatted(Formatting.RED)));
+									ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.powderTracker.rewardsFilteredOut").withStyle(ChatFormatting.RED)));
 									return Command.SINGLE_SUCCESS;
 								}
 
-								for (Entry<Text> entry : INSTANCE.shownRewards.object2IntEntrySet()) {
+								for (Entry<Component> entry : INSTANCE.shownRewards.object2IntEntrySet()) {
 									ctx.getSource().sendFeedback(
-											Text.empty()
+											Component.empty()
 												.append(entry.getKey())
-												.append(Text.literal(": ").formatted(Formatting.GRAY))
-												.append(Text.literal(String.valueOf(entry.getIntValue()))));
+												.append(Component.literal(": ").withStyle(ChatFormatting.GRAY))
+												.append(Component.literal(String.valueOf(entry.getIntValue()))));
 								}
-								ctx.getSource().sendFeedback(Text.translatable("skyblocker.powderTracker.profit", NumberFormat.getInstance().format(INSTANCE.profit)).formatted(Formatting.GOLD));
+								ctx.getSource().sendFeedback(Component.translatable("skyblocker.powderTracker.profit", NumberFormat.getInstance().format(INSTANCE.profit)).withStyle(ChatFormatting.GOLD));
 								return Command.SINGLE_SUCCESS;
 							})
 						)
@@ -111,7 +116,8 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 							.executes(ctx -> {
 								INSTANCE.currentProfileRewards.clear();
 								INSTANCE.allRewards.save();
-								ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.powderTracker.historyReset").formatted(Formatting.GREEN)));
+								INSTANCE.shownRewards.clear();
+								ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.powderTracker.historyReset").withStyle(ChatFormatting.GREEN)));
 								return Command.SINGLE_SUCCESS;
 							})
 						)
@@ -120,59 +126,57 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 		)); // @formatter:on
 
 		SkyblockEvents.PROFILE_CHANGE.register(INSTANCE::onProfileChange);
-		SkyblockEvents.PROFILE_INIT.register(INSTANCE::onProfileInit);
 	}
 
 	private void onProfileChange(String prevProfileId, String newProfileId) {
-		onProfileInit(newProfileId);
-	}
-
-	private void onProfileInit(String profileId) {
 		if (!isEnabled()) return;
 		currentProfileRewards = allRewards.computeIfAbsent(Object2IntArrayMap::new);
 		recalculateAll();
 	}
 
-	private void onChatMessage(String message) {
-		if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !INSTANCE.isEnabled()) return;
+	@SuppressWarnings("SameReturnValue")
+	private boolean onChatMessage(Component text, boolean overlay) {
+		if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !INSTANCE.isEnabled() || overlay) return true;
+		String message = text.getString();
 		// Reward messages end with a separator like so
 		if (insideChestMessage && message.equals("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")) {
 			insideChestMessage = false;
-			return;
+			return true;
 		}
 
 		if (!insideChestMessage && (message.equals("  CHEST LOCKPICKED ") || (SkyblockerConfigManager.get().mining.crystalHollows.countNaturalChestsInTracker && message.equals("  LOOT CHEST COLLECTED ")))) {
 			insideChestMessage = true;
-			return;
+			return true;
 		}
 
-		if (!insideChestMessage) return;
+		if (!insideChestMessage) return true;
 		Matcher matcher = REWARD_PATTERN.matcher(message);
-		if (!matcher.matches()) return;
+		if (!matcher.matches()) return true;
 		String itemName = matcher.group(1);
 		int amount = NumberUtils.toInt(matcher.group(2).replace(",", ""), 1);
 
 		String itemId = getItemId(itemName);
 		if (itemId.isEmpty()) {
 			LOGGER.error("No matching item id for name `{}`. Report this!", itemName);
-			return;
+			return true;
 		}
 		incrementReward(itemName, itemId, amount);
 		calculateProfitForItem(itemId, amount);
+		return true;
 	}
 
 	private void incrementReward(String itemName, String itemId, int amount) {
 		currentProfileRewards.mergeInt(itemId, amount, Integer::sum);
 		if (!SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter.contains(itemName)) {
 			if (itemId.equals("GEMSTONE_POWDER")) {
-				shownRewards.merge(Text.literal("Gemstone Powder").formatted(Formatting.LIGHT_PURPLE), amount, Integer::sum);
+				shownRewards.merge(Component.literal("Gemstone Powder").withStyle(ChatFormatting.LIGHT_PURPLE), amount, Integer::sum);
 			} else {
 				ItemStack stack = ItemRepository.getItemStack(itemId);
 				if (stack == null) {
 					LOGGER.warn("Item stack for id `{}` is null! This might be caused by failed item repository downloads.", itemId);
 					return;
 				}
-				shownRewards.merge(stack.getName(), amount, Integer::sum);
+				shownRewards.merge(stack.getHoverName(), amount, Integer::sum);
 			}
 		}
 	}
@@ -208,8 +212,8 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	 */
 	private void recalculatePrices() {
 		profit = 0;
-		ObjectSortedSet<Entry<Text>> set = shownRewards.object2IntEntrySet();
-		for (Entry<Text> entry : set) {
+		ObjectSortedSet<Entry<Component>> set = shownRewards.object2IntEntrySet();
+		for (Entry<Component> entry : set) {
 			calculateProfitForItem(getItemId(entry.getKey().getString()), entry.getIntValue());
 		}
 	}
@@ -228,14 +232,14 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 			if (filters.contains(entry.getKey())) continue;
 
 			if (entry.getKey().equals("GEMSTONE_POWDER")) {
-				shownRewards.put(Text.literal("Gemstone Powder").formatted(Formatting.LIGHT_PURPLE), entry.getIntValue());
+				shownRewards.put(Component.literal("Gemstone Powder").withStyle(ChatFormatting.LIGHT_PURPLE), entry.getIntValue());
 			} else {
 				ItemStack stack = ItemRepository.getItemStack(entry.getKey());
 				if (stack == null) {
 					LOGGER.warn("Item stack for id `{}` is null! This might be caused by failed item repository downloads.", entry.getKey());
 					continue;
 				}
-				shownRewards.put(stack.getName(), entry.getIntValue());
+				shownRewards.put(stack.getHoverName(), entry.getIntValue());
 			}
 		}
 		recalculatePrices();
@@ -311,21 +315,15 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 		NAME2ID_MAP.put("Superlite Motor", "SUPERLITE_MOTOR");
 	}
 
-	@NotNull
 	private String getItemId(String itemName) {
 		return NAME2ID_MAP.getOrDefault(itemName, "");
 	}
 
-	// TODO: Make this a hud widget without the background (optional), needs to be moveable
-	private static void render(DrawContext context, RenderTickCounter tickCounter) {
-		if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !INSTANCE.isEnabled()) return;
-		int y = MinecraftClient.getInstance().getWindow().getScaledHeight() / 2 - 100;
-		var set = INSTANCE.shownRewards.object2IntEntrySet();
-		for (Entry<Text> entry : set) {
-			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, entry.getKey(), 5, y, 0xFFFFFF);
-			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(NumberFormat.getInstance().format(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, 0xFFFFFF);
-			y += 10;
-		}
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.translatable("skyblocker.powderTracker.profit", NumberFormat.getInstance().format(INSTANCE.profit)).formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
+	public static double getProfit() {
+		return INSTANCE.profit;
+	}
+
+	public static Object2IntMap<Component> getShownRewards() {
+		return INSTANCE.shownRewards;
 	}
 }

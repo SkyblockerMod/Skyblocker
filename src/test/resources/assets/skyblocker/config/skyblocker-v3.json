@@ -477,7 +477,7 @@
       "clickEvent": "/wardrobe",
       "itemData": {
         "count": 1,
-        "components": "[minecraft:dyed_color\u003d{rgb:8991416}]",
+        "components": "[minecraft:dyed_color\u003d8991416]",
         "item": "minecraft:leather_chestplate"
       }
     },

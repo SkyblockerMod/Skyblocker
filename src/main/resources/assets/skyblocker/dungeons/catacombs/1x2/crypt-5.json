@@ -1,0 +1,91 @@
+{
+  "info": {
+    "name": "Crypt"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Under Crypt",
+      "category": "superboom",
+      "x": 34,
+      "y": 66,
+      "z": 15
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 13,
+      "y": 60,
+      "z": 15
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 56,
+      "y": 87,
+      "z": 11
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 44,
+      "y": 86,
+      "z": 26
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 35,
+      "y": 92,
+      "z": 21
+    },
+    {
+      "secretName": "3 - Item",
+      "category": "item",
+      "x": 46,
+      "y": 88,
+      "z": 16
+    },
+    {
+      "secretName": "4/5 - Entrance",
+      "category": "entrance",
+      "x": 31,
+      "y": 82,
+      "z": 22
+    },
+    {
+      "secretName": "4/5 - Entrance",
+      "category": "entrance",
+      "x": 15,
+      "y": 86,
+      "z": 20
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 2,
+      "y": 81,
+      "z": 16
+    },
+    {
+      "secretName": "5 - Superboom",
+      "category": "superboom",
+      "x": 15,
+      "y": 89,
+      "z": 6
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 19,
+      "y": 89,
+      "z": 2
+    },
+    {
+      "secretName": "Fairy Soul",
+      "category": "fairysoul",
+      "x": 8,
+      "y": 75,
+      "z": 16
+    }
+  ]
+}

@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.DyeColor;
 
 public class ColorUtils {
 	/**
@@ -12,9 +13,9 @@ public class ColorUtils {
 	 */
 	public static float[] getFloatComponents(int color) {
 		return new float[] {
-				((color >> 16) & 0xFF) / 255f,
-				((color >> 8) & 0xFF) / 255f,
-				(color & 0xFF) / 255f
+				ARGB.redFloat(color),
+				ARGB.greenFloat(color),
+				ARGB.blueFloat(color),
 		};
 	}
 
@@ -22,7 +23,7 @@ public class ColorUtils {
 	 * @param dye The dye from which the entity color will be used for the components.
 	 */
 	public static float[] getFloatComponents(DyeColor dye) {
-		return getFloatComponents(dye.getEntityColor());
+		return getFloatComponents(dye.getTextureDiffuseColor());
 	}
 
 	/**
@@ -30,29 +31,41 @@ public class ColorUtils {
 	 * @return an int representing a color, where 100% = green and 0% = red
 	 */
 	public static int percentToColor(float pcnt) {
-		return MathHelper.hsvToRgb(pcnt / 300, 1, 1);
+		return Mth.hsvToRgb(pcnt / 300, 1, 1);
 	}
 
 	/**
-	 * Interpolates linearly between two colours.
+	 * Interpolates between two colours.
 	 */
-	//Credit to https://codepen.io/OliverBalfour/post/programmatically-making-gradients
 	public static int interpolate(int firstColor, int secondColor, double percentage) {
-		int r1 = MathHelper.square((firstColor >> 16) & 0xFF);
-		int g1 = MathHelper.square((firstColor >> 8) & 0xFF);
-		int b1 = MathHelper.square(firstColor & 0xFF);
+		return OkLabColor.interpolate(firstColor, secondColor, (float) percentage);
+	}
 
-		int r2 = MathHelper.square((secondColor >> 16) & 0xFF);
-		int g2 = MathHelper.square((secondColor >> 8) & 0xFF);
-		int b2 = MathHelper.square(secondColor & 0xFF);
+	/**
+	 * Interpolates between multiple colors.
+	 *
+	 * @param percentage percentage between 0 and 1
+	 * @param colors     the colors to interpolate between
+	 * @return the interpolated color
+	 * @see #interpolate(int, int, double)
+	 */
+	public static int interpolate(double percentage, int... colors) {
+		int colorCount = colors.length;
+		if (colorCount == 0) {
+			return 0;
+		}
+		if (colorCount == 1 || percentage <= 0) {
+			return colors[0];
+		}
+		if (percentage >= 1) {
+			return colors[colorCount - 1];
+		}
 
-		double inverse = 1d - percentage;
+		double scaledPercentage = percentage * (colorCount - 1);
+		int index = (int) Math.floor(scaledPercentage);
+		double remainder = scaledPercentage - index;
 
-		int r3 = (int) Math.floor(Math.sqrt(r1 * inverse + r2 * percentage));
-		int g3 = (int) Math.floor(Math.sqrt(g1 * inverse + g2 * percentage));
-		int b3 = (int) Math.floor(Math.sqrt(b1 * inverse + b2 * percentage));
-
-		return (r3 << 16) | (g3 << 8 ) | b3;
+		return interpolate(colors[index], colors[index + 1], remainder);
 	}
 
 	/**

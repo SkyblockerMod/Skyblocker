@@ -9,19 +9,25 @@ import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.inventory.Slot;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Locale;
+
 public class InventorySearch {
-	private static HandledScreen<?> openedHandledScreen = null;
+	private static @Nullable AbstractContainerScreen<?> openedHandledScreen = null;
 	private static final Int2BooleanMap slotToMatch = new Int2BooleanArrayMap(64);
 	private static String search = "";
 
@@ -29,12 +35,13 @@ public class InventorySearch {
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			UIAndVisualsConfig.InventorySearchConfig inventorySearchConfig = SkyblockerConfigManager.get().uiAndVisuals.inventorySearch;
-			if (!inventorySearchConfig.enabled.isEnabled() || !(screen instanceof HandledScreen<?> handledScreen)) return;
+			if (!inventorySearchConfig.enabled.isEnabled() || !(screen instanceof AbstractContainerScreen<?> handledScreen)) return;
+			openedHandledScreen = null;
 
 			if (inventorySearchConfig.clickableText) Screens.getButtons(handledScreen).add(new SearchTextWidget(handledScreen));
 
-			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((screen1, key, scancode, modifiers) -> {
-				if (key == (inventorySearchConfig.ctrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && (modifiers & (GLFW.GLFW_MOD_CONTROL | GLFW.GLFW_MOD_SUPER)) != 0) {
+			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((screen1, input) -> {
+				if (input.key() == (inventorySearchConfig.ctrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && input.hasControlDownWithQuirk()) {
 					InventorySearch.showSearchBar(handledScreen);
 					return false;
 				}
@@ -43,11 +50,10 @@ public class InventorySearch {
 		});
 	}
 
-	public static void showSearchBar(HandledScreen<?> handledScreen) {
+	public static void showSearchBar(AbstractContainerScreen<?> handledScreen) {
 		if (handledScreen == openedHandledScreen) return;
 		openedHandledScreen = handledScreen;
-		TextFieldWidget textFieldWidget = getTextFieldWidget(handledScreen);
-		Screens.getButtons(handledScreen).add(new TextWidget(0, 5, handledScreen.width, 10, Text.literal("Search Inventory"), Screens.getTextRenderer(handledScreen)));
+		EditBox textFieldWidget = getTextFieldWidget(handledScreen);
 		Screens.getButtons(handledScreen).addFirst(textFieldWidget);
 		Screens.getButtons(handledScreen).removeIf(button -> button instanceof SearchTextWidget); // remove search text
 		handledScreen.setFocused(textFieldWidget);
@@ -55,13 +61,13 @@ public class InventorySearch {
 		ScreenEvents.remove(handledScreen).register(InventorySearch::onScreenClosed);
 	}
 
-	private static @NotNull TextFieldWidget getTextFieldWidget(HandledScreen<?> handledScreen) {
+	private static EditBox getTextFieldWidget(AbstractContainerScreen<?> handledScreen) {
 		// Slightly modified text field widget
-		TextFieldWidget textFieldWidget = new SearchTextFieldWidget(handledScreen);
+		EditBox textFieldWidget = new SearchTextFieldWidget(handledScreen.getFont(), Component.translatable("skyblocker.inventorySearch.searchInventory"));
 		textFieldWidget.setPosition((handledScreen.width - textFieldWidget.getWidth()) / 2, 15);
-		textFieldWidget.setPlaceholder(Text.translatable("gui.socialInteractions.search_hint"));
-		textFieldWidget.setText(search); // Restore previous search
-		textFieldWidget.setChangedListener(InventorySearch::onSearchTyped);
+		textFieldWidget.setHint(Component.translatable("gui.socialInteractions.search_hint"));
+		textFieldWidget.setValue(search); // Restore previous search
+		textFieldWidget.setResponder(InventorySearch::onSearchTyped);
 		return textFieldWidget;
 	}
 
@@ -70,13 +76,13 @@ public class InventorySearch {
 	}
 
 	public static boolean slotMatches(Slot slot) {
-		return slotToMatch.computeIfAbsent(slot.id, i -> slot.hasStack() &&
-				(slot.getStack().getName().getString().toLowerCase().contains(search) || ItemUtils.getLoreLineIf(slot.getStack(), s -> s.toLowerCase().contains(search)) != null));
+		return slotToMatch.computeIfAbsent(slot.index, i -> slot.hasItem() &&
+				(slot.getItem().getHoverName().getString().toLowerCase(Locale.ENGLISH).contains(search) || ItemUtils.getLoreLineIf(slot.getItem(), s -> s.toLowerCase(Locale.ENGLISH).contains(search)) != null));
 	}
 
 	private static void onSearchTyped(String text) {
 		slotToMatch.clear();
-		search = text.toLowerCase();
+		search = text.toLowerCase(Locale.ENGLISH);
 	}
 
 	private static void onScreenClosed(Screen screen) {
@@ -85,31 +91,35 @@ public class InventorySearch {
 
 	}
 
+	public static void refreshSlot(int slotId) {
+		slotToMatch.remove(slotId);
+	}
+
 	/**
 	 * Button to open the search bar, for accessibility reasons (pojav and general preferences)
 	 */
-	private static class SearchTextWidget extends TextWidget {
-		private final Text underlinedText;
-		private final Text normalText;
-		private final HandledScreen<?> screen;
+	private static class SearchTextWidget extends StringWidget {
+		private final Component underlinedText;
+		private final Component normalText;
+		private final AbstractContainerScreen<?> screen;
 		private boolean hoveredState = false;
 
-		public SearchTextWidget(HandledScreen<?> handledScreen) {
-			super(Text.translatable("skyblocker.inventorySearch.clickHereToSearch"), Screens.getTextRenderer(handledScreen));
+		private SearchTextWidget(AbstractContainerScreen<?> handledScreen) {
+			super(Component.translatable("skyblocker.inventorySearch.clickHereToSearch"), handledScreen.getFont());
 			setPosition((handledScreen.width - this.getWidth()) / 2, 15);
-			underlinedText = getMessage().copy().formatted(Formatting.UNDERLINE);
-			normalText = getMessage().copy().formatted(Formatting.GRAY);
+			underlinedText = getMessage().copy().withStyle(ChatFormatting.UNDERLINE);
+			normalText = getMessage().copy().withStyle(ChatFormatting.GRAY);
 			screen = handledScreen;
 			setMessage(normalText);
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(MouseButtonEvent click, boolean doubled) {
 			InventorySearch.showSearchBar(screen);
 		}
 
 		@Override
-		public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 			if (isHovered() != hoveredState) {
 				hoveredState = active = isHovered();
 				if (hoveredState) setMessage(underlinedText);
@@ -120,27 +130,42 @@ public class InventorySearch {
 		}
 	}
 
-	public static class SearchTextFieldWidget extends TextFieldWidget {
-		public SearchTextFieldWidget(HandledScreen<?> handledScreen) {
-			super(Screens.getTextRenderer(handledScreen), 120, 20, Text.literal("Search Inventory"));
+	public static class SearchTextFieldWidget extends EditBox {
+		Font textRenderer;
+		Component message;
+
+		public SearchTextFieldWidget(Font textRenderer, Component message) {
+			super(textRenderer, 120, 20, message);
+			this.textRenderer = textRenderer;
+			this.message = message;
 		}
 
 		@Override
-		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+			super.renderWidget(context, mouseX, mouseY, deltaTicks);
+			context.drawCenteredString(textRenderer, message, getX() + width / 2, getY() - 1 - textRenderer.lineHeight, CommonColors.WHITE);
+		}
+
+		@Override
+		public boolean keyPressed(KeyEvent input) {
 			// Makes the widget catch all key presses (except escape) to fix closing the inventory when pressing E
 			// also check that the widget is focused and active
-			return super.keyPressed(keyCode, scanCode, modifiers) || (keyCode != GLFW.GLFW_KEY_ESCAPE && this.isNarratable() && this.isFocused());
+			return super.keyPressed(input) || (input.key() != GLFW.GLFW_KEY_ESCAPE && this.isFocused());
 		}
 
 		// Unfocus when clicking outside
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
-			if (isFocused() && !isMouseOver(mouseX, mouseY)) {
+		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+			if (isFocused() && !isMouseOver(click.x(), click.y())) {
 				setFocused(false);
 				return false;
 			}
 
-			return super.mouseClicked(mouseX, mouseY, button);
+			if (super.mouseClicked(click, doubled)) {
+				setFocused(true);
+				return true;
+			}
+			return false;
 		}
 	}
 }

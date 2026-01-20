@@ -5,17 +5,26 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.util.math.MathHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,37 +35,85 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 public class FancyStatusBars {
+	private static final Identifier HUD_LAYER = SkyblockerMod.id("fancy_status_bars");
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("status_bars.json");
 	private static final Logger LOGGER = LoggerFactory.getLogger(FancyStatusBars.class);
 
-	private final MinecraftClient client = MinecraftClient.getInstance();
-	private final StatusBarTracker statusBarTracker = SkyblockerMod.getInstance().statusBarTracker;
-
 	public static BarPositioner barPositioner = new BarPositioner();
 	public static Map<StatusBarType, StatusBar> statusBars = new EnumMap<>(StatusBarType.class);
+	private static boolean updatePositionsNextFrame;
 
-	public static boolean isHealthFancyBarVisible() {
-		StatusBar health = statusBars.get(StatusBarType.HEALTH);
-		return health.anchor != null || health.inMouse;
+	public static boolean isHealthFancyBarEnabled() {
+		return isBarEnabled(StatusBarType.HEALTH);
 	}
 
-	public static boolean isExperienceFancyBarVisible() {
-		StatusBar experience = statusBars.get(StatusBarType.EXPERIENCE);
-		return experience.anchor != null || experience.inMouse;
+	public static boolean isExperienceFancyBarEnabled() {
+		return isBarEnabled(StatusBarType.EXPERIENCE);
+	}
+
+	public static boolean isBarEnabled(StatusBarType type) {
+		StatusBar statusBar = statusBars.get(type);
+		return Debug.isTestEnvironment() || statusBar.enabled || statusBar.inMouse;
 	}
 
 	@SuppressWarnings("deprecation")
 	@Init
 	public static void init() {
+		Function<HudElement, HudElement> hideIfFancyStatusBarsEnabled = hudElement -> {
+			if (Utils.isOnSkyblock() && isEnabled())
+				return (context, tickCounter) -> {};
+			return hudElement;
+		};
+
+		HudElementRegistry.replaceElement(VanillaHudElements.HEALTH_BAR, hudElement -> {
+			if (!Utils.isOnSkyblock() || !isEnabled()) return hudElement;
+			if (isHealthFancyBarEnabled()) {
+				return (context, tickCounter) -> {};
+			} else if (isExperienceFancyBarEnabled()) {
+				return (context, tickCounter) -> {
+					Matrix3x2fStack pose = context.pose();
+					pose.pushMatrix();
+					pose.translate(0, 6);
+					hudElement.render(context, tickCounter);
+					pose.popMatrix();
+				};
+			}
+			return hudElement;
+		});
+		HudElementRegistry.replaceElement(VanillaHudElements.EXPERIENCE_LEVEL, hudElement -> {
+			if (!Utils.isOnSkyblock() || !isEnabled() || !isExperienceFancyBarEnabled()) return hudElement;
+			return (context, tickCounter) -> {};
+		});
+		HudElementRegistry.replaceElement(VanillaHudElements.INFO_BAR, hudElement -> {
+			if (!Utils.isOnSkyblock() || !isEnabled() || !isExperienceFancyBarEnabled()) return hudElement;
+			return (context, tickCounter) -> {};
+		});
+		HudElementRegistry.replaceElement(VanillaHudElements.ARMOR_BAR, hideIfFancyStatusBarsEnabled);
+		HudElementRegistry.replaceElement(VanillaHudElements.MOUNT_HEALTH, hideIfFancyStatusBarsEnabled);
+		HudElementRegistry.replaceElement(VanillaHudElements.FOOD_BAR, hideIfFancyStatusBarsEnabled);
+		HudElementRegistry.replaceElement(VanillaHudElements.AIR_BAR, hideIfFancyStatusBarsEnabled);
+
+		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, HUD_LAYER, (context, tickCounter) -> {
+			if (Utils.isOnSkyblock()) render(context, Minecraft.getInstance());
+		});
+
 		statusBars.put(StatusBarType.HEALTH, StatusBarType.HEALTH.newStatusBar());
 		statusBars.put(StatusBarType.INTELLIGENCE, StatusBarType.INTELLIGENCE.newStatusBar());
 		statusBars.put(StatusBarType.DEFENSE, StatusBarType.DEFENSE.newStatusBar());
 		statusBars.put(StatusBarType.EXPERIENCE, StatusBarType.EXPERIENCE.newStatusBar());
 		statusBars.put(StatusBarType.SPEED, StatusBarType.SPEED.newStatusBar());
+		statusBars.put(StatusBarType.AIR, StatusBarType.AIR.newStatusBar());
 
 		// Fetch from old status bar config
 		int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
@@ -66,8 +123,9 @@ public class FancyStatusBars {
 		initBarPosition(statusBars.get(StatusBarType.DEFENSE), counts, barPositions.defenceBarPosition);
 		initBarPosition(statusBars.get(StatusBarType.EXPERIENCE), counts, barPositions.experienceBarPosition);
 		initBarPosition(statusBars.get(StatusBarType.SPEED), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
+		initBarPosition(statusBars.get(StatusBarType.AIR), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
 
-		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
+		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(object -> {
 			if (object != null) {
 				for (String s : object.keySet()) {
 					StatusBarType type = StatusBarType.from(s);
@@ -96,6 +154,8 @@ public class FancyStatusBars {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
 						.then(ClientCommandManager.literal("bars").executes(Scheduler.queueOpenScreenCommand(StatusBarsConfigScreen::new)))));
+
+		SkyblockEvents.LOCATION_CHANGE.register(location -> updatePositionsNextFrame = true);
 	}
 
 	/**
@@ -105,6 +165,7 @@ public class FancyStatusBars {
 	 * @param counts   the counts for each bar position (LAYER1, LAYER2, RIGHT)
 	 * @param position the position to load
 	 */
+	@SuppressWarnings("incomplete-switch")
 	private static void initBarPosition(StatusBar bar, int[] counts, UIAndVisualsConfig.LegacyBarPosition position) {
 		switch (position) {
 			case RIGHT:
@@ -148,7 +209,7 @@ public class FancyStatusBars {
 		}
 	}
 
-	public static JsonObject loadBarConfig() {
+	public static @Nullable JsonObject loadBarConfig() {
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
 			return SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
 		} catch (NoSuchFileException e) {
@@ -161,7 +222,7 @@ public class FancyStatusBars {
 
 	public static void saveBarConfig() {
 		JsonObject output = new JsonObject();
-		statusBars.forEach((s, statusBar) -> output.add(s.asString(), statusBar.toJson()));
+		statusBars.forEach((s, statusBar) -> output.add(s.getSerializedName(), statusBar.toJson()));
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
 			SkyblockerMod.GSON.toJson(output, writer);
 			LOGGER.info("[Skyblocker] Saved status bars config");
@@ -170,28 +231,35 @@ public class FancyStatusBars {
 		}
 	}
 
-	public static void updatePositions() {
+	public static void updatePositions(boolean ignoreVisibility) {
 		if (!configLoaded) return;
-		final int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
-		final int height = MinecraftClient.getInstance().getWindow().getScaledHeight();
+		final int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+		final int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 
 		// Put these in the corner for the config screen
 		int offset = 0;
 		for (StatusBar statusBar : statusBars.values()) {
-			if (statusBar.anchor == null) {
+			if (!statusBar.enabled) {
 				statusBar.setX(5);
 				statusBar.setY(50 + offset);
 				statusBar.setWidth(30);
 				offset += statusBar.getHeight();
+			} else if (statusBar.anchor == null) {
+				statusBar.width = Math.clamp(statusBar.width, 30f / width, 1);
+				statusBar.x = Math.clamp(statusBar.x, 0, 1 - statusBar.width);
+				statusBar.y = Math.clamp(statusBar.y, 0, 1 - (float) statusBar.getHeight() / height);
+				statusBar.setX((int) (statusBar.x * width));
+				statusBar.setY((int) (statusBar.y * height));
+				statusBar.setWidth((int) (statusBar.width * width));
 			}
 		}
 
 		for (BarPositioner.BarAnchor barAnchor : BarPositioner.BarAnchor.allAnchors()) {
-			ScreenPos anchorPosition = barAnchor.getAnchorPosition(width, height);
+			ScreenPosition anchorPosition = barAnchor.getAnchorPosition(width, height);
 			BarPositioner.SizeRule sizeRule = barAnchor.getSizeRule();
 
 			int targetSize = sizeRule.targetSize();
-			boolean visibleHealthMove = barAnchor == BarPositioner.BarAnchor.HOTBAR_TOP && !isHealthFancyBarVisible();
+			boolean visibleHealthMove = barAnchor == BarPositioner.BarAnchor.HOTBAR_TOP && !isHealthFancyBarEnabled();
 			if (visibleHealthMove) {
 				targetSize /= 2;
 			}
@@ -230,15 +298,22 @@ public class FancyStatusBars {
 				}
 			}
 
-			for (int row = 0; row < barPositioner.getRowCount(barAnchor); row++) {
-				List<StatusBar> barRow = barPositioner.getRow(barAnchor, row);
+			int row = 0;
+			for (int i = 0; i < barPositioner.getRowCount(barAnchor); i++) {
+				List<StatusBar> barRow = barPositioner.getRow(barAnchor, i);
 				if (barRow.isEmpty()) continue;
 
 
 				// Update the positions
 				float widthPerSize;
-				if (sizeRule.isTargetSize())
-					widthPerSize = (float) sizeRule.totalWidth() / targetSize;
+				if (sizeRule.isTargetSize()) {
+					int size = 0;
+					for (StatusBar bar : barRow) {
+						if (bar.visible || ignoreVisibility) size += bar.size;
+					}
+					widthPerSize = (float) sizeRule.totalWidth() / size;
+
+				}
 				else
 					widthPerSize = sizeRule.widthPerSize();
 
@@ -246,13 +321,13 @@ public class FancyStatusBars {
 
 				int currSize = 0;
 				int rowSize = barRow.size();
-				for (int i = 0; i < rowSize; i++) {
+				for (int j = 0; j < rowSize; j++) {
 					// A bit of a padding
 					int offsetX = 0;
 					int lessWidth = 0;
 					if (rowSize > 1) { // Technically bars in the middle of 3+ bars will be smaller than the 2 side ones but shh
-						if (i == 0) lessWidth = 1;
-						else if (i == rowSize - 1) {
+						if (j == 0) lessWidth = 1;
+						else if (j == rowSize - 1) {
 							lessWidth = 1;
 							offsetX = 1;
 						} else {
@@ -260,53 +335,81 @@ public class FancyStatusBars {
 							offsetX = 1;
 						}
 					}
-					StatusBar statusBar = barRow.get(i);
+					StatusBar statusBar = barRow.get(j);
 					statusBar.size = Math.clamp(statusBar.size, sizeRule.minSize(), sizeRule.maxSize());
+
+					if (!statusBar.visible && !ignoreVisibility) continue;
 
 					float x = barAnchor.isRight() ?
 							anchorPosition.x() + (visibleHealthMove ? sizeRule.totalWidth() / 2.f : 0) + currSize * widthPerSize :
 							anchorPosition.x() - currSize * widthPerSize - statusBar.size * widthPerSize;
-					statusBar.setX(MathHelper.ceil(x) + offsetX);
+					statusBar.setX(Mth.ceil(x) + offsetX);
 
 					int y = barAnchor.isUp() ?
 							anchorPosition.y() - (row + 1) * (statusBar.getHeight() + 1) :
 							anchorPosition.y() + row * (statusBar.getHeight() + 1);
 					statusBar.setY(y);
 
-					statusBar.setWidth(MathHelper.floor(statusBar.size * widthPerSize) - lessWidth);
+					statusBar.setWidth(Mth.floor(statusBar.size * widthPerSize) - lessWidth);
 					currSize += statusBar.size;
-					statusBar.gridX = i;
-					statusBar.gridY = row;
-
 				}
+				if (currSize > 0) row++;
 			}
 
 		}
 	}
 
 	public static boolean isEnabled() {
-		return SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift();
+		return SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && (!Utils.isInTheRift() || SkyblockerConfigManager.get().uiAndVisuals.bars.enableBarsRift);
 	}
 
-	public boolean render(DrawContext context, int scaledWidth, int scaledHeight) {
-		var player = client.player;
-		if (!isEnabled() || player == null)
-			return false;
+	public static boolean render(GuiGraphics context, Minecraft client) {
+		LocalPlayer player = client.player;
+		if (!isEnabled() || player == null) return false;
 
 		Collection<StatusBar> barCollection = statusBars.values();
 		for (StatusBar statusBar : barCollection) {
-			if (statusBar.anchor != null) statusBar.render(context, -1, -1, client.getRenderTickCounter().getLastFrameDuration());
+			if (!statusBar.enabled || !statusBar.visible) continue;
+			statusBar.renderBar(context);
+		}
+		for (StatusBar statusBar : barCollection) {
+			if (!statusBar.enabled || !statusBar.visible) continue;
+			statusBar.renderText(context);
 		}
 
-		StatusBarTracker.Resource health = statusBarTracker.getHealth();
-		statusBars.get(StatusBarType.HEALTH).updateValues(health.value() / (float) health.max(), health.overflow() / (float) health.max(), health.value());
-		StatusBarTracker.Resource intelligence = statusBarTracker.getMana();
-		statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / (float) intelligence.max(), intelligence.overflow() / (float) intelligence.max(), intelligence.value());
-		int defense = statusBarTracker.getDefense();
-		statusBars.get(StatusBarType.DEFENSE).updateValues(defense / (defense + 100.f), 0, defense);
-		StatusBarTracker.Resource speed = statusBarTracker.getSpeed();
-		statusBars.get(StatusBarType.SPEED).updateValues(speed.value() / (float) speed.max(), 0, speed.value());
-		statusBars.get(StatusBarType.EXPERIENCE).updateValues(player.experienceProgress, 0, player.experienceLevel);
+		if (Utils.isInTheRift()) {
+			final int div = SkyblockerConfigManager.get().uiAndVisuals.bars.riftHealthHP ? 1 : 2;
+			statusBars.get(StatusBarType.HEALTH).updateValues(Math.round(player.getHealth()) / player.getMaxHealth(), 0, Math.round(player.getHealth()) / div, Math.round(player.getMaxHealth()) / div, null);
+			statusBars.get(StatusBarType.DEFENSE).visible = false;
+		} else {
+			StatusBarTracker.Resource health = StatusBarTracker.getHealth();
+			statusBars.get(StatusBarType.HEALTH).updateWithResource(health);
+			int defense = StatusBarTracker.getDefense();
+			StatusBar defenseBar = statusBars.get(StatusBarType.DEFENSE);
+			defenseBar.visible = true;
+			defenseBar.updateValues(defense / (defense + 100.f), 0, defense, null, null);
+		}
+
+		StatusBarTracker.Resource intelligence = StatusBarTracker.getMana();
+		if (SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.ACCURATE) {
+			float totalIntelligence = (float) intelligence.max() + intelligence.overflow();
+			statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / totalIntelligence + intelligence.overflow() / totalIntelligence, intelligence.overflow() / totalIntelligence, intelligence.value(), intelligence.max(), intelligence.overflow());
+		} else statusBars.get(StatusBarType.INTELLIGENCE).updateWithResource(intelligence);
+
+		StatusBarTracker.Resource speed = StatusBarTracker.getSpeed();
+		statusBars.get(StatusBarType.SPEED).updateWithResource(speed);
+		statusBars.get(StatusBarType.EXPERIENCE).updateValues(player.experienceProgress, 0, player.experienceLevel, null, null);
+		StatusBarTracker.Resource air = StatusBarTracker.getAir();
+		StatusBar airBar = statusBars.get(StatusBarType.AIR);
+		airBar.updateWithResource(air);
+		if (player.isUnderWater() != airBar.visible) {
+			airBar.visible = player.isUnderWater();
+			updatePositionsNextFrame = true;
+		}
+		if (updatePositionsNextFrame) {
+			updatePositions(false);
+			updatePositionsNextFrame = false;
+		}
 		return true;
 	}
 }

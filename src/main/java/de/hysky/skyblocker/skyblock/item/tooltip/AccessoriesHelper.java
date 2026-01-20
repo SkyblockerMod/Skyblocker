@@ -5,25 +5,23 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.profile.ProfiledData;
+import de.hysky.skyblocker.utils.data.ProfiledData;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.slot.Slot;
-
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.regex.Matcher;
@@ -40,22 +38,20 @@ public class AccessoriesHelper {
 	private static final ToIntFunction<Accessory> ACCESSORY_TIER = Accessory::tier;
 
 	private static Map<String, Accessory> ACCESSORY_DATA = new Object2ObjectOpenHashMap<>();
-	//remove??
-	private static CompletableFuture<Void> loaded;
 
 	@Init
 	public static void init() {
-		loaded = COLLECTED_ACCESSORIES.init();
+		COLLECTED_ACCESSORIES.init();
 		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
-			if (Utils.isOnSkyblock() && TooltipInfoType.ACCESSORIES.isTooltipEnabled() && !Utils.getProfileId().isEmpty() && screen instanceof GenericContainerScreen genericContainerScreen) {
+			if (Utils.isOnSkyblock() && TooltipInfoType.ACCESSORIES.isTooltipEnabled() && !Utils.getProfileId().isEmpty() && screen instanceof ContainerScreen genericContainerScreen) {
 				Matcher matcher = ACCESSORY_BAG_TITLE.matcher(genericContainerScreen.getTitle().getString());
 
 				if (matcher.matches()) {
 					ScreenEvents.afterTick(screen).register(_screen -> {
-						GenericContainerScreenHandler handler = genericContainerScreen.getScreenHandler();
+						ChestMenu handler = genericContainerScreen.getMenu();
 						int page = matcher.group("page") != null ? Integer.parseInt(matcher.group("page")) : 1;
 
-						collectAccessories(handler.slots.subList(0, handler.getRows() * 9), page);
+						collectAccessories(handler.slots.subList(0, handler.getRowCount() * 9), page);
 					});
 				}
 			}
@@ -64,11 +60,11 @@ public class AccessoriesHelper {
 
 	private static void collectAccessories(List<Slot> slots, int page) {
 		//Is this even needed?
-		if (!loaded.isDone()) return;
+		if (!COLLECTED_ACCESSORIES.isLoaded()) return;
 
 		List<String> accessoryIds = slots.stream()
-				.map(Slot::getStack)
-				.map(ItemUtils::getItemId)
+				.map(Slot::getItem)
+				.map(ItemStack::getSkyblockId)
 				.filter(NON_EMPTY)
 				.toList();
 
@@ -80,6 +76,10 @@ public class AccessoriesHelper {
 		if (!ACCESSORY_DATA.containsKey(accessoryId) || Utils.getProfileId().isEmpty()) return Pair.of(AccessoryReport.INELIGIBLE, null);
 
 		Accessory accessory = ACCESSORY_DATA.get(accessoryId);
+
+		//Ignore rift-only accessories
+		if (accessory.origin().orElse("").equals("RIFT")) return Pair.of(AccessoryReport.INELIGIBLE, null);
+
 		Set<Accessory> collectedAccessories = COLLECTED_ACCESSORIES.computeIfAbsent(ProfileAccessoryData::createDefault).pages().values().stream()
 				.flatMap(ObjectOpenHashSet::stream)
 				.filter(ACCESSORY_DATA::containsKey)
@@ -151,11 +151,12 @@ public class AccessoriesHelper {
 	 * @author AzureAaron
 	 * @implSpec <a href="https://github.com/AzureAaron/aaron-mod/blob/1.20/src/main/java/net/azureaaron/mod/commands/MagicalPowerCommand.java#L475">Aaron's Mod</a>
 	 */
-	public record Accessory(String id, Optional<String> family, int tier) {
+	public record Accessory(String id, Optional<String> family, int tier, Optional<String> origin) {
 		private static final Codec<Accessory> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("id").forGetter(Accessory::id),
 				Codec.STRING.optionalFieldOf("family").forGetter(Accessory::family),
-				Codec.INT.optionalFieldOf("tier", 0).forGetter(Accessory::tier)
+				Codec.INT.optionalFieldOf("tier", 0).forGetter(Accessory::tier),
+				Codec.STRING.optionalFieldOf("origin").forGetter(Accessory::origin)
 		).apply(instance, Accessory::new));
 		public static final Codec<Map<String, Accessory>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC);
 

@@ -2,6 +2,8 @@ package de.hysky.skyblocker;
 
 import de.hysky.skyblocker.hud.HudProcessor;
 import de.hysky.skyblocker.init.InitProcessor;
+import de.hysky.skyblocker.object.ObjectProcessor;
+
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
@@ -10,17 +12,22 @@ import org.gradle.api.tasks.compile.JavaCompile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Processor implements Plugin<Project> {
 
@@ -37,20 +44,20 @@ public class Processor implements Plugin<Project> {
 
 			new InitProcessor().apply(javaCompile);
 			new HudProcessor().apply(javaCompile);
+			ObjectProcessor.apply();
 		});
 	}
 
-	public static void forEachClass(@NotNull File directory, final Consumer<InputStream> consumer) {
+	public static void forEachClass(@NotNull File directory, BiConsumer<Path, InputStream> consumer) {
 		try {
 			Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<>() {
 				@Override
 				public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
 					if (!path.toString().endsWith(".class")) return FileVisitResult.CONTINUE;
 					try (InputStream inputStream = Files.newInputStream(path)) {
-						consumer.accept(inputStream);
+						consumer.accept(path, inputStream);
 					} catch (IOException e) {
 						logger.error("Failed to run consumer on class {}", path, e);
-
 					}
 
 					return FileVisitResult.CONTINUE;
@@ -61,8 +68,12 @@ public class Processor implements Plugin<Project> {
 		}
 	}
 
-	public static void forEachClass(final Consumer<InputStream> consumer) {
+	public static void forEachClass(BiConsumer<Path, InputStream> consumer) {
 		forEachClass(classesDir, consumer);
+	}
+
+	public static void forEachClass(Consumer<InputStream> consumer) {
+		forEachClass((_path, inputStream) -> consumer.accept(inputStream));
 	}
 
 	public static @Nullable File findClass(File directory, String className) {
@@ -84,6 +95,32 @@ public class Processor implements Plugin<Project> {
 
 	public static @Nullable File findClass(String className) {
 		return findClass(classesDir, className);
+	}
+
+	public static void readClass(InputStream classData, Function<ClassReader, ClassVisitor> visitorFactory) {
+		try {
+			ClassReader classReader = new ClassReader(classData);
+			classReader.accept(visitorFactory.apply(classReader), ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static void writeClass(Path classFilePath, Function<ClassWriter, ClassVisitor> visitorFactory) {
+		try (InputStream inputStream = Files.newInputStream(classFilePath)) {
+			ClassReader classReader = new ClassReader(inputStream);
+			//ASM's frame calculation reads classes reflectively which will cause a TypeNotPresentException
+			//since the classes we are transforming aren't on the class path. So we need to manually calculate
+			//the stack frames.
+			ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+			classReader.accept(visitorFactory.apply(classWriter), 0);
+
+			try (OutputStream outputStream = Files.newOutputStream(classFilePath)) {
+				outputStream.write(classWriter.toByteArray());
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

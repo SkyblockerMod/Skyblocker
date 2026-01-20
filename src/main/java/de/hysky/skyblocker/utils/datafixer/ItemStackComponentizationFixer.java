@@ -7,76 +7,68 @@ import java.util.Optional;
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Dynamic;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.argument.ItemStringReader;
-import net.minecraft.command.argument.ItemStringReader.ItemResult;
-import net.minecraft.component.Component;
-import net.minecraft.component.ComponentType;
-import net.minecraft.datafixer.Schemas;
-import net.minecraft.datafixer.TypeReferences;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import de.hysky.skyblocker.utils.Utils;
+import net.minecraft.commands.arguments.item.ItemParser;
+import net.minecraft.commands.arguments.item.ItemParser.ItemResult;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.registry.BuiltinRegistries;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.RegistryWrapper.WrapperLookup;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.util.datafix.DataFixers;
+import net.minecraft.util.datafix.fixes.References;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Contains a data fixer to convert legacy item NBT to the new components system, among other fixers related to the item components system.
  *
- * @see net.minecraft.datafixer.fix.ItemStackComponentizationFix
+ * @see net.minecraft.util.datafix.fixes.ItemStackComponentizationFix
  */
 public class ItemStackComponentizationFixer {
 	private static final int ITEM_NBT_DATA_VERSION = 3817;
-	private static final int ITEM_COMPONENTS_DATA_VERSION = 3825;
-	private static final WrapperLookup LOOKUP = BuiltinRegistries.createWrapperLookup();
+	private static final int ITEM_COMPONENTS_DATA_VERSION = 4325;
 
-	public static ItemStack fixUpItem(NbtCompound nbt) {
-		Dynamic<NbtElement> dynamic = Schemas.getFixer().update(TypeReferences.ITEM_STACK, new Dynamic<>(getRegistryLookup().getOps(NbtOps.INSTANCE), nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
+	public static ItemStack fixUpItem(CompoundTag nbt) {
+		Dynamic<Tag> dynamic = DataFixers.getDataFixer().update(References.ITEM_STACK, new Dynamic<>(Utils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
 
 		return ItemStack.CODEC.parse(dynamic).getOrThrow();
 	}
 
 	/**
-	 * Modified version of {@link net.minecraft.command.argument.ItemStackArgument#asString(net.minecraft.registry.RegistryWrapper.WrapperLookup)} to only care about changed components.
+	 * Modified version of {@link net.minecraft.commands.arguments.item.ItemInput#serialize(net.minecraft.core.HolderLookup.Provider)} to only care about changed components.
 	 *
 	 * @return The {@link ItemStack}'s components as a string which is in the format that the {@code /give} command accepts.
 	 */
 	public static String componentsAsString(ItemStack stack) {
-		RegistryOps<NbtElement> nbtRegistryOps = getRegistryLookup().getOps(NbtOps.INSTANCE);
+		RegistryOps<Tag> nbtRegistryOps = Utils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE);
 
-		return Arrays.toString(stack.getComponentChanges().entrySet().stream().map(entry -> {
-			ComponentType<?> componentType = entry.getKey();
-			Identifier componentId = Registries.DATA_COMPONENT_TYPE.getId(componentType);
+		return Arrays.toString(stack.getComponentsPatch().entrySet().stream().map(entry -> {
+			DataComponentType<?> componentType = entry.getKey();
+			Identifier componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
 			if (componentId == null) return null;
 
 			Optional<?> component = entry.getValue();
 			if (component.isEmpty()) return "!" + componentId;
 
-			Optional<NbtElement> encodedComponent = Component.of(componentType, component.get()).encode(nbtRegistryOps).result();
+			Optional<Tag> encodedComponent = TypedDataComponent.createUnchecked(componentType, component.get()).encodeValue(nbtRegistryOps).result();
 
 			if (encodedComponent.isEmpty()) return null;
 			return componentId + "=" + encodedComponent.orElseThrow();
 		}).filter(Objects::nonNull).toArray());
 	}
 
-	/**
-	 * Constructs an {@link ItemStack} from an {@code itemId}, with item components in string format as returned by {@link #componentsAsString(ItemStack)}, and with a specified stack count.
-	 *
-	 * @return an {@link ItemStack} or {@link ItemStack#EMPTY} if there was an exception thrown.
-	 */
-	public static ItemStack fromComponentsString(String itemId, int count, String componentsString) {
-		ItemStringReader reader = new ItemStringReader(getRegistryLookup());
+	public static ItemStack fromItemString(String itemString, int count) {
+		ItemParser reader = new ItemParser(Utils.getRegistryWrapperLookup());
 
 		try {
-			ItemResult result = reader.consume(new StringReader(itemId + componentsString));
+			ItemResult result = reader.parse(new StringReader(itemString));
 			ItemStack stack = new ItemStack(result.item(), count);
 
 			//Vanilla skips validation with /give so we will too
-			stack.applyUnvalidatedChanges(result.components());
+			stack.applyComponents(result.components());
 
 			return stack;
 		} catch (Exception ignored) {}
@@ -85,10 +77,12 @@ public class ItemStackComponentizationFixer {
 	}
 
 	/**
-	 * Tries to get the dynamic registry manager instance currently in use or else returns {@link #LOOKUP}
+	 * Constructs an {@link ItemStack} from an {@code itemId}, with item components in string format as returned by {@link #componentsAsString(ItemStack)}, and with a specified stack count.
+	 *
+	 * @return an {@link ItemStack} or {@link ItemStack#EMPTY} if there was an exception thrown.
 	 */
-	public static WrapperLookup getRegistryLookup() {
-		MinecraftClient client = MinecraftClient.getInstance();
-		return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : LOOKUP;
+	public static ItemStack fromComponentsString(String itemId, int count, String componentsString) {
+		return fromItemString(itemId + componentsString, count);
 	}
+
 }

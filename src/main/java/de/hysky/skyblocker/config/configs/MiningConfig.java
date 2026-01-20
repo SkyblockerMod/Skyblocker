@@ -1,197 +1,178 @@
 package de.hysky.skyblocker.config.configs;
 
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
-import net.minecraft.client.resource.language.I18n;
-
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.resources.language.I18n;
 
 public class MiningConfig {
-    @SerialEntry
-    public boolean enableDrillFuel = true;
+	public boolean enableDrillFuel = true;
 
-    @SerialEntry
-    public DwarvenMines dwarvenMines = new DwarvenMines();
+	public boolean commissionHighlight = true;
 
-	@Deprecated
-    public DwarvenHud dwarvenHud = new DwarvenHud();
+	public boolean callMismyla = true;
 
-    @SerialEntry
-    public CrystalHollows crystalHollows = new CrystalHollows();
+	public boolean redialOnBadSignal = true;
 
-    @SerialEntry
-    public CrystalsHud crystalsHud = new CrystalsHud();
+	/**
+	 * TODO: Move into {@link PickobulusHelper} in next config version.
+	*/
+	public boolean enablePickobulusHelper = true;
 
-    @SerialEntry
-    public CrystalsWaypoints crystalsWaypoints = new CrystalsWaypoints();
+	public PickobulusHelper pickobulusHelper = new PickobulusHelper();
 
-    @SerialEntry
-    public CommissionWaypoints commissionWaypoints = new CommissionWaypoints();
-
-    @SerialEntry
-    public Glacite glacite = new Glacite();
-
-    @SerialEntry
-    public boolean commissionHighlight = true;
-
-    public static class DwarvenMines {
-        @SerialEntry
-        public boolean solveFetchur = true;
-
-        @SerialEntry
-        public boolean solvePuzzler = true;
-
-		@SerialEntry
-	    public boolean enableCarpetHighlighter = true;
-
-		@SerialEntry
-	    public Color carpetHighlightColor = new Color(255, 0, 0, 76);
-    }
+	public DwarvenMines dwarvenMines = new DwarvenMines();
 
 	@Deprecated
-    public static class DwarvenHud {
-        @Deprecated
-        public boolean enabledCommissions = true;
+	public transient DwarvenHud dwarvenHud = new DwarvenHud();
 
-        @Deprecated
-        public boolean enabledPowder = true;
+	public CrystalHollows crystalHollows = new CrystalHollows();
 
-        @Deprecated
-        public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
+	public CrystalsHud crystalsHud = new CrystalsHud();
 
-        @Deprecated
-        public int commissionsX = 10;
+	public CrystalsWaypoints crystalsWaypoints = new CrystalsWaypoints();
 
-        @Deprecated
-        public int commissionsY = 10;
+	public CommissionWaypoints commissionWaypoints = new CommissionWaypoints();
 
-        @Deprecated
-        public int powderX = 10;
+	public Glacite glacite = new Glacite();
 
-        @Deprecated
-        public int powderY = 70;
-    }
+	public static class PickobulusHelper {
+		public boolean enablePickobulusHud = true;
 
-    public static class CrystalHollows {
-        @SerialEntry
-        public boolean metalDetectorHelper = true;
+		public boolean hideHudOnCooldown = false;
+	}
 
-        @SerialEntry
-        public boolean nucleusWaypoints = false;
+	public static class DwarvenMines {
+		public boolean solveFetchur = true;
 
-        @SerialEntry
-        public boolean chestHighlighter = true;
+		public boolean solvePuzzler = true;
 
-        @SerialEntry
-        public Color chestHighlightColor = new Color(0, 0, 255, 128);
+		public boolean enableCarpetHighlighter = true;
 
-	    @SerialEntry
-	    public boolean enablePowderTracker = true;
+		public Color carpetHighlightColor = new Color(255, 0, 0, 76);
+	}
 
-	    @SerialEntry
-	    public boolean countNaturalChestsInTracker = true;
-
-		@SerialEntry
-	    public List<String> powderTrackerFilter = new ArrayList<>();
-    }
-
-    public static class CrystalsHud {
-        @SerialEntry
-        public boolean enabled = true;
-
-        @SerialEntry
-        public boolean showLocations = true;
-
-        @SerialEntry
-        public int locationSize = 8;
-
-        @SerialEntry
-        public int x = 10;
-
-        @SerialEntry
-        public int y = 130;
-
-        @SerialEntry
-        public float mapScaling = 1f;
-    }
-
-    public static class CrystalsWaypoints {
-        @SerialEntry
-        public boolean enabled = true;
+	@Deprecated
+	public static class DwarvenHud {
+		@Deprecated
+		public boolean enabledCommissions = true;
 
 		@Deprecated
-        @SerialEntry
-        public float textScale = 1;
+		public boolean enabledPowder = true;
 
-        @SerialEntry
-        public boolean findInChat = true;
+		@Deprecated
+		public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
 
-        @SerialEntry
-        public boolean wishingCompassSolver = true;
+		@Deprecated
+		public int commissionsX = 10;
 
-		@SerialEntry
+		@Deprecated
+		public int commissionsY = 10;
+
+		@Deprecated
+		public int powderX = 10;
+
+		@Deprecated
+		public int powderY = 70;
+	}
+
+	public static class CrystalHollows {
+		public boolean metalDetectorHelper = true;
+
+		public boolean nucleusWaypoints = false;
+
+		public boolean chestHighlighter = true;
+
+		public Color chestHighlightColor = new Color(0, 0, 255, 128);
+
+		public boolean enablePowderTracker = true;
+
+		public boolean countNaturalChestsInTracker = true;
+
+		public List<String> powderTrackerFilter = new ArrayList<>();
+	}
+
+	public static class CrystalsHud {
+		public boolean enabled = true;
+
+		public boolean showLocations = true;
+
+		public int locationSize = 8;
+
+		public int x = 10;
+
+		public int y = 130;
+
+		public float mapScaling = 1f;
+	}
+
+	public static class CrystalsWaypoints {
+		public boolean enabled = true;
+
+		@Deprecated
+		public transient float textScale = 1;
+
+		public boolean findInChat = true;
+
+		public boolean wishingCompassSolver = true;
+
 		public boolean shareFairyGrotto = true;
-    }
+	}
 
-    public static class CommissionWaypoints {
-        @SerialEntry
-        public CommissionWaypointMode mode = CommissionWaypointMode.BOTH;
+	public static class CommissionWaypoints {
+		public CommissionWaypointMode mode = CommissionWaypointMode.BOTH;
 
 		@Deprecated
-        @SerialEntry
-        public float textScale = 1;
+		public transient float textScale = 1;
 
-        @SerialEntry
-        public boolean useColor = true;
+		public boolean useColor = true;
 
-        @SerialEntry
-        public boolean showBaseCamp = false;
+		public boolean showBaseCamp = false;
 
-        @SerialEntry
-        public boolean showEmissary = true;
-    }
+		public boolean showEmissary = true;
 
-    public enum CommissionWaypointMode {
-        OFF, DWARVEN, GLACITE, BOTH;
+		public boolean hideEmissaryOnPigeon = true;
+	}
 
-        @Override
-        public String toString() {
-            return I18n.translate("skyblocker.config.mining.commissionWaypoints.mode." + name());
-        }
-    }
+	public enum CommissionWaypointMode {
+		OFF, DWARVEN, GLACITE, BOTH;
 
-    public static class Glacite {
-        @SerialEntry
-        public boolean coldOverlay = true;
+		@Override
+		public String toString() {
+			return I18n.get("skyblocker.config.mining.commissionWaypoints.mode." + name());
+		}
+	}
 
-        @SerialEntry
-        public boolean enableCorpseFinder = true;
+	public static class Glacite {
+		public boolean coldOverlay = true;
 
-        @SerialEntry
-        public boolean enableParsingChatCorpseFinder = true;
+		public boolean fossilSolver = true;
 
-		@SerialEntry
-	    public boolean autoShareCorpses = false;
+		public boolean enableCorpseFinder = true;
 
-		@SerialEntry
-	    public boolean enableCorpseProfitTracker = true;
-    }
+		public boolean enableParsingChatCorpseFinder = true;
+
+		public boolean autoShareCorpses = false;
+
+		public boolean enableCorpseProfitTracker = true;
+
+		public boolean forceEnglishCorpseProfitTracker = true;
+	}
 
 	/**
 	 * @deprecated See {@link UIAndVisualsConfig.TabHudStyle}.
 	 */
 	@Deprecated
-    public enum DwarvenHudStyle {
-        SIMPLE, FANCY, CLASSIC;
+	public enum DwarvenHudStyle {
+		SIMPLE, FANCY, CLASSIC;
 
-        @Override
-        public String toString() {
-            return switch (this) {
-                case SIMPLE -> "Simple";
-                case FANCY -> "Fancy";
-                case CLASSIC -> "Classic";
-            };
-        }
-    }
+		@Override
+		public String toString() {
+			return switch (this) {
+				case SIMPLE -> "Simple";
+				case FANCY -> "Fancy";
+				case CLASSIC -> "Classic";
+			};
+		}
+	}
 }

@@ -3,69 +3,65 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 
 // this widget shows what you're forging right now.
 // for locked slots, the unlock requirement is shown
 @RegisterWidget
 public class ForgeWidget extends TabHudWidget {
 
-	private static final MutableText TITLE = Text.literal("Forges").formatted(Formatting.DARK_AQUA,
-			Formatting.BOLD);
+	private static final MutableComponent TITLE = net.minecraft.network.chat.Component.literal("Forges").withStyle(ChatFormatting.DARK_AQUA,
+			ChatFormatting.BOLD);
 
 	public ForgeWidget() {
-		super("Forges", TITLE, Formatting.DARK_AQUA.getColorValue());
+		super("Forges", TITLE, ChatFormatting.DARK_AQUA.getColor());
 	}
 
 	@Override
-	public void updateContent(List<Text> lines) {
+	public void updateContent(List<net.minecraft.network.chat.Component> lines) {
 		boolean b = lines.getFirst().getString().trim().startsWith("(");
 		for (int i = b ? 1 : 0, slot = 1; i < lines.size(); i++, slot++) {
 			String trim = lines.get(i).getString().trim();
 
 			Component c;
-			Text l1, l2;
+			net.minecraft.network.chat.Component l1, l2;
 
 			switch (trim.substring(3)) {
 				case "LOCKED" -> {
-					l1 = Text.literal("Locked").formatted(Formatting.RED);
+					l1 = net.minecraft.network.chat.Component.literal("Locked").withStyle(ChatFormatting.RED);
 					l2 = switch (slot) {
-						case 3 -> Text.literal("Needs HotM 3").formatted(Formatting.GRAY);
-						case 4 -> Text.literal("Needs HotM 4").formatted(Formatting.GRAY);
-						case 5 -> Text.literal("Needs HotM 5").formatted(Formatting.GRAY);
-						case 6 -> Text.literal("Needs HotM 6").formatted(Formatting.GRAY);
-						case 7 -> Text.literal("Needs HotM 7").formatted(Formatting.GRAY);
-						default -> Text.literal("This message should not appear").formatted(Formatting.RED, Formatting.BOLD);
+						case 3 -> net.minecraft.network.chat.Component.literal("Needs HotM 3").withStyle(ChatFormatting.GRAY);
+						case 4 -> net.minecraft.network.chat.Component.literal("Needs HotM 4").withStyle(ChatFormatting.GRAY);
+						case 5 -> net.minecraft.network.chat.Component.literal("Needs HotM 5").withStyle(ChatFormatting.GRAY);
+						case 6 -> net.minecraft.network.chat.Component.literal("Needs HotM 6").withStyle(ChatFormatting.GRAY);
+						case 7 -> net.minecraft.network.chat.Component.literal("Needs HotM 7").withStyle(ChatFormatting.GRAY);
+						default -> net.minecraft.network.chat.Component.literal("This message should not appear").withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
 					};
-					c = new IcoFatTextComponent(Ico.BARRIER, l1, l2);
+					c = Components.iconFatTextComponent(Ico.BARRIER, l1, l2);
 				}
 				case "EMPTY" -> {
-					l1 = Text.literal("Empty").formatted(Formatting.GRAY);
-					c = new IcoTextComponent(Ico.FURNACE, l1);
+					l1 = net.minecraft.network.chat.Component.literal("Empty").withStyle(ChatFormatting.GRAY);
+					c = Components.iconTextComponent(Ico.FURNACE, l1);
 				}
 				default -> {
 					String[] parts = trim.split(": ");
 					if (parts.length != 2) {
-						c = new IcoFatTextComponent();
+						c = Components.iconFatTextComponent();
 					} else {
-						l1 = Text.literal(parts[0].substring(3)).formatted(Formatting.YELLOW);
+						l1 = net.minecraft.network.chat.Component.literal(parts[0].substring(3)).withStyle(ChatFormatting.YELLOW);
 						if (parts[1].equals("Ready!")) {
-							l2 = Text.literal("Done!").formatted(Formatting.GREEN);
+							l2 = net.minecraft.network.chat.Component.literal("Done!").withStyle(ChatFormatting.GREEN);
 						} else {
-							l2 = Text.literal("Done in: ").formatted(Formatting.GRAY).append(Text.literal(parts[1]).formatted(Formatting.WHITE));
+							l2 = net.minecraft.network.chat.Component.literal("Done in: ").withStyle(ChatFormatting.GRAY).append(net.minecraft.network.chat.Component.literal(parts[1]).withStyle(ChatFormatting.WHITE));
 						}
-						c = new IcoFatTextComponent(Ico.FIRE, l1, l2);
+						c = Components.iconFatTextComponent(Ico.CAMPFIRE, l1, l2);
 					}
 				}
 			}
 			this.addComponent(c);
 		}
 	}
-
 }

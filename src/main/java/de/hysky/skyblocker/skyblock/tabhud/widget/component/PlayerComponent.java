@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.PlayerSkinDrawer;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Component that consists of a player's skin icon and their name
@@ -13,26 +13,24 @@ import org.jetbrains.annotations.Nullable;
 public class PlayerComponent extends Component {
 
 	private static final int SKIN_ICO_DIM = 8;
-
-	private final Text name;
+	private final net.minecraft.network.chat.Component name;
 	private final Identifier tex;
 
-	public PlayerComponent(PlayerListEntry ple) {
+	public PlayerComponent(PlayerInfo ple) {
 		this(ple, null);
 	}
 
-	public PlayerComponent(PlayerListEntry ple, @Nullable Text name) {
-		this.name = name == null ? ple.getDisplayName() : name;
-		this.tex = ple.getSkinTextures().texture();
+	public PlayerComponent(PlayerInfo ple, net.minecraft.network.chat.@Nullable Component name) {
+		this.name = name == null ? ple.getTabListDisplayName() : name;
+		this.tex = ple.getSkin().body().texturePath();
 
-		this.width = SKIN_ICO_DIM + PAD_S + txtRend.getWidth(this.name);
-		this.height = txtRend.fontHeight;
+		this.width = SKIN_ICO_DIM + PAD_S + txtRend.width(this.name);
+		this.height = txtRend.lineHeight;
 	}
 
 	@Override
-	public void render(DrawContext context, int x, int y) {
-		PlayerSkinDrawer.draw(context, tex, x, y, SKIN_ICO_DIM, true, false, -1);
-		context.drawText(txtRend, name, x + SKIN_ICO_DIM + PAD_S, y, 0xffffffff, false);
+	public void render(GuiGraphics context, int x, int y) {
+		PlayerFaceRenderer.draw(context, tex, x, y, SKIN_ICO_DIM, true, false, -1);
+		context.drawString(txtRend, name, x + SKIN_ICO_DIM + PAD_S, y, CommonColors.WHITE, false);
 	}
-
 }

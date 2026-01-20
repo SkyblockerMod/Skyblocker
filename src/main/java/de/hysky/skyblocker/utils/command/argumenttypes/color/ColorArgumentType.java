@@ -25,4 +25,3 @@ public final class ColorArgumentType {
 		return RgbColorArgumentType.getInt(context, name);
 	}
 }
-

@@ -1,133 +1,161 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.client.resources.language.I18n;
 
 public class HelperConfig {
+	public boolean enableNewYearCakesHelper = true;
 
-    @SerialEntry
-    public boolean enableNewYearCakesHelper = true;
+	public boolean enableBitsTooltip = true;
 
-    @SerialEntry
-    public boolean enableBitsTooltip = true;
+	public boolean enableWardrobeHelper = true;
 
-    @SerialEntry
-    public boolean enableWardrobeHelper = true;
+	public boolean enableDateCalculator = true;
 
-    @SerialEntry
-    public MythologicalRitual mythologicalRitual = new MythologicalRitual();
+	public boolean enableCopyUnderbidPrice = false;
 
-    @SerialEntry
-    public Jerry jerry = new Jerry();
+	public boolean enableBuildersWandPreview = true;
 
-    @SerialEntry
-    public Experiments experiments = new Experiments();
+	public boolean enableAnvilHelper = true;
 
-    @SerialEntry
-    public Fishing fishing = new Fishing();
+	public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
-    @SerialEntry
-    public FairySouls fairySouls = new FairySouls();
+	public Jerry jerry = new Jerry();
 
-    @SerialEntry
-    public ChocolateFactory chocolateFactory = new ChocolateFactory();
+	public Experiments experiments = new Experiments();
 
-    @SerialEntry
-    public Carnival carnival = new Carnival();
+	public Fishing fishing = new Fishing();
 
-    @SerialEntry
-    public Bazaar bazaar = new Bazaar();
+	public FairySouls fairySouls = new FairySouls();
 
-    @SerialEntry
-    public ItemPrice itemPrice = new ItemPrice();
+	public ChocolateFactory chocolateFactory = new ChocolateFactory();
 
-    public static class MythologicalRitual {
-        @SerialEntry
-        public boolean enableMythologicalRitualHelper = true;
-    }
+	public Carnival carnival = new Carnival();
 
-    public static class Jerry {
-        @SerialEntry
-        public boolean enableJerryTimer = false;
-    }
+	public Bazaar bazaar = new Bazaar();
 
-    public static class Experiments {
-        @SerialEntry
-        public boolean enableChronomatronSolver = true;
+	public ItemPrice itemPrice = new ItemPrice();
 
-        @SerialEntry
-        public boolean enableSuperpairsSolver = true;
+	public GreatSpookEvent greatSpookEvent = new GreatSpookEvent();
 
-        @SerialEntry
-        public boolean enableUltrasequencerSolver = true;
-    }
+	public static class MythologicalRitual {
+		public boolean enableMythologicalRitualHelper = true;
+	}
 
-    public static class Fishing {
-        @SerialEntry
-        public boolean enableFishingHelper = true;
+	public static class Jerry {
+		public boolean enableJerryTimer = false;
+	}
 
-        @SerialEntry
-        public boolean enableFishingTimer = false;
+	public static class Experiments {
+		public boolean enableChronomatronSolver = true;
 
-        @SerialEntry
-        public boolean changeTimerColor = true;
+		public boolean enableSuperpairsSolver = true;
 
-        @SerialEntry
-        public float fishingTimerScale = 1f;
+		public boolean enableUltrasequencerSolver = true;
 
-        @SerialEntry
-        public boolean hideOtherPlayersRods = false;
-    }
+		public boolean blockIncorrectClicks = false;
+	}
 
-    public static class FairySouls {
-        @SerialEntry
-        public boolean enableFairySoulsHelper = false;
+	public static class Fishing {
+		public boolean enableFishingHelper = true;
 
-        @SerialEntry
-        public boolean highlightFoundSouls = true;
+		@Deprecated
+		public transient boolean enableFishingHookDisplay = true;
 
-        @SerialEntry
-        public boolean highlightOnlyNearbySouls = false;
-    }
+		public boolean enableFishingTimer = false;
 
-    public static class ChocolateFactory {
-        @SerialEntry
-        public boolean enableChocolateFactoryHelper = true;
+		@Deprecated
+		public transient boolean changeTimerColor = true;
 
-        @SerialEntry
-        public boolean enableEggFinder = true;
+		@Deprecated
+		public transient float fishingTimerScale = 1f;
 
-        @SerialEntry
-        public boolean sendEggFoundMessages = true;
+		public boolean hideOtherPlayersRods = false;
 
-        @SerialEntry
-        public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+		public boolean enableFishingHud = true;
 
-        @SerialEntry
-        public boolean enableTimeTowerReminder = true;
+		@Deprecated
+		public List<Location> fishingHudEnabledLocations = new ArrayList<>(List.of(Location.values()));
 
-        @SerialEntry
-        public boolean straySound = true;
-    }
+		public boolean enableSeaCreatureCounter = true;
 
-    public static class Carnival {
-    	@SerialEntry
-    	public boolean catchAFishHelper = true;
+		public FishingHookDisplay fishingHookDisplay = FishingHookDisplay.HUD;
 
-    	@SerialEntry
-    	public boolean zombieShootoutHelper = true;
-    }
+		public boolean onlyShowHudInBarn = true;
 
-    public static class Bazaar {
-        @SerialEntry
-        public boolean enableBazaarHelper = true;
-    }
+		public int timerLength = 340;
 
-    public static class ItemPrice {
-        @SerialEntry
-        public boolean enableItemPriceLookup = true;
+		public boolean seaCreatureTimerNotification = true;
 
-        @SerialEntry
-        public boolean enableItemPriceRefresh = true;
-    }
+		public int seaCreatureCap = 30;
+
+		public boolean seaCreatureCapNotification = true;
+
+		public SkyblockItemRarity minimumNotificationRarity = SkyblockItemRarity.EPIC;
+
+		public enum FishingHookDisplay {
+			OFF,
+			CROSSHAIR,
+			HUD;
+
+			@Override
+			public String toString() {
+				return I18n.get("skyblocker.config.helpers.fishing.fishingHookDisplay." + name());
+			}
+		}
+	}
+
+	public static class FairySouls {
+		public boolean enableFairySoulsHelper = false;
+
+		public boolean highlightFoundSouls = true;
+
+		public boolean highlightOnlyNearbySouls = false;
+	}
+
+	public static class ChocolateFactory {
+		public boolean enableChocolateFactoryHelper = true;
+
+		public boolean enableTimeTowerReminder = true;
+
+		public boolean straySound = true;
+
+		// Hoppity's Hunt
+
+		public boolean enableEggFinder = true;
+
+		public boolean sendEggFoundMessages = true;
+
+		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+
+		public boolean showThroughWalls = false;
+	}
+
+	public static class Carnival {
+		public boolean catchAFishHelper = true;
+
+		public boolean zombieShootoutHelper = true;
+	}
+
+	public static class Bazaar {
+		public boolean enableBazaarHelper = true;
+
+		public boolean enableReorderHelper = true;
+
+		public boolean enableOrderTracker = true;
+	}
+
+	public static class ItemPrice {
+		public boolean enableItemPriceLookup = true;
+
+		public boolean enableItemPriceRefresh = true;
+	}
+
+	public static class GreatSpookEvent {
+		public boolean enableMathTeacherHelper = true;
+	}
 }

@@ -5,23 +5,22 @@ import java.util.function.Supplier;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class DangerWarning {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final Supplier<MutableText> DANGER_TEXT = () -> Text.translatable("skyblocker.crimson.kuudra.danger");
+	private static final Minecraft CLIENT = Minecraft.getInstance();
+	private static final Supplier<MutableComponent> DANGER_TEXT = () -> Component.translatable("skyblocker.crimson.kuudra.danger");
 	private static final Title TITLE = new Title(DANGER_TEXT.get());
 
 	@Init
@@ -31,13 +30,13 @@ public class DangerWarning {
 	}
 
 	private static void updateIndicator() {
-		if (Utils.isInKuudra() && SkyblockerConfigManager.get().crimsonIsle.kuudra.dangerWarning && CLIENT.player != null && CLIENT.world != null) {
+		if (Utils.isInKuudra() && SkyblockerConfigManager.get().crimsonIsle.kuudra.dangerWarning && CLIENT.player != null && CLIENT.level != null) {
 			for (int i = 1; i <= 5; i++) {
-				BlockPos under = CLIENT.player.getBlockPos().down(i);
+				BlockPos under = CLIENT.player.blockPosition().below(i);
 				Title title = getDangerTitle(under);
 
 				if (title != null) {
-					RenderHelper.displayInTitleContainerAndPlaySound(title);
+					TitleContainer.addTitleAndPlaySound(title);
 
 					return;
 				} else if (i == 5) { //Prevent removing the title prematurely
@@ -48,16 +47,16 @@ public class DangerWarning {
 	}
 
 	private static Title getDangerTitle(BlockPos pos) {
-		BlockState state = CLIENT.world.getBlockState(pos);
+		BlockState state = CLIENT.level.getBlockState(pos);
 		Block block = state.getBlock();
 
 		int argb = switch (block) {
-			case Block b when b == Blocks.GREEN_TERRACOTTA -> DyeColor.GREEN.getEntityColor();
-			case Block b when b == Blocks.LIME_TERRACOTTA -> DyeColor.LIME.getEntityColor();
-			case Block b when b == Blocks.YELLOW_TERRACOTTA -> DyeColor.YELLOW.getEntityColor();
-			case Block b when b == Blocks.ORANGE_TERRACOTTA -> DyeColor.ORANGE.getEntityColor();
-			case Block b when b == Blocks.PINK_TERRACOTTA -> DyeColor.PINK.getEntityColor();
-			case Block b when b == Blocks.RED_TERRACOTTA -> DyeColor.RED.getEntityColor();
+			case Block b when b == Blocks.GREEN_TERRACOTTA -> DyeColor.GREEN.getTextureDiffuseColor();
+			case Block b when b == Blocks.LIME_TERRACOTTA -> DyeColor.LIME.getTextureDiffuseColor();
+			case Block b when b == Blocks.YELLOW_TERRACOTTA -> DyeColor.YELLOW.getTextureDiffuseColor();
+			case Block b when b == Blocks.ORANGE_TERRACOTTA -> DyeColor.ORANGE.getTextureDiffuseColor();
+			case Block b when b == Blocks.PINK_TERRACOTTA -> DyeColor.PINK.getTextureDiffuseColor();
+			case Block b when b == Blocks.RED_TERRACOTTA -> DyeColor.RED.getTextureDiffuseColor();
 
 			default -> 0;
 		};

@@ -1,15 +1,16 @@
 package de.hysky.skyblocker.skyblock.events.greatspook;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Calculator;
 import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.PlainTextContent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +30,10 @@ public final class MathTeacherHelper {
 	/**
 	 * Appends the result of the math expression to the message and a send in chat text that, well, sends the result in chat.
 	 */
-	public static Text onMessage(Text message, boolean overlay) {
-		if (overlay) return message;
-		List<Text> siblings = message.getSiblings();
-		if (message.getContent() != PlainTextContent.EMPTY || siblings.size() != 3) return message;
+	public static Component onMessage(Component message, boolean overlay) {
+		if (overlay || !SkyblockerConfigManager.get().helpers.greatSpookEvent.enableMathTeacherHelper) return message;
+		List<Component> siblings = message.getSiblings();
+		if (message.getContents() != PlainTextContents.EMPTY || siblings.size() != 3) return message;
 		if (!siblings.getFirst().getString().equals("QUICK MATHS! ")) return message;
 
 		String expression = siblings.get(2).getString().replace('x', '*'); // Hypixel uses x for multiplication while our calculator uses *
@@ -40,16 +41,16 @@ public final class MathTeacherHelper {
 			String result = "%.0f".formatted(Calculator.calculate(expression));
 
 			return message.copy()
-			              .append(" = ")
-			              .append(Text.literal(result)
-			                          .formatted(Formatting.AQUA))
-			              .append(ScreenTexts.SPACE)
-			              .append(Text.translatable("text.skyblocker.clickToSend")
-			                          .formatted(Formatting.GREEN)
-			                          .styled(style ->
-					                          style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ac " + result))
-					                               .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Constants.PREFIX.get().append(Text.translatable("text.skyblocker.clickToSend.@Tooltip"))))
-			                          ));
+						.append(" = ")
+						.append(Component.literal(result)
+									.withStyle(ChatFormatting.AQUA))
+						.append(CommonComponents.SPACE)
+						.append(Component.translatable("text.skyblocker.clickToSend")
+									.withStyle(ChatFormatting.GREEN)
+									.withStyle(style ->
+											style.withClickEvent(new ClickEvent.RunCommand("/ac " + result))
+												.withHoverEvent(new HoverEvent.ShowText(Constants.PREFIX.get().append(Component.translatable("text.skyblocker.clickToSend.@Tooltip"))))
+									));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Math Teacher Helper] Failed to calculate math expression: {}", expression, e);
 			return message;

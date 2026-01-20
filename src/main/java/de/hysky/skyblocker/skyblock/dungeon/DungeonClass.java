@@ -1,20 +1,20 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import net.minecraft.item.ItemStack;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.item.ItemStack;
 
 public enum DungeonClass {
 	UNKNOWN("Unknown", MobGlow.NO_GLOW, Ico.BARRIER),
-	HEALER("Healer", 0x820dd1, Ico.POTION),
-	MAGE("Mage", 0x36c6e3, Ico.B_ROD),
-	BERSERK("Berserk", 0xfa5b16, Ico.DIASWORD),
-	ARCHER("Archer", 0xed240e, Ico.BOW),
+	HEALER("Healer", 0x820DD1, Ico.POTION),
+	MAGE("Mage", 0x36C6E3, Ico.B_ROD),
+	BERSERK("Berserk", 0xFA5B16, Ico.DIA_SWORD),
+	ARCHER("Archer", 0xED240E, Ico.BOW),
 	TANK("Tank", 0x138717, Ico.CHESTPLATE);
 
 	private static final Map<String, DungeonClass> CLASSES = Arrays.stream(values())
@@ -22,11 +22,13 @@ public enum DungeonClass {
 
 	private final String name;
 	private final int color;
+	private final int glowColor;
 	private final ItemStack icon;
 
 	DungeonClass(String name, int color, ItemStack icon) {
 		this.name = name;
-		this.color = color;
+		this.color = ARGB.opaque(color);
+		this.glowColor = color;
 		this.icon = icon;
 	}
 
@@ -35,10 +37,17 @@ public enum DungeonClass {
 	}
 
 	/**
-	 * @return The color of the class in RGB format.
+	 * @return The color of the class in ARGB format.
 	 */
 	public int color() {
 		return this.color;
+	}
+
+	/**
+	 * @return The color of the class in RGB format.
+	 */
+	public int glowColor() {
+		return this.glowColor;
 	}
 
 	public ItemStack icon() {

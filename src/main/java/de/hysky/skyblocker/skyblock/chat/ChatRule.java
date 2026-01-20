@@ -3,19 +3,33 @@ package de.hysky.skyblocker.skyblock.chat;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.annotations.GenEquals;
+import de.hysky.skyblocker.annotations.GenHashCode;
+import de.hysky.skyblocker.annotations.GenToString;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.CollectionUtils;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.sound.SoundEvent;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 /**
  * Data class to contain all the settings for a chat rule
@@ -32,23 +46,30 @@ public class ChatRule {
 			Either::left
 	);
 
+	private static final UnaryOperator<Optional<String>> REMOVE_BLANK = opt -> opt.flatMap(s -> s.isBlank() ? Optional.empty() : Optional.of(s));
+
 	private static final Codec<ChatRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("name").forGetter(ChatRule::getName),
 			Codec.BOOL.fieldOf("enabled").forGetter(ChatRule::getEnabled),
-			Codec.BOOL.fieldOf("isPartialMatch").forGetter(ChatRule::getPartialMatch),
-			Codec.BOOL.fieldOf("isRegex").forGetter(ChatRule::getRegex),
-			Codec.BOOL.fieldOf("isIgnoreCase").forGetter(ChatRule::getIgnoreCase),
+			Codec.BOOL.fieldOf("partialMatch").forGetter(ChatRule::getPartialMatch),
+			Codec.BOOL.fieldOf("regex").forGetter(ChatRule::getRegex),
+			Codec.BOOL.fieldOf("ignoreCase").forGetter(ChatRule::getIgnoreCase),
 			Codec.STRING.fieldOf("filter").forGetter(ChatRule::getFilter),
-			LOCATION_FIXING_CODEC.fieldOf("validLocations").forGetter(ChatRule::getValidLocations),
-			Codec.BOOL.fieldOf("hideMessage").forGetter(ChatRule::getHideMessage),
-			Codec.BOOL.fieldOf("showActionBar").forGetter(ChatRule::getShowActionBar),
-			Codec.BOOL.fieldOf("showAnnouncement").forGetter(ChatRule::getShowAnnouncement),
-			Codec.STRING.optionalFieldOf("replaceMessage").forGetter(ChatRule::getReplaceMessageOpt),
-			SoundEvent.CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOpt)
-	).apply(instance, ChatRule::new));
+			LOCATION_FIXING_CODEC.fieldOf("locations").forGetter(ChatRule::getValidLocations),
+			Codec.BOOL.fieldOf("hideOriginalMessage").forGetter(ChatRule::getHideMessage),
+			Codec.STRING.optionalFieldOf("chatMessage").xmap(REMOVE_BLANK, REMOVE_BLANK).forGetter(ChatRule::getChatMessageOptional),
+			Codec.STRING.optionalFieldOf("actionbarMessage").xmap(REMOVE_BLANK, REMOVE_BLANK).forGetter(ChatRule::getActionBarMessageOptional),
+			AnnouncementMessage.CODEC.optionalFieldOf("announcementMessage").forGetter(ChatRule::getAnnouncementMessageOptional),
+			ToastMessage.CODEC.optionalFieldOf("toastMessage").forGetter(ChatRule::getToastMessageOptional),
+			SoundEvent.DIRECT_CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOptional)
+	).apply(instance, (s, aBoolean, aBoolean2, aBoolean3, aBoolean4, s2, locations, aBoolean5, s3, s4, s5, toastMessage1, soundEvent) ->
+			new ChatRule(s, aBoolean, aBoolean2, aBoolean3, aBoolean4, s2, locations, aBoolean5, s3.orElse(null), s4.orElse(null), s5.orElse(null), toastMessage1.orElse(null), soundEvent.orElse(null))
+	));
+
 	public static final Codec<List<ChatRule>> LIST_CODEC = CODEC.listOf();
 
 	private String name;
+	private @Nullable Pattern pattern; // Only compile Regex patterns once
 
 	// Inputs
 	private boolean enabled;
@@ -60,10 +81,11 @@ public class ChatRule {
 
 	// Outputs
 	private boolean hideMessage;
-	private boolean showActionBar;
-	private boolean showAnnouncement;
-	private String replaceMessage;
-	private SoundEvent customSound;
+	private @Nullable String chatMessage;
+	private @Nullable String actionBarMessage;
+	private @Nullable AnnouncementMessage announcementMessage;
+	private @Nullable ToastMessage toastMessage;
+	private @Nullable SoundEvent customSound;
 
 	/**
 	 * Creates a chat rule with default options.
@@ -79,13 +101,14 @@ public class ChatRule {
 		this.validLocations = EnumSet.noneOf(Location.class);
 
 		this.hideMessage = true;
-		this.showActionBar = false;
-		this.showAnnouncement = false;
-		this.replaceMessage = null;
+		this.chatMessage = null;
+		this.actionBarMessage = null;
+		this.announcementMessage = null;
+		this.toastMessage = null;
 		this.customSound = null;
 	}
 
-	public ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, boolean showActionBar, boolean showAnnouncement, @Nullable String replaceMessage, @Nullable SoundEvent customSound) {
+	ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, @Nullable String chatMessage, @Nullable String actionBarMessage, @Nullable AnnouncementMessage announcementMessage, @Nullable ToastMessage toastMessage, @Nullable SoundEvent customSound) {
 		this.name = name;
 		this.enabled = enabled;
 		this.isPartialMatch = isPartialMatch;
@@ -94,14 +117,11 @@ public class ChatRule {
 		this.filter = filter;
 		this.validLocations = validLocations;
 		this.hideMessage = hideMessage;
-		this.showActionBar = showActionBar;
-		this.showAnnouncement = showAnnouncement;
-		this.replaceMessage = replaceMessage;
+		this.chatMessage = chatMessage;
+		this.actionBarMessage = actionBarMessage;
+		this.announcementMessage = announcementMessage;
+		this.toastMessage = toastMessage;
 		this.customSound = customSound;
-	}
-
-	private ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, boolean showActionBar, boolean showAnnouncement, Optional<String> replaceMessage, Optional<SoundEvent> customSound) {
-		this(name, enabled, isPartialMatch, isRegex, isIgnoreCase, filter, validLocations, hideMessage, showActionBar, showAnnouncement, replaceMessage.orElse(null), customSound.orElse(null));
 	}
 
 	protected String getName() {
@@ -134,6 +154,7 @@ public class ChatRule {
 
 	protected void setRegex(boolean regex) {
 		isRegex = regex;
+		this.pattern = null;
 	}
 
 	protected boolean getIgnoreCase() {
@@ -142,6 +163,7 @@ public class ChatRule {
 
 	protected void setIgnoreCase(boolean ignoreCase) {
 		isIgnoreCase = ignoreCase;
+		this.pattern = null;
 	}
 
 	protected String getFilter() {
@@ -150,6 +172,7 @@ public class ChatRule {
 
 	protected void setFilter(String filter) {
 		this.filter = filter;
+		this.pattern = null;
 	}
 
 	protected boolean getHideMessage() {
@@ -160,43 +183,65 @@ public class ChatRule {
 		this.hideMessage = hideMessage;
 	}
 
-	protected boolean getShowActionBar() {
-		return showActionBar;
+	@Nullable String getActionBarMessage() {
+		return actionBarMessage;
 	}
 
-	protected void setShowActionBar(boolean showActionBar) {
-		this.showActionBar = showActionBar;
+	private Optional<String> getActionBarMessageOptional() {
+		return Optional.ofNullable(getActionBarMessage());
 	}
 
-	protected boolean getShowAnnouncement() {
-		return showAnnouncement;
+	void setActionBarMessage(@Nullable String actionBarMessage) {
+		if (actionBarMessage != null && actionBarMessage.isBlank()) actionBarMessage = null;
+		this.actionBarMessage = actionBarMessage;
 	}
 
-	protected void setShowAnnouncement(boolean showAnnouncement) {
-		this.showAnnouncement = showAnnouncement;
+	@Nullable String getChatMessage() {
+		return chatMessage;
 	}
 
-	protected String getReplaceMessage() {
-		return replaceMessage;
+	private Optional<String> getChatMessageOptional() {
+		return Optional.ofNullable(getChatMessage());
 	}
 
-	private Optional<String> getReplaceMessageOpt() {
-		return Optional.ofNullable(replaceMessage);
+	void setChatMessage(@Nullable String chatMessage) {
+		if (chatMessage != null && chatMessage.isBlank()) chatMessage = null;
+		this.chatMessage = chatMessage;
 	}
 
-	protected void setReplaceMessage(String replaceMessage) {
-		this.replaceMessage = replaceMessage;
+	@Nullable AnnouncementMessage getAnnouncementMessage() {
+		return announcementMessage;
 	}
 
-	protected SoundEvent getCustomSound() {
+	private Optional<AnnouncementMessage> getAnnouncementMessageOptional() {
+		return Optional.ofNullable(getAnnouncementMessage());
+	}
+
+	void setAnnouncementMessage(@Nullable AnnouncementMessage announcementMessage) {
+		this.announcementMessage = announcementMessage;
+	}
+
+	@Nullable ToastMessage getToastMessage() {
+		return toastMessage;
+	}
+
+	private Optional<ToastMessage> getToastMessageOptional() {
+		return Optional.ofNullable(getToastMessage());
+	}
+
+	void setToastMessage(@Nullable ToastMessage toastMessage) {
+		this.toastMessage = toastMessage;
+	}
+
+	protected @Nullable SoundEvent getCustomSound() {
 		return customSound;
 	}
 
-	private Optional<SoundEvent> getCustomSoundOpt() {
-		return Optional.ofNullable(customSound);
+	private Optional<SoundEvent> getCustomSoundOptional() {
+		return Optional.ofNullable(getCustomSound());
 	}
 
-	protected void setCustomSound(SoundEvent customSound) {
+	protected void setCustomSound(@Nullable SoundEvent customSound) {
 		this.customSound = customSound;
 	}
 
@@ -208,51 +253,61 @@ public class ChatRule {
 		this.validLocations = validLocations;
 	}
 
+	private void compilePattern(String filterText) {
+		if (pattern != null) return;
+
+		try {
+			this.pattern = Pattern.compile(filterText);
+		} catch (PatternSyntaxException ex) {
+			this.enabled = false;
+			Minecraft client = Minecraft.getInstance();
+			if (client.player == null) return;
+			client.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)), false);
+		}
+	}
+
 	/**
 	 * checks every input option and if the games state and the inputted str matches them returns true.
 	 *
 	 * @param inputString the chat message to check if fits
 	 * @return if the inputs are all true and the outputs should be performed
 	 */
-	protected boolean isMatch(String inputString) {
+	protected Match isMatch(String inputString) {
 		//enabled
-		if (!enabled) return false;
+		if (!enabled) return Match.noMatch();
 
 		//ignore case
-		String testString;
-		String testFilter;
-
-		if (isIgnoreCase) {
-			testString = inputString.toLowerCase();
-			testFilter = filter.toLowerCase();
-		} else {
-			testString = inputString;
-			testFilter = filter;
-		}
+		String testString = isIgnoreCase ? inputString.toLowerCase(Locale.ENGLISH) : inputString;
+		String testFilter = isIgnoreCase ? filter.toLowerCase(Locale.ENGLISH) : filter;
+		if (testFilter.isBlank()) return Match.noMatch();
 
 		//filter
-		if (testFilter.isBlank()) return false;
+		Match match;
 		if (isRegex) {
+			compilePattern(testFilter);
+			if (pattern == null) return Match.noMatch();
+
+			Matcher matcher = pattern.matcher(testString);
 			if (isPartialMatch) {
-				if (!Pattern.compile(testFilter).matcher(testString).find()) return false;
+				if (matcher.find()) match = Match.ofRegex(matcher); else return Match.noMatch();
 			} else {
-				if (!testString.matches(testFilter)) return false;
+				if (matcher.matches()) match = Match.ofRegex(matcher); else return Match.noMatch();
 			}
 		} else {
 			if (isPartialMatch) {
-				if (!testString.contains(testFilter)) return false;
+				if (testString.contains(testFilter)) match = Match.ofString(); else return Match.noMatch();
 			} else {
-				if (!testFilter.equals(testString)) return false;
+				if (testFilter.equals(testString)) match = Match.ofString(); else return Match.noMatch();
 			}
 		}
 
-		// As a special case, if there are no valid locations all locations are valid.
+		// As a special case, if there are no valid locations, all locations are valid.
 		// This exists because it doesn't make sense to remove all valid locations, you should disable the chat rule if you want to do that.
 		// This way, we can also default to an empty set for validLocations.
-		if (validLocations.isEmpty()) return true;
+		if (validLocations.isEmpty()) return match;
 		// UNKNOWN isn't a valid location, so we act the same as the list being empty.
-		if (validLocations.size() == 1 && validLocations.contains(Location.UNKNOWN)) return true;
-		return validLocations.contains(Utils.getLocation());
+		if (validLocations.size() == 1 && validLocations.contains(Location.UNKNOWN)) return match;
+		return validLocations.contains(Utils.getLocation()) ? match : Match.noMatch();
 	}
 
 	// This maps invalid entries to `Location.UNKNOWN`, which is better than failing outright.
@@ -263,16 +318,117 @@ public class ChatRule {
 		// If a location's name contains a ! prefix, it's negated, meaning every location except that one is valid.
 		if (string.contains("!")) return EnumSet.complementOf(
 				Arrays.stream(string.split(", ?"))
-					  .filter(s1 -> s1.startsWith("!")) // Filter out the non-negated locations because the negation of any element in the list already implies those non-negated locations being valid.
-					  .map(s -> s.substring(1)) // Skip the `!`
-					  .map(Location::fromFriendlyName)
-					  .collect(CollectionUtils.enumSetCollector(Location.class))
+						.filter(s1 -> s1.startsWith("!")) // Filter out the non-negated locations because the negation of any element in the list already implies those non-negated locations being valid.
+						.map(s -> s.substring(1)) // Skip the `!`
+						.map(Location::fromFriendlyName)
+						.collect(CollectionUtils.enumSetCollector(Location.class))
 		);
 		return Arrays.stream(string.split(", ?"))
-					 .map(Location::fromFriendlyName)
-					 .collect(CollectionUtils.enumSetCollector(Location.class));
+				.map(Location::fromFriendlyName)
+				.collect(CollectionUtils.enumSetCollector(Location.class));
 	}
+
+	@Override
+	public final boolean equals(Object o) {
+		if (!(o instanceof ChatRule chatRule)) return false;
+		return getEnabled() == chatRule.getEnabled() && getPartialMatch() == chatRule.getPartialMatch() && getRegex() == chatRule.getRegex() && getIgnoreCase() == chatRule.getIgnoreCase() && getHideMessage() == chatRule.getHideMessage() && getName().equals(chatRule.getName()) && getFilter().equals(chatRule.getFilter()) && getValidLocations().equals(chatRule.getValidLocations()) && Objects.equals(getChatMessage(), chatRule.getChatMessage()) && Objects.equals(getActionBarMessage(), chatRule.getActionBarMessage()) && Objects.equals(getAnnouncementMessage(), chatRule.getAnnouncementMessage()) && Objects.equals(getToastMessage(), chatRule.getToastMessage()) && Objects.equals(getCustomSound(), chatRule.getCustomSound());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getName(), getEnabled(), getPartialMatch(), getRegex(), getIgnoreCase(), getFilter(), getValidLocations(), getHideMessage(), getChatMessage(), getActionBarMessage(), getActionBarMessage(), getAnnouncementMessage(), getToastMessage(), getCustomSound());
+	}
+
+	protected record Match(boolean matches, Optional<Matcher> matcher) {
+		protected static Match noMatch() {
+			return new Match(false, Optional.empty());
+		}
+
+		protected static Match ofString() {
+			return new Match(true, Optional.empty());
+		}
+
+		protected static Match ofRegex(Matcher matcher) {
+			return new Match(true, Optional.of(matcher));
+		}
+
+		protected String insertCaptureGroups(String replaceMessage) {
+			if (!matches || matcher.isEmpty()) return replaceMessage;
+			StringBuilder sb = new StringBuilder();
+			Matcher m = matcher.get();
+			m.reset();
+			if (!m.find()) return replaceMessage; // shouldn't happen but you never know
+			m.appendReplacement(sb, replaceMessage);
+			return sb.substring(m.start());
+		}
+	}
+
+	static class ToastMessage {
+		static final Codec<ToastMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				ItemStack.OPTIONAL_CODEC.optionalFieldOf("icon", ItemStack.EMPTY).forGetter(o -> o.icon),
+				Codec.STRING.fieldOf("message").forGetter(o -> o.message),
+				Codec.LONG.fieldOf("displayDuration").forGetter(o -> o.displayDuration)
+		).apply(instance, ToastMessage::new));
+
+		ItemStack icon;
+		String message;
+		long displayDuration;
+
+		ToastMessage(ItemStack icon, String message, long displayDuration) {
+			this.message = message;
+			this.icon = icon;
+			this.displayDuration = displayDuration;
+		}
+
+		ToastMessage() {
+			this(new ItemStack(Items.PAINTING), "", 1000);
+		}
+
+		@Override
+		@GenToString
+		public native String toString();
+
+		@Override
+		@GenEquals
+		public native boolean equals(Object obj);
+
+		@Override
+		@GenHashCode
+		public native int hashCode();
+	}
+
+	static class AnnouncementMessage {
+		static final Codec<AnnouncementMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.STRING.fieldOf("message").forGetter(o -> o.message),
+				Codec.LONG.fieldOf("displayDuration").forGetter(o -> o.displayDuration)
+		).apply(instance, AnnouncementMessage::new));
+
+		String message;
+		long displayDuration;
+
+		AnnouncementMessage(String message, long displayDuration) {
+			this.message = message;
+			this.displayDuration = displayDuration;
+		}
+
+		AnnouncementMessage() {
+			this("", SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength * 50L);
+		}
+
+		@Override
+		@GenToString
+		public native String toString();
+
+		@Override
+		@GenEquals
+		public native boolean equals(Object obj);
+
+		@Override
+		@GenHashCode
+		public native int hashCode();
+	}
+
+	@Override
+	@GenToString
+	public native String toString();
 }
-
-
-

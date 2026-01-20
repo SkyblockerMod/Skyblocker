@@ -1,33 +1,32 @@
 package de.hysky.skyblocker.config.configs;
 
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
-import net.minecraft.client.resource.language.I18n;
+import net.azureaaron.dandelion.api.ConfigType;
+import net.minecraft.client.resources.language.I18n;
 
 public class MiscConfig {
 
-    @SerialEntry
-    public RichPresence richPresence = new RichPresence();
+	public RichPresence richPresence = new RichPresence();
 
-    public static class RichPresence {
-        @SerialEntry
-        public boolean enableRichPresence = false;
+	public ConfigType configBackend = ConfigType.MOUL_CONFIG;
 
-        @SerialEntry
-        public Info info = Info.LOCATION;
+	public boolean cat = true;
 
-        @SerialEntry
-        public boolean cycleMode = false;
+	public static class RichPresence {
+		public boolean enableRichPresence = false;
 
-        @SerialEntry
-        public String customMessage = "Playing Skyblock";
-    }
+		public Info info = Info.LOCATION;
 
-    public enum Info {
-        PURSE, BITS, LOCATION;
+		public boolean cycleMode = false;
 
-        @Override
-        public String toString() {
-            return I18n.translate("skyblocker.config.misc.richPresence.info." + name());
-        }
-    }
+		public String customMessage = "Playing Skyblock";
+	}
+
+	public enum Info {
+		PURSE, BITS, LOCATION;
+
+		@Override
+		public String toString() {
+			return I18n.get("skyblocker.config.misc.richPresence.info." + name());
+		}
+	}
 }

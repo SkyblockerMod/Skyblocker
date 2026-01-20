@@ -1,56 +1,185 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.jetbrains.annotations.Range;
-
+import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
-import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
-import net.minecraft.entity.player.PlayerEntity;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.StreamSupport;
 
 public class DungeonPlayerManager {
 	/**
-	 * @implNote Same as {@link de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget#PLAYER_PATTERN}
+	 * Match a player entry.
+	 * Group 1: name
+	 * Group 2: class (or literal "EMPTY" pre dungeon start)
+	 * Group 3: level (or nothing, if pre dungeon start)
+	 * This regex filters out the ironman icon as well as rank prefixes and emblems
+	 * \[\d+\] (?:\[[A-Za-z]+\] )?(?&lt;name&gt;[A-Za-z0-9_]+) (?:.+ )?\((?&lt;class&gt;\S+) ?(?&lt;level&gt;[LXVI0]+)?\)
 	 */
-	private static final Pattern PLAYER_TAB_PATTERN = Pattern.compile("\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\\((?<class>\\S*) ?(?<level>[LXVI]*)\\)");
-	private static final Object2ReferenceMap<String, DungeonClass> PLAYER_CLASSES = new Object2ReferenceOpenHashMap<>(5);
+	public static final Pattern PLAYER_TAB_PATTERN = Pattern.compile("\\[\\d+] (?:\\[[A-Za-z]+] )?(?<name>[A-Za-z0-9_]+) (?:.+ )?\\((?<class>\\S+) ?(?<level>[LXVI0]+)?\\)");
+	public static final Pattern PLAYER_GHOST_PATTERN = Pattern.compile(" ☠ (?<name>[A-Za-z0-9_]+) .+ became a ghost\\.");
+	private static boolean dungeonLoaded;
+	/**
+	 * Use an array to ensure order, since the order of players in the player list is used to determine which decoration corresponds to which player in the dungeon map.
+	 */
+	private static final @Nullable DungeonPlayer[] players = new DungeonPlayer[5];
 
 	@Init
 	public static void init() {
-		DungeonEvents.DUNGEON_STARTED.register(DungeonPlayerManager::onDungeonStart);
+		DungeonEvents.DUNGEON_LOADED.register(() -> dungeonLoaded = true);
+		Scheduler.INSTANCE.scheduleCyclic(DungeonPlayerManager::updatePlayers, 1);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonPlayerManager::onPlayerGhost);
+		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 	}
 
-	public static DungeonClass getClassFromPlayer(PlayerEntity player) {
-		String name = player.getGameProfile().getName();
-
-		return PLAYER_CLASSES.getOrDefault(name, DungeonClass.UNKNOWN);
+	public static @Nullable DungeonPlayer[] getPlayers() {
+		return players;
 	}
 
-	private static void onDungeonStart() {
-		reset();
+	public static Optional<DungeonPlayer> getPlayer(String name) {
+		return Arrays.stream(players).filter(Objects::nonNull).filter(p -> p.name.equals(name)).findAny();
+	}
+
+	/**
+	 * @implNote If a player is currently a ghost, this will return {@link DungeonClass#UNKNOWN}.
+	 */
+	public static DungeonClass getClassFromPlayer(Player player) {
+		return getClassFromPlayer(player.getGameProfile().name());
+	}
+
+	/**
+	 * @implNote If a player is currently a ghost, this will return {@link DungeonClass#UNKNOWN}.
+	 */
+	public static DungeonClass getClassFromPlayer(String name) {
+		return getPlayer(name).map(DungeonPlayer::dungeonClass).orElse(DungeonClass.UNKNOWN);
+	}
+
+	private static void updatePlayers() {
+		if (!dungeonLoaded) return;
 
 		for (int i = 0; i < 5; i++) {
 			Matcher matcher = getPlayerFromTab(i + 1);
 
-			if (matcher != null) {
-				String name = matcher.group("name");
-				DungeonClass dungeonClass = DungeonClass.from(matcher.group("class"));
+			if (matcher == null) {
+				players[i] = null;
+				continue;
+			}
 
-				if (dungeonClass != DungeonClass.UNKNOWN) PLAYER_CLASSES.put(name, dungeonClass);
+			String name = matcher.group("name");
+			DungeonClass dungeonClass = DungeonClass.from(matcher.group("class"));
+
+			DungeonPlayer dungeonPlayer = players[i];
+			if (dungeonPlayer != null && dungeonPlayer.name.equals(name)) {
+				dungeonPlayer.update(dungeonClass);
+			} else {
+				players[i] = new DungeonPlayer(name, dungeonClass);
 			}
 		}
 	}
 
-	private static void reset() {
-		PLAYER_CLASSES.clear();
+	public static @Nullable Matcher getPlayerFromTab(@Range(from = 1, to = 5) int index) {
+		return PlayerListManager.regexAt(1 + (index - 1) * 4, PLAYER_TAB_PATTERN);
 	}
 
-	private static Matcher getPlayerFromTab(@Range(from = 1, to = 5) int index) {
-		return PlayerListManager.regexAt(1 + (index - 1) * 4, PLAYER_TAB_PATTERN);
+	@SuppressWarnings("SameReturnValue")
+	private static boolean onPlayerGhost(Component text, boolean overlay) {
+		if (!dungeonLoaded) return true;
+
+		Matcher matcher = PLAYER_GHOST_PATTERN.matcher(text.getString());
+		if (!matcher.find()) return true;
+
+		String name = matcher.group("name");
+		if (name.equals("You")) {
+			assert Minecraft.getInstance().player != null;
+			name = Minecraft.getInstance().player.getName().getString();
+		}
+		getPlayer(name).ifPresentOrElse(DungeonPlayer::ghost, () -> DungeonManager.LOGGER.error("[Skyblocker Dungeon Player Manager] Received ghost message for player '{}' but player was not found in the player list: {}", matcher.group("name"), Arrays.toString(players)));
+
+		return true;
+	}
+
+	private static void reset() {
+		dungeonLoaded = false;
+		Arrays.fill(players, null);
+	}
+
+	public static class DungeonPlayer {
+		private @Nullable UUID uuid;
+		private final String name;
+		private DungeonClass dungeonClass = DungeonClass.UNKNOWN;
+		private boolean alive;
+		private long lastGhostTime; // Used to prevent player list from overriding a recently ghosted player. The player list may have a few seconds of delay.
+
+		public DungeonPlayer(String name, DungeonClass dungeonClass) {
+			this.uuid = findPlayerUuid(name);
+			this.name = name;
+			update(dungeonClass);
+
+			// Pre-fetches game profiles for rendering skins in the leap overlay and fancy dungeon map.
+			CompletableFuture.runAsync(() -> Minecraft.getInstance().services().sessionService().fetchProfile(uuid, false), Executors.newVirtualThreadPerTaskExecutor());
+		}
+
+		private static @Nullable UUID findPlayerUuid(String name) {
+			assert Minecraft.getInstance().level != null;
+			return StreamSupport.stream(Minecraft.getInstance().level.entitiesForRendering().spliterator(), false)
+					.filter(Player.class::isInstance)
+					.map(Player.class::cast)
+					.filter(player -> player.getGameProfile().name().equals(name))
+					.findAny()
+					.map(Player::getUUID)
+					.orElse(null);
+		}
+
+		private void update(DungeonClass dungeonClass) {
+			// Prevent the player list from overriding a recently ghosted player back to normal, since the player list may have a few seconds of delay.
+			if (this.dungeonClass == DungeonClass.UNKNOWN && lastGhostTime + 2000 > System.currentTimeMillis()) {
+				return;
+			}
+			this.dungeonClass = dungeonClass;
+			alive = dungeonClass != DungeonClass.UNKNOWN;
+		}
+
+		private void ghost() {
+			update(DungeonClass.UNKNOWN);
+			lastGhostTime = System.currentTimeMillis();
+		}
+
+		public @Nullable UUID uuid() {
+			if (uuid == null) return uuid = findPlayerUuid(name); // Try to find the UUID. This shouldn't really happen, but this can act as failsafe.
+			return uuid;
+		}
+
+		public String name() {
+			return name;
+		}
+
+		public DungeonClass dungeonClass() {
+			return dungeonClass;
+		}
+
+		public boolean alive() {
+			return alive;
+		}
+
+		@Override
+		@GenToString
+		public native String toString();
 	}
 }

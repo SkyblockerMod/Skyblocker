@@ -1,18 +1,18 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import net.azureaaron.networth.NetworthResult;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 
@@ -21,13 +21,19 @@ public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		NetworthResult result = NetworthCalculator.getItemNetworth(stack);
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
+		if (TooltipInfoType.BAZAAR.getData() != null && TooltipInfoType.BAZAAR.getData().containsKey(stack.getSkyblockApiId())) {
+			return; // Bazaar price already displayed
+		}
+
+		int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreStrings()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
+
+		NetworthResult result = NetworthCalculator.getItemNetworth(stack, count);
 
 		if (result.price() > 0) {
-			lines.add(Text.literal(String.format("%-20s", "Est. Item Value:"))
-					.formatted(Formatting.GOLD)
-					.append(ItemTooltip.getCoinsMessage(result.price(), stack.getCount(), true)));
+			lines.add(Component.literal(String.format("%-20s", "Est. Item Value:"))
+					.withStyle(ChatFormatting.GOLD)
+					.append(ItemTooltip.getCoinsMessage(result.price(), count, true)));
 		}
 	}
 

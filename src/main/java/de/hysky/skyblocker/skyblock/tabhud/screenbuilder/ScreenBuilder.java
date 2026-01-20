@@ -10,23 +10,27 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.client.gui.DrawContext;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.language.I18n;
+import org.jspecify.annotations.Nullable;
 
 public class ScreenBuilder {
-	public static boolean positionsNeedsUpdating = true;
-
-	//private final String builderName;
+	// TODO: eliminate this static field completely?
+	// 	we can get rid of this field by moving the widget dimensions check into `updateWidgetLists`
+	private static boolean positionsNeedsUpdating = true;
 
 	private final Map<String, PositionRule> positioning = new Object2ObjectOpenHashMap<>();
 	private Map<String, PositionRule> positioningBackup = null;
 	private final Location location;
+
+	private List<HudWidget> hudScreen = new ArrayList<>();
+	private List<HudWidget> mainTabScreen = new ArrayList<>();
+	private List<HudWidget> secondaryTabScreen = new ArrayList<>();
 
 	/**
 	 * Create a ScreenBuilder from a json.
@@ -63,33 +67,36 @@ public class ScreenBuilder {
 		positioning.putAll(positioningBackup);
 	}
 
-	private final List<HudWidget> hudScreen = new ArrayList<>();
-	private final List<HudWidget> mainTabScreen = new ArrayList<>();
-	private final List<HudWidget> secondaryTabScreen = new ArrayList<>();
+	public static void markDirty() {
+		positionsNeedsUpdating = true;
+	}
 
-	public void positionWidgets(int screenW, int screenH, boolean config) {
-		hudScreen.clear();
-		mainTabScreen.clear();
-		secondaryTabScreen.clear();
+	/**
+	 * Updates the lists of widgets that should be rendered. This method runs every frame to check if any widgets have changed visibility (shouldRender).
+	 * @param config whether this render in happening in the config screen
+	 * @return true if the lists have changed and positioners should run, false if they are the same as before and repositioning is not needed
+	 */
+	public boolean updateWidgetLists(boolean config) {
+		// Save the hud widgets that should be rendered to new lists
+		final List<HudWidget> hudNew = new ArrayList<>();
+		final List<HudWidget> mainTabNew = new ArrayList<>();
+		final List<HudWidget> secondaryTabNew = new ArrayList<>();
 
-		WidgetPositioner newPositioner = SkyblockerConfigManager.get().uiAndVisuals.tabHud.defaultPositioning.getNewPositioner(screenW, screenH);
-
-		for (HudWidget widget : ScreenMaster.widgetInstances.values()) {
+		for (HudWidget widget : WidgetManager.widgetInstances.values()) {
 			widget.setVisible(false);
 			if (config ? widget.isEnabledIn(location) : widget.shouldRender(location)) { // TabHudWidget has this at false
 				// TODO maybe behavior to change? (having no position rule on a normal hud widget shouldn't quite be possible)
 				PositionRule rule = getPositionRule(widget.getInternalID());
 				if (rule == null) {
-					hudScreen.add(widget);
+					hudNew.add(widget);
 				} else {
 					switch (rule.screenLayer()) {
-						case MAIN_TAB -> mainTabScreen.add(widget);
-						case SECONDARY_TAB -> secondaryTabScreen.add(widget);
-						case null, default -> hudScreen.add(widget);
+						case MAIN_TAB -> mainTabNew.add(widget);
+						case SECONDARY_TAB -> secondaryTabNew.add(widget);
+						case null, default -> hudNew.add(widget);
 					}
 				}
 				widget.setVisible(true);
-				widget.update();
 				widget.setPositioned(false);
 			}
 		}
@@ -98,16 +105,39 @@ public class ScreenBuilder {
 			PositionRule rule = getPositionRule(widget.getInternalID());
 			widget.setVisible(true);
 			if (rule == null) {
-				mainTabScreen.add(widget);
+				mainTabNew.add(widget);
 			} else {
 				widget.setPositioned(false);
 				switch (rule.screenLayer()) {
-					case HUD -> hudScreen.add(widget);
-					case SECONDARY_TAB -> secondaryTabScreen.add(widget);
-					case null, default -> mainTabScreen.add(widget);
+					case HUD -> hudNew.add(widget);
+					case SECONDARY_TAB -> secondaryTabNew.add(widget);
+					case null, default -> mainTabNew.add(widget);
 				}
 			}
 		}
+
+		// Compare the newly generated lists with the old ones
+		if (hudScreen.equals(hudNew) && mainTabScreen.equals(mainTabNew) && secondaryTabScreen.equals(secondaryTabNew)) {
+			return false;
+		}
+		hudScreen = hudNew;
+		mainTabScreen = mainTabNew;
+		secondaryTabScreen = secondaryTabNew;
+
+		return true;
+	}
+
+	/**
+	 * Updates the widgets (if needed) after the new widget list has been generated and before positioners run.
+	 */
+	public void updateWidgets(WidgetManager.ScreenLayer screenLayer) {
+		for (HudWidget widget : getHudWidgets(screenLayer)) {
+			if (widget.shouldUpdateBeforeRendering()) widget.update();
+		}
+	}
+
+	public void positionWidgets(int screenW, int screenH) {
+		WidgetPositioner newPositioner = SkyblockerConfigManager.get().uiAndVisuals.tabHud.defaultPositioning.getNewPositioner(screenW, screenH);
 
 		// Auto positioning
 		for (HudWidget widget : mainTabScreen) {
@@ -142,7 +172,7 @@ public class ScreenBuilder {
 	/**
 	 * Renders the widgets present on the specified layer. Doesn't scale with the config option.
 	 */
-	public void renderWidgets(DrawContext context, ScreenMaster.ScreenLayer screenLayer) {
+	public void renderWidgets(GuiGraphics context, WidgetManager.ScreenLayer screenLayer) {
 		List<HudWidget> widgetsToRender = getHudWidgets(screenLayer);
 
 		for (HudWidget widget : widgetsToRender) {
@@ -150,7 +180,7 @@ public class ScreenBuilder {
 		}
 	}
 
-	public List<HudWidget> getHudWidgets(ScreenMaster.ScreenLayer screenLayer) {
+	public List<HudWidget> getHudWidgets(WidgetManager.ScreenLayer screenLayer) {
 		return switch (screenLayer) {
 			case MAIN_TAB -> mainTabScreen;
 			case SECONDARY_TAB -> secondaryTabScreen;
@@ -160,19 +190,18 @@ public class ScreenBuilder {
 	}
 
 	/**
-	 * Run the pipeline to build a Screen
+	 * Builds and renders the given {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager.ScreenLayer WidgetManager.ScreenLayer}, which
+	 * {@link #updateWidgetLists(boolean) updates the widget lists (for all screen layers)}, {@link #updateWidgets(WidgetManager.ScreenLayer) updates the widgets (for the current screen layer)},
+	 * {@link #positionWidgets(int, int) positions the widgets}, and {@link #renderWidgets(GuiGraphics, WidgetManager.ScreenLayer) renders the widgets}.
 	 */
-	public void run(DrawContext context, int screenW, int screenH, ScreenMaster.ScreenLayer screenLayer) {
+	public void run(GuiGraphics context, int screenW, int screenH, WidgetManager.ScreenLayer screenLayer) {
+		boolean widgetListsChanged = updateWidgetLists(false);
 
-        /*int i = 0;
-        for (TabHudWidget value : PlayerListMgr.tabWidgetInstances.values()) {
-            context.drawText(MinecraftClient.getInstance().textRenderer, value.getHypixelWidgetName(), 0, i, PlayerListMgr.tabWidgetsToShow.contains(value) ? Colors.LIGHT_YELLOW : -1, true);
-            i += 9;
-        }*/
+		updateWidgets(screenLayer);
 
-		if (positionsNeedsUpdating) {
+		if (widgetListsChanged || positionsNeedsUpdating) {
 			positionsNeedsUpdating = false;
-			positionWidgets(screenW, screenH, false);
+			positionWidgets(screenW, screenH);
 		}
 
 		renderWidgets(context, screenLayer);
@@ -191,6 +220,11 @@ public class ScreenBuilder {
 
 		public WidgetPositioner getNewPositioner(int screenWidth, int screenHeight) {
 			return function.apply(screenWidth, screenHeight);
+		}
+
+		@Override
+		public String toString() {
+			return I18n.get("skyblocker.config.uiAndVisuals.tabHud.defaultPosition." + name());
 		}
 	}
 

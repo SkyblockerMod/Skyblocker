@@ -1,5 +1,4 @@
 {
-    "key.wikiLookup": "Wiki-oppslag",
     "skyblocker.config.title": "Skyblocker-innstillinger",
     "skyblocker.config.uiAndVisuals.bars.enableBars": "Aktiver barer",
     "skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift": "Vis forhåndsvisning av ryggsekk uten å holde Shift nede",
@@ -13,7 +12,6 @@
     "skyblocker.config.general.itemTooltip.enableLowestBIN": "Aktiver laveste BIN-pris",
     "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Aktiver Bazaar kjøp/salg Pris",
     "skyblocker.config.general.hitbox": "Treffbokser",
-    "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Aktiver 1.8 treffboks for avlinger",
     "skyblocker.config.general.hitbox.oldLeverHitbox": "Aktiver 1.8 spak Treffboks",
     "skyblocker.itemTooltip.noData": "§cIngen data",
     "skyblocker.config.misc.richPresence": "Discord-rik tilstedeværelse",
@@ -27,8 +25,7 @@
     "skyblocker.config.misc.richPresence.customMessage": "Egendefinert melding",
     "skyblocker.config.quickNav": "Rask navigering",
     "skyblocker.config.quickNav.enableQuickNav": "Aktiver hurtignavigering",
-    "key.categories.skyblocker": "SkyBlocker",
-    "key.hotbarSlotLock": "Slot lås (Hotbar)",
+    "key.skyblocker.hotbarSlotLock": "Slot lås (Hotbar)",
     "skyblocker.config.general": "Generelt",
     "skyblocker.config.uiAndVisuals.bars": "Helse, mana, forsvar og XP-barer",
     "skyblocker.config.general.itemTooltip.avg.@Tooltip": "Du kan velge hvor mange dager med gjennomsnittspris som skal være",
@@ -52,5 +49,6 @@
     "skyblocker.config.mining.enableDrillFuel": "Aktiver Drill Fuel",
     "skyblocker.config.mining.dwarvenMines.solveFetchur": "Løse Fetchur",
     "skyblocker.config.mining.dwarvenMines.solvePuzzler": "Løs Puzzler Puzzle",
-    "skyblocker.config.mining.dwarvenHud": "Dverg-HUD"
+    "skyblocker.config.mining.dwarvenHud": "Dverg-HUD",
+    "argument.color.hex.invalidChar": "feilaktig karakter av heksadesimal heltall: %s. Gyldige tegn: [0-9a-fA-F]"
 }

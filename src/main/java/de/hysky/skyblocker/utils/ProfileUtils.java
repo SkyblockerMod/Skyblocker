@@ -1,57 +1,77 @@
 package de.hysky.skyblocker.utils;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import de.hysky.skyblocker.SkyblockerMod;
-import it.unimi.dsi.fastutil.objects.ObjectLongPair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.mojang.logging.LogUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import de.hysky.skyblocker.SkyblockerMod;
 
 public class ProfileUtils {
-    public static final Logger LOGGER = LoggerFactory.getLogger(ProfileUtils.class);
-    private static final long HYPIXEL_API_COOLDOWN = 300000; // 5min = 300000
+	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final LoadingCache<String, JsonObject> UUID_TO_PROFILES_CACHE = CacheBuilder.newBuilder()
+			.expireAfterWrite(5, TimeUnit.MINUTES)
+			.build(new CacheLoader<>() {
+				@Override
+				public JsonObject load(String uuid) throws Exception {
+					return fetchProfilesInternal(uuid);
+				}
+			});
 
-    public static Map<String, ObjectLongPair<JsonObject>> players = new HashMap<>();
-    public static Map<String, ObjectLongPair<JsonObject>> profiles = new HashMap<>();
+	/**
+	 * Fetches the given player's profiles and returns the player's data from their currently selected profile.
+	 */
+	public static CompletableFuture<@Nullable JsonObject> fetchProfileMember(String name) {
+		return CompletableFuture.supplyAsync(() -> {
+			String uuid = ApiUtils.name2Uuid(name);
 
-    public static CompletableFuture<JsonObject> updateProfileByName(String name) {
-        return fetchFullProfile(name).thenApply(profile -> {
-            JsonObject player = profile.getAsJsonArray("profiles").asList().stream()
-                    .map(JsonElement::getAsJsonObject)
-                    .filter(profileObj -> profileObj.getAsJsonPrimitive("selected").getAsBoolean())
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("No selected profile found!?"))
-                    .getAsJsonObject("members").get(name).getAsJsonObject();
+			if (!uuid.isEmpty()) {
+				JsonObject profile = UUID_TO_PROFILES_CACHE.getUnchecked(uuid);
+				JsonObject player = profile.getAsJsonArray("profiles").asList().stream()
+						.map(JsonElement::getAsJsonObject)
+						.filter(profileObj -> profileObj.getAsJsonPrimitive("selected").getAsBoolean())
+						.findFirst()
+						.orElseThrow(() -> new IllegalStateException("No selected profile found!?"))
+						.getAsJsonObject("members").get(uuid).getAsJsonObject();
 
-            players.put(name, ObjectLongPair.of(player, System.currentTimeMillis()));
-            return player;
-        });
-    }
+				return player;
+			}
 
-    public static CompletableFuture<JsonObject> fetchFullProfile(String name) {
-        ObjectLongPair<JsonObject> playerCache = profiles.get(name);
-        if (playerCache != null && playerCache.rightLong() + HYPIXEL_API_COOLDOWN > System.currentTimeMillis()) {
-            return CompletableFuture.completedFuture(playerCache.left());
-        }
+			return null;
+		}, Executors.newVirtualThreadPerTaskExecutor());
+	}
 
-        return CompletableFuture.supplyAsync(() -> {
-            String uuid = ApiUtils.name2Uuid(name);
-            try (Http.ApiResponse response = Http.sendHypixelRequest("skyblock/profiles", "?uuid=" + uuid)) {
-                if (!response.ok()) {
-                    throw new IllegalStateException("Failed to get profile uuid for player: " + name + "! Response: " + response.content());
-                }
-                JsonObject profile = SkyblockerMod.GSON.fromJson(response.content(), JsonObject.class);
-                profiles.put(name, ObjectLongPair.of(profile, System.currentTimeMillis()));
+	/**
+	 * Fetches the all of the given player's skyblock profiles from the API and returns the JSON response.
+	 */
+	public static CompletableFuture<@Nullable JsonObject> fetchFullProfile(String name) {
+		return CompletableFuture.supplyAsync(() -> {
+			String uuid = ApiUtils.name2Uuid(name);
 
-                return profile;
-            } catch (Exception e) {
-                LOGGER.error("[Skyblocker Profile Utils] Failed to get Player Profile Data for players {}, is the API Down/Limited?", name, e);
-            }
-            return null;
-        });
-    }
+			return !uuid.isEmpty() ? UUID_TO_PROFILES_CACHE.getUnchecked(uuid) : null;
+		}, Executors.newVirtualThreadPerTaskExecutor());
+	}
+
+	private static @Nullable JsonObject fetchProfilesInternal(String uuid) {
+		try (Http.ApiResponse response = Http.sendHypixelRequest("skyblock/profiles", "?uuid=" + uuid)) {
+			if (!response.ok()) {
+				throw new IllegalStateException(String.format("Failed to get profile for player: %s!, Status Code: %d, Response: %s", uuid, response.statusCode(), response.content()));
+			}
+
+			return SkyblockerMod.GSON.fromJson(response.content(), JsonObject.class);
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Profile Utils] Failed to get Player Profile Data for player {}, is the API Down/Limited?", uuid, e);
+		}
+
+		return null;
+	}
 }

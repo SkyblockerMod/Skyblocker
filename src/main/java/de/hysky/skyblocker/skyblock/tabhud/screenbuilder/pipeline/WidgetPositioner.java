@@ -1,11 +1,10 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import net.minecraft.client.gui.ScreenPos;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.function.Function;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import org.jspecify.annotations.Nullable;
 
 public abstract class WidgetPositioner {
 	protected final int screenWidth;
@@ -36,7 +35,7 @@ public abstract class WidgetPositioner {
 			startY = (int) (rule.parentPoint().verticalPoint().getPercentage() * screenHeight);
 
 		} else {
-			HudWidget parentWidget = ScreenMaster.widgetInstances.get(rule.parent());
+			HudWidget parentWidget = WidgetManager.widgetInstances.get(rule.parent());
 			if (parentWidget == null) return;
 			if (!parentWidget.isPositioned()) applyRuleToWidget(parentWidget, screenWidth, screenHeight, ruleProvider);
 
@@ -71,18 +70,18 @@ public abstract class WidgetPositioner {
 	 * @param parentPoint  The point on the parent widget that the child widget should be positioned relative to
 	 * @return The start position of the child widget
 	 */
-	public static @Nullable ScreenPos getStartPosition(String parent, int screenWidth, int screenHeight, PositionRule.Point parentPoint) {
+	public static @Nullable ScreenPosition getStartPosition(String parent, int screenWidth, int screenHeight, PositionRule.Point parentPoint) {
 		if (parent.equals("screen")) {
-			return new ScreenPos(
+			return new ScreenPosition(
 					(int) (parentPoint.horizontalPoint().getPercentage() * screenWidth),
 					(int) (parentPoint.verticalPoint().getPercentage() * screenHeight)
 			);
 
 		} else {
-			HudWidget parentWidget = ScreenMaster.widgetInstances.get(parent);
+			HudWidget parentWidget = WidgetManager.widgetInstances.get(parent);
 			if (parentWidget == null) return null;
 
-			return new ScreenPos(
+			return new ScreenPosition(
 					parentWidget.getX() + (int) (parentPoint.horizontalPoint().getPercentage() * parentWidget.getWidth()),
 					parentWidget.getY() + (int) (parentPoint.verticalPoint().getPercentage() * parentWidget.getHeight()));
 

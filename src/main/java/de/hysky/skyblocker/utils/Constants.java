@@ -1,56 +1,71 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 /**
  * Holds generic static constants
  */
 public interface Constants {
-	String LEVEL_EMBLEMS = "\u2E15\u273F\u2741\u2E19\u03B1\u270E\u2615\u2616\u2663\u213B\u2694\u27B6\u26A1\u2604\u269A\u2693\u2620\u269B\u2666\u2660\u2764\u2727\u238A\u1360\u262C\u269D\u29C9\uA214\u32D6\u2E0E\u26A0\uA541\u3020\u30C4\u2948\u2622\u2623\u273E\u269C\u0BD0\u0A6D\u2742\u16C3\u3023\u10F6\u0444\u266A\u266B\u04C3\u26C1\u26C3\u16DD\uA03E\u1C6A\u03A3\u09EB\u2603\u2654\u26C2\u0FC7\uA925\uA56A\u2592\u2600\u12DE";
+	String LEVEL_EMBLEMS = "\u2E15\u273F\u2741\u2E19\u03B1\u270E\u2615\u2616\u2663\u213B\u2694\u27B6\u26A1\u2604\u269A\u2693\u2620\u269B\u2666\u2660\u2764\u2727\u238A\u1360\u262C\u269D\u29C9\uA214\u32D6\u2E0E\u26A0\uA541\u3020\u30C4\u2948\u2622\u2623\u273E\u269C\u0BD0\u0A6D\u2742\u16C3\u3023\u10F6\u0444\u266A\u266B\u04C3\u26C1\u26C3\u16DD\u2618\uA598\uA03E\u1C6A\u03A3\u09EB\u2603\u2654\u26C2\u0FC7\uA925\uA56A\u2592\u2600\u12DE";
+	/**
+	 * Pattern for player names in the chat. For tab player names, use {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#PLAYER_NAME_PATTERN PlayerListManager#PLAYER_NAME_PATTERN}.
+	 */
 	Pattern PLAYER_NAME = Pattern.compile("(?:\\[[0-9]+\\] )?(?:[" + Constants.LEVEL_EMBLEMS + "] )?(?:\\[[A-Z+]+\\] )?([A-Za-z0-9_]+)");
 
-	Supplier<MutableText> PREFIX = () -> {
-		LocalDate time = LocalDate.now();
-		if (time.getMonthValue() == 4 && time.getDayOfMonth() == 1) {
-			return Text.empty().append(Text.literal("[").formatted(Formatting.GRAY))
-					.append(Text.literal("S").withColor(0x00ff4c))
-					.append(Text.literal("k").withColor(0x02fa60))
-					.append(Text.literal("i").withColor(0x04f574))
-					.append(Text.literal("b").withColor(0x07ef88))
-					.append(Text.literal("i").withColor(0x09ea9c))
-					.append(Text.literal("d").withColor(0x0be5af))
-					.append(Text.literal("i").withColor(0x0de0c3))
-					.append(Text.literal("b").withColor(0x10dad7))
-					.append(Text.literal("l").withColor(0x12d5eb))
-					.append(Text.literal("o").withColor(0x14d0ff))
-					.append(Text.literal("c").withColor(0x16cbff))
-					.append(Text.literal("k").withColor(0x18c6ff))
-					.append(Text.literal("e").withColor(0x1ac1ff))
-					.append(Text.literal("r").withColor(0x1cbbff))
-					.append(Text.literal("] ").formatted(Formatting.GRAY));
+	Supplier<MutableComponent> PREFIX = () -> {
+		if (FunUtils.shouldEnableFun()) {
+			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
+					.append(Component.literal("S").withColor(0x00FF4C))
+					.append(Component.literal("k").withColor(0x02FA60))
+					.append(Component.literal("i").withColor(0x04F574))
+					.append(Component.literal("b").withColor(0x07EF88))
+					.append(Component.literal("i").withColor(0x09EA9C))
+					.append(Component.literal("d").withColor(0x0BE5AF))
+					.append(Component.literal("i").withColor(0x0DE0C3))
+					.append(Component.literal("b").withColor(0x10DAD7))
+					.append(Component.literal("l").withColor(0x12D5EB))
+					.append(Component.literal("o").withColor(0x14D0FF))
+					.append(Component.literal("c").withColor(0x16CBFF))
+					.append(Component.literal("k").withColor(0x18C6FF))
+					.append(Component.literal("e").withColor(0x1AC1FF))
+					.append(Component.literal("r").withColor(0x1CBBFF))
+					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
+		} else if (FunUtils.shouldEnableChristmasFun()) {
+			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
+					.append(Component.literal("J").withColor(0x00FF4C))
+					.append(Component.literal("o").withColor(0x02FA60))
+					.append(Component.literal("l").withColor(0x04F574))
+					.append(Component.literal("l").withColor(0x07EF88))
+					.append(Component.literal("y").withColor(0x09EA9C))
+					.append(Component.literal("b").withColor(0x0BE5AF))
+					.append(Component.literal("l").withColor(0x0DE0C3))
+					.append(Component.literal("o").withColor(0x10DAD7))
+					.append(Component.literal("c").withColor(0x12D5EB))
+					.append(Component.literal("k").withColor(0x14D0FF))
+					.append(Component.literal("e").withColor(0x16CBFF))
+					.append(Component.literal("r").withColor(0x18C6FF))
+					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
 		}
 
-		return Text.empty()
-				.append(Text.literal("[").formatted(Formatting.GRAY))
-				.append(Text.literal("S").withColor(0x00ff4c))
-				.append(Text.literal("k").withColor(0x02fa60))
-				.append(Text.literal("y").withColor(0x04f574))
-				.append(Text.literal("b").withColor(0x07ef88))
-				.append(Text.literal("l").withColor(0x09ea9c))
-				.append(Text.literal("o").withColor(0x0be5af))
-				.append(Text.literal("c").withColor(0x0de0c3))
-				.append(Text.literal("k").withColor(0x10dad7))
-				.append(Text.literal("e").withColor(0x12d5eb))
-				.append(Text.literal("r").withColor(0x14d0ff))
-				.append(Text.literal("] ").formatted(Formatting.GRAY));
+		return Component.empty()
+				.append(Component.literal("[").withStyle(ChatFormatting.GRAY))
+				.append(Component.literal("S").withColor(0x00FF4C))
+				.append(Component.literal("k").withColor(0x02FA60))
+				.append(Component.literal("y").withColor(0x04F574))
+				.append(Component.literal("b").withColor(0x07EF88))
+				.append(Component.literal("l").withColor(0x09EA9C))
+				.append(Component.literal("o").withColor(0x0BE5AF))
+				.append(Component.literal("c").withColor(0x0DE0C3))
+				.append(Component.literal("k").withColor(0x10DAD7))
+				.append(Component.literal("e").withColor(0x12D5EB))
+				.append(Component.literal("r").withColor(0x14D0FF))
+				.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
 	};
 
 

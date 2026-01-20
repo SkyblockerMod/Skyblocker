@@ -3,15 +3,12 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class PotionLevelAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
@@ -22,19 +19,14 @@ public class PotionLevelAdder extends SimpleSlotTextAdder {
 		super(CONFIG_INFORMATION);
 	}
 
-    @Override
-    public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-        NbtCompound customData = ItemUtils.getCustomData(stack);
-        String title = stack.getName().getString();
-        if (customData.contains("potion_level", NbtElement.INT_TYPE) && !title.contains("Healer Class") && !title.contains("Class Passives")) {
-            if (title.contains("Healer Level ")){
-                String level = title.replaceAll("\\D", "");
-                return SlotText.bottomRightList(Text.literal(level).withColor(SlotText.WHITE));
-            } else {
-                int level = customData.getInt("potion_level");
-                return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
-            }
-        }
-        return List.of();
-    }
+	@Override
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
+		CompoundTag customData = ItemUtils.getCustomData(stack);
+		String title = stack.getHoverName().getString();
+		if (customData.contains("potion_level") && !title.contains("Healer") && !title.contains("Class Passives")) {
+			int level = customData.getIntOr("potion_level", 0);
+			return SlotText.bottomRightList(Component.literal(String.valueOf(level)).withColor(SlotText.CREAM));
+		}
+		return List.of();
+	}
 }

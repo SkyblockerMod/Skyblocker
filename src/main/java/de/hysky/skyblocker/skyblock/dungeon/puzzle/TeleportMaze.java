@@ -1,23 +1,30 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 public class TeleportMaze extends DungeonPuzzle {
+	private static final float[] LIME = ColorUtils.getFloatComponents(DyeColor.LIME);
+	private static final float[] RED = ColorUtils.getFloatComponents(DyeColor.RED);
 	private static final Set<BlockPos> ROOM_CENTERS = Set.of(
 			new BlockPos(7, 68, 9),
 			new BlockPos(23, 68, 9),
@@ -67,33 +74,32 @@ public class TeleportMaze extends DungeonPuzzle {
 	/**
 	 * The actual coordinate of the final pad.
 	 */
-	@Nullable
-	private BlockPos finalPad;
+	private @Nullable BlockPos finalPad;
 
 	private TeleportMaze() {
 		super("teleport-maze", "teleport-pad-room");
 	}
 
-	public void onTeleport(MinecraftClient client, BlockPos from, BlockPos to) {
-		if (!shouldSolve() || !DungeonManager.isCurrentRoomMatched() || client.player == null || client.world == null) return;
+	public void onTeleport(Minecraft client, BlockPos from, BlockPos to) {
+		if (!shouldSolve() || !DungeonManager.isCurrentRoomMatched() || client.player == null || client.level == null) return;
 
-		BlockPos prevPlayer = DungeonManager.getCurrentRoom().actualToRelative(from.withY(69));
-		BlockPos player = DungeonManager.getCurrentRoom().actualToRelative(to.withY(69));
+		BlockPos prevPlayer = DungeonManager.getCurrentRoom().actualToRelative(from.atY(69));
+		BlockPos player = DungeonManager.getCurrentRoom().actualToRelative(to.atY(69));
 		if (prevPlayer.equals(player) || !TELEPORT_PADS.contains(prevPlayer)) return;
 
 		// Process the teleport from the previous pad to the current pad
-		processTeleport(client.world, prevPlayer, player);
+		processTeleport(client.level, prevPlayer, player);
 		// Find the pad closest to the player, which is the current pad they teleported to
-		BlockPos nearestPad = TELEPORT_PADS.stream().min(Comparator.comparingDouble(pad -> pad.getSquaredDistance(player))).orElse(null);
+		BlockPos nearestPad = TELEPORT_PADS.stream().min(Comparator.comparingDouble(pad -> pad.distSqr(player))).orElse(null);
 		// Also process the teleport from the current pad to the previous pad
-		processTeleport(client.world, nearestPad, prevPlayer);
+		processTeleport(client.level, nearestPad, prevPlayer);
 	}
 
-	private void processTeleport(World world, BlockPos from, BlockPos to) {
+	private void processTeleport(Level world, BlockPos from, BlockPos to) {
 		getRoomType(world, to).ifPresent(type -> pads.put(DungeonManager.getCurrentRoom().relativeToActual(from), type));
 	}
 
-	private Optional<RoomType> getRoomType(World world, BlockPos pos) {
+	private Optional<RoomType> getRoomType(Level world, BlockPos pos) {
 		// Special processing for the entrance
 		if (pos.getX() == 15 && pos.getZ() == 12) return Optional.of(RoomType.ENTRANCE);
 		// Check if the position is in a room and return the room type by checking the ore block
@@ -103,7 +109,7 @@ public class TeleportMaze extends DungeonPuzzle {
 	}
 
 	@Override
-	public void tick(MinecraftClient client) {
+	public void tick(Minecraft client) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveTeleportMaze || !shouldSolve() || finalPad != null) return;
 		// Mark the last unused pad that's not the start or the end as the final pad
 		List<BlockPos> finalPads = TELEPORT_PADS.stream().filter(pad -> pad.getX() != 15) // Filter out the start and end pads
@@ -112,14 +118,18 @@ public class TeleportMaze extends DungeonPuzzle {
 	}
 
 	@Override
-	public void render(WorldRenderContext context) {
+	public void extractRendering(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveTeleportMaze || !shouldSolve()) return;
+		boolean debug = Debug.debugEnabled();
 		for (Map.Entry<BlockPos, RoomType> entry : pads.entrySet()) {
-			RenderHelper.renderFilled(context, entry.getKey(), entry.getValue().colorComponents, 0.5f, true);
+			// Only use the real room color in debug mode to present the solution to users in a simpler manner for now.
+			// Should be revisited eventually.
+			float[] color = debug ? entry.getValue().colorComponents : RED;
+			collector.submitFilledBox(entry.getKey(), color, 0.5f, debug);
 		}
 		if (finalPad != null) {
-			RenderHelper.renderFilled(context, finalPad, ColorUtils.getFloatComponents(DyeColor.LIME), 1f, true);
-			RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(finalPad), ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 2f);
+			collector.submitFilledBox(finalPad, LIME, 1f, true);
+			collector.submitLineFromCursor(Vec3.atCenterOf(finalPad), LIME, 1f, 2f);
 		}
 	}
 

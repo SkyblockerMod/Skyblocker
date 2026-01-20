@@ -5,35 +5,40 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
 import de.hysky.skyblocker.skyblock.dwarven.profittrackers.AbstractProfitTracker;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.profile.ProfiledData;
+import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
-import it.unimi.dsi.fastutil.objects.*;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.NumberFormat;
 import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +56,10 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	public static final String CITRINE_CRYSTAL = "CITRINE_CRYSTAL";
 	public static final String RUBY_CRYSTAL = "RUBY_CRYSTAL";
 	public static final String JASPER_CRYSTAL = "JASPER_CRYSTAL";
+	public static final String ENCHANTMENT_ICE_COLD_1 = "ENCHANTMENT_ICE_COLD_1";	// fix for item repo
 	public static final @Unmodifiable List<String> PRICELESS_ITEMS = List.of(GLACITE_POWDER, OPAL_CRYSTAL, ONYX_CRYSTAL, AQUAMARINE_CRYSTAL, PERIDOT_CRYSTAL, CITRINE_CRYSTAL, RUBY_CRYSTAL, JASPER_CRYSTAL);
+	// English translation for that forceEnglishCorpseProfitTracker option
+	public static final String CORPSE_PROFIT_MESSAGE = "Corpse Profit: %s";
 
 	public static final CorpseProfitTracker INSTANCE = new CorpseProfitTracker();
 
@@ -62,18 +70,16 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	private ObjectArrayList<CorpseLoot> currentProfileRewards = new ObjectArrayList<>();
 	private final ProfiledData<ObjectArrayList<CorpseLoot>> allRewards = new ProfiledData<>(getRewardFilePath("corpse-profits.json"), CorpseLoot.CODEC.listOf().xmap(ObjectArrayList::new, Function.identity()));
 	private boolean insideRewardMessage = false;
-	@Nullable
-	private CorpseLoot lastCorpseLoot = null;
+	private @Nullable CorpseLoot lastCorpseLoot = null;
 
 	private CorpseProfitTracker() {} // Singleton
 
 	@Init
 	public static void init() {
-		ChatEvents.RECEIVE_STRING.register(INSTANCE::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(INSTANCE::onChatMessage);
 
 		INSTANCE.allRewards.init();
 
-		SkyblockEvents.PROFILE_INIT.register(INSTANCE::onProfileInit);
 		SkyblockEvents.PROFILE_CHANGE.register(INSTANCE::onProfileChange);
 
 		// @formatter:off // Don't you hate it when your format style for chained method calls makes a chain like this incredibly ugly?
@@ -85,12 +91,12 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 							// Optional argument.
 							.then(argument("summaryView", BoolArgumentType.bool())
 								.executes(ctx -> {
-									Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().currentScreen, BoolArgumentType.getBool(ctx, "summaryView")));
+									Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().screen, BoolArgumentType.getBool(ctx, "summaryView")));
 									return Command.SINGLE_SUCCESS;
 								})
 							)
 							.executes(ctx -> {
-								Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().currentScreen));
+								Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().screen));
 								return Command.SINGLE_SUCCESS;
 							})
 						)
@@ -98,7 +104,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 							.executes(ctx -> {
 								INSTANCE.currentProfileRewards.clear();
 								INSTANCE.allRewards.save();
-								ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.corpseTracker.historyReset").formatted(Formatting.GREEN)));
+								ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.corpseTracker.historyReset").withStyle(ChatFormatting.GREEN)));
 								return Command.SINGLE_SUCCESS;
 							})
 						)
@@ -109,10 +115,6 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	}
 
 	private void onProfileChange(String prevProfileId, String newProfileId) {
-		onProfileInit(newProfileId);
-	}
-
-	private void onProfileInit(String profileId) {
 		if (!isEnabled()) return;
 		currentProfileRewards = allRewards.computeIfAbsent(ObjectArrayList::new);
 		recalculateAll();
@@ -122,39 +124,55 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		return SkyblockerConfigManager.get().mining.glacite.enableCorpseProfitTracker;
 	}
 
-	private void onChatMessage(String message) {
-		if (Utils.getLocation() != Location.GLACITE_MINESHAFT || !INSTANCE.isEnabled()) return;
+	@SuppressWarnings("SameReturnValue")
+	private boolean onChatMessage(Component text, boolean overlay) {
+		if (Utils.getLocation() != Location.GLACITE_MINESHAFTS || !INSTANCE.isEnabled() || overlay) return true;
+		String message = text.getString();
+
 		// Reward messages end with a separator like so
 		if (insideRewardMessage && message.equals("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")) {
 			if (lastCorpseLoot == null) {
 				LOGGER.error("Received a reward message end without a corresponding start. Report this!");
-				return;
+				return true;
 			}
 			currentProfileRewards.add(lastCorpseLoot);
 			if (!lastCorpseLoot.isPriceDataComplete()) {
-				MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
-						Constants.PREFIX.get().append(Text.translatable("skyblocker.corpseTracker.somethingWentWrong").formatted(Formatting.GOLD))
+				Minecraft.getInstance().gui.getChat().addMessage(
+						Constants.PREFIX.get().append(Component.translatable("skyblocker.corpseTracker.somethingWentWrong").withStyle(ChatFormatting.GOLD))
 				);
-			} else {
-				MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
-						Constants.PREFIX.get()
-										.append(Text.translatable("skyblocker.corpseTracker.corpseProfit", Text.literal(NumberFormat.getInstance().format(Math.round(lastCorpseLoot.profit()))).formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED)))
-										.styled(style ->
-														style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
-															 .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker rewardTrackers corpse list false"))
-										)
-				);
+			} else {	// if forceEnglishCorpseProfitTracker is FALSE - use normal translation
+				if (!SkyblockerConfigManager.get().mining.glacite.forceEnglishCorpseProfitTracker) {
+					Minecraft.getInstance().gui.getChat().addMessage(
+							Constants.PREFIX.get()
+									.append(Component.translatable("skyblocker.corpseTracker.corpseProfit", Component.literal(Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit()))
+											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED)))
+									.withStyle(style ->
+											style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.corpseTracker.hoverText").withStyle(ChatFormatting.GREEN)))
+													.withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
+									)
+					);
+				} else {	// else, if forceEnglishCorpseProfitTracker is TRUE - force English translation
+					Minecraft.getInstance().gui.getChat().addMessage(
+							Constants.PREFIX.get()
+									.append(Component.literal(String.format(CORPSE_PROFIT_MESSAGE, Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit())))
+											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED))
+									.withStyle(style ->
+											style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.corpseTracker.hoverText").withStyle(ChatFormatting.GREEN)))
+													.withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
+									)
+					);
+				}
 			}
 			lastCorpseLoot = null;
 			insideRewardMessage = false;
-			return;
+			return true;
 		}
 		Matcher matcher = CORPSE_PATTERN.matcher(message);
 		if (!insideRewardMessage && matcher.matches()) {
 			String corpse = matcher.group(1);
 			CorpseType type;
 			try {
-				type = CorpseType.valueOf(corpse.toUpperCase()); // toUpperCase is not strictly necessary here, but it's good practice
+				type = CorpseType.valueOf(corpse.toUpperCase(Locale.ENGLISH)); // toUpperCase is not strictly necessary here, but it's good practice
 				lastCorpseLoot = new CorpseLoot(
 						type,
 						new ObjectArrayList<>(),
@@ -162,7 +180,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 				);
 			} catch (IllegalArgumentException e) {
 				LOGGER.error("Unknown corpse type `{}` for message: `{}`. Report this!", corpse, message);
-				return;
+				return true;
 			}
 
 			try {
@@ -172,15 +190,16 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 				lastCorpseLoot.markPriceDataIncomplete();
 			}
 			insideRewardMessage = true;
-			return;
+			return true;
 		}
 
-		if (!insideRewardMessage || lastCorpseLoot == null || !matcher.usePattern(REWARD_PATTERN).matches()) return;
+		if (!insideRewardMessage || lastCorpseLoot == null || !matcher.usePattern(REWARD_PATTERN).matches()) return true;
 
 		String itemName = matcher.group(1);
 		int amount = NumberUtils.toInt(matcher.group(2).replace(",", ""), 1);
-		if (matcher.usePattern(HOTM_XP_PATTERN).matches()) return; // Ignore HOTM XP messages.
+		if (matcher.usePattern(HOTM_XP_PATTERN).matches()) return true; // Ignore HOTM XP messages.
 		lastCorpseLoot.addLoot(itemName, amount);
+		return true;
 	}
 
 	private void recalculateAll() {
@@ -260,9 +279,10 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		NAME2ID_MAP.put("Tungsten Key", "TUNGSTEN_KEY");
 		NAME2ID_MAP.put("Glacite Jewel", "GLACITE_JEWEL");
 		NAME2ID_MAP.put("Suspicious Scrap", "SUSPICIOUS_SCRAP");
-		NAME2ID_MAP.put("Ice Cold I", "ENCHANTMENT_ICE_COLD_1");
+		NAME2ID_MAP.put("Enchanted Book (Ice Cold I)", "ENCHANTMENT_ICE_COLD_1");
 		NAME2ID_MAP.put("Dwarven O's Metallic Minis", "DWARVEN_OS_METALLIC_MINIS");
 		NAME2ID_MAP.put("Shattered Locket", "SHATTERED_PENDANT");
+		NAME2ID_MAP.put("Frozen Scute", "FROZEN_SCUTE");
 
 		NAME2ID_MAP.put("Frostbitten Dye", "DYE_FROSTBITTEN");
 

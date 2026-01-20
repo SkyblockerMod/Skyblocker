@@ -1,16 +1,19 @@
 package de.hysky.skyblocker.debug;
 
+import com.google.gson.JsonElement;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.GuiInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -20,31 +23,44 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.storage.TagValueOutput;
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.util.List;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class Debug {
+	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final boolean DEBUG_ENABLED = Boolean.parseBoolean(System.getProperty("skyblocker.debug", "false"));
 	//This is necessary to not spam the chat with 20 messages per second
 	private static boolean keyDown = false;
 
 	public static boolean debugEnabled() {
 		return DEBUG_ENABLED || FabricLoader.getInstance().isDevelopmentEnvironment() || SnapshotDebug.isInSnapshot();
+	}
+
+	/**
+	 * Used for checking if unit tests are being run.
+	 */
+	public static boolean isTestEnvironment() {
+		return Boolean.getBoolean("IS_TEST_ENV");
 	}
 
 	public static boolean webSocketDebug() {
@@ -55,8 +71,8 @@ public class Debug {
 	public static void init() {
 		if (!debugEnabled()) return;
 		SnapshotDebug.init();
-		KeyBinding dumpNearbyEntitiesKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, "key.categories.skyblocker"));
-		KeyBinding dumpHoveredItemKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, "key.categories.skyblocker"));
+		KeyMapping dumpNearbyEntitiesKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
+		KeyMapping dumpHoveredItemKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				literal(SkyblockerMod.NAMESPACE).then(literal("debug")
 						.then(dumpPlayersCommand())
@@ -66,30 +82,38 @@ public class Debug {
 						.then(dumpArmorStandHeadTextures())
 						.then(toggleWebSocketDebug())
 						.then(EventNotifications.debugToasts())
+						.then(dumpBiome())
+						.then(dumpActionBar())
+						.then(auditMixins())
 				)
 		));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (client.player == null || client.world == null) return;
-			if (dumpNearbyEntitiesKey.wasPressed() && !keyDown) {
-				client.world.getOtherEntities(client.player, client.player.getBoundingBox().expand(SkyblockerConfigManager.get().debug.dumpRange))
+			if (client.player == null || client.level == null) return;
+			if (dumpNearbyEntitiesKey.consumeClick() && !keyDown) {
+				client.level.getEntities(client.player, client.player.getBoundingBox().inflate(SkyblockerConfigManager.get().debug.dumpRange))
 						.stream()
-						.map(entity -> entity.writeNbt(new NbtCompound()))
-						.map(NbtHelper::toPrettyPrintedText)
-						.forEach(text -> client.player.sendMessage(text, false));
+						.map(entity -> {
+							TagValueOutput writeView = TagValueOutput.createWithContext(new ProblemReporter.ScopedCollector(LOGGER), Utils.getRegistryWrapperLookup());
+							entity.saveWithoutId(writeView);
+
+							return writeView.buildResult();
+						})
+						.map(NbtUtils::toPrettyComponent)
+						.forEach(text -> client.player.displayClientMessage(text, false));
 				keyDown = true;
-			} else if (!dumpNearbyEntitiesKey.wasPressed() && keyDown) {
+			} else if (!dumpNearbyEntitiesKey.consumeClick() && keyDown) {
 				keyDown = false;
 			}
 		});
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-			if (!(screen instanceof HandledScreen<?> handledScreen)) return;
-			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifier) -> {
-				Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
-				if (dumpHoveredItemKey.matchesKey(key, scancode) && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
-					if (!Screen.hasShiftDown()) {
-						client.player.sendMessage(Constants.PREFIX.get().append("Hovered Item: ").append(SkyblockerConfigManager.get().debug.dumpFormat.format(focusedSlot.getStack())), false);
+			if (!(screen instanceof AbstractContainerScreen<?> handledScreen)) return;
+			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, keyInput) -> {
+				Slot focusedSlot = ((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot();
+				if (dumpHoveredItemKey.matches(keyInput) && client.player != null && focusedSlot != null && focusedSlot.hasItem()) {
+					if (!keyInput.hasShiftDown()) {
+						client.player.displayClientMessage(Constants.PREFIX.get().append("Hovered Item: ").append(SkyblockerConfigManager.get().debug.dumpFormat.format(focusedSlot.getItem())), false);
 					} else {
-						client.player.sendMessage(Constants.PREFIX.get().append("Held Item NW Calcs: ").append(Text.literal(SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getStack()).calculations()).getOrThrow()))), false);
+						client.player.displayClientMessage(Constants.PREFIX.get().append("Held Item NW Calcs: ").append(Component.literal(SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getItem()).calculations()).getOrThrow()))), false);
 					}
 				}
 			});
@@ -99,7 +123,7 @@ public class Debug {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> dumpPlayersCommand() {
 		return literal("dumpPlayers")
 				.executes(context -> {
-					context.getSource().getWorld().getPlayers().forEach(player -> context.getSource().sendFeedback(Text.of("'" + player.getName().getString() + "'")));
+					context.getSource().getWorld().players().forEach(player -> context.getSource().sendFeedback(Component.nullToEmpty("'" + player.getName().getString() + "'")));
 					return Command.SINGLE_SUCCESS;
 				});
 	}
@@ -107,9 +131,8 @@ public class Debug {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> toggleShowingInvisibleArmorStands() {
 		return literal("toggleShowingInvisibleArmorStands")
 				.executes(context -> {
-					SkyblockerConfigManager.get().debug.showInvisibleArmorStands = !SkyblockerConfigManager.get().debug.showInvisibleArmorStands;
-					SkyblockerConfigManager.save();
-					context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.debug.toggledShowingInvisibleArmorStands", SkyblockerConfigManager.get().debug.showInvisibleArmorStands)));
+					SkyblockerConfigManager.update(config -> config.debug.showInvisibleArmorStands = !config.debug.showInvisibleArmorStands);
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.debug.toggledShowingInvisibleArmorStands", SkyblockerConfigManager.get().debug.showInvisibleArmorStands)));
 					return Command.SINGLE_SUCCESS;
 				});
 	}
@@ -117,9 +140,8 @@ public class Debug {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> toggleWebSocketDebug() {
 		return literal("toggleWebSocketDebug")
 				.executes(context -> {
-					SkyblockerConfigManager.get().debug.webSocketDebug = !SkyblockerConfigManager.get().debug.webSocketDebug;
-					SkyblockerConfigManager.save();
-					context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.debug.toggledWebSocketDebug", SkyblockerConfigManager.get().debug.webSocketDebug)));
+					SkyblockerConfigManager.update(config -> config.debug.webSocketDebug = !SkyblockerConfigManager.get().debug.webSocketDebug);
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.debug.toggledWebSocketDebug", SkyblockerConfigManager.get().debug.webSocketDebug)));
 					return Command.SINGLE_SUCCESS;
 				});
 	}
@@ -127,15 +149,57 @@ public class Debug {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> dumpArmorStandHeadTextures() {
 		return literal("dumpArmorStandHeadTextures")
 				.executes(context -> {
-					List<ArmorStandEntity> armorStands = context.getSource().getWorld().getEntitiesByClass(ArmorStandEntity.class, context.getSource().getPlayer().getBoundingBox().expand(8d), EntityPredicates.NOT_MOUNTED);
+					List<ArmorStand> armorStands = context.getSource().getWorld().getEntitiesOfClass(ArmorStand.class, context.getSource().getPlayer().getBoundingBox().inflate(8d), EntitySelector.ENTITY_NOT_BEING_RIDDEN);
 
-					for (ArmorStandEntity armorStand : armorStands) {
-						Iterable<ItemStack> equippedItems = armorStand.getEquippedItems();
+					for (ArmorStand armorStand : armorStands) {
+						Iterable<ItemStack> equippedItems = ItemUtils.getArmor(armorStand);
 
 						for (ItemStack stack : equippedItems) {
-							ItemUtils.getHeadTextureOptional(stack).ifPresent(texture -> context.getSource().sendFeedback(Text.of(texture)));
+							ItemUtils.getHeadTextureOptional(stack).ifPresent(texture -> context.getSource().sendFeedback(Component.nullToEmpty(texture)));
 						}
 					}
+
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> dumpBiome() {
+		return literal("dumpBiome")
+				.executes(context -> {
+					FabricClientCommandSource source = context.getSource();
+					Holder<Biome> biome = source.getWorld().getBiome(source.getPlayer().blockPosition());
+
+					if (biome != null && biome.value() != null) {
+						String biomeData = Biome.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, biome.value())
+								.map(JsonElement::toString)
+								.setPartial("")
+								.getPartialOrThrow();
+						source.sendFeedback(Constants.PREFIX.get().append(Component.literal(String.format("Biome ID: %s, Data: %s", biome.getRegisteredName(), biomeData))));
+					}
+
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> dumpActionBar() {
+		return literal("dumpActionBar")
+				.executes(context -> {
+					FabricClientCommandSource source = context.getSource();
+					Component actionBar = ((GuiInvoker) (source.getClient().gui)).getOverlayMessageString();
+
+					if (actionBar != null) {
+						Component pretty = NbtUtils.toPrettyComponent(ComponentSerialization.CODEC.encodeStart(Utils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), actionBar).getOrThrow());
+						source.sendFeedback(Constants.PREFIX.get().append("Action Bar: ").append(pretty));
+					}
+
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> auditMixins() {
+		return literal("auditMixins")
+				.executes(context -> {
+					MixinEnvironment.getCurrentEnvironment().audit();
 
 					return Command.SINGLE_SUCCESS;
 				});
@@ -144,17 +208,17 @@ public class Debug {
 	public enum DumpFormat {
 		JSON {
 			@Override
-			public Text format(ItemStack stack) {
-				return Text.literal(SkyblockerMod.GSON_COMPACT.toJson(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), stack).getOrThrow()));
+			public Component format(ItemStack stack) {
+				return Component.literal(SkyblockerMod.GSON_COMPACT.toJson(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(Utils.getRegistryWrapperLookup().createSerializationContext(JsonOps.INSTANCE), stack).getOrThrow()));
 			}
 		},
 		SNBT {
 			@Override
-			public Text format(ItemStack stack) {
-				return NbtHelper.toPrettyPrintedText(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(MinecraftClient.getInstance().player.getRegistryManager().getOps(NbtOps.INSTANCE), stack).getOrThrow());
+			public Component format(ItemStack stack) {
+				return NbtUtils.toPrettyComponent(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(Minecraft.getInstance().player.registryAccess().createSerializationContext(NbtOps.INSTANCE), stack).getOrThrow());
 			}
 		};
 
-		public abstract Text format(ItemStack stack);
+		public abstract Component format(ItemStack stack);
 	}
 }

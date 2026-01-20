@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "skyblocker-test",
+  "version": "${version}",
+  "name": "Skyblocker Test",
+  "description": "Skyblocker Mod Test",
+  "authors": ["LifeIsAParadox/wohlhabend", "kevinthegreat1", "AzureAaron"],
+  "contact": {
+    "homepage": "https://hysky.de",
+    "sources": "https://github.com/SkyblockerMod/Skyblocker",
+    "issues": "https://github.com/SkyblockerMod/Skyblocker/issues"
+  },
+  "license": "LGPL-3.0-or-later",
+  "icon": "assets/skyblocker/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-client-gametest": [
+      "de.hysky.skyblocker.RoomDataTest",
+      "de.hysky.skyblocker.SkyblockerConfigTest",
+      "de.hysky.skyblocker.SkyblockerGameTest"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "info": {
+    "name": "Crypts"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Lever behind Crypt",
+      "category": "lever",
+      "x": 29,
+      "y": 75,
+      "z": 15
+    },
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 17,
+      "y": 67,
+      "z": 15
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 6,
+      "y": 66,
+      "z": 15
+    }
+  ]
+}

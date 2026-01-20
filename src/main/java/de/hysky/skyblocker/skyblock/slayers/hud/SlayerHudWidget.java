@@ -8,25 +8,29 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
-import java.text.NumberFormat;
 import java.util.Set;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 @RegisterWidget
 public class SlayerHudWidget extends ComponentBasedWidget {
+	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.CRIMSON_ISLE, Location.HUB, Location.SPIDERS_DEN, Location.THE_END, Location.THE_PARK, Location.THE_RIFT);
 	private static SlayerHudWidget instance;
-	private final MinecraftClient client = MinecraftClient.getInstance();
-	private final NumberFormat numberFormat = NumberFormat.getInstance();
+	private final Minecraft client = Minecraft.getInstance();
 
 	public SlayerHudWidget() {
-		super(Text.literal("Slayer").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), Formatting.DARK_PURPLE.getColorValue(), "hud_slayer");
+		super(Component.literal("Slayer").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD), ChatFormatting.DARK_PURPLE.getColor(), "hud_slayer");
 		instance = this;
 		update();
+	}
+
+	@Override
+	public boolean shouldUpdateBeforeRendering() {
+		return true;
 	}
 
 	public static SlayerHudWidget getInstance() {
@@ -35,7 +39,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public Set<Location> availableLocations() {
-		return Set.of(Location.CRIMSON_ISLE, Location.HUB, Location.SPIDERS_DEN, Location.THE_END, Location.THE_PARK, Location.THE_RIFT);
+		return AVAILABLE_LOCATIONS;
 	}
 
 	@Override
@@ -56,13 +60,13 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen) {
+		if (Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen) {
 			SlayerType type = SlayerType.REVENANT;
 			SlayerTier tier = SlayerTier.V;
 
 			addSimpleIcoText(type.icon, "", tier.color, type.bossName + " " + tier);
-			addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE, "100,000/400,000");
-			addComponent(new IcoTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal("200").formatted(Formatting.LIGHT_PURPLE))));
+			addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", ChatFormatting.LIGHT_PURPLE, "100,000/400,000");
+			addComponent(Components.iconTextComponent(Ico.NETHER_STAR, Component.translatable("skyblocker.slayer.hud.levelUpIn", Component.literal("200").withStyle(ChatFormatting.LIGHT_PURPLE))));
 			return;
 		}
 
@@ -78,21 +82,21 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 		addSimpleIcoText(type.icon, "", tier.color, type.bossName + " " + tier);
 		if (level > 0) {
 			if (level == type.maxLevel) {
-				addComponent(new IcoTextComponent(Ico.EXPERIENCE_BOTTLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));
+				addComponent(Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, Component.literal("XP: ").append(Component.translatable("skyblocker.slayer.hud.levelMaxed").withStyle(ChatFormatting.GREEN))));
 			} else {
 				int nextMilestone = type.levelMilestones[level];
 				int currentXP = nextMilestone - SlayerManager.getSlayerQuest().xpRemaining;
-				addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE, numberFormat.format(currentXP) + "/" + numberFormat.format(nextMilestone));
+				addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", ChatFormatting.LIGHT_PURPLE, Formatters.INTEGER_NUMBERS.format(currentXP) + "/" + Formatters.INTEGER_NUMBERS.format(nextMilestone));
 			}
 		}
 
 		if (bossesNeeded > 0) {
-			addComponent(new IcoTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal(numberFormat.format(bossesNeeded)).formatted(Formatting.LIGHT_PURPLE))));
+			addComponent(Components.iconTextComponent(Ico.NETHER_STAR, Component.translatable("skyblocker.slayer.hud.levelUpIn", Component.literal(Formatters.INTEGER_NUMBERS.format(bossesNeeded)).withStyle(ChatFormatting.LIGHT_PURPLE))));
 		}
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.literal("Slayer Hud");
+	public Component getDisplayName() {
+		return Component.literal("Slayer Hud");
 	}
 }

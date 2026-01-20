@@ -2,22 +2,21 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.utils.Location;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.MutableComponent;
+import org.jspecify.annotations.Nullable;
 
 public abstract class TabHudWidget extends ComponentBasedWidget {
 	private final String hypixelWidgetName;
 	private final List<Component> cachedComponents = new ArrayList<>();
 
 
-	public TabHudWidget(String hypixelWidgetName, MutableText title, Integer colorValue) {
-		super(title, colorValue, hypixelWidgetName.toLowerCase().replace(' ', '_').replace("'", ""));
+	public TabHudWidget(String hypixelWidgetName, MutableComponent title, Integer colorValue) {
+		super(title, colorValue, hypixelWidgetName.toLowerCase(Locale.ENGLISH).replace(' ', '_').replace("'", ""));
 		this.hypixelWidgetName = hypixelWidgetName;
 	}
 
@@ -26,8 +25,8 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.literal(getHypixelWidgetName());
+	public net.minecraft.network.chat.Component getDisplayName() {
+		return net.minecraft.network.chat.Component.literal(getHypixelWidgetName());
 	}
 
 	@Override
@@ -35,13 +34,15 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 		cachedComponents.forEach(super::addComponent);
 	}
 
-	public void updateFromTab(List<Text> lines, @Nullable List<PlayerListEntry> playerListEntries) {
+	public void updateFromTab(List<net.minecraft.network.chat.Component> lines, @Nullable List<PlayerInfo> playerListEntries) {
 		cachedComponents.clear();
 		updateContent(lines, playerListEntries);
 	}
 
 	/**
-	 * Controlled by hypxiel and PlayerListMgr
+	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
+	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
+	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
 	 */
 	@Override
 	public final boolean shouldRender(Location location) {
@@ -49,16 +50,28 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	}
 
 	/**
-	 * Controlled by hypxiel and PlayerListMgr
+	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
+	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
+	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
 	 */
 	@Override
 	public final Set<Location> availableLocations() {
 		return Set.of();
 	}
 
+	/**
+	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
+	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
+	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
+	 */
 	@Override
 	public final void setEnabledIn(Location location, boolean enabled) {}
 
+	/**
+	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
+	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
+	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
+	 */
 	@Override
 	public final boolean isEnabledIn(Location location) {
 		return false;
@@ -71,7 +84,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	 *                          Null in dungeons.
 	 * @see #updateContent(List)
 	 */
-	protected void updateContent(List<Text> lines, @Nullable List<PlayerListEntry> playerListEntries) {
+	protected void updateContent(List<net.minecraft.network.chat.Component> lines, @Nullable List<PlayerInfo> playerListEntries) {
 		updateContent(lines);
 	}
 
@@ -81,7 +94,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	 * @param lines the lines, they are formatted and trimmed, no blank lines will be present.
 	 *              If the vanilla tab widget has text right after the : they will be put on the first line.
 	 */
-	protected abstract void updateContent(List<Text> lines);
+	protected abstract void updateContent(List<net.minecraft.network.chat.Component> lines);
 
 	@Override
 	public final void addComponent(Component c) {

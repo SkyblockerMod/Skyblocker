@@ -1,13 +1,36 @@
 package de.hysky.skyblocker.config.configs;
 
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import java.awt.Color;
 
 public class ForagingConfig {
 
-	@SerialEntry
-	public Hunting hunting = new Hunting();
+	public Galatea galatea = new Galatea();
 
-	public static class Hunting {
-		
+	public SweepOverlay sweepOverlay = new SweepOverlay();
+
+	public static class Galatea {
+		public boolean enableForestNodeHelper = true;
+
+		public boolean solveForestTemplePuzzle = true;
+
+		public boolean enableLushlilacHighlighter = true;
+
+		public boolean enableSeaLumiesHighlighter = true;
+
+		public int seaLumiesMinimumCount = 3;
+
+		public boolean enableTreeBreakProgress = true;
+
+		public boolean enableTunerSolver = true;
+
+		public boolean enableSweepDetailsWidget = true;
+	}
+
+	public static class SweepOverlay {
+		public boolean enableSweepOverlay = true;
+
+		public boolean enableThrownAbilityOverlay = true;
+
+		public Color sweepOverlayColor = new Color(0x40FF9600, true);
 	}
 }

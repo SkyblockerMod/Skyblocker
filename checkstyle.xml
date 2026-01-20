@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "https://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="fileExtensions" value="java"/>
+    <property name="localeLanguage" value="en"/>
+    <property name="localeCountry" value="US"/>
+    <property name="tabWidth" value="4"/>
+
+    <!-- Configure suppression filters -->
+    <module name="SuppressionFilter">
+        <property name="file" value="${suppressionsFile}"/>
+        <property name="optional" value="false"/>
+    </module>
+
+    <module name="NewlineAtEndOfFile"/>
+
+    <!-- disallow trailing whitespace -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$"/>
+        <property name="message" value="trailing whitespace"/>
+    </module>
+
+    <!-- Require each package to have a package-info file -->
+    <module name="JavadocPackage">
+        <message key="javadoc.packageInfo" value="The enclosing package must have a package-info file."/>
+    </module>
+
+    <module name="TreeWalker">
+        <!-- Allow "//CHECKSTYLE.OFF: <InspectionName>" and "//CHECKSTYLE.ON: <InspectionName>" pairs to toggle some inspections -->
+        <module name="SuppressionCommentFilter">
+            <property name="offCommentFormat" value="CHECKSTYLE.OFF\: ([\w\|]+)"/>
+            <property name="onCommentFormat" value="CHECKSTYLE.ON\: ([\w\|]+)"/>
+            <property name="checkFormat" value="$1"/>
+        </module>
+
+        <!-- Ensure all imports are ship shape -->
+        <module name="AvoidStarImport"/>
+        <module name="IllegalImport"/>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+        <module name="IllegalImport">
+            <property name="illegalClasses" value="org.jetbrains.annotations.Nullable"/>
+            <property name="illegalClasses" value="org.jetbrains.annotations.NotNull"/>
+            <property name="illegalClasses" value="org.jetbrains.annotations.NotNullByDefault"/>
+            <!-- Since everything is @NullMarked this should not be used, prefer Objects#requireNonNull -->
+            <property name="illegalClasses" value="org.jspecify.annotations.NonNull"/>
+        </module>
+
+        <module name="SeparatorWrap">
+            <property name="tokens" value="DOT,ELLIPSIS,AT"/>
+            <property name="option" value="nl"/>
+        </module>
+        <module name="SeparatorWrap">
+            <property name="tokens" value="COMMA,SEMI"/>
+            <property name="option" value="eol"/>
+        </module>
+
+        <module name="ParenPad"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="NoWhitespaceAfter">
+            <!-- allow ARRAY_INIT -->
+            <property name="tokens" value="AT,INC,DEC,UNARY_MINUS,UNARY_PLUS,BNOT,LNOT,DOT,ARRAY_DECLARATOR,INDEX_OP"/>
+        </module>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround">
+            <!-- Allow PLUS, MINUS, STAR, DIV as they may be more readable without spaces in some cases -->
+            <property name="tokens" value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV_ASSIGN,DO_WHILE,EQUAL,GE,GT,LAMBDA,LAND,LCURLY,LE,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_RETURN,LITERAL_SWITCH,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE,LOR,LT,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS_ASSIGN,QUESTION,RCURLY,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR_ASSIGN,LITERAL_ASSERT,TYPE_EXTENSION_AND"/>
+            <property name="allowEmptyCatches" value="true"/>
+            <property name="allowEmptyConstructors" value="true"/>
+            <property name="allowEmptyLambdas" value="true"/>
+            <property name="allowEmptyLoops" value="true"/>
+            <property name="allowEmptyMethods" value="true"/>
+            <property name="allowEmptySwitchBlockStatements" value="true"/>
+            <property name="allowEmptyTypes" value="true"/>
+        </module>
+        <module name="GenericWhitespace"/>
+
+        <module name="ArrayTypeStyle"/>
+        <module name="DefaultComesLast">
+            <property name="skipIfLastAndSharedWithCase" value="true"/>
+        </module>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="StringLiteralEquality"/>
+        <module name="EqualsHashCode"/>
+
+        <module name="HexLiteralCase"/>
+        <module name="UpperEll"/>
+
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
+        <module name="AnnotationLocation"/>
+        <module name="MissingOverride"/>
+
+        <!-- Enforce tabs -->
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="^\t* ([^*]|\*[^ /])"/>
+            <property name="message" value="non-tab indentation"/>
+        </module>
+
+        <module name="OuterTypeFilename"/>
+        <module name="PackageDeclaration"/>
+
+        <module name="InvalidJavadocPosition"/>
+        <module name="AtclauseOrder"/>
+
+        <!-- Prevent non-@Unique fields in Mixin classes -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //OBJBLOCK/VARIABLE_DEF[
+                    not(
+                        ./MODIFIERS/ANNOTATION/IDENT[
+                            @text='Unique'
+                            or @text='Shadow'
+                        ]
+                    )
+                    and
+                    ../../../CLASS_DEF[
+                        ./MODIFIERS/ANNOTATION/IDENT[@text='Mixin']
+                    ]
+                ]
+            "/>
+            <message key="matchxpath.match" value="Mixin fields must be annotated with @Unique or @Shadow"/>
+        </module>
+
+        <!-- Prevent non-@Unique methods in Mixin classes -->
+        <!-- All Mixin and MixinExtras annotations must be listed here -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //METHOD_DEF[
+                    not(
+                        ./MODIFIERS/ANNOTATION/IDENT[
+                            @text='Unique'
+                            or @text='Inject'
+                            or @text='ModifyArg'
+                            or @text='ModifyExpressionValue'
+                            or @text='ModifyReceiver'
+                            or @text='ModifyReturnValue'
+                            or @text='ModifyVariable'
+                            or @text='Override'
+                            or @text='Overwrite'
+                            or @text='Redirect'
+                            or @text='Shadow'
+                            or @text='WrapMethod'
+                            or @text='WrapOperation'
+                            or @text='WrapWithCondition'
+                        ]
+                    )
+                    and
+                    ../../../CLASS_DEF[
+                        ./MODIFIERS/ANNOTATION/IDENT[@text='Mixin']
+                    ]
+                ]
+            "/>
+            <message key="matchxpath.match" value="Mixin methods must be annotated with @Unique or one of the Mixin annotations"/>
+        </module>
+
+        <!-- Prevent @Inject local capture, @Local is preferred -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //METHOD_DEF[
+                    ./MODIFIERS/ANNOTATION[
+                        ./IDENT[@text='Inject']
+                        and
+                        ./ANNOTATION_MEMBER_VALUE_PAIR/IDENT[@text='locals']
+                    ]
+                ]
+            "/>
+            <message key="matchxpath.match" value="Inject local capture is not allowed, use @Local instead"/>
+        </module>
+
+        <!-- Prevent String#toLowerCase/toUpperCase without a given Locale to prevent localization issues -->
+        <!-- Not specifying a locale is error prone as it can easily lead to silent breakages with some locales! -->
+        <module name="MatchXpath">
+            <property name="query" value="//METHOD_CALL[./DOT/IDENT[@text='toLowerCase' or @text='toUpperCase']]/ELIST[count(./*) = 0]"/>
+            <message key="matchxpath.match" value="String#toLowerCase/toUpperCase calls must specify a locale, English recommended"/>
+        </module>
+
+        <!--  Require package-info files to have NullMarked annotations -->
+        <module name="MatchXpath">
+            <!--  Package info files cannot be identified separately so we check if its not a package declaration in another type of class -->
+            <property name="query" value="/COMPILATION_UNIT[.//PACKAGE_DEF][not(.//CLASS_DEF) and not(.//INTERFACE_DEF) and not(.//ENUM_DEF) and not(.//RECORD_DEF) and not(.//ANNOTATION_DEF)][not(.//ANNOTATIONS/ANNOTATION/IDENT[@text='NullMarked'])]"/>
+            <message key="matchxpath.match" value="Package declarations in package-info files must be annotated with @NullMarked"/>
+        </module>
+    </module>
+</module>

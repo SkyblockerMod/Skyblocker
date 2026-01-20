@@ -2,43 +2,39 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import de.hysky.skyblocker.utils.render.gui.SideTabButtonWidget;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.Item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 
 public class CategoryTabWidget extends SideTabButtonWidget {
-    private final SlotClickHandler slotClick;
-    private int slotId = -1;
+	private final SlotClickHandler slotClick;
+	private int slotId = -1;
 
-    public CategoryTabWidget(@NotNull ItemStack icon, SlotClickHandler slotClick) {
-        super(0, 0, false, icon);
-        this.slotClick = slotClick;
-    }
+	public CategoryTabWidget(ItemStack icon, SlotClickHandler slotClick) {
+		super(0, 0, false, icon);
+		this.slotClick = slotClick;
+	}
 
-    @Override
-    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderWidget(context, mouseX, mouseY, delta);
+	@Override
+	public void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		super.renderContents(context, mouseX, mouseY, delta);
 
-        if (isMouseOver(mouseX, mouseY)) {
-            context.getMatrices().push();
-            context.drawTooltip(MinecraftClient.getInstance().textRenderer, icon.getTooltip(TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC), mouseX, mouseY);
-            context.getMatrices().pop();
-        }
+		if (isMouseOver(mouseX, mouseY)) {
+			context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, icon.getTooltipLines(TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL), mouseX, mouseY);
+		}
+	}
 
-    }
+	public void setSlotId(int slotId) {
+		this.slotId = slotId;
+	}
 
-    public void setSlotId(int slotId) {
-        this.slotId = slotId;
-    }
-
-    @Override
-    public void onClick(double mouseX, double mouseY) {
-        if (isToggled() || slotId == -1) return;
-        super.onClick(mouseX, mouseY);
-        slotClick.click(slotId);
-    }
+	@Override
+	public void onClick(MouseButtonEvent click, boolean doubled) {
+		if (this.selected || slotId == -1) return;
+		super.onClick(click, doubled);
+		slotClick.click(slotId);
+	}
 }

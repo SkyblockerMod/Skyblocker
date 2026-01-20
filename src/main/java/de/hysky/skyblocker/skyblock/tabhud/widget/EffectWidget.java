@@ -1,18 +1,17 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 // this widgte shows, how many active effects you have.
 // it also shows one of those in detail.
@@ -20,16 +19,16 @@ import java.util.regex.Pattern;
 @RegisterWidget
 public class EffectWidget extends TabHudWidget {
 
-	private static final MutableText TITLE = Text.literal("Active Effects").formatted(Formatting.DARK_PURPLE,
-			Formatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Active Effects").withStyle(ChatFormatting.DARK_PURPLE,
+			ChatFormatting.BOLD);
 	private static final Pattern COOKIE_PATTERN = Pattern.compile(".*\\nCookie Buff\\n(?<buff>.*)\\n");
 
 	public EffectWidget() {
-		super("Active Effects", TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super("Active Effects", TITLE, ChatFormatting.DARK_PURPLE.getColor());
 	}
 
 	@Override
-	public void updateContent(List<Text> lines) {
+	public void updateContent(List<Component> lines) {
 
 		if (lines.isEmpty())
 			fetchFromFooter();
@@ -37,9 +36,9 @@ public class EffectWidget extends TabHudWidget {
 			fetchFromWidget(lines);
 	}
 
-	private void fetchFromWidget(List<Text> lines) {
+	private void fetchFromWidget(List<Component> lines) {
 		String string = lines.getFirst().getString().replaceAll("[()]", "");
-		addComponent(new PlainTextComponent(Text.literal(string).formatted(Formatting.YELLOW, Formatting.BOLD).append(Text.literal(" effect(s) active").formatted(Formatting.WHITE))));
+		addComponent(new PlainTextComponent(Component.literal(string).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD).append(Component.literal(" effect(s) active").withStyle(ChatFormatting.WHITE))));
 		for (int i = 1; i < lines.size(); i++) {
 			addComponent(new PlainTextComponent(lines.get(i)));
 		}
@@ -49,7 +48,7 @@ public class EffectWidget extends TabHudWidget {
 		String footertext = PlayerListManager.getFooter();
 
 		if (footertext == null || !footertext.contains("Active Effects")) {
-			this.addComponent(new IcoTextComponent());
+			this.addComponent(Components.iconTextComponent());
 			return;
 
 		}
@@ -58,43 +57,40 @@ public class EffectWidget extends TabHudWidget {
 		if (m.find() && m.group("buff") != null) {
 			String buff = m.group("buff");
 			if (buff.startsWith("Not")) {
-				this.addComponent(new IcoTextComponent(Ico.COOKIE, Text.of("Cookie: not active")));
+				this.addComponent(Components.iconTextComponent(ItemRepository.getItemStack("BOOSTER_COOKIE", Ico.COOKIE), Component.nullToEmpty("Cookie: not active")));
 			} else {
-				Text cookie = Text.literal("Cookie: ").append(buff);
-				this.addComponent(new IcoTextComponent(Ico.COOKIE, cookie));
+				Component cookie = Component.literal("Cookie: ").append(buff);
+				this.addComponent(Components.iconTextComponent(ItemRepository.getItemStack("BOOSTER_COOKIE", Ico.COOKIE), cookie));
 			}
 		}
 
 		String[] lines = footertext.split("Active Effects")[1].split("\n");
 		if (lines.length < 2) {
-			this.addComponent(new IcoTextComponent());
+			this.addComponent(Components.iconTextComponent());
 			return;
 		}
 
 		if (lines[1].startsWith("No")) {
-			Text txt = Text.literal("No effects active").formatted(Formatting.GRAY);
-			this.addComponent(new IcoTextComponent(Ico.POTION, txt));
+			Component txt = Component.literal("No effects active").withStyle(ChatFormatting.GRAY);
+			this.addComponent(Components.iconTextComponent(Ico.POTION, txt));
 		} else if (lines[1].contains("God")) {
 			String timeleft = lines[1].split("! ")[1];
-			Text godpot = Text.literal("God potion!").formatted(Formatting.RED);
-			Text txttleft = Text.literal(timeleft).formatted(Formatting.LIGHT_PURPLE);
-			IcoFatTextComponent iftc = new IcoFatTextComponent(Ico.POTION, godpot, txttleft);
-			this.addComponent(iftc);
+			Component godpot = Component.literal("God potion!").withStyle(ChatFormatting.RED);
+			Component txttleft = Component.literal(timeleft).withStyle(ChatFormatting.LIGHT_PURPLE);
+			this.addComponent(Components.iconFatTextComponent(ItemRepository.getItemStack("GOD_POTION_2", Ico.GOD_POTION), godpot, txttleft));
 		} else {
 			String number = lines[1].substring("You have ".length());
 			int idx = number.indexOf(' ');
 			if (idx == -1 || lines.length < 4) {
-				this.addComponent(new IcoFatTextComponent());
+				this.addComponent(Components.iconFatTextComponent());
 				return;
 			}
 			number = number.substring(0, idx);
-			Text active = Text.literal("Active Effects: ")
-					.append(Text.literal(number).formatted(Formatting.YELLOW));
+			Component active = Component.literal("Active Effects: ")
+					.append(Component.literal(number).withStyle(ChatFormatting.YELLOW));
 
-			IcoFatTextComponent iftc = new IcoFatTextComponent(Ico.POTION, active,
-					Text.literal(lines[2]).formatted(Formatting.AQUA));
-			this.addComponent(iftc);
+			this.addComponent(Components.iconFatTextComponent(Ico.POTION, active,
+					Component.literal(lines[2]).withStyle(ChatFormatting.AQUA)));
 		}
 	}
-
 }

@@ -3,14 +3,13 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class DungeonQualityTooltip extends SimpleTooltipAdder {
 	public DungeonQualityTooltip(int priority) {
@@ -18,23 +17,23 @@ public class DungeonQualityTooltip extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		NbtCompound customData = ItemUtils.getCustomData(stack);
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
+		CompoundTag customData = ItemUtils.getCustomData(stack);
 		if (customData == null || !customData.contains("baseStatBoostPercentage")) return;
-		int baseStatBoostPercentage = customData.getInt("baseStatBoostPercentage");
+		int baseStatBoostPercentage = customData.getIntOr("baseStatBoostPercentage", 0);
 		boolean maxQuality = baseStatBoostPercentage == 50;
 		if (maxQuality) {
-			lines.add(Text.literal(String.format("%-17s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.RED).formatted(Formatting.BOLD));
+			lines.add(Component.literal(String.format("%-17s", "Item Quality:") + baseStatBoostPercentage + "/50").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.BOLD));
 		} else {
-			lines.add(Text.literal(String.format("%-21s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.BLUE));
+			lines.add(Component.literal(String.format("%-21s", "Item Quality:") + baseStatBoostPercentage + "/50").withStyle(ChatFormatting.BLUE));
 		}
 
 		if (customData.contains("item_tier")) {     // sometimes it just isn't here?
-			int itemTier = customData.getInt("item_tier");
+			int itemTier = customData.getIntOr("item_tier", 0);
 			if (maxQuality) {
-				lines.add(Text.literal(String.format("%-17s", "Floor Tier:") + itemTier + " (" + getItemTierFloor(itemTier) + ")").formatted(Formatting.RED).formatted(Formatting.BOLD));
+				lines.add(Component.literal(String.format("%-17s", "Floor Tier:") + itemTier + " (" + getItemTierFloor(itemTier) + ")").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.BOLD));
 			} else {
-				lines.add(Text.literal(String.format("%-21s", "Floor Tier:") + itemTier + " (" + getItemTierFloor(itemTier) + ")").formatted(Formatting.BLUE));
+				lines.add(Component.literal(String.format("%-21s", "Floor Tier:") + itemTier + " (" + getItemTierFloor(itemTier) + ")").withStyle(ChatFormatting.BLUE));
 			}
 		}
 	}

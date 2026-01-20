@@ -1,64 +1,54 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.client.gui.widget.SimplePositioningWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 
 public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
-    private ButtonWidget buttonNew;
-    private ButtonWidget buttonDone;
 
-    public WaypointsScreen(Screen parent) {
-        super(Text.translatable("skyblocker.waypoints.config"), parent, Waypoints.waypointsDeepCopy());
-    }
+	public WaypointsScreen(Screen parent) {
+		super(Component.translatable("skyblocker.waypoints.config"), parent, Waypoints.waypointsDeepCopy());
+	}
 
-    @Override
-    protected void init() {
-        super.init();
-        GridWidget gridWidget = new GridWidget();
-        gridWidget.getMainPositioner().marginX(5).marginY(2);
-        GridWidget.Adder adder = gridWidget.createAdder(2);
-        adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.share"), buttonShare -> client.setScreen(new WaypointsShareScreen(this, waypoints))).build());
-        buttonNew = adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.newGroup"), buttonNew -> waypointsListWidget.addWaypointGroupAfterSelected()).build());
-        adder.add(ButtonWidget.builder(ScreenTexts.CANCEL, button -> close()).build());
-        buttonDone = adder.add(ButtonWidget.builder(ScreenTexts.DONE, button -> {
-            saveWaypoints();
-            close();
-        }).build());
-        gridWidget.refreshPositions();
-        SimplePositioningWidget.setPos(gridWidget, 0, this.height - 64, this.width, 64);
-        gridWidget.forEachChild(this::addDrawableChild);
-        updateButtons();
-    }
+	@Override
+	protected void init() {
+		super.init();
+		GridLayout gridWidget = new GridLayout().columnSpacing(5).rowSpacing(2);
+		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
+		adder.addChild(Button.builder(Component.translatable("skyblocker.waypoints.share"), buttonShare -> minecraft.setScreen(new WaypointsShareScreen(this, waypoints))).build());
+		adder.addChild(Button.builder(Component.translatable("skyblocker.waypoints.newGroup"), buttonNew -> waypointsListWidget.addWaypointGroupAfterSelected()).build());
+		adder.addChild(Button.builder(CommonComponents.GUI_CANCEL, button -> onClose()).build());
+		adder.addChild(Button.builder(CommonComponents.GUI_DONE, button -> {
+			saveWaypoints();
+			onClose();
+		}).build());
+		layout.addToFooter(gridWidget);
+		layout.setFooterHeight(64);
+		layout.addToHeader(Button.builder(Component.translatable("skyblocker.waypoints.otherOptions"), b -> minecraft.setScreen(new WaypointsOptionScreen(this))).build(), p -> p.alignHorizontallyLeft().paddingLeft(10));
+		updateButtons();
+		super.lateInit();
+	}
 
-    @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 16, 0xFFFFFF);
-    }
+	private void saveWaypoints() {
+		Waypoints.clearAndPutAllWaypoints(waypoints);
+		Waypoints.saveWaypoints(minecraft);
+	}
 
-    private void saveWaypoints() {
-        Waypoints.clearAndPutAllWaypoints(waypoints);
-        Waypoints.saveWaypoints(client);
-    }
-
-    @Override
-    public void close() {
-        assert client != null;
-        if (!Waypoints.areWaypointsEqual(waypoints)) {
-            client.setScreen(new ConfirmScreen(confirmedAction -> client.setScreen(confirmedAction ? parent : this),
-                    Text.translatable("text.skyblocker.quit_config"),
-                    Text.translatable("text.skyblocker.quit_config_sure"),
-                    Text.translatable("text.skyblocker.quit_discard"),
-                    ScreenTexts.CANCEL
-            ));
-        } else {
-            client.setScreen(parent);
-        }
-    }
+	@Override
+	public void onClose() {
+		assert minecraft != null;
+		if (!Waypoints.areWaypointsEqual(waypoints)) {
+			minecraft.setScreen(new ConfirmScreen(confirmedAction -> minecraft.setScreen(confirmedAction ? parent : this),
+					Component.translatable("text.skyblocker.quit_config"),
+					Component.translatable("text.skyblocker.quit_config_sure"),
+					Component.translatable("text.skyblocker.quit_discard"),
+					CommonComponents.GUI_CANCEL
+			));
+		} else {
+			minecraft.setScreen(parent);
+		}
+	}
 }

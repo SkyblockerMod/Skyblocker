@@ -7,10 +7,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
-import net.minecraft.command.CommandSource;
-
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import net.minecraft.commands.SharedSuggestionProvider;
 
 public final class EggTypeArgumentType implements ArgumentType<EggFinder.EggType> {
 	@Override
@@ -24,9 +23,9 @@ public final class EggTypeArgumentType implements ArgumentType<EggFinder.EggType
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		return context.getSource() instanceof CommandSource
-		       ? CommandSource.suggestMatching(EggFinder.EggType.entries.stream().map(EggFinder.EggType::name).map(String::toLowerCase), builder)
-		       : Suggestions.empty();
+		return context.getSource() instanceof SharedSuggestionProvider
+			? SharedSuggestionProvider.suggest(EggFinder.EggType.entries.stream().map(EggFinder.EggType::name).map(String::toLowerCase), builder)
+			: Suggestions.empty();
 	}
 
 	@Override

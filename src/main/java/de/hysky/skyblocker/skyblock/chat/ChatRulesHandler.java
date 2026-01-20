@@ -1,156 +1,181 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.TextTransformer;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.JsonData;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.client.gui.components.toasts.ToastManager;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.VisibleForTesting;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 public class ChatRulesHandler {
-    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChatRulesHandler.class);
-    private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chat_rules.json");
-    private static final Codec<Map<String, List<ChatRule>>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, ChatRule.LIST_CODEC);
+	private static final Minecraft CLIENT = Minecraft.getInstance();
+	private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chat_rules.json");
 
-    protected static final List<ChatRule> chatRuleList = new ArrayList<>();
+	@VisibleForTesting
+	static final Codec<List<ChatRule>> UNBOXING_CODEC = ConfigDataFixer.createDataFixingCodec(ConfigDataFixer.CHAT_RULES_TYPE, CodecUtils.mutableOptional(ChatRule.LIST_CODEC.fieldOf("rules"), ArrayList::new).codec());
 
-    @Init
-    public static void init() {
-        CompletableFuture.runAsync(ChatRulesHandler::loadChatRules);
-        ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
-    }
+	protected static final JsonData<List<ChatRule>> CHAT_RULE_LIST = new JsonData<>(CHAT_RULE_FILE, UNBOXING_CODEC, getDefaultChatRules());
 
-    private static void loadChatRules() {
-        try (BufferedReader reader = Files.newBufferedReader(CHAT_RULE_FILE)) {
-            Map<String, List<ChatRule>> chatRules = MAP_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
-            LOGGER.info("[Skyblocker Chat Rules]: {}", chatRules);
+	@Init
+	public static void init() {
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> CHAT_RULE_LIST.init());
+		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
+				dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
+						.then(ClientCommandManager.literal("chatRules")
+								.executes(
+										Scheduler.queueOpenScreenCommand(() -> new ChatRulesConfigScreen(null)))
+		)));
+	}
 
-            chatRuleList.addAll(chatRules.get("rules"));
+	@VisibleForTesting
+	static List<ChatRule> getDefaultChatRules() {
+		return new ArrayList<>(List.of(
+				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, null, null, null, null, null),
+				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, new ChatRule.AnnouncementMessage("&1Ability", 3000), null, SoundEvents.ARROW_HIT_PLAYER)
+		));
+	}
 
-            LOGGER.info("[Skyblocker Chat Rules] Loaded chat rules");
-        } catch (NoSuchFileException e) {
-            registerDefaultChatRules();
-            LOGGER.warn("[Skyblocker Chat Rules] chat rules file not found, using default rules. This is normal when using for the first time.");
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker Chat Rules] Failed to load chat rules file", e);
-        }
-    }
+	/**
+	 * Checks each rule in {@link ChatRulesHandler#CHAT_RULE_LIST} to see if they are a match for the message and if so change outputs based on the options set in the {@link ChatRule}.
+	 */
+	private static boolean checkMessage(Component message, boolean overlay) {
+		if (overlay || !Utils.isOnSkyblock()) return true;
+		List<ChatRule> rules = CHAT_RULE_LIST.getData();
+		if (!CHAT_RULE_LIST.isLoaded() || rules.isEmpty()) return true;
+		String plain = ChatFormatting.stripFormatting(message.getString());
 
-    private static void registerDefaultChatRules() {
-        //clean hub chat
-        ChatRule cleanHubRule = new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, false, false, "", null);
-        //mining Ability
-        ChatRule miningAbilityRule = new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, false, true, "&1Ability", SoundEvents.ENTITY_ARROW_HIT_PLAYER);
+		for (ChatRule rule : rules) {
+			ChatRule.Match match = rule.isMatch(plain);
+			if (!match.matches()) continue;
 
-        chatRuleList.add(cleanHubRule);
-        chatRuleList.add(miningAbilityRule);
-    }
+			// Get a replacement message
+			boolean sendOriginal = !rule.getHideMessage();
+			if (sendOriginal && rule.getChatMessage() != null) {
+				sendOriginal = false;
+				Utils.sendMessageToBypassEvents(formatText(match.insertCaptureGroups(rule.getChatMessage())));
+			}
 
-    protected static void saveChatRules() {
-        JsonObject chatRuleJson = new JsonObject();
-        chatRuleJson.add("rules", ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, chatRuleList).getOrThrow());
-        try (BufferedWriter writer = Files.newBufferedWriter(CHAT_RULE_FILE)) {
-            SkyblockerMod.GSON.toJson(chatRuleJson, writer);
-            LOGGER.info("[Skyblocker Chat Rules] Saved chat rules file");
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker Chat Rules] Failed to save chat rules file", e);
-        }
-    }
+			if (rule.getAnnouncementMessage() != null) {
+				ChatRule.AnnouncementMessage announcementMessage = rule.getAnnouncementMessage();
+				TitleContainer.addTitle(new Title(formatText(match.insertCaptureGroups(announcementMessage.message))), (int) (announcementMessage.displayDuration / 50)); // One tick is 50ms
+			}
 
-    /**
-     * Checks each rule in {@link ChatRulesHandler#chatRuleList} to see if they are a match for the message and if so change outputs based on the options set in the {@link ChatRule}.
-     * @param message the chat message
-     * @param overlay if its overlay
-     */
-    private static boolean checkMessage(Text message, boolean overlay) {
-        if (!Utils.isOnSkyblock()) return true; //do not work not on skyblock
-        if (overlay) return true; //ignore messages in overlay
-        String plain =  Formatting.strip(message.getString());
+			// Show in action bar
+			if (rule.getActionBarMessage() != null && CLIENT.player != null) {
+				CLIENT.player.displayClientMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())), true);
+			}
 
-        for (ChatRule rule : chatRuleList) {
-            if (!rule.isMatch(plain)) continue;
+			if (rule.getToastMessage() != null) {
+				ChatRule.ToastMessage toastMessage = rule.getToastMessage();
+				CLIENT.getToastManager().addToast(new ChatRulesToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon));
+			}
 
-            //get a replacement message
-            Text newMessage;
-            if (!rule.getReplaceMessage().isBlank()) {
-                newMessage = formatText(rule.getReplaceMessage());
-            } else {
-                newMessage = message;
-            }
+			// Play sound
+			if (rule.getCustomSound() != null && CLIENT.player != null) {
+				CLIENT.player.playSound(rule.getCustomSound(), 100f, 0.1f);
+			}
 
-            if (rule.getShowAnnouncement()) {
-                TitleContainer.addTitle(new Title(newMessage.copy()), SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength) ;
-            }
+			// Do not send the original message
+			if (!sendOriginal) return false;
+		}
+		return true;
+	}
 
-            //show in action bar
-            if (rule.getShowActionBar() && CLIENT.player != null) {
-                CLIENT.player.sendMessage(newMessage, true);
-            }
+	/**
+	 * Converts a string with color codes into a formatted Text object
+	 *
+	 * @param codedString the string with color codes in
+	 * @return formatted text
+	 */
+	protected static MutableComponent formatText(String codedString) {
+		// These are done in order of precedence, so § is checked first, then &.
+		// This is to ensure that there are no accidental formatting issues due to an actual use of '&' with a valid color code.
+		if (codedString.contains("§")) return TextTransformer.fromLegacy(codedString, '§', false);
+		if (codedString.contains("&")) return TextTransformer.fromLegacy(codedString, '&', false);
+		return Component.literal(codedString);
+	}
 
-            //show replacement message in chat
-            //bypass MessageHandler#onGameMessage to avoid activating chat rules again
-            if (!rule.getHideMessage() && CLIENT.player != null) {
-                Utils.sendMessageToBypassEvents(newMessage);
-            }
+	public static void saveChatRules() {
+		if (CHAT_RULE_LIST.isLoaded()) CHAT_RULE_LIST.save();
+	}
 
-            //play sound
-            if (rule.getCustomSound() != null && CLIENT.player != null) {
-                CLIENT.player.playSound(rule.getCustomSound(), 100f, 0.1f);
-            }
+	private static class ChatRulesToast implements Toast {
+		private static final Identifier TEXTURE = SkyblockerMod.id("notification");
 
-            //do not send original message
-            return false;
-        }
-        return true;
-    }
+		private final long displayDuration;
+		private final ItemStack icon;
+		private final List<FormattedCharSequence> lines;
+		private final int width;
+		private Visibility visibility = Visibility.SHOW;
 
-    /**
-     * Converts a string with color codes into a formatted Text object
-     * @param codedString the string with color codes in
-     * @return formatted text
-     */
-    protected static MutableText formatText(String codedString) {
-        if (codedString.contains(String.valueOf(Formatting.FORMATTING_CODE_PREFIX)) || codedString.contains("&")) {
-            MutableText newText =  Text.literal("");
-            String[] parts = codedString.split("[" + Formatting.FORMATTING_CODE_PREFIX +"&]");
-            Style style = Style.EMPTY;
+		private ChatRulesToast(Component message, long displayDuration, ItemStack icon) {
+			Font textRenderer = Minecraft.getInstance().font;
+			this.lines = textRenderer.split(message, 200);
+			this.displayDuration = displayDuration;
+			this.icon = icon;
+			this.width = lines.stream().mapToInt(textRenderer::width).max().orElse(200) + 30;
+			for (FormattedCharSequence line : lines) {
+				System.out.println(textRenderer.width(line));
+			}
+		}
 
-            for (String part : parts) {
-                if (part.isEmpty()) continue;
-                Formatting formatting =  Formatting.byCode(part.charAt(0));
+		@Override
+		public Visibility getWantedVisibility() {
+			return visibility;
+		}
 
-                if (formatting != null) {
-                    style = style.withFormatting(formatting);
-                    Text.literal(part.substring(1)).getWithStyle(style).forEach(newText::append);
-                } else {
-                    newText.append(Text.of(part));
-                }
-            }
-            return newText;
-        }
-        return Text.literal(codedString);
-    }
+		@Override
+		public void update(ToastManager manager, long time) {
+			if (time > displayDuration) visibility = Visibility.HIDE;
+		}
+
+		@Override
+		public void render(GuiGraphics context, Font textRenderer, long startTime) {
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
+			context.renderFakeItem(icon, 4, 4);
+			for (int i = 0; i < lines.size(); i++) {
+				context.drawString(textRenderer, lines.get(i), 4 + 16 + 4, 8 + i * 12, -1, false);
+			}
+		}
+
+		@Override
+		public int height() {
+			return 8 + 4 + Math.max(lines.size(), 1) * 12;
+		}
+
+		@Override
+		public int width() {
+			return width;
+		}
+	}
 }

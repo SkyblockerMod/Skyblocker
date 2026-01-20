@@ -1,0 +1,444 @@
+package de.hysky.skyblocker.skyblock.item.custom.screen;
+
+import com.demonwav.mcdev.annotations.Translatable;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
+import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
+import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
+import it.unimi.dsi.fastutil.floats.FloatConsumer;
+import java.io.Closeable;
+import java.util.List;
+import java.util.stream.Stream;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.LayoutSettings;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
+import net.minecraft.world.item.equipment.Equippable;
+
+public class ColorSelectionWidget extends AbstractContainerWidget implements Closeable {
+	private static final int PADDING = 3;
+
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
+	private static final Component RESET_COLOR_TEXT = Component.translatable("skyblocker.customization.armor.resetColor");
+	private static final Component CANNOT_CUSTOMIZE_COLOR_TEXT = Component.translatable("skyblocker.customization.armor.cannotCustomizeColor");
+	private static final Component ANIMATED_TEXT = Component.translatable("skyblocker.customization.armor.animated");
+	private static final Component CYCLE_BACK_TEXT = Component.translatable("skyblocker.customization.armor.cycleBack");
+	private static final Component DURATION_TOOLTIP_TEXT = Component.translatable("skyblocker.customization.armor.durationTooltip");
+	private static final Component DELAY_TOOLTIP_TEXT = Component.translatable("skyblocker.customization.armor.delayTooltip");
+	private static final String DURATION_TEXT = "skyblocker.customization.armor.duration";
+	private static final String DELAY_TEXT = "skyblocker.customization.armor.delay";
+
+	private final ColorPickerWidget colorPicker;
+	private final ARGBTextInput argbTextInput;
+
+	private final AnimatedDyeTimelineWidget timelineWidget;
+	private final Checkbox cycleBackCheckbox;
+	private final Slider delaySlider;
+	private final Slider durationSlider;
+
+	private final Button resetColorButton;
+	private final Checkbox animatedCheckbox;
+	private final StringWidget notCustomizableText;
+
+	private final FrameLayout layout;
+
+	private ItemStack currentItem;
+	private boolean animated;
+	private boolean customizable = false;
+
+	private final List<AbstractWidget> children;
+
+	public ColorSelectionWidget(int x, int y, int width, int height, Font textRenderer) {
+		super(x, y, width, height, Component.nullToEmpty("ColorSelectionWidget"));
+		int height1 = Math.min(Math.min(2 * height / 3, width / 5), height - 40); // 40 is the height of slider + timeline + some padding/margin
+
+		colorPicker = new ColorPickerWidget(0, 0, height1 * 2, height1);
+		colorPicker.setOnColorChange(this::onPickerColorChanged);
+		argbTextInput = new ARGBTextInput(0, 0, textRenderer, true);
+		argbTextInput.setOnChange(this::onTextInputColorChanged);
+		timelineWidget = new AnimatedDyeTimelineWidget(0, 0, getWidth() - 6, 15, this::onTimelineFrameSelected);
+
+		resetColorButton = Button.builder(RESET_COLOR_TEXT, this::onRemoveCustomColor).width(Math.min(150, x + width - argbTextInput.getRight() - 5)).build();
+
+		notCustomizableText = new StringWidget(CANNOT_CUSTOMIZE_COLOR_TEXT, textRenderer);
+		FrameLayout.centerInRectangle(notCustomizableText, getX(), getY(), getWidth(), getHeight());
+
+		animatedCheckbox = Checkbox.builder(ANIMATED_TEXT, textRenderer)
+				.pos(colorPicker.getRight() + 5, resetColorButton.getBottom())
+				.maxWidth(80)
+				.onValueChange(this::onAnimatedCheckbox)
+				.build();
+		cycleBackCheckbox = Checkbox.builder(CYCLE_BACK_TEXT, textRenderer)
+				.pos(colorPicker.getRight() + 5, animatedCheckbox.getBottom() + 3)
+				.maxWidth(80)
+				.onValueChange(this::onCycleBackCheckbox)
+				.build();
+
+		int sliderWidth = (int) (width * 0.35f);
+		delaySlider = new Slider(0, 0, sliderWidth, 0.0f, 2.0f, 0.02f, true, DELAY_TEXT, f -> {
+			String itemUuid = currentItem.getUuid();
+			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
+			CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
+					dye.keyframes(),
+					dye.cycleBack(),
+					f,
+					dye.duration()
+			);
+			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
+		});
+		delaySlider.setTooltip(Tooltip.create(DELAY_TOOLTIP_TEXT));
+
+		durationSlider = new Slider(0, 0, sliderWidth, 0.1f, 10.0f, 0.1f, true, DURATION_TEXT, f -> {
+			String itemUuid = currentItem.getUuid();
+			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
+			CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
+					dye.keyframes(),
+					dye.cycleBack(),
+					dye.delay(),
+					f
+			);
+			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
+		});
+		durationSlider.setTooltip(Tooltip.create(DURATION_TOOLTIP_TEXT));
+
+		children = List.of(colorPicker, argbTextInput, timelineWidget, resetColorButton, animatedCheckbox, notCustomizableText, cycleBackCheckbox, delaySlider, durationSlider);
+		int w = getWidth() - PADDING * 2;
+		int h = getHeight() - PADDING * 2;
+		layout = new FrameLayout(w, h);
+		layout.addChild(timelineWidget, LayoutSettings::alignVerticallyBottom);
+
+		GridLayout grid = new GridLayout().spacing(3);
+		grid.addChild(argbTextInput, 0, 1);
+		grid.addChild(resetColorButton, 0, 2, 1, 3, LayoutSettings::alignHorizontallyRight);
+		grid.addChild(animatedCheckbox, 1, 1, 1, 2);
+		grid.addChild(delaySlider, 1, 3, 1, 2, LayoutSettings::alignHorizontallyRight);
+		grid.addChild(cycleBackCheckbox, 2, 1, 1, 2);
+		grid.addChild(durationSlider, 2, 3, 1, 2, LayoutSettings::alignHorizontallyRight);
+		grid.addChild(colorPicker, 0, 0, 3, 1);
+		layout.addChild(grid, LayoutSettings::alignVerticallyTop);
+		layout.addChild(notCustomizableText);
+		updateWidgetDimensions();
+	}
+
+	private void updateWidgetDimensions() {
+		int w = getWidth() - PADDING * 2;
+		int h = getHeight() - PADDING * 2;
+		timelineWidget.setWidth(w);
+		colorPicker.setHeight(Math.min(h - timelineWidget.getHeight() - 5, w / 3 / 2));
+		colorPicker.setWidth(colorPicker.getHeight() * 2);
+		delaySlider.setWidth((int) (w * 0.35f));
+		durationSlider.setWidth((int) (w * 0.35f));
+		layout.arrangeElements();
+		layout.setPosition(getX() + PADDING, getY() + PADDING);
+		width = layout.getWidth() + PADDING * 2;
+		height = layout.getHeight() + PADDING * 2;
+	}
+
+	@Override
+	public void setX(int x) {
+		super.setX(x);
+		layout.setX(getX() + PADDING);
+	}
+
+	@Override
+	public void setY(int y) {
+		super.setY(y);
+		layout.setY(getY() + PADDING);
+	}
+
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		updateWidgetDimensions();
+	}
+
+	public AnimatedDyeTimelineWidget getTimelineWidget() {
+		return timelineWidget;
+	}
+
+	private void onPickerColorChanged(int argb, boolean release) {
+		argbTextInput.setARGBColor(argb);
+		if (!animated) {
+			SkyblockerConfigManager.get().general.customDyeColors.put(currentItem.getUuid(), ARGB.opaque(argb));
+		} else if (release) {
+			timelineWidget.setColor(argb);
+		}
+	}
+
+	private void onTextInputColorChanged(int argb) {
+		colorPicker.setARGBColor(argb);
+		if (animated) timelineWidget.setColor(argb);
+		else SkyblockerConfigManager.get().general.customDyeColors.put(currentItem.getUuid(), ARGB.opaque(argb));
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		return getChildAt(mouseX, mouseY).filter(element -> element.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)).isPresent() || super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+	}
+
+	private void onTimelineFrameSelected(int color, float time) {
+		argbTextInput.setARGBColor(color);
+		colorPicker.setARGBColor(color);
+	}
+
+	private void onRemoveCustomColor(Button button) {
+		animated = false;
+		((CheckboxAccessor) animatedCheckbox).setSelected(false);
+		changeVisibilities();
+
+		String itemUuid = currentItem.getUuid();
+		SkyblockerConfigManager.get().general.customDyeColors.removeInt(itemUuid);
+		SkyblockerConfigManager.get().general.customAnimatedDyes.remove(itemUuid);
+
+		int color = DyedItemColor.getOrDefault(currentItem, -1);
+		argbTextInput.setARGBColor(color);
+		colorPicker.setARGBColor(color);
+	}
+
+	private void onAnimatedCheckbox(Checkbox checkbox, boolean checked) {
+		animated = checked;
+		changeVisibilities();
+		String itemUuid = currentItem.getUuid();
+		if (animated) {
+			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, new CustomArmorAnimatedDyes.AnimatedDye(
+					List.of(new CustomArmorAnimatedDyes.Keyframe(CommonColors.RED, 0), new CustomArmorAnimatedDyes.Keyframe(CommonColors.BLUE, 1)),
+					true,
+					0,
+					1.f
+			));
+			timelineWidget.setAnimatedDye(itemUuid);
+			delaySlider.setValue(0);
+			durationSlider.setValue(1);
+			((CheckboxAccessor) cycleBackCheckbox).setSelected(true);
+		} else {
+			int color = SkyblockerConfigManager.get().general.customDyeColors.getOrDefault(itemUuid, DyedItemColor.getOrDefault(currentItem, -1));
+			colorPicker.setARGBColor(color);
+			argbTextInput.setARGBColor(color);
+			SkyblockerConfigManager.get().general.customAnimatedDyes.remove(itemUuid);
+		}
+	}
+
+	private void onCycleBackCheckbox(Checkbox checkbox, boolean checked) {
+		String itemUuid = currentItem.getUuid();
+		CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
+		CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
+				dye.keyframes(),
+				checked,
+				dye.delay(),
+				dye.duration()
+		);
+		SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
+	}
+
+	private void changeVisibilities() {
+		colorPicker.visible = customizable;
+		argbTextInput.visible = customizable;
+
+		timelineWidget.visible = customizable && animated;
+		cycleBackCheckbox.visible = customizable && animated;
+		delaySlider.visible = customizable && animated;
+		durationSlider.visible = customizable && animated;
+
+		resetColorButton.visible = customizable;
+		animatedCheckbox.visible = customizable;
+		notCustomizableText.visible = !customizable;
+	}
+
+	@Override
+	public List<? extends GuiEventListener> children() {
+		return children;
+	}
+
+	@Override
+	protected int contentHeight() {
+		return 0;
+	}
+
+	@Override
+	protected double scrollRate() {
+		return 0;
+	}
+
+	@Override
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+		for (AbstractWidget child : children) {
+			child.render(context, mouseX, mouseY, delta);
+		}
+	}
+
+	@Override
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
+
+	@Override
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+		if (!super.mouseClicked(click, doubled)) {
+			setFocused(null);
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public void close() {
+		timelineWidget.close();
+	}
+
+	public void setCurrentItem(ItemStack currentItem) {
+		this.currentItem = currentItem;
+		refresh();
+	}
+
+	public void refresh() {
+		String itemUuid = currentItem.getUuid();
+		ResourceKey<EquipmentAsset> key = null;
+		if (SkyblockerConfigManager.get().general.customArmorModel.containsKey(itemUuid)) {
+			key = ResourceKey.create(EquipmentAssets.ROOT_ID, SkyblockerConfigManager.get().general.customArmorModel.get(itemUuid));
+		} else if (currentItem.has(DataComponents.EQUIPPABLE)) {
+			Equippable component = currentItem.get(DataComponents.EQUIPPABLE);
+			key = component.assetId().orElse(null);
+		}
+		if (key == null) customizable = false;
+		else {
+			EquipmentClientInfo model = ((EntityRenderDispatcherAccessor) Minecraft.getInstance().getEntityRenderDispatcher()).getEquipmentAssets().get(key);
+			customizable = Stream.of(EquipmentClientInfo.LayerType.HUMANOID, EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS, EquipmentClientInfo.LayerType.WINGS)
+					.flatMap(l -> model.getLayers(l).stream())
+					.anyMatch(layer -> layer.dyeable().isPresent());
+		}
+		if (!customizable) {
+			animated = false;
+			((CheckboxAccessor) animatedCheckbox).setSelected(false);
+			changeVisibilities();
+			return;
+		}
+		if (SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(itemUuid)) {
+			animated = true;
+			CustomArmorAnimatedDyes.AnimatedDye animatedDye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
+			((CheckboxAccessor) cycleBackCheckbox).setSelected(animatedDye.cycleBack());
+			delaySlider.setValue(animatedDye.delay());
+			durationSlider.setValue(animatedDye.duration());
+			timelineWidget.setAnimatedDye(itemUuid);
+		} else if (SkyblockerConfigManager.get().general.customDyeColors.containsKey(itemUuid)) {
+			animated = false;
+			int color = SkyblockerConfigManager.get().general.customDyeColors.getInt(itemUuid);
+			argbTextInput.setARGBColor(color);
+			colorPicker.setARGBColor(color);
+		} else {
+			animated = false;
+			int color = DyedItemColor.getOrDefault(currentItem, -1);
+			argbTextInput.setARGBColor(color);
+			colorPicker.setARGBColor(color);
+		}
+		changeVisibilities();
+		((CheckboxAccessor) animatedCheckbox).setSelected(animated);
+	}
+
+	private static class Slider extends AbstractSliderButton {
+		private final float minValue;
+		private final float maxValue;
+		private final float step;
+		private final boolean linear;
+		private final String translatable;
+		private final FloatConsumer onValueChanged;
+
+		private boolean clicked = false;
+
+		private Slider(int x, int y, int width, float min, float max, float step, boolean linear, @Translatable String translatable, FloatConsumer onValueChanged) {
+			super(x, y, width, 15, Component.empty(), 0);
+			if (min >= max || step <= 0 || step > (max - min)) throw new IllegalArgumentException("Invalid slider parameters: min=" + min + ", max=" + max + ", step=" + step);
+			this.minValue = min;
+			this.maxValue = max;
+			this.step = step;
+			this.linear = linear; // old code stuff... is always true, keeping it, can maybe be useful
+			this.translatable = translatable;
+			this.onValueChanged = onValueChanged;
+			updateMessage();
+		}
+
+		private float trueValue() {
+			double v = linear ? value : value * value;
+			return roundToStep(v * (maxValue - minValue));
+		}
+
+		@Override
+		protected void updateMessage() {
+			setMessage(Component.translatable(translatable, Formatters.DOUBLE_NUMBERS.format(trueValue())));
+		}
+
+		private void setValue(float val) {
+			float v = (val - minValue) / (maxValue - minValue);
+			value = linear ? v : Math.sqrt(v);
+			updateMessage();
+		}
+
+		@Override
+		public void onClick(MouseButtonEvent click, boolean doubled) {
+			super.onClick(click, doubled);
+			clicked = true;
+		}
+
+		@Override
+		public void onRelease(MouseButtonEvent click) {
+			super.onRelease(click);
+			if (clicked) {
+				onValueChanged.accept(trueValue());
+				clicked = false;
+			}
+		}
+
+		@Override
+		public boolean keyPressed(KeyEvent input) {
+			if (super.keyPressed(input)) {
+				onValueChanged.accept(trueValue());
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+		public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+			if (verticalAmount == 0) return false;
+			float offset = verticalAmount > 0 ? step : -step;
+			setValue(Math.clamp(trueValue() + offset, minValue, maxValue));
+			onValueChanged.accept(trueValue());
+			return true;
+		}
+
+		// Not using this cuz it updates every drag
+		@Override
+		protected void applyValue() {}
+
+		private float roundToStep(double value) {
+			return Math.clamp(minValue + step * Math.round(value / step), minValue, maxValue);
+		}
+	}
+}
