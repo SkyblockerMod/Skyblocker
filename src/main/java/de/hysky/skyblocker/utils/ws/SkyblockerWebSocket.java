@@ -78,7 +78,12 @@ public class SkyblockerWebSocket {
 			try {
 				if (Debug.debugEnabled() && Debug.webSocketDebug()) LOGGER.info("[Skyblocker WebSocket] Sending Message: {}", message);
 
-				socket.sendText(message, true).join();
+				WebSocket currentSocket = socket;
+				if (currentSocket != null && !currentSocket.isOutputClosed()) {
+					currentSocket.sendText(message, true).join();
+				} else {
+					LOGGER.warn("[Skyblocker WebSocket] Cannot send message - socket is null or closed");
+				}
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker WebSocket] Failed to send message!", e);
 			}
