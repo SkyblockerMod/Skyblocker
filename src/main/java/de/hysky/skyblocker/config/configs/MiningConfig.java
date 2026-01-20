@@ -163,7 +163,7 @@ public class MiningConfig {
 	}
 
 	public static class BlockBreakPrediction {
-		public boolean enabled = true;
+		public boolean enabled = false;
 
 		public boolean playSound = false;
 
