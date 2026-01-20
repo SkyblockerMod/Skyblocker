@@ -114,7 +114,7 @@ public enum Location implements StringRepresentable {
 	 */
 	public static Location fromFriendlyName(String friendlyName) {
 		return Arrays.stream(Location.values())
-				.filter(loc -> loc.friendlyName.equalsIgnoreCase(friendlyName) || loc.friendlyName.equalsIgnoreCase(friendlyName))
+				.filter(loc -> loc.friendlyName.equalsIgnoreCase(friendlyName))
 				.findFirst()
 				.orElse(UNKNOWN);
 	}
