@@ -5,9 +5,10 @@ import org.jspecify.annotations.Nullable;
 
 public interface SkyblockerEntity {
 	default @Nullable Component skyblocker$getCustomName() {
-		return null;
+		throw new UnsupportedOperationException("Implemented via Mixin");
 	}
 
 	default void skyblocker$setCustomName(Component customName) {
+		throw new UnsupportedOperationException("Implemented via Mixin");
 	}
 }
