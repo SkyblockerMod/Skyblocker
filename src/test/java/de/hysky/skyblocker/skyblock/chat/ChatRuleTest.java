@@ -56,6 +56,11 @@ class ChatRuleTest {
 				EnumSet.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND, Location.THE_PARK),
 				ChatRule.LOCATION_FIXING_CODEC.parse(JsonOps.INSTANCE, JsonOps.INSTANCE.createString("Dwarven Mines, Jerry's Workshop, The Park")).getOrThrow()
 		);
+
+		Assertions.assertEquals(
+				EnumSet.of(Location.HUB),
+				ChatRule.LOCATION_FIXING_CODEC.parse(JsonOps.INSTANCE, JsonOps.INSTANCE.createString("hub")).getOrThrow()
+		);
 	}
 
 	@Test
