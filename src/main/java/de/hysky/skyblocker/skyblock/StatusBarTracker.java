@@ -6,6 +6,7 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarType;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.RegexUtils;
@@ -22,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +31,6 @@ public class StatusBarTracker {
 	private static final Pattern DEFENSE_STATUS = Pattern.compile("§a(?<defense>[\\d,]+)§a❈ Defense *");
 	private static final Pattern MANA_USE = Pattern.compile("§b-([\\d,]+) Mana \\(§.*?\\) *");
 	private static final Pattern MANA_STATUS = Pattern.compile("§b(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|§3(?<overflow>[\\d,]+)ʬ) *");
-	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
 	private static final Pattern RIFT_TIME_STATUS = Pattern.compile("§[a7](?:[\\d,]+m)?[\\d,]+sф Left *");
 
 	private static final Minecraft client = Minecraft.getInstance();
@@ -94,15 +93,10 @@ public class StatusBarTracker {
 		if (client.player == null) return InteractionResult.PASS;
 		ItemStack handStack = client.player.getMainHandItem();
 		int manaCost = 0;
-		boolean foundRightClick = false;
-		for (String text : handStack.skyblocker$getLoreStrings()) {
-			Matcher matcher;
-			if (foundRightClick && (matcher = MANA_LORE.matcher(text)).matches()) {
-				manaCost = RegexUtils.parseIntFromMatcher(matcher, 1);
+		for (ItemAbility ability : handStack.skyblocker$getAbilities()) {
+			if (ability.activation().isRightClick()) {
+				manaCost = ability.manaCost().orElse(0);
 				break;
-			}
-			if (text.trim().toLowerCase(Locale.ENGLISH).endsWith("right click")) {
-				foundRightClick = true;
 			}
 		}
 		if (manaCost > 0 && manaCost <= mana.value()) {
