@@ -37,7 +37,7 @@ public class IceFill extends DungeonPuzzle {
 			new BlockPos(17, 71, 16),
 			new BlockPos(18, 72, 25)
 	};
-	private CompletableFuture<Void> solve;
+	private @Nullable CompletableFuture<Void> solve;
 	private final boolean[][][] iceFillBoards = {new boolean[3][3], new boolean[5][5], new boolean[7][7]};
 	private final List<List<Vector2ic>> iceFillPaths = new ArrayList<>(List.of(List.of(), List.of(), List.of()));
 
@@ -72,7 +72,7 @@ public class IceFill extends DungeonPuzzle {
 		}
 	}
 
-	private static String boardToString(boolean[][] iceFillBoard) {
+	public static String boardToString(boolean[][] iceFillBoard) {
 		StringBuilder sb = new StringBuilder();
 		for (boolean[] row : iceFillBoard) {
 			sb.append("\n");
@@ -89,6 +89,7 @@ public class IceFill extends DungeonPuzzle {
 			return;
 		}
 		Room room = DungeonManager.getCurrentRoom();
+		if (room == null) return;
 
 		solve = CompletableFuture.runAsync(() -> {
 			BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -162,6 +163,8 @@ public class IceFill extends DungeonPuzzle {
 			return;
 		}
 		Room room = DungeonManager.getCurrentRoom();
+		if (room == null) return;
+
 		for (int i = 0; i < 3; i++) {
 			extractPath(collector, room, iceFillPaths.get(i), BOARD_ORIGINS[i]);
 		}
