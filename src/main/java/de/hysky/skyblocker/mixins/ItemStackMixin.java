@@ -8,6 +8,7 @@ import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
+import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.Utils;
@@ -53,6 +54,9 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 
 	@Unique
 	private @Nullable List<String> loreString;
+
+	@Unique
+	private @Nullable List<ItemAbility> abilities;
 
 	@Unique
 	private @Nullable PetInfo petInfo;
@@ -128,6 +132,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 		if (type == DataComponents.LORE) {
 			loreString = null;
 			skyblockRarity = null;
+			abilities = null;
 		}
 	}
 
@@ -186,6 +191,13 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 	public List<String> skyblocker$getLoreStrings() {
 		if (loreString != null) return loreString;
 		return loreString = ItemUtils.getLore((ItemStack) (Object) this).stream().map(Component::getString).toList();
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public List<ItemAbility> skyblocker$getAbilities() {
+		if (abilities != null) return abilities;
+		return abilities = ItemAbility.getAbilities((ItemStack) (Object) this);
 	}
 
 	@SuppressWarnings("deprecation")
