@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
@@ -19,8 +18,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Optional;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {
@@ -57,8 +54,9 @@ public class EntityRendererMixin {
 		}
 	}
 
-	@WrapMethod(method = "getNameTag")
-	private <T extends Entity> @Nullable Component skyblocker$applyCustomName(T entity, Operation<Component> original) {
-		return Optional.ofNullable(entity.skyblocker$getCustomName()).orElseGet(() -> original.call(entity));
+	@ModifyReturnValue(method = "getNameTag", at = @At("RETURN"))
+	private <T extends Entity> @Nullable Component skyblocker$applyCustomName(Component original, T entity) {
+		Component customName = entity.skyblocker$getCustomName();
+		return customName != null ? customName : original;
 	}
 }
