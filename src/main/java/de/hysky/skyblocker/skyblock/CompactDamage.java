@@ -74,7 +74,7 @@ public class CompactDamage {
 		}
 		// Add the additional symbol back, if present
 		if (!matcher.group(2).isEmpty()) prettierCustomName.append(Component.literal(matcher.group(2)).setStyle(siblings.getLast().getStyle()));
-		entity.setCustomName(prettierCustomName);
+		entity.skyblocker$setCustomName(prettierCustomName);
 	}
 
 	/// We want precision to signify the *number of significant digits*, not the number of digits after the decimal.
