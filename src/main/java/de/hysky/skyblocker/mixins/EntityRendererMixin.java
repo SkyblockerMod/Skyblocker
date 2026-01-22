@@ -55,7 +55,7 @@ public class EntityRendererMixin {
 	}
 
 	@ModifyReturnValue(method = "getNameTag", at = @At("RETURN"))
-	private <T extends Entity> @Nullable Component skyblocker$applyCustomName(Component original, T entity) {
+	private <T extends Entity> @Nullable Component skyblocker$applyCustomName(@Nullable Component original, T entity) {
 		Component customName = entity.skyblocker$getCustomName();
 		return customName != null ? customName : original;
 	}
