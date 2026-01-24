@@ -37,8 +37,6 @@ public class GeneralConfig {
 
 	public SpecialEffects specialEffects = new SpecialEffects();
 
-	public Hitbox hitbox = new Hitbox();
-
 	public List<Integer> lockedSlots = new ArrayList<>();
 
 	//maybe put this 5 somewhere else
@@ -231,17 +229,6 @@ public class GeneralConfig {
 		public boolean rareDropEffects = true;
 
 		public boolean rareDyeDropEffects = true;
-	}
-
-	public static class Hitbox {
-		public boolean oldCactusHitbox = false;
-
-		@Deprecated
-		public transient boolean oldFarmlandHitbox = false;
-
-		public boolean oldLeverHitbox = false;
-
-		public boolean oldMushroomHitbox = false;
 	}
 
 }

@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.AttachFace;
@@ -15,8 +14,10 @@ public class OldLever {
 
 	@SuppressWarnings("incomplete-switch")
 	public static VoxelShape getShape(AttachFace face, Direction direction) {
-		if (!SkyblockerConfigManager.get().general.hitbox.oldLeverHitbox)
-			return null;
+//		commented out because 'oldLeverHitbox' is gone
+
+//		if (!SkyblockerConfigManager.get().general.hitbox.oldLeverHitbox)
+//			return null;
 
 		if (face == AttachFace.FLOOR) {
 			return FLOOR_SHAPE;
