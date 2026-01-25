@@ -79,14 +79,14 @@ public record TexturePool(String name, int size, @GpuTexture.Usage int usage, Te
 	}
 
 	/**
-	 * Retrieves the {@code GpuTexture} at the {@code index}. You must use {@link #nextAvailableIndex(int, int)} first.
+	 * Retrieves the {@code GpuTexture} at the {@code index}. You must use {@link #getNextAvailableIndex(int, int)} first.
 	 */
 	public GpuTexture getTexture(int index) {
 		return Objects.requireNonNull(this.textures()[index]);
 	}
 
 	/**
-	 * Retrieves the {@code GpuTextureView} at the {@code index}. You must use {@link #nextAvailableIndex(int, int)} first.
+	 * Retrieves the {@code GpuTextureView} at the {@code index}. You must use {@link #getNextAvailableIndex(int, int)} first.
 	 */
 	public GpuTextureView getTextureView(int index) {
 		return Objects.requireNonNull(this.textureViews()[index]);

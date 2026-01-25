@@ -108,6 +108,7 @@ public class UIAndVisualsCategory {
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.hideStatusEffectOverlay"))
+						.description(Component.translatable("skyblocker.config.uiAndVisuals.hideStatusEffectOverlay.@Tooltip"))
 						.binding(defaults.uiAndVisuals.hideStatusEffectOverlay,
 								() -> config.uiAndVisuals.hideStatusEffectOverlay,
 								newValue -> config.uiAndVisuals.hideStatusEffectOverlay = newValue)
@@ -115,6 +116,7 @@ public class UIAndVisualsCategory {
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.showEquipmentInInventory"))
+						.description(Component.translatable("skyblocker.config.uiAndVisuals.showEquipmentInInventory.@Tooltip"))
 						.binding(defaults.uiAndVisuals.showEquipmentInInventory,
 								() -> config.uiAndVisuals.showEquipmentInInventory,
 								newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
@@ -224,6 +226,7 @@ public class UIAndVisualsCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu"))
 						.collapsed(true)
+						.tags(CommonTags.ADDED_IN_6_0_0)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu.enabled"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu.enabled.@Tooltip"))
@@ -420,6 +423,31 @@ public class UIAndVisualsCategory {
 								.binding(defaults.uiAndVisuals.bars.enableBars,
 										() -> config.uiAndVisuals.bars.enableBars,
 										newValue -> config.uiAndVisuals.bars.enableBars = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableBarsRift"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
+								.binding(defaults.uiAndVisuals.bars.enableBarsRift,
+										() -> config.uiAndVisuals.bars.enableBarsRift,
+										newValue -> config.uiAndVisuals.bars.enableBarsRift = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.riftHealthHP"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.riftHealthHP.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
+								.binding(defaults.uiAndVisuals.bars.riftHealthHP,
+										() -> config.uiAndVisuals.bars.riftHealthHP,
+										newValue -> config.uiAndVisuals.bars.riftHealthHP = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBar"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
+								.binding(defaults.uiAndVisuals.bars.enableVanillaStyleManaBar,
+										() -> config.uiAndVisuals.bars.enableVanillaStyleManaBar,
+										newValue -> config.uiAndVisuals.bars.enableVanillaStyleManaBar = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(ButtonOption.createBuilder()
@@ -818,9 +846,10 @@ public class UIAndVisualsCategory {
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.compactDamage.precision"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip"))
-								.binding(defaults.uiAndVisuals.compactDamage.precision,
-										() -> config.uiAndVisuals.compactDamage.precision,
-										newValue -> config.uiAndVisuals.compactDamage.precision = newValue)
+								.tags(CommonTags.ADDED_IN_6_0_0)
+								.binding(defaults.uiAndVisuals.compactDamage.maxPrecision,
+										() -> config.uiAndVisuals.compactDamage.maxPrecision,
+										newValue -> config.uiAndVisuals.compactDamage.maxPrecision = newValue)
 								.controller(IntegerController.createBuilder().range(3, 10).slider(1).build())
 								.build())
 						.option(Option.<Color>createBuilder()

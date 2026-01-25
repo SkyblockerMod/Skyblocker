@@ -55,5 +55,8 @@
     "text.skyblocker.clickToSend.@Tooltip": "اضغط لإرسال هذا في الدردشة.",
     "skyblocker.config.crimsonIsle.extendNetherFog": "تمديد ضباب الNether",
     "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "عند التواجد في جزيرة الCrimson Isle، يمنع ظهور الضباب بالقرب من اللاعب كما هو الحال في البيئة الأصلية لعالم الNether.",
-    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "إذا كانت كمية سم الأسهم في مخزونك أقل من العدد التحذيري، فستتلقى تحذيرًا.\n\nالرقم 16 هو الحد الأدنى المطلق.\nينصح بأن تمتلك 32 سم الأسهم من أجل أفضل DPS مع Prefire."
+    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "إذا كانت كمية سم الأسهم في مخزونك أقل من العدد التحذيري، فستتلقى تحذيرًا.\n\nالرقم 16 هو الحد الأدنى المطلق.\nينصح بأن تمتلك 32 سم الأسهم من أجل أفضل DPS مع Prefire.",
+    "skyblocker.config.dungeons.allowDroppingProtectedItems": "تفعيل إمكانية إسقاط العناصر المحمية وفي الخانات المقفلة",
+    "skyblocker.config.dungeons.croesusHelper": "مساعد Croesus",
+    "skyblocker.config.dungeons.croesusHelper.@Tooltip": "تظليل الصناديق التي تم فتحها."
 }

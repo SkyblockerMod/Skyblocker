@@ -41,12 +41,12 @@ public class LassoHud extends ComponentBasedWidget {
 
 	public static void onEntityUpdate(ArmorStand entity) {
 		//check to see if close to end of players lasso
-		if (!getInstance().isEnabledIn(Utils.getLocation()) || lassoEntity == null || entity.distanceToSqr(lassoEntity) > 10) return;
+		if (!getInstance().isEnabledIn(Utils.getLocation()) || lassoEntity == null || entity.distanceToSqr(lassoEntity) > 16) return;
 
 		//see if it's the name we are looking for
 		Component name = entity.getCustomName();
 		if (name != null) {
-			//percentage bar amor stand when it's not 0
+			//percentage bar armor stand when it's not 0
 			if (name.getString().equals(LASSO_COUNT_DOWN_NAME) && name.getSiblings().size() == 2) {
 				int newPercentage = (int) (((name.getSiblings().getFirst().getString().length() - reelValue) / (20f - reelValue)) * 100);
 				percentage = Math.max(newPercentage, 0);

@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 
-@Mixin(targets = "org.eclipse.jgit.util.SystemReader$Default", remap = false)
+@Mixin(targets = "org.eclipse.jgit.util.SystemReader$Default")
 public class SystemReaderMixin {
 
 	@ModifyReturnValue(method = "getenv", at = @At("RETURN"))

@@ -5,6 +5,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.Collection;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.RomanNumerals;
@@ -39,14 +40,12 @@ public class GenericCategory implements ProfileViewerPage {
 	private static final int ROW_GAP = 34;
 	private static final int COLUMNS = 7;
 
-	private final Map<String, String[]> collectionsMap;
-	private final Map<String, IntList> tierRequirementsMap;
+	private final Map<String, List<Collection>> collectionsData;
 	private final Map<String, String> ICON_TRANSLATION = Map.ofEntries(
 			Map.entry("MUSHROOM_COLLECTION", "RED_MUSHROOM"));
 
 	public GenericCategory(JsonObject hProfile, JsonObject pProfile, String collection) {
-		collectionsMap = ProfileViewerScreen.getCollections();
-		tierRequirementsMap = ProfileViewerScreen.getTierRequirements();
+		collectionsData = ProfileViewerScreen.getCollections();
 		this.category = collection;
 		setupItemStacks(hProfile, pProfile);
 	}
@@ -58,12 +57,12 @@ public class GenericCategory implements ProfileViewerPage {
 	private void setupItemStacks(JsonObject hProfile, JsonObject pProfile) {
 		JsonObject playerCollection = pProfile.getAsJsonObject("collection");
 
-		for (String collection : collectionsMap.get(this.category)) {
-			ItemStack itemStack = ItemRepository.getItemStack(ICON_TRANSLATION.getOrDefault(collection, collection).replace(':', '-'));
+		for (Collection collection : collectionsData.get(this.category)) {
+			ItemStack itemStack = ItemRepository.getItemStack(ICON_TRANSLATION.getOrDefault(collection.id(), collection.id()).replace(':', '-'));
 			itemStack = itemStack == null ? Ico.BARRIER.copy() : itemStack.copy();
 
 			if (itemStack.getItem().getName().getString().equals("Barrier")) {
-				itemStack.set(DataComponents.CUSTOM_NAME, Component.nullToEmpty(collection));
+				itemStack.set(DataComponents.CUSTOM_NAME, Component.nullToEmpty(collection.id()));
 				System.out.println(collection);
 				System.out.println(this.category);
 			}
@@ -72,17 +71,17 @@ public class GenericCategory implements ProfileViewerPage {
 			itemStack.set(DataComponents.CUSTOM_NAME, Component.literal(ChatFormatting.stripFormatting(itemStack.getComponents().get(DataComponents.CUSTOM_NAME).getString())).setStyle(style));
 
 
-			long personalColl = playerCollection != null && playerCollection.has(collection) ? playerCollection.get(collection).getAsLong() : 0;
+			long personalColl = playerCollection != null && playerCollection.has(collection.id()) ? playerCollection.get(collection.id()).getAsLong() : 0;
 
 			long totalCollection = 0;
 			for (String member : hProfile.get("members").getAsJsonObject().keySet()) {
 				if (!hProfile.getAsJsonObject("members").getAsJsonObject(member).has("collection")) continue;
 				JsonObject memberColl = hProfile.getAsJsonObject("members").getAsJsonObject(member).getAsJsonObject("collection");
-				totalCollection += memberColl.has(collection) ? memberColl.get(collection).getAsLong() : 0;
+				totalCollection += memberColl.has(collection.id()) ? memberColl.get(collection.id()).getAsLong() : 0;
 			}
 
-			int collectionTier = calculateTier(totalCollection, tierRequirementsMap.get(collection));
-			IntList tierRequirements = tierRequirementsMap.get(collection);
+			int collectionTier = calculateTier(totalCollection, collection.tiers());
+			IntList tierRequirements = collection.tiers();
 
 			List<Component> lore = new ArrayList<>();
 			lore.add(Component.literal("Collection Item").setStyle(style).withStyle(ChatFormatting.DARK_GRAY));

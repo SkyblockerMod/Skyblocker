@@ -32,6 +32,7 @@ public class ForagingCategory {
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.galatea.enableForestNodeHelper"))
+								.description(Component.translatable("skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip"))
 								.binding(defaults.foraging.galatea.enableForestNodeHelper,
 										() -> config.foraging.galatea.enableForestNodeHelper,
 										newValue -> config.foraging.galatea.enableForestNodeHelper = newValue)
@@ -119,6 +120,7 @@ public class ForagingCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay"))
+								.description(Component.translatable("skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip"))
 								.binding(defaults.foraging.sweepOverlay.enableThrownAbilityOverlay,
 										() -> config.foraging.sweepOverlay.enableThrownAbilityOverlay,
 										newValue -> config.foraging.sweepOverlay.enableThrownAbilityOverlay = newValue)

@@ -47,7 +47,7 @@ public class CompactDamage {
 
 		MutableComponent prettierCustomName = Component.empty();
 
-		String prettifiedDmg = prettifyDamageNumber(Long.parseLong(dmg), config.precision);
+		String prettifiedDmg = prettifyDamageNumber(Long.parseLong(dmg), config.maxPrecision);
 
 		if (isCrit) {
 			String dmgSymbol = matcher.group(1);
@@ -74,7 +74,7 @@ public class CompactDamage {
 		}
 		// Add the additional symbol back, if present
 		if (!matcher.group(2).isEmpty()) prettierCustomName.append(Component.literal(matcher.group(2)).setStyle(siblings.getLast().getStyle()));
-		entity.setCustomName(prettierCustomName);
+		entity.skyblocker$setCustomName(prettierCustomName);
 	}
 
 	/// We want precision to signify the *number of significant digits*, not the number of digits after the decimal.
@@ -100,11 +100,11 @@ public class CompactDamage {
 
 		if (targetDamage < 1_000L) return String.valueOf(targetDamage);
 		if (targetDamage < 1_000_000L) return formatToPrecision(targetDamage / 1_000.0, targetPrecision) + "k";
-		if (targetDamage < 1_000_000_000L) return formatToPrecision(targetDamage / 1_000_000.0, targetPrecision) + "m";
-		if (targetDamage < 1_000_000_000_000L) return formatToPrecision(targetDamage / 1_000_000_000.0, targetPrecision) + "b";
-		if (targetDamage < 1_000_000_000_000_000L) return formatToPrecision(targetDamage / 1_000_000_000_000.0, targetPrecision) + "t";
+		if (targetDamage < 1_000_000_000L) return formatToPrecision(targetDamage / 1_000_000.0, targetPrecision) + "M";
+		if (targetDamage < 1_000_000_000_000L) return formatToPrecision(targetDamage / 1_000_000_000.0, targetPrecision) + "B";
+		if (targetDamage < 1_000_000_000_000_000L) return formatToPrecision(targetDamage / 1_000_000_000_000.0, targetPrecision) + "T";
 		// surely this will never happen :clueless:
-		return formatToPrecision(targetDamage / 1_000_000_000_000_000.0, targetPrecision) + "q";
+		return formatToPrecision(targetDamage / 1_000_000_000_000_000.0, targetPrecision) + "Q";
 	}
 
 	@VisibleForTesting

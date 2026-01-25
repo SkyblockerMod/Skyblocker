@@ -35,7 +35,7 @@ public class CompactDamageTest {
 		SharedConstants.tryDetectVersion();
 		Bootstrap.bootStrap();
 
-		// Make crits cyan
+		// Make crits black
 		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientStart = new Color(CommonColors.BLACK);
 		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientEnd = new Color(CommonColors.BLACK);
 	}
@@ -49,9 +49,9 @@ public class CompactDamageTest {
 	}
 
 	private static Component getCompactText(ArmorStand entity, int maxPrecision) {
-		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.precision = maxPrecision;
+		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.maxPrecision = maxPrecision;
 		CompactDamage.compactDamage(entity);
-		return entity.getCustomName();
+		return entity.skyblocker$getCustomName();
 	}
 
 	private static void testCompact(Component inputText, int maxPrecision, Component expectedText) {
@@ -98,7 +98,7 @@ public class CompactDamageTest {
 		testCompact(makeInputText("3,825", false), 4, Component.literal("3.825k").withColor(CommonColors.WHITE));
 		testCompact(makeInputText("3,825", false), 6, Component.literal("3.825k").withColor(CommonColors.WHITE));
 		testCompact(makeInputText("9,995", false), 3, Component.literal("10.0k").withColor(CommonColors.WHITE));
-		testCompact(makeInputText("179,481,824,995", false), 6, Component.literal("179.482b").withColor(CommonColors.WHITE));
+		testCompact(makeInputText("179,481,824,995", false), 6, Component.literal("179.482B").withColor(CommonColors.WHITE));
 	}
 
 	@Test
@@ -106,7 +106,7 @@ public class CompactDamageTest {
 		testCompact(makeInputText("7,214", true), 4, splitString("✧7.214k✧"));
 		testCompact(makeInputText("3,825", true), 4, splitString("✧3.825k✧"));
 		testCompact(makeInputText("9,995", true), 3, splitString("✧10.0k✧"));
-		testCompact(makeInputText("179,481,824,995", true), 6, splitString("✧179.482b✧"));
+		testCompact(makeInputText("179,481,824,995", true), 6, splitString("✧179.482B✧"));
 
 	}
 
@@ -121,7 +121,7 @@ public class CompactDamageTest {
 					Component.literal("99.972k").withColor(CommonColors.WHITE).append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
 			testCompact(makeInputText("179,999,999,995", false, pair.getKey(), pair.getValue()),
 					9,
-					Component.literal("180.000000b").withColor(CommonColors.WHITE).append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
+					Component.literal("180.000000B").withColor(CommonColors.WHITE).append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
 		}
 	}
 
@@ -136,7 +136,7 @@ public class CompactDamageTest {
 					splitString("✧490k✧").append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
 			testCompact(makeInputText("35,518,885,661,733", true, pair.getKey(), pair.getValue()),
 					6,
-					splitString("✧35.5189t✧").append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
+					splitString("✧35.5189T✧").append(Component.literal(pair.getKey()).withStyle(pair.getValue())));
 		}
 	}
 
@@ -172,10 +172,10 @@ public class CompactDamageTest {
 		Assertions.assertEquals("300", prettifyDamageNumber(253, 1));
 		Assertions.assertEquals("1.0k", prettifyDamageNumber(996, 2));
 		Assertions.assertEquals("68.68k", prettifyDamageNumber(68_682, 4));
-		Assertions.assertEquals("1.00m", prettifyDamageNumber(999_999, 3));
+		Assertions.assertEquals("1.00M", prettifyDamageNumber(999_999, 3));
 		Assertions.assertEquals("999.999k", prettifyDamageNumber(999_999, 7));
 		Assertions.assertEquals("999.999k", prettifyDamageNumber(999_999, 1000));
-		Assertions.assertEquals("99.999999m", prettifyDamageNumber(99_999_999, 1000));
-		Assertions.assertEquals("100.0000m", prettifyDamageNumber(99_999_999, 7));
+		Assertions.assertEquals("99.999999M", prettifyDamageNumber(99_999_999, 1000));
+		Assertions.assertEquals("100.0000M", prettifyDamageNumber(99_999_999, 7));
 	}
 }

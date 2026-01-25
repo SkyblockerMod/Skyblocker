@@ -7,21 +7,22 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
 
 public class KeybindWidget extends Button {
 	private final ShortcutKeyBinding keyBinding;
 	private final Runnable updateListener;
 	private boolean editing;
 
-	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, net.minecraft.network.chat.Component message, Runnable updateListener) {
+	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, Component message, Runnable updateListener) {
 		this(keyBinding, x, y, width, height, message, DEFAULT_NARRATION, updateListener);
 	}
 
-	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, net.minecraft.network.chat.Component message, CreateNarration narrationSupplier, Runnable updateListener) {
+	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, Component message, CreateNarration narrationSupplier, Runnable updateListener) {
 		this(keyBinding, x, y, width, height, message, button -> {}, narrationSupplier, updateListener);
 	}
 
-	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, net.minecraft.network.chat.Component message, OnPress onPress, CreateNarration narrationSupplier, Runnable updateListener) {
+	protected KeybindWidget(ShortcutKeyBinding keyBinding, int x, int y, int width, int height, Component message, OnPress onPress, CreateNarration narrationSupplier, Runnable updateListener) {
 		super(x, y, width, height, message, onPress, narrationSupplier);
 		this.keyBinding = keyBinding;
 		this.updateListener = updateListener;

@@ -10,7 +10,9 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.SkyblockTime;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +60,10 @@ public class MayorUtils {
 		long currentYearMillis = SkyblockTime.getSkyblockMillis() % 446400000L; //446400000ms is 1 year, 105600000ms is the amount of time from early spring 1st to late spring 27th
 		// If current time is past late spring 27th, the next mayor change is at next year's spring 27th, otherwise it's at this year's spring 27th
 		long millisUntilNextMayorChange = currentYearMillis > 105600000L ? 446400000L - currentYearMillis + 105600000L : 105600000L - currentYearMillis;
-		Scheduler.INSTANCE.schedule(MayorUtils::tickMayorCache, (int) (millisUntilNextMayorChange / 50) + 5 * 60 * 20); // 5 extra minutes to allow the cache to expire. This is a simpler than checking age and subtracting from max age and rescheduling again.
+		RenderHelper.runOnRenderThread(() -> {
+			// 5 extra minutes to allow the cache to expire. This is a simpler than checking age and subtracting from max age and rescheduling again.
+			Scheduler.INSTANCE.schedule(MayorUtils::tickMayorCache, (int) (millisUntilNextMayorChange / 50) + 5 * 60 * 20);
+		});
 	}
 
 	private static void tickMayorCache() {
@@ -92,8 +97,11 @@ public class MayorUtils {
 			if (mayorTickRetryAttempts < 5) {
 				int minutes = 5 << mayorTickRetryAttempts; //5, 10, 20, 40, 80 minutes
 				mayorTickRetryAttempts++;
+
 				LOGGER.warn("[Skyblocker] Retrying in {} minutes.", minutes);
-				Scheduler.INSTANCE.schedule(MayorUtils::tickMayorCache, minutes * 60 * 20);
+				RenderHelper.runOnRenderThread(() -> {
+					Scheduler.INSTANCE.schedule(MayorUtils::tickMayorCache, minutes * 60 * 20);
+				});
 			} else {
 				LOGGER.warn("[Skyblocker] Failed to get mayor status after 5 retries! Stopping further retries until next reboot.");
 			}

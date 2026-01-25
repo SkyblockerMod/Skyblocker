@@ -105,18 +105,15 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	@SuppressWarnings("JavadocReference")
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
-		if (getState() == State.SHOW) {
-			if (slot == ultrasequencerNextSlot) {
-				int count = getSlots().get(ultrasequencerNextSlot).getCount() + 1;
-				getSlots().int2ObjectEntrySet().stream()
-						.filter(entry -> entry.getValue().getCount() == count)
-						.findAny()
-						.map(Int2ObjectMap.Entry::getIntKey)
-						.ifPresent(nextSlot -> this.ultrasequencerNextSlot = nextSlot);
-			} else {
-				return shouldBlockIncorrectClicks();
-			}
-		}
+		if (getState() != State.SHOW) { return shouldBlockIncorrectClicks(); }  // Block early clicks when table is still loading
+		if (slot != ultrasequencerNextSlot) { return shouldBlockIncorrectClicks(); }
+
+		int count = getSlots().get(ultrasequencerNextSlot).getCount() + 1;
+		getSlots().int2ObjectEntrySet().stream()
+			.filter(entry -> entry.getValue().getCount() == count)
+			.findAny()
+			.map(Int2ObjectMap.Entry::getIntKey)
+			.ifPresent(nextSlot -> this.ultrasequencerNextSlot = nextSlot);
 		return super.onClickSlot(slot, stack, screenId, button);
 	}
 
