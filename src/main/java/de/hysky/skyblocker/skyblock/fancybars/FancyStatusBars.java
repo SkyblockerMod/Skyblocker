@@ -25,7 +25,6 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +34,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -146,10 +146,7 @@ public class FancyStatusBars {
 			LOGGER.error("[Skyblocker] Failed reading status bars config", throwable);
 			return null;
 		});
-		ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> {
-			saveBarConfig();
-			GLFW.glfwDestroyCursor(StatusBarsConfigScreen.RESIZE_CURSOR);
-		});
+		ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> saveBarConfig());
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
@@ -300,7 +297,8 @@ public class FancyStatusBars {
 
 			int row = 0;
 			for (int i = 0; i < barPositioner.getRowCount(barAnchor); i++) {
-				List<StatusBar> barRow = barPositioner.getRow(barAnchor, i);
+				List<StatusBar> barRow = new ArrayList<>(barPositioner.getRow(barAnchor, i));
+				barRow.removeIf(statusBar -> !statusBar.visible && !ignoreVisibility);
 				if (barRow.isEmpty()) continue;
 
 
@@ -308,9 +306,7 @@ public class FancyStatusBars {
 				float widthPerSize;
 				if (sizeRule.isTargetSize()) {
 					int size = 0;
-					for (StatusBar bar : barRow) {
-						if (bar.visible || ignoreVisibility) size += bar.size;
-					}
+					for (StatusBar bar : barRow) size += bar.size;
 					widthPerSize = (float) sizeRule.totalWidth() / size;
 
 				}
@@ -325,7 +321,10 @@ public class FancyStatusBars {
 					// A bit of a padding
 					int offsetX = 0;
 					int lessWidth = 0;
-					if (rowSize > 1) { // Technically bars in the middle of 3+ bars will be smaller than the 2 side ones but shh
+					if (!sizeRule.isTargetSize()) {
+						offsetX = 1;
+						lessWidth = 2;
+					} else if (rowSize > 1) { // Technically bars in the middle of 3+ bars will be smaller than the 2 side ones but shh
 						if (j == 0) lessWidth = 1;
 						else if (j == rowSize - 1) {
 							lessWidth = 1;
@@ -337,8 +336,6 @@ public class FancyStatusBars {
 					}
 					StatusBar statusBar = barRow.get(j);
 					statusBar.size = Math.clamp(statusBar.size, sizeRule.minSize(), sizeRule.maxSize());
-
-					if (!statusBar.visible && !ignoreVisibility) continue;
 
 					float x = barAnchor.isRight() ?
 							anchorPosition.x() + (visibleHealthMove ? sizeRule.totalWidth() / 2.f : 0) + currSize * widthPerSize :

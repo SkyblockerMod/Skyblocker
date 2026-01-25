@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanPair;
@@ -13,7 +14,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.PopupScreen;
@@ -32,22 +32,8 @@ public class StatusBarsConfigScreen extends Screen {
 	private static final int HOTBAR_WIDTH = 182;
 	private static final float RESIZE_THRESHOLD = 0.75f;
 	private static final int BAR_MINIMUM_WIDTH = 30;
-	public static final long RESIZE_CURSOR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR);
 	// prioritize left and right cuz they are much smaller than up and down
 	private static final ScreenDirection[] DIRECTION_CHECK_ORDER = new ScreenDirection[]{ScreenDirection.LEFT, ScreenDirection.RIGHT, ScreenDirection.UP, ScreenDirection.DOWN};
-
-	private static boolean resizeCursor = false;
-	private static void setResizeCursor(boolean bl) {
-		if (bl != resizeCursor) {
-			resizeCursor = bl;
-			Window window = Minecraft.getInstance().getWindow();
-			if (resizeCursor) {
-				GLFW.glfwSetCursor(window.handle(), RESIZE_CURSOR);
-			} else {
-				GLFW.glfwSetCursor(window.handle(), 0);
-			}
-		}
-	}
 
 	private final Map<ScreenRectangle, Pair<StatusBar, BarLocation>> rectToBar = new HashMap<>();
 	/**
@@ -70,16 +56,12 @@ public class StatusBarsConfigScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		/*for (ScreenRect screenRect : meaningFullName.keySet()) {
-			context.fillGradient(screenRect.position().x(), screenRect.position().y(), screenRect.position().x() + screenRect.width(), screenRect.position().y() + screenRect.height(), 0xFFFF0000, 0xFF0000FF);
-		}*/
 		super.render(context, mouseX, mouseY, delta);
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, width / 2 - HOTBAR_WIDTH / 2, height - 22, HOTBAR_WIDTH, 22);
 		editBarWidget.render(context, mouseX, mouseY, delta);
 
-		assert minecraft != null;
 		Window window = minecraft.getWindow();
-		int scaleFactor = window.calculateScale(0, minecraft.isEnforceUnicode()) - (int) window.getGuiScale() + 3;
+		int scaleFactor = window.calculateScale(0, minecraft.isEnforceUnicode()) - window.getGuiScale() + 3;
 		if ((scaleFactor & 2) == 0) scaleFactor++;
 
 		ScreenRectangle mouseRect = new ScreenRectangle(new ScreenPosition(mouseX - scaleFactor / 2, mouseY - scaleFactor / 2), scaleFactor, scaleFactor);
@@ -247,11 +229,10 @@ public class StatusBarsConfigScreen extends Screen {
 							}
 							resizeHover.first(bar);
 							resizeHover.right(right);
-							setResizeCursor(true);
+							context.requestCursor(CursorTypes.RESIZE_EW);
 							break rectLoop;
 						} else {
 							resizeHover.first(null);
-							setResizeCursor(false);
 						}
 					}
 				}
@@ -292,13 +273,10 @@ public class StatusBarsConfigScreen extends Screen {
 		values.forEach(this::setup);
 		updateScreenRects();
 		this.addRenderableWidget(Button.builder(Component.literal("?"),
-						button -> {
-							assert minecraft != null;
-							minecraft.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.explanationTitle"))
-									.addButton(Component.translatable("gui.ok"), PopupScreen::onClose)
-									.setMessage(Component.translatable("skyblocker.bars.config.explanation"))
-									.build());
-						})
+						button -> minecraft.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.explanationTitle"))
+								.addButton(Component.translatable("gui.ok"), PopupScreen::onClose)
+								.setMessage(Component.translatable("skyblocker.bars.config.explanation"))
+								.build()))
 				.bounds(width - 20, (height - 15) / 2, 15, 15)
 				.build());
 	}
@@ -314,8 +292,6 @@ public class StatusBarsConfigScreen extends Screen {
 		FancyStatusBars.statusBars.values().forEach(statusBar -> statusBar.setOnClick(null));
 		if (cursorBar != null) cursorBar.inMouse = false;
 		FancyStatusBars.updatePositions(false);
-		assert minecraft != null;
-		setResizeCursor(false);
 		FancyStatusBars.saveBarConfig();
 	}
 
