@@ -45,10 +45,12 @@ public class FarmingHud {
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
 	private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?<percent>[\\d,]+(?:\\.\\d+)?%|[\\d,]+/[\\d,]+)\\)");
 	private static final Minecraft client = Minecraft.getInstance();
+
 	private static CounterType counterType = CounterType.NONE;
 	private static final Deque<LongLongPair> counter = new ArrayDeque<>();
 	private static final LongPriorityQueue blockBreaks = new LongArrayFIFOQueue();
 	private static final Queue<FloatLongPair> farmingXp = new ArrayDeque<>();
+
 	private static float farmingXpPercentProgress;
 
 	@Init
@@ -58,10 +60,10 @@ public class FarmingHud {
 				if (!counter.isEmpty() && counter.peek().rightLong() + 5000 < System.currentTimeMillis()) {
 					counter.poll();
 				}
-				if (!blockBreaks.isEmpty() && blockBreaks.firstLong() + 1000 < System.currentTimeMillis()) {
+				if (!blockBreaks.isEmpty() && blockBreaks.firstLong() + 5000 < System.currentTimeMillis()) {
 					blockBreaks.dequeueLong();
 				}
-				if (!farmingXp.isEmpty() && farmingXp.peek().rightLong() + 1000 < System.currentTimeMillis()) {
+				if (!farmingXp.isEmpty() && farmingXp.peek().rightLong() + 5000 < System.currentTimeMillis()) {
 					farmingXp.poll();
 				}
 
