@@ -2,7 +2,9 @@ package de.hysky.skyblocker.config;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
 import java.lang.reflect.Field;
@@ -43,7 +45,7 @@ public class ConfigCommands {
 			SkyblockerConfigManager.update(config -> {
 				try {
 					field.setBoolean(object, true);
-					context.getSource().sendFeedback(Component.translatable("skyblocker.config.commands.set", name, true));
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.set", name, true).withStyle(ChatFormatting.GREEN)));
 				} catch (IllegalAccessException e) {
 					throw new RuntimeException(e);
 				}
@@ -53,7 +55,7 @@ public class ConfigCommands {
 			SkyblockerConfigManager.update(config -> {
 				try {
 					field.setBoolean(object, false);
-					context.getSource().sendFeedback(Component.translatable("skyblocker.config.commands.set", name, false));
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.set", name, false).withStyle(ChatFormatting.GREEN)));
 				} catch (IllegalAccessException e) {
 					throw new RuntimeException(e);
 				}
@@ -64,12 +66,19 @@ public class ConfigCommands {
 				try {
 					boolean toggled = !field.getBoolean(object);
 					field.setBoolean(object, toggled);
-					context.getSource().sendFeedback(Component.translatable("skyblocker.config.commands.set", name, toggled));
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.set", name, toggled).withStyle(ChatFormatting.GREEN)));
 				} catch (IllegalAccessException e) {
 					throw new RuntimeException(e);
 				}
 			});
 			return Command.SINGLE_SUCCESS;
-		}));
+		})).executes(context -> {
+			try {
+				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.query", name, field.getBoolean(object)).withStyle(ChatFormatting.GREEN)));
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+			return Command.SINGLE_SUCCESS;
+		});
 	}
 }
