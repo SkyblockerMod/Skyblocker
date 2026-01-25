@@ -12,8 +12,7 @@ public class FishingHookMixin {
 
 	@WrapWithCondition(method = "recreateFromPacket", at = @At(
 			value = "INVOKE",
-			target = "org/slf4j/Logger.error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V",
-			remap = false))
+			target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"))
 	private static boolean skyblocker$dontLogInvalidOwner(Logger logger, String message, Object entityId, Object entityData) {
 		return !Utils.isOnHypixel();
 	}

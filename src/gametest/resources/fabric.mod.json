@@ -15,8 +15,9 @@
   "environment": "client",
   "entrypoints": {
     "fabric-client-gametest": [
-      "de.hysky.skyblocker.SkyblockerGameTest",
-      "de.hysky.skyblocker.RoomDataTest"
+      "de.hysky.skyblocker.RoomDataTest",
+      "de.hysky.skyblocker.SkyblockerConfigTest",
+      "de.hysky.skyblocker.SkyblockerGameTest"
     ]
   }
 }

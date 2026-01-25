@@ -14,13 +14,12 @@ import de.hysky.skyblocker.skyblock.profileviewer.dungeons.DungeonsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.InventoryPage;
 import de.hysky.skyblocker.skyblock.profileviewer.skills.SkillsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayersPage;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.Collection;
 import de.hysky.skyblocker.utils.ApiAuthentication;
 import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.ints.IntImmutableList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -43,8 +42,6 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,8 +58,7 @@ public class ProfileViewerScreen extends Screen {
 	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/base_plate.png");
 	private static final int GUI_WIDTH = 322;
 	private static final int GUI_HEIGHT = 180;
-	private static Map<String, String[]> COLLECTIONS;
-	private static Map<String, IntList> TIER_REQUIREMENTS;
+	private static Map<String, List<Collection>> collections = Map.of();
 
 	private String playerName;
 	private JsonObject hypixelProfile;
@@ -244,40 +240,15 @@ public class ProfileViewerScreen extends Screen {
 		CompletableFuture.runAsync(() -> {
 			try {
 				JsonObject jsonObject = JsonParser.parseString(Http.sendGetRequest(HYPIXEL_COLLECTIONS)).getAsJsonObject();
-				if (jsonObject.get("success").getAsBoolean()) {
-					Map<String, String[]> collectionsMap = new HashMap<>();
-					Map<String, IntList> tierRequirementsMap = new HashMap<>();
-					JsonObject collections = jsonObject.getAsJsonObject("collections");
-					collections.entrySet().forEach(entry -> {
-						String category = entry.getKey();
-						JsonObject itemsObject = entry.getValue().getAsJsonObject().getAsJsonObject("items");
-						String[] items = itemsObject.keySet().toArray(new String[0]);
-						// Sort collections alphabetically like in the menu
-						// Still not exact since some collections are sorted weirdly and some item ids aren't what you expect
-						Arrays.sort(items, String::compareToIgnoreCase);
-						collectionsMap.put(category, items);
-						itemsObject.entrySet().forEach(itemEntry -> {
-							IntImmutableList tierReqs = IntImmutableList.toList(itemEntry.getValue().getAsJsonObject().getAsJsonArray("tiers").asList().stream()
-									.mapToInt(tier -> tier.getAsJsonObject().get("amountRequired").getAsInt())
-							);
-							tierRequirementsMap.put(itemEntry.getKey(), tierReqs);
-						});
-					});
-					COLLECTIONS = collectionsMap;
-					TIER_REQUIREMENTS = tierRequirementsMap;
-				}
+				collections = Collection.parse(jsonObject);
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
 			}
 		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
-	public static Map<String, String[]> getCollections() {
-		return COLLECTIONS;
-	}
-
-	public static Map<String, IntList> getTierRequirements() {
-		return TIER_REQUIREMENTS;
+	public static Map<String, List<Collection>> getCollections() {
+		return collections;
 	}
 
 	/**

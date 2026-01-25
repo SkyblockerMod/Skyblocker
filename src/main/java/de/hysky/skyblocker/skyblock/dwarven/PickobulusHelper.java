@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -149,7 +149,7 @@ public class PickobulusHelper {
 			return;
 		}
 
-		if (ItemUtils.getLoreLineContains(CLIENT.player.getMainHandItem(), "Ability: Pickobulus") == null) {
+		if (!ItemAbility.hasAbility(CLIENT.player.getMainHandItem(), "Pickobulus")) {
 			shouldRender = false;
 			errorMessage = Component.literal("Not holding a tool with pickobulus").withStyle(ChatFormatting.RED);
 			return;
