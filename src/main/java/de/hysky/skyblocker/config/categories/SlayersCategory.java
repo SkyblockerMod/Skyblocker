@@ -92,6 +92,14 @@ public class SlayersCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.slayer.alertOtherMinibosses"))
+						.description(Component.translatable("skyblocker.config.slayer.alertOtherMinibosses.@Tooltip"))
+						.binding(defaults.slayers.alertOtherMinibosses,
+								() -> config.slayers.alertOtherMinibosses,
+								newValue -> config.slayers.alertOtherMinibosses = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.showMiniBossNameInAlert"))
 						.binding(defaults.slayers.showMiniBossNameInAlert,
 								() -> config.slayers.showMiniBossNameInAlert,

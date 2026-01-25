@@ -109,7 +109,7 @@ public class SlayerManager {
 		if (overlay || !Utils.isOnSkyblock()) return true;
 		String message = text.getString();
 
-		switch (message.replaceFirst("^\\s+", "")) {
+		switch (message.stripLeading()) {
 			case "Your Slayer Quest has been cancelled!", "SLAYER QUEST FAILED!" -> {
 				slayerQuest = null;
 				CallMaddox.onSlayerFailed();
@@ -549,10 +549,14 @@ public class SlayerManager {
 			if (miniboss == null) return;
 			minibosses.add(miniboss);
 
-			if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert) {
-				Title title = SkyblockerConfigManager.get().slayers.showMiniBossNameInAlert ?
-						new Title((MutableComponent) armorStand.getCustomName()) : MINIBOSS_SPAWN;
-				TitleContainer.addTitleAndPlaySound(title, 20);
+			var slayersConfig = SkyblockerConfigManager.get().slayers;
+			if (slayersConfig.miniBossSpawnAlert) {
+				MutableComponent armorStandName = (MutableComponent) armorStand.getCustomName();
+				if (armorStandName == null) return;
+				if (slayersConfig.alertOtherMinibosses || armorStandName.getString().contains(CLIENT.getUser().getName())) {
+					Title title = slayersConfig.showMiniBossNameInAlert ? new Title(armorStandName) : MINIBOSS_SPAWN;
+					TitleContainer.addTitleAndPlaySound(title, 20);
+				}
 			}
 		}
 	}

@@ -983,6 +983,9 @@
 
   "skyblocker.config.slayer": "Slayers",
 
+  "skyblocker.config.slayer.alertOtherMinibosses": "Alerts for minibosses spawned by other players.",
+  "skyblocker.config.slayer.alertOtherMinibosses.@Tooltip": "Requires 'MiniBoss Spawn Alert' option to be enabled.",
+
   "skyblocker.config.slayer.blazeSlayer": "Blaze Slayer",
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights": "Attunement Highlights",
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "Applies a color matching the current attunement to the selected effect.",

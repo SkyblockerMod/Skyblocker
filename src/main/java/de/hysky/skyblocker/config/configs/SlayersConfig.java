@@ -27,6 +27,8 @@ public class SlayersConfig {
 
 	public boolean miniBossSpawnAlert = true;
 
+	public boolean alertOtherMinibosses = false;
+
 	public boolean showMiniBossNameInAlert = false;
 
 	public boolean slainTime = true;
