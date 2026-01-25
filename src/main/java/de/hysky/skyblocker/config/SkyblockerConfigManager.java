@@ -2,7 +2,6 @@ package de.hysky.skyblocker.config;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
@@ -48,8 +47,6 @@ import org.slf4j.Logger;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.lang.StackWalker.Option;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -62,7 +59,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class SkyblockerConfigManager {
 	public static final int CONFIG_VERSION = 6;
-	private static final Logger LOGGER = LogUtils.getLogger();
+	static final Logger LOGGER = LogUtils.getLogger();
 	private static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
 	private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 	private static final Path CONFIG_FILE = CONFIG_DIR.resolve("skyblocker.json");
@@ -158,62 +155,8 @@ public class SkyblockerConfigManager {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> configLiteral(String name) {
 		LiteralArgumentBuilder<FabricClientCommandSource> builder = literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
 				.then(literal("search").then(argument("option", StringArgumentType.greedyString()).executes((ctx) -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("option", String.class))))));
-		registerConfigEntriesCommand(builder);
+		ConfigCommands.registerConfigEntries(builder);
 		return builder;
-	}
-
-	private static void registerConfigEntriesCommand(LiteralArgumentBuilder<FabricClientCommandSource> builder) {
-		try {
-			registerConfigEntriesCommand(builder, SkyblockerConfigManager.get());
-		} catch (Exception e) {
-			LOGGER.error("[Skyblocker Config Manager] Failed to register config entries command!", e);
-		}
-	}
-
-	private static void registerConfigEntriesCommand(LiteralArgumentBuilder<FabricClientCommandSource> builder, Object object) throws IllegalAccessException {
-		for (Field field : object.getClass().getDeclaredFields()) {
-			if (Modifier.isStatic(field.getModifiers())) continue;
-			field.setAccessible(true);
-
-			LiteralArgumentBuilder<FabricClientCommandSource> entryBuilder = literal(field.getName());
-			Class<?> type = field.getType();
-			Object value = field.get(object);
-
-			if (type == boolean.class) {
-				entryBuilder.then(literal("true").executes(context -> {
-					SkyblockerConfigManager.update(config -> {
-						try {
-							field.setBoolean(object, true);
-						} catch (IllegalAccessException e) {
-							throw new RuntimeException(e);
-						}
-					});
-					return Command.SINGLE_SUCCESS;
-				})).then(literal("false").executes(context -> {
-					SkyblockerConfigManager.update(config -> {
-						try {
-							field.setBoolean(object, false);
-						} catch (IllegalAccessException e) {
-							throw new RuntimeException(e);
-						}
-					});
-					return Command.SINGLE_SUCCESS;
-				})).then(literal("toggle").executes(context -> {
-					SkyblockerConfigManager.update(config -> {
-						try {
-							field.setBoolean(object, !field.getBoolean(object));
-						} catch (IllegalAccessException e) {
-							throw new RuntimeException(e);
-						}
-					});
-					return Command.SINGLE_SUCCESS;
-				}));
-			} else if (value != null && SkyblockerConfigManager.isConfigClass(type)) {
-				registerConfigEntriesCommand(entryBuilder, value);
-			}
-
-			builder.then(entryBuilder);
-		}
 	}
 
 	/**
