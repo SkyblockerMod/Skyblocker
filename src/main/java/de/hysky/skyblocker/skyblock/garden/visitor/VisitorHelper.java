@@ -167,6 +167,8 @@ public class VisitorHelper extends AbstractWidget {
 	 * Draws the visitor items and their associated information.
 	 */
 	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		if (activeVisitors.isEmpty()) return;
+
 		Font textRenderer = Minecraft.getInstance().font;
 		int index = 0;
 		int newWidth = 0;
@@ -235,6 +237,7 @@ public class VisitorHelper extends AbstractWidget {
 
 	@Override
 	protected void onDrag(MouseButtonEvent click, double offsetX, double offsetY) {
+		if (activeVisitors.isEmpty()) return;
 		setPosition(xOffset = (int) click.x() - dragStartX, yOffset = (int) click.y() - dragStartY);
 	}
 
@@ -242,6 +245,8 @@ public class VisitorHelper extends AbstractWidget {
 	 * Handles mouse click events on the visitor UI.
 	 */
 	public void onClick(MouseButtonEvent click, boolean doubled) {
+		if (activeVisitors.isEmpty()) return;
+
 		Font textRenderer = Minecraft.getInstance().font;
 		dragStartX = (int) click.x() - getX();
 		dragStartY = (int) click.y() - getY();
