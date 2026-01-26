@@ -64,7 +64,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 	//////////////////////////
 	// STATIC SHENANIGANS
-	//////////////////////////
+	/// ///////////////////////
 
 	public static final Int2IntMap GARDEN_PLOT_TO_SLOT = Int2IntMap.ofEntries(
 			Int2IntMap.entry(1, 7),
@@ -101,22 +101,24 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			if (screen instanceof ContainerScreen containerScreen && screen.getTitle().getString().trim().equals("Configure Plots")) {
 				ScreenEvents.remove(screen).register(ignored -> {
 					ChestMenu screenHandler = containerScreen.getMenu();
+
 					// Take plot icons and names
-					for (int row = 0; row < 5; row++) for (int i = row * 9 + 2; i < row * 9 + 7; i++) {
-						if (i == 22) continue; // Barn icon
-						Slot slot = screenHandler.slots.get(i);
-						ItemStack stack = slot.getItem();
-						if (stack.isEmpty() || stack.is(Items.RED_STAINED_GLASS_PANE) || stack.is(Items.OAK_BUTTON) || stack.is(Items.BLACK_STAINED_GLASS_PANE))
-							continue;
-						// SkyHanni adds formatting codes to the plot names when using their custom plot icons.
-						String name = ChatFormatting.stripFormatting(stack.getHoverName().getString());
-						String[] parts = name.split("-", 2);
-						if (parts.length < 2) {
-							LOGGER.warn("Invalid plot name: {}", name);
-							continue;
+					for (int row = 0; row < 5; row++)
+						for (int i = row * 9 + 2; i < row * 9 + 7; i++) {
+							if (i == 22) continue; // Barn icon
+							Slot slot = screenHandler.slots.get(i);
+							ItemStack stack = slot.getItem();
+							if (stack.isEmpty() || stack.is(Items.RED_STAINED_GLASS_PANE) || stack.is(Items.OAK_BUTTON) || stack.is(Items.BLACK_STAINED_GLASS_PANE))
+								continue;
+							// SkyHanni adds formatting codes to the plot names when using their custom plot icons.
+							String name = ChatFormatting.stripFormatting(stack.getHoverName().getString());
+							String[] parts = name.split("-", 2);
+							if (parts.length < 2) {
+								LOGGER.warn("Invalid plot name: {}", name);
+								continue;
+							}
+							gardenPlots[(i / 9) * 5 + (i % 9 - 2)] = new GardenPlot(stack.getItem(), parts[1].trim());
 						}
-						gardenPlots[(i / 9) * 5 + (i % 9 - 2)] = new GardenPlot(stack.getItem(), parts[1].trim());
-					}
 
 				});
 			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) {
@@ -192,11 +194,12 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 	/////////////////////////////
 	// THE WIDGET ITSELF
-	/////////////////////////////
+	/// //////////////////////////
 
 	private static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/garden_plots.png");
+	private static final Identifier DARK_BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/garden_plots_dark.png");
 	private static final MutableComponent GROSS_PEST_TEXT = Component.translatable("skyblocker.gardenPlots.pests").withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
-	private static final MutableComponent TP_TEXT = Component.translatable("skyblocker.gardenPlots.tp").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD);
+	private static final MutableComponent TP_TEXT = Component.translatable("skyblocker.gardenPlots.tp").withStyle(ChatFormatting.YELLOW);
 
 	private final ItemStack[] items;
 	private int hoveredSlot = -1;
@@ -204,6 +207,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	private final IntList infectedPlots = new IntArrayList(8);
 
 	private final ItemButtonWidget[] widgets;
+	private final Identifier backgroundTexture;
 
 	public GardenPlotsWidget(int x, int y) {
 		super(x, y, 104, 132, Component.translatable("skyblocker.gardenPlots"));
@@ -216,6 +220,11 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 		items[12] = new ItemStack(Items.LODESTONE);
 		items[12].set(DataComponents.ITEM_NAME, Component.literal("The Barn"));
 		updateInfestedFromTab();
+
+		//Applying the correct background texture
+		backgroundTexture = SkyblockerConfigManager.get().farming.garden.darkGardenPlotsWidget
+				? DARK_BACKGROUND_TEXTURE
+				: BACKGROUND_TEXTURE;
 
 		// Inner widgets
 		ItemButtonWidget deskButton = new ItemButtonWidget(
@@ -243,7 +252,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 
-		context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
+		context.blit(RenderPipelines.GUI_TEXTURED, backgroundTexture, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
 
 		context.drawString(textRenderer, getMessage(), 8, 6, CommonColors.DARK_GRAY, false);
 
@@ -303,7 +312,6 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 		for (ItemButtonWidget widget : widgets) {
 			widget.render(context, mouseX, mouseY, delta);
 		}
-
 
 
 		if (timeMillis - updateFromTabTime > 3000) {

@@ -83,6 +83,14 @@ public class FarmingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.garden.darkGardenPlotsWidget"))
+								.description(Component.translatable("skyblocker.config.farming.garden.darkGardenPlotsWidget.@Tooltip"))
+								.binding(defaults.farming.garden.darkGardenPlotsWidget,
+										() -> config.farming.garden.darkGardenPlotsWidget,
+										newValue -> config.farming.garden.darkGardenPlotsWidget = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.garden.closeScreenOnPlotClick"))
 								.description(Component.translatable("skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip"))
 								.binding(defaults.farming.garden.closeScreenOnPlotClick,
