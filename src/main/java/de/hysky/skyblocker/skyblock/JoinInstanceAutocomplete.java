@@ -58,7 +58,8 @@ public class JoinInstanceAutocomplete {
 				.then(argument("instance", StringArgumentType.word())
 						.suggests((context, builder) -> SharedSuggestionProvider.suggest(
 								instanceMap.keySet().stream().filter(filter).sorted(),
-								builder)))
+								builder))
+						.executes(ctx -> -1))
 				.build();
 	}
 }

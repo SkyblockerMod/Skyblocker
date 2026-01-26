@@ -52,8 +52,11 @@ public class RngMeterAutocomplete {
 				.requires(source -> Utils.isOnSkyblock())
 				.then(argument("type", StringArgumentType.string())
 						.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.keySet(), builder))
+						.executes(ctx -> -1)
 						.then(argument("subtype", StringArgumentType.string())
-								.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.getOrDefault(StringArgumentType.getString(context, "type"), List.of()), builder)))
+								.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.getOrDefault(StringArgumentType.getString(context, "type"), List.of()), builder))
+								.executes(ctx -> -1)
+						)
 				).build();
 	}
 }

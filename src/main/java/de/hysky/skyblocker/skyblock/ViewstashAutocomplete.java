@@ -16,6 +16,7 @@ public class ViewstashAutocomplete {
 					.requires(fabricClientCommandSource -> Utils.isOnSkyblock())
 					.then(argument("stash", StringArgumentType.word())
 									.suggests((context, builder) -> SharedSuggestionProvider.suggest(Stream.of("material", "item"), builder))
+									.executes(ctx -> -1)
 					).build();
 	}
 }

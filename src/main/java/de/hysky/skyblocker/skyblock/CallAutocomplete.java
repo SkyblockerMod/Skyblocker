@@ -47,7 +47,8 @@ public class CallAutocomplete {
 			commandNode = literal("call")
 					.requires(fccs -> Utils.isOnSkyblock())
 					.then(argument("contact", StringArgumentType.greedyString())
-							.suggests((context, builder) -> SharedSuggestionProvider.suggest(suggestions, builder)))
+							.suggests((context, builder) -> SharedSuggestionProvider.suggest(suggestions, builder))
+							.executes(ctx -> -1))
 					.build();
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Call Autocomplete] Failed to load abiphone contacts list!", e);

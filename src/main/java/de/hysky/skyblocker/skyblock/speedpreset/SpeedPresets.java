@@ -46,7 +46,7 @@ public class SpeedPresets {
 								return SharedSuggestionProvider.suggest(instance.getPresets().keySet(), builder);
 							}
 							return builder.buildFuture();
-						})).build();
+						}).executes(ctx -> -1)).build();
 	}
 
 	@Init
