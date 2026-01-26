@@ -13,6 +13,7 @@ import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.CommandUtils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
 import net.azureaaron.hmapi.data.rank.PackageRank;
@@ -96,10 +97,10 @@ public class WarpAutocomplete {
 	private static void createCommandNode(Object2BooleanMap<String> warps) {
 		commandNode = literal("warp")
 				.requires(fabricClientCommandSource -> Utils.isOnSkyblock())
-				.executes(ctx -> -1)
+				.executes(CommandUtils.noOp)
 				.then(argument("destination", StringArgumentType.greedyString())
 						.suggests((context, builder) -> SharedSuggestionProvider.suggest(getEligibleWarps(warps), builder))
-						.executes(ctx -> -1)
+						.executes(CommandUtils.noOp)
 				).build();
 	}
 

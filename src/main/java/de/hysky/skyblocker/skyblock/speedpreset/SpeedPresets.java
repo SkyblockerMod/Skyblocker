@@ -8,6 +8,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.CommandUtils;
 import de.hysky.skyblocker.utils.data.JsonData;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -40,14 +41,14 @@ public class SpeedPresets {
 	public static CommandNode<FabricClientCommandSource> getCommandNode() {
 		return ClientCommandManager.literal("setmaxspeed")
 				.requires(source -> Utils.isOnSkyblock())
-				.executes(ctx -> -1)
+				.executes(CommandUtils.noOp)
 				.then(ClientCommandManager.argument("preset", StringArgumentType.string())
 						.suggests((ctx, builder) -> {
 							if (SkyblockerConfigManager.get().general.speedPresets.enableSpeedPresets && getInstance().presets.isLoaded()) {
 								return SharedSuggestionProvider.suggest(instance.getPresets().keySet(), builder);
 							}
 							return builder.buildFuture();
-						}).executes(ctx -> -1)).build();
+						}).executes(CommandUtils.noOp)).build();
 	}
 
 	@Init

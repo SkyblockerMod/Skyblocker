@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
+import de.hysky.skyblocker.utils.command.CommandUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -50,13 +51,13 @@ public class RngMeterAutocomplete {
 	private static LiteralCommandNode<FabricClientCommandSource> createCommandNode(String command) {
 		return literal(command)
 				.requires(source -> Utils.isOnSkyblock())
-				.executes(ctx -> -1)
+				.executes(CommandUtils.noOp)
 				.then(argument("type", StringArgumentType.string())
 						.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.keySet(), builder))
-						.executes(ctx -> -1)
+						.executes(CommandUtils.noOp)
 						.then(argument("subtype", StringArgumentType.string())
 								.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.getOrDefault(StringArgumentType.getString(context, "type"), List.of()), builder))
-								.executes(ctx -> -1)
+								.executes(CommandUtils.noOp)
 						)
 				).build();
 	}

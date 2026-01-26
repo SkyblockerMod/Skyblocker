@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+import de.hysky.skyblocker.utils.command.CommandUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -46,10 +47,10 @@ public class CallAutocomplete {
 
 			commandNode = literal("call")
 					.requires(fccs -> Utils.isOnSkyblock())
-					.executes(ctx -> -1)
+					.executes(CommandUtils.noOp)
 					.then(argument("contact", StringArgumentType.greedyString())
 							.suggests((context, builder) -> SharedSuggestionProvider.suggest(suggestions, builder))
-							.executes(ctx -> -1))
+							.executes(CommandUtils.noOp))
 					.build();
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Call Autocomplete] Failed to load abiphone contacts list!", e);
