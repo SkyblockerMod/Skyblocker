@@ -50,7 +50,7 @@ public class SkyblockerCreditsScreen extends Screen {
 	private static final Component SECTION_HEADING = Component.literal("================").withStyle(ChatFormatting.WHITE);
 	private static final float SPEEDUP_FACTOR = 5f;
 	private static final float SPEEDUP_FACTOR_FAST = 15f;
-	private static final float UNMODIFIED_SCROLL_SPEED = 0.75f;
+	private static final float UNMODIFIED_SCROLL_SPEED = 1.2f;
 	private float scroll;
 	private final List<FormattedCharSequence> lines = new ArrayList<>();
 	private final List<Component> narratorComponents = new ArrayList<>();

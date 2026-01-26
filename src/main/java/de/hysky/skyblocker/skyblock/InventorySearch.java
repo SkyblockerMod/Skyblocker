@@ -33,7 +33,7 @@ public class InventorySearch {
 
 	@Init
 	public static void init() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		/*ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			UIAndVisualsConfig.InventorySearchConfig inventorySearchConfig = SkyblockerConfigManager.get().uiAndVisuals.inventorySearch;
 			if (!inventorySearchConfig.enabled.isEnabled() || !(screen instanceof AbstractContainerScreen<?> handledScreen)) return;
 			openedHandledScreen = null;
@@ -47,7 +47,7 @@ public class InventorySearch {
 				}
 				return true;
 			});
-		});
+		});*/
 	}
 
 	public static void showSearchBar(AbstractContainerScreen<?> handledScreen) {
