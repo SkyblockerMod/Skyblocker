@@ -127,8 +127,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	private static final Component CLICK_TEXT = Component.literal("CLICK").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 	private static JsonObject SOLUTIONS;
 
-	// TODO: set to false
-	private boolean timerEnabled = true;
+	private boolean timerEnabled = false;
 	private final List<Mark> marks = new ArrayList<>();
 	private @Nullable ClientLevel world;
 	private @Nullable Room room;
