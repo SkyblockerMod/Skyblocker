@@ -64,7 +64,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 	//////////////////////////
 	// STATIC SHENANIGANS
-	/// ///////////////////////
+	//////////////////////////
 
 	public static final Int2IntMap GARDEN_PLOT_TO_SLOT = Int2IntMap.ofEntries(
 			Int2IntMap.entry(1, 7),
@@ -194,7 +194,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 	/////////////////////////////
 	// THE WIDGET ITSELF
-	/// //////////////////////////
+	/////////////////////////////
 
 	private static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/garden_plots.png");
 	private static final Identifier DARK_BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/garden_plots_dark.png");
