@@ -42,7 +42,6 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -88,28 +87,27 @@ public class VisitorHelper extends AbstractWidget {
 			Screens.getButtons(screen).add(new VisitorHelper(xOffset, yOffset));
 		});
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _buildContext) -> {
-			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("garden").then(literal("visitors")
-					.then(literal("clearAll").executes(ctx -> {
-						activeVisitors.clear();
-						updateItems();
-						ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.farming.visitorHelper.command.clearedAllVisitors")));
-						return Command.SINGLE_SUCCESS;
-					}))
-					.then(literal("remove").then(argument("visitor", StringArgumentType.greedyString()).executes(ctx -> {
-						String name = ctx.getArgument("visitor", String.class).toLowerCase(Locale.ENGLISH);
-						Optional<Visitor> visitor = activeVisitors.stream().filter(v -> v.name().getString().toLowerCase(Locale.ENGLISH).equals(name)).findAny();
-						if (visitor.isEmpty()) {
-							ctx.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.farming.visitorHelper.command.unableToRemoveVisitor")));
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _buildContext) ->
+				dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("garden").then(literal("visitors")
+						.then(literal("clearAll").executes(ctx -> {
+							activeVisitors.clear();
+							updateItems();
+							ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.farming.visitorHelper.command.clearedAllVisitors")));
 							return Command.SINGLE_SUCCESS;
-						}
-						activeVisitors.remove(visitor.get());
-						updateItems();
-						ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatableEscape("skyblocker.farming.visitorHelper.command.removedVisitor", visitor.get().name())));
-						return Command.SINGLE_SUCCESS;
-					}).suggests((ctx, builder) -> SharedSuggestionProvider.suggest(activeVisitors.stream().map(Visitor::name).map(Component::getString), builder))))
-			)));
-		});
+						}))
+						.then(literal("remove").then(argument("visitor", StringArgumentType.greedyString()).executes(ctx -> {
+							String name = ctx.getArgument("visitor", String.class).toLowerCase(Locale.ENGLISH);
+							Optional<Visitor> visitor = activeVisitors.stream().filter(v -> v.name().getString().toLowerCase(Locale.ENGLISH).equals(name)).findAny();
+							if (visitor.isEmpty()) {
+								ctx.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.farming.visitorHelper.command.unableToRemoveVisitor")));
+								return Command.SINGLE_SUCCESS;
+							}
+							activeVisitors.remove(visitor.get());
+							updateItems();
+							ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatableEscape("skyblocker.farming.visitorHelper.command.removedVisitor", visitor.get().name())));
+							return Command.SINGLE_SUCCESS;
+						}).suggests((ctx, builder) -> SharedSuggestionProvider.suggest(activeVisitors.stream().map(Visitor::name).map(Component::getString), builder))))
+				))));
 	}
 
 	public static boolean shouldRender() {
