@@ -96,6 +96,7 @@ public class WarpAutocomplete {
 	private static void createCommandNode(Object2BooleanMap<String> warps) {
 		commandNode = literal("warp")
 				.requires(fabricClientCommandSource -> Utils.isOnSkyblock())
+				.executes(ctx -> -1)
 				.then(argument("destination", StringArgumentType.greedyString())
 						.suggests((context, builder) -> SharedSuggestionProvider.suggest(getEligibleWarps(warps), builder))
 						.executes(ctx -> -1)

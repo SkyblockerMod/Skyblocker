@@ -50,6 +50,7 @@ public class RngMeterAutocomplete {
 	private static LiteralCommandNode<FabricClientCommandSource> createCommandNode(String command) {
 		return literal(command)
 				.requires(source -> Utils.isOnSkyblock())
+				.executes(ctx -> -1)
 				.then(argument("type", StringArgumentType.string())
 						.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.keySet(), builder))
 						.executes(ctx -> -1)

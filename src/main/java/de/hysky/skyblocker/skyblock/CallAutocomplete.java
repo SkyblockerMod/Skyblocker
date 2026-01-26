@@ -46,6 +46,7 @@ public class CallAutocomplete {
 
 			commandNode = literal("call")
 					.requires(fccs -> Utils.isOnSkyblock())
+					.executes(ctx -> -1)
 					.then(argument("contact", StringArgumentType.greedyString())
 							.suggests((context, builder) -> SharedSuggestionProvider.suggest(suggestions, builder))
 							.executes(ctx -> -1))

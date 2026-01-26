@@ -71,6 +71,7 @@ public class SackItemAutocomplete {
 	private static LiteralCommandNode<FabricClientCommandSource> createCommandNode(String command, Set<String> sackItems) {
 		return literal(command)
 				.requires(fccs -> Utils.isOnSkyblock())
+				.executes(ctx -> -1)
 				.then(argument("item", StringArgumentType.greedyString())
 						.suggests((context, builder) -> SharedSuggestionProvider.suggest(sackItems, builder))
 						.then(argument("amount", IntegerArgumentType.integer(0))) // Adds a nice <amount> text to the suggestion when any number is entered after the item string

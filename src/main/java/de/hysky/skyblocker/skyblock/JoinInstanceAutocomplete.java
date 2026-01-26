@@ -55,6 +55,7 @@ public class JoinInstanceAutocomplete {
 	private static LiteralCommandNode<FabricClientCommandSource> buildCommand(String command, java.util.function.Predicate<String> filter) {
 		return literal(command)
 				.requires(source -> Utils.isOnSkyblock())
+				.executes(ctx -> -1)
 				.then(argument("instance", StringArgumentType.word())
 						.suggests((context, builder) -> SharedSuggestionProvider.suggest(
 								instanceMap.keySet().stream().filter(filter).sorted(),
