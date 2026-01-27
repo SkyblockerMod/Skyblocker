@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.dungeon;
+package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
