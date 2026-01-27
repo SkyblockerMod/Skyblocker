@@ -3,12 +3,10 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -17,45 +15,25 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 
+// TODO move the options to the widget options thingamjig
 @RegisterWidget
 public class TerminalHud extends ComponentBasedWidget {
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.DUNGEON);
 	private static final Supplier<DungeonsConfig.TerminalHud> CONFIG = () -> SkyblockerConfigManager.get().dungeons.terminalHud;
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	public static TerminalHud INSTANCE;
 
 	public TerminalHud() {
-		super(FunUtils.shouldEnableFun() ? Component.literal("P3 Guide") : Component.literal("Goldor Tasks"),
-				CommonColors.RED, "terminal_hud");
+		super(FunUtils.shouldEnableFun() ? Component.literal("P3 Guide") : Component.literal("Goldor Tasks"), CommonColors.RED, new Information("terminal_hud", Component.literal("Goldor Tasks"), l -> l == Location.DUNGEON));
 		INSTANCE = this;
 		Scheduler.INSTANCE.scheduleCyclic(this::updateFromScheduler, 50);
 	}
 
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!AVAILABLE_LOCATIONS.contains(location)) return;
-		CONFIG.get().enableTerminalHud = enabled;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		if (!AVAILABLE_LOCATIONS.contains(location)) return false;
-		return CONFIG.get().enableTerminalHud;
-	}
-
-	@Override
-	public boolean shouldRender(Location location) {
-		if (!super.shouldRender(location)) return false;
+	public boolean shouldRender() {
 		return GoldorWaypointsManager.isActive();
 	}
 
@@ -79,36 +57,12 @@ public class TerminalHud extends ComponentBasedWidget {
 	}
 
 	public void updateFromScheduler() {
-		if (CLIENT.screen instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) update();
-		if (!GoldorWaypointsManager.isActive() || !shouldRender(Utils.getLocation())) return;
+		if (!GoldorWaypointsManager.isActive() || !shouldRender()) return;
 		update();
 	}
 
 	@Override
 	public void updateContent() {
-		if (CLIENT.screen instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) {
-			MutableComponent status = Component.empty();
-			if (CONFIG.get().showTerminalStatus) {
-				status = Component.literal(" ").append(Component.translatable("skyblocker.dungeons.terminalHud.incompleteStatus").withStyle(ChatFormatting.RED));
-			}
-			if (CONFIG.get().showTerminals) {
-				for (int i = 0; i < 5; i++) {
-					addComponent(new PlainTextComponent(Component.literal("Terminal #" + (i + 1)).append(status)));
-				}
-			}
-			if (CONFIG.get().showDevice) {
-				addComponent(new PlainTextComponent(Component.literal("Device").append(status)));
-			}
-			if (CONFIG.get().showLevers) {
-				addComponent(new PlainTextComponent(Component.literal("Lever").append(status)));
-				addComponent(new PlainTextComponent(Component.literal("Lever").append(status)));
-			}
-			if (CONFIG.get().showGate) {
-				addComponent(new PlainTextComponent(Component.literal("Gate").append(status)));
-			}
-			return;
-		}
-
 		List<GoldorWaypointsManager.GoldorWaypoint> waypoints = GoldorWaypointsManager.getPhaseWaypoints();
 		if (waypoints.isEmpty()) return;
 		for (var waypoint : waypoints) {
@@ -148,7 +102,27 @@ public class TerminalHud extends ComponentBasedWidget {
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return Component.literal("Goldor Tasks");
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> components = new LinkedList<>();
+		MutableComponent status = Component.empty();
+		if (CONFIG.get().showTerminalStatus) {
+			status = Component.literal(" ").append(Component.translatable("skyblocker.dungeons.terminalHud.incompleteStatus").withStyle(ChatFormatting.RED));
+		}
+		if (CONFIG.get().showTerminals) {
+			for (int i = 0; i < 5; i++) {
+				components.add(new PlainTextComponent(Component.literal("Terminal #" + (i + 1)).append(status)));
+			}
+		}
+		if (CONFIG.get().showDevice) {
+			components.add(new PlainTextComponent(Component.literal("Device").append(status)));
+		}
+		if (CONFIG.get().showLevers) {
+			components.add(new PlainTextComponent(Component.literal("Lever").append(status)));
+			components.add(new PlainTextComponent(Component.literal("Lever").append(status)));
+		}
+		if (CONFIG.get().showGate) {
+			components.add(new PlainTextComponent(Component.literal("Gate").append(status)));
+		}
+		return components;
 	}
 }

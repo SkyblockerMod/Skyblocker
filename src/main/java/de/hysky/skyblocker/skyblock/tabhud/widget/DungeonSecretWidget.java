@@ -4,6 +4,8 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.utils.Location;
 import java.util.List;
 import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
@@ -18,11 +20,12 @@ public class DungeonSecretWidget extends TabHudWidget {
 	private static final Pattern DISCOVERIES = Pattern.compile("Discoveries: (\\d+)");
 
 	public DungeonSecretWidget() {
-		super("Dungeon Discoveries", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Discoveries", TITLE, ChatFormatting.DARK_PURPLE.getColor(), Location.DUNGEON);
+		cacheForConfig = false;
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent() {
 		if (!DungeonScore.isDungeonStarted()) {
 			this.addSimpleIcoText(Ico.CHEST, "Secrets:", ChatFormatting.YELLOW, 30);
 			this.addSimpleIcoText(Ico.SKULL, "Crypts:", ChatFormatting.YELLOW, 31);
@@ -34,4 +37,15 @@ public class DungeonSecretWidget extends TabHudWidget {
 			this.addSimpleIcoText(Ico.SKULL, "Crypts:", ChatFormatting.YELLOW, 32);
 		}
 	}
+
+	@Override
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		return List.of(
+				Components.iconTextComponent(Ico.CHEST, simpleEntryText("0", "Secrets:", ChatFormatting.YELLOW)),
+				Components.iconTextComponent(Ico.SKULL, simpleEntryText("0", "Crypts:", ChatFormatting.YELLOW))
+		);
+	}
+
+	@Override
+	protected void updateContent(List<Component> lines) {}
 }

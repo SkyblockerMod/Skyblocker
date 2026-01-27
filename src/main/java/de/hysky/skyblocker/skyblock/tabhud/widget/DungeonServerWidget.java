@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.utils.Location;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,11 +25,12 @@ public class DungeonServerWidget extends TabHudWidget {
 	private static final Pattern SECRET_PATTERN = Pattern.compile("Secrets Found: (?<secnum>.*)%");
 
 	public DungeonServerWidget() {
-		super("Dungeon Info", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Dungeon", TITLE, ChatFormatting.DARK_PURPLE.getColor(), Location.DUNGEON);
+		cacheForConfig = false;
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent() {
 		this.addSimpleIcoText(Ico.NTAG, "Name:", ChatFormatting.AQUA, 41);
 		this.addSimpleIcoText(Ico.SIGN, "Rooms Visited:", ChatFormatting.DARK_PURPLE, 42);
 		this.addSimpleIcoText(Ico.SIGN, "Rooms Completed:", ChatFormatting.LIGHT_PURPLE, 43);
@@ -44,4 +46,18 @@ public class DungeonServerWidget extends TabHudWidget {
 
 		this.addSimpleIcoText(Ico.CLOCK, "Time:", ChatFormatting.GOLD, 45);
 	}
+
+	@Override
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		return List.of(
+				Components.iconTextComponent(Ico.NTAG, simpleEntryText("Catacombs", "Name:", ChatFormatting.AQUA)),
+				Components.iconTextComponent(Ico.SIGN, simpleEntryText("N/A", "Rooms Visited:", ChatFormatting.AQUA)),
+				Components.iconTextComponent(Ico.SIGN, simpleEntryText("N/A", "Rooms Completed:", ChatFormatting.AQUA)),
+				Components.progressComponent(),
+				Components.iconTextComponent(Ico.CLOCK, simpleEntryText("N/A", "Time:", ChatFormatting.GOLD))
+				);
+	}
+
+	@Override
+	protected void updateContent(List<Component> lines) {}
 }

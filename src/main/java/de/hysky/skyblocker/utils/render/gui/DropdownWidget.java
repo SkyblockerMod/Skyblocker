@@ -1,7 +1,10 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
@@ -14,13 +17,11 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
-import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import de.hysky.skyblocker.utils.render.HudHelper;
 
 public class DropdownWidget<T> extends AbstractContainerWidget {
-	private static final Minecraft client = Minecraft.getInstance();
-	public static final int ENTRY_HEIGHT = 15;
-	public static final int HEADER_HEIGHT = ENTRY_HEIGHT + 4;
+	public final int entryHeight;
+	protected int headerHeight;
+	protected final Minecraft client;
 	protected final List<T> entries;
 	protected final Consumer<T> selectCallback;
 	protected final Consumer<Boolean> openedCallback;
@@ -29,18 +30,45 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 	protected T selected;
 	protected boolean open;
 	private int maxHeight;
+	protected Function<T, Component> formatter = t -> Component.literal(t.toString());
 
-	public DropdownWidget(Minecraft minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
-		super(x, y, width, HEADER_HEIGHT, Component.empty());
+
+	public DropdownWidget(Minecraft minecraftClient, int x, int y, int width, int maxHeight, int entryHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
+		super(x, y, width, 0, Component.empty());
+		this.client = minecraftClient;
+		this.entryHeight = entryHeight;
+		this.headerHeight = entryHeight + 4;
 		this.maxHeight = maxHeight;
 		this.entries = entries;
 		this.selectCallback = selectCallback;
 		this.openedCallback = openedCallback;
 		this.selected = selected;
-		dropdownList = new DropdownList(minecraftClient, x + 1, y + HEADER_HEIGHT, width - 2, maxHeight - HEADER_HEIGHT);
+		dropdownList = createDropdown();
+		dropdownList.setRectangle(width - 2, maxHeight - headerHeight, x + 1, y + headerHeight);
 		for (T element : entries) {
-			dropdownList.addEntry(new Entry(element));
+			dropdownList.addEntry(createEntry(element));
 		}
+		setHeight(headerHeight);
+	}
+
+	public int getHeaderHeight() {
+		return headerHeight;
+	}
+
+	protected DropdownList createDropdown() {
+		return new DropdownList(client);
+	}
+
+	protected Entry createEntry(T element) {
+		return new Entry(element);
+	}
+
+	public void setFormatter(Function<T, Component> formatter) {
+		this.formatter = formatter;
+	}
+
+	public DropdownWidget(Minecraft minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
+		this(minecraftClient, x, y, width, maxHeight, 15, entries, selectCallback, selected, openedCallback);
 	}
 
 	public void setMaxHeight(int maxHeight) {
@@ -57,11 +85,15 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		dropdownList.visible = open;
 		dropdownList.render(context, mouseX, mouseY, delta);
-		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, CommonColors.BLACK);
-		HudHelper.drawBorder(context, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, CommonColors.WHITE);
+		renderHeader(context, mouseX, mouseY, delta);
+		if (isMouseOver(mouseX, mouseY)) context.requestCursor(CursorTypes.POINTING_HAND);
+	}
+
+	protected void renderHeader(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		context.fill(getX(), getY(), getRight(), getY() + headerHeight + 1, CommonColors.BLACK);
+		HudHelper.drawBorder(context, getX(), getY(), getWidth(), headerHeight + 1, CommonColors.WHITE);
 		context.drawString(client.font, ">", getX() + 4, getY() + 6, CommonColors.LIGHTER_GRAY, true);
 		context.drawString(client.font, selected.toString(), getX() + 12, getY() + 6, CommonColors.WHITE, true);
-		if (isMouseOver(mouseX, mouseY)) context.requestCursor(CursorTypes.POINTING_HAND);
 	}
 
 	@Override
@@ -71,9 +103,9 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		this.open = open;
 		if (this.open) {
 			setHeight(maxHeight);
-			dropdownList.setHeight(Math.min(entries.size() * ENTRY_HEIGHT + 4, maxHeight - HEADER_HEIGHT));
+			dropdownList.setHeight(Math.min(entries.size() * entryHeight + 4, maxHeight - headerHeight));
 		} else {
-			setHeight(HEADER_HEIGHT);
+			setHeight(headerHeight);
 		}
 		this.openedCallback.accept(open);
 	}
@@ -101,7 +133,7 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 	@Override
 	public void setY(int y) {
 		super.setY(y);
-		dropdownList.setY(getY() + HEADER_HEIGHT);
+		dropdownList.setY(getY() + headerHeight);
 	}
 
 	@Override
@@ -113,12 +145,13 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 	@Override
 	public void setHeight(int height) {
 		super.setHeight(height);
+		dropdownList.setHeight(height - headerHeight);
 	}
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (!visible) return false;
-		if (getX() <= click.x() && click.x() < getX() + getWidth() && getY() <= click.y() && click.y() < getY() + HEADER_HEIGHT) {
+		if (getX() <= click.x() && click.x() < getX() + getWidth() && getY() <= click.y() && click.y() < getY() + headerHeight) {
 			setOpen(!open);
 			playDownSound(client.getSoundManager());
 			return true;
@@ -144,11 +177,10 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
-	private class DropdownList extends ContainerObjectSelectionList<Entry> {
+	protected class DropdownList extends ContainerObjectSelectionList<Entry> {
 
-		private DropdownList(Minecraft minecraftClient, int x, int y, int width, int height) {
-			super(minecraftClient, width, height, y, ENTRY_HEIGHT);
-			setX(x);
+		protected DropdownList(Minecraft minecraftClient) {
+			super(minecraftClient, 0, 0, 0, entryHeight);
 		}
 
 		@Override
@@ -228,11 +260,10 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		}
 	}
 
-	private class Entry extends ContainerObjectSelectionList.Entry<Entry> {
+	protected class Entry extends ContainerObjectSelectionList.Entry<Entry> {
+		protected final T entry;
 
-		private final T entry;
-
-		private Entry(T element) {
+		protected Entry(T element) {
 			this.entry = element;
 		}
 

@@ -32,7 +32,7 @@ class ProgressComponent extends Component {
 	 * @see Components#progressComponent(ItemStack, net.minecraft.network.chat.Component, net.minecraft.network.chat.Component, float)
 	 */
 	ProgressComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component description, net.minecraft.network.chat.@Nullable Component bar, float percent, int color) {
-		boolean showIcons = SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons;
+		boolean showIcons = SkyblockerConfigManager.get().uiAndVisuals.hud.displayIcons;
 		if (description == null || bar == null) {
 			this.ico = showIcons ? Ico.BARRIER : null;
 			this.desc = net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY);

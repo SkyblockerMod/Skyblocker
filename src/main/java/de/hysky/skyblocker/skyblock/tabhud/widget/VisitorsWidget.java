@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -14,7 +15,7 @@ public class VisitorsWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public VisitorsWidget() {
-		super("Visitors", TITLE, ChatFormatting.AQUA.getColor());
+		super("Visitors", TITLE, ChatFormatting.AQUA.getColor(), Location.GARDEN);
 	}
 
 	@Override
