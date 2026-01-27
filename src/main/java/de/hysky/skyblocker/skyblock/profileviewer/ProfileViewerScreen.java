@@ -61,16 +61,16 @@ public class ProfileViewerScreen extends Screen {
 	private static Map<String, List<Collection>> collections = Map.of();
 
 	private String playerName;
-	private JsonObject hypixelProfile;
-	private JsonObject playerProfile;
-	private boolean profileNotFound = false;
-	private String errorMessage = "No Profile";
+	private volatile JsonObject hypixelProfile;
+	private volatile JsonObject playerProfile;
+	private volatile boolean profileNotFound = false;
+	private volatile String errorMessage = "No Profile";
 
 	private int activePage = 0;
 	private static final String[] PAGE_NAMES = {"Skills", "Slayers", "Dungeons", "Inventories", "Collections"};
 	private final ProfileViewerPage[] profileViewerPages = new ProfileViewerPage[PAGE_NAMES.length];
 	private final List<ProfileViewerNavButton> profileViewerNavButtons = new ArrayList<>();
-	private RemotePlayer entity;
+	private volatile RemotePlayer entity;
 	private ProfileViewerTextWidget textWidget;
 
 	public ProfileViewerScreen(String username) {
