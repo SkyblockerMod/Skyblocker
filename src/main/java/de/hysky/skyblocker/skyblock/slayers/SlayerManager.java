@@ -125,6 +125,12 @@ public class SlayerManager {
 				}
 				return true;
 			}
+			case String s when s.startsWith("SLAYER MINI-BOSS") -> {
+				if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert && !SkyblockerConfigManager.get().slayers.alertOtherMinibosses) {
+					TitleContainer.addTitleAndPlaySound(MINIBOSS_SPAWN, 20);
+				}
+			}
+			default -> {}
 		}
 
 		if (slayerQuest != null) {
@@ -550,13 +556,10 @@ public class SlayerManager {
 			minibosses.add(miniboss);
 
 			var slayersConfig = SkyblockerConfigManager.get().slayers;
-			if (slayersConfig.miniBossSpawnAlert) {
+			if (slayersConfig.miniBossSpawnAlert && slayersConfig.alertOtherMinibosses) {
 				MutableComponent armorStandName = (MutableComponent) armorStand.getCustomName();
-				if (armorStandName == null) return;
-				if (slayersConfig.alertOtherMinibosses || armorStandName.getString().contains(CLIENT.getUser().getName())) {
-					Title title = slayersConfig.showMiniBossNameInAlert ? new Title(armorStandName) : MINIBOSS_SPAWN;
-					TitleContainer.addTitleAndPlaySound(title, 20);
-				}
+				Title title = slayersConfig.showMiniBossNameInAlert && armorStandName != null ? new Title(armorStandName) : MINIBOSS_SPAWN;
+				TitleContainer.addTitleAndPlaySound(title, 20);
 			}
 		}
 	}

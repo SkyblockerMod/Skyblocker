@@ -983,7 +983,7 @@
 
   "skyblocker.config.slayer": "Slayers",
 
-  "skyblocker.config.slayer.alertOtherMinibosses": "Alerts for minibosses spawned by other players.",
+  "skyblocker.config.slayer.alertOtherMinibosses": "Alerts other players minibosses",
   "skyblocker.config.slayer.alertOtherMinibosses.@Tooltip": "Requires 'MiniBoss Spawn Alert' option to be enabled.",
 
   "skyblocker.config.slayer.blazeSlayer": "Blaze Slayer",
@@ -1041,6 +1041,7 @@
   "skyblocker.config.slayer.minibossSpawnAlert.@Tooltip": "Displays a warning when a slayer miniboss spawns.",
 
   "skyblocker.config.slayer.showMiniBossNameInAlert": "Show MiniBoss Name in Spawn Alert",
+  "skyblocker.config.slayer.showMiniBossNameInAlert.@Tooltip": "Requires 'MiniBoss Spawn Alert' and 'Alerts other players minibosses' options to be enabled.",
 
   "skyblocker.config.slayer.slainTime": "Slayer Kill Time",
   "skyblocker.config.slayer.slainTime.@Tooltip": "Sends the amount of time spent to kill the slayer.",
