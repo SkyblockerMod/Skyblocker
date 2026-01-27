@@ -503,11 +503,6 @@
 
   "skyblocker.config.general.enableTips": "Enable Tips",
 
-  "skyblocker.config.general.hitbox": "Hitboxes",
-  "skyblocker.config.general.hitbox.oldCactusHitbox": "Enable 1.8 cactus hitbox",
-  "skyblocker.config.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",
-  "skyblocker.config.general.hitbox.oldMushroomHitbox": "Enable 1.8 mushroom hitbox",
-
   "skyblocker.config.general.itemInfoDisplay": "Item Info Display",
   "skyblocker.config.general.itemInfoDisplay.itemBackgroundOpacity": "Item Background Overlay Opacity",
   "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle": "Item Background Overlay Style",
