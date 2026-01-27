@@ -101,7 +101,7 @@ public class SlayersCategory {
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.showMiniBossNameInAlert"))
-						.name(Component.translatable("skyblocker.config.slayer.showMiniBossNameInAlert.@Tooltip"))
+						.description(Component.translatable("skyblocker.config.slayer.showMiniBossNameInAlert.@Tooltip"))
 						.binding(defaults.slayers.showMiniBossNameInAlert,
 								() -> config.slayers.showMiniBossNameInAlert,
 								newValue -> config.slayers.showMiniBossNameInAlert = newValue)

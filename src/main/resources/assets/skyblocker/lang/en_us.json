@@ -983,8 +983,8 @@
 
   "skyblocker.config.slayer": "Slayers",
 
-  "skyblocker.config.slayer.alertOtherMinibosses": "Alerts other players minibosses",
-  "skyblocker.config.slayer.alertOtherMinibosses.@Tooltip": "Requires 'MiniBoss Spawn Alert' option to be enabled.",
+  "skyblocker.config.slayer.alertOtherMinibosses": "Alert for Other Players' MiniBosses",
+  "skyblocker.config.slayer.alertOtherMinibosses.@Tooltip": "Whether to show an alert for slayer minibosses spawned by other players.\n\nRequires 'MiniBoss Spawn Alert' option to be enabled.",
 
   "skyblocker.config.slayer.blazeSlayer": "Blaze Slayer",
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights": "Attunement Highlights",
