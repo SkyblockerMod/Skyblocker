@@ -101,7 +101,7 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			}
 
 			// Excessive widgets config
-			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && (nameLowercase.startsWith("widgets in") || nameLowercase.startsWith("widgets on") || nameLowercase.equals("tablist widgets") || nameLowercase.endsWith("widget settings") || (nameLowercase.startsWith("shown") && client.screen instanceof WidgetsConfigurationScreen)) -> {
+			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && WidgetsConfigurationScreen.overrideWidgetsScreen && (nameLowercase.startsWith("widgets in") || nameLowercase.startsWith("widgets on") || nameLowercase.equals("tablist widgets") || (nameLowercase.endsWith("widget settings") && !nameLowercase.startsWith("reset")) || (nameLowercase.startsWith("shown") && client.screen instanceof WidgetsConfigurationScreen)) -> {
 				client.player.containerMenu = containerScreenHandler;
 				switch (client.screen) {
 					case WidgetsConfigurationScreen screen -> screen.updateHandler(containerScreenHandler, nameLowercase);

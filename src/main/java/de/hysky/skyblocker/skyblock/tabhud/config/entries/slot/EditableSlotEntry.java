@@ -19,9 +19,10 @@ public class EditableSlotEntry extends WidgetsListSlotEntry {
 
 	public EditableSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
-		editButton = Button.builder(Component.literal("EDIT"), button -> this.parent.clickAndWaitForServer(this.slotId, 0))
-				.size(32, 12)
-				.build();
+		editButton = Button.builder(Component.literal("EDIT"), button -> {
+			this.parent.clickAndWaitForServer(this.slotId, 0);
+			this.parent.resetScrollOnLoad();
+		}).size(32, 12).build();
 		this.locked = ItemUtils.getLoreLineIf(icon, s -> s.startsWith("Click to edit")) == null || icon.is(Items.RED_STAINED_GLASS_PANE);
 	}
 
