@@ -423,6 +423,8 @@
   "skyblocker.config.farming.garden": "Garden",
   "skyblocker.config.farming.garden.closeScreenOnPlotClick": "Close inventory on plot tp",
   "skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip": "Whether or not your inventory should automatically close when teleporting to a plot using the Garden Plots Widget",
+  "skyblocker.config.farming.garden.darkGardenPlotsWidget": "Dark Mode Garden Plots Widget",
+  "skyblocker.config.farming.garden.darkGardenPlotsWidget.@Tooltip": "Applies a dark theme to the Garden Plots widget when it is enabled.",
   "skyblocker.config.farming.garden.dicerTitlePrevent": "Enable Dicer Title Prevent",
   "skyblocker.config.farming.garden.enableHud": "Enable Farming HUD",
   "skyblocker.config.farming.garden.enableStereoHarmonyHelperForContest": "Enable Stereo Harmony Helper for Jacob's Contest",
@@ -1596,7 +1598,7 @@
   "skyblocker.gardenPlots.plot": "Plot - %s",
   "skyblocker.gardenPlots.setSpawn": "Set Garden spawn",
   "skyblocker.gardenPlots.spawn": "TP to Garden spawn",
-  "skyblocker.gardenPlots.tp": "Click to TP to it!",
+  "skyblocker.gardenPlots.tp": "Click to TP!",
 
   "skyblocker.helpers.hoppitysHunt.chocolateEgg": "Chocolate %s Egg",
   "skyblocker.helpers.hoppitysHunt.newEggDiscovered": "Found a %s at %s!",

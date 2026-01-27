@@ -20,6 +20,8 @@ public class FarmingConfig {
 
 		public boolean gardenPlotsWidget = true;
 
+		public boolean darkGardenPlotsWidget = false;
+
 		public boolean closeScreenOnPlotClick = false;
 
 		public boolean enableStereoHarmonyHelperForContest = true;
