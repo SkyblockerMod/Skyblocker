@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.Boxes;
+import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.chat.Component;
@@ -51,7 +52,7 @@ public class EntityRendererMixin {
 		}
 
 		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.HITBOX)) {
-			float[] color = MobBoundingBoxes.rgbToFloatArray(SkyblockerConfigManager.get().slayers.highlightColor.getRGB());
+			float[] color = ColorUtils.getFloatComponents(SkyblockerConfigManager.get().slayers.highlightColor.getRGB());
 			MobBoundingBoxes.submitBox2BeRendered(Boxes.lerpEntityBoundingBox(entity, partialTick), color);
 		}
 	}

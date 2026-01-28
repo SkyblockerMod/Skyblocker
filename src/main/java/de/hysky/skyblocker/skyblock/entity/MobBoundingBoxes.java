@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.glow.adder.DungeonGlowAdder;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
@@ -44,15 +45,7 @@ public class MobBoundingBoxes {
 
 	public static float[] getBoxColor(Entity entity) {
 		int color = MobGlow.getMobGlow(entity);
-		return rgbToFloatArray(color);
-	}
-
-	public static float[] rgbToFloatArray(int color) {
-		return new float[]{
-				((color >> 16) & 0xFF) / 255f,
-				((color >> 8) & 0xFF) / 255f,
-				(color & 0xFF) / 255f
-		};
+		return ColorUtils.getFloatComponents(color);
 	}
 
 	public static void submitBox2BeRendered(AABB box, float[] colorComponents) {
