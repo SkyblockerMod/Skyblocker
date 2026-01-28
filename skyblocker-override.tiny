@@ -4,6 +4,9 @@ c	net/minecraft/class_2232	net/minecraft/commands/arguments/IdentifierArgument
 c	net/minecraft/class_11907	net/minecraft/client/input/InputWithModifiers
 	m	()Z	method_74240	hasControlDownWithQuirk
 
+c	net/minecraft/class_361	net/minecraft/client/gui/components/StateSwitchingButton
+	f	Z	field_2194	selected
+
 c	net/minecraft/class_9950	net/minecraft/client/model/player/PlayerModel
 c	net/minecraft/class_1921	net/minecraft/client/renderer/rendertype/RenderType
 c	net/minecraft/class_1921$class_4688	net/minecraft/client/renderer/rendertype/RenderType$CompositeState

@@ -33,7 +33,7 @@ public class CategoryTabWidget extends SideTabButtonWidget {
 
 	@Override
 	public void onClick(MouseButtonEvent click, boolean doubled) {
-		if (isStateTriggered() || slotId == -1) return;
+		if (this.selected || slotId == -1) return;
 		super.onClick(click, doubled);
 		slotClick.click(slotId);
 	}

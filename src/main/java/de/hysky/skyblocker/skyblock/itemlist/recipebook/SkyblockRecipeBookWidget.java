@@ -113,7 +113,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookComponent<NoopRecipeScre
 			this.currentTab = this.tabButtons.getFirst();
 		}
 
-		this.currentTab.right().setStateTriggered(true);
+		this.currentTab.right().select();
 		this.updateTabs(false);
 
 		// Tab Init
@@ -152,10 +152,10 @@ public class SkyblockRecipeBookWidget extends RecipeBookComponent<NoopRecipeScre
 				for (Pair<RecipeTab, SkyblockRecipeTabButton> tabButton : this.tabButtons) {
 					if (tabButton.right().mouseClicked(click, doubled)) {
 						if (this.currentTab != tabButton) {
-							if (this.currentTab != null) this.currentTab.right().setStateTriggered(false);
+							if (this.currentTab != null) this.currentTab.right().unselect();
 
 							this.currentTab = tabButton;
-							this.currentTab.right().setStateTriggered(true);
+							this.currentTab.right().select();
 						}
 
 						return true;

@@ -26,18 +26,28 @@ public class SkyblockRecipeTabButton extends StateSwitchingButton {
 			int x = this.getX();
 
 			//Offset x
-			if (this.isStateTriggered) x -= 2;
+			if (this.selected) {
+				x -= 2;
+			}
 
 			//Render main texture
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(true, this.isStateTriggered), x, this.getY(), this.width, this.height);
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(true, this.selected), x, this.getY(), this.width, this.height);
 
 			//Render item icon
-			int offset = this.isStateTriggered ? -2 : 0;
+			int offset = this.selected ? -2 : 0;
 			context.renderFakeItem(this.icon, this.getX() + 9 + offset, this.getY() + 5);
 
 			if (this.isHovered()) {
 				context.requestCursor(CursorTypes.POINTING_HAND);
 			}
 		}
+	}
+
+	public void select() {
+		this.selected = true;
+	}
+
+	public void unselect() {
+		this.selected = false;
 	}
 }

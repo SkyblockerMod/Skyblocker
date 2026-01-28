@@ -25,9 +25,9 @@ public class SideTabButtonWidget extends StateSwitchingButton {
 	@Override
 	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		if (sprites == null) return;
-		Identifier identifier = sprites.get(true, this.isStateTriggered);
+		Identifier identifier = sprites.get(true, this.selected);
 		int x = getX();
-		if (isStateTriggered) x -= 2;
+		if (this.selected) x -= 2;
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, identifier, x, this.getY(), this.width, this.height);
 		context.renderItem(icon, x + 9, getY() + 5);
 	}
@@ -35,6 +35,14 @@ public class SideTabButtonWidget extends StateSwitchingButton {
 	@Override
 	public void onClick(MouseButtonEvent click, boolean doubled) {
 		super.onClick(click, doubled);
-		if (!isStateTriggered()) this.setStateTriggered(true);
+		if (!this.selected) this.selected = true;
+	}
+
+	public void select() {
+		this.selected = true;
+	}
+
+	public void unselect() {
+		this.selected = false;
 	}
 }
