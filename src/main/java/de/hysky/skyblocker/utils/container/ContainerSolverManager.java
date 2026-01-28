@@ -28,6 +28,7 @@ import de.hysky.skyblocker.skyblock.garden.StereoHarmonyHelper;
 import de.hysky.skyblocker.skyblock.hunting.HuntingBoxHelper;
 import de.hysky.skyblocker.skyblock.item.AnvilHelper;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.BitsHelper;
+import de.hysky.skyblocker.skyblock.slayers.features.RewardsHighlighter;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -74,6 +75,7 @@ public class ContainerSolverManager {
 			StereoHarmonyHelper.INSTANCE,
 			new EndStatsBestiaryUpdater(),
 			new AnvilHelper(),
+			new RewardsHighlighter(),
 	};
 	private static @Nullable ContainerSolver currentSolver = null;
 	private static @Nullable List<ColorHighlight> highlights;
