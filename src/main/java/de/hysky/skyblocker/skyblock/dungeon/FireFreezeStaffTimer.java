@@ -47,7 +47,7 @@ public class FireFreezeStaffTimer {
 
 			Component message;
 			if (fireFreezeTimer > 0) {
-				message = Component.literal("in: ").append(Component.literal(String.format("%.2f", (float) (fireFreezeTimer) / 1000) + "s").withStyle(ChatFormatting.YELLOW));
+				message = Component.literal("in ").append(Component.literal(String.format("%.2f", (float) (fireFreezeTimer) / 1000) + "s").withStyle(ChatFormatting.YELLOW));
 			} else {
 				message = Component.literal("NOW").withStyle(ChatFormatting.RED);
 			}
@@ -68,7 +68,7 @@ public class FireFreezeStaffTimer {
 	private static boolean onChatMessage(Component text, boolean overlay) {
 		if (!overlay && SkyblockerConfigManager.get().dungeons.theProfessor.fireFreezeStaffTimer && ChatFormatting.stripFormatting(text.getString())
 				.equals("[BOSS] The Professor: Oh? You found my Guardians' one weakness?")) {
-			fireFreezeTimer = 5750L;
+			fireFreezeTimer = 5700L;
 			timerActive = true;
 		}
 
