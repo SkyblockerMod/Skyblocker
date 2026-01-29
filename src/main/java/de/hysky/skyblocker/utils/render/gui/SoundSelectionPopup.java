@@ -7,8 +7,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -20,25 +22,25 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 public class SoundSelectionPopup extends AbstractPopupScreen {
+	private static final Component YES_TEXT = CommonComponents.GUI_YES.copy().withStyle(ChatFormatting.GREEN);
+	private static final Component NO_TEXT = CommonComponents.GUI_NO.copy().withStyle(ChatFormatting.RED);
 
 	private final List<AbstractWidget> filteredWidgets = new ObjectArrayList<>();
 	private final Consumer<@Nullable SoundEvent> onDone;
 	private @Nullable SoundEvent selectedSound = null;
+	private  boolean advanced = false;
 
 	private final GridLayout gridWidget = new GridLayout();
 	private LinearLayout listLayout = new LinearLayout(0, 0, LinearLayout.Orientation.VERTICAL);
 	private @Nullable Button doneButton;
-	private EditBox searchField;
-	private ListContainer widgetsContainer;
+	private @Nullable ListContainer widgetsContainer;
 
 	public SoundSelectionPopup(Screen backgroundScreen, Consumer<@Nullable SoundEvent> onDone) {
 		super(Component.literal("Select Sound"), backgroundScreen);
@@ -49,10 +51,13 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 	@Override
 	protected void init() {
 		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
-		searchField = new EditBox(Minecraft.getInstance().font, 400, 20, Component.translatable("gui.recipebook.search_hint"));
+		EditBox searchField = new EditBox(Minecraft.getInstance().font, 300, 20, Component.translatable("gui.recipebook.search_hint"));
 		searchField.setHint(Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
 		searchField.setResponder(this::filterSounds);
-		addRenderableWidget(adder.addChild(searchField, 2));
+		addRenderableWidget(adder.addChild(searchField, 1));
+		addRenderableWidget((adder.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, advanced)
+				.withTooltip(b -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
+				.create(0, 0, 100, 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (button, value) -> advanced = !advanced),1)));
 
 		widgetsContainer = new ListContainer(0, 0, 400, this.height / 2);
 
@@ -72,20 +77,20 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 		repositionElements();
 		filterSounds("");
 	}
-	@Nullable
-	private Component getSoundName (SoundEvent sound){
+
+	private Component getSoundName(SoundEvent sound) {
 		String key = BuiltInRegistries.SOUND_EVENT.getKey(sound).toShortLanguageKey();
 		//first check for translation
 		Component translation = Component.translatableWithFallback("subtitles." + key, "null");
-		if (!translation.getString().equals("null")){
+		if (!translation.getString().equals("null")) {
 			return translation;
 		}
 		//convert note block sounds
-		if (key.contains("note_block")){
+		if (key.contains("note_block")) {
 			String[] split = key.split("\\.");
-			return Component.literal("note block " + split[split.length -1].replace("_", " "));
+			return Component.literal("note block " + split[split.length - 1].replace("_", " "));
 		}
-		return null;
+		return Component.literal(key);
 
 
 	}
@@ -95,20 +100,24 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 		for (SoundEvent soundEvent : BuiltInRegistries.SOUND_EVENT) {
 			Component translation = getSoundName(soundEvent);
 			//filter sounds
-			if (translation != null && translation.getString().toLowerCase().contains(input.toLowerCase())) {
+			if (translation.getString().toLowerCase().contains(input.toLowerCase())) {
 				AbstractWidget widget = new SoundWidget(translation, soundEvent);
 				filteredWidgets.add(widget);
 			}
-
-
 		}
+		recreateList();
+	}
+
+	private void recreateList() {
 		int listX = listLayout.getX();
 		int listY = listLayout.getY();
 		listLayout = new LinearLayout(0, 0, LinearLayout.Orientation.VERTICAL);
 		filteredWidgets.forEach(listLayout::addChild);
 		listLayout.arrangeElements();
 		listLayout.setPosition(listX, listY);
-		widgetsContainer.refreshScrollAmount();
+		if (widgetsContainer != null) {
+			widgetsContainer.refreshScrollAmount();
+		}
 	}
 
 	@Override
@@ -201,9 +210,9 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 			super.renderWidget(context, mouseX, mouseY, delta);
 			if (selectedSound == sound) {
-				context.fill(RenderPipelines.GUI,this.getX(),this.getY(),this.getRight(),this.getBottom(),0x3000FF00);
-			} else if (this.isHovered){
-				context.fill(RenderPipelines.GUI,this.getX(),this.getY(),this.getRight(),this.getBottom(),0x20FFFFFF);
+				context.fill(RenderPipelines.GUI, this.getX(), this.getY(), this.getRight(), this.getBottom(), 0x3000FF00);
+			} else if (this.isHovered) {
+				context.fill(RenderPipelines.GUI, this.getX(), this.getY(), this.getRight(), this.getBottom(), 0x20FFFFFF);
 			}
 		}
 
@@ -216,5 +225,4 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 			super.onClick(click, doubled);
 		}
 	}
-
 }
