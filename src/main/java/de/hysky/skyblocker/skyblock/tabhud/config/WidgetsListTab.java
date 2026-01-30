@@ -11,16 +11,21 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.tabs.Tab;
+import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ChestMenu;
@@ -31,35 +36,34 @@ import org.jspecify.annotations.Nullable;
 
 // TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsListTab implements Tab {
+	public static final SystemToast.SystemToastId SYSTEM_TOAST_ID = new SystemToast.SystemToastId(1_000);
+
 	private final WidgetsElementList widgetsElementList;
 	private final Button back;
 	private final Button previousPage;
 	private final Button nextPage;
 	private final Button thirdColumnButton;
-	private @Nullable ChestMenu handler;
+	private final Button resetButton;
+	private final StringWidget waitingForServerText;
 	private final Minecraft client;
-	private boolean waitingForServer = false;
 
 	private final Int2ObjectMap<WidgetsListSlotEntry> entries = new Int2ObjectOpenHashMap<>();
 	private final List<WidgetEntry> customWidgetEntries = new ArrayList<>();
-	private boolean listNeedsUpdate = false;
-	private boolean shouldShowCustomWidgetEntries = false;
 
+	private @Nullable ChestMenu handler;
+	private boolean waitingForServer = false;
+	private boolean shouldShowCustomWidgetEntries = false;
+	private int resetSlotId = -1;
+	private boolean shouldResetScroll = false;
 
 	public void setCustomWidgetEntries(Collection<WidgetEntry> entries) {
 		this.customWidgetEntries.clear();
 		this.customWidgetEntries.addAll(entries);
-		listNeedsUpdate = true;
+		widgetsElementList.updateList();
 	}
 
 	public List<WidgetEntry> getCustomWidgetEntries() {
 		return customWidgetEntries;
-	}
-
-	public boolean listNeedsUpdate() {
-		boolean b = listNeedsUpdate;
-		listNeedsUpdate = false;
-		return b;
 	}
 
 	public ObjectSet<Int2ObjectMap.Entry<WidgetsListSlotEntry>> getEntries() {
@@ -70,24 +74,33 @@ public class WidgetsListTab implements Tab {
 		widgetsElementList = new WidgetsElementList(this, client, 0, 0, 0);
 		this.client = client;
 		this.handler = handler;
-		back = Button.builder(Component.translatable("gui.back"), button -> clickAndWaitForServer(48, 0))
-				.size(64, 15)
-				.build();
+		back = Button.builder(Component.translatable("gui.back"), button -> {
+			clickAndWaitForServer(48, 0);
+			this.resetScrollOnLoad();
+		}).size(64, 15).build();
+		widgetsElementList.setBackButton(back);
 		thirdColumnButton = Button.builder(Component.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))
 				.size(120, 15)
 				.build();
 		thirdColumnButton.setTooltip(Tooltip.create(Component.literal("It is recommended to have this enabled, to have more info be displayed!")));
 		previousPage = Button.builder(Component.translatable("book.page_button.previous"), button -> clickAndWaitForServer(45, 0))
-				.size(100, 15)
+				.size(90, 15)
 				.build();
 		nextPage = Button.builder(Component.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
-				.size(100, 15)
+				.size(90, 15)
 				.build();
+		resetButton = Button.builder(Component.literal("Reset"), button -> {
+			if (resetSlotId == -1) return;
+			clickAndWaitForServer(resetSlotId, 0);
+		}).size(60, 15).build();
+		waitingForServerText = new StringWidget(Component.literal("Waiting for server..."), client.font);
+		waitingForServerText.setWidth(client.font.width(waitingForServerText.getMessage()));
 		if (handler == null) {
 			back.visible = false;
 			previousPage.visible = false;
 			nextPage.visible = false;
 			thirdColumnButton.visible = false;
+			resetButton.visible = false;
 		}
 	}
 
@@ -98,11 +111,20 @@ public class WidgetsListTab implements Tab {
 
 	@Override
 	public void visitChildren(Consumer<AbstractWidget> consumer) {
-		consumer.accept(back);
 		consumer.accept(previousPage);
 		consumer.accept(nextPage);
 		consumer.accept(thirdColumnButton);
+		consumer.accept(resetButton);
 		consumer.accept(widgetsElementList);
+		consumer.accept(waitingForServerText);
+	}
+
+	public void resetScrollOnLoad() {
+		this.shouldResetScroll = true;
+	}
+
+	public boolean isWaitingForServer() {
+		return waitingForServer;
 	}
 
 	public void clickAndWaitForServer(int slot, int button) {
@@ -110,6 +132,7 @@ public class WidgetsListTab implements Tab {
 		if (client.gameMode == null || this.client.player == null) return;
 		client.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.PICKUP, this.client.player);
 		waitingForServer = true;
+		waitingForServerText.visible = true;
 	}
 
 	public void shiftClickAndWaitForServer(int slot, int button) {
@@ -117,47 +140,70 @@ public class WidgetsListTab implements Tab {
 		if (client.gameMode == null || this.client.player == null) return;
 		client.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.QUICK_MOVE, this.client.player);
 		// When moving a widget down it gets stuck sometimes
-		Scheduler.INSTANCE.schedule(() -> this.waitingForServer = false, 4);
+		Scheduler.INSTANCE.schedule(() -> {
+			this.waitingForServer = false;
+			waitingForServerText.visible = false;
+		}, 4);
 		waitingForServer = true;
+		waitingForServerText.visible = true;
 	}
 
-	public void updateHandler(ChestMenu newHandler) {
+	public void updateHandler(@Nullable ChestMenu newHandler) {
 		this.handler = newHandler;
 		back.visible = handler != null;
 		entries.clear();
-		listNeedsUpdate = true;
+		widgetsElementList.updateList();
+		resetButton.visible = false;
+		if (this.shouldResetScroll) {
+			this.shouldResetScroll = false;
+			this.widgetsElementList.setScrollAmount(0);
+		}
 	}
 
 	public void hopper(@Nullable List<String> hopperTooltip) {
 		if (hopperTooltip == null) {
-			widgetsElementList.setEditingPosition(-1);
+			widgetsElementList.setEditingPosition(false, -1, -1);
 			return;
 		}
 		int start = -1;
 		int editing = 1;
+		int end = -1;
+
 		for (int i = 0; i < hopperTooltip.size(); i++) {
 			String string = hopperTooltip.get(i);
-			if (start == -1 && string.contains("▶")) {
-				start = i;
+			if (string.contains("▶")) {
+				if (start == -1) start = i;
+				if (i > end) end = i;
 			}
 			if (string.contains("(EDITING)")) {
 				editing = i;
-				break;
 			}
 		}
-		widgetsElementList.setEditingPosition(editing - start);
+		widgetsElementList.setEditingPosition(true, editing - start, end - start);
 	}
 
 	public void onSlotChange(int slot, ItemStack stack) {
 		waitingForServer = false;
-		listNeedsUpdate = true;
+		waitingForServerText.visible = false;
+		widgetsElementList.updateList();
 		switch (slot) {
 			case 45 -> {
-				previousPage.visible = stack.is(Items.ARROW);
+				widgetsElementList.setIsOnSecondPage(previousPage.visible = stack.is(Items.ARROW));
 				return;
 			}
-			case 53 -> {
-				nextPage.visible = stack.is(Items.ARROW);
+			case 51, 53 -> {
+				if (slot == 53) nextPage.visible = stack.is(Items.ARROW);
+				if (stack.is(Items.PLAYER_HEAD)) {
+					String stackName = stack.getHoverName().getString().toLowerCase(Locale.ENGLISH);
+					if (!stackName.startsWith("reset")) return;
+					Component buttonText = Component.literal("Reset ALL").withStyle(style -> style.withColor(ChatFormatting.RED).withUnderlined(true));
+					if (slot == 51) {
+						buttonText = Component.literal("Reset").withStyle(ChatFormatting.RED);
+					}
+					resetButton.visible = true;
+					resetButton.setMessage(buttonText);
+					resetSlotId = slot;
+				}
 				return;
 			}
 			case 50 -> {
@@ -179,7 +225,6 @@ public class WidgetsListTab implements Tab {
 			return;
 		}
 
-
 		String lowerCase = stack.getHoverName().getString().trim().toLowerCase(Locale.ENGLISH);
 		List<String> lore = stack.skyblocker$getLoreStrings();
 		String lastLowerCase = lore.getLast().toLowerCase(Locale.ENGLISH);
@@ -194,8 +239,8 @@ public class WidgetsListTab implements Tab {
 		} else {
 			entry = new DefaultSlotEntry(this, slot, stack);
 		}
-		entries.put(slot, entry);
 
+		entries.put(slot, entry);
 	}
 
 	@Override
@@ -204,9 +249,13 @@ public class WidgetsListTab implements Tab {
 		widgetsElementList.setY(tabArea.top());
 		widgetsElementList.setSize(tabArea.width(), tabArea.height() - 20);
 		widgetsElementList.refreshScrollAmount();
-		previousPage.setPosition(widgetsElementList.getRowLeft(), widgetsElementList.getBottom() + 4);
-		nextPage.setPosition(widgetsElementList.scrollBarX() - 100, widgetsElementList.getBottom() + 4);
-		thirdColumnButton.setPosition(widgetsElementList.scrollBarX() + 5, widgetsElementList.getBottom() + 4);
+
+		int bottomButtonY = widgetsElementList.getBottom() + 4;
+		thirdColumnButton.setPosition((tabArea.width() - thirdColumnButton.getWidth()) / 2, bottomButtonY);
+		previousPage.setPosition(thirdColumnButton.getX() - previousPage.getWidth() - 5, bottomButtonY);
+		nextPage.setPosition(thirdColumnButton.getRight() + 5, bottomButtonY);
+		resetButton.setPosition(tabArea.right() - resetButton.getWidth() - 4, bottomButtonY);
+		waitingForServerText.setPosition(tabArea.width() - waitingForServerText.getWidth() - 5, tabArea.height() - client.font.lineHeight - 2);
 	}
 
 	public boolean shouldShowCustomWidgetEntries() {

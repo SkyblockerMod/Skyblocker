@@ -1803,6 +1803,12 @@
   "skyblocker.tips.waypoints": "You can import (including from skytils), add, remove, and toggle waypoints on any island with /skyblocker waypoints.",
   "skyblocker.tips.wikiLookup": "Press F4 while hovering over an item to open its wiki page in your web browser.",
 
+  "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.cannotMoveHere": "This widget cannot be moved here!",
+  "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.mustEnableWidget": "This widget must be enabled to be selected!",
+  "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToMove": "Click %s more time(s) to re-order this widget to here!",
+  "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToSelect": "Click %s more time(s) to select!",
+  "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.unselectableWidget": "This widget cannot be selected!",
+
   "skyblocker.updateNotifications.newUpdateMessage": "There's a new Skyblocker update available! %s",
   "skyblocker.updateNotifications.newUpdateToast.description": "Download version %s!",
   "skyblocker.updateNotifications.newUpdateToast.title": "Skyblocker Update Available!",
