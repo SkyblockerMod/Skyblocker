@@ -6,53 +6,41 @@ import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 
 public class LazerTimer {
-	public static double remainingTime = 0;
-	private static boolean isRiding = false;
+	private static long lastPhaseTime;
+	private static double remainingTime;
+	private static boolean active;
 
 	@Init
 	public static void init() {
 		WorldRenderExtractionCallback.EVENT.register(LazerTimer::extractRendering);
 	}
 
-	public static void updateTimer() {
-		if (isRiding) {
-			if (!SlayerManager.isBossSpawned()) {
-				isRiding = false;
-				return;
-			}
+	public static void tick() {
+		remainingTime -= 0.05;
+		active = remainingTime > 0;
+	}
 
-			remainingTime -= 0.05;
-			if (remainingTime <= 0) {
-				isRiding = false;
-			}
+	public static void activate() {
+		if (System.currentTimeMillis() - lastPhaseTime >= 10000) {
+			lastPhaseTime = System.currentTimeMillis();
+			remainingTime = 8;
+			active = true;
 		}
-	}
-
-	public static void resetTimer() {
-		remainingTime = 8.0;
-	}
-
-	public static boolean isRiding() {
-		return isRiding;
-	}
-
-	public static void setRiding(boolean riding) {
-		isRiding = riding;
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (isRiding) {
-			Entity boss = SlayerManager.getSlayerBoss();
-			if (boss != null) {
-				String timeText = String.format("%.2fs", remainingTime);
-				Component renderText = Component.literal("Lazer: ").withStyle(ChatFormatting.WHITE)
-						.append(Component.literal(timeText).withStyle(ChatFormatting.GREEN).withStyle(ChatFormatting.BOLD));
-
-				collector.submitText(renderText, boss.position().add(0, 2, 0), true);
+		if (active) {
+			SlayerManager.BossFight bossFight = SlayerManager.getBossFight();
+			if (bossFight != null && bossFight.boss.getVehicle() != null) {
+				Component text = Component.literal(String.format("%.1fs", remainingTime)).withStyle(ChatFormatting.AQUA);
+				collector.submitText(text, bossFight.boss.position().add(0, 1.5, 0), 3, true);
 			}
 		}
+	}
+
+	public static boolean isActive() {
+		return active;
 	}
 }
