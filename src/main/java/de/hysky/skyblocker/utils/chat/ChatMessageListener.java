@@ -10,7 +10,6 @@ import de.hysky.skyblocker.skyblock.chat.filters.AoteFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.AutopetFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ComboFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.DeathFilter;
-import de.hysky.skyblocker.skyblock.chat.filters.DicerFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.DungeonBreakerFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.HealFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ImplosionFilter;
@@ -19,6 +18,7 @@ import de.hysky.skyblocker.skyblock.chat.filters.MimicFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.MoltenWaveFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ShowOffFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.SkyMallFilter;
+import de.hysky.skyblocker.skyblock.slayers.features.SlayerMinibossSpawnFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.TeleportPadFilter;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
 import de.hysky.skyblocker.skyblock.dwarven.CallMismyla;
@@ -26,6 +26,7 @@ import de.hysky.skyblocker.skyblock.dwarven.RedialOnBadSignal;
 import de.hysky.skyblocker.skyblock.dwarven.Fetchur;
 import de.hysky.skyblocker.skyblock.dwarven.Puzzler;
 import de.hysky.skyblocker.skyblock.galatea.SweepDetailsListener;
+import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.HellionShieldFilter;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.Event;
@@ -81,8 +82,9 @@ public interface ChatMessageListener {
 				new LotteryFilter(),
 				new MimicFilter(),
 				new DeathFilter(),
-				new DicerFilter(),
 				new DungeonBreakerFilter(),
+				new SlayerMinibossSpawnFilter(),
+				new HellionShieldFilter(),
 		};
 
 		// Register all listeners to EVENT

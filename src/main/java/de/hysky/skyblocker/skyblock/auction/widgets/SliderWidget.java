@@ -56,11 +56,11 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends A
 		int optionWidth = current.getOptionSize()[0];
 		int optionHeight = current.getOptionSize()[1];
 
-		context.blit(RenderPipelines.GUI_TEXTURED, current.getBackTexture(), 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
-		context.blit(RenderPipelines.GUI_TEXTURED, current.getOptionTexture(), x, y, 0, 0, optionWidth, optionHeight, optionWidth, optionHeight);
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, current.getBackTexture(), 0, 0, getWidth(), getHeight());
 		if (isHovered()) {
-			context.blit(RenderPipelines.GUI_TEXTURED, current.getHoverTexture(), x, y, 0, 0, optionWidth, optionHeight, optionWidth, optionHeight);
-
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, current.getHoverTexture(), x, y, optionWidth, optionHeight);
+		} else {
+			context.blitSprite(RenderPipelines.GUI_TEXTURED, current.getOptionTexture(), x, y, optionWidth, optionHeight);
 		}
 		context.pose().popMatrix();
 	}

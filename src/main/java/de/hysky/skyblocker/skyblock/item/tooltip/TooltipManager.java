@@ -17,6 +17,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.DateCalculatorTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.DungeonQualityTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.EssenceShopPrice;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.EstimatedItemValueTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.EvolvingItemProgressTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.HuntingBoxPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LBinTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
@@ -58,6 +59,7 @@ public class TooltipManager {
 			new ReorderHelper(),
 			BazaarOrderTracker.INSTANCE,
 			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that
+			new EvolvingItemProgressTooltip(0),
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
 			new LBinTooltip(3),

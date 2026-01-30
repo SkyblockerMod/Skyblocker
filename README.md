@@ -20,10 +20,14 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Fancy Party Finder GUI**
 - **Secrets Waypoint Highlight:** Fully customizable
 - **Room and Secret Syncing**
-- **Fancy Minimap & Score**
+- **Fancy Minimap**
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
-    - Room Name Labels
+    - Room Labels
+      - Can show either the Room Name, Secrets Found, or Both
+    - Hidable room checkmarks
+    - Configurable outline and background blur
+- **Score Calculation**
 - **Starred Mob Glow**
 - **Croesus Helper:**
     - Highlight not opened chests
@@ -32,8 +36,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Three Weirdos*
     - *Blaze*
     - *Creeper Beams*
-    - *Quiz - Ouro the Omniscient*
-    - *Tic Tac Toe*
+    - *Quiz* (Ouro the Omniscient)
+    - *Tic-tac-toe*
     - *Waterboard* (one flow)
     - *Silverfish*
     - *Ice Fill*
@@ -56,11 +60,12 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **F3/M3 Fire Freeze Staff Timer**
 - **F3/M3 Guardian Health Display**
 - **F5/M5 Livid Color Highlight**
-- **F7/M7 Terminal/Device Waypoints/Highlight**
+- **F7/M7 Terminal/Device Waypoints/Highlight and HUD**
 - **Reparty:** Auto-rejoin and `/rp` command.
 - **Secret Waypoints**
     - AOTV / Ender Pearl
     - Dungeonbreaker / Stonk
+- **Room Preview**
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
 - **Salvage Helper**
@@ -229,7 +234,6 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Copy amount to clipboard
 - **Garden Plots Widget**
 - **Speed Presets (Rancher's Boots)**
-- **Disable title and chat messages for Melon/Pumpkin Dicer**
 - **Basic garden mouse locking feature (set mouse sensitivity to 0)**
 - **Pest Highlighter**
 
@@ -257,11 +261,16 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
         - *Location*
 - **Ender Nodes Helper**
 - **Powder mining tracker**
-- **Special Effects for rare dye drops**
+- **Special Effects for rare drops**
+    - Dye drops
+    - Dungeons drops
+    - Slayer drops
 - **Entity health bars**
 - **Fishing HUD**
 - **Museum HUD**
 - **Gyrokinetic Wand Overlay**
+- **Radial Menus**
+- **Vanilla-like Mana Bar**
 
 ### User Interface Enhancements:
 - **Equipment in inventory**
@@ -298,6 +307,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *HOTM*
     - *HOTF*
     - *Bestiary*
+    - *Hunting Toolkit Indicator*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
@@ -315,8 +325,9 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Estimated Item Value*
     - *Skyblock ID*
     - *Bazaar Reorder Helper*
+    - *Evolution Item Progress*
 - **Quick Navigation:** Fully customizable fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
-    - Item Selector 
+    - Item Selector
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
     - Crafting
     - Forge

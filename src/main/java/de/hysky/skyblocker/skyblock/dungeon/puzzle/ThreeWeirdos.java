@@ -71,7 +71,7 @@ public class ThreeWeirdos extends DungeonPuzzle {
 		if (!npcs.isEmpty()) {
 			pos = room.relativeToActual(relative.offset(1, 0, 0));
 			boundingBox = RenderHelper.getBlockBoundingBox(world, pos);
-			npcs.forEach(entity -> entity.setCustomName(Component.literal(name).withStyle(ChatFormatting.GREEN)));
+			npcs.forEach(entity -> entity.skyblocker$setCustomName(Component.literal(name).withStyle(ChatFormatting.GREEN)));
 		}
 	}
 

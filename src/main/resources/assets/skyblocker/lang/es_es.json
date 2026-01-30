@@ -236,5 +236,6 @@
     "skyblocker.bars.config.commonPosition.RIGHT": "bien",
     "key.category.skyblocker.main": "Skyblocker",
     "skyblocker.bars.config.commonPosition.OFF": "apagado",
-    "skyblocker.bars.config.explanationTitle": "¿Qué es esto?"
+    "skyblocker.bars.config.explanationTitle": "¿Qué es esto?",
+    "skyblocker.waypoints.throughWalls": "Ver a través de paredes"
 }

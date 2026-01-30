@@ -48,6 +48,7 @@ public class PickobulusHelper {
 			Blocks.EMERALD_BLOCK,
 			Blocks.REDSTONE_BLOCK,
 			Blocks.COAL_BLOCK,
+			Blocks.QUARTZ_BLOCK,
 			Blocks.GOLD_ORE,
 			Blocks.IRON_ORE,
 			Blocks.COAL_ORE,

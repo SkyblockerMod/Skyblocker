@@ -3,16 +3,16 @@ package de.hysky.skyblocker.skyblock.entity.glow.adder;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.AttunementColors;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
@@ -28,27 +28,30 @@ public class SlayerGlowAdder extends MobGlowAdder {
 
 	@Override
 	public int computeColour(Entity entity) {
-		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.GLOW)) {
-			return switch (entity) {
-				case ArmorStand e when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(e);
-				case Blaze e when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(e);
-				default -> DungeonGlowAdder.STARRED_COLOUR;
-			};
+		// Blaze Slayer
+		if (SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights &&
+				SlayerManager.isFightingSlayerType(SlayerType.DEMONLORD) &&
+				(entity instanceof Blaze || entity instanceof WitherSkeleton || entity instanceof ZombifiedPiglin)) {
+			int color = AttunementColors.getColor((LivingEntity) entity);
+			if (color != MobGlow.NO_GLOW) return color;
 		}
 
-		return switch (entity) {
-			//Nukekubi Fixation Skulls
-			case ArmorStand as when SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads && Utils.isInTheEnd() && as.isMarker() && isNukekubiHead(as) -> NUKEKUBI_COLOUR;
-			//Blaze Slayer's Demonic Minions
-			case WitherSkeleton e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerManager.isInSlayerType(SlayerType.DEMONLORD) && e.distanceTo(Minecraft.getInstance().player) <= 15 -> AttunementColors.getColor(e);
-			case ZombifiedPiglin e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerManager.isInSlayerType(SlayerType.DEMONLORD) && e.distanceTo(Minecraft.getInstance().player) <= 15 -> AttunementColors.getColor(e);
-			default -> NO_GLOW;
-		};
+		// Slayer Boss/Miniboss
+		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.GLOW)) {
+			return SkyblockerConfigManager.get().slayers.highlightColor.getRGB();
+		}
+
+		// Nukebuki Skulls
+		if (SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads &&
+				SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM) &&
+				entity instanceof ArmorStand as && as.isMarker() && isNukekubiHead(as)) return NUKEKUBI_COLOUR;
+
+		return MobGlow.NO_GLOW;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return SlayerManager.isInSlayer();
+		return SlayerManager.isInSlayerQuest() || SlayerManager.isFightingSlayer();
 	}
 
 	/**

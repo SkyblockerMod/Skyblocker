@@ -203,7 +203,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		private final PlayerReference reference;
 
 		private PlayerButton(int x, int y, int width, int height, PlayerReference reference) {
-			super(x, y, width, height, net.minecraft.network.chat.Component.empty(), b -> {}, ts -> net.minecraft.network.chat.Component.empty());
+			super(x, y, width, height, Component.empty(), b -> {}, ts -> Component.empty());
 			this.reference = reference;
 		}
 
@@ -233,7 +233,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 			matrices.pushMatrix();
 			matrices.translate(baseX + HEAD_SIZE * scale + 8, centreY - halfFontHeight);
 			matrices.scale(scale, scale);
-			context.drawString(CLIENT.font, net.minecraft.network.chat.Component.literal(reference.name()), 0, 0, CommonColors.WHITE);
+			context.drawString(CLIENT.font, Component.literal(reference.name()), 0, 0, CommonColors.WHITE);
 			matrices.popMatrix();
 
 			if (reference.status() != null) {

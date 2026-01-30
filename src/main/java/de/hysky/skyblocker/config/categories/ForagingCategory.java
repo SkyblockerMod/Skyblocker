@@ -10,12 +10,12 @@ import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
 import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
-import net.azureaaron.dandelion.systems.ConfigCategory;
-import net.azureaaron.dandelion.systems.Option;
-import net.azureaaron.dandelion.systems.OptionGroup;
-import net.azureaaron.dandelion.systems.ButtonOption;
-import net.azureaaron.dandelion.systems.controllers.ColourController;
-import net.azureaaron.dandelion.systems.controllers.IntegerController;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.controllers.ColourController;
+import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
@@ -32,6 +32,7 @@ public class ForagingCategory {
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.galatea.enableForestNodeHelper"))
+								.description(Component.translatable("skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip"))
 								.binding(defaults.foraging.galatea.enableForestNodeHelper,
 										() -> config.foraging.galatea.enableForestNodeHelper,
 										newValue -> config.foraging.galatea.enableForestNodeHelper = newValue)
@@ -119,6 +120,7 @@ public class ForagingCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay"))
+								.description(Component.translatable("skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip"))
 								.binding(defaults.foraging.sweepOverlay.enableThrownAbilityOverlay,
 										() -> config.foraging.sweepOverlay.enableThrownAbilityOverlay,
 										newValue -> config.foraging.sweepOverlay.enableThrownAbilityOverlay = newValue)

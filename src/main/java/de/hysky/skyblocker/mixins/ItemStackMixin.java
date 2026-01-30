@@ -136,6 +136,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 		if (type == DataComponents.LORE) {
 			loreString = null;
 			skyblockRarity = null;
+			abilities = null;
 		}
 	}
 
