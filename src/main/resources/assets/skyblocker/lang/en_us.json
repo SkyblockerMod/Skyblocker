@@ -1598,6 +1598,10 @@
   "skyblocker.fancyAuctionHouse.youPay": "You pay: %s",
   "skyblocker.fancyAuctionHouse.yourAuction": "This is your auction!",
 
+  "skyblocker.farming.visitorHelper.command.clearedAllVisitors": "Cleared all visitors!",
+  "skyblocker.farming.visitorHelper.command.removedVisitor": "Removed %s!",
+  "skyblocker.farming.visitorHelper.command.unableToRemoveVisitor": "Unable to remove visitor!",
+
   "skyblocker.fishing.reelNow": "Reel in now!",
 
   "skyblocker.galatea.hud.sweepDetails": "Sweep Details",
