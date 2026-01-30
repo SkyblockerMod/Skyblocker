@@ -79,7 +79,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	private static void addToast(Component message) {
-		Minecraft.getInstance().getToastManager().addToast(new SystemToast(WidgetsListTab.SYSTEM_TOAST_ID, message, null));
+		Minecraft.getInstance().getToastManager().addToast(new SystemToast(WidgetsListScreen.SYSTEM_TOAST_ID, message, null));
 	}
 
 	@Override

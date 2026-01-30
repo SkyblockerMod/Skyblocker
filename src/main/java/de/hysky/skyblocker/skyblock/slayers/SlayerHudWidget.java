@@ -1,9 +1,6 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.skyblock.slayers.SlayerTier;
-import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
@@ -16,8 +13,6 @@ import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-
-import java.util.Set;
 
 @RegisterWidget
 public class SlayerHudWidget extends ComponentBasedWidget {
@@ -49,7 +44,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 	@Override
 	public void updateContent() {
 		SlayerManager.SlayerQuest slayerQuest = SlayerManager.getSlayerQuest();
-		if (client.player == null || slayerQuest == null) return;
+		if (CLIENT.player == null || slayerQuest == null) return;
 
 		SlayerType slayerType = slayerQuest.slayerType;
 		SlayerTier slayerTier = slayerQuest.slayerTier;

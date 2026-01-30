@@ -22,6 +22,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -39,6 +40,7 @@ import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
 public class WidgetsListScreen extends Screen implements ContainerListener {
+	public static final SystemToast.SystemToastId SYSTEM_TOAST_ID = new SystemToast.SystemToastId(1_000);
 	private static final int PADDING = 8;
 
 	private WidgetsElementList widgetsElementList;
@@ -46,11 +48,11 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 	private Button previousPage;
 	private Button nextPage;
 	private Button thirdColumnButton;
+	private Button resetButton;
+	private StringWidget waitingForServerText;
 	private MultiLineTextWidget infoText;
 
 	private String titleLowercase;
-	private ChestMenu handler;
-	private boolean waitingForServer = false;
 	private boolean overflowing = false;
 	private boolean previewVisible = false;
 	private boolean thirdColumnEnabled = false;
@@ -61,13 +63,11 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 	private final List<Component>[] previewColumns = new List[3];
 
 	private final Int2ObjectMap<WidgetsListSlotEntry> entries = new Int2ObjectOpenHashMap<>();
-	private boolean listNeedsUpdate = false;
 
-	public boolean listNeedsUpdate() {
-		boolean b = listNeedsUpdate;
-		listNeedsUpdate = false;
-		return b;
-	}
+	private @Nullable ChestMenu handler;
+	private boolean waitingForServer = false;
+	private int resetSlotId = -1;
+	private boolean shouldResetScroll = false;
 
 	public ObjectSet<Int2ObjectMap.Entry<WidgetsListSlotEntry>> getEntries() {
 		return entries.int2ObjectEntrySet();
@@ -81,12 +81,23 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		Arrays.fill(previewColumns, List.of());
 	}
 
+	public boolean isWaitingForServer() {
+		return waitingForServer;
+	}
+
+	public void resetScrollOnLoad() {
+		this.shouldResetScroll = true;
+	}
+
 	public void clickAndWaitForServer(int slot, int button) {
 		if (waitingForServer) return;
 		if (minecraft.gameMode == null || this.minecraft.player == null) return;
 		minecraft.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.PICKUP, this.minecraft.player);
 		// wacky fix for "this action is on cooldown"
-		if (slot == 50) Scheduler.INSTANCE.schedule(() -> this.waitingForServer = false, 4);
+		if (slot == 50) Scheduler.INSTANCE.schedule(() -> {
+			this.waitingForServer = false;
+			waitingForServerText.visible = false;
+		}, 4);
 		waitingForServer = true;
 	}
 
@@ -95,7 +106,10 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		if (minecraft.gameMode == null || this.minecraft.player == null) return;
 		minecraft.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.QUICK_MOVE, this.minecraft.player);
 		// When moving a widget down it gets stuck sometimes
-		Scheduler.INSTANCE.schedule(() -> this.waitingForServer = false, 4);
+		Scheduler.INSTANCE.schedule(() -> {
+			this.waitingForServer = false;
+			waitingForServerText.visible = false;
+		}, 4);
 		waitingForServer = true;
 	}
 
@@ -105,39 +119,58 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		this.handler = newHandler;
 		this.titleLowercase = titleLowercase;
 		entries.clear();
-		listNeedsUpdate = true;
+		widgetsElementList.updateList();
+		resetButton.visible = false;
+		if (this.shouldResetScroll) {
+			this.shouldResetScroll = false;
+			this.widgetsElementList.setScrollAmount(0);
+		}
 	}
 
 	public void hopper(@Nullable List<String> hopperTooltip) {
 		if (hopperTooltip == null) {
-			widgetsElementList.setEditingPosition(-1);
+			widgetsElementList.setEditingPosition(false, -1, -1);
 			return;
 		}
 		int start = -1;
 		int editing = 1;
+		int end = -1;
+
 		for (int i = 0; i < hopperTooltip.size(); i++) {
 			String string = hopperTooltip.get(i);
-			if (start == -1 && string.contains("▶")) {
-				start = i;
+			if (string.contains("▶")) {
+				if (start == -1) start = i;
+				if (i > end) end = i;
 			}
 			if (string.contains("(EDITING)")) {
 				editing = i;
-				break;
 			}
 		}
-		widgetsElementList.setEditingPosition(editing - start);
+		widgetsElementList.setEditingPosition(true, editing - start, end - start);
 	}
 
 	public void onSlotChange(int slot, ItemStack stack) {
 		waitingForServer = false;
-		listNeedsUpdate = true;
+		waitingForServerText.visible = false;
+		widgetsElementList.updateList();
 		switch (slot) {
 			case 45 -> {
-				previousPage.visible = stack.is(Items.ARROW);
+				widgetsElementList.setIsOnSecondPage(previousPage.visible = stack.is(Items.ARROW));
 				return;
 			}
-			case 53 -> {
-				nextPage.visible = stack.is(Items.ARROW);
+			case 51, 53 -> {
+				if (slot == 53) nextPage.visible = stack.is(Items.ARROW);
+				if (stack.is(Items.PLAYER_HEAD)) {
+					String stackName = stack.getHoverName().getString().toLowerCase(Locale.ENGLISH);
+					if (!stackName.startsWith("reset")) return;
+					Component buttonText = Component.literal("Reset ALL").withStyle(style -> style.withColor(ChatFormatting.RED).withUnderlined(true));
+					if (slot == 51) {
+						buttonText = Component.literal("Reset").withStyle(ChatFormatting.RED);
+					}
+					resetButton.visible = true;
+					resetButton.setMessage(buttonText);
+					resetSlotId = slot;
+				}
 				return;
 			}
 			case 50 -> {
@@ -188,7 +221,10 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		super.init();
 		layout.addToHeader(headerLayout);
 		widgetsElementList = layout.addToContents(new WidgetsElementList(this, minecraft, 0, 0, 0));
-		back = headerLayout.addChild(Button.builder(Component.translatable("gui.back"), button -> clickAndWaitForServer(48, 0))
+		back = headerLayout.addChild(Button.builder(Component.translatable("gui.back"), button -> {
+					clickAndWaitForServer(48, 0);
+					this.resetScrollOnLoad();
+				})
 				.size(60, 15)
 				.build(), l -> l.alignHorizontallyLeft().paddingLeft(PADDING));
 		thirdColumnButton = headerLayout.addChild(Button.builder(Component.translatable("gui.back"), button -> clickAndWaitForServer(50, 0))
@@ -203,7 +239,15 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		nextPage = footer.addChild(Button.builder(Component.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
 				.size(100, 15)
 				.build());
+		layout.addToFooter(footer);
+		waitingForServerText = new StringWidget(Component.literal("Waiting for server..."), font);
+		waitingForServerText.setWidth(font.width(waitingForServerText.getMessage()));
+		resetButton = layout.addToFooter(Button.builder(Component.literal("Reset"), button -> {
+			if (resetSlotId == -1) return;
+			clickAndWaitForServer(resetSlotId, 0);
+		}).size(60, 15).build(), l -> l.alignHorizontallyRight().paddingRight(PADDING));
 		layout.visitWidgets(this::addRenderableWidget);
+		addRenderableWidget(waitingForServerText);
 		repositionElements();
 	}
 
@@ -253,7 +297,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		layout.setHeaderHeight(headerLayout.getHeight());
 		widgetsElementList.updateSize(width, layout);
 		layout.arrangeElements();
-		//infoText.setX((back.getRight() + thirdColumnButton.getX() - infoText.getWidth()) / 2);
+		waitingForServerText.setPosition(width - waitingForServerText.getWidth() - 5, height - font.lineHeight - 2);
 	}
 
 	@Override
@@ -328,7 +372,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 				hopper(null);
 			}
 		}
-		if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRowCount() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50) {
+		if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRowCount() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50 || slotId == 51) {
 			onSlotChange(slotId, stack);
 		}
 	}
