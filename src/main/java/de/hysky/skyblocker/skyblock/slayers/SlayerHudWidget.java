@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.slayers.hud;
+package de.hysky.skyblocker.skyblock.slayers;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.TextureTextComponent;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import java.util.EnumSet;
@@ -16,11 +17,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
+import java.util.Set;
+
 @RegisterWidget
 public class SlayerHudWidget extends ComponentBasedWidget {
 	private static final Set<Location> AVAILABLE_LOCATIONS = EnumSet.of(Location.CRIMSON_ISLE, Location.HUB, Location.SPIDERS_DEN, Location.THE_END, Location.THE_PARK, Location.THE_RIFT);
+	private static final Minecraft CLIENT = Minecraft.getInstance();
+	private static final int TEXTURE_SIZE = 16;
 	private static SlayerHudWidget instance;
-	private final Minecraft client = Minecraft.getInstance();
 
 	public SlayerHudWidget() {
 		super(Component.literal("Slayer").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD), ChatFormatting.DARK_PURPLE.getColor(), new Information("hud_slayer", Component.literal("Slayer HUD"), AVAILABLE_LOCATIONS::contains)); // TODO translatable
@@ -39,42 +43,42 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public boolean shouldRender() {
-		return SlayerManager.isInSlayer() && !SlayerManager.getSlayerType().isUnknown() && !SlayerManager.getSlayerTier().isUnknown();
+		return SlayerManager.isInSlayerQuest();
 	}
 
 	@Override
 	public void updateContent() {
-		if (client.player == null || SlayerManager.getSlayerQuest() == null) return;
+		SlayerManager.SlayerQuest slayerQuest = SlayerManager.getSlayerQuest();
+		if (client.player == null || slayerQuest == null) return;
 
-		SlayerType type = SlayerManager.getSlayerType();
-		SlayerTier tier = SlayerManager.getSlayerTier();
-		int level = SlayerManager.getSlayerQuest().level;
-		int bossesNeeded = SlayerManager.getSlayerQuest().bossesNeeded;
+		SlayerType slayerType = slayerQuest.slayerType;
+		SlayerTier slayerTier = slayerQuest.slayerTier;
+		int level = slayerQuest.level;
+		int bossesNeeded = slayerQuest.bossesNeeded;
 
-		if (type == null || tier == null) return;
+		Component slayerName = Component.literal(slayerType.bossName + " " + slayerTier).withStyle(slayerTier.color);
+		addComponent(new TextureTextComponent(slayerName, slayerType.texture, TEXTURE_SIZE, TEXTURE_SIZE));
 
-		addSimpleIcoText(type.icon, "", tier.color, type.bossName + " " + tier);
-		if (level > 0) {
-			if (level == type.maxLevel) {
-				addComponent(Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, Component.literal("XP: ").append(Component.translatable("skyblocker.slayer.hud.levelMaxed").withStyle(ChatFormatting.GREEN))));
-			} else {
-				int nextMilestone = type.levelMilestones[level];
-				int currentXP = nextMilestone - SlayerManager.getSlayerQuest().xpRemaining;
-				addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", ChatFormatting.LIGHT_PURPLE, Formatters.INTEGER_NUMBERS.format(currentXP) + "/" + Formatters.INTEGER_NUMBERS.format(nextMilestone));
+		if (level == slayerType.maxLevel) {
+			addComponent(Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, Component.literal("XP: ").append(Component.translatable("skyblocker.slayer.hud.levelMaxed").withStyle(ChatFormatting.GREEN))));
+		} else if (level >= 0) {
+			int nextMilestone = slayerType.levelMilestones[level];
+			int currentXP = nextMilestone - slayerQuest.xpRemaining;
+			addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", ChatFormatting.LIGHT_PURPLE, Formatters.INTEGER_NUMBERS.format(currentXP) + "/" + Formatters.INTEGER_NUMBERS.format(nextMilestone));
+
+			if (bossesNeeded > 0) {
+				addComponent(Components.iconTextComponent(Ico.NETHER_STAR, Component.translatable("skyblocker.slayer.hud.levelUpIn", Component.literal(Formatters.INTEGER_NUMBERS.format(bossesNeeded)).withStyle(ChatFormatting.LIGHT_PURPLE))));
 			}
-		}
-
-		if (bossesNeeded > 0) {
-			addComponent(Components.iconTextComponent(Ico.NETHER_STAR, Component.translatable("skyblocker.slayer.hud.levelUpIn", Component.literal(Formatters.INTEGER_NUMBERS.format(bossesNeeded)).withStyle(ChatFormatting.LIGHT_PURPLE))));
 		}
 	}
 
 	@Override
 	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
-		SlayerType type = SlayerType.REVENANT;
-		SlayerTier tier = SlayerTier.V;
+		SlayerType slayerType = SlayerType.REVENANT;
+		SlayerTier slayerTier = SlayerTier.V;
+		Component slayerName = Component.literal(slayerType.bossName + " " + slayerTier).withStyle(slayerTier.color);
 		return List.of(
-				Components.iconTextComponent(type.icon, simpleEntryText(type.bossName + " " + tier, "", tier.color)),
+				new TextureTextComponent(slayerName, slayerType.texture, TEXTURE_SIZE, TEXTURE_SIZE),
 				Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, simpleEntryText("100,000/400,000", "XP: ", ChatFormatting.LIGHT_PURPLE)),
 				Components.iconTextComponent(Ico.NETHER_STAR, Component.translatable("skyblocker.slayer.hud.levelUpIn", Component.literal("200").withStyle(ChatFormatting.LIGHT_PURPLE)))
 		);

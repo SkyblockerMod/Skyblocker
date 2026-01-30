@@ -165,7 +165,7 @@
     "skyblocker.slayer.hud.levelMaxed": "Maksimuma Ulaştı",
     "skyblocker.shortcuts.keyBinding.tooltip": "Atanan tuşa basınca komutu çalıştır.",
     "skyblocker.waypoints.importWaypointsSkyblocker": "Önemli Yol Noktaları (Skyblocker)",
-    "skyblocker.slayer.previousPB": "Önceki Kişisel Rekorunuz %s.",
+    "skyblocker.slayer.previousPersonalBest": "Önceki Kişisel Rekorunuz %s.",
     "skyblocker.waypoints.newGroup": "Yeni Yol Noktası Grubu",
     "skyblocker.shortcuts.keyBinding.replacement": "Komutu Çalıştır",
     "skyblocker.slayer.bossSpawnAlert": "Boss Doğdu!",

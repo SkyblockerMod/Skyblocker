@@ -1012,20 +1012,26 @@
 
   "skyblocker.config.slayer": "Slayers",
 
+  "skyblocker.config.slayer.alertOtherMinibosses": "Alert for Other Players' MiniBosses",
+  "skyblocker.config.slayer.alertOtherMinibosses.@Tooltip": "Whether to show an alert for slayer minibosses spawned by other players.\n\nRequires 'MiniBoss Spawn Alert' option to be enabled.",
+
   "skyblocker.config.slayer.blazeSlayer": "Blaze Slayer",
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights": "Attunement Highlights",
-  "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "If Boss Highlighting is on, applies a color matching the current attunement to the selected effect.",
+  "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "Applies a color matching the current attunement to the selected effect.",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer": "Fire Pillar Countdown Notifications",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "Countdowns the last five seconds before the Fire Pillar explodes. Configure 'Title Container' to customise the location on the HUD (Note: This only uses a rudimentary distance check, so the Pillar may be spawned by another player's slayer)",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.OFF": "Off",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.SOUND_AND_VISUAL": "Sound and Visual Indicator",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.VISUAL": "Visual Indicator",
+  "skyblocker.config.slayer.blazeSlayer.hideHellionShield": "Hide Hellion Shield Messages",
+  "skyblocker.config.slayer.blazeSlayer.muteBlazeSounds": "Mute Blaze Sounds",
+  "skyblocker.config.slayer.blazeSlayer.muteBlazeSounds.@Tooltip": "Mutes Blaze, Fire, Lava, Fireball and Lightning Bolt Sounds",
 
   "skyblocker.config.slayer.bossSpawnAlert": "Boss Spawn Alert",
-  "skyblocker.config.slayer.bossSpawnAlert.@Tooltip": "\nDisplays a warning when a slayer boss spawns",
+  "skyblocker.config.slayer.bossSpawnAlert.@Tooltip": "Displays a warning when a slayer boss spawns",
 
   "skyblocker.config.slayer.bossbar": "Slayer Bossbar",
-  "skyblocker.config.slayer.bossbar.@Tooltip": "Displays a bossbar for your active slayer boss",
+  "skyblocker.config.slayer.bossbar.@Tooltip": "Displays a bossbar for the active slayer boss",
 
   "skyblocker.config.slayer.callMaddox": "Call Maddox",
   "skyblocker.config.slayer.callMaddox.sendMessageOnFail": "Send Message on Slayer Boss Failed",
@@ -1033,35 +1039,47 @@
   "skyblocker.config.slayer.callMaddox.sendMessageOnKill": "Send Message on Slayer Boss Kill",
 
   "skyblocker.config.slayer.enableHud": "Slayer HUD",
-  "skyblocker.config.slayer.enableHud.@Tooltip": "You may have to do 1 boss before all HUD elements show",
 
   "skyblocker.config.slayer.endermanSlayer": "Enderman Slayer",
-  "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs notification",
+  "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs Notification",
   "skyblocker.config.slayer.endermanSlayer.highlightBeacons": "Beacon Highlighting",
   "skyblocker.config.slayer.endermanSlayer.highlightNukekubiHeads": "Nukekubi Head Highlighting",
   "skyblocker.config.slayer.endermanSlayer.lazerTimer": "Lazer Timer",
 
+  "skyblocker.config.slayer.hideSlayerMinibossSpawn": "Hide Slayer Miniboss Spawn Messages",
+
   "skyblocker.config.slayer.highlightBosses": "Highlight Bosses",
   "skyblocker.config.slayer.highlightBosses.@Tooltip[0]": "\nOFF: Do not highlight Slayer Bosses.",
-  "skyblocker.config.slayer.highlightBosses.@Tooltip[1]": "\nGLOW: Creates a glow effect on Slayer Bosses. Due to technical limitations, there is a small chance of this option making mistakes in mob detection.",
+  "skyblocker.config.slayer.highlightBosses.@Tooltip[1]": "\nGLOW: Creates a glow effect on Slayer Bosses.",
   "skyblocker.config.slayer.highlightBosses.@Tooltip[2]": "\nHITBOX: Display a Hitbox around the Slayer Boss.",
-  "skyblocker.config.slayer.highlightBosses.@Tooltip[3]": "\nThis option is required for Blazeslayer Attunement Highlighting.",
   "skyblocker.config.slayer.highlightBosses.GLOW": "Glow",
   "skyblocker.config.slayer.highlightBosses.HITBOX": "Hitbox",
   "skyblocker.config.slayer.highlightBosses.OFF": "Off",
 
+  "skyblocker.config.slayer.highlightColor": "Boss/Miniboss Highlight Color",
+
   "skyblocker.config.slayer.highlightMinis": "Highlight Minibosses",
   "skyblocker.config.slayer.highlightMinis.@Tooltip[0]": "\nOFF: Do not highlight Slayer Minibosses.",
-  "skyblocker.config.slayer.highlightMinis.@Tooltip[1]": "\nGLOW: Creates a glow effect on Slayer Minibosses. Due to technical limitations, there is a small chance of this option making mistakes in mob detection.",
+  "skyblocker.config.slayer.highlightMinis.@Tooltip[1]": "\nGLOW: Creates a glow effect on Slayer Minibosses.",
   "skyblocker.config.slayer.highlightMinis.@Tooltip[2]": "\nHITBOX: Display a Hitbox around Slayer Minibosses.",
 
-  "skyblocker.config.slayer.minibossSpawnAlert": "MiniBoss Spawn Alert",
-  "skyblocker.config.slayer.minibossSpawnAlert.@Tooltip": "\nDisplays a warning when a slayer miniboss spawns.",
+  "skyblocker.config.slayer.highlightUnclaimedRewards": "Highlight Unclaimed Rewards",
+  "skyblocker.config.slayer.highlightUnclaimedRewards.@Tooltip": "Highlights unclaimed slayer level rewards",
 
-  "skyblocker.config.slayer.slainTime": "Slayer kill time",
+  "skyblocker.config.slayer.minibossSpawnAlert": "MiniBoss Spawn Alert",
+  "skyblocker.config.slayer.minibossSpawnAlert.@Tooltip": "Displays a warning when a slayer miniboss spawns.",
+
+  "skyblocker.config.slayer.showMiniBossNameInAlert": "Show MiniBoss Name in Spawn Alert",
+  "skyblocker.config.slayer.showMiniBossNameInAlert.@Tooltip": "Requires 'MiniBoss Spawn Alert' and 'Alerts other players minibosses' options to be enabled.",
+
+  "skyblocker.config.slayer.slainTime": "Slayer Kill Time",
   "skyblocker.config.slayer.slainTime.@Tooltip": "Sends the amount of time spent to kill the slayer.",
 
   "skyblocker.config.slayer.slayerHud": "Slayer HUD Config...",
+
+  "skyblocker.config.slayer.spiderSlayer": "Spider Slayer",
+  "skyblocker.config.slayer.spiderSlayer.muteSpiderSounds": "Mute Spider Sounds",
+  "skyblocker.config.slayer.spiderSlayer.muteSpiderSounds.@Tooltip": "Mutes Spider, Bat, Silverfish and Skeleton Sounds",
 
   "skyblocker.config.slayer.vampireSlayer": "Vampire Slayer",
   "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "Compact Effigy Waypoints",
@@ -1080,6 +1098,10 @@
   "skyblocker.config.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
   "skyblocker.config.slayer.vampireSlayer.steakStakeUpdateFrequency": "Steak Stake Indicator Update Frequency (Ticks)",
   "skyblocker.config.slayer.vampireSlayer.steakStakeUpdateFrequency.@Tooltip": "The lower the value, the more frequent the updates, which may cause lag.",
+
+  "skyblocker.config.slayer.wolfSlayer": "Wolf Slayer",
+  "skyblocker.config.slayer.wolfSlayer.hideSvenPupNametag": "Hide Sven Pup's Nametag",
+  "skyblocker.config.slayer.wolfSlayer.muteWolfSounds": "Mute Wolf Sounds",
 
   "skyblocker.config.title": "Skyblocker %s",
   "skyblocker.config.title.settings": "Settings",
@@ -1606,6 +1628,10 @@
   "skyblocker.fancyAuctionHouse.youPay": "You pay: %s",
   "skyblocker.fancyAuctionHouse.yourAuction": "This is your auction!",
 
+  "skyblocker.farming.visitorHelper.command.clearedAllVisitors": "Cleared all visitors!",
+  "skyblocker.farming.visitorHelper.command.removedVisitor": "Removed %s!",
+  "skyblocker.farming.visitorHelper.command.unableToRemoveVisitor": "Unable to remove visitor!",
+
   "skyblocker.fishing.reelNow": "Reel in now!",
 
   "skyblocker.galatea.hud.sweepDetails": "Sweep Details",
@@ -1755,7 +1781,8 @@
   "skyblocker.slayer.hud.levelUpIn": "Level up in %s bosses",
   "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss",
   "skyblocker.slayer.personalBest": "PERSONAL BEST!",
-  "skyblocker.slayer.previousPB": "Your previous Personal Best was %s.",
+  "skyblocker.slayer.personalBestMissing": "No personal best recorded for %s.",
+  "skyblocker.slayer.previousPersonalBest": "Your previous Personal Best was %s.",
   "skyblocker.slayer.slainTime": "Slayer has been killed in %s!",
 
   "skyblocker.tips.accessoryHelper": "Open your accessory bag and Skyblocker will remember them. The accessory helper will tell you what accessories you have and what accessories are missing.",
@@ -1808,6 +1835,12 @@
   "skyblocker.tips.visitorHelper": "Click on the item name in the visitor helper to buy from the bazaar or click on [Copy Amount] to copy the amount to your clipboard.",
   "skyblocker.tips.waypoints": "You can import (including from skytils), add, remove, and toggle waypoints on any island with /skyblocker waypoints.",
   "skyblocker.tips.wikiLookup": "Press F4 while hovering over an item to open its wiki page in your web browser.",
+
+  "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.cannotMoveHere": "This widget cannot be moved here!",
+  "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.mustEnableWidget": "This widget must be enabled to be selected!",
+  "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToMove": "Click %s more time(s) to re-order this widget to here!",
+  "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToSelect": "Click %s more time(s) to select!",
+  "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.unselectableWidget": "This widget cannot be selected!",
 
   "skyblocker.updateNotifications.newUpdateMessage": "There's a new Skyblocker update available! %s",
   "skyblocker.updateNotifications.newUpdateToast.description": "Download version %s!",
