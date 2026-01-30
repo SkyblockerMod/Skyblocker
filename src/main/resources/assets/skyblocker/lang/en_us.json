@@ -147,6 +147,9 @@
   "skyblocker.config.chat.skyblockXpMessages": "SkyBlock XP Messages",
   "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "Notifies you in the chat when you gain SkyBlock XP.",
 
+  "skyblocker.config.commands.query": "Option '%s' is currently set to %s",
+  "skyblocker.config.commands.set": "Option '%s' is now set to %s",
+
   "skyblocker.config.crimsonIsle": "Crimson Isle",
 
   "skyblocker.config.crimsonIsle.extendNetherFog": "Extend Nether Fog",
