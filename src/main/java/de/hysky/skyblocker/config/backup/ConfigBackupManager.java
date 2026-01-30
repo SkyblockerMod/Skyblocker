@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 public class ConfigBackupManager {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Path BACKUP_DIR = SkyblockerMod.CONFIG_DIR.resolve("config_backups");
-	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+	public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
 	private static final int MAX_BACKUPS = 10;
 
 	private ConfigBackupManager() {}

@@ -6,6 +6,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.backup.ConfigBackupManager;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
@@ -23,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
@@ -68,7 +70,7 @@ public class JsonData<T> {
 	 *                     {@link JsonOps#COMPRESSED} is required for maps with non-string keys.
 	 */
 	public JsonData(Path file, Codec<T> codec, T defaultValue, boolean compressed) {
-		this(file, codec, defaultValue, compressed, true, false);
+		this(file, codec, defaultValue, compressed, true, true);
 	}
 
 	/**
@@ -120,10 +122,9 @@ public class JsonData<T> {
 	private void loadInternal() {
 		boolean createBackup = false;
 		try (BufferedReader reader = Files.newBufferedReader(file)) {
-			// Atomic operation to prevent concurrent modification
 			DataResult<T> parsed = codec.parse(compressed ? JsonOps.COMPRESSED : JsonOps.INSTANCE, JsonParser.parseReader(reader));
 			parsed.resultOrPartial(s -> LOGGER.error("[Skyblocker Json Data] Failed to parse data from file: `{}`. {}", file, s))
-					.ifPresent(t -> data = t);
+					.ifPresent(t -> data = t); // Atomic operation to prevent concurrent modification
 			createBackup = parsed.isError();
 		} catch (NoSuchFileException ignored) {
 		} catch (Exception e) {
@@ -139,7 +140,18 @@ public class JsonData<T> {
 							.append("See logs for details. A backup of the file has been made.")
 			));
 			try {
-				Files.copy(file, file.getParent().resolve(file.getFileName().toString() + ".bak"), StandardCopyOption.REPLACE_EXISTING);
+				// future-proof in case we use other things apart from json
+				String fileName = file.getFileName().toString();
+				int extensionIndex = fileName.lastIndexOf('.');
+				String newFileName;
+				if (extensionIndex >= 0) {
+					String extension = fileName.substring(extensionIndex);
+					newFileName = fileName.substring(0, extensionIndex) + '_' + ConfigBackupManager.FORMATTER.format(LocalDateTime.now()) + extension;
+				} else {
+					LOGGER.warn("[Skyblocker Json Data] No extension? {}", file);
+					newFileName = fileName + '_' + ConfigBackupManager.FORMATTER.format(LocalDateTime.now());
+				}
+				Files.copy(file, file.getParent().resolve(newFileName), StandardCopyOption.REPLACE_EXISTING);
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker Json Data] Failed to create backup for file: `{}`", file, e);
 			}
