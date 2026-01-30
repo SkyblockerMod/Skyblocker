@@ -45,10 +45,6 @@
     "specialEffects": {
       "rareDungeonDropEffects": true
     },
-    "hitbox": {
-      "oldFarmlandHitbox": true,
-      "oldLeverHitbox": false
-    },
     "lockedSlots": [
       3,
       8,
