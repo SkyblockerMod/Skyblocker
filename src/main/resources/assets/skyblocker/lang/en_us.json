@@ -751,6 +751,35 @@
   "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "Enable Mythological Ritual Helper",
   "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper.@Tooltip": "Adds waypoints for nearby Griffin Burrows during Diana's Mythological Ritual event.",
 
+  "skyblocker.config.hud.fancyTab.enable": "Enable Fancy Tab",
+  "skyblocker.config.hud.fancyTab.hiddenWidgets": "Hidden Widgets",
+  "skyblocker.config.hud.fancyTab.positioner": "Positioner: %s",
+
+  "skyblocker.config.hud.globalOptionsScreen.title": "Skyblock HUD and TAB options",
+
+  "skyblocker.config.hud.globalScale": "Global Scale",
+
+  "skyblocker.config.hud.helpText": "Use right click to add widgets and edit their options.\nYou can delete a widget by pressing the delete key.\n\nWidgets are per island. To have a widget show up everywhere select \"Everywhere\" in the first dropdown. Widget options apply to every location with a few exceptions.\n\nYou can hold SHIFT to snap to other widgets.",
+
+  "skyblocker.config.hud.location.everywhere": "Everywhere",
+
+  "skyblocker.config.hud.position.parent": "Parent: %s",
+  "skyblocker.config.hud.position.parent.screen": "Screen",
+  "skyblocker.config.hud.position.pointParent": "Parent Point",
+  "skyblocker.config.hud.position.pointThis": "This Point",
+
+  "skyblocker.config.hud.screen.rightClick": "Right click to add widgets and edit things.",
+
+  "skyblocker.config.hud.topBar.autoAnchor": "Auto Screen Anchor",
+  "skyblocker.config.hud.topBar.autoAnchor.@Tooltip": "Auto Screen Anchor",
+  "skyblocker.config.hud.topBar.help": "Help",
+  "skyblocker.config.hud.topBar.options": "Options",
+  "skyblocker.config.hud.topBar.options.@Tooltip": "Automatically change the anchor of the widget based on the position to avoid it going off screen when the screen is resized.",
+
+  "skyblocker.config.hud.widget.copy": "Create Copy",
+  "skyblocker.config.hud.widget.inherited": "This widget is inherited from the \"Everything\" screen, edit there for the change to take place everywhere or create a copy to have it only affect here.",
+  "skyblocker.config.hud.widget.remove": "Remove",
+
   "skyblocker.config.hunting": "Hunting",
 
   "skyblocker.config.hunting.huntingBoxHelper": "Enable Hunting Box Helper",
@@ -1329,7 +1358,7 @@
   "skyblocker.config.uiAndVisuals.tabHud.compactWidgets": "Compact Widgets",
   "skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip": "Display widgets in a compact form.",
   "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Open Widget Config Screen",
-  "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "Use this to move Tab and HUD widgets.\nUse `/skyblocker hud` to get here quicker!",
+  "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "Add, edit and remove HUD widgets here!\n\nCan also be accessed with /skyblocker hud",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.CENTERED": "Centered",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.TOP": "Top",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Default Positioning Behavior",
@@ -1338,6 +1367,8 @@
   "skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip": "If on, will fetch current effects from the tab footer if the Hypixel Effects Widget is disabled.",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground": "Enable HUD Background",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip": "Enables the background of the non-tab HUD.",
+  "skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList": "Enable fancy widgets list",
+  "skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip": "Replaces the /widgets and /tablist menu with a more readable version.",
   "skyblocker.config.uiAndVisuals.tabHud.nameSorting": "Player Name Sorting Method",
   "skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip": "Alphabetical sorting sorts names alphabetically while Default has no particular order.",
   "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault": "Show Vanilla Tab by Default",
@@ -1351,8 +1382,7 @@
   "skyblocker.config.uiAndVisuals.tabHud.style.FANCY": "Fancy",
   "skyblocker.config.uiAndVisuals.tabHud.style.MINIMAL": "Minimal",
   "skyblocker.config.uiAndVisuals.tabHud.style.SIMPLE": "Simple",
-  "skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled": "Enable fancy tab HUD",
-  "skyblocker.config.uiAndVisuals.tabHud.tabHudScale": "Scale factor of fancy tab HUD",
+  "skyblocker.config.uiAndVisuals.tabHud.tabHudScale": "Global scale factor of the HUD",
   "skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip": "Value in %, relative to your vanilla GUI scale",
 
   "skyblocker.config.uiAndVisuals.teleportOverlay": "Teleport Overlay",
@@ -1629,6 +1659,9 @@
   "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "Click to share this egg's location in chat!",
   "skyblocker.helpers.hoppitysHunt.unableToShareEgg": "Unable to share this egg.",
 
+  "skyblocker.hud.missingTabWidget[0]": "Missing data for %s TAB widget!",
+  "skyblocker.hud.missingTabWidget[1]": "Add it to the tab using /widgets!",
+
   "skyblocker.inventorySearch.clickHereToSearch": "Click here to search.",
   "skyblocker.inventorySearch.searchInventory": "Search Inventory",
 
@@ -1876,6 +1909,12 @@
   "skyblocker.waypoints.waypointsOptions": "Waypoints Options",
 
   "skyblocker.webSocket.receivedCrystalsWaypoint": "Received a waypoint to %s from the Skyblocker WebSocket.",
+
+  "skyblocker.widgetsList.info.overflowWarning": "It would seem you've run out of widget space in the player list! Some widgets are not being displayed correctly!",
+  "skyblocker.widgetsList.info.overflowWarning.columnTip": "Be sure to enabled the third column with the button to the right.",
+  "skyblocker.widgetsList.info.overflowWarning.wrappingSpacingTip": "Enable wrapping and disable spacing on widgets to save on space.",
+  "skyblocker.widgetsList.info.preview": "Hold CTRL to see a preview.",
+  "skyblocker.widgetsList.playerColumn": "This column is being used to display online players.\nEnable the 3rd column to have widgets instead!",
 
   "skyblocker.wikiLookup.noArticleFound.fandom": "Unable to locate a Fandom wiki article for this item...",
   "skyblocker.wikiLookup.noArticleFound.official": "Unable to locate an Official wiki article for this item...",

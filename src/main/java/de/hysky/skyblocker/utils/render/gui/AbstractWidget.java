@@ -34,20 +34,28 @@ public abstract class AbstractWidget implements LayoutElement, GuiEventListener,
 		return this.w;
 	}
 
-	public void setWidth(int width) {
-		this.w = width;
-	}
-
 	public final int getHeight() {
 		return this.h;
 	}
 
-	@Override
-	public void visitWidgets(Consumer<net.minecraft.client.gui.components.AbstractWidget> consumer) {}
+	public final int getRight() {
+		return getX() + getWidth();
+	}
+
+	public final int getBottom() {
+		return getY() + getHeight();
+	}
+
+	public void setWidth(int width) {
+		this.w = width;
+	}
 
 	public void setHeight(int height) {
 		this.h = height;
 	}
+
+	@Override
+	public void visitWidgets(Consumer<net.minecraft.client.gui.components.AbstractWidget> consumer) {}
 
 	public void setDimensions(int size) {
 		setDimensions(size, size);

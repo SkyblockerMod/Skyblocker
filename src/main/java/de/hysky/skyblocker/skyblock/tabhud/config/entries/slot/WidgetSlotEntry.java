@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsElementList;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListScreen;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -23,7 +23,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	private final Button enableButton;
 	private final boolean alwaysEnabled;
 
-	public WidgetSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
+	public WidgetSlotEntry(WidgetsListScreen parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
 		editButton = Button.builder(Component.literal("EDIT"), button -> this.parent.clickAndWaitForServer(this.slotId, 1))
 				.size(32, 12)
@@ -79,7 +79,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	private static void addToast(Component message) {
-		Minecraft.getInstance().getToastManager().addToast(new SystemToast(WidgetsListTab.SYSTEM_TOAST_ID, message, null));
+		Minecraft.getInstance().getToastManager().addToast(new SystemToast(WidgetsListScreen.SYSTEM_TOAST_ID, message, null));
 	}
 
 	@Override

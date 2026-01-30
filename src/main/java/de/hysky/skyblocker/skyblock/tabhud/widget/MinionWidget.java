@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -92,7 +93,7 @@ public class MinionWidget extends TabHudWidget {
 	public static final Pattern MINION_PATTERN = Pattern.compile("^(?<amount>\\d+)x (?<name>.*) (?<level>[XVI]*) \\[(?<status>.*)]");
 
 	public MinionWidget() {
-		super("Minions", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Minions", TITLE, ChatFormatting.DARK_AQUA.getColor(), Location.PRIVATE_ISLAND);
 	}
 
 	@Override

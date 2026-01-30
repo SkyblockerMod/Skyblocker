@@ -2,6 +2,9 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.BooleanOption;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
@@ -22,18 +25,26 @@ public class EffectWidget extends TabHudWidget {
 	private static final MutableComponent TITLE = Component.literal("Active Effects").withStyle(ChatFormatting.DARK_PURPLE,
 			ChatFormatting.BOLD);
 	private static final Pattern COOKIE_PATTERN = Pattern.compile(".*\\nCookie Buff\\n(?<buff>.*)\\n");
+	private static final String HYPIXEL_WIDGET_NAME = "Active Effects";
+
+	private boolean effectsFromFooter = true;
 
 	public EffectWidget() {
-		super("Active Effects", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super(HYPIXEL_WIDGET_NAME, TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		PlayerListManager.registerFooterListener(() -> {
+			if (effectsFromFooter && WidgetManager.isInCurrentScreen(this) && PlayerListManager.getListWidget(HYPIXEL_WIDGET_NAME) == null) updateContent();
+		});
 	}
 
 	@Override
 	public void updateContent(List<Component> lines) {
+		fetchFromWidget(lines);
+	}
 
-		if (lines.isEmpty())
-			fetchFromFooter();
-		else
-			fetchFromWidget(lines);
+	@Override
+	protected void updateTabWidgetAbsent() {
+		if (!effectsFromFooter) super.updateTabWidgetAbsent();
+		else fetchFromFooter();
 	}
 
 	private void fetchFromWidget(List<Component> lines) {
@@ -92,5 +103,12 @@ public class EffectWidget extends TabHudWidget {
 			this.addComponent(Components.iconFatTextComponent(Ico.POTION, active,
 					Component.literal(lines[2]).withStyle(ChatFormatting.AQUA)));
 		}
+	}
+
+	@Override
+	public void getOptions(List<WidgetOption<?>> options) {
+		super.getOptions(options);
+		// TODO translatable
+		options.add(new BooleanOption("from_footer", Component.literal("Effects from footer"), () -> effectsFromFooter, b -> effectsFromFooter = b, true));
 	}
 }

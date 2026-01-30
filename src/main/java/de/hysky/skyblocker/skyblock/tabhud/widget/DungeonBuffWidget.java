@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -18,12 +19,12 @@ public class DungeonBuffWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public DungeonBuffWidget() {
-		super("Dungeon Buffs", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Dungeon Buffs", TITLE, ChatFormatting.DARK_PURPLE.getColor(), Location.DUNGEON);
+		cacheForConfig = false;
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
-
+	public void updateContent() {
 		String footertext = PlayerListManager.getFooter();
 
 		if (footertext == null || !footertext.contains("Dungeon Buffs")) {
@@ -54,6 +55,14 @@ public class DungeonBuffWidget extends TabHudWidget {
 		}
 
 	}
+
+	@Override
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		return List.of(new PlainTextComponent(net.minecraft.network.chat.Component.literal("Life Blessing").withStyle(ChatFormatting.LIGHT_PURPLE)));
+	}
+
+	@Override
+	protected void updateContent(List<net.minecraft.network.chat.Component> lines) {}
 
 	@SuppressWarnings("DataFlowIssue")
 	public int getBlessingColor(String blessing) {

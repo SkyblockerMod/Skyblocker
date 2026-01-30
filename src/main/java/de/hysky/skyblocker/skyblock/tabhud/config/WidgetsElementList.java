@@ -6,7 +6,6 @@ import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEn
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -27,8 +26,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	final int SELECT_COLOR = 0x761111FF;
 	final int MOVE_COLOR = 0x76FF3333;
 
-	private final WidgetsListTab parent;
-	private @Nullable Button backButton;
+	private final WidgetsListScreen parent;
 	private boolean rightUpArrowHovered = false;
 	private boolean rightDownArrowHovered = false;
 	private boolean leftUpArrowHovered = false;
@@ -39,7 +37,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	public static int maxPosition = -1;
 	public static boolean isOnSecondPage = false;
 
-	public WidgetsElementList(WidgetsListTab parent, Minecraft minecraftClient, int width, int height, int y) {
+	public WidgetsElementList(WidgetsListScreen parent, Minecraft minecraftClient, int width, int height, int y) {
 		super(minecraftClient, width, height, y, 32);
 		this.parent = parent;
 	}
@@ -64,9 +62,6 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 		WidgetsListEntry hoveredEntry = getHovered();
 		if (hoveredEntry != null) {
 			hoveredEntry.renderTooltip(context, hoveredEntry.getX(), hoveredEntry.getY(), hoveredEntry.getWidth(), hoveredEntry.getHeight(), mouseX, mouseY);
-		}
-		if (backButton != null) {
-			backButton.render(context, mouseX, mouseY, delta);
 		}
 
 		if (!enableEditing || this.getSelected() == null) return;
@@ -130,10 +125,6 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 		}
 	}
 
-	public void setBackButton(Button backButton) {
-		this.backButton = backButton;
-	}
-
 	public void updateList() {
 		ArrayList<Int2ObjectMap.Entry<WidgetsListSlotEntry>> entries = new ArrayList<>(parent.getEntries());
 		clearEntries();
@@ -141,15 +132,10 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 				.sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))
 				.map(Map.Entry::getValue)
 				.forEach(this::addEntry);
-		if (!parent.getCustomWidgetEntries().isEmpty() && parent.shouldShowCustomWidgetEntries()) {
-			if (!children().isEmpty()) addEntry(new SeparatorEntry());
-			parent.getCustomWidgetEntries().forEach(this::addEntry);
-		}
 	}
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-		if (backButton != null && backButton.mouseClicked(click, doubled)) return true;
 		if (!enableEditing || this.getSelected() == null) return super.mouseClicked(click, doubled);
 		if (rightUpArrowHovered) {
 			parent.shiftClickAndWaitForServer(13, 1);

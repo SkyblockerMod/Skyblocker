@@ -4,18 +4,13 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
-import de.hysky.skyblocker.skyblock.slayers.SlayerHudWidget;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
-import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
 import net.azureaaron.dandelion.api.controllers.ColourController;
 import net.azureaaron.dandelion.api.controllers.FloatController;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import java.awt.Color;
@@ -61,11 +56,6 @@ public class SlayersCategory {
 								() -> config.slayers.enableHud,
 								newValue -> config.slayers.enableHud = newValue)
 						.controller(ConfigUtils.createBooleanController())
-						.build())
-				.option(ButtonOption.createBuilder()
-						.name(Component.translatable("skyblocker.config.slayer.slayerHud"))
-						.prompt(Component.translatable("text.skyblocker.open"))
-						.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.bossbar"))

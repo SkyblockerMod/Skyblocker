@@ -1,9 +1,7 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -11,9 +9,9 @@ import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
@@ -22,7 +20,6 @@ import net.minecraft.world.item.Items;
 
 @RegisterWidget
 public class SweepDetailsHudWidget extends ComponentBasedWidget {
-	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Map<String, ItemStack> LOG_TO_ITEM = Map.of(
 			"Fig", new ItemStack(Items.STRIPPED_SPRUCE_LOG),
 			"Mangrove", new ItemStack(Items.MANGROVE_LOG),
@@ -37,23 +34,17 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.HUB, Location.THE_PARK);
 
 	public SweepDetailsHudWidget() {
-		super(Component.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails");
+		super(Component.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweep_details", LOCATIONS);
 		update();
 	}
 
 	@Override
-	public boolean shouldRender(Location location) {
-		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea().equals(Area.FOREST)) && super.shouldRender(location);
+	public boolean shouldRender() {
+		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea().equals(Area.FOREST)) && super.shouldRender();
 	}
 
 	@Override
 	public void updateContent() {
-		if (CLIENT.player == null || CLIENT.screen instanceof WidgetsConfigurationScreen) {
-			addComponent(Components.iconTextComponent(new ItemStack(Items.STRIPPED_SPRUCE_LOG), Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
-			addComponent(new PlainTextComponent(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
-			addComponent(new PlainTextComponent(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
-			return;
-		}
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
 			SweepDetailsListener.active = false;
 			ItemStack axeIcon = switch (Utils.getLocation()) {
@@ -93,25 +84,13 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	public Set<Location> availableLocations() {
-		return LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!availableLocations().contains(location)) return;
-		SkyblockerConfigManager.get().foraging.galatea.enableSweepDetailsWidget = enabled;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		if (!availableLocations().contains(location)) return false;
-		return SkyblockerConfigManager.get().foraging.galatea.enableSweepDetailsWidget;
-	}
-
-	@Override
-	public Component getDisplayName() {
-		return Component.translatable("skyblocker.galatea.hud.sweepDetails");
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		return List.of(
+				Components.iconTextComponent(ItemRepository.getItemStack("FIG_LOG", Items.STRIPPED_SPRUCE_LOG.getDefaultInstance()),
+						Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")),
+				new PlainTextComponent(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)),
+				new PlainTextComponent(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15))
+		);
 	}
 
 	@Override

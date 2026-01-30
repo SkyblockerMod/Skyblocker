@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListScreen;
 import de.hysky.skyblocker.utils.ItemUtils;
 import java.util.List;
 import net.minecraft.client.Minecraft;
@@ -17,7 +17,7 @@ public class EditableSlotEntry extends WidgetsListSlotEntry {
 	private final Button editButton;
 	private final boolean locked;
 
-	public EditableSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
+	public EditableSlotEntry(WidgetsListScreen parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
 		editButton = Button.builder(Component.literal("EDIT"), button -> {
 			this.parent.clickAndWaitForServer(this.slotId, 0);

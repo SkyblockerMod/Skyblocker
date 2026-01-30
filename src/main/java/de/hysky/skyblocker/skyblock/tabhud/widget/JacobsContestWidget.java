@@ -5,6 +5,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -44,7 +45,7 @@ public class JacobsContestWidget extends TabHudWidget {
 	);
 
 	public JacobsContestWidget() {
-		super("Jacob's Contest", TITLE, ChatFormatting.YELLOW.getColor());
+		super("Jacob's Contest", TITLE, ChatFormatting.YELLOW.getColor(), Location.HUB, Location.THE_FARMING_ISLAND, Location.GARDEN);
 	}
 
 	@Override

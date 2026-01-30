@@ -8,6 +8,6 @@ public class ScreenConst {
 	private static final int SCREEN_PAD_BASE = 20;
 
 	public static int getScreenPad() {
-		return (int) ((1f / ((float) SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f) * SCREEN_PAD_BASE));
+		return (int) ((1f / ((float) SkyblockerConfigManager.get().uiAndVisuals.hud.hudScale / 100f) * SCREEN_PAD_BASE));
 	}
 }

@@ -2,30 +2,26 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
 import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.joml.Vector2i;
 
 public class TopAlignedWidgetPositioner extends WidgetPositioner {
 
-	private static final int START_Y = 20;
+	private static final int START_Y = 0;
 
 	private int totalWidth = 0;
+	private int totalHeight = 0;
 
 	private int currentWidth = 0;
 	private int currentY = START_Y;
 
-	private final List<HudWidget> widgets = new ArrayList<>();
-
-	public TopAlignedWidgetPositioner(int screenWidth, int screenHeight) {
-		super(screenWidth, screenHeight);
+	public TopAlignedWidgetPositioner(float maxHeight, int screenHeight) {
+		super(maxHeight, screenHeight);
 	}
 
 	@Override
 	public void positionWidget(HudWidget hudWidget) {
-		widgets.add(hudWidget);
-
-		if (currentY + hudWidget.getHeight() > screenHeight * 0.75f) {
+		if (currentY + hudWidget.getHeight() > screenHeight * maxHeight) {
+			totalHeight = Math.max(totalHeight, currentY);
 			totalWidth += currentWidth + ScreenConst.WIDGET_PAD;
 			currentY = START_Y;
 			currentWidth = 0;
@@ -37,10 +33,9 @@ public class TopAlignedWidgetPositioner extends WidgetPositioner {
 	}
 
 	@Override
-	public void finalizePositioning() {
-		int off = (screenWidth - totalWidth - currentWidth) / 2;
-		for (HudWidget widget : widgets) {
-			widget.setX(widget.getX() + off);
-		}
+	public Vector2i finalizePositioning() {
+		totalHeight = Math.max(totalHeight, currentY);
+		totalWidth += currentWidth + ScreenConst.WIDGET_PAD;
+		return new Vector2i(totalWidth, totalHeight);
 	}
 }

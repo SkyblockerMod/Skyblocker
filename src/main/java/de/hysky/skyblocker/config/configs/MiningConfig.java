@@ -160,7 +160,7 @@ public class MiningConfig {
 	}
 
 	/**
-	 * @deprecated See {@link UIAndVisualsConfig.TabHudStyle}.
+	 * @deprecated See {@link UIAndVisualsConfig.HudStyle}.
 	 */
 	@Deprecated
 	public enum DwarvenHudStyle {

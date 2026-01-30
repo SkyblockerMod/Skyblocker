@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.hunting;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import java.util.List;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -35,13 +35,17 @@ public class LassoHud extends ComponentBasedWidget {
 	}
 
 	public LassoHud() {
-		super(Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), "Lasso HUD");
+		super(
+				Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD),
+				ChatFormatting.DARK_AQUA.getColor(),
+				new Information("lasso_hud", Component.translatable("skyblocker.config.hunting.lassoHud"), AVAILABLE_LOCATION::contains)
+		);
 		instance = this;
 	}
 
 	public static void onEntityUpdate(ArmorStand entity) {
 		//check to see if close to end of players lasso
-		if (!getInstance().isEnabledIn(Utils.getLocation()) || lassoEntity == null || entity.distanceToSqr(lassoEntity) > 16) return;
+		if (!AVAILABLE_LOCATION.contains(Utils.getLocation()) || lassoEntity == null || entity.distanceToSqr(lassoEntity) > 16) return;
 
 		//see if it's the name we are looking for
 		Component name = entity.getCustomName();
@@ -55,7 +59,7 @@ public class LassoHud extends ComponentBasedWidget {
 	}
 
 	public static void onEntityAttach(ClientboundSetEntityLinkPacket packet) {
-		if (!getInstance().isEnabledIn(Utils.getLocation()) || CLIENT.level == null) return;
+		if (!AVAILABLE_LOCATION.contains(Utils.getLocation()) || CLIENT.level == null) return;
 		//see if lasso is coming from this player
 		if (CLIENT.level.getEntity(packet.getDestId()) instanceof Player player) {
 			if (player.equals(CLIENT.player)) {
@@ -69,7 +73,7 @@ public class LassoHud extends ComponentBasedWidget {
 					case "ABYSMAL_LASSO" -> 2;
 					case "VINERIP_LASSO", "ENTANGLER_LASSO" -> 3;
 					case "EVERSTRETCH_LASSO" -> 4;
-					//Moody Grappleshot is a thing and we don't want to throw (crash) when it is used.
+					//Moody Grappleshot is a thing, and we don't want to throw (crash) when it is used.
 					default -> 0;
 				};
 
@@ -95,29 +99,19 @@ public class LassoHud extends ComponentBasedWidget {
 	}
 
 	@Override
-	public boolean shouldRender(Location location) {
+	protected List<de.hysky.skyblocker.skyblock.tabhud.widget.component.Component> getConfigComponents() {
+		return List.of(
+				Components.progressComponent(Items.LEAD.getDefaultInstance(), Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.wait"), 50)
+		);
+	}
+
+	@Override
+	public boolean shouldRender() {
 		//forget entity if it has died
 		if (lassoEntity != null && !lassoEntity.isAlive()) {
 			lassoEntity = null;
 		}
 
-		return percentage != -1 && lassoEntity != null && super.shouldRender(location);
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATION;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!AVAILABLE_LOCATION.contains(location)) return;
-		SkyblockerConfigManager.get().hunting.lassoHud.enabled = enabled;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		if (!AVAILABLE_LOCATION.contains(location)) return false;
-		return SkyblockerConfigManager.get().hunting.lassoHud.enabled;
+		return percentage != -1 && lassoEntity != null;
 	}
 }

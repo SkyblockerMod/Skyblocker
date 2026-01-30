@@ -2,18 +2,13 @@ package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.PlayerListWidget;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.language.I18n;
 
 public class UIAndVisualsConfig {
@@ -58,7 +53,7 @@ public class UIAndVisualsConfig {
 
 	public TitleContainer titleContainer = new TitleContainer();
 
-	public TabHudConf tabHud = new TabHudConf();
+	public HudConf hud = new HudConf();
 
 	public FancyAuctionHouse fancyAuctionHouse = new FancyAuctionHouse();
 
@@ -178,14 +173,17 @@ public class UIAndVisualsConfig {
 		}
 	}
 
-	public static class TabHudConf {
-		public boolean tabHudEnabled = true;
+	public static class HudConf {
+		@Deprecated
+		public transient boolean tabHudEnabled = true;
 
-		public int tabHudScale = 100;
+		public boolean fancyWidgetsList = true;
+
+		public int hudScale = 100;
 
 		public boolean showVanillaTabByDefault = false;
 
-		public TabHudStyle style = TabHudStyle.FANCY;
+		public HudStyle style = HudStyle.FANCY;
 
 		public boolean displayIcons = true;
 
@@ -193,24 +191,24 @@ public class UIAndVisualsConfig {
 
 		public boolean enableHudBackground = true;
 
-		public boolean effectsFromFooter = false;
-
-		public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
+		@Deprecated
+		public transient boolean effectsFromFooter = false;
 
 		@Deprecated
 		public transient boolean plainPlayerNames = false;
 
-		public NameSorting nameSorting = NameSorting.DEFAULT;
+		@Deprecated
+		public transient Object nameSorting = PlayerListWidget.NameSorting.DEFAULT;
 	}
 
 	/**
 	 * @implNote Currently, there are no "decorations", meaning that there is no difference between the SIMPLE and CLASSIC styles.
 	 */
-	public enum TabHudStyle {
+	public enum HudStyle {
 		/**
 		 * The minimal style, with no decorations nor custom components,
 		 * rendered in a minimal rectangle background,
-		 * or no background at all if {@link TabHudConf#enableHudBackground} is false.
+		 * or no background at all if {@link HudConf#enableHudBackground} is false.
 		 */
 		MINIMAL,
 		/**
@@ -233,36 +231,6 @@ public class UIAndVisualsConfig {
 		@Override
 		public String toString() {
 			return I18n.get("skyblocker.config.uiAndVisuals.tabHud.style." + name());
-		}
-	}
-
-	public enum NameSorting {
-		DEFAULT,
-		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
-		SKYBLOCK_LEVEL(Comparator.<PlayerInfo>comparingInt(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
-
-		public final Comparator<PlayerInfo> comparator;
-
-		NameSorting() {
-			this(null);
-		}
-
-		NameSorting(Comparator<PlayerInfo> comparator) {
-			this.comparator = comparator;
-		}
-
-		private static Optional<String> matchPlayerName(String name, String group) {
-			Matcher matcher = PlayerListManager.PLAYER_NAME_PATTERN.matcher(name);
-			return matcher.matches() ? Optional.of(matcher.group(group)) : Optional.empty();
-		}
-
-		@Override
-		public String toString() {
-			return switch (this) {
-				case DEFAULT -> "Default";
-				case ALPHABETICAL -> "Alphabetical";
-				case SKYBLOCK_LEVEL -> "Skyblock Level";
-			};
 		}
 	}
 
