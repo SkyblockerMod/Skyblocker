@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.slayers;
+package de.hysky.skyblocker.skyblock.slayers.features;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
