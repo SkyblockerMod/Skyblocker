@@ -967,7 +967,7 @@
     "skyblocker.config.mining.dwarvenMines.carpetHighlightColor": "地毯高亮颜色",
     "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "设置不可破坏地毯的高亮颜色。",
     "skyblocker.slayer.personalBest": "最佳纪录！",
-    "skyblocker.slayer.previousPB": "之前的最佳纪录是%s。",
+    "skyblocker.slayer.previousPersonalBest": "之前的最佳纪录是%s。",
     "skyblocker.config.chat.confirmationPromptHelper": "聊天确认提示助手",
     "skyblocker.config.dungeons.classBasedPlayerGlow": "基于职业的玩家光亮",
     "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "根据队友的职业而不是会员等级来更改队友的发光颜色。",
@@ -1623,5 +1623,8 @@
     "skyblocker.config.dungeons.map.hideCheckmarks": "隐藏勾号",
     "skyblocker.config.dungeons.map.hideCheckmarks.@Tooltip": "隐藏有名称的房间的勾号。需要启用“显示房间名称”。",
     "skyblocker.customization.armor": "护甲",
-    "skyblocker.customization.item": "物品"
+    "skyblocker.customization.item": "物品",
+    "skyblocker.config.uiAndVisuals.bars.enableBarsRift": "在Rift中启用",
+    "skyblocker.config.uiAndVisuals.slotText.chipLevel": "芯片等级",
+    "skyblocker.config.uiAndVisuals.slotText.chipLevel.@tooltip": "在芯片菜单中显示芯片的等级。"
 }

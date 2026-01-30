@@ -14,6 +14,7 @@
     "ChestBlockEntityMixin",
     "ChestMenuMixin",
     "ClientboundCommandsPacketMixin",
+	"ClientCommonPacketListenerImplMixin",
     "ClientLevelMixin",
     "ClientPacketListenerMixin",
     "DataComponentHolderMixin",

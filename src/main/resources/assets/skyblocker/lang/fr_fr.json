@@ -554,7 +554,7 @@
     "skyblocker.config.uiAndVisuals.titleContainer.direction.VERTICAL": "Vertical",
     "skyblocker.config.uiAndVisuals.waypoints.waypointType": "Type de Marqueurs",
     "skyblocker.slayer.miniBossSpawnAlert": "Mini Boss",
-    "skyblocker.slayer.previousPB": "Votre record précédent était %s.",
+    "skyblocker.slayer.previousPersonalBest": "Votre record précédent était %s.",
     "skyblocker.waypoints.newGroup": "Nouveau Groupe de Marqueurs",
     "skyblocker.waypoints.exportWaypointsSkyblocker": "Exporter des Marqueurs (Skyblocker)",
     "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "Exporte les Marqueurs dans le presse-papier (Format Skyblocker)",

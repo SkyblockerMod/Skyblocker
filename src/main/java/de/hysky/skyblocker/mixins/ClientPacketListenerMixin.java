@@ -6,13 +6,11 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.HealthBars;
-import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapTexture;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.TeleportMaze;
@@ -27,11 +25,11 @@ import de.hysky.skyblocker.skyblock.hunting.LassoHud;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
 import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAOTE;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.CommonListenerCookie;
 import net.minecraft.core.BlockPos;
@@ -65,9 +63,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPacketListener.class)
 public abstract class ClientPacketListenerMixin extends ClientCommonPacketListenerImpl {
 	@Shadow
-	private ClientLevel level;
-
-	@Shadow
 	@Final
 	private static Logger LOGGER;
 
@@ -80,8 +75,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 		if (!(entity instanceof ArmorStand armorStandEntity)) return;
 
 		SlayerManager.checkSlayerBoss(armorStandEntity);
-
-		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
+		FirePillarAnnouncer.checkFirePillar(entity);
 
 		CorpseFinder.checkIfCorpse(armorStandEntity);
 		HealthBars.healthBar(armorStandEntity);
@@ -94,7 +88,6 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
 		}
-
 
 		FishingHookDisplayHelper.onArmorStandSpawn(armorStandEntity);
 	}
@@ -123,7 +116,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 		DungeonManager.onItemPickup(itemEntity);
 	}
 
-	@WrapWithCondition(method = "handleSetEntityPassengersPacket", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;)V", remap = false))
+	@WrapWithCondition(method = "handleSetEntityPassengersPacket", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;)V"))
 	private boolean skyblocker$cancelEntityPassengersWarning(Logger instance, String msg) {
 		return !Utils.isOnHypixel();
 	}
@@ -147,7 +140,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 		PlayerListManager.updateFooter(packet.footer());
 	}
 
-	@WrapWithCondition(method = "handlePlayerInfoUpdate", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
+	@WrapWithCondition(method = "handlePlayerInfoUpdate", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"))
 	private boolean skyblocker$cancelPlayerListWarning(Logger instance, String format, Object arg1, Object arg2) {
 		return !Utils.isOnHypixel();
 	}
@@ -157,17 +150,17 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 		PlaySoundEvents.FROM_SERVER.invoker().onPlaySoundFromServer(packet);
 	}
 
-	@WrapWithCondition(method = "handleUnknownCustomPayload", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
+	@WrapWithCondition(method = "handleUnknownCustomPayload", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V"))
 	private boolean skyblocker$dropBadlionPacketWarnings(Logger instance, String message, Object identifier) {
 		return !(Utils.isOnHypixel() && ((Identifier) identifier).getNamespace().equals("badlion"));
 	}
 
-	@WrapWithCondition(method = {"handleSetScore", "handleResetScore"}, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false), require = 2)
+	@WrapWithCondition(method = {"handleSetScore", "handleResetScore"}, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V"), require = 2)
 	private boolean skyblocker$cancelUnknownScoreboardObjectiveWarnings(Logger instance, String message, Object objectiveName) {
 		return !Utils.isOnHypixel();
 	}
 
-	@WrapWithCondition(method = "handleSetPlayerTeamPacket", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;[Ljava/lang/Object;)V", remap = false))
+	@WrapWithCondition(method = "handleSetPlayerTeamPacket", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;[Ljava/lang/Object;)V"))
 	private boolean skyblocker$cancelTeamWarning(Logger instance, String format, Object... arg) {
 		return !Utils.isOnHypixel();
 	}

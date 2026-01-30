@@ -161,7 +161,7 @@ public class HealthBars {
 
 			cleanedText.append(parts.get(i));
 		}
-		armorStand.setCustomName(cleanedText);
+		armorStand.skyblocker$setCustomName(cleanedText);
 	}
 
 	/**
@@ -207,7 +207,7 @@ public class HealthBars {
 			}
 			cleanedText.append(parts.get(i));
 		}
-		armorStand.setCustomName(cleanedText);
+		armorStand.skyblocker$setCustomName(cleanedText);
 	}
 
 	/**

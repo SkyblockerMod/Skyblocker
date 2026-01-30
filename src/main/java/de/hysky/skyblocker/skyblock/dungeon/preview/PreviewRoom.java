@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,6 +35,13 @@ public class PreviewRoom extends Room {
 	@Override
 	protected Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return new Direction[]{Direction.NW};
+	}
+
+	@Override
+	protected void onUseBlock(Level level, BlockPos pos) {
+		// Fix Scheduler being called from the Server thread
+		if (!level.isClientSide()) return;
+		super.onUseBlock(level, pos);
 	}
 
 	protected void loadSecrets() {

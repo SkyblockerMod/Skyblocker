@@ -12,12 +12,12 @@ public class StakeIndicator {
 	private static final Title title = new Title("skyblocker.rift.stakeNow", ChatFormatting.RED);
 
 	public static void updateStake() {
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableSteakStakeIndicator || !SlayerManager.isInSlayerType(SlayerType.VAMPIRE)) {
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableSteakStakeIndicator || !SlayerManager.isFightingSlayerType(SlayerType.VAMPIRE)) {
 			TitleContainer.removeTitle(title);
 			return;
 		}
-		Entity slayerEntity = SlayerManager.getSlayerBossArmorStand();
-		if (slayerEntity != null && slayerEntity.getDisplayName().toString().contains("҉")) {
+		Entity slayerEntity = SlayerManager.getSlayerArmorStand();
+		if (slayerEntity != null && slayerEntity.getName().toString().contains("҉")) {
 			TitleContainer.addTitleAndPlaySound(title);
 		} else {
 			TitleContainer.removeTitle(title);

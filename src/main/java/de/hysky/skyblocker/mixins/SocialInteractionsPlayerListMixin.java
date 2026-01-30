@@ -13,7 +13,7 @@ import de.hysky.skyblocker.utils.Utils;
 @Mixin(SocialInteractionsPlayerList.class)
 public class SocialInteractionsPlayerListMixin {
 
-	@WrapWithCondition(method = "addOnlinePlayers", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", remap = false))
+	@WrapWithCondition(method = "addOnlinePlayers", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
 	private boolean skyblocker$hideInvalidPlayers(Map<Object, Object> map, Object uuid, Object entry) {
 		return !(Utils.isOnSkyblock() && !((PlayerEntry) entry).getPlayerName().matches("[A-Za-z0-9_]+"));
 	}

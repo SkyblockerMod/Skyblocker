@@ -11,6 +11,7 @@ import de.hysky.skyblocker.skyblock.dungeon.terminal.SameColorTerminal;
 import de.hysky.skyblocker.skyblock.hunting.AttributeLevelHelper;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.BestiaryLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.CatacombsLevelAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.adders.ChipLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.ChoosePetLevelAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.CollectionAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.CommunityShopAdder;
@@ -91,7 +92,8 @@ public class SlotTextManager {
 			SameColorTerminal.INSTANCE,
 			AttributeLevelHelper.INSTANCE,
 			new BestiaryLevelAdder(),
-			new HuntingToolkitIndicatorAdder()
+			new HuntingToolkitIndicatorAdder(),
+			new ChipLevelAdder(),
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 	private static final KeyMapping keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));
