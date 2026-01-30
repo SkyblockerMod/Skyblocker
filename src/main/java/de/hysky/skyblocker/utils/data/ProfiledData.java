@@ -38,7 +38,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 *                   {@link JsonOps#COMPRESSED} is required for maps with non-string keys.
 	 */
 	public ProfiledData(Path file, Codec<T> codec, boolean compressed) {
-		this(file, codec, compressed, true, false);
+		this(file, codec, compressed, true, true);
 	}
 
 	/**
