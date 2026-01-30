@@ -154,7 +154,7 @@ public class SkyblockerConfigManager {
 	 */
 	private static LiteralArgumentBuilder<FabricClientCommandSource> configLiteral(String name) {
 		LiteralArgumentBuilder<FabricClientCommandSource> builder = literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
-				.then(literal("search").then(argument("option", StringArgumentType.greedyString()).executes((ctx) -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("option", String.class))))));
+				.then(argument("option", StringArgumentType.greedyString()).executes((ctx) -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("option", String.class)))));
 		ConfigCommands.registerConfigEntries(builder);
 		return builder;
 	}

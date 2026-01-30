@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -10,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class ConfigCommands {
@@ -41,21 +43,12 @@ public class ConfigCommands {
 	}
 
 	private static LiteralArgumentBuilder<FabricClientCommandSource> registerBooleanConfigEntry(Field field, Object object, String name) {
-		return literal(name).then(literal("true").executes(context -> {
+		return literal(name).then(argument("value", BoolArgumentType.bool()).executes(context -> {
 			SkyblockerConfigManager.update(config -> {
 				try {
-					field.setBoolean(object, true);
-					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.set", name, true).withStyle(ChatFormatting.GREEN)));
-				} catch (IllegalAccessException e) {
-					throw new RuntimeException(e);
-				}
-			});
-			return Command.SINGLE_SUCCESS;
-		})).then(literal("false").executes(context -> {
-			SkyblockerConfigManager.update(config -> {
-				try {
-					field.setBoolean(object, false);
-					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.set", name, false).withStyle(ChatFormatting.GREEN)));
+					boolean value = BoolArgumentType.getBool(context, "value");
+					field.setBoolean(object, value);
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.set", name, value).withStyle(ChatFormatting.GREEN)));
 				} catch (IllegalAccessException e) {
 					throw new RuntimeException(e);
 				}
