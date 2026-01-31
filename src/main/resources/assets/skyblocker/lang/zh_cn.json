@@ -1627,7 +1627,7 @@
     "skyblocker.config.uiAndVisuals.slotText.chipLevel.@tooltip": "在芯片菜单中显示芯片的等级。",
     "skyblocker.config.slayer.blazeSlayer.hideHellionShield": "隐藏Hellion Shield消息",
     "skyblocker.config.slayer.blazeSlayer.muteBlazeSounds": "消除烈焰人音效",
-    "skyblocker.config.slayer.blazeSlayer.muteBlazeSounds.@Tooltip": "消除烈焰人、火焰、岩浆、火球、闪电的音效",
+    "skyblocker.config.slayer.blazeSlayer.muteBlazeSounds.@Tooltip": "消除烈焰人、火焰、熔岩、火球、闪电的音效",
     "skyblocker.config.slayer.hideSlayerMinibossSpawn": "隐藏猎手小型Boss生成消息",
     "skyblocker.config.slayer.highlightColor": "Boss/小型Boss高亮颜色",
     "skyblocker.config.slayer.highlightUnclaimedRewards": "高亮未收集的奖励",
@@ -1642,5 +1642,13 @@
     "skyblocker.farming.visitorHelper.command.removedVisitor": "移除了%s！",
     "skyblocker.config.slayer.alertOtherMinibosses": "为其他玩家的小型Boss发出提醒",
     "skyblocker.config.slayer.alertOtherMinibosses.@Tooltip": "是否在其他玩家生成猎手小型Boss时显示提醒。\n\n需要启用“小型Boss生成提醒”选项。",
-    "skyblocker.config.slayer.showMiniBossNameInAlert.@Tooltip": "需要启用“小型Boss生成提醒”和“提醒其他玩家的小型Boss”选项。"
+    "skyblocker.config.slayer.showMiniBossNameInAlert.@Tooltip": "需要启用“小型Boss生成提醒”和“为其他玩家的小型Boss发出提醒”选项。",
+    "skyblocker.farming.visitorHelper.command.unableToRemoveVisitor": "无法移除访客！",
+    "skyblocker.slayer.personalBestMissing": "没有%s的个人最佳纪录。",
+    "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.mustEnableWidget": "该小部件必须被启用才能选择！",
+    "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToMove": "再次点击%s即可将此小部件重新排序到此处！",
+    "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToSelect": "再次点击%s以选择小部件！",
+    "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.unselectableWidget": "该小部件无法被选择！",
+    "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.cannotMoveHere": "该小部件无法被移动到这里！",
+    "skyblocker.farming.visitorHelper.command.clearedAllVisitors": "清除了所有访客！"
 }
