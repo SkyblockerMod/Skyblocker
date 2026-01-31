@@ -434,7 +434,7 @@
   "skyblocker.config.farming.garden.farmingHud.type.BOTH": "Both",
   "skyblocker.config.farming.garden.farmingHud.type.NPC": "NPC",
   "skyblocker.config.farming.garden.gardenPlotsWidget": "Enable Garden Plots Widget",
-  "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "While in the garden, on the right of your inventory there will be a widget to quickly teleport to plots. It will also show plots that have pests (this requires the Pests widget to be enabled and visible in the Tab).",
+  "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "While in the garden, on the right of your inventory there will be a widget to quickly teleport to plots. It will also show plots that have pests (this requires the Pests widget to be enabled and visible in the Tab).\n\nThe icon of a plot can be customized by right clicking the plot in the widget.",
   "skyblocker.config.farming.garden.lockMouseGround": "Only lock camera when on the ground",
   "skyblocker.config.farming.garden.lockMouseTool": "Lock camera when holding a farming tool",
   "skyblocker.config.farming.garden.pestHighlighter": "Pest Highlighter",
