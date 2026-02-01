@@ -1034,7 +1034,7 @@
     "skyblocker.corpseTracker.emptyHistory": "你的尸体战利品历史记录是空的 :(",
     "skyblocker.config.slayer.bossSpawnAlert.@Tooltip": "在猎手Boss生成时显示一条警告",
     "skyblocker.config.mining.glacite.enableCorpseFinder": "尸体搜寻器",
-    "skyblocker.config.slayer.minibossSpawnAlert": "迷你Boss生成警告",
+    "skyblocker.config.slayer.minibossSpawnAlert": "小型Boss生成警告",
     "skyblocker.config.slayer.slainTime.@Tooltip": "将猎杀完成所用的时间发送出来",
     "skyblocker.tips.viewRecipe": "右键点击配方表中的目标即可打开超级打造菜单。",
     "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip": "以回车键关闭当前的告示牌界面",
