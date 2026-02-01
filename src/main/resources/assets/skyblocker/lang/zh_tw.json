@@ -997,7 +997,7 @@
     "skyblocker.config.mining.glacite.enableParsingChatCorpseFinder.@Tooltip": "如果啟用，將監聽其他玩家在聊天訊息中共享的屍體路徑點。應與其它mod相容。",
     "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": "計算從屍體中獲得的利潤和戰利品。在搜索屍體後在聊天欄中顯示此次獲利。使用指令 /skyblocker rewardTrackers corpse list 可以查看戰利品的歷史記錄和詳細清單。",
     "skyblocker.config.slayer.bossSpawnAlert.@Tooltip": "當Boss生成時顯示一則警告訊息",
-    "skyblocker.config.slayer.minibossSpawnAlert": "迷你Boss生成警告",
+    "skyblocker.config.slayer.minibossSpawnAlert": "小型Boss生成警告",
     "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "每當使用具有右鍵單擊能力的物品時都會揮一次手。",
     "skyblocker.config.uiAndVisuals.healthBars": "自訂怪物生命值條",
     "skyblocker.config.uiAndVisuals.healthBars.enabled.@Tooltip": "（僅當生命值更新時刷新）",
