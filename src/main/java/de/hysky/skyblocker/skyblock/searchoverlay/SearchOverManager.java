@@ -9,6 +9,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.museum.Donation;
@@ -311,7 +312,13 @@ public class SearchOverManager {
 	}
 
 	private static String getItemId(String name) {
-		if (location != SearchLocation.MUSEUM || !MuseumItemCache.ARMOR_NAMES.containsValue(name)) return namesToNeuId.get(name);
+		if (name.isEmpty()) return "";
+		if (location != SearchLocation.MUSEUM || !MuseumItemCache.ARMOR_NAMES.containsValue(name)) {
+			return namesToNeuId.computeIfAbsent(name, (str) ->
+					ItemRepository.getItemsStream().filter(stack -> stack.getHoverName().getString().equals(str))
+							.map(SkyblockerStack::getNeuName).findFirst().orElse("")
+			);
+		}
 
 		// Handle Id for Armor/Equipment Donation Sets
 		String armorId = "";
@@ -339,12 +346,12 @@ public class SearchOverManager {
 			case BAZAAR -> history = config.bazaarHistory;
 			case MUSEUM -> history = config.museumHistory;
 			default -> {
-				return null;
+				return "";
 			}
 		}
 
 		if (history.size() > index) return history.get(index);
-		return null;
+		return "";
 	}
 
 	protected static String getHistoryId(int index) {
