@@ -250,7 +250,7 @@
     "text.skyblocker.offline": "オフライン",
     "text.skyblocker.dead": "死亡",
     "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "チェスト画面のタイトルにダンジョンチェストの利益を表示します。\n利益があれば緑色。\n利益がなければ赤色。\n損益がない場合は灰色。\n不完全なデータに基づいて計算された場合は青色。",
-    "skyblocker.config.debug.dumpFormat": "ダンプ フォーマット",
+    "skyblocker.config.debug.dumpFormat": "ダンプ時のフォーマット",
     "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor": "不完全なときに使用される色",
     "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor.@Tooltip": "価格データが不完全な場合に表示される色。",
     "skyblocker.config.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "忘れっぽい人には無効化は**おすすめしません**。",
