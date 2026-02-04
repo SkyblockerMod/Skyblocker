@@ -649,7 +649,7 @@
     "skyblocker.customization.titleSecret": "Pimp ton armure",
     "skyblocker.wikiLookup.noArticleFound.official": "Impossible de trouver un article du wiki officiel pour cet objet...",
     "skyblocker.config.general.itemTooltip.craft.BUY_ORDER": "Ordre d'achat",
-    "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "Dans le jardin, à droite de votre inventaire, vous trouverez un widget qui vous permettra de vous téléporter rapidement vers les parcelles. Il affichera également les parcelles qui ont des parasites (il faut pour cela que le Pests widget soit activé et visible dans Tab).",
+    "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "Dans le jardin, à droite de votre inventaire, vous trouverez un widget qui vous permettra de vous téléporter rapidement vers les parcelles. Il affichera également les parcelles qui ont des parasites (il faut pour cela que le Pests widget soit activé et visible dans Tab).\n\nL'icône de la parcelle peut être personnalisée avec un clic droit sur la parcelle dans le widget.",
     "skyblocker.config.dungeons.puzzle.previewWaterPath": "Waterboard : Aperçu du chemin de l'eau",
     "skyblocker.config.farming.garden.pestHighlighter": "Surbrillance des parasites",
     "skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip": "Si votre inventaire doit ou non se fermer automatiquement lors de la téléportation à une parcelle à l'aide du Garden Plots Widget",
@@ -1673,5 +1673,8 @@
     "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToSelect": "Cliquez encore %s fois pour sélectionner !",
     "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.unselectableWidget": "Ce widget ne peut pas être sélectionné !",
     "skyblocker.config.dungeons.terminalHud.determineInProgressStatus": "Activer le statut \"En cours\"",
-    "skyblocker.dungeons.terminalHud.incompleteStatus": "Inachevé"
+    "skyblocker.dungeons.terminalHud.incompleteStatus": "Inachevé",
+    "skyblocker.config.chat.filter.chatFilterResult.TOAST": "Afficher une notification",
+    "skyblocker.config.chat.toastDuration": "Durée d'Affichage de la Notification",
+    "skyblocker.config.chat.toastDuration.@Tooltip": "Nombre de secondes les notifications doivent rester affichées pour les filtres configurés sur \"Afficher une notification\"."
 }
