@@ -1648,5 +1648,8 @@
     "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToMove": "A widget átrendezéséhez kattints még ennyit: %s!",
     "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.unselectableWidget": "Ez a widget nem választható ki!",
     "skyblocker.farming.visitorHelper.command.unableToRemoveVisitor": "Nem sikerült a látogató eltávolítása!",
-    "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToSelect": "A kiválsztáshoz kattins még ennyiszer: %s!"
+    "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToSelect": "A kiválsztáshoz kattins még ennyiszer: %s!",
+    "skyblocker.config.chat.filter.chatFilterResult.TOAST": "Felugró értesítés mutatása",
+    "skyblocker.config.chat.toastDuration": "Felugró Értesítés Hossza",
+    "skyblocker.config.chat.toastDuration.@Tooltip": "Hány másodpercig legyen látható a felugró értesítés azoknál a beállításoknál, ahol a \"Felugró értesítés mutatása\" opció van kiválasztva."
 }
