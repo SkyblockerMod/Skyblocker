@@ -170,8 +170,7 @@ public class DungeonSplitsWidget extends TableWidget {
 	private static final Path BEST_FILE = SkyblockerMod.CONFIG_DIR.resolve("dungeon_split_bests.json");
 	private static final Codec<Object2ObjectMap<String, Object2LongMap<String>>> BEST_CODEC =
 			CodecUtils.object2ObjectMapCodec(Codec.STRING, CodecUtils.object2LongMapCodec(Codec.STRING));
-	private static final ProfiledData<Object2ObjectMap<String, Object2LongMap<String>>> BEST_SPLITS =
-			new ProfiledData<>(BEST_FILE, BEST_CODEC, true, true);
+	private static final ProfiledData<Object2ObjectMap<String, Object2LongMap<String>>> BEST_SPLITS = new ProfiledData<>(BEST_FILE, BEST_CODEC);
 
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.DUNGEON);
 

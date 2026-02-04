@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  */
 public class PetCache {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("pet_cache.json");
-	private static final ProfiledData<PetInfo> CACHED_PETS = new ProfiledData<>(FILE, PetInfo.CODEC, true, true);
+	private static final ProfiledData<PetInfo> CACHED_PETS = new ProfiledData<>(FILE, PetInfo.CODEC);
 	private static final Pattern AUTOPET_PATTERN = Pattern.compile("^Autopet equipped your \\[Lvl (?<level>\\d+)\\] (?<name>[A-Za-z ]+)(?: ✦)?! VIEW RULE$");
 
 	/**
