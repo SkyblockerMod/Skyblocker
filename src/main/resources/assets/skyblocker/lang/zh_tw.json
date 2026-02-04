@@ -402,7 +402,7 @@
     "skyblocker.config.mining.crystalsWaypoints.findInChat.@Tooltip": "在水晶洞窟時，讀取聊天內容以查看是否有座標，並將其提取出顯示為路徑點或在地圖中標出",
     "skyblocker.config.otherLocations.end.waypoint": "終界守護者路徑點",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "隱藏訊息",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar": "操作欄：",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar": "動作欄：",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.name": "名稱",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.name.@Tooltip": "規則的名稱。",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.filter": "過濾",
