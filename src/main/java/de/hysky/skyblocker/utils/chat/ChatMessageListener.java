@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.chat;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.barn.CallTrevor;
 import de.hysky.skyblocker.skyblock.barn.HungryHiker;
 import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
@@ -28,6 +29,7 @@ import de.hysky.skyblocker.skyblock.dwarven.Puzzler;
 import de.hysky.skyblocker.skyblock.galatea.SweepDetailsListener;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.HellionShieldFilter;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.gui.BasicToast;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -113,6 +115,11 @@ public interface ChatMessageListener {
 
 						return false;
 					}
+				}
+
+				case TOAST -> {
+					Minecraft.getInstance().getToastManager().addToast(new BasicToast(message, (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), null));
+					return false;
 				}
 
 				case FILTER -> {
