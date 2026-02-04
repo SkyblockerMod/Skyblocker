@@ -295,7 +295,7 @@ spotless {
 				// The third and remaining stems are optional, allowing matching lines with only two stems (in this case "skyblocker.config"), and separating it from other keys that start with "skyblocker.config.[whatever]".
 				/^(  "skyblocker\.config(?:\.([^."]++)(?:\.[^"]++)?)?": "(?:[^\\"]++|\\.)*+",)$\n^(?=  "skyblocker\.config\.(?!\2[."]))/,
 				'$1\n\n'
-		final List<String> excludeCategories = ["debug", "eventNotifications", "quickNav", "shortcutToKeybindsSettings", "title"]
+		final List<String> excludeCategories = ["commands", "debug", "eventNotifications", "quickNav", "shortcutToKeybindsSettings", "title"]
 		final String excludeCategoriesLookahead = /(?!(?:${excludeCategories.join('|')})(?=[."]))/
 		replaceRegex \
 				"Separate different fouth stems if the first three stems are skyblocker.config.[configCategory]",
