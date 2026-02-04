@@ -686,4 +686,11 @@ public final class ItemUtils {
 		stack.set(DataComponents.CUSTOM_NAME, Component.literal(itemName));
 		return stack;
 	}
+
+	public static ItemStack getItemIdPlaceholder(String itemId) {
+		ItemStack stack = new ItemStack(Items.POISONOUS_POTATO);
+		stack.set(DataComponents.ITEM_NAME, Component.literal(itemId));
+		stack.set(DataComponents.CUSTOM_DATA, CustomData.of(Util.make(new CompoundTag(), c -> c.putString(ID, itemId))));
+		return stack;
+	}
 }
