@@ -120,6 +120,7 @@
   "skyblocker.config.chat.filter.chatFilterResult.ACTION_BAR": "Move to action bar",
   "skyblocker.config.chat.filter.chatFilterResult.FILTER": "Filter",
   "skyblocker.config.chat.filter.chatFilterResult.PASS": "Disabled",
+  "skyblocker.config.chat.filter.chatFilterResult.TOAST": "Show toast",
   "skyblocker.config.chat.filter.hideAOTE": "Hide Teleport Ability Messages",
   "skyblocker.config.chat.filter.hideAOTE.@Tooltip": "Hides those pesky \"There are blocks in the way!\" messages.",
   "skyblocker.config.chat.filter.hideAbility": "Hide Ability Cooldown",
@@ -146,6 +147,9 @@
 
   "skyblocker.config.chat.skyblockXpMessages": "SkyBlock XP Messages",
   "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "Notifies you in the chat when you gain SkyBlock XP.",
+
+  "skyblocker.config.chat.toastDuration": "Toast Display Duration",
+  "skyblocker.config.chat.toastDuration.@Tooltip": "How long in seconds should the toast display for filters set to \"Show toast\".",
 
   "skyblocker.config.crimsonIsle": "Crimson Isle",
 

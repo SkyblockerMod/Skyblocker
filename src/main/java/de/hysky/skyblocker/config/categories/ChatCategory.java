@@ -9,6 +9,7 @@ import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
+import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -34,6 +35,14 @@ public class ChatCategory {
 								() -> config.chat.confirmationPromptHelper,
 								newValue -> config.chat.confirmationPromptHelper = newValue)
 						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Float>createBuilder()
+						.name(Component.translatable("skyblocker.config.chat.toastDuration"))
+						.description(Component.translatable("skyblocker.config.chat.toastDuration.@Tooltip"))
+						.binding(defaults.chat.toastDisplayDuration,
+								() -> config.chat.toastDisplayDuration,
+								newValue -> config.chat.toastDisplayDuration = newValue)
+						.controller(FloatController.createBuilder().range(1f, 10f).slider(0.1f).build())
 						.build())
 
 				//Uncategorized Options
