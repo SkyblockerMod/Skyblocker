@@ -353,7 +353,7 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "是",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.false": "否",
     "skyblocker.end.hud.stage": "阶段：%s",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar": "操作栏：",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar": "动作栏：",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds": "音效",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.@Tooltip": "当信息发送后播放音效。",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.none": "无",
