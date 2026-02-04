@@ -30,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 public class Kuudra {
 	public static final int KUUDRA_MAGMA_CUBE_SIZE = 30;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("kuudra.json");
-	private static final ProfiledData<KuudraProfileData> DATA = new ProfiledData<>(FILE, KuudraProfileData.CODEC, true, true);
+	private static final ProfiledData<KuudraProfileData> DATA = new ProfiledData<>(FILE, KuudraProfileData.CODEC);
 	private static final Pattern FACTION_SHOP_PATTERN = Pattern.compile("^(?<faction>Mage|Barbarian) Shop$");
 
 	protected static KuudraPhase phase = KuudraPhase.OTHER;
