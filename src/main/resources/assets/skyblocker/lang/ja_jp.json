@@ -737,5 +737,7 @@
     "skyblocker.shortcuts.config": "ショートカットの設定",
     "skyblocker.config.uiAndVisuals.radialMenu.enabled": "有効",
     "skyblocker.config.uiAndVisuals.radialMenu.hideButton": "隠す",
-    "skyblocker.shortcuts.command.replacement": "置き換えるコマンド"
+    "skyblocker.shortcuts.command.replacement": "置き換えるコマンド",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar": "アクションバー：",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds": "サウンド"
 }
