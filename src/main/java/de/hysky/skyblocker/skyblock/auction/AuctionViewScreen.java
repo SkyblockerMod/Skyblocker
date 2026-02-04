@@ -53,10 +53,8 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 	private StringWidget priceTextWidget;
 
 	public AuctionViewScreen(AuctionHouseScreenHandler handler, Inventory inventory, Component title) {
-		super(handler, inventory, title);
-		imageHeight = 187;
+		super(handler, inventory, title, 187);
 		isBinAuction = this.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("bin");
-		inventoryLabelY = 93;
 		titleLabelX = 5;
 		titleLabelY = 4;
 	}
