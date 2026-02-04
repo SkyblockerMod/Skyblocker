@@ -101,6 +101,7 @@ public class WidgetsListTab implements Tab {
 			nextPage.visible = false;
 			thirdColumnButton.visible = false;
 			resetButton.visible = false;
+			waitingForServerText.visible = false;
 		}
 	}
 
