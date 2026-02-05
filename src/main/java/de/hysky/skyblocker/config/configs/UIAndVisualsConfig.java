@@ -183,7 +183,7 @@ public class UIAndVisualsConfig {
 
 		public int tabHudScale = 100;
 
-		public boolean showVanillaTabByDefault = false;
+		public boolean showVanillaTabByDefault = true;
 
 		public TabHudStyle style = TabHudStyle.FANCY;
 
