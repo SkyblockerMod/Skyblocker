@@ -154,13 +154,13 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 
 		mainLayout.addChild(CycleButton.builder(f -> Component.translatable(f.toString()), filter)
 				.withValues(Filter.values())
-				.create(0, 0, filterWidth, 16, Component.translatable("skyblocker.accessory_helper.filter"), (b, v) -> {
+				.create(0, 0, filterWidth, 16, Component.translatable("skyblocker.accessoryHelper.filter"), (b, v) -> {
 					filter = v;
 					updateFilter();
 					changePage(0);
 				})
 		);
-		mainLayout.addChild(CycleButton.booleanBuilder(Component.translatable("skyblocker.accessory_helper.highestTierOnly"), Component.translatable("skyblocker.accessory_helper.allTiers"), showHighestTierOnly)
+		mainLayout.addChild(CycleButton.booleanBuilder(Component.translatable("skyblocker.accessoryHelper.highestTierOnly"), Component.translatable("skyblocker.accessoryHelper.allTiers"), showHighestTierOnly)
 				.displayOnlyValue()
 				.create(0, 0, filterWidth, 16, CommonComponents.EMPTY, (button, value) -> {
 					showHighestTierOnly = value;
@@ -377,8 +377,8 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	private record AccessoryInfo(Accessory accessory, Optional<Accessory> highestOwned, Accessory highestInFamily) {
 		private static class Source implements MagicPowerSource {
 			private static final Component smoothLine = LineSmoothener.createSmoothLine();
-			private static final Component wikiLine = Component.translatable("skyblocker.accessory_helper.openWiki").withStyle(ChatFormatting.YELLOW);
-			private static final Component fandomLine = Component.translatable("skyblocker.accessory_helper.fandom").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
+			private static final Component wikiLine = Component.translatable("skyblocker.accessoryHelper.openWiki").withStyle(ChatFormatting.YELLOW);
+			private static final Component fandomLine = Component.translatable("skyblocker.accessoryHelper.fandom").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
 
 			private final AccessoryInfo info;
 			private final @Nullable List<Component> afterSelling;
@@ -396,7 +396,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 							DoubleBooleanPair price = ItemUtils.getItemPrice(accStack);
 							if (!price.rightBoolean()) return Optional.empty();
 							return Optional.of(List.of(
-									Component.translatable("skyblocker.accessory_helper.afterSelling", ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1)),
+									Component.translatable("skyblocker.accessoryHelper.afterSelling", ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1)),
 									accStack.getHoverName(),
 									Component.empty()
 							));
@@ -466,7 +466,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 			pricePerMp = mp <= 0 ? Double.MAX_VALUE : price / mp;
 			tooltip = List.of(
 					Component.translatable(
-							"skyblocker.accessory_helper.recombobulate",
+							"skyblocker.accessoryHelper.recombobulate",
 							Component.literal(rarity.name().replace("_", " ")).withColor(rarity.color)
 					),
 					ItemTooltip.getCoinsMessage(price, 1)
@@ -514,7 +514,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 
 		@Override
 		public String toString() {
-			return "skyblocker.accessory_helper.filter." + name();
+			return "skyblocker.accessoryHelper.filter." + name();
 		}
 	}
 }
