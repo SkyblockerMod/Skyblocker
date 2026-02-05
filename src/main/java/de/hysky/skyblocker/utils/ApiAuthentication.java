@@ -42,7 +42,8 @@ public class ApiAuthentication {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final String MINECRAFT_VERSION = SharedConstants.getCurrentVersion().name();
-	private static final String AUTH_URL = "https://hysky.de/api/aaron/authenticate";
+	// Old URL: https://hysky.de/api/aaron/authenticate
+	private static final String AUTH_URL = "https://api.azureaaron.net/authenticate";
 	private static final String CONTENT_TYPE = "application/json";
 	private static final String ALGORITHM = "SHA256withRSA";
 
