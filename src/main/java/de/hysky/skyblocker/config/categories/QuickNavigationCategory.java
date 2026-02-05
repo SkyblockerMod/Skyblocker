@@ -4,14 +4,15 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
-import de.hysky.skyblocker.config.screens.quicknav.ItemSelectionScreen;
-import net.azureaaron.dandelion.systems.ButtonOption;
-import net.azureaaron.dandelion.systems.ConfigCategory;
-import net.azureaaron.dandelion.systems.Option;
-import net.azureaaron.dandelion.systems.OptionGroup;
-import net.azureaaron.dandelion.systems.controllers.IntegerController;
-import net.azureaaron.dandelion.systems.controllers.ItemController;
-import net.azureaaron.dandelion.systems.controllers.StringController;
+import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.controllers.IntegerController;
+import net.azureaaron.dandelion.api.controllers.ItemController;
+import net.azureaaron.dandelion.api.controllers.StringController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -71,7 +72,11 @@ public class QuickNavigationCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem"))
 						.description(Component.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip"))
-						.action(screen -> Minecraft.getInstance().setScreen(new ItemSelectionScreen(screen, button.itemData)))
+						.action(screen -> Minecraft.getInstance().setScreen(new ItemSelectionPopup(screen, item -> {
+							if (item == null) return;
+							button.itemData.item = item.getItem();
+							button.itemData.components = ItemStackComponentizationFixer.componentsAsString(item);
+						})))
 						.prompt(Component.translatable("text.skyblocker.open"))
 						.build())
 				.option(Option.<Item>createBuilder()

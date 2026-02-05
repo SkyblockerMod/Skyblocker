@@ -1,5 +1,8 @@
 package de.hysky.skyblocker.utils.mayor;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 /**
  * Represents a mayor perk.
  * @param name The name of the perk.
@@ -12,4 +15,8 @@ public record Perk(String name, String description) {
 	 * Allows for better null safety.
 	 */
 	public static final Perk EMPTY = new Perk("", "");
+	public static final Codec<Perk> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.STRING.fieldOf("name").forGetter(Perk::name),
+			Codec.STRING.fieldOf("description").forGetter(Perk::description)
+			).apply(instance, Perk::new));
 }

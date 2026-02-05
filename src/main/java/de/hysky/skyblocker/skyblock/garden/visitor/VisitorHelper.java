@@ -5,12 +5,18 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -22,6 +28,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
@@ -34,6 +41,7 @@ import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -41,7 +49,9 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class VisitorHelper extends AbstractWidget {
 	private static final Set<Visitor> activeVisitors = new HashSet<>();
@@ -56,7 +66,6 @@ public class VisitorHelper extends AbstractWidget {
 	private static final int ICON_SIZE = 16;
 	private static final int LINE_HEIGHT = 3;
 	private static final int PADDING = 4;
-	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 	private static final Object2LongMap<Component> copiedTimestamps = new Object2LongOpenHashMap<>();
 
 	// Used to prevent adding the visitor again after the player clicks accept or refuse.
@@ -77,6 +86,28 @@ public class VisitorHelper extends AbstractWidget {
 			ScreenEvents.afterTick(screen).register(_screen -> updateVisitors(handledScreen.getMenu()));
 			Screens.getButtons(screen).add(new VisitorHelper(xOffset, yOffset));
 		});
+
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _buildContext) ->
+				dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("garden").then(literal("visitors")
+						.then(literal("clearAll").executes(ctx -> {
+							activeVisitors.clear();
+							updateItems();
+							ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.farming.visitorHelper.command.clearedAllVisitors")));
+							return Command.SINGLE_SUCCESS;
+						}))
+						.then(literal("remove").then(argument("visitor", StringArgumentType.greedyString()).executes(ctx -> {
+							String name = ctx.getArgument("visitor", String.class).toLowerCase(Locale.ENGLISH);
+							Optional<Visitor> visitor = activeVisitors.stream().filter(v -> v.name().getString().toLowerCase(Locale.ENGLISH).equals(name)).findAny();
+							if (visitor.isEmpty()) {
+								ctx.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.farming.visitorHelper.command.unableToRemoveVisitor")));
+								return Command.SINGLE_SUCCESS;
+							}
+							activeVisitors.remove(visitor.get());
+							updateItems();
+							ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatableEscape("skyblocker.farming.visitorHelper.command.removedVisitor", visitor.get().name())));
+							return Command.SINGLE_SUCCESS;
+						}).suggests((ctx, builder) -> SharedSuggestionProvider.suggest(activeVisitors.stream().map(Visitor::name).map(Component::getString), builder))))
+				))));
 	}
 
 	public static boolean shouldRender() {
@@ -97,7 +128,7 @@ public class VisitorHelper extends AbstractWidget {
 	private static void updateVisitors(AbstractContainerMenu handler) {
 		if (!processVisitor) return;
 		ItemStack visitorHead = handler.getSlot(13).getItem();
-		if (visitorHead == null || !visitorHead.has(DataComponents.LORE) || ItemUtils.getLoreLineIf(visitorHead, t -> t.contains("Times Visited")) == null) return;
+		if (visitorHead.isEmpty() || !visitorHead.has(DataComponents.LORE) || ItemUtils.getLoreLineIf(visitorHead, t -> t.contains("Times Visited")) == null) return;
 
 		Component visitorName = visitorHead.getHoverName();
 		if (activeVisitors.stream().map(Visitor::name).anyMatch(visitorName::equals)) return;
@@ -117,7 +148,7 @@ public class VisitorHelper extends AbstractWidget {
 	 */
 	private static void extractRequiredItems(AbstractContainerMenu handler, Visitor visitor) {
 		ItemStack acceptButton = handler.getSlot(29).getItem();
-		if (acceptButton == null || ItemUtils.getLoreLineIf(acceptButton, t -> t.contains("Items Required")) == null) return;
+		if (acceptButton.isEmpty() || ItemUtils.getLoreLineIf(acceptButton, t -> t.contains("Items Required")) == null) return;
 
 		acceptButton.skyblocker$getLoreStrings().stream()
 				.map(String::trim)
@@ -154,14 +185,14 @@ public class VisitorHelper extends AbstractWidget {
 	private static ItemStack getCachedItem(String itemName) {
 		String cleanName = ChatFormatting.stripFormatting(itemName);
 		return cachedItems.computeIfAbsent(cleanName, name -> {
-			if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return null;
+			if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return ItemUtils.getNamedPlaceholder(itemName);
 
 			return NEURepoManager.getItemByName(itemName)
 					.stream()
 					.findFirst()
 					.map(NEUItem::getSkyblockItemId)
 					.map(ItemRepository::getItemStack)
-					.orElse(BARRIER);
+					.orElseGet(() -> ItemUtils.getNamedPlaceholder(itemName));
 		});
 	}
 
@@ -169,6 +200,8 @@ public class VisitorHelper extends AbstractWidget {
 	 * Draws the visitor items and their associated information.
 	 */
 	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		if (activeVisitors.isEmpty()) return;
+
 		Font textRenderer = Minecraft.getInstance().font;
 		int index = 0;
 		int newWidth = 0;
@@ -204,15 +237,13 @@ public class VisitorHelper extends AbstractWidget {
 			int yPosition = y + index * (LINE_HEIGHT + textRenderer.lineHeight);
 
 			ItemStack cachedStack = getCachedItem(itemName.getString());
-			if (cachedStack != null) {
-				context.pose().pushMatrix();
-				context.pose().translate(iconX, yPosition + (float) textRenderer.lineHeight / 2 - ICON_SIZE * 0.95f / 2);
-				context.pose().scale(0.95f, 0.95f);
-				context.renderItem(cachedStack, 0, 0);
-				context.pose().popMatrix();
-			}
+			context.pose().pushMatrix();
+			context.pose().translate(iconX, yPosition + (float) textRenderer.lineHeight / 2 - ICON_SIZE * 0.95f / 2);
+			context.pose().scale(0.95f, 0.95f);
+			context.renderItem(cachedStack, 0, 0);
+			context.pose().popMatrix();
 
-			MutableComponent name = cachedStack != null ? cachedStack.getHoverName().copy() : itemName.copy();
+			MutableComponent name = cachedStack.getHoverName().copy();
 			MutableComponent itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
 					? name.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
 					: name.append(" x" + totalAmount);
@@ -231,7 +262,7 @@ public class VisitorHelper extends AbstractWidget {
 
 			index++;
 		}
-		setHeight((groupedItems.size() + activeVisitors.size()) * (LINE_HEIGHT + Minecraft.getInstance().font.lineHeight) + PADDING * 2);
+		setHeight(index * (LINE_HEIGHT + Minecraft.getInstance().font.lineHeight) + PADDING * 2);
 		setWidth(newWidth + PADDING * 2);
 		exclusionZoneWidth = getWidth();
 		exclusionZoneHeight = getHeight();
@@ -239,6 +270,7 @@ public class VisitorHelper extends AbstractWidget {
 
 	@Override
 	protected void onDrag(MouseButtonEvent click, double offsetX, double offsetY) {
+		if (activeVisitors.isEmpty()) return;
 		setPosition(xOffset = (int) click.x() - dragStartX, yOffset = (int) click.y() - dragStartY);
 	}
 
@@ -246,6 +278,8 @@ public class VisitorHelper extends AbstractWidget {
 	 * Handles mouse click events on the visitor UI.
 	 */
 	public void onClick(MouseButtonEvent click, boolean doubled) {
+		if (activeVisitors.isEmpty()) return;
+
 		Font textRenderer = Minecraft.getInstance().font;
 		dragStartX = (int) click.x() - getX();
 		dragStartY = (int) click.y() - getY();

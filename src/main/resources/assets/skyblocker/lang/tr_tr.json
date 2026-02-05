@@ -165,7 +165,7 @@
     "skyblocker.slayer.hud.levelMaxed": "Maksimuma Ulaştı",
     "skyblocker.shortcuts.keyBinding.tooltip": "Atanan tuşa basınca komutu çalıştır.",
     "skyblocker.waypoints.importWaypointsSkyblocker": "Önemli Yol Noktaları (Skyblocker)",
-    "skyblocker.slayer.previousPB": "Önceki Kişisel Rekorunuz %s.",
+    "skyblocker.slayer.previousPersonalBest": "Önceki Kişisel Rekorunuz %s.",
     "skyblocker.waypoints.newGroup": "Yeni Yol Noktası Grubu",
     "skyblocker.shortcuts.keyBinding.replacement": "Komutu Çalıştır",
     "skyblocker.slayer.bossSpawnAlert": "Boss Doğdu!",
@@ -249,6 +249,5 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.filter.@Tooltip": "Sohbet mesajıyla eşleşecek dize/düzen.",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "Mesajı Gizle:",
     "skyblocker.chat.confirmationPromptNotification": "İstemi kabul etmek için 60 saniye içinde ekranın herhangi bir yerine tıklayın.",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar.@Tooltip": "Eylem çubuğunda mesajı göster.",
     "skyblocker.config.chat.chatRules.screen": "Sohbet Kuralalrı Yapılandırma..."
 }

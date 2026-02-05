@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -119,13 +120,16 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		if (enabled) renderText(context);
 	}
 
-	@SuppressWarnings("incomplete-switch")
+	protected Identifier getIcon() {
+		return icon;
+	}
+
 	public void renderBar(GuiGraphics context) {
 		if (renderWidth <= 0) return;
 		int transparency = transparency(-1);
 		switch (iconPosition) {
-			case LEFT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, icon, renderX, renderY, ICON_SIZE, ICON_SIZE, transparency);
-			case RIGHT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, icon, renderX + renderWidth - ICON_SIZE, renderY, ICON_SIZE, ICON_SIZE, transparency);
+			case LEFT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX, renderY, ICON_SIZE, ICON_SIZE, transparency);
+			case RIGHT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX + renderWidth - ICON_SIZE, renderY, ICON_SIZE, ICON_SIZE, transparency);
 		}
 
 		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
@@ -178,7 +182,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 			case RIGHT -> x = barX + barWidth - textWidth;
 			case CENTER -> x = this.renderX + (renderWidth - textWidth) / 2;
 			case BAR_CENTER -> x = barX + (barWidth - textWidth) / 2;
-			case null, default -> x = barX; // Put on the left by default because I said so.
+			default -> x = barX; // Put on the left by default because I said so.
 		}
 		int y = this.renderY - 3;
 
@@ -453,6 +457,26 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		@Override
 		public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
 			super.updateValues(fill, overflowFill, StatusBarTracker.isManaEstimated() ? "~" + text : text, max, overflow);
+		}
+	}
+
+	public static class ExperienceStatusBar extends StatusBar {
+		private static final Identifier CLOCK_ICON = SkyblockerMod.id("bars/icons/rift_time");
+		public ExperienceStatusBar(StatusBarType type) {
+			super(type);
+		}
+
+		@Override
+		protected Identifier getIcon() {
+			return Utils.isInTheRift() ? CLOCK_ICON : super.getIcon();
+		}
+
+		@Override
+		public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
+			if (Utils.isInTheRift() && text instanceof Integer time) {
+				text = time < 60 ? time + "s" : String.format("%dm%02ds", time / 60, time % 60);
+			}
+			super.updateValues(fill, overflowFill, text, max, overflow);
 		}
 	}
 }

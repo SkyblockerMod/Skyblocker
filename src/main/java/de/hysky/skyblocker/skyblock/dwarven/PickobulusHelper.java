@@ -2,9 +2,10 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -13,6 +14,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -46,6 +48,7 @@ public class PickobulusHelper {
 			Blocks.EMERALD_BLOCK,
 			Blocks.REDSTONE_BLOCK,
 			Blocks.COAL_BLOCK,
+			Blocks.QUARTZ_BLOCK,
 			Blocks.GOLD_ORE,
 			Blocks.IRON_ORE,
 			Blocks.COAL_ORE,
@@ -137,7 +140,16 @@ public class PickobulusHelper {
 			return;
 		}
 
-		if (ItemUtils.getLoreLineContains(CLIENT.player.getMainHandItem(), "Ability: Pickobulus") == null) {
+		// Process cooldown info before checking whether the user is holding a pickaxe with pickobulus so cooldown info is always displayed
+		Optional<String> pickobulusCooldownHud = PlayerListManager.getPlayerStringList().stream().map(String::trim).filter(entry -> entry.startsWith("Pickobulus: ")).findAny();
+		// Only process if the pickobulus ability info is in the player list, so pickobulus helper will still render if this info is not in the player list
+		if (pickobulusCooldownHud.isPresent() && !pickobulusCooldownHud.get().equals("Pickobulus: Available")) {
+			shouldRender = !SkyblockerConfigManager.get().mining.pickobulusHelper.hideHudOnCooldown;
+			errorMessage = Component.literal("Pickobulus is on cooldown: " + pickobulusCooldownHud.get().substring(12)).withStyle(ChatFormatting.RED);
+			return;
+		}
+
+		if (!ItemAbility.hasAbility(CLIENT.player.getMainHandItem(), "Pickobulus")) {
 			shouldRender = false;
 			errorMessage = Component.literal("Not holding a tool with pickobulus").withStyle(ChatFormatting.RED);
 			return;
@@ -178,11 +190,12 @@ public class PickobulusHelper {
 					if (!exposed) continue;
 
 					if (Utils.getArea().equals(Area.GLACITE_TUNNELS)) handleGlaciteTunnels(pos, state, i, j, k);
+					else if (Utils.getArea().equals(Area.GLACITE_MINESHAFTS)) handleGlaciteMineshafts(pos, state, i, j, k);
 					else switch (Utils.getLocation()) {
 						case PRIVATE_ISLAND -> handleBreakable(pos, i, j, k);
 						case GOLD_MINE, DEEP_CAVERNS, DWARVEN_MINES -> handleConvertIntoBedrock(pos, state, i, j, k);
 						case CRYSTAL_HOLLOWS -> handleCrystalHollows(pos, state, i, j, k);
-						case GLACITE_MINESHAFTS -> handleGlaciteMineshafts(pos, state, i, j, k);
+						case GLACITE_MINESHAFTS -> handleGlaciteMineshafts(pos, state, i, j, k); // This doesn't seem to be actually possible according to the API?
 					}
 				}
 			}

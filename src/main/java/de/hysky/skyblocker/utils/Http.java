@@ -16,6 +16,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
+import java.util.concurrent.Executors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
@@ -26,10 +27,12 @@ import org.jspecify.annotations.Nullable;
  */
 public class Http {
 	private static final String NAME_2_UUID = "https://api.minecraftservices.com/minecraft/profile/lookup/name/";
-	private static final String HYPIXEL_PROXY = "https://hysky.de/api/hypixel/v2/";
+	// Old URL: https://hysky.de/api/hypixel/v2/
+	private static final String HYPIXEL_PROXY = "https://api.azureaaron.net/hypixel/v2/";
 	public static final String USER_AGENT = "Skyblocker/" + SkyblockerMod.VERSION + " (" + SharedConstants.getCurrentVersion().name() + ")";
 	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
+			.executor(Executors.newVirtualThreadPerTaskExecutor())
 			.followRedirects(Redirect.NORMAL)
 			.build();
 

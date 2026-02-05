@@ -9,6 +9,9 @@ import de.hysky.skyblocker.skyblock.dungeon.LeapOverlay;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreen;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuScreen;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Utils;
 import java.util.Locale;
@@ -98,7 +101,7 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			}
 
 			// Excessive widgets config
-			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && (nameLowercase.startsWith("widgets in") || nameLowercase.startsWith("widgets on") || nameLowercase.equals("tablist widgets") || nameLowercase.endsWith("widget settings") || (nameLowercase.startsWith("shown") && client.screen instanceof WidgetsConfigurationScreen)) -> {
+			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && WidgetsConfigurationScreen.overrideWidgetsScreen && (nameLowercase.startsWith("widgets in") || nameLowercase.startsWith("widgets on") || nameLowercase.equals("tablist widgets") || (nameLowercase.endsWith("widget settings") && !nameLowercase.startsWith("reset")) || (nameLowercase.startsWith("shown") && client.screen instanceof WidgetsConfigurationScreen)) -> {
 				client.player.containerMenu = containerScreenHandler;
 				switch (client.screen) {
 					case WidgetsConfigurationScreen screen -> screen.updateHandler(containerScreenHandler, nameLowercase);
@@ -111,6 +114,15 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			case ChestMenu containerScreenHandler when Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.leapOverlay.enableLeapOverlay && nameLowercase.contains(LeapOverlay.TITLE.toLowerCase(Locale.ENGLISH)) -> {
 				client.player.containerMenu = containerScreenHandler;
 				client.setScreen(new LeapOverlay(containerScreenHandler));
+
+				ci.cancel();
+			}
+
+			// radial menus
+			case ChestMenu containerScreenHandler when RadialMenuManager.isMenuExistsFromTitle(nameLowercase) -> {
+				client.player.containerMenu = containerScreenHandler;
+				RadialMenu menuType = RadialMenuManager.getMenuFromTitle(nameLowercase);
+				client.setScreen(new RadialMenuScreen(containerScreenHandler, menuType, name));
 
 				ci.cancel();
 			}

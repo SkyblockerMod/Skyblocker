@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
-import de.hysky.skyblocker.skyblock.dungeon.partyfinder.OptionDropdownWidget.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

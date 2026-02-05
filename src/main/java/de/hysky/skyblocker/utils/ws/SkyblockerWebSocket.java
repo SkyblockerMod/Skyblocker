@@ -29,6 +29,7 @@ public class SkyblockerWebSocket {
 	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
 			.followRedirects(Redirect.NORMAL)
+			.executor(Executors.newVirtualThreadPerTaskExecutor())
 			.version(Version.HTTP_2)
 			.build();
 	private static final ExecutorService MESSAGE_SEND_QUEUE = Executors.newSingleThreadExecutor(Thread.ofVirtual()
@@ -57,7 +58,7 @@ public class SkyblockerWebSocket {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker WebSocket] Failed to setup WebSocket connection!", e);
 			}
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	private static boolean isConnectionOpen() {

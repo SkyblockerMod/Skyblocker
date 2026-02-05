@@ -350,7 +350,12 @@ public class DungeonScore {
 	}
 
 	private static void checkMessageForWatcher(String message) {
-		if (message.equals("[BOSS] The Watcher: You have proven yourself. You may pass.")) bloodRoomCompleted = true;
+		if (message.equals("[BOSS] The Watcher: You have proven yourself. You may pass.")) {
+			Scheduler.INSTANCE.schedule(() -> {
+				bloodRoomCompleted = true;
+				tick();
+			}, 20 * 5 + 10);
+		}
 	}
 
 	private static void checkMessageForMimic(String message) {

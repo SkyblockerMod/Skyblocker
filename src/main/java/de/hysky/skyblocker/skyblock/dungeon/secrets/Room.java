@@ -9,6 +9,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Tickable;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -53,7 +55,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Room implements Tickable, Renderable {
-	private static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
+	public static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
 	private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
 	private static final String CHEST_ALREADY_OPENED = "This chest has already been searched!";
 	protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
@@ -61,13 +63,11 @@ public class Room implements Tickable, Renderable {
 	private final Type type;
 	final Set<Vector2ic> segments;
 	/**
-	 * Used to allow rooms to have their secrets unmarked after the map detects the green checkmark.
-	 * This should not be used for rendering as it would break the above case and having the prince waypoints show until a prince is killed.
+	 * The current state of the room as it appears on the map.
 	 */
-	public boolean greenChecked = false;
+	public ClearState clearState = ClearState.UNCLEARED;
 
-	public boolean whiteChecked = false;
-
+	private int maxSecrets = -1;
 	protected int secretsFound = 0;
 
 	public boolean secretCountOutdated = true;
@@ -105,10 +105,10 @@ public class Room implements Tickable, Renderable {
 	 * <li>{@link MatchState#FAILED} means that the room has been checked and there is no match.</li>
 	 */
 	protected MatchState matchState = MatchState.MATCHING;
-	private final Table<Integer, BlockPos, SecretWaypoint> secretWaypoints = HashBasedTable.create();
-	private @Nullable String name;
-	private @Nullable Direction direction;
-	private @Nullable Vector2ic physicalCornerPos;
+	protected Table<Integer, BlockPos, SecretWaypoint> secretWaypoints = HashBasedTable.create();
+	protected @Nullable String name;
+	protected @Nullable Direction direction;
+	protected @Nullable Vector2ic physicalCornerPos;
 
 	protected List<Tickable> tickables = new ArrayList<>();
 	protected List<Renderable> renderables = new ArrayList<>();
@@ -140,6 +140,7 @@ public class Room implements Tickable, Renderable {
 		roomMatched();
 		matchState = MatchState.MATCHED;
 		DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this);
+		discard();
 	}
 
 	public Type getType() {
@@ -159,6 +160,7 @@ public class Room implements Tickable, Renderable {
 	}
 
 	public boolean isMatched() {
+		// This technically isn't very thread safe but should be fine
 		return matchState == MatchState.DOUBLE_CHECKING || matchState == MatchState.MATCHED;
 	}
 
@@ -210,7 +212,7 @@ public class Room implements Tickable, Renderable {
 		return possibleRooms;
 	}
 
-	private Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
+	protected Direction[] getPossibleDirections(IntSortedSet segmentsX, IntSortedSet segmentsY) {
 		return switch (shape) {
 			case ONE_BY_ONE, TWO_BY_TWO, PUZZLE, TRAP, MINIBOSS -> Direction.values();
 			case ONE_BY_TWO, ONE_BY_THREE, ONE_BY_FOUR -> {
@@ -442,33 +444,37 @@ public class Room implements Tickable, Renderable {
 		}
 
 		int matchingRoomsSize = possibleRooms.stream().map(Triple::getRight).mapToInt(Collection::size).sum();
-		if (matchingRoomsSize == 0) synchronized (this) {
+		if (matchingRoomsSize == 0) {
 			// If no rooms match, reset the fields and scan again after 50 ticks.
 			matchState = MatchState.FAILED;
 			assert checkedBlocks != null;
 			DungeonManager.LOGGER.warn("[Skyblocker Dungeon Secrets] No dungeon room matched after checking {} block(s) including double checking {} block(s)", checkedBlocks.size(), doubleCheckBlocks);
-			Scheduler.INSTANCE.schedule(() -> matchState = MatchState.MATCHING, 50);
-			reset();
+			RenderHelper.runOnRenderThread(() -> {
+				Scheduler.INSTANCE.schedule(() -> matchState = MatchState.MATCHING, 50);
+				reset();
+			});
 			return true;
-		}
-		else if (matchingRoomsSize == 1) {
+		} else if (matchingRoomsSize == 1) {
 			if (matchState == MatchState.MATCHING) {
 				// If one room matches, load the secrets for that room and set state to double-checking.
+				matchState = MatchState.DOUBLE_CHECKING;
 				Triple<Direction, Vector2ic, List<String>> directionRoom = possibleRooms.stream().filter(directionRooms -> directionRooms.getRight().size() == 1).findAny().orElseThrow();
 				name = directionRoom.getRight().getFirst();
 				direction = directionRoom.getLeft();
 				physicalCornerPos = directionRoom.getMiddle();
 				assert checkedBlocks != null;
 				DungeonManager.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} matched after checking {} block(s), starting double checking", name, checkedBlocks.size());
-				roomMatched();
+				RenderHelper.runOnRenderThread(this::roomMatched);
 				return false;
 			} else if (matchState == MatchState.DOUBLE_CHECKING && ++doubleCheckBlocks >= 10) {
 				// If double-checked, set state to matched and discard the no longer needed fields.
 				matchState = MatchState.MATCHED;
-				DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this);
 				assert checkedBlocks != null;
 				DungeonManager.LOGGER.info("[Skyblocker Dungeon Secrets] Room {} confirmed after checking {} block(s) including double checking {} block(s)", name, checkedBlocks.size(), doubleCheckBlocks);
-				discard();
+				RenderHelper.runOnRenderThread(() -> {
+					DungeonEvents.ROOM_MATCHED.invoker().onRoomMatched(this);
+					discard();
+				});
 				return true;
 			}
 			return false;
@@ -498,7 +504,15 @@ public class Room implements Tickable, Renderable {
 	 */
 	@SuppressWarnings("JavadocReference")
 	private void roomMatched() {
-		assert name != null && direction != null && physicalCornerPos != null;
+		// Save fields and null check for thread safety
+		String name = this.name;
+		Direction direction = this.direction;
+		Vector2ic physicalCornerPos = this.physicalCornerPos;
+		if (name == null || direction == null || physicalCornerPos == null) {
+			DungeonManager.LOGGER.warn("[Skyblocker Dungeon Secrets] Room matched called with invalid fields: matchState={}, name={}, direction={}, physicalCornerPos={}", matchState, name, direction, physicalCornerPos);
+			return;
+		}
+
 		List<DungeonManager.RoomWaypoint> roomWaypoints = DungeonManager.getRoomWaypoints(name);
 		if (roomWaypoints != null) {
 			for (DungeonManager.RoomWaypoint waypoint : roomWaypoints) {
@@ -510,7 +524,9 @@ public class Room implements Tickable, Renderable {
 			}
 		}
 		DungeonManager.getCustomWaypoints(name).values().forEach(this::addCustomWaypoint);
-		matchState = MatchState.DOUBLE_CHECKING;
+
+		// Calculate max secrets based off room id, surely this isn't going to be wrong for some rooms
+		this.maxSecrets = Utils.parseInt(name.replaceAll("\\D", "")).orElse(-1);
 	}
 
 	/**
@@ -580,12 +596,10 @@ public class Room implements Tickable, Renderable {
 			renderable.extractRendering(collector);
 		}
 
-		synchronized (this) {
-			if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
-				for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
-					if (secretWaypoint.shouldRender()) {
-						secretWaypoint.extractRendering(collector);
-					}
+		if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
+			for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
+				if (secretWaypoint.shouldRender()) {
+					secretWaypoint.extractRendering(collector);
 				}
 			}
 		}
@@ -733,6 +747,10 @@ public class Room implements Tickable, Renderable {
 		secretWaypoints.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
 	}
 
+	public int getMaxSecretCount() {
+		return maxSecrets;
+	}
+
 	protected int getSecretCount() {
 		return secretWaypoints.rowMap().size();
 	}
@@ -751,7 +769,7 @@ public class Room implements Tickable, Renderable {
 		BLOOD(MapColor.FIRE.getPackedId(MapColor.Brightness.HIGH), "Blood"),
 		UNKNOWN(MapColor.COLOR_GRAY.getPackedId(MapColor.Brightness.NORMAL), "Unknown");
 
-		final byte color;
+		public final byte color;
 		final String name;
 
 		public static final Codec<Type> CODEC = StringRepresentable.fromEnum(Type::values);
@@ -832,6 +850,10 @@ public class Room implements Tickable, Renderable {
 				return context.getArgument(name, Direction.class);
 			}
 		}
+	}
+
+	public enum ClearState {
+		GREEN_CHECKED, WHITE_CHECKED, FAILED, UNCLEARED
 	}
 
 	protected enum MatchState {

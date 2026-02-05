@@ -20,7 +20,7 @@ public class ConfigNullFieldsFix {
 
 	@SuppressWarnings("removal")
 	public static void init() {
-		SkyblockerConfig current = SkyblockerConfigManager.get();
+		SkyblockerConfig current = SkyblockerConfigManager.getUnpatched();
 		SkyblockerConfig clean = new SkyblockerConfig();
 
 		try {

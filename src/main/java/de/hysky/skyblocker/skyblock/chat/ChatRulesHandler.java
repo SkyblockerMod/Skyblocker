@@ -1,16 +1,20 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.TextTransformer;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.JsonData;
+import de.hysky.skyblocker.utils.render.gui.BasicToast;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
@@ -24,45 +28,43 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 
 public class ChatRulesHandler {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chat_rules.json");
-	private static final Codec<Map<String, List<ChatRule>>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, ChatRule.LIST_CODEC);
-	/**
-	 * This codec can parse two JSON formats: a list of chat rules OR an object with a "rules" property containing a list of chat rules,
-	 * and encodes in one JSON format: an object with a "rules" property containing a list of chat rules.
-	 */
-	@VisibleForTesting
-	static final Codec<List<ChatRule>> UNBOXING_CODEC = Codec.either(ChatRule.LIST_CODEC, MAP_CODEC).xmap(
-			either -> either.map(ArrayList::new, map -> new ArrayList<>(map.getOrDefault("rules", getDefaultChatRules()))),
-			value -> Either.right(Map.of("rules", value))
-	);
 
-	protected static final JsonData<List<ChatRule>> chatRuleList = new JsonData<>(CHAT_RULE_FILE, UNBOXING_CODEC, getDefaultChatRules());
+	@VisibleForTesting
+	static final Codec<List<ChatRule>> UNBOXING_CODEC = ConfigDataFixer.createDataFixingCodec(ConfigDataFixer.CHAT_RULES_TYPE, CodecUtils.mutableOptional(ChatRule.LIST_CODEC.fieldOf("rules"), ArrayList::new).codec());
+
+	protected static final JsonData<List<ChatRule>> CHAT_RULE_LIST = new JsonData<>(CHAT_RULE_FILE, UNBOXING_CODEC, getDefaultChatRules());
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> chatRuleList.init());
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> CHAT_RULE_LIST.init());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
+				dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
+						.then(ClientCommandManager.literal("chatRules")
+								.executes(
+										Scheduler.queueOpenScreenCommand(() -> new ChatRulesConfigScreen(null)))
+		)));
 	}
 
 	@VisibleForTesting
 	static List<ChatRule> getDefaultChatRules() {
 		return new ArrayList<>(List.of(
-				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, false, false, "", null),
-				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, false, true, "&1Ability", SoundEvents.ARROW_HIT_PLAYER)
+				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, null, null, null, null, null),
+				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, new ChatRule.AnnouncementMessage("&1Ability", 3000), null, SoundEvents.ARROW_HIT_PLAYER)
 		));
 	}
 
 	/**
-	 * Checks each rule in {@link ChatRulesHandler#chatRuleList} to see if they are a match for the message and if so change outputs based on the options set in the {@link ChatRule}.
+	 * Checks each rule in {@link ChatRulesHandler#CHAT_RULE_LIST} to see if they are a match for the message and if so change outputs based on the options set in the {@link ChatRule}.
 	 */
 	private static boolean checkMessage(Component message, boolean overlay) {
 		if (overlay || !Utils.isOnSkyblock()) return true;
-		List<ChatRule> rules = chatRuleList.getData();
-		if (!chatRuleList.isLoaded() || rules.isEmpty()) return true;
+		List<ChatRule> rules = CHAT_RULE_LIST.getData();
+		if (!CHAT_RULE_LIST.isLoaded() || rules.isEmpty()) return true;
 		String plain = ChatFormatting.stripFormatting(message.getString());
 
 		for (ChatRule rule : rules) {
@@ -70,26 +72,25 @@ public class ChatRulesHandler {
 			if (!match.matches()) continue;
 
 			// Get a replacement message
-			Component newMessage;
-			if (!rule.getReplaceMessage().isBlank()) {
-				newMessage = formatText(match.insertCaptureGroups(rule.getReplaceMessage()));
-			} else {
-				newMessage = message;
+			boolean sendOriginal = !rule.getHideMessage();
+			if (sendOriginal && rule.getChatMessage() != null) {
+				sendOriginal = false;
+				Utils.sendMessageToBypassEvents(formatText(match.insertCaptureGroups(rule.getChatMessage())));
 			}
 
-			if (rule.getShowAnnouncement()) {
-				TitleContainer.addTitle(new Title(newMessage.copy()), SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength);
+			if (rule.getAnnouncementMessage() != null) {
+				ChatRule.AnnouncementMessage announcementMessage = rule.getAnnouncementMessage();
+				TitleContainer.addTitle(new Title(formatText(match.insertCaptureGroups(announcementMessage.message))), (int) (announcementMessage.displayDuration / 50)); // One tick is 50ms
 			}
 
 			// Show in action bar
-			if (rule.getShowActionBar() && CLIENT.player != null) {
-				CLIENT.player.displayClientMessage(newMessage, true);
+			if (rule.getActionBarMessage() != null && CLIENT.player != null) {
+				CLIENT.player.displayClientMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())), true);
 			}
 
-			// Show replacement message in chat
-			// Bypass MessageHandler#onGameMessage to avoid activating chat rules again
-			if (!rule.getHideMessage() && CLIENT.player != null) {
-				Utils.sendMessageToBypassEvents(newMessage);
+			if (rule.getToastMessage() != null) {
+				ChatRule.ToastMessage toastMessage = rule.getToastMessage();
+				CLIENT.getToastManager().addToast(new BasicToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon));
 			}
 
 			// Play sound
@@ -98,7 +99,7 @@ public class ChatRulesHandler {
 			}
 
 			// Do not send the original message
-			return false;
+			if (!sendOriginal) return false;
 		}
 		return true;
 	}
@@ -118,6 +119,6 @@ public class ChatRulesHandler {
 	}
 
 	public static void saveChatRules() {
-		if (chatRuleList.getData() != null) chatRuleList.save();
+		if (CHAT_RULE_LIST.isLoaded()) CHAT_RULE_LIST.save();
 	}
 }

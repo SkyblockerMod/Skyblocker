@@ -30,8 +30,7 @@ public class SlayerWidget {
 	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 	private final Identifier item;
 	private final ItemStack drop;
-	private static final Font textRenderer = Minecraft.getInstance().font;
-	private static final Map<String, Identifier> HEAD_ICON = Map.ofEntries(
+	public static final Map<String, Identifier> HEAD_ICON = Map.ofEntries(
 			Map.entry("Zombie", SkyblockerMod.id("textures/gui/profile_viewer/zombie.png")),
 			Map.entry("Spider", SkyblockerMod.id("textures/gui/profile_viewer/spider.png")),
 			Map.entry("Wolf", SkyblockerMod.id("textures/gui/profile_viewer/wolf.png")),
@@ -60,15 +59,16 @@ public class SlayerWidget {
 	}
 
 	public void render(GuiGraphics context, int mouseX, int mouseY, int x, int y) {
+		Font font = Minecraft.getInstance().font;
 		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
 		context.blit(RenderPipelines.GUI_TEXTURED, this.item, x + 1, y + 3, 0, 0, 20, 20, 20, 20);
-		context.drawString(textRenderer, slayerName + " " + slayerLevel.level, x + 31, y + 5, Color.white.hashCode(), false);
+		context.drawString(font, slayerName + " " + slayerLevel.level, x + 31, y + 5, Color.white.hashCode(), false);
 
 		int col2 = x + 113;
 		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, col2, y, 0, 0, 109, 26, 109, 26);
 		context.renderItem(this.drop, col2 + 3, y + 5);
-		context.drawString(textRenderer, "§aKills: §r" + findTotalKills(), col2 + 30, y + 4, Color.white.hashCode(), true);
-		context.drawString(textRenderer, findTopTierKills(), findTopTierKills().equals("No Data") ? col2 + 30 : col2 + 29, y + 15, Color.white.hashCode(), true);
+		context.drawString(font, "§aKills: §r" + findTotalKills(), col2 + 30, y + 4, Color.white.hashCode(), true);
+		context.drawString(font, findTopTierKills(), findTopTierKills().equals("No Data") ? col2 + 30 : col2 + 29, y + 15, Color.white.hashCode(), true);
 
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
 		Color fillColor = slayerLevel.fill == 1 ? Color.MAGENTA : Color.green;
@@ -78,7 +78,7 @@ public class SlayerWidget {
 			List<Component> tooltipText = new ArrayList<>();
 			tooltipText.add(Component.literal(this.slayerName).withStyle(ChatFormatting.GREEN));
 			tooltipText.add(Component.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.slayerLevel.xp)).withStyle(ChatFormatting.GOLD));
-			context.setComponentTooltipForNextFrame(textRenderer, tooltipText, mouseX, mouseY);
+			context.setComponentTooltipForNextFrame(font, tooltipText, mouseX, mouseY);
 		}
 	}
 
