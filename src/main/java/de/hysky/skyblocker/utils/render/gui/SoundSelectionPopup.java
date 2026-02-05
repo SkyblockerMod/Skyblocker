@@ -35,7 +35,7 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 	private final List<AbstractWidget> filteredWidgets = new ObjectArrayList<>();
 	private final Consumer<@Nullable SoundEvent> onDone;
 	private @Nullable SoundEvent selectedSound = null;
-	private  boolean advanced = false;
+	private boolean advanced = false;
 
 	private final GridLayout gridWidget = new GridLayout();
 	private LinearLayout listLayout = new LinearLayout(0, 0, LinearLayout.Orientation.VERTICAL);
@@ -51,13 +51,19 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 	@Override
 	protected void init() {
 		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
-		EditBox searchField = new EditBox(Minecraft.getInstance().font, 300, 20, Component.translatable("gui.recipebook.search_hint"));
+		EditBox searchField = new EditBox(Minecraft.getInstance().font, 200, 20, Component.empty());
 		searchField.setHint(Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
 		searchField.setResponder(this::filterSounds);
-		addRenderableWidget(adder.addChild(searchField, 1));
-		addRenderableWidget((adder.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, advanced)
-				.withTooltip(b -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
-				.create(0, 0, 100, 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (button, value) -> advanced = !advanced),1)));
+		addRenderableWidget(adder.addChild(searchField));
+
+		CycleButton<Boolean> toggleAdvanced = CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, advanced)
+				.withTooltip(b -> Tooltip.create(Component.translatable("skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip")))
+				.create(0, 0, 100, 20, Component.translatable("skyblocker.utils.render.gui.soundSelectionPopup.advanced"), (button, value) -> {
+					advanced = !advanced;
+					filterSounds(searchField.getValue());
+				});
+
+		addRenderableWidget(adder.addChild(toggleAdvanced));
 
 		widgetsContainer = new ListContainer(0, 0, 400, this.height / 2);
 
@@ -78,7 +84,7 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 		filterSounds("");
 	}
 
-	private Component getSoundName(SoundEvent sound) {
+	private @Nullable Component getSoundName(SoundEvent sound) {
 		String key = BuiltInRegistries.SOUND_EVENT.getKey(sound).toShortLanguageKey();
 		//first check for translation
 		Component translation = Component.translatableWithFallback("subtitles." + key, "null");
@@ -90,7 +96,11 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 			String[] split = key.split("\\.");
 			return Component.literal("note block " + split[split.length - 1].replace("_", " "));
 		}
-		return Component.literal(key);
+		if (advanced) {
+			return Component.literal(key);
+		} else {
+			return null;
+		}
 
 
 	}
@@ -100,7 +110,7 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 		for (SoundEvent soundEvent : BuiltInRegistries.SOUND_EVENT) {
 			Component translation = getSoundName(soundEvent);
 			//filter sounds
-			if (translation.getString().toLowerCase().contains(input.toLowerCase())) {
+			if (translation != null && translation.getString().toLowerCase().contains(input.toLowerCase())) {
 				AbstractWidget widget = new SoundWidget(translation, soundEvent);
 				filteredWidgets.add(widget);
 			}

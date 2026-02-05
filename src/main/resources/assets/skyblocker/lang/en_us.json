@@ -1813,6 +1813,9 @@
 
   "skyblocker.utils.locationUpdateError": "Failed to update your location! Some features of the mod may not work properly :(",
 
+  "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "Advanced",
+  "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "Show sounds without a propper name",
+
   "skyblocker.valueBreakdownPopup": "Skyblocker Estimated Value Breakdown",
   "skyblocker.valueBreakdownPopup.baseItemPrice": "Base item price: %s",
   "skyblocker.valueBreakdownPopup.coins": "%s coins",
