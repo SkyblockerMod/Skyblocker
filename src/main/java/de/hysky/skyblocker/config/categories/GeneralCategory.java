@@ -13,12 +13,12 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresetsScreen;
-import net.azureaaron.dandelion.systems.ButtonOption;
-import net.azureaaron.dandelion.systems.ConfigCategory;
-import net.azureaaron.dandelion.systems.Option;
-import net.azureaaron.dandelion.systems.OptionGroup;
-import net.azureaaron.dandelion.systems.OptionListener.UpdateType;
-import net.azureaaron.dandelion.systems.controllers.FloatController;
+import net.azureaaron.dandelion_bp.api.ButtonOption;
+import net.azureaaron.dandelion_bp.api.ConfigCategory;
+import net.azureaaron.dandelion_bp.api.Option;
+import net.azureaaron.dandelion_bp.api.OptionGroup;
+import net.azureaaron.dandelion_bp.api.OptionListener.UpdateType;
+import net.azureaaron.dandelion_bp.api.controllers.FloatController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 

@@ -13,7 +13,7 @@ import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.azureaaron.dandelion.api.patching.ConfigPatch;
+import net.azureaaron.dandelion_bp.api.patching.ConfigPatch;
 import net.minecraft.client.Minecraft;
 
 public class ConfigPatchLoader {

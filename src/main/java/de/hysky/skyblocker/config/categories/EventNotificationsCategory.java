@@ -5,17 +5,18 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
+import de.hysky.skyblocker.utils.config.DurationController;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import net.azureaaron.dandelion.systems.ConfigCategory;
-import net.azureaaron.dandelion.systems.LabelOption;
-import net.azureaaron.dandelion.systems.ListOption;
-import net.azureaaron.dandelion.systems.Option;
-import net.azureaaron.dandelion.systems.OptionGroup;
-import net.azureaaron.dandelion.systems.OptionListener.UpdateType;
-import net.azureaaron.dandelion.systems.controllers.IntegerController;
+import net.azureaaron.dandelion_bp.api.ConfigCategory;
+import net.azureaaron.dandelion_bp.api.LabelOption;
+import net.azureaaron.dandelion_bp.api.ListOption;
+import net.azureaaron.dandelion_bp.api.Option;
+import net.azureaaron.dandelion_bp.api.OptionGroup;
+import net.azureaaron.dandelion_bp.api.OptionListener.UpdateType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class EventNotificationsCategory {
 			groups.add(ListOption.<Integer>createBuilder()
 					.name(Component.literal(entry.getKey()))
 					.binding(EventNotifications.DEFAULT_REMINDERS, entry::getValue, integers -> entry.setValue(new IntArrayList(integers)))
-					.controller(IntegerController.createBuilder().min(0).build()) // TODO: Bring back DurationController
+					.controller(new DurationController())
 							.description(Component.translatable("skyblocker.config.eventNotifications.@Tooltip[0]"),
 									Component.empty(),
 									Component.translatable("skyblocker.config.eventNotifications.@Tooltip[1]"),

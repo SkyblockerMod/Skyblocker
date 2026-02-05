@@ -5,12 +5,12 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.chat.ChatRulesConfigScreen;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
-import net.azureaaron.dandelion.systems.ButtonOption;
-import net.azureaaron.dandelion.systems.ConfigCategory;
-import net.azureaaron.dandelion.systems.Option;
-import net.azureaaron.dandelion.systems.OptionGroup;
-import net.azureaaron.dandelion.systems.controllers.FloatController;
-import net.azureaaron.dandelion.systems.controllers.IntegerController;
+import net.azureaaron.dandelion_bp.api.ButtonOption;
+import net.azureaaron.dandelion_bp.api.ConfigCategory;
+import net.azureaaron.dandelion_bp.api.Option;
+import net.azureaaron.dandelion_bp.api.OptionGroup;
+import net.azureaaron.dandelion_bp.api.controllers.FloatController;
+import net.azureaaron.dandelion_bp.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
