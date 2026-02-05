@@ -26,6 +26,7 @@ import net.minecraft.sounds.SoundEvent;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 public class SoundSelectionPopup extends AbstractPopupScreen {
@@ -110,7 +111,7 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 		for (SoundEvent soundEvent : BuiltInRegistries.SOUND_EVENT) {
 			Component translation = getSoundName(soundEvent);
 			//filter sounds
-			if (translation != null && translation.getString().toLowerCase().contains(input.toLowerCase())) {
+			if (translation != null && translation.getString().toLowerCase(Locale.ENGLISH).contains(input.toLowerCase(Locale.ENGLISH))) {
 				AbstractWidget widget = new SoundWidget(translation, soundEvent);
 				filteredWidgets.add(widget);
 			}
@@ -143,7 +144,7 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 
 	private class ListContainer extends AbstractContainerWidget {
 
-		public ListContainer(int i, int j, int k, int l) {
+		ListContainer(int i, int j, int k, int l) {
 			super(i, j, k, l, Component.literal("List"));
 		}
 
@@ -204,7 +205,7 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 		SoundEvent sound;
 		Component name;
 
-		public SoundWidget(Component name, SoundEvent sound) {
+		SoundWidget(Component name, SoundEvent sound) {
 			super(name, font);
 			this.name = name;
 			this.sound = sound;

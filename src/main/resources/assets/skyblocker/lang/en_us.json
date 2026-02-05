@@ -1812,7 +1812,6 @@
   "skyblocker.updateRepository.success": "§aUpdated the local repository successfully.",
 
   "skyblocker.utils.locationUpdateError": "Failed to update your location! Some features of the mod may not work properly :(",
-
   "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "Advanced",
   "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "Show sounds without a propper name",
 
