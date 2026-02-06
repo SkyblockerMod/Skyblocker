@@ -75,7 +75,7 @@ public class GlowingMushrooms {
 	}
 
 	private static boolean shouldProcess() {
-		return SkyblockerConfigManager.get().otherLocations.barn.enableGlowingMushroomHelper && Utils.isInFarm() && Utils.getArea() == Area.GLOWING_MUSHROOM_CAVE;
+		return SkyblockerConfigManager.get().otherLocations.barn.enableGlowingMushroomHelper && Utils.isInFarm() && Utils.getArea() == Area.TheFarmingIslands.GLOWING_MUSHROOM_CAVE;
 	}
 
 	private static void reset() {
