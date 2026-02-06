@@ -474,7 +474,7 @@
     "skyblocker.config.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "值越低，更新越频繁，可能会导致卡顿。",
     "skyblocker.config.uiAndVisuals.fancyCraftingTable": "花哨的工作台UI",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]": "当将鼠标悬停在某个饰品上时，你将得知是否已经拥有它，以及它与当前的饰品相比更差还是更好。状态列表：",
-    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "启用饰品助手",
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "启用饰品助手工具提示",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[1]": "你已拥有该系列中最高级的饰品。",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[3]": "该饰品可以升级。同时显示目前拥有该系列中哪个级别的饰品。",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[2]": "该饰品是现有同系列饰品升级后的版本。同时展示了该饰品在其系列中的级别。",
@@ -1653,5 +1653,17 @@
     "skyblocker.farming.visitorHelper.command.clearedAllVisitors": "清除了所有访客！",
     "skyblocker.config.chat.toastDuration": "弹窗显示时长",
     "skyblocker.config.chat.toastDuration.@Tooltip": "如果过滤器设置为“显示弹窗”，弹窗显示的时长（以秒为单位）。",
-    "skyblocker.config.chat.filter.chatFilterResult.TOAST": "显示弹窗"
+    "skyblocker.config.chat.filter.chatFilterResult.TOAST": "显示弹窗",
+    "skyblocker.config.helpers.enableAccessoriesHelperWidget": "启用饰品助手小部件",
+    "skyblocker.config.helpers.enableAccessoriesHelperWidget.@Tooltip": "在饰品界面添加一个显示缺失饰品的列表以及提升MP的方式。需要启用“饰品助手工具提示”。",
+    "skyblocker.accessoryHelper.allTiers": "显示所有等级",
+    "skyblocker.accessoryHelper.fandom": "（按住shift以打开Fandom页面）",
+    "skyblocker.accessoryHelper.filter": "过滤器",
+    "skyblocker.accessoryHelper.filter.ALL": "全部",
+    "skyblocker.accessoryHelper.filter.MISSING": "缺失",
+    "skyblocker.accessoryHelper.highestTierOnly": "只显示最高等级",
+    "skyblocker.accessoryHelper.openWiki": "点击打开wiki！",
+    "skyblocker.accessoryHelper.recombobulate": "重铸一个%s饰品。",
+    "skyblocker.accessoryHelper.filter.UPGRADES": "升级",
+    "skyblocker.accessoryHelper.afterSelling": "%s在卖掉之后："
 }
