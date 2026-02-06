@@ -29,6 +29,7 @@ public class EditableSlotEntry extends WidgetsListSlotEntry {
 	@Override
 	public void renderTooltip(GuiGraphics context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
 		if (mouseX >= x && mouseX <= x + entryWidth - 50 && mouseY >= y && mouseY <= y + entryHeight) {
+			@SuppressWarnings("deprecation")
 			List<Component> lore = ItemUtils.getLore(icon);
 			context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, locked ? lore : lore.subList(0, Math.max(lore.size() - 2, 0)), mouseX, mouseY);
 		}

@@ -44,6 +44,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	@Override
 	public void renderTooltip(GuiGraphics context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
 		if (mouseX >= x && mouseX <= x + entryWidth - 110 && mouseY >= y && mouseY <= y + entryHeight) {
+			@SuppressWarnings("deprecation")
 			List<Component> lore = ItemUtils.getLore(icon);
 			if (alwaysEnabled) {
 				lore = lore.subList(0, Math.max(lore.size() - 2, 0));

@@ -197,6 +197,7 @@ public class PreviewTab implements Tab {
 		locationDropdownOpened(locationDropdown.isOpen());
 	}
 
+	@SuppressWarnings("deprecation")
 	private void updatePlayerListFromPreview() {
 		if (mode == Mode.DUNGEON) {
 			PlayerListManager.updateDungeons(DungeonsTabPlaceholder.get());
