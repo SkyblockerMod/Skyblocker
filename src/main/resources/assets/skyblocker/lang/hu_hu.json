@@ -881,7 +881,7 @@
     "skyblocker.config.dungeons.map.backgroundBlur": "Háttér Elmosása",
     "skyblocker.config.dungeons.map.showOutline": "Körvonal Mutatása",
     "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "Megakadályozza az olyan tárgyak elfogyasztását, mint Bottles of Jyrre, Dark Cacao Truffle, Discrite, Moby Duck, és Rosewater Flask mielőtt azok kifejlődnek.",
-    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "Kiegészítők (Accessories) Segítő Engedélyezése",
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "Kiegészítők (Accessories) Segítő Leírás Engedélyezése",
     "skyblocker.config.general.specialEffects.rareDyeDropEffects": "Ritka festék Drop Effektek",
     "skyblocker.config.mining.crystalsWaypoints.enabled": "Helyjelölők Engedélyezve",
     "skyblocker.config.misc.richPresence.info": "Skyblock Infó",
@@ -1651,5 +1651,16 @@
     "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToSelect": "A kiválsztáshoz kattins még ennyiszer: %s!",
     "skyblocker.config.chat.filter.chatFilterResult.TOAST": "Felugró értesítés mutatása",
     "skyblocker.config.chat.toastDuration": "Felugró Értesítés Hossza",
-    "skyblocker.config.chat.toastDuration.@Tooltip": "Hány másodpercig legyen látható a felugró értesítés azoknál a beállításoknál, ahol a \"Felugró értesítés mutatása\" opció van kiválasztva."
+    "skyblocker.config.chat.toastDuration.@Tooltip": "Hány másodpercig legyen látható a felugró értesítés azoknál a beállításoknál, ahol a \"Felugró értesítés mutatása\" opció van kiválasztva.",
+    "skyblocker.accessoryHelper.allTiers": "Összes szint mutatása",
+    "skyblocker.accessoryHelper.fandom": "(Tartsd nyomva a shiftet Fandom-hoz)",
+    "skyblocker.accessoryHelper.filter": "Szűrő",
+    "skyblocker.accessoryHelper.filter.ALL": "Összes",
+    "skyblocker.accessoryHelper.filter.MISSING": "Hiányzók",
+    "skyblocker.accessoryHelper.openWiki": "Kattints a wiki megnyitásához!",
+    "skyblocker.accessoryHelper.recombobulate": "Recombobulálj egy %s accessory-t.",
+    "skyblocker.accessoryHelper.highestTierOnly": "Csak a legmagasabb szint mutatása",
+    "skyblocker.accessoryHelper.filter.UPGRADES": "Fejlesztések",
+    "skyblocker.config.helpers.enableAccessoriesHelperWidget.@Tooltip": "Megmutatja a hiányzó accessoriaid listáját, és azt, hogy hogyan tudod növelni az MP-det az accessory bag-ben. Ehhez az \"Accessories Segítő Leírás\"-nak bekapcsolva kell lennie.",
+    "skyblocker.config.helpers.enableAccessoriesHelperWidget": "Accessory Segítő Widget Engedélyezése"
 }
