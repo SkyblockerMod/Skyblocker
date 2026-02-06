@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
@@ -102,7 +103,7 @@ public class MetalDetector {
 	 * @param overlay if the message is an overlay message
 	 */
 	private static boolean getDistanceMessage(Component text, boolean overlay) {
-		if (!overlay || !SkyblockerConfigManager.get().mining.crystalHollows.metalDetectorHelper || !Utils.isInCrystalHollows() || !(Utils.getIslandArea().substring(2).equals("Mines of Divan")) || CLIENT.player == null) {
+		if (!overlay || !SkyblockerConfigManager.get().mining.crystalHollows.metalDetectorHelper || !Utils.isInCrystalHollows() || Utils.getArea() != Area.MINES_OF_DIVAN || CLIENT.player == null) {
 			checkChestFound(text);
 			return true;
 		}
@@ -154,7 +155,7 @@ public class MetalDetector {
 	 * @param text the message sent to the player
 	 */
 	private static void checkChestFound(Component text) {
-		if (!Utils.isInCrystalHollows() || !(Utils.getIslandArea().substring(2).equals("Mines of Divan")) || CLIENT.player == null) {
+		if (!Utils.isInCrystalHollows() || Utils.getArea() != Area.MINES_OF_DIVAN || CLIENT.player == null) {
 			return;
 		}
 		if (text.getString().startsWith("You found")) {
@@ -240,7 +241,7 @@ public class MetalDetector {
 	 */
 	private static void extractRendering(PrimitiveCollector collector) {
 		//only render enabled and if there is a few location options and in the mines of divan
-		if (!SkyblockerConfigManager.get().mining.crystalHollows.metalDetectorHelper || !Utils.isInCrystalHollows() || possibleBlocks.isEmpty() || possibleBlocks.size() > 8 || !(Utils.getIslandArea().substring(2).equals("Mines of Divan"))) {
+		if (!SkyblockerConfigManager.get().mining.crystalHollows.metalDetectorHelper || !Utils.isInCrystalHollows() || possibleBlocks.isEmpty() || possibleBlocks.size() > 8 || Utils.getArea() != Area.MINES_OF_DIVAN) {
 			return;
 		}
 		//only one location render just that and guiding line to it

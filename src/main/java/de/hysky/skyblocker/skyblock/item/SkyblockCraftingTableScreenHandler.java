@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Utils;
 import java.util.Arrays;
-import java.util.Locale;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;
@@ -27,7 +27,7 @@ public class SkyblockCraftingTableScreenHandler extends ChestMenu {
 
 	public SkyblockCraftingTableScreenHandler(MenuType<?> type, int syncId, Inventory playerInventory, Container inventory, int rows) {
 		super(type, syncId, playerInventory, inventory, rows);
-		mirrorverse = Utils.getIslandArea().toLowerCase(Locale.ENGLISH).contains("mirrorverse");
+		mirrorverse = Utils.getArea() == Area.MIRRORVERSE;
 		int[] activeSlots = mirrorverse ? riftNormalSlots : normalSlots;
 
 		for (int i = 0; i < rows * 9; i++) {

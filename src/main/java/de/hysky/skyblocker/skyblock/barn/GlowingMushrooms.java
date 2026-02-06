@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.barn;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -74,7 +75,7 @@ public class GlowingMushrooms {
 	}
 
 	private static boolean shouldProcess() {
-		return SkyblockerConfigManager.get().otherLocations.barn.enableGlowingMushroomHelper && Utils.isInFarm() && Utils.getIslandArea().equals("⏣ Glowing Mushroom Cave");
+		return SkyblockerConfigManager.get().otherLocations.barn.enableGlowingMushroomHelper && Utils.isInFarm() && Utils.getArea() == Area.GLOWING_MUSHROOM_CAVE;
 	}
 
 	private static void reset() {

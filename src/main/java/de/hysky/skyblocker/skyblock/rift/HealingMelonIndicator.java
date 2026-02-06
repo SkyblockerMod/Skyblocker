@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.rift;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
@@ -12,7 +13,7 @@ public class HealingMelonIndicator {
 	private static final Title title = new Title("skyblocker.rift.healNow", ChatFormatting.DARK_RED);
 
 	public static void updateHealth() {
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableHealingMelonIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getIslandArea().contains("Stillgore Château")) {
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableHealingMelonIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || Utils.getArea() != Area.CHATEAU) {
 			TitleContainer.removeTitle(title);
 			return;
 		}
