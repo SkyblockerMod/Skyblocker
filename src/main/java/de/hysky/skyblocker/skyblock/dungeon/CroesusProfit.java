@@ -201,9 +201,13 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 						}
 					}
 
-					// TODO: Make code like this to detect recombed gear (it can drop with 1% chance, according to wiki, tho I never saw any?)
-					case String s when s.equals("Spirit") && line.getStyle().getColor() == TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE) -> {
-						chestValue += getItemPrice("Spirit Epic");
+					case String s when s.equals("[Lvl 1] Spirit") -> {
+						// TODO: Make code like this to detect recombed gear (it can drop with 1% chance, according to wiki, tho I never saw any?)
+						if (line.getStyle().getColor().equals(TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE))) {
+							chestValue += getItemPrice("Spirit Epic");
+						} else {
+							chestValue += getItemPrice("Spirit Legendary");
+						}
 					}
 
 					default -> {
@@ -296,7 +300,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		Map.entry("Spirit Sword", "SPIRIT_SWORD"),    // F4 M4
 		Map.entry("Spirit Shortbow", "ITEM_SPIRIT_BOW"),
 		Map.entry("Spirit Boots", "THORNS_BOOTS"),
-		Map.entry("Spirit", "LVL_1_LEGENDARY_SPIRIT"),    // Spirit pet (Legendary)
+		Map.entry("Spirit Legendary", "LVL_1_LEGENDARY_SPIRIT"),    // Spirit pet (Legendary)
 		Map.entry("Spirit Epic", "LVL_1_EPIC_SPIRIT"),
 
 		Map.entry("Second Master Star", "SECOND_MASTER_STAR"),
