@@ -31,7 +31,7 @@ public enum PurseChangeCause {
 				// UI closed
 				// need to make this more specific, but atm might as well attrib to mob kill
 				return MOB_KILL;
-			} else if (Utils.getArea() == Area.BANK) {
+			} else if (Utils.getArea() == Area.Hub.BANK) {
 				return TAKE_BANK;
 			}
 			return UNKNOWN_GAIN;

@@ -114,7 +114,7 @@ public class VisitorHelper extends AbstractWidget {
 	public static boolean shouldRender() {
 		boolean isHelperEnabled = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelper;
 		boolean isGardenMode = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelperGardenOnly;
-		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getArea() == Area.BAZAAR);
+		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getArea() == Area.Hub.BAZAAR);
 	}
 
 	public static List<ScreenRectangle> getExclusionZones() {

@@ -190,8 +190,8 @@ public class PickobulusHelper {
 									|| blocks[i][j][k - 1].isAir() || blocks[i][j][k + 1].isAir();
 					if (!exposed) continue;
 
-					if (Utils.getArea().equals(Area.GLACITE_TUNNELS)) handleGlaciteTunnels(pos, state, i, j, k);
-					else if (Utils.getArea().equals(Area.GLACITE_MINESHAFTS)) handleGlaciteMineshafts(pos, state, i, j, k);
+					if (Utils.getArea() == Area.DwarvenMines.GLACITE_TUNNELS) handleGlaciteTunnels(pos, state, i, j, k);
+					else if (Utils.getArea() == Area.DwarvenMines.GLACITE_MINESHAFTS) handleGlaciteMineshafts(pos, state, i, j, k);
 					else switch (Utils.getLocation()) {
 						case PRIVATE_ISLAND -> handleBreakable(pos, i, j, k);
 						case GOLD_MINE, DEEP_CAVERNS, DWARVEN_MINES -> handleConvertIntoBedrock(pos, state, i, j, k);

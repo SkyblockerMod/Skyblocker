@@ -13,7 +13,7 @@ public class HealingMelonIndicator {
 	private static final Title title = new Title("skyblocker.rift.healNow", ChatFormatting.DARK_RED);
 
 	public static void updateHealth() {
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableHealingMelonIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || Utils.getArea() != Area.CHATEAU) {
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableHealingMelonIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || Utils.getArea() != Area.TheRift.CHATEAU) {
 			TitleContainer.removeTitle(title);
 			return;
 		}

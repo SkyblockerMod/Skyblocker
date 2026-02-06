@@ -30,7 +30,7 @@ public class EffigyWaypoints {
 	private static final float[] RED = ColorUtils.getFloatComponents(DyeColor.RED);
 
 	protected static void updateEffigies() {
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints || !Utils.isOnSkyblock() || !Utils.isInTheRift() || Utils.getArea() != Area.CHATEAU) return;
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints || !Utils.isOnSkyblock() || !Utils.isInTheRift() || Utils.getArea() != Area.TheRift.CHATEAU) return;
 
 		UNBROKEN_EFFIGIES.clear();
 
@@ -57,7 +57,7 @@ public class EffigyWaypoints {
 	}
 
 	protected static void extractRendering(PrimitiveCollector collector) {
-		if (SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints && Utils.getArea() == Area.CHATEAU) {
+		if (SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints && Utils.getArea() == Area.TheRift.CHATEAU) {
 			for (BlockPos effigy : UNBROKEN_EFFIGIES) {
 				if (SkyblockerConfigManager.get().slayers.vampireSlayer.compactEffigyWaypoints) {
 					collector.submitFilledBoxWithBeaconBeam(effigy.below(6), RED, 0.5F, true);

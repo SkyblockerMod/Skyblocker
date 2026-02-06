@@ -27,7 +27,7 @@ public class SkyblockCraftingTableScreenHandler extends ChestMenu {
 
 	public SkyblockCraftingTableScreenHandler(MenuType<?> type, int syncId, Inventory playerInventory, Container inventory, int rows) {
 		super(type, syncId, playerInventory, inventory, rows);
-		mirrorverse = Utils.getArea() == Area.MIRRORVERSE;
+		mirrorverse = Utils.getArea() == Area.TheRift.MIRRORVERSE;
 		int[] activeSlots = mirrorverse ? riftNormalSlots : normalSlots;
 
 		for (int i = 0; i < rows * 9; i++) {
