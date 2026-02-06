@@ -14,6 +14,7 @@ import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.Minecraft;
@@ -63,6 +64,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	private static final Identifier SLOT_TEXTURE = Identifier.withDefaultNamespace("container/slot");
 	private static final Identifier EMPTY_SLOT = SkyblockerMod.id("equipment/empty_icon");
 	private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
+	private static final FallbackedTexture<Identifier> BACKGROUND = FallbackedTexture.ofTexture(SkyblockerMod.id("textures/gui/container/skyblock_inventory.png"), INVENTORY_LOCATION);
 
 	private final Slot[] equipmentSlots = new Slot[4];
 	private ItemStack hoveredItem;
@@ -189,7 +191,15 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 
 	@Override
 	protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
-		super.renderBg(context, delta, mouseX, mouseY);
+		if (BACKGROUND.isUsingFallback()) {
+			super.renderBg(context, delta, mouseX, mouseY);
+		} else {
+			int x = this.leftPos;
+			int y = this.topPos;
+			context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND.get(), x, y, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
+			renderEntityInInventoryFollowsMouse(context, x + 26, y + 8, x + 75, y + 78, 30, 0.0625F, mouseX, mouseY, this.minecraft.player);
+			return;
+		}
 		for (int i = 0; i < 3; i++) {
 			context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, leftPos + 76, topPos + 7 + i * 18, 18, 18);
 		}

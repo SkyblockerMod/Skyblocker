@@ -7,6 +7,7 @@ import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.PopupScreenAccessor;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -36,6 +37,8 @@ import org.jspecify.annotations.Nullable;
 @Environment(value = EnvType.CLIENT)
 public class QuickNavButton extends AbstractWidget {
 	private static final long TOGGLE_DURATION = 1000;
+	@SuppressWarnings("unchecked")
+	private static final @Nullable FallbackedTexture<Identifier>[] TAB_TEXTURES = new FallbackedTexture[14];
 
 	private final int index;
 	private final boolean toggled;
@@ -178,8 +181,7 @@ public class QuickNavButton extends AbstractWidget {
 			alpha = Math.min(alpha + 10, 255);
 		}
 
-		// Construct the texture identifier based on the index and toggled state
-		Identifier tabTexture = Identifier.withDefaultNamespace("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (renderInFront ? "selected" : "unselected") + "_" + (index % 7 + 1));
+		Identifier tabTexture = getTexture();
 
 		// Render the button texture, always with full alpha if it's not rendering in front
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, tabTexture, this.getX(), this.getY(), this.width, this.height, renderInFront ? ARGB.color(alpha, -1) : -1);
@@ -188,6 +190,16 @@ public class QuickNavButton extends AbstractWidget {
 		context.renderItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
 
 		this.handleCursor(context);
+	}
+
+	private Identifier getTexture() {
+		FallbackedTexture<Identifier> texture = TAB_TEXTURES[index];
+		if (texture != null) return texture.get();
+		// Construct the texture identifier based on the index and toggled state
+		return (TAB_TEXTURES[index] = FallbackedTexture.ofGuiSprite(
+				SkyblockerMod.id("quick_nav/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (renderInFront ? "selected" : "unselected") + "_" + (index % 7 + 1)),
+				Identifier.withDefaultNamespace("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (renderInFront ? "selected" : "unselected") + "_" + (index % 7 + 1))
+		)).get();
 	}
 
 	@Override
