@@ -801,7 +801,7 @@
   "skyblocker.config.mining.blockBreakPrediction.enableStatsMessage": "Unable to find the Mining Speed stat in the player list. Please make sure it's enabled in the Stats Widget in /tab for client side block breaking animations to work.",
   "skyblocker.config.mining.blockBreakPrediction.enabled": "Enabled",
   "skyblocker.config.mining.blockBreakPrediction.playSound": "Play Sound",
-  "skyblocker.config.mining.blockBreakPrediction.playSound.@Tooltip": "Play a blaze sound when the block should be broken",
+  "skyblocker.config.mining.blockBreakPrediction.playSound.@Tooltip": "Plays a Blaze sound when the block should be broken.",
 
   "skyblocker.config.mining.callMismyla": "Enable Call Mismyla Message",
   "skyblocker.config.mining.callMismyla.@Tooltip": "Sends a message in chat that can be clicked to call Queen Mismyla after completing a commission.\n\nThis requires having her as an Abiphone contact, and an Abiphone in your inventory!",
