@@ -389,6 +389,26 @@ public class MiningCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
+				//Block break prediction
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.mining.blockBreakPrediction"))
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.mining.blockBreakPrediction.enabled"))
+								.binding(defaults.mining.blockBreakPrediction.enabled,
+										() -> config.mining.blockBreakPrediction.enabled,
+										newValue -> config.mining.blockBreakPrediction.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.mining.blockBreakPrediction.playSound"))
+								.description(Component.translatable("skyblocker.config.mining.blockBreakPrediction.playSound.@Tooltip"))
+								.binding(defaults.mining.blockBreakPrediction.playSound,
+										() -> config.mining.blockBreakPrediction.playSound,
+										newValue -> config.mining.blockBreakPrediction.playSound = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+
+						.build())
 				.build();
 	}
 }

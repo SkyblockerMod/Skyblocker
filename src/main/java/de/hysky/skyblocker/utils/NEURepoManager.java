@@ -12,6 +12,7 @@ import io.github.moulberry.repo.NEURecipeCache;
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.NEURepository;
 import io.github.moulberry.repo.data.ItemOverlays;
+import io.github.moulberry.repo.NEURepositoryException;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
 import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
@@ -43,6 +44,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Initializes the NEU repo, which contains item metadata and fairy souls location data. Clones the repo if it does not exist and checks for updates. Use {@link #runAsyncAfterLoad(Runnable)} to run code after the repo is initialized.
@@ -238,6 +240,10 @@ public class NEURepoManager {
 
 	public static @Nullable NEURepoFile file(String path) {
 		return NEU_REPO.file(path);
+	}
+
+	public static Stream<NEURepoFile> tree(String path) throws NEURepositoryException {
+		return NEU_REPO.tree(path);
 	}
 
 	public static Map<@NEUId String, Set<NEURecipe>> getRecipes() {

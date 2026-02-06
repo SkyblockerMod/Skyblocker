@@ -1,5 +1,20 @@
 package de.hysky.skyblocker.mixins;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.injected.EntityRenderMarker;
+import de.hysky.skyblocker.skyblock.dwarven.BlockBreakPrediction;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.utils.render.GlowRenderer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.BlockBreakingRenderState;
+import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.core.BlockPos;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -9,16 +24,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
-
-import de.hysky.skyblocker.injected.EntityRenderMarker;
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.utils.render.GlowRenderer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.state.LevelRenderState;
 
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin implements EntityRenderMarker {
@@ -67,5 +72,19 @@ public class LevelRendererMixin implements EntityRenderMarker {
 	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V"))
 	private void skyblocker$drawGlowVertexConsumers(CallbackInfo ci) {
 		GlowRenderer.getInstance().getGlowVertexConsumers().endOutlineBatch();
+	}
+
+	@WrapOperation(method = "extractBlockDestroyAnimation", at = @At(value = "NEW", target = "(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/core/BlockPos;I)Lnet/minecraft/client/renderer/state/BlockBreakingRenderState;"))
+	private BlockBreakingRenderState skyblocker$addBlockBreakingProgressRenderState(ClientLevel clientLevel, BlockPos blockPos, int i, Operation<BlockBreakingRenderState> original) {
+		if (SkyblockerConfigManager.get().mining.blockBreakPrediction.enabled) {
+			int pingModifiedProgress = BlockBreakPrediction.getBlockBreakPrediction(blockPos, i);
+			return new BlockBreakingRenderState(clientLevel, blockPos, pingModifiedProgress);
+
+		}
+		//if the setting is not enabled do not modify anything
+		else {
+			return original.call(clientLevel, blockPos, i);
+		}
+
 	}
 }
