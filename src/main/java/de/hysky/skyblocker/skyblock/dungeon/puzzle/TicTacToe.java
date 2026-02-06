@@ -24,7 +24,6 @@ import net.minecraft.world.phys.AABB;
  */
 public class TicTacToe extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TicTacToe.class);
-	private static final float[] RED_COLOR_COMPONENTS = { 1.0F, 0.0F, 0.0F };
 	private static final float[] GREEN_COLOR_COMPONENTS = { 0.0F, 1.0F, 0.0F };
 	@SuppressWarnings("unused")
 	private static final TicTacToe INSTANCE = new TicTacToe();

@@ -108,6 +108,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		return 16;
 	}
 
+	@SuppressWarnings("deprecation")
 	private double getChestValue(ItemStack chest) {
 		double chestValue = 0;
 		int chestPrice = 0;

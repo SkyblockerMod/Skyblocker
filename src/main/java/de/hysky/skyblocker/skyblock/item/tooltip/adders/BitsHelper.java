@@ -289,7 +289,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			ItemStack stack = entry.getValue();
 			if (stack == null || stack.isEmpty()) continue;
 
-			if (CATEGORY_PATTERN.matcher(ItemUtils.concatenateLore(ItemUtils.getLore(stack))).find()) {
+			if (CATEGORY_PATTERN.matcher(ItemUtils.getConcatenatedLore(stack)).find()) {
 				ObjectLongImmutablePair<String> categoryResults = calculateBestInCategory(stack);
 
 				String itemID = categoryResults.left();
@@ -312,7 +312,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			if (stack == null || stack.isEmpty()) continue;
 
 			String itemId = stack.getSkyblockApiId();
-			String lore = ItemUtils.concatenateLore(ItemUtils.getLore(stack));
+			String lore = ItemUtils.getConcatenatedLore(stack);
 			Matcher bitsMatcher = BITS_PATTERN.matcher(lore);
 			if (!bitsMatcher.find()) continue;
 

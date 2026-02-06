@@ -383,6 +383,7 @@ public class PartyFinderScreen extends Screen {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private void updatePartyFinderPage() {
 		previousPageButton.active = false;
 		nextPageButton.active = false;
