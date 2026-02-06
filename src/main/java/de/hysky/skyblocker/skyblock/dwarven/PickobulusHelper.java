@@ -165,6 +165,7 @@ public class PickobulusHelper {
 		calculatePickobulus(blockHitResult.getBlockPos());
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	private static void calculatePickobulus(BlockPos pos) {
 		assert CLIENT.level != null;
 		BlockPos.MutableBlockPos posMutable = pos.mutable().move(-4, -4, -4);

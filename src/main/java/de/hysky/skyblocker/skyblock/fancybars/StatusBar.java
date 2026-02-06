@@ -124,6 +124,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		return icon;
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public void renderBar(GuiGraphics context) {
 		if (renderWidth <= 0) return;
 		int transparency = transparency(-1);

@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.rift;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -29,7 +30,7 @@ public class EffigyWaypoints {
 	private static final float[] RED = ColorUtils.getFloatComponents(DyeColor.RED);
 
 	protected static void updateEffigies() {
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getIslandArea().contains("Stillgore Château")) return;
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints || !Utils.isOnSkyblock() || !Utils.isInTheRift() || Utils.getArea() != Area.CHATEAU) return;
 
 		UNBROKEN_EFFIGIES.clear();
 
@@ -56,7 +57,7 @@ public class EffigyWaypoints {
 	}
 
 	protected static void extractRendering(PrimitiveCollector collector) {
-		if (SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints && Utils.getIslandArea().contains("Stillgore Château")) {
+		if (SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints && Utils.getArea() == Area.CHATEAU) {
 			for (BlockPos effigy : UNBROKEN_EFFIGIES) {
 				if (SkyblockerConfigManager.get().slayers.vampireSlayer.compactEffigyWaypoints) {
 					collector.submitFilledBoxWithBeaconBeam(effigy.below(6), RED, 0.5F, true);

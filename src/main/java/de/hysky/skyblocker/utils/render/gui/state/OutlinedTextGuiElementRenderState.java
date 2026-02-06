@@ -7,7 +7,6 @@ import de.hysky.skyblocker.mixins.accessors.FontAccessor;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.GlyphVisitor;
 import net.minecraft.client.gui.Font.PreparedText;
-import net.minecraft.client.gui.Font.PreparedTextBuilder;
 import net.minecraft.client.gui.font.glyphs.BakedGlyph;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.state.GuiTextRenderState;
