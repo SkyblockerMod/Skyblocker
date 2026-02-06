@@ -680,7 +680,9 @@
   "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
   "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip.",
 
-  "skyblocker.config.helpers.enableBuildersWandPreview": "Enable Builder's Wand and Builder's Ruler Preview",
+  "skyblocker.config.helpers.buildersWand": "Builder's Wand",
+  "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "Enable Builder's Wand and Builder's Ruler Preview",
+  "skyblocker.config.helpers.buildersWand.previewOpacity": "Preview Opacity",
 
   "skyblocker.config.helpers.enableCopyUnderbidPrice": "Enable Copy Underbid Price",
   "skyblocker.config.helpers.enableCopyUnderbidPrice.@Tooltip": "Copies the lowest BIN price minus one coin to your clipboard when opening the Create BIN Auction screen.",
