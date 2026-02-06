@@ -152,7 +152,8 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 
 		int filterWidth = layout.getWidth() - 2;
 
-		mainLayout.addChild(CycleButton.builder(f -> Component.translatable(f.toString()), filter)
+		mainLayout.addChild(CycleButton.<Filter>builder(f -> Component.translatable(f.toString()))
+				.withInitialValue(filter)
 				.withValues(Filter.values())
 				.create(0, 0, filterWidth, 16, Component.translatable("skyblocker.accessoryHelper.filter"), (b, v) -> {
 					filter = v;
@@ -160,7 +161,8 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 					changePage(0);
 				})
 		);
-		mainLayout.addChild(CycleButton.booleanBuilder(Component.translatable("skyblocker.accessoryHelper.highestTierOnly"), Component.translatable("skyblocker.accessoryHelper.allTiers"), showHighestTierOnly)
+		mainLayout.addChild(CycleButton.booleanBuilder(Component.translatable("skyblocker.accessoryHelper.highestTierOnly"), Component.translatable("skyblocker.accessoryHelper.allTiers"))
+				.withInitialValue(showHighestTierOnly)
 				.displayOnlyValue()
 				.create(0, 0, filterWidth, 16, CommonComponents.EMPTY, (button, value) -> {
 					showHighestTierOnly = value;
@@ -306,7 +308,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		}
 
 		@Override
-		public void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 			if (this.sprites == null) return;
 			int x = this.getX();
 			if (this.toggled) x -= 2;
