@@ -1662,5 +1662,12 @@
     "skyblocker.accessoryHelper.highestTierOnly": "Csak a legmagasabb szint mutatása",
     "skyblocker.accessoryHelper.filter.UPGRADES": "Fejlesztések",
     "skyblocker.config.helpers.enableAccessoriesHelperWidget.@Tooltip": "Megmutatja a hiányzó accessoriaid listáját, és azt, hogy hogyan tudod növelni az MP-det az accessory bag-ben. Ehhez az \"Accessories Segítő Leírás\"-nak bekapcsolva kell lennie.",
-    "skyblocker.config.helpers.enableAccessoriesHelperWidget": "Accessory Segítő Widget Engedélyezése"
+    "skyblocker.config.helpers.enableAccessoriesHelperWidget": "Accessory Segítő Widget Engedélyezése",
+    "skyblocker.config.mining.blockBreakPrediction": "Kliens-oldalú Blokk Kiütés Animáció",
+    "skyblocker.config.mining.blockBreakPrediction.enableStatsMessage": "Nem sikerült megtalálni a Mining Speed statisztikát a játékoslistában. Kérlek győződj meg, hogy a /tab-ban a Stats Widget-ben be van kapcsolva, hogy a kliensoldalú blokk kiütés animációk működni tudjanak.",
+    "skyblocker.config.mining.blockBreakPrediction.enabled": "Engedélyezve",
+    "skyblocker.config.mining.blockBreakPrediction.playSound": "Hang Lejátszása",
+    "skyblocker.config.mining.blockBreakPrediction.playSound.@Tooltip": "Lejátszik egy Őrláng hangot, amikor a blokk-ot ki kell ütni.",
+    "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize": "Adaptív Dobozméret",
+    "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "A Secret Helyjelölők mérete a tényleges blokk méretét mutaják Essence és Redstone kulcsok esetén."
 }
