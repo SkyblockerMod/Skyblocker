@@ -13,6 +13,8 @@ public interface PrimitiveCollector {
 
 	void submitFilledBoxWithBeaconBeam(BlockPos pos, float[] colourComponents, float alpha, boolean throughWalls);
 
+	void submitFilledBoxWithBeaconBeam(AABB box, float[] colourComponents, float alpha, boolean throughWalls);
+
 	void submitFilledBox(BlockPos pos, float[] colourComponents, float alpha, boolean throughWalls);
 
 	void submitFilledBox(Vec3 pos, Vec3 dimensions, float[] colourComponents, float alpha, boolean throughWalls);
