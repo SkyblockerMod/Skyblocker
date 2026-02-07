@@ -6,7 +6,7 @@
 * Add Custom Plot Icons for the Garden Plot Widgets
     * Allows changing plot icons to be any crop.
 * Add Garden Chip Level Slot Text
-* Add a command to remove visitors from visitor helper
+* Add a command to remove visitors from Visitor Helper
   * `/skyblocker garden visitor remove <visitorName>`
   * `/skyblocker garden visitor removeAll`
 * Add "Show Toast" option for Chat Filters
@@ -31,7 +31,7 @@
   * Add a toggle for hiding Sven Pup nametags
   * Add chat filters for some slayer chat messages
   * Fix slayer boss detection
-* Improve accuracy for Farming HUD's Block Breaks and Farming XP
+* Improve accuracy for Farming HUD's Block Breaks and Farming XP metrics
 * Fix Bazaar Price Tooltip not working for Essences
 * Fix "Confirm Command Execution" Popup on some commands
 * Fix Powder Mining Tracker HUD not clearing with the command
