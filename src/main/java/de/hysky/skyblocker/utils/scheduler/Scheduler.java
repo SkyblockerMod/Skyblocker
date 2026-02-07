@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.utils.scheduler;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
+
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -13,7 +14,6 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.StackWalker.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -56,12 +56,7 @@ public class Scheduler {
 	 * @param multithreaded whether to run the task on the schedulers dedicated thread pool
 	 */
 	public void schedule(Runnable task, int delay, boolean multithreaded) {
-		if (!RenderSystem.isOnRenderThread() && Minecraft.getInstance() != null) {
-			LOGGER.warn("[Skyblocker Scheduler] Called the scheduler from the {} class on the {} thread. This will be unsupported in the future.", StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName(), Thread.currentThread().getName());
-			Minecraft.getInstance().schedule(() -> schedule(task, delay, multithreaded));
-
-			return;
-		}
+		RenderHelper.assertOnRenderThread("Scheduler called from outside the Render Thread");
 
 		if (delay >= 0) {
 			addTask(multithreaded ? new ScheduledTask(task, true) : task, currentTick + delay);
@@ -78,12 +73,7 @@ public class Scheduler {
 	 * @param multithreaded whether to run the task on the schedulers dedicated thread pool
 	 */
 	public void scheduleCyclic(Runnable task, int period, boolean multithreaded) {
-		if (!RenderSystem.isOnRenderThread() && Minecraft.getInstance() != null) {
-			LOGGER.warn("[Skyblocker Scheduler] Called the scheduler from the {} class on the {} thread. This will be unsupported in the future.", StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName(), Thread.currentThread().getName());
-			Minecraft.getInstance().schedule(() -> scheduleCyclic(task, period, multithreaded));
-
-			return;
-		}
+		RenderHelper.assertOnRenderThread("Scheduler called from outside the Render Thread");
 
 		if (period > 0) {
 			addTask(new ScheduledTask(task, period, true, multithreaded), currentTick);
@@ -154,7 +144,7 @@ public class Scheduler {
 			//noinspection ForLoopReplaceableByForEach (or else we get a ConcurrentModificationException)
 			for (int i = 0; i < currentTickTasks.size(); i++) {
 				Runnable task = currentTickTasks.get(i);
-				if (!runTask(task, task instanceof ScheduledTask scheduledTask && scheduledTask.multithreaded)) {
+				if (!runTask(task)) {
 					tasks.computeIfAbsent(currentTick + 1, key -> new ArrayList<>()).add(task);
 				}
 			}
@@ -171,12 +161,8 @@ public class Scheduler {
 	 * @param task the task to run
 	 * @return {@code true} if the task is run, and {@link false} if task is not run.
 	 */
-	protected boolean runTask(Runnable task, boolean multithreaded) {
-		if (multithreaded) {
-			executors.execute(task);
-		} else {
-			task.run();
-		}
+	protected boolean runTask(Runnable task) {
+		task.run();
 
 		return true;
 	}
@@ -201,14 +187,14 @@ public class Scheduler {
 
 		@Override
 		public void run() {
-			task.run();
+			if (this.multithreaded) {
+				INSTANCE.executors.execute(this.task);
+			} else {
+				this.task.run();
+			}
 
-			if (cyclic) {
-				if (!RenderSystem.isOnRenderThread() && Minecraft.getInstance() != null) {
-					Minecraft.getInstance().schedule(() -> INSTANCE.addTask(this, INSTANCE.currentTick + interval));
-				} else {
-					INSTANCE.addTask(this, INSTANCE.currentTick + interval);
-				}
+			if (this.cyclic) {
+				INSTANCE.addTask(this, INSTANCE.currentTick + this.interval);
 			}
 		}
 	}

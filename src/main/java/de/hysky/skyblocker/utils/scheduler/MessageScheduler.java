@@ -64,7 +64,7 @@ public class MessageScheduler extends Scheduler {
 	}
 
 	@Override
-	protected boolean runTask(Runnable task, boolean multithreaded) {
+	protected boolean runTask(Runnable task) {
 		if (lastMessage + MIN_DELAY < System.currentTimeMillis()) {
 			task.run();
 			lastMessage = System.currentTimeMillis();
