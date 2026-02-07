@@ -95,6 +95,7 @@ public class HelperCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.helpers.enableAccessoriesHelperWidget"))
 						.description(Component.translatable("skyblocker.config.helpers.enableAccessoriesHelperWidget.@Tooltip"))
+						.tags(CommonTags.ADDED_IN_6_0_0)
 						.binding(defaults.helpers.enableAccessoriesHelperWidget,
 								() -> config.helpers.enableAccessoriesHelperWidget,
 								newValue -> config.helpers.enableAccessoriesHelperWidget = newValue)
