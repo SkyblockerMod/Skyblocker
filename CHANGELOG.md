@@ -16,7 +16,7 @@
 * Add some missing tooltips/descriptions
 * Update compact damage precision option
     * If you changed this after Beta #1, you will have to set it again!
-* Improve resourcepack compatability for Fancy AH textures
+* Improve resourcepack compatibility for Fancy AH textures
 * Fix Bazaar Price tooltip for Enchanted Books in Superpairs
 * Fix command key inputs being bound to control for Mac users on 1.21.11
 * Fix score fluctuating after blood room is completed
@@ -135,7 +135,7 @@ ___
 * Fix Barrier placeholders not showing the proper item name
 * Fix Dungeons special effects not showing sometimes on items from Croesus
 * Use Fabric Events for Fancy Status Bars
-  * Fixes a mod compatability issue
+  * Fixes a mod compatibility issue
 
 ## What's Changed
 * Fix Sacks Item Value by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1935
