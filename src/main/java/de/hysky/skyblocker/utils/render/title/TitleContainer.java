@@ -131,18 +131,17 @@ public class TitleContainer {
 	}
 
 	private static void render(GuiGraphics context, DeltaTracker tickCounter) {
-		var conf = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
-		render(context, titles, conf.x, conf.y, tickCounter.getGameTimeDeltaPartialTick(true));
+		render(context, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getGameTimeDeltaPartialTick(true));
 	}
 
 	protected static void render(GuiGraphics context, Set<Title> titles, int xPos, int yPos, float tickDelta) {
-		var conf = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
+		UIAndVisualsConfig.TitleContainer config = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
 
 		// Calculate Scale to use
-		float scale = conf.titleContainerScale * RENDER_SCALE;
+		float scale = config.titleContainerScale * RENDER_SCALE;
 		// Grab direction and alignment values
-		UIAndVisualsConfig.Direction direction = conf.direction;
-		UIAndVisualsConfig.Alignment alignment = conf.alignment;
+		UIAndVisualsConfig.Direction direction = config.direction;
+		UIAndVisualsConfig.Alignment alignment = config.alignment;
 
 		render(context, titles, xPos, yPos, tickDelta, scale, direction, alignment);
 	}

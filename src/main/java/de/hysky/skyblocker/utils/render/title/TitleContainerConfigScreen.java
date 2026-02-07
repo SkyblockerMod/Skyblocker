@@ -49,14 +49,14 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 		super.init();
 
 		// Get the unpatched config options
-		SkyblockerConfigManager.update(config -> {
-			var conf = config.uiAndVisuals.titleContainer;
-			direction = conf.direction;
-			alignment = conf.alignment;
-			titleContainerScale = conf.titleContainerScale;
+		SkyblockerConfigManager.update(fullConfig -> {
+			UIAndVisualsConfig.TitleContainer config = fullConfig.uiAndVisuals.titleContainer;
+			direction = config.direction;
+			alignment = config.alignment;
+			titleContainerScale = config.titleContainerScale;
 
 			// Only load config positions if they are not default
-			int x = conf.x, y = conf.y;
+			int x = config.x, y = config.y;
 			if (x >= 0 && y >= 0) {
 				// Load the config positions here since #getConfigPos is used for resetting. This loads the config pos after HudConfigScreen#init calls HudConfigScreen#resetPos.
 				widgets.getFirst().setPosition(x, y);
@@ -142,14 +142,14 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected void savePos(SkyblockerConfig config, List<AbstractWidget> widgets) {
+	protected void savePos(SkyblockerConfig fullConfig, List<AbstractWidget> widgets) {
 		// Save to -1 if the widget is at the default position
-		List<IntIntMutablePair> defaultPos = getConfigPos(config);
-		var conf = config.uiAndVisuals.titleContainer;
-		conf.x = widgets.getFirst().getX() != defaultPos.getFirst().leftInt() ? widgets.getFirst().getX() : -1;
-		conf.y = widgets.getFirst().getY() != defaultPos.getFirst().rightInt() ? widgets.getFirst().getY() : -1;
-		conf.direction = direction;
-		conf.alignment = alignment;
-		conf.titleContainerScale = titleContainerScale;
+		List<IntIntMutablePair> defaultPos = getConfigPos(fullConfig);
+		UIAndVisualsConfig.TitleContainer config = fullConfig.uiAndVisuals.titleContainer;
+		config.x = widgets.getFirst().getX() != defaultPos.getFirst().leftInt() ? widgets.getFirst().getX() : -1;
+		config.y = widgets.getFirst().getY() != defaultPos.getFirst().rightInt() ? widgets.getFirst().getY() : -1;
+		config.direction = direction;
+		config.alignment = alignment;
+		config.titleContainerScale = titleContainerScale;
 	}
 }
