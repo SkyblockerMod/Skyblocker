@@ -79,6 +79,12 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
+	public void submitFilledBoxWithBeaconBeam(AABB box, float[] colourComponents, float alpha, boolean throughWalls) {
+		submitFilledBox(box, colourComponents, alpha, throughWalls);
+		submitBeaconBeam(new BlockPos((int) box.minX, (int) box.minY, (int) box.minZ), colourComponents);
+	}
+
+	@Override
 	public void submitFilledBox(BlockPos pos, float[] colourComponents, float alpha, boolean throughWalls) {
 		submitFilledBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1, colourComponents, alpha, throughWalls);
 	}
