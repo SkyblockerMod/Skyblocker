@@ -32,7 +32,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
-import org.apache.commons.lang3.function.Consumers;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -359,21 +358,23 @@ public class SearchOverManager {
 	}
 
 	protected static void removeHistoryItem(int index) {
-		UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
-		List<String> history;
+		SkyblockerConfigManager.update(fullConfig -> {
+			UIAndVisualsConfig.SearchOverlay config = fullConfig.uiAndVisuals.searchOverlay;
+			List<String> history;
 
-		switch (location) {
-			case AUCTION -> history = config.auctionHistory;
-			case BAZAAR -> history = config.bazaarHistory;
-			case MUSEUM -> history = config.museumHistory;
-			default -> {
-				return;
+			switch (location) {
+				case AUCTION -> history = config.auctionHistory;
+				case BAZAAR -> history = config.bazaarHistory;
+				case MUSEUM -> history = config.museumHistory;
+				default -> {
+					return;
+				}
 			}
-		}
 
-		if (history.size() > index) {
-			history.remove(index);
-		}
+			if (history.size() > index) {
+				history.remove(index);
+			}
+		});
 	}
 
 	private static List<String> addToHistory(List<String> history, String search, int historyLength) {
@@ -396,14 +397,14 @@ public class SearchOverManager {
 	 */
 	@SuppressWarnings("incomplete-switch")
 	private static void saveHistory() {
-		//save to history
-		UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
-		switch (location) {
-			case AUCTION -> config.auctionHistory = addToHistory(config.auctionHistory, search, config.historyLength);
-			case BAZAAR -> config.bazaarHistory = addToHistory(config.bazaarHistory, search, config.historyLength);
-			case MUSEUM -> config.museumHistory = addToHistory(config.museumHistory, search, config.historyLength);
-		}
-		SkyblockerConfigManager.update(Consumers.nop());
+		SkyblockerConfigManager.update(fullConfig -> {
+			UIAndVisualsConfig.SearchOverlay config = fullConfig.uiAndVisuals.searchOverlay;
+			switch (location) {
+				case AUCTION -> config.auctionHistory = addToHistory(config.auctionHistory, search, config.historyLength);
+				case BAZAAR -> config.bazaarHistory = addToHistory(config.bazaarHistory, search, config.historyLength);
+				case MUSEUM -> config.museumHistory = addToHistory(config.museumHistory, search, config.historyLength);
+			}
+		});
 	}
 
 	/**
