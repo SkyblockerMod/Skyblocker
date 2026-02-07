@@ -884,7 +884,7 @@
     "skyblocker.tips.orderedWaypoints": "你可以使用/skyblocker waypoints ordered 导入（包括来自Coleweight）、添加、移除、切换已有的路径点。当从Coleweight导入时必须使用导入路径点（Soopy）。务必确保在正确的岛屿上导入路径点。",
     "skyblocker.config.eventNotifications.notificationSound.sound.PLING": "音符盒-电钢琴",
     "skyblocker.config.eventNotifications.notificationSound.sound.GOAT": "山羊",
-    "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "在火柱爆炸的前五秒倒计时。配置“标题容器”以自定义本项目在HUD上的位置。（注意：本功能使用了尚未成熟的距离检测，所以火柱有可能是另一位玩家的slayer召唤的）。",
+    "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "在火柱爆炸的前五秒倒计时。配置“标题容器”以自定义本项目在HUD上的位置。（注意：本功能使用了尚未成熟的距离检测，所以火柱有可能是另一位玩家的slayer召唤的）",
     "skyblocker.tips.fancierBars": "使用/skyblocker bars 自定义血量、法术值、防御值、速度、经验条。你也可以关闭和调整大小！",
     "skyblocker.webSocket.receivedCrystalsWaypoint": "从Skyblocker WebSocket收到了%s的路径点。",
     "skyblocker.rift.healNow": "立刻治疗！",
@@ -1665,5 +1665,12 @@
     "skyblocker.accessoryHelper.openWiki": "点击打开wiki！",
     "skyblocker.accessoryHelper.recombobulate": "重铸一个%s饰品。",
     "skyblocker.accessoryHelper.filter.UPGRADES": "升级",
-    "skyblocker.accessoryHelper.afterSelling": "%s在卖掉之后："
+    "skyblocker.accessoryHelper.afterSelling": "%s在卖掉之后：",
+    "skyblocker.config.mining.blockBreakPrediction": "客户端方块破坏动画",
+    "skyblocker.config.mining.blockBreakPrediction.enabled": "已启用",
+    "skyblocker.config.mining.blockBreakPrediction.playSound": "播放音效",
+    "skyblocker.config.mining.blockBreakPrediction.enableStatsMessage": "无法在TAB找到挖掘速度。请确保在/tab的状态小部件中启用了挖掘速度以使客户端方块破坏动画正常运作。",
+    "skyblocker.config.mining.blockBreakPrediction.playSound.@Tooltip": "当方块应当已经被破坏时播放烈焰人音效。",
+    "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize": "自适应判定箱尺寸",
+    "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "调整秘密路径点的大小以匹配精粹和红石钥匙的方块大小。"
 }
