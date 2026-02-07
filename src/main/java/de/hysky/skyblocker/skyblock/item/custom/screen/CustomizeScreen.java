@@ -33,6 +33,9 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+
+import org.apache.commons.lang3.function.Consumers;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Map;
@@ -43,7 +46,7 @@ public class CustomizeScreen extends Screen {
 	static final Logger LOGGER = LogUtils.getLogger();
 	static final Minecraft CLIENT = Minecraft.getInstance();
 
-	private final Screen previousScreen;
+	private final @Nullable Screen previousScreen;
 	private final Map<String, PreviousConfig> previousConfigs = new Object2ObjectOpenHashMap<>();
 
 	private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
@@ -74,7 +77,7 @@ public class CustomizeScreen extends Screen {
 		});
 	}
 
-	public CustomizeScreen(Screen previousScreen, boolean item) {
+	public CustomizeScreen(@Nullable Screen previousScreen, boolean item) {
 		super((Math.random() < 0.01 ? Component.translatable("skyblocker.customization.titleSecret") : Component.translatable("skyblocker.customization.title")).withStyle(ChatFormatting.GRAY).withStyle(style -> style.withShadowColor(0)));
 		this.previousScreen = previousScreen;
 		this.item = item;
@@ -131,7 +134,7 @@ public class CustomizeScreen extends Screen {
 	}
 
 	private void cancel() {
-		SkyblockerConfigManager.update(config -> {
+		SkyblockerConfigManager.updateOnly(config -> {
 			previousConfigs.forEach((uuid, previousConfig) -> {
 				previousConfig.armorTrimId().ifPresentOrElse(
 						trim -> config.general.customArmorTrims.put(uuid, trim),
@@ -206,8 +209,8 @@ public class CustomizeScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		assert minecraft != null;
 		minecraft.setScreen(previousScreen);
+		SkyblockerConfigManager.update(Consumers.nop());
 	}
 
 	private record PreviousConfig(Optional<CustomArmorTrims.ArmorTrimId> armorTrimId,

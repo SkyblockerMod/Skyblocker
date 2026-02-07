@@ -179,7 +179,7 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 				dye.delay(),
 				dye.duration()
 		);
-		SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.put(uuid, newDye));
+		SkyblockerConfigManager.updateOnly(config -> config.general.customAnimatedDyes.put(uuid, newDye));
 	}
 
 	private class KeyframeWidget extends AbstractWidget {

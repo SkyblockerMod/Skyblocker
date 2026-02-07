@@ -132,7 +132,7 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 
 	private void updateConfig() {
 		if (currentItem == null) return;
-		SkyblockerConfigManager.update(config -> {
+		SkyblockerConfigManager.updateOnly(config -> {
 			Map<String, CustomArmorTrims.ArmorTrimId> trims = config.general.customArmorTrims;
 			String itemUuid = currentItem.getUuid();
 			if (selectedPattern == null) {

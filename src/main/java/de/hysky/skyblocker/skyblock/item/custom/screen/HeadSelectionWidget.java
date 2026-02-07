@@ -109,7 +109,7 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 		if (this.currentItem == null) return;
 		String uuid = this.currentItem.getUuid();
 
-		SkyblockerConfigManager.update(config -> {
+		SkyblockerConfigManager.updateOnly(config -> {
 			switch (this.selectedButton) {
 				case null -> {
 					config.general.customHelmetTextures.remove(uuid);
