@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
@@ -50,6 +51,7 @@ public class SlayersCategory {
 						.build())
 				.option(Option.<Color>createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.highlightColor"))
+						.tags(CommonTags.ADDED_IN_6_0_0)
 						.binding(defaults.slayers.highlightColor,
 								() -> config.slayers.highlightColor,
 								newValue -> config.slayers.highlightColor = newValue)
@@ -94,6 +96,7 @@ public class SlayersCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.alertOtherMinibosses"))
 						.description(Component.translatable("skyblocker.config.slayer.alertOtherMinibosses.@Tooltip"))
+						.tags(CommonTags.ADDED_IN_6_0_0)
 						.binding(defaults.slayers.alertOtherMinibosses,
 								() -> config.slayers.alertOtherMinibosses,
 								newValue -> config.slayers.alertOtherMinibosses = newValue)
@@ -102,6 +105,7 @@ public class SlayersCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.showMiniBossNameInAlert"))
 						.description(Component.translatable("skyblocker.config.slayer.showMiniBossNameInAlert.@Tooltip"))
+						.tags(CommonTags.ADDED_IN_6_0_0)
 						.binding(defaults.slayers.showMiniBossNameInAlert,
 								() -> config.slayers.showMiniBossNameInAlert,
 								newValue -> config.slayers.showMiniBossNameInAlert = newValue)
@@ -117,6 +121,7 @@ public class SlayersCategory {
 						.build())
 				.option(Option.<ChatFilterResult>createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.hideSlayerMinibossSpawn"))
+						.tags(CommonTags.ADDED_IN_6_0_0)
 						.binding(defaults.slayers.hideSlayerMinibossSpawn,
 								() -> config.slayers.hideSlayerMinibossSpawn,
 								newValue -> config.slayers.hideSlayerMinibossSpawn = newValue)
@@ -125,6 +130,7 @@ public class SlayersCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.highlightUnclaimedRewards"))
 						.description(Component.translatable("skyblocker.config.slayer.highlightUnclaimedRewards.@Tooltip"))
+						.tags(CommonTags.ADDED_IN_6_0_0)
 						.binding(defaults.slayers.highlightUnclaimedRewards,
 								() -> config.slayers.highlightUnclaimedRewards,
 								newValue -> config.slayers.highlightUnclaimedRewards = newValue)
@@ -303,6 +309,7 @@ public class SlayersCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.slayer.blazeSlayer.muteBlazeSounds"))
 								.description(Component.translatable("skyblocker.config.slayer.blazeSlayer.muteBlazeSounds.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.slayers.blazeSlayer.muteBlazeSounds,
 										() -> config.slayers.blazeSlayer.muteBlazeSounds,
 										newValue -> config.slayers.blazeSlayer.muteBlazeSounds = newValue)
@@ -310,6 +317,7 @@ public class SlayersCategory {
 								.build())
 						.option(Option.<ChatFilterResult>createBuilder()
 								.name(Component.translatable("skyblocker.config.slayer.blazeSlayer.hideHellionShield"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.slayers.blazeSlayer.hideHellionShield,
 										() -> config.slayers.blazeSlayer.hideHellionShield,
 										newValue -> config.slayers.blazeSlayer.hideHellionShield = newValue)
@@ -323,6 +331,7 @@ public class SlayersCategory {
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.slayer.wolfSlayer.muteWolfSounds"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.slayers.wolfSlayer.muteWolfSounds,
 										() -> config.slayers.wolfSlayer.muteWolfSounds,
 										newValue -> config.slayers.wolfSlayer.muteWolfSounds = newValue)
@@ -330,6 +339,7 @@ public class SlayersCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.slayer.wolfSlayer.hideSvenPupNametag"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.slayers.wolfSlayer.hideSvenPupNametag,
 										() -> config.slayers.wolfSlayer.hideSvenPupNametag,
 										newValue -> config.slayers.wolfSlayer.hideSvenPupNametag = newValue)
@@ -344,6 +354,7 @@ public class SlayersCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.slayer.spiderSlayer.muteSpiderSounds"))
 								.description(Component.translatable("skyblocker.config.slayer.spiderSlayer.muteSpiderSounds.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
 								.binding(defaults.slayers.spiderSlayer.muteSpiderSounds,
 										() -> config.slayers.spiderSlayer.muteSpiderSounds,
 										newValue -> config.slayers.spiderSlayer.muteSpiderSounds = newValue)

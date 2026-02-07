@@ -90,7 +90,7 @@ public class VisitorHelper extends AbstractWidget {
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _buildContext) ->
 				dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("garden").then(literal("visitors")
-						.then(literal("clearAll").executes(ctx -> {
+						.then(literal("removeAll").executes(ctx -> {
 							activeVisitors.clear();
 							updateItems();
 							ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.farming.visitorHelper.command.clearedAllVisitors")));
