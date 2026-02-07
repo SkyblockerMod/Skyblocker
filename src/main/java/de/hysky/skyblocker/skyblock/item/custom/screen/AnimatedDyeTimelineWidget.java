@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.NativeImage;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -172,7 +171,7 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 	private void dataChanged() {
 		keyframes.sort(Comparator.comparingDouble(f -> f.time));
 		createGradientTexture();
-		List<CustomArmorAnimatedDyes.Keyframe> configFrames = ImmutableList.copyOf(keyframes.stream().map(keyframe -> new CustomArmorAnimatedDyes.Keyframe(keyframe.color, keyframe.time)).toList());
+		List<CustomArmorAnimatedDyes.Keyframe> configFrames = List.copyOf(keyframes.stream().map(keyframe -> new CustomArmorAnimatedDyes.Keyframe(keyframe.color, keyframe.time)).toList());
 		CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(uuid);
 		CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
 				configFrames,
@@ -180,7 +179,7 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 				dye.delay(),
 				dye.duration()
 		);
-		SkyblockerConfigManager.get().general.customAnimatedDyes.put(uuid, newDye);
+		SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.put(uuid, newDye));
 	}
 
 	private class KeyframeWidget extends AbstractWidget {

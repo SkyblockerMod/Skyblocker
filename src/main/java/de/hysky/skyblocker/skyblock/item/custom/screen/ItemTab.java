@@ -49,18 +49,22 @@ public class ItemTab extends GridLayoutTab {
 			glintState = states[(glintState.ordinal() + 1) % states.length];
 			b.setMessage(getGlintText());
 			String uuid = currentItem.getUuid();
-			Object2BooleanMap<String> customGlint = SkyblockerConfigManager.get().general.customGlint;
-			switch (glintState) {
-				case DEFAULT -> customGlint.removeBoolean(uuid);
-				case TRUE -> customGlint.put(uuid, true);
-				case FALSE -> customGlint.put(uuid, false);
-			}
+			SkyblockerConfigManager.update(config -> {
+				Object2BooleanMap<String> customGlint = config.general.customGlint;
+				switch (glintState) {
+					case DEFAULT -> customGlint.removeBoolean(uuid);
+					case TRUE -> customGlint.put(uuid, true);
+					case FALSE -> customGlint.put(uuid, false);
+				}
+			});
 		}).width(Button.SMALL_WIDTH).build();
 		modelField = new IdentifierTextField(120, 20, identifier -> {
 			String uuid = currentItem.getUuid();
 			if (uuid.isEmpty()) return;
-			if (identifier == null) SkyblockerConfigManager.get().general.customItemModel.remove(uuid);
-			else SkyblockerConfigManager.get().general.customItemModel.put(uuid, identifier);
+			SkyblockerConfigManager.update(config -> {
+				if (identifier == null) config.general.customItemModel.remove(uuid);
+				else config.general.customItemModel.put(uuid, identifier);
+			});
 		});
 		modelField.setHint(Component.translatable("skyblocker.customization.item.modelOverride").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
 		nameWidget = new CustomizeNameWidget(parentScreen);

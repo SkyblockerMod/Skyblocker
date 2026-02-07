@@ -132,13 +132,15 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 
 	private void updateConfig() {
 		if (currentItem == null) return;
-		Map<String, CustomArmorTrims.ArmorTrimId> trims = SkyblockerConfigManager.get().general.customArmorTrims;
-		String itemUuid = currentItem.getUuid();
-		if (selectedPattern == null) {
-			trims.remove(itemUuid);
-		} else {
-			trims.put(itemUuid, new CustomArmorTrims.ArmorTrimId(selectedMaterial, selectedPattern));
-		}
+		SkyblockerConfigManager.update(config -> {
+			Map<String, CustomArmorTrims.ArmorTrimId> trims = config.general.customArmorTrims;
+			String itemUuid = currentItem.getUuid();
+			if (selectedPattern == null) {
+				trims.remove(itemUuid);
+			} else {
+				trims.put(itemUuid, new CustomArmorTrims.ArmorTrimId(selectedMaterial, selectedPattern));
+			}
+		});
 	}
 
 	@Override
