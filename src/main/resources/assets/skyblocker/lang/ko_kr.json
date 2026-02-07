@@ -234,5 +234,8 @@
     "skyblocker.config.chat.chatRules.screen": "채팅 규칙 설정...",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage.@Placeholder": "기본 메세지를 사용하려면 비워두세요.",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "메세지 숨기기",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.locations": "위치 수정"
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.locations": "위치 수정",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.outputs": "출력",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds": "소리",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.regex": "정규 표현식"
 }
