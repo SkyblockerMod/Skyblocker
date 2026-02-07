@@ -155,9 +155,6 @@ public class UIAndVisualsConfig {
 
 		public Alignment alignment = Alignment.MIDDLE;
 
-		public float getRenderScale() {
-			return titleContainerScale * 0.03f;
-		}
 	}
 
 	public enum Direction {
