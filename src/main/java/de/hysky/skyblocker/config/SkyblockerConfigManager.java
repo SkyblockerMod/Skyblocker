@@ -107,6 +107,13 @@ public class SkyblockerConfigManager {
 		CONFIG_MANAGER.save();
 	}
 
+	/**
+	 * Executes the given {@code action} to update fields in the config, without saving the changes.
+	 */
+	public static void updateOnly(Consumer<SkyblockerConfig> action) {
+		action.accept(getUnpatched());
+	}
+
 	public static Screen createGUI(@Nullable Screen parent) {
 		return createGUI(parent, "");
 	}

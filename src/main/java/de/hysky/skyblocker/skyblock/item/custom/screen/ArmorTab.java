@@ -239,7 +239,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 			field = containerLayout.addChild(new IdentifierTextField(width - 10, 20, identifier -> {
 				String uuid = armor[selectedSlot].getUuid();
 				if (uuid.isEmpty()) return;
-				SkyblockerConfigManager.update(config -> {
+				SkyblockerConfigManager.updateOnly(config -> {
 					if (identifier == null) config.general.customArmorModel.remove(uuid);
 					else config.general.customArmorModel.put(uuid, identifier);
 				});

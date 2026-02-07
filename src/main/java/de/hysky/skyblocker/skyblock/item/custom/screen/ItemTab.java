@@ -49,7 +49,7 @@ public class ItemTab extends GridLayoutTab {
 			glintState = states[(glintState.ordinal() + 1) % states.length];
 			b.setMessage(getGlintText());
 			String uuid = currentItem.getUuid();
-			SkyblockerConfigManager.update(config -> {
+			SkyblockerConfigManager.updateOnly(config -> {
 				Object2BooleanMap<String> customGlint = config.general.customGlint;
 				switch (glintState) {
 					case DEFAULT -> customGlint.removeBoolean(uuid);
@@ -61,7 +61,7 @@ public class ItemTab extends GridLayoutTab {
 		modelField = new IdentifierTextField(120, 20, identifier -> {
 			String uuid = currentItem.getUuid();
 			if (uuid.isEmpty()) return;
-			SkyblockerConfigManager.update(config -> {
+			SkyblockerConfigManager.updateOnly(config -> {
 				if (identifier == null) config.general.customItemModel.remove(uuid);
 				else config.general.customItemModel.put(uuid, identifier);
 			});
