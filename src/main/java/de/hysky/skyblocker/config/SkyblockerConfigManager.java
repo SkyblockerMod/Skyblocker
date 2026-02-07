@@ -41,7 +41,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.lang3.function.Consumers;
 import org.jspecify.annotations.Nullable;
 
 import java.io.BufferedReader;
@@ -100,15 +99,6 @@ public class SkyblockerConfigManager {
 	}
 
 	/**
-	 * @deprecated The use of this method is discouraged as it may encourage the writing of new config values
-	 * to the patched instance which cannot happen with {@link #update(Consumer)}.
-	 */
-	@Deprecated(since = "1.21.5", forRemoval = true)
-	protected static void save() {
-		update(Consumers.nop());
-	}
-
-	/**
 	 * Executes the given {@code action} to update fields in the config, then saves the changes.
 	 */
 	public static void update(Consumer<SkyblockerConfig> action) {
@@ -117,7 +107,7 @@ public class SkyblockerConfigManager {
 		CONFIG_MANAGER.save();
 	}
 
-	public static Screen createGUI(Screen parent) {
+	public static Screen createGUI(@Nullable Screen parent) {
 		return createGUI(parent, "");
 	}
 

@@ -19,6 +19,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 
 public class TitleContainerConfigScreen extends HudConfigScreen {
 	public static final float MIN_TITLE_SCALE = 30f;
@@ -30,32 +31,46 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 			new Title(Component.literal("Testing1234").withStyle(ChatFormatting.DARK_GREEN))
 	);
 
+	private UIAndVisualsConfig.Direction direction = UIAndVisualsConfig.Direction.VERTICAL;
+	private UIAndVisualsConfig.Alignment alignment = UIAndVisualsConfig.Alignment.MIDDLE;
+	private float titleContainerScale;
+	private float renderScale;
+
 	protected TitleContainerConfigScreen() {
 		this(null);
 	}
 
-	public TitleContainerConfigScreen(Screen parent) {
+	public TitleContainerConfigScreen(@Nullable Screen parent) {
 		super(Component.nullToEmpty("Title Container HUD Config"), parent, new EmptyWidget());
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-		// Only load config positions if they are not default
-		if (SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x >= 0 && SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y >= 0) {
-			// Load the config positions here since #getConfigPos is used for resetting. This loads the config pos after HudConfigScreen#init calls HudConfigScreen#resetPos.
-			widgets.getFirst().setPosition(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y);
-		}
-		// Set the dimensions here or else Screen#textRenderer is null.
-		updateWidgetDimensions();
+
+		// Get the unpatched config options
+		SkyblockerConfigManager.update(fullConfig -> {
+			UIAndVisualsConfig.TitleContainer config = fullConfig.uiAndVisuals.titleContainer;
+			direction = config.direction;
+			alignment = config.alignment;
+			titleContainerScale = config.titleContainerScale;
+
+			// Only load config positions if they are not default
+			int x = config.x, y = config.y;
+			if (x >= 0 && y >= 0) {
+				// Load the config positions here since #getConfigPos is used for resetting. This loads the config pos after HudConfigScreen#init calls HudConfigScreen#resetPos.
+				widgets.getFirst().setPosition(x, y);
+			}
+
+			// Set the dimensions here or else Screen#textRenderer is null.
+			updateWidgetDimensions();
+		});
 	}
 
 	@Override
 	protected void renderWidget(GuiGraphics context, List<AbstractWidget> widgets, float delta) {
 		super.renderWidget(context, widgets, delta);
-		TitleContainer.render(context, EXAMPLES, widgets.getFirst().getX(), widgets.getFirst().getY(), delta);
-		UIAndVisualsConfig.Direction direction = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction;
-		UIAndVisualsConfig.Alignment alignment = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment;
+		TitleContainer.render(context, EXAMPLES, widgets.getFirst().getX(), widgets.getFirst().getY(), delta, renderScale, direction, alignment);
 		context.drawCenteredString(font, "Press Q/E to change Alignment: " + alignment, width / 2, font.lineHeight * 2, Color.WHITE.getRGB());
 		context.drawCenteredString(font, "Press R to change Direction: " + direction, width / 2, font.lineHeight * 3 + 5, Color.WHITE.getRGB());
 		context.drawCenteredString(font, "Press +/- to change Scale", width / 2, font.lineHeight * 4 + 10, Color.WHITE.getRGB());
@@ -78,34 +93,33 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	private void updateWidgetDimensions() {
+		renderScale = titleContainerScale * TitleContainer.RENDER_SCALE;
 		widgets.getFirst().setDimensions(getSelectionWidth(), getSelectionHeight());
 	}
 
 	private int getSelectionWidth() {
-		return TitleContainer.getWidth(font, EXAMPLES);
+		return TitleContainer.getWidth(font, direction, renderScale, EXAMPLES);
 	}
 
 	private int getSelectionHeight() {
-		return TitleContainer.getHeight(font, EXAMPLES);
+		return TitleContainer.getHeight(font, direction, renderScale, EXAMPLES);
 	}
 
 	@Override
 	public boolean keyPressed(KeyEvent input) {
 		switch (input.key()) {
-			case GLFW.GLFW_KEY_Q -> SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment = EnumUtils.cycle(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment);
-			case GLFW.GLFW_KEY_E -> SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment = EnumUtils.cycleBackwards(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment);
+			case GLFW.GLFW_KEY_Q -> alignment = EnumUtils.cycle(alignment);
+			case GLFW.GLFW_KEY_E -> alignment = EnumUtils.cycleBackwards(alignment);
 			case GLFW.GLFW_KEY_R -> {
-				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction = EnumUtils.cycle(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction);
+				direction = EnumUtils.cycle(direction);
 				updateWidgetDimensions();
 			}
 			case GLFW.GLFW_KEY_EQUAL -> {
-				UIAndVisualsConfig.TitleContainer conf = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
-				conf.titleContainerScale = Math.min(MAX_TITLE_SCALE, conf.titleContainerScale + 10);
+				titleContainerScale = Math.min(MAX_TITLE_SCALE, titleContainerScale + 10);
 				updateWidgetDimensions();
 			}
 			case GLFW.GLFW_KEY_MINUS -> {
-				UIAndVisualsConfig.TitleContainer conf = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
-				conf.titleContainerScale = Math.max(MIN_TITLE_SCALE, conf.titleContainerScale - 10);
+				titleContainerScale = Math.max(MIN_TITLE_SCALE, titleContainerScale - 10);
 				updateWidgetDimensions();
 			}
 		}
@@ -114,7 +128,7 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 
 	@Override
 	protected int getWidgetXOffset(AbstractWidget widget) {
-		return switch (SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment) {
+		return switch (alignment) {
 			case LEFT -> 0;
 			case MIDDLE -> -getSelectionWidth() / 2;
 			case RIGHT -> -getSelectionWidth();
@@ -128,10 +142,14 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected void savePos(SkyblockerConfig config, List<AbstractWidget> widgets) {
+	protected void savePos(SkyblockerConfig fullConfig, List<AbstractWidget> widgets) {
 		// Save to -1 if the widget is at the default position
-		List<IntIntMutablePair> defaultPos = getConfigPos(config);
-		config.uiAndVisuals.titleContainer.x = widgets.getFirst().getX() != defaultPos.getFirst().leftInt() ? widgets.getFirst().getX() : -1;
-		config.uiAndVisuals.titleContainer.y = widgets.getFirst().getY() != defaultPos.getFirst().rightInt() ? widgets.getFirst().getY() : -1;
+		List<IntIntMutablePair> defaultPos = getConfigPos(fullConfig);
+		UIAndVisualsConfig.TitleContainer config = fullConfig.uiAndVisuals.titleContainer;
+		config.x = widgets.getFirst().getX() != defaultPos.getFirst().leftInt() ? widgets.getFirst().getX() : -1;
+		config.y = widgets.getFirst().getY() != defaultPos.getFirst().rightInt() ? widgets.getFirst().getY() : -1;
+		config.direction = direction;
+		config.alignment = alignment;
+		config.titleContainerScale = titleContainerScale;
 	}
 }
