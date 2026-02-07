@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetClickedPositionVisitor;
@@ -213,9 +212,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		this.text = text;
 		textString = text.getString();
 		if (updateConfig && !uuid.isEmpty()) {
-			SkyblockerConfig config = SkyblockerConfigManager.get();
-			if (textString.isBlank()) config.general.customItemNames.remove(uuid);
-			else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(ChatFormatting.WHITE)));
+			SkyblockerConfigManager.update(config -> {
+				if (textString.isBlank()) config.general.customItemNames.remove(uuid);
+				else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(ChatFormatting.WHITE)));
+			});
 		}
 		previewWidget.setMessage(text);
 		grid.arrangeElements();

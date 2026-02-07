@@ -130,39 +130,41 @@ public class CustomizeScreen extends Screen {
 	}
 
 	private void cancel() {
-		previousConfigs.forEach((uuid, previousConfig) -> {
-			previousConfig.armorTrimId().ifPresentOrElse(
-					trim -> SkyblockerConfigManager.get().general.customArmorTrims.put(uuid, trim),
-					() -> SkyblockerConfigManager.get().general.customArmorTrims.remove(uuid)
-			);
-			previousConfig.color().ifPresentOrElse(
-					i -> SkyblockerConfigManager.get().general.customDyeColors.put(uuid, i),
-					() -> SkyblockerConfigManager.get().general.customDyeColors.removeInt(uuid)
-			);
-			previousConfig.animatedDye().ifPresentOrElse(
-					animatedDye -> SkyblockerConfigManager.get().general.customAnimatedDyes.put(uuid, animatedDye),
-					() -> SkyblockerConfigManager.get().general.customAnimatedDyes.remove(uuid)
-			);
-			previousConfig.helmetTexture().ifPresentOrElse(
-					tex -> SkyblockerConfigManager.get().general.customHelmetTextures.put(uuid, tex),
-					() -> SkyblockerConfigManager.get().general.customHelmetTextures.remove(uuid)
-			);
-			previousConfig.itemName().ifPresentOrElse(
-					text -> SkyblockerConfigManager.get().general.customItemNames.put(uuid, text),
-					() -> SkyblockerConfigManager.get().general.customItemNames.remove(uuid)
-			);
-			previousConfig.glint().ifPresentOrElse(
-					b -> SkyblockerConfigManager.get().general.customGlint.put(uuid, b.booleanValue()),
-					() -> SkyblockerConfigManager.get().general.customGlint.removeBoolean(uuid)
-			);
-			previousConfig.itemModel().ifPresentOrElse(
-					identifier -> SkyblockerConfigManager.get().general.customItemModel.put(uuid, identifier),
-					() -> SkyblockerConfigManager.get().general.customItemModel.remove(uuid)
-			);
-			previousConfig.armorModel().ifPresentOrElse(
-					identifier -> SkyblockerConfigManager.get().general.customArmorModel.put(uuid, identifier),
-					() -> SkyblockerConfigManager.get().general.customArmorModel.remove(uuid)
-			);
+		SkyblockerConfigManager.update(config -> {
+			previousConfigs.forEach((uuid, previousConfig) -> {
+				previousConfig.armorTrimId().ifPresentOrElse(
+						trim -> config.general.customArmorTrims.put(uuid, trim),
+						() -> config.general.customArmorTrims.remove(uuid)
+				);
+				previousConfig.color().ifPresentOrElse(
+						i -> config.general.customDyeColors.put(uuid, i),
+						() -> config.general.customDyeColors.removeInt(uuid)
+				);
+				previousConfig.animatedDye().ifPresentOrElse(
+						animatedDye -> config.general.customAnimatedDyes.put(uuid, animatedDye),
+						() -> config.general.customAnimatedDyes.remove(uuid)
+				);
+				previousConfig.helmetTexture().ifPresentOrElse(
+						tex -> config.general.customHelmetTextures.put(uuid, tex),
+						() -> config.general.customHelmetTextures.remove(uuid)
+				);
+				previousConfig.itemName().ifPresentOrElse(
+						text -> config.general.customItemNames.put(uuid, text),
+						() -> config.general.customItemNames.remove(uuid)
+				);
+				previousConfig.glint().ifPresentOrElse(
+						b -> config.general.customGlint.put(uuid, b.booleanValue()),
+						() -> config.general.customGlint.removeBoolean(uuid)
+				);
+				previousConfig.itemModel().ifPresentOrElse(
+						identifier -> config.general.customItemModel.put(uuid, identifier),
+						() -> config.general.customItemModel.remove(uuid)
+				);
+				previousConfig.armorModel().ifPresentOrElse(
+						identifier -> config.general.customArmorModel.put(uuid, identifier),
+						() -> config.general.customArmorModel.remove(uuid)
+				);
+			});
 		});
 		onClose();
 	}
@@ -204,7 +206,6 @@ public class CustomizeScreen extends Screen {
 	@Override
 	public void onClose() {
 		assert minecraft != null;
-		SkyblockerConfigManager.update(config -> {});
 		minecraft.setScreen(previousScreen);
 	}
 

@@ -13,7 +13,6 @@ import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -174,6 +173,6 @@ public class CustomArmorAnimatedDyes {
 		STATE_TRACKER_MAP.clear();
 	}
 
-	public record Keyframe(@SerialEntry int color, @SerialEntry float time) {}
-	public record AnimatedDye(@SerialEntry List<Keyframe> keyframes, @SerialEntry boolean cycleBack, @SerialEntry float delay, @SerialEntry float duration) {}
+	public record Keyframe(int color, float time) {}
+	public record AnimatedDye(List<Keyframe> keyframes, boolean cycleBack, float delay, float duration) {}
 }

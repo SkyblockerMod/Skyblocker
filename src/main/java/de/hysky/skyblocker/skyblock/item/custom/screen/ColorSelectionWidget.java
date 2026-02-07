@@ -113,7 +113,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 					f,
 					dye.duration()
 			);
-			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
+			SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.put(itemUuid, newDye));
 		});
 		delaySlider.setTooltip(Tooltip.create(DELAY_TOOLTIP_TEXT));
 
@@ -126,7 +126,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 					dye.delay(),
 					f
 			);
-			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
+			SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.put(itemUuid, newDye));
 		});
 		durationSlider.setTooltip(Tooltip.create(DURATION_TOOLTIP_TEXT));
 
@@ -188,7 +188,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 	private void onPickerColorChanged(int argb, boolean release) {
 		argbTextInput.setARGBColor(argb);
 		if (!animated) {
-			SkyblockerConfigManager.get().general.customDyeColors.put(currentItem.getUuid(), ARGB.opaque(argb));
+			SkyblockerConfigManager.update(config -> config.general.customDyeColors.put(currentItem.getUuid(), ARGB.opaque(argb)));
 		} else if (release) {
 			timelineWidget.setColor(argb);
 		}
@@ -197,7 +197,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 	private void onTextInputColorChanged(int argb) {
 		colorPicker.setARGBColor(argb);
 		if (animated) timelineWidget.setColor(argb);
-		else SkyblockerConfigManager.get().general.customDyeColors.put(currentItem.getUuid(), ARGB.opaque(argb));
+		else SkyblockerConfigManager.update(config -> config.general.customDyeColors.put(currentItem.getUuid(), ARGB.opaque(argb)));
 	}
 
 	@Override
@@ -216,8 +216,8 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 		changeVisibilities();
 
 		String itemUuid = currentItem.getUuid();
-		SkyblockerConfigManager.get().general.customDyeColors.removeInt(itemUuid);
-		SkyblockerConfigManager.get().general.customAnimatedDyes.remove(itemUuid);
+		SkyblockerConfigManager.update(config -> config.general.customDyeColors.removeInt(itemUuid));
+		SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.remove(itemUuid));
 
 		int color = DyedItemColor.getOrDefault(currentItem, -1);
 		argbTextInput.setARGBColor(color);
@@ -229,12 +229,12 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 		changeVisibilities();
 		String itemUuid = currentItem.getUuid();
 		if (animated) {
-			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, new CustomArmorAnimatedDyes.AnimatedDye(
+			SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.put(itemUuid, new CustomArmorAnimatedDyes.AnimatedDye(
 					List.of(new CustomArmorAnimatedDyes.Keyframe(CommonColors.RED, 0), new CustomArmorAnimatedDyes.Keyframe(CommonColors.BLUE, 1)),
 					true,
 					0,
 					1.f
-			));
+			)));
 			timelineWidget.setAnimatedDye(itemUuid);
 			delaySlider.setValue(0);
 			durationSlider.setValue(1);
@@ -243,7 +243,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 			int color = SkyblockerConfigManager.get().general.customDyeColors.getOrDefault(itemUuid, DyedItemColor.getOrDefault(currentItem, -1));
 			colorPicker.setARGBColor(color);
 			argbTextInput.setARGBColor(color);
-			SkyblockerConfigManager.get().general.customAnimatedDyes.remove(itemUuid);
+			SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.remove(itemUuid));
 		}
 	}
 
@@ -256,7 +256,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 				dye.delay(),
 				dye.duration()
 		);
-		SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
+		SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.put(itemUuid, newDye));
 	}
 
 	private void changeVisibilities() {
