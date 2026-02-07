@@ -68,6 +68,15 @@ public class RenderHelper {
 		}
 	}
 
+	/**
+	 * A version of {@link RenderSystem#assertOnRenderThread()} that allows for a custom error message.
+	 */
+	public static void assertOnRenderThread(String message) {
+		if (!RenderSystem.isOnRenderThread()) {
+			throw new IllegalStateException(message);
+		}
+	}
+
 	public static DeltaTracker getTickCounter() {
 		return CLIENT.getDeltaTracker();
 	}
