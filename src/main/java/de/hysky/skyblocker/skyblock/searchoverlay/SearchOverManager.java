@@ -358,7 +358,7 @@ public class SearchOverManager {
 	}
 
 	protected static void removeHistoryItem(int index) {
-		SkyblockerConfigManager.update(fullConfig -> {
+		SkyblockerConfigManager.updateOnly(fullConfig -> {
 			UIAndVisualsConfig.SearchOverlay config = fullConfig.uiAndVisuals.searchOverlay;
 			List<String> history;
 
@@ -397,7 +397,7 @@ public class SearchOverManager {
 	 */
 	@SuppressWarnings("incomplete-switch")
 	private static void saveHistory() {
-		SkyblockerConfigManager.update(fullConfig -> {
+		SkyblockerConfigManager.updateOnly(fullConfig -> {
 			UIAndVisualsConfig.SearchOverlay config = fullConfig.uiAndVisuals.searchOverlay;
 			switch (location) {
 				case AUCTION -> config.auctionHistory = addToHistory(config.auctionHistory, search, config.historyLength);
@@ -415,6 +415,10 @@ public class SearchOverManager {
 		if (!search.isEmpty()) {
 			saveHistory();
 		}
+
+		// Write history to the config
+		SkyblockerConfigManager.update(_config -> {});
+
 		//add pet level or dungeon starts if in ah
 		if (location == SearchLocation.AUCTION) {
 			addExtras();
