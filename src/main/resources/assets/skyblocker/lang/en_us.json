@@ -355,6 +355,8 @@
   "skyblocker.config.dungeons.secretSync.receiveRoomSecretCount": "Use Synced Room Secret Count",
 
   "skyblocker.config.dungeons.secretWaypoints": "Dungeon Secret Waypoints",
+  "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize": "Adaptive Box Size",
+  "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "Adapts the size of the Secret Waypoints to match the block's size for Essences and Redstone Keys.",
   "skyblocker.config.dungeons.secretWaypoints.enableAotvWaypoints": "Enable AOTV Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableBatWaypoints": "Enable Bat Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableChestWaypoints": "Enable Chest Waypoints",
