@@ -212,7 +212,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		this.text = text;
 		textString = text.getString();
 		if (updateConfig && !uuid.isEmpty()) {
-			SkyblockerConfigManager.update(config -> {
+			SkyblockerConfigManager.updateOnly(config -> {
 				if (textString.isBlank()) config.general.customItemNames.remove(uuid);
 				else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(ChatFormatting.WHITE)));
 			});
