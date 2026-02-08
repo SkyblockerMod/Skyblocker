@@ -116,8 +116,7 @@ public class GenericCategory implements ProfileViewerPage {
 			int x = rootX + 2 + (i % COLUMNS) * COLUMN_GAP;
 			int y = rootY + 19 + (i / COLUMNS) * ROW_GAP;
 
-			context.fill(x - 3, y - 3, x + 19, y + 19, Color.BLACK.getRGB());
-			context.blit(RenderPipelines.GUI_TEXTURED, BUTTON_TEXTURE, x - 2, y - 2, 0, 0, 20, 20, 20, 20);
+			context.blit(RenderPipelines.GUI_TEXTURED, BUTTON_TEXTURE, x - 3, y - 3, 0, 0, 22, 22, 22, 22);
 			context.renderItem(collections.get(i), x, y);
 
 			ItemStack itemStack = collections.get(i);
