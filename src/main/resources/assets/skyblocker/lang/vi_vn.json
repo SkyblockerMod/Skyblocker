@@ -442,5 +442,6 @@
     "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage": "Bật Tin nhắn Dịch chuyển",
     "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip": "Gửi tin nhắn vào tổ đội khi dịch chuyển.\n§cYêu cầu tính năng Giao diện Spirit Leap phải được bật.",
     "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage": "Tin nhắn Dịch chuyển",
-    "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip": "Tin nhắn được gửi khi dịch chuyển, từ \"[name]\" sẽ được thay đổi bằng tên của người chơi bạn dịch chuyển đến."
+    "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip": "Tin nhắn được gửi khi dịch chuyển, từ \"[name]\" sẽ được thay đổi bằng tên của người chơi bạn dịch chuyển đến.",
+    "skyblocker.accessoryHelper.afterSelling": "%s sau khi bán:"
 }
