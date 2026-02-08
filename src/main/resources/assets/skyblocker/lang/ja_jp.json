@@ -125,7 +125,7 @@
     "skyblocker.config.farming.garden": "庭園",
     "skyblocker.config.dungeons.dungeonChestProfit.profitColor": "利益が出たときに使用される色",
     "skyblocker.config.dungeons.dungeonChestProfit.lossColor": "損失のときに使用される色",
-    "skyblocker.config.dungeons.map.mapScreen": "ドンジョンの地図と得点の位置の設定…",
+    "skyblocker.config.dungeons.map.mapScreen": "ダンジョンの地図と得点の位置の設定…",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "はい",
     "skyblocker.config.quickNav.button.item.itemName": "アイテム",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.finish": "完成",
