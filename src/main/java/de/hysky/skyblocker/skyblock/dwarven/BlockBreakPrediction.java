@@ -174,7 +174,7 @@ public class BlockBreakPrediction {
 						for (Location location : skyblockBlockType.onlyIn) {
 							//if its mithril edit it to the actual strength as that is not in the repo
 							if (data.name.equals("Mithril Ore")) {
-								Block block = LegacyLookup.get(skyblockBlockType.itemId, skyblockBlockType.damage);
+								Block block = getBlockFromRepo(skyblockBlockType.itemId, skyblockBlockType.damage);
 								if (block == Blocks.GRAY_WOOL || block == Blocks.CYAN_TERRACOTTA) {
 									addStrength(location, block, 500, data.breakingPower);
 								} else if (block == Blocks.LIGHT_BLUE_WOOL) {
@@ -185,7 +185,7 @@ public class BlockBreakPrediction {
 								continue;
 							}
 
-							addStrength(location, LegacyLookup.get(skyblockBlockType.itemId, skyblockBlockType.damage), data.blockStrength, data.breakingPower);
+							addStrength(location, getBlockFromRepo(skyblockBlockType.itemId, skyblockBlockType.damage), data.blockStrength, data.breakingPower);
 						}
 					}
 
@@ -220,14 +220,11 @@ public class BlockBreakPrediction {
 		public static final Codec<List<SkyblockBlock>> LIST_CODEC = CODEC.listOf();
 	}
 
-	public static class LegacyLookup {
-		public static Block get(String id, int damage) {
-			return Optional.ofNullable(ItemStackTheFlatteningFix.updateItem(id, damage))
-					.map(Identifier::tryParse)
-					.flatMap(BuiltInRegistries.BLOCK::getOptional)
-					.orElse(BuiltInRegistries.BLOCK.getValue(Identifier.tryParse(id)));
-		}
+	public static Block getBlockFromRepo(String id, int damage) {
+		return Optional.ofNullable(ItemStackTheFlatteningFix.updateItem(id, damage))
+				.map(Identifier::tryParse)
+				.flatMap(BuiltInRegistries.BLOCK::getOptional)
+				.orElse(BuiltInRegistries.BLOCK.getValue(Identifier.tryParse(id)));
 	}
-
 
 }
