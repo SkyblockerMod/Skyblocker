@@ -57,6 +57,16 @@ public class SlayersConfig {
 		public boolean sendMessageOnKill = false;
 	}
 
+	public static class SpiderSlayer {
+		public boolean muteSpiderSounds = false;
+	}
+
+	public static class WolfSlayer {
+		public boolean muteWolfSounds = false;
+
+		public boolean hideSvenPupNametag = true;
+	}
+
 	public static class EndermanSlayer {
 		public boolean enableYangGlyphsNotification = true;
 
@@ -114,13 +124,4 @@ public class SlayersConfig {
 		}
 	}
 
-	public static class WolfSlayer {
-		public boolean muteWolfSounds = false;
-
-		public boolean hideSvenPupNametag = true;
-	}
-
-	public static class SpiderSlayer {
-		public boolean muteSpiderSounds = false;
-	}
 }
