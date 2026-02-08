@@ -1,3 +1,20 @@
+# Release 6.0.1
+
+## Highlight
+* Fix Item Customization not updating until the menu is reopened
+* Fix Search Overlay History not being removed until the menu is reopened
+* Update default Quick Navigation AH and BZ UI Titles
+
+## What's Changed
+* Fix AH & bazaar quick navigation regexes for co-op players by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2098
+
+## New Contributors
+* @LJNeon made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2098
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.0.0+1.21.11...v6.0.1+1.21.11
+
+___
+
 # Release 6.0.0
 
 ## Highlight
