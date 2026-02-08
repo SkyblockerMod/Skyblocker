@@ -158,6 +158,43 @@ public class SlayersCategory {
 								.build())
 						.build())
 
+				//Spider Slayer
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.slayer.spiderSlayer"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.slayer.spiderSlayer.muteSpiderSounds"))
+								.description(Component.translatable("skyblocker.config.slayer.spiderSlayer.muteSpiderSounds.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
+								.binding(defaults.slayers.spiderSlayer.muteSpiderSounds,
+										() -> config.slayers.spiderSlayer.muteSpiderSounds,
+										newValue -> config.slayers.spiderSlayer.muteSpiderSounds = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
+				//Wolf Slayer
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.slayer.wolfSlayer"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.slayer.wolfSlayer.muteWolfSounds"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
+								.binding(defaults.slayers.wolfSlayer.muteWolfSounds,
+										() -> config.slayers.wolfSlayer.muteWolfSounds,
+										newValue -> config.slayers.wolfSlayer.muteWolfSounds = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.slayer.wolfSlayer.hideSvenPupNametag"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
+								.binding(defaults.slayers.wolfSlayer.hideSvenPupNametag,
+										() -> config.slayers.wolfSlayer.hideSvenPupNametag,
+										newValue -> config.slayers.wolfSlayer.hideSvenPupNametag = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
 				//Enderman Slayer
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.endermanSlayer"))
@@ -322,43 +359,6 @@ public class SlayersCategory {
 										() -> config.slayers.blazeSlayer.hideHellionShield,
 										newValue -> config.slayers.blazeSlayer.hideHellionShield = newValue)
 								.controller(ConfigUtils.createEnumController())
-								.build())
-						.build())
-
-				//Wolf Slayer
-				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.slayer.wolfSlayer"))
-						.collapsed(true)
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.slayer.wolfSlayer.muteWolfSounds"))
-								.tags(CommonTags.ADDED_IN_6_0_0)
-								.binding(defaults.slayers.wolfSlayer.muteWolfSounds,
-										() -> config.slayers.wolfSlayer.muteWolfSounds,
-										newValue -> config.slayers.wolfSlayer.muteWolfSounds = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.slayer.wolfSlayer.hideSvenPupNametag"))
-								.tags(CommonTags.ADDED_IN_6_0_0)
-								.binding(defaults.slayers.wolfSlayer.hideSvenPupNametag,
-										() -> config.slayers.wolfSlayer.hideSvenPupNametag,
-										newValue -> config.slayers.wolfSlayer.hideSvenPupNametag = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.build())
-
-				//Spider Slayer
-				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.slayer.spiderSlayer"))
-						.collapsed(true)
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.slayer.spiderSlayer.muteSpiderSounds"))
-								.description(Component.translatable("skyblocker.config.slayer.spiderSlayer.muteSpiderSounds.@Tooltip"))
-								.tags(CommonTags.ADDED_IN_6_0_0)
-								.binding(defaults.slayers.spiderSlayer.muteSpiderSounds,
-										() -> config.slayers.spiderSlayer.muteSpiderSounds,
-										newValue -> config.slayers.spiderSlayer.muteSpiderSounds = newValue)
-								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
 
