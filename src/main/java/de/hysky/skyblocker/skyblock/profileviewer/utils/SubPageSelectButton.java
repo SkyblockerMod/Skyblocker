@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.profileviewer.utils;
 
-import java.awt.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -33,10 +32,9 @@ public class SubPageSelectButton extends AbstractWidget {
 
 	@Override
 	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.fill(this.getX(), this.getY(), this.getX() + 20, this.getY() + 20, Color.BLACK.getRGB());
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURES.get(toggled, (mouseX > getX() && mouseX < getX() + 19 && mouseY > getY() && mouseY < getY() + 19)), this.getX() + 1, this.getY() + 1, 0, 0, 18, 18, 18, 18);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURES.get(toggled, (mouseX > getX() && mouseX < getX() + 20 && mouseY > getY() && mouseY < getY() + 20)), this.getX(), this.getY(), 0, 0, 20, 20, 20, 20);
 		context.renderItem(ICON, this.getX() + 2, this.getY() + 2);
-		if ((mouseX > getX() + 1 && mouseX < getX() + 19 && mouseY > getY() + 1 && mouseY < getY() + 19)) {
+		if ((mouseX > getX() && mouseX < getX() + 20 && mouseY > getY() && mouseY < getY() + 20)) {
 			ItemLore lore = ICON.get(DataComponents.LORE);
 			if (lore != null) context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, lore.lines(), mouseX, mouseY + 10);
 		}
@@ -46,7 +44,7 @@ public class SubPageSelectButton extends AbstractWidget {
 
 	@Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
-		return this.active && this.visible && (mouseX > getX() + 1 && mouseX < getX() + 19 && mouseY > getY() + 1 && mouseY < getY() + 19);
+		return this.active && this.visible && (mouseX > getX() && mouseX < getX() + 20 && mouseY > getY() && mouseY < getY() + 20);
 	}
 
 	@Override
