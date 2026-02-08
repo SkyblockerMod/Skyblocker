@@ -11,7 +11,7 @@
 ## New Contributors
 * @LJNeon made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2098
 
-**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.0.0+1.21.11...test
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.0.0+1.21.11...v6.0.1+1.21.11
 
 ___
 
