@@ -938,7 +938,7 @@
   "skyblocker.config.misc": "Misc",
 
   "skyblocker.config.misc.cat": "Cat",
-  "skyblocker.config.misc.cat.@Tooltip": "Adds a cat picture to Hub's Community Center.",
+  "skyblocker.config.misc.cat.@Tooltip": "Adds a cat picture to the Hub's Community Center.",
 
   "skyblocker.config.misc.configBackend": "Config Backend",
   "skyblocker.config.misc.configBackend.@Tooltip": "You can choose between having YetAnotherConfigLib (YACL) or MoulConfig as the Config Backend.",
