@@ -18,7 +18,7 @@
     "skyblocker.itemTooltip.noData": "§cPas de données",
     "skyblocker.config.misc.richPresence": "Discord Rich Presence",
     "skyblocker.config.misc.richPresence.info": "Information Skyblock",
-    "skyblocker.config.misc.richPresence.info.@Tooltip": "Cette valeur n'a aucune importance si vous faites défiler",
+    "skyblocker.config.misc.richPresence.info.@Tooltip": "Cette valeur n'a aucune importance si vous faites défiler.",
     "skyblocker.config.misc.richPresence.cycleMode": "Faire défiler les informations",
     "skyblocker.config.misc.richPresence.enableRichPresence": "Activé",
     "skyblocker.config.misc.richPresence.customMessage": "Message personnalisé",
