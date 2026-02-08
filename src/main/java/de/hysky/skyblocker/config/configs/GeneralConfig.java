@@ -138,7 +138,7 @@ public class GeneralConfig {
 	}
 
 	public enum Craft {
-		SELL_ORDER, BUY_ORDER, OFF;
+		INSTANT_BUY, BUY_ORDER, OFF;
 
 		@Override
 		public String toString() {
@@ -147,8 +147,8 @@ public class GeneralConfig {
 
 		public String getOrder() {
 			return switch (this) {
-				case SELL_ORDER -> "sellPrice";
-				case BUY_ORDER -> "buyPrice";
+				case BUY_ORDER -> "sellPrice";
+				case INSTANT_BUY -> "buyPrice";
 				case OFF -> null;
 			};
 		}
