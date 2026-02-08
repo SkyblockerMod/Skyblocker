@@ -19,6 +19,7 @@ import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.LoadingDotsText;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.gui.GuiGraphics;
@@ -41,6 +42,8 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -249,6 +252,12 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		for (AbstractWidget widget : widgets) {
 			widget.render(context, mouseX, mouseY, deltaTicks);
 		}
+		if (!ItemRepository.filesImported()) {
+			int x = getX() + getWidth() / 2;
+			int y = getY() + getHeight() / 4;
+			context.drawCenteredString(Minecraft.getInstance().font, "Loading...", x, y, -1);
+			context.drawCenteredString(Minecraft.getInstance().font, LoadingDotsText.get(Util.getMillis()), x, y + 10, -1);
+		}
 		if (!Objects.equals(prevHighlighted, AccessoriesContainerSolver.INSTANCE.highlightedAccessory)) ContainerSolverManager.markHighlightsDirty();
 	}
 
@@ -381,7 +390,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 			private static final Component fandomLine = Component.translatable("skyblocker.accessoryHelper.fandom").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
 
 			private final AccessoryInfo info;
-			private final @Nullable List<Component> afterSelling;
+			private final @Nullable List<FormattedCharSequence> afterSelling;
 
 			private @Nullable ItemStack icon;
 
@@ -395,11 +404,11 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 							if (priceOpt.isEmpty()) return Optional.empty();
 							DoubleBooleanPair price = ItemUtils.getItemPrice(accStack);
 							if (!price.rightBoolean()) return Optional.empty();
-							return Optional.of(List.of(
-									Component.translatable("skyblocker.accessoryHelper.afterSelling", ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1)),
-									accStack.getHoverName(),
-									Component.empty()
-							));
+							Component translatable = Component.translatable(
+									"skyblocker.accessoryHelper.afterSelling",
+									ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1),
+									accStack.getHoverName());
+							return Optional.of(Minecraft.getInstance().font.split(translatable, 170));
 						})
 						.orElse(null);
 			}
@@ -416,14 +425,15 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 				}
 				info.highestOwned().ifPresent(owned -> AccessoriesContainerSolver.INSTANCE.highlightedAccessory = owned.id());
 				Minecraft client = Minecraft.getInstance();
-				List<Component> tooltip = new ArrayList<>(Screen.getTooltipFromItem(client, icon));
-				tooltip.add(smoothLine);
+				List<FormattedCharSequence> tooltip = Screen.getTooltipFromItem(client, icon).stream().map(Component::getVisualOrderText).collect(Util.toMutableList());
+				tooltip.add(smoothLine.getVisualOrderText());
 				if (afterSelling != null) {
 					tooltip.addAll(afterSelling);
+					tooltip.add(FormattedCharSequence.EMPTY);
 				}
-				tooltip.add(wikiLine);
-				tooltip.add(fandomLine);
-				context.setTooltipForNextFrame(client.font, tooltip, icon.getTooltipImage(), mouseX, mouseY, icon.get(DataComponents.TOOLTIP_STYLE));
+				tooltip.add(wikiLine.getVisualOrderText());
+				tooltip.add(fandomLine.getVisualOrderText());
+				context.setTooltipForNextFrame(client.font, tooltip, mouseX, mouseY, icon.get(DataComponents.TOOLTIP_STYLE));
 			}
 
 			@Override

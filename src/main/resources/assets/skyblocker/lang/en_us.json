@@ -21,7 +21,7 @@
   "key.skyblocker.wikiLookup.fandom": "Fandom Wiki Lookup",
   "key.skyblocker.wikiLookup.official": "Hypixel Wiki Lookup",
 
-  "skyblocker.accessoryHelper.afterSelling": "%s after selling:",
+  "skyblocker.accessoryHelper.afterSelling": "%s after selling %s",
   "skyblocker.accessoryHelper.allTiers": "Show all tiers",
   "skyblocker.accessoryHelper.fandom": "(Hold shift for Fandom)",
   "skyblocker.accessoryHelper.filter": "Filter",
