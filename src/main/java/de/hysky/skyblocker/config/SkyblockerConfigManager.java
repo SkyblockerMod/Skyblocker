@@ -112,6 +112,7 @@ public class SkyblockerConfigManager {
 	 */
 	public static void updateOnly(Consumer<SkyblockerConfig> action) {
 		action.accept(getUnpatched());
+		CONFIG_MANAGER.updatePatchedInstance();
 	}
 
 	public static Screen createGUI(@Nullable Screen parent) {
