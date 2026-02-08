@@ -28,7 +28,8 @@ public class MiscCategory {
 						.controller(ConfigUtils.createEnumController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Component.literal("cat"))
+						.name(Component.translatable("skyblocker.config.misc.cat"))
+						.description(Component.translatable("skyblocker.config.misc.cat.@Tooltip"))
 						.binding(
 								defaults.misc.cat,
 								() -> config.misc.cat,
