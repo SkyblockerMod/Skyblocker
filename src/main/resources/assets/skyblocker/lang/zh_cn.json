@@ -24,7 +24,7 @@
     "skyblocker.config.misc.richPresence.info.PURSE": "钱包",
     "skyblocker.config.misc.richPresence.info.BITS": "点数",
     "skyblocker.config.misc.richPresence.info.LOCATION": "位置",
-    "skyblocker.config.misc.richPresence.info.@Tooltip": "如果你处于循环模式，这个值将不会生效",
+    "skyblocker.config.misc.richPresence.info.@Tooltip": "如果你处于循环模式，这个值将不会生效。",
     "skyblocker.config.misc.richPresence.cycleMode": "循环Skyblock信息",
     "skyblocker.config.misc.richPresence.enableRichPresence": "已启用",
     "skyblocker.config.misc.richPresence.customMessage": "自定义消息",
@@ -1665,12 +1665,14 @@
     "skyblocker.accessoryHelper.openWiki": "点击打开wiki！",
     "skyblocker.accessoryHelper.recombobulate": "重铸一个%s饰品。",
     "skyblocker.accessoryHelper.filter.UPGRADES": "升级",
-    "skyblocker.accessoryHelper.afterSelling": "%s在卖掉之后：",
+    "skyblocker.accessoryHelper.afterSelling": "在卖掉%2$s之后：%1$s",
     "skyblocker.config.mining.blockBreakPrediction": "客户端方块破坏动画",
     "skyblocker.config.mining.blockBreakPrediction.enabled": "已启用",
     "skyblocker.config.mining.blockBreakPrediction.playSound": "播放音效",
     "skyblocker.config.mining.blockBreakPrediction.enableStatsMessage": "无法在TAB找到挖掘速度。请确保在/tab的状态小部件中启用了挖掘速度以使客户端方块破坏动画正常运作。",
     "skyblocker.config.mining.blockBreakPrediction.playSound.@Tooltip": "当方块应当已经被破坏时播放烈焰人音效。",
     "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize": "自适应判定箱尺寸",
-    "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "调整秘密路径点的大小以匹配精粹和红石钥匙的方块大小。"
+    "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "调整秘密路径点的大小以匹配精粹和红石钥匙的方块大小。",
+    "skyblocker.config.misc.cat": "猫",
+    "skyblocker.config.misc.cat.@Tooltip": "为Hub的社区中心添加猫咪图片。"
 }
