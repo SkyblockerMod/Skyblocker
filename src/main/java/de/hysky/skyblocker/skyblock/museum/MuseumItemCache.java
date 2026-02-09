@@ -66,9 +66,10 @@ public class MuseumItemCache {
 	private static final Path CACHE_FILE = SkyblockerMod.CONFIG_DIR.resolve("museum_item_cache.json");
 	private static final ProfiledData<ProfileMuseumData> MUSEUM_ITEM_CACHE = new ProfiledData<>(CACHE_FILE, ProfileMuseumData.CODEC);
 	public static final String DONATION_CONFIRMATION_SCREEN_TITLE = "Confirm Donation";
-
-	public static final Map<String, String> ARMOR_NAMES = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>()); // Set Id -> Display Name
-	public static final Map<String, String> ARMOR_TO_ID = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>()); // Set Id -> Display Item Id
+	/** Set Id -> Display Name */
+	public static final Map<String, String> ARMOR_NAMES = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>());
+	/** Set Id -> Display Item Id */
+	public static final Map<String, String> ARMOR_TO_ID = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>());
 	private static final Map<String, String> MAPPED_IDS = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>());
 	public static final ObjectList<Donation> MUSEUM_DONATIONS = ObjectLists.synchronize(new ObjectArrayList<>());
 	private static final ObjectList<ObjectArrayList<String>> ORDERED_UPGRADES = ObjectLists.synchronize(new ObjectArrayList<>());
