@@ -33,7 +33,7 @@
     "skyblocker.config.chat.filter.hideImplosion": "隱藏Implosion技能的提示訊息",
     "skyblocker.config.misc.richPresence.info.PURSE": "錢包",
     "skyblocker.config.misc.richPresence.info.LOCATION": "位置",
-    "skyblocker.config.misc.richPresence.info.@Tooltip": "如果你正在循環模式，這個值將不會生效",
+    "skyblocker.config.misc.richPresence.info.@Tooltip": "如果你正在循環模式，這個值將不會生效。",
     "skyblocker.config.misc.richPresence.customMessage": "自訂訊息",
     "skyblocker.config.mining.dwarvenMines.solveFetchur": "解開Fetchur的謎題",
     "skyblocker.config.chat.filter.chatFilterResult.ACTION_BAR": "移至動作欄",
@@ -1670,5 +1670,8 @@
     "skyblocker.config.mining.blockBreakPrediction.playSound": "播放音效",
     "skyblocker.config.mining.blockBreakPrediction.playSound.@Tooltip": "當方塊應當已被破壞時播放烈焰使者音效。",
     "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize": "自適應判定箱尺寸",
-    "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "調整秘密路徑點的大小以配合精粹和紅石鑰匙的方塊大小。"
+    "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "調整秘密路徑點的大小以配合精粹和紅石鑰匙的方塊大小。",
+    "skyblocker.accessoryHelper.afterSelling": "在賣掉%2$s之後：%1$s",
+    "skyblocker.config.misc.cat": "貓",
+    "skyblocker.config.misc.cat.@Tooltip": "為Hub的社區中心加入貓咪圖片。"
 }
