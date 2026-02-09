@@ -82,7 +82,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 			Object2DoubleMap<String> lowestBinsData = TooltipInfoType.LOWEST_BINS.getData();
 			if (bazaarData != null && bazaarData.containsKey(inputItemName)) {
 				BazaarProduct product = bazaarData.get(inputItemName);
-				itemCost = SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost == Craft.INSTANT_BUY ? product.buyPrice().orElse(0d) : product.sellPrice().orElse(0d);
+				itemCost = SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost == Craft.BUY_ORDER ? product.buyPrice().orElse(0d) : product.sellPrice().orElse(0d);
 			} else if (lowestBinsData != null && lowestBinsData.containsKey(inputItemName)) {
 				itemCost = lowestBinsData.getDouble(inputItemName);
 			}

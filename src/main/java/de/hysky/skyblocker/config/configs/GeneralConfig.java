@@ -138,19 +138,11 @@ public class GeneralConfig {
 	}
 
 	public enum Craft {
-		INSTANT_BUY, BUY_ORDER, OFF;
+		SELL_ORDER, BUY_ORDER, OFF;
 
 		@Override
 		public String toString() {
 			return I18n.get("skyblocker.config.general.itemTooltip.craft." + name());
-		}
-
-		public String getOrder() {
-			return switch (this) {
-				case BUY_ORDER -> "sellPrice";
-				case INSTANT_BUY -> "buyPrice";
-				case OFF -> null;
-			};
 		}
 	}
 
