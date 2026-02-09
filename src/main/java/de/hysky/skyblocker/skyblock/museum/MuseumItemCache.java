@@ -33,6 +33,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
@@ -88,7 +89,7 @@ public class MuseumItemCache {
 						.then(literal("resync")
 								.executes(context -> {
 									FabricClientCommandSource source = context.getSource();
-									Component text = Component.translatable(tryResync(source) ? "skyblocker.museum.attemptingResync" : "skyblocker.museum.cannotResync");
+									Component text = tryResync(source);
 									source.sendFeedback(Constants.PREFIX.get().append(text));
 
 									return Command.SINGLE_SUCCESS;
@@ -336,19 +337,22 @@ public class MuseumItemCache {
 					} else {
 						//If the player's Museum API is disabled
 						putEmpty(uuid, profileId);
-						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure")));
+						if (source != null) {
+							source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.apiDisabled")))
+									.withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.museum.resyncFailure.apiDisabled.@Tooltip")))));
+						}
 						LOGGER.warn(ERROR_LOG_TEMPLATE + " because the Museum API is disabled!", profileId);
 					}
 				} else {
 					//If the request returns a non 200 status code
 					putEmpty(uuid, profileId);
-					if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure")));
+					if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.unknownError"))));
 					LOGGER.error(ERROR_LOG_TEMPLATE + " because a non 200 status code was encountered! Response: {}", profileId, response);
 				}
 			} catch (Exception e) {
 				//If an exception was somehow thrown
 				putEmpty(uuid, profileId);
-				if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure")));
+				if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.unknownError"))));
 				LOGGER.error(ERROR_LOG_TEMPLATE, profileId, e);
 			}
 		}, Executors.newVirtualThreadPerTaskExecutor());
@@ -360,15 +364,19 @@ public class MuseumItemCache {
 		MUSEUM_ITEM_CACHE.save();
 	}
 
-	private static boolean tryResync(FabricClientCommandSource source) {
-		if (!MUSEUM_ITEM_CACHE.isLoaded()) return false;
-		if (MUSEUM_DONATIONS.isEmpty()) return false;
+	private static Component tryResync(FabricClientCommandSource source) {
+		if (!MUSEUM_ITEM_CACHE.isLoaded()) return Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.profile"));
+		if (MUSEUM_DONATIONS.isEmpty()) {
+			return Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.itemRepo"))
+					.withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.museum.resyncFailure.itemRepo.@Tooltip"))));
+		}
 
 		String profileId = Utils.getProfileId();
-		if (profileId.isEmpty() || (MUSEUM_ITEM_CACHE.containsKey() && !MUSEUM_ITEM_CACHE.get().canResync())) return false;
+		if (profileId.isEmpty()) return Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.profile"));
+		if (MUSEUM_ITEM_CACHE.containsKey() && !MUSEUM_ITEM_CACHE.get().canResync()) return Component.translatable("skyblocker.museum.cannotResync");
 		updateData4ProfileMember(Utils.getUuid(), profileId, source);
 
-		return true;
+		return Component.translatable("skyblocker.museum.attemptingResync");
 	}
 
 	/**
