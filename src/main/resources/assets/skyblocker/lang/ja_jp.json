@@ -17,7 +17,7 @@
     "skyblocker.itemTooltip.nullMessage": "§cツールチップ上のアイテムの値段は最大60秒ごとに更新されます。されていない場合はlatest.logを確認してください",
     "skyblocker.config.misc.richPresence": "discordに自分のゲームアクティビティを表示する",
     "skyblocker.config.misc.richPresence.info": "skyblockの情報",
-    "skyblocker.config.misc.richPresence.info.@Tooltip": "この値はあなたがサイクリングしている場合は重要ではありません",
+    "skyblocker.config.misc.richPresence.info.@Tooltip": "この値はあなたがサイクリングしている場合は重要ではありません。",
     "skyblocker.config.misc.richPresence.cycleMode": "円状のskyblockの情報",
     "skyblocker.config.misc.richPresence.enableRichPresence": "有効",
     "skyblocker.config.misc.richPresence.customMessage": "カスタムメッセージ",
@@ -739,5 +739,7 @@
     "skyblocker.config.uiAndVisuals.radialMenu.hideButton": "隠す",
     "skyblocker.shortcuts.command.replacement": "置き換えるコマンド",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar": "アクションバー：",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds": "サウンド"
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds": "サウンド",
+    "skyblocker.config.misc.cat": "猫",
+    "skyblocker.config.misc.cat.@Tooltip": "HubのCommunity Centerに猫の写真を追加します。"
 }
