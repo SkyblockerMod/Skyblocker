@@ -20,8 +20,11 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import io.github.moulberry.repo.NEURepoFile;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
+import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -62,11 +65,13 @@ public class MuseumItemCache {
 	private static final Path CACHE_FILE = SkyblockerMod.CONFIG_DIR.resolve("museum_item_cache.json");
 	private static final ProfiledData<ProfileMuseumData> MUSEUM_ITEM_CACHE = new ProfiledData<>(CACHE_FILE, ProfileMuseumData.CODEC);
 	public static final String DONATION_CONFIRMATION_SCREEN_TITLE = "Confirm Donation";
-	public static final Map<String, String> ARMOR_NAMES = new Object2ObjectArrayMap<>(); // Set Id -> Display Name
-	public static final Map<String, String> ARMOR_TO_ID = new Object2ObjectArrayMap<>(); // Set Id -> Display Item Id
-	private static final Map<String, String> MAPPED_IDS = new Object2ObjectArrayMap<>();
-	public static final ObjectArrayList<Donation> MUSEUM_DONATIONS = new ObjectArrayList<>();
-	private static final ObjectArrayList<ObjectArrayList<String>> ORDERED_UPGRADES = new ObjectArrayList<>();
+
+	public static final Map<String, String> ARMOR_NAMES = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>()); // Set Id -> Display Name
+	public static final Map<String, String> ARMOR_TO_ID = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>()); // Set Id -> Display Item Id
+	private static final Map<String, String> MAPPED_IDS = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>());
+	public static final ObjectList<Donation> MUSEUM_DONATIONS = ObjectLists.synchronize(new ObjectArrayList<>());
+	private static final ObjectList<ObjectArrayList<String>> ORDERED_UPGRADES = ObjectLists.synchronize(new ObjectArrayList<>());
+
 	private static final int CURRENT_DATA_VERSION = 1;
 
 	@Init
@@ -95,6 +100,12 @@ public class MuseumItemCache {
 	 */
 	public static void loadMuseumItems() {
 		NEURepoManager.runAsyncAfterLoad(() -> {
+			ARMOR_NAMES.clear();
+			ARMOR_TO_ID.clear();
+			MAPPED_IDS.clear();
+			MUSEUM_DONATIONS.clear();
+			ORDERED_UPGRADES.clear();
+
 			NEURepoFile filePath = NEURepoManager.file(CONSTANTS_MUSEUM_DATA);
 			if (filePath == null) return;
 			try (BufferedReader reader = Files.newBufferedReader(filePath.getFsPath())) {
