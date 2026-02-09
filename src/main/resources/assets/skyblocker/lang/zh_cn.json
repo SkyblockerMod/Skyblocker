@@ -293,7 +293,7 @@
     "skyblocker.tips.enabled": "§a启用提示。",
     "skyblocker.tips.tip": "§a提示：%s\n",
     "skyblocker.partyFinder.tabs.partyFinder": "队伍查找器",
-    "skyblocker.config.chat.chatRules": "定义聊天规则",
+    "skyblocker.config.chat.chatRules": "自定义聊天规则",
     "skyblocker.partyFinder.error.name": "队伍查找器错误！",
     "skyblocker.partyFinder.error.message": "出现错误，将自动转回原版的队伍查找器",
     "skyblocker.partyFinder.yourParty": "你的队伍",
