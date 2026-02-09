@@ -285,6 +285,8 @@ public class MuseumItemCache {
 	}
 
 	private static void updateData4ProfileMember(UUID uuid, String profileId, @Nullable FabricClientCommandSource source) {
+		if (MUSEUM_DONATIONS.isEmpty()) return;
+
 		CompletableFuture.runAsync(() -> {
 			try (ApiResponse response = Http.sendHypixelRequest("skyblock/museum", "?profile=" + profileId)) {
 				//The request was successful
@@ -348,15 +350,14 @@ public class MuseumItemCache {
 	}
 
 	private static boolean tryResync(FabricClientCommandSource source) {
-		if (MUSEUM_ITEM_CACHE.isLoaded()) {
-			String profileId = Utils.getProfileId();
-			if (profileId.isEmpty() || (MUSEUM_ITEM_CACHE.containsKey() && !MUSEUM_ITEM_CACHE.get().canResync())) return false;
-			updateData4ProfileMember(Utils.getUuid(), profileId, source);
+		if (!MUSEUM_ITEM_CACHE.isLoaded()) return false;
+		if (MUSEUM_DONATIONS.isEmpty()) return false;
 
-			return true;
-		}
+		String profileId = Utils.getProfileId();
+		if (profileId.isEmpty() || (MUSEUM_ITEM_CACHE.containsKey() && !MUSEUM_ITEM_CACHE.get().canResync())) return false;
+		updateData4ProfileMember(Utils.getUuid(), profileId, source);
 
-		return false;
+		return true;
 	}
 
 	/**
