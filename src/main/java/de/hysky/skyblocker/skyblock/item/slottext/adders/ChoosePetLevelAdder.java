@@ -25,7 +25,7 @@ public class ChoosePetLevelAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
-		if (slotId < 18 || slotId > 44 || !stack.is(Items.PLAYER_HEAD)) return List.of();
+		if (slotId < 9 || slotId > 44 || !stack.is(Items.PLAYER_HEAD)) return List.of();
 		Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, AUTOPET_LEVEL_PATTERN);
 		if (matcher == null) {
 			matcher = LEVEL_PATTERN.matcher(stack.getHoverName().getString());

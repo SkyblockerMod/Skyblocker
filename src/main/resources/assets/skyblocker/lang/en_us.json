@@ -1297,7 +1297,7 @@
   "skyblocker.config.uiAndVisuals.slotText.catacombsLevel": "Catacombs Class Level",
   "skyblocker.config.uiAndVisuals.slotText.chipLevel": "Chip Level",
   "skyblocker.config.uiAndVisuals.slotText.chipLevel.@tooltip": "Displays the level of chips in the chip menu.",
-  "skyblocker.config.uiAndVisuals.slotText.choosePetPetLevel": "Pet Level (in choose pet)",
+  "skyblocker.config.uiAndVisuals.slotText.choosePetPetLevel": "Pet Level (in Auto Pet Menus)",
   "skyblocker.config.uiAndVisuals.slotText.collectionLevel": "Collection Level",
   "skyblocker.config.uiAndVisuals.slotText.communityShop": "Community Shop",
   "skyblocker.config.uiAndVisuals.slotText.communityShop.@Tooltip": "Displays the level of the upgrades in the community shop.",
