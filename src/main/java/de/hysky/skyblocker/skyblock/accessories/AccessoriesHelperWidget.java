@@ -13,6 +13,7 @@ import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeResultButton;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
@@ -112,7 +113,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 						.toList();
 
 				widget.accessories = AccessoriesHelper.ACCESSORY_DATA.values().stream()
-						.filter(accessory -> ItemRepository.getItemStack(accessory.id()) != null) // Removes admin items
+						.filter(accessory -> NEURepoManager.isLoading() || !NEURepoManager.getConstants().getMisc().getIgnoredTalismans().contains(accessory.id())) // Removes admin and rift items
 						.map(accessory -> {
 							if (accessory.family().isPresent()) {
 								AccessoriesHelper.FamilyReport report = AccessoriesHelper.calculateFamilyReport(accessory, collectedAccessories);
