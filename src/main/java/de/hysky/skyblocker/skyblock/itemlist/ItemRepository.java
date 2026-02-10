@@ -153,7 +153,7 @@ public class ItemRepository {
 		NEURepoManager.getConstants().getBazaarStocks().getStocks().forEach((String neuId, String skyblockId) -> bazaarStocks.put(skyblockId, neuId));
 	}
 
-	public static String getWikiLink(String neuId, boolean useOfficial) {
+	public static @Nullable String getWikiLink(String neuId, boolean useOfficial) {
 		NEUItem item = NEURepoManager.getItemByNeuId(neuId);
 		if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
 			return null;
