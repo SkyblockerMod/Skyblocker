@@ -83,10 +83,16 @@ public class WidgetsListTab implements Tab {
 				.size(120, 15)
 				.build();
 		thirdColumnButton.setTooltip(Tooltip.create(Component.literal("It is recommended to have this enabled, to have more info be displayed!")));
-		previousPage = Button.builder(Component.translatable("book.page_button.previous"), button -> clickAndWaitForServer(45, 0))
+		previousPage = Button.builder(Component.translatable("book.page_button.previous"), button -> {
+					clickAndWaitForServer(45, 0);
+					resetScrollOnLoad();
+				})
 				.size(90, 15)
 				.build();
-		nextPage = Button.builder(Component.translatable("book.page_button.next"), button -> clickAndWaitForServer(53, 0))
+		nextPage = Button.builder(Component.translatable("book.page_button.next"), button -> {
+					clickAndWaitForServer(53, 0);
+					resetScrollOnLoad();
+				})
 				.size(90, 15)
 				.build();
 		resetButton = Button.builder(Component.literal("Reset"), button -> {
