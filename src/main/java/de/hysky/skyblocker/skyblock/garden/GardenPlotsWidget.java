@@ -163,11 +163,15 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 			if (hovered) {
 				context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, slotX - 3, slotY - 3, 24, 24);
-				matrices.pushMatrix();
-				matrices.translate(slotX, slotY);
-				if (!item.is(ConventionalItemTags.GLASS_PANES)) matrices.scale(1.125f, 1.125f);
-				context.renderItem(item, 0, 0);
-				matrices.popMatrix();
+				if (item.is(ConventionalItemTags.GLASS_PANES)) {
+					context.renderItem(item, slotX + 1, slotY + 1);
+				} else {
+					matrices.pushMatrix();
+					matrices.translate(slotX, slotY);
+					matrices.scale(1.125f, 1.125f);
+					context.renderItem(item, 0, 0);
+					matrices.popMatrix();
+				}
 				context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
 				hoveredSlot = i;
 			} else
