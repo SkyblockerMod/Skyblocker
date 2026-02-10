@@ -11,6 +11,7 @@ import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -163,7 +164,8 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 			if (hovered) {
 				context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, slotX - 3, slotY - 3, 24, 24);
-				if (item.is(ConventionalItemTags.GLASS_PANES)) {
+				//noinspection deprecation
+				if (ClientTags.isInLocal(ConventionalItemTags.GLASS_PANES, item.getItem().builtInRegistryHolder().key())) {
 					context.renderItem(item, slotX + 1, slotY + 1);
 				} else {
 					matrices.pushMatrix();
