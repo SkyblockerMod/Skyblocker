@@ -80,6 +80,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			"RED_MUSHROOM",
 			"CACTUS",
 			"MELON",
+			"PUMPKIN",
 			"INK_SACK-3"
 	};
 
