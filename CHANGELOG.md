@@ -1,3 +1,36 @@
+# Release 6.0.2
+
+## Highlight
+ * Add Pumpkin option for Custom Plot Icons
+ * Add loading text for the Accessory Helper
+ * Fix Rift talismans showing in the Accessory Helper
+ * Fix block break predictions not working
+ * Fix Garden Plots Widget not using slot highlight textures
+ * Fix Garden Plots Widget magnifying glass panes when hovering
+ * Fix button border being hard coded with PV buttons
+ * Fix NPE with Wiki Lookups
+ * Fix slot range with Choose Pet Level Slot Text Adder
+ * Fix widget list scroll not resetting sometimes
+ * Fix ordering of Slayers config options
+ * Fix ambiguous wording with the Raw Craft Cost options
+
+## What's Changed
+* Change some configs by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/2100
+* Move border in /pv buttons to sprites by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2101
+* accessory helper changes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2105
+* fix NPE in wiki lookup by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2114
+* hide rift talismans from accessory helper by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2118
+* Fix Slot Range for Choose Pet Level Adder by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2117
+* Fix Widgets List scroll not resetting sometimes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2116
+* Add Pumpkin option for Custom Plot Icon by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2115
+* fix block break prediction by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2106
+* Less ambiguous wording in crafting tooltip option by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2109
+* fix GardenPlotsWidget issues that make eljay slightly upset by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2119
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.0.1+1.21.11...v6.0.2+1.21.11
+
+___
+
 # Release 6.0.1
 
 ## Highlight
