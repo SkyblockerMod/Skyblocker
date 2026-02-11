@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.accessories;
 
 import com.google.common.collect.ImmutableList;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.injected.SkyblockerStack;
@@ -416,7 +417,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 
 			@Override
 			public ItemStack icon() {
-				return icon != null ? icon : (icon = Optional.ofNullable(ItemRepository.getItemStack(info.accessory().id())).orElse(ItemStack.EMPTY));
+				return icon != null ? icon : (icon = Optional.ofNullable(ItemRepository.getItemStack(info.accessory().id())).orElse(ItemUtils.getItemIdPlaceholder(info.accessory().id())));
 			}
 
 			@Override
