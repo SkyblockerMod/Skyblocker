@@ -155,16 +155,28 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 		long timeMillis = System.currentTimeMillis();
 		@Nullable ItemStack[] stacks = editingSlotIcon >= 0 ? customIconOptionsItems : items;
 		for (int i = 0; i < stacks.length; i++) {
-			ItemStack item = stacks[i];
-			if (item == null) continue;
-
-
 			int slotX = 7 + (i % 5) * 18;
 			int slotY = 17 + (i / 5) * 18;
 			boolean hovered = slotX + getX() <= mouseX && mouseX < slotX + getX() + 18 && slotY + getY() <= mouseY && mouseY < slotY + getY() + 18;
+			boolean infested = infectedPlots.contains(i);
 
 			if (hovered) {
 				context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, slotX - 3, slotY - 3, 24, 24);
+			}
+
+			ItemStack item = stacks[i];
+			// Still show hover highlight & pest outline in empty slots.
+			if (item == null) {
+				if (hovered)
+					context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
+
+				if (infested && (timeMillis & 512) != 0)
+					HudHelper.drawBorder(context, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
+
+				continue;
+			}
+
+			if (hovered) {
 				//noinspection deprecation
 				if (ClientTags.isInLocal(ConventionalItemTags.GLASS_PANES, item.getItem().builtInRegistryHolder().key())) {
 					context.renderItem(item, slotX + 1, slotY + 1);
@@ -186,7 +198,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 				}
 				continue;
 			}
-			boolean infested = infectedPlots.contains(i);
+
 			if (infested && (timeMillis & 512) != 0) {
 				HudHelper.drawBorder(context, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
 			}
