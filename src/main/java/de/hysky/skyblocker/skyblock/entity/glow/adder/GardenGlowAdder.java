@@ -112,7 +112,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 
 		// Filter only pest head that matches by name
 		return entity.hasItemInSlot(EquipmentSlot.HEAD) && GardenConstants.PEST_HEAD_BY_CROP
-				.get(GardenConstants.CROP_BY_PEST.get(vinyl))
+				.get(GardenConstants.CROP_BY_VINYL.get(vinyl))
 				.contains(ItemUtils.getHeadTexture(entity.getItemBySlot(EquipmentSlot.HEAD)));
 	}
 }

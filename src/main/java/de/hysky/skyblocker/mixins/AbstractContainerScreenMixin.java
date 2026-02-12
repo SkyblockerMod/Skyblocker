@@ -27,7 +27,6 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.PetCache;
-import de.hysky.skyblocker.skyblock.VacuumCache;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
@@ -389,11 +388,6 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		//Pet Caching
 		if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && title.startsWith("Pets")) {
 			PetCache.handlePetEquip(slot, slotId);
-		}
-
-		// Vacuum Vinyl Caching
-		if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && title.startsWith("Stereo Harmony")) {
-			VacuumCache.handleVinylSelect(slot, slotId);
 		}
 
 		if (currentSolver != null) {

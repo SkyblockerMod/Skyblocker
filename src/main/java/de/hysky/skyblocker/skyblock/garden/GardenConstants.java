@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.skyblock.garden;
 
 import static java.util.Map.entry;
+
 import java.util.Map;
 
-import net.minecraft.util.Util;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
+import net.minecraft.util.Util;
 
 public interface GardenConstants {
 	Map<String, String> CROP_BY_PEST = Map.ofEntries(
@@ -42,4 +44,20 @@ public interface GardenConstants {
 			map.put("Sunflower", HeadTextures.DRAGONFLY_PEST);
 			map.put("Wild Rose", HeadTextures.PRAYING_MANTIS_PEST);
 	});
+
+	Map<String, String> CROP_BY_VINYL = Map.ofEntries(
+			entry("VINYL_PRETTY_FLY", "Wheat"),
+			entry("VINYL_BUZZIN_BEATS", "Sugar Cane"),
+			entry("VINYL_CRICKET_CHOIR", "Carrot"),
+			entry("VINYL_CICADA_SYMPHONY", "Potato"),
+			entry("VINYL_EARTHWORM_ENSEMBLE", "Melon Slice"),
+			entry("VINYL_RODENT_REVOLUTION", "Pumpkin"),
+			entry("VINYL_WINGS_OF_HARMONY", "Cocoa Beans"),
+			entry("VINYL_BEETLE", "Nether Wart"),
+			entry("VINYL_DYNAMITES", "Cactus"),
+			entry("VINYL_SLOW_AND_GROOVY", "Mushroom"),
+			entry("VINYL_FIREFLY", "Moonflower"),
+			entry("VINYL_IMAGINE_DRAGONFLIES", "Sunflower"),
+			entry("VINYL_PRAY_FOR_ME", "Wild Rose")
+	);
 }
