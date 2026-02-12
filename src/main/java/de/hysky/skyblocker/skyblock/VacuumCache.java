@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
 
@@ -42,32 +41,32 @@ public class VacuumCache {
 							}
 						}
 
-						if (noneSelected) setVinyl(null);
+						if (noneSelected) setVinyl("");
 					});
 				}
 			}
 		});
 	}
 
-	private static void setVinyl(@Nullable String skyblockId) {
+	private static void setVinyl(String skyblockId) {
 		if (Utils.getProfileId().isEmpty()) return;
 
-		if (skyblockId == null) {
-			if (getVinyl() != null) {
+		if (skyblockId.isEmpty()) {
+			if (!getVinyl().isEmpty()) {
 				CACHED_VINYL.remove();
 				CACHED_VINYL.save();
 			}
 		} else {
-			@Nullable String current = getVinyl();
+			String current = getVinyl();
 
-			if (current == null || !current.equals(skyblockId)) {
+			if (current.isEmpty() || !current.equals(skyblockId)) {
 				CACHED_VINYL.put(skyblockId);
 				CACHED_VINYL.save();
 			}
 		}
 	}
 
-	public static @Nullable String getVinyl() {
-		return CACHED_VINYL.get();
+	public static String getVinyl() {
+		return CACHED_VINYL.containsKey() ? CACHED_VINYL.get() : "";
 	}
 }

@@ -3,24 +3,22 @@ package de.hysky.skyblocker.skyblock.entity.glow.adder;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jspecify.annotations.Nullable;
-
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.VacuumCache;
-import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
-import de.hysky.skyblocker.skyblock.garden.CurrentJacobCrop;
-import de.hysky.skyblocker.skyblock.garden.GardenConstants;
-import de.hysky.skyblocker.skyblock.item.HeadTextures;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import org.apache.commons.lang3.StringUtils;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
+import de.hysky.skyblocker.skyblock.garden.CurrentJacobCrop;
+import de.hysky.skyblocker.skyblock.garden.GardenConstants;
+import de.hysky.skyblocker.skyblock.item.HeadTextures;
+import de.hysky.skyblocker.skyblock.VacuumCache;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class GardenGlowAdder extends MobGlowAdder {
 	private static final GardenGlowAdder INSTANCE = new GardenGlowAdder();
@@ -103,10 +101,10 @@ public class GardenGlowAdder extends MobGlowAdder {
 		if (!SkyblockerConfigManager.get().farming.garden.vinylHighlighter)
 			return false;
 
-		@Nullable String vinyl = VacuumCache.getVinyl();
+		String vinyl = VacuumCache.getVinyl();
 
 		// Only applies outside of Jacob's Contests
-		if (!StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST) || vinyl == null) {
+		if (!StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST) || vinyl.isEmpty()) {
 			return false;
 		}
 
