@@ -3,14 +3,13 @@ package de.hysky.skyblocker.skyblock.entity.glow.adder;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.minecraft.ChatFormatting;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.decoration.ArmorStand;
+
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.VacuumCache;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.skyblock.garden.CurrentJacobCrop;
 import de.hysky.skyblocker.skyblock.garden.GardenConstants;
@@ -18,6 +17,10 @@ import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class GardenGlowAdder extends MobGlowAdder {
 	private static final GardenGlowAdder INSTANCE = new GardenGlowAdder();
@@ -36,8 +39,11 @@ public class GardenGlowAdder extends MobGlowAdder {
 					doesPestMatchCurrentContest(as) ?
 							// Pests but during Jacob's Contest
 							ChatFormatting.GREEN.getColor() :
-							// Default color
-							PEST_COLOUR;
+							// Pests from currently playing vinyl
+							doesPestMatchCurrentVinyl(as) ?
+									ChatFormatting.AQUA.getColor() :
+									// Default color
+									PEST_COLOUR;
 			default -> NO_GLOW;
 		};
 	}
@@ -87,6 +93,26 @@ public class GardenGlowAdder extends MobGlowAdder {
 		// Filter only pest head that matches by crop
 		return entity.hasItemInSlot(EquipmentSlot.HEAD) && GardenConstants.PEST_HEAD_BY_CROP
 				.get(CurrentJacobCrop.CURRENT_CROP_CONTEST)
+				.contains(ItemUtils.getHeadTexture(entity.getItemBySlot(EquipmentSlot.HEAD)));
+	}
+
+	/**
+	 * Matches the armor stand head with currently playing vinyl outside of Jacob's Contest.
+	 */
+	public static boolean doesPestMatchCurrentVinyl(ArmorStand entity) {
+		if (!SkyblockerConfigManager.get().farming.garden.vinylHighlighter)
+			return false;
+
+		@Nullable String vinyl = VacuumCache.getVinyl();
+
+		// Only applies outside of Jacob's Contests
+		if (!StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST) || vinyl == null) {
+			return false;
+		}
+
+		// Filter only pest head that matches by name
+		return entity.hasItemInSlot(EquipmentSlot.HEAD) && GardenConstants.PEST_HEAD_BY_CROP
+				.get(GardenConstants.CROP_BY_PEST.get(vinyl))
 				.contains(ItemUtils.getHeadTexture(entity.getItemBySlot(EquipmentSlot.HEAD)));
 	}
 }

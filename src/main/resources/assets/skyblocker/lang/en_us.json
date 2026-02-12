@@ -455,7 +455,9 @@
   "skyblocker.config.farming.garden.lockMouseGround": "Only lock camera when on the ground",
   "skyblocker.config.farming.garden.lockMouseTool": "Lock camera when holding a farming tool",
   "skyblocker.config.farming.garden.pestHighlighter": "Pest Highlighter",
-  "skyblocker.config.farming.garden.pestHighlighter.@Tooltip": "Makes all pests on your island glow so you can see them easier :D",
+  "skyblocker.config.farming.garden.pestHighlighter.@Tooltip": "Make's all pest's on your island glow so you can see them easier :D",
+  "skyblocker.config.farming.garden.vinylHighlighter": "Stereo Harmony Vinyl Highlighter",
+  "skyblocker.config.farming.garden.vinylHighlighter.@Tooltip": "Pests from Stereo Harmony vinyls glow blue outside of Jacob's Contests. Only enabled if Pest Highlighter is also enabled.",
 
   "skyblocker.config.farming.general.blocksPerSec": "Blocks/s: %s",
   "skyblocker.config.farming.general.coinsPerHour": "Coins/h: %s",
