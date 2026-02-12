@@ -1,10 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-
-import java.nio.file.Path;
-
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.serialization.Codec;
 
 import de.hysky.skyblocker.SkyblockerMod;
@@ -16,6 +11,9 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
+
+import java.nio.file.Path;
 
 public class VacuumCache {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("vacuum_cache.json");
