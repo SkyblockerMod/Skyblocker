@@ -328,7 +328,6 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 
 		@Override
 		public void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			if (this.sprites == null) return;
 			int x = this.getX();
 			if (this.toggled) x -= 2;
 
