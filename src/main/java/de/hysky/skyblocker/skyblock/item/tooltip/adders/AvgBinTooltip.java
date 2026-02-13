@@ -4,6 +4,8 @@ import de.hysky.skyblocker.config.configs.GeneralConfig.Average;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -25,6 +27,10 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 		if ((TooltipInfoType.ONE_DAY_AVERAGE.getData() == null && type != Average.THREE_DAY) || (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null && type != Average.ONE_DAY)) {
 			ItemTooltip.nullWarning();
 		} else {
+			// Don't show AH price for non-transferable items while in the rift
+			if (Utils.isInTheRift() && ItemUtils.getLoreLineIf(stack, line -> line.contains("Rift-Transferable")) == null) {
+				return;
+			}
 				/*
 				We are skipping check average prices for potions, runes
 				and enchanted books because there is no data for their in API.
