@@ -35,25 +35,26 @@ import de.hysky.skyblocker.utils.render.state.QuadRenderState;
 import de.hysky.skyblocker.utils.render.state.SphereRenderState;
 import de.hysky.skyblocker.utils.render.state.TextRenderState;
 import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
+import org.jspecify.annotations.Nullable;
 
 public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
 	private final LevelRenderState worldState;
 	private final Frustum frustum;
-	private List<VanillaSubmittable<?>> vanillaSubmittables = null;
-	private List<FilledBoxRenderState> filledBoxStates = null;
-	private List<OutlinedBoxRenderState> outlinedBoxStates = null;
-	private List<LinesRenderState> linesStates = null;
-	private List<CursorLineRenderState> cursorLineStates = null;
-	private List<QuadRenderState> quadStates = null;
-	private List<TexturedQuadRenderState> texturedQuadStates = null;
-	private List<BlockHologramRenderState> blockHologramStates = null;
-	private List<TextRenderState> textStates = null;
-	private List<CylinderRenderState> cylinderStates = null;
-	private List<FilledCircleRenderState> filledCircleStates = null;
-	private List<SphereRenderState> sphereStates = null;
-	private List<OutlinedCircleRenderState> outlinedCircleStates = null;
+	private @Nullable List<VanillaSubmittable<?>> vanillaSubmittables = null;
+	private @Nullable List<FilledBoxRenderState> filledBoxStates = null;
+	private @Nullable List<OutlinedBoxRenderState> outlinedBoxStates = null;
+	private @Nullable List<LinesRenderState> linesStates = null;
+	private @Nullable List<CursorLineRenderState> cursorLineStates = null;
+	private @Nullable List<QuadRenderState> quadStates = null;
+	private @Nullable List<TexturedQuadRenderState> texturedQuadStates = null;
+	private @Nullable List<BlockHologramRenderState> blockHologramStates = null;
+	private @Nullable List<TextRenderState> textStates = null;
+	private @Nullable List<CylinderRenderState> cylinderStates = null;
+	private @Nullable List<FilledCircleRenderState> filledCircleStates = null;
+	private @Nullable List<SphereRenderState> sphereStates = null;
+	private @Nullable List<OutlinedCircleRenderState> outlinedCircleStates = null;
 	private boolean frozen = false;
 
 	public PrimitiveCollectorImpl(LevelRenderState worldState, Frustum frustum) {
