@@ -128,7 +128,7 @@ public class PickobulusHelper {
 	}
 
 	private static void update() {
-		if (!SkyblockerConfigManager.get().mining.enablePickobulusHelper) return;
+		if (!(SkyblockerConfigManager.get().mining.enablePickobulusHelper || SkyblockerConfigManager.get().mining.pickobulusHelper.enablePickobulusHud)) return;
 
 		shouldRender = true;
 		errorMessage = null;
