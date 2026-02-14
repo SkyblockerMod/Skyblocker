@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,7 +44,7 @@ public class BackpackPreview {
 	private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
 	private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)");
 	private static final int STORAGE_SIZE = 27;
-	private static final Storage[] storages = new Storage[STORAGE_SIZE];
+	private static final AtomicReferenceArray<Storage> storages = new AtomicReferenceArray<>(STORAGE_SIZE);
 
 	/**
 	 * The profile id of the currently loaded backpack preview.
@@ -88,7 +89,7 @@ public class BackpackPreview {
 
 	private static void loadStorages() {
 		for (int index = 0; index < STORAGE_SIZE; ++index) {
-			storages[index] = null;
+			storages.set(index, null);
 			//Copy variable since lambdas do not like when you use iteration variables (JDK-8300691)
 			int index2 = index;
 
@@ -104,7 +105,7 @@ public class BackpackPreview {
 				}
 
 				return null;
-			}, Executors.newVirtualThreadPerTaskExecutor()).thenAcceptAsync(storage -> storages[index2] = storage, Minecraft.getInstance());
+			}, Executors.newVirtualThreadPerTaskExecutor()).thenAcceptAsync(storage -> storages.set(index2, storage), Minecraft.getInstance());
 		}
 	}
 
@@ -114,7 +115,8 @@ public class BackpackPreview {
 
 	private static void saveStorages() {
 		for (int index = 0; index < STORAGE_SIZE; ++index) {
-			if (storages[index] != null && storages[index].dirty) {
+			Storage storage = storages.get(index);
+			if (storage != null && storage.dirty) {
 				saveStorage(index);
 			}
 		}
@@ -122,7 +124,7 @@ public class BackpackPreview {
 
 	private static void saveStorage(int index) {
 		//Store desired storage in a variable to ensure that the instance cannot change during async execution
-		Storage storage = storages[index];
+		Storage storage = storages.get(index);
 
 		CompletableFuture.runAsync(() -> {
 			Path storageFile = saveDir.resolve(index + ".nbt");
@@ -138,7 +140,7 @@ public class BackpackPreview {
 		String title = handledScreen.getTitle().getString();
 		int index = getStorageIndexFromTitle(title);
 		if (index != -1) {
-			storages[index] = new Storage(handledScreen.getMenu().slots.getFirst().container, title, true);
+			storages.set(index, new Storage(handledScreen.getMenu().slots.getFirst().container, title, true));
 		}
 	}
 
@@ -147,8 +149,9 @@ public class BackpackPreview {
 		else if (index >= 27 && index < 45) index -= 18;
 		else return false;
 
-		if (storages[index] == null) return false;
-		int rows = (storages[index].size() - 9) / 9;
+		Storage storage = storages.get(index);
+		if (storage == null) return false;
+		int rows = (storage.size() - 9) / 9;
 
 		int x = mouseX + 184 >= screen.width ? mouseX - 188 : mouseX + 8;
 		int y = Math.max(0, mouseY - 16);
@@ -157,10 +160,10 @@ public class BackpackPreview {
 		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
 
 		Font textRenderer = Minecraft.getInstance().font;
-		context.drawString(textRenderer, storages[index].name(), x + 8, y + 6, 0xFF404040, false);
+		context.drawString(textRenderer, storage.name(), x + 8, y + 6, 0xFF404040, false);
 
-		for (int i = 9; i < storages[index].size(); ++i) {
-			ItemStack currentStack = storages[index].getStack(i);
+		for (int i = 9; i < storage.size(); ++i) {
+			ItemStack currentStack = storage.getStack(i);
 			int itemX = x + (i - 9) % 9 * 18 + 8;
 			int itemY = y + (i - 9) / 9 * 18 + 18;
 
