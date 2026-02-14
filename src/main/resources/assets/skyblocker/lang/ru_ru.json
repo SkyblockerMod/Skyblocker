@@ -955,7 +955,7 @@
     "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip": "Подсвечивает Sea Lumies сине-зелёным цветом.",
     "skyblocker.config.farming.garden.farmingHud.type.@Tooltip": "Какую цену использовать при расчета монет в Фарминг HUD.\nпри 'Оба' будет выбрана большая цена.",
     "skyblocker.config.general.speedPresets.config": "Настройки прессетов скоростей...",
-    "skyblocker.config.helpers.enableDateCalculator.@Tooltip": "Показывает дату и время ивентов в будующем, таких как календарные ивенты.",
+    "skyblocker.config.helpers.enableDateCalculator.@Tooltip": "Показывает дату и время ивентов в будущем, таких как календарные ивенты.",
     "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Решать пазл Forest Temple",
     "skyblocker.config.helpers.carnival.catchAFishHelper.@Tooltip": "Подсвечивает золотую рыбку.",
     "skyblocker.config.helpers.carnival.catchAFishHelper": "Помощник в ловле рыбы",
