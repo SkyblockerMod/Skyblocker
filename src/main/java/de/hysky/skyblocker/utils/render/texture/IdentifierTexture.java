@@ -10,12 +10,12 @@ import java.util.Optional;
 
 class IdentifierTexture implements FallbackedTexture<Identifier> {
 
-	final Identifier texture;
-	final Identifier fallback;
+	protected final Identifier texture;
+	protected final Identifier fallback;
 	private final @Nullable Identifier atlas;
 	private Identifier currentTexture;
 
-	IdentifierTexture(Identifier texture, Identifier fallback, @Nullable Identifier atlas) {
+	protected IdentifierTexture(Identifier texture, Identifier fallback, @Nullable Identifier atlas) {
 		this.texture = texture;
 		this.fallback = fallback;
 		this.atlas = atlas;

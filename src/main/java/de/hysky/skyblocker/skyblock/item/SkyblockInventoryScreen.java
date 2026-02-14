@@ -64,7 +64,9 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	private static final Identifier SLOT_TEXTURE = Identifier.withDefaultNamespace("container/slot");
 	private static final Identifier EMPTY_SLOT = SkyblockerMod.id("equipment/empty_icon");
 	private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
-	private static final FallbackedTexture<Identifier> BACKGROUND = FallbackedTexture.ofTexture(SkyblockerMod.id("textures/gui/container/skyblock_inventory.png"), INVENTORY_LOCATION);
+	private static final FallbackedTexture<Identifier> BACKGROUND = FallbackedTexture.ofTexture(
+			SkyblockerMod.id("textures/gui/container/skyblock_inventory.png"),
+			INVENTORY_LOCATION);
 
 	private final Slot[] equipmentSlots = new Slot[4];
 	private ItemStack hoveredItem;

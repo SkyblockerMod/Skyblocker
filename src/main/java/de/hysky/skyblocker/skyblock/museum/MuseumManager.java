@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.museum;
 
 import com.google.common.collect.Lists;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
@@ -37,7 +38,7 @@ import org.jspecify.annotations.Nullable;
 public class MuseumManager extends AbstractWidget implements HoveredItemStackProvider {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Font TEXT_RENDERER = CLIENT.font;
-	private static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("textures/gui/recipe_book.png");
+	private static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("background");
 	public static final int BACKGROUND_WIDTH = 147;
 	public static final int BACKGROUND_HEIGHT = 160;
 	public static final int SPACING = 2;
