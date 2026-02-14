@@ -18,14 +18,18 @@ import net.minecraft.client.renderer.state.CameraRenderState;
 
 public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRenderState> {
 	protected static final TextPrimitiveRenderer INSTANCE = new TextPrimitiveRenderer();
-	private static final RenderPipeline SEE_THROUGH = CaxtonCompatibility.getSeeThroughTextPipeline().orElse(RenderPipelines.TEXT_SEE_THROUGH);
-	private static final RenderPipeline NORMAL = CaxtonCompatibility.getTextPipeline().orElse(RenderPipelines.TEXT);
+	private static final PipelineProvider SEE_THROUGH = CaxtonCompatibility.getSeeThroughTextPipeline()
+			.<PipelineProvider>map(p -> ignored -> p)
+			.orElse(intensityBased -> intensityBased ? RenderPipelines.TEXT_INTENSITY_SEE_THROUGH : RenderPipelines.TEXT_SEE_THROUGH);
+	private static final PipelineProvider NORMAL = CaxtonCompatibility.getTextPipeline()
+			.<PipelineProvider>map(p -> ignored -> p)
+			.orElse(intensityBased -> intensityBased ? RenderPipelines.TEXT_INTENSITY : RenderPipelines.TEXT);
 
 	private TextPrimitiveRenderer() {}
 
 	@Override
 	public void submitPrimitives(TextRenderState state, CameraRenderState cameraState) {
-		RenderPipeline pipeline = state.throughWalls ? SEE_THROUGH : NORMAL;
+		PipelineProvider pipeline = state.throughWalls ? SEE_THROUGH : NORMAL;
 		Matrix4f positionMatrix = new Matrix4f()
 				.translate((float) (state.pos.x() - cameraState.pos.x()), (float) (state.pos.y() - cameraState.pos.y()), (float) (state.pos.z() - cameraState.pos.z()))
 				.rotate(cameraState.orientation)
@@ -44,10 +48,16 @@ public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRender
 
 			private void draw(TextRenderable glyph) {
 				TextureSetup textureSetup = TextureSetup.singleTextureWithLightmap(glyph.textureView(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
-				BufferBuilder buffer = Renderer.getBuffer(pipeline, textureSetup);
+				// This is a bit of a weird workaround to know if the intensity pipelines should be used instead of the normal ones.
+				// Normally GlyphBitmap#isColored should be used to figure that out, but we don't have access to it here
+				BufferBuilder buffer = Renderer.getBuffer(pipeline.get(glyph.guiPipeline() == RenderPipelines.GUI_TEXT_INTENSITY), textureSetup);
 
 				glyph.render(positionMatrix, buffer, LightTexture.FULL_BRIGHT, false);
 			}
 		});
+	}
+
+	private interface PipelineProvider {
+		RenderPipeline get(boolean intensityBased);
 	}
 }

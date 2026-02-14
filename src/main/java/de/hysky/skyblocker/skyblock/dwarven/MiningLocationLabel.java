@@ -29,6 +29,11 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
 		return category;
 	}
 
+	@Override
+	public String toString() {
+		return "MiningLocationLabel [category=" + category + "]";
+	}
+
 	/**
 	 * Override the {@link DistancedNamedWaypoint#shouldRenderName()} method to always return true,
 	 * as the name should always be rendered, even though this waypoint is always disabled.
