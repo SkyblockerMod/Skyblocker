@@ -70,7 +70,6 @@ public class CommissionLabels {
 				foundCommissions = true;
 			}
 		}
-		System.out.println("active commissions: " + activeWaypoints);
 		if (!newCommissions.equals(commissions) || newCommissionDone != commissionDone) {
 			commissions = newCommissions;
 			commissionDone = newCommissionDone;
@@ -117,9 +116,6 @@ public class CommissionLabels {
 			return;
 		}
 
-		System.out.println("checking commissions");
-		System.out.println(newCommissions);
-		System.out.println(DWARVEN_LOCATIONS);
 		for (String commission : newCommissions) {
 			for (Map.Entry<String, MiningLocationLabel.DwarvenCategory> dwarvenLocation : DWARVEN_LOCATIONS.entrySet()) {
 				if (commission.contains(dwarvenLocation.getKey())) {
