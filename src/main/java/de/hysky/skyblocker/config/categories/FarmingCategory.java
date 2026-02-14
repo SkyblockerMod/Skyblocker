@@ -61,6 +61,14 @@ public class FarmingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.garden.vinylHighlighter"))
+								.description(Component.translatable("skyblocker.config.farming.garden.vinylHighlighter.@Tooltip"))
+								.binding(defaults.farming.garden.vinylHighlighter,
+										() -> config.farming.garden.vinylHighlighter,
+										newValue -> config.farming.garden.vinylHighlighter = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.garden.lockMouseTool"))
 								.binding(defaults.farming.garden.lockMouseTool,
 										() -> config.farming.garden.lockMouseTool,
