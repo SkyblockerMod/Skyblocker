@@ -10,6 +10,7 @@ import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper.Accessory;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeResultButton;
@@ -78,6 +79,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	private List<AccessoryInfo> accessories = List.of();
 	private List<MagicPowerSource> displays = List.of();
 	private List<RecombobulateSource> recombDisplays = List.of();
+	private boolean refreshWhenDoneLoading = false;
 
 	// Things that should persist when you close the accessory bag
 	private static Filter filter = Filter.MISSING;
@@ -86,7 +88,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	private static boolean showHighestTierOnly;
 
 	static void attachToScreen(ContainerScreen screen) {
-		if (!SkyblockerConfigManager.get().helpers.enableAccessoriesHelperWidget) return;
+		if (!SkyblockerConfigManager.get().general.itemTooltip.enableAccessoriesHelper || !SkyblockerConfigManager.get().helpers.enableAccessoriesHelperWidget) return;
 		final AccessoriesHelperWidget widget = new AccessoriesHelperWidget();
 		widget.setY((screen.height - widget.getHeight()) / 2);
 		Screens.getButtons(screen).add(widget);
@@ -101,31 +103,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 			button.setX((toggled ? widget.getX() : x) - button.getWidth() + 5);
 			button.setY((toggled ? widget.getY() : ((AbstractContainerScreenAccessor) screen).getY()) + 8);
 			if (toggled) {
-				final Set<Accessory> collectedAccessories = AccessoriesHelper.getCollectedAccessories();
-				widget.recombDisplays = collectedAccessories.stream()
-						.filter(Accessory::recombobulatable)
-						.map(Accessory::id)
-						.filter(id -> !AccessoriesHelper.isRecombobulated(id))
-						.map(ItemRepository::getItemStack)
-						.filter(Objects::nonNull)
-						.map(SkyblockerStack::getSkyblockRarity)
-						.distinct()
-						.map(RecombobulateSource::new)
-						.toList();
-
-				widget.accessories = AccessoriesHelper.ACCESSORY_DATA.values().stream()
-						.filter(accessory -> NEURepoManager.isLoading() || !NEURepoManager.getConstants().getMisc().getIgnoredTalismans().contains(accessory.id())) // Removes admin and rift items
-						.map(accessory -> {
-							if (accessory.family().isPresent()) {
-								AccessoriesHelper.FamilyReport report = AccessoriesHelper.calculateFamilyReport(accessory, collectedAccessories);
-								return new AccessoryInfo(accessory, report.highestCollectedInFamily(), report.highestInFamily());
-							} else
-								return new AccessoryInfo(accessory, collectedAccessories.contains(accessory) ? Optional.of(accessory) : Optional.empty(), accessory);
-						}).distinct()
-						.filter(info -> info.accessory().tier() > info.highestOwned().map(Accessory::tier).orElse(-1))
-						.toList();
-				widget.updateFilter(); // Update items
-				widget.changePage(0); // Updates display
+				widget.refreshData();
 			} else {
 				// Reset when you close the helper
 				filter = Filter.MISSING;
@@ -179,6 +157,34 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		widgets = builder.build();
 		mainLayout.arrangeElements();
 		updatePageSwitcher();
+	}
+
+	private void refreshData() {
+		final Set<Accessory> collectedAccessories = AccessoriesHelper.getCollectedAccessories();
+		this.recombDisplays = collectedAccessories.stream()
+				.filter(Accessory::recombobulatable)
+				.map(Accessory::id)
+				.filter(id -> !AccessoriesHelper.isRecombobulated(id))
+				.map(ItemRepository::getItemStack)
+				.filter(Objects::nonNull)
+				.map(SkyblockerStack::getSkyblockRarity)
+				.distinct()
+				.map(RecombobulateSource::new)
+				.toList();
+
+		this.accessories = AccessoriesHelper.ACCESSORY_DATA.values().stream()
+				.filter(accessory -> NEURepoManager.isLoading() || !NEURepoManager.getConstants().getMisc().getIgnoredTalismans().contains(accessory.id())) // Removes admin and rift items
+				.map(accessory -> {
+					if (accessory.family().isPresent()) {
+						AccessoriesHelper.FamilyReport report = AccessoriesHelper.calculateFamilyReport(accessory, collectedAccessories);
+						return new AccessoryInfo(accessory, report.highestCollectedInFamily(), report.highestInFamily());
+					} else
+						return new AccessoryInfo(accessory, collectedAccessories.contains(accessory) ? Optional.of(accessory) : Optional.empty(), accessory);
+				}).distinct()
+				.filter(info -> info.accessory().tier() > info.highestOwned().map(Accessory::tier).orElse(-1))
+				.toList();
+		this.updateFilter(); // Update items
+		this.changePage(0); // Updates display
 	}
 
 	private void updateFilter() {
@@ -256,11 +262,15 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		for (AbstractWidget widget : widgets) {
 			widget.render(context, mouseX, mouseY, deltaTicks);
 		}
-		if (!ItemRepository.filesImported()) {
+		if (!ItemRepository.filesImported() || TooltipInfoType.ACCESSORIES.getData() == null) {
+			refreshWhenDoneLoading = true;
 			int x = getX() + getWidth() / 2;
 			int y = getY() + getHeight() / 4;
 			context.drawCenteredString(Minecraft.getInstance().font, "Loading...", x, y, -1);
 			context.drawCenteredString(Minecraft.getInstance().font, LoadingDotsText.get(Util.getMillis()), x, y + 10, -1);
+		} else if (refreshWhenDoneLoading) {
+			refreshWhenDoneLoading = false;
+			refreshData();
 		}
 		if (!Objects.equals(prevHighlighted, AccessoriesContainerSolver.INSTANCE.highlightedAccessory)) ContainerSolverManager.markHighlightsDirty();
 	}
@@ -320,7 +330,6 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 
 		@Override
 		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			if (this.sprites == null) return;
 			int x = this.getX();
 			if (this.toggled) x -= 2;
 
