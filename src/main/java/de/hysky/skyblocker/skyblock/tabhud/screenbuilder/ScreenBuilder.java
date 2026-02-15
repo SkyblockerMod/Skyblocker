@@ -102,6 +102,7 @@ public class ScreenBuilder {
 		}
 
 		for (TabHudWidget widget : PlayerListManager.tabWidgetsToShow) {
+			if (!config && widget.isEmpty()) continue;
 			PositionRule rule = getPositionRule(widget.getInternalID());
 			widget.setVisible(true);
 			if (rule == null) {
