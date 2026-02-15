@@ -18,7 +18,6 @@
     "skyblocker.config.general.hitbox": "히트박스",
     "skyblocker.config.general.hitbox.oldLeverHitbox": "1.8 레버 히트박스 활성화",
     "skyblocker.itemTooltip.nullMessage": "§c아이템 가격 툴팁이 최대 60초 이내에 갱신 됩니다. 갱신 되지 않을 시 latest.log 를 확인하세요.",
-    "skyblocker.itemTooltip.noData": "§c데이터 없음",
     "skyblocker.config.misc.richPresence": "디스코드 Rich Presence",
     "skyblocker.config.misc.richPresence.info": "스카이블록 정보",
     "skyblocker.config.misc.richPresence.info.PURSE": "PURSE",

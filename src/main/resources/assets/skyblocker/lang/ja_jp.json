@@ -630,7 +630,6 @@
     "skyblocker.config.uiAndVisuals.inventorySearch.state.SKYBLOCK": "Skyblockのみ",
     "skyblocker.config.uiAndVisuals.titleContainer.alignment.LEFT": "左",
     "skyblocker.config.uiAndVisuals.titleContainer.alignment.RIGHT": "右",
-    "skyblocker.itemTooltip.noData": "§cデータなし",
     "skyblocker.config.uiAndVisuals.slotText.catacombsLevel": "ダンジョン職業レベル",
     "skyblocker.reparty.error": "Repartyは失敗しました。後でもう一度お試しください！",
     "skyblocker.updateNotifications.newUpdateMessage": "Skyblockerの新しいアップデートが利用可能になりました！%s",

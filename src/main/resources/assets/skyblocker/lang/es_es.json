@@ -16,7 +16,6 @@
     "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Habilitar los precios de compra/venta del Bazar",
     "skyblocker.config.general.hitbox": "Cajas de Colisión",
     "skyblocker.config.general.hitbox.oldLeverHitbox": "Habilitar la Caja de Colisión de la 1.8 para la palanca",
-    "skyblocker.itemTooltip.noData": "§cSin Información",
     "skyblocker.config.misc.richPresence": "Discord Rich Presence",
     "skyblocker.config.misc.richPresence.info": "Información de Skyblock",
     "skyblocker.config.misc.richPresence.info.PURSE": "CARTERA",
