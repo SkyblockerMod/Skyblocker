@@ -1674,7 +1674,7 @@
   "skyblocker.itemTooltip.nullMessage": "Item price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
   "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
-  "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! You can only do this once every two days.",
+  "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! You can only do this once an hour.",
   "skyblocker.museum.hud.alreadyDonatedItem": "Donated Item",
   "skyblocker.museum.hud.coin": "Coins",
   "skyblocker.museum.hud.countsFor": "Will count for",
