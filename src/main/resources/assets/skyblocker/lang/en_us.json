@@ -1522,7 +1522,12 @@
   "skyblocker.disableAll.confirmYes": "§c[Disable All]",
   "skyblocker.disableAll.failed": "§cFailed to disable all features.",
   "skyblocker.disableAll.notPending": "§cRun /skyblocker disableAll first.",
+  "skyblocker.disableAll.popup.description": "Disables all of Skyblocker's features. Use this carefully.",
+  "skyblocker.disableAll.popup.seriousWarning": "This action is irreversible.",
+  "skyblocker.disableAll.popup.title": "Disable All Features",
+  "skyblocker.disableAll.popup.warning": "Are you sure that you want to disable all of Skyblocker's features? %s",
   "skyblocker.disableAll.success": "§cAll features disabled.",
+  "skyblocker.disableAll.toast.title": "Skyblocker Disable All",
 
   "skyblocker.dungeons.croesusHelper.chestValue": "Chest Value: %s",
   "skyblocker.dungeons.dungeonScore.scoreText": "Score: %s",

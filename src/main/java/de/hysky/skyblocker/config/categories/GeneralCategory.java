@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.categories;
 
+import de.hysky.skyblocker.DisableAllPopup;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.SkyblockerScreen;
 import de.hysky.skyblocker.UpdateNotifications;
@@ -34,6 +35,14 @@ public class GeneralCategory {
 						.name(Component.translatable("skyblocker.skyblockerScreen"))
 						.prompt(Component.translatable("text.skyblocker.open"))
 						.action(screen -> Minecraft.getInstance().setScreen(new SkyblockerScreen()))
+						.build())
+
+				// Disable All
+				.option(ButtonOption.createBuilder()
+						.name(Component.translatable("skyblocker.disableAll.popup.title"))
+						.description(Component.translatable("skyblocker.disableAll.popup.description"))
+						.prompt(Component.translatable("text.skyblocker.open"))
+						.action(screen -> new DisableAllPopup().open(screen))
 						.build())
 
 				//Ungrouped Options
