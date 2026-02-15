@@ -11,6 +11,7 @@ import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -44,7 +45,7 @@ public class DisableAll {
 
 	private static int confirmMessage(CommandContext<FabricClientCommandSource> context) {
 		confirmAllowedUntil = System.currentTimeMillis() + CONFIRM_TIMEOUT;
-		MutableComponent confirm = Component.translatable("skyblocker.disableAll.confirmYes")
+		MutableComponent confirm = Component.translatable("skyblocker.disableAll.confirmYes").withStyle(ChatFormatting.RED)
 				.withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/" + SkyblockerMod.NAMESPACE + " disableAll confirm")));
 		context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.confirm", confirm)));
 		return Command.SINGLE_SUCCESS;
@@ -52,7 +53,7 @@ public class DisableAll {
 
 	private static int disableAll(CommandContext<FabricClientCommandSource> context) {
 		if (System.currentTimeMillis() > confirmAllowedUntil) {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.notPending")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.notPending").withStyle(ChatFormatting.RED)));
 			return Command.SINGLE_SUCCESS;
 		}
 		confirmAllowedUntil = 0;
@@ -64,10 +65,10 @@ public class DisableAll {
 					throw new RuntimeException(e);
 				}
 			});
-			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.success")));
+			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.success").withStyle(ChatFormatting.RED)));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker DisableAll] Failed to disable all features", e);
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.failed")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.failed").withStyle(ChatFormatting.RED)));
 		}
 		return Command.SINGLE_SUCCESS;
 	}

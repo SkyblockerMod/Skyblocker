@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.CountdownComponent;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.PopupScreen;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -49,10 +50,10 @@ public final class DisableAllPopup {
 
 				popupScreen.onClose();
 				minecraft.setScreen(SkyblockerConfigManager.createGUI(null));
-				SystemToast.add(minecraft.getToastManager(), TOAST_ID, Component.translatable("skyblocker.disableAll.toast.title"), Component.translatable("skyblocker.disableAll.success"));
+				SystemToast.add(minecraft.getToastManager(), TOAST_ID, Component.translatable("skyblocker.disableAll.toast.title"), Component.translatable("skyblocker.disableAll.success").withStyle(ChatFormatting.RED));
 			} catch (Exception e) {
 				DisableAll.LOGGER.error("[Skyblocker DisableAll] Failed to disable all features", e);
-				SystemToast.add(minecraft.getToastManager(), TOAST_ID, Component.translatable("skyblocker.disableAll.toast.title"), Component.translatable("skyblocker.disableAll.failed"));
+				SystemToast.add(minecraft.getToastManager(), TOAST_ID, Component.translatable("skyblocker.disableAll.toast.title"), Component.translatable("skyblocker.disableAll.failed").withStyle(ChatFormatting.RED));
 			}
 		}
 	}

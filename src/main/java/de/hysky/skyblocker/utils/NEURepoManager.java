@@ -182,7 +182,7 @@ public class NEURepoManager {
 	 */
 	private static void deleteAndDownloadRepository(Player player) {
 		if (isLoading()) {
-			sendMessage(player, Component.translatable("skyblocker.updateRepository.loading"));
+			sendMessage(player, Component.translatable("skyblocker.updateRepository.loading").withStyle(ChatFormatting.RED));
 			return;
 		}
 		deleteAndDownloadRepositoryInternal(player);
@@ -191,14 +191,14 @@ public class NEURepoManager {
 	private static void deleteAndDownloadRepositoryInternal(@Nullable Player player) {
 		Function<Runnable, CompletableFuture<Void>> runner = isLoading() ? REPO_LOADING::thenRunAsync : task -> CompletableFuture.runAsync(task, Executors.newVirtualThreadPerTaskExecutor());
 		REPO_LOADING = runner.apply(() -> {
-			sendMessage(player, Component.translatable("skyblocker.updateRepository.start"));
+			sendMessage(player, Component.translatable("skyblocker.updateRepository.start").withStyle(ChatFormatting.AQUA));
 			try {
 				FileUtils.recursiveDelete(NEURepoManager.LOCAL_REPO_DIR);
-				sendMessage(player, Component.translatable("skyblocker.updateRepository.deleted"));
-				sendMessage(player, Component.translatable(loadRepository().join() ? "skyblocker.updateRepository.success" : "skyblocker.updateRepository.failed"));
+				sendMessage(player, Component.translatable("skyblocker.updateRepository.deleted").withStyle(ChatFormatting.AQUA));
+				sendMessage(player, loadRepository().join() ? Component.translatable("skyblocker.updateRepository.success").withStyle(ChatFormatting.GREEN) : Component.translatable("skyblocker.updateRepository.failed").withStyle(ChatFormatting.RED));
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while deleting the NEU repo", e);
-				sendMessage(player, Component.translatable("skyblocker.updateRepository.error"));
+				sendMessage(player, Component.translatable("skyblocker.updateRepository.error").withStyle(ChatFormatting.RED));
 			}
 		});
 	}
