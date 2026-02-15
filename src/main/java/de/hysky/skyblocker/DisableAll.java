@@ -5,11 +5,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.ConfigNullFieldsFix;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -22,8 +24,7 @@ import java.lang.reflect.Modifier;
  * Command helper for disabling every configurable feature.
  */
 public class DisableAll {
-	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
+	protected static final Logger LOGGER = LogUtils.getLogger();
 
 	@Init
 	public static void init() {
@@ -44,7 +45,7 @@ public class DisableAll {
 
 	private static int confirmMessage(CommandContext<FabricClientCommandSource> context) {
 		confirmAllowedUntil = System.currentTimeMillis() + CONFIRM_TIMEOUT;
-		MutableComponent confirm = Component.translatable("skyblocker.disableAll.confirmYes")
+		MutableComponent confirm = Component.translatable("skyblocker.disableAll.confirmYes").withStyle(ChatFormatting.RED)
 				.withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/" + SkyblockerMod.NAMESPACE + " disableAll confirm")));
 		context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.confirm", confirm)));
 		return Command.SINGLE_SUCCESS;
@@ -52,7 +53,7 @@ public class DisableAll {
 
 	private static int disableAll(CommandContext<FabricClientCommandSource> context) {
 		if (System.currentTimeMillis() > confirmAllowedUntil) {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.notPending")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.notPending").withStyle(ChatFormatting.RED)));
 			return Command.SINGLE_SUCCESS;
 		}
 		confirmAllowedUntil = 0;
@@ -64,10 +65,10 @@ public class DisableAll {
 					throw new RuntimeException(e);
 				}
 			});
-			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.success")));
+			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.success").withStyle(ChatFormatting.RED)));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker DisableAll] Failed to disable all features", e);
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.failed")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.failed").withStyle(ChatFormatting.RED)));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -77,7 +78,7 @@ public class DisableAll {
 	 * {@code false}. Previously this relied on the {@code SerialEntry} annotation
 	 * from YACL, but the configuration system no longer uses it.
 	 */
-	private static void disableBooleans(Object target) throws IllegalAccessException {
+	protected static void disableBooleans(Object target) throws IllegalAccessException {
 		for (Field field : target.getClass().getDeclaredFields()) {
 			if (Modifier.isStatic(field.getModifiers())) continue;
 			field.setAccessible(true);
@@ -112,6 +113,6 @@ public class DisableAll {
 				&& !clazz.isRecord()
 				&& !clazz.equals(String.class)
 				&& !Number.class.isAssignableFrom(clazz)
-				&& clazz.getPackageName().startsWith(CONFIGS_PACKAGE);
+				&& clazz.getPackageName().startsWith(ConfigNullFieldsFix.CONFIGS_PACKAGE);
 	}
 }

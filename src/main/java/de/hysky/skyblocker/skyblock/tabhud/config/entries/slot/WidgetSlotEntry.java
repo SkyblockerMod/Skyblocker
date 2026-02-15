@@ -25,7 +25,10 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 
 	public WidgetSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
-		editButton = Button.builder(Component.literal("EDIT"), button -> this.parent.clickAndWaitForServer(this.slotId, 1))
+		editButton = Button.builder(Component.literal("EDIT"), button -> {
+					this.parent.clickAndWaitForServer(this.slotId, 1);
+					this.parent.resetScrollOnLoad();
+				})
 				.size(32, 12)
 				.build();
 

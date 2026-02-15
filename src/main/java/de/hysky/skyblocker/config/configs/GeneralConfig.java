@@ -144,14 +144,6 @@ public class GeneralConfig {
 		public String toString() {
 			return I18n.get("skyblocker.config.general.itemTooltip.craft." + name());
 		}
-
-		public String getOrder() {
-			return switch (this) {
-				case SELL_ORDER -> "sellPrice";
-				case BUY_ORDER -> "buyPrice";
-				case OFF -> null;
-			};
-		}
 	}
 
 	public static class ItemInfoDisplay {

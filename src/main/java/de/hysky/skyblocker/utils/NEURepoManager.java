@@ -110,6 +110,7 @@ public class NEURepoManager {
 
 	private static CompletableFuture<Boolean> loadRepository() {
 		return CompletableFuture.supplyAsync(() -> {
+			Minecraft client = Minecraft.getInstance();
 			boolean success = true;
 			try {
 				if (Files.isDirectory(NEURepoManager.LOCAL_REPO_DIR)) {
@@ -119,7 +120,9 @@ public class NEURepoManager {
 							LOGGER.info("[Skyblocker NEU Repo] NEU Repository updated with merge status: {}", result.getMergeResult().getMergeStatus());
 						} else {
 							LOGGER.error("[Skyblocker NEU Repo] Update failed with merge status: {}. Downloading new repository", result.getMergeResult().getMergeStatus());
-							Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(Minecraft.getInstance().player), 1);
+							client.execute(() ->
+								Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(client.player), 1)
+							);
 							success = false;
 						}
 					}
@@ -138,7 +141,9 @@ public class NEURepoManager {
 				success = false;
 			} catch (RepositoryNotFoundException e) {
 				LOGGER.warn("[Skyblocker NEU Repo] Local NEU Repository not found or corrupted, downloading new one", e);
-				Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(Minecraft.getInstance().player), 1);
+				client.execute(() ->
+						Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(client.player), 1)
+				);
 				success = false;
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while downloading NEU Repository", e);
@@ -177,33 +182,36 @@ public class NEURepoManager {
 	 */
 	private static void deleteAndDownloadRepository(Player player) {
 		if (isLoading()) {
-			sendMessage(player, Component.translatable("skyblocker.updateRepository.loading"));
+			sendMessage(player, Component.translatable("skyblocker.updateRepository.loading").withStyle(ChatFormatting.RED));
 			return;
 		}
 		deleteAndDownloadRepositoryInternal(player);
 	}
 
-	private static void deleteAndDownloadRepositoryInternal(Player player) {
+	private static void deleteAndDownloadRepositoryInternal(@Nullable Player player) {
 		Function<Runnable, CompletableFuture<Void>> runner = isLoading() ? REPO_LOADING::thenRunAsync : task -> CompletableFuture.runAsync(task, Executors.newVirtualThreadPerTaskExecutor());
 		REPO_LOADING = runner.apply(() -> {
-			sendMessage(player, Component.translatable("skyblocker.updateRepository.start"));
+			sendMessage(player, Component.translatable("skyblocker.updateRepository.start").withStyle(ChatFormatting.AQUA));
 			try {
 				FileUtils.recursiveDelete(NEURepoManager.LOCAL_REPO_DIR);
-				sendMessage(player, Component.translatable("skyblocker.updateRepository.deleted"));
-				sendMessage(player, Component.translatable(loadRepository().join() ? "skyblocker.updateRepository.success" : "skyblocker.updateRepository.failed"));
+				sendMessage(player, Component.translatable("skyblocker.updateRepository.deleted").withStyle(ChatFormatting.AQUA));
+				sendMessage(player, loadRepository().join() ? Component.translatable("skyblocker.updateRepository.success").withStyle(ChatFormatting.GREEN) : Component.translatable("skyblocker.updateRepository.failed").withStyle(ChatFormatting.RED));
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while deleting the NEU repo", e);
-				sendMessage(player, Component.translatable("skyblocker.updateRepository.error"));
+				sendMessage(player, Component.translatable("skyblocker.updateRepository.error").withStyle(ChatFormatting.RED));
 			}
 		});
 	}
 
-	private static void sendMessage(Player player, Component text) {
-		if (player != null) {
-			player.displayClientMessage(Constants.PREFIX.get().append(text), false);
-		} else {
+	private static void sendMessage(@Nullable Player player, Component text) {
+		if (player == null) {
 			LOGGER.info("[Skyblocker NEU Repo] {}", text.getString());
+			return;
 		}
+
+		Minecraft.getInstance().execute(() ->
+			player.displayClientMessage(Constants.PREFIX.get().append(text), false)
+		);
 	}
 
 	/**

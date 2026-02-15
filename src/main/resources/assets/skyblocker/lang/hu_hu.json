@@ -1564,7 +1564,7 @@
     "skyblocker.config.helpers.enableNewYearCakesHelper": "Újévi Torták Segítő Engedélyezése",
     "skyblocker.config.mining.glacite.coldOverlay": "Hideg Átfedés",
     "skyblocker.config.mining.glacite.enableCorpseFinder": "Hulla Kereső",
-    "skyblocker.config.misc.richPresence.info.@Tooltip": "Ez az érték nem számít, ha visszapulzálsz",
+    "skyblocker.config.misc.richPresence.info.@Tooltip": "Ez az érték nem számít, ha visszapulzálsz.",
     "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor": "Üres Életerő sáv Színe",
     "skyblocker.config.uiAndVisuals.healthBars.halfBarColor": "Fél Életerő sáv Színe",
     "skyblocker.config.uiAndVisuals.healthBars.hideFullHealth": "Teljes Életerő sávok Elrejtése",
@@ -1669,5 +1669,8 @@
     "skyblocker.config.mining.blockBreakPrediction.playSound": "Hang Lejátszása",
     "skyblocker.config.mining.blockBreakPrediction.playSound.@Tooltip": "Lejátszik egy Őrláng hangot, amikor a blokk-ot ki kell ütni.",
     "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize": "Adaptív Dobozméret",
-    "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "A Secret Helyjelölők mérete a tényleges blokk méretét mutaják Essence és Redstone kulcsok esetén."
+    "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "A Secret Helyjelölők mérete a tényleges blokk méretét mutaják Essence és Redstone kulcsok esetén.",
+    "skyblocker.accessoryHelper.afterSelling": "%s %s eladása után",
+    "skyblocker.config.misc.cat": "Cica",
+    "skyblocker.config.misc.cat.@Tooltip": "A Hub Közösségi Központjára rak egy képet egy macskáról."
 }

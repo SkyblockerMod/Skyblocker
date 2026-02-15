@@ -11,6 +11,8 @@ import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -36,6 +38,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GardenPlotsWidget extends AbstractContainerWidget {
+	private static final Identifier SLOT_HIGHLIGHT_BACK_SPRITE = Identifier.withDefaultNamespace("container/slot_highlight_back");
+	private static final Identifier SLOT_HIGHLIGHT_FRONT_SPRITE = Identifier.withDefaultNamespace("container/slot_highlight_front");
 
 	public static final Int2IntMap GARDEN_PLOT_TO_SLOT = Int2IntMap.ofEntries(
 			Int2IntMap.entry(1, 7),
@@ -77,6 +81,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			"RED_MUSHROOM",
 			"CACTUS",
 			"MELON",
+			"PUMPKIN",
 			"INK_SACK-3"
 	};
 
@@ -159,12 +164,18 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			boolean hovered = slotX + getX() <= mouseX && mouseX < slotX + getX() + 18 && slotY + getY() <= mouseY && mouseY < slotY + getY() + 18;
 
 			if (hovered) {
-				context.fill(slotX + 1, slotY + 1, slotX + 17, slotY + 17, 0xAA_FF_FF_FF);
-				matrices.pushMatrix();
-				matrices.translate(slotX, slotY);
-				matrices.scale(1.125f, 1.125f);
-				context.renderItem(item, 0, 0);
-				matrices.popMatrix();
+				context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, slotX - 3, slotY - 3, 24, 24);
+				//noinspection deprecation
+				if (ClientTags.isInLocal(ConventionalItemTags.GLASS_PANES, item.getItem().builtInRegistryHolder().key())) {
+					context.renderItem(item, slotX + 1, slotY + 1);
+				} else {
+					matrices.pushMatrix();
+					matrices.translate(slotX, slotY);
+					matrices.scale(1.125f, 1.125f);
+					context.renderItem(item, 0, 0);
+					matrices.popMatrix();
+				}
+				context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
 				hoveredSlot = i;
 			} else
 				context.renderItem(item, slotX + 1, slotY + 1);
