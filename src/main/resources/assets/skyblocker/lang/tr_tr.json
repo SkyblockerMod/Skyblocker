@@ -11,7 +11,6 @@
     "skyblocker.config.general.hitbox": "Hitbox'lar",
     "skyblocker.itemTooltip.nullMessage": "§cEşya açıklamasındaki ürün fiyat bilgisi en fazla 60 saniye içinde yenilenecektir. Aksi takdirde latest.log dosyasını kontrol edin",
     "skyblocker.config.general.hitbox.oldLeverHitbox": "1.8 şalter hitboxunu etkinleştir",
-    "skyblocker.itemTooltip.noData": "§cVeri yok",
     "skyblocker.config.misc.richPresence": "Discord Özel Durumu",
     "skyblocker.config.misc.richPresence.info": "Skyblock bilgisi",
     "skyblocker.config.misc.richPresence.info.PURSE": "Cüzdan",
