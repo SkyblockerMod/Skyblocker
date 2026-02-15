@@ -1672,5 +1672,10 @@
     "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "A Secret Helyjelölők mérete a tényleges blokk méretét mutaják Essence és Redstone kulcsok esetén.",
     "skyblocker.accessoryHelper.afterSelling": "%s %s eladása után",
     "skyblocker.config.misc.cat": "Cica",
-    "skyblocker.config.misc.cat.@Tooltip": "A Hub Közösségi Központjára rak egy képet egy macskáról."
+    "skyblocker.config.misc.cat.@Tooltip": "A Hub Közösségi Központjára rak egy képet egy macskáról.",
+    "skyblocker.disableAll.popup.description": "Kikapcsolja az összes Skyblocker funkciót. Óvatosan használd.",
+    "skyblocker.disableAll.popup.seriousWarning": "Ez a művelet visszafordíthatatlan.",
+    "skyblocker.disableAll.popup.title": "Összes Funkció Kikapcsolása",
+    "skyblocker.disableAll.popup.warning": "Biztosan ki szeretnéd kapcsolni Skyblocker összes funkcióját? %s",
+    "skyblocker.disableAll.toast.title": "Skyblocker Összes Kikapcsolása"
 }
