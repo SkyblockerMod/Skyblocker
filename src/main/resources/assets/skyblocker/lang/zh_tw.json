@@ -1673,5 +1673,10 @@
     "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "調整秘密路徑點的大小以配合精粹和紅石鑰匙的方塊大小。",
     "skyblocker.accessoryHelper.afterSelling": "在賣掉%2$s之後：%1$s",
     "skyblocker.config.misc.cat": "貓",
-    "skyblocker.config.misc.cat.@Tooltip": "為Hub的社區中心加入貓咪圖片。"
+    "skyblocker.config.misc.cat.@Tooltip": "為Hub的社區中心加入貓咪圖片。",
+    "skyblocker.disableAll.popup.seriousWarning": "此操作不可逆。",
+    "skyblocker.disableAll.popup.title": "停用全部功能",
+    "skyblocker.disableAll.popup.description": "停用Skyblocker的全部功能。請謹慎使用此功能。",
+    "skyblocker.disableAll.popup.warning": "確定要停用Skyblocker的全部功能嗎？ %s",
+    "skyblocker.disableAll.toast.title": "禁用全部Skyblocker功能"
 }
