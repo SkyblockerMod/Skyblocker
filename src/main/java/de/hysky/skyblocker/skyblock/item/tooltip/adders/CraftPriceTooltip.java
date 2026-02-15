@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.data.NEUIngredient;
 import io.github.moulberry.repo.data.NEUItem;
@@ -39,6 +40,11 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSloFt, ItemStack stack, List<Component> lines) {
+		// Don't show crafting cost for non-transferable items while in the rift
+		if (Utils.isInTheRift() && ItemUtils.getLoreLineIf(stack, line -> line.contains("Rift-Transferable")) == null) {
+			return;
+		}
+
 		if (TooltipInfoType.LOWEST_BINS.getData() == null || TooltipInfoType.BAZAAR.getData() == null) {
 			ItemTooltip.nullWarning();
 			return;
