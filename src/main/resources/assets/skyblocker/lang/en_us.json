@@ -1702,6 +1702,7 @@
   "skyblocker.museum.resyncFailure.itemRepo": "Item repository hasn't loaded yet",
   "skyblocker.museum.resyncFailure.itemRepo.@Tooltip": "Try again in a few minutes!",
   "skyblocker.museum.resyncFailure.profile": "Unknown profile",
+  "skyblocker.museum.resyncFailure.profile.@Tooltip": "Rejoin Skyblock and try again in a few minutes!",
   "skyblocker.museum.resyncFailure.unknownError": "Unknown Error",
   "skyblocker.museum.resyncSuccess": "Successfully resynced your museum item donations!",
 

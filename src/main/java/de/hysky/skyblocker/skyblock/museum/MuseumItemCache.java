@@ -366,14 +366,16 @@ public class MuseumItemCache {
 	}
 
 	private static Component tryResync(FabricClientCommandSource source) {
-		if (!MUSEUM_ITEM_CACHE.isLoaded()) return Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.profile"));
+		String profileId = Utils.getProfileId();
+		if (!MUSEUM_ITEM_CACHE.isLoaded() || profileId.isEmpty()) {
+			return Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.profile"))
+					.withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.museum.resyncFailure.profile.@Tooltip"))));
+		}
 		if (MUSEUM_DONATIONS.isEmpty()) {
 			return Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.itemRepo"))
 					.withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.museum.resyncFailure.itemRepo.@Tooltip"))));
 		}
 
-		String profileId = Utils.getProfileId();
-		if (profileId.isEmpty()) return Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.profile"));
 		if (MUSEUM_ITEM_CACHE.containsKey() && !MUSEUM_ITEM_CACHE.get().canResync()) return Component.translatable("skyblocker.museum.cannotResync");
 		updateData4ProfileMember(Utils.getUuid(), profileId, source);
 
