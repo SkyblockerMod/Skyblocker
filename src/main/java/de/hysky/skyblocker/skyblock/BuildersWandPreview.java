@@ -33,7 +33,7 @@ public class BuildersWandPreview {
 	@Init
 	public static void init() {
 		WorldRenderExtractionCallback.EVENT.register(collector -> {
-			if (!SkyblockerConfigManager.get().helpers.enableBuildersWandPreview || !Utils.isOnSkyblock() || client.player == null) return;
+			if (!SkyblockerConfigManager.get().helpers.buildersWand.enableBuildersWandPreview || !Utils.isOnSkyblock() || client.player == null) return;
 			if (!Utils.isInPrivateIsland() && !Utils.isInGarden()) return;
 			if (!(client.hitResult instanceof BlockHitResult blockHitResult) || blockHitResult.getType() != HitResult.Type.BLOCK) return;
 			ItemStack stack = client.player.getMainHandItem();
@@ -102,7 +102,7 @@ public class BuildersWandPreview {
 
 		BlockPos.MutableBlockPos pos = startPos.mutable();
 		for (int i = 0; i < MAX_BLOCKS && checkPos(startPos, pos, client.level.getBlockState(pos), isSneaking, startBlock); i++) {
-			if (isSneaking) collector.submitFilledBox(pos, RED, 0.5f, true);
+			if (isSneaking) collector.submitFilledBox(pos, RED, SkyblockerConfigManager.get().helpers.buildersWand.previewOpacity, true);
 			else extractBlockPreview(collector, pos, Blocks.DIRT.defaultBlockState());
 			pos.move(client.player.getDirection());
 		}
