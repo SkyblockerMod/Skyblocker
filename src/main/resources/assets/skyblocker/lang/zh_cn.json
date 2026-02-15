@@ -1674,5 +1674,10 @@
     "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize": "自适应判定箱尺寸",
     "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "调整秘密路径点的大小以匹配精粹和红石钥匙的方块大小。",
     "skyblocker.config.misc.cat": "猫",
-    "skyblocker.config.misc.cat.@Tooltip": "为Hub的社区中心添加猫咪图片。"
+    "skyblocker.config.misc.cat.@Tooltip": "为Hub的社区中心添加猫咪图片。",
+    "skyblocker.disableAll.popup.description": "禁用Skyblocker的全部功能。请谨慎使用此功能。",
+    "skyblocker.disableAll.popup.seriousWarning": "此操作不可逆。",
+    "skyblocker.disableAll.popup.title": "禁用全部功能",
+    "skyblocker.disableAll.popup.warning": "确定要禁用Skyblocker的全部功能吗？%s",
+    "skyblocker.disableAll.toast.title": "禁用全部Skyblocker功能"
 }
