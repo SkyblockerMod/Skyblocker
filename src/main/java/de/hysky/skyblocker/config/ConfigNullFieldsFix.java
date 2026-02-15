@@ -16,7 +16,7 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
  */
 public class ConfigNullFieldsFix {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
+	public static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
 
 	public static void init() {
 		SkyblockerConfigManager.update(config -> {

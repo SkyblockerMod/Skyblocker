@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.ConfigNullFieldsFix;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -22,8 +23,7 @@ import java.lang.reflect.Modifier;
  * Command helper for disabling every configurable feature.
  */
 public class DisableAll {
-	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
+	protected static final Logger LOGGER = LogUtils.getLogger();
 
 	@Init
 	public static void init() {
@@ -77,7 +77,7 @@ public class DisableAll {
 	 * {@code false}. Previously this relied on the {@code SerialEntry} annotation
 	 * from YACL, but the configuration system no longer uses it.
 	 */
-	private static void disableBooleans(Object target) throws IllegalAccessException {
+	protected static void disableBooleans(Object target) throws IllegalAccessException {
 		for (Field field : target.getClass().getDeclaredFields()) {
 			if (Modifier.isStatic(field.getModifiers())) continue;
 			field.setAccessible(true);
@@ -112,6 +112,6 @@ public class DisableAll {
 				&& !clazz.isRecord()
 				&& !clazz.equals(String.class)
 				&& !Number.class.isAssignableFrom(clazz)
-				&& clazz.getPackageName().startsWith(CONFIGS_PACKAGE);
+				&& clazz.getPackageName().startsWith(ConfigNullFieldsFix.CONFIGS_PACKAGE);
 	}
 }
