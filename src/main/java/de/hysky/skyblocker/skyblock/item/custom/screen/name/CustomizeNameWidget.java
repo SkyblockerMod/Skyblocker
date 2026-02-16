@@ -447,6 +447,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 
 			context.drawString(textRenderer, text, textX, textY, -1, false);
 
+			this.handleCursor(context);
+		}
+
+		protected void handleCursor(GuiGraphics context) {
 			if (this.isHovered()) {
 				context.requestCursor(CursorTypes.IBEAM);
 			}

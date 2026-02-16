@@ -232,7 +232,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 	}
 
 	private class ModelFieldContainer extends AbstractContainerWidget {
-		private final Component TEXT = Component.translatable("skyblocker.customization.armor.modelOverride").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
+		private final Component text = Component.translatable("skyblocker.customization.armor.modelOverride").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
 		private final FrameLayout containerLayout;
 		private final IdentifierTextField field;
 
@@ -301,7 +301,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 			);
 			int padding = 5;
 			int startY = getY() + padding;
-			renderScrollingString(context, CLIENT.font, TEXT, getX() + padding, startY, getRight() - padding, startY + 9, -1);
+			renderScrollingString(context, CLIENT.font, text, getX() + padding, startY, getRight() - padding, startY + 9, -1);
 			field.render(context, mouseX, mouseY, deltaTicks);
 		}
 

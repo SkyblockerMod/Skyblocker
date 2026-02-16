@@ -22,6 +22,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
 
 public class SkyblockerScreen extends Screen {
@@ -131,16 +132,16 @@ public class SkyblockerScreen extends Screen {
 			//17 = (32 + 2) / 2 • 32 + 2 is the width of the icon + spacing between icon and text
 			int x = this.getX() + 17 + Math.round(horizontalAlignment * (float) (width - textWidth));
 			int y = this.getY() + (this.getHeight() - textRenderer.lineHeight) / 2;
-			FormattedCharSequence orderedText = textWidth > width ? this.clipText(text, width) : text.getVisualOrderText();
+			FormattedCharSequence orderedText = textWidth > width ? this.trim(text, width) : text.getVisualOrderText();
 
 			int iconX = x - 34;
 			int iconY = y - 13;
 
-			context.drawString(textRenderer, orderedText, x, y, this.getColor());
+			context.drawString(textRenderer, orderedText, x, y, CommonColors.WHITE);
 			context.blit(RenderPipelines.GUI_TEXTURED, this.icon, iconX, iconY, 0, 0, 32, 32, 32, 32);
 		}
 
-		private FormattedCharSequence clipText(Component text, int width) {
+		private FormattedCharSequence trim(Component text, int width) {
 			Font textRenderer = this.getFont();
 			FormattedText stringVisitable = textRenderer.substrByWidth(text, width - textRenderer.width(CommonComponents.ELLIPSIS));
 			return Language.getInstance().getVisualOrder(FormattedText.composite(stringVisitable, CommonComponents.ELLIPSIS));
