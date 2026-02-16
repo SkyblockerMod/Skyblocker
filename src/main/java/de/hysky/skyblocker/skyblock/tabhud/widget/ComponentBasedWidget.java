@@ -68,6 +68,10 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		this.components.add(c);
 	}
 
+	public final boolean isEmpty() {
+		return this.components.isEmpty();
+	}
+
 	public final void update() {
 		this.components.clear();
 		try {
