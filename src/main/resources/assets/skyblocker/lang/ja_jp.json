@@ -752,5 +752,8 @@
     "skyblocker.config.chat.chatRules.invalidRegex": "チャットルール「%s」に無効な正規表現が含まれているため、無効化されました！",
     "skyblocker.api.token.noProfileKeys": "プロフィールキーの取得に失敗しました！Modの一部の機能が一時的に利用できない場合があります :(（ゲームを24時間以上起動したままにしていませんか？）これらの機能を再有効化するには、ゲームを再起動してください。",
     "skyblocker.api.token.authFailure": "Skyblocker APIトークンの更新に失敗しました。一部の機能が一時的に利用できない場合があります！",
-    "skyblocker.config.chat.chatRules": "カスタムチャットルール"
+    "skyblocker.config.chat.chatRules": "カスタムチャットルール",
+    "skyblocker.config.chat.filter.hideDeath": "プレイヤーの死亡メッセージを非表示にする",
+    "skyblocker.config.dungeons.map.hideCheckmarks": "チェックマークを隠す",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "ゾンビ"
 }
