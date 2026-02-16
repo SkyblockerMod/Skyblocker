@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -65,8 +66,7 @@ public class MirrorverseWaypoints {
 	}
 
 	protected static void extractRendering(PrimitiveCollector collector) {
-		//I would also check for the mirrorverse location but the scoreboard stuff is not performant at all...
-		if (Utils.isInTheRift() && SkyblockerConfigManager.get().otherLocations.rift.mirrorverseWaypoints && waypointsLoaded.isDone()) {
+		if (Utils.isInTheRift() && Utils.getArea() == Area.TheRift.MIRRORVERSE && SkyblockerConfigManager.get().otherLocations.rift.mirrorverseWaypoints && waypointsLoaded.isDone()) {
 			for (Waypoint waypoint : LAVA_PATH_WAYPOINTS) {
 				waypoint.extractRendering(collector);
 			}
