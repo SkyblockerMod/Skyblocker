@@ -634,6 +634,7 @@
   "skyblocker.config.general.speedPresets.enableSpeedPresets": "Enable Speed Presets",
 
   "skyblocker.config.general.updateNotifications": "Update Notifications",
+  "skyblocker.config.general.updateNotifications.@Tooltip": "Prompts you to install and configure new updates. It is highly recommended to keep this enabled.",
   "skyblocker.config.general.updateNotifications.updateChannel": "Update Channel",
   "skyblocker.config.general.updateNotifications.updateChannel.@Tooltip": "Choose between receiving notifications for releases, for both releases and betas, or for releases; betas; and alphas.",
   "skyblocker.config.general.updateNotifications.updateChannel.channel.ALPHA": "Alpha",
@@ -1842,6 +1843,8 @@
   "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToSelect": "Click %s more time(s) to select!",
   "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.unselectableWidget": "This widget cannot be selected!",
 
+  "skyblocker.updateNotifications.configureNewVersion": "Thanks for installing Skyblocker %s! %s",
+  "skyblocker.updateNotifications.configureNewVersionHere": "Click here to configure the new version.",
   "skyblocker.updateNotifications.newUpdateMessage": "There's a new Skyblocker update available! %s",
   "skyblocker.updateNotifications.newUpdateToast.description": "Download version %s!",
   "skyblocker.updateNotifications.newUpdateToast.title": "Skyblocker Update Available!",
