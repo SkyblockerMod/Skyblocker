@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
 
 public final class DisableAllPopup {
-	private static final long DELAY_S = 5;
+	private static final long DELAY_S = 10;
 	private static final long DELAY_MS = DELAY_S * 1000;
 	private static final SystemToast.SystemToastId TOAST_ID = new SystemToast.SystemToastId();
 	private final long end;
