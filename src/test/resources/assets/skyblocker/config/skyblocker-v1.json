@@ -101,10 +101,6 @@
     "specialEffects": {
       "rareDungeonDropEffects": true
     },
-    "hitbox": {
-      "oldFarmlandHitbox": true,
-      "oldLeverHitbox": false
-    },
     "titleContainer": {
       "titleContainerScale": 100.0,
       "x": 482,
