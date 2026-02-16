@@ -760,5 +760,7 @@
     "skyblocker.config.dungeons.terminalHud.showTerminalStatus": "タスクの状態を表示する",
     "skyblocker.config.dungeons.terminalHud.showLevers": "レバーを表示",
     "skyblocker.config.dungeons.map.roomLabelType.ROOM_NAME": "ルーム名",
-    "skyblocker.config.dungeons.terminalHud.showTerminals": "ターミナルを表示"
+    "skyblocker.config.dungeons.terminalHud.showTerminals": "ターミナルを表示",
+    "skyblocker.config.dungeons.terminalHud.showDevice": "デバイスを表示",
+    "skyblocker.config.dungeons.terminalHud.showGate": "ゲートを表示"
 }
