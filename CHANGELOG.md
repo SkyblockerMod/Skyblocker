@@ -1,3 +1,35 @@
+# Release 6.0.3
+
+## Highlight
+ * Rework Update Notifications system
+   * Add prompt to configure new updates after installing them
+   * Add better algorithm for determining which version a user should update to
+   * Fix update notifications not working
+ * Add Disable All button to the config
+   * Opens a prompt where you can disable all of Skyblocker's features after waiting 10 seconds
+ * Fix Accessory Helper loading issues
+ * Fix greyscale fonts not rendering properly in in-world text
+ * Fix Pickobulus helper working on Private Islands
+ * Fix Pickobulus widget not updating if the helper is disabled
+ * Fix Smooth AOTE crash
+ * Fix empty tab list widgets appearing
+ * Fix Mirrorverse waypoints being visible from the Château
+ * Fix NEU Repo Scheduler errors
+
+## What's Changed
+* Fix NEURepoManager Scheduler Errors by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2127
+* Accessory helper loading changes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2130
+* Fix smooth aote bug by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/2131
+* still update pickobulus widget even if helper is disabled by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2134
+* fix grayscale fonts not rendering properly in in-world text by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2133
+* Hide mirrorverse waypoints when outside of the mirrorverse by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2139
+* Hide tab list widgets that have no content by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2137
+* Hide Pickobulus Helper on Private Island by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2143
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.0.2+1.21.11...v6.0.3+1.21.11
+
+___
+
 # Release 6.0.2
 
 ## Highlight
