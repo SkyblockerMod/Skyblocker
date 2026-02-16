@@ -1674,5 +1674,7 @@
     "skyblocker.disableAll.popup.title": "停用全部功能",
     "skyblocker.disableAll.popup.description": "停用Skyblocker的全部功能。請謹慎使用此功能。",
     "skyblocker.disableAll.popup.warning": "確定要停用Skyblocker的全部功能嗎？ %s",
-    "skyblocker.disableAll.toast.title": "禁用全部Skyblocker功能"
+    "skyblocker.disableAll.toast.title": "禁用全部Skyblocker功能",
+    "skyblocker.config.general.updateNotifications.@Tooltip": "提示安裝新版本及配置更新帶來的新內容。強烈建議保持啟用狀態。",
+    "skyblocker.updateNotifications.configureNewVersion": "感謝安裝Skyblocker %s！ %s"
 }
