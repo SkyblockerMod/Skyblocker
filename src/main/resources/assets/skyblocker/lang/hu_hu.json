@@ -1673,5 +1673,8 @@
     "skyblocker.disableAll.popup.seriousWarning": "Ez a művelet visszafordíthatatlan.",
     "skyblocker.disableAll.popup.title": "Összes Funkció Kikapcsolása",
     "skyblocker.disableAll.popup.warning": "Biztosan ki szeretnéd kapcsolni Skyblocker összes funkcióját? %s",
-    "skyblocker.disableAll.toast.title": "Skyblocker Összes Kikapcsolása"
+    "skyblocker.disableAll.toast.title": "Skyblocker Összes Kikapcsolása",
+    "skyblocker.config.general.updateNotifications.@Tooltip": "Figyelmeztet a frissítésekről és azok beállításáról. Ajánlatos engedélyezve tartani.",
+    "skyblocker.updateNotifications.configureNewVersion": "Köszönjük, hogy telepítetted a Skyblocker %s verzióját! %s",
+    "skyblocker.updateNotifications.configureNewVersionHere": "Kattints ide az új verzió beállításához."
 }
