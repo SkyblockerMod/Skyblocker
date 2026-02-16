@@ -9,7 +9,7 @@
    * Opens a prompt where you can disable all of Skyblocker's features after waiting 10 seconds
  * Fix Accessory Helper loading issues
  * Fix greyscale fonts not rendering properly in in-world text
- * FIx Pickobulus helper working on Private Islands
+ * Fix Pickobulus helper working on Private Islands
  * Fix Pickobulus widget not updating if the helper is disabled
  * Fix Smooth AOTE crash
  * Fix empty tab list widgets appearing
