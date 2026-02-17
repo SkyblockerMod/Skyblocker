@@ -58,7 +58,7 @@ public class ProfileViewerScreen extends Screen {
 	private static final String HYPIXEL_COLLECTIONS = "https://api.hypixel.net/v2/resources/skyblock/collections";
 	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/base_plate.png");
 	private static final int GUI_WIDTH = 322;
-	private static final int GUI_HEIGHT = 180;
+	private static final int GUI_HEIGHT = 189;
 	private static Map<String, List<Collection>> collections = Map.of();
 
 	private String playerName;
