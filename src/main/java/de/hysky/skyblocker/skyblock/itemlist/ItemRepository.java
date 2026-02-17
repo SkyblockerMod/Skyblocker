@@ -57,11 +57,11 @@ public class ItemRepository {
 	/**
 	 * Consumers must check this field when accessing `items` and `itemsMap`, or else thread safety is not guaranteed.
 	 */
-	private static boolean itemsImported = false;
+	private static volatile boolean itemsImported = false;
 	/**
 	 * Consumers must check this field when accessing `recipes`, or else thread safety is not guaranteed.
 	 */
-	private static boolean filesImported = false;
+	private static volatile boolean filesImported = false;
 
 	@Init
 	public static void init() {
