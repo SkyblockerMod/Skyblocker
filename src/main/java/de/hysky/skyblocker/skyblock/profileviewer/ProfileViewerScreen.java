@@ -79,6 +79,7 @@ public class ProfileViewerScreen extends Screen {
 		fetchPlayerData(username).thenRun(this::initialisePagesAndWidgets).exceptionally(err -> {
 			LOGGER.error("[Skyblocker Profile Viewer] An error occurred while fetching player data!", err);
 			errorMessage = "Unable to get player data!";
+			profileNotFound = true;
 			return null;
 		});
 
@@ -106,6 +107,7 @@ public class ProfileViewerScreen extends Screen {
 				}).exceptionally(err -> {
 					LOGGER.error("[Skyblocker Profile Viewer] An error occurred while initializing widgets!", err);
 					errorMessage = "Unable to process player data!";
+					profileNotFound = true;
 					return null;
 				});
 	}

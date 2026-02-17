@@ -14,6 +14,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class CollectionsPage implements ProfileViewerPage {
 	private static final String[] COLLECTION_CATEGORIES = {"MINING", "FARMING", "COMBAT", "FISHING", "FORAGING", "RIFT"};
@@ -29,7 +30,7 @@ public class CollectionsPage implements ProfileViewerPage {
 	);
 	private static final Font textRenderer = Minecraft.getInstance().font;
 
-	private final GenericCategory[] collections = new GenericCategory[COLLECTION_CATEGORIES.length];
+	private final @Nullable GenericCategory[] collections = new GenericCategory[COLLECTION_CATEGORIES.length];
 	private final List<SubPageSelectButton> collectionSelectButtons = new ArrayList<>();
 	private int activePage = 0;
 

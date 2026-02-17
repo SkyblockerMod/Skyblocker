@@ -2,6 +2,12 @@ name: Build Beta
 
 on:
   workflow_dispatch:
+    inputs:
+      skip_modify_version:
+        description: 'Leave Mod Version Unchanged'
+        type: boolean
+        required: false
+        default: false
   merge_group:
   push:
     branches:
@@ -37,6 +43,7 @@ jobs:
 
       - name: Set jar name
         uses: actions/github-script@v7
+        if: ${{ !inputs.skip_modify_version }}
         with:
           result-encoding: string
           script: |
