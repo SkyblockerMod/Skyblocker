@@ -1,11 +1,8 @@
 package de.hysky.skyblocker.skyblock.profileviewer;
 
-
-import org.joml.Matrix3x2fStack;
-
 import com.google.gson.JsonObject;
-
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.BackpackItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.InventoryItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.ItemLoader;
@@ -13,25 +10,23 @@ import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.PetsInve
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.WardrobeInventoryItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.HashSet;
-import java.util.Set;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix3x2fStack;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 public class ProfileViewerTextWidget {
 	private static final int ROW_GAP = 9;
@@ -42,7 +37,7 @@ public class ProfileViewerTextWidget {
 	private double BANK = 0;
 	private double NETWORTH = 0;
 	private int MAGICAL_POWER = 0;
-	private List<Component> networthTooltip = List.of();
+	private final List<Component> networthTooltip = new ArrayList<>();
 
 	public ProfileViewerTextWidget(JsonObject hypixelProfile, JsonObject playerProfile) {
 		try {
@@ -56,124 +51,61 @@ public class ProfileViewerTextWidget {
 		this.MAGICAL_POWER = getMagicalPower(playerProfile);
 	}
 
-	private int computeMagicalPower(SkyblockItemRarity rarity) {
-		switch (rarity) {
-			case SPECIAL:
-			case COMMON:
-				return 3;
-
-			case VERY_SPECIAL:
-			case UNCOMMON:
-				return 5;
-
-			case RARE:
-				return 8;
-
-			case EPIC:
-				return 12;
-
-			case LEGENDARY:
-				return 16;
-
-			case MYTHIC:
-				return 22;
-
-			default:
-				return 0;
-		}
-	}
-
 	public int getMagicalPower(JsonObject playerProfile) {
+		int totalMagicalPower = 0;
+		boolean hatCounted = false, abicaseCounted = false;
 
-		int magicalPower = 0;
-		HashMap<String, Integer> duplicates = new HashMap<>();
-		Boolean hatCounted = false,
-				abicaseCounted = false;
+		HashMap<String, Integer> accessories = new HashMap<>();
+		if (TooltipInfoType.ACCESSORIES.getData() == null) return totalMagicalPower;
+
 		try {
-			Map<String, List<String>> upgradeList =	NEURepoManager.getConstants().getMisc().getTalismanUpgrades();
-			Map<String, List<String>> parentList = NEURepoManager.getConstants().getParents().getParents();
-
 			// Rift-prism does not show up in 'talisman_bag'
 			if (playerProfile.has("rift") && playerProfile.getAsJsonObject("rift").has("access") && playerProfile.getAsJsonObject("rift").getAsJsonObject("access").has("consumed_prism")) {
-					magicalPower += 11;
+				totalMagicalPower += 11;
 			}
 
 			JsonObject inventoryData = playerProfile.getAsJsonObject("inventory");
 			if (inventoryData.has("bag_contents") && inventoryData.getAsJsonObject("bag_contents").has("talisman_bag")) {
 				for (ItemStack item : new ItemLoader().loadItems(inventoryData.getAsJsonObject("bag_contents").getAsJsonObject("talisman_bag"))) {
+					if (item.getSkyblockId().isEmpty()) continue;
+					AccessoriesHelper.Accessory accessory = Objects.requireNonNull(TooltipInfoType.ACCESSORIES.getData()).get(item.getSkyblockId());
+					String name = accessory.family().orElse(accessory.id());
 
-					if (item.getSkyblockApiId().equals("")) {
-						continue;
-					}
-
-					Boolean duplicate = false;
-
-					// If duplicate in 'constants/misc.json/talisman_upgrades': skip item
-					if (upgradeList.containsKey(item.getSkyblockApiId())) {
-						for (String el : upgradeList.get(item.getSkyblockApiId())) {
-							if (duplicates.containsKey(el)) {
-								duplicate = true;
-								break;
-							}
-						}
-					}
-
-					if (duplicate) {
-						continue;
-					}
-
-					// If duplicate in 'constants/parents.json': remove MP value of parent item
-					if (parentList.containsKey(item.getSkyblockApiId())) {
-						for (String el : parentList.get(item.getSkyblockApiId())) {
-							if (duplicates.containsKey(el)) {
-								magicalPower -= duplicates.get(el);
-								duplicates.remove(el);
-								break;
-							}
-						}
-					}
-
-					// If 'item' is a duplicate, but is recombobulated / higher rarity than the item in 'duplicates', remove MP value of lower tier item
-					if (duplicates.containsKey(item.getSkyblockApiId()) && duplicates.get(item.getSkyblockApiId()) < computeMagicalPower(item.getSkyblockRarity())) {
-						magicalPower -= duplicates.get(item.getSkyblockApiId());
-						duplicates.remove(item.getSkyblockApiId());
-					}
+					// Remove duplicates and lower tier accessories
+					if (accessories.getOrDefault(name, 0) >= item.getSkyblockRarity().getMP()) continue;
 
 					// Phone contacts
-					if (item.getSkyblockApiId().startsWith("ABICASE") && !abicaseCounted) {
+					if (item.getSkyblockId().startsWith("ABICASE") && !abicaseCounted) {
 						if (playerProfile.has("nether_island_player_data")) {
 							JsonObject data = playerProfile.get("nether_island_player_data").getAsJsonObject();
 							if (data.has("abiphone") && data.get("abiphone").getAsJsonObject().has("active_contacts")) {
-								magicalPower += Math.floor(data.get("abiphone").getAsJsonObject().get("active_contacts").getAsJsonArray().size() / 2);
+								totalMagicalPower += (int) (double) (data.get("abiphone").getAsJsonObject().get("active_contacts").getAsJsonArray().size() / 2);
 								abicaseCounted = true;
 							}
 						}
 					}
 
 					// Hatcessory - upgrade/parent trees are weird, so we have to check manually
-					else if (item.getSkyblockApiId().startsWith("BALLOON_HAT") || item.getSkyblockApiId().startsWith("PARTY_HAT")) {
-						if (hatCounted) {
-							continue;
-						}
-
+					else if (item.getSkyblockId().startsWith("BALLOON_HAT") || item.getSkyblockId().startsWith("PARTY_HAT")) {
+						if (hatCounted) continue;
 						hatCounted = true;
 					}
 
 					// Hegemony gives double MP
-					else if (item.getSkyblockApiId().equals("HEGEMONY_ARTIFACT") && !duplicates.containsKey(item.getSkyblockApiId())) {
-						magicalPower += computeMagicalPower(item.getSkyblockRarity());
+					else if (item.getSkyblockId().equals("HEGEMONY_ARTIFACT")) {
+						accessories.put(name, item.getSkyblockRarity().getMP() * 2);
+						continue;
 					}
 
-					if (!duplicates.containsKey(item.getSkyblockApiId())) {
-						magicalPower += computeMagicalPower(item.getSkyblockRarity());
-						duplicates.put(item.getSkyblockApiId(), computeMagicalPower(item.getSkyblockRarity()));
-					}
+					accessories.put(name, item.getSkyblockRarity().getMP());
 				}
 			}
 		} catch (Exception ignored) {
 			return -1;
 		}
-		return magicalPower;
+
+		for (var entry : accessories.entrySet()) totalMagicalPower += entry.getValue();
+		return totalMagicalPower;
 	}
 
 	private double getItemsNetworth(JsonObject playerProfile) {
@@ -233,13 +165,11 @@ public class ProfileViewerTextWidget {
 
 		List<ItemValue> list = new ArrayList<>(top);
 		list.sort(Comparator.comparingDouble(ItemValue::price).reversed());
-		List<Component> tooltip = new ArrayList<>();
-		tooltip.add(Component.literal("Top Items:").withStyle(ChatFormatting.GOLD));
+		networthTooltip.add(Component.literal("Top Items:").withStyle(ChatFormatting.GOLD));
 		for (ItemValue iv : list) {
-			tooltip.add(Component.literal(iv.name + ": ")
+			networthTooltip.add(Component.literal(iv.name + ": ")
 					.append(Component.literal(ProfileViewerUtils.numLetterFormat(iv.price)).withStyle(ChatFormatting.YELLOW)));
 		}
-		this.networthTooltip = tooltip;
 
 		return value;
 	}
