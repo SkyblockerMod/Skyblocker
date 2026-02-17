@@ -8,7 +8,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -65,15 +64,11 @@ public class ItemProtection {
 			String itemUuid = heldItem.getUuid();
 
 			if (!itemUuid.isEmpty()) {
-				ObjectOpenHashSet<String> protectedItems = SkyblockerConfigManager.get().general.protectedItems;
-
-				if (!protectedItems.contains(itemUuid)) {
-					protectedItems.add(itemUuid);
-					SkyblockerConfigManager.save();
+				if (!SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid)) {
+					SkyblockerConfigManager.update(config -> config.general.protectedItems.add(itemUuid));
 					source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.added", heldItem.getHoverName())));
 				} else {
-					protectedItems.remove(itemUuid);
-					SkyblockerConfigManager.save();
+					SkyblockerConfigManager.update(config -> config.general.protectedItems.remove(itemUuid));
 					source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.removed", heldItem.getHoverName())));
 				}
 			} else {
@@ -105,17 +100,14 @@ public class ItemProtection {
 
 		String itemUuid = heldItem.getUuid();
 		if (!itemUuid.isEmpty()) {
-			ObjectOpenHashSet<String> protectedItems = SkyblockerConfigManager.get().general.protectedItems;
 
-			if (!protectedItems.contains(itemUuid)) {
-				protectedItems.add(itemUuid);
-				SkyblockerConfigManager.save();
+			if (!SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid)) {
+				SkyblockerConfigManager.update(config -> config.general.protectedItems.add(itemUuid));
 				if (notifyConfiguration) {
 					playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.added", heldItem.getHoverName())), false);
 				}
 			} else {
-				protectedItems.remove(itemUuid);
-				SkyblockerConfigManager.save();
+				SkyblockerConfigManager.update(config -> config.general.protectedItems.remove(itemUuid));
 				if (notifyConfiguration) {
 					playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.removed", heldItem.getHoverName())), false);
 				}

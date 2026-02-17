@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import java.awt.Color;
 import net.minecraft.ChatFormatting;
@@ -50,6 +51,8 @@ public class DungeonsConfig {
 
 	public Goldor goldor = new Goldor();
 
+	public TerminalHud terminalHud = new TerminalHud();
+
 	public SecretWaypoints secretWaypoints = new SecretWaypoints();
 
 	public SecretSync secretSync = new SecretSync();
@@ -72,6 +75,14 @@ public class DungeonsConfig {
 		public boolean showSelfHead = true;
 
 		public boolean showRoomLabels = true;
+
+		public DungeonMapLabels.RoomLabelType roomLabelType = DungeonMapLabels.RoomLabelType.ROOM_NAME_AND_SECRETS_FOUND;
+
+		public boolean hideCheckmarks = true;
+
+		public boolean showOutline = true;
+
+		public boolean backgroundBlur = false;
 
 		public float mapScaling = 1f;
 
@@ -173,6 +184,23 @@ public class DungeonsConfig {
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 	}
 
+	public static class TerminalHud {
+		public boolean enableTerminalHud = false;
+
+		public boolean showTerminalStatus = true;
+
+		public boolean showPlayerAtTerminal = true;
+
+		public boolean showTerminals = true;
+
+		public boolean showDevice = true;
+
+		public boolean showLevers = true;
+
+		public boolean showGate = true;
+	}
+
+
 	public static class SecretWaypoints {
 		@Deprecated
 		public transient boolean enableRoomMatching = true;
@@ -180,6 +208,8 @@ public class DungeonsConfig {
 		public boolean enableSecretWaypoints = true;
 
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+
+		public boolean adaptiveBoxSize = false;
 
 		public boolean showSecretText = true;
 

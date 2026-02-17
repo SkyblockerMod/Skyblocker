@@ -29,7 +29,7 @@ public class EvolvingItemAdder extends SimpleSlotTextAdder {
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		switch (stack.getSkyblockId()) {
-			case "NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE", "MOBY_DUCK" -> {
+			case "NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE", "MOBY_DUCK", "ROSEWATER_FLASK" -> {
 				return actualLogic(stack, "Current Bonus: ");
 			}
 			case "TRAINING_WEIGHTS" -> {
@@ -47,6 +47,7 @@ public class EvolvingItemAdder extends SimpleSlotTextAdder {
 
 	// This method was extracted to avoid duplicating the whole method multiple times with just 1 different string equality check.
 	private List<SlotText> actualLogic(ItemStack stack, String equal) {
+		@SuppressWarnings("deprecation")
 		List<Component> lore = ItemUtils.getLore(stack);
 		if (lore.isEmpty()) return List.of();
 		for (Component line : lore) {

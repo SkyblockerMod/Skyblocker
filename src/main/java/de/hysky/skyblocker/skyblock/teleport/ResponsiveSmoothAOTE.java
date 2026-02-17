@@ -17,7 +17,7 @@ public class ResponsiveSmoothAOTE {
 	private static double lastProgress;
 
 	public static void playerGoingToTeleport() {
-		if (CLIENT.player == null) return;
+		if (CLIENT.player == null || SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.maximumAddedLag == 0) return;
 		//make sure teleport is enabled for held item
 		ItemStack heldItem = CLIENT.player.getMainHandItem();
 		String itemId = heldItem.getSkyblockId();
@@ -37,7 +37,7 @@ public class ResponsiveSmoothAOTE {
 		if (lastPosition == null || CLIENT.player == null) return null;
 		double progress = (double) (System.currentTimeMillis() - startTime) / SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.maximumAddedLag;
 		//end if finished
-		if (progress > 1) {
+		if (progress >= 1) {
 			lastPosition = null;
 			lastProgress = 0;
 			return null;

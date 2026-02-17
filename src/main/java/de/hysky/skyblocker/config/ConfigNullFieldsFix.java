@@ -16,19 +16,16 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
  */
 public class ConfigNullFieldsFix {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
+	public static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
 
-	@SuppressWarnings("removal")
 	public static void init() {
-		SkyblockerConfig current = SkyblockerConfigManager.get();
-		SkyblockerConfig clean = new SkyblockerConfig();
-
-		try {
-			fixNullFields(current, clean);
-			SkyblockerConfigManager.save();
-		} catch (Exception e) {
-			LOGGER.error("[Skyblocker Config Null Fields Fixer] Failed to ensure that the config has no null fields! You may encounter crashes :(", e);
-		}
+		SkyblockerConfigManager.update(config -> {
+			try {
+				fixNullFields(config, new SkyblockerConfig());
+			} catch (Exception e) {
+				LOGGER.error("[Skyblocker Config Null Fields Fixer] Failed to ensure that the config has no null fields! You may encounter crashes :(", e);
+			}
+		});
 	}
 
 	/**

@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.config.categories;
 
+import de.hysky.skyblocker.DisableAllPopup;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.SkyblockerScreen;
 import de.hysky.skyblocker.UpdateNotifications;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.backup.ConfigBackupScreen;
@@ -12,12 +14,12 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresetsScreen;
-import net.azureaaron.dandelion.systems.ButtonOption;
-import net.azureaaron.dandelion.systems.ConfigCategory;
-import net.azureaaron.dandelion.systems.Option;
-import net.azureaaron.dandelion.systems.OptionGroup;
-import net.azureaaron.dandelion.systems.OptionListener.UpdateType;
-import net.azureaaron.dandelion.systems.controllers.FloatController;
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.OptionListener.UpdateType;
+import net.azureaaron.dandelion.api.controllers.FloatController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
@@ -35,6 +37,14 @@ public class GeneralCategory {
 						.action(screen -> Minecraft.getInstance().setScreen(new SkyblockerScreen()))
 						.build())
 
+				// Disable All
+				.option(ButtonOption.createBuilder()
+						.name(Component.translatable("skyblocker.disableAll.popup.title"))
+						.description(Component.translatable("skyblocker.disableAll.popup.description"))
+						.prompt(Component.translatable("text.skyblocker.open"))
+						.action(screen -> new DisableAllPopup().open(screen))
+						.build())
+
 				//Ungrouped Options
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.general.enableTips"))
@@ -45,17 +55,18 @@ public class GeneralCategory {
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.general.updateNotifications"))
+						.description(Component.translatable("skyblocker.config.general.updateNotifications.@Tooltip"))
 						.binding(UpdateNotifications.Config.DEFAULT.enabled(),
-								() -> UpdateNotifications.config.getData().enabled(),
-								newValue -> UpdateNotifications.config.setData(UpdateNotifications.config.getData().withEnabled(newValue)))
+								() -> UpdateNotifications.getConfig().enabled(),
+								newValue -> UpdateNotifications.setConfig(updateNotificationsConfig -> updateNotificationsConfig.withEnabled(newValue)))
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<UpdateNotifications.Channel>createBuilder()
 						.name(Component.translatable("skyblocker.config.general.updateNotifications.updateChannel"))
 						.description(Component.translatable("skyblocker.config.general.updateNotifications.updateChannel.@Tooltip"))
 						.binding(UpdateNotifications.Config.DEFAULT.channel(),
-								() -> UpdateNotifications.config.getData().channel(),
-								newValue -> UpdateNotifications.config.setData(UpdateNotifications.config.getData().withChannel(newValue)))
+								() -> UpdateNotifications.getConfig().channel(),
+								newValue -> UpdateNotifications.setConfig(updateNotificationsConfig -> updateNotificationsConfig.withChannel(newValue)))
 						.controller(ConfigUtils.createEnumController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
@@ -314,6 +325,15 @@ public class GeneralCategory {
 										newValue -> config.general.itemTooltip.enableStackingEnchantProgress = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableEvolvingItemProgress"))
+								.description(Component.translatable("skyblocker.config.general.itemTooltip.enableEvolvingItemProgress.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
+								.binding(defaults.general.itemTooltip.enableEvolvingItemProgress,
+										() -> config.general.itemTooltip.enableEvolvingItemProgress,
+										newValue -> config.general.itemTooltip.enableEvolvingItemProgress = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//Item Info Display
@@ -412,8 +432,17 @@ public class GeneralCategory {
 						.name(Component.translatable("skyblocker.config.general.specialEffects"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.specialEffects.rareDungeonDropEffects"))
+								.description(Component.translatable("skyblocker.config.general.specialEffects.rareDungeonDropEffects.@Tooltip"))
+								.binding(defaults.general.specialEffects.rareDungeonDropEffects,
+										() -> config.general.specialEffects.rareDungeonDropEffects,
+										newValue -> config.general.specialEffects.rareDungeonDropEffects = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.specialEffects.rareDropEffects"))
 								.description(Component.translatable("skyblocker.config.general.specialEffects.rareDropEffects.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_5_11_0)
 								.binding(defaults.general.specialEffects.rareDropEffects,
 										() -> config.general.specialEffects.rareDropEffects,
 										newValue -> config.general.specialEffects.rareDropEffects = newValue)

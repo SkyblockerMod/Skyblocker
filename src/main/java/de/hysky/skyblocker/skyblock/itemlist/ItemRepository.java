@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.minecraft.client.Minecraft;
@@ -113,7 +114,7 @@ public class ItemRepository {
 
 		afterImportTasks.forEach(task -> {
 			if (task.async) {
-				CompletableFuture.runAsync(task.runnable).exceptionally(e -> {
+				CompletableFuture.runAsync(task.runnable, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
 					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
 					return null;
 				});
@@ -152,7 +153,7 @@ public class ItemRepository {
 		NEURepoManager.getConstants().getBazaarStocks().getStocks().forEach((String neuId, String skyblockId) -> bazaarStocks.put(skyblockId, neuId));
 	}
 
-	public static String getWikiLink(String neuId, boolean useOfficial) {
+	public static @Nullable String getWikiLink(String neuId, boolean useOfficial) {
 		NEUItem item = NEURepoManager.getItemByNeuId(neuId);
 		if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
 			return null;
@@ -256,7 +257,7 @@ public class ItemRepository {
 	public static void runAfterImport(Runnable runnable, boolean async) {
 		if (filesImported) {
 			if (async) {
-				CompletableFuture.runAsync(runnable).exceptionally(e -> {
+				CompletableFuture.runAsync(runnable, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
 					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
 					return null;
 				});

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.container;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.RaffleTaskHighlight;
+import de.hysky.skyblocker.skyblock.accessories.AccessoriesContainerSolver;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
 import de.hysky.skyblocker.skyblock.auction.CopyUnderbidPrice;
@@ -28,6 +29,7 @@ import de.hysky.skyblocker.skyblock.garden.StereoHarmonyHelper;
 import de.hysky.skyblocker.skyblock.hunting.HuntingBoxHelper;
 import de.hysky.skyblocker.skyblock.item.AnvilHelper;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.BitsHelper;
+import de.hysky.skyblocker.skyblock.slayers.features.RewardsHighlighter;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -73,7 +75,9 @@ public class ContainerSolverManager {
 			new SellableItemsHighlighter(),
 			StereoHarmonyHelper.INSTANCE,
 			new EndStatsBestiaryUpdater(),
+			AccessoriesContainerSolver.INSTANCE,
 			new AnvilHelper(),
+			new RewardsHighlighter(),
 	};
 	private static @Nullable ContainerSolver currentSolver = null;
 	private static @Nullable List<ColorHighlight> highlights;

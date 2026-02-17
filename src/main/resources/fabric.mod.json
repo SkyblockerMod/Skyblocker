@@ -41,11 +41,11 @@
   "mixins": [
     "skyblocker.mixins.json"
   ],
-  "accessWidener": "skyblocker.accesswidener",
+  "accessWidener": "skyblocker.classtweaker",
   "depends": {
-    "fabricloader": ">=0.18.2",
+    "fabricloader": ">=0.18.4",
     "fabric-api": ">=0.140.0+1.21.11",
-	"dandelion": ">=1.0.0-alpha.5+1.21.8",
+	"dandelion": ">=1.0.0-alpha.14+1.21.11",
     "yet_another_config_lib_v3": ">=3.8.1+1.21.11",
 	"fabric-language-kotlin": "*",
     "hm-api": ">=1.0.1+1.21.2",
@@ -65,26 +65,6 @@
         "modmenu.modrinth": "https://modrinth.com/mod/skyblocker-liap",
         "text.skyblocker.translate": "https://translate.hysky.de"
       }
-    },
-    "loom:injected_interfaces": {
-      "net/minecraft/class_1799": [
-        "de/hysky/skyblocker/injected/SkyblockerStack"
-      ],
-	  "net/minecraft/class_490": [
-		"de/hysky/skyblocker/injected/RecipeBookHolder"
-	  ],
-      "net/minecraft/class_898": [
-        "de/hysky/skyblocker/injected/EntityRenderMarker"
-      ],
-      "net/minecraft/class_11661\u0024class_11668": [
-        "de/hysky/skyblocker/injected/CustomGlowState"
-      ],
-      "net/minecraft/class_11661\u0024class_11789": [
-        "de/hysky/skyblocker/injected/CustomGlowState"
-      ],
-	  "net/minecraft/class_11661\u0024class_11670": [
-		"de/hysky/skyblocker/injected/CustomGlowState"
-	  ]
     }
   }
 }

@@ -7,6 +7,8 @@ import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.utils.Area;
+import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -41,14 +43,11 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PredictiveSmoothAOTE {
 	public static final Identifier SMOOTH_AOTE_BEFORE_PHASE = SkyblockerMod.id("smooth_aote");
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 
-	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
 	private static final long MAX_TELEPORT_TIME = 2500; //2.5 seconds
 
 	private static long startTime;
@@ -198,9 +197,9 @@ public class PredictiveSmoothAOTE {
 		}
 
 		//make sure the player has enough mana to do the teleport
-		Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
-		if (manaNeeded != null && manaNeeded.matches()) {
-			int manaCost = Integer.parseInt(manaNeeded.group(1));
+		List<ItemAbility> abilities = heldItem.skyblocker$getAbilities();
+		if (!abilities.isEmpty() && abilities.getFirst().manaCost().isPresent()) {
+			int manaCost = abilities.getFirst().manaCost().getAsInt();
 			int predictedMana = StatusBarTracker.getMana().value();
 			if (predictedMana < manaCost) {
 				return;
@@ -379,11 +378,11 @@ public class PredictiveSmoothAOTE {
 		//check mines shafts
 		if (Utils.getMap().equals("Mineshaft")) {
 			return false;
-		} else if (Utils.getIslandArea().equals("⏣ Jungle Temple")) { //do not allow in jungle temple
+		} else if (Utils.getArea() == Area.CrystalHollows.JUNGLE_TEMPLE) { //do not allow in jungle temple
 			return false;
-		} else if (Utils.getLocation() == Location.PRIVATE_ISLAND && !Utils.getIslandArea().equals("⏣ Your Island")) { //do not allow it when visiting
+		} else if (Utils.getLocation() == Location.PRIVATE_ISLAND && Utils.getArea() != Area.PrivateIsland.YOUR_ISLAND) { //do not allow it when visiting
 			return false;
-		} else if (Utils.getIslandArea().equals("⏣ Dojo")) { //do not allow in dojo
+		} else if (Utils.getArea() == Area.CrimsonIsle.DOJO) { //do not allow in dojo
 			return false;
 		} else if (Utils.isInDungeons()) { //check places in dungeons where you can't teleport
 			if (DungeonManager.isInBoss() && DungeonManager.getBoss() == DungeonBoss.MAXOR) {

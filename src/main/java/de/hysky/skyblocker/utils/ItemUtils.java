@@ -12,6 +12,8 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.mixins.accessors.CustomDataAccessor;
+import de.hysky.skyblocker.skyblock.ChestValue;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
 import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
@@ -29,6 +31,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentPatch;
@@ -80,7 +85,7 @@ public final class ItemUtils {
 	private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
 	private static final Pattern GEMSTONES_SACK_AMOUNT_PATTERN = Pattern.compile(" Amount: ([\\d,]+)");
 	private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
-	private static final Pattern HUNTING_BOX_COUNT_PATTERN = Pattern.compile("Owned: (?<shards>\\d+) Shards?");
+	private static final Pattern HUNTING_BOX_COUNT_PATTERN = Pattern.compile("Owned: (?<shards>[\\d,]+) Shards?");
 	private static final short LOG_INTERVAL = 1000;
 	private static long lastLog = Util.getMillis();
 
@@ -101,12 +106,12 @@ public final class ItemUtils {
 	}
 
 	/**
-	 * Gets the nbt in the custom data component of the item stack.
-	 * @return The {@link DataComponents#CUSTOM_DATA custom data} of the itemstack,
-	 *         or an empty {@link CompoundTag} if the itemstack is missing a custom data component
+	 * {@return the {@link DataComponents#CUSTOM_DATA custom data} of the {@link ItemStack}, or an empty {@link CompoundTag} if the ItemStack is missing a Custom Data component}
+	 *
+	 * <p><strong>Do not write directly to this instance, treat it as a read-only view.</strong>
 	 */
 	public static CompoundTag getCustomData(DataComponentHolder stack) {
-		return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+		return ((CustomDataAccessor) (Object) stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)).getTag();
 	}
 
 	/**
@@ -174,6 +179,11 @@ public final class ItemUtils {
 			return "SHINY_" + id;
 		}
 
+		// Some repo items have their IDs set to their internal names
+		if (id.contains(";") && !NEURepoManager.isLoading()) {
+			return NEURepoManager.getConstants().getBazaarStocks().getBazaarStockOrDefault(id);
+		}
+
 		switch (id) {
 			case "ENCHANTED_BOOK" -> {
 				if (customData.contains("enchantments")) {
@@ -227,6 +237,27 @@ public final class ItemUtils {
 			case "MIDAS_STAFF" -> {
 				if (customData.getIntOr("winning_bid", 0) >= 100000000) {
 					return id + "_100M";
+				}
+			}
+			case "" -> {
+				Screen currentScreen = Minecraft.getInstance().screen;
+				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().startsWith("Superpairs")) {
+					ItemLore lore = itemStack.get(DataComponents.LORE);
+					if (lore == null) return id;
+					List<Component> lines = lore.lines();
+					if (lines.size() < 3) return id;
+					return EnchantedBookUtils.getApiIdByName(lines.get(2));
+				}
+
+				if (itemStack instanceof ItemStack realStack && itemStack.has(DataComponents.CUSTOM_NAME)) {
+					Component stackName = itemStack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+					// Enchanted Books in the Bazaar
+					if (realStack.is(Items.ENCHANTED_BOOK)) return EnchantedBookUtils.getApiIdByName(stackName);
+					// Essences
+					if (realStack.is(Items.PLAYER_HEAD)) {
+						Matcher matcher = ChestValue.ESSENCE_PATTERN.matcher(stackName.getString());
+						if (matcher.find()) return "ESSENCE_" + matcher.group("type").toUpperCase(Locale.ENGLISH);
+					}
 				}
 			}
 		}
@@ -614,6 +645,18 @@ public final class ItemUtils {
 	}
 
 	/**
+	 * Gets the proper item count for Enchanted Books in Superpairs.
+	 * For all other items, returns empty.
+	 */
+	public static OptionalInt getItemCountInSuperpairs(ItemStack stack) {
+		Screen currentScreen = Minecraft.getInstance().screen;
+		if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().startsWith("Superpairs")) {
+			if (stack.getHoverName().getString().contains("Enchanted Book")) return OptionalInt.of(1);
+		}
+		return OptionalInt.empty();
+	}
+
+	/**
 	 * @deprecated Use {@link ItemStack#getSkyblockRarity()} which caches the result.
 	 */
 	@Deprecated(since = "5.8.0")
@@ -642,6 +685,13 @@ public final class ItemUtils {
 	public static ItemStack getNamedPlaceholder(String itemName) {
 		ItemStack stack = new ItemStack(Items.BARRIER);
 		stack.set(DataComponents.CUSTOM_NAME, Component.literal(itemName));
+		return stack;
+	}
+
+	public static ItemStack getItemIdPlaceholder(String itemId) {
+		ItemStack stack = new ItemStack(Items.POISONOUS_POTATO);
+		stack.set(DataComponents.ITEM_NAME, Component.literal(itemId));
+		stack.set(DataComponents.CUSTOM_DATA, CustomData.of(Util.make(new CompoundTag(), c -> c.putString(ID, itemId))));
 		return stack;
 	}
 }

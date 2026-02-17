@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetClickedPositionVisitor;
@@ -213,9 +212,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		this.text = text;
 		textString = text.getString();
 		if (updateConfig && !uuid.isEmpty()) {
-			SkyblockerConfig config = SkyblockerConfigManager.get();
-			if (textString.isBlank()) config.general.customItemNames.remove(uuid);
-			else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(ChatFormatting.WHITE)));
+			SkyblockerConfigManager.updateOnly(config -> {
+				if (textString.isBlank()) config.general.customItemNames.remove(uuid);
+				else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(ChatFormatting.WHITE)));
+			});
 		}
 		previewWidget.setMessage(text);
 		grid.arrangeElements();
@@ -381,6 +381,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		@Override
 		protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 			this.renderDefaultSprite(context);
+			this.renderDefaultLabel(context.textRenderer());
 		}
 	}
 
@@ -466,10 +467,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		public boolean keyPressed(KeyEvent input) {
 			boolean captured = true;
 			switch (input.key()) {
-				case GLFW.GLFW_KEY_LEFT -> moveCursor(true, input.hasShiftDown(), input.hasControlDown());
-				case GLFW.GLFW_KEY_RIGHT -> moveCursor(false, input.hasShiftDown(), input.hasControlDown());
-				case GLFW.GLFW_KEY_BACKSPACE -> erase(true, input.hasControlDown());
-				case GLFW.GLFW_KEY_DELETE -> erase(false, input.hasControlDown());
+				case GLFW.GLFW_KEY_LEFT -> moveCursor(true, input.hasShiftDown(), input.hasControlDownWithQuirk());
+				case GLFW.GLFW_KEY_RIGHT -> moveCursor(false, input.hasShiftDown(), input.hasControlDownWithQuirk());
+				case GLFW.GLFW_KEY_BACKSPACE -> erase(true, input.hasControlDownWithQuirk());
+				case GLFW.GLFW_KEY_DELETE -> erase(false, input.hasControlDownWithQuirk());
 				default -> captured = false;
 			}
 			if (captured) return true;

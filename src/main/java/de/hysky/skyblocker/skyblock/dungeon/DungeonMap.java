@@ -18,10 +18,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MapRenderer;
-import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -45,7 +44,6 @@ public class DungeonMap {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonMap.class);
 	private static final Identifier DUNGEON_MAP = SkyblockerMod.id("dungeon_map");
 	private static final MapId DEFAULT_MAP_ID_COMPONENT = new MapId(1024);
-	private static final MapRenderState MAP_RENDER_STATE = new MapRenderState();
 	private static @Nullable MapId cachedMapIdComponent = null;
 
 	@Init
@@ -81,20 +79,21 @@ public class DungeonMap {
 	 */
 	public static @Nullable UUID render(GuiGraphics context, int x, int y, float scale, boolean fancy, int mouseX, int mouseY, @Nullable UUID enlarge) {
 		Minecraft client = Minecraft.getInstance();
+		DungeonsConfig.DungeonMap dungeonMap = SkyblockerConfigManager.get().dungeons.dungeonMap;
 		if (client.player == null || client.level == null) return null;
 
 		MapId mapId = getMapIdComponent(client.player.getInventory().getNonEquipmentItems().get(8));
 		MapItemSavedData state = MapItem.getSavedData(mapId, client.level);
 		if (state == null) return null;
 
-		MapRenderer mapRenderer = client.getMapRenderer();
-		mapRenderer.extractRenderState(mapId, state, MAP_RENDER_STATE);
-
 		context.pose().pushMatrix();
 		context.pose().translate(x, y);
 		context.pose().scale(scale, scale);
-		context.submitMapRenderState(MAP_RENDER_STATE);
 
+		if (dungeonMap.backgroundBlur) HudHelper.submitBlurredRectangle(context, 0, 0, 128, 128, 5);
+		if (dungeonMap.showOutline) HudHelper.drawBorder(context, 0, 0, 128, 128, CommonColors.LIGHT_GRAY);
+
+		DungeonMapTexture.blitMap(context);
 		DungeonMapLabels.renderRoomNames(context);
 
 		UUID hoveredHead = null;
@@ -103,8 +102,8 @@ public class DungeonMap {
 		return hoveredHead;
 	}
 
-	public static @Nullable MapId getMapIdComponent(ItemStack stack) {
-		if (stack.is(Items.FILLED_MAP) && stack.has(DataComponents.MAP_ID)) {
+	public static MapId getMapIdComponent(@Nullable ItemStack stack) {
+		if (stack != null && stack.is(Items.FILLED_MAP) && stack.has(DataComponents.MAP_ID)) {
 			MapId mapIdComponent = stack.get(DataComponents.MAP_ID);
 			cachedMapIdComponent = mapIdComponent;
 			return mapIdComponent;

@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.config.configs;
 
+import net.minecraft.client.resources.language.I18n;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.resources.language.I18n;
 
 public class MiningConfig {
 	public boolean enableDrillFuel = true;
@@ -16,7 +17,7 @@ public class MiningConfig {
 
 	/**
 	 * TODO: Move into {@link PickobulusHelper} in next config version.
-	*/
+	 */
 	public boolean enablePickobulusHelper = true;
 
 	public PickobulusHelper pickobulusHelper = new PickobulusHelper();
@@ -35,6 +36,8 @@ public class MiningConfig {
 	public CommissionWaypoints commissionWaypoints = new CommissionWaypoints();
 
 	public Glacite glacite = new Glacite();
+
+	public BlockBreakPrediction blockBreakPrediction = new BlockBreakPrediction();
 
 	public static class PickobulusHelper {
 		public boolean enablePickobulusHud = true;
@@ -157,6 +160,14 @@ public class MiningConfig {
 		public boolean enableCorpseProfitTracker = true;
 
 		public boolean forceEnglishCorpseProfitTracker = true;
+	}
+
+	public static class BlockBreakPrediction {
+		public boolean enabled = false;
+
+		public boolean playSound = false;
+
+
 	}
 
 	/**

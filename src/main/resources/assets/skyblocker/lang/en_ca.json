@@ -32,7 +32,6 @@
     "skyblocker.config.dungeons.livid.enableLividColorTitle": "Enable Livid Colour Title",
     "skyblocker.config.dungeons.livid.enableLividColorTitle.@Tooltip": "Display the Livid colour as a title during the boss fight.",
     "skyblocker.end.hud.protectorLocations.center": "Centre",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage.@Tooltip": "Input a new message to output (can be formatted using minecraft colour codes).",
     "skyblocker.tips.customAnimatedDyes": "You can apply a custom animated dye to your leather armour with /skyblocker custom!",
     "skyblocker.customAnimatedDyes.invalidHex": "§cAn invalid HEX colour code was supplied!",
     "skyblocker.customAnimatedDyes.notDyeable": "§cThis item isn't a dyeable armour piece!",
@@ -54,7 +53,7 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Displays a warning when you're in danger from a tentacle slam or from TNT. The colour of the warning adapts to the danger level!",
     "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "Chest Highlight Colour",
     "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "What colour the treasure chests / lock pick should be highlighted.",
-    "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "If Boss Highlighting is on, applies a colour matching the current attunement to the selected effect.",
+    "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "Applies a colour matching the current attunement to the selected effect.",
     "skyblocker.config.debug.dumpFormat.@Tooltip": "The format to use when dumping items. SNBT is coloured and easier to read while JSON has escaped string characters (double quotes).",
     "skyblocker.bars.config.textPosition.BAR_CENTER": "Bar Centre",
     "skyblocker.bars.config.textPosition.CENTER": "Centre",
@@ -106,5 +105,8 @@
     "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "Shellwise highlight colour picker",
     "skyblocker.customization.armor.modelOverride": "Armour Model Override",
     "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.CENTERED": "Centred",
-    "skyblocker.config.uiAndVisuals.waypoints.lineColor": "Line Colour"
+    "skyblocker.config.uiAndVisuals.waypoints.lineColor": "Line Colour",
+    "skyblocker.customization.armor": "Armour",
+    "skyblocker.config.slayer.highlightColor": "Boss/Miniboss Highlight Colour",
+    "skyblocker.config.misc.cat.@Tooltip": "Adds a cat picture to the Hub's Community Centre."
 }

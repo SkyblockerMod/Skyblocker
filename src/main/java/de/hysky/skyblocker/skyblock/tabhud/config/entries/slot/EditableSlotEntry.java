@@ -19,15 +19,17 @@ public class EditableSlotEntry extends WidgetsListSlotEntry {
 
 	public EditableSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
-		editButton = Button.builder(Component.literal("EDIT"), button -> this.parent.clickAndWaitForServer(this.slotId, 0))
-				.size(32, 12)
-				.build();
+		editButton = Button.builder(Component.literal("EDIT"), button -> {
+			this.parent.clickAndWaitForServer(this.slotId, 0);
+			this.parent.resetScrollOnLoad();
+		}).size(32, 12).build();
 		this.locked = ItemUtils.getLoreLineIf(icon, s -> s.startsWith("Click to edit")) == null || icon.is(Items.RED_STAINED_GLASS_PANE);
 	}
 
 	@Override
 	public void renderTooltip(GuiGraphics context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
 		if (mouseX >= x && mouseX <= x + entryWidth - 50 && mouseY >= y && mouseY <= y + entryHeight) {
+			@SuppressWarnings("deprecation")
 			List<Component> lore = ItemUtils.getLore(icon);
 			context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, locked ? lore : lore.subList(0, Math.max(lore.size() - 2, 0)), mouseX, mouseY);
 		}

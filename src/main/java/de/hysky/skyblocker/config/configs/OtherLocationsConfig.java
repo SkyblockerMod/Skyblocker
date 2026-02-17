@@ -46,7 +46,7 @@ public class OtherLocationsConfig {
 
 		public boolean waypoint = true;
 
-		public boolean muteEndermanSounds = false;
+		public boolean muteEndermanSounds = true;
 
 		public int x = 10;
 

@@ -108,20 +108,22 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 		if (this.currentItem == null) return;
 		String uuid = this.currentItem.getUuid();
 
-		switch (this.selectedButton) {
-			case null -> {
-				SkyblockerConfigManager.get().general.customHelmetTextures.remove(uuid);
-				SkyblockerConfigManager.get().general.customAnimatedHelmetTextures.remove(uuid);
+		SkyblockerConfigManager.updateOnly(config -> {
+			switch (this.selectedButton) {
+				case null -> {
+					config.general.customHelmetTextures.remove(uuid);
+					config.general.customAnimatedHelmetTextures.remove(uuid);
+				}
+				case AnimatedHeadButton button -> {
+					config.general.customAnimatedHelmetTextures.put(uuid, button.id);
+					config.general.customHelmetTextures.remove(uuid);
+				}
+				case HeadButton button -> {
+					config.general.customHelmetTextures.put(uuid, Objects.requireNonNull(button.texture));
+					config.general.customAnimatedHelmetTextures.remove(uuid);
+				}
 			}
-			case AnimatedHeadButton button -> {
-				SkyblockerConfigManager.get().general.customAnimatedHelmetTextures.put(uuid, button.id);
-				SkyblockerConfigManager.get().general.customHelmetTextures.remove(uuid);
-			}
-			case HeadButton button -> {
-				SkyblockerConfigManager.get().general.customHelmetTextures.put(uuid, Objects.requireNonNull(button.texture));
-				SkyblockerConfigManager.get().general.customAnimatedHelmetTextures.remove(uuid);
-			}
-		}
+		});
 	}
 
 	private void updateButtons() {

@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A screen for configuring the positions of HUD widgets.
@@ -20,10 +21,10 @@ import net.minecraft.network.chat.Component;
  * (i.e. one for dwarven mines, one for the end, etc.) See an implementation for an example.
  */
 public abstract class HudConfigScreen extends Screen {
-	protected final Screen parent;
+	protected final @Nullable Screen parent;
 	protected final List<AbstractWidget> widgets;
 
-	private AbstractWidget draggingWidget;
+	private @Nullable AbstractWidget draggingWidget;
 	private double mouseClickRelativeX;
 	private double mouseClickRelativeY;
 
@@ -34,7 +35,7 @@ public abstract class HudConfigScreen extends Screen {
 	 * @param parent the parent screen
 	 * @param widget the widget to configure
 	 */
-	public HudConfigScreen(Component title, Screen parent, AbstractWidget widget) {
+	public HudConfigScreen(Component title, @Nullable Screen parent, AbstractWidget widget) {
 		this(title, parent, List.of(widget));
 	}
 
@@ -45,7 +46,7 @@ public abstract class HudConfigScreen extends Screen {
 	 * @param parent  the parent screen
 	 * @param widgets the widgets to configure
 	 */
-	public HudConfigScreen(Component title, Screen parent, List<AbstractWidget> widgets) {
+	public HudConfigScreen(Component title, @Nullable Screen parent, List<AbstractWidget> widgets) {
 		super(title);
 		this.parent = parent;
 		this.widgets = widgets;

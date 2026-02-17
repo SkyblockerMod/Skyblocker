@@ -19,7 +19,6 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
-import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -32,9 +31,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
 public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
-	protected static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/browser/background_view.png");
+	protected static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/view.png");
 
 	public static final int BACK_BUTTON_SLOT = 49;
 
@@ -47,27 +47,16 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 	private StringWidget infoTextWidget;
 	public String minBid = "";
 
-	private BuyState buyState = null;
+	private @Nullable BuyState buyState = null;
 	private MutableComponent priceText = Component.literal("?");
 	private Button buyButton;
 	private StringWidget priceTextWidget;
 
 	public AuctionViewScreen(AuctionHouseScreenHandler handler, Inventory inventory, Component title) {
-		super(handler, inventory, title);
-		imageHeight = 187;
+		super(handler, inventory, title, 187);
 		isBinAuction = this.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("bin");
-		inventoryLabelY = 93;
 		titleLabelX = 5;
 		titleLabelY = 4;
-	}
-
-	@Override
-	public boolean keyPressed(KeyEvent input) {
-		if (input.isEscape()) {
-			clickSlot(BACK_BUTTON_SLOT);
-			return true;
-		}
-		return super.keyPressed(input);
 	}
 
 	@Override
@@ -202,10 +191,10 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 		return super.mouseClicked(click, doubled);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onSlotChange(AuctionHouseScreenHandler handler, int slotId, ItemStack stack) {
 		if (stack.is(Items.BLACK_STAINED_GLASS_PANE) || slotId == 13 || slotId >= handler.getRowCount() * 9) return;
-		assert minecraft != null;
 		if (stack.is(Items.RED_TERRACOTTA)) { // Red terracotta shows up when you can cancel it
 			changeState(BuyState.CANCELLABLE_AUCTION);
 			buySlotID = slotId;

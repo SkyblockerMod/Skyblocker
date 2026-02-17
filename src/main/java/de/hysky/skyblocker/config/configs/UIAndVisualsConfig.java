@@ -52,6 +52,8 @@ public class UIAndVisualsConfig {
 
 	public SlotText slotText = new SlotText();
 
+	public RadialMenu radialMenu = new RadialMenu();
+
 	public InventorySearchConfig inventorySearch = new InventorySearchConfig();
 
 	public TitleContainer titleContainer = new TitleContainer();
@@ -105,6 +107,16 @@ public class UIAndVisualsConfig {
 
 	}
 
+	public static class RadialMenu {
+		public boolean enabled = false;
+
+		public boolean tooltipsWithoutShift = false;
+
+		public Object2BooleanOpenHashMap<String> enabledMenus = new Object2BooleanOpenHashMap<>();
+
+
+	}
+
 	public static class InventorySearchConfig {
 		public EnableState enabled = EnableState.SKYBLOCK;
 
@@ -143,9 +155,6 @@ public class UIAndVisualsConfig {
 
 		public Alignment alignment = Alignment.MIDDLE;
 
-		public float getRenderScale() {
-			return titleContainerScale * 0.03f;
-		}
 	}
 
 	public enum Direction {
@@ -171,7 +180,7 @@ public class UIAndVisualsConfig {
 
 		public int tabHudScale = 100;
 
-		public boolean showVanillaTabByDefault = false;
+		public boolean showVanillaTabByDefault = true;
 
 		public TabHudStyle style = TabHudStyle.FANCY;
 
@@ -262,6 +271,12 @@ public class UIAndVisualsConfig {
 
 	public static class Bars {
 		public boolean enableBars = true;
+
+		public boolean enableBarsRift = true;
+
+		public boolean riftHealthHP = false;
+
+		public boolean enableVanillaStyleManaBar = false;
 
 		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
 
@@ -405,7 +420,10 @@ public class UIAndVisualsConfig {
 	public static class CompactDamage {
 		public boolean enabled = true;
 
-		public int precision = 1;
+		@Deprecated
+		public transient int precision = 1;
+
+		public int maxPrecision = 4;
 
 		public Color normalDamageColor = new Color(0xFFFFFF);
 

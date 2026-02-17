@@ -17,10 +17,13 @@ public class RegularItemLookup implements WikiLookup {
 		String neuId = itemStack.getNeuName();
 
 		if (StringUtils.isNotEmpty(neuId)) {
-			WikiLookupManager.openWikiLink(ItemRepository.getWikiLink(neuId, useOfficial), player);
-		} else {
-			noArticleFound(player, useOfficial);
+			String wikiLink = ItemRepository.getWikiLink(neuId, useOfficial);
+			if (wikiLink != null) {
+				WikiLookupManager.openWikiLink(wikiLink, player);
+				return;
+			}
 		}
+		noArticleFound(player, useOfficial);
 	}
 
 	private static void noArticleFound(Player player, boolean useOfficial) {

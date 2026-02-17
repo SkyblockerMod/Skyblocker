@@ -124,6 +124,8 @@ public class GeneralConfig {
 		public boolean enableEstimatedItemValue = true;
 
 		public boolean enableStackingEnchantProgress = true;
+
+		public boolean enableEvolvingItemProgress = true;
 	}
 
 	public enum Average {
@@ -141,14 +143,6 @@ public class GeneralConfig {
 		@Override
 		public String toString() {
 			return I18n.get("skyblocker.config.general.itemTooltip.craft." + name());
-		}
-
-		public String getOrder() {
-			return switch (this) {
-				case SELL_ORDER -> "sellPrice";
-				case BUY_ORDER -> "buyPrice";
-				case OFF -> null;
-			};
 		}
 	}
 
@@ -224,12 +218,11 @@ public class GeneralConfig {
 	}
 
 	public static class SpecialEffects {
+		public boolean rareDungeonDropEffects = true;
+
 		public boolean rareDropEffects = true;
 
 		public boolean rareDyeDropEffects = true;
-
-		@Deprecated
-		public transient boolean rareDungeonDropEffects = true;
 	}
 
 	public static class Hitbox {

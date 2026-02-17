@@ -64,7 +64,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 	};
 
 	public ArmorTab(CustomizeScreen parent) {
-		super(Component.literal("Armor"));
+		super(Component.translatable("skyblocker.customization.armor"));
 		this.parent = parent;
 		layout.rowSpacing(PADDING / 2).columnSpacing(PADDING);
 
@@ -239,8 +239,10 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 			field = containerLayout.addChild(new IdentifierTextField(width - 10, 20, identifier -> {
 				String uuid = armor[selectedSlot].getUuid();
 				if (uuid.isEmpty()) return;
-				if (identifier == null) SkyblockerConfigManager.get().general.customArmorModel.remove(uuid);
-				else SkyblockerConfigManager.get().general.customArmorModel.put(uuid, identifier);
+				SkyblockerConfigManager.updateOnly(config -> {
+					if (identifier == null) config.general.customArmorModel.remove(uuid);
+					else config.general.customArmorModel.put(uuid, identifier);
+				});
 				colorSelectionWidget.refresh();
 			}));
 			containerLayout.arrangeElements();

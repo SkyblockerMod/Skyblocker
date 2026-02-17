@@ -8,9 +8,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,12 +18,15 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.arguments.StringRepresentableArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
 
 public class SecretWaypoint extends DistancedNamedWaypoint {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecretWaypoint.class);
@@ -38,10 +40,10 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 	static final List<String> SECRET_ITEMS = List.of("Candycomb", "Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
 	private static final Supplier<DungeonsConfig.SecretWaypoints> CONFIG = () -> SkyblockerConfigManager.get().dungeons.secretWaypoints;
 	static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
-	final int secretIndex;
-	final Category category;
+	public final int secretIndex;
+	public final Category category;
 
-	SecretWaypoint(int secretIndex, Category category, String name, BlockPos pos) {
+	public SecretWaypoint(int secretIndex, Category category, String name, BlockPos pos) {
 		this(secretIndex, category, Component.nullToEmpty(name), pos);
 	}
 
@@ -99,20 +101,25 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 		return super.shouldRenderName() && CONFIG.get().showSecretText;
 	}
 
-	/**
-	 * Extracts the rendering for the secret waypoint, including a waypoint through {@link Waypoint#extractRendering(PrimitiveCollector)}, the name, and the distance from the player.
-	 */
 	@Override
-	public void extractRendering(PrimitiveCollector collector) {
-		//TODO In the future, shrink the box for wither essence and items so its more realistic - can be done with RenderHelper
-		super.extractRendering(collector);
+	protected AABB getRenderBox() {
+		// Optionally use a smaller box size for Essences and Redstone Keys
+		if (SkyblockerConfigManager.get().dungeons.secretWaypoints.adaptiveBoxSize && (category == Category.WITHER || category == Category.REDSTONE_KEY)) {
+			AABB box = RenderHelper.getBlockBoundingBox(Minecraft.getInstance().level, this.pos);
+
+			if (box != null) {
+				return box;
+			}
+		}
+
+		return super.getRenderBox();
 	}
 
 	SecretWaypoint relativeToActual(Room room) {
 		return new SecretWaypoint(secretIndex, category, name, room.relativeToActual(pos));
 	}
 
-	enum Category implements StringRepresentable {
+	public enum Category implements StringRepresentable {
 		ENTRANCE("entrance", secretWaypoints -> secretWaypoints.enableEntranceWaypoints, 0, 255, 0),
 		SUPERBOOM("superboom", secretWaypoints -> secretWaypoints.enableSuperboomWaypoints, 255, 0, 0),
 		CHEST("chest", secretWaypoints -> secretWaypoints.enableChestWaypoints, 2, 213, 250),

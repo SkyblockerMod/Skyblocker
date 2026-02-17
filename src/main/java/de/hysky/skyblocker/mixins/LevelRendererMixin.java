@@ -1,27 +1,42 @@
 package de.hysky.skyblocker.mixins;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.injected.EntityRenderMarker;
+import de.hysky.skyblocker.skyblock.dwarven.BlockBreakPrediction;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.utils.render.GlowRenderer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.BlockBreakingRenderState;
+import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.core.BlockPos;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
-
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.utils.render.GlowRenderer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.state.LevelRenderState;
-
 @Mixin(LevelRenderer.class)
-public class LevelRendererMixin {
+public class LevelRendererMixin implements EntityRenderMarker {
 	@Shadow
 	@Final
 	private LevelRenderState levelRenderState;
+	@Unique
+	private @Nullable EntityRenderState currentEntityStateBeingRendered;
+
+	@Override
+	public @Nullable EntityRenderState skyblocker$getEntityStateBeingRendered() {
+		return this.currentEntityStateBeingRendered;
+	}
 
 	@ModifyExpressionValue(method = "extractVisibleEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/state/EntityRenderState;appearsGlowing()Z"))
 	private boolean skyblocker$markCustomGlowUsedThisFrame(boolean hasVanillaGlow, @Local EntityRenderState entityRenderState) {
@@ -44,8 +59,32 @@ public class LevelRendererMixin {
 		}
 	}
 
+	@Inject(method = "submitEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;submit(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lnet/minecraft/client/renderer/state/CameraRenderState;DDDLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;)V"))
+	private void skyblocker$markEntityStateBeingRendered(CallbackInfo ci, @Local EntityRenderState state) {
+		this.currentEntityStateBeingRendered = state;
+	}
+
+	@Inject(method = "submitEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;submit(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lnet/minecraft/client/renderer/state/CameraRenderState;DDDLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;)V", shift = At.Shift.AFTER))
+	private void skyblocker$clearEntityStateBeingRendered(CallbackInfo ci) {
+		this.currentEntityStateBeingRendered = null;
+	}
+
 	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V"))
 	private void skyblocker$drawGlowVertexConsumers(CallbackInfo ci) {
 		GlowRenderer.getInstance().getGlowVertexConsumers().endOutlineBatch();
+	}
+
+	@WrapOperation(method = "extractBlockDestroyAnimation", at = @At(value = "NEW", target = "(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/core/BlockPos;I)Lnet/minecraft/client/renderer/state/BlockBreakingRenderState;"))
+	private BlockBreakingRenderState skyblocker$addBlockBreakingProgressRenderState(ClientLevel clientLevel, BlockPos blockPos, int i, Operation<BlockBreakingRenderState> original) {
+		if (SkyblockerConfigManager.get().mining.blockBreakPrediction.enabled) {
+			int pingModifiedProgress = BlockBreakPrediction.getBlockBreakPrediction(blockPos, i);
+			return new BlockBreakingRenderState(clientLevel, blockPos, pingModifiedProgress);
+
+		}
+		//if the setting is not enabled do not modify anything
+		else {
+			return original.call(clientLevel, blockPos, i);
+		}
+
 	}
 }

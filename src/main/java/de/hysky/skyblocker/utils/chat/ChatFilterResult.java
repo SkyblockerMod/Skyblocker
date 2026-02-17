@@ -8,7 +8,9 @@ public enum ChatFilterResult {
 	// Filter
 	FILTER,
 	// Move to action bar
-	ACTION_BAR;
+	ACTION_BAR,
+	// Show a toast
+	TOAST;
 	// Skip remaining checks, don't filter
 	// null
 

@@ -28,11 +28,12 @@ public class HotbarSlotLock {
 
 	public static void handleInputEvents(LocalPlayer player) {
 		while (hotbarSlotLock.consumeClick()) {
-			List<Integer> lockedSlots = SkyblockerConfigManager.get().general.lockedSlots;
-			int selected = player.getInventory().getSelectedSlot();
-			if (!isLocked(player.getInventory().getSelectedSlot())) lockedSlots.add(selected);
-			else lockedSlots.remove(Integer.valueOf(selected));
-			SkyblockerConfigManager.save();
+			SkyblockerConfigManager.update(config -> {
+				List<Integer> lockedSlots = config.general.lockedSlots;
+				int selected = player.getInventory().getSelectedSlot();
+				if (!isLocked(player.getInventory().getSelectedSlot())) lockedSlots.add(selected);
+				else lockedSlots.remove(Integer.valueOf(selected));
+			});
 		}
 	}
 }

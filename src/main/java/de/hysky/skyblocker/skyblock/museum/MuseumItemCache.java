@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -59,7 +60,7 @@ public class MuseumItemCache {
 	private static final int CONFIRM_DONATION_BUTTON_SLOT = 20;
 	private static final String CONSTANTS_MUSEUM_DATA = "constants/museum.json";
 	private static final Path CACHE_FILE = SkyblockerMod.CONFIG_DIR.resolve("museum_item_cache.json");
-	private static final ProfiledData<ProfileMuseumData> MUSEUM_ITEM_CACHE = new ProfiledData<>(CACHE_FILE, ProfileMuseumData.CODEC, true, true);
+	private static final ProfiledData<ProfileMuseumData> MUSEUM_ITEM_CACHE = new ProfiledData<>(CACHE_FILE, ProfileMuseumData.CODEC);
 	public static final String DONATION_CONFIRMATION_SCREEN_TITLE = "Confirm Donation";
 	public static final Map<String, String> ARMOR_NAMES = new Object2ObjectArrayMap<>(); // Set Id -> Display Name
 	public static final Map<String, String> ARMOR_TO_ID = new Object2ObjectArrayMap<>(); // Set Id -> Display Item Id
@@ -337,7 +338,7 @@ public class MuseumItemCache {
 				if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure")));
 				LOGGER.error(ERROR_LOG_TEMPLATE, profileId, e);
 			}
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	private static void putEmpty(UUID uuid, String profileId) {
