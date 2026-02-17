@@ -19,6 +19,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class InventoryPage implements ProfileViewerPage {
 	private static final String[] INVENTORY_PAGES = {"inventory", "enderchest", "backpack", "wardrobe", "pets", "accessoryBag"};
@@ -33,7 +34,7 @@ public class InventoryPage implements ProfileViewerPage {
 	);
 
 	private static final Font textRenderer = Minecraft.getInstance().font;
-	private final ProfileViewerPage[] inventorySubPages = new ProfileViewerPage[6];
+	private final @Nullable ProfileViewerPage[] inventorySubPages = new ProfileViewerPage[6];
 	private final List<SubPageSelectButton> inventorySelectButtons = new ArrayList<>();
 	private int activePage = 0;
 

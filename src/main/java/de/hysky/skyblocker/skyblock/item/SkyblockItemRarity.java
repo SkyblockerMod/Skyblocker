@@ -24,6 +24,7 @@ public enum SkyblockItemRarity implements StringRepresentable {
 	UNKNOWN(ChatFormatting.DARK_GRAY);
 
 	public static final Codec<SkyblockItemRarity> CODEC = StringRepresentable.fromEnum(SkyblockItemRarity::values);
+	public final String name;
 	public final ChatFormatting formatting;
 	public final int color;
 	public final float r;
@@ -31,6 +32,7 @@ public enum SkyblockItemRarity implements StringRepresentable {
 	public final float b;
 
 	SkyblockItemRarity(ChatFormatting formatting) {
+		this.name = name().replace("_", " ");
 		this.formatting = formatting;
 		//noinspection DataFlowIssue
 		this.color = formatting.getColor();
@@ -74,6 +76,11 @@ public enum SkyblockItemRarity implements StringRepresentable {
 		return name();
 	}
 
+	@Override
+	public String toString() {
+		return name;
+	}
+
 	public SkyblockItemRarity next() {
 		return EnumUtils.cycle(this);
 	}
@@ -81,7 +88,7 @@ public enum SkyblockItemRarity implements StringRepresentable {
 	public static Optional<SkyblockItemRarity> containsName(String name) {
 		// Find last because "UNCOMMON" contains "COMMON" and "VERY_SPECIAL" contains "SPECIAL"
 		return Streams.findLast(Arrays.stream(SkyblockItemRarity.values())
-				.filter(rarity -> name.contains(rarity.name()))
+				.filter(rarity -> name.contains(rarity.toString()))
 		);
 	}
 
