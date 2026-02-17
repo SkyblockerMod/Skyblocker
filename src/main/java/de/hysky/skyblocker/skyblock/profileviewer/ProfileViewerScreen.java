@@ -37,6 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.item.component.ResolvableProfile;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,12 +71,17 @@ public class ProfileViewerScreen extends Screen {
 	private static final String[] PAGE_NAMES = {"Skills", "Slayers", "Dungeons", "Inventories", "Collections"};
 	private final ProfileViewerPage[] profileViewerPages = new ProfileViewerPage[PAGE_NAMES.length];
 	private final List<ProfileViewerNavButton> profileViewerNavButtons = new ArrayList<>();
-	private RemotePlayer entity;
+	private @Nullable RemotePlayer entity;
 	private ProfileViewerTextWidget textWidget;
 
 	public ProfileViewerScreen(String username) {
 		super(TITLE);
-		fetchPlayerData(username).thenRun(this::initialisePagesAndWidgets);
+		fetchPlayerData(username).thenRun(this::initialisePagesAndWidgets).exceptionally(err -> {
+			LOGGER.error("[Skyblocker Profile Viewer] An error occurred while fetching player data!", err);
+			errorMessage = "Unable to get player data!";
+			profileNotFound = true;
+			return null;
+		});
 
 		for (int i = 0; i < PAGE_NAMES.length; i++) {
 			profileViewerNavButtons.add(new ProfileViewerNavButton(this, PAGE_NAMES[i], i, i == 0));
@@ -98,6 +104,11 @@ public class ProfileViewerScreen extends Screen {
 					synchronized (this) {
 						rebuildWidgets();
 					}
+				}).exceptionally(err -> {
+					LOGGER.error("[Skyblocker Profile Viewer] An error occurred while initializing widgets!", err);
+					errorMessage = "Unable to process player data!";
+					profileNotFound = true;
+					return null;
 				});
 	}
 
