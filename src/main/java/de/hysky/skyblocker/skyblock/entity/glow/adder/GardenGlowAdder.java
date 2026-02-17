@@ -39,7 +39,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 							ChatFormatting.GREEN.getColor() :
 							// Pests from currently playing vinyl
 							doesPestMatchCurrentVinyl(as) ?
-									ChatFormatting.AQUA.getColor() :
+									ChatFormatting.DARK_AQUA.getColor() :
 									// Default color
 									PEST_COLOUR;
 			default -> NO_GLOW;
