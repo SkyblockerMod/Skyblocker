@@ -120,7 +120,7 @@ public class RoomPreviewServer {
 		errorMessages.add(Constants.PREFIX.get().append(errorText.getString()));
 	}
 
-	public static @Nullable StructureTemplate getStructureTemplate(IntegratedServer server, String type, String roomName) {
+	public static @Nullable StructureTemplate getStructureTemplate(String type, String roomName) {
 		Optional<int[]> blockData = DungeonManager.getRoomBlockData(type, roomName);
 		return blockData.map(blocks -> {
 			StructureTemplate template = new StructureTemplate();
@@ -134,7 +134,7 @@ public class RoomPreviewServer {
 		if (server == null) return;
 
 		selectedRoom = roomName;
-		StructureTemplate template = getStructureTemplate(server, type, roomName);
+		StructureTemplate template = getStructureTemplate(type, roomName);
 		if (template == null) {
 			addErrorMessage(Component.translatable("skyblocker.dungeons.roomPreview.failedToLoad", Component.translatable("skyblocker.dungeons.roomPreview.invalidRoom")).withStyle(ChatFormatting.RED));
 			return;
