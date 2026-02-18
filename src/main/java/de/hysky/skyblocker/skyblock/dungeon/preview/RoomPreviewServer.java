@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -121,7 +122,11 @@ public class RoomPreviewServer {
 
 	public static @Nullable StructureTemplate getStructureTemplate(IntegratedServer server, String type, String roomName) {
 		Optional<int[]> blockData = DungeonManager.getRoomBlockData(type, roomName);
-		return blockData.map(blocks -> server.getStructureManager().readStructure(RoomStructure.getCompound(blocks))).orElse(null);
+		return blockData.map(blocks -> {
+			StructureTemplate template = new StructureTemplate();
+			template.load(BuiltInRegistries.BLOCK, RoomStructure.getCompound(blocks));
+			return template;
+		}).orElse(null);
 	}
 
 	public static void loadRoom(String type, String roomName) {
@@ -136,7 +141,7 @@ public class RoomPreviewServer {
 		}
 
 		server.execute(() ->
-				template.placeInWorld(server.overworld(), BlockPos.ZERO, BlockPos.ZERO, new StructurePlaceSettings(), server.overworld().random, 0));
+				template.placeInWorld(server.overworld(), BlockPos.ZERO, BlockPos.ZERO, new StructurePlaceSettings(), server.overworld().getRandom(), 0));
 
 		// Add a world border to partially prevent falling out of the world
 		server.execute(() -> {
