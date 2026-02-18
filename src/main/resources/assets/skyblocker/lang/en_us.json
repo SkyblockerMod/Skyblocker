@@ -21,6 +21,17 @@
   "key.skyblocker.wikiLookup.fandom": "Fandom Wiki Lookup",
   "key.skyblocker.wikiLookup.official": "Hypixel Wiki Lookup",
 
+  "skyblocker.accessoryHelper.afterSelling": "%s after selling %s",
+  "skyblocker.accessoryHelper.allTiers": "Show all tiers",
+  "skyblocker.accessoryHelper.fandom": "(Hold shift for Fandom)",
+  "skyblocker.accessoryHelper.filter": "Filter",
+  "skyblocker.accessoryHelper.filter.ALL": "All",
+  "skyblocker.accessoryHelper.filter.MISSING": "Missing",
+  "skyblocker.accessoryHelper.filter.UPGRADES": "Upgrades",
+  "skyblocker.accessoryHelper.highestTierOnly": "Show highest tier only",
+  "skyblocker.accessoryHelper.openWiki": "Click to open on the wiki!",
+  "skyblocker.accessoryHelper.recombobulate": "Recombobulate a %s accessory.",
+
   "skyblocker.api.cache.HIT": "This data was cached!\nIt's %s seconds old.",
   "skyblocker.api.cache.MISS": "This data wasn't cached!",
   "skyblocker.api.token.authFailure": "Failed to refresh your Skyblocker API token, some features may not work temporarily!",
@@ -120,6 +131,7 @@
   "skyblocker.config.chat.filter.chatFilterResult.ACTION_BAR": "Move to action bar",
   "skyblocker.config.chat.filter.chatFilterResult.FILTER": "Filter",
   "skyblocker.config.chat.filter.chatFilterResult.PASS": "Disabled",
+  "skyblocker.config.chat.filter.chatFilterResult.TOAST": "Show toast",
   "skyblocker.config.chat.filter.hideAOTE": "Hide Teleport Ability Messages",
   "skyblocker.config.chat.filter.hideAOTE.@Tooltip": "Hides those pesky \"There are blocks in the way!\" messages.",
   "skyblocker.config.chat.filter.hideAbility": "Hide Ability Cooldown",
@@ -146,6 +158,9 @@
 
   "skyblocker.config.chat.skyblockXpMessages": "SkyBlock XP Messages",
   "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "Notifies you in the chat when you gain SkyBlock XP.",
+
+  "skyblocker.config.chat.toastDuration": "Toast Display Duration",
+  "skyblocker.config.chat.toastDuration.@Tooltip": "How long in seconds should the toast display for filters set to \"Show toast\".",
 
   "skyblocker.config.crimsonIsle": "Crimson Isle",
 
@@ -340,6 +355,8 @@
   "skyblocker.config.dungeons.secretSync.receiveRoomSecretCount": "Use Synced Room Secret Count",
 
   "skyblocker.config.dungeons.secretWaypoints": "Dungeon Secret Waypoints",
+  "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize": "Adaptive Box Size",
+  "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "Adapts the size of the Secret Waypoints to match the block's size for Essences and Redstone Keys.",
   "skyblocker.config.dungeons.secretWaypoints.enableAotvWaypoints": "Enable AOTV Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableBatWaypoints": "Enable Bat Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableChestWaypoints": "Enable Chest Waypoints",
@@ -434,7 +451,7 @@
   "skyblocker.config.farming.garden.farmingHud.type.BOTH": "Both",
   "skyblocker.config.farming.garden.farmingHud.type.NPC": "NPC",
   "skyblocker.config.farming.garden.gardenPlotsWidget": "Enable Garden Plots Widget",
-  "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "While in the garden, on the right of your inventory there will be a widget to quickly teleport to plots. It will also show plots that have pests (this requires the Pests widget to be enabled and visible in the Tab).",
+  "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "While in the garden, on the right of your inventory there will be a widget to quickly teleport to plots. It will also show plots that have pests (this requires the Pests widget to be enabled and visible in the Tab).\n\nThe icon of a plot can be customized by right clicking the plot in the widget.",
   "skyblocker.config.farming.garden.lockMouseGround": "Only lock camera when on the ground",
   "skyblocker.config.farming.garden.lockMouseTool": "Lock camera when holding a farming tool",
   "skyblocker.config.farming.garden.pestHighlighter": "Pest Highlighter",
@@ -549,12 +566,12 @@
   "skyblocker.config.general.itemTooltip.avg.THREE_DAY": "3-day price",
   "skyblocker.config.general.itemTooltip.craft": "Crafting Cost",
   "skyblocker.config.general.itemTooltip.craft.@Tooltip": "You can choose which Bazaar order type to use in crafting calculation",
-  "skyblocker.config.general.itemTooltip.craft.BUY_ORDER": "Buy Order",
+  "skyblocker.config.general.itemTooltip.craft.BUY_ORDER": "Buy Instantly",
   "skyblocker.config.general.itemTooltip.craft.OFF": "Off",
-  "skyblocker.config.general.itemTooltip.craft.SELL_ORDER": "Sell Order",
+  "skyblocker.config.general.itemTooltip.craft.SELL_ORDER": "Buy Order",
   "skyblocker.config.general.itemTooltip.dungeonQuality": "Dungeon Quality",
   "skyblocker.config.general.itemTooltip.dungeonQuality.@Tooltip": "Displays quality and tier of dungeon drops from mobs.\n\n\nReminder:\nTier 1-3 dropped from F1-F3\nTier 4-7 dropped from F4-F7 or M1-M4\nTier 8-10 are dropped only from M5-M7",
-  "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "Enable Accessories Helper",
+  "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "Enable Accessories Helper Tooltip",
   "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]": "When hovering over an accessory, you are informed about whether you already have it or not, and whether it's worse than what you have already collected or better. List of Statuses:",
   "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[1]": "You have the highest tier accessory from that family.",
   "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[2]": "This accessory is an upgrade from the one that you already have in the same family. Also shows you what tier this accessory is in its family.",
@@ -617,6 +634,7 @@
   "skyblocker.config.general.speedPresets.enableSpeedPresets": "Enable Speed Presets",
 
   "skyblocker.config.general.updateNotifications": "Update Notifications",
+  "skyblocker.config.general.updateNotifications.@Tooltip": "Prompts you to install and configure new updates. It is highly recommended to keep this enabled.",
   "skyblocker.config.general.updateNotifications.updateChannel": "Update Channel",
   "skyblocker.config.general.updateNotifications.updateChannel.@Tooltip": "Choose between receiving notifications for releases, for both releases and betas, or for releases; betas; and alphas.",
   "skyblocker.config.general.updateNotifications.updateChannel.channel.ALPHA": "Alpha",
@@ -652,6 +670,9 @@
   "skyblocker.config.helpers.chocolateFactory.sendTimeTowerReminderMessage": "Your Chocolate Factory's Time Tower has deactivated!",
   "skyblocker.config.helpers.chocolateFactory.straySound": "Stray Rabbit Sound",
   "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "Repeatedly plays a ding while a stray rabbit is present. If it is golden, the sound will be more frequent and different.",
+
+  "skyblocker.config.helpers.enableAccessoriesHelperWidget": "Enable Accessory Helper Widget",
+  "skyblocker.config.helpers.enableAccessoriesHelperWidget.@Tooltip": "Displays a list of missing accessories and ways of increasing MP in the accessory bag. Requires \"Accessories Helper Tooltip\" to be enabled.",
 
   "skyblocker.config.helpers.enableAnvilHelper": "Enable Anvil Helper",
   "skyblocker.config.helpers.enableAnvilHelper.@Tooltip": "Displays a warning when combining enchantments of different levels.",
@@ -778,6 +799,12 @@
   "skyblocker.config.hunting.lassoHud.wait": "Wait",
 
   "skyblocker.config.mining": "Mining",
+
+  "skyblocker.config.mining.blockBreakPrediction": "Client Side Block Breaking Animation",
+  "skyblocker.config.mining.blockBreakPrediction.enableStatsMessage": "Unable to find the Mining Speed stat in the player list. Please make sure it's enabled in the Stats Widget in /tab for client side block breaking animations to work.",
+  "skyblocker.config.mining.blockBreakPrediction.enabled": "Enabled",
+  "skyblocker.config.mining.blockBreakPrediction.playSound": "Play Sound",
+  "skyblocker.config.mining.blockBreakPrediction.playSound.@Tooltip": "Plays a Blaze sound when the block should be broken.",
 
   "skyblocker.config.mining.callMismyla": "Enable Call Mismyla Message",
   "skyblocker.config.mining.callMismyla.@Tooltip": "Sends a message in chat that can be clicked to call Queen Mismyla after completing a commission.\n\nThis requires having her as an Abiphone contact, and an Abiphone in your inventory!",
@@ -911,6 +938,9 @@
 
   "skyblocker.config.misc": "Misc",
 
+  "skyblocker.config.misc.cat": "Cat",
+  "skyblocker.config.misc.cat.@Tooltip": "Adds a cat picture to the Hub's Community Center.",
+
   "skyblocker.config.misc.configBackend": "Config Backend",
   "skyblocker.config.misc.configBackend.@Tooltip": "You can choose between having YetAnotherConfigLib (YACL) or MoulConfig as the Config Backend.",
 
@@ -919,7 +949,7 @@
   "skyblocker.config.misc.richPresence.cycleMode": "Cycle Skyblock Info",
   "skyblocker.config.misc.richPresence.enableRichPresence": "Enabled",
   "skyblocker.config.misc.richPresence.info": "Skyblock Info",
-  "skyblocker.config.misc.richPresence.info.@Tooltip": "This value doesn't matter if you are cycling",
+  "skyblocker.config.misc.richPresence.info.@Tooltip": "This value doesn't matter if you are cycling.",
   "skyblocker.config.misc.richPresence.info.BITS": "BITS",
   "skyblocker.config.misc.richPresence.info.LOCATION": "LOCATION",
   "skyblocker.config.misc.richPresence.info.PURSE": "PURSE",
@@ -990,13 +1020,13 @@
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights": "Attunement Highlights",
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "Applies a color matching the current attunement to the selected effect.",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer": "Fire Pillar Countdown Notifications",
-  "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "Countdowns the last five seconds before the Fire Pillar explodes. Configure 'Title Container' to customise the location on the HUD (Note: This only uses a rudimentary distance check, so the Pillar may be spawned by another player's slayer)",
+  "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "Countdowns the last five seconds before the Fire Pillar explodes. Configure 'Title Container' to customise the location on the HUD (Note: This only uses a rudimentary distance check, so the Pillar may be spawned by another player's slayer).",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.OFF": "Off",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.SOUND_AND_VISUAL": "Sound and Visual Indicator",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.VISUAL": "Visual Indicator",
   "skyblocker.config.slayer.blazeSlayer.hideHellionShield": "Hide Hellion Shield Messages",
   "skyblocker.config.slayer.blazeSlayer.muteBlazeSounds": "Mute Blaze Sounds",
-  "skyblocker.config.slayer.blazeSlayer.muteBlazeSounds.@Tooltip": "Mutes Blaze, Fire, Lava, Fireball and Lightning Bolt Sounds",
+  "skyblocker.config.slayer.blazeSlayer.muteBlazeSounds.@Tooltip": "Mutes Blaze, Fire, Lava, Fireball and Lightning Bolt Sounds.",
 
   "skyblocker.config.slayer.bossSpawnAlert": "Boss Spawn Alert",
   "skyblocker.config.slayer.bossSpawnAlert.@Tooltip": "Displays a warning when a slayer boss spawns",
@@ -1035,7 +1065,7 @@
   "skyblocker.config.slayer.highlightMinis.@Tooltip[2]": "\nHITBOX: Display a Hitbox around Slayer Minibosses.",
 
   "skyblocker.config.slayer.highlightUnclaimedRewards": "Highlight Unclaimed Rewards",
-  "skyblocker.config.slayer.highlightUnclaimedRewards.@Tooltip": "Highlights unclaimed slayer level rewards",
+  "skyblocker.config.slayer.highlightUnclaimedRewards.@Tooltip": "Highlights unclaimed slayer level rewards.",
 
   "skyblocker.config.slayer.minibossSpawnAlert": "MiniBoss Spawn Alert",
   "skyblocker.config.slayer.minibossSpawnAlert.@Tooltip": "Displays a warning when a slayer miniboss spawns.",
@@ -1050,7 +1080,7 @@
 
   "skyblocker.config.slayer.spiderSlayer": "Spider Slayer",
   "skyblocker.config.slayer.spiderSlayer.muteSpiderSounds": "Mute Spider Sounds",
-  "skyblocker.config.slayer.spiderSlayer.muteSpiderSounds.@Tooltip": "Mutes Spider, Bat, Silverfish and Skeleton Sounds",
+  "skyblocker.config.slayer.spiderSlayer.muteSpiderSounds.@Tooltip": "Mutes Spider, Bat, Silverfish and Skeleton Sounds.",
 
   "skyblocker.config.slayer.vampireSlayer": "Vampire Slayer",
   "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "Compact Effigy Waypoints",
@@ -1268,7 +1298,7 @@
   "skyblocker.config.uiAndVisuals.slotText.catacombsLevel": "Catacombs Class Level",
   "skyblocker.config.uiAndVisuals.slotText.chipLevel": "Chip Level",
   "skyblocker.config.uiAndVisuals.slotText.chipLevel.@tooltip": "Displays the level of chips in the chip menu.",
-  "skyblocker.config.uiAndVisuals.slotText.choosePetPetLevel": "Pet Level (in choose pet)",
+  "skyblocker.config.uiAndVisuals.slotText.choosePetPetLevel": "Pet Level (in Auto Pet Menus)",
   "skyblocker.config.uiAndVisuals.slotText.collectionLevel": "Collection Level",
   "skyblocker.config.uiAndVisuals.slotText.communityShop": "Community Shop",
   "skyblocker.config.uiAndVisuals.slotText.communityShop.@Tooltip": "Displays the level of the upgrades in the community shop.",
@@ -1490,10 +1520,15 @@
   "skyblocker.debug.toggledWebSocketDebug": "Toggled WebSocket debugging to %s.",
 
   "skyblocker.disableAll.confirm": "Are you sure you want to disable all features? %s",
-  "skyblocker.disableAll.confirmYes": "§c[Disable All]",
-  "skyblocker.disableAll.failed": "§cFailed to disable all features.",
-  "skyblocker.disableAll.notPending": "§cRun /skyblocker disableAll first.",
-  "skyblocker.disableAll.success": "§cAll features disabled.",
+  "skyblocker.disableAll.confirmYes": "[Disable All]",
+  "skyblocker.disableAll.failed": "Failed to disable all features.",
+  "skyblocker.disableAll.notPending": "Run /skyblocker disableAll first.",
+  "skyblocker.disableAll.popup.description": "Disables all of Skyblocker's features. Use this carefully.",
+  "skyblocker.disableAll.popup.seriousWarning": "This action is irreversible.",
+  "skyblocker.disableAll.popup.title": "Disable All Features",
+  "skyblocker.disableAll.popup.warning": "Are you sure that you want to disable all of Skyblocker's features? %s",
+  "skyblocker.disableAll.success": "All features disabled.",
+  "skyblocker.disableAll.toast.title": "Skyblocker Disable All",
 
   "skyblocker.dungeons.croesusHelper.chestValue": "Chest Value: %s",
   "skyblocker.dungeons.dungeonScore.scoreText": "Score: %s",
@@ -1578,8 +1613,8 @@
   "skyblocker.exotic.og_fairy": "OG_FAIRY",
   "skyblocker.exotic.spook": "SPOOK",
 
-  "skyblocker.fairySouls.markAllFound": "§rMarked all fairy souls in the current island as found",
-  "skyblocker.fairySouls.markAllMissing": "§rMarked all fairy souls in the current island as missing",
+  "skyblocker.fairySouls.markAllFound": "Marked all fairy souls in the current island as found",
+  "skyblocker.fairySouls.markAllMissing": "Marked all fairy souls in the current island as missing",
 
   "skyblocker.fancyAuctionHouse.alreadyTopBid": "Already Top Bid!",
   "skyblocker.fancyAuctionHouse.auctionEnded": "Auction Ended!",
@@ -1637,8 +1672,7 @@
   "skyblocker.itemProtection.removed": "§fYour %s will §nno longer be protected§f :( - §lBeware of the dangers in doing this!",
   "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item. Please check if you are in Skyblock and holding an item.",
 
-  "skyblocker.itemTooltip.noData": "§cNo Data",
-  "skyblocker.itemTooltip.nullMessage": "§cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
+  "skyblocker.itemTooltip.nullMessage": "Item price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
   "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
   "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! Note that you can only do this once every two days.",
@@ -1709,16 +1743,16 @@
   "skyblocker.rei.transfer.failed": "Failed to open recipe!\nCheck chat for more info.",
   "skyblocker.rei.transfer.noRecipe": "No Skyblock recipe found!",
 
-  "skyblocker.relics.markAllFound": "§rMarked all relics as found",
-  "skyblocker.relics.markAllMissing": "§rMarked all relics as missing",
+  "skyblocker.relics.markAllFound": "Marked all relics as found",
+  "skyblocker.relics.markAllMissing": "Marked all relics as missing",
 
   "skyblocker.reorderHelper.tooltip": "Hold CTRL to copy the remaining amount.",
 
   "skyblocker.reparty.error": "Failed to reparty, try again in a moment!",
   "skyblocker.reparty.notInPartyOrNotLeader": "You must be in a party and be the leader of it to reparty!",
 
-  "skyblocker.rift.enigmaSouls.markAllFound": "§rMarked all enigma souls as found!",
-  "skyblocker.rift.enigmaSouls.markAllMissing": "§rMarked all enigma souls as missing!",
+  "skyblocker.rift.enigmaSouls.markAllFound": "Marked all enigma souls as found!",
+  "skyblocker.rift.enigmaSouls.markAllMissing": "Marked all enigma souls as missing!",
   "skyblocker.rift.healNow": "Heal now!",
   "skyblocker.rift.iceNow": "Ice now!",
   "skyblocker.rift.mania": "Mania!",
@@ -1809,16 +1843,18 @@
   "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.remainingClicksToSelect": "Click %s more time(s) to select!",
   "skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.unselectableWidget": "This widget cannot be selected!",
 
+  "skyblocker.updateNotifications.configureNewVersion": "Thanks for installing Skyblocker %s! %s",
+  "skyblocker.updateNotifications.configureNewVersionHere": "Click here to configure the new version.",
   "skyblocker.updateNotifications.newUpdateMessage": "There's a new Skyblocker update available! %s",
   "skyblocker.updateNotifications.newUpdateToast.description": "Download version %s!",
   "skyblocker.updateNotifications.newUpdateToast.title": "Skyblocker Update Available!",
 
-  "skyblocker.updateRepository.deleted": "§bDeleted the local repository successfully, downloading new files... This will take a minute!",
-  "skyblocker.updateRepository.error": "§cEncountered an error while deleting and updating the local repository. Try again in a moment or remove the files manually and restart the game. See logs for details.",
-  "skyblocker.updateRepository.failed": "§cUpdating the local repository failed. See logs for details.",
-  "skyblocker.updateRepository.loading": "§cAnother process is currently updating the local repository, please try again in a moment.",
-  "skyblocker.updateRepository.start": "§bUpdating the local repository...",
-  "skyblocker.updateRepository.success": "§aUpdated the local repository successfully.",
+  "skyblocker.updateRepository.deleted": "Deleted the local repository successfully, downloading new files... This will take a minute!",
+  "skyblocker.updateRepository.error": "Encountered an error while deleting and updating the local repository. Try again in a moment or remove the files manually and restart the game. See logs for details.",
+  "skyblocker.updateRepository.failed": "Updating the local repository failed. See logs for details.",
+  "skyblocker.updateRepository.loading": "Another process is currently updating the local repository, please try again in a moment.",
+  "skyblocker.updateRepository.start": "Updating the local repository...",
+  "skyblocker.updateRepository.success": "Updated the local repository successfully.",
 
   "skyblocker.utils.locationUpdateError": "Failed to update your location! Some features of the mod may not work properly :(",
 
@@ -1860,9 +1896,6 @@
   "skyblocker.waypoints.importWaypointsSnoopy.tooltip": "Import Waypoints from Clipboard (Snoopy Format)",
   "skyblocker.waypoints.new": "New Waypoint",
   "skyblocker.waypoints.newGroup": "New Waypoint Group",
-  "skyblocker.waypoints.ordered.import.skyblocker.fail": "§cFailed to import waypoints from the Skyblocker Ordered Waypoints format. Make sure to have the waypoint data copied to your clipboard!",
-  "skyblocker.waypoints.ordered.import.skyblocker.success": "Successfully imported waypoints from the Skyblocker Ordered Waypoints format!",
-  "skyblocker.waypoints.ordered.import.skyblocker.unknownFormatHeader": "§cThis import code doesn't look like its in the Skyblocker Ordered Waypoints format, double-check your clipboard to see if everything is correct.",
   "skyblocker.waypoints.otherOptions": "Other Options",
   "skyblocker.waypoints.share": "Import/Export",
   "skyblocker.waypoints.shareWaypoints": "Share Waypoints",

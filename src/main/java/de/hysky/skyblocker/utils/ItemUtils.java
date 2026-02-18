@@ -12,6 +12,7 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.mixins.accessors.CustomDataAccessor;
 import de.hysky.skyblocker.skyblock.ChestValue;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
 import de.hysky.skyblocker.skyblock.hunting.Attributes;
@@ -105,12 +106,12 @@ public final class ItemUtils {
 	}
 
 	/**
-	 * Gets the nbt in the custom data component of the item stack.
-	 * @return The {@link DataComponents#CUSTOM_DATA custom data} of the itemstack,
-	 *         or an empty {@link CompoundTag} if the itemstack is missing a custom data component
+	 * {@return the {@link DataComponents#CUSTOM_DATA custom data} of the {@link ItemStack}, or an empty {@link CompoundTag} if the ItemStack is missing a Custom Data component}
+	 *
+	 * <p><strong>Do not write directly to this instance, treat it as a read-only view.</strong>
 	 */
 	public static CompoundTag getCustomData(DataComponentHolder stack) {
-		return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+		return ((CustomDataAccessor) (Object) stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)).getTag();
 	}
 
 	/**
@@ -684,6 +685,13 @@ public final class ItemUtils {
 	public static ItemStack getNamedPlaceholder(String itemName) {
 		ItemStack stack = new ItemStack(Items.BARRIER);
 		stack.set(DataComponents.CUSTOM_NAME, Component.literal(itemName));
+		return stack;
+	}
+
+	public static ItemStack getItemIdPlaceholder(String itemId) {
+		ItemStack stack = new ItemStack(Items.POISONOUS_POTATO);
+		stack.set(DataComponents.ITEM_NAME, Component.literal(itemId));
+		stack.set(DataComponents.CUSTOM_DATA, CustomData.of(Util.make(new CompoundTag(), c -> c.putString(ID, itemId))));
 		return stack;
 	}
 }

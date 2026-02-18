@@ -43,7 +43,7 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public boolean shouldRender(Location location) {
-		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea().equals(Area.FOREST)) && super.shouldRender(location);
+		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea() == Area.Hub.FOREST) && super.shouldRender(location);
 	}
 
 	@Override

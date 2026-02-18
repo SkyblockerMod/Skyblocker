@@ -7,6 +7,8 @@ public class ChatConfig {
 
 	public boolean confirmationPromptHelper = false;
 
+	public float toastDisplayDuration = 4;
+
 	public ChatFilterResult hideAbility = ChatFilterResult.PASS;
 
 	public ChatFilterResult hideHeal = ChatFilterResult.PASS;

@@ -637,6 +637,15 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createEnumController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize"))
+								.description(Component.translatable("skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
+								.binding(defaults.dungeons.secretWaypoints.adaptiveBoxSize,
+										() -> config.dungeons.secretWaypoints.adaptiveBoxSize,
+										newValue -> config.dungeons.secretWaypoints.adaptiveBoxSize = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.secretWaypoints.showSecretText"))
 								.binding(defaults.dungeons.secretWaypoints.showSecretText,
 										() -> config.dungeons.secretWaypoints.showSecretText,

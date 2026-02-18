@@ -24,7 +24,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
     - Room Labels
-      - Can show either the Room Name, Secrets Found, or Both
+        - Can show either the Room Name, Secrets Found, or Both
     - Hidable room checkmarks
     - Configurable outline and background blur
 - **Score Calculation**
@@ -196,7 +196,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 ### Spider's Den Features:
 - **Hidden Relic Helper**
 
-### Slayer Helper:
+### Slayer Features:
 - **Vampire:**
     - Effigy Waypoints
     - Healing Melon Indicator
@@ -207,18 +207,19 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Yang Glyph Notification
     - Nukekubi Head Highlighting
     - Laser phase Timer
-- **Blaze Slayer:**
+- **Blaze:**
     - Attunement highlighting
     - Fire Pillar Countdown Notifications
 - **General:**
-    - Bossbars
     - Slayer HUD
-    - Boss slain time
-    - Personal Best slain time
-    - Boss and MiniBoss spawn alert
-    - Mute Enderman sounds
-    - Slayer (Mini)Bosses Highlighting
-    - Glow Effect Slayer Mob Highlighting
+    - Bossbars
+    - Boss Kill Time
+        - Personal Bests
+    - Boss and MiniBoss spawn alerts
+    - Mute Blaze, Wolf, Spider, and Enderman sounds
+    - Slayer Boss and Mini-Boss Highlighting
+        - Glow Effect or Bounding Box options
+    - Highlight unclaimed level
 
 ### Garden Features:
 - **Farming HUD:**
@@ -308,6 +309,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *HOTF*
     - *Bestiary*
     - *Hunting Toolkit Indicator*
+    - *Garden Chip Level*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
@@ -331,7 +333,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
     - Crafting
     - Forge
-- **Backpack Preview:** After clicking your backpack or ender chest once, you can hover over it and hold Shift to preview its contents.
+- **Backpack Preview:** After opening a backpack or ender chest once, you can hover over it and hold Shift to preview its contents.
 - **New Year Cakes Helper**
 - **Fancy Crafting Table**
 - **Info Screen**
@@ -385,7 +387,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Chocolate Factory Helper**
 - **Hoppity's Hunt Helper**
 - **Jerry timer**
-- **Wardrobe helper based on hotbar keybinds**
+- **Wardrobe Keybinds**
 - **Carnival Helpers**
 - **Bits Helper**
 - **Math teacher helper**
@@ -394,6 +396,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Abiphone Call Prompts**
     - Adds clickable messages in chat to quickly call Trevor the Trapper, Maddox, and Queen Mismyla
 - **Anvil Helper**
+- **Accessory Helper**
 
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
@@ -406,7 +409,6 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
 - **Wiki Lookup:** Press F4 to open the wiki page about a hovered item, pet, garden visitor, or calendar event.
-- **OptiFabric Compatibility**
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
 - **True Quiver Count**
@@ -424,6 +426,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Keybind/Keybind Combo Shortcuts
 - **Config Backups**
 - **Iris shader support**
+- **Block Break Prediction**
 
 
 </details>

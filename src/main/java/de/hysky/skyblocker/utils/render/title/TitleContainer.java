@@ -23,6 +23,9 @@ import java.util.Set;
 public class TitleContainer {
 	private static final Identifier TITLE_CONTAINER = SkyblockerMod.id("title_container");
 	private static final Minecraft CLIENT = Minecraft.getInstance();
+
+	protected static final float RENDER_SCALE = 0.03f;
+
 	/**
 	 * The set of titles which will be rendered.
 	 *
@@ -132,14 +135,20 @@ public class TitleContainer {
 	}
 
 	protected static void render(GuiGraphics context, Set<Title> titles, int xPos, int yPos, float tickDelta) {
-		if (titles.isEmpty()) return;
-		Font textRenderer = Minecraft.getInstance().font;
+		UIAndVisualsConfig.TitleContainer config = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
 
 		// Calculate Scale to use
-		float scale = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.getRenderScale();
+		float scale = config.titleContainerScale * RENDER_SCALE;
 		// Grab direction and alignment values
-		UIAndVisualsConfig.Direction direction = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction;
-		UIAndVisualsConfig.Alignment alignment = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment;
+		UIAndVisualsConfig.Direction direction = config.direction;
+		UIAndVisualsConfig.Alignment alignment = config.alignment;
+
+		render(context, titles, xPos, yPos, tickDelta, scale, direction, alignment);
+	}
+
+	protected static void render(GuiGraphics context, Set<Title> titles, int xPos, int yPos, float tickDelta, float scale, UIAndVisualsConfig.Direction direction, UIAndVisualsConfig.Alignment alignment) {
+		if (titles.isEmpty()) return;
+		Font textRenderer = Minecraft.getInstance().font;
 
 		// x/y refer to the starting position for the text
 		// If xPos or yPos is negative, use the default values
@@ -149,7 +158,7 @@ public class TitleContainer {
 		float y = yPos >= 0 ? yPos : Minecraft.getInstance().getWindow().getGuiScaledHeight() * 0.6f;
 
 		// Calculate the width of combined text
-		float totalWidth = getWidth(textRenderer, titles);
+		float totalWidth = getWidth(textRenderer, direction, scale, titles);
 		if (alignment == UIAndVisualsConfig.Alignment.MIDDLE && direction == UIAndVisualsConfig.Direction.HORIZONTAL) {
 			// If middle aligned horizontally, start the xPosition at half of the width to the left.
 			x = xPos - totalWidth / 2;
@@ -201,16 +210,14 @@ public class TitleContainer {
 		}
 	}
 
-	protected static int getWidth(Font textRenderer, Set<Title> titles) {
-		float scale = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.getRenderScale();
-		return SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction == UIAndVisualsConfig.Direction.HORIZONTAL ?
+	protected static int getWidth(Font textRenderer, UIAndVisualsConfig.Direction direction, float scale, Set<Title> titles) {
+		return direction == UIAndVisualsConfig.Direction.HORIZONTAL ?
 				(int) ((titles.stream().map(Title::getText).mapToInt(textRenderer::width).mapToDouble(width -> width + 10).sum() - 10) * scale) :
 				(int) (titles.stream().map(Title::getText).mapToInt(textRenderer::width).max().orElse(0) * scale);
 	}
 
-	protected static int getHeight(Font textRenderer, Set<Title> titles) {
-		float scale = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.getRenderScale();
-		return SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction == UIAndVisualsConfig.Direction.HORIZONTAL ?
+	protected static int getHeight(Font textRenderer, UIAndVisualsConfig.Direction direction, float scale, Set<Title> titles) {
+		return direction == UIAndVisualsConfig.Direction.HORIZONTAL ?
 				(int) (textRenderer.lineHeight * scale) :
 				(int) ((textRenderer.lineHeight + 1) * titles.size() * scale);
 	}

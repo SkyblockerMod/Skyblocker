@@ -45,6 +45,7 @@ public class ChatPositionShare {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatPositionShare::onMessage);
 	}
 
+	@SuppressWarnings("deprecation")
 	private static int sharePlayerPosition(FabricClientCommandSource source) {
 		Vec3 pos = source.getPosition();
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown("x: " + (int) pos.x() + ", y: " + (int) pos.y() + ", z: " + (int) pos.z() + " | " + Utils.getIslandArea(), true);

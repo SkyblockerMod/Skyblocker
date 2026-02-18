@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class HealthBars {
+	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getLogger(HealthBars.class);
 	private static final Identifier HEALTH_BAR_BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/boss_bar/white_background.png");
 	private static final Identifier HEALTH_BAR_TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/boss_bar/white_progress.png");

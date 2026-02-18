@@ -19,7 +19,6 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
-import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -54,21 +53,10 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 	private StringWidget priceTextWidget;
 
 	public AuctionViewScreen(AuctionHouseScreenHandler handler, Inventory inventory, Component title) {
-		super(handler, inventory, title);
-		imageHeight = 187;
+		super(handler, inventory, title, 187);
 		isBinAuction = this.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("bin");
-		inventoryLabelY = 93;
 		titleLabelX = 5;
 		titleLabelY = 4;
-	}
-
-	@Override
-	public boolean keyPressed(KeyEvent input) {
-		if (input.isEscape()) {
-			clickSlot(BACK_BUTTON_SLOT);
-			return true;
-		}
-		return super.keyPressed(input);
 	}
 
 	@Override

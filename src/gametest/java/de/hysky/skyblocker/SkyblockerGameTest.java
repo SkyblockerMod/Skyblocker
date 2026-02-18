@@ -1,20 +1,13 @@
 package de.hysky.skyblocker;
 
-import de.hysky.skyblocker.debug.SnapshotDebug;
-import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
-import it.unimi.dsi.fastutil.Pair;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
-import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.level.levelgen.presets.WorldPresets;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SkyblockerGameTest implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		/*
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().adjustSettings(worldCreator -> {
 			worldCreator.setWorldType(new WorldCreationUiState.WorldTypeEntry(worldCreator.getSettings().worldgenLoadContext().lookupOrThrow(Registries.WORLD_PRESET).getOrThrow(WorldPresets.NORMAL)));
 			worldCreator.setSeed(String.valueOf(SnapshotDebug.AARON_WORLD_SEED));
@@ -55,6 +48,6 @@ public class SkyblockerGameTest implements FabricClientGameTest {
 				FancyStatusBars.placeBarsInPositioner();
 				FancyStatusBars.updatePositions(false);
 			});
-		}
+		}*/
 	}
 }

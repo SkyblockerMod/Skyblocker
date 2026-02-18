@@ -16,6 +16,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -89,7 +90,7 @@ public class VisitorHelper extends AbstractWidget {
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _buildContext) ->
 				dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("garden").then(literal("visitors")
-						.then(literal("clearAll").executes(ctx -> {
+						.then(literal("removeAll").executes(ctx -> {
 							activeVisitors.clear();
 							updateItems();
 							ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.farming.visitorHelper.command.clearedAllVisitors")));
@@ -113,7 +114,7 @@ public class VisitorHelper extends AbstractWidget {
 	public static boolean shouldRender() {
 		boolean isHelperEnabled = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelper;
 		boolean isGardenMode = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelperGardenOnly;
-		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getIslandArea().contains("Bazaar"));
+		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getArea() == Area.Hub.BAZAAR);
 	}
 
 	public static List<ScreenRectangle> getExclusionZones() {

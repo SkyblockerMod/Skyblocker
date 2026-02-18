@@ -67,7 +67,7 @@ public abstract sealed class AbstractSkyblockRecipeCategory<T extends SkyblockRe
 	}
 
 	@Override
-	public Identifier getRegistryName(T recipe) {
+	public Identifier getIdentifier(T recipe) {
 		return recipe.getRecipeIdentifier();
 	}
 }

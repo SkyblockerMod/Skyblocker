@@ -406,6 +406,7 @@ public class CrystalsLocationsManager {
 		}
 
 		//get if the player is in the crystals
+		@SuppressWarnings("deprecation")
 		String location = Utils.getIslandArea().substring(2);
 		//if new location and needs waypoint add waypoint, and if socket hasn't received waypoint send it
 		if (!location.equals("Unknown") && WAYPOINT_LOCATIONS.containsKey(location)) {

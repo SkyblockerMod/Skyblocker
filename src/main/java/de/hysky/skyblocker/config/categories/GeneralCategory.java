@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.categories;
 
+import de.hysky.skyblocker.DisableAllPopup;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.SkyblockerScreen;
 import de.hysky.skyblocker.UpdateNotifications;
@@ -36,6 +37,14 @@ public class GeneralCategory {
 						.action(screen -> Minecraft.getInstance().setScreen(new SkyblockerScreen()))
 						.build())
 
+				// Disable All
+				.option(ButtonOption.createBuilder()
+						.name(Component.translatable("skyblocker.disableAll.popup.title"))
+						.description(Component.translatable("skyblocker.disableAll.popup.description"))
+						.prompt(Component.translatable("text.skyblocker.open"))
+						.action(screen -> new DisableAllPopup().open(screen))
+						.build())
+
 				//Ungrouped Options
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.general.enableTips"))
@@ -46,17 +55,18 @@ public class GeneralCategory {
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.general.updateNotifications"))
+						.description(Component.translatable("skyblocker.config.general.updateNotifications.@Tooltip"))
 						.binding(UpdateNotifications.Config.DEFAULT.enabled(),
-								() -> UpdateNotifications.config.getData().enabled(),
-								newValue -> UpdateNotifications.config.setData(UpdateNotifications.config.getData().withEnabled(newValue)))
+								() -> UpdateNotifications.getConfig().enabled(),
+								newValue -> UpdateNotifications.setConfig(updateNotificationsConfig -> updateNotificationsConfig.withEnabled(newValue)))
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<UpdateNotifications.Channel>createBuilder()
 						.name(Component.translatable("skyblocker.config.general.updateNotifications.updateChannel"))
 						.description(Component.translatable("skyblocker.config.general.updateNotifications.updateChannel.@Tooltip"))
 						.binding(UpdateNotifications.Config.DEFAULT.channel(),
-								() -> UpdateNotifications.config.getData().channel(),
-								newValue -> UpdateNotifications.config.setData(UpdateNotifications.config.getData().withChannel(newValue)))
+								() -> UpdateNotifications.getConfig().channel(),
+								newValue -> UpdateNotifications.setConfig(updateNotificationsConfig -> updateNotificationsConfig.withChannel(newValue)))
 						.controller(ConfigUtils.createEnumController())
 						.build())
 				.option(Option.<Boolean>createBuilder()

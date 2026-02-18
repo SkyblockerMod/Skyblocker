@@ -17,6 +17,7 @@
 	"ClientCommonPacketListenerImplMixin",
     "ClientLevelMixin",
     "ClientPacketListenerMixin",
+    "ContainerScreenMixin",
     "DataComponentHolderMixin",
     "DyedItemColorMixin",
     "EntityMixin",
@@ -67,6 +68,7 @@
     "accessors.AbstractContainerScreenAccessor",
     "accessors.ChatListenerAccessor",
     "accessors.CheckboxAccessor",
+	"accessors.CustomDataAccessor",
     "accessors.DirectStateAccessInvoker",
     "accessors.EnderManAccessor",
     "accessors.EntityRenderDispatcherAccessor",
@@ -91,5 +93,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "mixinextras": {
+    "minVersion": "0.5.0"
   }
 }

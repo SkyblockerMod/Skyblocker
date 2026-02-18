@@ -1,12 +1,10 @@
 package de.hysky.skyblocker.skyblock.hunting;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -34,12 +32,11 @@ public class HuntingBoxHelper extends SimpleContainerSolver {
 			ItemStack stack = entry.getValue();
 			if (stack.isEmpty()) continue;
 
-			List<Component> lore = ItemUtils.getLore(stack);
+			List<String> lore = stack.skyblocker$getLoreStrings();
 			if (lore.isEmpty()) continue;
 
 			String owned = null, syphon = null;
-			for (Component line : lore) { // We iterate manually instead of the ItemUtils helper methods because the lines are adjacent, this way we only iterate once rather than twice.
-				String text = line.getString();
+			for (String text : lore) { // We iterate manually instead of the ItemUtils helper methods because the lines are adjacent, this way we only iterate once rather than twice.
 				if (owned == null) {
 					Matcher matcher = OWNED_PATTERN.matcher(text);
 					if (matcher.matches()) owned = matcher.group(1).replace(",", "");
@@ -57,7 +54,7 @@ public class HuntingBoxHelper extends SimpleContainerSolver {
 				continue;
 			}
 			if (ownedCount >= syphonCount) {
-				boolean enoughButNotUnlocked = lore.getLast().getString().startsWith("Requires");
+				boolean enoughButNotUnlocked = lore.getLast().startsWith("Requires");
 				highlights.add(enoughButNotUnlocked ? ColorHighlight.yellow(entry.getIntKey())
 													: ColorHighlight.green(entry.getIntKey()));
 			}

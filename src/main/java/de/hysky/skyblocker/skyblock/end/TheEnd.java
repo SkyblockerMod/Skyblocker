@@ -76,7 +76,7 @@ public class TheEnd {
 
 		ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
 			Area area = Utils.getArea();
-			if (Utils.isInTheEnd() || area.equals(Area.THE_END) || area.equals(Area.DRAGONS_NEST)) {
+			if (Utils.isInTheEnd() || area.equals(Area.TheEnd.THE_END) || area.equals(Area.TheEnd.DRAGONS_NEST)) {
 				ChunkPos pos = chunk.getPos();
 				AABB box = new AABB(pos.getMinBlockX(), 0, pos.getMinBlockZ(), pos.getMaxBlockX() + 1, 1, pos.getMaxBlockZ() + 1);
 				for (ProtectorLocation protectorLocation : PROTECTOR_LOCATIONS) {

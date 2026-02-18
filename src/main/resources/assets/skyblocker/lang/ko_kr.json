@@ -17,14 +17,13 @@
     "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Bazaar 매매 가격 활성화",
     "skyblocker.config.general.hitbox": "히트박스",
     "skyblocker.config.general.hitbox.oldLeverHitbox": "1.8 레버 히트박스 활성화",
-    "skyblocker.itemTooltip.nullMessage": "§c아이템 가격 툴팁이 최대 60초 이내에 갱신 됩니다. 갱신 되지 않을 시 latest.log 를 확인하세요.",
-    "skyblocker.itemTooltip.noData": "§c데이터 없음",
+    "skyblocker.itemTooltip.nullMessage": "아이템 가격 툴팁이 최대 60초 이내에 갱신 됩니다. 갱신 되지 않을 시 latest.log 를 확인하세요.",
     "skyblocker.config.misc.richPresence": "디스코드 Rich Presence",
     "skyblocker.config.misc.richPresence.info": "스카이블록 정보",
     "skyblocker.config.misc.richPresence.info.PURSE": "PURSE",
     "skyblocker.config.misc.richPresence.info.BITS": "BITS",
     "skyblocker.config.misc.richPresence.info.LOCATION": "위치",
-    "skyblocker.config.misc.richPresence.info.@Tooltip": "이 값은 순환중일 시 중요하지 않습니다",
+    "skyblocker.config.misc.richPresence.info.@Tooltip": "이 값은 순환중일 시 중요하지 않습니다.",
     "skyblocker.config.misc.richPresence.cycleMode": "스카이블록 정보 순환",
     "skyblocker.config.misc.richPresence.enableRichPresence": "활성화됨",
     "skyblocker.config.misc.richPresence.customMessage": "사용자 지정 메시지",
@@ -234,5 +233,8 @@
     "skyblocker.config.chat.chatRules.screen": "채팅 규칙 설정...",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage.@Placeholder": "기본 메세지를 사용하려면 비워두세요.",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "메세지 숨기기",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.locations": "위치 수정"
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.locations": "위치 수정",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.outputs": "출력",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds": "소리",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.regex": "정규 표현식"
 }

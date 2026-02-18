@@ -141,7 +141,7 @@ public class OverlayScreen extends Screen {
 	 */
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-		if (dungeonStarButton != null && dungeonStarButton.isHovered() && minecraft != null) {
+		if (dungeonStarButton != null && dungeonStarButton.isHovered()) {
 			double actualTextWidth = minecraft.font.width(dungeonStarButton.getMessage());
 			double textOffset = (dungeonStarButton.getWidth() - actualTextWidth) / 2;
 			double offset = click.x() - (dungeonStarButton.getX() + textOffset);
@@ -192,7 +192,7 @@ public class OverlayScreen extends Screen {
 		int historyLength = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.historyLength;
 		for (int i = 0; i < historyLength; i++) {
 			String text = SearchOverManager.getHistory(i);
-			if (text == null) {
+			if (text.isEmpty()) {
 				historyButtons[i].visible = false;
 				deleteButtons[i].visible = false;
 				continue;
@@ -252,7 +252,7 @@ public class OverlayScreen extends Screen {
 	 * Draws the item and tooltip for the given button
 	 */
 	private void drawItemAndTooltip(GuiGraphics context, int mouseX, int mouseY, String id, Button button, int renderOffset) {
-		if (id == null || id.isEmpty()) return;
+		if (id.isEmpty()) return;
 		ItemStack item = getItemStack(id);
 		if (item == null) return;
 		context.renderItem(item, button.getX() + renderOffset, button.getY() + renderOffset);
@@ -312,7 +312,6 @@ public class OverlayScreen extends Screen {
 	 */
 	@Override
 	public void onClose() {
-		assert this.minecraft != null;
 		assert this.minecraft.player != null;
 		SearchOverManager.pushSearch();
 		super.onClose();

@@ -24,6 +24,7 @@ public class PickobulusHudWidget extends ComponentBasedWidget {
 		update();
 	}
 
+	@SuppressWarnings("unused")
 	public static PickobulusHudWidget getInstance() {
 		if (instance == null) new PickobulusHudWidget();
 		return instance;

@@ -322,7 +322,8 @@ checkstyle {
 	toolVersion = "${checkstyle_version}"
 	configFile = rootProject.file("checkstyle.xml")
 	configProperties = [
-		"suppressionsFile": rootProject.file("checkstyle-suppressions.xml")
+		"suppressionsFile": rootProject.file("checkstyle-suppressions.xml"),
+		"cacheFile": layout.buildDirectory.file("checkstyle/checkstyle-cache.txt").get().asFile
 	]
 }
 

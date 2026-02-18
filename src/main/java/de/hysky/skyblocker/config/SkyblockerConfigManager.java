@@ -30,6 +30,7 @@ import de.hysky.skyblocker.utils.datafixer.JsonHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.azureaaron.dandelion.api.ConfigManager;
 import net.azureaaron.dandelion.api.DandelionConfigScreen;
+import net.azureaaron.dandelion.api.patching.ConfigPatch;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -40,7 +41,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.lang3.function.Consumers;
 import org.jspecify.annotations.Nullable;
 
 import java.io.BufferedReader;
@@ -48,6 +48,7 @@ import java.io.BufferedWriter;
 import java.lang.StackWalker.Option;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -64,6 +65,10 @@ public class SkyblockerConfigManager {
 
 	public static SkyblockerConfig get() {
 		return CONFIG_MANAGER.instance();
+	}
+
+	protected static SkyblockerConfig getUnpatched() {
+		return CONFIG_MANAGER.unpatchedInstance();
 	}
 
 	/**
@@ -89,21 +94,28 @@ public class SkyblockerConfigManager {
 		});
 	}
 
-	@Deprecated(since = "1.21.5", forRemoval = true)
-	public static void save() {
-		update(Consumers.nop());
+	protected static void setPatches(List<ConfigPatch> patches) {
+		CONFIG_MANAGER.setPatches(patches);
 	}
 
 	/**
 	 * Executes the given {@code action} to update fields in the config, then saves the changes.
 	 */
 	public static void update(Consumer<SkyblockerConfig> action) {
-		action.accept(get());
+		action.accept(getUnpatched());
 		ConfigBackupManager.backupConfig();
 		CONFIG_MANAGER.save();
 	}
 
-	public static Screen createGUI(Screen parent) {
+	/**
+	 * Executes the given {@code action} to update fields in the config, without saving the changes.
+	 */
+	public static void updateOnly(Consumer<SkyblockerConfig> action) {
+		action.accept(getUnpatched());
+		CONFIG_MANAGER.updatePatchedInstance();
+	}
+
+	public static Screen createGUI(@Nullable Screen parent) {
 		return createGUI(parent, "");
 	}
 
