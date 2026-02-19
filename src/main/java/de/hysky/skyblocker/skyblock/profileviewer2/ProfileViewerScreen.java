@@ -20,6 +20,8 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+		super.render(graphics, mouseX, mouseY, a);
+
 		int middleX = graphics.guiWidth() / 2;
 		int middleY = graphics.guiHeight() / 2;
 		graphics.drawCenteredString(this.font, "The calm before the storm.", middleX, middleY, CommonColors.WHITE);
