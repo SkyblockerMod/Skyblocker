@@ -19,7 +19,6 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +30,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	private static final ItemStack CLOCK = new ItemStack(Items.CLOCK);
 
 	private final List<EventRenderer> events = new ArrayList<>();
-	private EventRenderer hovered = null;
+	private @Nullable EventRenderer hovered = null;
 
 	protected UpcomingEventsTab() {
 		List<EventRenderer> renderers = EventNotifications.getEvents().entrySet().stream()
