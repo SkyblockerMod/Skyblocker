@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CarpetBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.block.WebBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
@@ -500,7 +501,7 @@ public class PredictiveSmoothAOTE {
 		Block block = blockState.getBlock();
 		VoxelShape shape = blockState.getCollisionShape(CLIENT.level, blockPos);
 
-		return shape.isEmpty() || block instanceof CarpetBlock || block instanceof FlowerPotBlock || (block.equals(Blocks.SNOW) && blockState.getValue(BlockStateProperties.LAYERS) <= 3);
+		return shape.isEmpty() || block instanceof CarpetBlock || block instanceof FlowerPotBlock || block instanceof WebBlock || (block.equals(Blocks.SNOW) && blockState.getValue(BlockStateProperties.LAYERS) <= 3);
 	}
 
 	/**
