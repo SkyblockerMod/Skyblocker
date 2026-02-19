@@ -92,4 +92,6 @@ public class Ico {
 	public static final ItemStack STRIPPED_SPRUCE_WOOD = Items.STRIPPED_SPRUCE_WOOD.getDefaultInstance();
 	public static final ItemStack MANGROVE_LOG = Items.MANGROVE_LOG.getDefaultInstance();
 	public static final ItemStack OMINOUS_BOTTLE = Items.OMINOUS_BOTTLE.getDefaultInstance();
+	public static final ItemStack CATACOMBS = ItemUtils.createSkull(HeadTextures.CATACOMBS);
+	public static final ItemStack LEAD = Items.LEAD.getDefaultInstance();
 }
