@@ -19,6 +19,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
@@ -128,11 +129,22 @@ public class UpcomingEventsTab implements RecipeTab {
 
 			EventNotifications.SkyblockEvent event = events.peekFirst();
 			if (event == null) return components;
-			if (eventName.equals(EventNotifications.JACOBS)) {
-				components.add(new JacobsTooltip(event.extras()));
+			if (eventName.equals(EventNotifications.JACOBS) && event.extras().left().isPresent()) {
+				components.add(new JacobsTooltip(event.extras().left().get()));
+			} else if (eventName.equals(EventNotifications.MAYOR_JERRY) && event.extras().right().isPresent()) {
+				EventNotifications.JerryPerks jerryInfo = event.extras().right().get();
+				Component mayorText = Component.translatable("skyblocker.events.tab.currentJerryMayor", jerryInfo.mayorName()).withStyle(ChatFormatting.DARK_GREEN);
+				components.add(ClientTooltipComponent.create(mayorText.getVisualOrderText()));
+
+				for (String perk : jerryInfo.perks()) {
+					Component perkText = Component.literal("- ").withStyle(ChatFormatting.GRAY).append(Component.literal(perk).withStyle(ChatFormatting.GREEN));
+					components.add(ClientTooltipComponent.create(perkText.getVisualOrderText()));
+				}
+
+				return components;
 			}
 
-			if (event.warpCommand() != null) {
+			if (!event.warpCommand().isEmpty()) {
 				components.add(ClientTooltipComponent.create(Component.translatable("skyblocker.events.tab.clickToWarp").withStyle(ChatFormatting.ITALIC).getVisualOrderText()));
 			}
 
@@ -146,7 +158,7 @@ public class UpcomingEventsTab implements RecipeTab {
 		}
 	}
 
-	private record JacobsTooltip(String[] crops) implements ClientTooltipComponent {
+	private record JacobsTooltip(List<String> crops) implements ClientTooltipComponent {
 		private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 
 		@Override
@@ -161,8 +173,8 @@ public class UpcomingEventsTab implements RecipeTab {
 
 		@Override
 		public void renderImage(Font textRenderer, int x, int y, int width, int height, GuiGraphics context) {
-			for (int i = 0; i < this.crops.length; i++) {
-				String crop = this.crops[i];
+			for (int i = 0; i < this.crops.size(); i++) {
+				String crop = this.crops.get(i);
 
 				context.renderFakeItem(JacobsContestWidget.FARM_DATA.getOrDefault(crop, BARRIER), x + 18 * i, y + 2);
 			}

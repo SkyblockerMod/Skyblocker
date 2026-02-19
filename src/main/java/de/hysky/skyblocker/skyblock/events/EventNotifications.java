@@ -6,7 +6,11 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -23,7 +27,6 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Comparator;
@@ -36,7 +39,10 @@ import java.util.concurrent.Executors;
 
 public class EventNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
+
 	public static final String JACOBS = "Jacob's Farming Contest";
+	public static final String MAYOR_JERRY = "Mayor Jerry";
+
 	public static final IntArrayList DEFAULT_REMINDERS = new IntArrayList(IntList.of(60, 60 * 5));
 	public static final Map<String, ItemStack> eventIcons = Map.ofEntries(
 			Map.entry("Dark Auction", new ItemStack(Items.NETHER_BRICK)),
@@ -46,6 +52,7 @@ public class EventNotifications {
 			Map.entry("New Year Celebration", new ItemStack(Items.CAKE)),
 			Map.entry("Election Over!", new ItemStack(Items.JUKEBOX)),
 			Map.entry("Election Booth Opens", new ItemStack(Items.JUKEBOX)),
+			Map.entry(MAYOR_JERRY, Items.VILLAGER_SPAWN_EGG.getDefaultInstance()),
 			Map.entry("Spooky Festival", new ItemStack(Items.JACK_O_LANTERN)),
 			Map.entry("Season of Jerry", new ItemStack(Items.SNOWBALL)),
 			Map.entry("Jerry's Workshop Opens", new ItemStack(Items.SNOW_BLOCK)),
@@ -66,7 +73,7 @@ public class EventNotifications {
 											long time = System.currentTimeMillis() / 1000 + context.getArgument("time", int.class);
 											if (context.getArgument("jacob", Boolean.class)) {
 												Minecraft.getInstance().getToastManager().addToast(
-														new JacobEventToast(time, "Jacob's farming contest", new String[]{"Cactus", "Cocoa Beans", "Pumpkin"})
+														new JacobEventToast(time, "Jacob's farming contest", List.of("Cactus", "Cocoa Beans", "Pumpkin"))
 												);
 											} else {
 												Minecraft.getInstance().getToastManager().addToast(
@@ -142,9 +149,9 @@ public class EventNotifications {
 			for (int reminderTime : reminderTimes) {
 				if (criterionMet() && currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
 					Minecraft instance = Minecraft.getInstance();
-					if (eventName.equals(JACOBS)) {
+					if (eventName.equals(JACOBS) && skyblockEvent.extras.left().isPresent()) {
 						instance.getToastManager().addToast(
-								new JacobEventToast(skyblockEvent.start(), eventName, skyblockEvent.extras())
+								new JacobEventToast(skyblockEvent.start(), eventName, skyblockEvent.extras().left().get())
 						);
 					} else {
 						instance.getToastManager().addToast(
@@ -170,14 +177,24 @@ public class EventNotifications {
 		};
 	}
 
-	public record SkyblockEvent(long start, int duration, String[] extras, @Nullable String warpCommand) {
+	public record SkyblockEvent(long start, int duration, Either<List<String>, JerryPerks> extras, String warpCommand) {
+		private static final Codec<SkyblockEvent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.LONG.fieldOf("timestamp").forGetter(SkyblockEvent::start),
+				Codec.INT.fieldOf("duration").forGetter(SkyblockEvent::duration),
+				Codec.either(Codec.STRING.listOf(), JerryPerks.CODEC)
+						.fieldOf("extras").forGetter(SkyblockEvent::extras),
+				Codec.STRING.fieldOf("location").forGetter(SkyblockEvent::warpCommand)
+		).apply(instance, SkyblockEvent::new));
+
 		public static SkyblockEvent of(JsonObject jsonObject) {
-			String location = jsonObject.get("location").getAsString();
-			location = location.isBlank() ? null : location;
-			return new SkyblockEvent(jsonObject.get("timestamp").getAsLong(),
-					jsonObject.get("duration").getAsInt(),
-					jsonObject.get("extras").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toArray(String[]::new),
-					location);
+			return CODEC.parse(JsonOps.INSTANCE, jsonObject).getOrThrow();
 		}
+	}
+
+	public record JerryPerks(String mayorName, List<String> perks) {
+		public static final Codec<JerryPerks> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.STRING.fieldOf("name").forGetter(JerryPerks::mayorName),
+				Codec.STRING.listOf().fieldOf("perks").forGetter(JerryPerks::perks)
+		).apply(instance, JerryPerks::new));
 	}
 }

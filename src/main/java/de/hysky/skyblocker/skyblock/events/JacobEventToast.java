@@ -13,20 +13,22 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import java.util.List;
+
 public class JacobEventToast extends EventToast {
-	private final String[] crops;
+	private final List<String> crops;
 
 	private static final ItemStack DEFAULT_ITEM = new ItemStack(Items.IRON_HOE);
 	private static final Component CROPS = Component.translatable("skyblocker.events.crops");
 	private final int cropsWidth;
 
-	public JacobEventToast(long eventStartTime, String name, String[] crops) {
+	public JacobEventToast(long eventStartTime, String name, List<String> crops) {
 		super(eventStartTime, name, new ItemStack(Items.IRON_HOE));
 		this.crops = crops;
 		Font renderer = Minecraft.getInstance().font;
 		cropsWidth = renderer.width(CROPS);
 
-		int i = cropsWidth + 4 + crops.length * 24;
+		int i = cropsWidth + 4 + crops.size() * 24;
 		messageWidth = Math.max(messageWidth, i);
 		messageNowWidth = Math.max(messageNowWidth, i);
 	}
@@ -45,8 +47,8 @@ public class JacobEventToast extends EventToast {
 
 			int x = 30 + cropsWidth + 4;
 			context.drawString(textRenderer, CROPS, 30, 7 + (16 - textRenderer.lineHeight) / 2, CommonColors.WHITE, false);
-			for (int i = 0; i < crops.length; i++) {
-				context.renderItem(JacobsContestWidget.FARM_DATA.getOrDefault(crops[i], DEFAULT_ITEM), x + i * (16 + 8), 7);
+			for (int i = 0; i < crops.size(); i++) {
+				context.renderItem(JacobsContestWidget.FARM_DATA.getOrDefault(crops.get(i), DEFAULT_ITEM), x + i * (16 + 8), 7);
 			}
 			// IDK how to make the items transparent, so I just redraw the texture on top
 			HudHelper.renderNineSliceColored(context, TEXTURE, 0, 0, width(), height(), ARGB.colorFromFloat((k >> 24) / 255f, 1f, 1f, 1f));
