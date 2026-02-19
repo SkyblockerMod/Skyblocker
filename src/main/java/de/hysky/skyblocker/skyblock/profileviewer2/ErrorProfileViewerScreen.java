@@ -5,11 +5,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 
 public final class ErrorProfileViewerScreen extends AbstractProfileViewerScreen {
-	private static final Component TITLE = Component.literal("Skyblocker Profile Viewer - Error");
 	private final String reason;
 
 	protected ErrorProfileViewerScreen(String reason) {
-		super(TITLE);
+		super(Component.literal("Skyblocker Profile Viewer - Error"));
 		this.reason = reason;
 	}
 
@@ -19,6 +18,7 @@ public final class ErrorProfileViewerScreen extends AbstractProfileViewerScreen 
 
 		int middleX = graphics.guiWidth() / 2;
 		int middleY = graphics.guiHeight() / 2;
-		graphics.drawCenteredString(this.font, "Error ;( " + this.reason, middleX, middleY, CommonColors.WHITE);
+		graphics.drawCenteredString(this.font, "Encountered an error.", middleX, middleY, CommonColors.WHITE);
+		graphics.drawCenteredString(this.font, this.reason, middleX, middleY + 9, CommonColors.WHITE);
 	}
 }

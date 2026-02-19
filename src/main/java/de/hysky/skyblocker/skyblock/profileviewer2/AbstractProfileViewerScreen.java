@@ -16,11 +16,17 @@ public abstract sealed class AbstractProfileViewerScreen extends Screen permits 
 		super(title);
 	}
 
+	protected final int getBackgroundX() {
+		return this.width / 2 - BACKGROUND_WIDTH / 2;
+	}
+
+	protected final int getBackgroundY() {
+		return this.height / 2 - BACKGROUND_HEIGHT / 2 + 5;
+	}
+
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
 		super.render(graphics, mouseX, mouseY, a);
-		int backgroundX = this.width / 2 - BACKGROUND_WIDTH / 2;
-		int backgroundY = this.height / 2 - BACKGROUND_HEIGHT / 2 + 5;
-		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, backgroundX, backgroundY, 0f, 0f, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.getBackgroundX(), this.getBackgroundY(), 0f, 0f, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
 	}
 }

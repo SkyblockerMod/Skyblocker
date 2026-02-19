@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.profileviewer2;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -18,7 +19,9 @@ import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LenientUuidTypeAdapter;
 import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.ProfileUtils;
@@ -69,21 +72,30 @@ public class ProfileViewer {
 		CompletableFuture<Void> dataFuture = loadData(name)
 				.thenApplyAsync(pair -> {
 					Optional<ApiProfileResponse> apiProfileResponse = pair.left();
+					Optional<ApiProfile> selectedProfile = apiProfileResponse.map(ApiProfileResponse::getSelectedProfile);
 					Optional<GameProfile> gameProfile = pair.right();
 					boolean loadedSkyblockProfile = apiProfileResponse.isPresent();
+					boolean hasSkyblockProfile = selectedProfile.isPresent();
 					boolean loadedGameProfile = gameProfile.isPresent();
 
-					if (!loadedSkyblockProfile || !loadedGameProfile) {
-						return new ErrorProfileViewerScreen("Failed to load Skyblock profile or game profile!");
+					if (!loadedSkyblockProfile) {
+						return new ErrorProfileViewerScreen("Failed to load Skyblock profiles.");
+					} else if (!hasSkyblockProfile) {
+						return new ErrorProfileViewerScreen("This user has no Skyblock profiles.");
+					} else if (!loadedGameProfile) {
+						return new ErrorProfileViewerScreen("Player not found.");
 					} else {
+						// This should never throw since I presume the API cannot return a profile that the user is not a member of (given we request the user's profiles)
+						ProfileMember member = Objects.requireNonNull(selectedProfile.get().members.get(gameProfile.get().id()), "profile member must not be null");
+
 						LOGGER.info("[Skyblocker Profile Viewer] Successfully loaded the profile for {}!", name);
-						return new ProfileViewerScreen(apiProfileResponse.get(), gameProfile.get());
+						return new ProfileViewerScreen(apiProfileResponse.get(), selectedProfile.get(), gameProfile.get(), member);
 					}
 				}, minecraft)
 				.thenAcceptAsync(minecraft::setScreen, minecraft)
 				.exceptionallyAsync(throwable -> {
 					LOGGER.error("[Skyblocker Profile Viewer] Encountered an unknown exception when loading the data.", throwable);
-					minecraft.setScreen(new ErrorProfileViewerScreen("Encountered an unknown error"));
+					minecraft.setScreen(new ErrorProfileViewerScreen("Encountered an unknown error."));
 
 					return null;
 				}, minecraft);

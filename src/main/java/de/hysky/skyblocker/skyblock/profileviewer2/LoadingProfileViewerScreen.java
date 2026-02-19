@@ -6,11 +6,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 
 public final class LoadingProfileViewerScreen extends AbstractProfileViewerScreen {
-	private static final Component TITLE = Component.literal("Skyblocker Profile Viewer - Loading");
 	private final long start = System.currentTimeMillis();
 
 	protected LoadingProfileViewerScreen(String name) {
-		super(TITLE);
+		super(Component.literal("Skyblocker Profile Viewer - Loading"));
 	}
 
 	@Override
