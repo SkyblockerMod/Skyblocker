@@ -30,7 +30,7 @@ public record CrystalsWaypointMessage(CrystalHollowsLocationsCategory location, 
 
 			case Type.INITIAL_MESSAGE -> {
 				if (message.isEmpty()) return;
-				List<CrystalsWaypointMessage> waypoints = LIST_CODEC.parse(message.get()).getOrThrow();
+				List<CrystalsWaypointMessage> waypoints = LIST_CODEC.parse(message.get()).getPartialOrThrow();
 
 				if (waypoints.isEmpty()) return;
 				RenderHelper.runOnRenderThread(() -> CrystalsLocationsManager.addCustomWaypointFromSocket(waypoints.toArray(
