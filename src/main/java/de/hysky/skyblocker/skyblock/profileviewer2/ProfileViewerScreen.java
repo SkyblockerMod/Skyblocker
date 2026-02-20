@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.skyblock.profileviewer2;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
@@ -11,6 +13,8 @@ import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.SlayersPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -24,9 +28,10 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final ApiProfile profile;
 	private final GameProfile userProfile;
 	private final ProfileMember member;
-	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage());
+	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
-	private int selectedPageIndex = 0;
+	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1));
+	private int selectedPageIndex;
 
 	protected ProfileViewerScreen(ApiProfileResponse apiProfileResponse, ApiProfile profile, GameProfile userProfile, ProfileMember member) {
 		super(Component.literal("Skyblocker Profile Viewer"));
@@ -35,6 +40,11 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 		this.userProfile = userProfile;
 		this.member = member;
 		this.loadPages();
+		this.setSelectedPage(0);
+	}
+
+	private PageTabWidget createPageTab(int index) {
+		return new PageTabWidget(this.pages.get(index).getIcon(), index, this::setSelectedPage);
 	}
 
 	private LoadingInformation createLoadingInformation() {
@@ -53,27 +63,52 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 		return this.pages.get(this.selectedPageIndex);
 	}
 
+	public void setSelectedPage(int index) {
+		this.selectedPageIndex = Preconditions.checkPositionIndex(index, this.pages.size());
+
+		for (PageTabWidget tabWidget : this.tabWidgets) {
+			tabWidget.setSelected(this.selectedPageIndex == this.tabWidgets.indexOf(tabWidget));
+		}
+	}
+
 	@Override
 	public List<? extends GuiEventListener> children() {
-		return this.getSelectedPage().getWidgets();
+		List<ProfileViewerWidget> children = new ArrayList<>();
+		children.addAll(this.getSelectedPage().getWidgets());
+		children.addAll(this.tabWidgets);
+
+		return children;
 	}
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+		// Render the unselected buttons under the background
+		this.renderTabButtons(graphics, mouseX, mouseY, a, false);
+		// Render the background
 		super.render(graphics, mouseX, mouseY, a);
-
-		graphics.pose().pushMatrix();
-		graphics.pose().translate(this.getBackgroundX(), this.getBackgroundY());
+		// Render the selected tab on top of the background
+		this.renderTabButtons(graphics, mouseX, mouseY, a, true);
 
 		for (ProfileViewerWidget widget : this.getSelectedPage().getWidgets()) {
+			widget.updatePosition(this.getBackgroundX(), this.getBackgroundY());
 			widget.render(graphics, mouseX, mouseY, a);
 		}
 
-		graphics.pose().popMatrix();
-
 		int middleX = graphics.guiWidth() / 2;
 		int middleY = graphics.guiHeight() / 2;
-		graphics.drawCenteredString(this.font, "The calm before the storm.", middleX, middleY, CommonColors.WHITE);
+		graphics.drawCenteredString(this.font, "Look at all this free screen real estate!", middleX, middleY, CommonColors.WHITE);
 		graphics.drawCenteredString(this.font, this.userProfile.name() + "'s profile " + this.apiProfileResponse.getSelectedProfile().cuteName + "?", middleX, middleY + this.font.lineHeight, CommonColors.WHITE);
+	}
+
+	private void renderTabButtons(GuiGraphics graphics, int mouseX, int mouseY, float a, boolean onlySelected) {
+		for (PageTabWidget tabWidget : this.tabWidgets) {
+			// We need to render the selected tab button behind the screen
+			if (onlySelected && this.tabWidgets.indexOf(tabWidget) != this.selectedPageIndex) {
+				continue;
+			}
+
+			tabWidget.updatePosition(this.getBackgroundX(), this.getBackgroundY());
+			tabWidget.render(graphics, mouseX, mouseY, a);
+		}
 	}
 }
