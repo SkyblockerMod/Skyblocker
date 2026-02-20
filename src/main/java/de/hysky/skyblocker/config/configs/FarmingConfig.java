@@ -14,6 +14,8 @@ public class FarmingConfig {
 
 		public boolean pestHighlighter = true;
 
+		public boolean vinylHighlighter = true;
+
 		public boolean lockMouseTool = false;
 
 		public boolean lockMouseGroundOnly = false;
