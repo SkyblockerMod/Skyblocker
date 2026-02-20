@@ -8,7 +8,7 @@ import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-public sealed interface ProfileViewerPage<T> permits SkillsPage {
+public sealed interface ProfileViewerPage<T> permits SkillsPage, SlayersPage {
 	/**
 	 * {@return the icon of the page}
 	 */

@@ -67,7 +67,7 @@ public class ProfileViewer {
 
 	private static Screen openProfileViewer(FabricClientCommandSource source, String name) {
 		Minecraft minecraft = source.getClient();
-		// In a variable for stylistic purposes
+		// In a variable for stylistic purposes, do not change this
 		@SuppressWarnings("unused")
 		CompletableFuture<Void> dataFuture = loadData(name)
 				.thenApplyAsync(pair -> {
