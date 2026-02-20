@@ -34,7 +34,7 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 			"Oak", new ItemStack(Items.OAK_LOG)
 	);
 	private static final ItemStack RED_CONCRETE = new ItemStack(Items.RED_CONCRETE);
-	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.HUB, Location.THE_PARK);
+	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.HUB, Location.THE_PARK, Location.GARDEN);
 
 	public SweepDetailsHudWidget() {
 		super(Component.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails");
@@ -43,7 +43,11 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public boolean shouldRender(Location location) {
-		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea() == Area.Hub.FOREST) && super.shouldRender(location);
+		// While in the hub only show in the forest
+		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea() == Area.Hub.FOREST)
+			// While in the garden only show in unclean plots
+			&& (!Utils.getLocation().equals(Location.GARDEN) || Utils.STRING_SCOREBOARD.stream().anyMatch(s -> s.contains("Cleanup")))
+			&& super.shouldRender(location);
 	}
 
 	@Override
