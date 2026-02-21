@@ -6,6 +6,7 @@ import java.util.Map;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import org.jspecify.annotations.Nullable;
 
 public class EventNotificationsConfig {
 	public Criterion criterion = Criterion.SKYBLOCK;
@@ -33,13 +34,13 @@ public class EventNotificationsConfig {
 		PLING(SoundEvents.NOTE_BLOCK_PLING.value()),
 		GOAT(SoundEvents.GOAT_HORN_SOUND_VARIANTS.getFirst().value());
 
-		private final SoundEvent soundEvent;
+		private final @Nullable SoundEvent soundEvent;
 
-		Sound(SoundEvent soundEvent) {
+		Sound(@Nullable SoundEvent soundEvent) {
 			this.soundEvent = soundEvent;
 		}
 
-		public SoundEvent getSoundEvent() {
+		public @Nullable SoundEvent getSoundEvent() {
 			return soundEvent;
 		}
 
