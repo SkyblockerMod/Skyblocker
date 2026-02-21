@@ -83,7 +83,16 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	}
 
 	@Override
+	protected void repositionElements() {
+		for (GuiEventListener widget : this.children()) {
+			((ProfileViewerWidget) widget).updatePosition(this.getBackgroundX(), this.getBackgroundY());
+		}
+	}
+
+	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+		// Reposition everything that is rendering
+		this.repositionElements();
 		// Render the unselected buttons under the background
 		this.renderTabButtons(graphics, mouseX, mouseY, a, false);
 		// Render the background
@@ -96,7 +105,6 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 		// Render the loaded page or some generic loading text
 		if (this.loadedPages.contains(selectedPage)) {
 			for (ProfileViewerWidget widget : selectedPage.getWidgets()) {
-				widget.updatePosition(this.getBackgroundX(), this.getBackgroundY());
 				widget.render(graphics, mouseX, mouseY, a);
 			}
 		} else {
@@ -121,7 +129,6 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 				continue;
 			}
 
-			tabWidget.updatePosition(this.getBackgroundX(), this.getBackgroundY());
 			tabWidget.render(graphics, mouseX, mouseY, a);
 		}
 	}
