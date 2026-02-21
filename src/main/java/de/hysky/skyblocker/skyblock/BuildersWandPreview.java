@@ -102,8 +102,8 @@ public class BuildersWandPreview {
 
 		BlockPos.MutableBlockPos pos = startPos.mutable();
 		for (int i = 0; i < MAX_BLOCKS && checkPos(startPos, pos, client.level.getBlockState(pos), isSneaking, startBlock); i++) {
-			if (isSneaking) collector.submitFilledBox(pos, RED, SkyblockerConfigManager.get().helpers.buildersWand.previewOpacity, true);
-			else extractBlockPreview(collector, pos, Blocks.DIRT.defaultBlockState());
+			if (isSneaking) collector.submitFilledBox(pos.immutable(), RED, SkyblockerConfigManager.get().helpers.buildersWand.previewOpacity, true);
+			else extractBlockPreview(collector, pos.immutable(), Blocks.DIRT.defaultBlockState());
 			pos.move(client.player.getDirection());
 		}
 	}
@@ -117,6 +117,6 @@ public class BuildersWandPreview {
 	}
 
 	private static void extractBlockPreview(PrimitiveCollector collector, BlockPos pos, BlockState state) {
-		collector.submitBlockHologram(pos, state);
+		collector.submitBlockHologram(pos, state, SkyblockerConfigManager.get().helpers.buildersWand.previewOpacity);
 	}
 }
