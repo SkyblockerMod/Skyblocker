@@ -16,11 +16,11 @@ public final class LoadingProfileViewerScreen extends AbstractProfileViewerScree
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
 		super.render(graphics, mouseX, mouseY, a);
 
-		int middleX = graphics.guiWidth() / 2;
-		int middleY = graphics.guiHeight() / 2;
+		int centreX = this.getBackgroundX() + (BACKGROUND_WIDTH / 2);
+		int centreY = this.getBackgroundY() + (BACKGROUND_HEIGHT / 2);
 		long timeLoading = System.currentTimeMillis() - this.start;
-		String loadingText = "Loading " + LoadingDotsText.get(timeLoading);
 
-		graphics.drawCenteredString(this.font, loadingText, middleX, middleY, CommonColors.WHITE);
+		graphics.drawCenteredString(this.font, "Loading", centreX, centreY - this.font.lineHeight, CommonColors.WHITE);
+		graphics.drawCenteredString(this.font, LoadingDotsText.get(timeLoading), centreX, centreY + this.font.lineHeight, CommonColors.WHITE);
 	}
 }

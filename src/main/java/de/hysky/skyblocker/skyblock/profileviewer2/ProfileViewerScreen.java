@@ -18,16 +18,18 @@ import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.LoadingDotsText;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 
 // TODO should this support tab navigation?
-// TODO add generic LoadingPage to be displayed when pv pages are still loading
 public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	@SuppressWarnings("unused")
 	private final ApiProfileResponse apiProfileResponse;
 	private final ApiProfile profile;
 	private final GameProfile userProfile;
 	private final ProfileMember member;
+	private final long openedAt = System.currentTimeMillis();
 	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
 	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1));
@@ -89,9 +91,26 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 		// Render the selected tab on top of the background
 		this.renderTabButtons(graphics, mouseX, mouseY, a, true);
 
-		for (ProfileViewerWidget widget : this.getSelectedPage().getWidgets()) {
-			widget.updatePosition(this.getBackgroundX(), this.getBackgroundY());
-			widget.render(graphics, mouseX, mouseY, a);
+		ProfileViewerPage<?> selectedPage = this.getSelectedPage();
+
+		// Render the loaded page or some generic loading text
+		if (this.loadedPages.contains(selectedPage)) {
+			for (ProfileViewerWidget widget : selectedPage.getWidgets()) {
+				widget.updatePosition(this.getBackgroundX(), this.getBackgroundY());
+				widget.render(graphics, mouseX, mouseY, a);
+			}
+		} else {
+			int centreX = this.getBackgroundX() + (BACKGROUND_WIDTH / 2);
+			int centreY = this.getBackgroundY() + (BACKGROUND_HEIGHT / 2);
+			long timeLoadingPage = System.currentTimeMillis() - this.openedAt;
+			Component pageLoadingText = Component.empty()
+					.append(Component.literal("Loading the "))
+					.append(selectedPage.getName())
+					.append(Component.literal(" page..."));
+			Component loadingDotsText = Component.literal(LoadingDotsText.get(timeLoadingPage));
+
+			graphics.drawCenteredString(this.font, pageLoadingText, centreX, centreY - this.font.lineHeight, CommonColors.WHITE);
+			graphics.drawCenteredString(this.font, loadingDotsText, centreX, centreY + this.font.lineHeight, CommonColors.WHITE);
 		}
 	}
 
