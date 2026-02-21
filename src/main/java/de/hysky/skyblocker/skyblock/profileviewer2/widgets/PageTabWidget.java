@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 import java.util.function.IntConsumer;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -26,10 +25,11 @@ public final class PageTabWidget extends ProfileViewerWidget {
 	private boolean selected = false;
 
 	public PageTabWidget(ItemStack icon, int index, IntConsumer pageSwitcher) {
-		super(0 + WIDTH * index, -HEIGHT + HEIGHT_OFFSET, WIDTH, HEIGHT, Component.empty());
+		super(0 + WIDTH * index, -HEIGHT + HEIGHT_OFFSET, WIDTH, HEIGHT, false, Component.empty());
 		this.icon = icon;
 		this.index = index;
 		this.pageSwitcher = pageSwitcher;
+		this.active = true;
 	}
 
 	@Override
@@ -52,7 +52,4 @@ public final class PageTabWidget extends ProfileViewerWidget {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 		graphics.renderFakeItem(this.icon, this.getX() + (this.getWidth() - ITEM_SIZE) / 2, this.getY() + iconYOffset + (this.getHeight() - ITEM_SIZE) / 2);
 	}
-
-	@Override
-	protected void updateWidgetNarration(NarrationElementOutput output) {}
 }

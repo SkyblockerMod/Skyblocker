@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.RulerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.TestTextWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.Minecraft;
@@ -33,6 +34,7 @@ public final class SlayersPage implements ProfileViewerPage<LoadingInformation> 
 
 	@Override
 	public void buildWidgets(LoadingInformation data) {
+		this.widgets.add(new RulerWidget());
 		this.widgets.add(new TestTextWidget(this.getName()));
 	}
 
