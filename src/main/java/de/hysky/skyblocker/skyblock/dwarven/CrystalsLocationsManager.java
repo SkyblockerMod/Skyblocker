@@ -58,7 +58,7 @@ import static net.minecraft.commands.SharedSuggestionProvider.suggest;
  * Manager for Crystal Hollows waypoints that handles {@link #update() location detection},
  * {@link #extractLocationFromMessage(Component, Boolean) waypoints receiving}, {@link #shareWaypoint(String) sharing},
  * {@link #registerWaypointLocationCommands(CommandDispatcher, CommandBuildContext) commands}, and
- * {@link #extractRendering(PrimitiveCollection) render extraction}.
+ * {@link #extractRendering(PrimitiveCollector) render extraction}.
  */
 public class CrystalsLocationsManager {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -141,7 +141,7 @@ public class CrystalsLocationsManager {
 			for (MiningLocationLabel.CrystalHollowsLocationsCategory waypointLocation : WAYPOINT_LOCATIONS.values()) {
 				String waypointLinkedMessage = waypointLocation.getLinkedMessage();
 				String waypointName = waypointLocation.getName();
-				if (waypointLinkedMessage != null && text.contains(waypointLinkedMessage) && !verifiedWaypoints.contains(waypointName)) {
+				if (waypointLinkedMessage != null && text.startsWith(waypointLinkedMessage) && !verifiedWaypoints.contains(waypointName)) {
 					addCustomWaypoint(waypointLocation.getName(), CLIENT.player.blockPosition());
 					verifiedWaypoints.add(waypointName);
 					trySendWaypoint2Socket(waypointLocation);
