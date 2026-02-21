@@ -19,11 +19,11 @@ import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.CommonColors;
 
 // TODO should this support tab navigation?
 // TODO add generic LoadingPage to be displayed when pv pages are still loading
 public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
+	@SuppressWarnings("unused")
 	private final ApiProfileResponse apiProfileResponse;
 	private final ApiProfile profile;
 	private final GameProfile userProfile;
@@ -93,11 +93,6 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 			widget.updatePosition(this.getBackgroundX(), this.getBackgroundY());
 			widget.render(graphics, mouseX, mouseY, a);
 		}
-
-		int middleX = graphics.guiWidth() / 2;
-		int middleY = graphics.guiHeight() / 2;
-		graphics.drawCenteredString(this.font, "Look at all this free screen real estate!", middleX, middleY, CommonColors.WHITE);
-		graphics.drawCenteredString(this.font, this.userProfile.name() + "'s profile " + this.apiProfileResponse.getSelectedProfile().cuteName + "?", middleX, middleY + this.font.lineHeight, CommonColors.WHITE);
 	}
 
 	private void renderTabButtons(GuiGraphics graphics, int mouseX, int mouseY, float a, boolean onlySelected) {
