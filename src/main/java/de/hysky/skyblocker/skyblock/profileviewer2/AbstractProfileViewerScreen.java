@@ -9,8 +9,8 @@ import net.minecraft.resources.Identifier;
 
 public abstract sealed class AbstractProfileViewerScreen extends Screen permits ErrorProfileViewerScreen, LoadingProfileViewerScreen, ProfileViewerScreen {
 	private static final Identifier BACKGROUND = SkyblockerMod.id("textures/gui/profile_viewer2/base_plate.png");
-	private static final int BACKGROUND_WIDTH = 322;
-	private static final int BACKGROUND_HEIGHT = 180;
+	private static final int BACKGROUND_WIDTH = 353;
+	private static final int BACKGROUND_HEIGHT = 199;
 
 	protected AbstractProfileViewerScreen(Component title) {
 		super(title);
