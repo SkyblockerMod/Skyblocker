@@ -18,6 +18,7 @@ import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.screens.LoadingDotsText;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
@@ -33,6 +34,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
 	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1));
+	private final FrameLayout contentLayout = new FrameLayout(BACKGROUND_WIDTH - PADDING * 2, BACKGROUND_HEIGHT - PADDING * 2);
 	private int selectedPageIndex;
 
 	protected ProfileViewerScreen(ApiProfileResponse apiProfileResponse, ApiProfile profile, GameProfile userProfile, ProfileMember member) {
@@ -57,7 +59,12 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 		LoadingInformation loadingInformation = this.createLoadingInformation();
 
 		for (ProfileViewerPage<?> page : this.pages) {
-			page.load(loadingInformation).thenRunAsync(() -> this.loadedPages.add(page), this.minecraft);
+			page.load(loadingInformation).thenAcceptAsync(layoutElement -> {
+				contentLayout.addChild(layoutElement, l -> l.alignVerticallyTop().alignHorizontallyLeft()); // custom layout setting cuz FrameLayout centers stuff by default
+				contentLayout.arrangeElements();
+				repositionElements();
+				loadedPages.add(page);
+			}, this.minecraft);
 		}
 	}
 
@@ -83,16 +90,22 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	}
 
 	@Override
+	protected void init() {
+		repositionElements();
+	}
+
+	@Override
 	protected void repositionElements() {
-		for (GuiEventListener widget : this.children()) {
-			((ProfileViewerWidget) widget).updatePosition(this.getBackgroundX(), this.getBackgroundY());
+		for (PageTabWidget widget : this.tabWidgets) {
+			widget.updatePosition(this.getBackgroundX(), this.getBackgroundY());
 		}
+		contentLayout.setPosition(this.getBackgroundX() + PADDING, this.getBackgroundY() + PADDING);
 	}
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
 		// Reposition everything that is rendering
-		this.repositionElements();
+		//this.repositionElements();
 		// Render the unselected buttons under the background
 		this.renderTabButtons(graphics, mouseX, mouseY, a, false);
 		// Render the background
