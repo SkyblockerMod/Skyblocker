@@ -10,6 +10,8 @@ import de.hysky.skyblocker.skyblock.profileviewer2.widgets.RulerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.TestTextWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -27,15 +29,17 @@ public final class SlayersPage implements ProfileViewerPage<LoadingInformation> 
 	}
 
 	@Override
-	public CompletableFuture<Void> load(LoadingInformation info) {
+	public CompletableFuture<LayoutElement> load(LoadingInformation info) {
 		return CompletableFuture.completedFuture(info)
-				.thenAcceptAsync(this::buildWidgets, Minecraft.getInstance());
+				.thenApplyAsync(this::buildWidgets, Minecraft.getInstance());
 	}
 
 	@Override
-	public void buildWidgets(LoadingInformation data) {
-		this.widgets.add(new RulerWidget());
-		this.widgets.add(new TestTextWidget(this.getName()));
+	public LayoutElement buildWidgets(LoadingInformation data) {
+		LinearLayout vertical = LinearLayout.vertical();
+		this.widgets.add(vertical.addChild(new RulerWidget()));
+		this.widgets.add(vertical.addChild(new TestTextWidget(this.getName()), l -> l.paddingLeft(18).paddingTop(18)));
+		return vertical;
 	}
 
 	@Override

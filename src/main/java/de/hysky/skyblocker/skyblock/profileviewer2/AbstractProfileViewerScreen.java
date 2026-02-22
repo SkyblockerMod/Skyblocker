@@ -11,6 +11,7 @@ public abstract sealed class AbstractProfileViewerScreen extends Screen permits 
 	private static final Identifier BACKGROUND = SkyblockerMod.id("textures/gui/profile_viewer2/base_plate.png");
 	public static final int BACKGROUND_WIDTH = 353;
 	public static final int BACKGROUND_HEIGHT = 199;
+	public static final int PADDING = 8;
 
 	protected AbstractProfileViewerScreen(Component title) {
 		super(title);

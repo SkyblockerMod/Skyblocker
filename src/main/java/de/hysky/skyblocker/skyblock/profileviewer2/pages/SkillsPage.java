@@ -11,6 +11,9 @@ import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.RulerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -29,16 +32,22 @@ public final class SkillsPage implements ProfileViewerPage<LoadingInformation> {
 	}
 
 	@Override
-	public CompletableFuture<Void> load(LoadingInformation info) {
+	public CompletableFuture<LayoutElement> load(LoadingInformation info) {
 		return CompletableFuture.completedFuture(info)
-				.thenAcceptAsync(this::buildWidgets, Minecraft.getInstance());
+				.thenApplyAsync(this::buildWidgets, Minecraft.getInstance());
 	}
 
 	@Override
-	public void buildWidgets(LoadingInformation info) {
-		this.widgets.add(new RulerWidget());
-		this.widgets.add(new PlayerWidget(0, 0, info.mainMember()));
-		this.widgets.add(new BasicInfoBoxWidget(0, PlayerWidget.HEIGHT + INFO_BOX_OFFSET, PlayerWidget.WIDTH, 71));
+	public LayoutElement buildWidgets(LoadingInformation info) {
+		// this frame layout is only there for the RulerWidget to not move the rest of the widgets due to the spacing
+		FrameLayout frameLayout = new FrameLayout();
+		frameLayout.defaultChildLayoutSetting().alignHorizontallyLeft().alignVerticallyTop(); // do not center by default grrrr
+		this.widgets.add(frameLayout.addChild(new RulerWidget()));
+		LinearLayout linearLayout = LinearLayout.vertical().spacing(INFO_BOX_OFFSET);
+		this.widgets.add(linearLayout.addChild(new PlayerWidget(0, 0, info.mainMember())));
+		this.widgets.add(linearLayout.addChild(new BasicInfoBoxWidget(0, 0, PlayerWidget.WIDTH, 71)));
+		frameLayout.addChild(linearLayout);
+		return frameLayout;
 	}
 
 	@Override
