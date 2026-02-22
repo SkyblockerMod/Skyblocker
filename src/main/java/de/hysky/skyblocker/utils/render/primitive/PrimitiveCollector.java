@@ -57,7 +57,7 @@ public interface PrimitiveCollector {
 	 */
 	void submitTexturedQuad(Vec3 pos, float width, float height, float textureWidth, float textureHeight, Vec3 renderOffset, Identifier texture, float[] shaderColour, float alpha, boolean throughWalls);
 
-	void submitBlockHologram(BlockPos pos, BlockState state);
+	void submitBlockHologram(BlockPos pos, BlockState state, float alpha);
 
 	void submitText(Component text, Vec3 pos, boolean throughWalls);
 
