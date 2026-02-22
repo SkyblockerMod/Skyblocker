@@ -121,7 +121,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 	 * @param id the ID of the donation to retrieve
 	 * @return the Donation object associated with the given ID, or null if not found
 	 */
-	protected static Donation getDonation(String id) {
+	protected static @Nullable Donation getDonation(String id) {
 		return donations.stream()
 				.filter(donation -> donation.getId().equals(id))
 				.findFirst()
