@@ -219,6 +219,14 @@ loom {
 	}
 }
 
+sourceSets {
+	main {
+		java {
+			exclude("de/hysky/skyblocker/skyblock/profileviewer2/**")
+		}
+	}
+}
+
 fabricApi {
 	configureTests {
 		createSourceSet = true
