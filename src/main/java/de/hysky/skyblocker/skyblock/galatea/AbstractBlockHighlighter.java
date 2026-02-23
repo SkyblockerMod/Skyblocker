@@ -60,7 +60,7 @@ public abstract class AbstractBlockHighlighter {
 		if (!shouldProcess()) return;
 
 		if (this.statePredicate.test(newState)) {
-			this.highlightedBlocks.add(pos.immutable());
+			this.highlightedBlocks.add(pos);
 		} else {
 			this.highlightedBlocks.remove(pos);
 		}
@@ -73,7 +73,7 @@ public abstract class AbstractBlockHighlighter {
 	protected void onChunkLoad(ClientLevel world, LevelChunk chunk) {
 		if (!shouldProcess()) return;
 
-		chunk.findBlocks(statePredicate, (pos, state) -> this.highlightedBlocks.add(pos.immutable()));
+		chunk.findBlocks(statePredicate, (pos, state) -> this.highlightedBlocks.add(pos));
 	}
 
 	/**

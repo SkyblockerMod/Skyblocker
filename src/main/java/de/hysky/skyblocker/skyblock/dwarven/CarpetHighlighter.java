@@ -59,9 +59,7 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 		if (!isLocationValid || !SkyblockerConfigManager.get().mining.dwarvenMines.enableCarpetHighlighter || Minecraft.getInstance().level == null || Minecraft.getInstance().player == null) return;
 		Iterable<BlockPos> iterable = BlockPos.withinManhattan(Minecraft.getInstance().player.blockPosition(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
 		for (BlockPos blockPos : iterable) {
-			//The iterator contains a BlockPos.Mutable that it changes the position of to iterate over blocks,
-			// so it has to be converted to an immutable BlockPos or the position will change based on the player's position && the search radius
-			if (checkForCarpet(blockPos)) CARPET_LOCATIONS.add(blockPos.immutable());
+			if (checkForCarpet(blockPos)) CARPET_LOCATIONS.add(blockPos);
 		}
 	}
 

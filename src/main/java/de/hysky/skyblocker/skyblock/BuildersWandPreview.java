@@ -50,7 +50,7 @@ public class BuildersWandPreview {
 		Direction side = hitResult.getDirection();
 		if (!client.level.getBlockState(hitPos.relative(side)).isAir()) return;
 		BlockState state = client.level.getBlockState(hitPos);
-		for (BlockPos pos : findConnectedFaces(client.level, hitPos, side, state).destroyAndIterate()) {
+		for (BlockPos pos : findConnectedFaces(client.level, hitPos, side, state).destroyAndIterateMut()) {
 			extractBlockPreview(collector, pos.relative(side), state);
 		}
 	}
