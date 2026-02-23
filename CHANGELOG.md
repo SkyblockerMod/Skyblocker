@@ -1,3 +1,37 @@
+# Release 6.1.0
+
+## Highlight
+* Various fixes for the 0.24.2 SkyBlock update
+* Remove 1.8 Lever, Cactus, and Mushroom Hitboxes
+* Add MP Calculation in the Profile Viewer
+* Fix some plot icons not saving correctly for the Garden Plots Widget
+* Fix Bazaar/NPC Price Tooltips not counting compost correctly in the Composter
+* Fix Sweep Details not being hidden in the Garden
+* Fix the Profile Viewer sometimes getting stuck loading when an error occurs
+
+## What's Changed
+* Add workflow option to not modify mod version by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2145
+* Minor PV Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2150
+* Add MP to PV by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2151
+* The start of the journey towards Profile Viewer v2 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/2156
+* Profile Viewer v2: Page & Widget/UI by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/2162
+* Handle sweep details in unclean garden plots by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2147
+* Fix Egg Finder not being disabled properly by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2158
+* Use getPartialOrThrow() for CH Waypoints by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2159
+* Minor Room Preview Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2153
+* Fix Some Plot Icons Not Saving Correctly by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2152
+* Small Config Grammar Fix by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2163
+* Check for item count in composter for NPC/bazaar prices by @GrowlingGrizzly in https://github.com/SkyblockerMod/Skyblocker/pull/2165
+* pv2 layout based suggestion by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2168
+* 0.24.2 Update Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2170
+
+## New Contributors
+* @GrowlingGrizzly made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2165
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.0.3+1.21.11...v6.1.0+1.21.11
+
+___
+
 # Release 6.0.3
 
 ## Highlight
