@@ -32,25 +32,13 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos> {
 	public int nextGrowThreshold = Math.min((int) (this.capacity * LOAD_FACTOR), this.capacity - 1);
 	public long[] entries = new long[this.capacity + LANES - 1];
 
-	// debug fields
-	public final static boolean DEBUG = false;
-	public static int TOMBSTONES_CLEARED = 0;
-	public static int QUERIES = 0;
-	public static int PROBES = 0;
-
 	public BlockPosSet() {
 		Arrays.fill(this.entries, EMPTY);
-		if (DEBUG) {
-			TOMBSTONES_CLEARED = 0;
-			QUERIES = 0;
-			PROBES = 0;
-		}
 	}
 
 	/// Roughly 1.5x faster than LongOpenHashSet at high load factors
 	/// Roughly on par at low load factors
 	public boolean containsXyz(int x, int y, int z) {
-		if (DEBUG) QUERIES++;
 		final long hash = hashXyz(x, y, z);
 		final int mask = this.mask;
 		int i = (int) hash & mask;
@@ -84,7 +72,6 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos> {
 			if (entries[i] == EMPTY) return false;
 			i = (i + 1) & mask;
 			*/
-			if (DEBUG) PROBES++;
 		} while (true);
 	}
 
@@ -96,7 +83,6 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos> {
 		if (this.size >= this.nextGrowThreshold) this.resize(this.capacity * 2);
 		else if (this.tombstones >= this.capacity - this.nextGrowThreshold) this.resize(this.capacity);
 
-		if (DEBUG) QUERIES++;
 		final long hash = hashXyz(x, y, z);
 
 		final int mask = this.mask;
@@ -130,7 +116,6 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos> {
 			// wrap to beginning
 			// we will never enter an infinite loop because there is at least 1 empty slot
 
-			if (DEBUG) PROBES++;
 			slotToInsert = (slotToInsert + 1) & mask;
 		} while (true);
 	}
@@ -164,7 +149,6 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos> {
 					if (this.entries[(i + 1) & mask] == TOMBSTONE) {
 						this.entries[i] = EMPTY;
 						this.tombstones--;
-						if (DEBUG) TOMBSTONES_CLEARED++;
 					}
 					i = (i - 1) & mask;
 				} while (this.entries[i] == TOMBSTONE);
