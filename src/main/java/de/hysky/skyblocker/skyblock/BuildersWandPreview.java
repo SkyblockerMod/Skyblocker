@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -18,9 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import java.util.ArrayDeque;
-import java.util.HashSet;
 import java.util.Queue;
-import java.util.Set;
 
 public class BuildersWandPreview {
 	private static final int MAX_BLOCKS = 241;
@@ -51,15 +50,15 @@ public class BuildersWandPreview {
 		Direction side = hitResult.getDirection();
 		if (!client.level.getBlockState(hitPos.relative(side)).isAir()) return;
 		BlockState state = client.level.getBlockState(hitPos);
-		for (BlockPos pos : findConnectedFaces(client.level, hitPos, side, state)) {
+		for (BlockPos pos : findConnectedFaces(client.level, hitPos, side, state).destroyAndIterate()) {
 			extractBlockPreview(collector, pos.relative(side), state);
 		}
 	}
 
-	private static Set<BlockPos> findConnectedFaces(Level world, BlockPos pos, Direction side, BlockState state) {
+	private static BlockPosSet findConnectedFaces(Level world, BlockPos pos, Direction side, BlockState state) {
 		// bfs connected block faces
 		Queue<BlockPos> q = new ArrayDeque<>();
-		Set<BlockPos> visited = new HashSet<>();
+		BlockPosSet visited = new BlockPosSet();
 		q.add(pos);
 		visited.add(pos);
 
@@ -83,7 +82,7 @@ public class BuildersWandPreview {
 				mutable.move(dir.getOpposite());
 			}
 
-			if (visited.size() > MAX_BLOCKS) return Set.of();
+			if (visited.size() > MAX_BLOCKS) return new BlockPosSet();
 		}
 
 		return visited;

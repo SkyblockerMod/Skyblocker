@@ -9,6 +9,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -40,9 +41,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -108,12 +107,12 @@ public class FairySouls {
 	}
 
 	private static void saveFoundFairySouls(Minecraft client) {
-		Map<String, Map<String, Set<BlockPos>>> foundFairies = new HashMap<>();
+		Map<String, Map<String, BlockPosSet>> foundFairies = new HashMap<>();
 		for (Map.Entry<String, Map<BlockPos, ProfileAwareWaypoint>> fairiesForLocation : fairySouls.entrySet()) {
 			for (ProfileAwareWaypoint fairySoul : fairiesForLocation.getValue().values()) {
 				for (String profile : fairySoul.foundProfiles) {
 					foundFairies.computeIfAbsent(profile, profile_ -> new HashMap<>());
-					foundFairies.get(profile).computeIfAbsent(fairiesForLocation.getKey(), location_ -> new HashSet<>());
+					foundFairies.get(profile).computeIfAbsent(fairiesForLocation.getKey(), location_ -> new BlockPosSet());
 					foundFairies.get(profile).get(fairiesForLocation.getKey()).add(fairySoul.pos);
 				}
 			}
@@ -121,11 +120,11 @@ public class FairySouls {
 
 		try (BufferedWriter writer = Files.newBufferedWriter(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json"))) {
 			JsonObject foundFairiesJson = new JsonObject();
-			for (Map.Entry<String, Map<String, Set<BlockPos>>> foundFairiesForProfile : foundFairies.entrySet()) {
+			for (Map.Entry<String, Map<String, BlockPosSet>> foundFairiesForProfile : foundFairies.entrySet()) {
 				JsonObject foundFairiesForProfileJson = new JsonObject();
-				for (Map.Entry<String, Set<BlockPos>> foundFairiesForLocation : foundFairiesForProfile.getValue().entrySet()) {
+				for (Map.Entry<String, BlockPosSet> foundFairiesForLocation : foundFairiesForProfile.getValue().entrySet()) {
 					JsonArray foundFairiesForLocationJson = new JsonArray();
-					for (BlockPos foundFairy : foundFairiesForLocation.getValue()) {
+					for (BlockPos foundFairy : foundFairiesForLocation.getValue().iterateMut()) {
 						foundFairiesForLocationJson.add(PosUtils.getPosString(foundFairy));
 					}
 					foundFairiesForProfileJson.add(foundFairiesForLocation.getKey(), foundFairiesForLocationJson);
