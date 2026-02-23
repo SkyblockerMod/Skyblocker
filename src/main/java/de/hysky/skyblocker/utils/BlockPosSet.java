@@ -2,7 +2,11 @@ package de.hysky.skyblocker.utils;
 
 import net.minecraft.core.BlockPos;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos> {
 	/// Sentinels for tombstones (deleted slots) and empty slots
@@ -14,10 +18,10 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos> {
 	/// [31_556_398, 107, 9_164_935].
 	/// However, this is unlikely to be an issue, as both positions
 	/// are outside the world border (+-30_000_000, +-30_000_000)
-	public final static long TOMBSTONE = Long.MAX_VALUE;
-	public final static long EMPTY = TOMBSTONE - 1;
-	public final static float LOAD_FACTOR = 0.75f;
-	public final static int LANES = 4;
+	public static final long TOMBSTONE = Long.MAX_VALUE;
+	public static final long EMPTY = TOMBSTONE - 1;
+	public static final float LOAD_FACTOR = 0.75f;
+	public static final int LANES = 4;
 
 	public int size = 0;
 	public int tombstones = 0;
