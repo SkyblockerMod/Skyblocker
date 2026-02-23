@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.utils;
 
 import net.minecraft.core.BlockPos;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.OutputStream;
@@ -13,7 +12,7 @@ import java.util.Random;
 import java.util.Set;
 
 public class BlockPosSetTest {
-	//	@Test
+	@Test
 	void testAddRemoveContains() {
 		long start = System.nanoTime();
 		PrintStream devNull = new PrintStream(OutputStream.nullOutputStream());
@@ -174,7 +173,7 @@ public class BlockPosSetTest {
 					iterator.remove();
 					expectEqual(true, javaSet.remove(pos));
 				} else {
-					i ++;
+					i++;
 				}
 			}
 			expectEqual(javaSet.size(), i);
@@ -236,16 +235,6 @@ public class BlockPosSetTest {
 					x0 == x1 ? x0 + 1 : Math.max(x0, x1),
 					y0 == y1 ? y0 + 1 : Math.max(y0, y1),
 					z0 == z1 ? z0 + 1 : Math.max(z0, z1)
-			);
-		}
-
-		public @NotNull String toString() {
-			return "%dx%dx%d=%d (%x)".formatted(
-					this.maxX - this.minX,
-					this.maxY - this.minY,
-					this.maxZ - this.minZ,
-					(this.maxX - this.minX) * (this.maxY - this.minY) * (this.maxZ - this.minZ),
-					this.seed
 			);
 		}
 	}
