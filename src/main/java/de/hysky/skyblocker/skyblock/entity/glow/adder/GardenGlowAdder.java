@@ -14,8 +14,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.skyblock.garden.CurrentJacobCrop;
 import de.hysky.skyblocker.skyblock.garden.GardenConstants;
+import de.hysky.skyblocker.skyblock.garden.VacuumCache;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
-import de.hysky.skyblocker.skyblock.VacuumCache;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -89,7 +89,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 		}
 
 		// Filter only pest head that matches by crop
-		return entity.hasItemInSlot(EquipmentSlot.HEAD) && GardenConstants.PEST_HEAD_BY_CROP
+		return GardenConstants.PEST_HEAD_BY_CROP
 				.get(CurrentJacobCrop.CURRENT_CROP_CONTEST)
 				.contains(ItemUtils.getHeadTexture(entity.getItemBySlot(EquipmentSlot.HEAD)));
 	}
@@ -109,7 +109,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 		}
 
 		// Filter only pest head that matches by name
-		return entity.hasItemInSlot(EquipmentSlot.HEAD) && GardenConstants.PEST_HEAD_BY_CROP
+		return GardenConstants.PEST_HEAD_BY_CROP
 				.get(GardenConstants.CROP_BY_VINYL.get(vinyl))
 				.contains(ItemUtils.getHeadTexture(entity.getItemBySlot(EquipmentSlot.HEAD)));
 	}

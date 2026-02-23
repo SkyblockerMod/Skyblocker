@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock;
+package de.hysky.skyblocker.skyblock.garden;
 
 import com.mojang.serialization.Codec;
 
@@ -28,20 +28,17 @@ public class VacuumCache {
 			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
 				if (genericContainerScreen.getTitle().getString().startsWith("Stereo Harmony")) {
 					ScreenEvents.afterTick(screen).register(screen1 -> {
-						boolean noneSelected = true;
-
 						for (Slot slot : genericContainerScreen.getMenu().slots) {
 							ItemStack stack = slot.getItem();
 
 							if (!stack.isEmpty() && ItemUtils.getLoreLineIf(stack, line -> line.equals("Click to stop playing!")) != null) {
 								setVinyl(stack.getSkyblockId());
-								noneSelected = false;
 
-								break;
+								return;
 							}
 						}
 
-						if (noneSelected) setVinyl("");
+						setVinyl("");
 					});
 				}
 			}
@@ -59,7 +56,7 @@ public class VacuumCache {
 		} else {
 			String current = getVinyl();
 
-			if (current.isEmpty() || !current.equals(skyblockId)) {
+			if (!current.equals(skyblockId)) {
 				CACHED_VINYL.put(skyblockId);
 				CACHED_VINYL.save();
 			}
