@@ -164,7 +164,7 @@ public class BlockPosSetTest {
 		}
 
 		{
-			Random rand = new Random(0x837e8598eb1dc288L);
+			Random rand = new Random(0x837E8598EB1DC288L);
 			final Set<BlockPos> javaSet = new HashSet<>(set);
 			Iterator<BlockPos.MutableBlockPos> iterator = set.iterateMut().iterator();
 			int i = 0;

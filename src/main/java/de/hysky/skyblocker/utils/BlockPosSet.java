@@ -392,7 +392,6 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		this.clearRetainingCapacity();
 	}
 
-
 	@Override
 	public Iterator<BlockPos> iterator() {
 		return new Iter(this.capacity, this.entries);
@@ -404,7 +403,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		private final int capacity;
 		private final long[] entries;
 
-		public Iter(int capacity, long[] entries) {
+		Iter(int capacity, long[] entries) {
 			this.index = Integer.MIN_VALUE;
 			this.nextIndex = Integer.MIN_VALUE;
 			for (int i = 0; i < capacity; i++) {
@@ -454,7 +453,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		private final long[] entries;
 		private final BlockPos.MutableBlockPos pos;
 
-		public IterMut(int capacity, long[] entries) {
+		IterMut(int capacity, long[] entries) {
 			this.index = Integer.MIN_VALUE;
 			this.nextIndex = Integer.MIN_VALUE;
 			for (int i = 0; i < capacity; i++) {
@@ -511,7 +510,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		private final int size;
 		private final long[] entries;
 
-		private OwningIter(int size, long[] entries) {
+		OwningIter(int size, long[] entries) {
 			for (int i = 0, j = 0; j < size; i++) {
 				if (entries[i] >= EMPTY) continue;
 				entries[j] = entries[i];
@@ -554,7 +553,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		private final long[] entries;
 		private final BlockPos.MutableBlockPos pos;
 
-		private OwningIterMut(int size, long[] entries) {
+		OwningIterMut(int size, long[] entries) {
 			for (int i = 0, j = 0; j < size; i++) {
 				if (entries[i] >= EMPTY) continue;
 				entries[j] = entries[i];
