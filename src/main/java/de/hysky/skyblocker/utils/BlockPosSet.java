@@ -156,15 +156,14 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 				// */
 
 				// travel backwards and attempt to remove tombstones if the next slot is empty
-//                /*
 				do {
-					if (this.entries[(i + 1) & mask] == TOMBSTONE) {
-						this.entries[i] = EMPTY;
-						this.tombstones--;
-					}
+					if (this.entries[(i + 1) & mask] != EMPTY) break;
+
+					this.entries[i] = EMPTY;
+					this.tombstones--;
+
 					i = (i - 1) & mask;
 				} while (this.entries[i] == TOMBSTONE);
-				// */
 
 				return true;
 			} else if (this.entries[i] == EMPTY) return false;
@@ -173,10 +172,9 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 	}
 
 	public void resize(int newCapacity) {
-		if (newCapacity < this.size)
-			throw new AssertionError("capacity must be greater than size! (got: %d, size: %d)".formatted(newCapacity, this.size));
-		if ((newCapacity & newCapacity - 1) != 0)
-			throw new AssertionError("capacity must be a power of two! (got: %d)".formatted(newCapacity));
+		assert newCapacity >= this.size : "capacity must be greater than size! (got: %d, size: %d)".formatted(newCapacity, this.size);
+		assert (newCapacity & newCapacity - 1) == 0 : "capacity must be a power of two! (got: %d)".formatted(newCapacity);
+
 		final int mask = newCapacity - 1;
 		long[] newEntries = new long[newCapacity + LANES - 1];
 		Arrays.fill(newEntries, EMPTY);
