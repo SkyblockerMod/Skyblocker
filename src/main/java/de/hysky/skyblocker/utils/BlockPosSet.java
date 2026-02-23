@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos> {
+public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable {
 	/// Sentinels for tombstones (deleted slots) and empty slots
 	/// This does mean that the set cannot store the positions
 	/// new BlockPos(unhashLong(TOMBSTONE)) and
@@ -49,7 +49,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos> {
 			LongVector n = LongVector.fromArray(LongVector.SPECIES_512, this.entries, i);
 			if (n.compare(VectorOperators.EQ, hash).anyTrue()) return true;
 			if (n.compare(VectorOperators.EQ, EMPTY).anyTrue()) return false;
-			 */
+			*/
 
 			// The JIT doesn't actually manage to vectorize this code.
 			// Why is it profitable over a naive loop, then?
@@ -72,6 +72,18 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos> {
 			if (entries[i] == EMPTY) return false;
 			i = (i + 1) & mask;
 			*/
+		} while (true);
+	}
+
+	public int indexOf(BlockPos pos) {
+		final long hash = hashXyz(pos.getX(), pos.getY(), pos.getZ());
+		final int mask = this.mask;
+		int i = (int) hash & mask;
+
+		do {
+			if (entries[i] == hash) return i;
+			if (entries[i] == EMPTY) return -1;
+			i = (i + 1) & mask;
 		} while (true);
 	}
 
@@ -570,6 +582,17 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos> {
 
 		public Iterator<BlockPos.MutableBlockPos> iterator() {
 			return this;
+		}
+	}
+
+	@Override
+	public BlockPosSet clone() {
+		try {
+			var cloned = (BlockPosSet) super.clone();
+			cloned.entries = cloned.entries.clone();
+			return cloned;
+		} catch (CloneNotSupportedException unreachable) {
+			throw new RuntimeException();
 		}
 	}
 }
