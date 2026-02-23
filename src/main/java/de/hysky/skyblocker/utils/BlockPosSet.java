@@ -232,7 +232,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 	public static long hashLong(final long l) {
 		// https://github.com/torvalds/linux/blob/master/include/linux/hash.h#L42 <- this one sucks
 		// https://www.pcg-random.org/posts/does-it-beat-the-minimal-standard.html <- used the 64 bit mcg constant
-		return Long.rotateRight(l * 0xcb45348a28cb43bdL, 32); // 64 bit mcg
+		return Long.rotateRight(l * 0xCB45348A28CB43BDL, 32); // 64 bit mcg
 	}
 
 	public static long unhashLong(final long h) {
