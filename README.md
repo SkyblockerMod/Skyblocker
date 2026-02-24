@@ -148,13 +148,14 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Catacombs**
 - **Container:**
     - Inventory
-    - Enderchest
+    - Ender Chest
     - Backpack
     - Wardrobe
     - Pets
     - Accessory Bag
 - **Collections**
-- **Networth Calculation**
+- **Net Worth Calculation**
+- **Magical Power Calculation**
 
 ### Dwarven Mines / Crystal Hollows / Glacite Mining:
 - **Dwarven Mines:**
@@ -243,7 +244,6 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Compact damage**
 - **Waypoints for commissions in dwarven mines and glacite tunnels**
 - **Fancy Tab HUD:** Fully configurable, allowing individual widgets to be freely placed on the main screen.
-- **1.8 Hitbox for Levers, Mushrooms, and Cacti**
 - **Hide Status Effect Overlay**
 - **Personal Compactor/Deletor Preview**
 - **Hide Fake Players in Social Interactions Screen**
