@@ -4,10 +4,14 @@
 * Various fixes for the 0.24.2 SkyBlock update
 * Remove 1.8 Lever, Cactus, and Mushroom Hitboxes
 * Add MP Calculation in the Profile Viewer
+* Improve Fire Freeze Staff Timer
+    * The timer should now be more accurate during server lag
+* Improve the Museum resync failure messages 
 * Fix some plot icons not saving correctly for the Garden Plots Widget
 * Fix Bazaar/NPC Price Tooltips not counting compost correctly in the Composter
 * Fix Sweep Details not being hidden in the Garden
 * Fix the Profile Viewer sometimes getting stuck loading when an error occurs
+* Fix Museum donatable items sometimes showing multiple times
 
 ## What's Changed
 * Add workflow option to not modify mod version by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2145
@@ -23,6 +27,8 @@
 * Small Config Grammar Fix by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2163
 * Check for item count in composter for NPC/bazaar prices by @GrowlingGrizzly in https://github.com/SkyblockerMod/Skyblocker/pull/2165
 * pv2 layout based suggestion by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2168
+* Use Server Ticks for the Fire Freeze Staff Timer by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2052
+* Improve Museum Resync Feedback + Other Museum Stuff by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2140
 * 0.24.2 Update Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2170
 
 ## New Contributors
