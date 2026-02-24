@@ -520,11 +520,6 @@
 
   "skyblocker.config.general.enableTips": "Enable Tips",
 
-  "skyblocker.config.general.hitbox": "Hitboxes",
-  "skyblocker.config.general.hitbox.oldCactusHitbox": "Enable 1.8 cactus hitbox",
-  "skyblocker.config.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",
-  "skyblocker.config.general.hitbox.oldMushroomHitbox": "Enable 1.8 mushroom hitbox",
-
   "skyblocker.config.general.itemInfoDisplay": "Item Info Display",
   "skyblocker.config.general.itemInfoDisplay.itemBackgroundOpacity": "Item Background Overlay Opacity",
   "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle": "Item Background Overlay Style",
@@ -1675,7 +1670,7 @@
   "skyblocker.itemTooltip.nullMessage": "Item price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
   "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
-  "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! Note that you can only do this once every two days.",
+  "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! You can only do this once an hour.",
   "skyblocker.museum.hud.alreadyDonatedItem": "Donated Item",
   "skyblocker.museum.hud.coin": "Coins",
   "skyblocker.museum.hud.countsFor": "Will count for",
@@ -1697,7 +1692,14 @@
   "skyblocker.museum.hud.unknownPrice": "Unknown",
   "skyblocker.museum.hud.wikiLookup": "Press %s to open the wiki page!",
   "skyblocker.museum.hud.xpReward": "Reward",
-  "skyblocker.museum.resyncFailure": "Failed to resync your museum item donations!",
+  "skyblocker.museum.resyncFailure": "Failed to resync your Museum item donations: %s!",
+  "skyblocker.museum.resyncFailure.apiDisabled": "Museum API is not enabled",
+  "skyblocker.museum.resyncFailure.apiDisabled.@Tooltip": "Enable Museum API in your SkyBlock Settings, and try again in a few minutes!",
+  "skyblocker.museum.resyncFailure.itemRepo": "Item repository hasn't loaded yet",
+  "skyblocker.museum.resyncFailure.itemRepo.@Tooltip": "Try again in a few minutes!",
+  "skyblocker.museum.resyncFailure.profile": "Unknown profile",
+  "skyblocker.museum.resyncFailure.profile.@Tooltip": "Rejoin Skyblock and try again in a few minutes!",
+  "skyblocker.museum.resyncFailure.unknownError": "Unknown Error",
   "skyblocker.museum.resyncSuccess": "Successfully resynced your museum item donations!",
 
   "skyblocker.nightVision.success": "Changed the strength of night vision to %s.",
