@@ -2,8 +2,8 @@
 
 ## Highlight
 * Various fixes for the 0.24.2 SkyBlock update
-* Remove 1.8 Lever, Cactus, and Mushroom Hitboxes
 * Add MP Calculation in the Profile Viewer
+* Remove 1.8 Lever, Cactus, and Mushroom Hitboxes
 * Improve Fire Freeze Staff Timer
     * The timer should now be more accurate during server lag
 * Improve the Museum resync failure messages 
