@@ -61,6 +61,7 @@ public class DungeonsSpecialEffects {
 
 			//M4
 			case "Second Master Star" -> "SECOND_MASTER_STAR";
+			case "Spirit Mask" -> "SPIRIT_MASK";
 
 			//M5
 			case "Third Master Star" -> "THIRD_MASTER_STAR";
