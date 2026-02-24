@@ -302,6 +302,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		Map.entry("Spirit Boots", "THORNS_BOOTS"),
 		Map.entry("Spirit Legendary", "LVL_1_LEGENDARY_SPIRIT"),    // Spirit pet (Legendary)
 		Map.entry("Spirit Epic", "LVL_1_EPIC_SPIRIT"),
+		Map.entry("Spirit Mask", "SPIRIT_MASK"),      // M4 Only
 
 		Map.entry("Second Master Star", "SECOND_MASTER_STAR"),
 		Map.entry("Spirit Wing", "SPIRIT_WING"),
