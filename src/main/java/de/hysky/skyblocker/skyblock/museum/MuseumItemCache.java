@@ -11,6 +11,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
@@ -51,6 +52,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -71,6 +73,7 @@ public class MuseumItemCache {
 	/** Set Id -> Display Item Id */
 	public static final Map<String, String> ARMOR_TO_ID = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>());
 	private static final Map<String, String> MAPPED_IDS = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>());
+	public static Set<String> MUSEUM_CATEGORIES = Set.of();
 	public static final ObjectList<Donation> MUSEUM_DONATIONS = ObjectLists.synchronize(new ObjectArrayList<>());
 	private static final ObjectList<ObjectArrayList<String>> ORDERED_UPGRADES = ObjectLists.synchronize(new ObjectArrayList<>());
 
@@ -95,6 +98,16 @@ public class MuseumItemCache {
 
 									return Command.SINGLE_SUCCESS;
 								}))));
+		if (!Debug.debugEnabled()) return;
+		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("debug").then(literal("reloadMuseumItems")
+						.executes(ctx -> {
+							ctx.getSource().sendFeedback(Component.literal("Reloading..."));
+							loadMuseumItems();
+							ctx.getSource().sendFeedback(Component.literal("Reloaded!"));
+							return Command.SINGLE_SUCCESS;
+						}))
+				)
+		);
 	}
 
 	/**
@@ -107,6 +120,7 @@ public class MuseumItemCache {
 			MAPPED_IDS.clear();
 			MUSEUM_DONATIONS.clear();
 			ORDERED_UPGRADES.clear();
+			MUSEUM_CATEGORIES = Set.of();
 
 			NEURepoFile filePath = NEURepoManager.file(CONSTANTS_MUSEUM_DATA);
 			if (filePath == null) return;
@@ -120,23 +134,18 @@ public class MuseumItemCache {
 				Map<String, JsonElement> setsToItems = json.get("sets_to_items").getAsJsonObject().asMap();
 				Map<String, JsonElement> children = json.get("children").getAsJsonObject().asMap();
 				Map<String, JsonElement> armorToId = json.get("armor_to_id").getAsJsonObject().asMap();
-
-				Map<String, JsonArray> allDonations = Map.of(
-						"weapons", json.get("weapons").getAsJsonArray(),
-						"armor", json.get("armor").getAsJsonArray(),
-						"rarities", json.get("rarities").getAsJsonArray()
-				);
-
 				mappedIds.forEach((s, jsonElement) -> MAPPED_IDS.put(s, jsonElement.getAsString()));
 
-				for (Map.Entry<String, JsonArray> entry : allDonations.entrySet()) {
-					String category = entry.getKey();
-					JsonArray array = entry.getValue();
+				Map<String, JsonElement> itemCategories = json.get("items").getAsJsonObject().asMap();
+				MUSEUM_CATEGORIES = itemCategories.keySet();
+				itemCategories.forEach((category, elem) -> {
+					JsonArray array = elem.getAsJsonArray();
+					if (category.equals("special")) return;
 
 					for (JsonElement element : array) {
 						String itemID = element.getAsString();
 						List<ObjectObjectMutablePair<String, PriceData>> set = new ArrayList<>();
-						if (category.equals("armor")) {
+						if (armorToId.containsKey(itemID)) {
 							boolean isEquipment = true;
 							for (JsonElement jsonElement : setsToItems.get(itemID).getAsJsonArray()) {
 								if (isEquipment) isEquipment = MuseumUtils.isEquipment(jsonElement.getAsString());
@@ -179,7 +188,7 @@ public class MuseumItemCache {
 
 						MUSEUM_DONATIONS.add(new Donation(category, itemID, set, itemXP));
 					}
-				}
+				});
 
 				MUSEUM_DONATIONS.forEach(donation -> {
 					for (List<String> list : ORDERED_UPGRADES) {
