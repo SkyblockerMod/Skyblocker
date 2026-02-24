@@ -870,7 +870,7 @@
     "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[0]": "Désactivé : Ne pas afficher de Marqueur de Commission.",
     "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[1]": "\nDwarven : Afficher les points de repère uniquement dans les Dwarven Mines.",
     "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[2]": "\nGlacite : Affiche les Marqueurs uniquement dans les tunnels de glacite.",
-    "skyblocker.config.mining.commissionWaypoints.mode.OFF": "Désactivé",
+    "skyblocker.config.mining.commissionWaypoints.mode.OFF": "Inactif",
     "skyblocker.config.mining.commissionWaypoints.showBaseCamp": "Affiche un Marqueur au Camp de Glacite",
     "skyblocker.config.mining.commissionWaypoints.useColor.@Tooltip": "Colorez le texte du marqueur pour qu'il corresponde au bloc auquel il appartient.",
     "skyblocker.config.mining.commissionWaypoints.mode.BOTH": "Les Deux",
@@ -1696,5 +1696,6 @@
     "skyblocker.disableAll.popup.seriousWarning": "Cette action est irréversible.",
     "skyblocker.disableAll.popup.title": "Désactive toutes les fonctionnalités",
     "skyblocker.disableAll.popup.warning": "Êtes-vous sûr(e) de vouloir désactiver toutes les fonctionnalités de Skyblocker ? %s",
-    "skyblocker.disableAll.toast.title": "Désactive Skyblocker entièrement"
+    "skyblocker.disableAll.toast.title": "Désactive Skyblocker entièrement",
+    "skyblocker.bars.config.commonPosition.OFF": "Inactif"
 }
