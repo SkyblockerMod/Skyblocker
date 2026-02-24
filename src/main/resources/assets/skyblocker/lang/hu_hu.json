@@ -574,7 +574,7 @@
     "skyblocker.config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission": "Sinrecall Transmission Átfedés Engedélyezése",
     "skyblocker.bars.config.experience": "Tapasztalat",
     "skyblocker.bars.config.defense": "Védelem (Defense)",
-    "skyblocker.museum.resyncFailure": "Múzeum adományaid szinkroniáziójának sikertelen!",
+    "skyblocker.museum.resyncFailure": "Az alábbi Múzeum adományaid szinkronizációja sikertelen: %s!",
     "skyblocker.museum.resyncSuccess": "Múzeum adományaid sikeresen szinkronizálva!",
     "skyblocker.dungeons.secrets.markSecretMissing": "§r%s.-ik titok hiányosként jelölve.",
     "skyblocker.config.chat.chatRules.invalidRegex": "Az alábbi chatszabályodnak helytelen a regex alakja és ki lett kapcsolva: '%s'!",
@@ -750,7 +750,7 @@
     "skyblocker.fancyAuctionHouse.collectAuction": "Aukció Begyűjtése",
     "skyblocker.fancyAuctionHouse.yourAuction": "Ez a te aukciód!",
     "skyblocker.gardenPlots.tp": "Kattins, hogy oda TP-z!",
-    "skyblocker.museum.cannotResync": "Nem sikerült a múzeum adományaid szinkronizációja! Fontos, hogy ezt naponta csak kétszer teheted meg.",
+    "skyblocker.museum.cannotResync": "Nem sikerült a múzeum adományaid szinkronizációja! Ezt óránkénrt csak egyszer teheted meg.",
     "skyblocker.museum.hud.skyblockXp": "Skyblock XP",
     "skyblocker.partyFinder.error.message": "Hiba történt, ezért az alap parti keresőbe lettél küldve",
     "skyblocker.partyFinder.noParties": "Nincsenek partik. Nagyon szomorú :(",
@@ -1672,5 +1672,12 @@
     "skyblocker.disableAll.toast.title": "Skyblocker Összes Kikapcsolása",
     "skyblocker.config.general.updateNotifications.@Tooltip": "Figyelmeztet a frissítésekről és azok beállításáról. Ajánlatos engedélyezve tartani.",
     "skyblocker.updateNotifications.configureNewVersion": "Köszönjük, hogy telepítetted a Skyblocker %s verzióját! %s",
-    "skyblocker.updateNotifications.configureNewVersionHere": "Kattints ide az új verzió beállításához."
+    "skyblocker.updateNotifications.configureNewVersionHere": "Kattints ide az új verzió beállításához.",
+    "skyblocker.museum.resyncFailure.apiDisabled": "A Múzeum API nincs bekapcsolva",
+    "skyblocker.museum.resyncFailure.apiDisabled.@Tooltip": "Engedélyezd a Múzeum API-t a Skyblock Settings-ben, majd pár perc múlva próbáld újra!",
+    "skyblocker.museum.resyncFailure.itemRepo": "Az Item repository még nem töltött be",
+    "skyblocker.museum.resyncFailure.itemRepo.@Tooltip": "Próbáld újra pár perc múlva!",
+    "skyblocker.museum.resyncFailure.profile": "Ismeretlen profil",
+    "skyblocker.museum.resyncFailure.profile.@Tooltip": "Csatlakozz újra Skyblockra, majd pár perc múlva próbáld újra!",
+    "skyblocker.museum.resyncFailure.unknownError": "Ismeretlen Hiba"
 }
