@@ -158,7 +158,8 @@ public class MuseumItemCache {
 									.orElse(itemID);
 							ARMOR_NAMES.put(itemID, MuseumUtils.formatArmorName(realId, isEquipment));
 						}
-						int itemXP = itemToXp.get(itemID).getAsInt();
+						int itemXP = 0;
+						if (itemToXp.containsKey(itemID)) itemXP = itemToXp.get(itemID).getAsInt();
 						List<String> upgrades = getUpgrades(children, itemID);
 
 						if (!upgrades.isEmpty()) {
