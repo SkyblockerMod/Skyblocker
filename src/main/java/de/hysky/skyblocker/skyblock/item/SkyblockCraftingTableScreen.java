@@ -3,6 +3,8 @@ package de.hysky.skyblocker.skyblock.item;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookWidget;
 import java.time.Duration;
+
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -20,7 +22,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class SkyblockCraftingTableScreen extends AbstractContainerScreen<SkyblockCraftingTableScreenHandler> {
-	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/crafting_table.png");
+	private static final FallbackedTexture<Identifier> TEXTURE = FallbackedTexture.ofTexture(
+			SkyblockerMod.id("textures/gui/container/skyblock_crafting_table.png"),
+			Identifier.withDefaultNamespace("textures/gui/container/crafting_table.png"));
+	private static final FallbackedTexture<Identifier> MIRRORVERSE_TEXTURE = FallbackedTexture.ofTexture(
+			SkyblockerMod.id("textures/gui/container/skyblock_crafting_table.png"),
+			Identifier.withDefaultNamespace("textures/gui/container/crafting_table.png"));
 	protected static final WidgetSprites MORE_CRAFTS_TEXTURES = new WidgetSprites(
 			SkyblockerMod.id("quick_craft/more_button"),
 			SkyblockerMod.id("quick_craft/more_button_disabled"),
@@ -96,9 +103,9 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 	protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
 		int i = this.leftPos;
 		int j = (this.height - this.imageHeight) / 2;
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+		context.blit(RenderPipelines.GUI_TEXTURED, menu.mirrorverse ? MIRRORVERSE_TEXTURE.get() : TEXTURE.get(), i, j, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 		//4 px of margin to allow some space for custom resource packs that have size differences on the crafting table/inventory textures
-		if (!menu.mirrorverse) context.blit(RenderPipelines.GUI_TEXTURED, QUICK_CRAFT, i + 143, j - 3, 0, 0, 37, 90, 37, 90);
+		if (TEXTURE.isUsingFallback() && !menu.mirrorverse) context.blit(RenderPipelines.GUI_TEXTURED, QUICK_CRAFT, i + 143, j - 3, 0, 0, 37, 90, 37, 90);
 	}
 
 	@Override
