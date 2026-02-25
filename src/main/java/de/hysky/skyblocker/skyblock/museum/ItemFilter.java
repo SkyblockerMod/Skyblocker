@@ -14,11 +14,11 @@ public class ItemFilter {
 	private int filterIndex = 0;
 
 	public void updateCategories() {
-		filterIndex = 0;
 		categories.clear();
 		this.categories.add("All");
 		this.categories.addAll(MuseumItemCache.MUSEUM_CATEGORIES);
 		this.categories.remove("special");
+		filterIndex = Math.min(filterIndex, categories.size()-1);
 	}
 
 	// Method to cycle through filtering modes and apply the corresponding logic
