@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.museum;
 
 import com.google.common.collect.Lists;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
@@ -75,6 +76,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 		this.prevPageButton = new ImageButton(getX() + 38, getY() + 133, 12, 17, RecipeBookPage.PAGE_BACKWARD_SPRITES, _ignored -> {});
 
 		donations = MuseumItemCache.getDonations();
+		ITEM_FILTER.updateCategories();
 
 		// Create donation buttons for pagination
 		for (int i = 0; i < BUTTONS_PER_PAGE; i++) {
@@ -206,9 +208,8 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 		if (this.filterButton.active) {
 			int iconX = this.filterButton.getX() + (this.filterButton.getWidth() - 16) / 2;
 			int iconY = this.filterButton.getY() + (this.filterButton.getHeight() - 16) / 2;
-			ItemStack stack = ITEM_FILTER.getCurrentFilterItem();
 			filterButton.render(context, mouseX, mouseY, delta);
-			context.renderFakeItem(stack, iconX, iconY);
+			context.renderFakeItem(Ico.HOPPER, iconX, iconY);
 		}
 
 		if (ItemRepository.filesImported()) {
