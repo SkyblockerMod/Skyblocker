@@ -1,18 +1,11 @@
 package de.hysky.skyblocker.utils.ws;
 
-import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.ApiAuthentication;
-import de.hysky.skyblocker.utils.Http;
-import org.slf4j.Logger;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpClient.Version;
 import java.net.http.WebSocket;
+import java.net.http.WebSocketHandshakeException;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -22,6 +15,18 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
+import com.mojang.logging.LogUtils;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.ApiAuthentication;
+import de.hysky.skyblocker.utils.Http;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
 public class SkyblockerWebSocket {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -35,14 +40,16 @@ public class SkyblockerWebSocket {
 	private static final ExecutorService MESSAGE_SEND_QUEUE = Executors.newSingleThreadExecutor(Thread.ofVirtual()
 			.name("Skyblocker WebSocket Message Send Queue")
 			.factory());
-
-	private static volatile WebSocket socket;
+	private static volatile @Nullable WebSocket socket;
 
 	@Init
 	public static void init() {
 		SkyblockEvents.JOIN.register(() -> {
 			if (!isConnectionOpen()) setupSocket();
 		});
+		// Make a best effort to send a message to the WS indicating the game & connection will close.
+		// The delivery of this message is not guaranteed since this will not block the game from closing.
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_minecraft -> closeSocket());
 	}
 
 	private static CompletableFuture<Void> setupSocket() {
@@ -56,9 +63,21 @@ public class SkyblockerWebSocket {
 
 				LOGGER.info("[Skyblocker WebSocket] Successfully connected to the Skyblocker WebSocket!");
 			} catch (Exception e) {
-				LOGGER.error("[Skyblocker WebSocket] Failed to setup WebSocket connection!", e);
+				if (e instanceof WebSocketHandshakeException wsHandshakeException) {
+					LOGGER.error("[Skyblocker WebSocket] Failed to setup WebSocket connection! Http Response: {}", wsHandshakeException.getResponse(), e);
+				} else {
+					LOGGER.error("[Skyblocker WebSocket] Failed to setup WebSocket connection!", e);
+				}
 			}
 		}, Executors.newVirtualThreadPerTaskExecutor());
+	}
+
+	private static void closeSocket() {
+		if (isConnectionOpen()) {
+			MESSAGE_SEND_QUEUE.submit(() -> {
+				socket.sendClose(WebSocket.NORMAL_CLOSURE, "Minecraft closing");
+			});
+		}
 	}
 
 	private static boolean isConnectionOpen() {
@@ -76,7 +95,9 @@ public class SkyblockerWebSocket {
 	private static void sendInternal(String message) {
 		MESSAGE_SEND_QUEUE.submit(() -> {
 			try {
-				if (Debug.debugEnabled() && Debug.webSocketDebug()) LOGGER.info("[Skyblocker WebSocket] Sending Message: {}", message);
+				if (Debug.debugEnabled() && Debug.webSocketDebug()) {
+					LOGGER.info("[Skyblocker WebSocket] Sending Message: {}", message);
+				}
 
 				socket.sendText(message, true).join();
 			} catch (Exception e) {
@@ -91,28 +112,30 @@ public class SkyblockerWebSocket {
 
 		@Override
 		public CompletionStage<?> onText(WebSocket webSocket, CharSequence message, boolean last) {
-			parts.add(message);
+			this.parts.add(message);
 			webSocket.request(1);
 
 			if (last) {
 				//Process message once we've got all the text
-				handleWholeMessage(parts);
+				handleWholeMessage(this.parts);
 
 				//Reset state and allow CharSequences to be reclaimed or something? Java WebSockets are very confusing
-				parts = new ArrayList<>();
-				accumulatedMessage.complete(null);
-				CompletionStage<?> future = accumulatedMessage;
-				accumulatedMessage = new CompletableFuture<>();
+				this.parts = new ArrayList<>();
+				this.accumulatedMessage.complete(null);
+				CompletionStage<?> future = this.accumulatedMessage;
+				this.accumulatedMessage = new CompletableFuture<>();
 
 				return future;
 			}
 
-			return accumulatedMessage;
+			return this.accumulatedMessage;
 		}
 
 		@Override
 		public CompletionStage<?> onPing(WebSocket webSocket, ByteBuffer message) {
-			if (Debug.debugEnabled() && Debug.webSocketDebug()) LOGGER.info("[Skyblocker WebSocket] Received ping");
+			if (Debug.debugEnabled() && Debug.webSocketDebug()) {
+				LOGGER.info("[Skyblocker WebSocket] Received ping");
+			}
 
 			return WebSocket.Listener.super.onPing(webSocket, message);
 		}
@@ -120,6 +143,7 @@ public class SkyblockerWebSocket {
 		@Override
 		public CompletionStage<?> onClose(WebSocket webSocket, int statusCode, String reason) {
 			LOGGER.info("[Skyblocker WebSocket] Connection closing. Status Code: {}, Reason: {}", statusCode, reason);
+			socket = null;
 
 			return WebSocket.Listener.super.onClose(webSocket, statusCode, reason);
 		}
@@ -132,7 +156,9 @@ public class SkyblockerWebSocket {
 		private void handleWholeMessage(List<CharSequence> parts) {
 			String message = String.join("", parts);
 
-			if (Debug.debugEnabled() && Debug.webSocketDebug()) LOGGER.info("[Skyblocker WebSocket] Received Message: {}", message);
+			if (Debug.debugEnabled() && Debug.webSocketDebug()) {
+				LOGGER.info("[Skyblocker WebSocket] Received Message: {}", message);
+			}
 
 			WsMessageHandler.handleMessage(message);
 		}

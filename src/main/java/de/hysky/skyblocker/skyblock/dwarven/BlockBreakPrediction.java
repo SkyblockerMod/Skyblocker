@@ -26,7 +26,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.datafix.fixes.ItemStackTheFlatteningFix;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -174,7 +173,7 @@ public class BlockBreakPrediction {
 						for (Location location : skyblockBlockType.onlyIn) {
 							//if its mithril edit it to the actual strength as that is not in the repo
 							if (data.name.equals("Mithril Ore")) {
-								Block block = getBlockFromRepo(skyblockBlockType.itemId, skyblockBlockType.damage);
+								Block block = getBlockFromRepo(skyblockBlockType.itemId);
 								if (block == Blocks.GRAY_WOOL || block == Blocks.CYAN_TERRACOTTA) {
 									addStrength(location, block, 500, data.breakingPower);
 								} else if (block == Blocks.LIGHT_BLUE_WOOL) {
@@ -185,7 +184,7 @@ public class BlockBreakPrediction {
 								continue;
 							}
 
-							addStrength(location, getBlockFromRepo(skyblockBlockType.itemId, skyblockBlockType.damage), data.blockStrength, data.breakingPower);
+							addStrength(location, getBlockFromRepo(skyblockBlockType.itemId), data.blockStrength, data.breakingPower);
 						}
 					}
 
@@ -211,20 +210,15 @@ public class BlockBreakPrediction {
 		).apply(instance, BlockFile::new));
 	}
 
-	public record SkyblockBlock(String itemId, int damage, List<Location> onlyIn) {
+	public record SkyblockBlock(String itemId, List<Location> onlyIn) {
 		private static final Codec<SkyblockBlock> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("itemId").forGetter(SkyblockBlock::itemId),
-				Codec.INT.fieldOf("damage").forGetter(SkyblockBlock::damage),
 				Location.CODEC.listOf().fieldOf("onlyIn").forGetter(SkyblockBlock::onlyIn)
 		).apply(instance, SkyblockBlock::new));
 		public static final Codec<List<SkyblockBlock>> LIST_CODEC = CODEC.listOf();
 	}
 
-	public static Block getBlockFromRepo(String id, int damage) {
-		return Optional.ofNullable(ItemStackTheFlatteningFix.updateItem(id, damage))
-				.map(Identifier::tryParse)
-				.flatMap(BuiltInRegistries.BLOCK::getOptional)
-				.orElse(BuiltInRegistries.BLOCK.getValue(Identifier.tryParse(id)));
+	public static Block getBlockFromRepo(String id) {
+		return BuiltInRegistries.BLOCK.getValue(Identifier.tryParse(id));
 	}
-
 }
