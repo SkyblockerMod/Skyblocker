@@ -49,7 +49,7 @@ public class TheEnd {
 
 	private static final Pattern END_STONE_PROTECTOR_TREMOR = Pattern.compile("^You feel a tremor from beneath the earth!$");
 	private static final Pattern END_STONE_PROTECTOR_RISES = Pattern.compile("^The ground begins to shake as an End Stone Protector rises from below!$");
-	private static final Pattern END_STONE_PROTECTOR_FIGHT_STARTS = Pattern.compile("^BEWARE - An End Stone Protector has risen!$");
+	private static final Pattern END_STONE_PROTECTOR_FIGHT_STARTS = Pattern.compile("^BEWARE - An (?:Endstone|End Stone) Protector has risen!$");
 	private static final Pattern SPECIAL_ZEALOT_SPAWNED = Pattern.compile("^A special Zealot has spawned nearby!$");
 	private static final List<ProtectorLocation> PROTECTOR_LOCATIONS = List.of(
 			new ProtectorLocation(-649, -219, Component.translatable("skyblocker.end.hud.protectorLocations.left")),
