@@ -1678,7 +1678,7 @@
     "skyblocker.accessoryHelper.filter.UPGRADES": "Amélioration(s)",
     "skyblocker.accessoryHelper.openWiki": "Cliquer pour ouvrir le wiki !",
     "skyblocker.accessoryHelper.highestTierOnly": "N’afficher que le niveau le plus élevé",
-    "skyblocker.accessoryHelper.recombobulate": "Recombobuler l’ %s accessoire.",
+    "skyblocker.accessoryHelper.recombobulate": "Recombobuler un accessoire %s.",
     "skyblocker.config.mining.blockBreakPrediction": "Animation d’excavation des blocs côté « Client » (« Client » = du point de vue de votre ordinateur uniquement, rien ne se passe depuis celui du serveur)",
     "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize": "Taille de la boîte adaptative",
     "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "Adapte les dimensions des Points de Passage des Secrets pour qu’elles correspondent à celles des Essences et des Clés de Redstone.",
