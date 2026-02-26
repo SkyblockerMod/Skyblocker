@@ -95,4 +95,5 @@ public class Ico {
 	public static final ItemStack CATACOMBS = ItemUtils.createSkull(HeadTextures.CATACOMBS);
 	public static final ItemStack MADDOX_BATPHONE = ItemUtils.createSkull(HeadTextures.MADDOX_BATPHONE);
 	public static final ItemStack LEAD = Items.LEAD.getDefaultInstance();
+	public static final ItemStack HOPPER = Items.HOPPER.getDefaultInstance();
 }

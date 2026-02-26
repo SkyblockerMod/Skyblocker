@@ -25,11 +25,7 @@ public class MuseumTooltip extends SimpleTooltipAdder {
 		final String internalID = stack.getSkyblockId();
 		if (TooltipInfoType.MUSEUM.hasOrNullWarning(internalID)) {
 			String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID);
-			String format = switch (itemCategory) {
-				case "Weapons" -> "%-18s";
-				case "Armor" -> "%-19s";
-				default -> "%-20s";
-			};
+			String format = "%-20s";
 
 			//Special case the special category so that it doesn't always display not donated
 			if (itemCategory.equals("Special")) {
