@@ -49,7 +49,7 @@ public class TheEnd {
 
 	private static final Pattern END_STONE_PROTECTOR_TREMOR = Pattern.compile("^You feel a tremor from beneath the earth!$");
 	private static final Pattern END_STONE_PROTECTOR_RISES = Pattern.compile("^The ground begins to shake as an End Stone Protector rises from below!$");
-	private static final Pattern END_STONE_PROTECTOR_FIGHT_STARTS = Pattern.compile("^BEWARE - An End Stone Protector has risen!$");
+	private static final Pattern END_STONE_PROTECTOR_FIGHT_STARTS = Pattern.compile("^BEWARE - An (?:Endstone|End Stone) Protector has risen!$");
 	private static final Pattern SPECIAL_ZEALOT_SPAWNED = Pattern.compile("^A special Zealot has spawned nearby!$");
 	private static final List<ProtectorLocation> PROTECTOR_LOCATIONS = List.of(
 			new ProtectorLocation(-649, -219, Component.translatable("skyblocker.end.hud.protectorLocations.left")),
@@ -78,9 +78,9 @@ public class TheEnd {
 			Area area = Utils.getArea();
 			if (Utils.isInTheEnd() || area.equals(Area.TheEnd.THE_END) || area.equals(Area.TheEnd.DRAGONS_NEST)) {
 				ChunkPos pos = chunk.getPos();
-				AABB box = new AABB(pos.getMinBlockX(), 0, pos.getMinBlockZ(), pos.getMaxBlockX() + 1, 1, pos.getMaxBlockZ() + 1);
+				AABB box = new AABB(pos.getMinBlockX(), 4, pos.getMinBlockZ(), pos.getMaxBlockX() + 1, 5, pos.getMaxBlockZ() + 1);
 				for (ProtectorLocation protectorLocation : PROTECTOR_LOCATIONS) {
-					if (box.contains(protectorLocation.x(), 0.5, protectorLocation.z())) {
+					if (box.contains(protectorLocation.x(), 4, protectorLocation.z())) {
 						if (isProtectorHere(world, protectorLocation)) break;
 					}
 				}
@@ -141,7 +141,8 @@ public class TheEnd {
 	 */
 	private static boolean isProtectorHere(ClientLevel world, ProtectorLocation protectorLocation) {
 		for (int i = 0; i < 5; i++) {
-			if (world.getBlockState(new BlockPos(protectorLocation.x, i + 5, protectorLocation.z)).is(Blocks.PLAYER_HEAD)) {
+			BlockState state = world.getBlockState(new BlockPos(protectorLocation.x, i + 5, protectorLocation.z));
+			if (state.is(Blocks.PLAYER_WALL_HEAD)) {
 				stage = i + 1;
 				currentProtectorLocation = protectorLocation;
 				EndHudWidget.getInstance().update();

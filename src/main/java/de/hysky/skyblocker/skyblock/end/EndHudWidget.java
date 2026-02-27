@@ -68,7 +68,7 @@ public class EndHudWidget extends ComponentBasedWidget {
 
 		// Endstone protector
 		if (SkyblockerConfigManager.get().otherLocations.end.protectorLocationEnabled) {
-			addComponent(Components.iconTextComponent(POPPY, Component.literal("Endstone Protector").withStyle(ChatFormatting.BOLD)));
+			addComponent(Components.iconTextComponent(POPPY, Component.literal("End Stone Protector").withStyle(ChatFormatting.BOLD)));
 			if (TheEnd.stage == 5) {
 				addComponent(new PlainTextComponent(Component.translatable("skyblocker.end.hud.stage", "IMMINENT")));
 			} else {
