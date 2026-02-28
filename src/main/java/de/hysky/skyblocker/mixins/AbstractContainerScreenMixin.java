@@ -363,6 +363,11 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 			ci.cancel();
 			return;
 		}
+		// Prevent swapping the item with a secret in a dungeon chest (which drops the item if you don't take it out before closing the chest)
+		if (Utils.isInDungeons() && title.equals("Chest") && ItemProtection.isItemProtected(stack)) {
+			ci.cancel();
+			return;
+		}
 
 		switch (this.menu) {
 			case ChestMenu genericContainerScreenHandler when genericContainerScreenHandler.getRowCount() == 6 -> {
