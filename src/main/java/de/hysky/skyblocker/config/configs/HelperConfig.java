@@ -18,11 +18,11 @@ public class HelperConfig {
 
 	public boolean enableCopyUnderbidPrice = false;
 
-	public boolean enableBuildersWandPreview = true;
-
 	public boolean enableAnvilHelper = true;
 
 	public boolean enableAccessoriesHelperWidget = true;
+
+	public BuildersWand buildersWand = new BuildersWand();
 
 	public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
@@ -43,6 +43,12 @@ public class HelperConfig {
 	public ItemPrice itemPrice = new ItemPrice();
 
 	public GreatSpookEvent greatSpookEvent = new GreatSpookEvent();
+
+	public static class BuildersWand {
+		public boolean enableBuildersWandPreview = true;
+
+		public float previewOpacity = 0.5f;
+	}
 
 	public static class MythologicalRitual {
 		public boolean enableMythologicalRitualHelper = true;
