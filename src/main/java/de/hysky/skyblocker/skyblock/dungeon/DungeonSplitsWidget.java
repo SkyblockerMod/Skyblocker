@@ -327,7 +327,7 @@ public class DungeonSplitsWidget extends TableWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (location != Location.DUNGEON) return;
-		SkyblockerConfigManager.get().dungeons.dungeonSplits = enabled;
+		SkyblockerConfigManager.update(config -> config.dungeons.dungeonSplits = enabled);
 	}
 
 	@Override

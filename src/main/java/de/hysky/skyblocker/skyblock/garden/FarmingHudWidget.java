@@ -187,7 +187,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!location.equals(Location.GARDEN)) return;
-		SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud = enabled;
+		SkyblockerConfigManager.update(config -> config.farming.garden.farmingHud.enableHud = enabled);
 	}
 
 	@Override

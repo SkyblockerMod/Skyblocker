@@ -77,6 +77,6 @@ public class PickobulusHudWidget extends ComponentBasedWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!AVAILABLE_LOCATIONS.contains(location)) return;
-		SkyblockerConfigManager.get().mining.pickobulusHelper.enablePickobulusHud = enabled;
+		SkyblockerConfigManager.update(config -> config.mining.pickobulusHelper.enablePickobulusHud = enabled);
 	}
 }
