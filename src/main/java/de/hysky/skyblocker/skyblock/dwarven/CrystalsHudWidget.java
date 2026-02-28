@@ -82,7 +82,7 @@ public class CrystalsHudWidget extends HudWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!location.equals(Location.CRYSTAL_HOLLOWS)) return;
-		SkyblockerConfigManager.get().mining.crystalsHud.enabled = enabled;
+		SkyblockerConfigManager.update(config -> config.mining.crystalsHud.enabled = enabled);
 	}
 
 	public void update() {

@@ -45,7 +45,7 @@ public class EndHudWidget extends ComponentBasedWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!location.equals(Location.THE_END)) return;
-		SkyblockerConfigManager.get().otherLocations.end.hudEnabled = enabled;
+		SkyblockerConfigManager.update(config -> config.otherLocations.end.hudEnabled = enabled);
 	}
 
 	@Override

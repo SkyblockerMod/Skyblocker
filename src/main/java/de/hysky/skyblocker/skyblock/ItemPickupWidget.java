@@ -221,7 +221,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
-		SkyblockerConfigManager.get().uiAndVisuals.itemPickup.enabled = enabled;
+		SkyblockerConfigManager.update(config -> config.uiAndVisuals.itemPickup.enabled = enabled);
 	}
 
 	@Override

@@ -104,7 +104,7 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!availableLocations().contains(location)) return;
-		SkyblockerConfigManager.get().foraging.galatea.enableSweepDetailsWidget = enabled;
+		SkyblockerConfigManager.update(config -> config.foraging.galatea.enableSweepDetailsWidget = enabled);
 	}
 
 	@Override

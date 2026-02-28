@@ -44,7 +44,7 @@ public class TerminalHud extends ComponentBasedWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!AVAILABLE_LOCATIONS.contains(location)) return;
-		CONFIG.get().enableTerminalHud = enabled;
+		SkyblockerConfigManager.update(config -> config.dungeons.terminalHud.enableTerminalHud = enabled);
 	}
 
 	@Override

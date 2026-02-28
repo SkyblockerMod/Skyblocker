@@ -45,7 +45,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!availableLocations().contains(location)) return;
-		SkyblockerConfigManager.get().slayers.enableHud = enabled;
+		SkyblockerConfigManager.update(config -> config.slayers.enableHud = enabled);
 	}
 
 	@Override
