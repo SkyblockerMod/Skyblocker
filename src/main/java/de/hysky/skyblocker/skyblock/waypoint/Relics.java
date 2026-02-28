@@ -9,6 +9,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
@@ -37,9 +38,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
@@ -97,19 +96,19 @@ public class Relics {
 	}
 
 	private static void saveFoundRelics(Minecraft client) {
-		Map<String, Set<BlockPos>> foundRelics = new HashMap<>();
+		Map<String, BlockPosSet> foundRelics = new HashMap<>();
 		for (ProfileAwareWaypoint relic : relics.values()) {
 			for (String profile : relic.foundProfiles) {
-				foundRelics.computeIfAbsent(profile, profile_ -> new HashSet<>());
+				foundRelics.computeIfAbsent(profile, profile_ -> new BlockPosSet());
 				foundRelics.get(profile).add(relic.pos);
 			}
 		}
 
 		try (BufferedWriter writer = Files.newBufferedWriter(SkyblockerMod.CONFIG_DIR.resolve("found_relics.json"))) {
 			JsonObject json = new JsonObject();
-			for (Map.Entry<String, Set<BlockPos>> foundRelicsForProfile : foundRelics.entrySet()) {
+			for (Map.Entry<String, BlockPosSet> foundRelicsForProfile : foundRelics.entrySet()) {
 				JsonArray foundRelicsJson = new JsonArray();
-				for (BlockPos foundRelic : foundRelicsForProfile.getValue()) {
+				for (BlockPos foundRelic : foundRelicsForProfile.getValue().iterateMut()) {
 					foundRelicsJson.add(PosUtils.getPosString(foundRelic));
 				}
 				json.add(foundRelicsForProfile.getKey(), foundRelicsJson);

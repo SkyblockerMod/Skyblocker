@@ -5,15 +5,12 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.Minecraft;
@@ -40,8 +37,8 @@ public class SimonSays {
 	private static final BlockPos START_BUTTON = new BlockPos(110, 121, 91);
 	private static final float[] GREEN = ColorUtils.getFloatComponents(DyeColor.LIME);
 	private static final float[] YELLOW = ColorUtils.getFloatComponents(DyeColor.YELLOW);
-	private static final ObjectSet<BlockPos> CLICKED_BUTTONS = new ObjectOpenHashSet<>();
-	private static final ObjectList<BlockPos> SIMON_PATTERN = new ObjectArrayList<>();
+	private static final BlockPosSet CLICKED_BUTTONS = new BlockPosSet();
+	private static final BlockPosSet SIMON_PATTERN = new BlockPosSet();
 
 	@Init
 	public static void init() {
@@ -60,7 +57,7 @@ public class SimonSays {
 
 			if (block.equals(Blocks.STONE_BUTTON)) {
 				if (BUTTONS_AREA.contains(Vec3.atLowerCornerOf(pos))) {
-					CLICKED_BUTTONS.add(new BlockPos(pos)); //Copy just in case it becomes mutable in the future
+					CLICKED_BUTTONS.add(pos);
 				} else if (pos.equals(START_BUTTON)) {
 					reset();
 				}
@@ -80,7 +77,7 @@ public class SimonSays {
 			Block newBlock = newState.getBlock();
 
 			if (BOARD_AREA.contains(posVec) && newBlock.equals(Blocks.OBSIDIAN) && oldState != null && oldState.getBlock().equals(Blocks.SEA_LANTERN)) {
-				SIMON_PATTERN.add(pos.immutable()); //Convert to immutable because chunk delta updates use the mutable variant
+				SIMON_PATTERN.add(pos);
 			} else if (BUTTONS_AREA.contains(posVec) && newBlock.equals(Blocks.AIR)) {
 				//Upon reaching the showing of the next sequence we need to reset the state so that we don't show old data
 				//Otherwise, the nextIndex will go beyond 5 and that can cause bugs, it also helps with the other case noted above
@@ -93,7 +90,7 @@ public class SimonSays {
 		if (shouldProcess()) {
 			int buttonsRendered = 0;
 
-			for (BlockPos pos : SIMON_PATTERN) {
+			for (BlockPos pos : SIMON_PATTERN.iterateMut()) {
 				//Offset to west (x - 1) to get the position of the button from the sea lantern block
 				BlockPos buttonPos = pos.west();
 				ClientLevel world = Objects.requireNonNull(Minecraft.getInstance().level); //Should never be null here
