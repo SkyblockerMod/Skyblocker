@@ -758,5 +758,21 @@
     "skyblocker.config.dungeons.map.roomLabelType.ROOM_NAME": "ルーム名",
     "skyblocker.config.dungeons.terminalHud.showTerminals": "ターミナルを表示",
     "skyblocker.config.dungeons.terminalHud.showDevice": "デバイスを表示",
-    "skyblocker.config.dungeons.terminalHud.showGate": "ゲートを表示"
+    "skyblocker.config.dungeons.terminalHud.showGate": "ゲートを表示",
+    "skyblocker.config.uiAndVisuals.inputCalculator.badNotationError": "方程式では逆ポーランド記法は使用されません",
+    "skyblocker.config.uiAndVisuals.inputCalculator.divisionByZeroError": "%sは0で割ることはできません",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError2": "数値テキストは区切り文字で始めることはできません",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError3": "数値テキストの先頭に小数点を含めることはできません",
+    "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals": "「=」が表示されているときのみ表示します。",
+    "skyblocker.config.quickNav.button.chooseSkyblockItem": "Skyblockアイテムを選ぶ",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidMagnitudeError": "無効な値「%s」",
+    "skyblocker.config.uiAndVisuals.inputCalculator.moduloByZeroError": "%sの剰余を取るために0を使用することはできません",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError": "無効な演算子「%s」",
+    "skyblocker.config.uiAndVisuals.inputCalculator.emptyEquationError": "方程式が空です",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidCharacterError": "無効な文字「%s」",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError": "無効な数値「%s」",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError": "入力「%s」は関数「%s」には無効です",
+    "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "無効な方程式",
+    "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "メッセージが「=」で始まる場合にのみ電卓が表示されます。",
+    "skyblocker.config.uiAndVisuals.inputCalculator.missingValueError": "演算子にオペランドがありません"
 }
