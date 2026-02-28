@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MiningConfig {
+	public boolean enablePickaxeAbility = false;
+
 	public boolean enableDrillFuel = true;
 
 	public boolean commissionHighlight = true;
