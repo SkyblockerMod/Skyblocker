@@ -1597,6 +1597,7 @@
   "skyblocker.events.startsNow": "%s starts now!",
   "skyblocker.events.startsSoon": "%s starts soon!",
   "skyblocker.events.tab.clickToWarp": "Click to warp!",
+  "skyblocker.events.tab.currentJerryMayor": "Mayor %s",
   "skyblocker.events.tab.endsIn": "Ends in %s",
   "skyblocker.events.tab.noMore": "No more this year!",
   "skyblocker.events.tab.startsIn": "Starts in %s",
