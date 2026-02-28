@@ -1,3 +1,26 @@
+# Release 6.1.1
+
+## Highlight
+* Add Xalx Crystal Hollows waypoint
+* Optimize Sven Pup name tag hiding
+* Fix Dungeon Chest Profit not working
+* Fix Museum Overlay not working
+* Fix Client side mining animations not working
+* Fix Corpse Profit Tracker not accounting for newer items
+* Fix End Stone Protector location being outdated
+* Fix being able to drop protected items in dungeon secret chests
+* Fix some settings in `/skyblocker hud` not saving properly
+
+## What's Changed
+* Fix Museum Overlay by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2174
+* Fix End Stone Protector Location by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2181
+* Add new items for Corpse Profit Tracker by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2183
+* Add Xalx CH Waypoint by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2164
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.1.0+1.21.11...v6.1.1+1.21.11
+
+___
+
 # Release 6.1.0
 
 ## Highlight
