@@ -115,6 +115,7 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.custom": "Custom",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.none": "None",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling": "Pling",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.search.@Tooltip": "Search more sounds",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "Zombie",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.toast": "Toast:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration": "Toast Duration",
@@ -1859,6 +1860,8 @@
   "skyblocker.updateRepository.success": "Updated the local repository successfully.",
 
   "skyblocker.utils.locationUpdateError": "Failed to update your location! Some features of the mod may not work properly :(",
+  "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "Advanced",
+  "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "Show sounds without a propper name",
 
   "skyblocker.valueBreakdownPopup": "Skyblocker Estimated Value Breakdown",
   "skyblocker.valueBreakdownPopup.baseItemPrice": "Base item price: %s",
