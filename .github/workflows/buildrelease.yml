@@ -71,11 +71,13 @@ jobs:
           } >> $GITHUB_OUTPUT
 
       - name: Publish using mod-publish-plugin
-        run: ./gradlew build publishMods
+        run: ./gradlew build publishMods publish
         env:
+          BUILD_SOURCES_JAR: true
           CHANGELOG: ${{ steps.read_changelog.outputs.changelog }}
           CHANGELOG_HIGHLIGHT: ${{ steps.read_changelog.outputs.changelog_highlight }}
           REF_NAME: ${{ github.ref_name }}
+          GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
