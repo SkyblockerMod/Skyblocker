@@ -845,7 +845,7 @@
     "skyblocker.config.slayer.highlightMinis.@Tooltip[0]": "\nВыключено: Не подсвечивать Slayer мини боссов.",
     "skyblocker.config.eventNotifications.@Tooltip[1]": "Порядок не важен. Если хотите отключить уведомления, просто очистите список.",
     "skyblocker.config.quickNav.button.tooltip.@Tooltip": "Подсказка, отображаемая при наведении курсора на кнопку.\n\nВы можете использовать текстовый формат json.\nОтсутствие значения приведет к тому, что подсказка не будет отображаться.",
-    "skyblocker.config.debug.debugWebSockets": "Включить Отладочные Сообщения Websocket",
+    "skyblocker.config.debug.debugWebSockets": "Включить отладочные сообщения Websocket",
     "skyblocker.config.debug.showInvisibleArmorStands": "Показать Невидимые Стойки Для Брони",
     "skyblocker.config.dungeons.salvageHelper": "Помощник Salvage",
     "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Выделять предметы, найденные в подземельях, которые можно уничтожить.",
@@ -897,7 +897,7 @@
     "skyblocker.config.dungeons.classBasedPlayerGlow": "Подсветка игрока на основе класса",
     "key.skyblocker.debug.dumpNearbyEntities": "Сделать дамп ближайших сущностей",
     "key.skyblocker.debug.dumpHoveredItem": "Сделать дамп выбранного предмета",
-    "skyblocker.config.debug.corpseFinderDebug": "Откладка нахождения трупов",
+    "skyblocker.config.debug.corpseFinderDebug": "Отладка поиска трупов",
     "skyblocker.config.dungeons.goldorWaypoints": "Метки Goldor (F7/M7)",
     "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Включить метки для терминалов/устройств/рычагов во время Goldor",
     "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "Включает виджет которй показывает ваше лучшее время для каждого участка данжа.",
@@ -1123,5 +1123,14 @@
     "key.category.skyblocker.main": "Skyblocker",
     "skyblocker.bars.config.commonPosition.RIGHT": "Вправо",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.formatting": "Все исходящие сообщения форматируемы с помощью кодов форматирования (с использованием символа &).",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.outputField.@Placeholder": "Оставьте пустым, чтобы ничего не отображалось."
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.outputField.@Placeholder": "Оставьте пустым, чтобы ничего не отображалось.",
+    "skyblocker.config.dungeons.devices.solveArrowAlign": "Помощь в решении Arrow Align",
+    "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "Отображает количество оставшихся поворотов для каждой стрелки.",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration": "Длительность уведомления",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast": "Показывать уведомление:",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration.@Tooltip": "Время отображения уведомления на экране.",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon": "Иконка уведомления:",
+    "skyblocker.config.chat.filter.chatFilterResult.TOAST": "Показать уведомление",
+    "skyblocker.config.chat.toastDuration": "Длительность отображения уведомления",
+    "skyblocker.config.chat.toastDuration.@Tooltip": "Длительность отображения уведомления в секундах для фильтров с включённой опцией \"Показать уведомление\"."
 }
