@@ -75,6 +75,8 @@ public class UIAndVisualsConfig {
 	public BazaarQuickQuantities bazaarQuickQuantities = new BazaarQuickQuantities();
 
 	public InputCalculator inputCalculator = new InputCalculator();
+	
+	public TimeInputCalculator timeInputCalculator = new TimeInputCalculator();
 
 	public FlameOverlay flameOverlay = new FlameOverlay();
 
@@ -410,7 +412,13 @@ public class UIAndVisualsConfig {
 
 		public boolean closeSignsWithEnter = true;
 	}
-
+	
+	public static class TimeInputCalculator {
+		public boolean enabled = true;
+		
+		public boolean closeSignsWithEnter = true;
+	}
+	
 	public static class FlameOverlay {
 		public int flameHeight = 100;
 
