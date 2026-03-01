@@ -268,7 +268,7 @@
     "skyblocker.customDyeColors.added": "§b[§6Skyblocker§b] §fУстановите цвет окраски для удерживаемого предмета!",
     "skyblocker.customDyeColors.neverHad": "§b[§6Skyblocker§b] §fДанный предмет не имеет пользовательского набора цветов окраски, но почему бы его не добавить? ;)",
     "skyblocker.customDyeColors.removed": "§b[§6Skyblocker§b] §fУдален пользовательский цвет окраски этого предмета.",
-    "skyblocker.customDyeColors.unableToSetColor": "Невозможно установить пользовательский цвет окраски : Вы на скайблоке  у вас в руках предмет.",
+    "skyblocker.customDyeColors.unableToSetColor": "Невозможно установить пользовательский цвет окраски : Вы на скайблоке у вас в руках предмет.",
     "skyblocker.customDyeColors.notDyeable": "§b[§6Skyblocker§b] §cЭтот предмет не является окрашиваемым предметом брони!",
     "skyblocker.customDyeColors.noItemUuid": "§cВы должны держать предмет, у которого есть uuid, чтобы установить кастомный цвет!",
     "skyblocker.customArmorTrims.removed": "§b[§6Skyblocker§b] §fУдалена пользовательская отделка брони этого предмета.",
