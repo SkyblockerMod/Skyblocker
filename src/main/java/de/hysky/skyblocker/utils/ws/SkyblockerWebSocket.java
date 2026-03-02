@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpClient.Version;
+import java.net.http.HttpResponse;
 import java.net.http.WebSocket;
 import java.net.http.WebSocketHandshakeException;
 import java.nio.ByteBuffer;
@@ -63,8 +64,10 @@ public class SkyblockerWebSocket {
 
 				LOGGER.info("[Skyblocker WebSocket] Successfully connected to the Skyblocker WebSocket!");
 			} catch (Exception e) {
-				if (e instanceof WebSocketHandshakeException wsHandshakeException) {
-					LOGGER.error("[Skyblocker WebSocket] Failed to setup WebSocket connection! Http Response: {}", wsHandshakeException.getResponse(), e);
+				if (e.getCause() instanceof WebSocketHandshakeException wsHandshakeException) {
+					HttpResponse<?> response = wsHandshakeException.getResponse();
+					String body = response.body().toString();
+					LOGGER.error("[Skyblocker WebSocket] Failed to setup WebSocket connection! HTTP {}: {}", response.statusCode(), body, wsHandshakeException);
 				} else {
 					LOGGER.error("[Skyblocker WebSocket] Failed to setup WebSocket connection!", e);
 				}
