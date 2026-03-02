@@ -76,6 +76,8 @@ public class UIAndVisualsConfig {
 
 	public InputCalculator inputCalculator = new InputCalculator();
 
+	public TimeInputCalculator timeInputCalculator = new TimeInputCalculator();
+
 	public FlameOverlay flameOverlay = new FlameOverlay();
 
 	public CompactDamage compactDamage = new CompactDamage();
@@ -408,6 +410,12 @@ public class UIAndVisualsConfig {
 
 		public boolean requiresEquals = false;
 
+		public boolean closeSignsWithEnter = true;
+	}
+
+	public static class TimeInputCalculator {
+		public boolean enabled = true;
+		
 		public boolean closeSignsWithEnter = true;
 	}
 

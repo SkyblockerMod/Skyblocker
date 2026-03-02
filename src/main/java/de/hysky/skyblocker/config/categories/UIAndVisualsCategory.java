@@ -802,6 +802,28 @@ public class UIAndVisualsCategory {
 								.build())
 						.build())
 
+				//Time Input Calculator
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.uiAndVisuals.timeInputCalculator"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.timeInputCalculator.enabled"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.timeInputCalculator.enabled.@Tooltip"))
+								.binding(defaults.uiAndVisuals.timeInputCalculator.enabled,
+										() -> config.uiAndVisuals.timeInputCalculator.enabled,
+										newValue -> config.uiAndVisuals.timeInputCalculator.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.timeInputCalculator.closeSignsWithEnter"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.timeInputCalculator.closeSignsWithEnter.@Tooltip"))
+								.binding(defaults.uiAndVisuals.timeInputCalculator.closeSignsWithEnter,
+										() -> config.uiAndVisuals.timeInputCalculator.closeSignsWithEnter,
+										newValue -> config.uiAndVisuals.timeInputCalculator.closeSignsWithEnter = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
 				//Flame Overlay
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.flameOverlay"))

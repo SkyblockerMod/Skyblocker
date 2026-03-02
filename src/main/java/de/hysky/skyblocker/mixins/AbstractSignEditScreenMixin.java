@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarQuickQuantities;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
+import de.hysky.skyblocker.skyblock.calculators.SignTimeCalculator;
 import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresets;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.ChatFormatting;
@@ -14,6 +15,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -59,18 +61,28 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 							context.guiWidth() / 2, 55, 0xFFFFFFFF);
 				}
 			}
-			//if the sign is being used to enter number send it to the sign calculator
-			else if (isInputSign() && config.uiAndVisuals.inputCalculator.enabled) {
-				SignCalculator.renderCalculator(context, messages[0], context.guiWidth() / 2, 55);
+			else {
+				SignTimeCalculator.TimeType timeInputType = getTimeInputType();
+				if (timeInputType != null) {
+					if (config.uiAndVisuals.timeInputCalculator.enabled) {
+						SignTimeCalculator.renderTime(context, messages[0], timeInputType, context.guiWidth() / 2, 55);
+					}
+				}
+				//if the sign is being used to enter number send it to the sign calculator
+				else if (isInputSign() && config.uiAndVisuals.inputCalculator.enabled) {
+					SignCalculator.renderCalculator(context, messages[0], context.guiWidth() / 2, 55);
+				}
 			}
 		}
 	}
 
 	@Inject(method = "keyPressed", at = @At("HEAD"))
 	private void skyblocker$keyPressed(KeyEvent input, CallbackInfoReturnable<Boolean> cir) {
-		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.closeSignsWithEnter
-				&& Utils.isOnSkyblock() && isInputSign()
-				&& (input.isConfirmation())) this.onClose();
+		if (input.isConfirmation() && Utils.isOnSkyblock()
+			&& (
+				SkyblockerConfigManager.get().uiAndVisuals.timeInputCalculator.closeSignsWithEnter && getTimeInputType() != null
+				|| SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.closeSignsWithEnter && isInputSign()
+			)) this.onClose();
 	}
 
 	@Inject(method = "onDone", at = @At("HEAD"))
@@ -82,6 +94,12 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 				var presets = SpeedPresets.getInstance();
 				if (presets.hasPreset(messages[0])) {
 					messages[0] = String.valueOf(presets.getPreset(messages[0]));
+				}
+			}
+			else if (getTimeInputType() != null) {
+				if (config.uiAndVisuals.timeInputCalculator.enabled) {
+					String value = SignTimeCalculator.getNewValue();
+					if (value != null) messages[0] = value;
 				}
 			}
 			//if the sign is being used to enter number get number from calculator for if maths has been done
@@ -99,6 +117,10 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 	@Unique
 	private static final String SPEED_INPUT_MARKER = "speed cap!";
 	@Unique
+	private static final String TIME_INPUT_MARKER_HOURS = "hours";
+	@Unique
+	private static final String TIME_INPUT_MARKER_MINUTES = "minutes";
+	@Unique
 	private static final String INPUT_SIGN_MARKER = "^^^^^^^^^^^^^^^";
 	/** This is used for some things like the super craft amount input */
 	@Unique
@@ -110,7 +132,21 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 	private boolean isSpeedInputSign() {
 		return messages[3].equals(SPEED_INPUT_MARKER);
 	}
-
+	
+	@Unique
+	private SignTimeCalculator.@Nullable TimeType getTimeInputType() {
+		if (messages[1].equals(INPUT_SIGN_MARKER)) {
+			if (messages[3].endsWith(TIME_INPUT_MARKER_HOURS)) {
+				return SignTimeCalculator.TimeType.HOURS;
+			}
+			if (messages[3].endsWith(TIME_INPUT_MARKER_MINUTES)) {
+				return SignTimeCalculator.TimeType.MINUTES;
+			}
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Used to exclude search signs with {@link AbstractSignEditScreenMixin#INPUT_SIGN_MARKER}.
 	 * <br> Works for /recipes & /shards signs
@@ -131,6 +167,10 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 
 	@Unique
 	private boolean isInputSign() {
-		return messages[1].equals(INPUT_SIGN_MARKER) && !isInputSearchSign() || messages[1].equals(ALT_INPUT_SIGN_MARKER) && !isAltInputSearchSign() || messages[1].equals(BAZAAR_FLIP_MARKER);
+		return (
+				messages[1].equals(INPUT_SIGN_MARKER) && !isInputSearchSign()
+				|| messages[1].equals(ALT_INPUT_SIGN_MARKER) && !isAltInputSearchSign()
+				|| messages[1].equals(BAZAAR_FLIP_MARKER)
+			) && getTimeInputType() == null;
 	}
 }
