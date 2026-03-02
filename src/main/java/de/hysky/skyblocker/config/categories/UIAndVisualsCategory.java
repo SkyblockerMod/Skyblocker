@@ -801,7 +801,7 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
-				
+
 				//Time Input Calculator
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.timeInputCalculator"))

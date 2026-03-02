@@ -6,9 +6,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,34 +17,34 @@ public class SignTimeCalculator
 	public enum TimeType {
 		HOURS, MINUTES
 	}
-	
+
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern TIME_CODE_PATTERN = Pattern.compile("(\\d+\\.\\d+|\\d+)(\\D+)?");
 	private static final int SECONDS_PER_DAY = 86400;
 	private static final short SECONDS_PER_HOUR = 3600;
 	private static final byte SECONDS_PER_MINUTE = 60;
-	
-	private static @Nullable String lastInput;
+
+	private static String lastInput;
 	private static long seconds;
-	private static @Nullable Component error = null;
-	
+	private static Component error = null;
+
 	public static void renderTime(GuiGraphics context, String message, TimeType type, int renderX, int renderY) {
 		calculate(message, type);
 		render(context, renderX, renderY);
 	}
-	
+
 	@VisibleForTesting
 	public static void calculate(String message, TimeType type) {
 		//only update if new input
 		if (message.equals(lastInput)) return;
 		lastInput = message;
-		
+
 		if (message.isBlank()) {
 			seconds = -1;
 			error = Component.translatable("skyblocker.config.uiAndVisuals.timeInputCalculator.emptyInputError").withStyle(ChatFormatting.RED);
 			return;
 		}
-		
+
 		long newSeconds = 0;
 		for (String segment : message.trim().split(" +")) {
 			Matcher matcher = TIME_CODE_PATTERN.matcher(segment);
@@ -63,7 +63,7 @@ public class SignTimeCalculator
 					error = Component.translatable("skyblocker.config.uiAndVisuals.timeInputCalculator.invalidNumberError", numberString).withStyle(ChatFormatting.RED);
 					return;
 				}
-				
+
 				String timeUnitString = matcher.group(2);
 				if (timeUnitString == null || timeUnitString.isEmpty()) {
 					newSeconds += switch (type) {
@@ -72,13 +72,13 @@ public class SignTimeCalculator
 					};
 				}
 				//mimics how Hypixel parses numbers, except also allowing plurals
-				else if ("days".startsWith(timeUnitString.toLowerCase())) {
+				else if ("days".startsWith(timeUnitString.toLowerCase(Locale.ENGLISH))) {
 					newSeconds += Math.round(number * SECONDS_PER_DAY);
-				} else if ("hours".startsWith(timeUnitString.toLowerCase())) {
+				} else if ("hours".startsWith(timeUnitString.toLowerCase(Locale.ENGLISH))) {
 					newSeconds += Math.round(number * SECONDS_PER_HOUR);
-				} else if ("minutes".startsWith(timeUnitString.toLowerCase())) {
+				} else if ("minutes".startsWith(timeUnitString.toLowerCase(Locale.ENGLISH))) {
 					newSeconds += Math.round(number * SECONDS_PER_MINUTE);
-				} else if ("seconds".startsWith(timeUnitString.toLowerCase())) {
+				} else if ("seconds".startsWith(timeUnitString.toLowerCase(Locale.ENGLISH))) {
 					//note/fun fact: for some reason Hypixel only allows up to "secon", not "second"
 					newSeconds += Math.round(number);
 				} else {
@@ -92,17 +92,17 @@ public class SignTimeCalculator
 				return;
 			}
 		}
-		
+
 		seconds = newSeconds;
 		error = null;
 	}
 
-	public static @Nullable String getNewValue() {
+	public static String getNewValue() {
 		if (seconds == -1) {
 			//if calculator is not activated or just invalid input return what the user typed in
 			return lastInput;
 		}
-		
+
 		//we can just return the total seconds, Hypixel converts it for us :)
 		return seconds + "s";
 	}
@@ -123,7 +123,7 @@ public class SignTimeCalculator
 
 		context.drawCenteredString(CLIENT.font, text, renderX, renderY, 0xFFFFFFFF);
 	}
-	
+
 	private static long appendTimeComponent(MutableComponent component, long seconds, int secondsPerUnit, String translationKeyUnit)
 	{
 		long units = seconds / secondsPerUnit; //long division -> cuts off decimal places automatically
