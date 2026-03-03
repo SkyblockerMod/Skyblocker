@@ -21,20 +21,20 @@ import net.minecraft.world.phys.AABB;
 public class ZombieShootout {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final float[] RED = { 1, 0, 0 };
-	private static final AABB SHOOTING_BOX = AABB.encapsulatingFullBlocks(new BlockPos(-100, 70, 15), new BlockPos(-102, 75, 13));
+	private static final AABB SHOOTING_BOX = AABB.encapsulatingFullBlocks(new BlockPos(-100, 70, 45), new BlockPos(-102, 75, 43));
 	private static final BlockPos[] LAMPS = {
-			new BlockPos(-96, 76, 31),
-			new BlockPos(-99, 77, 32),
-			new BlockPos(-102, 75, 32),
-			new BlockPos(-106, 77, 31),
-			new BlockPos(-109, 75, 30),
-			new BlockPos(-112, 76, 28),
-			new BlockPos(-115, 77, 25),
-			new BlockPos(-117, 76, 22),
-			new BlockPos(-118, 76, 19),
-			new BlockPos(-119, 75, 15),
-			new BlockPos(-119, 77, 12),
-			new BlockPos(-118, 76, 9)
+			new BlockPos(-96, 76, 61),
+			new BlockPos(-99, 77, 62),
+			new BlockPos(-102, 75, 62),
+			new BlockPos(-106, 77, 61),
+			new BlockPos(-109, 75, 60),
+			new BlockPos(-112, 76, 58),
+			new BlockPos(-115, 77, 55),
+			new BlockPos(-117, 76, 52),
+			new BlockPos(-118, 76, 49),
+			new BlockPos(-119, 75, 45),
+			new BlockPos(-119, 77, 42),
+			new BlockPos(-118, 76, 39)
 			};
 
 	@Init
