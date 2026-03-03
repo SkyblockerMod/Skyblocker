@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class SwiftnessTestHelper {
 
@@ -14,8 +14,8 @@ public class SwiftnessTestHelper {
 	}
 
 	protected static void onBlockUpdate(BlockPos pos, BlockState state) {
-		if (state.isOf(Blocks.LIME_WOOL)) {
-			lastBlock = pos.toImmutable();
+		if (state.is(Blocks.LIME_WOOL)) {
+			lastBlock = pos.immutable();
 		}
 	}
 

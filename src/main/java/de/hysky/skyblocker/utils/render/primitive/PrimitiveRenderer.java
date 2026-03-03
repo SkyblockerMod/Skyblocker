@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
-import net.minecraft.client.render.state.CameraRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 
 /**
  * Interface to represent a class that renders simple primitives in the world. Implementations

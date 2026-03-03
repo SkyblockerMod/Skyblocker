@@ -1,21 +1,20 @@
 package de.hysky.skyblocker.config.screens.powdertracker;
 
-import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.widget.CheckboxWidget;
-import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.text.Text;
-
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import java.util.Collection;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.network.chat.Component;
 
 /**
  * A checkbox list for filter configuring purposes.
  */
-public class ItemTickList<T> extends ElementListWidget<ItemTickList.ItemTickEntry> {
+public class ItemTickList<T> extends ContainerObjectSelectionList<ItemTickList.ItemTickEntry> {
 	private final Collection<T> filters;
 	private final Collection<T> allItems;
 	private final boolean whitelist;
@@ -30,7 +29,7 @@ public class ItemTickList<T> extends ElementListWidget<ItemTickList.ItemTickEntr
 	 * @param filters The items that will be marked. This should be a subset of allItems.
 	 * @param allItems All possible values
 	 */
-	public ItemTickList(MinecraftClient minecraftClient, int width, int height, int y, int entryHeight, Collection<T> filters, Collection<T> allItems) {
+	public ItemTickList(Minecraft minecraftClient, int width, int height, int y, int entryHeight, Collection<T> filters, Collection<T> allItems) {
 		super(minecraftClient, width, height, y, entryHeight);
 		this.filters = filters;
 		this.allItems = allItems;
@@ -47,7 +46,7 @@ public class ItemTickList<T> extends ElementListWidget<ItemTickList.ItemTickEntr
 	 * @param allItems All possible values
 	 * @param whitelist Whether the filter logic works as a whitelist or blacklist, to change whether the boxes for items in the filters collection should be checked. As an example: PowderFilter keeps which items to remove inside the filter (blacklist), while ChatRuleLocation keeps which locations the feature should work in (whitelist).
 	 */
-	public ItemTickList(MinecraftClient minecraftClient, int width, int height, int y, int entryHeight, Collection<T> filters, Collection<T> allItems, boolean whitelist) {
+	public ItemTickList(Minecraft minecraftClient, int width, int height, int y, int entryHeight, Collection<T> filters, Collection<T> allItems, boolean whitelist) {
 		super(minecraftClient, width, height, y, entryHeight);
 		this.filters = filters;
 		this.allItems = allItems;
@@ -62,9 +61,9 @@ public class ItemTickList<T> extends ElementListWidget<ItemTickList.ItemTickEntr
 	public ItemTickList<T> init() {
 		for (T item : allItems) {
 			ItemTickEntry entry = new ItemTickEntry(
-					CheckboxWidget.builder(Text.of(item.toString()), client.textRenderer)
-								.checked(whitelist == filters.contains(item))
-								.callback((checkbox1, checked) -> {
+					Checkbox.builder(Component.nullToEmpty(item.toString()), minecraft.font)
+								.selected(whitelist == filters.contains(item))
+								.onValueChange((checkbox1, checked) -> {
 									if (whitelist) {
 										if (checked) filters.add(item);
 										else filters.remove(item);
@@ -80,22 +79,22 @@ public class ItemTickList<T> extends ElementListWidget<ItemTickList.ItemTickEntr
 		return this;
 	}
 
-	public static class ItemTickEntry extends ElementListWidget.Entry<ItemTickEntry> {
-		private final List<CheckboxWidget> children;
+	public static class ItemTickEntry extends ContainerObjectSelectionList.Entry<ItemTickEntry> {
+		private final List<Checkbox> children;
 
-		ItemTickEntry(CheckboxWidget checkboxWidget) {
+		ItemTickEntry(Checkbox checkboxWidget) {
 			children = List.of(checkboxWidget);
 		}
 
 		public void setChecked(boolean checked) {
-			for (CheckboxWidget child : children) {
-				((CheckboxWidgetAccessor) child).setChecked(checked);
+			for (Checkbox child : children) {
+				((CheckboxAccessor) child).setSelected(checked);
 			}
 		}
 
 		@Override
-		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			for (CheckboxWidget child : children) {
+		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			for (Checkbox child : children) {
 				child.setX(this.getX());
 				child.setY(this.getY());
 				child.setWidth(this.getWidth());
@@ -105,12 +104,12 @@ public class ItemTickList<T> extends ElementListWidget<ItemTickList.ItemTickEntr
 		}
 
 		@Override
-		public List<? extends Selectable> selectableChildren() {
+		public List<? extends NarratableEntry> narratables() {
 			return children;
 		}
 
 		@Override
-		public List<? extends Element> children() {
+		public List<? extends GuiEventListener> children() {
 			return children;
 		}
 	}

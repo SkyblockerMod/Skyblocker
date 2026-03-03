@@ -5,18 +5,17 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.Vec3d;
-
 import java.awt.Color;
 import java.util.Locale;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 public class GyroOverlay {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 
 	private static float[] colorComponents;
 
@@ -52,25 +51,25 @@ public class GyroOverlay {
 	 * </ul>
 	 */
 	public static void extractRendering(PrimitiveCollector collector) {
-		if (CLIENT.player == null || CLIENT.world == null) return;
+		if (CLIENT.player == null || CLIENT.level == null) return;
 		if (!Utils.isOnSkyblock()) return;
 		if (SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayMode == Mode.OFF) return;
 
-		String heldItem = CLIENT.player.getMainHandStack().getSkyblockId();
+		String heldItem = CLIENT.player.getMainHandItem().getSkyblockId();
 		if (!heldItem.equals("GYROKINETIC_WAND")) return;
 
-		HitResult hit = CLIENT.getCameraEntity().raycast(MAX_REACH, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false), false);
+		HitResult hit = CLIENT.getCameraEntity().pick(MAX_REACH, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false), false);
 		if (hit.getType() == HitResult.Type.MISS) {
 			return;
 		}
 
-		int color = ColorHelper.fromFloats(colorComponents[3], colorComponents[0], colorComponents[1], colorComponents[2]);
+		int color = ARGB.colorFromFloat(colorComponents[3], colorComponents[0], colorComponents[1], colorComponents[2]);
 
 		switch (SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayMode) {
 			case OFF -> {}
-			case CIRCLE_OUTLINE -> collector.submitOutlinedCircle(hit.getPos().add(new Vec3d(0, 0.1, 0)), GYRO_RADIUS, 0.25f, SEGMENTS, color);
-			case CIRCLE -> collector.submitFilledCircle(hit.getPos().add(new Vec3d(0, 0.1, 0)), GYRO_RADIUS, SEGMENTS, color);
-			case SPHERE -> collector.submitSphere(hit.getPos(), GYRO_RADIUS, SEGMENTS, SEGMENTS, color);
+			case CIRCLE_OUTLINE -> collector.submitOutlinedCircle(hit.getLocation().add(new Vec3(0, 0.1, 0)), GYRO_RADIUS, 0.25f, SEGMENTS, color);
+			case CIRCLE -> collector.submitFilledCircle(hit.getLocation().add(new Vec3(0, 0.1, 0)), GYRO_RADIUS, SEGMENTS, color);
+			case SPHERE -> collector.submitSphere(hit.getLocation(), GYRO_RADIUS, SEGMENTS, SEGMENTS, color);
 		}
 	}
 
@@ -78,7 +77,7 @@ public class GyroOverlay {
 		colorComponents = color.getRGBComponents(null);
 	}
 
-	public enum Mode implements StringIdentifiable {
+	public enum Mode implements StringRepresentable {
 		OFF("OFF"),
 		CIRCLE("CIRCLE"),
 		CIRCLE_OUTLINE("CIRCLE_OUTLINE"),
@@ -91,13 +90,13 @@ public class GyroOverlay {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name().toLowerCase(Locale.ENGLISH);
 		}
 
 		@Override
 		public String toString() {
-			return I18n.translate(this.key);
+			return I18n.get(this.key);
 		}
 	}
 }

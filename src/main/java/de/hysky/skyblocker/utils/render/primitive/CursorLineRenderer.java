@@ -2,13 +2,12 @@ package de.hysky.skyblocker.utils.render.primitive;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.CursorLineRenderState;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.world.phys.Vec3;
 
 public final class CursorLineRenderer implements PrimitiveRenderer<CursorLineRenderState> {
 	protected static final CursorLineRenderer INSTANCE = new CursorLineRenderer();
@@ -17,21 +16,23 @@ public final class CursorLineRenderer implements PrimitiveRenderer<CursorLineRen
 
 	@Override
 	public void submitPrimitives(CursorLineRenderState state, CameraRenderState cameraState) {
-		BufferBuilder buffer = Renderer.getBuffer(SkyblockerRenderPipelines.LINES_THROUGH_WALLS, state.lineWidth);
+		BufferBuilder buffer = Renderer.getBuffer(SkyblockerRenderPipelines.LINES_THROUGH_WALLS);
 		Matrix4f positionMatrix = new Matrix4f()
 				.translate((float) -cameraState.pos.x, (float) -cameraState.pos.y, (float) -cameraState.pos.z);
 
 		// Start drawing the line from a point slightly in front of the camera
-		Vec3d point = state.point;
-		Vec3d cameraPoint = cameraState.pos.add(new Vec3d(cameraState.orientation.transform(new Vector3f(0, 0, -1))));
+		Vec3 point = state.point;
+		Vec3 cameraPoint = cameraState.pos.add(new Vec3(cameraState.orientation.transform(new Vector3f(0, 0, -1))));
 		Vector3f normal = point.toVector3f().sub((float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z).normalize();
 
-		buffer.vertex(positionMatrix, (float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z)
-		.color(state.colourComponents[0], state.colourComponents[1], state.colourComponents[2], state.alpha)
-		.normal(normal.x(), normal.y(), normal.z());
+		buffer.addVertex(positionMatrix, (float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z)
+		.setColor(state.colourComponents[0], state.colourComponents[1], state.colourComponents[2], state.alpha)
+		.setNormal(normal.x(), normal.y(), normal.z())
+		.setLineWidth(state.lineWidth);
 
-		buffer.vertex(positionMatrix, (float) point.getX(), (float) point.getY(), (float) point.getZ())
-		.color(state.colourComponents[0], state.colourComponents[1], state.colourComponents[2], state.alpha)
-		.normal(normal.x(), normal.y(), normal.z());
+		buffer.addVertex(positionMatrix, (float) point.x(), (float) point.y(), (float) point.z())
+		.setColor(state.colourComponents[0], state.colourComponents[1], state.colourComponents[2], state.alpha)
+		.setNormal(normal.x(), normal.y(), normal.z())
+		.setLineWidth(state.lineWidth);
 	}
 }

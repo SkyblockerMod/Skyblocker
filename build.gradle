@@ -1,6 +1,6 @@
 plugins {
 	// Building
-	id 'fabric-loom' version "${loom_version}"
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
 	id "de.hysky.skyblocker.annotation-processor"
 	id "com.diffplug.spotless" version "${spotless_version}"
 	id "checkstyle"
@@ -126,14 +126,6 @@ repositories {
 		}
 	}
 
-	maven {
-		url = "https://maven.notenoughupdates.org/releases"
-
-		content {
-			includeGroup "org.notenoughupdates.moulconfig"
-		}
-	}
-
 	//mavenLocal()
 }
 
@@ -141,12 +133,9 @@ dependencies {
 	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	//Layered Yarn & Mojmap - used to fill in intermediary names
-	mappings loom.layered {
-		//Using Mojmap breaks runClient, so uncomment only for snapshots when temp mappings are needed
-		//officialMojangMappings()
-		mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
-	}
+
+	mappings loom.officialMojangMappings()
+
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Loom does not always add this
@@ -155,14 +144,11 @@ dependencies {
 	// Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	// Dandelion
+	// Dandelion (also shades in MoulConfig)
 	include modImplementation("net.azureaaron:dandelion:${project.dandelion_version}")
 
 	// YACL
 	include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
-
-	// MoulConfig - Dandelion shades it in already
-	//modImplementation("org.notenoughupdates.moulconfig:${project.moulconfig_flavour}:${project.moulconfig_version}")
 
 	// HM API (Hypixel Mod API Library)
 	include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
@@ -206,18 +192,24 @@ dependencies {
 	// Apache Commons Text
 	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
 
-	// JSpecify Annotations
-	include implementation("org.jspecify:jspecify:1.0.0")
-
 	// Fabric Language Kotlin for using MoulConfig - we are still a Java-exclusive mod
 	modImplementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/skyblocker.accesswidener")
+	accessWidenerPath = file("src/main/resources/skyblocker.classtweaker")
 
 	mixin {
 		useLegacyMixinAp = false
+	}
+
+	decompilers {
+		vineflower {
+			options.put(
+					// Makes lambda names easy to find for Mixins
+					"mark-corresponding-synthetics", "1"
+					)
+		}
 	}
 }
 
@@ -234,7 +226,7 @@ base {
 	archivesName = project.archives_base_name
 }
 
-processResources {
+tasks.withType(ProcessResources).configureEach {
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
@@ -330,7 +322,8 @@ checkstyle {
 	toolVersion = "${checkstyle_version}"
 	configFile = rootProject.file("checkstyle.xml")
 	configProperties = [
-		"suppressionsFile": rootProject.file("checkstyle-suppressions.xml")
+		"suppressionsFile": rootProject.file("checkstyle-suppressions.xml"),
+		"cacheFile": layout.buildDirectory.file("checkstyle/checkstyle-cache.txt").get().asFile
 	]
 }
 

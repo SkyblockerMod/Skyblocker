@@ -5,18 +5,18 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class QuickNav {
 	static final Logger LOGGER = LoggerFactory.getLogger(QuickNav.class);
@@ -54,9 +54,9 @@ public class QuickNav {
 			uiTitleMatches = screenTitle.matches(buttonInfo.uiTitle);
 		} catch (PatternSyntaxException e) {
 			LOGGER.error("[Skyblocker] Failed to parse Quick Nav Button with regex: {}", buttonInfo.uiTitle, e);
-			ClientPlayerEntity player = MinecraftClient.getInstance().player;
+			LocalPlayer player = Minecraft.getInstance().player;
 			if (player != null) {
-				player.sendMessage(Constants.PREFIX.get().append(Text.literal("Invalid regex in Quick Nav Button " + (id + 1) + "!").formatted(Formatting.RED)), false);
+				player.displayClientMessage(Constants.PREFIX.get().append(Component.literal("Invalid regex in Quick Nav Button " + (id + 1) + "!").withStyle(ChatFormatting.RED)), false);
 			}
 		}
 

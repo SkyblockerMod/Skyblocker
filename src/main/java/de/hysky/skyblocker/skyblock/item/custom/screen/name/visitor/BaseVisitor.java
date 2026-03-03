@@ -1,11 +1,10 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor;
 
-import net.minecraft.text.StringVisitable;
-import net.minecraft.text.Style;
-
 import java.util.Optional;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
 
-abstract class BaseVisitor implements StringVisitable.StyledVisitor<Void> {
+abstract class BaseVisitor implements FormattedText.StyledContentConsumer<Void> {
 	protected int selStart;
 	protected int selSize;
 

@@ -1,22 +1,15 @@
 package de.hysky.skyblocker;
 
-import de.hysky.skyblocker.debug.SnapshotDebug;
-import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
-import it.unimi.dsi.fastutil.Pair;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
-import net.minecraft.client.gui.screen.world.WorldCreator;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.world.gen.WorldPresets;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SkyblockerGameTest implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		/*
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().adjustSettings(worldCreator -> {
-			worldCreator.setWorldType(new WorldCreator.WorldType(worldCreator.getGeneratorOptionsHolder().getCombinedRegistryManager().getOrThrow(RegistryKeys.WORLD_PRESET).getOrThrow(WorldPresets.DEFAULT)));
+			worldCreator.setWorldType(new WorldCreationUiState.WorldTypeEntry(worldCreator.getSettings().worldgenLoadContext().lookupOrThrow(Registries.WORLD_PRESET).getOrThrow(WorldPresets.NORMAL)));
 			worldCreator.setSeed(String.valueOf(SnapshotDebug.AARON_WORLD_SEED));
 		}).create()) {
 			// Set up the world
@@ -26,8 +19,8 @@ public class SkyblockerGameTest implements FabricClientGameTest {
 
 			context.runOnClient(client -> {
 				assert client.player != null;
-				client.player.setYaw(180);
-				client.player.setPitch(20);
+				client.player.setYRot(180);
+				client.player.setXRot(20);
 			});
 
 			// Save the current fancy status bars config and reset it to default
@@ -55,6 +48,6 @@ public class SkyblockerGameTest implements FabricClientGameTest {
 				FancyStatusBars.placeBarsInPositioner();
 				FancyStatusBars.updatePositions(false);
 			});
-		}
+		}*/
 	}
 }

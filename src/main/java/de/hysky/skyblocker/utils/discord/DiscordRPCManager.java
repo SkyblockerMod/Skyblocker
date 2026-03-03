@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 /**
  * Manages the discord rich presence. Automatically connects to discord and displays a customizable activity when playing Skyblock.
@@ -92,7 +93,7 @@ public class DiscordRPCManager {
 				} else if (initialization) {
 					LOGGER.info("[Skyblocker] Discord RPC is currently disabled, will not connect");
 				}
-			});
+			}, Executors.newVirtualThreadPerTaskExecutor());
 		}
 	}
 
@@ -105,6 +106,7 @@ public class DiscordRPCManager {
 		return presence;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static String getInfo() {
 		String info = null;
 		if (!SkyblockerConfigManager.get().misc.richPresence.cycleMode) {

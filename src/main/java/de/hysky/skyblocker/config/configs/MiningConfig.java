@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -15,7 +15,12 @@ public class MiningConfig {
 
 	public boolean redialOnBadSignal = true;
 
+	/**
+	 * TODO: Move into {@link PickobulusHelper} in next config version.
+	 */
 	public boolean enablePickobulusHelper = true;
+
+	public PickobulusHelper pickobulusHelper = new PickobulusHelper();
 
 	public DwarvenMines dwarvenMines = new DwarvenMines();
 
@@ -31,6 +36,14 @@ public class MiningConfig {
 	public CommissionWaypoints commissionWaypoints = new CommissionWaypoints();
 
 	public Glacite glacite = new Glacite();
+
+	public BlockBreakPrediction blockBreakPrediction = new BlockBreakPrediction();
+
+	public static class PickobulusHelper {
+		public boolean enablePickobulusHud = true;
+
+		public boolean hideHudOnCooldown = false;
+	}
 
 	public static class DwarvenMines {
 		public boolean solveFetchur = true;
@@ -129,7 +142,7 @@ public class MiningConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.mining.commissionWaypoints.mode." + name());
+			return I18n.get("skyblocker.config.mining.commissionWaypoints.mode." + name());
 		}
 	}
 
@@ -147,6 +160,14 @@ public class MiningConfig {
 		public boolean enableCorpseProfitTracker = true;
 
 		public boolean forceEnglishCorpseProfitTracker = true;
+	}
+
+	public static class BlockBreakPrediction {
+		public boolean enabled = false;
+
+		public boolean playSound = false;
+
+
 	}
 
 	/**

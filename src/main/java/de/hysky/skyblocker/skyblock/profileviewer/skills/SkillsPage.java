@@ -4,13 +4,12 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Identifier;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 
 public class SkillsPage implements ProfileViewerPage {
 	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
@@ -37,12 +36,12 @@ public class SkillsPage implements ProfileViewerPage {
 		}
 	}
 
-	public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int column2 = rootX + 113;
 		for (int i = 0; i < skillWidgets.size(); i++) {
 			int x = (i < 6) ? rootX : column2;
 			int y = rootY + (i % 6) * ROW_GAP;
-			context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+			context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
 			skillWidgets.get(i).render(context, mouseX, mouseY, x, y + 3);
 		}
 	}

@@ -3,20 +3,20 @@ package de.hysky.skyblocker.skyblock.calculators;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Calculator;
 import de.hysky.skyblocker.utils.Formatters;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.VisibleForTesting;
 
 public class SignCalculator {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 
 	private static String lastInput;
 	private static double output;
-	private static Text error;
+	private static Component error;
 
-	public static void renderCalculator(DrawContext context, String message, int renderX, int renderY) {
+	public static void renderCalculator(GuiGraphics context, String message, int renderX, int renderY) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.requiresEquals && !message.startsWith("=")) {
 			output = -1;
 			error = null;
@@ -41,7 +41,7 @@ public class SignCalculator {
 				error = null;
 			} catch (Calculator.CalculatorException e) {
 				output = -1;
-				error = Text.translatable(e.getMessage(), e.args).formatted(Formatting.RED);
+				error = Component.translatable(e.getMessage(), e.args).withStyle(ChatFormatting.RED);
 			}
 		}
 	}
@@ -60,14 +60,14 @@ public class SignCalculator {
 		return Long.toString(Math.round(output));
 	}
 
-	private static void render(DrawContext context, String input, int renderX, int renderY) {
-		Text text;
+	private static void render(GuiGraphics context, String input, int renderX, int renderY) {
+		Component text;
 		if (output == -1) {
-			text = error != null ? error : Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").formatted(Formatting.RED);
+			text = error != null ? error : Component.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").withStyle(ChatFormatting.RED);
 		} else {
-			text = Text.literal(input + " = " + Formatters.DOUBLE_NUMBERS.format(output)).formatted(Formatting.GREEN);
+			text = Component.literal(input + " = " + Formatters.DOUBLE_NUMBERS.format(output)).withStyle(ChatFormatting.GREEN);
 		}
 
-		context.drawCenteredTextWithShadow(CLIENT.textRenderer, text, renderX, renderY, 0xFFFFFFFF);
+		context.drawCenteredString(CLIENT.font, text, renderX, renderY, 0xFFFFFFFF);
 	}
 }

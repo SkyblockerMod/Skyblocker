@@ -4,18 +4,17 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SeaPickleBlock;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.WorldChunk;
-
 import java.util.Iterator;
 import java.util.Set;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SeaPickleBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 	private final Set<BlockPos> allBlocks = new ObjectOpenHashSet<>();
@@ -25,8 +24,8 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 		if (!shouldProcess()) return;
 
 		if (this.statePredicate.test(newState)) {
-			this.allBlocks.add(pos.toImmutable());
-			if (isEnabled() && isEnoughPickles(newState)) this.highlightedBlocks.add(pos.toImmutable());
+			this.allBlocks.add(pos.immutable());
+			if (isEnabled() && isEnoughPickles(newState)) this.highlightedBlocks.add(pos.immutable());
 		} else {
 			this.allBlocks.remove(pos);
 			this.highlightedBlocks.remove(pos);
@@ -45,12 +44,12 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 	}
 
 	@Override
-	protected void onChunkUnload(ClientWorld world, WorldChunk chunk) {
+	protected void onChunkUnload(ClientLevel world, LevelChunk chunk) {
 		if (!shouldProcess()) return;
 		Iterator<BlockPos> iterator = this.allBlocks.iterator();
 		while (iterator.hasNext()) {
 			BlockPos pos = iterator.next();
-			Chunk holder = world.getChunk(pos);
+			ChunkAccess holder = world.getChunk(pos);
 
 			if (holder.equals(chunk)) {
 				iterator.remove();
@@ -60,12 +59,12 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 	}
 
 	@Override
-	protected void onChunkLoad(ClientWorld world, WorldChunk chunk) {
+	protected void onChunkLoad(ClientLevel world, LevelChunk chunk) {
 		if (!shouldProcess()) return;
 
-		chunk.forEachBlockMatchingPredicate(statePredicate, (pos, state) -> {
-			this.allBlocks.add(pos.toImmutable());
-			if (isEnabled() && isEnoughPickles(state)) this.highlightedBlocks.add(pos.toImmutable());
+		chunk.findBlocks(statePredicate, (pos, state) -> {
+			this.allBlocks.add(pos.immutable());
+			if (isEnabled() && isEnoughPickles(state)) this.highlightedBlocks.add(pos.immutable());
 		});
 	}
 
@@ -83,7 +82,7 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 	// Called when either the min count or the enabled state changes.
 	public void configCallback() {
 		this.highlightedBlocks.clear();
-		ClientWorld world = MinecraftClient.getInstance().world;
+		ClientLevel world = Minecraft.getInstance().level;
 		if (!shouldProcess() || world == null || !isEnabled()) {
 			return;
 		}
@@ -97,7 +96,7 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 	}
 
 	private boolean isEnoughPickles(BlockState state) {
-		return state.contains(SeaPickleBlock.PICKLES) && state.get(SeaPickleBlock.PICKLES) >= SkyblockerConfigManager.get().foraging.galatea.seaLumiesMinimumCount;
+		return state.hasProperty(SeaPickleBlock.PICKLES) && state.getValue(SeaPickleBlock.PICKLES) >= SkyblockerConfigManager.get().foraging.galatea.seaLumiesMinimumCount;
 	}
 
 	private boolean isEnabled() {

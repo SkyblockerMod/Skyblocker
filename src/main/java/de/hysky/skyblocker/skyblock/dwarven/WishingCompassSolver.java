@@ -10,20 +10,20 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.math3.geometry.euclidean.threed.Line;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
@@ -31,16 +31,16 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class WishingCompassSolver {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final Map<Zone, Box> ZONE_BOUNDING_BOXES = Map.of(
-			Zone.CRYSTAL_NUCLEUS, new Box(462, 63, 461, 564, 181, 565),
-			Zone.JUNGLE, new Box(201, 63, 201, 513, 189, 513),
-			Zone.MITHRIL_DEPOSITS, new Box(512, 63, 201, 824, 189, 513),
-			Zone.GOBLIN_HOLDOUT, new Box(201, 63, 512, 513, 189, 824),
-			Zone.PRECURSOR_REMNANTS, new Box(512, 63, 512, 824, 189, 824),
-			Zone.MAGMA_FIELDS, new Box(201, 30, 201, 824, 64, 824)
+	private static final Minecraft CLIENT = Minecraft.getInstance();
+	private static final Map<Zone, AABB> ZONE_BOUNDING_BOXES = Map.of(
+			Zone.CRYSTAL_NUCLEUS, new AABB(462, 63, 461, 564, 181, 565),
+			Zone.JUNGLE, new AABB(201, 63, 201, 513, 189, 513),
+			Zone.MITHRIL_DEPOSITS, new AABB(512, 63, 201, 824, 189, 513),
+			Zone.GOBLIN_HOLDOUT, new AABB(201, 63, 512, 513, 189, 824),
+			Zone.PRECURSOR_REMNANTS, new AABB(512, 63, 512, 824, 189, 824),
+			Zone.MAGMA_FIELDS, new AABB(201, 30, 201, 824, 64, 824)
 	);
-	private static final Vec3d JUNGLE_TEMPLE_DOOR_OFFSET = new Vec3d(-57, 36, -21);
+	private static final Vec3 JUNGLE_TEMPLE_DOOR_OFFSET = new Vec3(-57, 36, -21);
 	/**
 	 * The number of particles to use to get direction of a line
 	 */
@@ -63,14 +63,14 @@ public class WishingCompassSolver {
 	private static final double DISTANCE_TOLERANCE = 5.0;
 
 	private static SolverStates currentState = SolverStates.NOT_STARTED;
-	private static Vec3d startPosOne = Vec3d.ZERO;
-	private static Vec3d startPosTwo = Vec3d.ZERO;
-	private static Vec3d directionOne = Vec3d.ZERO;
-	private static Vec3d directionTwo = Vec3d.ZERO;
+	private static Vec3 startPosOne = Vec3.ZERO;
+	private static Vec3 startPosTwo = Vec3.ZERO;
+	private static Vec3 directionOne = Vec3.ZERO;
+	private static Vec3 directionTwo = Vec3.ZERO;
 	private static long particleUsedCountOne = 0;
 	private static long particleUsedCountTwo = 0;
 	private static long particleLastUpdate = System.currentTimeMillis();
-	private static Vec3d particleLastPos = Vec3d.ZERO;
+	private static Vec3 particleLastPos = Vec3.ZERO;
 
 	@Init
 	public static void init() {
@@ -86,11 +86,11 @@ public class WishingCompassSolver {
 	 * @param text message
 	 * @param b overlay
 	 */
-	private static boolean failMessageListener(Text text, boolean b) {
+	private static boolean failMessageListener(Component text, boolean b) {
 		if (!Utils.isInCrystalHollows()) {
 			return true;
 		}
-		if (Formatting.strip(text.getString()).equals("The Wishing Compass can't seem to locate anything!")) {
+		if (ChatFormatting.stripFormatting(text.getString()).equals("The Wishing Compass can't seem to locate anything!")) {
 			currentState = SolverStates.NOT_STARTED;
 		}
 
@@ -99,14 +99,14 @@ public class WishingCompassSolver {
 
 	private static void reset() {
 		currentState = SolverStates.NOT_STARTED;
-		startPosOne = Vec3d.ZERO;
-		startPosTwo = Vec3d.ZERO;
-		directionOne = Vec3d.ZERO;
-		directionTwo = Vec3d.ZERO;
+		startPosOne = Vec3.ZERO;
+		startPosTwo = Vec3.ZERO;
+		directionOne = Vec3.ZERO;
+		directionTwo = Vec3.ZERO;
 		particleUsedCountOne = 0;
 		particleUsedCountTwo = 0;
 		particleLastUpdate = System.currentTimeMillis();
-		particleLastPos = Vec3d.ZERO;
+		particleLastPos = Vec3.ZERO;
 	}
 
 	private static boolean isKingsScentPresent() {
@@ -115,28 +115,28 @@ public class WishingCompassSolver {
 		}
 		//make sure the data is in tab and if not tell the user
 		if (PlayerListManager.getPlayerStringList().stream().noneMatch(entry -> entry.startsWith("Active Effects:"))) {
-			CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage")), false);
+			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage")), false);
 			return false;
 		}
 		return PlayerListManager.getPlayerStringList().stream().anyMatch(entry -> entry.startsWith("King's Scent"));
 	}
 
 	private static boolean isKeyInInventory() {
-		return CLIENT.player != null && CLIENT.player.getInventory().getMainStacks().stream().anyMatch(stack -> stack != null && stack.getSkyblockId().equals("JUNGLE_KEY"));
+		return CLIENT.player != null && CLIENT.player.getInventory().getNonEquipmentItems().stream().anyMatch(stack -> stack != null && stack.getSkyblockId().equals("JUNGLE_KEY"));
 	}
 
-	private static Zone getZoneOfLocation(Vec3d location) {
+	private static Zone getZoneOfLocation(Vec3 location) {
 		return ZONE_BOUNDING_BOXES.entrySet().stream().filter(zone -> zone.getValue().contains(location)).findFirst().map(Map.Entry::getKey).orElse(Zone.CRYSTAL_NUCLEUS); //default to nucleus if somehow not in another zone
 	}
 
 	private static Boolean isZoneComplete(Zone zone) {
-		if (CLIENT.getNetworkHandler() == null || CLIENT.player == null) {
+		if (CLIENT.getConnection() == null || CLIENT.player == null) {
 			return false;
 		}
 
 		//make sure the data is in tab and if not tell the user
 		if (PlayerListManager.getPlayerStringList().stream().noneMatch(entry -> entry.equals("Crystals:"))) {
-			CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabMessage")), false);
+			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabMessage")), false);
 			return false;
 		}
 
@@ -173,17 +173,17 @@ public class WishingCompassSolver {
 	 * @param pos location where the area should be
 	 * @return corrected location
 	 */
-	private static Boolean verifyLocation(Zone startingZone, Vec3d pos) {
-		return ZONE_BOUNDING_BOXES.get(startingZone).expand(100, 0, 100).contains(pos);
+	private static Boolean verifyLocation(Zone startingZone, Vec3 pos) {
+		return ZONE_BOUNDING_BOXES.get(startingZone).inflate(100, 0, 100).contains(pos);
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private static void onParticle(ParticleS2CPacket packet) {
-		if (!Utils.isInCrystalHollows() || !ParticleTypes.HAPPY_VILLAGER.equals(packet.getParameters().getType())) {
+	private static void onParticle(ClientboundLevelParticlesPacket packet) {
+		if (!Utils.isInCrystalHollows() || !ParticleTypes.HAPPY_VILLAGER.equals(packet.getParticle().getType())) {
 			return;
 		}
 		//get location of particle
-		Vec3d particlePos = new Vec3d(packet.getX(), packet.getY(), packet.getZ());
+		Vec3 particlePos = new Vec3(packet.getX(), packet.getY(), packet.getZ());
 		//update particle used time
 		particleLastUpdate = System.currentTimeMillis();
 		//ignore particle not in the line
@@ -194,22 +194,22 @@ public class WishingCompassSolver {
 
 		switch (currentState) {
 			case PROCESSING_FIRST_USE -> {
-				Vec3d particleDirection = particlePos.subtract(startPosOne).normalize();
+				Vec3 particleDirection = particlePos.subtract(startPosOne).normalize();
 				//move direction to fit with particle
-				directionOne = directionOne.add(particleDirection.multiply((double) 1 / PARTICLES_PER_LINE));
+				directionOne = directionOne.add(particleDirection.scale((double) 1 / PARTICLES_PER_LINE));
 				particleUsedCountOne += 1;
 				//if used enough particle go to next state
 				if (particleUsedCountOne >= PARTICLES_PER_LINE) {
 					currentState = SolverStates.WAITING_FOR_SECOND;
 					if (CLIENT.player != null) {
-						CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage").formatted(Formatting.GREEN)), false);
+						CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage").withStyle(ChatFormatting.GREEN)), false);
 					}
 				}
 			}
 			case PROCESSING_SECOND_USE -> {
-				Vec3d particleDirection = particlePos.subtract(startPosTwo).normalize();
+				Vec3 particleDirection = particlePos.subtract(startPosTwo).normalize();
 				//move direction to fit with particle
-				directionTwo = directionTwo.add(particleDirection.multiply((double) 1 / PARTICLES_PER_LINE));
+				directionTwo = directionTwo.add(particleDirection.scale((double) 1 / PARTICLES_PER_LINE));
 				particleUsedCountTwo += 1;
 				//if used enough particle go to next state
 				if (particleUsedCountTwo >= PARTICLES_PER_LINE) {
@@ -224,9 +224,9 @@ public class WishingCompassSolver {
 			reset();
 			return;
 		}
-		Vec3d targetLocation = solve(startPosOne, startPosTwo, directionOne, directionTwo);
+		Vec3 targetLocation = solve(startPosOne, startPosTwo, directionOne, directionTwo);
 		if (targetLocation == null) {
-			CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.somethingWentWrongMessage").formatted(Formatting.RED)), false);
+			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.somethingWentWrongMessage").withStyle(ChatFormatting.RED)), false);
 		} else {
 			//send message to player with location and name
 			Zone playerZone = getZoneOfLocation(startPosOne);
@@ -234,21 +234,21 @@ public class WishingCompassSolver {
 			//set to unknown if the target is to far from the region it's allowed to spawn in
 			if (!verifyLocation(playerZone, targetLocation)) {
 				location = MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN;
-				CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.targetLocationToFar").formatted(Formatting.RED)), false);
+				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.targetLocationToFar").withStyle(ChatFormatting.RED)), false);
 			}
 			//offset the jungle location to its doors
 			if (location == MiningLocationLabel.CrystalHollowsLocationsCategory.JUNGLE_TEMPLE) {
 				targetLocation = targetLocation.add(JUNGLE_TEMPLE_DOOR_OFFSET);
 			}
 
-			CLIENT.player.sendMessage(Constants.PREFIX.get()
-							.append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.foundMessage").formatted(Formatting.GREEN))
-							.append(Text.literal(location.getName()).withColor(location.getColor()))
-							.append(Text.literal(": " + (int) targetLocation.getX() + " " + (int) targetLocation.getY() + " " + (int) targetLocation.getZ())),
+			CLIENT.player.displayClientMessage(Constants.PREFIX.get()
+							.append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.foundMessage").withStyle(ChatFormatting.GREEN))
+							.append(Component.literal(location.getName()).withColor(location.getColor()))
+							.append(Component.literal(": " + (int) targetLocation.x() + " " + (int) targetLocation.y() + " " + (int) targetLocation.z())),
 					false);
 
 			//add waypoint
-			CrystalsLocationsManager.addCustomWaypoint(location.getName(), BlockPos.ofFloored(targetLocation));
+			CrystalsLocationsManager.addCustomWaypoint(location.getName(), BlockPos.containing(targetLocation));
 		}
 
 		//reset ready for another go
@@ -258,7 +258,7 @@ public class WishingCompassSolver {
 	/**
 	 * using the stating locations and line direction solve for where the location must be
 	 */
-	protected static Vec3d solve(Vec3d startPosOne, Vec3d startPosTwo, Vec3d directionOne, Vec3d directionTwo) {
+	protected static Vec3 solve(Vec3 startPosOne, Vec3 startPosTwo, Vec3 directionOne, Vec3 directionTwo) {
 		if (directionOne.equals(directionTwo)) return null;
 
 		//convert format to get lines for the intersection solving
@@ -273,49 +273,49 @@ public class WishingCompassSolver {
 		Vector3D closeTwo = lineTwo.closestPoint(line);
 		double distance = close.distance(closeTwo);
 
-		Vec3d intersection = null;
+		Vec3 intersection = null;
 		if (distance < DISTANCE_TOLERANCE) {
 			//average the two closest points
-			Vec3d c1 = new Vec3d(close.getX(), close.getY(), close.getZ());
-			Vec3d c2 = new Vec3d(close.getX(), close.getY(), close.getZ());
+			Vec3 c1 = new Vec3(close.getX(), close.getY(), close.getZ());
+			Vec3 c2 = new Vec3(close.getX(), close.getY(), close.getZ());
 
-			intersection = c1.add(c2).multiply(0.5);
+			intersection = c1.add(c2).scale(0.5);
 		}
 
 		//return final target location
 		return intersection;
 	}
 
-	private static ActionResult onBlockInteract(PlayerEntity playerEntity, World world, Hand hand, BlockHitResult blockHitResult) {
+	private static InteractionResult onBlockInteract(Player playerEntity, Level world, InteractionHand hand, BlockHitResult blockHitResult) {
 		if (CLIENT.player == null) {
 			return null;
 		}
-		ItemStack stack = CLIENT.player.getStackInHand(hand);
+		ItemStack stack = CLIENT.player.getItemInHand(hand);
 		//make sure the user is in the crystal hollows and holding the wishing compass
 		if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.wishingCompassSolver || !stack.getSkyblockId().equals("WISHING_COMPASS")) {
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		}
 		if (useCompass()) {
-			return ActionResult.FAIL;
+			return InteractionResult.FAIL;
 		}
 
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
-	private static ActionResult onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
+	private static InteractionResult onItemInteract(Player playerEntity, Level world, InteractionHand hand) {
 		if (CLIENT.player == null) {
 			return null;
 		}
-		ItemStack stack = CLIENT.player.getStackInHand(hand);
+		ItemStack stack = CLIENT.player.getItemInHand(hand);
 		//make sure the user is in the crystal hollows and holding the wishing compass
 		if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.wishingCompassSolver || !stack.getSkyblockId().equals("WISHING_COMPASS")) {
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		}
 		if (useCompass()) {
-			return ActionResult.FAIL;
+			return InteractionResult.FAIL;
 		}
 
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
 	/**
@@ -327,14 +327,14 @@ public class WishingCompassSolver {
 		if (CLIENT.player == null) {
 			return true;
 		}
-		Vec3d playerPos = CLIENT.player.getEyePos();
+		Vec3 playerPos = CLIENT.player.getEyePosition();
 		Zone currentZone = getZoneOfLocation(playerPos);
 
 		switch (currentState) {
 			case NOT_STARTED -> {
 				//do not start if the player is in nucleus as this does not work well
 				if (currentZone == Zone.CRYSTAL_NUCLEUS) {
-					CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.useOutsideNucleusMessage")), false);
+					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.useOutsideNucleusMessage")), false);
 					return true;
 				}
 				startNewState(SolverStates.PROCESSING_FIRST_USE);
@@ -342,13 +342,13 @@ public class WishingCompassSolver {
 
 			case WAITING_FOR_SECOND -> {
 				//only continue if the player is far enough away from the first position to get a better reading
-				if (startPosOne.isInRange(playerPos, DISTANCE_BETWEEN_USES)) {
-					CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.moveFurtherMessage")), false);
+				if (startPosOne.closerThan(playerPos, DISTANCE_BETWEEN_USES)) {
+					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.moveFurtherMessage")), false);
 					return true;
 				} else {
 					//make sure the player is in the same zone as they used to first or restart
 					if (currentZone != getZoneOfLocation(startPosOne)) {
-						CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.changingZoneMessage")), false);
+						CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.changingZoneMessage")), false);
 						reset();
 						startNewState(SolverStates.PROCESSING_FIRST_USE);
 					} else {
@@ -361,10 +361,10 @@ public class WishingCompassSolver {
 				//if still looking for particles for line tell the user to wait
 				//else tell the user something went wrong and its starting again
 				if (System.currentTimeMillis() - particleLastUpdate < PARTICLES_MAX_DELAY) {
-					CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.waitLongerMessage").formatted(Formatting.RED)), false);
+					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.waitLongerMessage").withStyle(ChatFormatting.RED)), false);
 					return true;
 				} else {
-					CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.couldNotDetectLastUseMessage").formatted(Formatting.RED)), false);
+					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.couldNotDetectLastUseMessage").withStyle(ChatFormatting.RED)), false);
 					reset();
 					startNewState(SolverStates.PROCESSING_FIRST_USE);
 				}
@@ -379,7 +379,7 @@ public class WishingCompassSolver {
 			return;
 		}
 		//get where eye pos independent of if player is crouching
-		Vec3d playerPos = CLIENT.player.getEntityPos().add(0, 1.62, 0);
+		Vec3 playerPos = CLIENT.player.position().add(0, 1.62, 0);
 
 		if (newState == SolverStates.PROCESSING_FIRST_USE) {
 			currentState = SolverStates.PROCESSING_FIRST_USE;

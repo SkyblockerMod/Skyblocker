@@ -23,13 +23,13 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +107,7 @@ public class FairySouls {
 		});
 	}
 
-	private static void saveFoundFairySouls(MinecraftClient client) {
+	private static void saveFoundFairySouls(Minecraft client) {
 		Map<String, Map<String, Set<BlockPos>>> foundFairies = new HashMap<>();
 		for (Map.Entry<String, Map<BlockPos, ProfileAwareWaypoint>> fairiesForLocation : fairySouls.entrySet()) {
 			for (ProfileAwareWaypoint fairySoul : fairiesForLocation.getValue().values()) {
@@ -139,17 +139,17 @@ public class FairySouls {
 		}
 	}
 
-	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("fairySouls")
 						.then(literal("markAllInCurrentIslandFound").executes(context -> {
 							FairySouls.markAllFairiesOnCurrentIslandFound();
-							context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.fairySouls.markAllFound")));
+							context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.fairySouls.markAllFound")));
 							return 1;
 						}))
 						.then(literal("markAllInCurrentIslandMissing").executes(context -> {
 							FairySouls.markAllFairiesOnCurrentIslandMissing();
-							context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.fairySouls.markAllMissing")));
+							context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.fairySouls.markAllMissing")));
 							return 1;
 						}))));
 	}
@@ -160,7 +160,7 @@ public class FairySouls {
 		if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
 			for (Waypoint fairySoul : fairySouls.get(Utils.getLocationRaw()).values()) {
 				boolean fairySoulNotFound = fairySoul.shouldRender();
-				if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.getSquaredDistance(RenderHelper.getCamera().getPos()) > 2500) {
+				if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.distToCenterSqr(RenderHelper.getCamera().position()) > 2500) {
 					continue;
 				}
 				fairySoul.extractRendering(collector);
@@ -168,7 +168,7 @@ public class FairySouls {
 		}
 	}
 
-	private static boolean onChatMessage(Text text, boolean overlay) {
+	private static boolean onChatMessage(Component text, boolean overlay) {
 		String message = text.getString();
 		if (message.equals("You have already found that Fairy Soul!") || message.equals("§d§lSOUL! §fYou found a §dFairy Soul§f!")) {
 			markClosestFairyFound();
@@ -180,7 +180,7 @@ public class FairySouls {
 	private static void markClosestFairyFound() {
 		if (!fairySoulsLoaded.isDone()) return;
 
-		PlayerEntity player = MinecraftClient.getInstance().player;
+		Player player = Minecraft.getInstance().player;
 		if (player == null) {
 			LOGGER.warn("[Skyblocker] Failed to mark closest fairy soul as found because player is null");
 			return;
@@ -194,8 +194,8 @@ public class FairySouls {
 
 		fairiesOnCurrentIsland.values().stream()
 				.filter(Waypoint::shouldRender)
-				.min(Comparator.comparingDouble(fairySoul -> fairySoul.pos.getSquaredDistance(player.getEntityPos())))
-				.filter(fairySoul -> fairySoul.pos.getSquaredDistance(player.getEntityPos()) <= 16)
+				.min(Comparator.comparingDouble(fairySoul -> fairySoul.pos.distToCenterSqr(player.position())))
+				.filter(fairySoul -> fairySoul.pos.distToCenterSqr(player.position()) <= 16)
 				.ifPresent(Waypoint::setFound);
 	}
 

@@ -1,0 +1,361 @@
+{
+	"authors": [
+		{
+			"name": "LifeIsAParadox/wohlhabend",
+			"uuid": "e079840c-50fa-464d-8041-c6716a5253fc"
+		},
+		{
+			"name": "kevinthegreat1",
+			"uuid": "28657546-de5f-4eaf-993d-1b06ee28d129",
+			"colour": "#7F2AD4"
+		},
+		{
+			"name": "AzureAaron",
+			"uuid": "ed3b9805-117c-47f7-80df-d05120f1d4a3",
+			"colour": "#FF5517"
+		},
+		{
+			"name": "viciscat",
+			"uuid": "647ffd4c-f99c-4b06-a8f8-66cf1a587e57"
+		},
+		{
+			"name": "Emirlol",
+			"uuid": "6b1b3977-6a82-4880-9086-b67b0e872aac"
+		},
+		{
+			"name": "olim88",
+			"uuid": "80e3b708-0df7-4d91-8f84-d43f438a3e81"
+		},
+		{
+			"name": "Alex33856",
+			"uuid": "349a4555-4223-4532-b706-635179b7a0d1",
+			"colour": "#FFAA00"
+		}
+	],
+	"creativeTeam": [
+		"1styuki",
+		"AJ",
+		"Clin"
+	],
+	"translations": [
+		{
+			"code": "ar_aa",
+			"name": "Arabic",
+			"translators": [
+				"SMEHJ"
+			]
+		},
+		{
+			"code": "en_ca",
+			"name": "English (Canada)",
+			"translators": [
+				"AzureAaron"
+			]
+		},
+		{
+			"code": "zh_cn",
+			"name": "Chinese (Simplified)",
+			"translators": [
+				"dounutguy",
+				"LFMJUN",
+				"XYZ7577",
+				"0linZ0",
+				"lasthaiXY",
+				"HenryXiaoYang",
+				"layou223",
+				"SimplSurro",
+				"Typogalaxy",
+				"xyx986",
+				"x-yingcan-x",
+				"Internet_Yamero",
+				"PumpkinXD"
+			]
+		},
+		{
+			"code": "zh_tw",
+			"name": "Chinese (Traditional)",
+			"translators": [
+				"dounutguy",
+				"larryshow0213",
+				"cvrunmin",
+				"4wl",
+				"layou223",
+				"SimplSurro",
+				"Internet_Yamero",
+				"PumpkinXD"
+			]
+		},
+		{
+			"code": "da_dk",
+			"name": "Danish",
+			"translators": [
+				"NugzZ3D"
+			]
+		},
+		{
+			"code": "nl_nl",
+			"name": "Dutch",
+			"translators": [
+				"mitch030504",
+				"Westsi",
+				"PinguinLars"
+			]
+		},
+		{
+			"code": "fr_fr",
+			"name": "French",
+			"translators": [
+				"viciscat",
+				"Kaelig2102",
+				"SimplSurro",
+				"Siroz555",
+				"TheGallium",
+				"Fursa_",
+				"Curzeed",
+				"HugoTLS",
+				"xnossisx",
+				"rycip",
+				"Tijba",
+				"Fyelne"
+			]
+		},
+		{
+			"code": "de_de",
+			"name": "German",
+			"translators": [
+				"LifeIsAParadox",
+				"Epxlsol",
+				"Manchick0",
+				"PartyStil",
+				"Chris579",
+				"Superjamp",
+				"callmespa-dev",
+				"jonnytheagent",
+				"YESSIR9153",
+				"itzmxritz",
+				"lukaseds",
+				"Donsaurus",
+				"TheLeCrafter",
+				"MindOfTyler",
+				"leoooidk8"
+			]
+		},
+		{
+			"code": "hu_hu",
+			"name": "Hungarian",
+			"translators": [
+				"ToastedKitten",
+				"min-bal",
+				"gtutheg"
+			]
+		},
+		{
+			"code": "id_id",
+			"name": "Indonesian",
+			"translators": [
+				"null2264"
+			]
+		},
+		{
+			"code": "it_it",
+			"name": "Italian",
+			"translators": [
+				"OhRetro",
+				"Vricken",
+				"Bloo02"
+			]
+		},
+		{
+			"code": "ja_jp",
+			"name": "Japanese",
+			"translators": [
+				"hirochisan",
+				"Internet_Yamero",
+				"WhyHina",
+				"aoipop0117",
+				"tdnpgm",
+				"tokumeika"
+			]
+		},
+		{
+			"code": "ko_kr",
+			"name": "Korean",
+			"translators": [
+				"lantice3720",
+				"Gyeongb1n",
+				"DaysSky",
+				"youmoon"
+			]
+		},
+		{
+			"code": "nb_no",
+			"name": "Norwegian Bokmål",
+			"translators": [
+				"KdGaming0",
+				"SyzeeTheGorilla"
+			]
+		},
+		{
+			"code": "nn_no",
+			"name": "Norweigan Nynorsk",
+			"translators": [
+				"KdGaming0",
+				"tdnpgm"
+			]
+		},
+		{
+			"code": "pl_pl",
+			"name": "Polish",
+			"translators": [
+				"danehcan",
+				"GiveMeFox"
+			]
+		},
+		{
+			"code": "pt_br",
+			"name": "Portuguese (Brazil)",
+			"translators": [
+				"OhRetro",
+				"yFelipeMc",
+				"AurinVPK",
+				"Owensaug",
+				"withet-pt",
+				"xEsc000",
+				"giovaniohira",
+				"xerosooo",
+				"GabrielSetta",
+				"ebrenotron",
+				"jan"
+			]
+		},
+		{
+			"code": "ru_ru",
+			"name": "Russian",
+			"translators": [
+				"CrimsonIsle",
+				"Ghost-3",
+				"MrWilons",
+				"Kolobok125040",
+				"Manchick0",
+				"BLACKUM",
+				"CheckMeJava",
+				"TheMychenik",
+				"LacticWhale",
+				"iMekky",
+				"anysad",
+				"Fiarr4ikDev",
+				"admiral1941",
+				"Fiarr4ik-dev",
+				"xilka1",
+				"KXNVRA-dot",
+				"andruhan123YT",
+				"Nekiplay"
+			]
+		},
+		{
+			"code": "es_es",
+			"name": "Spanish",
+			"translators": [
+				"IngeSebastian",
+				"MackToons",
+				"NickdaWizIsDev",
+				"Teyxos",
+				"Dopjs",
+				"urdaknows",
+				"Fjrtyy",
+				"AndresMohamed",
+				"MentaPay",
+				"CHUSCO015"
+			]
+		},
+		{
+			"code": "sv_se",
+			"name": "Swedish",
+			"translators": [
+				"Ski11-pro"
+			]
+		},
+		{
+			"code": "tr_tr",
+			"name": "Turkish",
+			"translators": [
+				"Fix3dll",
+				"Emirlol",
+				"pillibebek-32",
+				"alidenizci",
+				"Opmetooo",
+				"AXCHNEER"
+			]
+		},
+		{
+			"code": "uk_ua",
+			"name": "Ukrainian",
+			"translators": [
+				"IvanPetriv",
+				"admiral1941"
+			]
+		},
+		{
+			"code": "vi_vn",
+			"name": "Vietnamese",
+			"translators": [
+				"ThqnhZ",
+				"HuydinhVN"
+			]
+		}
+	],
+	"libraries": [
+		{
+			"name": "Apache Commons Math 3",
+			"credit": "Apache Software Foundation"
+		},
+		{
+			"name": "Apache Commons Text",
+			"credit": "Apache Software Foundation"
+		},
+		{
+			"name": "Dandelion",
+			"credit": "AzureAaron and contributors"
+		},
+		{
+			"name": "Discord IPC",
+			"credit": "Meteor Development"
+		},
+		{
+			"name": "Fabric API",
+			"credit": "Modmuss and contributors"
+		},
+		{
+			"name": "HM API",
+			"credit": "AzureAaron and contributors"
+		},
+		{
+			"name": "Legacy Item DFU",
+			"credit": "AzureAaron"
+		},
+		{
+			"name": "MoulConfig",
+			"credit": "Nea and contributors"
+		},
+		{
+			"name": "Networth Calculator",
+			"credit": "AzureAaron"
+		},
+		{
+			"name": "NEU Repository",
+			"credit": "Jani and contributors"
+		},
+		{
+			"name": "NEU Repo Parser",
+			"credit": "Nea and contributors"
+		},
+		{
+			"name": "JGit",
+			"credit": "Eclipse Foundation"
+		},
+		{
+			"name": "YetAnotherConfigLib",
+			"credit": "isXander and contributors"
+		}
+	]
+}

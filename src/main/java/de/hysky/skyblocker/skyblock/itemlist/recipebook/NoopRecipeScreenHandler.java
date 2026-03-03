@@ -1,43 +1,43 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.RecipeFinder;
-import net.minecraft.recipe.book.RecipeBookType;
-import net.minecraft.screen.AbstractRecipeScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.StackedItemContents;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.RecipeBookMenu;
+import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 /**
- * Implementation of an {@link AbstractRecipeScreenHandler} that does not do anything.
+ * Implementation of an {@link RecipeBookMenu} that does not do anything.
  */
-public class NoopRecipeScreenHandler extends AbstractRecipeScreenHandler {
+public class NoopRecipeScreenHandler extends RecipeBookMenu {
 	protected NoopRecipeScreenHandler(int syncId) {
-		super(ScreenHandlerType.GENERIC_9X6, syncId);
+		super(MenuType.GENERIC_9x6, syncId);
 	}
 
 	@Override
-	public PostFillAction fillInputSlots(boolean craftAll, boolean creative, RecipeEntry<?> recipe, ServerWorld world, PlayerInventory inventory) {
-		return PostFillAction.NOTHING;
+	public PostPlaceAction handlePlacement(boolean craftAll, boolean creative, RecipeHolder<?> recipe, ServerLevel world, Inventory inventory) {
+		return PostPlaceAction.NOTHING;
 	}
 
 	@Override
-	public void populateRecipeFinder(RecipeFinder finder) {}
+	public void fillCraftSlotsStackedContents(StackedItemContents finder) {}
 
 	@Override
-	public RecipeBookType getCategory() {
+	public RecipeBookType getRecipeBookType() {
 		return RecipeBookType.CRAFTING;
 	}
 
 	@Override
-	public ItemStack quickMove(PlayerEntity player, int slot) {
+	public ItemStack quickMoveStack(Player player, int slot) {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public boolean canUse(PlayerEntity player) {
+	public boolean stillValid(Player player) {
 		return false;
 	}
 }

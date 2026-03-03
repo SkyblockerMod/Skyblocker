@@ -9,21 +9,23 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.util.Colors;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
-
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.Mth;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class TitleContainer {
 	private static final Identifier TITLE_CONTAINER = SkyblockerMod.id("title_container");
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
+
+	protected static final float RENDER_SCALE = 0.03f;
+
 	/**
 	 * The set of titles which will be rendered.
 	 *
@@ -115,7 +117,7 @@ public class TitleContainer {
 
 	public static void playNotificationSound() {
 		if (CLIENT.player != null) {
-			CLIENT.player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
+			CLIENT.player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
 		}
 	}
 
@@ -128,29 +130,35 @@ public class TitleContainer {
 		titles.remove(title);
 	}
 
-	private static void render(DrawContext context, RenderTickCounter tickCounter) {
-		render(context, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getTickProgress(true));
+	private static void render(GuiGraphics context, DeltaTracker tickCounter) {
+		render(context, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getGameTimeDeltaPartialTick(true));
 	}
 
-	protected static void render(DrawContext context, Set<Title> titles, int xPos, int yPos, float tickDelta) {
-		if (titles.isEmpty()) return;
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+	protected static void render(GuiGraphics context, Set<Title> titles, int xPos, int yPos, float tickDelta) {
+		UIAndVisualsConfig.TitleContainer config = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
 
 		// Calculate Scale to use
-		float scale = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.getRenderScale();
+		float scale = config.titleContainerScale * RENDER_SCALE;
 		// Grab direction and alignment values
-		UIAndVisualsConfig.Direction direction = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction;
-		UIAndVisualsConfig.Alignment alignment = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment;
+		UIAndVisualsConfig.Direction direction = config.direction;
+		UIAndVisualsConfig.Alignment alignment = config.alignment;
+
+		render(context, titles, xPos, yPos, tickDelta, scale, direction, alignment);
+	}
+
+	protected static void render(GuiGraphics context, Set<Title> titles, int xPos, int yPos, float tickDelta, float scale, UIAndVisualsConfig.Direction direction, UIAndVisualsConfig.Alignment alignment) {
+		if (titles.isEmpty()) return;
+		Font textRenderer = Minecraft.getInstance().font;
 
 		// x/y refer to the starting position for the text
 		// If xPos or yPos is negative, use the default values
 		// If left or right aligned or middle aligned vertically, start at xPos, we will shift each text later
-		float x = xPos >= 0 ? xPos : MinecraftClient.getInstance().getWindow().getScaledWidth() / 2f;
+		float x = xPos >= 0 ? xPos : Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2f;
 		// y always starts at yPos
-		float y = yPos >= 0 ? yPos : MinecraftClient.getInstance().getWindow().getScaledHeight() * 0.6f;
+		float y = yPos >= 0 ? yPos : Minecraft.getInstance().getWindow().getGuiScaledHeight() * 0.6f;
 
 		// Calculate the width of combined text
-		float totalWidth = getWidth(textRenderer, titles);
+		float totalWidth = getWidth(textRenderer, direction, scale, titles);
 		if (alignment == UIAndVisualsConfig.Alignment.MIDDLE && direction == UIAndVisualsConfig.Direction.HORIZONTAL) {
 			// If middle aligned horizontally, start the xPosition at half of the width to the left.
 			x = xPos - totalWidth / 2;
@@ -161,10 +169,10 @@ public class TitleContainer {
 			float xTextLeft = x;
 			if (alignment == UIAndVisualsConfig.Alignment.RIGHT) {
 				//if right aligned we need the text position to be aligned on the right side.
-				xTextLeft = x - textRenderer.getWidth(title.getText()) * scale;
+				xTextLeft = x - textRenderer.width(title.getText()) * scale;
 			} else if (direction == UIAndVisualsConfig.Direction.VERTICAL && alignment == UIAndVisualsConfig.Alignment.MIDDLE) {
 				//if middle aligned we need the text position to be aligned in the middle.
-				xTextLeft = x - (textRenderer.getWidth(title.getText()) * scale) / 2;
+				xTextLeft = x - (textRenderer.width(title.getText()) * scale) / 2;
 			}
 
 			//Start displaying the title at the correct position, not at the default position
@@ -174,45 +182,43 @@ public class TitleContainer {
 			}
 
 			//Lerp the texts x and y variables
-			title.x = MathHelper.lerp(tickDelta * 0.5F, title.x, xTextLeft);
-			title.y = MathHelper.lerp(tickDelta * 0.5F, title.y, y);
+			title.x = Mth.lerp(tickDelta * 0.5F, title.x, xTextLeft);
+			title.y = Mth.lerp(tickDelta * 0.5F, title.y, y);
 
 			//Translate the matrix to the texts position and scale
-			context.getMatrices().pushMatrix();
-			context.getMatrices().translate(title.x, title.y);
-			context.getMatrices().scale(scale, scale);
+			context.pose().pushMatrix();
+			context.pose().translate(title.x, title.y);
+			context.pose().scale(scale, scale);
 
 			//Draw text
-			context.drawTextWithShadow(textRenderer, title.getText(), 0, 0, Colors.WHITE);
-			context.getMatrices().popMatrix();
+			context.drawString(textRenderer, title.getText(), 0, 0, CommonColors.WHITE);
+			context.pose().popMatrix();
 
 			//Calculate the x and y positions for the next title
 			if (direction == UIAndVisualsConfig.Direction.HORIZONTAL) {
 				if (alignment == UIAndVisualsConfig.Alignment.MIDDLE || alignment == UIAndVisualsConfig.Alignment.LEFT) {
 					//Move to the right if middle or left aligned
-					x += (textRenderer.getWidth(title.getText()) + 10) * scale;
+					x += (textRenderer.width(title.getText()) + 10) * scale;
 				} else if (alignment == UIAndVisualsConfig.Alignment.RIGHT) {
 					//Move to the left if right aligned
-					x -= (textRenderer.getWidth(title.getText()) + 10) * scale;
+					x -= (textRenderer.width(title.getText()) + 10) * scale;
 				}
 			} else {
 				//Y always moves by the same amount if vertical
-				y += (textRenderer.fontHeight + 1) * scale;
+				y += (textRenderer.lineHeight + 1) * scale;
 			}
 		}
 	}
 
-	protected static int getWidth(TextRenderer textRenderer, Set<Title> titles) {
-		float scale = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.getRenderScale();
-		return SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction == UIAndVisualsConfig.Direction.HORIZONTAL ?
-				(int) ((titles.stream().map(Title::getText).mapToInt(textRenderer::getWidth).mapToDouble(width -> width + 10).sum() - 10) * scale) :
-				(int) (titles.stream().map(Title::getText).mapToInt(textRenderer::getWidth).max().orElse(0) * scale);
+	protected static int getWidth(Font textRenderer, UIAndVisualsConfig.Direction direction, float scale, Set<Title> titles) {
+		return direction == UIAndVisualsConfig.Direction.HORIZONTAL ?
+				(int) ((titles.stream().map(Title::getText).mapToInt(textRenderer::width).mapToDouble(width -> width + 10).sum() - 10) * scale) :
+				(int) (titles.stream().map(Title::getText).mapToInt(textRenderer::width).max().orElse(0) * scale);
 	}
 
-	protected static int getHeight(TextRenderer textRenderer, Set<Title> titles) {
-		float scale = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.getRenderScale();
-		return SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction == UIAndVisualsConfig.Direction.HORIZONTAL ?
-				(int) (textRenderer.fontHeight * scale) :
-				(int) ((textRenderer.fontHeight + 1) * titles.size() * scale);
+	protected static int getHeight(Font textRenderer, UIAndVisualsConfig.Direction direction, float scale, Set<Title> titles) {
+		return direction == UIAndVisualsConfig.Direction.HORIZONTAL ?
+				(int) (textRenderer.lineHeight * scale) :
+				(int) ((textRenderer.lineHeight + 1) * titles.size() * scale);
 	}
 }

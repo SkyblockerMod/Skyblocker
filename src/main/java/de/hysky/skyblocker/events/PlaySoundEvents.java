@@ -4,12 +4,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.sounds.SoundEvent;
 
 public class PlaySoundEvents {
 	/**
-	 * Called upon receiving a {@link PlaySoundS2CPacket} from the server.
+	 * Called upon receiving a {@link ClientboundSoundPacket} from the server.
 	 *
 	 * @implNote This event always fires regardless of any other events.
 	 */
@@ -34,7 +34,7 @@ public class PlaySoundEvents {
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface FromServer {
-		void onPlaySoundFromServer(PlaySoundS2CPacket packet);
+		void onPlaySoundFromServer(ClientboundSoundPacket packet);
 	}
 
 	@Environment(EnvType.CLIENT)

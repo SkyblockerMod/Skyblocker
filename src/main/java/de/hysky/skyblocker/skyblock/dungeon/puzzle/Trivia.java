@@ -12,15 +12,15 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class Trivia extends DungeonPuzzle {
 	private static final BlockPos CHOICE_C = new BlockPos(10, 70, 6);
 	private static final float[] ANSWER_COLOR = new float[]{0, 1f, 0};
 	private static final Direction[] DIRECTIONS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
-	private static final ArrayList<Box> BOXES_TO_HIGHLIGHT = new ArrayList<>();
+	private static final ArrayList<AABB> BOXES_TO_HIGHLIGHT = new ArrayList<>();
 
 	private static final Map<String, List<String>> answers = new Object2ObjectOpenHashMap<>();
 	private List<String> solutions = Collections.emptyList();
@@ -61,10 +61,10 @@ public class Trivia extends DungeonPuzzle {
 		return Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveTrivia;
 	}
 
-	public boolean onMessage(Text message, boolean overlay) {
+	public boolean onMessage(Component message, boolean overlay) {
 		if (!shouldRun() || overlay) return true;
 
-		Matcher matcher = PATTERN.matcher(Formatting.strip(message.getString()));
+		Matcher matcher = PATTERN.matcher(ChatFormatting.stripFormatting(message.getString()));
 		if (!matcher.matches()) return true;
 
 		// Reset state when a question is answered and when the puzzle is failed or completed.
@@ -82,9 +82,9 @@ public class Trivia extends DungeonPuzzle {
 			if (solutions.isEmpty()) return true;
 			if (!solutions.contains(answerChoice)) {
 				// Incorrect answer choice
-				ClientPlayerEntity player = MinecraftClient.getInstance().player;
+				LocalPlayer player = Minecraft.getInstance().player;
 				if (player == null) return true;
-				Utils.sendMessageToBypassEvents(Text.of("    " + Formatting.GOLD + " " + matcher.group(2) + " " + Formatting.RED + answerChoice));
+				Utils.sendMessageToBypassEvents(Component.nullToEmpty("    " + ChatFormatting.GOLD + " " + matcher.group(2) + " " + ChatFormatting.RED + answerChoice));
 				return false;
 			}
 			currentSolution = matcher.group(2);
@@ -108,21 +108,20 @@ public class Trivia extends DungeonPuzzle {
 	}
 
 	@Override
-	public void tick(MinecraftClient client) {
-		if (!shouldRun() || currentSolution.isEmpty() || !BOXES_TO_HIGHLIGHT.isEmpty() || client.world == null) return;
+	public void tick(Minecraft client) {
+		if (!shouldRun() || currentSolution.isEmpty() || !BOXES_TO_HIGHLIGHT.isEmpty() || client.level == null) return;
 		BlockPos correctBlockPos = updateCorrectBlockPos();
 		if (correctBlockPos == null) return;
 
 		Room room = DungeonManager.getCurrentRoom();
 		for (Direction direction : DIRECTIONS) {
 			//noinspection DataFlowIssue - the room must not be null and must be matched (would not tick otherwise)
-			Box buttonBox = RenderHelper.getBlockBoundingBox(client.world, room.relativeToActual(correctBlockPos).offset(direction));
+			AABB buttonBox = RenderHelper.getBlockBoundingBox(client.level, room.relativeToActual(correctBlockPos).relative(direction));
 			if (buttonBox != null) BOXES_TO_HIGHLIGHT.add(buttonBox);
 		}
 	}
 
-	@Nullable
-	private static BlockPos updateCorrectBlockPos() {
+	private static @Nullable BlockPos updateCorrectBlockPos() {
 		return switch (currentSolution) {
 			case "ⓐ" -> CHOICE_A;
 			case "ⓑ" -> CHOICE_B;
@@ -134,7 +133,7 @@ public class Trivia extends DungeonPuzzle {
 	@Override
 	public void extractRendering(PrimitiveCollector collector) {
 		if (!shouldRun() || BOXES_TO_HIGHLIGHT.isEmpty()) return;
-		for (Box box : BOXES_TO_HIGHLIGHT) {
+		for (AABB box : BOXES_TO_HIGHLIGHT) {
 			collector.submitFilledBox(box, ANSWER_COLOR, 0.5f, false);
 			collector.submitOutlinedBox(box, ANSWER_COLOR, 5f, false);
 		}
@@ -168,7 +167,7 @@ public class Trivia extends DungeonPuzzle {
 		answers.put("What is the name of the person that upgrades pets?", List.of("Kat"));
 		answers.put("What is the name of the lady of the Nether?", List.of("Elle"));
 		answers.put("Which villager in the Village gives you a Rogue Sword?", List.of("Jamie"));
-		answers.put("How many unique minions are there?", List.of("59 Minions"));
+		answers.put("How many unique minions are there?", List.of("60 Minions"));
 		answers.put("Which of these enemies does not spawn in the Spider's Den?", List.of("Zombie Spider", "Cave Spider", "Wither Skeleton", "Dashing Spooder", "Broodfather", "Night Spider"));
 		answers.put("Which of these monsters only spawns at night?", List.of("Zombie Villager", "Ghast"));
 		answers.put("Which of these is not a dragon in The End?", List.of("Zoomer Dragon", "Weak Dragon", "Stonk Dragon", "Holy Dragon", "Boomer Dragon", "Booger Dragon", "Older Dragon", "Elder Dragon", "Stable Dragon", "Professor Dragon"));

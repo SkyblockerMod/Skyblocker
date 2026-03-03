@@ -7,6 +7,8 @@ public class ChatConfig {
 
 	public boolean confirmationPromptHelper = false;
 
+	public float toastDisplayDuration = 4;
+
 	public ChatFilterResult hideAbility = ChatFilterResult.PASS;
 
 	public ChatFilterResult hideHeal = ChatFilterResult.PASS;
@@ -37,7 +39,8 @@ public class ChatConfig {
 
 	public boolean hideMana = false;
 
-	public ChatFilterResult hideDicer = ChatFilterResult.PASS;
+	@Deprecated
+	public transient ChatFilterResult hideDicer = ChatFilterResult.PASS;
 
 	public ChatFilterResult hideDungeonBreaker = ChatFilterResult.PASS;
 

@@ -4,14 +4,6 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.tooltip.HoveredTooltipPositioner;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -19,6 +11,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class CompactorDeletorPreview {
 	/**
@@ -32,29 +32,29 @@ public class CompactorDeletorPreview {
 	);
 	private static final IntIntPair DEFAULT_DIMENSION = IntIntPair.of(1, 6);
 	public static final Pattern NAME = Pattern.compile("PERSONAL_(?<type>COMPACTOR|DELETOR)_(?<size>\\d+)");
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static final Minecraft client = Minecraft.getInstance();
 
-	public static boolean drawPreview(DrawContext context, ItemStack stack, List<Text> tooltips, String type, String size, int x, int y) {
+	public static boolean drawPreview(GuiGraphics context, ItemStack stack, List<Component> tooltips, String type, String size, int x, int y) {
 		int targetIndex = getTargetIndex(tooltips);
 		if (targetIndex == -1) return false;
 
 		// Get items in compactor or deletor
-		NbtCompound customData = ItemUtils.getCustomData(stack);
+		CompoundTag customData = ItemUtils.getCustomData(stack);
 		// Get the slots and their items from the nbt, which is in the format personal_compact_<slot_number> or personal_deletor_<slot_number>
-		List<IntObjectPair<ItemStack>> slots = customData.getKeys()
+		List<IntObjectPair<ItemStack>> slots = customData.keySet()
 														.stream()
 														.filter(slot -> slot.contains(type.toLowerCase(Locale.ENGLISH).substring(0, 7)))
-														.map(slot -> IntObjectPair.of(Integer.parseInt(StringUtils.substringAfterLast(slot, "_")), ItemRepository.getItemStack(customData.getString(slot, "")))).toList();
+														.map(slot -> IntObjectPair.of(Integer.parseInt(StringUtils.substringAfterLast(slot, "_")), ItemRepository.getItemStack(customData.getStringOr(slot, "")))).toList();
 
-		List<TooltipComponent> components = tooltips.stream().map(Text::asOrderedText).map(TooltipComponent::of).collect(Collectors.toList());
+		List<ClientTooltipComponent> components = tooltips.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).collect(Collectors.toList());
 		IntIntPair dimensions = DIMENSIONS.getOrDefault(size, DEFAULT_DIMENSION);
 
 		// If there are no items in compactor or deletor
 		if (slots.isEmpty()) {
 			int slotsCount = dimensions.leftInt() * dimensions.rightInt();
-			components.add(targetIndex, TooltipComponent.of(Text.literal(slotsCount + (slotsCount == 1 ? " slot" : " slots")).formatted(Formatting.GRAY).asOrderedText()));
+			components.add(targetIndex, ClientTooltipComponent.create(Component.literal(slotsCount + (slotsCount == 1 ? " slot" : " slots")).withStyle(ChatFormatting.GRAY).getVisualOrderText()));
 
-			context.drawTooltipImmediately(client.textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE, null);
+			context.renderTooltip(client.font, components, x, y, DefaultTooltipPositioner.INSTANCE, null);
 			return true;
 		}
 
@@ -62,17 +62,17 @@ public class CompactorDeletorPreview {
 		components.add(targetIndex, new CompactorPreviewTooltipComponent(slots, dimensions));
 
 		if (customData.contains("PERSONAL_DELETOR_ACTIVE")) {
-			components.add(targetIndex, TooltipComponent.of(Text.literal("Active: ")
-					.append(customData.getBoolean("PERSONAL_DELETOR_ACTIVE", false) ? Text.literal("YES").formatted(Formatting.BOLD).formatted(Formatting.GREEN) : Text.literal("NO").formatted(Formatting.BOLD).formatted(Formatting.RED)).asOrderedText()));
+			components.add(targetIndex, ClientTooltipComponent.create(Component.literal("Active: ")
+					.append(customData.getBooleanOr("PERSONAL_DELETOR_ACTIVE", false) ? Component.literal("YES").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.GREEN) : Component.literal("NO").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.RED)).getVisualOrderText()));
 		}
-		context.drawTooltipImmediately(client.textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE, null);
+		context.renderTooltip(client.font, components, x, y, DefaultTooltipPositioner.INSTANCE, null);
 		return true;
 	}
 
 	/**
 	 * Finds the target index to insert the preview component, which is the second empty line
 	 */
-	private static int getTargetIndex(List<Text> tooltips) {
+	private static int getTargetIndex(List<Component> tooltips) {
 		int targetIndex = -1;
 		int lineCount = 0;
 		for (int i = 0; i < tooltips.size(); i++) {

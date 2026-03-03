@@ -4,15 +4,16 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class TreasureHunter extends ChatPatternListener {
 
@@ -26,25 +27,25 @@ public class TreasureHunter extends ChatPatternListener {
 	}
 
 	@Override
-	public boolean onMatch(Text message, Matcher matcher) {
-		MinecraftClient client = MinecraftClient.getInstance();
+	public boolean onMatch(Component message, Matcher matcher) {
+		Minecraft client = Minecraft.getInstance();
 		if (client.player == null) return false;
 		String hint = matcher.group(1);
 		String location = locations.get(hint);
 		if (location == null) return false;
-		client.player.sendMessage(Text.of("§e[NPC] Treasure Hunter§f: Go mine around " + location), false);
+		client.player.displayClientMessage(Component.nullToEmpty("§e[NPC] Treasure Hunter§f: Go mine around " + location), false);
 		requestWaypoint(location);
 		return true;
 	}
 
 	private static void requestWaypoint(String location) {
 		String command = "/skyblocker waypoints individual " + location + " Treasure";
-		MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.display", java.util.Arrays.stream(location.split(" ")).mapToInt(Integer::parseInt).boxed().toArray()).formatted(Formatting.AQUA)
-				.styled(style -> style
+		MutableComponent requestMessage = Constants.PREFIX.get().append(Component.translatable("skyblocker.waypoints.chat.display", Arrays.stream(location.split(" ")).mapToInt(Integer::parseInt).boxed().toArray()).withStyle(ChatFormatting.AQUA)
+				.withStyle(style -> style
 						.withClickEvent(new ClickEvent.RunCommand(command.trim()))
 				)
 		);
-		MinecraftClient.getInstance().player.sendMessage(requestMessage, false);
+		Minecraft.getInstance().player.displayClientMessage(requestMessage, false);
 	}
 
 	static {

@@ -3,9 +3,9 @@ package de.hysky.skyblocker.skyblock.galatea;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.DyeColor;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 public class LushlilacHighlighter extends AbstractBlockHighlighter {
 	public static final LushlilacHighlighter INSTANCE = new LushlilacHighlighter(Blocks.FLOWERING_AZALEA, DyeColor.MAGENTA);

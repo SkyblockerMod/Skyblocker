@@ -11,6 +11,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
@@ -20,19 +21,23 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import io.github.moulberry.repo.NEURepoFile;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
+import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +52,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -59,13 +66,17 @@ public class MuseumItemCache {
 	private static final int CONFIRM_DONATION_BUTTON_SLOT = 20;
 	private static final String CONSTANTS_MUSEUM_DATA = "constants/museum.json";
 	private static final Path CACHE_FILE = SkyblockerMod.CONFIG_DIR.resolve("museum_item_cache.json");
-	private static final ProfiledData<ProfileMuseumData> MUSEUM_ITEM_CACHE = new ProfiledData<>(CACHE_FILE, ProfileMuseumData.CODEC, true, true);
+	private static final ProfiledData<ProfileMuseumData> MUSEUM_ITEM_CACHE = new ProfiledData<>(CACHE_FILE, ProfileMuseumData.CODEC);
 	public static final String DONATION_CONFIRMATION_SCREEN_TITLE = "Confirm Donation";
-	public static final Map<String, String> ARMOR_NAMES = new Object2ObjectArrayMap<>(); // Set Id -> Display Name
-	public static final Map<String, String> ARMOR_TO_ID = new Object2ObjectArrayMap<>(); // Set Id -> Display Item Id
-	private static final Map<String, String> MAPPED_IDS = new Object2ObjectArrayMap<>();
-	public static final ObjectArrayList<Donation> MUSEUM_DONATIONS = new ObjectArrayList<>();
-	private static final ObjectArrayList<ObjectArrayList<String>> ORDERED_UPGRADES = new ObjectArrayList<>();
+	/** Set Id -> Display Name */
+	public static final Map<String, String> ARMOR_NAMES = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>());
+	/** Set Id -> Display Item Id */
+	public static final Map<String, String> ARMOR_TO_ID = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>());
+	private static final Map<String, String> MAPPED_IDS = Object2ObjectMaps.synchronize(new Object2ObjectArrayMap<>());
+	public static Set<String> MUSEUM_CATEGORIES = Set.of();
+	public static final ObjectList<Donation> MUSEUM_DONATIONS = ObjectLists.synchronize(new ObjectArrayList<>());
+	private static final ObjectList<ObjectArrayList<String>> ORDERED_UPGRADES = ObjectLists.synchronize(new ObjectArrayList<>());
+
 	private static final int CURRENT_DATA_VERSION = 1;
 
 	@Init
@@ -76,17 +87,27 @@ public class MuseumItemCache {
 		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> onProfileChange());
 	}
 
-	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("museum")
 						.then(literal("resync")
 								.executes(context -> {
 									FabricClientCommandSource source = context.getSource();
-									Text text = Text.translatable(tryResync(source) ? "skyblocker.museum.attemptingResync" : "skyblocker.museum.cannotResync");
+									Component text = tryResync(source);
 									source.sendFeedback(Constants.PREFIX.get().append(text));
 
 									return Command.SINGLE_SUCCESS;
 								}))));
+		if (!Debug.debugEnabled()) return;
+		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("debug").then(literal("reloadMuseumItems")
+						.executes(ctx -> {
+							ctx.getSource().sendFeedback(Component.literal("Reloading..."));
+							loadMuseumItems();
+							ctx.getSource().sendFeedback(Component.literal("Reloaded!"));
+							return Command.SINGLE_SUCCESS;
+						}))
+				)
+		);
 	}
 
 	/**
@@ -94,6 +115,13 @@ public class MuseumItemCache {
 	 */
 	public static void loadMuseumItems() {
 		NEURepoManager.runAsyncAfterLoad(() -> {
+			ARMOR_NAMES.clear();
+			ARMOR_TO_ID.clear();
+			MAPPED_IDS.clear();
+			MUSEUM_DONATIONS.clear();
+			ORDERED_UPGRADES.clear();
+			MUSEUM_CATEGORIES = Set.of();
+
 			NEURepoFile filePath = NEURepoManager.file(CONSTANTS_MUSEUM_DATA);
 			if (filePath == null) return;
 			try (BufferedReader reader = Files.newBufferedReader(filePath.getFsPath())) {
@@ -106,23 +134,18 @@ public class MuseumItemCache {
 				Map<String, JsonElement> setsToItems = json.get("sets_to_items").getAsJsonObject().asMap();
 				Map<String, JsonElement> children = json.get("children").getAsJsonObject().asMap();
 				Map<String, JsonElement> armorToId = json.get("armor_to_id").getAsJsonObject().asMap();
-
-				Map<String, JsonArray> allDonations = Map.of(
-						"weapons", json.get("weapons").getAsJsonArray(),
-						"armor", json.get("armor").getAsJsonArray(),
-						"rarities", json.get("rarities").getAsJsonArray()
-				);
-
 				mappedIds.forEach((s, jsonElement) -> MAPPED_IDS.put(s, jsonElement.getAsString()));
 
-				for (Map.Entry<String, JsonArray> entry : allDonations.entrySet()) {
-					String category = entry.getKey();
-					JsonArray array = entry.getValue();
+				Map<String, JsonElement> itemCategories = json.get("items").getAsJsonObject().asMap();
+				MUSEUM_CATEGORIES = itemCategories.keySet();
+				itemCategories.forEach((category, elem) -> {
+					JsonArray array = elem.getAsJsonArray();
+					if (category.equals("special")) return;
 
 					for (JsonElement element : array) {
 						String itemID = element.getAsString();
 						List<ObjectObjectMutablePair<String, PriceData>> set = new ArrayList<>();
-						if (category.equals("armor")) {
+						if (armorToId.containsKey(itemID)) {
 							boolean isEquipment = true;
 							for (JsonElement jsonElement : setsToItems.get(itemID).getAsJsonArray()) {
 								if (isEquipment) isEquipment = MuseumUtils.isEquipment(jsonElement.getAsString());
@@ -135,7 +158,8 @@ public class MuseumItemCache {
 									.orElse(itemID);
 							ARMOR_NAMES.put(itemID, MuseumUtils.formatArmorName(realId, isEquipment));
 						}
-						int itemXP = itemToXp.get(itemID).getAsInt();
+						int itemXP = 0;
+						if (itemToXp.containsKey(itemID)) itemXP = itemToXp.get(itemID).getAsInt();
 						List<String> upgrades = getUpgrades(children, itemID);
 
 						if (!upgrades.isEmpty()) {
@@ -165,7 +189,7 @@ public class MuseumItemCache {
 
 						MUSEUM_DONATIONS.add(new Donation(category, itemID, set, itemXP));
 					}
-				}
+				});
 
 				MUSEUM_DONATIONS.forEach(donation -> {
 					for (List<String> list : ORDERED_UPGRADES) {
@@ -244,14 +268,14 @@ public class MuseumItemCache {
 		return uncontributedItems;
 	}
 
-	public static void handleClick(Slot ignoredSlot, int slotId, DefaultedList<Slot> slots) {
+	public static void handleClick(Slot ignoredSlot, int slotId, NonNullList<Slot> slots) {
 		if (slotId == CONFIRM_DONATION_BUTTON_SLOT) {
 			String profileId = Utils.getProfileId();
 
 			if (!profileId.isEmpty()) {
 				//Slots 0 to 17 can have items, well not all but thats the general range
 				for (int i = 0; i < 17; i++) {
-					ItemStack stack = slots.get(i).getStack();
+					ItemStack stack = slots.get(i).getItem();
 
 					if (!stack.isEmpty()) {
 						String itemId = stack.getSkyblockId();
@@ -284,6 +308,8 @@ public class MuseumItemCache {
 	}
 
 	private static void updateData4ProfileMember(UUID uuid, String profileId, @Nullable FabricClientCommandSource source) {
+		if (MUSEUM_DONATIONS.isEmpty()) return;
+
 		CompletableFuture.runAsync(() -> {
 			try (ApiResponse response = Http.sendHypixelRequest("skyblock/museum", "?profile=" + profileId)) {
 				//The request was successful
@@ -317,27 +343,30 @@ public class MuseumItemCache {
 						MUSEUM_ITEM_CACHE.put(uuid, profileId, new ProfileMuseumData(System.currentTimeMillis(), itemIds, CURRENT_DATA_VERSION));
 						MUSEUM_ITEM_CACHE.save();
 
-						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncSuccess")));
+						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncSuccess")));
 						LOGGER.info("[Skyblocker] Successfully updated museum item cache for profile {}", profileId);
 					} else {
 						//If the player's Museum API is disabled
 						putEmpty(uuid, profileId);
-						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncFailure")));
+						if (source != null) {
+							source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.apiDisabled")))
+									.withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.museum.resyncFailure.apiDisabled.@Tooltip")))));
+						}
 						LOGGER.warn(ERROR_LOG_TEMPLATE + " because the Museum API is disabled!", profileId);
 					}
 				} else {
 					//If the request returns a non 200 status code
 					putEmpty(uuid, profileId);
-					if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncFailure")));
+					if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.unknownError"))));
 					LOGGER.error(ERROR_LOG_TEMPLATE + " because a non 200 status code was encountered! Response: {}", profileId, response);
 				}
 			} catch (Exception e) {
 				//If an exception was somehow thrown
 				putEmpty(uuid, profileId);
-				if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncFailure")));
+				if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.unknownError"))));
 				LOGGER.error(ERROR_LOG_TEMPLATE, profileId, e);
 			}
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	private static void putEmpty(UUID uuid, String profileId) {
@@ -346,16 +375,21 @@ public class MuseumItemCache {
 		MUSEUM_ITEM_CACHE.save();
 	}
 
-	private static boolean tryResync(FabricClientCommandSource source) {
-		if (MUSEUM_ITEM_CACHE.isLoaded()) {
-			String profileId = Utils.getProfileId();
-			if (profileId.isEmpty() || (MUSEUM_ITEM_CACHE.containsKey() && !MUSEUM_ITEM_CACHE.get().canResync())) return false;
-			updateData4ProfileMember(Utils.getUuid(), profileId, source);
-
-			return true;
+	private static Component tryResync(FabricClientCommandSource source) {
+		String profileId = Utils.getProfileId();
+		if (!MUSEUM_ITEM_CACHE.isLoaded() || profileId.isEmpty()) {
+			return Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.profile"))
+					.withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.museum.resyncFailure.profile.@Tooltip"))));
+		}
+		if (MUSEUM_DONATIONS.isEmpty()) {
+			return Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.itemRepo"))
+					.withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.museum.resyncFailure.itemRepo.@Tooltip"))));
 		}
 
-		return false;
+		if (MUSEUM_ITEM_CACHE.containsKey() && !MUSEUM_ITEM_CACHE.get().canResync()) return Component.translatable("skyblocker.museum.cannotResync");
+		updateData4ProfileMember(Utils.getUuid(), profileId, source);
+
+		return Component.translatable("skyblocker.museum.attemptingResync");
 	}
 
 	/**

@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils.waypoint;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,8 +10,8 @@ public class WaypointTest {
 
 	@Test
 	void testDefaultConstructor() {
-		Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents);
-		Assertions.assertEquals(BlockPos.ORIGIN, waypoint.pos);
+		Waypoint waypoint = new Waypoint(BlockPos.ZERO, () -> type, colorComponents);
+		Assertions.assertEquals(BlockPos.ZERO, waypoint.pos);
 		Assertions.assertEquals(type, waypoint.typeSupplier.get());
 		Assertions.assertEquals(0f, waypoint.colorComponents[0]);
 		Assertions.assertEquals(0.5f, waypoint.colorComponents[1]);
@@ -24,31 +24,31 @@ public class WaypointTest {
 
 	@Test
 	void testTypeConstructor() {
-		Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, Waypoint.Type.WAYPOINT, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA);
+		Waypoint waypoint = new Waypoint(BlockPos.ZERO, Waypoint.Type.WAYPOINT, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA);
 		Assertions.assertEquals(Waypoint.Type.WAYPOINT, waypoint.typeSupplier.get());
 	}
 
 	@Test
 	void testLineWidthConstructor() {
-		Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, 10f);
+		Waypoint waypoint = new Waypoint(BlockPos.ZERO, () -> type, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, 10f);
 		Assertions.assertEquals(10f, waypoint.lineWidth);
 	}
 
 	@Test
 	void testThroughWallsConstructor() {
-		Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, Waypoint.DEFAULT_LINE_WIDTH, false);
+		Waypoint waypoint = new Waypoint(BlockPos.ZERO, () -> type, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, Waypoint.DEFAULT_LINE_WIDTH, false);
 		Assertions.assertFalse(waypoint.throughWalls);
 	}
 
 	@Test
 	void testShouldRenderConstructor() {
-		Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, Waypoint.DEFAULT_LINE_WIDTH, true, false);
+		Waypoint waypoint = new Waypoint(BlockPos.ZERO, () -> type, colorComponents, Waypoint.DEFAULT_HIGHLIGHT_ALPHA, Waypoint.DEFAULT_LINE_WIDTH, true, false);
 		Assertions.assertFalse(waypoint.shouldRender());
 	}
 
 	@Test
 	void testFound() {
-		Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents);
+		Waypoint waypoint = new Waypoint(BlockPos.ZERO, () -> type, colorComponents);
 		Assertions.assertTrue(waypoint.shouldRender());
 		waypoint.setFound();
 		Assertions.assertFalse(waypoint.shouldRender());
@@ -58,7 +58,7 @@ public class WaypointTest {
 
 	@Test
 	void testType() {
-		Waypoint waypoint = new Waypoint(BlockPos.ORIGIN, () -> type, colorComponents);
+		Waypoint waypoint = new Waypoint(BlockPos.ZERO, () -> type, colorComponents);
 		Assertions.assertEquals(type, waypoint.typeSupplier.get());
 		type = Waypoint.Type.WAYPOINT;
 		Assertions.assertEquals(type, waypoint.typeSupplier.get());

@@ -3,12 +3,12 @@ package de.hysky.skyblocker.skyblock.profileviewer.dungeons;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.utils.ProfileUtils;
-import net.minecraft.client.gui.DrawContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class DungeonsPage implements ProfileViewerPage {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ProfileUtils.class);
@@ -28,7 +28,7 @@ public class DungeonsPage implements ProfileViewerPage {
 		}
 	}
 
-	public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		dungeonHeaderWidget.render(context, rootX, rootY);
 		dungeonFloorRunsWidget.render(context, mouseX, mouseY, rootX + 113, rootY + 56);
 		dungeonMiscStatsWidgets.render(context, rootX + 113, rootY);

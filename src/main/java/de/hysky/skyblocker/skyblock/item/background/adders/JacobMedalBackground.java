@@ -4,26 +4,25 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.ColorHelper;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.item.ItemStack;
 
 public class JacobMedalBackground extends ColoredItemBackground<Integer> {
 
 	private static final Pattern PATTERN = Pattern.compile("You placed in the (?<bracket>DIAMOND|PLATINUM|GOLD|SILVER|BRONZE) bracket!");
 	private static final Map<String, Integer> BRACKET_COLORS = Map.of(
-			"DIAMOND", Objects.requireNonNull(Formatting.AQUA.getColorValue()),
-			"PLATINUM", Objects.requireNonNull(Formatting.DARK_AQUA.getColorValue()),
-			"GOLD", Objects.requireNonNull(Formatting.GOLD.getColorValue()),
-			"SILVER", Objects.requireNonNull(Formatting.WHITE.getColorValue()),
-			"BRONZE", Objects.requireNonNull(Formatting.RED.getColorValue())
+			"DIAMOND", Objects.requireNonNull(ChatFormatting.AQUA.getColor()),
+			"PLATINUM", Objects.requireNonNull(ChatFormatting.DARK_AQUA.getColor()),
+			"GOLD", Objects.requireNonNull(ChatFormatting.GOLD.getColor()),
+			"SILVER", Objects.requireNonNull(ChatFormatting.WHITE.getColor()),
+			"BRONZE", Objects.requireNonNull(ChatFormatting.RED.getColor())
 	);
 
 	@Override
@@ -56,13 +55,13 @@ public class JacobMedalBackground extends ColoredItemBackground<Integer> {
 	}
 
 	@Override
-	protected void draw(DrawContext context, int x, int y, Integer color) {
+	protected void draw(GuiGraphics context, int x, int y, Integer color) {
 		float r = ((color >> 16) & 0xFF) / 255F;
 		float g = ((color >> 8) & 0xFF) / 255F;
 		float b = (color & 0xFF) / 255F;
 
-		context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, getSprite(), x, y, 16, 16,
-				ColorHelper.fromFloats(
+		context.blitSprite(RenderPipelines.GUI_TEXTURED, getSprite(), x, y, 16, 16,
+				ARGB.colorFromFloat(
 						SkyblockerConfigManager.get().general.itemInfoDisplay.itemBackgroundOpacity,
 						r, g, b
 				)

@@ -8,16 +8,15 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.WorldChunk;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.AABB;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -38,7 +37,7 @@ public abstract class AbstractBlockHighlighter {
 	 * @param colour Color to use for highlighting.
 	 */
 	protected AbstractBlockHighlighter(Block target, DyeColor colour) {
-		this(state -> state.isOf(target), colour);
+		this(state -> state.is(target), colour);
 	}
 
 	/**
@@ -62,7 +61,7 @@ public abstract class AbstractBlockHighlighter {
 		if (!shouldProcess()) return;
 
 		if (this.statePredicate.test(newState)) {
-			this.highlightedBlocks.add(pos.toImmutable());
+			this.highlightedBlocks.add(pos.immutable());
 		} else {
 			this.highlightedBlocks.remove(pos);
 		}
@@ -72,22 +71,22 @@ public abstract class AbstractBlockHighlighter {
 	 * Add initial highlights since {@link #onBlockUpdate(BlockPos, BlockState)} doesn't fire when the
 	 * server sends chunk data via the {@code ChunkDataS2CPacket}.
 	 */
-	protected void onChunkLoad(ClientWorld world, WorldChunk chunk) {
+	protected void onChunkLoad(ClientLevel world, LevelChunk chunk) {
 		if (!shouldProcess()) return;
 
-		chunk.forEachBlockMatchingPredicate(statePredicate, (pos, state) -> this.highlightedBlocks.add(pos.toImmutable()));
+		chunk.findBlocks(statePredicate, (pos, state) -> this.highlightedBlocks.add(pos.immutable()));
 	}
 
 	/**
 	 * Remove highlights in unloaded chunks.
 	 */
-	protected void onChunkUnload(ClientWorld world, WorldChunk chunk) {
+	protected void onChunkUnload(ClientLevel world, LevelChunk chunk) {
 		if (!shouldProcess()) return;
 		Iterator<BlockPos> iterator = this.highlightedBlocks.iterator();
 
 		while (iterator.hasNext()) {
 			BlockPos pos = iterator.next();
-			Chunk holder = world.getChunk(pos);
+			ChunkAccess holder = world.getChunk(pos);
 
 			if (holder.equals(chunk)) {
 				iterator.remove();
@@ -96,11 +95,11 @@ public abstract class AbstractBlockHighlighter {
 	}
 
 	private void extractRendering(PrimitiveCollector collector) {
-		MinecraftClient client = MinecraftClient.getInstance();
-		if (!shouldProcess() || client.world == null) return;
+		Minecraft client = Minecraft.getInstance();
+		if (!shouldProcess() || client.level == null) return;
 
 		for (BlockPos highlight : this.highlightedBlocks) {
-			Box outline = RenderHelper.getBlockBoundingBox(client.world, highlight);
+			AABB outline = RenderHelper.getBlockBoundingBox(client.level, highlight);
 
 			if (outline != null) {
 				collector.submitFilledBox(outline, this.colour, 0.4f, false);

@@ -8,6 +8,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.CommandUtils;
 import de.hysky.skyblocker.utils.data.JsonData;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -15,9 +16,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
-import net.minecraft.command.CommandSource;
-import org.jetbrains.annotations.NotNull;
-
+import net.minecraft.commands.SharedSuggestionProvider;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -42,13 +41,14 @@ public class SpeedPresets {
 	public static CommandNode<FabricClientCommandSource> getCommandNode() {
 		return ClientCommandManager.literal("setmaxspeed")
 				.requires(source -> Utils.isOnSkyblock())
+				.executes(CommandUtils.noOp)
 				.then(ClientCommandManager.argument("preset", StringArgumentType.string())
 						.suggests((ctx, builder) -> {
 							if (SkyblockerConfigManager.get().general.speedPresets.enableSpeedPresets && getInstance().presets.isLoaded()) {
-								return CommandSource.suggestMatching(instance.getPresets().keySet(), builder);
+								return SharedSuggestionProvider.suggest(instance.getPresets().keySet(), builder);
 							}
 							return builder.buildFuture();
-						})).build();
+						}).executes(CommandUtils.noOp)).build();
 	}
 
 	@Init
@@ -90,7 +90,6 @@ public class SpeedPresets {
 		return true;
 	}
 
-	@NotNull
 	public Object2IntMap<String> getPresets() {
 		// There's a non-null default value, so this is safe
 		return presets.getData();

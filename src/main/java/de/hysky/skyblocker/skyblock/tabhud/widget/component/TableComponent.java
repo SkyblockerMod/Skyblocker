@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
 import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphics;
 
 /**
  * Meta-Component that consists of a grid of other components
@@ -72,7 +72,7 @@ public class TableComponent extends Component {
 	}
 
 	@Override
-	public void render(DrawContext context, int xpos, int ypos) {
+	public void render(GuiGraphics context, int xpos, int ypos) {
 		int yOff = 0;
 		for (int y = 0; y < rows; y++) {
 			int col = rowBorders[y];

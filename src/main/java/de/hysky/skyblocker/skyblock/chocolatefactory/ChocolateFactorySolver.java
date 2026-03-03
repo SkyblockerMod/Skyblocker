@@ -14,18 +14,17 @@ import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -99,11 +98,11 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		ClientTickEvents.START_CLIENT_TICK.register(ChocolateFactorySolver::onTick);
 	}
 
-	private static void onTick(MinecraftClient client) {
+	private static void onTick(Minecraft client) {
 		if (ding != StraySound.NONE) {
 			dingTick = (++dingTick) % (ding == StraySound.NORMAL ? 5 : 3);
 			if (dingTick == 0) {
-				client.getSoundManager().play(PositionedSoundInstance.master(ding == StraySound.NORMAL ? SoundEvents.BLOCK_NOTE_BLOCK_PLING.value() : SoundEvents.BLOCK_NOTE_BLOCK_HARP.value(), 1.f, 1.f));
+				client.getSoundManager().play(SimpleSoundInstance.forUI(ding == StraySound.NORMAL ? SoundEvents.NOTE_BLOCK_PLING.value() : SoundEvents.NOTE_BLOCK_HARP.value(), 1.f, 1.f));
 			}
 		}
 	}
@@ -148,7 +147,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 
 		for (int i = RABBITS_START; i <= RABBITS_END; i++) { // The 7 rabbits slots are in 28, 29, 30, 31, 32, 33 and 34.
 			ItemStack item = slots.get(i);
-			if (item.isOf(Items.PLAYER_HEAD)) {
+			if (item.is(Items.PLAYER_HEAD)) {
 				getRabbit(item, i).ifPresent(cpsIncreaseFactors::add);
 			}
 		}
@@ -157,7 +156,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		getCoach(slots.get(COACH_SLOT)).ifPresent(cpsIncreaseFactors::add);
 
 		//The clickable chocolate is in slot 13, holds the total chocolate
-		RegexUtils.findLongFromMatcher(CHOCOLATE_PATTERN.matcher(slots.get(CHOCOLATE_SLOT).getName().getString())).ifPresent(l -> totalChocolate = l);
+		RegexUtils.findLongFromMatcher(CHOCOLATE_PATTERN.matcher(slots.get(CHOCOLATE_SLOT).getHoverName().getString())).ifPresent(l -> totalChocolate = l);
 
 		//Cps item (cocoa bean) is in slot 45
 		String cpsItemLore = ItemUtils.getConcatenatedLore(slots.get(CPS_SLOT));
@@ -185,14 +184,14 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 			canPrestige = false;
 			reachedMaxPrestige = true;
 		}
-		Matcher upgradeMatcher = ROMAN_LEVEL_PATTERN.matcher(slots.get(PRESTIGE_SLOT).getName().getString());
+		Matcher upgradeMatcher = ROMAN_LEVEL_PATTERN.matcher(slots.get(PRESTIGE_SLOT).getHoverName().getString());
 		prestigeLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(-1);
 
 		//Hand-Baked Chocolate
-		upgradeMatcher = ROMAN_LEVEL_PATTERN.matcher(slots.get(HAND_BAKED_CHOCOLATE_SLOT).getName().getString());
+		upgradeMatcher = ROMAN_LEVEL_PATTERN.matcher(slots.get(HAND_BAKED_CHOCOLATE_SLOT).getHoverName().getString());
 		handBakedChocolateLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(-1);
 		//Time Tower
-		upgradeMatcher.reset(slots.get(TIME_TOWER_SLOT).getName().getString());
+		upgradeMatcher.reset(slots.get(TIME_TOWER_SLOT).getHoverName().getString());
 		timeTowerLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(-1);
 		isTimeTowerMaxed = timeTowerLevel >= 15;
 		String timeTowerLore = ItemUtils.getConcatenatedLore(slots.get(TIME_TOWER_SLOT));
@@ -203,10 +202,10 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 			isTimeTowerActive = timeTowerStatusMatcher.group(1).equals("ACTIVE");
 		}
 		//Rabbit Shrine
-		upgradeMatcher.reset(slots.get(RABBIT_SHRINE_SLOT).getName().getString());
+		upgradeMatcher.reset(slots.get(RABBIT_SHRINE_SLOT).getHoverName().getString());
 		rabbitShrineLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(-1);
 		//Rabbit Barn
-		upgradeMatcher.reset(slots.get(RABBIT_BARN_SLOT).getName().getString());
+		upgradeMatcher.reset(slots.get(RABBIT_BARN_SLOT).getHoverName().getString());
 		rabbitBarnLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(-1);
 
 		//Rabbit Hitman
@@ -227,7 +226,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	 * @return An optional containing the rabbit if the item is a coach, empty otherwise.
 	 */
 	private Optional<Rabbit> getCoach(ItemStack coachItem) {
-		if (!coachItem.isOf(Items.PLAYER_HEAD)) return Optional.empty();
+		if (!coachItem.is(Items.PLAYER_HEAD)) return Optional.empty();
 		String coachLore = ItemUtils.getConcatenatedLore(coachItem);
 
 		if (totalCps < 0 || totalCpsMultiplier < 0) return Optional.empty(); //We need these 2 to calculate the increase in cps.
@@ -242,7 +241,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 			currentCpsMultiplier = OptionalDouble.of(0.0); //And so, we can re-assign values to the variables to make the calculation more readable.
 		}
 
-		Matcher levelMatcher = ROMAN_LEVEL_PATTERN.matcher(coachItem.getName().getString());
+		Matcher levelMatcher = ROMAN_LEVEL_PATTERN.matcher(coachItem.getHoverName().getString());
 		int level = RegexUtils.findRomanNumeralFromMatcher(levelMatcher).orElse(-1);
 
 		Matcher costMatcher = COST_PATTERN.matcher(coachLore);
@@ -282,8 +281,8 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		final List<ColorHighlight> highlights = new ArrayList<>();
 		for (byte i = STRAY_RABBIT_START; i <= STRAY_RABBIT_END; i++) {
 			ItemStack item = slots.get(i);
-			if (!item.isOf(Items.PLAYER_HEAD)) continue;
-			String name = item.getName().getString();
+			if (!item.is(Items.PLAYER_HEAD)) continue;
+			String name = item.getHoverName().getString();
 			if (name.equals("CLICK ME!") || name.startsWith("Golden Rabbit - ")) {
 				if (SkyblockerConfigManager.get().helpers.chocolateFactory.straySound) ding = name.startsWith("Golden") ? StraySound.GOLDEN : StraySound.NORMAL;
 				highlights.add(ColorHighlight.green(i));
@@ -295,7 +294,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	// ======== Tooltip Adder ========
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		if (focusedSlot == null) return;
 
 		int lineIndex = lines.size();
@@ -309,7 +308,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		//Available on all items with a chocolate cost
 		if (cost.isPresent()) shouldAddLine |= addUpgradeTimerToLore(lines, cost.getAsLong());
 
-		int index = focusedSlot.id;
+		int index = focusedSlot.index;
 
 		//Prestige item
 		if (index == PRESTIGE_SLOT) {
@@ -328,68 +327,68 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		if (shouldAddLine) lines.add(lineIndex, LineSmoothener.createSmoothLine());
 	}
 
-	private boolean addUpgradeTimerToLore(List<Text> lines, long cost) {
+	private boolean addUpgradeTimerToLore(List<Component> lines, long cost) {
 		if (totalChocolate < 0L || totalCps < 0.0) return false;
-		lines.add(Text.empty()
-					.append(Text.literal("Time until upgrade: ").formatted(Formatting.GRAY))
+		lines.add(Component.empty()
+					.append(Component.literal("Time until upgrade: ").withStyle(ChatFormatting.GRAY))
 					.append(formatTime((cost - totalChocolate) / totalCps)));
 		return true;
 	}
 
-	private boolean addPrestigeTimerToLore(List<Text> lines) {
+	private boolean addPrestigeTimerToLore(List<Component> lines) {
 		if (totalCps < 0.0 || reachedMaxPrestige) return false;
 		if (requiredUntilNextPrestige > 0 && !canPrestige) {
-			lines.add(Text.empty()
-						.append(Text.literal("Chocolate until next prestige: ").formatted(Formatting.GRAY))
-						.append(Text.literal(Formatters.FLOAT_NUMBERS.format(requiredUntilNextPrestige)).formatted(Formatting.GOLD)));
+			lines.add(Component.empty()
+						.append(Component.literal("Chocolate until next prestige: ").withStyle(ChatFormatting.GRAY))
+						.append(Component.literal(Formatters.FLOAT_NUMBERS.format(requiredUntilNextPrestige)).withStyle(ChatFormatting.GOLD)));
 		}
-		lines.add(Text.empty() //Keep this outside of the `if` to match the format of the upgrade tooltips, that say "Time until upgrade: Now" when it's possible
-					.append(Text.literal("Time until next prestige: ").formatted(Formatting.GRAY))
+		lines.add(Component.empty() //Keep this outside of the `if` to match the format of the upgrade tooltips, that say "Time until upgrade: Now" when it's possible
+					.append(Component.literal("Time until next prestige: ").withStyle(ChatFormatting.GRAY))
 					.append(formatTime(requiredUntilNextPrestige / totalCps)));
 		return true;
 	}
 
-	private boolean addTimeTowerStatsToLore(List<Text> lines) {
+	private boolean addTimeTowerStatsToLore(List<Component> lines) {
 		if (totalCps < 0.0 || totalCpsMultiplier < 0.0 || timeTowerMultiplier < 0.0) return false;
-		lines.add(Text.literal("Current stats:").formatted(Formatting.GRAY));
-		lines.add(Text.empty()
-					.append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
-					.append(Text.literal(Formatters.FLOAT_NUMBERS.format(totalCps / totalCpsMultiplier * timeTowerMultiplier)).formatted(Formatting.GOLD)));
-		lines.add(Text.empty()
-					.append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
-					.append(Text.literal(Formatters.FLOAT_NUMBERS.format(isTimeTowerActive ? totalCps : totalCps / totalCpsMultiplier * (timeTowerMultiplier + totalCpsMultiplier))).formatted(Formatting.GOLD)));
+		lines.add(Component.literal("Current stats:").withStyle(ChatFormatting.GRAY));
+		lines.add(Component.empty()
+					.append(Component.literal("  CPS increase: ").withStyle(ChatFormatting.GRAY))
+					.append(Component.literal(Formatters.FLOAT_NUMBERS.format(totalCps / totalCpsMultiplier * timeTowerMultiplier)).withStyle(ChatFormatting.GOLD)));
+		lines.add(Component.empty()
+					.append(Component.literal("  CPS when active: ").withStyle(ChatFormatting.GRAY))
+					.append(Component.literal(Formatters.FLOAT_NUMBERS.format(isTimeTowerActive ? totalCps : totalCps / totalCpsMultiplier * (timeTowerMultiplier + totalCpsMultiplier))).withStyle(ChatFormatting.GOLD)));
 		if (!isTimeTowerMaxed) {
-			lines.add(Text.literal("Stats after upgrade:").formatted(Formatting.GRAY));
-			lines.add(Text.empty()
-						.append(Text.literal("  CPS increase: ").formatted(Formatting.GRAY))
-						.append(Text.literal(Formatters.FLOAT_NUMBERS.format(totalCps / (totalCpsMultiplier) * (timeTowerMultiplier + 0.1))).formatted(Formatting.GOLD)));
-			lines.add(Text.empty()
-						.append(Text.literal("  CPS when active: ").formatted(Formatting.GRAY))
-						.append(Text.literal(Formatters.FLOAT_NUMBERS.format(isTimeTowerActive ? totalCps / totalCpsMultiplier * (totalCpsMultiplier + 0.1) : totalCps / totalCpsMultiplier * (timeTowerMultiplier + 0.1 + totalCpsMultiplier))).formatted(Formatting.GOLD)));
+			lines.add(Component.literal("Stats after upgrade:").withStyle(ChatFormatting.GRAY));
+			lines.add(Component.empty()
+						.append(Component.literal("  CPS increase: ").withStyle(ChatFormatting.GRAY))
+						.append(Component.literal(Formatters.FLOAT_NUMBERS.format(totalCps / (totalCpsMultiplier) * (timeTowerMultiplier + 0.1))).withStyle(ChatFormatting.GOLD)));
+			lines.add(Component.empty()
+						.append(Component.literal("  CPS when active: ").withStyle(ChatFormatting.GRAY))
+						.append(Component.literal(Formatters.FLOAT_NUMBERS.format(isTimeTowerActive ? totalCps / totalCpsMultiplier * (totalCpsMultiplier + 0.1) : totalCps / totalCpsMultiplier * (timeTowerMultiplier + 0.1 + totalCpsMultiplier))).withStyle(ChatFormatting.GOLD)));
 		}
 		return true;
 	}
 
-	private boolean addRabbitStatsToLore(List<Text> lines, int slot) {
+	private boolean addRabbitStatsToLore(List<Component> lines, int slot) {
 		if (cpsIncreaseFactors.isEmpty()) return false;
 		for (Rabbit rabbit : cpsIncreaseFactors) {
 			if (rabbit.slot == slot) {
-				lines.add(Text.empty()
-							.append(Text.literal("CPS Increase: ").formatted(Formatting.GRAY))
-							.append(Text.literal(Formatters.FLOAT_NUMBERS.format(rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
+				lines.add(Component.empty()
+							.append(Component.literal("CPS Increase: ").withStyle(ChatFormatting.GRAY))
+							.append(Component.literal(Formatters.FLOAT_NUMBERS.format(rabbit.cpsIncrease)).withStyle(ChatFormatting.GOLD)));
 
-				lines.add(Text.empty()
-							.append(Text.literal("Cost per CPS: ").formatted(Formatting.GRAY))
-							.append(Text.literal(Formatters.FLOAT_NUMBERS.format(rabbit.cost / rabbit.cpsIncrease)).formatted(Formatting.GOLD)));
+				lines.add(Component.empty()
+							.append(Component.literal("Cost per CPS: ").withStyle(ChatFormatting.GRAY))
+							.append(Component.literal(Formatters.FLOAT_NUMBERS.format(rabbit.cost / rabbit.cpsIncrease)).withStyle(ChatFormatting.GOLD)));
 
 				if (rabbit.slot == bestUpgrade) {
 					if (rabbit.cost <= totalChocolate) {
-						lines.add(Text.literal("Best upgrade").formatted(Formatting.GREEN));
+						lines.add(Component.literal("Best upgrade").withStyle(ChatFormatting.GREEN));
 					} else {
-						lines.add(Text.literal("Best upgrade, can't afford").formatted(Formatting.YELLOW));
+						lines.add(Component.literal("Best upgrade, can't afford").withStyle(ChatFormatting.YELLOW));
 					}
 				} else if (rabbit.slot == bestAffordableUpgrade && rabbit.cost <= totalChocolate) {
-					lines.add(Text.literal("Best upgrade you can afford").formatted(Formatting.GREEN));
+					lines.add(Component.literal("Best upgrade you can afford").withStyle(ChatFormatting.GREEN));
 				}
 				return true;
 			}
@@ -397,8 +396,8 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		return false;
 	}
 
-	private MutableText formatTime(double seconds) {
-		return SkyblockTime.formatTime(seconds).formatted(Formatting.GOLD);
+	private MutableComponent formatTime(double seconds) {
+		return SkyblockTime.formatTime(seconds).withStyle(ChatFormatting.GOLD);
 	}
 
 	@Override
@@ -409,56 +408,56 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	// ======== Slot Text Adder ========
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		for (ChocolateFactorySolver.Rabbit rabbit : cpsIncreaseFactors) { // Coach is included in these
 			if (slotId == rabbit.slot()) {
 				// Use SlotText#topLeft for positioning and add color to the text.
-				Text levelText = Text.literal(String.valueOf(rabbit.level())).formatted(Formatting.GOLD);
+				Component levelText = Component.literal(String.valueOf(rabbit.level())).withStyle(ChatFormatting.GOLD);
 				return SlotText.topLeftList(levelText);
 			}
 		}
 		return switch (slotId) {
 			case HAND_BAKED_CHOCOLATE_SLOT -> {
 				if (handBakedChocolateLevel < 0 || handBakedChocolateLevel == 10) yield List.of();
-				Text levelText = Text.literal(String.valueOf(handBakedChocolateLevel)).formatted(Formatting.GOLD);
+				Component levelText = Component.literal(String.valueOf(handBakedChocolateLevel)).withStyle(ChatFormatting.GOLD);
 				yield SlotText.topLeftList(levelText);
 			}
 			case RABBIT_SHRINE_SLOT -> {
 				if (rabbitShrineLevel < 0 || rabbitShrineLevel == 20) yield List.of();
-				Text levelText = Text.literal(String.valueOf(rabbitShrineLevel)).formatted(Formatting.GOLD);
+				Component levelText = Component.literal(String.valueOf(rabbitShrineLevel)).withStyle(ChatFormatting.GOLD);
 				yield SlotText.topLeftList(levelText);
 			}
 			case RABBIT_BARN_SLOT -> {
 				if (rabbitBarnLevel < 0 || rabbitBarnLevel == 245) yield List.of();
-				Text levelText = Text.literal(String.valueOf(rabbitBarnLevel)).formatted(Formatting.GOLD);
+				Component levelText = Component.literal(String.valueOf(rabbitBarnLevel)).withStyle(ChatFormatting.GOLD);
 				yield SlotText.topLeftList(levelText);
 			}
 			case TIME_TOWER_SLOT -> {
 				if (timeTowerLevel < 0 || isTimeTowerMaxed) yield List.of();
-				Text levelText = Text.literal(String.valueOf(timeTowerLevel)).formatted(Formatting.GOLD);
+				Component levelText = Component.literal(String.valueOf(timeTowerLevel)).withStyle(ChatFormatting.GOLD);
 				yield SlotText.topLeftList(levelText);
 			}
 			case RABBIT_HITMAN_SLOT -> {
 				if (hitmanAvailableEggs < 0 || purchasedHitmanSlots < 0 || maxHitmanSlots < 0) yield List.of();
-				if (purchasedHitmanSlots == 0) yield SlotText.topLeftList(Text.literal("0/0").formatted(Formatting.GRAY));
+				if (purchasedHitmanSlots == 0) yield SlotText.topLeftList(Component.literal("0/0").withStyle(ChatFormatting.GRAY));
 
-				MutableText levelText = Text.literal(String.valueOf(hitmanAvailableEggs));
-				if (hitmanAvailableEggs == purchasedHitmanSlots) levelText = levelText.formatted(Formatting.GOLD, Formatting.BOLD);
-				else if (hitmanAvailableEggs == 0) levelText = levelText.formatted(Formatting.GRAY);
-				else levelText = levelText.formatted(Formatting.YELLOW); // Some amount that is neither 0 nor the max
+				MutableComponent levelText = Component.literal(String.valueOf(hitmanAvailableEggs));
+				if (hitmanAvailableEggs == purchasedHitmanSlots) levelText = levelText.withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
+				else if (hitmanAvailableEggs == 0) levelText = levelText.withStyle(ChatFormatting.GRAY);
+				else levelText = levelText.withStyle(ChatFormatting.YELLOW); // Some amount that is neither 0 nor the max
 
-				MutableText result = Text.empty()
+				MutableComponent result = Component.empty()
 										.append(levelText);
 				if (purchasedHitmanSlots < maxHitmanSlots) {
-					result.append(Text.literal("/").formatted(Formatting.GRAY))
-						.append(Text.literal(String.valueOf(purchasedHitmanSlots)).formatted(Formatting.YELLOW));
+					result.append(Component.literal("/").withStyle(ChatFormatting.GRAY))
+						.append(Component.literal(String.valueOf(purchasedHitmanSlots)).withStyle(ChatFormatting.YELLOW));
 				}
 
 				yield SlotText.topLeftList(result);
 			}
 			case PRESTIGE_SLOT -> {
 				if (prestigeLevel < 0) yield List.of();
-				Text levelText = Text.literal(String.valueOf(prestigeLevel)).formatted(Formatting.GOLD);
+				Component levelText = Component.literal(String.valueOf(prestigeLevel)).withStyle(ChatFormatting.GOLD);
 				yield SlotText.topLeftList(levelText);
 			}
 

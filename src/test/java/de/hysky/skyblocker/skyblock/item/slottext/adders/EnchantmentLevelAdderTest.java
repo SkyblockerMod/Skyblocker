@@ -10,12 +10,12 @@ import java.util.Map;
 public class EnchantmentLevelAdderTest {
 	@Test
 	void testEnchantmentAbbreviations() {
-		checkForDuplicates(EnchantmentLevelAdder.ENCHANTMENT_ABBREVIATIONS);
+		checkForDuplicates(EnchantmentAbbreviationAdder.ENCHANTMENT_ABBREVIATIONS);
 	}
 
 	@Test
 	void testUltimateEnchantmentAbbreviations() {
-		checkForDuplicates(EnchantmentLevelAdder.ULTIMATE_ENCHANTMENT_ABBREVIATIONS);
+		checkForDuplicates(EnchantmentAbbreviationAdder.ULTIMATE_ENCHANTMENT_ABBREVIATIONS);
 	}
 
 	private void checkForDuplicates(Map<String, String> abbreviations) {

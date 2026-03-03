@@ -3,7 +3,10 @@ package de.hysky.skyblocker.skyblock.entity.glow.adder;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import org.apache.commons.lang3.StringUtils;
 
 import de.hysky.skyblocker.annotations.Init;
@@ -15,11 +18,6 @@ import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.util.Formatting;
 
 public class GardenGlowAdder extends MobGlowAdder {
 	private static final GardenGlowAdder INSTANCE = new GardenGlowAdder();
@@ -34,10 +32,10 @@ public class GardenGlowAdder extends MobGlowAdder {
 	@Override
 	public int computeColour(Entity entity) {
 		return switch (entity) {
-			case ArmorStandEntity as when isPestHead(as) ->
+			case ArmorStand as when isPestHead(as) ->
 					doesPestMatchCurrentContest(as) ?
 							// Pests but during Jacob's Contest
-							Formatting.GREEN.getColorValue() :
+							ChatFormatting.GREEN.getColor() :
 							// Default color
 							PEST_COLOUR;
 			default -> NO_GLOW;
@@ -52,9 +50,9 @@ public class GardenGlowAdder extends MobGlowAdder {
 	/**
 	 * Compares the armor items of an armor stand to the Pest head texture to determine if it is a Pest head.
 	 */
-	private static boolean isPestHead(ArmorStandEntity entity) {
-		return entity.hasStackEquipped(EquipmentSlot.HEAD) && HeadTextures.PEST_HEADS
-				.contains(ItemUtils.getHeadTexture(entity.getEquippedStack(EquipmentSlot.HEAD)));
+	private static boolean isPestHead(ArmorStand entity) {
+		return entity.hasItemInSlot(EquipmentSlot.HEAD) && HeadTextures.PEST_HEADS
+				.contains(ItemUtils.getHeadTexture(entity.getItemBySlot(EquipmentSlot.HEAD)));
 	}
 
 	private static void update() {
@@ -81,14 +79,14 @@ public class GardenGlowAdder extends MobGlowAdder {
 	/**
 	 * Matches the armor stand head with current collected crop during Jacob's Contest.
 	 */
-	public static boolean doesPestMatchCurrentContest(ArmorStandEntity entity) {
+	public static boolean doesPestMatchCurrentContest(ArmorStand entity) {
 		if (StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST)) {
 			return false;
 		}
 
 		// Filter only pest head that matches by crop
-		return entity.hasStackEquipped(EquipmentSlot.HEAD) && GardenConstants.PEST_HEAD_BY_CROP
+		return entity.hasItemInSlot(EquipmentSlot.HEAD) && GardenConstants.PEST_HEAD_BY_CROP
 				.get(CurrentJacobCrop.CURRENT_CROP_CONTEST)
-				.contains(ItemUtils.getHeadTexture(entity.getEquippedStack(EquipmentSlot.HEAD)));
+				.contains(ItemUtils.getHeadTexture(entity.getItemBySlot(EquipmentSlot.HEAD)));
 	}
 }

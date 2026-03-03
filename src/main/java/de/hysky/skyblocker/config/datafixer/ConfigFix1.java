@@ -7,10 +7,9 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.OptionalDynamic;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.StringNbtReader;
-
 import java.util.Locale;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.world.item.ItemStack;
 
 public class ConfigFix1 extends ConfigDataFix {
 	public ConfigFix1(Schema outputSchema, boolean changesType) {
@@ -193,7 +192,7 @@ public class ConfigFix1 extends ConfigDataFix {
 			if (extraNbt.length() > 2) itemNbt += "," + extraNbt;
 			itemNbt += "}";
 
-			ItemStack fixed = ItemStackComponentizationFixer.fixUpItem(StringNbtReader.readCompound(itemNbt));
+			ItemStack fixed = ItemStackComponentizationFixer.fixUpItem(TagParser.parseCompoundFully(itemNbt));
 
 			return nbt.createString(ItemStackComponentizationFixer.componentsAsString(fixed));
 		} catch (Exception e) {

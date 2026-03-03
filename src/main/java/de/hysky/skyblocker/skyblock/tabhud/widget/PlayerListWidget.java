@@ -4,24 +4,23 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class PlayerListWidget extends TabHudWidget {
-	private static final MutableText TITLE = Text.literal("Players").formatted(Formatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Players").withStyle(ChatFormatting.BOLD);
 
 	public PlayerListWidget() {
-		super("Players", TITLE, Formatting.AQUA.getColorValue());
+		super("Players", TITLE, ChatFormatting.AQUA.getColor());
 	}
 
 	@Override
-	protected void updateContent(List<Text> lines, @Nullable List<PlayerListEntry> playerListEntries) {
+	protected void updateContent(List<Component> lines, @Nullable List<PlayerInfo> playerListEntries) {
 		if (playerListEntries == null) {
 			lines.forEach(text -> addComponent(new PlainTextComponent(text)));
 		} else switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.nameSorting) {
@@ -31,5 +30,5 @@ public class PlayerListWidget extends TabHudWidget {
 	}
 
 	@Override
-	protected void updateContent(List<Text> lines) {}
+	protected void updateContent(List<Component> lines) {}
 }

@@ -19,7 +19,11 @@ public interface GardenConstants {
 			entry("Moth", "Cocoa Beans"),
 			entry("Beetle", "Nether Wart"),
 			entry("Mite", "Cactus"),
-			entry("Slug", "Mushroom"));
+			entry("Slug", "Mushroom"),
+			entry("Firefly", "Moonflower"),
+			entry("Dragonfly", "Sunflower"),
+			entry("Praying Mantis", "Wild Rose")
+	);
 
 	Multimap<String, String> PEST_HEAD_BY_CROP = Util.make(ArrayListMultimap.create(), map -> {
 			map.put("Wheat", HeadTextures.FLY_PEST);
@@ -33,5 +37,9 @@ public interface GardenConstants {
 			map.put("Nether Wart", HeadTextures.BEETLE_PEST);
 			map.put("Cactus", HeadTextures.MITE_PEST);
 			map.put("Mushroom", HeadTextures.SLUG_PEST);
+			map.put("Moonflower", HeadTextures.FIREFLY_PEST);
+			map.put("Moonflower", HeadTextures.FIREFLY_PEST_FLASH);
+			map.put("Sunflower", HeadTextures.DRAGONFLY_PEST);
+			map.put("Wild Rose", HeadTextures.PRAYING_MANTIS_PEST);
 	});
 }

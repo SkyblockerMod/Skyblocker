@@ -4,7 +4,7 @@ import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public class ConfigFix2QuickNav extends ConfigDataFix {
 	public ConfigFix2QuickNav(Schema outputSchema, boolean changesType) {
@@ -33,6 +33,6 @@ public class ConfigFix2QuickNav extends ConfigDataFix {
 	}
 
 	private <T> Dynamic<T> fixButton(Dynamic<T> button) {
-		return button.renameAndFixField("item", "itemData", itemData -> itemData.renameAndFixField("id", "item", id -> id.createString(Identifier.of(id.asString().getOrThrow()).toString())));
+		return button.renameAndFixField("item", "itemData", itemData -> itemData.renameAndFixField("id", "item", id -> id.createString(Identifier.parse(id.asString().getOrThrow()).toString())));
 	}
 }

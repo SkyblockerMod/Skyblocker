@@ -4,18 +4,17 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class BazaarHelper extends SimpleSlotTextAdder {
 	private static final Pattern FILLED_PATTERN = Pattern.compile("Filled: \\S+ \\(?([\\d.]+)%\\)?!?");
@@ -33,7 +32,7 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public boolean test(@NotNull String title) {
+	public boolean test(String title) {
 		if (super.test(title)) {
 			BazaarOrderTracker.INSTANCE.clearOrders();
 			return true;
@@ -42,17 +41,17 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slot == null) return List.of();
 		// Skip the first row as it's always glass panes.
 		if (slotId < 10) return List.of();
 		// Skip the last 10 items. 11 is subtracted because size is 1-based so the last slot is size - 1.
-		if (slotId > slot.inventory.size() - 11) return List.of(); //Note that this also skips the slots in player's inventory (anything above 36/45/54 depending on the order count)
+		if (slotId > slot.container.getContainerSize() - 11) return List.of(); //Note that this also skips the slots in player's inventory (anything above 36/45/54 depending on the order count)
 
 		int column = slotId % 9;
 		if (column == 0 || column == 8) return List.of(); // Skip the first and last column as those are always glass panes as well.
 
-		ItemStack item = slot.getStack();
+		ItemStack item = slot.getItem();
 		if (item.isEmpty()) return List.of(); //We've skipped all invalid slots, so we can just check if it's not air here.
 
 		BazaarOrderTracker.INSTANCE.processOrder(item, slotId);
@@ -75,16 +74,16 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 		return List.of();
 	}
 
-	public static @NotNull MutableText getExpiredIcon() {
-		return Text.literal("⏰").withColor(RED).formatted(Formatting.BOLD);
+	public static MutableComponent getExpiredIcon() {
+		return Component.literal("⏰").withColor(RED).withStyle(ChatFormatting.BOLD);
 	}
 
-	public static @NotNull MutableText getExpiringIcon() {
-		return Text.literal("⏰").withColor(YELLOW).formatted(Formatting.BOLD);
+	public static MutableComponent getExpiringIcon() {
+		return Component.literal("⏰").withColor(YELLOW).withStyle(ChatFormatting.BOLD);
 	}
 
-	public static @NotNull MutableText getFilledIcon(int filled) {
-		if (filled < 100) return Text.literal("%").withColor(YELLOW).formatted(Formatting.BOLD);
-		return Text.literal("✅").withColor(GREEN).formatted(Formatting.BOLD);
+	public static MutableComponent getFilledIcon(int filled) {
+		if (filled < 100) return Component.literal("%").withColor(YELLOW).withStyle(ChatFormatting.BOLD);
+		return Component.literal("✅").withColor(GREEN).withStyle(ChatFormatting.BOLD);
 	}
 }

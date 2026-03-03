@@ -1,16 +1,16 @@
 package de.hysky.skyblocker.skyblock.auction;
 
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
-public class AuctionHouseScreenHandler extends GenericContainerScreenHandler {
-	public AuctionHouseScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, Inventory inventory, int rows, boolean isView) {
+public class AuctionHouseScreenHandler extends ChestMenu {
+	public AuctionHouseScreenHandler(MenuType<?> type, int syncId, Inventory playerInventory, Container inventory, int rows, boolean isView) {
 		super(type, syncId, playerInventory, inventory, rows);
 
 		int yOffset = (rows - 4) * 18;
@@ -30,9 +30,9 @@ public class AuctionHouseScreenHandler extends GenericContainerScreenHandler {
 				slotAccessor.setX(8 + miniInventorySlot % 8 * 18);
 				slotAccessor.setY(18 + miniInventorySlot / 8 * 18);
 			} else {
-				slots.set(i, new Slot(slot.inventory, slot.getIndex(), slot.x, slot.y) {
+				slots.set(i, new Slot(slot.container, slot.getContainerSlot(), slot.x, slot.y) {
 					@Override
-					public boolean isEnabled() {
+					public boolean isActive() {
 						return false;
 					}
 				});
@@ -40,18 +40,18 @@ public class AuctionHouseScreenHandler extends GenericContainerScreenHandler {
 		}
 	}
 
-	public static AuctionHouseScreenHandler of(GenericContainerScreenHandler original, boolean isView) {
-		assert MinecraftClient.getInstance().player != null;
+	public static AuctionHouseScreenHandler of(ChestMenu original, boolean isView) {
+		assert Minecraft.getInstance().player != null;
 		return new AuctionHouseScreenHandler(original.getType(),
-				original.syncId,
-				MinecraftClient.getInstance().player.getInventory(),
-				original.getInventory(),
-				original.getRows(),
+				original.containerId,
+				Minecraft.getInstance().player.getInventory(),
+				original.getContainer(),
+				original.getRowCount(),
 				isView);
 	}
 
 	@Override
-	public void setStackInSlot(int slot, int revision, ItemStack stack) {
-		super.setStackInSlot(slot, revision, stack);
+	public void setItem(int slot, int revision, ItemStack stack) {
+		super.setItem(slot, revision, stack);
 	}
 }

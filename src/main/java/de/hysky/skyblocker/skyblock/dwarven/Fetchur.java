@@ -3,14 +3,14 @@ package de.hysky.skyblocker.skyblock.dwarven;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 public class Fetchur extends ChatPatternListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Fetchur.class);
@@ -27,32 +27,32 @@ public class Fetchur extends ChatPatternListener {
 	}
 
 	@Override
-	public boolean onMatch(Text message, Matcher matcher) {
-		MinecraftClient client = MinecraftClient.getInstance();
+	public boolean onMatch(Component message, Matcher matcher) {
+		Minecraft client = Minecraft.getInstance();
 		if (client.player == null) return false;
 		LOGGER.info("Original Fetchur message: {}", message.getString());
 		String riddle = matcher.group(1);
 		String answer = answers.getOrDefault(riddle, riddle);
-		client.player.sendMessage(Text.of("§e[NPC] Fetchur§f: " + answer), false);
+		client.player.displayClientMessage(Component.nullToEmpty("§e[NPC] Fetchur§f: " + answer), false);
 		return true;
 	}
 
 	static {
 		answers = new HashMap<>();
 
-		answers.put("yellow and see through", Text.translatable("block.minecraft.yellow_stained_glass").getString());
-		answers.put("circular and sometimes moves", Text.translatable("item.minecraft.compass").getString());
+		answers.put("yellow and see through", Component.translatable("block.minecraft.yellow_stained_glass").getString());
+		answers.put("circular and sometimes moves", Component.translatable("item.minecraft.compass").getString());
 		answers.put("expensive minerals", "Mithril");
-		answers.put("useful during celebrations", Text.translatable("item.minecraft.firework_rocket").getString());
+		answers.put("useful during celebrations", Component.translatable("item.minecraft.firework_rocket").getString());
 		answers.put("hot and gives energy", "Cheap / Decent / Black Coffee");
 		answers.put("tall and can be opened", String.format("%s / %s",
-				Text.literal("Any Wooden Door").getString(),
-				Text.translatable("block.minecraft.iron_door").getString()));
-		answers.put("brown and fluffy", Text.translatable("item.minecraft.rabbit_foot").getString());
+				Component.literal("Any Wooden Door").getString(),
+				Component.translatable("block.minecraft.iron_door").getString()));
+		answers.put("brown and fluffy", Component.translatable("item.minecraft.rabbit_foot").getString());
 		answers.put("explosive but more than usual", "Superboom TNT");
-		answers.put("wearable and grows", Text.translatable("block.minecraft.pumpkin").getString());
-		answers.put("shiny and makes sparks", Text.translatable("item.minecraft.flint_and_steel").getString());
-		answers.put("green and some dudes trade stuff for it", Text.translatable("item.minecraft.emerald").getString());
-		answers.put("red and soft", Text.translatable("block.minecraft.red_wool").getString());
+		answers.put("wearable and grows", Component.translatable("block.minecraft.pumpkin").getString());
+		answers.put("shiny and makes sparks", Component.translatable("item.minecraft.flint_and_steel").getString());
+		answers.put("green and some dudes trade stuff for it", Component.translatable("item.minecraft.emerald").getString());
+		answers.put("red and soft", Component.translatable("block.minecraft.red_wool").getString());
 	}
 }

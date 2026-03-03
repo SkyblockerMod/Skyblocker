@@ -6,18 +6,17 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Queue;
@@ -29,16 +28,16 @@ public class BuildersWandPreview {
 	public static final int PLOT_OFFSET = 48;
 	private static final float[] RED = {1.0f, 0.0f, 0.0f};
 	public static final boolean SODIUM_LOADED = FabricLoader.getInstance().isModLoaded("sodium");
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static final Minecraft client = Minecraft.getInstance();
 
 	@Init
 	public static void init() {
 		WorldRenderExtractionCallback.EVENT.register(collector -> {
 			if (!SkyblockerConfigManager.get().helpers.enableBuildersWandPreview || !Utils.isOnSkyblock() || client.player == null) return;
 			if (!Utils.isInPrivateIsland() && !Utils.isInGarden()) return;
-			if (!(client.crosshairTarget instanceof BlockHitResult blockHitResult) || blockHitResult.getType() != HitResult.Type.BLOCK) return;
-			ItemStack stack = client.player.getMainHandStack();
-			if (!stack.isOf(Items.BLAZE_ROD)) return;
+			if (!(client.hitResult instanceof BlockHitResult blockHitResult) || blockHitResult.getType() != HitResult.Type.BLOCK) return;
+			ItemStack stack = client.player.getMainHandItem();
+			if (!stack.is(Items.BLAZE_ROD)) return;
 			switch (stack.getSkyblockId()) {
 				case "BUILDERS_WAND" -> extractBuildersWandPreview(collector, blockHitResult);
 				case "BUILDERS_RULER" -> extractBuildersRulerPreview(collector, blockHitResult);
@@ -47,17 +46,17 @@ public class BuildersWandPreview {
 	}
 
 	private static void extractBuildersWandPreview(PrimitiveCollector collector, BlockHitResult hitResult) {
-		if (client.world == null) return;
+		if (client.level == null) return;
 		BlockPos hitPos = hitResult.getBlockPos();
-		Direction side = hitResult.getSide();
-		if (!client.world.getBlockState(hitPos.offset(side)).isAir()) return;
-		BlockState state = client.world.getBlockState(hitPos);
-		for (BlockPos pos : findConnectedFaces(client.world, hitPos, side, state)) {
-			extractBlockPreview(collector, pos.offset(side), state);
+		Direction side = hitResult.getDirection();
+		if (!client.level.getBlockState(hitPos.relative(side)).isAir()) return;
+		BlockState state = client.level.getBlockState(hitPos);
+		for (BlockPos pos : findConnectedFaces(client.level, hitPos, side, state)) {
+			extractBlockPreview(collector, pos.relative(side), state);
 		}
 	}
 
-	private static Set<BlockPos> findConnectedFaces(World world, BlockPos pos, Direction side, BlockState state) {
+	private static Set<BlockPos> findConnectedFaces(Level world, BlockPos pos, Direction side, BlockState state) {
 		// bfs connected block faces
 		Queue<BlockPos> q = new ArrayDeque<>();
 		Set<BlockPos> visited = new HashSet<>();
@@ -66,7 +65,7 @@ public class BuildersWandPreview {
 
 		while (!q.isEmpty()) {
 			BlockPos current = q.poll();
-			BlockPos.Mutable mutable = current.mutableCopy();
+			BlockPos.MutableBlockPos mutable = current.mutable();
 			for (Direction dir : Direction.values()) {
 				// Only search in the 4 directions perpendicular to the hit side
 				if (dir == side || dir == side.getOpposite()) continue;
@@ -74,7 +73,7 @@ public class BuildersWandPreview {
 				// We nest to make sure mutable is moved back to the original position after checking each direction
 				if (!visited.contains(mutable) && world.getBlockState(mutable).equals(state)) {
 					if (world.getBlockState(mutable.move(side)).isAir()) {
-						BlockPos neighbor = mutable.move(side.getOpposite()).toImmutable();
+						BlockPos neighbor = mutable.move(side.getOpposite()).immutable();
 						q.add(neighbor);
 						visited.add(neighbor);
 					} else {
@@ -91,26 +90,26 @@ public class BuildersWandPreview {
 	}
 
 	private static void extractBuildersRulerPreview(PrimitiveCollector collector, BlockHitResult hitResult) {
-		if (client.player == null || client.world == null || !Utils.isInGarden()) return;
+		if (client.player == null || client.level == null || !Utils.isInGarden()) return;
 		BlockPos startPos = hitResult.getBlockPos();
-		boolean isSneaking = client.player.isSneaking();
+		boolean isSneaking = client.player.isShiftKeyDown();
 		Block startBlock = Blocks.AIR;
 		// Render the blocks we're about to remove if we're sneaking
 		// Render the blocks we're about to place if we're not sneaking
-		if (!isSneaking) startPos = startPos.offset(hitResult.getSide());
+		if (!isSneaking) startPos = startPos.relative(hitResult.getDirection());
 		// Save the starting block state since only the same blocks can be removed
-		else startBlock = client.world.getBlockState(startPos).getBlock();
+		else startBlock = client.level.getBlockState(startPos).getBlock();
 
-		BlockPos.Mutable pos = startPos.mutableCopy();
-		for (int i = 0; i < MAX_BLOCKS && checkPos(startPos, pos, client.world.getBlockState(pos), isSneaking, startBlock); i++) {
+		BlockPos.MutableBlockPos pos = startPos.mutable();
+		for (int i = 0; i < MAX_BLOCKS && checkPos(startPos, pos, client.level.getBlockState(pos), isSneaking, startBlock); i++) {
 			if (isSneaking) collector.submitFilledBox(pos, RED, 0.5f, true);
-			else extractBlockPreview(collector, pos, Blocks.DIRT.getDefaultState());
-			pos.move(client.player.getHorizontalFacing());
+			else extractBlockPreview(collector, pos, Blocks.DIRT.defaultBlockState());
+			pos.move(client.player.getDirection());
 		}
 	}
 
-	private static boolean checkPos(BlockPos plotPos, BlockPos.Mutable pos, BlockState state, boolean isSneaking, Block startBlock) {
-		return isInPlot(plotPos, pos) && (isSneaking ? state.isOf(startBlock) : state.isAir());
+	private static boolean checkPos(BlockPos plotPos, BlockPos.MutableBlockPos pos, BlockState state, boolean isSneaking, Block startBlock) {
+		return isInPlot(plotPos, pos) && (isSneaking ? state.is(startBlock) : state.isAir());
 	}
 
 	private static boolean isInPlot(BlockPos plotPos, BlockPos pos) {

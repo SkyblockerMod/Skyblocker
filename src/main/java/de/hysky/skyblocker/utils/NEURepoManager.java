@@ -11,23 +11,25 @@ import io.github.moulberry.repo.NEUConstants;
 import io.github.moulberry.repo.NEURecipeCache;
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.NEURepository;
+import io.github.moulberry.repo.data.ItemOverlays;
+import io.github.moulberry.repo.NEURepositoryException;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
+import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
 import io.github.moulberry.repo.util.NEUId;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.function.Consumers;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +41,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Initializes the NEU repo, which contains item metadata and fairy souls location data. Clones the repo if it does not exist and checks for updates. Use {@link #runAsyncAfterLoad(Runnable)} to run code after the repo is initialized.
@@ -68,6 +72,10 @@ public class NEURepoManager {
 	 * @see #getUsages()
 	 */
 	private static final NEURecipeCache RECIPE_CACHE = NEURecipeCache.forRepo(NEU_REPO);
+	/**
+	 * @see #getStackOverlays(int)
+	 */
+	private static final ItemOverlays STACK_OVERLAYS = ItemOverlays.forRepo(NEU_REPO);
 	/**
 	 * Store after load runnables so we can execute them after each time the repository is (re)loaded.
 	 */
@@ -102,6 +110,7 @@ public class NEURepoManager {
 
 	private static CompletableFuture<Boolean> loadRepository() {
 		return CompletableFuture.supplyAsync(() -> {
+			Minecraft client = Minecraft.getInstance();
 			boolean success = true;
 			try {
 				if (Files.isDirectory(NEURepoManager.LOCAL_REPO_DIR)) {
@@ -111,7 +120,9 @@ public class NEURepoManager {
 							LOGGER.info("[Skyblocker NEU Repo] NEU Repository updated with merge status: {}", result.getMergeResult().getMergeStatus());
 						} else {
 							LOGGER.error("[Skyblocker NEU Repo] Update failed with merge status: {}. Downloading new repository", result.getMergeResult().getMergeStatus());
-							Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(MinecraftClient.getInstance().player), 1);
+							client.execute(() ->
+								Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(client.player), 1)
+							);
 							success = false;
 						}
 					}
@@ -130,7 +141,9 @@ public class NEURepoManager {
 				success = false;
 			} catch (RepositoryNotFoundException e) {
 				LOGGER.warn("[Skyblocker NEU Repo] Local NEU Repository not found or corrupted, downloading new one", e);
-				Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(MinecraftClient.getInstance().player), 1);
+				client.execute(() ->
+						Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(client.player), 1)
+				);
 				success = false;
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while downloading NEU Repository", e);
@@ -144,13 +157,13 @@ public class NEURepoManager {
 				success = false;
 			}
 			return success;
-		}).thenApplyAsync(success -> {
-			CompletableFuture.allOf(afterLoadTasks.stream().map(CompletableFuture::runAsync).toArray(CompletableFuture[]::new)).exceptionally(e -> {
+		}, Executors.newVirtualThreadPerTaskExecutor()).thenApplyAsync(success -> {
+			CompletableFuture.allOf(afterLoadTasks.stream().map(task -> CompletableFuture.runAsync(task, Executors.newVirtualThreadPerTaskExecutor())).toArray(CompletableFuture[]::new)).exceptionally(e -> {
 				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while running after load tasks", e);
 				return null;
 			});
 			return success;
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	/**
@@ -161,41 +174,44 @@ public class NEURepoManager {
 				.getItems()
 				.values()
 				.stream()
-				.collect(Multimaps.toMultimap(item -> Formatting.strip(item.getDisplayName()), Function.identity(), HashMultimap::create));
+				.collect(Multimaps.toMultimap(item -> ChatFormatting.stripFormatting(item.getDisplayName()), Function.identity(), HashMultimap::create));
 	}
 
 	/**
-	 * Differs from {@link #deleteAndDownloadRepositoryInternal(PlayerEntity)} in that this method checks if the repository is currently loading to prevent spamming the command.
+	 * Differs from {@link #deleteAndDownloadRepositoryInternal(Player)} in that this method checks if the repository is currently loading to prevent spamming the command.
 	 */
-	private static void deleteAndDownloadRepository(PlayerEntity player) {
+	private static void deleteAndDownloadRepository(Player player) {
 		if (isLoading()) {
-			sendMessage(player, Text.translatable("skyblocker.updateRepository.loading"));
+			sendMessage(player, Component.translatable("skyblocker.updateRepository.loading").withStyle(ChatFormatting.RED));
 			return;
 		}
 		deleteAndDownloadRepositoryInternal(player);
 	}
 
-	private static void deleteAndDownloadRepositoryInternal(PlayerEntity player) {
-		Function<Runnable, CompletableFuture<Void>> runner = isLoading() ? REPO_LOADING::thenRunAsync : CompletableFuture::runAsync;
+	private static void deleteAndDownloadRepositoryInternal(@Nullable Player player) {
+		Function<Runnable, CompletableFuture<Void>> runner = isLoading() ? REPO_LOADING::thenRunAsync : task -> CompletableFuture.runAsync(task, Executors.newVirtualThreadPerTaskExecutor());
 		REPO_LOADING = runner.apply(() -> {
-			sendMessage(player, Text.translatable("skyblocker.updateRepository.start"));
+			sendMessage(player, Component.translatable("skyblocker.updateRepository.start").withStyle(ChatFormatting.AQUA));
 			try {
 				FileUtils.recursiveDelete(NEURepoManager.LOCAL_REPO_DIR);
-				sendMessage(player, Text.translatable("skyblocker.updateRepository.deleted"));
-				sendMessage(player, Text.translatable(loadRepository().join() ? "skyblocker.updateRepository.success" : "skyblocker.updateRepository.failed"));
+				sendMessage(player, Component.translatable("skyblocker.updateRepository.deleted").withStyle(ChatFormatting.AQUA));
+				sendMessage(player, loadRepository().join() ? Component.translatable("skyblocker.updateRepository.success").withStyle(ChatFormatting.GREEN) : Component.translatable("skyblocker.updateRepository.failed").withStyle(ChatFormatting.RED));
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while deleting the NEU repo", e);
-				sendMessage(player, Text.translatable("skyblocker.updateRepository.error"));
+				sendMessage(player, Component.translatable("skyblocker.updateRepository.error").withStyle(ChatFormatting.RED));
 			}
 		});
 	}
 
-	private static void sendMessage(PlayerEntity player, Text text) {
-		if (player != null) {
-			player.sendMessage(Constants.PREFIX.get().append(text), false);
-		} else {
+	private static void sendMessage(@Nullable Player player, Component text) {
+		if (player == null) {
 			LOGGER.info("[Skyblocker NEU Repo] {}", text.getString());
+			return;
 		}
+
+		Minecraft.getInstance().execute(() ->
+			player.displayClientMessage(Constants.PREFIX.get().append(text), false)
+		);
 	}
 
 	/**
@@ -230,8 +246,12 @@ public class NEURepoManager {
 		return NEU_REPO.getConstants();
 	}
 
-	public static @Nullable NEURepoFile file(@NotNull String path) {
+	public static @Nullable NEURepoFile file(String path) {
 		return NEU_REPO.file(path);
+	}
+
+	public static Stream<NEURepoFile> tree(String path) throws NEURepositoryException {
+		return NEU_REPO.tree(path);
 	}
 
 	public static Map<@NEUId String, Set<NEURecipe>> getRecipes() {
@@ -240,5 +260,9 @@ public class NEURepoManager {
 
 	public static Map<@NEUId String, Set<NEURecipe>> getUsages() {
 		return RECIPE_CACHE.getUsages();
+	}
+
+	public static Map<@NEUId String, ItemOverlayFile> getStackOverlays(int maxSupportedDataVersion) {
+		return STACK_OVERLAYS.getMostUpToDateCompatibleWith(maxSupportedDataVersion);
 	}
 }

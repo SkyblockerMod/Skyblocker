@@ -12,16 +12,15 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +37,7 @@ public class IceFill extends DungeonPuzzle {
 			new BlockPos(17, 71, 16),
 			new BlockPos(18, 72, 25)
 	};
-	private CompletableFuture<Void> solve;
+	private @Nullable CompletableFuture<Void> solve;
 	private final boolean[][][] iceFillBoards = {new boolean[3][3], new boolean[5][5], new boolean[7][7]};
 	private final List<List<Vector2ic>> iceFillPaths = new ArrayList<>(List.of(List.of(), List.of(), List.of()));
 
@@ -73,7 +72,7 @@ public class IceFill extends DungeonPuzzle {
 		}
 	}
 
-	private static String boardToString(boolean[][] iceFillBoard) {
+	public static String boardToString(boolean[][] iceFillBoard) {
 		StringBuilder sb = new StringBuilder();
 		for (boolean[] row : iceFillBoard) {
 			sb.append("\n");
@@ -85,29 +84,30 @@ public class IceFill extends DungeonPuzzle {
 	}
 
 	@Override
-	public void tick(MinecraftClient client) {
-		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveIceFill || client.world == null || !DungeonManager.isCurrentRoomMatched() || solve != null && !solve.isDone()) {
+	public void tick(Minecraft client) {
+		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveIceFill || client.level == null || !DungeonManager.isCurrentRoomMatched() || solve != null && !solve.isDone()) {
 			return;
 		}
 		Room room = DungeonManager.getCurrentRoom();
+		if (room == null) return;
 
 		solve = CompletableFuture.runAsync(() -> {
-			BlockPos.Mutable pos = new BlockPos.Mutable();
+			BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 			for (int i = 0; i < 3; i++) {
-				if (updateBoard(client.world, room, iceFillBoards[i], pos.set(BOARD_ORIGINS[i]))) {
+				if (updateBoard(client.level, room, iceFillBoards[i], pos.set(BOARD_ORIGINS[i]))) {
 					iceFillPaths.set(i, solve(iceFillBoards[i]));
 				}
 			}
 		});
 	}
 
-	private boolean updateBoard(World world, Room room, boolean[][] iceFillBoard, BlockPos.Mutable pos) {
+	private boolean updateBoard(Level world, Room room, boolean[][] iceFillBoard, BlockPos.MutableBlockPos pos) {
 		boolean boardChanged = false;
 		for (int row = 0; row < iceFillBoard.length; pos.move(iceFillBoard[row].length, 0, -1), row++) {
 			for (int col = 0; col < iceFillBoard[row].length; pos.move(Direction.WEST), col++) {
 				BlockPos actualPos = room.relativeToActual(pos);
 				// Don't solve the board if the block below is air
-				if (world.getBlockState(actualPos.down()).isAir()) return false;
+				if (world.getBlockState(actualPos.below()).isAir()) return false;
 
 				boolean isBlock = !world.getBlockState(actualPos).isAir();
 				if (iceFillBoard[row][col] != isBlock) {
@@ -119,7 +119,6 @@ public class IceFill extends DungeonPuzzle {
 		return boardChanged;
 	}
 
-	@NotNull
 	List<Vector2ic> solve(boolean[][] iceFillBoard) {
 		Vector2ic start = new Vector2i(iceFillBoard.length - 1, iceFillBoard[0].length / 2);
 		int count = iceFillBoard.length * iceFillBoard[0].length - Arrays.stream(iceFillBoard).mapToInt(Booleans::countTrue).sum();
@@ -131,8 +130,7 @@ public class IceFill extends DungeonPuzzle {
 		return newPath != null ? newPath : List.of();
 	}
 
-	@Nullable
-	private List<Vector2ic> solveDfs(boolean[][] iceFillBoard, int count, List<Vector2ic> path, boolean[][] visited) {
+	private @Nullable List<Vector2ic> solveDfs(boolean[][] iceFillBoard, int count, List<Vector2ic> path, boolean[][] visited) {
 		Vector2ic pos = path.getLast();
 		if (count == 0) {
 			if (pos.x() == 0 && pos.y() == iceFillBoard[0].length / 2) {
@@ -165,17 +163,19 @@ public class IceFill extends DungeonPuzzle {
 			return;
 		}
 		Room room = DungeonManager.getCurrentRoom();
+		if (room == null) return;
+
 		for (int i = 0; i < 3; i++) {
 			extractPath(collector, room, iceFillPaths.get(i), BOARD_ORIGINS[i]);
 		}
 	}
 
 	private void extractPath(PrimitiveCollector collector, Room room, List<Vector2ic> iceFillPath, BlockPos originPos) {
-		BlockPos.Mutable pos = new BlockPos.Mutable();
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		for (int i = 0; i < iceFillPath.size() - 1; i++) {
-			Vec3d start = Vec3d.ofCenter(room.relativeToActual(pos.set(originPos).move(-iceFillPath.get(i).y(), 0, -iceFillPath.get(i).x())));
-			Vec3d end = Vec3d.ofCenter(room.relativeToActual(pos.set(originPos).move(-iceFillPath.get(i + 1).y(), 0, -iceFillPath.get(i + 1).x())));
-			collector.submitLinesFromPoints(new Vec3d[]{start, end}, RED_COLOR_COMPONENTS, 1f, 5f, true);
+			Vec3 start = Vec3.atCenterOf(room.relativeToActual(pos.set(originPos).move(-iceFillPath.get(i).y(), 0, -iceFillPath.get(i).x())));
+			Vec3 end = Vec3.atCenterOf(room.relativeToActual(pos.set(originPos).move(-iceFillPath.get(i + 1).y(), 0, -iceFillPath.get(i + 1).x())));
+			collector.submitLinesFromPoints(new Vec3[]{start, end}, RED_COLOR_COMPONENTS, 1f, 5f, true);
 		}
 	}
 }

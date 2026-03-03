@@ -11,11 +11,10 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.Text;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +26,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class Tips {
 	private static final String modVersion = SkyblockerMod.VERSION.split("\\+")[0];
 	private static int currentTipIndex = 0;
-	private static final List<Supplier<Text>> TIPS = new ArrayList<>(List.of(
+	private static final List<Supplier<Component>> TIPS = new ArrayList<>(List.of(
 			getTipFactory("skyblocker.tips.customItemNames", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker custom renameItem"),
 			getTipFactory("skyblocker.tips.customArmorDyeColors", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker custom"),
 			getTipFactory("skyblocker.tips.customArmorTrims", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker custom"),
@@ -73,15 +72,15 @@ public class Tips {
 
 	private static boolean sentTip = false;
 
-	private static Supplier<Text> getTipFactory(@Translatable String key) {
-		return () -> Text.translatable(key);
+	private static Supplier<Component> getTipFactory(@Translatable String key) {
+		return () -> Component.translatable(key);
 	}
 
-	private static Supplier<Text> getTipFactory(@Translatable String key, ClickEvent.Action clickAction, String value) {
+	private static Supplier<Component> getTipFactory(@Translatable String key, ClickEvent.Action clickAction, String value) {
 		return getTipFactory(key, clickAction, value, new Object[0]);
 	}
 
-	private static Supplier<Text> getTipFactory(@Translatable String key, ClickEvent.Action clickAction, String value, Object... args) {
+	private static Supplier<Component> getTipFactory(@Translatable String key, ClickEvent.Action clickAction, String value, Object... args) {
 		ClickEvent event = switch (clickAction) {
 			case ClickEvent.Action.SUGGEST_COMMAND -> new ClickEvent.SuggestCommand(value);
 			case ClickEvent.Action.OPEN_URL -> new ClickEvent.OpenUrl(URI.create(value));
@@ -89,7 +88,7 @@ public class Tips {
 			default -> throw new IllegalArgumentException("Unexpected value: " + clickAction);
 		};
 
-		return () -> Text.translatable(key, args).styled(style -> style.withClickEvent(event));
+		return () -> Component.translatable(key, args).withStyle(style -> style.withClickEvent(event));
 	}
 
 	@Init
@@ -99,7 +98,7 @@ public class Tips {
 		Collections.shuffle(TIPS);
 	}
 
-	private static void registerTipsCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	private static void registerTipsCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("tips")
 				.then(literal("enable").executes(Tips::enableTips))
 				.then(literal("disable").executes(Tips::disableTips))
@@ -110,20 +109,20 @@ public class Tips {
 
 	private static int enableTips(CommandContext<FabricClientCommandSource> context) {
 		SkyblockerConfigManager.update(config -> config.general.enableTips = true);
-		context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.tips.enabled")).append(" ").append(Text.translatable("skyblocker.tips.clickDisable").styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker tips disable")))));
+		context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.tips.enabled")).append(" ").append(Component.translatable("skyblocker.tips.clickDisable").withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker tips disable")))));
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int disableTips(CommandContext<FabricClientCommandSource> context) {
 		SkyblockerConfigManager.update(config -> config.general.enableTips = false);
-		context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.tips.disabled")).append(" ").append(Text.translatable("skyblocker.tips.clickEnable").styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker tips enable")))));
+		context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.tips.disabled")).append(" ").append(Component.translatable("skyblocker.tips.clickEnable").withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker tips enable")))));
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static void sendNextTip() {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		if (client.player != null && SkyblockerConfigManager.get().general.enableTips && !sentTip) {
-			client.player.sendMessage(tipMessage(nextTip()), false);
+			client.player.displayClientMessage(tipMessage(nextTip()), false);
 			sentTip = true;
 		}
 	}
@@ -133,11 +132,11 @@ public class Tips {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static Text nextTip() {
-		return Text.translatable("skyblocker.tips.tip", nextTipInternal());
+	public static Component nextTip() {
+		return Component.translatable("skyblocker.tips.tip", nextTipInternal());
 	}
 
-	private static Text nextTipInternal() {
+	private static Component nextTipInternal() {
 		currentTipIndex++;
 		currentTipIndex %= TIPS.size();
 		return TIPS.get(currentTipIndex).get();
@@ -148,24 +147,24 @@ public class Tips {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static Text previousTip() {
-		return Text.translatable("skyblocker.tips.tip", previousTipInternal());
+	public static Component previousTip() {
+		return Component.translatable("skyblocker.tips.tip", previousTipInternal());
 	}
 
-	private static Text previousTipInternal() {
+	private static Component previousTipInternal() {
 		currentTipIndex--;
 		currentTipIndex += TIPS.size();
 		currentTipIndex %= TIPS.size();
 		return TIPS.get(currentTipIndex).get();
 	}
 
-	private static Text tipMessage(Text tip) {
+	private static Component tipMessage(Component tip) {
 		return Constants.PREFIX.get().append(tip)
 				.append(" ")
-				.append(Text.translatable("skyblocker.tips.clickPreviousTip").styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker tips previous"))))
+				.append(Component.translatable("skyblocker.tips.clickPreviousTip").withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker tips previous"))))
 				.append(" ")
-				.append(Text.translatable("skyblocker.tips.clickNextTip").styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker tips next"))))
+				.append(Component.translatable("skyblocker.tips.clickNextTip").withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker tips next"))))
 				.append(" ")
-				.append(Text.translatable("skyblocker.tips.clickDisable").styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker tips disable"))));
+				.append(Component.translatable("skyblocker.tips.clickDisable").withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker tips disable"))));
 	}
 }

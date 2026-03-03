@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.state.WorldRenderState;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.LevelRenderState;
 
 public interface VanillaRenderer<S> {
 
-	void submitVanilla(S state, WorldRenderState worldState, OrderedRenderCommandQueue commandQueue);
+	void submitVanilla(S state, LevelRenderState worldState, SubmitNodeCollector commandQueue);
 }

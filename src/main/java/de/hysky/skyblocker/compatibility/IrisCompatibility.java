@@ -12,7 +12,7 @@ import com.mojang.logging.LogUtils;
 
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.renderer.RenderPipelines;
 
 public class IrisCompatibility {
 	private static final Logger LOGGER = LogUtils.getLogger();

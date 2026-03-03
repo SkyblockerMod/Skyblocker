@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.io.IOException;
 
-@Mixin(value = {UnixConnection.class, WinConnection.class}, remap = false)
+@Mixin(value = { UnixConnection.class, WinConnection.class })
 public class ConnectionMixin {
 	@Redirect(method = "write", at = @At(value = "INVOKE", target = "Ljava/io/IOException;printStackTrace()V"))
 	private void write(IOException e) {

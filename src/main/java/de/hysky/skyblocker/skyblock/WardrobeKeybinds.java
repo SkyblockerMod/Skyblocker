@@ -7,16 +7,15 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -32,9 +31,9 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-			if (!(screen instanceof HandledScreen<?> handledScreen) || !INSTANCE.test(handledScreen) || !INSTANCE.isEnabled() || client.interactionManager == null) return;
+			if (!(screen instanceof AbstractContainerScreen<?> handledScreen) || !INSTANCE.test(handledScreen) || !INSTANCE.isEnabled() || client.gameMode == null) return;
 			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((ignored, keyInput) ->
-					allowInput(client, handledScreen, keybinding -> keybinding.matchesKey(keyInput))
+					allowInput(client, handledScreen, keybinding -> keybinding.matches(keyInput))
 			);
 			ScreenMouseEvents.allowMouseClick(handledScreen).register((ignored, click) ->
 					allowInput(client, handledScreen, keybinding -> keybinding.matchesMouse(click))
@@ -42,11 +41,11 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 		});
 	}
 
-	private static boolean allowInput(MinecraftClient client, HandledScreen<?> handledScreen, Predicate<KeyBinding> predicate) {
+	private static boolean allowInput(Minecraft client, AbstractContainerScreen<?> handledScreen, Predicate<KeyMapping> predicate) {
 		boolean found = false;
 		int i;
-		for (i = 0; i < client.options.hotbarKeys.length; i++) {
-			if (predicate.test(client.options.hotbarKeys[i])) {
+		for (i = 0; i < client.options.keyHotbarSlots.length; i++) {
+			if (predicate.test(client.options.keyHotbarSlots[i])) {
 				found = true;
 				break;
 			}
@@ -54,20 +53,20 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 		if (!found) return true;
 		// The items start from the 5th row in the inventory. The i number we have is the column in the first row, so we have to offset it by 4 rows to get the 5th row, which is where the items start.
 		i += 9 * 4;
-		ItemStack itemStack = handledScreen.getScreenHandler().getSlot(i).getStack();
+		ItemStack itemStack = handledScreen.getMenu().getSlot(i).getItem();
 		// Check if the item in the slot is a swap/unequip item before going further.
 		// This prevents usage when the inventory hasn't loaded fully or when the slot pressed is locked or when the slot has no armor (which would be meaningless to click)
-		if (!itemStack.isOf(Items.PINK_DYE) && !itemStack.isOf(Items.LIME_DYE)) return true;
-		assert client.interactionManager != null;
-		client.interactionManager.clickSlot(handledScreen.getScreenHandler().syncId, i, GLFW.GLFW_MOUSE_BUTTON_1, SlotActionType.PICKUP, client.player);
+		if (!itemStack.is(Items.PINK_DYE) && !itemStack.is(Items.LIME_DYE)) return true;
+		assert client.gameMode != null;
+		client.gameMode.handleInventoryMouseClick(handledScreen.getMenu().containerId, i, GLFW.GLFW_MOUSE_BUTTON_1, ClickType.PICKUP, client.player);
 		return false;
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		if (!stack.isOf(Items.PINK_DYE) && !stack.isOf(Items.LIME_DYE)) return List.of();
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
+		if (!stack.is(Items.PINK_DYE) && !stack.is(Items.LIME_DYE)) return List.of();
 		if (!(slotId >= 36 && slotId <= 44)) return List.of();
-		return SlotText.bottomLeftList(Text.literal(String.valueOf(slotId - 35)).withColor(SlotText.MID_BLUE));
+		return SlotText.bottomLeftList(Component.literal(String.valueOf(slotId - 35)).withColor(SlotText.MID_BLUE));
 	}
 
 	@Override

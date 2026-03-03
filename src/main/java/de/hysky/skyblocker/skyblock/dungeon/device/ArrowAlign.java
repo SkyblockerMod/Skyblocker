@@ -12,12 +12,12 @@ import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.decoration.ItemFrameEntity;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.AABB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +28,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class ArrowAlign {
 	private static final BlockPos LEFT_TOP = new BlockPos(-2, 124, 79);
-	private static final Box FRAMES_AREA = Box.enclosing(LEFT_TOP, new BlockPos(-3, 120, 75));
+	private static final AABB FRAMES_AREA = AABB.encapsulatingFullBlocks(LEFT_TOP, new BlockPos(-3, 120, 75));
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Arrow Align Solver");
 
 	private static int[] currentSolution = null;
@@ -47,19 +47,19 @@ public class ArrowAlign {
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (shouldProcess() && MinecraftClient.getInstance().player.getEntityPos().squaredDistanceTo(FRAMES_AREA.getCenter()) < 64) {
+		if (shouldProcess() && Minecraft.getInstance().player.position().distanceToSqr(FRAMES_AREA.getCenter()) < 64) {
 			if (currentSolution == null && !noSolution) {
 				findSolution();
 			}
 			if (!noSolution) {
-				List<ItemFrameEntity> frameEntitiesList = getFrameEntitiesList();
-				for (ItemFrameEntity frameEntity : frameEntitiesList) {
+				List<ItemFrame> frameEntitiesList = getFrameEntitiesList();
+				for (ItemFrame frameEntity : frameEntitiesList) {
 					int now = frameEntity.getRotation();
-					int expect = currentSolution[getSolutionIndex(frameEntity.getBlockPos())];
+					int expect = currentSolution[getSolutionIndex(frameEntity.blockPosition())];
 					if (expect >= 0) {
 						int remaining = (expect + 8 - now) % 8;
 						if (remaining > 0) {
-							collector.submitText(Text.literal(String.valueOf(remaining)).withColor(ColorUtils.interpolate(0xFF00FF00, 0xFFFF0000, remaining / 7d)), frameEntity.getEntityPos().add(0.3, 0, 0), false);
+							collector.submitText(Component.literal(String.valueOf(remaining)).withColor(ColorUtils.interpolate(0xFF00FF00, 0xFFFF0000, remaining / 7d)), frameEntity.position().add(0.3, 0, 0), false);
 						}
 					}
 				}
@@ -67,8 +67,8 @@ public class ArrowAlign {
 		}
 	}
 
-	private static List<ItemFrameEntity> getFrameEntitiesList() {
-		return MinecraftClient.getInstance().world.getEntitiesByClass(ItemFrameEntity.class, FRAMES_AREA, frame -> true);
+	private static List<ItemFrame> getFrameEntitiesList() {
+		return Minecraft.getInstance().level.getEntitiesOfClass(ItemFrame.class, FRAMES_AREA, frame -> true);
 	}
 
 	private static int getSolutionIndex(BlockPos pos) {
@@ -76,23 +76,23 @@ public class ArrowAlign {
 	}
 
 	private static void findSolution() {
-		List<ItemFrameEntity> frameEntitiesList = getFrameEntitiesList();
+		List<ItemFrame> frameEntitiesList = getFrameEntitiesList();
 
 		Optional<int[]> solution = Align.SOLUTIONS.stream()
 				.filter(rotations -> {
-					for (ItemFrameEntity itemFrame : frameEntitiesList) {
-						switch (rotations[getSolutionIndex(itemFrame.getBlockPos())]) {
+					for (ItemFrame itemFrame : frameEntitiesList) {
+						switch (rotations[getSolutionIndex(itemFrame.blockPosition())]) {
 							case Align.X -> {
 								return false;
 							}
 							case Align.S -> {
-								if (!itemFrame.getHeldItemStack().isOf(Items.LIME_WOOL)) return false;
+								if (!itemFrame.getItem().is(Items.LIME_WOOL)) return false;
 							}
 							case Align.E -> {
-								if (!itemFrame.getHeldItemStack().isOf(Items.RED_WOOL)) return false;
+								if (!itemFrame.getItem().is(Items.RED_WOOL)) return false;
 							}
 							default -> {
-								if (!itemFrame.getHeldItemStack().isOf(Items.ARROW)) return false;
+								if (!itemFrame.getItem().is(Items.ARROW)) return false;
 							}
 						}
 					}

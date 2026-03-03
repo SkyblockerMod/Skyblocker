@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.utils;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -102,5 +104,17 @@ public final class CodecUtils {
 	 */
 	public static <T> MapCodec<T> mutableOptional(MapCodec<T> codec, Function<? super T, ? extends T> mutableFactory) {
 		return codec.xmap(mutableFactory, Function.identity());
+	}
+
+	/**
+	 * Creates a codec that will sort the List with the given {@code comparator}.
+	 */
+	public static <E> Codec<List<E>> sortedListCodec(Codec<E> elementCodec, Comparator<E> comparator) {
+		return elementCodec.listOf().xmap(list -> {
+			List<E> sortedList = new ArrayList<>(list);
+			sortedList.sort(comparator);
+
+			return List.copyOf(sortedList);
+		}, Function.identity());
 	}
 }

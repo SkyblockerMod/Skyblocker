@@ -3,11 +3,11 @@ package de.hysky.skyblocker.compatibility;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.logging.LogUtils;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.OrderedText;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.FormattedCharSequence;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.lang.invoke.MethodHandle;
@@ -33,7 +33,7 @@ public final class CaxtonCompatibility {
 			return lookup.findStatic(
 					clazz,
 					"drawText4Way",
-					MethodType.methodType(void.class, DrawContext.class, TextRenderer.class, OrderedText.class, float.class, float.class, int.class, int.class));
+					MethodType.methodType(void.class, GuiGraphics.class, Font.class, FormattedCharSequence.class, float.class, float.class, int.class, int.class));
 		} catch (NoSuchMethodException | IllegalAccessException e) {
 			LOGGER.error("[Skyblocker Caxton Compat] Could not find drawText4Way method", e);
 			return null;
@@ -60,10 +60,10 @@ public final class CaxtonCompatibility {
 	private static final MethodHandle HANDLE = createHandle();
 	private static boolean errored = false;
 
-	public static boolean drawOutlinedText(DrawContext context, OrderedText text, float x, float y, int color, int outlineColor) {
+	public static boolean drawOutlinedText(GuiGraphics context, FormattedCharSequence text, float x, float y, int color, int outlineColor) {
 		if (HANDLE == null || errored) return false;
 		try {
-			HANDLE.invoke(context, MinecraftClient.getInstance().textRenderer, text, x, y, color, outlineColor);
+			HANDLE.invoke(context, Minecraft.getInstance().font, text, x, y, color, outlineColor);
 		} catch (Throwable e) {
 			LOGGER.error("[Skyblocker Caxton Compat] Could not invoke drawText4Way", e);
 			errored = true;

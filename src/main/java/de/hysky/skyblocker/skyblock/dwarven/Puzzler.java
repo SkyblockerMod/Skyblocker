@@ -3,13 +3,12 @@ package de.hysky.skyblocker.skyblock.dwarven;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.regex.Matcher;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Blocks;
 
 public class Puzzler extends ChatPatternListener {
 	public Puzzler() {
@@ -22,7 +21,7 @@ public class Puzzler extends ChatPatternListener {
 	}
 
 	@Override
-	public boolean onMatch(Text message, Matcher matcher) {
+	public boolean onMatch(Component message, Matcher matcher) {
 		int x = 181;
 		int z = 135;
 		for (char c : matcher.group(1).toCharArray()) {
@@ -31,9 +30,9 @@ public class Puzzler extends ChatPatternListener {
 			else if (c == '◀') x++;
 			else if (c == '▶') x--;
 		}
-		ClientWorld world = MinecraftClient.getInstance().world;
+		ClientLevel world = Minecraft.getInstance().level;
 		if (world != null)
-			world.setBlockState(new BlockPos(x, 195, z), Blocks.CRIMSON_PLANKS.getDefaultState());
+			world.setBlockAndUpdate(new BlockPos(x, 195, z), Blocks.CRIMSON_PLANKS.defaultBlockState());
 		return false;
 	}
 }

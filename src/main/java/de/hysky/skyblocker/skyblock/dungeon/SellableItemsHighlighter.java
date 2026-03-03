@@ -5,10 +5,9 @@ import de.hysky.skyblocker.utils.container.ContainerAndInventorySolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.item.ItemStack;
-
 import java.util.List;
 import java.util.Set;
+import net.minecraft.world.item.ItemStack;
 
 public class SellableItemsHighlighter extends SimpleContainerSolver implements ContainerAndInventorySolver {
 	private static final Set<String> ITEM_IDS = Set.of(
@@ -38,7 +37,7 @@ public class SellableItemsHighlighter extends SimpleContainerSolver implements C
 	private boolean isValidItem(ItemStack stack) {
 		String skyblockId = stack.getSkyblockId();
 		if (skyblockId.equals("POTION")) {
-			String displayName = stack.getName().getString();
+			String displayName = stack.getHoverName().getString();
 			return POTION_ITEM_NAMES.stream().anyMatch(displayName::contains);
 		}
 		return ITEM_IDS.stream().anyMatch(skyblockId::equals);

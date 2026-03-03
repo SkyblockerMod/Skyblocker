@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtInt;
+import de.hysky.skyblocker.skyblock.dungeon.preview.RoomStructure;
+import de.hysky.skyblocker.skyblock.dungeon.preview.SkeletonBlock;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +11,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.zip.InflaterInputStream;
 
@@ -37,7 +35,7 @@ public class SkeletonToStructure {
 		if (Files.exists(outputPath)) throw new RuntimeException("Output file already exists! - %s".formatted(outputPath));
 
 		int[] blocks = readSkeletonFile(Path.of(inputPath));
-		List<SkeletonBlock> blockData = createBlockList(blocks);
+		List<SkeletonBlock> blockData = RoomStructure.createBlockList(blocks);
 		writeStructureFile(blockData, outputPath);
 		LOGGER.info("Successfully converted to .nbt - {}", outputPath);
 	}
@@ -52,77 +50,11 @@ public class SkeletonToStructure {
 	}
 
 	/**
-	 * Opposite of {@link StructureToSkeleton#createBlockArray(List)}
-	 */
-	static List<SkeletonBlock> createBlockList(int[] blocks) {
-		return Arrays.stream(blocks).mapToObj(SkeletonBlock::from).toList();
-	}
-
-	/**
-	 * Manually creates a structure .nbt file from the skeleton blocks.
-	 * A structure template is an NbtCompound of "size", "palette", and "blocks"
+	 * Creates the NBT Compound and saves it to a file from the skeleton blocks.
+	 * See {@link RoomStructure#createCompound(List)}
 	 */
 	static void writeStructureFile(List<SkeletonBlock> blockData, Path outputPath) throws IOException {
-		NbtCompound structureFile = new NbtCompound();
-
-		// Structure Size
-		structureFile.put("size", getSize(blockData));
-
-		// Palette
-		NbtCompound[] sortedPalette = new NbtCompound[DungeonManager.NUMERIC_ID.size()];
-		// The entries are not guaranteed to be ordered.
-		for (var entry : DungeonManager.NUMERIC_ID.object2ByteEntrySet()) {
-			NbtCompound paletteBlock = new NbtCompound();
-			paletteBlock.put("Name", NbtString.of(entry.getKey()));
-			sortedPalette[entry.getByteValue() - 1] = paletteBlock; // Subtract 1 because NUMERIC_ID starts at 1.
-		}
-		NbtList palette = new NbtList();
-		palette.addAll(Arrays.asList(sortedPalette));
-		structureFile.put("palette", palette);
-
-		// Blocks
-		NbtList blocks = new NbtList();
-		for (SkeletonBlock block : blockData) {
-			NbtCompound nbtBlock = new NbtCompound();
-			NbtList posList = new NbtList();
-			posList.add(NbtInt.of(block.x()));
-			posList.add(NbtInt.of(block.y()));
-			posList.add(NbtInt.of(block.z()));
-			nbtBlock.put("pos", posList);
-			nbtBlock.put("state", NbtInt.of(block.blockType() - 1)); // Subtract 1 because NUMERIC_ID starts at 1.
-			blocks.add(nbtBlock);
-		}
-		structureFile.put("blocks", blocks);
-
+		CompoundTag structureFile = RoomStructure.createCompound(blockData);
 		NbtIo.writeCompressed(structureFile, outputPath);
-	}
-
-	/**
-	 * Calculates the room size by finding the smallest and largest X, Y, and Z coordinates.
-	 * Generally, it's always going to be one of a few possibilities depending on room size...
-	 */
-	static NbtList getSize(List<SkeletonBlock> blockData) {
-		// Min and Max are initially set to first block and last blocks respectively
-		int minX = blockData.getFirst().x();
-		int minY = 0; // Intentionally set to 0 so that it can be pasted in at the correct height.
-		int minZ = blockData.getFirst().z();
-		int maxX = blockData.getLast().x();
-		int maxY = blockData.getLast().y();
-		int maxZ = blockData.getLast().z();
-
-		for (SkeletonBlock block : blockData) {
-			if (block.x() > maxX) maxX = block.x();
-			if (block.x() < minX) minX = block.x();
-			if (block.y() > maxY) maxY = block.y();
-			if (block.y() < minY) minY = block.y();
-			if (block.z() > maxZ) maxZ = block.z();
-			if (block.z() < minZ) minZ = block.z();
-		}
-
-		NbtList sizeList = new NbtList();
-		sizeList.add(NbtInt.of(maxX - minX));
-		sizeList.add(NbtInt.of(maxY - minY));
-		sizeList.add(NbtInt.of(maxZ - minZ));
-		return sizeList;
 	}
 }

@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.utils;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.google.common.cache.CacheBuilder;
@@ -46,7 +47,7 @@ public class ProfileUtils {
 			}
 
 			return null;
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	/**
@@ -57,7 +58,16 @@ public class ProfileUtils {
 			String uuid = ApiUtils.name2Uuid(name);
 
 			return !uuid.isEmpty() ? UUID_TO_PROFILES_CACHE.getUnchecked(uuid) : null;
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
+	}
+
+	/**
+	 * Fetches the all of the given player's skyblock profiles from the API and returns the JSON response.
+	 */
+	public static CompletableFuture<@Nullable JsonObject> fetchFullProfileByUuid(String uuid) {
+		return CompletableFuture.supplyAsync(() -> {
+			return !uuid.isEmpty() ? UUID_TO_PROFILES_CACHE.getUnchecked(uuid) : null;
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 
 	private static @Nullable JsonObject fetchProfilesInternal(String uuid) {

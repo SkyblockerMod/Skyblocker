@@ -1,14 +1,13 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class FossilCalculations {
 	protected static final List<Structures.permutation> POSSIBLE_STATES = getAllPossibleStates();

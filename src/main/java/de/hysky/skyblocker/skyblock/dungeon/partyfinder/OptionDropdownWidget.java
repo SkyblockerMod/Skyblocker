@@ -1,27 +1,26 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
+import net.minecraft.client.gui.components.AbstractSelectionList;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
 
-public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.AbstractEntry> {
+public class OptionDropdownWidget extends AbstractSelectionList<OptionDropdownWidget.AbstractEntry> {
 	private static final int CLOSED_HEIGHT = 35;
 
 	private final int slotId;
-	private final Text name;
+	private final Component name;
 	private final int maxHeight;
 	private final PartyFinderScreen screen;
 	private final Header header = new Header();
@@ -32,7 +31,7 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 
 	private float animationProgress = 0f;
 
-	public OptionDropdownWidget(PartyFinderScreen screen, Text name, int x, int y, int width, int maxHeight, int slotId) {
+	public OptionDropdownWidget(PartyFinderScreen screen, Component name, int x, int y, int width, int maxHeight, int slotId) {
 		super(screen.getClient(), width, CLOSED_HEIGHT, y, 15);
 		//super(screen.getClient(), width, CLOSED_HEIGHT, y, 15, 25);
 		this.maxHeight = maxHeight;
@@ -49,7 +48,7 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 	}
 
 	@Override
-	protected int getScrollbarX() {
+	protected int scrollBarX() {
 		return getRowLeft() + getRowWidth();
 	}
 
@@ -58,12 +57,12 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 		return getWidth() - 6;
 	}
 
-	public void setSelectedOption(@NotNull OptionDropdownWidget.Option entry) {
+	public void setSelectedOption(OptionDropdownWidget.Option entry) {
 		selectedOption = entry;
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (!screen.getSettingsContainer().canInteract(this)) return false;
 		if (isOpen) {
 			if (!isMouseOver(click.x(), click.y()) && backButtonId != -1) {
@@ -75,10 +74,10 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		if (isOpen) {
 			if (animationProgress < 1) animationProgress += delta * 0.5f;
 			else if (animationProgress != 1) animationProgress = 1;
@@ -87,26 +86,26 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 		}
 
 		if (PartyFinderScreen.DEBUG) {
-			context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(slotId), getX(), getY() - 10, Colors.RED, true);
-			context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(backButtonId), getX() + 50, getY() - 10, Colors.RED, true);
-			context.drawText(client.textRenderer, String.valueOf(animationProgress), getX() - 10, getY(), Colors.GREEN, true);
+			context.drawString(Minecraft.getInstance().font, String.valueOf(slotId), getX(), getY() - 10, CommonColors.RED, true);
+			context.drawString(Minecraft.getInstance().font, String.valueOf(backButtonId), getX() + 50, getY() - 10, CommonColors.RED, true);
+			context.drawString(minecraft.font, String.valueOf(animationProgress), getX() - 10, getY(), CommonColors.GREEN, true);
 		}
 		if (isOpen) {
-			int listHeight = Math.min(getHeight(), getContentsHeightWithPadding() - header.getHeight() - 4);
+			int listHeight = Math.min(getHeight(), contentHeight() - header.getHeight() - 4);
 			int openedListHeight = isOpen ? (int) (listHeight * animationProgress) : (int) (listHeight * (1 - animationProgress));
 			context.fill(getX(), header.getY() + header.getHeight(), getX() + getWidth() - 1, header.getY() + openedListHeight + header.getHeight(), 0xFFF0F0F0);
-			context.fill(getX() + 1, header.getY() + header.getHeight() + 1, getX() + getWidth() - 2, header.getY() + openedListHeight + header.getHeight() - 1, Colors.BLACK);
+			context.fill(getX() + 1, header.getY() + header.getHeight() + 1, getX() + getWidth() - 2, header.getY() + openedListHeight + header.getHeight() - 1, CommonColors.BLACK);
 		}
 
 		super.renderWidget(context, mouseX, mouseY, delta);
 	}
 
 	@Override
-	protected void drawHeaderAndFooterSeparators(DrawContext context) {
+	protected void renderListSeparators(GuiGraphics context) {
 	}
 
 	@Override
-	protected void drawMenuListBackground(DrawContext context) {
+	protected void renderListBackground(GuiGraphics context) {
 	}
 
 	public void open(List<Option> entries, int backButtonId) {
@@ -127,13 +126,13 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 	}
 
 	@Override
-	protected boolean isEntrySelectionAllowed() {
+	protected boolean entriesCanBeSelected() {
 		return false;
 	}
 
 	private class Header extends AbstractEntry {
 		@Override
-		public boolean mouseClicked(Click click, boolean doubled) {
+		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 			if (screen.isWaitingForServer()) return false;
 			if (isOpen) {
 				if (backButtonId != -1) screen.clickAndWaitForServer(backButtonId);
@@ -151,16 +150,16 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 		}
 
 		@Override
-		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			int x = this.getX();
 			int y = this.getY();
-			context.drawText(MinecraftClient.getInstance().textRenderer, name, x, y + 1, 0xFFD0D0D0, false);
+			context.drawString(Minecraft.getInstance().font, name, x, y + 1, 0xFFD0D0D0, false);
 			int offset = 10;
 			context.fill(x - 2, y + offset, x - 3 + OptionDropdownWidget.this.getWidth(), y + 15 + offset, 0xFFF0F0F0);
-			context.fill(x - 1, y + 1 + offset, x - 3 + OptionDropdownWidget.this.getWidth() - 1, y + 14 + offset, Colors.BLACK);
+			context.fill(x - 1, y + 1 + offset, x - 3 + OptionDropdownWidget.this.getWidth() - 1, y + 14 + offset, CommonColors.BLACK);
 			if (selectedOption != null) {
-				context.drawText(MinecraftClient.getInstance().textRenderer, selectedOption.message, x + 2, y + 3 + offset, Colors.WHITE, true);
-			} else context.drawText(MinecraftClient.getInstance().textRenderer, "???", x + 2, y + 3 + offset, Colors.WHITE, true);
+				context.drawString(Minecraft.getInstance().font, selectedOption.message, x + 2, y + 3 + offset, CommonColors.WHITE, true);
+			} else context.drawString(Minecraft.getInstance().font, "???", x + 2, y + 3 + offset, CommonColors.WHITE, true);
 		}
 	}
 
@@ -170,29 +169,29 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 		private final ItemStack icon;
 		private final int optionSlotId;
 
-		public Option(@NotNull String message, @Nullable ItemStack icon, int slotId) {
+		public Option(String message, @Nullable ItemStack icon, int slotId) {
 			this.message = message;
 			this.icon = icon;
 			this.optionSlotId = slotId;
 		}
 
 		@Override
-		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			Matrix3x2fStack matrices = context.getMatrices();
+		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			Matrix3x2fStack matrices = context.pose();
 			matrices.pushMatrix();
 			int iconY = this.getY() + 1;
 			matrices.translate(this.getX(), iconY);
 			matrices.scale(0.8f, 0.8f);
 			matrices.translate(-this.getX(), -iconY);
-			context.drawItem(icon, this.getX(), iconY);
+			context.renderItem(icon, this.getX(), iconY);
 			matrices.popMatrix();
 
-			if (PartyFinderScreen.DEBUG) context.drawText(client.textRenderer, String.valueOf(optionSlotId), this.getX() + 8, this.getY(), Colors.RED, true);
-			MutableText text = Text.literal(message).fillStyle(Style.EMPTY.withUnderline(hovered));
-			if (client.textRenderer.getWidth(text) >= this.getWidth() - 14) {
-				ClickableWidget.drawScrollableText(context, client.textRenderer, text, this.getX() + 14, getY() + 3, this.getX() + this.getWidth(), this.getY() + 3 + client.textRenderer.fontHeight, Colors.WHITE);
+			if (PartyFinderScreen.DEBUG) context.drawString(minecraft.font, String.valueOf(optionSlotId), this.getX() + 8, this.getY(), CommonColors.RED, true);
+			MutableComponent text = Component.literal(message).withStyle(Style.EMPTY.withUnderlined(hovered));
+			if (minecraft.font.width(text) >= this.getWidth() - 14) {
+				context.textRenderer(HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(text, this.getX() + 14, this.getX() + this.getWidth(), getY() + 3, this.getY() + 3 + minecraft.font.lineHeight);
 			} else {
-				context.drawText(client.textRenderer, text, this.getX() + 14, this.getY() + 3, Colors.WHITE, false);
+				context.drawString(minecraft.font, text, this.getX() + 14, this.getY() + 3, CommonColors.WHITE, false);
 			}
 		}
 
@@ -207,7 +206,7 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 		}
 
 		@Override
-		public boolean mouseClicked(Click click, boolean doubled) {
+		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 			if (screen.isWaitingForServer()) return false;
 			if (click.button() == 0) {
 				screen.clickAndWaitForServer(this.optionSlotId);
@@ -222,5 +221,5 @@ public class OptionDropdownWidget extends EntryListWidget<OptionDropdownWidget.A
 		}
 	}
 
-	abstract static class AbstractEntry extends EntryListWidget.Entry<AbstractEntry> {}
+	abstract static class AbstractEntry extends AbstractSelectionList.Entry<AbstractEntry> {}
 }

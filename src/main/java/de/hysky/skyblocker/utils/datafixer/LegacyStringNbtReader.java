@@ -2,7 +2,23 @@ package de.hysky.skyblocker.utils.datafixer;
 
 import java.util.List;
 import java.util.regex.Pattern;
-
+import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.FloatTag;
+import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongArrayTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.NumericTag;
+import net.minecraft.nbt.ShortTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.nbt.TagType;
+import net.minecraft.network.chat.Component;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.StringReader;
@@ -11,39 +27,21 @@ import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 
-import net.minecraft.nbt.AbstractNbtNumber;
-import net.minecraft.nbt.NbtByte;
-import net.minecraft.nbt.NbtByteArray;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtDouble;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtFloat;
-import net.minecraft.nbt.NbtInt;
-import net.minecraft.nbt.NbtIntArray;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtLong;
-import net.minecraft.nbt.NbtLongArray;
-import net.minecraft.nbt.NbtShort;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.nbt.NbtType;
-import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.text.Text;
-
 /**
- * Implementation of {@link StringNbtReader} that is capable of reading the legacy SNBT format of 1.8.
+ * Implementation of {@link TagParser} that is capable of reading the legacy SNBT format of 1.8.
  */
 public class LegacyStringNbtReader {
-	public static final SimpleCommandExceptionType TRAILING = new SimpleCommandExceptionType(Text.translatable("argument.nbt.trailing"));
-	public static final SimpleCommandExceptionType EXPECTED_KEY = new SimpleCommandExceptionType(Text.translatable("argument.nbt.expected.key"));
-	public static final SimpleCommandExceptionType EXPECTED_VALUE = new SimpleCommandExceptionType(Text.translatable("argument.nbt.expected.value"));
+	public static final SimpleCommandExceptionType TRAILING = new SimpleCommandExceptionType(Component.translatable("argument.nbt.trailing"));
+	public static final SimpleCommandExceptionType EXPECTED_KEY = new SimpleCommandExceptionType(Component.translatable("argument.nbt.expected.key"));
+	public static final SimpleCommandExceptionType EXPECTED_VALUE = new SimpleCommandExceptionType(Component.translatable("argument.nbt.expected.value"));
 	public static final Dynamic2CommandExceptionType LIST_MIXED = new Dynamic2CommandExceptionType(
-		(receivedType, expectedType) -> Text.stringifiedTranslatable("argument.nbt.list.mixed", receivedType, expectedType)
+		(receivedType, expectedType) -> Component.translatableEscape("argument.nbt.list.mixed", receivedType, expectedType)
 	);
 	public static final Dynamic2CommandExceptionType ARRAY_MIXED = new Dynamic2CommandExceptionType(
-		(receivedType, expectedType) -> Text.stringifiedTranslatable("argument.nbt.array.mixed", receivedType, expectedType)
+		(receivedType, expectedType) -> Component.translatableEscape("argument.nbt.array.mixed", receivedType, expectedType)
 	);
 	public static final DynamicCommandExceptionType ARRAY_INVALID = new DynamicCommandExceptionType(
-		type -> Text.stringifiedTranslatable("argument.nbt.array.invalid", type)
+		type -> Component.translatableEscape("argument.nbt.array.invalid", type)
 	);
 	private static final Pattern DOUBLE_PATTERN_IMPLICIT = Pattern.compile("[-+]?(?:[0-9]+[.]|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?", Pattern.CASE_INSENSITIVE);
 	private static final Pattern DOUBLE_PATTERN = Pattern.compile("[-+]?(?:[0-9]+[.]?|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?d", Pattern.CASE_INSENSITIVE);
@@ -64,13 +62,13 @@ public class LegacyStringNbtReader {
 	 * @throws CommandSyntaxException if the reader detects a syntax error (including
 	 * {@linkplain #TRAILING trailing strings})
 	 */
-	public static NbtCompound parse(String string) throws CommandSyntaxException {
+	public static CompoundTag parse(String string) throws CommandSyntaxException {
 		return new LegacyStringNbtReader(new StringReader(string)).readCompound();
 	}
 
 	@VisibleForTesting
-	protected NbtCompound readCompound() throws CommandSyntaxException {
-		NbtCompound nbtCompound = this.parseCompound();
+	protected CompoundTag readCompound() throws CommandSyntaxException {
+		CompoundTag nbtCompound = this.parseCompound();
 		this.reader.skipWhitespace();
 		if (this.reader.canRead()) {
 			throw TRAILING.createWithContext(this.reader);
@@ -88,11 +86,11 @@ public class LegacyStringNbtReader {
 		}
 	}
 
-	protected NbtElement parseElementPrimitive() throws CommandSyntaxException {
+	protected Tag parseElementPrimitive() throws CommandSyntaxException {
 		this.reader.skipWhitespace();
 		int i = this.reader.getCursor();
 		if (StringReader.isQuotedStringStart(this.reader.peek())) {
-			return NbtString.of(this.reader.readQuotedString());
+			return StringTag.valueOf(this.reader.readQuotedString());
 		} else {
 			String string = this.reader.readUnquotedString();
 			if (string.isEmpty()) {
@@ -104,47 +102,47 @@ public class LegacyStringNbtReader {
 		}
 	}
 
-	private NbtElement parsePrimitive(String input) {
+	private Tag parsePrimitive(String input) {
 		try {
 			if (FLOAT_PATTERN.matcher(input).matches()) {
-				return NbtFloat.of(Float.parseFloat(input.substring(0, input.length() - 1)));
+				return FloatTag.valueOf(Float.parseFloat(input.substring(0, input.length() - 1)));
 			}
 
 			if (BYTE_PATTERN.matcher(input).matches()) {
-				return NbtByte.of(Byte.parseByte(input.substring(0, input.length() - 1)));
+				return ByteTag.valueOf(Byte.parseByte(input.substring(0, input.length() - 1)));
 			}
 
 			if (LONG_PATTERN.matcher(input).matches()) {
-				return NbtLong.of(Long.parseLong(input.substring(0, input.length() - 1)));
+				return LongTag.valueOf(Long.parseLong(input.substring(0, input.length() - 1)));
 			}
 
 			if (SHORT_PATTERN.matcher(input).matches()) {
-				return NbtShort.of(Short.parseShort(input.substring(0, input.length() - 1)));
+				return ShortTag.valueOf(Short.parseShort(input.substring(0, input.length() - 1)));
 			}
 
 			if (INT_PATTERN.matcher(input).matches()) {
-				return NbtInt.of(Integer.parseInt(input));
+				return IntTag.valueOf(Integer.parseInt(input));
 			}
 
 			if (DOUBLE_PATTERN.matcher(input).matches()) {
-				return NbtDouble.of(Double.parseDouble(input.substring(0, input.length() - 1)));
+				return DoubleTag.valueOf(Double.parseDouble(input.substring(0, input.length() - 1)));
 			}
 
 			if (DOUBLE_PATTERN_IMPLICIT.matcher(input).matches()) {
-				return NbtDouble.of(Double.parseDouble(input));
+				return DoubleTag.valueOf(Double.parseDouble(input));
 			}
 
 			if ("true".equalsIgnoreCase(input)) {
-				return NbtByte.ONE;
+				return ByteTag.ONE;
 			}
 
 			if ("false".equalsIgnoreCase(input)) {
-				return NbtByte.ZERO;
+				return ByteTag.ZERO;
 			}
 		} catch (NumberFormatException var3) {
 		}
 
-		return NbtString.of(input);
+		return StringTag.valueOf(input);
 	}
 
 	/**
@@ -152,7 +150,7 @@ public class LegacyStringNbtReader {
 	 *
 	 * @throws CommandSyntaxException if the reader detects a syntax error
 	 */
-	public NbtElement parseElement() throws CommandSyntaxException {
+	public Tag parseElement() throws CommandSyntaxException {
 		this.reader.skipWhitespace();
 		if (!this.reader.canRead()) {
 			throw EXPECTED_VALUE.createWithContext(this.reader);
@@ -166,7 +164,7 @@ public class LegacyStringNbtReader {
 		}
 	}
 
-	protected NbtElement parseArray() throws CommandSyntaxException {
+	protected Tag parseArray() throws CommandSyntaxException {
 		return this.reader.canRead(3) && !StringReader.isQuotedStringStart(this.reader.peek(1)) && this.reader.peek(2) == ';'
 			? this.parseElementPrimitiveArray()
 			: this.parseList();
@@ -177,9 +175,9 @@ public class LegacyStringNbtReader {
 	 *
 	 * @throws CommandSyntaxException if the reader detects a syntax error
 	 */
-	public NbtCompound parseCompound() throws CommandSyntaxException {
+	public CompoundTag parseCompound() throws CommandSyntaxException {
 		this.expect('{');
-		NbtCompound nbtCompound = new NbtCompound();
+		CompoundTag nbtCompound = new CompoundTag();
 		this.reader.skipWhitespace();
 
 		while (this.reader.canRead() && this.reader.peek() != '}') {
@@ -208,14 +206,14 @@ public class LegacyStringNbtReader {
 	/**
 	 * @implNote The implementation is the exact same as the old vanilla StringNbtReader except where noted.
 	 */
-	protected NbtElement parseList() throws CommandSyntaxException {
+	protected Tag parseList() throws CommandSyntaxException {
 		this.expect('[');
 		this.reader.skipWhitespace();
 		if (!this.reader.canRead()) {
 			throw EXPECTED_VALUE.createWithContext(this.reader);
 		} else {
-			NbtList nbtList = new NbtList();
-			NbtType<?> listType = null;
+			ListTag nbtList = new ListTag();
+			TagType<?> listType = null;
 
 			while (this.reader.peek() != ']') {
 				//Legacy lists might have the element indices before the actual element so we need to skip them (why Mojang? :()
@@ -236,14 +234,14 @@ public class LegacyStringNbtReader {
 				}
 
 				int cursorPosition = this.reader.getCursor();
-				NbtElement element = this.parseElement();
-				NbtType<?> elementType = element.getNbtType();
+				Tag element = this.parseElement();
+				TagType<?> elementType = element.getType();
 
 				if (listType == null) {
 					listType = elementType;
 				} else if (elementType != listType) {
 					this.reader.setCursor(cursorPosition);
-					throw LIST_MIXED.createWithContext(this.reader, elementType.getCommandFeedbackName(), listType.getCommandFeedbackName());
+					throw LIST_MIXED.createWithContext(this.reader, elementType.getPrettyName(), listType.getPrettyName());
 				}
 
 				nbtList.add(element);
@@ -261,7 +259,7 @@ public class LegacyStringNbtReader {
 		}
 	}
 
-	private NbtElement parseElementPrimitiveArray() throws CommandSyntaxException {
+	private Tag parseElementPrimitiveArray() throws CommandSyntaxException {
 		this.expect('[');
 		int i = this.reader.getCursor();
 		char c = this.reader.read();
@@ -270,11 +268,11 @@ public class LegacyStringNbtReader {
 		if (!this.reader.canRead()) {
 			throw EXPECTED_VALUE.createWithContext(this.reader);
 		} else if (c == 'B') {
-			return new NbtByteArray(mapToByteArray(this.readArray(NbtByteArray.TYPE, NbtByte.TYPE)));
+			return new ByteArrayTag(mapToByteArray(this.readArray(ByteArrayTag.TYPE, ByteTag.TYPE)));
 		} else if (c == 'L') {
-			return new NbtLongArray(this.readArray(NbtLongArray.TYPE, NbtLong.TYPE).stream().mapToLong(Number::longValue).toArray());
+			return new LongArrayTag(this.readArray(LongArrayTag.TYPE, LongTag.TYPE).stream().mapToLong(Number::longValue).toArray());
 		} else if (c == 'I') {
-			return new NbtIntArray(this.readArray(NbtIntArray.TYPE, NbtInt.TYPE).stream().mapToInt(Number::intValue).toArray());
+			return new IntArrayTag(this.readArray(IntArrayTag.TYPE, IntTag.TYPE).stream().mapToInt(Number::intValue).toArray());
 		} else {
 			this.reader.setCursor(i);
 			throw ARRAY_INVALID.createWithContext(this.reader, String.valueOf(c));
@@ -292,24 +290,24 @@ public class LegacyStringNbtReader {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends Number> List<T> readArray(NbtType<?> arrayTypeReader, NbtType<?> typeReader) throws CommandSyntaxException {
+	private <T extends Number> List<T> readArray(TagType<?> arrayTypeReader, TagType<?> typeReader) throws CommandSyntaxException {
 		List<T> list = Lists.newArrayList();
 
 		while (this.reader.peek() != ']') {
 			int i = this.reader.getCursor();
-			NbtElement nbtElement = this.parseElement();
-			NbtType<?> nbtType = nbtElement.getNbtType();
+			Tag nbtElement = this.parseElement();
+			TagType<?> nbtType = nbtElement.getType();
 			if (nbtType != typeReader) {
 				this.reader.setCursor(i);
-				throw ARRAY_MIXED.createWithContext(this.reader, nbtType.getCommandFeedbackName(), arrayTypeReader.getCommandFeedbackName());
+				throw ARRAY_MIXED.createWithContext(this.reader, nbtType.getPrettyName(), arrayTypeReader.getPrettyName());
 			}
 
-			if (typeReader == NbtByte.TYPE) {
-				list.add((T) Byte.valueOf(((AbstractNbtNumber) nbtElement).byteValue()));
-			} else if (typeReader == NbtLong.TYPE) {
-				list.add((T) Long.valueOf(((AbstractNbtNumber) nbtElement).longValue()));
+			if (typeReader == ByteTag.TYPE) {
+				list.add((T) Byte.valueOf(((NumericTag) nbtElement).byteValue()));
+			} else if (typeReader == LongTag.TYPE) {
+				list.add((T) Long.valueOf(((NumericTag) nbtElement).longValue()));
 			} else {
-				list.add((T) Integer.valueOf(((AbstractNbtNumber) nbtElement).intValue()));
+				list.add((T) Integer.valueOf(((NumericTag) nbtElement).intValue()));
 			}
 
 			if (!this.readComma()) {

@@ -4,15 +4,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.RegexUtils;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -20,6 +11,12 @@ import java.util.function.Predicate;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class DateCalculatorTooltip extends SimpleTooltipAdder {
 	//((?<days>\d+)d)? ?((?<hours>\d+)h)? ?((?<minutes>\d+)m)? ?((?<seconds>\d+)s)?
@@ -31,7 +28,7 @@ public class DateCalculatorTooltip extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public boolean test(@NotNull Screen screen) {
+	public boolean test(Screen screen) {
 		for (Timer timer : Timer.values()) {
 			Matcher matcher = timer.titlePattern.matcher(screen.getTitle().getString());
 
@@ -46,7 +43,7 @@ public class DateCalculatorTooltip extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		if (currentTimer == null) return;
 
 		for (int i = 1; i < lines.size(); i++) {
@@ -69,7 +66,7 @@ public class DateCalculatorTooltip extends SimpleTooltipAdder {
 						.plusSeconds(30) // Add 30 seconds to round to the nearest minute
 						.truncatedTo(ChronoUnit.MINUTES);
 
-				lines.add(++i, Text.literal(Formatters.DATE_FORMATTER.format(instant)).formatted(Formatting.ITALIC, Formatting.DARK_GRAY));
+				lines.add(++i, Component.literal(Formatters.DATE_FORMATTER.format(instant)).withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_GRAY));
 			}
 		}
 	}

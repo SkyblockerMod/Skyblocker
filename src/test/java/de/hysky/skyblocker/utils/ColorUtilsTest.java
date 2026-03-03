@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.util.ARGB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ColorUtilsTest {
 	@Test
 	void testFloatComponents() {
-		Assertions.assertArrayEquals(new float[]{0.2f, 0.4f, 0.6f}, ColorUtils.getFloatComponents(ColorHelper.getArgb(51, 102, 153)));
+		Assertions.assertArrayEquals(new float[]{0.2f, 0.4f, 0.6f}, ColorUtils.getFloatComponents(ARGB.color(51, 102, 153)));
 	}
 
 	@Test

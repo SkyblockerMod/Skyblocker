@@ -1,12 +1,11 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
 import org.joml.Matrix4f;
-
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.CylinderRenderState;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.state.CameraRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 
 public final class CylinderRenderer implements PrimitiveRenderer<CylinderRenderState> {
 	protected static final CylinderRenderer INSTANCE = new CylinderRenderer();
@@ -26,8 +25,8 @@ public final class CylinderRenderer implements PrimitiveRenderer<CylinderRenderS
 			float dx = (float) Math.cos(angle) * state.radius;
 			float dz = (float) Math.sin(angle) * state.radius;
 
-			buffer.vertex(positionMatrix, (float) state.centre.getX() + dx, (float) state.centre.getY() + halfHeight, (float) state.centre.getZ() + dz).color(state.colour);
-			buffer.vertex(positionMatrix, (float) state.centre.getX() + dx, (float) state.centre.getY() - halfHeight, (float) state.centre.getZ() + dz).color(state.colour);
+			buffer.addVertex(positionMatrix, (float) state.centre.x() + dx, (float) state.centre.y() + halfHeight, (float) state.centre.z() + dz).setColor(state.colour);
+			buffer.addVertex(positionMatrix, (float) state.centre.x() + dx, (float) state.centre.y() - halfHeight, (float) state.centre.z() + dz).setColor(state.colour);
 		}
 	}
 }

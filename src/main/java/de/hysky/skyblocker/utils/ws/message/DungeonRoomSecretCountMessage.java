@@ -2,15 +2,14 @@ package de.hysky.skyblocker.utils.ws.message;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.Uuids;
-
 import java.util.UUID;
+import net.minecraft.core.UUIDUtil;
 
 public record DungeonRoomSecretCountMessage(String type, UUID sender, String roomName, int secretCount) implements Message<DungeonRoomSecretCountMessage> {
 	public static final String TYPE = "room_secret_count";
 	public static final Codec<DungeonRoomSecretCountMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 					Codec.STRING.fieldOf("type").forGetter(DungeonRoomSecretCountMessage::type),
-					Uuids.STRING_CODEC.fieldOf("uuid").forGetter(DungeonRoomSecretCountMessage::sender),
+					UUIDUtil.STRING_CODEC.fieldOf("uuid").forGetter(DungeonRoomSecretCountMessage::sender),
 					Codec.STRING.fieldOf("room").forGetter(DungeonRoomSecretCountMessage::roomName),
 					Codec.INT.fieldOf("secretCount").forGetter(DungeonRoomSecretCountMessage::secretCount))
 			.apply(instance, DungeonRoomSecretCountMessage::new));

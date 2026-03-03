@@ -10,6 +10,7 @@ import de.hysky.skyblocker.utils.networth.NetworthDataSuppliers;
 import org.slf4j.Logger;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 public class SkyblockItemData {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -35,6 +36,6 @@ public class SkyblockItemData {
 
 			//Complete the future exceptionally so that the other things don't run
 			throw new IllegalStateException();
-		});
+		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
 }

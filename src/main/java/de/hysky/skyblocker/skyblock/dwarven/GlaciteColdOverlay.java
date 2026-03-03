@@ -7,18 +7,17 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
-
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GlaciteColdOverlay {
-	private static final Identifier POWDER_SNOW_OUTLINE = Identifier.ofVanilla("textures/misc/powder_snow_outline.png");
+	private static final Identifier POWDER_SNOW_OUTLINE = Identifier.withDefaultNamespace("textures/misc/powder_snow_outline.png");
 	private static final Pattern COLD_PATTERN = Pattern.compile("Cold: -(\\d+)❄");
 	private static int cold = 0;
 	private static long resetTime = System.currentTimeMillis();
@@ -30,7 +29,7 @@ public class GlaciteColdOverlay {
 		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, POWDER_SNOW_OUTLINE, (context, tickCounter) -> render(context));
 	}
 
-	private static boolean coldReset(Text text, boolean b) {
+	private static boolean coldReset(Component text, boolean b) {
 		if (!Utils.isInDwarvenMines() || b) {
 			return true;
 		}
@@ -60,26 +59,26 @@ public class GlaciteColdOverlay {
 	}
 
 	/**
-	 * @see InGameHud#renderOverlay as this is a carbon copy of it
+	 * @see Gui#renderTextureOverlay as this is a carbon copy of it
 	 */
-	private static void renderOverlay(DrawContext context, Identifier texture, float opacity) {
-		int white = ColorHelper.getWhite(opacity);
-		context.drawTexture(
+	private static void renderOverlay(GuiGraphics context, Identifier texture, float opacity) {
+		int white = ARGB.white(opacity);
+		context.blit(
 			RenderPipelines.GUI_TEXTURED,
 			texture,
 			0,
 			0,
 			0.0F,
 			0.0F,
-			context.getScaledWindowWidth(),
-			context.getScaledWindowHeight(),
-			context.getScaledWindowWidth(),
-			context.getScaledWindowHeight(),
+			context.guiWidth(),
+			context.guiHeight(),
+			context.guiWidth(),
+			context.guiHeight(),
 			white
 		);
 	}
 
-	public static void render(DrawContext context) {
+	public static void render(GuiGraphics context) {
 		if (Utils.isInDwarvenMines() && SkyblockerConfigManager.get().mining.glacite.coldOverlay) {
 			renderOverlay(context, POWDER_SNOW_OUTLINE, cold / 100f);
 		}

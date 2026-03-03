@@ -2,19 +2,15 @@ package de.hysky.skyblocker.utils;
 
 import com.demonwav.mcdev.annotations.Translatable;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongMaps;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import net.minecraft.util.StringIdentifiable;
-
 import java.io.Serial;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.util.StringRepresentable;
 
 public class Calculator {
 	public enum TokenType {
@@ -43,9 +39,9 @@ public class Calculator {
 		}
 	}
 
-	public enum Operator implements StringIdentifiable {
+	public enum Operator implements StringRepresentable {
 		ADD("+"), SUB("-"), MULT("*"), DIV("/"), MOD("%"), POW("^", true);
-		private static final java.util.function.Function<String, Operator> OPERATOR_MAP = StringIdentifiable.createMapper(Operator.values(), op -> op.op);
+		private static final java.util.function.Function<String, Operator> OPERATOR_MAP = StringRepresentable.createNameLookup(Operator.values(), op -> op.op);
 		private final String op;
 		private final boolean rightAssociative;
 
@@ -59,7 +55,7 @@ public class Calculator {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return op;
 		}
 	}
@@ -70,7 +66,7 @@ public class Calculator {
 		}
 	}
 
-	public enum Function implements StringIdentifiable {
+	public enum Function implements StringRepresentable {
 		SQRT("sqrt", val -> {
 			if (val < 0) throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError", val, "sqrt");
 			return Math.sqrt(val);
@@ -126,7 +122,7 @@ public class Calculator {
 		CEIL("ceil", Math::ceil),
 		ROUND("round", Math::round);
 
-		private static final java.util.function.Function<String, Function> FUNCTION_MAP = StringIdentifiable.createMapper(Function.values(), func -> func.name);
+		private static final java.util.function.Function<String, Function> FUNCTION_MAP = StringRepresentable.createNameLookup(Function.values(), func -> func.name);
 		private final String name;
 		private final CalculatorFunction function;
 
@@ -136,7 +132,7 @@ public class Calculator {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name;
 		}
 
@@ -149,16 +145,16 @@ public class Calculator {
 		}
 	}
 
-	private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([sekmbtq]?)");
-	private static final Object2LongMap<String> MAGNITUDE_VALUES = Object2LongMaps.unmodifiable(new Object2LongOpenHashMap<>(Map.of(
-			"s", 64L,
-			"e", 160L,
-			"k", 1_000L,
-			"m", 1_000_000L,
-			"b", 1_000_000_000L,
-			"t", 1_000_000_000_000L,
-			"q", 1_000_000_000_000_000L
-	)));
+	private static final Pattern NUMBER_PATTERN = Pattern.compile("([_,\\d]+\\.?[_,\\d]*)([sekmbtq]?)");
+	private static final Object2LongMap<String> MAGNITUDE_VALUES = Object2LongMap.ofEntries(
+			Object2LongMap.entry("s", 64L),
+			Object2LongMap.entry("e", 160L),
+			Object2LongMap.entry("k", 1_000L),
+			Object2LongMap.entry("m", 1_000_000L),
+			Object2LongMap.entry("b", 1_000_000_000L),
+			Object2LongMap.entry("t", 1_000_000_000_000L),
+			Object2LongMap.entry("q", 1_000_000_000_000_000L)
+	);
 
 	private static List<AbstractToken<?>> lex(String input) throws CalculatorException {
 		List<AbstractToken<?>> tokens = new ArrayList<>();
@@ -194,6 +190,8 @@ public class Calculator {
 
 				case ')' -> new Token(TokenType.R_PARENTHESIS, ")");
 
+				case '_', ',' -> throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError2");
+				case '.' -> throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError3");
 				case '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' -> {
 					Matcher numberMatcher = NUMBER_PATTERN.matcher(input.substring(i));
 					if (!numberMatcher.find()) { //invalid value to lex
@@ -356,7 +354,7 @@ public class Calculator {
 		if (!numberMatcher.matches()) {
 			throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError", value.toLowerCase(Locale.ENGLISH));
 		}
-		double number = Double.parseDouble(numberMatcher.group(1));
+		double number = Double.parseDouble(numberMatcher.group(1).replaceAll("[_,]", ""));
 		String magnitude = numberMatcher.group(2);
 
 		if (!magnitude.isEmpty()) {

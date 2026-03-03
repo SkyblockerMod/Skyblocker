@@ -1,19 +1,19 @@
 package de.hysky.skyblocker.skyblock.quicknav;
 
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.sound.SoundManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * A special type of {@link QuickNavButton} that requires double-clicking to open.
  */
 public class QuickNavConfirmationButton extends QuickNavButton {
-	private static final Tooltip CONFIRM_TOOLTIP = Tooltip.of(Text.translatable("skyblocker.quickNav.confirm"));
+	private static final Tooltip CONFIRM_TOOLTIP = Tooltip.create(Component.translatable("skyblocker.quickNav.confirm"));
 	private static final long DOUBLE_CLICK_TIME = 1000;
 	private long lastClicked = 0;
 	private boolean showingConfirmTooltip;
@@ -29,7 +29,7 @@ public class QuickNavConfirmationButton extends QuickNavButton {
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.renderWidget(context, mouseX, mouseY, delta);
 		if (toggled()) return;
 		if (isDoubleClick() == showingConfirmTooltip) return;
@@ -43,11 +43,11 @@ public class QuickNavConfirmationButton extends QuickNavButton {
 			super.playDownSound(soundManager);
 			return;
 		}
-		soundManager.play(PositionedSoundInstance.master(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.0F));
+		soundManager.play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_CHIME, 1.0F));
 	}
 
 	@Override
-	public void onClick(Click click, boolean doubled) {
+	public void onClick(MouseButtonEvent click, boolean doubled) {
 		if (!isDoubleClick()) {
 			lastClicked = System.currentTimeMillis();
 			return;

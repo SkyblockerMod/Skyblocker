@@ -7,13 +7,12 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Container solver that copies the lowest BIN price minus one coin
@@ -34,17 +33,17 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 
 
 	@Override
-	public void start(GenericContainerScreen screen) {
+	public void start(ContainerScreen screen) {
 		copied = false;
 		previousItem = ItemStack.EMPTY;
 	}
 
 	@Override
 	public void markDirty() {
-		MinecraftClient client = MinecraftClient.getInstance();
-		if (!(client.currentScreen instanceof GenericContainerScreen screen)) return;
+		Minecraft client = Minecraft.getInstance();
+		if (!(client.screen instanceof ContainerScreen screen)) return;
 
-		ItemStack stack = screen.getScreenHandler().getSlot(13).getStack();
+		ItemStack stack = screen.getMenu().getSlot(13).getItem();
 
 		if (stack.isEmpty()) {
 			copied = false;
@@ -52,7 +51,7 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 			return;
 		}
 
-		if (!ItemStack.areEqual(stack, previousItem)) {
+		if (!ItemStack.matches(stack, previousItem)) {
 			copied = false;
 			previousItem = stack.copy();
 		}
@@ -63,12 +62,12 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 		if (price <= 1) return;
 
 		long underbid = (long) price - 1;
-		client.keyboard.setClipboard(String.valueOf(underbid));
+		client.keyboardHandler.setClipboard(String.valueOf(underbid));
 
 		if (client.player != null) {
-			Text priceText = Text.literal(Formatters.INTEGER_NUMBERS.format(underbid)).formatted(Formatting.GOLD);
-			client.player.sendMessage(Constants.PREFIX.get()
-					.append(Text.translatable("skyblocker.copyUnderbidPrice.copied", priceText).formatted(Formatting.GRAY)), false);
+			Component priceText = Component.literal(Formatters.INTEGER_NUMBERS.format(underbid)).withStyle(ChatFormatting.GOLD);
+			client.player.displayClientMessage(Constants.PREFIX.get()
+					.append(Component.translatable("skyblocker.copyUnderbidPrice.copied", priceText).withStyle(ChatFormatting.GRAY)), false);
 		}
 
 		copied = true;

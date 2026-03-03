@@ -17,21 +17,21 @@ import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.decoration.DisplayEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
-import net.minecraft.particle.ParticleType;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Display;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.AABB;
 
 public class ForestNodes {
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static final Minecraft client = Minecraft.getInstance();
 	private static final Map<BlockPos, ForestNode> forestNodes = new HashMap<>();
 
 	@Init
@@ -40,29 +40,29 @@ public class ForestNodes {
 		WorldRenderExtractionCallback.EVENT.register(ForestNodes::extractRendering);
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
 			if (!shouldProcess()) {
-				return ActionResult.PASS;
+				return InteractionResult.PASS;
 			}
 			forestNodes.remove(pos);
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		});
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 			if (!shouldProcess()) {
-				return ActionResult.PASS;
+				return InteractionResult.PASS;
 			}
 			BlockPos pos = hitResult.getBlockPos();
 			forestNodes.remove(pos);
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		});
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 		ParticleEvents.FROM_SERVER.register(ForestNodes::onParticle);
 	}
 
-	private static void onParticle(ParticleS2CPacket packet) {
+	private static void onParticle(ClientboundLevelParticlesPacket packet) {
 		if (!shouldProcess()) {
 			return;
 		}
 
-		ParticleType<?> particleType = packet.getParameters().getType();
+		ParticleType<?> particleType = packet.getParticle().getType();
 		if (!ParticleTypes.HAPPY_VILLAGER.getType().equals(particleType)) {
 			return;
 		}
@@ -70,10 +70,10 @@ public class ForestNodes {
 		double x = packet.getX();
 		double y = packet.getY() - 1;
 		double z = packet.getZ();
-		BlockPos pos = BlockPos.ofFloored(x, y, z);
+		BlockPos pos = BlockPos.containing(x, y, z);
 
 		// Check for three ItemDisplayEntity with minecraft:string in the same block
-		if (client.world != null) {
+		if (client.level != null) {
 			int stringItemCount = countStringItemDisplays(pos);
 			if (stringItemCount == 3) {
 				forestNodes.computeIfAbsent(pos, ForestNode::new);
@@ -82,15 +82,15 @@ public class ForestNodes {
 	}
 
 	private static int countStringItemDisplays(BlockPos pos) {
-		ClientWorld world = client.world;
+		ClientLevel world = client.level;
 		if (world == null) {
 			return 0;
 		}
 
 		// Get all ItemDisplayEntity within the same block
-		List<DisplayEntity.ItemDisplayEntity> entities = world.getEntitiesByClass(
-				DisplayEntity.ItemDisplayEntity.class,
-				Box.of(pos.toCenterPos(), 1.0, 1.0, 1.0),
+		List<Display.ItemDisplay> entities = world.getEntitiesOfClass(
+				Display.ItemDisplay.class,
+				AABB.ofSize(pos.getCenter(), 1.0, 1.0, 1.0),
 				entity -> true
 		);
 
@@ -153,7 +153,7 @@ public class ForestNodes {
 
 		private void updateWaypoint() {
 			long currentTimeMillis = System.currentTimeMillis();
-			if (lastConfirmed + 2000 > currentTimeMillis || client.world == null) {
+			if (lastConfirmed + 2000 > currentTimeMillis || client.level == null) {
 				return;
 			}
 			int stringItemCount = countStringItemDisplays(pos);

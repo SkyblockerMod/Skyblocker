@@ -8,12 +8,11 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public class GeneralConfig {
 	public boolean enableTips = true;
@@ -38,7 +37,8 @@ public class GeneralConfig {
 
 	public SpecialEffects specialEffects = new SpecialEffects();
 
-	public Hitbox hitbox = new Hitbox();
+	@Deprecated
+	public transient Hitbox hitbox = new Hitbox();
 
 	public List<Integer> lockedSlots = new ArrayList<>();
 
@@ -48,7 +48,7 @@ public class GeneralConfig {
 	//well... turns out its 9 now
 	public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
 
-	public Object2ObjectOpenHashMap<String, Text> customItemNames = new Object2ObjectOpenHashMap<>();
+	public Object2ObjectOpenHashMap<String, Component> customItemNames = new Object2ObjectOpenHashMap<>();
 
 	public Object2IntOpenHashMap<String> customDyeColors = new Object2IntOpenHashMap<>();
 
@@ -125,6 +125,8 @@ public class GeneralConfig {
 		public boolean enableEstimatedItemValue = true;
 
 		public boolean enableStackingEnchantProgress = true;
+
+		public boolean enableEvolvingItemProgress = true;
 	}
 
 	public enum Average {
@@ -132,7 +134,7 @@ public class GeneralConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.itemTooltip.avg." + name());
+			return I18n.get("skyblocker.config.general.itemTooltip.avg." + name());
 		}
 	}
 
@@ -141,15 +143,7 @@ public class GeneralConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.itemTooltip.craft." + name());
-		}
-
-		public String getOrder() {
-			return switch (this) {
-				case SELL_ORDER -> "sellPrice";
-				case BUY_ORDER -> "buyPrice";
-				case OFF -> null;
-			};
+			return I18n.get("skyblocker.config.general.itemTooltip.craft." + name());
 		}
 	}
 
@@ -189,7 +183,7 @@ public class GeneralConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style." + name());
+			return I18n.get("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style." + name());
 		}
 	}
 
@@ -213,7 +207,7 @@ public class GeneralConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.itemProtection.slotLockStyle.style." + name());
+			return I18n.get("skyblocker.config.general.itemProtection.slotLockStyle.style." + name());
 		}
 	}
 
@@ -227,18 +221,24 @@ public class GeneralConfig {
 	public static class SpecialEffects {
 		public boolean rareDungeonDropEffects = true;
 
+		public boolean rareDropEffects = true;
+
 		public boolean rareDyeDropEffects = true;
 	}
 
+	@Deprecated
 	public static class Hitbox {
-		public boolean oldCactusHitbox = false;
+		@Deprecated
+		public transient boolean oldCactusHitbox = false;
 
 		@Deprecated
 		public transient boolean oldFarmlandHitbox = false;
 
-		public boolean oldLeverHitbox = false;
+		@Deprecated
+		public transient boolean oldLeverHitbox = false;
 
-		public boolean oldMushroomHitbox = false;
+		@Deprecated
+		public transient boolean oldMushroomHitbox = false;
 	}
 
 }

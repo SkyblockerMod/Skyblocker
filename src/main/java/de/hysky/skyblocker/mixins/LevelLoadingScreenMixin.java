@@ -7,16 +7,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
-import net.minecraft.client.world.ClientChunkLoadProgress;
+import net.minecraft.client.gui.screens.LevelLoadingScreen;
+import net.minecraft.client.multiplayer.LevelLoadTracker;
 
 @Mixin(LevelLoadingScreen.class)
 public class LevelLoadingScreenMixin {
 	@Shadow
-	private ClientChunkLoadProgress chunkLoadProgress;
+	private LevelLoadTracker loadTracker;
 
 	@Inject(method = { "render", "renderBackground" }, at = @At("HEAD"), cancellable = true)
 	private void skyblocker$hideWorldLoadingScreen(CallbackInfo ci) {
-		if (Utils.isOnHypixel() && this.chunkLoadProgress.getChunkLoadMap() == null) ci.cancel();
+		if (Utils.isOnHypixel() && this.loadTracker.statusView() == null) ci.cancel();
 	}
 }

@@ -1,8 +1,8 @@
 package de.hysky.skyblocker;
 
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard;
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,8 +20,8 @@ public class VerifyJsonTest {
 
 	@BeforeAll
 	public static void setup() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 	}
 
 	@Test
@@ -143,7 +143,7 @@ public class VerifyJsonTest {
 	}
 
 	/**
-	 * Verifies the compact json form of block pos created by {@link net.minecraft.util.math.BlockPos#CODEC}.
+	 * Verifies the compact json form of block pos created by {@link net.minecraft.core.BlockPos#CODEC}.
 	 */
 	static void verifyBlockPos(JsonElement posElement) {
 		Assertions.assertTrue(posElement.isJsonArray());

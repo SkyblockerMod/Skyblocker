@@ -4,10 +4,9 @@ import dev.isxander.yacl3.api.utils.Dimension;
 import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.string.IStringController;
 import dev.isxander.yacl3.gui.controllers.string.StringControllerElement;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.function.Consumer;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 
 public class DurationControllerWidget extends StringControllerElement {
 
@@ -30,9 +29,9 @@ public class DurationControllerWidget extends StringControllerElement {
 	}
 
 	@Override
-	protected Text getValueText() {
-		Text valueText = super.getValueText();
+	protected Component getValueText() {
+		Component valueText = super.getValueText();
 		boolean inputValid = control.isInputValid(valueText.getString());
-		return valueText.copy().formatted(inputValid ? Formatting.WHITE : Formatting.RED);
+		return valueText.copy().withStyle(inputValid ? ChatFormatting.WHITE : ChatFormatting.RED);
 	}
 }

@@ -1,27 +1,26 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import java.util.Locale;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.arguments.StringRepresentableArgument;
+import net.minecraft.util.StringRepresentable;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.command.argument.EnumArgumentType;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.StringIdentifiable;
 
-public enum CorpseType implements StringIdentifiable {
-	LAPIS("LAPIS_ARMOR_HELMET", null, Formatting.BLUE), // dark blue looks bad and these two never exist in same shaft
-	UMBER("ARMOR_OF_YOG_HELMET", "UMBER_KEY", Formatting.GOLD),
-	TUNGSTEN("MINERAL_HELMET", "TUNGSTEN_KEY", Formatting.GRAY),
-	VANGUARD("VANGUARD_HELMET", "SKELETON_KEY", Formatting.AQUA),
-	UNKNOWN("UNKNOWN", null, Formatting.RED);
+public enum CorpseType implements StringRepresentable {
+	LAPIS("LAPIS_ARMOR_HELMET", null, ChatFormatting.BLUE), // dark blue looks bad and these two never exist in same shaft
+	UMBER("ARMOR_OF_YOG_HELMET", "UMBER_KEY", ChatFormatting.GOLD),
+	TUNGSTEN("MINERAL_HELMET", "TUNGSTEN_KEY", ChatFormatting.GRAY),
+	VANGUARD("VANGUARD_HELMET", "SKELETON_KEY", ChatFormatting.AQUA),
+	UNKNOWN("UNKNOWN", null, ChatFormatting.RED);
 
-	public static final Codec<CorpseType> CODEC = StringIdentifiable.createCodec(CorpseType::values);
+	public static final Codec<CorpseType> CODEC = StringRepresentable.fromEnum(CorpseType::values);
 	public final String helmetItemId;
 	public final String keyItemId;
-	public final Formatting color;
+	public final ChatFormatting color;
 
-	CorpseType(String helmetItemId, String keyItemId, Formatting color) {
+	CorpseType(String helmetItemId, String keyItemId, ChatFormatting color) {
 		this.helmetItemId = helmetItemId;
 		this.keyItemId = keyItemId;
 		this.color = color;
@@ -37,7 +36,7 @@ public enum CorpseType implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return name().toLowerCase(Locale.ENGLISH);
 	}
 
@@ -57,7 +56,7 @@ public enum CorpseType implements StringIdentifiable {
 		};
 	}
 
-	public static class CorpseTypeArgumentType extends EnumArgumentType<CorpseType> {
+	public static class CorpseTypeArgumentType extends StringRepresentableArgument<CorpseType> {
 		protected CorpseTypeArgumentType() {
 			super(CODEC, CorpseType::values);
 		}

@@ -9,13 +9,12 @@ import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 
 public class WaypointGroup {
 	public static final Waypoint.Type DEFAULT_TYPE = Waypoint.Type.WAYPOINT;
@@ -160,12 +159,12 @@ public class WaypointGroup {
 	}
 
 	public void tick() {
-		if (MinecraftClient.getInstance().player == null || !ordered || waypoints.isEmpty()) return;
+		if (Minecraft.getInstance().player == null || !ordered || waypoints.isEmpty()) return;
 		for (int i = 0; i < waypoints.size(); i++) {
 			NamedWaypoint waypoint = waypoints.get(i);
 			boolean notBackwards = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowGoingBackwards || i > currentIndex;
 			boolean notSkipping = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowSkippingWaypoints || i == (currentIndex + 1) % waypoints.size() || i == (currentIndex - 1 + waypoints.size()) % waypoints.size();
-			if (notBackwards && notSkipping && waypoint.pos.isWithinDistance(MinecraftClient.getInstance().player.getEntityPos(), WAYPOINT_ACTIVATION_RADIUS)) {
+			if (notBackwards && notSkipping && waypoint.pos.closerToCenterThan(Minecraft.getInstance().player.position(), WAYPOINT_ACTIVATION_RADIUS)) {
 				currentIndex = i;
 			}
 		}

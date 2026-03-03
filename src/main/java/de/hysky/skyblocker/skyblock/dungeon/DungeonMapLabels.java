@@ -3,19 +3,22 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import java.util.List;
 import java.util.Set;
 
+import de.hysky.skyblocker.utils.FunUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.math.Vec3d;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2dc;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -59,7 +62,7 @@ public class DungeonMapLabels {
 		Vector2ic mapEntrancePos = DungeonManager.getMapEntrancePos();
 		if (entrancePos == null || mapEntrancePos == null) return;
 		int mapRoomSize = DungeonManager.getMapRoomSize();
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		Font textRenderer = Minecraft.getInstance().font;
 
 		if (newRoom != null) {
 			addRoomLabel(newRoom, entrancePos, mapEntrancePos, mapRoomSize, textRenderer);
@@ -71,9 +74,9 @@ public class DungeonMapLabels {
 				addRoomLabel(room, entrancePos, mapEntrancePos, mapRoomSize, textRenderer));
 	}
 
-	private static void addRoomLabel(Room room, Vector2ic entrancePos, Vector2ic mapEntrancePos, int mapRoomSize, TextRenderer textRenderer) {
+	private static void addRoomLabel(Room room, Vector2ic entrancePos, Vector2ic mapEntrancePos, int mapRoomSize, Font textRenderer) {
 		if (LABELS.containsKey(room.getName())) return;
-		Vec3d labelPos = getPosForLabel(room, mapRoomSize, textRenderer.fontHeight);
+		Vec3 labelPos = getPosForLabel(room, mapRoomSize, textRenderer.lineHeight);
 		if (labelPos == null) return;
 		Vector2dc mapPos = DungeonMapUtils.getMapPosFromPhysical(entrancePos, mapEntrancePos, mapRoomSize, labelPos);
 		//noinspection DataFlowIssue - room is matched
@@ -81,28 +84,44 @@ public class DungeonMapLabels {
 		if (roomInfo == null) return;
 		String roomName = roomInfo.name();
 
-		int color = switch (room) {
-			case Room r when r.greenChecked -> Colors.GREEN;
-			case Room r when r.whiteChecked -> Colors.WHITE;
-			default -> Colors.GRAY;
+		int color = switch (room.clearState) {
+			case Room.ClearState.GREEN_CHECKED -> CommonColors.GREEN;
+			case Room.ClearState.WHITE_CHECKED -> CommonColors.WHITE;
+			case Room.ClearState.UNCLEARED -> CommonColors.GRAY;
+			case Room.ClearState.FAILED -> CommonColors.RED;
 		};
 
 		float width = getMaxWidth(room, mapRoomSize) / LABEL_SCALE;
-		Text text = Text.literal(roomName);
-		List<OrderedText> lines = textRenderer.wrapLines(text, (int) width);
+		Component text = getLabelForRoom(room, roomName);
+		List<FormattedCharSequence> lines = textRenderer.split(text, (int) width);
 		LABELS.put(room.getName(), new RoomLabel(lines, (int) mapPos.x(), (int) mapPos.y(), color));
 	}
 
-	protected static void renderRoomNames(DrawContext context) {
+	private static Component getLabelForRoom(Room room, String roomName) {
+		if (room.getType() != Room.Type.ROOM && room.getType() != Room.Type.TRAP) return Component.literal(roomName);
+
+		RoomLabelType roomLabelType = SkyblockerConfigManager.get().dungeons.dungeonMap.roomLabelType;
+		return switch (roomLabelType) {
+			case RoomLabelType.ROOM_NAME -> Component.literal(roomName);
+			case RoomLabelType.SECRETS_FOUND -> Component.literal(room.getFoundSecretCount() + "/" + room.getMaxSecretCount());
+			case RoomLabelType.ROOM_NAME_AND_SECRETS_FOUND -> {
+				if (FunUtils.shouldEnableFun())
+					yield Component.literal(room.getFoundSecretCount() + "/" + room.getMaxSecretCount()).append("\n").append(roomName);
+				yield Component.literal(roomName).append("\n").append(room.getFoundSecretCount() + "/" + room.getMaxSecretCount());
+			}
+		};
+	}
+
+	protected static void renderRoomNames(GuiGraphics context) {
 		if (!SkyblockerConfigManager.get().dungeons.dungeonMap.showRoomLabels) return;
 
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		Font textRenderer = Minecraft.getInstance().font;
 		for (RoomLabel label : LABELS.values()) {
-			context.getMatrices().pushMatrix();
-			context.getMatrices().translate(label.x, label.y);
-			context.getMatrices().scale(LABEL_SCALE);
+			context.pose().pushMatrix();
+			context.pose().translate(label.x, label.y);
+			context.pose().scale(LABEL_SCALE);
 			drawText(context, textRenderer, label.textLines, label.color);
-			context.getMatrices().popMatrix();
+			context.pose().popMatrix();
 		}
 	}
 
@@ -113,7 +132,7 @@ public class DungeonMapLabels {
 	 * For the remaining room types, we take the average of the x and y.<br>
 	 */
 	@SuppressWarnings("incomplete-switch")
-	private static @Nullable Vec3d getPosForLabel(Room room, int mapRoomSize, int fontHeight) {
+	private static @Nullable Vec3 getPosForLabel(Room room, int mapRoomSize, int fontHeight) {
 		switch (room.getType()) {
 			case BLOOD, FAIRY:
 				return null;
@@ -156,7 +175,7 @@ public class DungeonMapLabels {
 		}
 
 		result.sub(0, fontHeight / 2, result);
-		return new Vec3d(result.x(), 0, result.y());
+		return new Vec3(result.x(), 0, result.y());
 	}
 
 	/**
@@ -181,14 +200,30 @@ public class DungeonMapLabels {
 		return (int) (maxWidth * MAX_WIDTH_SCALAR);
 	}
 
-	private static void drawText(DrawContext context, TextRenderer textRenderer, List<OrderedText> lines, int color) {
-		int y = lines.size() > 1 ? -(textRenderer.fontHeight / 2) * (lines.size() - 1) : 0;
-		for (OrderedText orderedText : lines) {
-			int textWidth = textRenderer.getWidth(orderedText) / 2;
-			HudHelper.drawOutlinedText(context, orderedText, -textWidth, y, color, Colors.BLACK);
+	private static void drawText(GuiGraphics context, Font textRenderer, List<FormattedCharSequence> lines, int color) {
+		int y = lines.size() > 1 ? -(textRenderer.lineHeight / 2) * (lines.size() - 1) : 0;
+		for (FormattedCharSequence orderedText : lines) {
+			int textWidth = textRenderer.width(orderedText) / 2;
+			HudHelper.drawOutlinedText(context, orderedText, -textWidth, y, color, CommonColors.BLACK);
 			y += 9;
 		}
 	}
 
-	private record RoomLabel(List<OrderedText> textLines, int x, int y, int color) {}
+	private record RoomLabel(List<FormattedCharSequence> textLines, int x, int y, int color) {}
+
+	public enum RoomLabelType implements StringRepresentable {
+		ROOM_NAME,
+		SECRETS_FOUND,
+		ROOM_NAME_AND_SECRETS_FOUND;
+
+		@Override
+		public String getSerializedName() {
+			return name();
+		}
+
+		@Override
+		public String toString() {
+			return I18n.get("skyblocker.config.dungeons.map.roomLabelType." + name());
+		}
+	}
 }
