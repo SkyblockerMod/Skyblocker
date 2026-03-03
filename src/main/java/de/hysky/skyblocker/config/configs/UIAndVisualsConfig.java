@@ -415,7 +415,7 @@ public class UIAndVisualsConfig {
 
 	public static class TimeInputCalculator {
 		public boolean enabled = true;
-		
+
 		public boolean closeSignsWithEnter = true;
 	}
 

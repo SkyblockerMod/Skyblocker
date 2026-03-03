@@ -132,7 +132,7 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 	private boolean isSpeedInputSign() {
 		return messages[3].equals(SPEED_INPUT_MARKER);
 	}
-	
+
 	@Unique
 	private SignTimeCalculator.@Nullable TimeType getTimeInputType() {
 		if (messages[1].equals(INPUT_SIGN_MARKER)) {
@@ -143,10 +143,10 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 				return SignTimeCalculator.TimeType.MINUTES;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Used to exclude search signs with {@link AbstractSignEditScreenMixin#INPUT_SIGN_MARKER}.
 	 * <br> Works for /recipes & /shards signs
