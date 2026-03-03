@@ -1390,16 +1390,6 @@
   "skyblocker.config.uiAndVisuals.teleportOverlay.showWhenInAir": "Show Overlay Mid Air",
   "skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor": "Teleport Overlay Color",
 
-  "skyblocker.config.uiAndVisuals.titleContainer": "Title Container",
-  "skyblocker.config.uiAndVisuals.titleContainer.@Tooltip": "Used to display multiple titles at once, Example use: Vampire Slayer",
-  "skyblocker.config.uiAndVisuals.titleContainer.alignment.LEFT": "Left",
-  "skyblocker.config.uiAndVisuals.titleContainer.alignment.MIDDLE": "Middle",
-  "skyblocker.config.uiAndVisuals.titleContainer.alignment.RIGHT": "Right",
-  "skyblocker.config.uiAndVisuals.titleContainer.config": "Title Container Placement Config...",
-  "skyblocker.config.uiAndVisuals.titleContainer.direction.HORIZONTAL": "Horizontal",
-  "skyblocker.config.uiAndVisuals.titleContainer.direction.VERTICAL": "Vertical",
-  "skyblocker.config.uiAndVisuals.titleContainer.titleContainerScale": "Title Container Scale",
-
   "skyblocker.config.uiAndVisuals.timeInputCalculator": "Time Input Calculator",
   "skyblocker.config.uiAndVisuals.timeInputCalculator.closeSignsWithEnter": "Close signs with enter",
   "skyblocker.config.uiAndVisuals.timeInputCalculator.closeSignsWithEnter.@Tooltip": "Close the current open sign screen with the enter key",
@@ -1418,6 +1408,16 @@
   "skyblocker.config.uiAndVisuals.timeInputCalculator.unit.minutes": "%s Minutes",
   "skyblocker.config.uiAndVisuals.timeInputCalculator.unit.second": "%s Second",
   "skyblocker.config.uiAndVisuals.timeInputCalculator.unit.seconds": "%s Seconds",
+
+  "skyblocker.config.uiAndVisuals.titleContainer": "Title Container",
+  "skyblocker.config.uiAndVisuals.titleContainer.@Tooltip": "Used to display multiple titles at once, Example use: Vampire Slayer",
+  "skyblocker.config.uiAndVisuals.titleContainer.alignment.LEFT": "Left",
+  "skyblocker.config.uiAndVisuals.titleContainer.alignment.MIDDLE": "Middle",
+  "skyblocker.config.uiAndVisuals.titleContainer.alignment.RIGHT": "Right",
+  "skyblocker.config.uiAndVisuals.titleContainer.config": "Title Container Placement Config...",
+  "skyblocker.config.uiAndVisuals.titleContainer.direction.HORIZONTAL": "Horizontal",
+  "skyblocker.config.uiAndVisuals.titleContainer.direction.VERTICAL": "Vertical",
+  "skyblocker.config.uiAndVisuals.titleContainer.titleContainerScale": "Title Container Scale",
 
   "skyblocker.config.uiAndVisuals.trueQuiverCount": "Show True Quiver Count",
   "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "Shows the actual amount of arrows in your quiver instead of being capped at 64.",
