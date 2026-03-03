@@ -43,8 +43,8 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public boolean shouldRender(Location location) {
-		// While in the hub only show in the forest
-		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea() == Area.Hub.FOREST)
+		// While in the hub only show in the forest and foraging camp
+		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea() == Area.Hub.FOREST || Utils.getArea() == Area.Hub.FORAGING_CAMP)
 			// While in the garden only show in unclean plots
 			&& (!Utils.getLocation().equals(Location.GARDEN) || Utils.STRING_SCOREBOARD.stream().anyMatch(s -> s.contains("Cleanup")))
 			&& super.shouldRender(location);

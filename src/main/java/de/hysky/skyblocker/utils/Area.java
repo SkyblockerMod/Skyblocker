@@ -64,6 +64,7 @@ public sealed interface Area {
 		BANK("Bank"),
 		BAZAAR("Bazaar Alley"),
 		CARNIVAL("Carnival"),
+		FORAGING_CAMP("Foraging Camp"),
 		FOREST("Forest");
 
 		private final String displayName;
