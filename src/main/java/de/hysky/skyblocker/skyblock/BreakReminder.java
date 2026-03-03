@@ -6,9 +6,9 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.InactivityFpsLimiterAccessor;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
 
 import java.util.Random;
@@ -24,7 +24,7 @@ public class BreakReminder {
 	@Init
 	public static void init() {
 		SkyblockEvents.JOIN.register(() -> {
-			long l = Util.getMeasuringTimeMs();
+			long l = Util.getMillis();
 			startedPlayingMillis = l;
 			lastWarningMillis = l;
 		});
@@ -33,9 +33,9 @@ public class BreakReminder {
 
 	private static void tick() {
 		if (!Utils.isOnSkyblock() || SkyblockerConfigManager.get().misc.disableBreakReminders) return;
-		long time = Util.getMeasuringTimeMs();
-		MinecraftClient client = MinecraftClient.getInstance();
-		if (time - ((InactivityFpsLimiterAccessor) client.getInactivityFpsLimiter()).getLastInputTime() > AFK_REQUIRED_FOR_BREAK) {
+		long time = Util.getMillis();
+		Minecraft client = Minecraft.getInstance();
+		if (time - ((InactivityFpsLimiterAccessor) client.getFramerateLimitTracker()).getLatestInputTime() > AFK_REQUIRED_FOR_BREAK) {
 			lastWarningMillis = time;
 		}
 		if (time - lastWarningMillis > WARNING_INTERVAL) {
@@ -45,14 +45,14 @@ public class BreakReminder {
 	}
 
 	private static void warnCouchPotato() {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		long playingFor = lastWarningMillis - startedPlayingMillis;
 		int playingForHours = (int) (playingFor / 3600_000);
-		client.getToastManager().add(SystemToast.create(
+		client.getToastManager().addToast(SystemToast.multiline(
 				client,
-				SystemToast.Type.PERIODIC_NOTIFICATION,
-				Text.translatable("skyblocker.potato.title", playingForHours),
-				Text.translatable("skyblocker.potato.description" + new Random().nextInt(DESCRIPTION_COUNT))
+				SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+				Component.translatable("skyblocker.potato.title", playingForHours),
+				Component.translatable("skyblocker.potato.description" + new Random().nextInt(DESCRIPTION_COUNT))
 		));
 	}
 }

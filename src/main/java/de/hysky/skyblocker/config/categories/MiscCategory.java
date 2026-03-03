@@ -38,8 +38,8 @@ public class MiscCategory {
 						.build()
 				)
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("skyblocker.config.misc.disableBreakReminders"))
-						.description(Text.translatable("skyblocker.config.misc.disableBreakReminders.@Tooltip"))
+						.name(Component.translatable("skyblocker.config.misc.disableBreakReminders"))
+						.description(Component.translatable("skyblocker.config.misc.disableBreakReminders.@Tooltip"))
 						.binding(defaults.misc.disableBreakReminders,
 								() -> config.misc.disableBreakReminders,
 								newValue -> config.misc.disableBreakReminders = newValue)

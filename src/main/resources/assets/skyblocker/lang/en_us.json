@@ -940,7 +940,7 @@
   "skyblocker.config.misc.configBackend.@Tooltip": "You can choose between having YetAnotherConfigLib (YACL) or MoulConfig as the Config Backend.",
 
   "skyblocker.config.misc.disableBreakReminders": "Disable break reminders",
-  "skyblocker.config.misc.disableBreakReminders.@Tooltip": "This is meant for content creators. If you disable this, please remember to take breaks.",
+  "skyblocker.config.misc.disableBreakReminders.@Tooltip": "If you disable this, please remember to take breaks. Or don't I guess, I'm just a toggle.",
 
   "skyblocker.config.misc.richPresence": "Discord RPC",
   "skyblocker.config.misc.richPresence.customMessage": "Custom Message",
@@ -1725,7 +1725,7 @@
   "skyblocker.potato.description2": "Remember to take breaks!",
   "skyblocker.potato.description3": "Don't forget to hydrate!",
   "skyblocker.potato.description4": "Might be time for a break don't ya think?",
-  "skyblocker.potato.description5": "Are you using a macro?",
+  "skyblocker.potato.description5": "Please go take a break...",
   "skyblocker.potato.title": "You have been playing for %s hours.",
 
   "skyblocker.powderTracker": "Powder Mining Tracker",
