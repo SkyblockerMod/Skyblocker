@@ -4,11 +4,12 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -38,9 +39,9 @@ public class EffectWidget extends TabHudWidget {
 
 	private void fetchFromWidget(List<Component> lines) {
 		String string = lines.getFirst().getString().replaceAll("[()]", "");
-		addComponent(new PlainTextComponent(Component.literal(string).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD).append(Component.literal(" effect(s) active").withStyle(ChatFormatting.WHITE))));
+		addComponent(new PlainTextElement(Component.literal(string).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD).append(Component.literal(" effect(s) active").withStyle(ChatFormatting.WHITE))));
 		for (int i = 1; i < lines.size(); i++) {
-			addComponent(new PlainTextComponent(lines.get(i)));
+			addComponent(new PlainTextElement(lines.get(i)));
 		}
 	}
 
@@ -48,7 +49,7 @@ public class EffectWidget extends TabHudWidget {
 		String footertext = PlayerListManager.getFooter();
 
 		if (footertext == null || !footertext.contains("Active Effects")) {
-			this.addComponent(Components.iconTextComponent());
+			this.addComponent(Elements.iconTextComponent());
 			return;
 
 		}
@@ -57,39 +58,39 @@ public class EffectWidget extends TabHudWidget {
 		if (m.find() && m.group("buff") != null) {
 			String buff = m.group("buff");
 			if (buff.startsWith("Not")) {
-				this.addComponent(Components.iconTextComponent(ItemRepository.getItemStack("BOOSTER_COOKIE", Ico.COOKIE), Component.nullToEmpty("Cookie: not active")));
+				this.addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("BOOSTER_COOKIE", Ico.COOKIE), Component.nullToEmpty("Cookie: not active")));
 			} else {
 				Component cookie = Component.literal("Cookie: ").append(buff);
-				this.addComponent(Components.iconTextComponent(ItemRepository.getItemStack("BOOSTER_COOKIE", Ico.COOKIE), cookie));
+				this.addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("BOOSTER_COOKIE", Ico.COOKIE), cookie));
 			}
 		}
 
 		String[] lines = footertext.split("Active Effects")[1].split("\n");
 		if (lines.length < 2) {
-			this.addComponent(Components.iconTextComponent());
+			this.addComponent(Elements.iconTextComponent());
 			return;
 		}
 
 		if (lines[1].startsWith("No")) {
 			Component txt = Component.literal("No effects active").withStyle(ChatFormatting.GRAY);
-			this.addComponent(Components.iconTextComponent(Ico.POTION, txt));
+			this.addComponent(Elements.iconTextComponent(Ico.POTION, txt));
 		} else if (lines[1].contains("God")) {
 			String timeleft = lines[1].split("! ")[1];
 			Component godpot = Component.literal("God potion!").withStyle(ChatFormatting.RED);
 			Component txttleft = Component.literal(timeleft).withStyle(ChatFormatting.LIGHT_PURPLE);
-			this.addComponent(Components.iconFatTextComponent(ItemRepository.getItemStack("GOD_POTION_2", Ico.GOD_POTION), godpot, txttleft));
+			this.addComponent(Elements.iconFatTextComponent(ItemRepository.getItemStack("GOD_POTION_2", Ico.GOD_POTION), godpot, txttleft));
 		} else {
 			String number = lines[1].substring("You have ".length());
 			int idx = number.indexOf(' ');
 			if (idx == -1 || lines.length < 4) {
-				this.addComponent(Components.iconFatTextComponent());
+				this.addComponent(Elements.iconFatTextComponent());
 				return;
 			}
 			number = number.substring(0, idx);
 			Component active = Component.literal("Active Effects: ")
 					.append(Component.literal(number).withStyle(ChatFormatting.YELLOW));
 
-			this.addComponent(Components.iconFatTextComponent(Ico.POTION, active,
+			this.addComponent(Elements.iconFatTextComponent(Ico.POTION, active,
 					Component.literal(lines[2]).withStyle(ChatFormatting.AQUA)));
 		}
 	}

@@ -5,9 +5,9 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
@@ -23,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
-public class FarmingHudWidget extends ComponentBasedWidget {
+public class FarmingHudWidget extends ElementBasedWidget {
 	private static final MutableComponent TITLE = Component.literal("Farming").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD);
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GARDEN);
 	public static final Map<String, String> FARMING_TOOLS = Map.ofEntries(
@@ -89,7 +89,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 	@Override
 	public void updateContent() {
 		if (client.player == null || client.level == null) {
-			addComponent(new PlainTextComponent(Component.literal("Nothing to show :p")));
+			addComponent(new PlainTextElement(Component.literal("Nothing to show :p")));
 			return;
 		}
 		ItemStack farmingToolStack = client.player.getMainHandItem();
@@ -109,16 +109,16 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.config.farming.general.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
 		addSimpleIconTranslatableText(cropStack, "skyblocker.config.farming.general.blocksPerSec", ChatFormatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
 		//noinspection DataFlowIssue
-		addComponent(Components.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.config.farming.general.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
+		addComponent(Elements.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.config.farming.general.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
 		addSimpleIconTranslatableText(Ico.LIME_DYE, "skyblocker.config.farming.general.farmingXPPerHour", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
 
 		Entity cameraEntity = client.getCameraEntity();
 		Component yaw = cameraEntity == null ? Component.translatable("skyblocker.config.farming.general.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getYRot())));
 		Component pitch = cameraEntity == null ? Component.translatable("skyblocker.config.farming.general.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getXRot())));
-		addComponent(new PlainTextComponent(Component.translatable("skyblocker.config.farming.general.yaw", yaw).withStyle(ChatFormatting.GOLD)));
-		addComponent(new PlainTextComponent(Component.translatable("skyblocker.config.farming.general.pitch", pitch).withStyle(ChatFormatting.GOLD)));
+		addComponent(new PlainTextElement(Component.translatable("skyblocker.config.farming.general.yaw", yaw).withStyle(ChatFormatting.GOLD)));
+		addComponent(new PlainTextElement(Component.translatable("skyblocker.config.farming.general.pitch", pitch).withStyle(ChatFormatting.GOLD)));
 		if (LowerSensitivity.isSensitivityLowered()) {
-			addComponent(new PlainTextComponent(Component.translatable("skyblocker.garden.hud.mouseLocked").withStyle(ChatFormatting.ITALIC)));
+			addComponent(new PlainTextElement(Component.translatable("skyblocker.garden.hud.mouseLocked").withStyle(ChatFormatting.ITALIC)));
 		}
 	}
 

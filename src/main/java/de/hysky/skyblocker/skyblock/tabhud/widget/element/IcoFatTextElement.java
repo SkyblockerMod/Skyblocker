@@ -1,27 +1,29 @@
-package de.hysky.skyblocker.skyblock.tabhud.widget.component;
+package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Component that consists of an icon and two lines of text
+ * Element that consists of an icon and two lines of text
  */
-class IcoFatTextComponent extends Component {
+class IcoFatTextElement extends Element {
 	private static final int ICO_OFFS = 4;
 	private ItemStack ico;
-	private net.minecraft.network.chat.Component line1, line2;
+	private final Component line1;
+	private final Component line2;
 
-	IcoFatTextComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component l1, net.minecraft.network.chat.@Nullable Component l2) {
+	IcoFatTextElement(@Nullable ItemStack ico, @Nullable Component l1, @Nullable Component l2) {
 		this.ico = (ico == null) ? Ico.BARRIER : ico;
 
 		if (l1 == null || l2 == null) {
 			this.ico = Ico.BARRIER;
-			this.line1 = net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY);
-			this.line2 = net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY);
+			this.line1 = Component.literal("No data").withStyle(ChatFormatting.GRAY);
+			this.line2 = Component.literal("No data").withStyle(ChatFormatting.GRAY);
 		} else {
 			this.line1 = l1;
 			this.line2 = l2;

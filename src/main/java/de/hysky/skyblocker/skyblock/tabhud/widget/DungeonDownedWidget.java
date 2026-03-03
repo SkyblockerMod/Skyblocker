@@ -3,8 +3,9 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -25,7 +26,7 @@ public class DungeonDownedWidget extends TabHudWidget {
 	public void updateContent(List<Component> ignored) {
 		String down = PlayerListManager.strAt(21);
 		if (down == null) {
-			this.addComponent(Components.iconTextComponent());
+			this.addComponent(Elements.iconTextComponent());
 		} else {
 
 			ChatFormatting format = ChatFormatting.RED;
@@ -35,7 +36,7 @@ public class DungeonDownedWidget extends TabHudWidget {
 			int idx = down.indexOf(": ");
 			Component downed = (idx == -1) ? null
 					: simpleEntryText(down.substring(idx + 2), "Downed: ", format);
-			this.addComponent(Components.iconTextComponent(Ico.SKULL, downed));
+			this.addComponent(Elements.iconTextComponent(Ico.SKULL, downed));
 		}
 
 		this.addSimpleIcoText(Ico.CLOCK, "Time:", ChatFormatting.GRAY, 22);

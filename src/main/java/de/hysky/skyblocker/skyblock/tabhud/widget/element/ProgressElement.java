@@ -1,5 +1,6 @@
-package de.hysky.skyblocker.skyblock.tabhud.widget.component;
+package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
+import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -11,32 +12,32 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Component that consists of an icon, some text and a progress bar.
+ * Element that consists of an icon, some text and a progress bar.
  * The progress bar either shows the fill percentage or custom text.
  * NOTICE: pcnt is 0-100, not 0-1!
  */
-class ProgressComponent extends Component {
+class ProgressElement extends Element {
 	private static final int BAR_WIDTH = 100;
 	private static final int BAR_HEIGHT = txtRend.lineHeight + 3;
 	private static final int ICO_OFFS = 4;
 	private static final int COL_BG_BAR = 0xF0101010;
 
-	private final ItemStack ico;
-	private final net.minecraft.network.chat.Component desc, bar;
+	private final @Nullable ItemStack ico;
+	private final Component desc, bar;
 	private final float pcnt;
 	private final int color;
 	private final boolean colorIsBright;
 	private final int barW;
 
 	/**
-	 * @see Components#progressComponent(ItemStack, net.minecraft.network.chat.Component, net.minecraft.network.chat.Component, float)
+	 * @see Elements#progressComponent(ItemStack, Component, Component, float)
 	 */
-	ProgressComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component description, net.minecraft.network.chat.@Nullable Component bar, float percent, int color) {
+	ProgressElement(@Nullable ItemStack ico, @Nullable Component description, @Nullable Component bar, float percent, int color) {
 		boolean showIcons = SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons;
 		if (description == null || bar == null) {
 			this.ico = showIcons ? Ico.BARRIER : null;
-			this.desc = net.minecraft.network.chat.Component.literal("No data").withStyle(ChatFormatting.GRAY);
-			this.bar = net.minecraft.network.chat.Component.literal("---").withStyle(ChatFormatting.GRAY);
+			this.desc = Component.literal("No data").withStyle(ChatFormatting.GRAY);
+			this.bar = Component.literal("---").withStyle(ChatFormatting.GRAY);
 			this.pcnt = 100f;
 			this.color = 0xFF000000 | ChatFormatting.DARK_GRAY.getColor();
 		} else {
@@ -54,28 +55,28 @@ class ProgressComponent extends Component {
 	}
 
 	/**
-	 * @see Components#progressComponent(ItemStack, net.minecraft.network.chat.Component, net.minecraft.network.chat.Component, float)
+	 * @see Elements#progressComponent(ItemStack, Component, Component, float)
 	 */
-	ProgressComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component description, net.minecraft.network.chat.@Nullable Component bar, float percent) {
+	ProgressElement(@Nullable ItemStack ico, @Nullable Component description, @Nullable Component bar, float percent) {
 		this(ico, description, bar, percent, ColorUtils.percentToColor(percent));
 	}
 
 	/**
-	 * @see Components#progressComponent(ItemStack, net.minecraft.network.chat.Component, float)
+	 * @see Elements#progressComponent(ItemStack, Component, float)
 	 */
-	ProgressComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component description, float percent, int color) {
+	ProgressElement(@Nullable ItemStack ico, @Nullable Component description, float percent, int color) {
 		// make sure percentages always have two decimals
-		this(ico, description, net.minecraft.network.chat.Component.nullToEmpty(String.format("%.2f%%", percent)), percent, color);
+		this(ico, description, Component.nullToEmpty(String.format("%.2f%%", percent)), percent, color);
 	}
 
 	/**
-	 * @see Components#progressComponent(ItemStack, net.minecraft.network.chat.Component, float)
+	 * @see Elements#progressComponent(ItemStack, Component, float)
 	 */
-	ProgressComponent(@Nullable ItemStack ico, net.minecraft.network.chat.@Nullable Component description, float percent) {
+	ProgressElement(@Nullable ItemStack ico, @Nullable Component description, float percent) {
 		this(ico, description, percent, ColorUtils.percentToColor(percent));
 	}
 
-	ProgressComponent() {
+	ProgressElement() {
 		this(null, null, null, 100, 0);
 	}
 

@@ -6,7 +6,7 @@ import de.hysky.skyblocker.mixins.accessors.PlayerTabOverlayAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
@@ -433,7 +433,7 @@ public class PlayerListManager {
 
 		@Override
 		protected void updateContent(List<Component> lines) {
-			lines.forEach(text -> addComponent(new PlainTextComponent(text)));
+			lines.forEach(text -> addComponent(new PlainTextElement(text)));
 		}
 	}
 

@@ -2,10 +2,12 @@ package de.hysky.skyblocker.skyblock.hunting;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+
+import java.util.Objects;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -15,23 +17,24 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
-public class LassoHud extends ComponentBasedWidget {
+public class LassoHud extends ElementBasedWidget {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final String LASSO_COUNT_DOWN_NAME = "                    ";
 	private static final Set<Location> AVAILABLE_LOCATION = Set.of(Location.GALATEA);
 
-	private static LassoHud instance;
+	private static @Nullable LassoHud instance;
 	private static int percentage = 0;
 	/**
 	 * When the reel message appears for the held lasso
 	 */
 	private static int reelValue = 0;
-	private static Entity lassoEntity = null;
+	private static @Nullable Entity lassoEntity = null;
 
 	public static LassoHud getInstance() {
-		return instance;
+		return Objects.requireNonNull(instance, "LassoHud not initialized");
 	}
 
 	public LassoHud() {
@@ -87,10 +90,10 @@ public class LassoHud extends ComponentBasedWidget {
 	public void updateContent() {
 		//if 0 percent now otherwise wait
 		if (percentage == 0) {
-			addComponent(Components.progressComponent(Items.LEAD.getDefaultInstance(), Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.now").withStyle(ChatFormatting.GREEN), percentage));
+			addComponent(Elements.progressComponent(Items.LEAD.getDefaultInstance(), Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.now").withStyle(ChatFormatting.GREEN), percentage));
 			return;
 		}
-		addComponent(Components.progressComponent(Items.LEAD.getDefaultInstance(), Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.wait"), percentage));
+		addComponent(Elements.progressComponent(Items.LEAD.getDefaultInstance(), Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.wait"), percentage));
 
 	}
 

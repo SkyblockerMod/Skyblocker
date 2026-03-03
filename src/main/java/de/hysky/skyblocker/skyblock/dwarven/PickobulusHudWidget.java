@@ -2,8 +2,8 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Location;
 import org.jspecify.annotations.Nullable;
 
@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 @RegisterWidget
-public class PickobulusHudWidget extends ComponentBasedWidget {
+public class PickobulusHudWidget extends ElementBasedWidget {
 	private static final MutableComponent TITLE = Component.literal("Pickobulus").withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD);
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GOLD_MINE, Location.DEEP_CAVERNS, Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
 	private static @Nullable PickobulusHudWidget instance;
@@ -39,17 +39,17 @@ public class PickobulusHudWidget extends ComponentBasedWidget {
 	public void updateContent() {
 		Component errorMessage = PickobulusHelper.getErrorMessage();
 		if (errorMessage != null) {
-			addComponent(new PlainTextComponent(errorMessage));
+			addComponent(new PlainTextElement(errorMessage));
 			return;
 		}
 
-		addComponent(new PlainTextComponent(Component.literal("Total Blocks: " + PickobulusHelper.getTotalBlocks())));
+		addComponent(new PlainTextElement(Component.literal("Total Blocks: " + PickobulusHelper.getTotalBlocks())));
 
 		int[] drops = PickobulusHelper.getDrops();
 		for (PickobulusHelper.MiningDrop drop : PickobulusHelper.MiningDrop.values()) {
 			int count = drops[drop.ordinal()];
 			if (count > 0) {
-				addComponent(new PlainTextComponent(Component.literal(drop.friendlyName() + ": " + count)));
+				addComponent(new PlainTextElement(Component.literal(drop.friendlyName() + ": " + count)));
 			}
 		}
 	}

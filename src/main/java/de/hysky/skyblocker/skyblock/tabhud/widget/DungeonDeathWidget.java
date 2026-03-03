@@ -3,10 +3,11 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -31,11 +32,11 @@ public class DungeonDeathWidget extends TabHudWidget {
 	public void updateContent(List<Component> ignored) {
 		Matcher m = PlayerListManager.regexAt(25, DEATH_PATTERN);
 		if (m == null) {
-			this.addComponent(Components.iconTextComponent());
+			this.addComponent(Elements.iconTextComponent());
 		} else {
 			ChatFormatting f = (m.group("deathnum").equals("0")) ? ChatFormatting.GREEN : ChatFormatting.RED;
 			Component d = simpleEntryText(m.group("deathnum"), "Deaths: ", f);
-			this.addComponent(Components.iconTextComponent(Ico.SKULL, d));
+			this.addComponent(Elements.iconTextComponent(Ico.SKULL, d));
 		}
 
 		this.addSimpleIcoText(Ico.IRON_SWORD, "Damage Dealt:", ChatFormatting.RED, 26);

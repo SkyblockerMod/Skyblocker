@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.tabhud.widget.component;
+package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import java.util.function.Supplier;
@@ -6,12 +6,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Abstract base class for a component that may be added to a Widget.
+ * Abstract base class for an element that may be added to a Widget.
  */
-public abstract class Component {
+public abstract class Element {
 	public final Supplier<Integer> ICO_DIM = () -> SkyblockerConfigManager.get().uiAndVisuals.tabHud.compactWidgets ? 12 : 16;
 	public static final int PAD_S = 2;
 	public static final int PAD_L = 2;
@@ -21,7 +22,7 @@ public abstract class Component {
 	// these should always be the content dimensions without any padding.
 	int width, height;
 
-	private LayoutElement parent;
+	private LayoutElement parent = SpacerElement.width(0);
 
 	public abstract void render(GuiGraphics context, int x, int y);
 

@@ -6,8 +6,8 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.SeparatorComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.SeparatorElement;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -25,18 +25,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RegisterWidget
-public class ItemPickupWidget extends ComponentBasedWidget {
+public class ItemPickupWidget extends ElementBasedWidget {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final int LOBBY_CHANGE_DELAY = 60;
 	private static final String SACKS_MESSAGE_START = "[Sacks]";
 	private static final Pattern CHANGE_REGEX = Pattern.compile("([+-])([\\d,]+) (.+) \\((.+)\\)");
 
-	private static ItemPickupWidget instance;
+	private static @Nullable ItemPickupWidget instance;
 
 	private boolean changingLobby;
 
@@ -57,7 +58,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	}
 
 	public static ItemPickupWidget getInstance() {
-		return instance;
+		return Objects.requireNonNull(instance, "ItemPickupWidget not initialized");
 	}
 
 	/**
@@ -165,7 +166,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		}
 		if (split && !(this.addedSackCount.isEmpty() && this.removedSackCount.isEmpty())) {
 			// Remove the borders and some random 8 value I do not know where that comes from from the width of the widget to make it fit.
-			this.addComponent(new SeparatorComponent(Component.nullToEmpty("Sacks")));
+			this.addComponent(new SeparatorElement(Component.nullToEmpty("Sacks")));
 			for (String item : addedSackCount.keySet()) {
 				ChangeData entry = addedSackCount.get(item);
 				String itemName = checkNextItem(entry);
