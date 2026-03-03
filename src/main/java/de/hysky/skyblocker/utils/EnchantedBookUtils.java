@@ -7,7 +7,7 @@ import java.util.Locale;
 public final class EnchantedBookUtils {
 	public static String getApiIdByName(Component enchantName) {
 		String name = enchantName.getString().toUpperCase(Locale.ENGLISH);
-		name = name.replace("BUY ", "").replace("SELL ", "").replace("'", "");
+		name = name.replace("BUY ", "").replace("SELL ", "").replace("'", "").replace("-", "_");
 
 		String[] parts = name.split(" ");
 		if (parts.length == 0) return "";
