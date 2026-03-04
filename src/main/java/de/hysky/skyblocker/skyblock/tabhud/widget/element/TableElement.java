@@ -1,14 +1,14 @@
-package de.hysky.skyblocker.skyblock.tabhud.widget.component;
+package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
 import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.gui.GuiGraphics;
 
 /**
- * Meta-Component that consists of a grid of other components
+ * Meta-Element that consists of a grid of other components
  * Grid cols are separated by lines.
  */
-public class TableComponent extends Component {
-	private final Component[][] comps;
+public class TableElement extends Element {
+	private final Element[][] comps;
 	private final int color;
 	private final int cols, rows;
 	private final int[] colWidths;
@@ -19,8 +19,8 @@ public class TableComponent extends Component {
 
 	private static final int EXTRA_PAD = PAD_L * 2 - PAD_S;
 
-	public TableComponent(int w, int h, int col, boolean drawLines) {
-		comps = new Component[w][h];
+	public TableElement(int w, int h, int col, boolean drawLines) {
+		comps = new Element[w][h];
 		this.color = drawLines && col != 0 ? 0xFF000000 | col : 0;
 		this.drawLines = drawLines && col != 0;
 		cols = w;
@@ -31,7 +31,7 @@ public class TableComponent extends Component {
 		rowHeights = new int[h];
 	}
 
-	public void addToCell(int x, int y, Component c) {
+	public void addToCell(int x, int y, Element c) {
 		this.comps[x][y] = c;
 
 		// widen the first column on both sides
@@ -95,11 +95,11 @@ public class TableComponent extends Component {
 			}
 			yOff = 0;
 			for (int y = 0; y < rows; y++) {
-				Component comp = comps[x][y];
+				Element comp = comps[x][y];
 				if (comp != null) {
 					// indent the first column only when a border is drawn
 					int pad = x == 0 && rowBorders[y] != 0 ? PAD_L / 2 : 0;
-					// shift down so the component is vertically centered within the row border
+					// shift down so the element is vertically centered within the row border
 					comp.render(context, xpos + xOff + pad, ypos + yOff + (rowHeights[y] / 2 - comp.height / 2 + 1));
 				}
 				yOff += rowHeights[y];

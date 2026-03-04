@@ -30,7 +30,7 @@ public final class CountdownComponent implements Component {
 	 *
 	 * @param duration the duration of the countdown
 	 * @param timeUnit the {@link TimeUnit} of the {@code duration}
-	 * @param style    the style of the component
+	 * @param style    the style of the element
 	 */
 	public CountdownComponent(long duration, TimeUnit timeUnit, Component prefix, Style style) {
 		this.start = System.currentTimeMillis();

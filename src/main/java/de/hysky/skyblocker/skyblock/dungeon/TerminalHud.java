@@ -4,8 +4,8 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 @RegisterWidget
-public class TerminalHud extends ComponentBasedWidget {
+public class TerminalHud extends ElementBasedWidget {
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.DUNGEON);
 	private static final Supplier<DungeonsConfig.TerminalHud> CONFIG = () -> SkyblockerConfigManager.get().dungeons.terminalHud;
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -93,18 +93,18 @@ public class TerminalHud extends ComponentBasedWidget {
 			}
 			if (CONFIG.get().showTerminals) {
 				for (int i = 0; i < 5; i++) {
-					addComponent(new PlainTextComponent(Component.literal("Terminal #" + (i + 1)).append(status)));
+					addComponent(new PlainTextElement(Component.literal("Terminal #" + (i + 1)).append(status)));
 				}
 			}
 			if (CONFIG.get().showDevice) {
-				addComponent(new PlainTextComponent(Component.literal("Device").append(status)));
+				addComponent(new PlainTextElement(Component.literal("Device").append(status)));
 			}
 			if (CONFIG.get().showLevers) {
-				addComponent(new PlainTextComponent(Component.literal("Lever").append(status)));
-				addComponent(new PlainTextComponent(Component.literal("Lever").append(status)));
+				addComponent(new PlainTextElement(Component.literal("Lever").append(status)));
+				addComponent(new PlainTextElement(Component.literal("Lever").append(status)));
 			}
 			if (CONFIG.get().showGate) {
-				addComponent(new PlainTextComponent(Component.literal("Gate").append(status)));
+				addComponent(new PlainTextElement(Component.literal("Gate").append(status)));
 			}
 			return;
 		}
@@ -128,7 +128,7 @@ public class TerminalHud extends ComponentBasedWidget {
 				displayText = waypoint.name;
 			}
 
-			addComponent(new PlainTextComponent(displayText));
+			addComponent(new PlainTextElement(displayText));
 		}
 
 		if (CONFIG.get().showGate && GoldorWaypointsManager.getCurrentPhase() < 3) {
@@ -143,7 +143,7 @@ public class TerminalHud extends ComponentBasedWidget {
 				}
 			}
 
-			addComponent(new PlainTextComponent(displayText));
+			addComponent(new PlainTextElement(displayText));
 		}
 	}
 
