@@ -356,7 +356,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
 	private static class ScaledTextButtonWidget extends Button {
 
-		protected ScaledTextButtonWidget(int x, int y, int width, int height, net.minecraft.network.chat.Component message, OnPress onPress) {
+		protected ScaledTextButtonWidget(int x, int y, int width, int height, Component message, OnPress onPress) {
 			super(x, y, width, height, message, onPress, Supplier::get);
 		}
 

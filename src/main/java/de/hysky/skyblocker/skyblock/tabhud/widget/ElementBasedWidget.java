@@ -5,9 +5,10 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -18,24 +19,23 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Abstract base class for a component based Widget.
- * Widgets are containers for components with a border and a title.
- * Their size is dependent on the components inside,
+ * Abstract base class for a element based Widget.
+ * Widgets are containers for elements with a border and a title.
+ * Their size is dependent on the elements inside,
  * the position may be changed after construction.
  */
-public abstract class ComponentBasedWidget extends HudWidget {
+public abstract class ElementBasedWidget extends HudWidget {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
 	private static final Font txtRend = Minecraft.getInstance().font;
 
 	private @Nullable String lastError = null;
-	private static final List<Component> ERROR_COMPONENTS = List.of(new PlainTextComponent(net.minecraft.network.chat.Component.literal("An error occurred! Please check logs.").withColor(0xFFFF0000)));
+	private static final List<Element> ERROR_ELEMENTS = List.of(new PlainTextElement(Component.literal("An error occurred! Please check logs.").withColor(0xFFFF0000)));
 
-	private final ArrayList<Component> components = new ArrayList<>();
+	private final ArrayList<Element> elements = new ArrayList<>();
 
 	private int prevW = 0, prevH = 0;
 
@@ -48,7 +48,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	public static final int MINIMAL_COL_BG_BOX = 0x64000000;
 
 	private final int color;
-	private final net.minecraft.network.chat.Component title;
+	private final Component title;
 
 	/**
 	 * Most often than not this should be instantiated only once.
@@ -57,23 +57,23 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 * @param colorValue the colour
 	 * @param internalID the internal ID, for config, positioning depending on other widgets, all that good stuff
 	 */
-	public ComponentBasedWidget(MutableComponent title, Integer colorValue, String internalID) {
+	public ElementBasedWidget(Component title, @Nullable Integer colorValue, String internalID) {
 		super(internalID);
 		this.title = title;
-		this.color = 0xFF000000 | colorValue;
+		this.color = 0xFF000000 | (colorValue == null ? 0 : colorValue);
 	}
 
-	public void addComponent(Component c) {
+	public void addComponent(Element c) {
 		c.setParent(this);
-		this.components.add(c);
+		this.elements.add(c);
 	}
 
 	public final boolean isEmpty() {
-		return this.components.isEmpty();
+		return this.elements.isEmpty();
 	}
 
 	public final void update() {
-		this.components.clear();
+		this.elements.clear();
 		try {
 			this.updateContent();
 		} catch (Exception e) {
@@ -81,8 +81,8 @@ public abstract class ComponentBasedWidget extends HudWidget {
 				lastError = e.getMessage();
 				LOGGER.error("Failed to update contents of {}", this, e);
 			}
-			this.components.clear();
-			this.components.addAll(ERROR_COMPONENTS);
+			this.elements.clear();
+			this.elements.addAll(ERROR_ELEMENTS);
 		}
 		this.pack();
 	}
@@ -90,29 +90,29 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	public abstract void updateContent();
 
 	/**
-	 * Shorthand function for simple components.
+	 * Shorthand function for simple elements.
 	 * If the entry at idx has the format "[textA]: [textB]", an IcoTextComponent is
 	 * added as such:
 	 * [ico] [string] [textB.formatted(fmt)]
 	 */
 	public final void addSimpleIcoText(@Nullable ItemStack ico, String string, ChatFormatting fmt, int idx) {
-		net.minecraft.network.chat.Component txt = simpleEntryText(idx, string, fmt);
-		this.addComponent(Components.iconTextComponent(ico, txt));
+		Component txt = simpleEntryText(idx, string, fmt);
+		this.addComponent(Elements.iconTextComponent(ico, txt));
 	}
 
 	public final void addSimpleIcoText(@Nullable ItemStack ico, String string, ChatFormatting fmt, String content) {
-		net.minecraft.network.chat.Component txt = simpleEntryText(content, string, fmt);
-		this.addComponent(Components.iconTextComponent(ico, txt));
+		Component txt = simpleEntryText(content, string, fmt);
+		this.addComponent(Elements.iconTextComponent(ico, txt));
 	}
 
 	public final void addSimpleIconTranslatableText(@Nullable ItemStack icon, @Translatable String translationKey, ChatFormatting formatting, String content) {
-		net.minecraft.network.chat.Component text = simpleEntryTranslatableText(translationKey, content, formatting);
-		this.addComponent(Components.iconTextComponent(icon, text));
+		Component text = simpleEntryTranslatableText(translationKey, content, formatting);
+		this.addComponent(Elements.iconTextComponent(icon, text));
 	}
 
-	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, ChatFormatting formatting, net.minecraft.network.chat.Component content) {
-		net.minecraft.network.chat.Component text = simpleEntryTranslatableText(translationKey, content, formatting);
-		this.addComponent(Components.iconTextComponent(icon, text));
+	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, ChatFormatting formatting, Component content) {
+		Component text = simpleEntryTranslatableText(translationKey, content, formatting);
+		this.addComponent(Elements.iconTextComponent(icon, text));
 	}
 
 	@Override
@@ -142,26 +142,26 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 		int yOffs = y + BORDER_SZE_N;
 
-		for (Component c : components) {
+		for (Element c : elements) {
 			c.render(context, x + BORDER_SZE_W, yOffs);
-			yOffs += c.getHeight() + Component.PAD_L;
+			yOffs += c.getHeight() + Element.PAD_L;
 		}
 	}
 
 	/**
 	 * Calculate the size of this widget.
 	 * <b>Must be called before returning from the widget constructor and after all
-	 * components are added!</b>
+	 * elements are added!</b>
 	 */
 	private void pack() {
 		h = 0;
 		w = 0;
-		for (Component c : components) {
-			h += c.getHeight() + Component.PAD_L;
-			w = Math.max(w, c.getWidth() + Component.PAD_S);
+		for (Element c : elements) {
+			h += c.getHeight() + Element.PAD_L;
+			w = Math.max(w, c.getWidth() + Element.PAD_S);
 		}
 
-		h -= Component.PAD_L / 2; // less padding after lowest/last component
+		h -= Element.PAD_L / 2; // less padding after lowest/last element
 		h += BORDER_SZE_N + BORDER_SZE_S - 2;
 		w += BORDER_SZE_E + BORDER_SZE_W;
 
@@ -186,7 +186,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 * returned:
 	 * [entryName] [textB.formatted(contentFmt)]
 	 */
-	public static net.minecraft.network.chat.@Nullable Component simpleEntryText(int idx, String entryName, ChatFormatting contentFmt) {
+	public static @Nullable Component simpleEntryText(int idx, String entryName, ChatFormatting contentFmt) {
 
 		String src = PlayerListManager.strAt(idx);
 
@@ -206,15 +206,15 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	/**
 	 * @return [entryName] [entryContent.formatted(contentFmt)]
 	 */
-	public static net.minecraft.network.chat.Component simpleEntryText(String entryContent, String entryName, ChatFormatting contentFmt) {
-		return net.minecraft.network.chat.Component.literal(entryName).append(net.minecraft.network.chat.Component.literal(entryContent).withStyle(contentFmt));
+	public static Component simpleEntryText(String entryContent, String entryName, ChatFormatting contentFmt) {
+		return Component.literal(entryName).append(Component.literal(entryContent).withStyle(contentFmt));
 	}
 
-	public static net.minecraft.network.chat.Component simpleEntryTranslatableText(String translationKey, String content, ChatFormatting contentFormatting) {
-		return net.minecraft.network.chat.Component.translatable(translationKey, net.minecraft.network.chat.Component.literal(content).withStyle(contentFormatting));
+	public static Component simpleEntryTranslatableText(String translationKey, String content, ChatFormatting contentFormatting) {
+		return Component.translatable(translationKey, Component.literal(content).withStyle(contentFormatting));
 	}
 
-	public static net.minecraft.network.chat.Component simpleEntryTranslatableText(String translationKey, net.minecraft.network.chat.Component content, ChatFormatting contentFormatting) {
-		return net.minecraft.network.chat.Component.translatable(translationKey, content.copy().withStyle(contentFormatting));
+	public static Component simpleEntryTranslatableText(String translationKey, Component content, ChatFormatting contentFormatting) {
+		return Component.translatable(translationKey, content.copy().withStyle(contentFormatting));
 	}
 }

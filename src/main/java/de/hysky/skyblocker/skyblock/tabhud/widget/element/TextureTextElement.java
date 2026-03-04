@@ -1,18 +1,19 @@
-package de.hysky.skyblocker.skyblock.tabhud.widget.component;
+package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 
-public class TextureTextComponent extends Component {
+public class TextureTextElement extends Element {
 	private final Identifier texture;
-	private final net.minecraft.network.chat.Component text;
+	private final Component text;
 	private final int textureWidth;
 	private final int textureHeight;
 
-	public TextureTextComponent(net.minecraft.network.chat.Component text, Identifier texture, int textureWidth, int textureHeight) {
+	public TextureTextElement(Component text, Identifier texture, int textureWidth, int textureHeight) {
 		this.text = text;
 		this.texture = texture;
 		this.textureWidth = textureWidth;
