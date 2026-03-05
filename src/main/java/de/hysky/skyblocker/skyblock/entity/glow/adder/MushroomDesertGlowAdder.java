@@ -5,11 +5,22 @@ import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.chicken.Chicken;
+import net.minecraft.world.entity.animal.cow.Cow;
+import net.minecraft.world.entity.animal.pig.Pig;
+import net.minecraft.world.entity.animal.rabbit.Rabbit;
+import net.minecraft.world.entity.animal.sheep.Sheep;
+import net.minecraft.world.entity.animal.equine.Horse;
 
 public class MushroomDesertGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")
 	private static final MushroomDesertGlowAdder INSTANCE = new MushroomDesertGlowAdder();
-	private static final int KUUDRA_COLOUR = 0xF7510F;
+
+	private static final int TRACKABLE_COLOR = 0xFFFFFF;
+	private static final int UNTRACKABLE_COLOR = 0x55FF55;
+	private static final int UNDETECTED_COLOR = 0x5555FF;
+	private static final int ENDANGERED_COLOR = 0xAA00AA;
+	private static final int ELUSIVE_COLOR = 0xFFAA00;
 
 	@Init
 	public static void init() {}
@@ -17,7 +28,35 @@ public class MushroomDesertGlowAdder extends MobGlowAdder {
 	@Override
 	public int computeColour(Entity entity) {
 		String name = MobGlow.getArmorStandName(entity);
-		return name.contains("able") ? KUUDRA_COLOUR : NO_GLOW;
+
+		return switch (entity) {
+			case Cow cow when isPeltMob(name, "Cow") -> getGlowColor(name);
+			case Pig pig when isPeltMob(name, "Pig") -> getGlowColor(name);
+			case Sheep sheep when isPeltMob(name, "Sheep") -> getGlowColor(name);
+			case Rabbit rabbit when isPeltMob(name, "Rabbit") -> getGlowColor(name);
+			case Chicken chicken when isPeltMob(name, "Chicken") -> getGlowColor(name);
+			case Horse horse when isPeltMob(name, "Horse") -> getGlowColor(name);
+			default -> NO_GLOW;
+		};
+	}
+
+	// Checks if the name follows the pelt mob naming convention
+	private static boolean isPeltMob(String name, String animal) {
+		return name.contains("Trackable " + animal)
+				|| name.contains("Untrackable " + animal)
+				|| name.contains("Undetected " + animal)
+				|| name.contains("Endangered " + animal)
+				|| name.contains("Elusive " + animal);
+	}
+
+	private int getGlowColor(String name) {
+		if (name.contains("Trackable")) return TRACKABLE_COLOR;
+		if (name.contains("Untrackable")) return UNTRACKABLE_COLOR;
+		if (name.contains("Undetected")) return UNDETECTED_COLOR;
+		if (name.contains("Endangered")) return ENDANGERED_COLOR;
+		if (name.contains("Elusive")) return ELUSIVE_COLOR;
+
+		return NO_GLOW;
 	}
 
 	@Override
