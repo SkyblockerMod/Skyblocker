@@ -183,7 +183,7 @@ dependencies {
 	// Legacy Item DFU
 	include implementation("net.azureaaron:legacy-item-dfu:${project.legacy_item_dfu_version}")
 
-	// JGit used pull data from the NEU item repo
+	// JGit used to pull data from the NEU item repo
 	include implementation("org.eclipse.jgit:org.eclipse.jgit:${project.jgit_version}")
 
 	// Apache Commons Math
@@ -239,6 +239,10 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
+	if (System.getenv("BUILD_SOURCES_JAR")?.toBoolean()) {
+		withSourcesJar()
+	}
+
 	sourceCompatibility = JavaVersion.VERSION_21
 	targetCompatibility = JavaVersion.VERSION_21
 }
@@ -291,14 +295,14 @@ spotless {
 				/^(  "skyblocker(?:\.([^."]++)(?:\.[^"]++)?)?": "(?:[^\\"]++|\\.)*+",)$\n^(?=  "skyblocker\.(?!\2[."]))/,
 				'$1\n\n'
 		replaceRegex \
-				"Separate different thrid stems if the first two stems are skyblocker.config",
+				"Separate different third stems if the first two stems are skyblocker.config",
 				// The third and remaining stems are optional, allowing matching lines with only two stems (in this case "skyblocker.config"), and separating it from other keys that start with "skyblocker.config.[whatever]".
 				/^(  "skyblocker\.config(?:\.([^."]++)(?:\.[^"]++)?)?": "(?:[^\\"]++|\\.)*+",)$\n^(?=  "skyblocker\.config\.(?!\2[."]))/,
 				'$1\n\n'
 		final List<String> excludeCategories = ["debug", "eventNotifications", "quickNav", "shortcutToKeybindsSettings", "title"]
 		final String excludeCategoriesLookahead = /(?!(?:${excludeCategories.join('|')})(?=[."]))/
 		replaceRegex \
-				"Separate different fouth stems if the first three stems are skyblocker.config.[configCategory]",
+				"Separate different fourth stems if the first three stems are skyblocker.config.[configCategory]",
 				// A negative lookahead is used before the third stem to exclude the above list of third stems.
 				// The fourth and remaining stems are optional, allowing matching lines with only three stems (such as "skyblocker.config.[configCategory]"), and separating them from other keys that start with "skyblocker.config.[configCategory].[whatever]".
 				// This treats keys with only three stems as if they have an empty fourth stem, which is considered different from any other fourth stem, therefore inserting a newline after them.
@@ -344,6 +348,9 @@ def truncateChangelog = { String text, int limit ->
 
 publishMods {
 	file = remapJar.archiveFile
+	if (System.getenv("BUILD_SOURCES_JAR")?.toBoolean()) {
+		additionalFiles.from(remapSourcesJar.archiveFile)
+	}
 	changelog = System.getenv('CHANGELOG_HIGHLIGHT')
 	version = "v${project.version}"
 	displayName = "Skyblocker ${mod_version} for ${minecraft_version}"
@@ -394,16 +401,22 @@ publishMods {
 // configure the maven publication
 publishing {
 	publications {
-		mavenJava(MavenPublication) {
+		create("mavenJava", MavenPublication) {
+			groupId = "de.hysky"
+			artifactId = base.archivesName
 			from components.java
 		}
 	}
 
 	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
+		maven {
+			name = "GitHubPackages"
+			url = "https://maven.pkg.github.com/SkyblockerMod/Skyblocker"
+			credentials {
+				username = System.getenv("GITHUB_ACTOR")
+				password = System.getenv("GITHUB_TOKEN")
+			}
+		}
 	}
 }
