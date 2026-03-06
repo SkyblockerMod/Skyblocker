@@ -108,9 +108,11 @@ public class EventNotifications {
 				//LOGGER.info("Next {} is at {}", entry.getKey(), entry.getValue().peekFirst());
 			}
 
-			for (String s : events.keySet()) {
-				SkyblockerConfigManager.get().eventNotifications.eventsReminderTimes.computeIfAbsent(s, s1 -> DEFAULT_REMINDERS);
-			}
+			SkyblockerConfigManager.update(config -> {
+				for (String s : events.keySet()) {
+					config.eventNotifications.eventsReminderTimes.computeIfAbsent(s, s1 -> DEFAULT_REMINDERS);
+				}
+			});
 		}).exceptionally(EventNotifications::itBorked);
 	}
 
