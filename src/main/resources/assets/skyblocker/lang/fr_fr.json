@@ -1704,5 +1704,7 @@
     "skyblocker.museum.resyncFailure.itemRepo.@Tooltip": "Réessayez dans quelques minutes !",
     "skyblocker.museum.resyncFailure.profile": "Profil inconnu",
     "skyblocker.museum.resyncFailure.profile.@Tooltip": "Rejoignez Skyblock et réessayez dans quelques minutes !",
-    "skyblocker.museum.resyncFailure.unknownError": "Erreur inconnue"
+    "skyblocker.museum.resyncFailure.unknownError": "Erreur inconnue",
+    "skyblocker.config.farming.garden.vinylHighlighter": "Vinyle «Stereo Harmony» en surbrillance",
+    "skyblocker.config.farming.garden.vinylHighlighter.@Tooltip": "Les parasites issus du vinyle «Stereo Harmony» brillent bleus en dehors des Jacob’s Contests. Ne fonctionne que si la surbrillance des parasites est active."
 }
