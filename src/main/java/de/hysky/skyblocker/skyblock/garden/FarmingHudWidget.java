@@ -141,7 +141,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		Component sourceLabel = null;
 		boolean hasValidPrice = false;
 
-		switch (SkyblockerConfigManager.get().farming.garden.farmingHud.type) {
+		switch (SkyblockerConfigManager.get().farming.farmingHud.type) {
 			case NPC -> {
 				// Use NPC price if it's available.
 				if (itemNpcPrice > 0 && itemNpcPrice != Double.MIN_VALUE) {
@@ -181,13 +181,13 @@ public class FarmingHudWidget extends ElementBasedWidget {
 
 	@Override
 	public boolean isEnabledIn(Location location) {
-		return location.equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud;
+		return location.equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.farmingHud.enabled;
 	}
 
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!location.equals(Location.GARDEN)) return;
-		SkyblockerConfigManager.update(config -> config.farming.garden.farmingHud.enableHud = enabled);
+		SkyblockerConfigManager.update(config -> config.farming.farmingHud.enabled = enabled);
 	}
 
 	@Override

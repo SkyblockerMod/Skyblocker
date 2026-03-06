@@ -20,33 +20,32 @@ public class ConfigDataFixerTest {
 		Bootstrap.bootStrap();
 	}
 
+	void testDataFix(int previousVersion, int newVersion) {
+		@SuppressWarnings("DataFlowIssue")
+		JsonObject oldConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream("/assets/skyblocker/config/skyblocker-v" + previousVersion + ".json")), JsonObject.class);
+		@SuppressWarnings("DataFlowIssue")
+		JsonObject expectedNewConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream("/assets/skyblocker/config/skyblocker-v" + newVersion + ".json")), JsonObject.class);
+
+		Assertions.assertEquals(expectedNewConfig, ConfigDataFixer.apply(ConfigDataFixer.CONFIG_TYPE, oldConfig, newVersion));
+	}
+
 	@Test
 	void testDataFixer1() {
-		@SuppressWarnings("DataFlowIssue")
-		JsonObject oldConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream("/assets/skyblocker/config/skyblocker-v1.json")), JsonObject.class);
-		@SuppressWarnings("DataFlowIssue")
-		JsonObject expectedNewConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream("/assets/skyblocker/config/skyblocker-v2.json")), JsonObject.class);
-
-		Assertions.assertEquals(expectedNewConfig, ConfigDataFixer.apply(ConfigDataFixer.CONFIG_TYPE, oldConfig, 2));
+		testDataFix(1, 2);
 	}
 
 	@Test
 	void testDataFixer2QuickNav() {
-		@SuppressWarnings("DataFlowIssue")
-		JsonObject oldConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream("/assets/skyblocker/config/skyblocker-v2.json")), JsonObject.class);
-		@SuppressWarnings("DataFlowIssue")
-		JsonObject expectedNewConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream("/assets/skyblocker/config/skyblocker-v3.json")), JsonObject.class);
-
-		Assertions.assertEquals(expectedNewConfig, ConfigDataFixer.apply(ConfigDataFixer.CONFIG_TYPE, oldConfig, 3));
+		testDataFix(2, 3);
 	}
 
 	@Test
 	void testDataFixer3() {
-		@SuppressWarnings("DataFlowIssue")
-		JsonObject oldConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream("/assets/skyblocker/config/skyblocker-v3.json")), JsonObject.class);
-		@SuppressWarnings("DataFlowIssue")
-		JsonObject expectedNewConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream("/assets/skyblocker/config/skyblocker-v4.json")), JsonObject.class);
+		testDataFix(3, 4);
+	}
 
-		Assertions.assertEquals(expectedNewConfig, ConfigDataFixer.apply(ConfigDataFixer.CONFIG_TYPE, oldConfig, 4));
+	@Test
+	void testDataFixer6() {
+		testDataFix(6, 7);
 	}
 }

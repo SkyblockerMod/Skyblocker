@@ -451,8 +451,8 @@
   "skyblocker.config.farming.mouseLock.lockMouseTool": "Lock when holding a farming tool",
 
   "skyblocker.config.farming.pestHighlighter": "Pest Highlighter",
-  "skyblocker.config.farming.pestHighlighter.@Tooltip": "Makes all pests on the Garden glow so you can see them easier! :D",
-  "skyblocker.config.farming.pestHighlighter.enable": "Enable Pest Highlighter",
+  "skyblocker.config.farming.pestHighlighter.enabled": "Enable Pest Highlighter",
+	"skyblocker.config.farming.pestHighlighter.enabled.@Tooltip": "Makes all pests on the Garden glow so you can see them easier! :D",
   "skyblocker.config.farming.pestHighlighter.stereoHarmony": "Stereo Harmony Vinyl Highlighter",
   "skyblocker.config.farming.pestHighlighter.stereoHarmony.@Tooltip": "Pests from Stereo Harmony vinyls glow blue outside of Jacob's Contests.\nRequires Pest Highlighter to be enabled!",
   "skyblocker.config.farming.pestHighlighter.stereoHarmony.contest": "Enable Stereo Harmony Helper for Jacob's Contest",
@@ -461,8 +461,8 @@
   "skyblocker.config.farming.plotsWidget": "Garden Plots Widget",
   "skyblocker.config.farming.plotsWidget.closeScreenOnPlotClick": "Close Inventory on Teleport",
   "skyblocker.config.farming.plotsWidget.closeScreenOnPlotClick.@Tooltip": "Whether your inventory should automatically close when teleporting to a plot using the Garden Plots Widget.",
-  "skyblocker.config.farming.plotsWidget.enable": "Enable Garden Plots Widget",
-  "skyblocker.config.farming.plotsWidget.enable.@Tooltip": "Displays a widget on the right of your inventory in the Garden.\n\nAllows quickly teleporting between plots. Highlights plots with pests. (Requires the Pests widget to be enabled and visible in Tab!)\n\nThe icon of a plot can be customized by right clicking the plot in the widget.",
+  "skyblocker.config.farming.plotsWidget.enabled": "Enable Garden Plots Widget",
+  "skyblocker.config.farming.plotsWidget.enabled.@Tooltip": "Displays a widget on the right of your inventory in the Garden.\n\nAllows quickly teleporting between plots. Highlights plots with pests. (Requires the Pests widget to be enabled and visible in Tab!)\n\nThe icon of a plot can be customized by right clicking the plot in the widget.",
 
   "skyblocker.config.farming.visitorHelper": "Visitor Helper",
   "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper": "Show Stacks in Visitor Helper",
