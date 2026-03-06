@@ -26,7 +26,7 @@ public class FarmingCategory {
 						.name(Component.translatable("skyblocker.config.farming.farmingHud"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.farmingHud.enableHud"))
+								.name(Component.translatable("skyblocker.config.farming.farmingHud.enabled"))
 								.binding(defaults.farming.farmingHud.enabled,
 										() -> config.farming.farmingHud.enabled,
 										newValue -> config.farming.farmingHud.enabled = newValue)
@@ -59,16 +59,16 @@ public class FarmingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.pestHighlighter.stereoHarmony"))
-								.description(Component.translatable("skyblocker.config.farming.pestHighlighter.stereoHarmony.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.farming.pestHighlighter.vinylHighlighter"))
+								.description(Component.translatable("skyblocker.config.farming.pestHighlighter.vinylHighlighter.@Tooltip"))
 								.binding(defaults.farming.pestHighlighter.vinylHighlighter,
 										() -> config.farming.pestHighlighter.vinylHighlighter,
 										newValue -> config.farming.pestHighlighter.vinylHighlighter = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.pestHighlighter.stereoHarmony.contest"))
-								.description(Component.translatable("skyblocker.config.farming.pestHighlighter.stereoHarmony.contest.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.farming.pestHighlighter.stereoHarmony"))
+								.description(Component.translatable("skyblocker.config.farming.pestHighlighter.stereoHarmony.@Tooltip"))
 								.binding(defaults.farming.pestHighlighter.enableStereoHarmonyHelperForContest,
 										() -> config.farming.pestHighlighter.enableStereoHarmonyHelperForContest,
 										newValue -> config.farming.pestHighlighter.enableStereoHarmonyHelperForContest = newValue)
@@ -121,24 +121,24 @@ public class FarmingCategory {
 						.name(Component.translatable("skyblocker.config.farming.visitorHelper"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.visitorHelper.visitorHelper"))
-								.description(Component.translatable("skyblocker.config.farming.visitorHelper.visitorHelper.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.farming.visitorHelper.enabled"))
+								.description(Component.translatable("skyblocker.config.farming.visitorHelper.enabled.@Tooltip"))
 								.binding(defaults.farming.visitorHelper.enabled,
 										() -> config.farming.visitorHelper.enabled,
 										newValue -> config.farming.visitorHelper.enabled = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly"))
-								.description(Component.translatable("skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.farming.visitorHelper.showInGardenOnly"))
+								.description(Component.translatable("skyblocker.config.farming.visitorHelper.showInGardenOnly.@Tooltip"))
 								.binding(defaults.farming.visitorHelper.showInGardenOnly,
 										() -> config.farming.visitorHelper.showInGardenOnly,
 										newValue -> config.farming.visitorHelper.showInGardenOnly = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper"))
-								.description(Component.translatable("skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.farming.visitorHelper.showInStacks"))
+								.description(Component.translatable("skyblocker.config.farming.visitorHelper.showInStacks.@Tooltip"))
 								.binding(defaults.farming.visitorHelper.showInStacks,
 										() -> config.farming.visitorHelper.showInStacks,
 										newValue -> config.farming.visitorHelper.showInStacks = newValue)
