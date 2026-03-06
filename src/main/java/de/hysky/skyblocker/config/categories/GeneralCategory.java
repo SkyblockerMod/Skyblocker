@@ -201,7 +201,7 @@ public class GeneralCategory {
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableNPCPrice"))
-								.description(Component.translatable("skyblocker.config.general.itemTooltip.enableNPCPrice.@Tooltip"))
+								.description(Component.translatable("skyblocker.config.general.itemTooltip.enablePrice.@Tooltip"))
 								.binding(defaults.general.itemTooltip.enableNPCPrice,
 										() -> config.general.itemTooltip.enableNPCPrice,
 										newValue -> config.general.itemTooltip.enableNPCPrice = newValue)
@@ -217,7 +217,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableAvgBIN"))
-								.description(Component.translatable("skyblocker.config.general.itemTooltip.enableAvgBIN.@Tooltip"))
+								.description(Component.translatable("skyblocker.config.general.itemTooltip.enablePrice.@Tooltip"))
 								.binding(defaults.general.itemTooltip.enableAvgBIN,
 										() -> config.general.itemTooltip.enableAvgBIN,
 										newValue -> config.general.itemTooltip.enableAvgBIN = newValue)
@@ -233,7 +233,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableLowestBIN"))
-								.description(Component.translatable("skyblocker.config.general.itemTooltip.enableLowestBIN.@Tooltip"))
+								.description(Component.translatable("skyblocker.config.general.itemTooltip.enablePrice.@Tooltip"))
 								.binding(defaults.general.itemTooltip.enableLowestBIN,
 										() -> config.general.itemTooltip.enableLowestBIN,
 										newValue -> config.general.itemTooltip.enableLowestBIN = newValue)
@@ -241,7 +241,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableBazaarPrice"))
-								.description(Component.translatable("skyblocker.config.general.itemTooltip.enableBazaarPrice.@Tooltip"))
+								.description(Component.translatable("skyblocker.config.general.itemTooltip.enablePrice.@Tooltip"))
 								.binding(defaults.general.itemTooltip.enableBazaarPrice,
 										() -> config.general.itemTooltip.enableBazaarPrice,
 										newValue -> config.general.itemTooltip.enableBazaarPrice = newValue)
