@@ -3,9 +3,10 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -31,7 +32,7 @@ public class PetWidget extends TabHudWidget {
 			if (string.contains("[") && string.contains("]")) {
 				String[] split = string.split("]", 2);
 				if (split.length < 2) {
-					addComponent(new PlainTextComponent(line));
+					addComponent(new PlainTextElement(line));
 					continue;
 				}
 				String petName = split[1].replace("✦", "").trim();
@@ -44,9 +45,9 @@ public class PetWidget extends TabHudWidget {
 					}).findFirst().orElse(Ico.BONE);
 					prevString = petName;
 				}
-				addComponent(Components.iconTextComponent(icon, line));
+				addComponent(Elements.iconTextComponent(icon, line));
 
-			} else addComponent(new PlainTextComponent(line));
+			} else addComponent(new PlainTextElement(line));
 		}
 	}
 }

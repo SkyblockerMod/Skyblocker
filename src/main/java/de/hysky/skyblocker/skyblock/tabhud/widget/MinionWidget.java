@@ -1,13 +1,14 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -97,10 +98,10 @@ public class MinionWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent(List<Component> lines) {
-		addComponent(new PlainTextComponent(lines.getFirst().copy().append(Component.literal(" minions"))));
+		addComponent(new PlainTextElement(lines.getFirst().copy().append(Component.literal(" minions"))));
 		for (int i = 1; i < lines.size(); i++) {
 			String string = lines.get(i).getString();
-			if (string.toLowerCase(Locale.ENGLISH).startsWith("...")) this.addComponent(new PlainTextComponent(lines.get(i).copy().withStyle(ChatFormatting.GRAY)));
+			if (string.toLowerCase(Locale.ENGLISH).startsWith("...")) this.addComponent(new PlainTextElement(lines.get(i).copy().withStyle(ChatFormatting.GRAY)));
 			else addMinionComponent(string);
 		}
 	}
@@ -125,7 +126,7 @@ public class MinionWidget extends TabHudWidget {
 			// makes "BLOCKED" also red. in reality, it's some kind of crimson
 			mt.append(Component.literal(stat).withStyle(format));
 
-			this.addComponent(Components.iconTextComponent(MIN_ICOS.get(min), mt));
+			this.addComponent(Elements.iconTextComponent(MIN_ICOS.get(min), mt));
 		}
 	}
 }

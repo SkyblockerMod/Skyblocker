@@ -17,7 +17,7 @@ public class Donation {
 	private final int xp;
 	private List<ObjectIntPair<String>> countsTowards;
 	private PriceData priceData;
-	private ObjectDoublePair<String> discount;
+	private @Nullable ObjectDoublePair<String> discount;
 	private int totalXp;
 	private double xpCoinsRatio;
 
@@ -56,7 +56,7 @@ public class Donation {
 		return discount;
 	}
 
-	public void setDiscount(ObjectDoublePair<String> discount) {
+	public void setDiscount(@Nullable ObjectDoublePair<String> discount) {
 		this.discount = discount;
 	}
 

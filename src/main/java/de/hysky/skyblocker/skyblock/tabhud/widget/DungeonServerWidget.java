@@ -3,10 +3,11 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -35,9 +36,9 @@ public class DungeonServerWidget extends TabHudWidget {
 
 		Matcher m = PlayerListManager.regexAt(44, SECRET_PATTERN);
 		if (m == null) {
-			this.addComponent(Components.progressComponent());
+			this.addComponent(Elements.progressComponent());
 		} else {
-			this.addComponent(Components.progressComponent(Ico.CHEST, Component.nullToEmpty("Secrets found:"),
+			this.addComponent(Elements.progressComponent(Ico.CHEST, Component.nullToEmpty("Secrets found:"),
 					Float.parseFloat(m.group("secnum")),
 					ChatFormatting.DARK_PURPLE.getColor()));
 		}

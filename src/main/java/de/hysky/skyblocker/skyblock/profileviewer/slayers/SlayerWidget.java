@@ -39,7 +39,7 @@ public class SlayerWidget {
 			Map.entry("Blaze", SkyblockerMod.id("textures/gui/profile_viewer/blaze.png"))
 	);
 
-	private static final Map<String, ItemStack> DROP_ICON = Map.ofEntries(
+	public static final Map<String, ItemStack> DROP_ICON = Map.ofEntries(
 			Map.entry("Zombie", Ico.FLESH),
 			Map.entry("Spider", Ico.STRING),
 			Map.entry("Wolf", Ico.MUTTON),

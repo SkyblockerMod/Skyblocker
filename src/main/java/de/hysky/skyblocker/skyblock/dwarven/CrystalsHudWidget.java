@@ -17,16 +17,17 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class CrystalsHudWidget extends HudWidget {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	protected static final Identifier MAP_TEXTURE = SkyblockerMod.id("textures/gui/crystals_map.png");
 	private static final Identifier MAP_ICON = Identifier.withDefaultNamespace("textures/map/decorations/player.png");
-	private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Unknown");
+	private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Xalx", "Unknown");
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.CRYSTAL_HOLLOWS);
 
-	private static CrystalsHudWidget instance = null;
+	private static @Nullable CrystalsHudWidget instance = null;
 
 	@SuppressWarnings("unused")
 	public static CrystalsHudWidget getInstance() {
@@ -82,7 +83,7 @@ public class CrystalsHudWidget extends HudWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!location.equals(Location.CRYSTAL_HOLLOWS)) return;
-		SkyblockerConfigManager.get().mining.crystalsHud.enabled = enabled;
+		SkyblockerConfigManager.update(config -> config.mining.crystalsHud.enabled = enabled);
 	}
 
 	public void update() {

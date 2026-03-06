@@ -57,7 +57,7 @@ public class PowderMiningWidget extends HudWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!LOCATIONS.contains(location)) return;
-		SkyblockerConfigManager.get().mining.crystalHollows.enablePowderTracker = enabled;
+		SkyblockerConfigManager.update(config -> config.mining.crystalHollows.enablePowderTracker = enabled);
 	}
 
 	@Override

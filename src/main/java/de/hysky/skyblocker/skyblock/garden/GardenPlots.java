@@ -69,7 +69,7 @@ public final class GardenPlots {
 								continue;
 							}
 							int index = (i / 9) * 5 + (i % 9 - 2);
-							Either<Item, String> icon = stack.getSkyblockId().isBlank() ? Either.left(stack.getItem()) : Either.right(stack.getSkyblockId());
+							Either<Item, String> icon = stack.getNeuName().isBlank() ? Either.left(stack.getItem()) : Either.right(stack.getNeuName());
 							String plotName = parts[1].trim();
 							GardenPlot plot = GARDEN_PLOTS[index];
 							if (plot == null) {

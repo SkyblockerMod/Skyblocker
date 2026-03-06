@@ -239,6 +239,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 
 	// TODO: Perhaps make a little something in the skyblocker-assets repo for this in case it needs updating in the future
 	static {
+		// Gemstones
 		NAME2ID_MAP.put("☠ Flawed Onyx Gemstone", "FLAWED_ONYX_GEM");
 		NAME2ID_MAP.put("☠ Fine Onyx Gemstone", "FINE_ONYX_GEM");
 		NAME2ID_MAP.put("☠ Flawless Onyx Gemstone", "FLAWLESS_ONYX_GEM");
@@ -251,16 +252,18 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		NAME2ID_MAP.put("☘ Fine Citrine Gemstone", "FINE_CITRINE_GEM");
 		NAME2ID_MAP.put("☘ Flawless Citrine Gemstone", "FLAWLESS_CITRINE_GEM");
 
-		NAME2ID_MAP.put("α Flawed Aquamarine Gemstone", "FLAWED_AQUAMARINE_GEM");
-		NAME2ID_MAP.put("α Fine Aquamarine Gemstone", "FINE_AQUAMARINE_GEM");
-		NAME2ID_MAP.put("α Flawless Aquamarine Gemstone", "FLAWLESS_AQUAMARINE_GEM");
+		NAME2ID_MAP.put("☂ Flawed Aquamarine Gemstone", "FLAWED_AQUAMARINE_GEM");
+		NAME2ID_MAP.put("☂ Fine Aquamarine Gemstone", "FINE_AQUAMARINE_GEM");
+		NAME2ID_MAP.put("☂ Flawless Aquamarine Gemstone", "FLAWLESS_AQUAMARINE_GEM");
 
+		// Eggs
 		NAME2ID_MAP.put("Goblin Egg", "GOBLIN_EGG");
 		NAME2ID_MAP.put("Green Goblin Egg", "GOBLIN_EGG_GREEN");
 		NAME2ID_MAP.put("Blue Goblin Egg", "GOBLIN_EGG_BLUE");
 		NAME2ID_MAP.put("Red Goblin Egg", "GOBLIN_EGG_RED");
 		NAME2ID_MAP.put("Yellow Goblin Egg", "GOBLIN_EGG_YELLOW");
 
+		// Forge Items
 		NAME2ID_MAP.put("Enchanted Glacite", "ENCHANTED_GLACITE");
 		NAME2ID_MAP.put("Enchanted Umber", "ENCHANTED_UMBER");
 		NAME2ID_MAP.put("Enchanted Tungsten", "ENCHANTED_TUNGSTEN");
@@ -270,20 +273,27 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		NAME2ID_MAP.put("Refined Mithril", "REFINED_MITHRIL");
 		NAME2ID_MAP.put("Refined Titanium", "REFINED_TITANIUM");
 
+		NAME2ID_MAP.put("Mithril Plate", "MITHRIL_PLATE");
 		NAME2ID_MAP.put("Umber Plate", "UMBER_PLATE");
 		NAME2ID_MAP.put("Tungsten Plate", "TUNGSTEN_PLATE");
 
+		// Keys
+		NAME2ID_MAP.put("Skeleton Key", "SKELETON_KEY");
+		NAME2ID_MAP.put("Tungsten Key", "TUNGSTEN_KEY");
+		NAME2ID_MAP.put("Umber Key", "UMBER_KEY");
+
+		// Misc.
 		NAME2ID_MAP.put("Glacite Amalgamation", "GLACITE_AMALGAMATION");
 		NAME2ID_MAP.put("Bejeweled Handle", "BEJEWELED_HANDLE");
-		NAME2ID_MAP.put("Umber Key", "UMBER_KEY");
-		NAME2ID_MAP.put("Tungsten Key", "TUNGSTEN_KEY");
 		NAME2ID_MAP.put("Glacite Jewel", "GLACITE_JEWEL");
 		NAME2ID_MAP.put("Suspicious Scrap", "SUSPICIOUS_SCRAP");
 		NAME2ID_MAP.put("Enchanted Book (Ice Cold I)", "ENCHANTMENT_ICE_COLD_1");
 		NAME2ID_MAP.put("Dwarven O's Metallic Minis", "DWARVEN_OS_METALLIC_MINIS");
-		NAME2ID_MAP.put("Shattered Locket", "SHATTERED_PENDANT");
-		NAME2ID_MAP.put("Frozen Scute", "FROZEN_SCUTE");
 
+		// Valuables
+		NAME2ID_MAP.put("Frozen Scute", "FROZEN_SCUTE");
+		NAME2ID_MAP.put("Shattered Locket", "SHATTERED_PENDANT");
+		NAME2ID_MAP.put("Caged Wisp", "CAGED_WISP");
 		NAME2ID_MAP.put("Frostbitten Dye", "DYE_FROSTBITTEN");
 
 		//These don't have an associated item id or price, but they are in the map regardless so we know what items are not properly mapped and log them accordingly

@@ -455,7 +455,9 @@
   "skyblocker.config.farming.garden.lockMouseGround": "Only lock camera when on the ground",
   "skyblocker.config.farming.garden.lockMouseTool": "Lock camera when holding a farming tool",
   "skyblocker.config.farming.garden.pestHighlighter": "Pest Highlighter",
-  "skyblocker.config.farming.garden.pestHighlighter.@Tooltip": "Make's all pest's on your island glow so you can see them easier :D",
+  "skyblocker.config.farming.garden.pestHighlighter.@Tooltip": "Makes all pests on your island glow so you can see them easier :D",
+  "skyblocker.config.farming.garden.vinylHighlighter": "Stereo Harmony Vinyl Highlighter",
+  "skyblocker.config.farming.garden.vinylHighlighter.@Tooltip": "Pests from Stereo Harmony vinyls glow blue outside of Jacob's Contests. Only enabled if Pest Highlighter is also enabled.",
 
   "skyblocker.config.farming.general.blocksPerSec": "Blocks/s: %s",
   "skyblocker.config.farming.general.coinsPerHour": "Coins/h: %s",
@@ -469,7 +471,7 @@
 
   "skyblocker.config.farming.visitorHelper": "Visitor Helper",
   "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper": "Show Stacks in Visitor Helper",
-  "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip": "Show's the required items as (5 stacks + 45) rather than just a total number especially useful for ironman players.",
+  "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip": "Shows the required items as (5 stacks + 45) rather than just a total number especially useful for ironman players.",
   "skyblocker.config.farming.visitorHelper.visitorHelper": "Enable Visitor Helper",
   "skyblocker.config.farming.visitorHelper.visitorHelper.@Tooltip": "Makes it easier to manage visitors by grouping similar requests, copying item amounts, and quickly opening the Bazaar to buy items.",
   "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly": "Garden Only",
@@ -519,11 +521,6 @@
   "skyblocker.config.general.backup.title": "Config Backups",
 
   "skyblocker.config.general.enableTips": "Enable Tips",
-
-  "skyblocker.config.general.hitbox": "Hitboxes",
-  "skyblocker.config.general.hitbox.oldCactusHitbox": "Enable 1.8 cactus hitbox",
-  "skyblocker.config.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",
-  "skyblocker.config.general.hitbox.oldMushroomHitbox": "Enable 1.8 mushroom hitbox",
 
   "skyblocker.config.general.itemInfoDisplay": "Item Info Display",
   "skyblocker.config.general.itemInfoDisplay.itemBackgroundOpacity": "Item Background Overlay Opacity",
@@ -1676,7 +1673,7 @@
   "skyblocker.itemTooltip.nullMessage": "Item price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
   "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
-  "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! Note that you can only do this once every two days.",
+  "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! You can only do this once an hour.",
   "skyblocker.museum.hud.alreadyDonatedItem": "Donated Item",
   "skyblocker.museum.hud.coin": "Coins",
   "skyblocker.museum.hud.countsFor": "Will count for",
@@ -1698,7 +1695,14 @@
   "skyblocker.museum.hud.unknownPrice": "Unknown",
   "skyblocker.museum.hud.wikiLookup": "Press %s to open the wiki page!",
   "skyblocker.museum.hud.xpReward": "Reward",
-  "skyblocker.museum.resyncFailure": "Failed to resync your museum item donations!",
+  "skyblocker.museum.resyncFailure": "Failed to resync your Museum item donations: %s!",
+  "skyblocker.museum.resyncFailure.apiDisabled": "Museum API is not enabled",
+  "skyblocker.museum.resyncFailure.apiDisabled.@Tooltip": "Enable Museum API in your SkyBlock Settings, and try again in a few minutes!",
+  "skyblocker.museum.resyncFailure.itemRepo": "Item repository hasn't loaded yet",
+  "skyblocker.museum.resyncFailure.itemRepo.@Tooltip": "Try again in a few minutes!",
+  "skyblocker.museum.resyncFailure.profile": "Unknown profile",
+  "skyblocker.museum.resyncFailure.profile.@Tooltip": "Rejoin Skyblock and try again in a few minutes!",
+  "skyblocker.museum.resyncFailure.unknownError": "Unknown Error",
   "skyblocker.museum.resyncSuccess": "Successfully resynced your museum item donations!",
 
   "skyblocker.nightVision.success": "Changed the strength of night vision to %s.",

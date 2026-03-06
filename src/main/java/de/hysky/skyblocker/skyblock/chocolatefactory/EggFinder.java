@@ -131,7 +131,7 @@ public class EggFinder {
 
 	private static void handleLocationChange(Location location) {
 		clearEggs();
-		if (!isSpring || !LOCATIONS.contains(location)) return;
+		if (!isSpring || !LOCATIONS.contains(location) || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		WsStateManager.subscribeIsland(Service.EGG_WAYPOINTS, Optional.empty());
 	}
 

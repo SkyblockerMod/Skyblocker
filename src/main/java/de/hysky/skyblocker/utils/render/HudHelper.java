@@ -63,7 +63,6 @@ public class HudHelper {
 		context.guiRenderState.submitGuiElement(new HorizontalGradientGuiElementRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), (int) startX, (int) startY, (int) endX, (int) endY, colorStart, colorEnd, context.scissorStack.peek()));
 	}
 
-	// FIXME replace with stroked rectangles?
 	public static void drawBorder(GuiGraphics context, int x, int y, int width, int height, int color) {
 		context.fill(x, y, x + width, y + 1, color);
 		context.fill(x, y + height - 1, x + width, y + height, color);

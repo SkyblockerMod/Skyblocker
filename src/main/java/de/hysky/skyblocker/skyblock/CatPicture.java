@@ -26,7 +26,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 
 public class CatPicture {
-	private static final Vec3 RENDER_POSITION = new Vec3(6, 72, -92);
+	private static final Vec3 RENDER_POSITION = new Vec3(-3, 79, 3);
 	//private static final Box CULLING_BOX = new Box(RENDER_POSITION.x, RENDER_POSITION.y, RENDER_POSITION.z, RENDER_POSITION.x + 1, RENDER_POSITION.y + 1, RENDER_POSITION.z + 1/16d);
 	private static final Identifier TEXTURE = SkyblockerMod.id("textures/cat.png");
 
