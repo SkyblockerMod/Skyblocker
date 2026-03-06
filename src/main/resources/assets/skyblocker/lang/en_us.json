@@ -452,11 +452,11 @@
 
   "skyblocker.config.farming.pestHighlighter": "Pest Highlighter",
   "skyblocker.config.farming.pestHighlighter.enabled": "Enable Pest Highlighter",
-	"skyblocker.config.farming.pestHighlighter.enabled.@Tooltip": "Makes all pests on the Garden glow so you can see them easier! :D",
-  "skyblocker.config.farming.pestHighlighter.vinylHighlighter": "Stereo Harmony Vinyl Highlighter",
-  "skyblocker.config.farming.pestHighlighter.vinylHighlighter.@Tooltip": "Pests from Stereo Harmony vinyls glow blue outside of Jacob's Contests.\nRequires Pest Highlighter to be enabled!",
+  "skyblocker.config.farming.pestHighlighter.enabled.@Tooltip": "Makes all pests on the Garden glow so you can see them easier! :D",
   "skyblocker.config.farming.pestHighlighter.stereoHarmony": "Enable Stereo Harmony Helper",
   "skyblocker.config.farming.pestHighlighter.stereoHarmony.@Tooltip": "Highlights the disc that matches with current Jacob's Contest crop.",
+  "skyblocker.config.farming.pestHighlighter.vinylHighlighter": "Stereo Harmony Vinyl Highlighter",
+  "skyblocker.config.farming.pestHighlighter.vinylHighlighter.@Tooltip": "Pests from Stereo Harmony vinyls glow blue outside of Jacob's Contests.\nRequires Pest Highlighter to be enabled!",
 
   "skyblocker.config.farming.plotsWidget": "Garden Plots Widget",
   "skyblocker.config.farming.plotsWidget.closeScreenOnPlotClick": "Close Inventory on Teleport",
@@ -465,12 +465,12 @@
   "skyblocker.config.farming.plotsWidget.enabled.@Tooltip": "Displays a widget on the right of your inventory in the Garden.\n\nAllows quickly teleporting between plots. Highlights plots with pests. (Requires the Pests widget to be enabled and visible in Tab!)\n\nThe icon of a plot can be customized by right clicking the plot in the widget.",
 
   "skyblocker.config.farming.visitorHelper": "Visitor Helper",
-  "skyblocker.config.farming.visitorHelper.showInStacks": "Show Stacks in Visitor Helper",
-  "skyblocker.config.farming.visitorHelper.showInStacks.@Tooltip": "Shows the required items as (5 stacks + 45) rather than just the total number.\nUseful for ironman players!",
   "skyblocker.config.farming.visitorHelper.enabled": "Enable Visitor Helper",
   "skyblocker.config.farming.visitorHelper.enabled.@Tooltip": "Makes it easier to manage visitors by grouping similar requests, copying item amounts, and quickly opening the Bazaar to buy items.",
   "skyblocker.config.farming.visitorHelper.showInGardenOnly": "Show On Garden Only",
   "skyblocker.config.farming.visitorHelper.showInGardenOnly.@Tooltip": "Whether to only display the Visitor Helper on the Garden.",
+  "skyblocker.config.farming.visitorHelper.showInStacks": "Show Stacks in Visitor Helper",
+  "skyblocker.config.farming.visitorHelper.showInStacks.@Tooltip": "Shows the required items as (5 stacks + 45) rather than just the total number.\nUseful for ironman players!",
 
   "skyblocker.config.foraging": "Foraging",
 
