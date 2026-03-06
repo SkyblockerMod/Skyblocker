@@ -53,7 +53,7 @@ public class FarmingConfig {
 
 		@Override
 		public String toString() {
-			return I18n.get("skyblocker.config.farming.garden.farmingHud.type." + name());
+			return I18n.get("skyblocker.config.farming.farmingHud.type." + name());
 		}
 	}
 }
