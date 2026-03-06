@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.Utils;
@@ -45,7 +46,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -91,7 +91,7 @@ public class Room implements Tickable, Renderable {
 	 * Contains all blocks that have been checked to prevent checking the same block multiple times.
 	 * This is null after the room is matched.
 	 */
-	private @Nullable Set<BlockPos> checkedBlocks = new HashSet<>();
+	private @Nullable BlockPosSet checkedBlocks = new BlockPosSet();
 	/**
 	 * The task that is used to check blocks. This is used to ensure only one such task can run at a time.
 	 */
@@ -536,7 +536,7 @@ public class Room implements Tickable, Renderable {
 		IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
 		IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
 		possibleRooms = getPossibleRooms(segmentsX, segmentsY);
-		checkedBlocks = new HashSet<>();
+		checkedBlocks = new BlockPosSet();
 		doubleCheckBlocks = 0;
 		secretWaypoints.clear();
 		name = null;

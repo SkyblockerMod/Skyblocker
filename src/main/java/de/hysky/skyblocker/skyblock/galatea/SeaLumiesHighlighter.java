@@ -2,10 +2,9 @@ package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Iterator;
-import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -17,15 +16,15 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 
 public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
-	private final Set<BlockPos> allBlocks = new ObjectOpenHashSet<>();
+	private final BlockPosSet allBlocks = new BlockPosSet();
 
 	@Override
 	public void onBlockUpdate(BlockPos pos, BlockState oldState, BlockState newState) {
 		if (!shouldProcess()) return;
 
 		if (this.statePredicate.test(newState)) {
-			this.allBlocks.add(pos.immutable());
-			if (isEnabled() && isEnoughPickles(newState)) this.highlightedBlocks.add(pos.immutable());
+			this.allBlocks.add(pos);
+			if (isEnabled() && isEnoughPickles(newState)) this.highlightedBlocks.add(pos);
 		} else {
 			this.allBlocks.remove(pos);
 			this.highlightedBlocks.remove(pos);
@@ -63,8 +62,8 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 		if (!shouldProcess()) return;
 
 		chunk.findBlocks(statePredicate, (pos, state) -> {
-			this.allBlocks.add(pos.immutable());
-			if (isEnabled() && isEnoughPickles(state)) this.highlightedBlocks.add(pos.immutable());
+			this.allBlocks.add(pos);
+			if (isEnabled() && isEnoughPickles(state)) this.highlightedBlocks.add(pos);
 		});
 	}
 

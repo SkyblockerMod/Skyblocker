@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.events.WorldEvents;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
@@ -18,7 +18,6 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -26,7 +25,7 @@ import java.util.function.Predicate;
  */
 //TODO Move this to a more generic package since this is not Galatea specific (maybe make a world rendering utility package?)
 public abstract class AbstractBlockHighlighter {
-	protected final Set<BlockPos> highlightedBlocks = new ObjectOpenHashSet<>();
+	protected final BlockPosSet highlightedBlocks = new BlockPosSet();
 	protected final float[] colour;
 	protected final Predicate<BlockState> statePredicate;
 
@@ -61,7 +60,7 @@ public abstract class AbstractBlockHighlighter {
 		if (!shouldProcess()) return;
 
 		if (this.statePredicate.test(newState)) {
-			this.highlightedBlocks.add(pos.immutable());
+			this.highlightedBlocks.add(pos);
 		} else {
 			this.highlightedBlocks.remove(pos);
 		}
@@ -74,7 +73,7 @@ public abstract class AbstractBlockHighlighter {
 	protected void onChunkLoad(ClientLevel world, LevelChunk chunk) {
 		if (!shouldProcess()) return;
 
-		chunk.findBlocks(statePredicate, (pos, state) -> this.highlightedBlocks.add(pos.immutable()));
+		chunk.findBlocks(statePredicate, (pos, state) -> this.highlightedBlocks.add(pos));
 	}
 
 	/**
@@ -98,7 +97,7 @@ public abstract class AbstractBlockHighlighter {
 		Minecraft client = Minecraft.getInstance();
 		if (!shouldProcess() || client.level == null) return;
 
-		for (BlockPos highlight : this.highlightedBlocks) {
+		for (BlockPos highlight : this.highlightedBlocks.iterateMut()) {
 			AABB outline = RenderHelper.getBlockBoundingBox(client.level, highlight);
 
 			if (outline != null) {
