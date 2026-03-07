@@ -975,6 +975,8 @@
   "skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip": "Only counts melee kills!\n\nKills can be updated by going to the Zealot page in the Bestiary.",
 
   "skyblocker.config.otherLocations.rift": "The Rift",
+  "skyblocker.config.otherLocations.rift.autoDetectMcGrubber": "Autodetect McGrubber Stacks",
+  "skyblocker.config.otherLocations.rift.autoDetectMcGrubber.@Tooltip": "Detects McGrubber stacks (e.g. from Orb pickup messages) and adjusts the stack count below automatically.",
   "skyblocker.config.otherLocations.rift.blobbercystGlow": "Blobbercyst Glow",
   "skyblocker.config.otherLocations.rift.blobbercystGlow.@Tooltip": "Applies the glowing effect to the Blobbercysts from the BACTE fight.",
   "skyblocker.config.otherLocations.rift.enigmaSoulWaypoints": "Enable Enigma Soul Waypoints",
