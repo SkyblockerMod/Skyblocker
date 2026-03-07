@@ -1679,5 +1679,7 @@
     "skyblocker.museum.resyncFailure.itemRepo.@Tooltip": "Próbáld újra pár perc múlva!",
     "skyblocker.museum.resyncFailure.profile": "Ismeretlen profil",
     "skyblocker.museum.resyncFailure.profile.@Tooltip": "Csatlakozz újra Skyblockra, majd pár perc múlva próbáld újra!",
-    "skyblocker.museum.resyncFailure.unknownError": "Ismeretlen Hiba"
+    "skyblocker.museum.resyncFailure.unknownError": "Ismeretlen Hiba",
+    "skyblocker.config.farming.garden.vinylHighlighter": "Stereo Harmony Lemez Jelölő",
+    "skyblocker.config.farming.garden.vinylHighlighter.@Tooltip": "Jacob versenyein kívül a Stereo Harmony Pestjei kéken csillognak. Csak akkor engedélyezhető, ha a Pest Kiemelés is engedélyezve van."
 }
