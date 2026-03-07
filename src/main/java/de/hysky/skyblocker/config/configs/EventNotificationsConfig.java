@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.annotations.GenToString;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +14,7 @@ public class EventNotificationsConfig {
 
 	public Sound reminderSound = Sound.PLING;
 
-	public Map<String, IntArrayList> eventsReminderTimes = new HashMap<>();
+	public Map<String, EventConfig> events = new HashMap<>();
 
 	public enum Criterion {
 		NONE,
@@ -25,6 +26,20 @@ public class EventNotificationsConfig {
 		public String toString() {
 			return I18n.get("skyblocker.config.eventNotifications.criterion." + name());
 		}
+	}
+
+	public static class EventConfig {
+		public boolean enabled;
+		public IntArrayList reminderTimes;
+
+		public EventConfig() {
+			enabled = true;
+			reminderTimes = new IntArrayList();
+		}
+
+		@GenToString
+		@Override
+		public native String toString();
 	}
 
 	public enum Sound {
