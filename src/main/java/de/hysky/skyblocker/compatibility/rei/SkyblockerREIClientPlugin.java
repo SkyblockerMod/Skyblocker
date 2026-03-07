@@ -130,7 +130,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 		});
 
 		zones.register(InventoryScreen.class, screen -> {
-			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.isInGarden()) return List.of();
+			if (!SkyblockerConfigManager.get().farming.plotsWidget.enabled || !Utils.isInGarden()) return List.of();
 			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) screen;
 			return List.of(new Rectangle(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
 		});
