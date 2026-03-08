@@ -178,10 +178,10 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		}
 
 		protected void renderName(GuiGraphics guiGraphics, float f) {
-			// not jank at all
-			this.setX(getX() + TEXT_OFFSET);
-			this.renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
-			this.setX(getX() - TEXT_OFFSET);
+			guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
+					getMessage(), getX() + TEXT_MARGIN + TEXT_OFFSET + 16,
+					getRight() - TEXT_MARGIN, getY() + TEXT_MARGIN, getBottom() - TEXT_MARGIN
+			);
 		}
 	}
 
