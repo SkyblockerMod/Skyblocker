@@ -120,7 +120,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		String name;
 		final ItemStack dyeStack;
 
-		public StaticDyeButton(String dyeId, int color, OnPress onPress) {
+		protected StaticDyeButton(String dyeId, int color, OnPress onPress) {
 			super(0, 0, 150, 20, Component.empty(), onPress, supplier -> Component.empty());
 			name = dyeId;
 			NEUItem item = NEURepoManager.getItemByNeuId(dyeId);
@@ -174,7 +174,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		private static final int BACKGROUND_TEXTURE_OFFSET = 23;
 		final Component message;
 
-		public HeaderWidget(Component component) {
+		protected HeaderWidget(Component component) {
 			super(0, 0, 0, 15, component);
 			this.message = component;
 			this.width = font.width(message);
