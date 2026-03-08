@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.utils;
 
+import net.minecraft.world.phys.Vec3;
+
 /**
  * Implements color interpolation in the OkLab color space.
  *
@@ -16,7 +18,7 @@ public class OkLabColor {
 	 * @param g the linearized green channel
 	 * @param b the linearized blue channel
 	 */
-	private static Lab linearSRGB2OkLab(float r, float g, float b) {
+	public static Lab linearSRGB2OkLab(float r, float g, float b) {
 		float l = Math.fma(0.4122214708f, r, Math.fma(0.5363325363f, g, 0.0514459929f * b));
 		float m = Math.fma(0.2119034982f, r, Math.fma(0.6806995451f, g, 0.1073969566f * b));
 		float s = Math.fma(0.0883024619f, r, Math.fma(0.2817188376f, g, 0.6299787005f * b));
@@ -35,7 +37,7 @@ public class OkLabColor {
 	/**
 	 * Converts a color in the OkLab color space to linear SRGB.
 	 */
-	private static RGB okLab2LinearSRGB(float L, float A, float B) {
+	public static RGB okLab2LinearSRGB(float L, float A, float B) {
 		float l_ = L + 0.3963377774f * A + 0.2158037573f * B;
 		float m_ = L - 0.1055613458f * A - 0.0638541728f * B;
 		float s_ = L - 0.0894841775f * A - 1.2914855480f * B;
@@ -100,6 +102,10 @@ public class OkLabColor {
 		return (r << 16) | (g << 8) | b;
 	}
 
-	private record Lab(float l, float a, float b) {}
-	private record RGB(float r, float g, float b) {}
+	public record Lab(float l, float a, float b) {
+		public Vec3 toVec3() {
+			return new Vec3(l, a, b);
+		}
+	}
+	public record RGB(float r, float g, float b) {}
 }

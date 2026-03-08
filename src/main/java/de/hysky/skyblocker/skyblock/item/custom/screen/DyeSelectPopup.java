@@ -4,9 +4,11 @@ import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.RepoDyeColors;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import io.github.moulberry.repo.data.NEUItem;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -18,9 +20,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,11 +106,47 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		int max = cycleBack ? colors.size() / 2 : colors.size();
 		List<CustomArmorAnimatedDyes.Keyframe> keyFrames = new ArrayList<>(colors.size());
 
-		int i = 0;
-		for (int color : colors) {
-			keyFrames.add(new CustomArmorAnimatedDyes.Keyframe(color, (float) i / max));
-			i += 1;
-			if (cycleBack && i >= max) break;
+		// Leave the previous method as an option in case the optimized isn't faithful enough
+		// Not gonna mention it though, I don't think most people are gonna notice
+		if (Minecraft.getInstance().hasShiftDown()) {
+			int i = 0;
+			for (int color : colors) {
+				keyFrames.add(new CustomArmorAnimatedDyes.Keyframe(color, (float) i / max));
+				i += 1;
+				if (cycleBack && i >= max) break;
+			}
+		} else {
+			// Optimize the keyframes by looking at the direction of the gradient in the OkLab color space
+			keyFrames.add(new CustomArmorAnimatedDyes.Keyframe(colors.getFirst(), 0));
+			Vec3 next = OkLabColor.linearSRGB2OkLab(
+							ARGB.redFloat(colors.get(1)),
+							ARGB.greenFloat(colors.get(1)),
+							ARGB.blueFloat(colors.get(1)))
+					.toVec3();
+			Vec3 current = OkLabColor.linearSRGB2OkLab(
+							ARGB.redFloat(colors.getFirst()),
+							ARGB.greenFloat(colors.getFirst()),
+							ARGB.blueFloat(colors.getFirst()))
+					.toVec3();
+			Vec3 direction = next.subtract(current).normalize();
+			//double speed = current.distanceToSqr(next);
+			for (int i = 1; i < max - 1; i++) {
+				current = next;
+				next = OkLabColor.linearSRGB2OkLab(
+						ARGB.redFloat(colors.get(i + 1)),
+						ARGB.greenFloat(colors.get(i + 1)),
+						ARGB.blueFloat(colors.get(i + 1))).toVec3();
+				Vec3 newDirection = next.subtract(current).normalize();
+				// Didn't really work that well, commenting out for now
+				//double newSpeed = current.distanceToSqr(next);
+				//double speedRatio = speed == 0 ? Double.MAX_VALUE : (newSpeed / speed);
+				if (newDirection.dot(direction) < 0.75 /*|| speedRatio < 0.5 || speedRatio > 2*/) {
+					keyFrames.add(new CustomArmorAnimatedDyes.Keyframe(colors.get(i), (float) i / max));
+					direction = newDirection;
+					//speed = newSpeed;
+				}
+			}
+			keyFrames.add(new CustomArmorAnimatedDyes.Keyframe(colors.get(max - 1), 1));
 		}
 
 		this.onClose();
