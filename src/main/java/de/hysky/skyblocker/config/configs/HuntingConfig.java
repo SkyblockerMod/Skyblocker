@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
 import java.awt.Color;
-import net.minecraft.world.item.DyeColor;
 
 public class HuntingConfig {
 	public HuntingBox huntingBox = new HuntingBox();
@@ -18,11 +17,11 @@ public class HuntingConfig {
 		public boolean silencePhantoms = true;
 
 		public boolean highlightHideonleaf = true;
-		public Color hideonleafGlowColor = new Color(DyeColor.YELLOW.getTextColor(), false);
+		public Color hideonleafGlowColor = Color.decode("#2ECC40");
 		public boolean highlightShellwise = true;
-		public Color shellwiseGlowColor = new Color(DyeColor.ORANGE.getTextColor(), false);
+		public Color shellwiseGlowColor = Color.decode("#3D9970");
 		public boolean highlightCoralot = true;
-		public Color coralotGlowColor = new Color(DyeColor.BLUE.getTextColor(), false);
+		public Color coralotGlowColor = Color.decode("#F012BE");
 	}
 
 	public static class LassoHud {
