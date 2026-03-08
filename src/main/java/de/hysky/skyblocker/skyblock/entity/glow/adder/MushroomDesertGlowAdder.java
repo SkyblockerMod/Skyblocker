@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.entity.glow.adder;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
@@ -27,21 +28,25 @@ public class MushroomDesertGlowAdder extends MobGlowAdder {
 
 	@Override
 	public int computeColour(Entity entity) {
+		if (!SkyblockerConfigManager.get().otherLocations.barn.enablePeltAnimalHighlighter) {
+			return NO_GLOW;
+		}
+
 		String name = MobGlow.getArmorStandName(entity);
 
 		return switch (entity) {
-			case Cow cow when isPeltMob(name, "Cow") -> getGlowColor(name);
-			case Pig pig when isPeltMob(name, "Pig") -> getGlowColor(name);
-			case Sheep sheep when isPeltMob(name, "Sheep") -> getGlowColor(name);
-			case Rabbit rabbit when isPeltMob(name, "Rabbit") -> getGlowColor(name);
-			case Chicken chicken when isPeltMob(name, "Chicken") -> getGlowColor(name);
-			case Horse horse when isPeltMob(name, "Horse") -> getGlowColor(name);
+			case Cow cow when isPeltAnimal(name, "Cow") -> getGlowColor(name);
+			case Pig pig when isPeltAnimal(name, "Pig") -> getGlowColor(name);
+			case Sheep sheep when isPeltAnimal(name, "Sheep") -> getGlowColor(name);
+			case Rabbit rabbit when isPeltAnimal(name, "Rabbit") -> getGlowColor(name);
+			case Chicken chicken when isPeltAnimal(name, "Chicken") -> getGlowColor(name);
+			case Horse horse when isPeltAnimal(name, "Horse") -> getGlowColor(name);
 			default -> NO_GLOW;
 		};
 	}
 
-	// Checks if the name follows the pelt mob naming convention
-	private static boolean isPeltMob(String name, String animal) {
+	// Checks if the name follows the pelt animal naming convention
+	private static boolean isPeltAnimal(String name, String animal) {
 		return name.contains("Trackable " + animal)
 				|| name.contains("Untrackable " + animal)
 				|| name.contains("Undetected " + animal)
