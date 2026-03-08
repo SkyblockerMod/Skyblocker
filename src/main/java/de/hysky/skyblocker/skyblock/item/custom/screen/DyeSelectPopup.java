@@ -15,6 +15,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ScrollableLayout;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -76,7 +77,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 						name, hex, (button) -> this.selectStaticDye(button, hex)
 				))
 		);
-		layout.addChild(new HeaderWidget(Component.empty())); // spacer
+		layout.addChild(new SpacerElement(0, 15));
 		layout.addChild(new HeaderWidget(Component.translatable("skyblocker.customization.armor.pickDye.dyes", Component.translatable("skyblocker.customization.armor.pickDye.dyes.animated"))));
 		RepoDyeColors.ANIMATED_DYES.forEach((name, colors) -> {
 			if (name.startsWith("FAIRY")) return;
