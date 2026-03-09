@@ -1681,5 +1681,6 @@
     "skyblocker.museum.resyncFailure.apiDisabled": "博物馆API未开启",
     "skyblocker.museum.resyncFailure.apiDisabled.@Tooltip": "请在Skyblock设置中开启博物馆API，然后数分钟后重新尝试！",
     "skyblocker.museum.resyncFailure.itemRepo": "物品存储库尚未加载",
-    "skyblocker.museum.resyncFailure.profile.@Tooltip": "请重新登录Skyblock并在数分钟后重新尝试！"
+    "skyblocker.museum.resyncFailure.profile.@Tooltip": "请重新登录Skyblock并在数分钟后重新尝试！",
+    "skyblocker.events.tab.currentJerryMayor": "市长%s"
 }
