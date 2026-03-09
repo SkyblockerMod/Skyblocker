@@ -6,19 +6,20 @@ import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemStack;
 
 public class FishingHelper {
 	private static final Title title = new Title("skyblocker.fishing.reelNow", ChatFormatting.GREEN);
 	protected static long startTime;
+
 	@Init
 	public static void init() {
 		UseItemCallback.EVENT.register((player, world, hand) -> {
@@ -28,27 +29,23 @@ public class FishingHelper {
 			}
 			if (stack.getItem() instanceof FishingRodItem) {
 				if (player.fishing == null) {
-					start(player);
+					start();
 				} else {
 					reset();
 				}
 			}
 			return InteractionResult.PASS;
 		});
+		ClientPlayConnectionEvents.JOIN.register((_cPL, _pS, _mc) -> reset());
 	}
 
-	public static void start(Player player) {
+	public static void start() {
 		startTime = System.currentTimeMillis();
-		@SuppressWarnings("unused")
-		float yawRad = player.getYRot() * 0.017453292F;
 	}
 
 	public static void reset() {
 		startTime = 0;
-		//once amour stand is gone reset rod real timer
 	}
-
-
 
 	// Sends a title notification if a fish is caught
 	public static void checkIfFishWasCaught(ArmorStand armorStand) {
@@ -66,6 +63,4 @@ public class FishingHelper {
 			}
 		}
 	}
-
-
 }
