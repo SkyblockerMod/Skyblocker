@@ -25,42 +25,42 @@ public class VacuumCache {
 		CACHED_VINYL.load();
 
 		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
-			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
-				if (genericContainerScreen.getTitle().getString().startsWith("Stereo Harmony")) {
-					ScreenEvents.afterTick(screen).register(screen1 -> {
-						for (Slot slot : genericContainerScreen.getMenu().slots) {
-							ItemStack stack = slot.getItem();
-
-							if (!stack.isEmpty() && ItemUtils.getLoreLineIf(stack, line -> line.equals("Click to stop playing!")) != null) {
-								setVinyl(stack.getSkyblockId());
-
-								return;
-							}
-						}
-
-						setVinyl("");
-					});
-				}
+			if (!Utils.isOnSkyblock() || !(screen instanceof ContainerScreen containerScreen)) {
+				return;
 			}
+
+			if (!containerScreen.getTitle().getString().equals("Stereo Harmony")) {
+				return;
+			}
+
+			ScreenEvents.remove(screen).register(_screen -> VacuumCache.update(containerScreen));
 		});
+	}
+
+	private static void update(ContainerScreen containerScreen) {
+		for (Slot slot : containerScreen.getMenu().slots) {
+			ItemStack stack = slot.getItem();
+
+			if (!stack.isEmpty() && ItemUtils.getLoreLineIf(stack, line -> line.equals("Click to stop playing!")) != null) {
+				setVinyl(stack.getSkyblockId());
+
+				return;
+			}
+		}
+
+		setVinyl("");
 	}
 
 	private static void setVinyl(String skyblockId) {
 		if (Utils.getProfileId().isEmpty()) return;
 
 		if (skyblockId.isEmpty()) {
-			if (!getVinyl().isEmpty()) {
-				CACHED_VINYL.remove();
-				CACHED_VINYL.save();
-			}
+			CACHED_VINYL.remove();
 		} else {
-			String current = getVinyl();
-
-			if (!current.equals(skyblockId)) {
-				CACHED_VINYL.put(skyblockId);
-				CACHED_VINYL.save();
-			}
+			CACHED_VINYL.put(skyblockId);
 		}
+
+		CACHED_VINYL.save();
 	}
 
 	public static String getVinyl() {
