@@ -10,19 +10,16 @@ import io.github.moulberry.repo.data.NEUItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ScrollableLayout;
 import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.layouts.LayoutSettings;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.layouts.SpacerElement;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
@@ -36,8 +33,6 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 	private ScrollableLayout scrollableLayout;
 	private StringWidget titleWidget;
 	private Button closeButton;
-
-	private int listWidth;
 
 	private final BiConsumer<Button, Integer> updateStatic;
 	private final AnimatedDyeConsumer updateAnimated;
@@ -61,7 +56,6 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		scrollableLayout.setMaxHeight(Math.min(300, (int) (height * 0.68)));
 		scrollableLayout.arrangeElements();
 		scrollableLayout.setPosition((width - scrollableLayout.getWidth()) / 2, (height - scrollableLayout.getHeight()) / 2);
-		listWidth = scrollableLayout.getWidth();
 
 		closeButton.setPosition((width - closeButton.getWidth()) / 2, scrollableLayout.getY() + scrollableLayout.getHeight() + 20);
 		titleWidget.setPosition((width - titleWidget.getWidth()) / 2, scrollableLayout.getY() - 30);
@@ -70,15 +64,17 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 	@Override
 	protected void init() {
 		LinearLayout layout = LinearLayout.vertical();
+		layout.defaultCellSetting().alignHorizontallyCenter();
 
-		layout.addChild(new HeaderWidget(Component.translatable("skyblocker.customization.armor.pickDye.dyes", Component.translatable("skyblocker.customization.armor.pickDye.dyes.static"))));
+		LayoutSettings headerLayout = layout.defaultCellSetting().copy().paddingBottom(6);
+		layout.addChild(new StringWidget(Component.translatable("skyblocker.customization.armor.pickDye.dyes", Component.translatable("skyblocker.customization.armor.pickDye.dyes.static")), font), headerLayout);
 		RepoDyeColors.STATIC_DYES.forEach((name, hex) ->
 				layout.addChild(new StaticDyeButton(
 						name, hex, (button) -> this.selectStaticDye(button, hex)
 				))
 		);
-		layout.addChild(new SpacerElement(0, 15));
-		layout.addChild(new HeaderWidget(Component.translatable("skyblocker.customization.armor.pickDye.dyes", Component.translatable("skyblocker.customization.armor.pickDye.dyes.animated"))));
+		layout.addChild(SpacerElement.height(15));
+		layout.addChild(new StringWidget(Component.translatable("skyblocker.customization.armor.pickDye.dyes", Component.translatable("skyblocker.customization.armor.pickDye.dyes.animated")), font), headerLayout);
 		RepoDyeColors.ANIMATED_DYES.forEach((name, colors) -> {
 			if (name.startsWith("FAIRY")) return;
 			layout.addChild(new AnimatedDyeColor(
@@ -209,31 +205,6 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 			}
 			super.renderName(guiGraphics, delta);
 		}
-	}
-
-	private class HeaderWidget extends AbstractWidget {
-		private static final int BACKGROUND_TEXTURE_OFFSET = 23;
-		final Component message;
-
-		protected HeaderWidget(Component component) {
-			super(0, 0, 0, 15, component);
-			this.message = component;
-			this.width = font.width(message);
-		}
-
-		@Override
-		protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float deltaTicks) {
-			guiGraphics.drawString(font, message, getX() - BACKGROUND_TEXTURE_OFFSET + (listWidth - this.width + BACKGROUND_TEXTURE_OFFSET) / 2,
-					getY(), CommonColors.WHITE);
-		}
-
-		@Override
-		public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
-			return false;
-		}
-
-		@Override
-		protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {}
 	}
 
 	public interface AnimatedDyeConsumer {
