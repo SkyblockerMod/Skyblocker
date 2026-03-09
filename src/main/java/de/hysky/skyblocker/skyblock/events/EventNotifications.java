@@ -10,12 +10,11 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
@@ -37,7 +36,7 @@ import java.util.concurrent.Executors;
 public class EventNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public static final String JACOBS = "Jacob's Farming Contest";
-	public static final IntArrayList DEFAULT_REMINDERS = new IntArrayList(IntList.of(60, 60 * 5));
+	public static final EventNotificationsConfig.EventConfig DEFAULT_REMINDERS = new EventNotificationsConfig.EventConfig();
 	public static final Map<String, ItemStack> eventIcons = Map.ofEntries(
 			Map.entry("Dark Auction", new ItemStack(Items.NETHER_BRICK)),
 			Map.entry("Bonus Fishing Festival", new ItemStack(Items.FISHING_ROD)),
@@ -110,7 +109,7 @@ public class EventNotifications {
 
 			SkyblockerConfigManager.update(config -> {
 				for (String s : events.keySet()) {
-					config.eventNotifications.eventsReminderTimes.computeIfAbsent(s, s1 -> DEFAULT_REMINDERS);
+					config.eventNotifications.events.computeIfAbsent(s, s1 -> DEFAULT_REMINDERS);
 				}
 			});
 		}).exceptionally(EventNotifications::itBorked);
@@ -137,11 +136,10 @@ public class EventNotifications {
 				if (skyblockEvent == null) continue;
 			}
 			String eventName = entry.getKey();
-			// Cannot be changed to fast util due to casting issues
-			List<Integer> reminderTimes = SkyblockerConfigManager.get().eventNotifications.eventsReminderTimes.getOrDefault(eventName, DEFAULT_REMINDERS);
-			if (reminderTimes.isEmpty()) continue;
+			EventNotificationsConfig.EventConfig config = SkyblockerConfigManager.get().eventNotifications.events.getOrDefault(eventName, DEFAULT_REMINDERS);
+			if (!config.enabled) continue;
 
-			for (int reminderTime : reminderTimes) {
+			for (int reminderTime : config.reminderTimes) {
 				if (criterionMet() && currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
 					Minecraft instance = Minecraft.getInstance();
 					if (eventName.equals(JACOBS)) {
