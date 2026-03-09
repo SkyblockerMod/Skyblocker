@@ -82,7 +82,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	private boolean refreshWhenDoneLoading = false;
 
 	// Things that should persist when you close the accessory bag
-	private static Filter filter = Filter.MISSING;
+	private static Filter filter = Filter.ALL;
 	private static int page;
 	private static boolean open;
 	private static boolean showHighestTierOnly;
@@ -105,10 +105,8 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 			if (toggled) {
 				widget.refreshData();
 			} else {
-				// Reset when you close the helper
-				filter = Filter.MISSING;
+				// Reset page when you close the helper. keep rest for UX
 				page = 0;
-				showHighestTierOnly = false;
 			}
 		});
 		Screens.getButtons(screen).add(tabButton);
@@ -217,7 +215,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	}
 
 	private void changePage(int offset) {
-		page = Math.clamp(page + offset, 0, getPageCount());
+		page = Math.clamp(page + offset, 0, getPageCount() - 1);
 		updatePageSwitcher();
 		for (int i = 0; i < BUTTON_COUNT; i++) {
 			int j = i + page * BUTTON_COUNT;
@@ -227,7 +225,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	}
 
 	private int getPageCount() {
-		return displays.size() / BUTTON_COUNT + 1;
+		return Math.max(1, Math.ceilDiv(displays.size(), BUTTON_COUNT));
 	}
 
 	private void updatePageSwitcher() {
