@@ -438,5 +438,14 @@
     "skyblocker.api.token.noProfileKeys": "Fehler beim erhalten deines Profile-Keys! Manche Funktionen der Mod könnten temporär nicht funktionieren :( (Ist dein Spiel seit mehr als 24 Stunden offen?). Starte dein Spiel neu, um diese Funktionen wieder zu reaktivieren.",
     "skyblocker.config.chat.chatRules.screen.new": "Neue Chat-Regel",
     "skyblocker.bars.config.commonPosition.RIGHT": "Rechts",
-    "skyblocker.bars.config.showMax": "Maximal anzeigen"
+    "skyblocker.bars.config.showMax": "Maximal anzeigen",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.finish": "Fertigstellen",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip": "Entferne die Nachricht aus dem Chat.",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.filter": "Filter",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.false": "Falsch",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.filter.@Tooltip": "Der String oder reguläre Ausdruck, der mit einer Chatnachricht übereinstimmen muss.",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage": "Ersetze Nachricht Mit:",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage.@Placeholder": "Für Originalnachricht leer lassen.",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.formatting": "Alle Ausgabemeldungen können mithilfe von Formatierungscodes (unter Verwendung von &) formatiert werden.",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "Verstecke Nachricht"
 }
