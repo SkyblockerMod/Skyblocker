@@ -1680,5 +1680,6 @@
     "skyblocker.museum.resyncFailure.unknownError": "未知錯誤",
     "skyblocker.museum.resyncFailure.apiDisabled.@Tooltip": "請在Skyblock設定中開啟博物館API，然後幾分鐘後重新嘗試！",
     "skyblocker.museum.resyncFailure.apiDisabled": "博物館API未開啟",
-    "skyblocker.museum.resyncFailure.itemRepo.@Tooltip": "稍後重試！"
+    "skyblocker.museum.resyncFailure.itemRepo.@Tooltip": "稍後重試！",
+    "skyblocker.events.tab.currentJerryMayor": "市長%s"
 }
