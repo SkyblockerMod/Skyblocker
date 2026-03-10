@@ -1682,5 +1682,10 @@
     "skyblocker.museum.resyncFailure.apiDisabled.@Tooltip": "请在Skyblock设置中开启博物馆API，然后数分钟后重新尝试！",
     "skyblocker.museum.resyncFailure.itemRepo": "物品存储库尚未加载",
     "skyblocker.museum.resyncFailure.profile.@Tooltip": "请重新登录Skyblock并在数分钟后重新尝试！",
-    "skyblocker.events.tab.currentJerryMayor": "市长%s"
+    "skyblocker.events.tab.currentJerryMayor": "市长%s",
+    "skyblocker.customization.armor.pickDye": "选择染料",
+    "skyblocker.customization.armor.pickDye.dyes": "-- %s染料 --",
+    "skyblocker.customization.armor.pickDye.dyes.animated": "动态",
+    "skyblocker.customization.armor.pickDye.dyes.static": "静态",
+    "skyblocker.customization.armor.pickDye.title": "选择染料"
 }
