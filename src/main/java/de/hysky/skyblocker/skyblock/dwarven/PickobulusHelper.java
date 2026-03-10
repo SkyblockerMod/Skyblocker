@@ -30,6 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+
 public class PickobulusHelper {
 	private static final Set<Block> CONVERT_INTO_BEDROCK_BLOCKS = Set.of(
 			Blocks.STONE,
@@ -190,7 +191,8 @@ public class PickobulusHelper {
 									|| blocks[i][j][k - 1].isAir() || blocks[i][j][k + 1].isAir();
 					if (!exposed) continue;
 
-					if (Utils.getArea() == Area.DwarvenMines.GLACITE_TUNNELS) handleGlaciteTunnels(pos, state, i, j, k);
+					if (Utils.getArea() == Area.DwarvenMines.GLACITE_TUNNELS
+							|| Utils.getArea() == Area.DwarvenMines.GREAT_GLACITE_LAKE) handleGlaciteTunnels(pos, state, i, j, k);
 					else if (Utils.getArea() == Area.DwarvenMines.GLACITE_MINESHAFTS) handleGlaciteMineshafts(pos, state, i, j, k);
 					else switch (Utils.getLocation()) {
 						case GOLD_MINE, DEEP_CAVERNS, DWARVEN_MINES -> handleConvertIntoBedrock(pos, state, i, j, k);
