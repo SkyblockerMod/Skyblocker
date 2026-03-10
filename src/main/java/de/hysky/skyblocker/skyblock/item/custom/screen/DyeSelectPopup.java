@@ -9,17 +9,22 @@ import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import io.github.moulberry.repo.data.NEUItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ScrollableLayout;
 import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.layouts.LayoutSettings;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
@@ -151,8 +156,9 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 	}
 
 
-	private static class StaticDyeButton extends Button.Plain {
+	private static class StaticDyeButton extends Button {
 		private static final int TEXT_OFFSET = 10;
+		private static final WidgetSprites SPRITES = new WidgetSprites(Identifier.withDefaultNamespace("widget/button"), Identifier.withDefaultNamespace("widget/button_disabled"), Identifier.withDefaultNamespace("widget/button_highlighted"));
 
 		String name;
 		final ItemStack dyeStack;
@@ -168,16 +174,18 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-			this.renderDefaultSprite(guiGraphics);
+		protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+			Minecraft client = Minecraft.getInstance();
+			guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight(), ARGB.white(this.alpha));
 			guiGraphics.renderItem(dyeStack, this.getX() + TEXT_OFFSET, this.getY() + 1);
-			renderName(guiGraphics, delta);
+			renderName(guiGraphics, client.font, delta);
 		}
 
-		protected void renderName(GuiGraphics guiGraphics, float f) {
-			guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
-					getMessage(), getX() + TEXT_MARGIN + TEXT_OFFSET + 16,
-					getRight() - TEXT_MARGIN, getY() + TEXT_MARGIN, getBottom() - TEXT_MARGIN
+		protected void renderName(GuiGraphics guiGraphics, Font font, float f) {
+			renderScrollingString(guiGraphics, font, this.getMessage(),
+					getX() + TEXT_MARGIN + TEXT_OFFSET + 16, getY() + TEXT_MARGIN,
+					getRight() - TEXT_MARGIN, getBottom() - TEXT_MARGIN,
+					CommonColors.WHITE
 			);
 		}
 	}
@@ -195,7 +203,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderName(GuiGraphics guiGraphics, float delta) {
+		protected void renderName(GuiGraphics guiGraphics, Font font, float delta) {
 			lastChange += delta;
 			if (lastChange > 2) {
 				lastChange = 0;
@@ -203,7 +211,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 				setMessage(animatedNames.get(index));
 				if (index == animatedNames.size() - 1) index = 0;
 			}
-			super.renderName(guiGraphics, delta);
+			super.renderName(guiGraphics, font, delta);
 		}
 	}
 
