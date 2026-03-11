@@ -30,7 +30,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-
 public class PickobulusHelper {
 	private static final Set<Block> CONVERT_INTO_BEDROCK_BLOCKS = Set.of(
 			Blocks.STONE,
