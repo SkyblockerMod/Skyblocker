@@ -1682,5 +1682,10 @@
     "skyblocker.museum.resyncFailure.unknownError": "Ismeretlen Hiba",
     "skyblocker.config.farming.garden.vinylHighlighter": "Stereo Harmony Lemez Jelölő",
     "skyblocker.config.farming.garden.vinylHighlighter.@Tooltip": "Jacob versenyein kívül a Stereo Harmony Pestjei kéken csillognak. Csak akkor engedélyezhető, ha a Pest Kiemelés is engedélyezve van.",
-    "skyblocker.events.tab.currentJerryMayor": "Mayor %s"
+    "skyblocker.events.tab.currentJerryMayor": "Mayor %s",
+    "skyblocker.customization.armor.pickDye": "Festék Választása",
+    "skyblocker.customization.armor.pickDye.dyes": "-- %s Festékek --",
+    "skyblocker.customization.armor.pickDye.dyes.animated": "Animált",
+    "skyblocker.customization.armor.pickDye.dyes.static": "Statikus",
+    "skyblocker.customization.armor.pickDye.title": "Válassz egy Festéket"
 }
