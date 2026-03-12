@@ -1445,7 +1445,6 @@
     "skyblocker.config.hunting.lassoHud.reel": "收",
     "skyblocker.config.hunting.lassoHud.wait": "等",
     "skyblocker.config.otherLocations.end.enderNodeWaypointType": "末地节点路径点类型",
-    "skyblocker.config.helpers.enableBuildersWandPreview": "启用Builder's Wand和Builder's Ruler预览",
     "skyblocker.powderTracker": "Powder Mining追踪器",
     "skyblocker.dungeons.croesusHelper.chestValue": "箱子价值：%s",
     "emi.category.skyblocker.skyblock_npc_shop": "NPC商店（Skyblock）",

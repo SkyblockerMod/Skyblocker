@@ -1444,7 +1444,6 @@
     "skyblocker.config.helpers.bazaar.enableOrderTracker.@Tooltip": "在物品訂單列表中追蹤你的訂單。",
     "skyblocker.config.helpers.bazaar.orderTrackerTooltip": "你在%2$s個訂單中有%1$s個",
     "skyblocker.config.otherLocations.end.enderNodeWaypointType": "終界節點路徑點類型",
-    "skyblocker.config.helpers.enableBuildersWandPreview": "啟用Builder's Wand和Builder's Ruler預覽",
     "skyblocker.config.general.backup.restore.error": "載入備份失敗",
     "skyblocker.powderTracker": "Powder Mining追蹤器",
     "skyblocker.config.hunting.lassoHud.wait": "等",

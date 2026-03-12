@@ -1479,7 +1479,6 @@
     "skyblocker.config.helpers.bazaar.enableOrderTracker.@Tooltip": "Traque vos commandes dans la liste des commandes pour un item.",
     "skyblocker.config.helpers.bazaar.orderTrackerTooltip": "Vous avez %sx parmi %s commande(s)",
     "skyblocker.config.otherLocations.end.enderNodeWaypointType": "Type de Marqueur pour les Ender Nodes",
-    "skyblocker.config.helpers.enableBuildersWandPreview": "Activer la Prévisualisation de la Builder's Wand et du Builder's Ruler",
     "skyblocker.dungeons.croesusHelper.chestValue": "Valeur du Coffre : %s",
     "emi.category.skyblocker.skyblock_npc_shop": "Boutiques PNJ (Skyblock)",
     "skyblocker.config.uiAndVisuals.trueQuiverCount": "Afficher la Quantité Réelle du Carquois",

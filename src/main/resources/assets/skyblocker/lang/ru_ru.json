@@ -1090,7 +1090,6 @@
     "skyblocker.config.helpers.bazaar.enableOrderTracker.@Tooltip": "Отслеживает ваш заказ в списке заказов на предмет.",
     "skyblocker.config.helpers.bazaar.orderTrackerTooltip": "У вас %sx в %s заказе(ах)",
     "skyblocker.config.hunting.huntingMobs.silencePhantoms": "Заглушить звуки фантомов",
-    "skyblocker.config.helpers.enableBuildersWandPreview": "Включить Builder's Wand и предпросмотр Builder's Ruler",
     "skyblocker.config.hunting.huntingMobs.highlightShellwise": "Подсвечивать Shellwise",
     "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "Подсвечивает Shellwise оранжевым цветом по умолчанию, с возможностью выбрать другой цвет.",
     "skyblocker.config.hunting.huntingMobs.highlightCoralot": "Подсвечивать Coralot",
