@@ -972,7 +972,6 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip": "Azon helyek fehérlistája, ahol a szűrő működni fog.",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.amethyst": "Ametiszt",
     "skyblocker.config.helpers.jerry.sendJerryTimerMessage": "Jerry visszatöltési ideje lejárt!",
-    "skyblocker.config.helpers.enableBuildersWandPreview": "Építő Pálcája és Vonalzója Előnézet Engedélyezése",
     "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "Frissített Tárgy Árak",
     "skyblocker.config.helpers.mythologicalRitual": "Mitológiai Rituálé Segítő",
     "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "Alapból narancssárgával emeli ki a Shellwiseokat, de lehet más színt választani.",
