@@ -48,4 +48,9 @@ public class ConfigDataFixerTest {
 	void testDataFixer6() {
 		testDataFix(6, 7);
 	}
+
+	@Test
+	void testDataFixer7() {
+		testDataFix(7, 8);
+	}
 }

@@ -1,5 +1,5 @@
 {
-	"version": 7,
+	"version": 8,
 	"general": {
 		"enableTips": true,
 		"acceptReparty": true,
@@ -660,25 +660,27 @@
 		}
 	},
 	"farming": {
-		"garden": {
-			"farmingHud": {
-				"enableHud": true,
-				"x": 180,
-				"y": 0,
-				"type": "BOTH"
-			},
-			"pestHighlighter": true,
+		"visitorHelper": {
+			"enabled": true,
+			"showInGardenOnly": true,
+			"showInStacks": false
+		},
+		"farmingHud": {
+			"enabled": true,
+			"type": "BOTH"
+		},
+		"pestHighlighter": {
+			"enabled": true,
 			"vinylHighlighter": true,
-			"lockMouseTool": true,
-			"lockMouseGroundOnly": true,
-			"gardenPlotsWidget": true,
-			"closeScreenOnPlotClick": false,
 			"enableStereoHarmonyHelperForContest": true
 		},
-		"visitorHelper": {
-			"visitorHelper": true,
-			"visitorHelperGardenOnly": true,
-			"showStacksInVisitorHelper": false
+		"mouseLock": {
+			"lockMouseTool": true,
+			"lockMouseGroundOnly": true
+		},
+		"plotsWidget": {
+			"enabled": true,
+			"closeScreenOnPlotClick": false
 		}
 	},
 	"hunting": {
