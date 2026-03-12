@@ -1352,6 +1352,13 @@
   "skyblocker.config.uiAndVisuals.swingOnAbilities": "Swing On Abilities",
   "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "Swings your hand whenever you use an item with a right-click ability.",
 
+  "skyblocker.config.uiAndVisuals.tabChat": "Tab Chat",
+  "skyblocker.config.uiAndVisuals.tabChat.@Tooltip": "Adds Guild, All, and Party chat mode buttons to the chat screen for quick switching.",
+  "skyblocker.config.uiAndVisuals.tabChat.enableTabChat": "Enable Tab Chat",
+  "skyblocker.config.uiAndVisuals.tabChat.enableTabChat.@Tooltip": "Shows chat mode buttons (Guild/All/Party) on the chat screen so you can switch chat channels without typing commands.",
+  "skyblocker.config.uiAndVisuals.tabChat.positionConfig": "Button Position",
+  "skyblocker.config.uiAndVisuals.tabChat.positionConfig.open": "Configure...",
+
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy HUD and TAB",
   "skyblocker.config.uiAndVisuals.tabHud.compactWidgets": "Compact Widgets",
   "skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip": "Display widgets in a compact form.",
@@ -1795,6 +1802,13 @@
   "skyblocker.slayer.personalBestMissing": "No personal best recorded for %s.",
   "skyblocker.slayer.previousPersonalBest": "Your previous Personal Best was %s.",
   "skyblocker.slayer.slainTime": "Slayer has been killed in %s!",
+
+  "skyblocker.tabChat.all": "All",
+  "skyblocker.tabChat.guild": "Guild",
+  "skyblocker.tabChat.openingConfig": "Opening TabChat position config...",
+  "skyblocker.tabChat.party": "Party",
+  "skyblocker.tabChat.positionScreen.hint": "Drag the buttons to reposition. Press ESC to save.",
+  "skyblocker.tabChat.positionScreen.title": "TabChat Button Position",
 
   "skyblocker.tips.accessoryHelper": "Open your accessory bag and Skyblocker will remember them. The accessory helper will tell you what accessories you have and what accessories are missing.",
   "skyblocker.tips.beta": "We often have beta versions available from GitHub Actions that contain new and experimental features.",
