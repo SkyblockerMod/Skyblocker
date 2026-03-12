@@ -38,7 +38,7 @@ public class SnapshotDebug {
 			collector.submitText(Component.nullToEmpty("Skyblocker on " + SharedConstants.getCurrentVersion().name() + "!"), new Vec3(175.5, 67.5, -7.5), false);
 			collector.submitCylinder(new BlockPos(172, 78, 44).getCenter(), 12, 12, 32, CYAN);
 			collector.submitCylinder(new BlockPos(144, 78, 44).getCenter(), 12, 12, 32, BLUE);
-			collector.submitBlockHologram(new BlockPos(183, 65, 9), Blocks.DIAMOND_BLOCK.defaultBlockState());
+			collector.submitBlockHologram(new BlockPos(183, 65, 9), Blocks.DIAMOND_BLOCK.defaultBlockState(), 0.5f);
 		} else if (isInSnapshot()) {
 			collector.submitFilledBoxWithBeaconBeam(new BlockPos(-3, 63, 5), RED, ALPHA, true);
 			collector.submitOutlinedBox(new BlockPos(-3, 63, 5), RED, 5, true); // Use waypoint default line width
