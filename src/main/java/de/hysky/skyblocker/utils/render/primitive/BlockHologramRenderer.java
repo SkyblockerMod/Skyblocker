@@ -31,7 +31,7 @@ public final class BlockHologramRenderer implements PrimitiveRenderer<BlockHolog
 		PoseStack matrices = MatrixHelper.toStack(positionMatrix);
 		BlockStateModel model = CLIENT.getBlockRenderer().getBlockModel(state.state);
 
-		MultiBufferSource consumers = SODIUM_LOADED ? CLIENT.renderBuffers().bufferSource() : _layer -> Renderer.getBuffer(RenderPipelines.TRANSLUCENT, RenderHelper.singleTexture(ChunkSectionLayer.TRANSLUCENT.textureView()), true);
+		MultiBufferSource consumers = SODIUM_LOADED ? CLIENT.renderBuffers().bufferSource() : _layer -> Renderer.getBuffer(RenderPipelines.TRANSLUCENT, RenderHelper.singleTexture(ChunkSectionLayer.TRANSLUCENT.textureView()), state.alpha);
 		CLIENT.getBlockRenderer().getModelRenderer().render(CLIENT.level, model, state.state, state.pos, matrices, RenderLayerHelper.movingDelegate(consumers), true, state.state.getSeed(state.pos), 0);
 	}
 }

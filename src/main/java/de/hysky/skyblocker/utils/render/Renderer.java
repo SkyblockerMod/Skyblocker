@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import org.joml.Matrix4fStack;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.system.MemoryUtil;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
@@ -49,50 +50,48 @@ public class Renderer {
 	private static final List<RenderPipeline> EXCLUDED_FROM_BATCHING = new ArrayList<>();
 	private static final ByteBufferBuilder GENERAL_ALLOCATOR = new ByteBufferBuilder(RenderType.SMALL_BUFFER_SIZE);
 	private static final float DEFAULT_LINE_WIDTH = 0f;
-	private static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);
-	private static final Vector4f COLOR_MODULATOR_TRANSLUCENT = new Vector4f(1f, 1f, 1f, 0.5f);
 	private static final Int2ObjectMap<ByteBufferBuilder> ALLOCATORS = new Int2ObjectArrayMap<>(5);
 	private static final Int2ObjectMap<BatchedDraw> BATCHED_DRAWS = new Int2ObjectArrayMap<>(5);
 	private static final Map<VertexFormat, MappableRingBuffer> VERTEX_BUFFERS = new Object2ObjectOpenHashMap<>();
 	private static final List<PreparedDraw> PREPARED_DRAWS = new ArrayList<>();
 	private static final List<Draw> DRAWS = new ArrayList<>();
-	private static BatchedDraw lastUnbatchedDraw = null;
+	private static @Nullable BatchedDraw lastUnbatchedDraw = null;
 
 	public static BufferBuilder getBuffer(RenderPipeline pipeline) {
 		return getBuffer(pipeline, DEFAULT_LINE_WIDTH);
 	}
 
 	public static BufferBuilder getBuffer(RenderPipeline pipeline, float lineWidth) {
-		return getBuffer(pipeline, TextureSetup.noTexture(), lineWidth, false);
+		return getBuffer(pipeline, TextureSetup.noTexture(), lineWidth, 1);
 	}
 
 	public static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup) {
-		return getBuffer(pipeline, Objects.requireNonNull(textureSetup, "textureSetup must not be null"), false);
+		return getBuffer(pipeline, Objects.requireNonNull(textureSetup, "textureSetup must not be null"), 1);
 	}
 
-	public static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, boolean translucent) {
-		return getBuffer(pipeline, Objects.requireNonNull(textureSetup, "textureSetup must not be null"), DEFAULT_LINE_WIDTH, translucent);
+	public static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier) {
+		return getBuffer(pipeline, Objects.requireNonNull(textureSetup, "textureSetup must not be null"), DEFAULT_LINE_WIDTH, alphaMultiplier);
 	}
 
 	/**
 	 * Returns the appropriate {@code BufferBuilder} that should be used with the given pipeline, texture view, and line width.
 	 */
-	private static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {
+	private static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, float alphaMultiplier) {
 		if (!EXCLUDED_FROM_BATCHING.contains(pipeline)) {
-			return setupBatched(pipeline, textureSetup, lineWidth, translucent);
+			return setupBatched(pipeline, textureSetup, lineWidth, alphaMultiplier);
 		} else {
-			return setupUnbatched(pipeline, textureSetup, lineWidth, translucent);
+			return setupUnbatched(pipeline, textureSetup, lineWidth, alphaMultiplier);
 		}
 	}
 
-	private static BufferBuilder setupBatched(RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {
-		int hash = hash(pipeline, textureSetup, lineWidth, translucent);
+	private static BufferBuilder setupBatched(RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, float alphaMultiplier) {
+		int hash = hash(pipeline, textureSetup, lineWidth, alphaMultiplier);
 		BatchedDraw draw = BATCHED_DRAWS.get(hash);
 
 		if (draw == null) {
 			ByteBufferBuilder allocator = ALLOCATORS.computeIfAbsent(hash, _hash -> new ByteBufferBuilder(RenderType.SMALL_BUFFER_SIZE));
 			BufferBuilder bufferBuilder = new BufferBuilder(allocator, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
-			BATCHED_DRAWS.put(hash, new BatchedDraw(bufferBuilder, pipeline, textureSetup, lineWidth, translucent));
+			BATCHED_DRAWS.put(hash, new BatchedDraw(bufferBuilder, pipeline, textureSetup, lineWidth, alphaMultiplier));
 
 			return bufferBuilder;
 		} else {
@@ -100,13 +99,13 @@ public class Renderer {
 		}
 	}
 
-	private static BufferBuilder setupUnbatched(RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {
+	private static BufferBuilder setupUnbatched(RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, float alphaMultiplier) {
 		if (lastUnbatchedDraw != null) {
 			prepareBatchedDraw(lastUnbatchedDraw);
 		}
 
 		BufferBuilder bufferBuilder = new BufferBuilder(GENERAL_ALLOCATOR, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
-		lastUnbatchedDraw = new BatchedDraw(bufferBuilder, pipeline, textureSetup, lineWidth, translucent);
+		lastUnbatchedDraw = new BatchedDraw(bufferBuilder, pipeline, textureSetup, lineWidth, alphaMultiplier);
 
 		return bufferBuilder;
 	}
@@ -115,13 +114,13 @@ public class Renderer {
 	 * Calculates the hash of the given inputs which serves as the keys to our maps where we store stuff for the batched draws.
 	 * This is much faster than using an object-based key as we do not need to create any objects to find the instances we want.
 	 */
-	private static int hash(RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {
+	private static int hash(RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, float alphaMultiplier) {
 		//This manually calculates the hash, avoiding Objects#hash to not incur the array allocation each time
 		int hash = 1;
 		hash = 31 * hash + pipeline.hashCode();
 		hash = 31 * hash + textureSetup.hashCode();
 		hash = 31 * hash + Float.hashCode(lineWidth);
-		hash = 31 * hash + Boolean.hashCode(translucent);
+		hash = 31 * hash + Float.hashCode(alphaMultiplier);
 
 		return hash;
 	}
@@ -146,7 +145,7 @@ public class Renderer {
 	}
 
 	private static void prepareBatchedDraw(BatchedDraw draw) {
-		PREPARED_DRAWS.add(new PreparedDraw(draw.bufferBuilder().buildOrThrow(), draw.pipeline(), draw.textureSetup(), draw.lineWidth(), draw.translucent()));
+		PREPARED_DRAWS.add(new PreparedDraw(draw.bufferBuilder().buildOrThrow(), draw.pipeline(), draw.textureSetup(), draw.lineWidth(), draw.alphaMultiplier()));
 	}
 
 	protected static void executeDraws() {
@@ -199,7 +198,7 @@ public class Renderer {
 					prepared.pipeline(),
 					prepared.textureSetup(),
 					prepared.lineWidth(),
-					prepared.translucent()
+					prepared.alphaMultiplier()
 			));
 		}
 	}
@@ -281,7 +280,7 @@ public class Renderer {
 
 	private static void draw(Draw draw, GpuBuffer indices, IndexType indexType) {
 		applyViewOffsetZLayering();
-		GpuBufferSlice dynamicTransforms = setupDynamicTransforms(draw.lineWidth, draw.translucent);
+		GpuBufferSlice dynamicTransforms = setupDynamicTransforms(draw.lineWidth, draw.alphaMultiplier);
 
 		try (RenderPass renderPass = RenderSystem.getDevice()
 				.createCommandEncoder()
@@ -311,9 +310,9 @@ public class Renderer {
 		unapplyViewOffsetZLayering();
 	}
 
-	private static GpuBufferSlice setupDynamicTransforms(float lineWidth, boolean translucent) {
+	private static GpuBufferSlice setupDynamicTransforms(float lineWidth, float alphaMultiplier) {
 		return RenderSystem.getDynamicUniforms()
-				.writeTransform(RenderSystem.getModelViewMatrix(), translucent ? COLOR_MODULATOR_TRANSLUCENT : COLOR_MODULATOR, new Vector3f(), RenderSystem.getTextureMatrix(), lineWidth);
+				.writeTransform(RenderSystem.getModelViewMatrix(), new Vector4f(1, 1, 1, alphaMultiplier), new Vector3f(), RenderSystem.getTextureMatrix(), lineWidth);
 	}
 
 	private static GpuTextureView getMainColorTexture() {
@@ -346,9 +345,9 @@ public class Renderer {
 		}
 	}
 
-	private record Draw(MeshData builtBuffer, GpuBuffer vertices, int baseVertex, int indexCount, RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {}
+	private record Draw(MeshData builtBuffer, GpuBuffer vertices, int baseVertex, int indexCount, RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, float alphaMultiplier) {}
 
-	private record PreparedDraw(MeshData builtBuffer, RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {}
+	private record PreparedDraw(MeshData builtBuffer, RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, float alphaMultiplier) {}
 
-	private record BatchedDraw(BufferBuilder bufferBuilder, RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {}
+	private record BatchedDraw(BufferBuilder bufferBuilder, RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, float alphaMultiplier) {}
 }

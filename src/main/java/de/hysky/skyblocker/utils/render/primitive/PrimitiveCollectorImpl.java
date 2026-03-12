@@ -267,7 +267,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@Override
-	public void submitBlockHologram(BlockPos pos, BlockState state) {
+	public void submitBlockHologram(BlockPos pos, BlockState state, float alpha) {
 		ensureNotFrozen();
 
 		if (!FrustumUtils.isVisible(this.frustum, pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
@@ -281,6 +281,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		BlockHologramRenderState renderState = new BlockHologramRenderState();
 		renderState.pos = pos;
 		renderState.state = state;
+		renderState.alpha = alpha;
 
 		this.blockHologramStates.add(renderState);
 	}
