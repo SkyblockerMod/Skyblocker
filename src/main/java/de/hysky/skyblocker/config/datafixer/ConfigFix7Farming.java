@@ -5,8 +5,8 @@ import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
 
-public class ConfigFix6Farming extends ConfigDataFix {
-	public ConfigFix6Farming(Schema outputSchema, boolean changesType) {
+public class ConfigFix7Farming extends ConfigDataFix {
+	public ConfigFix7Farming(Schema outputSchema, boolean changesType) {
 		super(outputSchema, changesType);
 	}
 
