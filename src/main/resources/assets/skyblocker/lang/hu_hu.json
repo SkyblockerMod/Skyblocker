@@ -1686,5 +1686,8 @@
     "skyblocker.customization.armor.pickDye.dyes": "-- %s Festékek --",
     "skyblocker.customization.armor.pickDye.dyes.animated": "Animált",
     "skyblocker.customization.armor.pickDye.dyes.static": "Statikus",
-    "skyblocker.customization.armor.pickDye.title": "Válassz egy Festéket"
+    "skyblocker.customization.armor.pickDye.title": "Válassz egy Festéket",
+    "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "Builder's Wand és Builder's Ruler Előnézet Engedélyezése",
+    "skyblocker.config.helpers.buildersWand": "Builder's Wand",
+    "skyblocker.config.helpers.buildersWand.previewOpacity": "Előnézet Átlátszósága"
 }
