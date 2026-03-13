@@ -1709,5 +1709,9 @@
     "skyblocker.customization.armor.pickDye.dyes.animated": "Animé",
     "skyblocker.customization.armor.pickDye.dyes.static": "Statique",
     "skyblocker.customization.armor.pickDye": "Sélectionner un colorant",
-    "skyblocker.customization.armor.pickDye.title": "Choisir un colorant"
+    "skyblocker.customization.armor.pickDye.title": "Choisir un colorant",
+    "skyblocker.events.tab.currentJerryMayor": "Maire %s",
+    "skyblocker.config.helpers.buildersWand": "Builder's Wand",
+    "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "Activer l'aperçu de la Builder's Wand et Builder's Ruler",
+    "skyblocker.config.helpers.buildersWand.previewOpacity": "Opacité de l'aperçu"
 }
