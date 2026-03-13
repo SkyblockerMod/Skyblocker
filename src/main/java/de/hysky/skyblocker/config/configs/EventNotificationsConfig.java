@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,7 @@ public class EventNotificationsConfig {
 	public Map<String, IntArrayList> eventsReminderTimes = new HashMap<>();
 
 	public enum Criterion {
+		@EnumDisabledValue
 		NONE,
 		SKYBLOCK,
 		HYPIXEL,

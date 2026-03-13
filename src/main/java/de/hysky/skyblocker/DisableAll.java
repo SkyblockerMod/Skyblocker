@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.ConfigNullFieldsFix;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -19,6 +20,8 @@ import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Command helper for disabling every configurable feature.
@@ -61,6 +64,7 @@ public class DisableAll {
 			SkyblockerConfigManager.update(config -> {
 				try {
 					disableBooleans(config);
+					disableEnum(config);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
@@ -98,6 +102,24 @@ public class DisableAll {
 				}
 			} else if (value != null && isConfigClass(type)) {
 				disableBooleans(value);
+			}
+		}
+	}
+
+	protected static void disableEnum(Object target) throws IllegalAccessException {
+		for (Field field : target.getClass().getDeclaredFields()) {
+			if (Modifier.isStatic(field.getModifiers())) continue;
+			field.setAccessible(true);
+			Object value = field.get(target);
+			Class<?> type = field.getType();
+			if (type.isEnum()) {
+				Field[] declaredFields = type.getDeclaredFields();
+				if (declaredFields.length == 0) return;
+				Optional<Field> option = Arrays.stream(declaredFields).filter(f -> f.getAnnotation(EnumDisabledValue.class) != null).findFirst();
+				if (option.isEmpty()) continue;
+				field.set(target, option.get().get(type));
+			} else if (value != null && isConfigClass(type)) {
+				disableEnum(value);
 			}
 		}
 	}
