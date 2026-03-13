@@ -57,6 +57,8 @@ public class DungeonsConfig {
 
 	public SecretSync secretSync = new SecretSync();
 
+	public RareRoomAlert rareRoomAlert = new RareRoomAlert();
+
 	public MimicMessage mimicMessage = new MimicMessage();
 
 	public PrinceMessage princeMessage = new PrinceMessage();
@@ -248,6 +250,16 @@ public class DungeonsConfig {
 		public boolean receiveRoomSecretCount = true;
 
 		public boolean hideReceivedWaypoints = true;
+	}
+
+	public static class RareRoomAlert {
+		public boolean enabled = false;
+
+		public boolean showForTrinity = true;
+
+		public boolean showForTomioka = false;
+
+		public boolean showForDuncan = false;
 	}
 
 	public static class MimicMessage {
