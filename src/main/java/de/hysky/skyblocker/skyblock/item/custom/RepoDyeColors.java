@@ -30,21 +30,19 @@ public class RepoDyeColors {
 	}
 
 	public static void loadDyes() {
-		NEURepoManager.runAsyncAfterLoad(() -> {
-			STATIC_DYES.clear();
-			ANIMATED_DYES.clear();
+		STATIC_DYES.clear();
+		ANIMATED_DYES.clear();
 
-			NEURepoFile file = NEURepoManager.file("constants/dyes.json");
-			if (file == null) return;
-			try (InputStream stream = file.stream()) {
-				Dyes dyes = Dyes.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(new String(stream.readAllBytes()))).getOrThrow();
-				STATIC_DYES.putAll(dyes.staticDyes);
-				ANIMATED_DYES.putAll(dyes.animatedDyes);
-				LOGGER.info("[Skyblocker] Successfully loaded {} static dyes and {} animated dyes from repo.", STATIC_DYES.size(), ANIMATED_DYES.size());
-			} catch (Exception ex) {
-				LOGGER.info("[Skyblocker] Failed to load dyes from repo", ex);
-			}
-		});
+		NEURepoFile file = NEURepoManager.file("constants/dyes.json");
+		if (file == null) return;
+		try (InputStream stream = file.stream()) {
+			Dyes dyes = Dyes.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(new String(stream.readAllBytes()))).getOrThrow();
+			STATIC_DYES.putAll(dyes.staticDyes);
+			ANIMATED_DYES.putAll(dyes.animatedDyes);
+			LOGGER.info("[Skyblocker] Successfully loaded {} static dyes and {} animated dyes from repo.", STATIC_DYES.size(), ANIMATED_DYES.size());
+		} catch (Exception ex) {
+			LOGGER.info("[Skyblocker] Failed to load dyes from repo", ex);
+		}
 	}
 
 	private record Dyes(Object2ObjectMap<String, List<Integer>> animatedDyes, Map<String, Integer> staticDyes) {
