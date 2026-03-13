@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -44,12 +45,10 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 			return;
 		}
 
-		NEUItem neuItem = NEURepoManager.getItemByNeuId(stack.getNeuName());
-		if (neuItem == null) return;
+		Set<NEURecipe> neuRecipes = NEURepoManager.getRecipes().get(stack.getNeuName());
+		if (neuRecipes == null || neuRecipes.isEmpty()) return;
 
-		List<NEURecipe> neuRecipes = neuItem.getRecipes();
-		if (neuRecipes.isEmpty()) return;
-		NEURecipe recipe = neuRecipes.getFirst();
+		NEURecipe recipe = neuRecipes.stream().findFirst().get();
 
 		try {
 			double totalCraftCost = getItemCost(recipe, 0);
