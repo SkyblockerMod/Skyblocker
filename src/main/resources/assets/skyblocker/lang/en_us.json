@@ -345,6 +345,13 @@
   "skyblocker.config.dungeons.puzzle.solveWaterboard": "Solve Waterboard Puzzle",
   "skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip": "Click the indicated levers at the correct times to solve the puzzle.",
 
+  "skyblocker.config.dungeons.rareRoomAlert": "Rare Room Alert",
+  "skyblocker.config.dungeons.rareRoomAlert.enabled": "Enabled",
+  "skyblocker.config.dungeons.rareRoomAlert.enabled.@Tooltip": "Shows a title on screen and a message in chat when a rare room (below) is discovered by you or your party* in Dungeons.",
+  "skyblocker.config.dungeons.rareRoomAlert.showForDuncan": "Show for 'Duncan'",
+  "skyblocker.config.dungeons.rareRoomAlert.showForTomioka": "Show for 'Tomioka'",
+  "skyblocker.config.dungeons.rareRoomAlert.showForTrinity": "Show for 'Trinity'",
+
   "skyblocker.config.dungeons.salvageHelper": "Salvage Helper",
   "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Highlights items picked up in dungeons that can be salvaged.",
   "skyblocker.config.dungeons.salvageHelper.onlyDonated": "Salvage Helper - Only Highlight Donated Items",
@@ -1539,6 +1546,7 @@
   "skyblocker.dungeons.puzzle.boulder.noSolution": "No solution found!",
   "skyblocker.dungeons.puzzle.waterboard.invalidDoors": "Doors are in an unrecognized state. Make sure exactly three doors are closed, then reset the solver.",
   "skyblocker.dungeons.puzzle.waterboard.waterFound": "Water must be toggled off or it will interfere with the solution. Turn the water off and let it drain, then reset the solver.",
+  "skyblocker.dungeons.rareRoomAlert.foundRoom": "Found rare room %s!",
   "skyblocker.dungeons.roomPreview.failedToLoad": "Failed to load room: %s",
   "skyblocker.dungeons.roomPreview.invalidRoom": "Invalid room!",
   "skyblocker.dungeons.roomPreview.joinMessage": "You are currently viewing %s.\nYou can fly around, modify your custom secret waypoints, and more!",
