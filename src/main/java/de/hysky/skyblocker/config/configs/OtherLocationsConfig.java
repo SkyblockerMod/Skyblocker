@@ -19,6 +19,8 @@ public class OtherLocationsConfig {
 		public boolean solveTreasureHunter = true;
 
 		public boolean enableCallTrevorMessage = true;
+
+		public boolean enablePeltAnimalHighlighter = true;
 	}
 
 	public static class Rift {

@@ -56,6 +56,13 @@ public class OtherLocationsCategory {
 										newValue -> config.otherLocations.barn.enableCallTrevorMessage = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter"))
+								.binding(defaults.otherLocations.barn.enablePeltAnimalHighlighter,
+										() -> config.otherLocations.barn.enablePeltAnimalHighlighter,
+										newValue -> config.otherLocations.barn.enablePeltAnimalHighlighter = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//The Rift
