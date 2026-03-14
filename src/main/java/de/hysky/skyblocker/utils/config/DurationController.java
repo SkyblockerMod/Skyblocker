@@ -27,6 +27,7 @@ public class DurationController extends IntegerControllerImpl {
 	}
 
 	private static String toString(int duration) {
+		if (duration <= 0) return "";
 		return SkyblockTime.formatTime(duration).getString();
 	}
 
@@ -49,6 +50,9 @@ public class DurationController extends IntegerControllerImpl {
 	}
 
 	private static boolean isValid(String s) {
+		// Allow empty string to disable notifications
+		if (s.isBlank()) return true;
+
 		Matcher hoursMatcher = hoursPattern.matcher(s);
 		Matcher minutesMatcher = minutesPattern.matcher(s);
 		Matcher secondsMatcher = secondsPattern.matcher(s);
