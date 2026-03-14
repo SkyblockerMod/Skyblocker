@@ -74,6 +74,7 @@
     "accessors.FrustumInvoker",
 	"accessors.GuiGraphicsInvoker",
     "accessors.GuiInvoker",
+    "accessors.InactivityFpsLimiterAccessor",
     "accessors.InventoryScreenInvoker",
     "accessors.MapItemSavedDataAccessor",
 	"accessors.MapRendererInvoker",
