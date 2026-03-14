@@ -107,6 +107,8 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 
 	public static void clearCache() {
 		cachedCraftCosts.clear();
+		cachedCraftCosts.put(NEUIngredient.NEU_SENTINEL_COINS, 1d);
+		cachedCraftCosts.put(NEUIngredient.NEU_SENTINEL_EMPTY, 0d);
 	}
 
 	@Override
