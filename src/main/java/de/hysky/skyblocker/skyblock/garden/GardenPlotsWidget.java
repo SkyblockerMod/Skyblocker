@@ -281,7 +281,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			return;
 		}
 
-		if (SkyblockerConfigManager.get().farming.garden.closeScreenOnPlotClick && Minecraft.getInstance().screen != null)
+		if (SkyblockerConfigManager.get().farming.plotsWidget.closeScreenOnPlotClick && Minecraft.getInstance().screen != null)
 			Minecraft.getInstance().screen.onClose();
 
 		if (hoveredSlot == 12) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/plottp barn", true);
