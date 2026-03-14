@@ -1685,5 +1685,10 @@
     "skyblocker.customization.armor.pickDye.dyes": "-- %s染料 --",
     "skyblocker.customization.armor.pickDye.dyes.animated": "動態",
     "skyblocker.customization.armor.pickDye.dyes.static": "靜態",
-    "skyblocker.customization.armor.pickDye.title": "選擇染料"
+    "skyblocker.customization.armor.pickDye.title": "選擇染料",
+    "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "啟用Builder's Wand和Builder's Ruler預覽",
+    "skyblocker.config.helpers.buildersWand.previewOpacity": "預覽不透明度",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "啟用Pelt Animal突顯",
+    "skyblocker.config.farming.garden.vinylHighlighter": "Stereo Harmony Vinyl突顯",
+    "skyblocker.config.farming.garden.vinylHighlighter.@Tooltip": "在Jacob的競賽期間之外，以藍色突顯來自Stereo Harmony vinyls的害蟲。僅當害蟲突顯已啟用時生效。"
 }
