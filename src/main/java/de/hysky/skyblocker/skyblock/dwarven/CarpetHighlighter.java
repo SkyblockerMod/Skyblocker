@@ -5,6 +5,7 @@ import java.awt.Color;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Resettable;
@@ -12,7 +13,6 @@ import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -30,7 +30,7 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 	private static final Vec3 CARPET_BOUNDING_BOX = Boxes.getLengthVec(CarpetBlock.SHAPE.bounds());
 	private static final int SEARCH_RADIUS = 15;
 	private static final int TICK_INTERVAL = 15;
-	private static final ObjectAVLTreeSet<BlockPos> CARPET_LOCATIONS = new ObjectAVLTreeSet<>();
+	private static final BlockPosSet CARPET_LOCATIONS = new BlockPosSet();
 	private static float[] colorComponents;
 	private static boolean isLocationValid = false;
 
@@ -46,7 +46,7 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 	@Override
 	public void extractRendering(PrimitiveCollector collector) {
 		if (!isLocationValid || !SkyblockerConfigManager.get().mining.dwarvenMines.enableCarpetHighlighter) return;
-		for (BlockPos carpetLocation : CARPET_LOCATIONS) {
+		for (BlockPos carpetLocation : CARPET_LOCATIONS.iterateMut()) {
 			collector.submitFilledBox(Vec3.atLowerCornerOf(carpetLocation), CARPET_BOUNDING_BOX, colorComponents, colorComponents[3], false);
 		}
 	}
@@ -59,9 +59,7 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 		if (!isLocationValid || !SkyblockerConfigManager.get().mining.dwarvenMines.enableCarpetHighlighter || Minecraft.getInstance().level == null || Minecraft.getInstance().player == null) return;
 		Iterable<BlockPos> iterable = BlockPos.withinManhattan(Minecraft.getInstance().player.blockPosition(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
 		for (BlockPos blockPos : iterable) {
-			//The iterator contains a BlockPos.Mutable that it changes the position of to iterate over blocks,
-			// so it has to be converted to an immutable BlockPos or the position will change based on the player's position && the search radius
-			if (checkForCarpet(blockPos)) CARPET_LOCATIONS.add(blockPos.immutable());
+			if (checkForCarpet(blockPos)) CARPET_LOCATIONS.add(blockPos);
 		}
 	}
 

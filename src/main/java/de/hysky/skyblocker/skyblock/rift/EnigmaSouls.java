@@ -9,6 +9,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
@@ -36,9 +37,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
@@ -88,16 +87,16 @@ public class EnigmaSouls {
 	}
 
 	static void save(Minecraft client) {
-		Map<String, Set<BlockPos>> foundSouls = new HashMap<>();
+		Map<String, BlockPosSet> foundSouls = new HashMap<>();
 		for (ProfileAwareWaypoint soul : SOUL_WAYPOINTS.values()) {
 			for (String profile : soul.foundProfiles) {
-				foundSouls.computeIfAbsent(profile, profile_ -> new HashSet<>());
+				foundSouls.computeIfAbsent(profile, profile_ -> new BlockPosSet());
 				foundSouls.get(profile).add(soul.pos);
 			}
 		}
 
 		JsonObject json = new JsonObject();
-		for (Map.Entry<String, Set<BlockPos>> foundSoulsForProfile : foundSouls.entrySet()) {
+		for (Map.Entry<String, BlockPosSet> foundSoulsForProfile : foundSouls.entrySet()) {
 			JsonArray foundSoulsJson = new JsonArray();
 
 			for (BlockPos foundSoul : foundSoulsForProfile.getValue()) {
