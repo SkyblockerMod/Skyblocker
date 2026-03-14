@@ -1686,5 +1686,10 @@
     "skyblocker.customization.armor.pickDye.dyes": "-- %s染料 --",
     "skyblocker.customization.armor.pickDye.dyes.animated": "动态",
     "skyblocker.customization.armor.pickDye.dyes.static": "静态",
-    "skyblocker.customization.armor.pickDye.title": "选择染料"
+    "skyblocker.customization.armor.pickDye.title": "选择染料",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "启用Pelt Animal高亮",
+    "skyblocker.config.farming.garden.vinylHighlighter": "Stereo Harmony Vinyl高亮",
+    "skyblocker.config.farming.garden.vinylHighlighter.@Tooltip": "在Jacob的竞赛期间之外，以蓝色高亮来自Stereo Harmony vinyls的害虫。仅当害虫高亮已启用时生效。",
+    "skyblocker.config.helpers.buildersWand.previewOpacity": "预览不透明度",
+    "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "启用Builder's Wand和Builder's Ruler预览"
 }
