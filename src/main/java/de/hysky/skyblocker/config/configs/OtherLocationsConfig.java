@@ -30,6 +30,8 @@ public class OtherLocationsConfig {
 
 		public boolean highlightFoundEnigmaSouls = true;
 
+		public boolean autoDetectMcGrubber = true;
+
 		public int mcGrubberStacks = 0;
 	}
 
