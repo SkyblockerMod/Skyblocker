@@ -22,7 +22,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
@@ -378,12 +377,8 @@ public final class ItemUtils {
 		return DoubleBooleanPair.of(0, false);
 	}
 
-	public static double getCraftCost(String skyblockApiId) {
-		NEUItem neuItem = NEURepoManager.getItemByNeuId(skyblockApiId);
-		if (neuItem != null && !neuItem.getRecipes().isEmpty()) {
-			return CraftPriceTooltip.getItemCost(neuItem.getRecipes().getFirst(), 0);
-		}
-		return 0;
+	public static double getCraftCost(String neuId) {
+		return CraftPriceTooltip.getItemCost(neuId);
 	}
 
 	/**
