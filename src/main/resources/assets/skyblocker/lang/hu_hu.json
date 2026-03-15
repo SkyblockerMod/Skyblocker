@@ -1689,5 +1689,6 @@
     "skyblocker.customization.armor.pickDye.title": "Válassz egy Festéket",
     "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "Builder's Wand és Builder's Ruler Előnézet Engedélyezése",
     "skyblocker.config.helpers.buildersWand": "Builder's Wand",
-    "skyblocker.config.helpers.buildersWand.previewOpacity": "Előnézet Átlátszósága"
+    "skyblocker.config.helpers.buildersWand.previewOpacity": "Előnézet Átlátszósága",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "Pelt Állat Kiemelő Engedélyezése"
 }
