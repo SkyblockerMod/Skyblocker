@@ -1445,7 +1445,6 @@
     "skyblocker.config.hunting.lassoHud.reel": "收",
     "skyblocker.config.hunting.lassoHud.wait": "等",
     "skyblocker.config.otherLocations.end.enderNodeWaypointType": "末地节点路径点类型",
-    "skyblocker.config.helpers.enableBuildersWandPreview": "启用Builder's Wand和Builder's Ruler预览",
     "skyblocker.powderTracker": "Powder Mining追踪器",
     "skyblocker.dungeons.croesusHelper.chestValue": "箱子价值：%s",
     "emi.category.skyblocker.skyblock_npc_shop": "NPC商店（Skyblock）",
@@ -1681,5 +1680,16 @@
     "skyblocker.museum.resyncFailure.apiDisabled": "博物馆API未开启",
     "skyblocker.museum.resyncFailure.apiDisabled.@Tooltip": "请在Skyblock设置中开启博物馆API，然后数分钟后重新尝试！",
     "skyblocker.museum.resyncFailure.itemRepo": "物品存储库尚未加载",
-    "skyblocker.museum.resyncFailure.profile.@Tooltip": "请重新登录Skyblock并在数分钟后重新尝试！"
+    "skyblocker.museum.resyncFailure.profile.@Tooltip": "请重新登录Skyblock并在数分钟后重新尝试！",
+    "skyblocker.events.tab.currentJerryMayor": "市长%s",
+    "skyblocker.customization.armor.pickDye": "选择染料",
+    "skyblocker.customization.armor.pickDye.dyes": "-- %s染料 --",
+    "skyblocker.customization.armor.pickDye.dyes.animated": "动态",
+    "skyblocker.customization.armor.pickDye.dyes.static": "静态",
+    "skyblocker.customization.armor.pickDye.title": "选择染料",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "启用Pelt Animal高亮",
+    "skyblocker.config.farming.garden.vinylHighlighter": "Stereo Harmony Vinyl高亮",
+    "skyblocker.config.farming.garden.vinylHighlighter.@Tooltip": "在Jacob的竞赛期间之外，以蓝色高亮来自Stereo Harmony vinyls的害虫。仅当害虫高亮已启用时生效。",
+    "skyblocker.config.helpers.buildersWand.previewOpacity": "预览不透明度",
+    "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "启用Builder's Wand和Builder's Ruler预览"
 }

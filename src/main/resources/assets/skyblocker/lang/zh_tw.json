@@ -1444,7 +1444,6 @@
     "skyblocker.config.helpers.bazaar.enableOrderTracker.@Tooltip": "在物品訂單列表中追蹤你的訂單。",
     "skyblocker.config.helpers.bazaar.orderTrackerTooltip": "你在%2$s個訂單中有%1$s個",
     "skyblocker.config.otherLocations.end.enderNodeWaypointType": "終界節點路徑點類型",
-    "skyblocker.config.helpers.enableBuildersWandPreview": "啟用Builder's Wand和Builder's Ruler預覽",
     "skyblocker.config.general.backup.restore.error": "載入備份失敗",
     "skyblocker.powderTracker": "Powder Mining追蹤器",
     "skyblocker.config.hunting.lassoHud.wait": "等",
@@ -1680,5 +1679,16 @@
     "skyblocker.museum.resyncFailure.unknownError": "未知錯誤",
     "skyblocker.museum.resyncFailure.apiDisabled.@Tooltip": "請在Skyblock設定中開啟博物館API，然後幾分鐘後重新嘗試！",
     "skyblocker.museum.resyncFailure.apiDisabled": "博物館API未開啟",
-    "skyblocker.museum.resyncFailure.itemRepo.@Tooltip": "稍後重試！"
+    "skyblocker.museum.resyncFailure.itemRepo.@Tooltip": "稍後重試！",
+    "skyblocker.events.tab.currentJerryMayor": "市長%s",
+    "skyblocker.customization.armor.pickDye": "選擇染料",
+    "skyblocker.customization.armor.pickDye.dyes": "-- %s染料 --",
+    "skyblocker.customization.armor.pickDye.dyes.animated": "動態",
+    "skyblocker.customization.armor.pickDye.dyes.static": "靜態",
+    "skyblocker.customization.armor.pickDye.title": "選擇染料",
+    "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "啟用Builder's Wand和Builder's Ruler預覽",
+    "skyblocker.config.helpers.buildersWand.previewOpacity": "預覽不透明度",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "啟用Pelt Animal突顯",
+    "skyblocker.config.farming.garden.vinylHighlighter": "Stereo Harmony Vinyl突顯",
+    "skyblocker.config.farming.garden.vinylHighlighter.@Tooltip": "在Jacob的競賽期間之外，以藍色突顯來自Stereo Harmony vinyls的害蟲。僅當害蟲突顯已啟用時生效。"
 }

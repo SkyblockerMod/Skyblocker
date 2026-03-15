@@ -972,7 +972,6 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip": "Azon helyek fehérlistája, ahol a szűrő működni fog.",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.amethyst": "Ametiszt",
     "skyblocker.config.helpers.jerry.sendJerryTimerMessage": "Jerry visszatöltési ideje lejárt!",
-    "skyblocker.config.helpers.enableBuildersWandPreview": "Építő Pálcája és Vonalzója Előnézet Engedélyezése",
     "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "Frissített Tárgy Árak",
     "skyblocker.config.helpers.mythologicalRitual": "Mitológiai Rituálé Segítő",
     "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "Alapból narancssárgával emeli ki a Shellwiseokat, de lehet más színt választani.",
@@ -1679,5 +1678,17 @@
     "skyblocker.museum.resyncFailure.itemRepo.@Tooltip": "Próbáld újra pár perc múlva!",
     "skyblocker.museum.resyncFailure.profile": "Ismeretlen profil",
     "skyblocker.museum.resyncFailure.profile.@Tooltip": "Csatlakozz újra Skyblockra, majd pár perc múlva próbáld újra!",
-    "skyblocker.museum.resyncFailure.unknownError": "Ismeretlen Hiba"
+    "skyblocker.museum.resyncFailure.unknownError": "Ismeretlen Hiba",
+    "skyblocker.config.farming.garden.vinylHighlighter": "Stereo Harmony Lemez Jelölő",
+    "skyblocker.config.farming.garden.vinylHighlighter.@Tooltip": "Jacob versenyein kívül a Stereo Harmony Pestjei kéken csillognak. Csak akkor engedélyezhető, ha a Pest Kiemelés is engedélyezve van.",
+    "skyblocker.events.tab.currentJerryMayor": "Mayor %s",
+    "skyblocker.customization.armor.pickDye": "Festék Választása",
+    "skyblocker.customization.armor.pickDye.dyes": "-- %s Festékek --",
+    "skyblocker.customization.armor.pickDye.dyes.animated": "Animált",
+    "skyblocker.customization.armor.pickDye.dyes.static": "Statikus",
+    "skyblocker.customization.armor.pickDye.title": "Válassz egy Festéket",
+    "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "Builder's Wand és Builder's Ruler Előnézet Engedélyezése",
+    "skyblocker.config.helpers.buildersWand": "Builder's Wand",
+    "skyblocker.config.helpers.buildersWand.previewOpacity": "Előnézet Átlátszósága",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "Pelt Állat Kiemelő Engedélyezése"
 }
