@@ -653,6 +653,10 @@
   "skyblocker.config.helpers.bazaar.enableReorderHelper.@Tooltip": "Hold CTRL when cancelling an unfilled buy/sell order to copy the unfilled amount to the clipboard.",
   "skyblocker.config.helpers.bazaar.orderTrackerTooltip": "You have %sx in %s order(s)",
 
+  "skyblocker.config.helpers.buildersWand": "Builder's Wand",
+  "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "Enable Builder's Wand and Builder's Ruler Preview",
+  "skyblocker.config.helpers.buildersWand.previewOpacity": "Preview Opacity",
+
   "skyblocker.config.helpers.carnival": "Chivalrous Carnival",
   "skyblocker.config.helpers.carnival.catchAFishHelper": "Catch a Fish Helper",
   "skyblocker.config.helpers.carnival.catchAFishHelper.@Tooltip": "Makes golden fish glow.",
@@ -676,8 +680,6 @@
 
   "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
   "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip.",
-
-  "skyblocker.config.helpers.enableBuildersWandPreview": "Enable Builder's Wand and Builder's Ruler Preview",
 
   "skyblocker.config.helpers.enableCopyUnderbidPrice": "Enable Copy Underbid Price",
   "skyblocker.config.helpers.enableCopyUnderbidPrice.@Tooltip": "Copies the lowest BIN price minus one coin to your clipboard when opening the Create BIN Auction screen.",
@@ -1066,6 +1068,17 @@
 
   "skyblocker.config.slayer.minibossSpawnAlert": "MiniBoss Spawn Alert",
   "skyblocker.config.slayer.minibossSpawnAlert.@Tooltip": "Displays a warning when a slayer miniboss spawns.",
+
+  "skyblocker.config.slayer.partySlayerCounter": "Party Slayer Counter",
+  "skyblocker.config.slayer.partySlayerCounter.counterMode": "Counter Mode",
+  "skyblocker.config.slayer.partySlayerCounter.counterMode.@Tooltip": "Auto: Automatically counts kills from LOOT SHARE messages.\nManual: Only counts kills added via commands.",
+  "skyblocker.config.slayer.partySlayerCounter.enable": "Enable Party Slayer Counter",
+  "skyblocker.config.slayer.partySlayerCounter.enable.@Tooltip": "Tracks boss kills for party members during slayer carries.\nDetects kills via LOOT SHARE messages and armor stand scanning.",
+  "skyblocker.config.slayer.partySlayerCounter.mode.AUTO": "Auto",
+  "skyblocker.config.slayer.partySlayerCounter.mode.MANUAL": "Manual",
+  "skyblocker.config.slayer.partySlayerCounter.showWidget": "Show Widget",
+  "skyblocker.config.slayer.partySlayerCounter.showWidget.@Tooltip": "Displays the party slayer counter widget on the HUD.",
+  "skyblocker.config.slayer.partySlayerCounter.widgetPosition": "Widget Position",
 
   "skyblocker.config.slayer.showMiniBossNameInAlert": "Show MiniBoss Name in Spawn Alert",
   "skyblocker.config.slayer.showMiniBossNameInAlert.@Tooltip": "Requires 'MiniBoss Spawn Alert' and 'Alerts other players minibosses' options to be enabled.",
@@ -1725,6 +1738,16 @@
   "skyblocker.partyFinder.tabs.searchSettings": "Search Filters",
   "skyblocker.partyFinder.yourParty": "Your party",
 
+  "skyblocker.partySlayerCounter.added": "Added %d kill(s) for %s (total: %d)",
+  "skyblocker.partySlayerCounter.cleared": "All kill counts cleared.",
+  "skyblocker.partySlayerCounter.header": "Party Slayer Counter:",
+  "skyblocker.partySlayerCounter.modeSet": "Counter mode set to: %s",
+  "skyblocker.partySlayerCounter.noCounts": "No kills tracked yet.",
+  "skyblocker.partySlayerCounter.removed": "Removed %d kill(s) for %s (total: %d)",
+  "skyblocker.partySlayerCounter.widgetScreen.cancel": "Cancel",
+  "skyblocker.partySlayerCounter.widgetScreen.reset": "Reset Position",
+  "skyblocker.partySlayerCounter.widgetScreen.save": "Save & Close",
+
   "skyblocker.powderTracker": "Powder Mining Tracker",
   "skyblocker.powderTracker.emptyHistory": "Your powder mining rewards list is empty :(",
   "skyblocker.powderTracker.historyReset": "Powder mining tracker has been reset for the current profile.",
@@ -1795,6 +1818,24 @@
   "skyblocker.slayer.personalBestMissing": "No personal best recorded for %s.",
   "skyblocker.slayer.previousPersonalBest": "Your previous Personal Best was %s.",
   "skyblocker.slayer.slainTime": "Slayer has been killed in %s!",
+
+  "skyblocker.slayerCalculator.amount": "Amount:",
+  "skyblocker.slayerCalculator.clickToShare": "[Click here to share in chat]",
+  "skyblocker.slayerCalculator.clickToShareHover": "Click to send calculation to chat",
+  "skyblocker.slayerCalculator.discount": "Discount:",
+  "skyblocker.slayerCalculator.header": "Slayer Carry Calculator",
+  "skyblocker.slayerCalculator.invalidPrice": "Invalid price. Use format like 1.3m, 500k, or 1000000.",
+  "skyblocker.slayerCalculator.invalidTier": "Invalid tier. Use t1-t5 or 1-5.",
+  "skyblocker.slayerCalculator.noDiscount": "NONE",
+  "skyblocker.slayerCalculator.priceEach": "Price Each:",
+  "skyblocker.slayerCalculator.tier": "Tier:",
+  "skyblocker.slayerCalculator.totalPrice": "Total Price:",
+  "skyblocker.slayerCalculator.type": "Type:",
+  "skyblocker.slayerCalculator.unknownType": "Unknown slayer type: %s",
+  "skyblocker.slayerCalculator.usage": "Slayer Carry Calculator - Calculate carry prices!",
+  "skyblocker.slayerCalculator.usagePrice": "Price: supports k/m/b suffixes (e.g. 1.3m, 500k)",
+  "skyblocker.slayerCalculator.usageTiers": "Tiers: t1-t5 or 1-5",
+  "skyblocker.slayerCalculator.usageTypes": "Types: voidgloom, revenant, tarantula, sven, inferno, riftstalker",
 
   "skyblocker.tips.accessoryHelper": "Open your accessory bag and Skyblocker will remember them. The accessory helper will tell you what accessories you have and what accessories are missing.",
   "skyblocker.tips.beta": "We often have beta versions available from GitHub Actions that contain new and experimental features.",
