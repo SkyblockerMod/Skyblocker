@@ -125,6 +125,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
         @Override
         public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
                 renderBar(context);
+                if (iconPosition == IconPosition.CUSTOM) renderCustomIcon(context);
                 if (enabled) renderText(context);
         }
 
@@ -140,7 +141,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 switch (iconPosition) {
                         case LEFT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX, iconY, ICON_SIZE, ICON_SIZE, transparency);
                         case RIGHT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX + renderWidth - ICON_SIZE, iconY, ICON_SIZE, ICON_SIZE, transparency);
-                        case CUSTOM -> context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX + iconCustomOffX, renderY + iconCustomOffY, ICON_SIZE, ICON_SIZE, transparency);
+                        // CUSTOM: rendered separately via renderCustomIcon() so it appears above all bars
                 }
 
                 boolean iconTakesSpace = iconPosition == IconPosition.LEFT || iconPosition == IconPosition.RIGHT;
@@ -150,6 +151,13 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 context.fill(barX, renderY, barX + barWidth, renderY + barHeight, transparency(BAR_BORDER_COLOR));
                 context.fill(barX + 1, renderY + 1, barX + barWidth - 1, renderY + barHeight - 1, transparency(BAR_BACKGROUND_COLOR));
                 drawBarFill(context, barX, barWidth);
+        }
+
+        /** Renders the icon at its custom position. Called AFTER all bars render, so it appears on top. */
+        public void renderCustomIcon(GuiGraphics context) {
+                if (renderWidth <= 0 || iconPosition != IconPosition.CUSTOM) return;
+                context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(),
+                        renderX + iconCustomOffX, renderY + iconCustomOffY, ICON_SIZE, ICON_SIZE, transparency(-1));
         }
 
         protected void drawBarFill(GuiGraphics context, int barX, int barWidth) {
@@ -346,27 +354,28 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
         }
 
         /**
-         * Returns the screen rectangle of the text for hit-testing in the config screen.
-         * Only meaningful when textPosition == CUSTOM.
+         * Returns the screen rectangle of the text for hit-testing and outline drawing in the config screen.
+         * Only meaningful when textPosition == CUSTOM. Includes generous padding for easy clicking.
          */
         public ScreenRectangle getTextHitArea(Font font) {
-                boolean iconTakesSpace = iconPosition == IconPosition.LEFT || iconPosition == IconPosition.RIGHT;
-                int barX = iconPosition == IconPosition.LEFT ? renderX + ICON_SIZE + 2 : renderX;
-                int tx = textPosition == TextPosition.CUSTOM ? renderX + textCustomOffX : barX;
-                int ty = textPosition == TextPosition.CUSTOM ? renderY + textCustomOffY : renderY + (barHeight - 9) / 2 + 1;
+                int tx = renderX + textCustomOffX;
+                int ty = renderY + textCustomOffY;
                 String sample = value.toString() + (showMax && max != null ? "/" + max : "");
-                int tw = Math.max(20, font.width(sample));
-                return new ScreenRectangle(tx, ty, tw, 9);
+                int tw = Math.max(24, font.width(sample));
+                int th = 9;
+                int pad = 8;
+                return new ScreenRectangle(tx - pad, ty - pad, tw + pad * 2, th + pad * 2);
         }
 
         /**
-         * Returns the screen rectangle of the icon for hit-testing in the config screen.
-         * Only meaningful when iconPosition == CUSTOM.
+         * Returns the screen rectangle of the icon for hit-testing and outline drawing in the config screen.
+         * Only meaningful when iconPosition == CUSTOM. Includes generous padding for easy clicking.
          */
         public ScreenRectangle getIconHitArea() {
-                int ix = iconPosition == IconPosition.CUSTOM ? renderX + iconCustomOffX : renderX;
-                int iy = iconPosition == IconPosition.CUSTOM ? renderY + iconCustomOffY : renderY + (barHeight - ICON_SIZE) / 2;
-                return new ScreenRectangle(ix, iy, ICON_SIZE, ICON_SIZE);
+                int ix = renderX + iconCustomOffX;
+                int iy = renderY + iconCustomOffY;
+                int pad = 8;
+                return new ScreenRectangle(ix - pad, iy - pad, ICON_SIZE + pad * 2, ICON_SIZE + pad * 2);
         }
 
         public enum IconPosition implements StringRepresentable {

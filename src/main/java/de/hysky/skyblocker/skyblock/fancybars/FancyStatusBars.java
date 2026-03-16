@@ -390,6 +390,13 @@ public class FancyStatusBars {
                         if (!statusBar.enabled || !statusBar.visible) continue;
                         statusBar.renderBar(context);
                 }
+                // Custom-positioned icons render AFTER all bars so they appear on top of everything
+                for (StatusBar statusBar : barCollection) {
+                        if (!statusBar.enabled || !statusBar.visible) continue;
+                        if (statusBar.getIconPosition() == StatusBar.IconPosition.CUSTOM) {
+                                statusBar.renderCustomIcon(context);
+                        }
+                }
                 for (StatusBar statusBar : barCollection) {
                         if (!statusBar.enabled || !statusBar.visible) continue;
                         statusBar.renderText(context);
