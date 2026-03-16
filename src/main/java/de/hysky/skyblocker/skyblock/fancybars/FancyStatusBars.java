@@ -209,22 +209,22 @@ public class FancyStatusBars {
                 bar.setIconPosition(StatusBar.IconPosition.LEFT);
                 switch (type) {
                         case HEALTH -> {
-                                bar.width = 0.06535948f; bar.x = 0.40882352f; bar.y = 0.90413946f;
+                                bar.width = 0.05882353f; bar.x = 0.40784314f; bar.y = 0.90413946f;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
-                                bar.textCustomOffX = 23; bar.textCustomOffY = -3;
+                                bar.textCustomOffX = 26; bar.textCustomOffY = -3;
                         }
                         case INTELLIGENCE -> {
-                                bar.width = 0.06535948f; bar.x = 0.46568626f; bar.y = 0.90413946f;
+                                bar.width = 0.05882353f; bar.x = 0.46813726f; bar.y = 0.90413946f;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
-                                bar.textCustomOffX = 25; bar.textCustomOffY = -3;
+                                bar.textCustomOffX = 26; bar.textCustomOffY = -3;
                         }
                         case DEFENSE -> {
-                                bar.width = 0.06535948f; bar.x = 0.5245098f; bar.y = 0.90413946f;
+                                bar.width = 0.05882353f; bar.x = 0.5294118f; bar.y = 0.90413946f;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
-                                bar.textCustomOffX = 22; bar.textCustomOffY = -3;
+                                bar.textCustomOffX = 26; bar.textCustomOffY = -3;
                         }
                         case EXPERIENCE -> {
                                 bar.width = 0.1882353f; bar.x = 0.40098038f; bar.y = 0.93028325f;
@@ -233,16 +233,16 @@ public class FancyStatusBars {
                                 bar.textCustomOffX = 0; bar.textCustomOffY = 0;
                         }
                         case SPEED -> {
-                                bar.width = 0.06535948f; bar.x = 0.34607843f; bar.y = 0.96949893f;
+                                bar.width = 0.05882353f; bar.x = 0.34607843f; bar.y = 0.9662309f;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
-                                bar.textCustomOffX = 28; bar.textCustomOffY = -3;
+                                bar.textCustomOffX = 26; bar.textCustomOffY = -3;
                         }
                         case AIR -> {
-                                bar.width = 0.06535948f; bar.x = 0.5921569f; bar.y = 0.96949893f;
+                                bar.width = 0.05882353f; bar.x = 0.59656864f; bar.y = 0.9651416f;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
-                                bar.textCustomOffX = 29; bar.textCustomOffY = -2;
+                                bar.textCustomOffX = 26; bar.textCustomOffY = -2;
                         }
                 }
         }

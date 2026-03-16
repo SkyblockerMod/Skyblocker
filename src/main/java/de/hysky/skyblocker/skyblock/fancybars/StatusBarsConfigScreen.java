@@ -79,6 +79,9 @@ public class StatusBarsConfigScreen extends Screen {
         private int subDragStartOffX = 0;
         private int subDragStartOffY = 0;
 
+        // ── Position overlay timer (shown after keyboard nudge) ──
+        private int nudgeOverlayTimer = 0;
+
         // ── CUSTOM sub-element resize ──
         private enum SubElementEdge { NONE, TEXT_RIGHT, ICON_RIGHT, ICON_BOTTOM }
         private SubElementEdge subElementEdgeHover = SubElementEdge.NONE;
@@ -235,6 +238,9 @@ public class StatusBarsConfigScreen extends Screen {
                         }
                 }
 
+                // Decrement nudge overlay timer each frame
+                if (nudgeOverlayTimer > 0) nudgeOverlayTimer--;
+
                 if (cursorBar != null) {
                         int bx = mouseX + cursorOffset.x();
                         int by = mouseY + cursorOffset.y();
@@ -249,6 +255,49 @@ public class StatusBarsConfigScreen extends Screen {
                         // Dark background for readability
                         context.fill(labelX - 2, labelY - 1, labelX + minecraft.font.width(posText) + 2, labelY + 10, 0xAA000000);
                         context.drawString(minecraft.font, posText, labelX, labelY, BAR_SEL_COLOR, false);
+
+                } else if (draggingSubElement && selectedBar != null) {
+                        // Position overlay while dragging a text or icon sub-element
+                        String overlayText;
+                        int centerX, aboveY;
+                        if (draggingText) {
+                                overlayText = "offX: " + selectedBar.textCustomOffX + "  offY: " + selectedBar.textCustomOffY;
+                                ScreenRectangle vis = selectedBar.getTextVisualArea(minecraft.font);
+                                centerX = vis.position().x() + vis.width() / 2;
+                                aboveY  = vis.position().y() - 14;
+                        } else {
+                                overlayText = "offX: " + selectedBar.iconCustomOffX + "  offY: " + selectedBar.iconCustomOffY;
+                                ScreenRectangle vis = selectedBar.getIconVisualArea();
+                                centerX = vis.position().x() + vis.width() / 2;
+                                aboveY  = vis.position().y() - 14;
+                        }
+                        int lx = centerX - minecraft.font.width(overlayText) / 2;
+                        context.fill(lx - 2, aboveY - 1, lx + minecraft.font.width(overlayText) + 2, aboveY + 10, 0xAA000000);
+                        context.drawString(minecraft.font, overlayText, lx, aboveY, BAR_SEL_COLOR, false);
+
+                } else if (nudgeOverlayTimer > 0 && selectedBar != null) {
+                        // Position overlay after a keyboard nudge — show for ~80 frames then fade out
+                        String overlayText;
+                        int centerX, aboveY;
+                        if (selectedSubElement == null) {
+                                // Bar position
+                                overlayText = "X: " + selectedBar.getX() + "  Y: " + (this.height - selectedBar.getY() - selectedBar.getHeight());
+                                centerX = selectedBar.getX() + selectedBar.getWidth() / 2;
+                                aboveY  = selectedBar.getY() - 14;
+                        } else if ("text".equals(selectedSubElement)) {
+                                overlayText = "offX: " + selectedBar.textCustomOffX + "  offY: " + selectedBar.textCustomOffY;
+                                ScreenRectangle vis = selectedBar.getTextVisualArea(minecraft.font);
+                                centerX = vis.position().x() + vis.width() / 2;
+                                aboveY  = vis.position().y() - 14;
+                        } else {
+                                overlayText = "offX: " + selectedBar.iconCustomOffX + "  offY: " + selectedBar.iconCustomOffY;
+                                ScreenRectangle vis = selectedBar.getIconVisualArea();
+                                centerX = vis.position().x() + vis.width() / 2;
+                                aboveY  = vis.position().y() - 14;
+                        }
+                        int lx = centerX - minecraft.font.width(overlayText) / 2;
+                        context.fill(lx - 2, aboveY - 1, lx + minecraft.font.width(overlayText) + 2, aboveY + 10, 0xAA000000);
+                        context.drawString(minecraft.font, overlayText, lx, aboveY, BAR_SEL_COLOR, false);
 
                 } else {
                         if (resizing) {
@@ -678,6 +727,7 @@ public class StatusBarsConfigScreen extends Screen {
 
                         FancyStatusBars.updatePositions(true);
                         updateScreenRects();
+                        nudgeOverlayTimer = 80;
                         return true;
                 }
 
