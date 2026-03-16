@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.utils;
 
+import java.util.Arrays;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
@@ -21,7 +23,8 @@ public class LevelCalculator {
 			19000000, 24000000, 30000000, 38000000, 48000000, 60000000, 75000000, 93000000, 116250000 };
 	private static final int DUNGEONS_OVERFLOW_THRESHOLD = 200_000_000;
 
-	public static LevelInfo getSkillLevel(long xp, Skill skill) {
+	// TODO make member parameter nullable?
+	public static LevelInfo getSkillLevel(long xp, Skill skill, ProfileMember member) {
 		int[] xpChart = switch (skill) {
 			case Skill.CATACOMBS -> DUNGEONS_XP_CHART;
 			case Skill.RUNECRAFTING -> RUNECRAFTING_XP_CHART;
@@ -29,7 +32,8 @@ public class LevelCalculator {
 
 			default -> REGULAR_XP_CHART;
 		};
-		int levelCap = skill.baseCap() + getSkillCapIncrease(skill, null);
+		int levelCapIncrease = getSkillCapIncrease(skill, member);
+		int levelCap = skill.getBaseCap() + levelCapIncrease;
 
 		long xpTotal = 0;
 		int level = 1;
@@ -45,7 +49,7 @@ public class LevelCalculator {
 		}
 
 		// For Catacombs we want to apply the overflow levels and return the level without it being capped to 50
-		if (skill == Skill.CATACOMBS) {
+		if (skill == Skill.CATACOMBS && level == levelCap) {
 			long xpLeft = xp - xpTotal;
 
 			while (xpLeft >= DUNGEONS_OVERFLOW_THRESHOLD) {
@@ -53,9 +57,16 @@ public class LevelCalculator {
 				xpLeft -= DUNGEONS_OVERFLOW_THRESHOLD;
 			}
 
-			return new LevelInfo(xp, level);
+			return new LevelInfo(xp, level, DUNGEONS_OVERFLOW_THRESHOLD, DUNGEONS_OVERFLOW_THRESHOLD - xpLeft);
 		} else {
-			return new LevelInfo(xp, Math.min(level, levelCap));
+			int cappedLevel = Math.min(levelCap, level);
+			long xpForNextLevel = xpChart.length > level ? xpChart[level] : 0;
+			long xpTowardsNextLevel = (cappedLevel == skill.getAbsoluteCap()) ? 0 : xp - Arrays.stream(xpChart)
+					.limit(cappedLevel)
+					.sum();
+
+			// Use cumulative xp in subtraction
+			return new LevelInfo(xp, cappedLevel, xpForNextLevel, cappedLevel == levelCap ? 0 : xpTowardsNextLevel);
 		}
 	}
 
@@ -73,13 +84,14 @@ public class LevelCalculator {
 		// Reverse the array so its easier to calculate the level, the original array is cloned to avoid mutation
 		ArrayUtils.reverse(xpChart);
 
+		// NYI: The other lvl calculations
 		for (int i = 0; i < xpChart.length; i++) {
 			if (xp >= xpChart[i]) {
-				return new LevelInfo(xp, i);
+				return new LevelInfo(xp, i, 0, 0);
 			}
 		}
 
-		return new LevelInfo(xp, 0);
+		return new LevelInfo(xp, 0, 0, 0);
 	}
 
 	public static int getSkyblockLevel(int xp) {

@@ -12,6 +12,8 @@ public abstract sealed class AbstractProfileViewerScreen extends Screen permits 
 	public static final int BACKGROUND_WIDTH = 353;
 	public static final int BACKGROUND_HEIGHT = 199;
 	public static final int PADDING = 8;
+	public static final int CONTENT_WIDTH = BACKGROUND_WIDTH - PADDING * 2;
+	public static final int CONTENT_HEIGHT = BACKGROUND_HEIGHT - PADDING * 2;
 
 	protected AbstractProfileViewerScreen(Component title) {
 		super(title);
