@@ -35,16 +35,19 @@ public class EditBarWidget extends AbstractContainerWidget {
         private final ColorOption textColor;
 
         private final RunnableOption hideOption;
+        private final RunnableOption borderRadiusOption;
 
         private final StringWidget nameWidget;
 
         private final List<? extends AbstractWidget> options;
 
         private int contentsWidth = 0;
+        private final Screen parent;
 
         @SuppressWarnings("unchecked")
         public EditBarWidget(int x, int y, Screen parent) {
-                super(x, y, 100, 99, Component.literal("Edit bar"));
+                super(x, y, 100, 110, Component.literal("Edit bar"));
+                this.parent = parent;
 
                 Font textRenderer = Minecraft.getInstance().font;
 
@@ -99,7 +102,11 @@ public class EditBarWidget extends AbstractContainerWidget {
                 contentsWidth = Math.max(contentsWidth, textRenderer.width(Component.translatable("skyblocker.bars.config.show")) + 9 + 10);
                 hideOption = new RunnableOption(0, 88, getWidth(), Component.translatable("skyblocker.bars.config.hide"));
 
-                options = List.of(iconOption, textOption, showMaxOption, showOverflowOption, color1, color2, textColor, hideOption);
+                translatable = Component.translatable("skyblocker.bars.config.borderRadius");
+                contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
+                borderRadiusOption = new RunnableOption(0, 99, getWidth(), translatable);
+
+                options = List.of(iconOption, textOption, showMaxOption, showOverflowOption, color1, color2, textColor, hideOption, borderRadiusOption);
 
                 setWidth(contentsWidth);
         }
@@ -188,6 +195,14 @@ public class EditBarWidget extends AbstractContainerWidget {
                                 FancyStatusBars.updatePositions(true);
                         });
                 }
+
+                borderRadiusOption.active = true;
+                borderRadiusOption.setRunnable(() -> {
+                        Minecraft.getInstance().setScreen(
+                                new BorderRadiusDialog(parent, statusBar.borderRadius, radius -> {
+                                        statusBar.borderRadius = radius;
+                                }));
+                });
 
                 MutableComponent formatted = statusBar.getName().copy().withStyle(ChatFormatting.BOLD);
                 nameWidget.setMessage(formatted);

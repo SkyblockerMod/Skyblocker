@@ -80,6 +80,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
         public int size = 1;
         public int barHeight = BAR_HEIGHT;
+        public int borderRadius = 0;
 
         public float fill = 0;
         public float overflowFill = 0;
@@ -148,8 +149,9 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 int barWidth = iconTakesSpace ? renderWidth - ICON_SIZE - 1 : renderWidth;
                 int barX = iconPosition == IconPosition.LEFT ? renderX + ICON_SIZE + 1 : renderX;
 
-                context.fill(barX, renderY, barX + barWidth, renderY + barHeight, transparency(BAR_BORDER_COLOR));
-                context.fill(barX + 1, renderY + 1, barX + barWidth - 1, renderY + barHeight - 1, transparency(BAR_BACKGROUND_COLOR));
+                int r = Math.min(borderRadius, Math.min(barWidth, barHeight) / 2);
+                fillRounded(context, barX, renderY, barWidth, barHeight, r, transparency(BAR_BORDER_COLOR));
+                fillRounded(context, barX + 1, renderY + 1, barWidth - 2, barHeight - 2, Math.max(0, r - 1), transparency(BAR_BACKGROUND_COLOR));
                 drawBarFill(context, barX, barWidth);
         }
 
@@ -161,15 +163,68 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
         }
 
         protected void drawBarFill(GuiGraphics context, int barX, int barWidth) {
-                int fillPx = (int) ((barWidth - 2) * fill);
+                int innerW = barWidth - 2;
+                int innerH = barHeight - 2;
+                int ir = Math.max(0, Math.min(borderRadius, Math.min(barWidth, barHeight) / 2) - 1);
+                int fillPx = (int) (innerW * fill);
                 if (fillPx > 0) {
-                        context.fill(barX + 1, getY() + 1, barX + 1 + fillPx, getY() + barHeight - 1, transparency(colors[0].getRGB()));
+                        fillRoundedClipped(context, barX + 1, getY() + 1, innerW, innerH, ir, fillPx, transparency(colors[0].getRGB()));
                 }
                 if (hasOverflow() && overflowFill > 0) {
-                        int overflowPx = (int) ((barWidth - 2) * Math.min(overflowFill, 1));
+                        int overflowPx = (int) (innerW * Math.min(overflowFill, 1));
                         if (overflowPx > 0) {
-                                context.fill(barX + 1, getY() + 1, barX + 1 + overflowPx, getY() + barHeight - 1, transparency(colors[1].getRGB()));
+                                fillRoundedClipped(context, barX + 1, getY() + 1, innerW, innerH, ir, overflowPx, transparency(colors[1].getRGB()));
                         }
+                }
+        }
+
+        // ────────────── Rounded fill helpers ──────────────
+
+        /**
+         * Draws a filled rounded rectangle. When r==0 falls back to a plain fill.
+         * Each row is computed from the circle formula so corners are pixel-perfect.
+         */
+        protected static void fillRounded(GuiGraphics ctx, int x, int y, int w, int h, int r, int color) {
+                if (w <= 0 || h <= 0) return;
+                if (r <= 0) { ctx.fill(x, y, x + w, y + h, color); return; }
+                int cr = Math.min(r, Math.min(w, h) / 2);
+                for (int row = 0; row < h; row++) {
+                        double py = row + 0.5;
+                        int xOff = 0;
+                        if (py < cr) {
+                                double cy = cr - py;
+                                xOff = (int) (cr - Math.sqrt(Math.max(0.0, (double) cr * cr - cy * cy)) + 0.5);
+                        } else if (py > h - cr) {
+                                double cy = py - (h - cr);
+                                xOff = (int) (cr - Math.sqrt(Math.max(0.0, (double) cr * cr - cy * cy)) + 0.5);
+                        }
+                        int rx1 = x + xOff, rx2 = x + w - xOff;
+                        if (rx1 < rx2) ctx.fill(rx1, y + row, rx2, y + row + 1, color);
+                }
+        }
+
+        /**
+         * Draws a rounded rectangle clipped to fillW pixels wide. The right edge is
+         * a straight cut when fillW &lt; w, and rounds naturally when fillW &ge; w.
+         * Used so bar fills respect rounded corners without over-drawing.
+         */
+        protected static void fillRoundedClipped(GuiGraphics ctx, int x, int y, int w, int h, int r, int fillW, int color) {
+                if (w <= 0 || h <= 0 || fillW <= 0) return;
+                int cr = Math.min(r, Math.min(w, h) / 2);
+                for (int row = 0; row < h; row++) {
+                        double py = row + 0.5;
+                        int xOff = 0;
+                        if (py < cr) {
+                                double cy = cr - py;
+                                xOff = (int) (cr - Math.sqrt(Math.max(0.0, (double) cr * cr - cy * cy)) + 0.5);
+                        } else if (py > h - cr) {
+                                double cy = py - (h - cr);
+                                xOff = (int) (cr - Math.sqrt(Math.max(0.0, (double) cr * cr - cy * cy)) + 0.5);
+                        }
+                        int rx1 = x + xOff;
+                        // Right edge: whichever is smaller — the fill level or the rounded right boundary
+                        int rx2 = Math.min(x + fillW, x + w - xOff);
+                        if (rx1 < rx2) ctx.fill(rx1, y + row, rx2, y + row + 1, color);
                 }
         }
 
@@ -469,6 +524,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 if (object.has("show_max")) this.showMax = object.get("show_max").getAsBoolean();
                 if (object.has("show_overflow")) this.showOverflow = object.get("show_overflow").getAsBoolean();
                 if (object.has("bar_height")) this.barHeight = Math.max(MIN_BAR_HEIGHT, object.get("bar_height").getAsInt());
+                if (object.has("border_radius")) this.borderRadius = Math.max(0, object.get("border_radius").getAsInt());
                 if (object.has("text_custom_off_x")) this.textCustomOffX = object.get("text_custom_off_x").getAsInt();
                 if (object.has("text_custom_off_y")) this.textCustomOffY = object.get("text_custom_off_y").getAsInt();
                 if (object.has("icon_custom_off_x")) this.iconCustomOffX = object.get("icon_custom_off_x").getAsInt();
@@ -503,6 +559,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 object.addProperty("show_overflow", showOverflow);
                 object.addProperty("enabled", enabled);
                 object.addProperty("bar_height", barHeight);
+                object.addProperty("border_radius", borderRadius);
                 if (iconPosition == IconPosition.CUSTOM) {
                         object.addProperty("icon_custom_off_x", iconCustomOffX);
                         object.addProperty("icon_custom_off_y", iconCustomOffY);
@@ -522,24 +579,26 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
                 @Override
                 protected void drawBarFill(GuiGraphics context, int barX, int barWith) {
-                        int top = getY() + 1;
-                        int bottom = getY() + barHeight - 1;
-                        int fillInner = barWith - 2;
+                        int innerW = barWith - 2;
+                        int innerH = barHeight - 2;
+                        int ir = Math.max(0, Math.min(borderRadius, Math.min(barWith, barHeight) / 2) - 1);
+                        int bx = barX + 1;
+                        int by = getY() + 1;
                         if (hasOverflow() && overflowFill > 0) {
                                 if (overflowFill > fill && SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.IN_FRONT) {
-                                        int ovPx = (int) (fillInner * Math.min(overflowFill, 1));
-                                        if (ovPx > 0) context.fill(barX + 1, top, barX + 1 + ovPx, bottom, transparency(getColors()[1].getRGB()));
-                                        int fillPx = (int) (fillInner * fill);
-                                        if (fillPx > 0) context.fill(barX + 1, top, barX + 1 + fillPx, bottom, transparency(getColors()[0].getRGB()));
+                                        int ovPx = (int) (innerW * Math.min(overflowFill, 1));
+                                        if (ovPx > 0) fillRoundedClipped(context, bx, by, innerW, innerH, ir, ovPx, transparency(getColors()[1].getRGB()));
+                                        int fillPx = (int) (innerW * fill);
+                                        if (fillPx > 0) fillRoundedClipped(context, bx, by, innerW, innerH, ir, fillPx, transparency(getColors()[0].getRGB()));
                                 } else {
-                                        int fillPx = (int) (fillInner * fill);
-                                        if (fillPx > 0) context.fill(barX + 1, top, barX + 1 + fillPx, bottom, transparency(getColors()[0].getRGB()));
-                                        int ovPx = (int) (fillInner * Math.min(overflowFill, 1));
-                                        if (ovPx > 0) context.fill(barX + 1, top, barX + 1 + ovPx, bottom, transparency(getColors()[1].getRGB()));
+                                        int fillPx = (int) (innerW * fill);
+                                        if (fillPx > 0) fillRoundedClipped(context, bx, by, innerW, innerH, ir, fillPx, transparency(getColors()[0].getRGB()));
+                                        int ovPx = (int) (innerW * Math.min(overflowFill, 1));
+                                        if (ovPx > 0) fillRoundedClipped(context, bx, by, innerW, innerH, ir, ovPx, transparency(getColors()[1].getRGB()));
                                 }
                         } else {
-                                int fillPx = (int) (fillInner * fill);
-                                if (fillPx > 0) context.fill(barX + 1, top, barX + 1 + fillPx, bottom, transparency(getColors()[0].getRGB()));
+                                int fillPx = (int) (innerW * fill);
+                                if (fillPx > 0) fillRoundedClipped(context, bx, by, innerW, innerH, ir, fillPx, transparency(getColors()[0].getRGB()));
                         }
                 }
 
