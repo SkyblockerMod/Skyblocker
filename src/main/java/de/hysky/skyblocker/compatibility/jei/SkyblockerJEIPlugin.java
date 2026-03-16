@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.compatibility.jei;
 
-/*import java.util.List;
+import java.util.List;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -29,17 +29,17 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;*/
+import net.minecraft.world.item.ItemStack;
 
-//@JeiPlugin
-public class SkyblockerJEIPlugin /*implements IModPlugin*/ {
-	/*private SkyblockCraftingRecipeCategory skyblockCraftingRecipeCategory;
+@JeiPlugin
+public class SkyblockerJEIPlugin implements IModPlugin {
+	private SkyblockCraftingRecipeCategory skyblockCraftingRecipeCategory;
 	private SkyblockForgeRecipeCategory skyblockForgeRecipeCategory;
 	private SkyblockNpcShopRecipeCategory skyblockNpcShopRecipeCategory;
 
-	*/public static void trickJEIIntoLoadingRecipes() {
-		//JeiLifecycleEvents.AFTER_RECIPE_SYNC.invoker().run();
-	}/*
+	public static void trickJEIIntoLoadingRecipes() {
+		JeiLifecycleEvents.AFTER_RECIPE_SYNC.invoker().run();
+	}
 
 	@Override
 	public Identifier getPluginUid() {
@@ -107,5 +107,5 @@ public class SkyblockerJEIPlugin /*implements IModPlugin*/ {
 					.map(rect -> new Rect2i(rect.position().x(), rect.position().y(), rect.width(), rect.height()))
 					.toList();
 		}
-	}*/
+	}
 }

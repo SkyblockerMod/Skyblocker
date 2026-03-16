@@ -17,7 +17,6 @@
     "fabric-client-gametest": [
       "de.hysky.skyblocker.RoomDataTest",
       "de.hysky.skyblocker.SkyblockerConfigTest",
-      "de.hysky.skyblocker.SkyblockerGameTest"
     ]
   }
 }

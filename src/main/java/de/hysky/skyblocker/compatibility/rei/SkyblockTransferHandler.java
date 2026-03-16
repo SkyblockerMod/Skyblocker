@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.compatibility.rei;
 
-/*import de.hysky.skyblocker.compatibility.rei.info.SkyblockInfoCategory;
+import de.hysky.skyblocker.compatibility.rei.info.SkyblockInfoCategory;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -14,10 +14,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;*/
+import net.minecraft.world.item.ItemStack;
 
-public class SkyblockTransferHandler/* implements TransferHandler*/ {
-	/*private static final int MAX_FAIL_COUNT = 5;
+public class SkyblockTransferHandler implements TransferHandler {
+	private static final int MAX_FAIL_COUNT = 5;
 
 	private String FAILED_ITEM;
 	private int FAIL_COUNT;
@@ -77,5 +77,5 @@ public class SkyblockTransferHandler/* implements TransferHandler*/ {
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/viewrecipe " + skyblockId, false);
 		Scheduler.INSTANCE.schedule(() -> checkScreen(skyblockId), 5);
 		return Result.createSuccessful();
-	}*/
+	}
 }

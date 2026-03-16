@@ -10,6 +10,6 @@ public class SkyblockerREICommonPlugin implements REICommonPlugin {
 	public void registerItemComparators(ItemComparatorRegistry registry) {
 		if (!Utils.isOnSkyblock()) return;
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
-		//registry.registerGlobal(new SkyblockItemComparator());
+		registry.registerGlobal(new SkyblockItemComparator());
 	}
 }

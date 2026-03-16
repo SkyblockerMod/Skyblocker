@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.compatibility.emi;
 
-/*import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
@@ -12,10 +12,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.Nullable;*/
+import org.jspecify.annotations.Nullable;
 
-public class SkyblockEmiRecipe /*implements EmiRecipe*/ {
-	/*private final Component craftText;
+public class SkyblockEmiRecipe implements EmiRecipe {
+	private final Component craftText;
 	private final SkyblockRecipe recipe;
 
 	public SkyblockEmiRecipe(SkyblockRecipe recipe) {
@@ -65,5 +65,5 @@ public class SkyblockEmiRecipe /*implements EmiRecipe*/ {
 			widgets.addSlot(EmiStack.of(outputSlot.stack()), outputSlot.x(), outputSlot.y()).recipeContext(this);
 		}
 		widgets.addDrawable(0, 0, getDisplayWidth(), getDisplayHeight(), (draw, mouseX, mouseY, delta) -> recipe.render(draw, getDisplayWidth(), getDisplayHeight(), mouseX, mouseY));
-	}*/
+	}
 }

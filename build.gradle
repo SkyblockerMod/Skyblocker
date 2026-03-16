@@ -209,6 +209,16 @@ loom {
 	}
 }
 
+sourceSets {
+	main {
+		java {
+			exclude("**/compatibility/rei/**")
+			exclude("**/compatibility/jei/**")
+			exclude("**/compatibility/emi/**")
+		}
+	}
+}
+
 fabricApi {
 	configureTests {
 		createSourceSet = true
@@ -232,6 +242,7 @@ tasks.withType(ProcessResources).configureEach {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 25
+	it.options.compilerArgs << "-Xmaxerrs" << "2000"
 }
 
 java {
