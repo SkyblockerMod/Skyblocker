@@ -74,6 +74,7 @@ public final class ItemUtils {
 	public static final String UUID = "uuid";
 	public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
 	public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
+	public static final String PET_API_ID_PREFIX = "LVL_1_";
 	private static final Codec<Holder<Item>> EMPTY_ALLOWING_ITEM_CODEC = BuiltInRegistries.ITEM.holderByNameCodec();
 	public static final Codec<ItemStack> EMPTY_ALLOWING_ITEMSTACK_CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
 			EMPTY_ALLOWING_ITEM_CODEC.fieldOf("id").forGetter(ItemStack::getItemHolder),
@@ -196,7 +197,7 @@ public final class ItemUtils {
 			case "PET" -> {
 				if (customData.contains("petInfo")) {
 					PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getStringOr("petInfo", ""))).getOrThrow();
-					return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
+					return PET_API_ID_PREFIX + petInfo.tier() + "_" + petInfo.type();
 				}
 			}
 			case "POTION" -> {

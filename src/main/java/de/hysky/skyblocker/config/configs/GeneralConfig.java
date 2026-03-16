@@ -98,6 +98,8 @@ public class GeneralConfig {
 	public static class ItemTooltip {
 		public boolean enableNPCPrice = true;
 
+		public boolean enableGeorgePrice = true;
+
 		public boolean enableMotesPrice = true;
 
 		public boolean enableAvgBIN = true;
