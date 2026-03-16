@@ -30,10 +30,10 @@ import java.util.regex.Pattern;
 public class StatusBarTracker {
 	private static final Pattern STATUS_PATTERN = Pattern.compile("(?<status>.+?)(?: {2,}|$)");
 	private static final Pattern RIFT_TIME_STATUS = Pattern.compile("(?:[\\d,]+m)?[\\d,]+sф Left");
-	private static final Pattern HEALTH_STATUS = Pattern.compile("(?<health>[\\d,]+)/(?<max>[\\d,]+)❤(?<healing> \\+([\\d,]+)[▁-▆])?");
-	private static final Pattern HEALING = Pattern.compile("(?:§[\\da-f])+❤");
+	private static final Pattern HEALTH_STATUS = Pattern.compile("(?<health>[\\d,]+)/(?<max>[\\d,]+)❤(?<healing>\\+([\\d,]+)[▁-▆])?");
+	private static final Pattern HEALING = Pattern.compile("(?:§[\\da-z])*❤");
 	private static final Pattern DEFENSE_STATUS = Pattern.compile("(?<defense>[\\d,]+)❈ Defense");
-	private static final Pattern MANA_USE = Pattern.compile("-(?<use>[\\d,]+) Mana \\(.*?\\)");
+	private static final Pattern MANA_USE = Pattern.compile("-(?:[\\d,]+) Mana \\(.*?\\)");
 	private static final Pattern MANA_STATUS = Pattern.compile("(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|(?<overflow>[\\d,]+)ʬ)");
 
 	private static final Minecraft client = Minecraft.getInstance();
@@ -149,11 +149,15 @@ public class StatusBarTracker {
 					if (FancyStatusBars.isHealthFancyBarEnabled()) {
 						if (status.group("healing") == null) {
 							statuses.appendReplacement(output, "");
-						// Healing needs to be re-parsed w/ formatting
+						// Parse healing again to add back formatting
 						} else {
-							String text = statuses.group();
+							status = HEALING.matcher(statuses.group());
+							status.find();
 
-							statuses.appendReplacement(output, text.substring(HEALING.matcher(text).start()));
+							if (!status.group().startsWith("§"))
+								output.append("§c");
+
+							statuses.appendReplacement(output, statuses.group().substring(status.start()));
 						}
 					} else {
 						statuses.appendReplacement(output, "$0");
