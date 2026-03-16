@@ -36,7 +36,7 @@ public class TargetPractice {
 	public static void init() {
 		WorldEvents.BLOCK_STATE_UPDATE.register(TargetPractice::onBlockStateUpdate);
 		WorldRenderExtractionCallback.EVENT.register(TargetPractice::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	private static void onBlockStateUpdate(BlockPos pos, BlockState oldState, BlockState newState) {

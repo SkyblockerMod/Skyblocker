@@ -7,7 +7,7 @@ import net.minecraft.resources.Identifier;
 
 public enum FilterOption implements Supplier<Identifier>, Predicate<String> {
 
-	ALL(query -> true, SkyblockerMod.id("textures/gui/filter/all.png")),
+	ALL(_ -> true, SkyblockerMod.id("textures/gui/filter/all.png")),
 	ENTITIES(query -> query.endsWith("(monster)") || query.endsWith("(miniboss)") || query.endsWith("(boss)")
 			|| query.endsWith("(animal)") || query.endsWith("(pest)") || query.endsWith("(sea creature)"),
 			SkyblockerMod.id("textures/gui/filter/entities.png")),

@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -108,10 +108,10 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int width, int height, double mouseX, double mouseY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int width, int height, double mouseX, double mouseY) {
 		// Render the duration of the recipe in hours by dividing by 3600
 		ScreenPosition arrowLocation = getArrowLocation(width, height);
 		if (arrowLocation != null)
-			context.drawCenteredString(Minecraft.getInstance().font, durationString, arrowLocation.x() + 12, arrowLocation.y() - 10, CommonColors.WHITE);
+			graphics.centeredText(Minecraft.getInstance().font, durationString, arrowLocation.x() + 12, arrowLocation.y() - 10, CommonColors.WHITE);
 	}
 }

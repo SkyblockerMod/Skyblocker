@@ -44,7 +44,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class Relics {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Relics.class);
@@ -100,7 +100,7 @@ public class Relics {
 		Map<String, Set<BlockPos>> foundRelics = new HashMap<>();
 		for (ProfileAwareWaypoint relic : relics.values()) {
 			for (String profile : relic.foundProfiles) {
-				foundRelics.computeIfAbsent(profile, profile_ -> new HashSet<>());
+				foundRelics.computeIfAbsent(profile, _ -> new HashSet<>());
 				foundRelics.get(profile).add(relic.pos);
 			}
 		}

@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.EditBox;
@@ -81,12 +81,12 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 		protected void updatePosition() {}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			this.children().forEach(child -> {
 				if (child instanceof LayoutElement widget)
 					widget.setY(this.getY());
 				if (child instanceof Renderable drawable)
-					drawable.render(context, mouseX, mouseY, deltaTicks);
+					drawable.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			});
 		}
 	}
@@ -94,11 +94,11 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 	public class TitleEntry extends AbstractEntry {
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// The line height is 25, the height of a single character is always 9.
 			// 25 - 9 = 16, 16 / 2 = 8, therefore the Y-offset should be 8.
-			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.config.general.speedPresets.config.title"), width / 2 - 50, this.getY() + 8, CommonColors.WHITE);
-			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.config.general.speedPresets.config.speed"), width / 2 + 50, this.getY() + 8, CommonColors.WHITE);
+			graphics.centeredText(minecraft.font, Component.translatable("skyblocker.config.general.speedPresets.config.title"), width / 2 - 50, this.getY() + 8, CommonColors.WHITE);
+			graphics.centeredText(minecraft.font, Component.translatable("skyblocker.config.general.speedPresets.config.speed"), width / 2 + 50, this.getY() + 8, CommonColors.WHITE);
 		}
 
 		@Override

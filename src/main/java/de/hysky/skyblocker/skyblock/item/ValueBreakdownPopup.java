@@ -15,14 +15,14 @@ import io.github.moulberry.repo.data.NEUItem;
 import net.azureaaron.networth.Calculation;
 import net.azureaaron.networth.NetworthResult;
 import net.azureaaron.networth.utils.ItemConstants;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.ScrollableLayout;
 import net.minecraft.client.gui.layouts.LayoutSettings;
@@ -34,6 +34,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.Slot;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ import java.util.function.Function;
 
 public class ValueBreakdownPopup extends AbstractPopupScreen {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final KeyMapping KEY_BINDING = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+	private static final KeyMapping KEY_BINDING = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.skyblocker.valueBreadownPopup",
 			GLFW.GLFW_KEY_I,
 			SkyblockerMod.KEYBINDING_CATEGORY
@@ -278,15 +279,15 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-		super.render(context, mouseX, mouseY, deltaTicks);
-		context.drawCenteredString(font, title, width / 2, 15, -1);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
+		graphics.centeredText(font, title, width / 2, 15, CommonColors.WHITE);
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, scrollable.getX(), scrollable.getY(), scrollable.getWidth(), scrollable.getHeight());
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractBackground(graphics, mouseX, mouseY, a);
+		extractPopupBackground(graphics, scrollable.getX(), scrollable.getY(), scrollable.getWidth(), scrollable.getHeight());
 	}
 
 	private static Component getCoinsText(double price) {

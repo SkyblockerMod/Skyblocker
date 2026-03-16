@@ -22,10 +22,10 @@ import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.LoadingDotsText;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -91,7 +91,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		if (!SkyblockerConfigManager.get().general.itemTooltip.enableAccessoriesHelper || !SkyblockerConfigManager.get().helpers.enableAccessoriesHelperWidget) return;
 		final AccessoriesHelperWidget widget = new AccessoriesHelperWidget();
 		widget.setY((screen.height - widget.getHeight()) / 2);
-		Screens.getButtons(screen).add(widget);
+		Screens.getWidgets(screen).add(widget);
 		final int previousX = ((AbstractContainerScreenAccessor) screen).getX();
 		final int offset = Math.max(180 - previousX, 0);
 		TabButton tabButton = new TabButton(button -> {
@@ -109,7 +109,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 				page = 0;
 			}
 		});
-		Screens.getButtons(screen).add(tabButton);
+		Screens.getWidgets(screen).add(tabButton);
 		tabButton.setToggled(open);
 	}
 
@@ -251,19 +251,19 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight());
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight());
 		String prevHighlighted = AccessoriesContainerSolver.INSTANCE.highlightedAccessory;
 		AccessoriesContainerSolver.INSTANCE.highlightedAccessory = null;
 		for (AbstractWidget widget : widgets) {
-			widget.render(context, mouseX, mouseY, deltaTicks);
+			widget.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 		if (!ItemRepository.filesImported() || TooltipInfoType.ACCESSORIES.getData() == null) {
 			refreshWhenDoneLoading = true;
 			int x = getX() + getWidth() / 2;
 			int y = getY() + getHeight() / 4;
-			context.drawCenteredString(Minecraft.getInstance().font, "Loading...", x, y, -1);
-			context.drawCenteredString(Minecraft.getInstance().font, LoadingDotsText.get(Util.getMillis()), x, y + 10, -1);
+			graphics.centeredText(Minecraft.getInstance().font, "Loading...", x, y, -1);
+			graphics.centeredText(Minecraft.getInstance().font, LoadingDotsText.get(Util.getMillis()), x, y + 10, -1);
 		} else if (refreshWhenDoneLoading) {
 			refreshWhenDoneLoading = false;
 			refreshData();
@@ -305,9 +305,9 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, textures.get(true, isHovered()), getX(), getY(), getWidth(), getHeight());
-			if (isHovered()) context.requestCursor(CursorTypes.POINTING_HAND);
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, textures.get(true, isHovered()), getX(), getY(), getWidth(), getHeight());
+			if (isHovered()) graphics.requestCursor(CursorTypes.POINTING_HAND);
 		}
 
 		@Override
@@ -325,15 +325,15 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		}
 
 		@Override
-		public void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			int x = this.getX();
 			if (this.toggled) x -= 2;
 
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(true, this.toggled), x, this.getY(), this.width, this.height);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(true, this.toggled), x, this.getY(), this.width, this.height);
 
 			int offset = this.toggled ? -2 : 0;
 			WidgetSprites buttonTextures = this.toggled ? RecipeBookPage.PAGE_FORWARD_SPRITES : RecipeBookPage.PAGE_BACKWARD_SPRITES;
-			context.blitSprite(RenderPipelines.GUI_TEXTURED,
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED,
 					buttonTextures.get(false, isHovered()),
 					getX() + offset + 9,
 					getY() + (getHeight() - 17) / 2,
@@ -342,7 +342,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 
 
 			if (this.isHovered()) {
-				context.requestCursor(CursorTypes.POINTING_HAND);
+				graphics.requestCursor(CursorTypes.POINTING_HAND);
 			}
 		}
 
@@ -367,12 +367,12 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-			super.renderWidget(context, mouseX, mouseY, delta);
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
 			ItemStack stack = getDisplayStack();
 			if (isHovered() && stack != null && source != null) {
-				source.drawTooltip(context, mouseX, mouseY);
-				context.requestCursor(CursorTypes.POINTING_HAND);
+				source.extractTooltip(graphics, mouseX, mouseY);
+				graphics.requestCursor(CursorTypes.POINTING_HAND);
 			}
 		}
 
@@ -428,7 +428,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 			}
 
 			@Override
-			public void drawTooltip(GuiGraphics context, int mouseX, int mouseY) {
+			public void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
 				if (icon == null) {
 					return;
 				}
@@ -442,7 +442,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 				}
 				tooltip.add(wikiLine.getVisualOrderText());
 				tooltip.add(fandomLine.getVisualOrderText());
-				context.setTooltipForNextFrame(client.font, tooltip, mouseX, mouseY, icon.get(DataComponents.TOOLTIP_STYLE));
+				graphics.setTooltipForNextFrame(client.font, tooltip, mouseX, mouseY, icon.get(DataComponents.TOOLTIP_STYLE));
 			}
 
 			@Override
@@ -498,9 +498,9 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		}
 
 		@Override
-		public void drawTooltip(GuiGraphics context, int mouseX, int mouseY) {
+		public void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
 			Font textRenderer = Minecraft.getInstance().font;
-			context.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
+			graphics.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
 		}
 
 		@Override
@@ -519,7 +519,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	private interface MagicPowerSource {
 		ItemStack icon();
 
-		void drawTooltip(GuiGraphics context, int mouseX, int mouseY);
+		void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY);
 
 		double pricePerMp();
 

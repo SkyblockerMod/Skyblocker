@@ -14,7 +14,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 import java.util.Set;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public abstract class DungeonPuzzle implements Tickable, Renderable, Resettable {
 	protected final String puzzleName;

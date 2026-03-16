@@ -8,8 +8,8 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Dynamic;
 
 import de.hysky.skyblocker.utils.Utils;
+import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.commands.arguments.item.ItemParser;
-import net.minecraft.commands.arguments.item.ItemParser.ItemResult;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -64,7 +64,7 @@ public class ItemStackComponentizationFixer {
 		ItemParser reader = new ItemParser(Utils.getRegistryWrapperLookup());
 
 		try {
-			ItemResult result = reader.parse(new StringReader(itemString));
+			ItemInput result = reader.parse(new StringReader(itemString));
 			ItemStack stack = new ItemStack(result.item(), count);
 
 			//Vanilla skips validation with /give so we will too

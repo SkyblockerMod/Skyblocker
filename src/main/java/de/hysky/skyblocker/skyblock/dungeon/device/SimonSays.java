@@ -46,7 +46,7 @@ public class SimonSays {
 	@Init
 	public static void init() {
 		UseBlockCallback.EVENT.register(SimonSays::onBlockInteract);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		WorldRenderExtractionCallback.EVENT.register(SimonSays::extractRendering);
 		WorldEvents.BLOCK_STATE_UPDATE.register(SimonSays::onBlockUpdate);
 	}

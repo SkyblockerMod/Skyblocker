@@ -29,7 +29,7 @@ import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
@@ -74,28 +74,28 @@ public class WidgetsListTab implements Tab {
 		widgetsElementList = new WidgetsElementList(this, client, 0, 0, 0);
 		this.client = client;
 		this.handler = handler;
-		back = Button.builder(Component.translatable("gui.back"), button -> {
+		back = Button.builder(Component.translatable("gui.back"), _ -> {
 			clickAndWaitForServer(48, 0);
 			this.resetScrollOnLoad();
 		}).size(64, 15).build();
 		widgetsElementList.setBackButton(back);
-		thirdColumnButton = Button.builder(Component.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))
+		thirdColumnButton = Button.builder(Component.literal("3rd Column:"), _ -> clickAndWaitForServer(50, 0))
 				.size(120, 15)
 				.build();
 		thirdColumnButton.setTooltip(Tooltip.create(Component.literal("It is recommended to have this enabled, to have more info be displayed!")));
-		previousPage = Button.builder(Component.translatable("book.page_button.previous"), button -> {
+		previousPage = Button.builder(Component.translatable("book.page_button.previous"), _ -> {
 					clickAndWaitForServer(45, 0);
 					resetScrollOnLoad();
 				})
 				.size(90, 15)
 				.build();
-		nextPage = Button.builder(Component.translatable("book.page_button.next"), button -> {
+		nextPage = Button.builder(Component.translatable("book.page_button.next"), _ -> {
 					clickAndWaitForServer(53, 0);
 					resetScrollOnLoad();
 				})
 				.size(90, 15)
 				.build();
-		resetButton = Button.builder(Component.literal("Reset"), button -> {
+		resetButton = Button.builder(Component.literal("Reset"), _ -> {
 			if (resetSlotId == -1) return;
 			clickAndWaitForServer(resetSlotId, 0);
 		}).size(60, 15).build();
@@ -137,7 +137,7 @@ public class WidgetsListTab implements Tab {
 	public void clickAndWaitForServer(int slot, int button) {
 		if (waitingForServer || handler == null) return;
 		if (client.gameMode == null || this.client.player == null) return;
-		client.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.PICKUP, this.client.player);
+		client.gameMode.handleContainerInput(handler.containerId, slot, button, ContainerInput.PICKUP, this.client.player);
 		waitingForServer = true;
 		waitingForServerText.visible = true;
 	}
@@ -145,7 +145,7 @@ public class WidgetsListTab implements Tab {
 	public void shiftClickAndWaitForServer(int slot, int button) {
 		if (waitingForServer || handler == null) return;
 		if (client.gameMode == null || this.client.player == null) return;
-		client.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.QUICK_MOVE, this.client.player);
+		client.gameMode.handleContainerInput(handler.containerId, slot, button, ContainerInput.QUICK_MOVE, this.client.player);
 		// When moving a widget down it gets stuck sometimes
 		Scheduler.INSTANCE.schedule(() -> {
 			this.waitingForServer = false;

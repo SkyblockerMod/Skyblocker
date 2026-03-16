@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class ArrowAlign {
 	private static final BlockPos LEFT_TOP = new BlockPos(-2, 124, 79);
@@ -36,10 +36,10 @@ public class ArrowAlign {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		WorldRenderExtractionCallback.EVENT.register(ArrowAlign::extractRendering);
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("device").then(literal("arrow-align")
-				.then(literal("solve").executes(context -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("device").then(literal("arrow-align")
+				.then(literal("solve").executes(_ -> {
 					findSolution();
 					return Command.SINGLE_SUCCESS;
 				}))
@@ -68,7 +68,7 @@ public class ArrowAlign {
 	}
 
 	private static List<ItemFrame> getFrameEntitiesList() {
-		return Minecraft.getInstance().level.getEntitiesOfClass(ItemFrame.class, FRAMES_AREA, frame -> true);
+		return Minecraft.getInstance().level.getEntitiesOfClass(ItemFrame.class, FRAMES_AREA, _ -> true);
 	}
 
 	private static int getSolutionIndex(BlockPos pos) {

@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Mth;
@@ -21,22 +21,22 @@ record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, 
 	}
 
 	@Override
-	public void draw(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta) {
 		assert recipeBook.searchBox != null;
 
 		if (ItemRepository.filesImported()) {
-			recipeBook.searchBox.render(context, mouseX, mouseY, delta);
-			recipeBook.filterOption.render(context, mouseX, mouseY, delta);
-			results.draw(context, x, y, mouseX, mouseY, delta);
+			recipeBook.searchBox.extractRenderState(graphics, mouseX, mouseY, delta);
+			recipeBook.filterOption.extractRenderState(graphics, mouseX, mouseY, delta);
+			results.extractRenderState(graphics, x, y, mouseX, mouseY, delta);
 		} else {
 			//68 is from 137 / 2 and 137 is the height from which the page flip buttons are rendered
-			context.drawCenteredString(Minecraft.getInstance().font, "Loading...", x + (SkyblockRecipeBookWidget.IMAGE_WIDTH / 2), y + 68, 0xFFFFFFFF);
+			graphics.centeredText(Minecraft.getInstance().font, "Loading...", x + (SkyblockRecipeBookWidget.IMAGE_WIDTH / 2), y + 68, 0xFFFFFFFF);
 		}
 	}
 
 	@Override
-	public void drawTooltip(GuiGraphics context, int x, int y) {
-		if (ItemRepository.filesImported()) results.drawTooltip(context, x, y);
+	public void extractTooltip(GuiGraphicsExtractor context, int x, int y) {
+		if (ItemRepository.filesImported()) results.extractTooltip(context, x, y);
 	}
 
 	@Override

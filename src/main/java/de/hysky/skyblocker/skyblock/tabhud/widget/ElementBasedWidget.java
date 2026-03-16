@@ -18,7 +18,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -116,7 +116,7 @@ public abstract class ElementBasedWidget extends HudWidget {
 	}
 
 	@Override
-	public final void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public final void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			Options options = Minecraft.getInstance().options;
 			int textBackgroundColor = options.getBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
@@ -128,22 +128,22 @@ public abstract class ElementBasedWidget extends HudWidget {
 		int strHeightHalf = txtRend.lineHeight / 2;
 		int strAreaWidth = txtRend.width(title) + 4;
 
-		context.drawString(txtRend, title, x + 8, y + 2, this.color, false);
+		context.text(txtRend, title, x + 8, y + 2, this.color, false);
 
 		// Only draw borders if not in minimal mode
 		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal()) {
-			this.drawHLine(context, x + 2, y + 1 + strHeightHalf, 4);
-			this.drawHLine(context, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
-			this.drawHLine(context, x + 2, y + h - 2, w - 4);
+			this.extractHorizontalLine(context, x + 2, y + 1 + strHeightHalf, 4);
+			this.extractHorizontalLine(context, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
+			this.extractHorizontalLine(context, x + 2, y + h - 2, w - 4);
 
-			this.drawVLine(context, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
-			this.drawVLine(context, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.extractVerticalLine(context, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.extractVerticalLine(context, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
 		}
 
 		int yOffs = y + BORDER_SZE_N;
 
 		for (Element c : elements) {
-			c.render(context, x + BORDER_SZE_W, yOffs);
+			c.extractRenderState(context, x + BORDER_SZE_W, yOffs);
 			yOffs += c.getHeight() + Element.PAD_L;
 		}
 	}
@@ -173,12 +173,12 @@ public abstract class ElementBasedWidget extends HudWidget {
 		prevH = h;
 	}
 
-	private void drawHLine(GuiGraphics context, int xpos, int ypos, int width) {
-		context.fill(xpos, ypos, xpos + width, ypos + 1, this.color);
+	private void extractHorizontalLine(GuiGraphicsExtractor graphics, int xpos, int ypos, int width) {
+		graphics.fill(xpos, ypos, xpos + width, ypos + 1, this.color);
 	}
 
-	private void drawVLine(GuiGraphics context, int xpos, int ypos, int height) {
-		context.fill(xpos, ypos, xpos + 1, ypos + height, this.color);
+	private void extractVerticalLine(GuiGraphicsExtractor graphics, int xpos, int ypos, int height) {
+		graphics.fill(xpos, ypos, xpos + 1, ypos + height, this.color);
 	}
 
 	/**

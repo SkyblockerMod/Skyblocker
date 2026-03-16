@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
@@ -82,9 +82,9 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-		searchField.render(context, mouseX, mouseY, deltaTicks);
-		widgetsContainer.render(context, mouseX, mouseY, deltaTicks);
+	protected void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
+		searchField.extractRenderState(context, mouseX, mouseY, deltaTicks);
+		widgetsContainer.extractRenderState(context, mouseX, mouseY, deltaTicks);
 	}
 
 	private class WidgetsContainer extends AbstractContainerWidget {
@@ -131,12 +131,12 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		protected void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
 			context.enableScissor(getX(), getY(), getRight(), getBottom());
 			for (AbstractWidget widget : filteredWidgets) {
-				if (isVisible(widget)) widget.render(context, mouseX, mouseY, deltaTicks);
+				if (isVisible(widget)) widget.extractRenderState(context, mouseX, mouseY, deltaTicks);
 			}
-			renderScrollbar(context, mouseX, mouseY);
+			extractScrollbar(context, mouseX, mouseY);
 			context.disableScissor();
 		}
 

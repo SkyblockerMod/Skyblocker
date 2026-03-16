@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.profileviewer;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import java.util.Map;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -38,10 +38,10 @@ public class ProfileViewerNavButton extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, toggled ? BUTTON_TEXTURES_TOGGLED : BUTTON_TEXTURES, this.getX(), this.getY(), this.width, this.height - ((this.toggled) ? 0 : 4));
-		context.renderItem(this.icon, this.getX() + 6, this.getY() + (this.toggled ? 7 : 9));
-		this.handleCursor(context);
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, toggled ? BUTTON_TEXTURES_TOGGLED : BUTTON_TEXTURES, this.getX(), this.getY(), this.width, this.height - ((this.toggled) ? 0 : 4));
+		graphics.item(this.icon, this.getX() + 6, this.getY() + (this.toggled ? 7 : 9));
+		this.handleCursor(graphics);
 	}
 
 	@Override

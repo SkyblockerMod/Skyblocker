@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.compatibility.rei.info;
 
-import de.hysky.skyblocker.SkyblockerMod;
+/*import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -27,10 +27,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.List;*/
 
-public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay> {
-	private static final int REI_SLOT_HEIGHT = 18;
+public class SkyblockInfoCategory/* implements DisplayCategory<SkyblockInfoDisplay>*/ {
+	/*private static final int REI_SLOT_HEIGHT = 18;
 	private static final int OFFSET = 10;
 	private static final int RED_ERROR_COLOR = 0xFFFF5555;
 	private static final EntryStack<ItemStack> ICON = EntryStacks.of(new ItemStack(Items.CHEST));
@@ -109,5 +109,5 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 	@Override
 	public int getDisplayWidth(SkyblockInfoDisplay display) {
 		return 150 + 20;
-	}
+	}*/
 }

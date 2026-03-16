@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.compatibility.rei.info;
 
-import de.hysky.skyblocker.SkyblockerMod;
+/*import de.hysky.skyblocker.SkyblockerMod;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.display.DisplaySerializer;
@@ -11,10 +11,10 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Optional;
 
-import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.Nullable;*/
 
-public class SkyblockInfoDisplay implements Display {
-	private final ItemStack displayItem;
+public class SkyblockInfoDisplay/* implements Display*/ {
+	/*private final ItemStack displayItem;
 
 	public SkyblockInfoDisplay(ItemStack item) {
 		this.displayItem = item;
@@ -43,5 +43,5 @@ public class SkyblockInfoDisplay implements Display {
 	@Override
 	public @Nullable DisplaySerializer<? extends Display> getSerializer() {
 		return null;
-	}
+	}*/
 }

@@ -47,8 +47,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class SearchOverManager {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -86,8 +86,8 @@ public class SearchOverManager {
 
 	private static void registerSearchCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableCommands) {
-			dispatcher.register(literal("ahs").executes(context -> startCommand(true, "")));
-			dispatcher.register(literal("bzs").executes(context -> startCommand(false, "")));
+			dispatcher.register(literal("ahs").executes(_ -> startCommand(true, "")));
+			dispatcher.register(literal("bzs").executes(_ -> startCommand(false, "")));
 
 			dispatcher.register(literal("ahs").then(argument("item", StringArgumentType.greedyString())
 					.executes(context -> startCommand(true, StringArgumentType.getString(context, "item"))
@@ -417,7 +417,7 @@ public class SearchOverManager {
 		}
 
 		// Write history to the config
-		SkyblockerConfigManager.update(_config -> {});
+		SkyblockerConfigManager.update(_ -> {});
 
 		//add pet level or dungeon starts if in ah
 		if (location == SearchLocation.AUCTION) {

@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
@@ -167,16 +167,16 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
 
-		searchField.render(context, mouseX, mouseY, delta);
+		searchField.extractRenderState(graphics, mouseX, mouseY, a);
 
 		int startY = searchField.getBottom() + 3;
 		int startX = getX() + 2;
 		int endX = getX() + getWidth() - 2;
 		int endY = getY() + getHeight() - 2;
-		context.enableScissor(startX, startY, endX, endY);
+		graphics.enableScissor(startX, startY, endX, endY);
 		int scrollY = (int) scrollAmount();
 		HeadButton hovered = null;
 		for (HeadButton b : visibleButtons) {
@@ -186,17 +186,17 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 				continue;
 			}
 			b.setY(y);
-			b.render(context, mouseX, mouseY, delta);
+			b.extractRenderState(graphics, mouseX, mouseY, a);
 			if (b.isMouseOver(mouseX, mouseY) && mouseX >= startX && mouseX < endX && mouseY >= startY && mouseY < endY) {
 				hovered = b;
 			}
 			b.setY(originalY);
 		}
-		renderScrollbar(context, mouseX, mouseY);
-		context.disableScissor();
+		extractScrollbar(graphics, mouseX, mouseY);
+		graphics.disableScissor();
 
 		if (hovered != null && !hovered.name.isEmpty()) {
-			context.setTooltipForNextFrame(Minecraft.getInstance().font, Component.nullToEmpty(hovered.name), mouseX, mouseY);
+			graphics.setTooltipForNextFrame(Minecraft.getInstance().font, Component.nullToEmpty(hovered.name), mouseX, mouseY);
 		}
 	}
 
@@ -208,7 +208,7 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 		}
 
 		double adjustedMouseY = click.y() + scrollAmount();
-		if (scrollbarVisible()) {
+		if (this.scrollable()) {
 			int scrollbarX = scrollBarX();
 			// Default scrollbar width is 6 pixels
 			if (click.x() >= scrollbarX && click.x() < scrollbarX + 6) {
@@ -319,15 +319,15 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-			context.renderItem(this.getHead(), getX() + 2, getY() + 2);
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.item(this.getHead(), getX() + 2, getY() + 2);
 			if (this.selected) {
-				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
+				graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
 			}
 			if (this.isHovered()) {
-				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
+				graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
 			}
-			this.handleCursor(context);
+			this.handleCursor(graphics);
 		}
 
 		@Override

@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.speedpreset;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -32,7 +32,7 @@ public class SpeedPresetsScreen extends Screen {
 		var grid = new GridLayout();
 		grid.spacing(4);
 		var doneButton = Button.builder(CommonComponents.GUI_DONE,
-						button -> {
+						_ -> {
 							this.list.save();
 							assert this.minecraft != null;
 							this.minecraft.setScreen(parent);
@@ -41,7 +41,7 @@ public class SpeedPresetsScreen extends Screen {
 				.build();
 		grid.addChild(doneButton, 0, 0, 1, 2);
 		var plusButton = Button.builder(Component.literal("+"),
-						button -> list.newEntry())
+						_ -> list.newEntry())
 				.width(20)
 				.build();
 		grid.addChild(plusButton, 0, 2, 1, 1);
@@ -51,11 +51,11 @@ public class SpeedPresetsScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		super.extractRenderState(graphics, mouseX, mouseY, delta);
 		assert this.minecraft != null;
 		var renderer = this.minecraft.font;
-		context.drawCenteredString(renderer, this.title, this.width / 2,
+		graphics.centeredText(renderer, this.title, this.width / 2,
 				8, CommonColors.WHITE);
 	}
 

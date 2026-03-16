@@ -106,7 +106,7 @@ public class ConfirmationPromptHelper {
 				commandFoundAt = System.currentTimeMillis();
 
 				//Send feedback msg
-				Minecraft.getInstance().player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.chat.confirmationPromptNotification")), false);
+				Minecraft.getInstance().player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.chat.confirmationPromptNotification")));
 			}
 		}
 

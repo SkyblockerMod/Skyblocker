@@ -180,10 +180,9 @@ public class SweepOverlay {
 			}
 		}
 		if (!sweepStatNoticeShown && (Utils.isInPark() || Utils.isInGalatea()) && CLIENT.player != null) {
-			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(
+			CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(
 							Component.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
-									.withStyle(ChatFormatting.RED)),
-					false);
+									.withStyle(ChatFormatting.RED)));
 			sweepStatNoticeShown = true;
 		}
 

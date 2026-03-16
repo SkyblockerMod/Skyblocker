@@ -84,7 +84,7 @@ public final class GardenPlots {
 				GardenPlotsWidget widget = new GardenPlotsWidget(
 						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,
 						((AbstractContainerScreenAccessor) inventoryScreen).getY());
-				Screens.getButtons(inventoryScreen).add(widget);
+				Screens.getWidgets(inventoryScreen).add(widget);
 
 				inventoryScreen.registerRecipeBookToggleCallback(() -> widget.setPosition(
 						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,

@@ -127,7 +127,7 @@ public class BlockBreakPrediction {
 		//make sure the data is in tab and if not tell the user
 		if (speed.isEmpty()) {
 			if (!sentWarningMessage) {
-				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.blockBreakPrediction.enableStatsMessage")).withStyle(ChatFormatting.RED), false);
+				CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.blockBreakPrediction.enableStatsMessage")).withStyle(ChatFormatting.RED));
 				sentWarningMessage = true;
 			}
 			return -1;

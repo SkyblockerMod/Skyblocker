@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
@@ -38,7 +38,7 @@ public class InventorySearch {
 			if (!inventorySearchConfig.enabled.isEnabled() || !(screen instanceof AbstractContainerScreen<?> handledScreen)) return;
 			openedHandledScreen = null;
 
-			if (inventorySearchConfig.clickableText) Screens.getButtons(handledScreen).add(new SearchTextWidget(handledScreen));
+			if (inventorySearchConfig.clickableText) Screens.getWidgets(handledScreen).add(new SearchTextWidget(handledScreen));
 
 			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((screen1, input) -> {
 				if (input.key() == (inventorySearchConfig.ctrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && input.hasControlDownWithQuirk()) {
@@ -54,8 +54,8 @@ public class InventorySearch {
 		if (handledScreen == openedHandledScreen) return;
 		openedHandledScreen = handledScreen;
 		EditBox textFieldWidget = getTextFieldWidget(handledScreen);
-		Screens.getButtons(handledScreen).addFirst(textFieldWidget);
-		Screens.getButtons(handledScreen).removeIf(button -> button instanceof SearchTextWidget); // remove search text
+		Screens.getWidgets(handledScreen).addFirst(textFieldWidget);
+		Screens.getWidgets(handledScreen).removeIf(button -> button instanceof SearchTextWidget); // remove search text
 		handledScreen.setFocused(textFieldWidget);
 
 		ScreenEvents.remove(handledScreen).register(InventorySearch::onScreenClosed);
@@ -119,14 +119,14 @@ public class InventorySearch {
 		}
 
 		@Override
-		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			if (isHovered() != hoveredState) {
 				hoveredState = active = isHovered();
 				if (hoveredState) setMessage(underlinedText);
 				else setMessage(normalText);
 			}
 
-			super.renderWidget(context, mouseX, mouseY, delta);
+			super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
 		}
 	}
 
@@ -141,9 +141,9 @@ public class InventorySearch {
 		}
 
 		@Override
-		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			super.renderWidget(context, mouseX, mouseY, deltaTicks);
-			context.drawCenteredString(textRenderer, message, getX() + width / 2, getY() - 1 - textRenderer.lineHeight, CommonColors.WHITE);
+		public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
+			graphics.centeredText(textRenderer, message, getX() + width / 2, getY() - 1 - textRenderer.lineHeight, CommonColors.WHITE);
 		}
 
 		@Override

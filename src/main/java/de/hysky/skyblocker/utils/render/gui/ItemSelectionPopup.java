@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import net.minecraft.client.gui.GuiGraphics;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -114,9 +115,9 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, gridWidget.getX(), gridWidget.getY(), gridWidget.getWidth(), gridWidget.getHeight());
+	public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+		super.extractBackground(context, mouseX, mouseY, delta);
+		extractPopupBackground(context, gridWidget.getX(), gridWidget.getY(), gridWidget.getWidth(), gridWidget.getHeight());
 	}
 
 	private class ItemList extends SearchableGridWidget {
@@ -159,13 +160,13 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.renderItem(item, getX() + 2, getY() + 2);
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
+			graphics.item(item, getX() + 2, getY() + 2);
 			if (selectedItem == this) {
-				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
+				graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
 			}
 			if (isHovered()) {
-				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
+				graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
 			}
 		}
 

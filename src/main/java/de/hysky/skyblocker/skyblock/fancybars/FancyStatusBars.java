@@ -10,14 +10,14 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.Identifier;
@@ -85,7 +85,7 @@ public class FancyStatusBars {
 					Matrix3x2fStack pose = context.pose();
 					pose.pushMatrix();
 					pose.translate(0, 6);
-					hudElement.render(context, tickCounter);
+					hudElement.extractRenderState(context, tickCounter);
 					pose.popMatrix();
 				};
 			}
@@ -105,7 +105,7 @@ public class FancyStatusBars {
 		HudElementRegistry.replaceElement(VanillaHudElements.AIR_BAR, hideIfFancyStatusBarsEnabled);
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, HUD_LAYER, (context, tickCounter) -> {
-			if (Utils.isOnSkyblock()) render(context, Minecraft.getInstance());
+			if (Utils.isOnSkyblock()) extractRenderState(context, Minecraft.getInstance());
 		});
 
 		statusBars.put(StatusBarType.HEALTH, StatusBarType.HEALTH.newStatusBar());
@@ -149,8 +149,8 @@ public class FancyStatusBars {
 		ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> saveBarConfig());
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
-				ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-						.then(ClientCommandManager.literal("bars").executes(Scheduler.queueOpenScreenCommand(StatusBarsConfigScreen::new)))));
+				ClientCommands.literal(SkyblockerMod.NAMESPACE)
+						.then(ClientCommands.literal("bars").executes(Scheduler.queueOpenScreenCommand(StatusBarsConfigScreen::new)))));
 
 		SkyblockEvents.LOCATION_CHANGE.register(location -> updatePositionsNextFrame = true);
 	}
@@ -360,18 +360,18 @@ public class FancyStatusBars {
 		return SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && (!Utils.isInTheRift() || SkyblockerConfigManager.get().uiAndVisuals.bars.enableBarsRift);
 	}
 
-	public static boolean render(GuiGraphics context, Minecraft client) {
+	public static boolean extractRenderState(GuiGraphicsExtractor graphics, Minecraft client) {
 		LocalPlayer player = client.player;
 		if (!isEnabled() || player == null) return false;
 
 		Collection<StatusBar> barCollection = statusBars.values();
 		for (StatusBar statusBar : barCollection) {
 			if (!statusBar.enabled || !statusBar.visible) continue;
-			statusBar.renderBar(context);
+			statusBar.extractBar(graphics);
 		}
 		for (StatusBar statusBar : barCollection) {
 			if (!statusBar.enabled || !statusBar.visible) continue;
-			statusBar.renderText(context);
+			statusBar.extractText(graphics);
 		}
 
 		if (Utils.isInTheRift()) {

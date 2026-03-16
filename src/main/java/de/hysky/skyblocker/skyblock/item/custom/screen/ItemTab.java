@@ -8,7 +8,7 @@ import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -178,20 +178,20 @@ public class ItemTab extends GridLayoutTab {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
-			Matrix3x2fStack matrices = context.pose();
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+			Matrix3x2fStack matrices = graphics.pose();
 			matrices.pushMatrix();
 			float x = layout.getX() + layout.getWidth() / 2f - 16;
 			int y = layout.getY();
 			if (mouseX >= x && mouseX < x + 32 && mouseY >= y && mouseY < y + 32) {
-				context.setTooltipForNextFrame(currentItem.getHoverName(), mouseX, mouseY);
+				graphics.setTooltipForNextFrame(currentItem.getHoverName(), mouseX, mouseY);
 			}
 			matrices.translate(x, y);
 			matrices.scale(2);
-			context.renderItem(currentItem, 0, 0);
+			graphics.item(currentItem, 0, 0);
 			matrices.popMatrix();
-			selectItemButton.render(context, mouseX, mouseY, deltaTicks);
+			selectItemButton.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 
 		@Override
@@ -208,10 +208,10 @@ public class ItemTab extends GridLayoutTab {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			int x = glintButton.getX() - 3;
 			int y = glintButton.getY() - 3;
-			context.blitSprite(RenderPipelines.GUI_TEXTURED,
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED,
 					INNER_SPACE_TEXTURE,
 					x,
 					y,

@@ -7,7 +7,7 @@ import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
 import de.hysky.skyblocker.utils.render.gui.ToggleableLayoutWidget;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -348,8 +348,8 @@ public class ChatRuleConfigScreen extends Screen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.renderFakeItem(stack, getX(), getY());
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.fakeItem(stack, getX(), getY());
 		}
 
 		@Override
@@ -395,15 +395,15 @@ public class ChatRuleConfigScreen extends Screen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.enableScissor(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height);
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.enableScissor(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height);
 
 			for (AbstractWidget clickableWidget : this.children) {
-				clickableWidget.render(context, mouseX, mouseY, deltaTicks);
+				clickableWidget.extractRenderState(graphics, mouseX, mouseY, a);
 			}
 
-			context.disableScissor();
-			this.renderScrollbar(context, mouseX, mouseY);
+			graphics.disableScissor();
+			this.extractScrollbar(graphics, mouseX, mouseY);
 		}
 
 		@Override

@@ -63,8 +63,8 @@ import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.
 import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MIN_Y;
 import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_Z;
 import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.WATER_ENTRANCE_POSITION;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 /*
 Benchmark times for solutions in watertimes.json (for anyone trying to improve the solutions)
@@ -279,9 +279,9 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 			finished = true;
 			if (timerEnabled) {
 				double elapsed = (currentTimeMillis - waterStartMillis) / 1000.0;
-				player.displayClientMessage(Constants.PREFIX.get().append("Puzzle solved in ")
+				player.sendSystemMessage(Constants.PREFIX.get().append("Puzzle solved in ")
 						.append(Component.literal(String.format("%.2f", elapsed)).withStyle(ChatFormatting.GREEN))
-						.append(ChatFormatting.RESET.toString()).append(" seconds."), false);
+						.append(ChatFormatting.RESET.toString()).append(" seconds."));
 			}
 		}
 
@@ -290,9 +290,9 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				if (!mark.reached && world.getBlockState(mark.pos).is(Blocks.WATER)) {
 					mark.reached = true;
 					double elapsed = (currentTimeMillis - waterStartMillis) / 1000.0;
-					player.displayClientMessage(Constants.PREFIX.get().append(String.format("Mark %d reached in ", mark.index))
+					player.sendSystemMessage(Constants.PREFIX.get().append(String.format("Mark %d reached in ", mark.index))
 							.append(Component.literal(String.format("%.2f", elapsed)).withStyle(ChatFormatting.GREEN))
-							.append(ChatFormatting.RESET.toString()).append(" seconds."), false);
+							.append(ChatFormatting.RESET.toString()).append(" seconds."));
 				}
 			}
 		}
@@ -314,14 +314,14 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				finished = true;
 				return;
 			} else if (doors.length() != 3) {
-				player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.puzzle.waterboard.invalidDoors")), false);
+				player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.puzzle.waterboard.invalidDoors")));
 				finished = true;
 				return;
 			}
 		}
 
 		if (!checkWater()) {
-			player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.puzzle.waterboard.waterFound")), false);
+			player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.puzzle.waterboard.waterFound")));
 			finished = true;
 			return;
 		}

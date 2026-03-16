@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
@@ -37,11 +37,9 @@ public class DungeonHeaderWidget {
 		}
 	}
 
-	public void render(GuiGraphics context, int x, int y) {
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-
-		context.drawString(textRenderer, "§i§6§lCatacombs §r" + this.classLevel.level, x + 3, y + 4, Color.WHITE.getRGB(), true);
-
-		context.drawString(textRenderer, "§eClass Average §r" + DF.format(this.classAvg), x + 3, y + 14, Color.WHITE.getRGB(), true);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int x, int y) {
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+		graphics.text(textRenderer, "§i§6§lCatacombs §r" + this.classLevel.level, x + 3, y + 4, Color.WHITE.getRGB(), true);
+		graphics.text(textRenderer, "§eClass Average §r" + DF.format(this.classAvg), x + 3, y + 14, Color.WHITE.getRGB(), true);
 	}
 }

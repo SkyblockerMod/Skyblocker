@@ -9,7 +9,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -25,7 +25,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -250,41 +250,41 @@ public class PartyFinderScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		if (!settingsContainer.canInteract(null)) {
-			context.fill(0, 0, width, height, 0x40000000);
+			graphics.fill(0, 0, width, height, 0x40000000);
 		}
-		super.render(context, mouseX, mouseY, delta);
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 
 		if (searchField.visible) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
 		}
 		if (DEBUG) {
-			context.drawString(font, currentPage.toString(), 0, 0, CommonColors.WHITE, true);
-			context.drawString(font, "Truly a party finder", 20, 20, CommonColors.WHITE, true);
+			graphics.text(font, currentPage.toString(), 0, 0, CommonColors.WHITE, true);
+			graphics.text(font, "Truly a party finder", 20, 20, CommonColors.WHITE, true);
 			if (sign != null) {
-				context.drawString(font, "You are in a sign btw", 20, 30, CommonColors.WHITE, true);
+				graphics.text(font, "You are in a sign btw", 20, 30, CommonColors.WHITE, true);
 			} else {
-				context.drawString(font, String.valueOf(refreshSlotId), width - 25, 30, CommonColors.WHITE, true);
-				context.drawString(font, String.valueOf(prevPageSlotId), width - 25, 40, CommonColors.WHITE, true);
-				context.drawString(font, String.valueOf(nextPageSlotId), width - 25, 50, CommonColors.WHITE, true);
+				graphics.text(font, String.valueOf(refreshSlotId), width - 25, 30, CommonColors.WHITE, true);
+				graphics.text(font, String.valueOf(prevPageSlotId), width - 25, 40, CommonColors.WHITE, true);
+				graphics.text(font, String.valueOf(nextPageSlotId), width - 25, 50, CommonColors.WHITE, true);
 				for (int i = 0; i < handler.slots.size(); i++) {
-					context.renderItem(handler.slots.get(i).getItem(), (i % 9) * 16, (i / 9) * 16);
+					graphics.item(handler.slots.get(i).getItem(), (i % 9) * 16, (i / 9) * 16);
 				}
-				context.drawString(font, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), CommonColors.WHITE, true);
+				graphics.text(font, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), CommonColors.WHITE, true);
 			}
 		}
 		if (isWaitingForServer()) {
 			String s = "Waiting for server...";
-			context.drawString(font, s, this.width - font.width(s) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
+			graphics.text(font, s, this.width - font.width(s) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
 		}
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		this.renderTransparentBackground(context);
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		this.extractTransparentBackground(graphics);
 		int i = partyEntryListWidget.getRowWidth() + 16 + 6;
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
 	}
 
 	@Override
@@ -511,7 +511,7 @@ public class PartyFinderScreen extends Screen {
 		//System.out.println("hey");
 		assert minecraft != null;
 		assert minecraft.gameMode != null;
-		minecraft.gameMode.handleInventoryMouseClick(handler.containerId, slotID, 0, ClickType.PICKUP, minecraft.player);
+		minecraft.gameMode.handleContainerInput(handler.containerId, slotID, 0, ContainerInput.PICKUP, minecraft.player);
 		waitingForServer = true;
 	}
 

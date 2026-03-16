@@ -8,7 +8,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.ConfigNullFieldsFix;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
@@ -35,10 +35,10 @@ public class DisableAll {
 	private static long confirmAllowedUntil;
 
 	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, net.minecraft.commands.CommandBuildContext registryAccess) {
-		dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-				.then(ClientCommandManager.literal("disableAll")
+		dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+				.then(ClientCommands.literal("disableAll")
 						.executes(DisableAll::confirmMessage)
-						.then(ClientCommandManager.literal("confirm")
+						.then(ClientCommands.literal("confirm")
 								.executes(DisableAll::disableAll)))
 		);
 	}

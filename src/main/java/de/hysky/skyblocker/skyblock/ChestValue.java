@@ -99,9 +99,9 @@ public class ChestValue {
 					}
 				} else if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
 					ScreenType screenType = determineScreenType(titleString);
-					Screens.getButtons(screen).add(Button
+					Screens.getWidgets(screen).add(Button
 							.builder(Component.literal("$"), buttonWidget -> {
-								Screens.getButtons(screen).remove(buttonWidget);
+								Screens.getWidgets(screen).remove(buttonWidget);
 								ScreenEvents.afterTick(screen).register(ignored -> {
 									Component chestValue = getChestValue(genericContainerScreen.getMenu(), screenType);
 									if (chestValue != null) {
@@ -381,7 +381,7 @@ public class ChestValue {
 	}
 
 	private static void addValueToContainer(ContainerScreen genericContainerScreen, Component chestValue, Component title) {
-		Screens.getButtons(genericContainerScreen).removeIf(ChestValueTextWidget.class::isInstance);
+		Screens.getWidgets(genericContainerScreen).removeIf(ChestValueTextWidget.class::isInstance);
 		int backgroundWidth = ((AbstractContainerScreenAccessor) genericContainerScreen).getImageWidth();
 		int y = ((AbstractContainerScreenAccessor) genericContainerScreen).getY();
 		int x = ((AbstractContainerScreenAccessor) genericContainerScreen).getX();
@@ -391,11 +391,11 @@ public class ChestValue {
 
 		StringWidget chestValueWidget = new ChestValueTextWidget(chestValueWidth, textRenderer.lineHeight, chestValue, textRenderer);
 		chestValueWidget.setPosition(x + backgroundWidth - chestValueWidget.getWidth() - 4, y + 6);
-		Screens.getButtons(genericContainerScreen).add(chestValueWidget);
+		Screens.getWidgets(genericContainerScreen).add(chestValueWidget);
 
 		ChestValueTextWidget chestTitleWidget = new ChestValueTextWidget(backgroundWidth - 8 - chestValueWidth - 2, textRenderer.lineHeight, title.copy().withStyle(Style.EMPTY.withColor(4210752)), textRenderer);
 		chestTitleWidget.setPosition(x + 8, y + 6);
-		Screens.getButtons(genericContainerScreen).add(chestTitleWidget);
+		Screens.getWidgets(genericContainerScreen).add(chestTitleWidget);
 	}
 
 	private static ScreenType determineScreenType(String rawTitleString) {

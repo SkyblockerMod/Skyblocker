@@ -9,7 +9,7 @@ import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import io.github.moulberry.repo.data.NEUItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ScrollableLayout;
 import net.minecraft.client.gui.components.StringWidget;
@@ -44,9 +44,9 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, scrollableLayout.getX(), scrollableLayout.getY(), scrollableLayout.getWidth(), scrollableLayout.getHeight());
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractBackground(graphics, mouseX, mouseY, a);
+		extractPopupBackground(graphics, scrollableLayout.getX(), scrollableLayout.getY(), scrollableLayout.getWidth(), scrollableLayout.getHeight());
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		scrollableLayout.visitWidgets(this::addRenderableWidget);
 
 		titleWidget = new StringWidget(Component.translatable("skyblocker.customization.armor.pickDye.title"), font);
-		closeButton = Button.builder(CommonComponents.GUI_CANCEL, button -> onClose()).width(75).build();
+		closeButton = Button.builder(CommonComponents.GUI_CANCEL, _ -> onClose()).width(75).build();
 		addRenderableWidget(titleWidget);
 		addRenderableWidget(closeButton);
 
@@ -158,7 +158,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		final ItemStack dyeStack;
 
 		protected StaticDyeButton(String dyeId, int color, OnPress onPress) {
-			super(0, 0, 150, 20, Component.empty(), onPress, supplier -> Component.empty());
+			super(0, 0, 150, 20, Component.empty(), onPress, _ -> Component.empty());
 			name = dyeId;
 			NEUItem item = NEURepoManager.getItemByNeuId(dyeId);
 			if (item != null) name = ChatFormatting.stripFormatting(item.getDisplayName());
@@ -168,14 +168,14 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-			this.renderDefaultSprite(guiGraphics);
-			guiGraphics.renderItem(dyeStack, this.getX() + TEXT_OFFSET, this.getY() + 1);
-			renderName(guiGraphics, delta);
+		protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			this.extractDefaultSprite(graphics);
+			graphics.item(dyeStack, this.getX() + TEXT_OFFSET, this.getY() + 1);
+			extractName(graphics, a);
 		}
 
-		protected void renderName(GuiGraphics guiGraphics, float f) {
-			guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
+		protected void extractName(GuiGraphicsExtractor graphics, float a) {
+			graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
 					getMessage(), getX() + TEXT_MARGIN + TEXT_OFFSET + 16,
 					getRight() - TEXT_MARGIN, getY() + TEXT_MARGIN, getBottom() - TEXT_MARGIN
 			);
@@ -195,15 +195,15 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderName(GuiGraphics guiGraphics, float delta) {
-			lastChange += delta;
+		protected void extractName(GuiGraphicsExtractor graphics, float a) {
+			lastChange += a;
 			if (lastChange > 2) {
 				lastChange = 0;
 				index = Math.min(index + 1, animatedNames.size() - 1);
 				setMessage(animatedNames.get(index));
 				if (index == animatedNames.size() - 1) index = 0;
 			}
-			super.renderName(guiGraphics, delta);
+			super.extractName(graphics, a);
 		}
 	}
 

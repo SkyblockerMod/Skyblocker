@@ -41,7 +41,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public final class PowderMiningTracker extends AbstractProfitTracker {
 	public static final PowderMiningTracker INSTANCE = new PowderMiningTracker();

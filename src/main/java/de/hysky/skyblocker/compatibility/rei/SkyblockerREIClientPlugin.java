@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.compatibility.rei;
 
-import de.hysky.skyblocker.SkyblockerMod;
+/*import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.compatibility.rei.info.SkyblockInfoCategory;
 import de.hysky.skyblocker.compatibility.rei.info.SkyblockInfoDisplayGenerator;
 import de.hysky.skyblocker.compatibility.rei.recipe.SkyblockRecipeCategory;
@@ -39,13 +39,13 @@ import net.minecraft.world.item.Items;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.stream.Stream;*/
 
 /**
  * REI integration
  */
-public class SkyblockerREIClientPlugin implements REIClientPlugin {
-
+public class SkyblockerREIClientPlugin/* implements REIClientPlugin*/ {
+/*
 	@Override
 	public void registerCategories(CategoryRegistry categoryRegistry) {
 		if (!Utils.isOnSkyblock()) return;
@@ -153,5 +153,5 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 	@Override
 	public double getPriority() {
 		return -50;
-	}
+	}*/
 }

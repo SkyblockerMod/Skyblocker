@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.client.gui.GuiGraphics;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -189,19 +190,19 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
-		context.enableScissor(getX() + 2, getY() + 2, getX() + getWidth() - 2, getY() + getHeight() - 2);
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+		graphics.enableScissor(getX() + 2, getY() + 2, getX() + getWidth() - 2, getY() + getHeight() - 2);
 
 		int scrollY = (int) this.scrollAmount();
 		for (AbstractWidget widget : this.children) {
 			widget.setY(widget.getY() - scrollY);
-			widget.render(context, mouseX, mouseY, delta);
+			widget.extractRenderState(graphics, mouseX, mouseY, a);
 			widget.setY(widget.getY() + scrollY);
 		}
 
-		renderScrollbar(context, mouseX, mouseY);
-		context.disableScissor();
+		extractScrollbar(graphics, mouseX, mouseY);
+		graphics.disableScissor();
 	}
 
 	@Override

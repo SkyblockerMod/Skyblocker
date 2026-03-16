@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.compatibility.jei;
 
-import java.util.List;
+/*import java.util.List;
 
 import org.joml.Vector2f;
 
@@ -18,11 +18,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;*/
 
 // Note that you must register your own custom recipe type with JEI, you cannot use any types/recipe classes from Vanilla or it will not work!
-public abstract sealed class AbstractSkyblockRecipeCategory<T extends SkyblockRecipe> extends AbstractRecipeCategory<T> permits SkyblockCraftingRecipeCategory, SkyblockForgeRecipeCategory, SkyblockNpcShopRecipeCategory {
-	protected final IGuiHelper guiHelper;
+public abstract /*sealed */class AbstractSkyblockRecipeCategory/*<T extends SkyblockRecipe> extends AbstractRecipeCategory<T> permits SkyblockCraftingRecipeCategory, SkyblockForgeRecipeCategory, SkyblockNpcShopRecipeCategory*/ {
+	/*protected final IGuiHelper guiHelper;
 	protected final ICraftingGridHelper craftingGridHelper;
 
 	protected AbstractSkyblockRecipeCategory(IGuiHelper guiHelper, IRecipeType<T> recipeType, Component title, ItemStack icon) {
@@ -66,8 +66,8 @@ public abstract sealed class AbstractSkyblockRecipeCategory<T extends SkyblockRe
 		return 3;
 	}
 
-	@Override
+	/*@Override
 	public Identifier getIdentifier(T recipe) {
 		return recipe.getRecipeIdentifier();
-	}
+	}*/
 }

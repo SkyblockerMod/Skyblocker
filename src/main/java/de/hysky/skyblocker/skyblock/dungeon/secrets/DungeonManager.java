@@ -3,8 +3,8 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getColor;
 import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getMapPosForNWMostRoom;
 import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getPhysicalPosFromMap;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

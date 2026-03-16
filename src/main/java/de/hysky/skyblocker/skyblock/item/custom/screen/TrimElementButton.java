@@ -7,7 +7,7 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import java.util.Optional;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -63,12 +63,12 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 	}
 
 	@Override
-	public void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-		this.renderDefaultSprite(context);
-		draw(context);
+	public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		this.extractDefaultSprite(graphics);
+		extract(graphics);
 	}
 
-	abstract void draw(GuiGraphics context);
+	abstract void extract(GuiGraphicsExtractor graphics);
 
 	public static final class Pattern extends TrimElementButton {
 		private static final int DEFAULT_ROTATION = 15;
@@ -112,9 +112,9 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 		}
 
 		@Override
-		void draw(GuiGraphics context) {
+		void extract(GuiGraphicsExtractor graphics) {
 			if (trim == null) {
-				context.renderItem(BARRIER, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
+				graphics.item(BARRIER, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
 				return;
 			}
 			if (isHovered()) {
@@ -129,7 +129,7 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 			EquipmentClientInfo.LayerType layerType = slot == EquipmentSlot.LEGS ? EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS : EquipmentClientInfo.LayerType.HUMANOID;
 			float offset = setVisibleAndGetOffset(model, slot);
 
-			HudHelper.drawEquipment(context, equipmentRenderer, layerType, equippableComponent.assetId().orElse(EquipmentAssets.IRON), model, state, stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), rotation, 14, offset);
+			HudHelper.drawEquipment(graphics, equipmentRenderer, layerType, equippableComponent.assetId().orElse(EquipmentAssets.IRON), model, state, stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), rotation, 14, offset);
 		}
 
 		@SuppressWarnings("incomplete-switch")
@@ -176,8 +176,8 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 		}
 
 		@Override
-		void draw(GuiGraphics context) {
-			context.renderItem(stack, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
+		void extract(GuiGraphicsExtractor graphics) {
+			graphics.item(stack, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
 		}
 	}
 

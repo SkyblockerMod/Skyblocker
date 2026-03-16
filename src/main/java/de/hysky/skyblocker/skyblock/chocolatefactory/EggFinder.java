@@ -47,8 +47,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class EggFinder {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Egg Finder");
@@ -245,12 +245,11 @@ public class EggFinder {
 
 		public void sendEggMessage() {
 			MutableComponent eggName = Component.translatable("skyblocker.helpers.hoppitysHunt.chocolateEgg", this.name).withColor(color);
-			Minecraft.getInstance().player.displayClientMessage(
+			Minecraft.getInstance().player.sendSystemMessage(
 					Constants.PREFIX.get().append(Component.translatable("skyblocker.helpers.hoppitysHunt.newEggDiscovered", eggName, egg.pos.toShortString())
 					).withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker eggFinder shareLocation " + this))
 							.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.helpers.hoppitysHunt.shareEggPrompt").withStyle(ChatFormatting.GREEN)))
-					),
-					false
+					)
 			);
 		}
 

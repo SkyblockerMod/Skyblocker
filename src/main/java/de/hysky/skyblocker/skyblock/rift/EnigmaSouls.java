@@ -43,7 +43,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class EnigmaSouls {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnigmaSouls.class);
@@ -91,7 +91,7 @@ public class EnigmaSouls {
 		Map<String, Set<BlockPos>> foundSouls = new HashMap<>();
 		for (ProfileAwareWaypoint soul : SOUL_WAYPOINTS.values()) {
 			for (String profile : soul.foundProfiles) {
-				foundSouls.computeIfAbsent(profile, profile_ -> new HashSet<>());
+				foundSouls.computeIfAbsent(profile, _ -> new HashSet<>());
 				foundSouls.get(profile).add(soul.pos);
 			}
 		}

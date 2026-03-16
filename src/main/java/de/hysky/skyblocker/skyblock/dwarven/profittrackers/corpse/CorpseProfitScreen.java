@@ -40,7 +40,7 @@ public class CorpseProfitScreen extends Screen {
 	protected void init() {
 		assert minecraft != null;
 		addRenderableOnly((context, mouseX, mouseY, delta) -> {
-			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.corpseTracker.screenTitle").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
+			context.centeredText(minecraft.font, Component.translatable("skyblocker.corpseTracker.screenTitle").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
 		});
 
 		if (summaryView) addRenderableWidget(getRewardList());

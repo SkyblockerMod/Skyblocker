@@ -47,7 +47,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class FairySouls {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FairySouls.class);
@@ -112,8 +112,8 @@ public class FairySouls {
 		for (Map.Entry<String, Map<BlockPos, ProfileAwareWaypoint>> fairiesForLocation : fairySouls.entrySet()) {
 			for (ProfileAwareWaypoint fairySoul : fairiesForLocation.getValue().values()) {
 				for (String profile : fairySoul.foundProfiles) {
-					foundFairies.computeIfAbsent(profile, profile_ -> new HashMap<>());
-					foundFairies.get(profile).computeIfAbsent(fairiesForLocation.getKey(), location_ -> new HashSet<>());
+					foundFairies.computeIfAbsent(profile, _ -> new HashMap<>());
+					foundFairies.get(profile).computeIfAbsent(fairiesForLocation.getKey(), _ -> new HashSet<>());
 					foundFairies.get(profile).get(fairiesForLocation.getKey()).add(fairySoul.pos);
 				}
 			}

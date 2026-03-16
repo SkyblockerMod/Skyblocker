@@ -17,7 +17,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -64,9 +64,9 @@ public class EventNotifications {
 	}
 
 	public static LiteralArgumentBuilder<FabricClientCommandSource> debugToasts() {
-		return ClientCommandManager.literal("toasts").then(
-				ClientCommandManager.argument("time", IntegerArgumentType.integer(0))
-						.then(ClientCommandManager.argument("jacob", BoolArgumentType.bool()).executes(context -> {
+		return ClientCommands.literal("toasts").then(
+				ClientCommands.argument("time", IntegerArgumentType.integer(0))
+						.then(ClientCommands.argument("jacob", BoolArgumentType.bool()).executes(context -> {
 											long time = System.currentTimeMillis() / 1000 + context.getArgument("time", int.class);
 											if (context.getArgument("jacob", Boolean.class)) {
 												Minecraft.getInstance().getToastManager().addToast(

@@ -12,9 +12,10 @@ import de.hysky.skyblocker.utils.render.state.TextRenderState;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.font.TextRenderable;
 import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.util.LightCoordsUtil;
+
 import org.jspecify.annotations.Nullable;
 
 public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRenderState> {
@@ -56,7 +57,7 @@ public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRender
 				// Normally GlyphBitmap#isColored should be used to figure that out, but we don't have access to it here
 				BufferBuilder buffer = Renderer.getBuffer(getPipeline(state.throughWalls, glyph.guiPipeline() == RenderPipelines.GUI_TEXT_INTENSITY), textureSetup);
 
-				glyph.render(positionMatrix, buffer, LightTexture.FULL_BRIGHT, false);
+				glyph.render(positionMatrix, buffer, LightCoordsUtil.FULL_BRIGHT, false);
 			}
 		});
 	}

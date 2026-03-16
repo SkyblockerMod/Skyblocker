@@ -262,7 +262,7 @@ public class ChatRule {
 			this.enabled = false;
 			Minecraft client = Minecraft.getInstance();
 			if (client.player == null) return;
-			client.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)), false);
+			client.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)));
 		}
 	}
 

@@ -6,7 +6,7 @@ import java.awt.Color;
 import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
@@ -57,9 +57,9 @@ public class EditBarColorPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractBackground(graphics, mouseX, mouseY, a);
+		extractPopupBackground(graphics, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
 	}
 
 	private static class BasicColorSelector extends AbstractContainerWidget {
@@ -96,10 +96,10 @@ public class EditBarColorPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-			HudHelper.drawBorder(context, getX(), getY(), 15, 15, validColor ? -1 : 0xFFDD0000);
-			context.fill(getX() + 1, getY() + 1, getX() + 14, getY() + 14, color);
-			textFieldWidget.renderWidget(context, mouseX, mouseY, delta);
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			HudHelper.drawBorder(graphics, getX(), getY(), 15, 15, validColor ? -1 : 0xFFDD0000);
+			graphics.fill(getX() + 1, getY() + 1, getX() + 14, getY() + 14, color);
+			textFieldWidget.extractWidgetRenderState(graphics, mouseX, mouseY, a);
 		}
 
 		@Override

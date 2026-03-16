@@ -252,7 +252,7 @@ public class Utils {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
-		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
+		ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> onDisconnect());
 
 		//Register Mod API stuff
 		HypixelNetworking.registerToEvents(Util.make(new Object2IntOpenHashMap<>(), map -> map.put(LocationUpdateS2CPacket.ID, 1)));
@@ -448,7 +448,7 @@ public class Utils {
 				HypixelNetworking.sendPlayerInfoC2SPacket(1);
 			}
 
-			case LocationUpdateS2CPacket(var serverName, var serverType, var _lobbyName, var mode, var mapName) -> {
+			case LocationUpdateS2CPacket(var serverName, var serverType, _, var mode, var mapName) -> {
 				Utils.server = serverName;
 				String previousServerType = Utils.gameType;
 				Utils.gameType = serverType.orElse("");
@@ -479,13 +479,13 @@ public class Utils {
 				LocalPlayer player = Minecraft.getInstance().player;
 
 				if (player != null) {
-					player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.utils.locationUpdateError").withStyle(ChatFormatting.RED)), false);
+					player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.utils.locationUpdateError").withStyle(ChatFormatting.RED)));
 				}
 
 				LOGGER.error("[Skyblocker] Failed to update your current location! Some features of the mod may not work correctly :( - Error: {}", error);
 			}
 
-			case PlayerInfoS2CPacket(var playerRank, var packageRank, var monthlyPackageRank, var _prefix) -> {
+			case PlayerInfoS2CPacket(var playerRank, var packageRank, var monthlyPackageRank, _) -> {
 				rank = RankType.getEffectiveRank(playerRank, packageRank, monthlyPackageRank);
 			}
 
@@ -585,7 +585,7 @@ public class Utils {
 	public static void sendMessageToBypassEvents(Component message) {
 		Minecraft client = Minecraft.getInstance();
 
-		client.gui.getChat().addMessage(message);
+		client.gui.getChat().addClientSystemMessage(message);
 		((ChatListenerAccessor) client.getChatListener()).invokeLogSystemMessage(message, Instant.now());
 		client.getNarrator().saySystemQueued(message);
 	}

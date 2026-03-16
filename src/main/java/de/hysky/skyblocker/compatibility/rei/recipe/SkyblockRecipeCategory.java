@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.compatibility.rei.recipe;
 
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
+/*import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
@@ -16,13 +16,13 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joml.Matrix3x2fStack;
+import org.joml.Matrix3x2fStack;*/
 
 /**
  * Skyblock recipe category class for REI
  */
-public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDisplay> {
-
+public class SkyblockRecipeCategory/* implements DisplayCategory<SkyblockRecipeDisplay>*/ {
+/*
 	private final Identifier identifier;
 	private final Component title;
 	private final ItemStack icon;
@@ -61,7 +61,7 @@ public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDis
 	 * @param display the display
 	 * @param bounds  the bounds of the display, configurable with overriding the width, height methods.
 	 */
-	@Override
+	/*@Override
 	public List<Widget> setupDisplay(SkyblockRecipeDisplay display, Rectangle bounds) {
 		List<Widget> out = new ArrayList<>();
 		out.add(Widgets.createRecipeBase(bounds));
@@ -90,5 +90,5 @@ public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDis
 			out.add(Widgets.createArrow(new Point(arrowLocation.x() + bounds.getX(), arrowLocation.y() + bounds.getY())));
 		out.add(Widgets.createLabel(new Point(bounds.getCenterX(), bounds.getCenterY() + 24), recipe.getExtraText()));
 		return out;
-	}
+	}*/
 }

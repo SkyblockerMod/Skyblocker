@@ -5,28 +5,28 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
-import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
+import net.minecraft.util.LightCoordsUtil;
 
 public class EquipmentGuiElementRenderer<S> extends PictureInPictureRenderer<EquipmentGuiElementRenderState<S>> {
 
-	private EquipmentGuiElementRenderer(SpecialGuiElementRegistry.Context context) {
-		super(context.vertexConsumers());
+	private EquipmentGuiElementRenderer(PictureInPictureRendererRegistry.Context context) {
+		super(context.bufferSource());
 	}
 
 	@Init
 	public static void init() {
-		SpecialGuiElementRegistry.register(EquipmentGuiElementRenderer::new);
+		PictureInPictureRendererRegistry.register(EquipmentGuiElementRenderer::new);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings("unchecked")
 	@Override
-	public Class getRenderStateClass() {
-		return EquipmentGuiElementRenderState.class;
+	public Class<EquipmentGuiElementRenderState<S>> getRenderStateClass() {
+		return (Class<EquipmentGuiElementRenderState<S>>) (Object) EquipmentGuiElementRenderState.class;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class EquipmentGuiElementRenderer<S> extends PictureInPictureRenderer<Equ
 				state.stack(),
 				matrices,
 				orderedRenderCommandQueueImpl,
-				LightTexture.FULL_BRIGHT,
+				LightCoordsUtil.FULL_BRIGHT,
 				0
 		);
 

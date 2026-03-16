@@ -26,7 +26,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.KeyEvent;
@@ -41,7 +41,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -129,62 +129,62 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+	protected void renderBg(GuiGraphicsExtractor graphics, float delta, int mouseX, int mouseY) {
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 		for (CategoryTabWidget categoryTabWidget : categoryTabWidgets) {
-			categoryTabWidget.render(context, mouseX, mouseY, delta);
+			categoryTabWidget.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 		if (isWaitingForServer) {
 			String waiting = "Waiting for server...";
-			context.drawString(font, waiting, this.width - font.width(waiting) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
+			graphics.text(font, waiting, this.width - font.width(waiting) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
 		}
 
-		Matrix3x2fStack matrices = context.pose();
+		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
 		matrices.translate(leftPos, topPos);
 		// Search
-		context.enableScissor(7, 4, 97, 16);
-		context.drawString(font, Component.literal(search).withStyle(Style.EMPTY.withUnderlined(onSearchField(mouseX, mouseY))), 9, 6, CommonColors.WHITE, true);
-		context.disableScissor();
+		graphics.enableScissor(7, 4, 97, 16);
+		graphics.text(font, Component.literal(search).withStyle(Style.EMPTY.withUnderlined(onSearchField(mouseX, mouseY))), 9, 6, CommonColors.WHITE, true);
+		graphics.disableScissor();
 
 		// Scrollbar
 		if (prevPageVisible) {
 			if (onScrollbarTop(mouseX, mouseY))
-				context.blitSprite(RenderPipelines.GUI_TEXTURED, UP_ARROW.get(), 159, 13, 6, 3);
-			else context.blitSprite(RenderPipelines.GUI_TEXTURED, UP_ARROW.get(), 159, 13, 6, 3, ARGB.color(137, 137, 137));
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, UP_ARROW.get(), 159, 13, 6, 3);
+			else graphics.blitSprite(RenderPipelines.GUI_TEXTURED, UP_ARROW.get(), 159, 13, 6, 3, ARGB.color(137, 137, 137));
 		}
 
 		if (nextPageVisible) {
 			if (onScrollbarBottom(mouseX, mouseY))
-				context.blitSprite(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3);
-			else context.blitSprite(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3, ARGB.color(137, 137, 137));
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3);
+			else graphics.blitSprite(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3, ARGB.color(137, 137, 137));
 		}
-		context.drawString(font, String.format("%d/%d", currentPage, totalPages), 111, 6, CommonColors.GRAY, false);
+		graphics.text(font, String.format("%d/%d", currentPage, totalPages), 111, 6, CommonColors.GRAY, false);
 		if (totalPages <= 1)
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, 18, 12, 15);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, 18, 12, 15);
 		else
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, (int) (18 + (float) (Math.min(currentPage, totalPages) - 1) / (totalPages - 1) * 37), 12, 15);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, (int) (18 + (float) (Math.min(currentPage, totalPages) - 1) / (totalPages - 1) * 37), 12, 15);
 
 		matrices.popMatrix();
 
-		this.renderTooltip(context, mouseX, mouseY);
+		this.extractTooltip(graphics, mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderSlot(GuiGraphics context, Slot slot, int mouseX, int mouseY) {
+	protected void extractSlot(GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN && slot.hasItem() && isSlotHighlighted.getOrDefault(slot.index, false)) {
-			HudHelper.drawBorder(context, slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
+			HudHelper.drawBorder(graphics, slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
 		}
-		super.renderSlot(context, slot, mouseX, mouseY);
+		super.extractSlot(graphics, slot, mouseX, mouseY);
 	}
 
 	@Override
-	protected void slotClicked(Slot slot, int slotId, int button, ClickType actionType) {
+	protected void slotClicked(Slot slot, int slotId, int button, ContainerInput actionType) {
 		if (slotId >= menu.getRowCount() * 9) return;
 		super.slotClicked(slot, slotId, button, actionType);
 	}
@@ -362,16 +362,16 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
 		// Code taken mostly from YACL by isxander. Love you <3
 		@Override
-		public void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			this.renderDefaultSprite(context);
+		public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			this.extractDefaultSprite(graphics);
 			Font font = Minecraft.getInstance().font;
-			Matrix3x2fStack matrices = context.pose();
+			Matrix3x2fStack matrices = graphics.pose();
 			float textScale = 2.f;
 
 			matrices.pushMatrix();
 			matrices.translate(((this.getX() + this.width / 2f) - font.width(getMessage()) * textScale / 2) + 1, (float) this.getY() + (this.height - font.lineHeight * textScale) / 2f - 1);
 			matrices.scale(textScale, textScale);
-			context.drawString(font, getMessage(), 0, 0, CommonColors.WHITE | Mth.ceil(this.alpha * 255.0F) << 24, true);
+			graphics.text(font, getMessage(), 0, 0, CommonColors.WHITE | Mth.ceil(this.alpha * 255.0F) << 24, true);
 			matrices.popMatrix();
 		}
 	}

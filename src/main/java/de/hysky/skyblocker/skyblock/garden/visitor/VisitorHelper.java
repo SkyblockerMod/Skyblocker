@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenPosition;
@@ -51,8 +51,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class VisitorHelper extends AbstractWidget {
 	private static final Set<Visitor> activeVisitors = new HashSet<>();
@@ -85,7 +85,7 @@ public class VisitorHelper extends AbstractWidget {
 
 			processVisitor = true;
 			ScreenEvents.afterTick(screen).register(_screen -> updateVisitors(handledScreen.getMenu()));
-			Screens.getButtons(screen).add(new VisitorHelper(xOffset, yOffset));
+			Screens.getWidgets(screen).add(new VisitorHelper(xOffset, yOffset));
 		});
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _buildContext) ->
@@ -200,7 +200,7 @@ public class VisitorHelper extends AbstractWidget {
 	/**
 	 * Draws the visitor items and their associated information.
 	 */
-	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+	public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		if (activeVisitors.isEmpty()) return;
 
 		Font textRenderer = Minecraft.getInstance().font;
@@ -208,7 +208,7 @@ public class VisitorHelper extends AbstractWidget {
 		int newWidth = 0;
 		int x = getX() + PADDING;
 		int y = getY() - (int) (textRenderer.lineHeight / 2f - ICON_SIZE * 0.95f / 2) + PADDING;
-		context.fill(getX(), getY(), getRight(), getBottom(), 0x18_80_80_80);
+		graphics.fill(getX(), getY(), getRight(), getBottom(), 0x18_80_80_80);
 
 		for (Object2IntMap.Entry<Component> entry : groupedItems.object2IntEntrySet()) {
 			Component itemName = entry.getKey();
@@ -221,13 +221,13 @@ public class VisitorHelper extends AbstractWidget {
 			for (Visitor visitor : visitors) {
 				int yPosition = y + index * (LINE_HEIGHT + textRenderer.lineHeight);
 
-				context.pose().pushMatrix();
-				context.pose().translate(x, yPosition + (float) textRenderer.lineHeight / 2 - ICON_SIZE * 0.95f / 2);
-				context.pose().scale(0.95f, 0.95f);
-				context.renderItem(visitor.head(), 0, 0);
-				context.pose().popMatrix();
+				graphics.pose().pushMatrix();
+				graphics.pose().translate(x, yPosition + (float) textRenderer.lineHeight / 2 - ICON_SIZE * 0.95f / 2);
+				graphics.pose().scale(0.95f, 0.95f);
+				graphics.item(visitor.head(), 0, 0);
+				graphics.pose().popMatrix();
 
-				context.drawString(textRenderer, visitor.name(), x + (int) (ICON_SIZE * 0.95f) + 4, yPosition, CommonColors.WHITE, true);
+				graphics.text(textRenderer, visitor.name(), x + (int) (ICON_SIZE * 0.95f) + 4, yPosition, CommonColors.WHITE, true);
 
 				index++;
 			}
@@ -238,11 +238,11 @@ public class VisitorHelper extends AbstractWidget {
 			int yPosition = y + index * (LINE_HEIGHT + textRenderer.lineHeight);
 
 			ItemStack cachedStack = getCachedItem(itemName.getString());
-			context.pose().pushMatrix();
-			context.pose().translate(iconX, yPosition + (float) textRenderer.lineHeight / 2 - ICON_SIZE * 0.95f / 2);
-			context.pose().scale(0.95f, 0.95f);
-			context.renderItem(cachedStack, 0, 0);
-			context.pose().popMatrix();
+			graphics.pose().pushMatrix();
+			graphics.pose().translate(iconX, yPosition + (float) textRenderer.lineHeight / 2 - ICON_SIZE * 0.95f / 2);
+			graphics.pose().scale(0.95f, 0.95f);
+			graphics.item(cachedStack, 0, 0);
+			graphics.pose().popMatrix();
 
 			MutableComponent name = cachedStack.getHoverName().copy();
 			MutableComponent itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
@@ -259,7 +259,7 @@ public class VisitorHelper extends AbstractWidget {
 			}
 			newWidth = Math.max(newWidth, textX + textRenderer.width(itemText) - x);
 
-			drawTextWithHoverUnderline(context, textRenderer, itemText, textX, yPosition, mouseX, mouseY);
+			extractTextWithHoverUnderline(graphics, textRenderer, itemText, textX, yPosition, mouseX, mouseY);
 
 			index++;
 		}
@@ -334,11 +334,11 @@ public class VisitorHelper extends AbstractWidget {
 		updateItems();
 	}
 
-	private static void drawTextWithHoverUnderline(GuiGraphics context, Font textRenderer, Component text, int x, int y, double mouseX, double mouseY) {
-		context.drawString(textRenderer, text, x, y, CommonColors.WHITE, true);
+	private static void extractTextWithHoverUnderline(GuiGraphicsExtractor graphics, Font textRenderer, Component text, int x, int y, double mouseX, double mouseY) {
+		graphics.text(textRenderer, text, x, y, CommonColors.WHITE, true);
 
 		if (isMouseOverText(textRenderer, text, x, y, mouseX, mouseY)) {
-			context.hLine(x, x + textRenderer.width(text), y + textRenderer.lineHeight, CommonColors.WHITE);
+			graphics.horizontalLine(x, x + textRenderer.width(text), y + textRenderer.lineHeight, CommonColors.WHITE);
 		}
 	}
 

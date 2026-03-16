@@ -268,14 +268,14 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 		// Backpack Preview
 		boolean shiftDown = SkyblockerConfigManager.get().uiAndVisuals.backpackPreviewWithoutShift ^ HudHelper.hasShiftDown();
-		if (shiftDown && getTitle().getString().equals("Storage") && hoveredSlot.container != minecraft.player.getInventory() && BackpackPreview.renderPreview(context, this, hoveredSlot.getContainerSlot(), x, y)) {
+		if (shiftDown && getTitle().getString().equals("Storage") && hoveredSlot.container != minecraft.player.getInventory() && BackpackPreview.extractPreview(context, this, hoveredSlot.getContainerSlot(), x, y)) {
 			return;
 		}
 
 		// Compactor Preview
 		if (SkyblockerConfigManager.get().uiAndVisuals.compactorDeletorPreview) {
 			Matcher matcher = CompactorDeletorPreview.NAME.matcher(stack.getSkyblockId());
-			if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, getTooltipFromContainerItem(stack), matcher.group("type"), matcher.group("size"), x, y)) {
+			if (matcher.matches() && CompactorDeletorPreview.extractPreview(context, stack, getTooltipFromContainerItem(stack), matcher.group("type"), matcher.group("size"), x, y)) {
 				return;
 			}
 		}
@@ -420,7 +420,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	@Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V"))
 	private void skyblocker$drawSlotText(CallbackInfo ci, @Local(argsOnly = true) GuiGraphics context, @Local(argsOnly = true) Slot slot) {
 		if (Utils.isOnSkyblock()) {
-			SlotTextManager.renderSlotText(context, font, slot);
+			SlotTextManager.extractSlotText(context, font, slot);
 		}
 	}
 }

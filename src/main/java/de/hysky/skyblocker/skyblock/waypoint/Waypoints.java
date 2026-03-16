@@ -62,8 +62,8 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class Waypoints {
 	public static final Logger LOGGER = LoggerFactory.getLogger(Waypoints.class);
@@ -84,7 +84,7 @@ public class Waypoints {
 		ClientLifecycleEvents.CLIENT_STOPPING.register(Waypoints::saveWaypoints);
 		WorldRenderExtractionCallback.EVENT.register(Waypoints::extractRendering);
 		ClientCommandRegistrationCallback.EVENT.register(Waypoints::registerCommands);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		Scheduler.INSTANCE.scheduleCyclic(Waypoints::tick, 1);
 	}
 

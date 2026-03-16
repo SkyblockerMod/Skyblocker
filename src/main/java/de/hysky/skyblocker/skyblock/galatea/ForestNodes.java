@@ -97,7 +97,7 @@ public class ForestNodes {
 		// Count those with minecraft:string
 		return (int) entities.stream()
 				.filter(entity -> {
-					ItemStack stack = entity.getItemStack();
+					ItemStack stack = entity.itemRenderState().itemStack();
 					return !stack.isEmpty() && stack.getItem().equals(Items.STRING);
 				})
 				.count();

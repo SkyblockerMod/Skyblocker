@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -110,8 +110,8 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 	}
 
 	@Override
-	protected void renderListItems(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-		super.renderListItems(context, mouseX, mouseY, deltaTicks);
+	protected void extractListItems(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
+		super.extractListItems(context, mouseX, mouseY, deltaTicks);
 		insertPosition = null;
 		int insertButtonY;
 		int position;
@@ -158,7 +158,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 				boolean top = Math.abs(mouseY - rowTop) < Math.abs(mouseY - rowBottom);
 				if (top) {
 					insertButtonY = rowTop;
-					AbstractWaypointEntry above = nextEntry(ScreenDirection.UP, ignored -> true, hoveredEntry);
+					AbstractWaypointEntry above = nextEntry(ScreenDirection.UP, _ -> true, hoveredEntry);
 					switch (above) {
 						case WaypointEntry entry -> {
 							groupEntry = entry.groupEntry;
@@ -188,7 +188,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		if (insertButtonY <= getY() || insertButtonY >= getBottom() || mX > 32) return;
 		boolean hovering = isMouseOver(mouseX, mouseY) && Math.abs(mouseY - insertButtonY) <= 6 && mX < 16 && mX >= -8;
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, hovering ? INSERT_HIGHLIGHTED_TEXTURE : INSERT_TEXTURE, getRowLeft(), insertButtonY - 5, 48, 11);
-		if (Debug.debugEnabled()) context.drawString(minecraft.font, String.valueOf(position), getX(), getY(), -1, true);
+		if (Debug.debugEnabled()) context.text(minecraft.font, String.valueOf(position), getX(), getY(), -1, true);
 		if (hovering) {
 			insertPosition = new InsertPosition(groupEntry, position);
 			context.requestCursor(CursorTypes.POINTING_HAND);
@@ -259,14 +259,14 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			layout.addChild(rightLayout, LayoutSettings::alignHorizontallyRight);
 
 			Component arrow = Component.nullToEmpty(collapsed ? "▲" : "▼");
-			Button collapseWaypoint = Button.builder(arrow, button -> {
+			Button collapseWaypoint = Button.builder(arrow, _ -> {
 				if (collapsed) collapsedGroups.remove(group);
 				else collapsedGroups.add(group);
 				updateEntries();
 			}).size(11, 11).build();
 			leftLayout.addChild(collapseWaypoint);
 
-			enabled = Checkbox.builder(Component.empty(), minecraft.font).selected(shouldBeChecked()).onValueChange((checkbox, checked) -> group.waypoints().forEach(waypoint -> screen.enabledChanged(waypoint, checked))).build();
+			enabled = Checkbox.builder(Component.empty(), minecraft.font).selected(shouldBeChecked()).onValueChange((_, checked) -> group.waypoints().forEach(waypoint -> screen.enabledChanged(waypoint, checked))).build();
 			leftLayout.addChild(enabled);
 
 			EditBox nameField = new EditBox(minecraft.font, 70, 20, Component.literal("Name"));
@@ -302,7 +302,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 					this::updateWaypointType
 			));
 
-			Button buttonNewWaypoint = Button.builder(Component.translatable("skyblocker.waypoints.new"), ignored -> {
+			Button buttonNewWaypoint = Button.builder(Component.translatable("skyblocker.waypoints.new"), _ -> {
 				WaypointEntry waypointEntry = new WaypointEntry(this);
 				group.waypoints().add(waypointEntry.waypoint);
 				WaypointsListWidget.this.updateEntries();
@@ -314,7 +314,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			rightLayout.addChild(buttonNewWaypoint);
 
 			Component deleteText = Component.translatable("selectServer.deleteButton");
-			Button buttonDelete = SpriteIconButton.builder(deleteText, ignored -> {
+			Button buttonDelete = SpriteIconButton.builder(deleteText, _ -> {
 				waypoints.remove(group);
 				updateEntries();
 			}, true).size(20, 20).sprite(DELETE_ICON, ICON_WIDTH, ICON_HEIGHT).build();
@@ -372,10 +372,10 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			layout.setPosition(this.getX(), this.getY());
 			for (AbstractWidget child : children) {
-				child.render(context, mouseX, mouseY, deltaTicks);
+				child.extractRenderState(context, mouseX, mouseY, deltaTicks);
 			}
 		}
 	}
@@ -547,13 +547,13 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			layout.setPosition(this.getX(), this.getY());
 			boolean showButtons = hovered && mouseY >= buttonUp.getY() - 1 && mouseY <= buttonUp.getBottom();
 			buttonUp.visible = showButtons;
 			buttonDown.visible = showButtons;
 			for (AbstractWidget child : children) {
-				child.render(context, mouseX, mouseY, deltaTicks);
+				child.extractRenderState(context, mouseX, mouseY, deltaTicks);
 			}
 		}
 	}
@@ -582,7 +582,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		}
 
 		@Override
-		protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
 			int padding = 1;
 			context.fill(getX() + padding, getY() + padding, getRight() - padding, getBottom() - padding, isHovered() ? CommonColors.WHITE : CommonColors.BLACK);
 			context.fill(getX() + padding + 1, getY() + padding + 1, getRight() - padding - 1, getBottom() - padding - 1, this.color);

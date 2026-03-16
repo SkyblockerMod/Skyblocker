@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -77,8 +77,8 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blit(RenderPipelines.GUI_TEXTURED,
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		graphics.blit(RenderPipelines.GUI_TEXTURED,
 				GRADIENT_TEXTURE,
 				getX() + HORIZONTAL_MARGIN,
 				getY() + VERTICAL_MARGIN,
@@ -89,7 +89,7 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 				textureWidth, textureHeight
 		);
 		for (KeyframeWidget frame : keyframes) {
-			frame.render(context, mouseX, mouseY, delta);
+			frame.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 	}
 
@@ -197,9 +197,9 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-			context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color);
-			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), isFocused() ? -1 : CommonColors.GRAY);
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color);
+			HudHelper.drawBorder(graphics, getX(), getY(), getWidth(), getHeight(), isFocused() ? -1 : CommonColors.GRAY);
 		}
 
 		@Override

@@ -56,7 +56,7 @@ public class QuickNav {
 			LOGGER.error("[Skyblocker] Failed to parse Quick Nav Button with regex: {}", buttonInfo.uiTitle, e);
 			LocalPlayer player = Minecraft.getInstance().player;
 			if (player != null) {
-				player.displayClientMessage(Constants.PREFIX.get().append(Component.literal("Invalid regex in Quick Nav Button " + (id + 1) + "!").withStyle(ChatFormatting.RED)), false);
+				player.sendSystemMessage(Constants.PREFIX.get().append(Component.literal("Invalid regex in Quick Nav Button " + (id + 1) + "!").withStyle(ChatFormatting.RED)));
 			}
 		}
 

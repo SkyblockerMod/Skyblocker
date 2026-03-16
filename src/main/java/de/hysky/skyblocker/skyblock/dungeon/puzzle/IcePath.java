@@ -23,7 +23,7 @@ import org.joml.Vector2ic;
 import org.jspecify.annotations.Nullable;
 
 import static de.hysky.skyblocker.skyblock.dungeon.puzzle.IceFill.boardToString;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

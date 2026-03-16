@@ -67,7 +67,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public final class ItemUtils {
 	public static final String ID = "id";
@@ -76,7 +76,7 @@ public final class ItemUtils {
 	public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
 	private static final Codec<Holder<Item>> EMPTY_ALLOWING_ITEM_CODEC = BuiltInRegistries.ITEM.holderByNameCodec();
 	public static final Codec<ItemStack> EMPTY_ALLOWING_ITEMSTACK_CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
-			EMPTY_ALLOWING_ITEM_CODEC.fieldOf("id").forGetter(ItemStack::getItemHolder),
+			EMPTY_ALLOWING_ITEM_CODEC.fieldOf("id").forGetter(ItemStack::typeHolder),
 			Codec.INT.orElse(1).fieldOf("count").forGetter(ItemStack::getCount),
 			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
 	).apply(instance, ItemStack::new)));

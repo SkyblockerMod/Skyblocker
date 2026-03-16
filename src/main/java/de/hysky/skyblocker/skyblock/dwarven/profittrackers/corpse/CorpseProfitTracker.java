@@ -43,8 +43,8 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public final class CorpseProfitTracker extends AbstractProfitTracker {
 	// Items without a proper item id or price
@@ -137,12 +137,12 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			}
 			currentProfileRewards.add(lastCorpseLoot);
 			if (!lastCorpseLoot.isPriceDataComplete()) {
-				Minecraft.getInstance().gui.getChat().addMessage(
+				Minecraft.getInstance().gui.getChat().addClientSystemMessage(
 						Constants.PREFIX.get().append(Component.translatable("skyblocker.corpseTracker.somethingWentWrong").withStyle(ChatFormatting.GOLD))
 				);
 			} else {	// if forceEnglishCorpseProfitTracker is FALSE - use normal translation
 				if (!SkyblockerConfigManager.get().mining.glacite.forceEnglishCorpseProfitTracker) {
-					Minecraft.getInstance().gui.getChat().addMessage(
+					Minecraft.getInstance().gui.getChat().addClientSystemMessage(
 							Constants.PREFIX.get()
 									.append(Component.translatable("skyblocker.corpseTracker.corpseProfit", Component.literal(Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit()))
 											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED)))
@@ -152,7 +152,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 									)
 					);
 				} else {	// else, if forceEnglishCorpseProfitTracker is TRUE - force English translation
-					Minecraft.getInstance().gui.getChat().addMessage(
+					Minecraft.getInstance().gui.getChat().addClientSystemMessage(
 							Constants.PREFIX.get()
 									.append(Component.literal(String.format(CORPSE_PROFIT_MESSAGE, Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit())))
 											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED))

@@ -95,7 +95,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		ItemStack farmingToolStack = client.player.getMainHandItem();
 		String itemId = farmingToolStack.getSkyblockId();
 		String cropItemId = FARMING_TOOLS.getOrDefault(itemId, "");
-		if (cropItemId.equals("DOUBLE_PLANT") && client.level.getDayTime() >= 12000) {
+		if (cropItemId.equals("DOUBLE_PLANT") && client.level.getDefaultClockTime() >= 12000) {
 			cropItemId = "MOONFLOWER";
 		}
 		ItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.

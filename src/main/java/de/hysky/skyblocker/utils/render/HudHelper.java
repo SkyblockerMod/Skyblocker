@@ -17,8 +17,8 @@ import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState
 import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.OutlinedTextGuiElementRenderState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.PlayerFaceExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.PlayerSkinRenderCache;
@@ -51,19 +51,19 @@ public class HudHelper {
 	 */
 	private static final TexturePool BLIT_TEXTURE_POOL = TexturePool.create("Blit Pool", 4, GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_COPY_DST, TextureFormat.RGBA8);
 
-	public static void renderNineSliceColored(GuiGraphics context, Identifier texture, int x, int y, int width, int height, int argb) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, width, height, argb);
+	public static void renderNineSliceColored(GuiGraphicsExtractor graphics, Identifier texture, int x, int y, int width, int height, int argb) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, width, height, argb);
 	}
 
-	public static void renderNineSliceColored(GuiGraphics context, Identifier texture, int x, int y, int width, int height, Color color) {
-		renderNineSliceColored(context, texture, x, y, width, height, ARGB.color(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
+	public static void renderNineSliceColored(GuiGraphicsExtractor graphics, Identifier texture, int x, int y, int width, int height, Color color) {
+		renderNineSliceColored(graphics, texture, x, y, width, height, ARGB.color(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
 	}
 
-	public static void drawHorizontalGradient(GuiGraphics context, float startX, float startY, float endX, float endY, int colorStart, int colorEnd) {
-		context.guiRenderState.submitGuiElement(new HorizontalGradientGuiElementRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), (int) startX, (int) startY, (int) endX, (int) endY, colorStart, colorEnd, context.scissorStack.peek()));
+	public static void drawHorizontalGradient(GuiGraphicsExtractor graphics, float startX, float startY, float endX, float endY, int colorStart, int colorEnd) {
+		graphics.guiRenderState.submitGuiElement(new HorizontalGradientGuiElementRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), (int) startX, (int) startY, (int) endX, (int) endY, colorStart, colorEnd, context.scissorStack.peek()));
 	}
 
-	public static void drawBorder(GuiGraphics context, int x, int y, int width, int height, int color) {
+	public static void drawBorder(GuiGraphicsExtractor context, int x, int y, int width, int height, int color) {
 		context.fill(x, y, x + width, y + 1, color);
 		context.fill(x, y + height - 1, x + width, y + height, color);
 		context.fill(x, y + 1, x + 1, y + height - 1, color);
@@ -76,43 +76,43 @@ public class HudHelper {
 	 * @param vertices vertices of shape
 	 * @param color color of shape
 	 */
-	public static void drawCustomShape(GuiGraphics context, List<Vector2f> vertices, int color) {
-		context.guiRenderState.submitGuiElement(new CustomShapeGuiElementRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), vertices, color, context.scissorStack.peek()));
+	public static void drawCustomShape(GuiGraphicsExtractor graphics, List<Vector2f> vertices, int color) {
+		graphics.guiRenderState.submitGuiElement(new CustomShapeGuiElementRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), vertices, color, context.scissorStack.peek()));
 	}
 
 	/**
 	 * Draws a player head without blocking or a default head if profile is not available immediately.
 	 * This fetches the profile so it will be available for future calls to this method.
 	 */
-	public static void drawPlayerHead(GuiGraphics context, int x, int y, int size, UUID uuid) {
+	public static void drawPlayerHead(GuiGraphicsExtractor graphics, int x, int y, int size, UUID uuid) {
 		PlayerSkin texture = CLIENT.playerSkinRenderCache().lookup(ResolvableProfile.createUnresolved(uuid))
 				.getNow(Optional.empty())
 				.map(PlayerSkinRenderCache.RenderInfo::playerSkin)
 				.orElseGet(() -> DefaultPlayerSkin.get(uuid));
-		PlayerFaceRenderer.draw(context, texture, x, y, size);
+		PlayerFaceExtractor.extractRenderState(graphics, texture, x, y, size);
 	}
 
-	public static <S> void drawEquipment(GuiGraphics context, EquipmentLayerRenderer equipmentRenderer, EquipmentClientInfo.LayerType layerType, ResourceKey<EquipmentAsset> assetKey, Model<S> model, S state, ItemStack stack, int x1, int y1, int x2, int y2, float rotation, float scale, float offset) {
+	public static <S> void drawEquipment(GuiGraphicsExtractor graphics, EquipmentLayerRenderer equipmentRenderer, EquipmentClientInfo.LayerType layerType, ResourceKey<EquipmentAsset> assetKey, Model<S> model, S state, ItemStack stack, int x1, int y1, int x2, int y2, float rotation, float scale, float offset) {
 		EquipmentGuiElementRenderState<S> renderState = new EquipmentGuiElementRenderState<>(equipmentRenderer, layerType, assetKey, model, state, stack, x1, y1, x2, y2, rotation, scale, offset, context.scissorStack.peek());
 
-		context.guiRenderState.submitPicturesInPictureState(renderState);
+		graphics.guiRenderState.submitPicturesInPictureState(renderState);
 	}
 
-	public static void drawOutlinedText(GuiGraphics context, Component text, int x, int y, int color, int outlineColor) {
+	public static void drawOutlinedText(GuiGraphicsExtractor graphics, Component text, int x, int y, int color, int outlineColor) {
 		FormattedCharSequence orderedText = text.getVisualOrderText();
-		drawOutlinedText(context, orderedText, ModernUICompatibility.MODERNUI_ENABLED ? Component.literal(text.getString()).getVisualOrderText() : orderedText, x, y, color, outlineColor);
+		drawOutlinedText(graphics, orderedText, ModernUICompatibility.MODERNUI_ENABLED ? Component.literal(text.getString()).getVisualOrderText() : orderedText, x, y, color, outlineColor);
 	}
 
-	public static void drawOutlinedText(GuiGraphics context, FormattedCharSequence text, int x, int y, int color, int outlineColor) {
-		drawOutlinedText(context, text, text, x, y, color, outlineColor);
+	public static void drawOutlinedText(GuiGraphicsExtractor graphics, FormattedCharSequence text, int x, int y, int color, int outlineColor) {
+		drawOutlinedText(graphics, text, text, x, y, color, outlineColor);
 	}
 
-	private static void drawOutlinedText(GuiGraphics context, FormattedCharSequence text, FormattedCharSequence outlineText, int x, int y, int color, int outlineColor) {
-		if (CaxtonCompatibility.drawOutlinedText(context, text, x, y, color, outlineColor)) return;
-		if (ModernUICompatibility.drawOutlinedText(context, text, outlineText, x, y, color, outlineColor)) return;
+	private static void drawOutlinedText(GuiGraphicsExtractor graphics, FormattedCharSequence text, FormattedCharSequence outlineText, int x, int y, int color, int outlineColor) {
+		if (CaxtonCompatibility.drawOutlinedText(graphics, text, x, y, color, outlineColor)) return;
+		if (ModernUICompatibility.extractOutlinedText(graphics, text, outlineText, x, y, color, outlineColor)) return;
 
 		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.font, text, new Matrix3x2f(context.pose()), x, y, color, outlineColor, false, false, context.scissorStack.peek());
-		context.guiRenderState.submitText(renderState);
+		graphics.guiRenderState.submitText(renderState);
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class HudHelper {
 	 *
 	 * @param radius The strength of the blur, must be positive.
 	 */
-	public static void submitBlurredRectangle(GuiGraphics graphics, int x0, int y0, int x1, int y1, int radius) {
+	public static void submitBlurredRectangle(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, int radius) {
 		RenderTarget mainRenderTarget = CLIENT.getMainRenderTarget();
 		int requiredWidth = mainRenderTarget.width;
 		int requiredHeight = mainRenderTarget.height;

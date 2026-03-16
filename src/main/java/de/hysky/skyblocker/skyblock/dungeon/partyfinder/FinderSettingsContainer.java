@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -275,15 +275,15 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		if (!visible || !isInitialized) return;
-		this.classLevelRange.render(context, mouseX, mouseY, delta);
-		this.dungeonLevelRange.render(context, mouseX, mouseY, delta);
+		this.classLevelRange.extractRenderState(graphics, mouseX, mouseY, a);
+		this.dungeonLevelRange.extractRenderState(graphics, mouseX, mouseY, a);
 
 		// Render the dropdowns last to fix overlap issue.
-		this.sortGroupsSelector.render(context, mouseX, mouseY, delta);
-		this.floorSelector.render(context, mouseX, mouseY, delta);
-		this.dungeonTypeSelector.render(context, mouseX, mouseY, delta);
+		this.sortGroupsSelector.extractRenderState(graphics, mouseX, mouseY, a);
+		this.floorSelector.extractRenderState(graphics, mouseX, mouseY, a);
+		this.dungeonTypeSelector.extractRenderState(graphics, mouseX, mouseY, a);
 	}
 
 	@Override

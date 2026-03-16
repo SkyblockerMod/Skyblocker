@@ -29,8 +29,8 @@ public class ChatRuleLocationConfigScreen extends Screen {
 	protected void init() {
 		assert minecraft != null;
 		addRenderableOnly((context, mouseX, mouseY, delta) -> {
-			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
-			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen.note"), width / 2, (38 - minecraft.font.lineHeight), CommonColors.WHITE);
+			context.centeredText(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
+			context.centeredText(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen.note"), width / 2, (38 - minecraft.font.lineHeight), CommonColors.WHITE);
 		});
 
 		ItemTickList<Location> itemTickList = addRenderableWidget(new ItemTickList<>(minecraft, width, height - 107, 43, 24, enabledLocations, EnumSet.complementOf(EnumSet.of(Location.UNKNOWN)), true).init());

@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -46,26 +46,26 @@ public class EventToast implements Toast {
 
 	}
 	@Override
-	public void render(GuiGraphics context, Font textRenderer, long startTime) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
+	public void extractRenderState(GuiGraphicsExtractor graphics, Font textRenderer, long startTime) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
 
 		int y = (height() - getInnerContentsHeight())/2;
-		y = 2 + drawMessage(context, 30, y, CommonColors.WHITE);
-		drawTimer(context, 30, y);
+		y = 2 + extractMessage(graphics, 30, y, CommonColors.WHITE);
+		extractTimer(graphics, 30, y);
 
-		context.renderFakeItem(icon, 8, height()/2 - 8);
+		graphics.fakeItem(icon, 8, height()/2 - 8);
 	}
 
-	protected int drawMessage(GuiGraphics context, int x, int y, int color) {
+	protected int extractMessage(GuiGraphicsExtractor graphics, int x, int y, int color) {
 		Font textRenderer = Minecraft.getInstance().font;
 		for (FormattedCharSequence orderedText : started ? messageNow : message) {
-			context.drawString(textRenderer, orderedText, x, y, color, false);
+			graphics.text(textRenderer, orderedText, x, y, color, false);
 			y += textRenderer.lineHeight;
 		}
 		return y;
 	}
 
-	protected void drawTimer(GuiGraphics context, int x, int y) {
+	protected void extractTimer(GuiGraphicsExtractor graphics, int x, int y) {
 		long currentTime = System.currentTimeMillis() / 1000;
 		int timeTillEvent = (int) (eventStartTime - currentTime);
 		started = timeTillEvent < 0;
@@ -74,7 +74,7 @@ public class EventToast implements Toast {
 		Component time = SkyblockTime.formatTime(timeTillEvent);
 
 		Font textRenderer = Minecraft.getInstance().font;
-		context.drawString(textRenderer, time, x, y, CommonColors.SOFT_YELLOW, false);
+		graphics.text(textRenderer, time, x, y, CommonColors.SOFT_YELLOW, false);
 	}
 
 	@Override
