@@ -139,6 +139,12 @@ public class FancyStatusBars {
                                                 LOGGER.warn("[Skyblocker] Unknown status bar: {}", s);
                                         }
                                 }
+                        } else {
+                                // No saved config — apply preferred default layout for first-time users
+                                for (StatusBarType type : StatusBarType.values()) {
+                                        StatusBar bar = statusBars.get(type);
+                                        if (bar != null) applyPreferredBarDefaults(type, bar);
+                                }
                         }
                         placeBarsInPositioner();
                         configLoaded = true;
@@ -185,36 +191,68 @@ public class FancyStatusBars {
 
         private static boolean configLoaded = false;
 
+        /**
+         * Applies the preferred default layout for a single bar.
+         * Free-floating compact cluster above the hotbar, mirroring the recommended out-of-box look.
+         */
+        private static void applyPreferredBarDefaults(StatusBarType type, StatusBar bar) {
+                bar.anchor = null;
+                bar.gridX = 0; bar.gridY = 0;
+                bar.enabled = true;
+                bar.visible = true;
+                bar.barHeight = 9;
+                bar.showMax = false;
+                bar.showOverflow = false;
+                bar.textCustomScale = 1.0f;
+                bar.iconCustomOffX = 0; bar.iconCustomOffY = 0;
+                bar.iconCustomW = StatusBar.ICON_SIZE; bar.iconCustomH = StatusBar.ICON_SIZE;
+                bar.setIconPosition(StatusBar.IconPosition.LEFT);
+                switch (type) {
+                        case HEALTH -> {
+                                bar.width = 0.06535948f; bar.x = 0.40882352f; bar.y = 0.90413946f;
+                                bar.borderRadius = 10;
+                                bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
+                                bar.textCustomOffX = 23; bar.textCustomOffY = -3;
+                        }
+                        case INTELLIGENCE -> {
+                                bar.width = 0.06535948f; bar.x = 0.46568626f; bar.y = 0.90413946f;
+                                bar.borderRadius = 10;
+                                bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
+                                bar.textCustomOffX = 25; bar.textCustomOffY = -3;
+                        }
+                        case DEFENSE -> {
+                                bar.width = 0.06535948f; bar.x = 0.5245098f; bar.y = 0.90413946f;
+                                bar.borderRadius = 10;
+                                bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
+                                bar.textCustomOffX = 22; bar.textCustomOffY = -3;
+                        }
+                        case EXPERIENCE -> {
+                                bar.width = 0.1882353f; bar.x = 0.40098038f; bar.y = 0.93028325f;
+                                bar.borderRadius = 0;
+                                bar.setTextPosition(StatusBar.TextPosition.BAR_CENTER);
+                                bar.textCustomOffX = 0; bar.textCustomOffY = 0;
+                        }
+                        case SPEED -> {
+                                bar.width = 0.06535948f; bar.x = 0.34607843f; bar.y = 0.96949893f;
+                                bar.borderRadius = 10;
+                                bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
+                                bar.textCustomOffX = 28; bar.textCustomOffY = -3;
+                        }
+                        case AIR -> {
+                                bar.width = 0.06535948f; bar.x = 0.5921569f; bar.y = 0.96949893f;
+                                bar.borderRadius = 10;
+                                bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
+                                bar.textCustomOffX = 29; bar.textCustomOffY = -2;
+                        }
+                }
+        }
+
         public static void resetToDefaults() {
                 barPositioner.clear();
-                java.util.Map<String, Integer> rowCounts = new java.util.HashMap<>();
                 for (StatusBarType type : StatusBarType.values()) {
                         StatusBar bar = statusBars.get(type);
                         if (bar == null) continue;
-                        bar.anchor = type.getDefaultAnchor();
-                        bar.gridY = type.getDefaultGridY();
-                        bar.size = 1;
-                        bar.enabled = true;
-                        bar.visible = true;
-                        bar.x = 0;
-                        bar.y = 0;
-                        bar.width = 0;
-                        String rowKey = type.getDefaultAnchor().name() + ":" + type.getDefaultGridY();
-                        bar.gridX = rowCounts.merge(rowKey, 1, Integer::sum) - 1;
-                        // Reset all per-bar visual customization to defaults
-                        bar.barHeight = StatusBar.BAR_HEIGHT;
-                        bar.borderRadius = 0;
-                        bar.setIconPosition(StatusBar.IconPosition.LEFT);
-                        bar.setTextPosition(StatusBar.TextPosition.BAR_CENTER);
-                        bar.showMax = false;
-                        bar.showOverflow = false;
-                        bar.textCustomOffX = 0;
-                        bar.textCustomOffY = 0;
-                        bar.textCustomScale = 1.0f;
-                        bar.iconCustomOffX = 0;
-                        bar.iconCustomOffY = 0;
-                        bar.iconCustomW = StatusBar.ICON_SIZE;
-                        bar.iconCustomH = StatusBar.ICON_SIZE;
+                        applyPreferredBarDefaults(type, bar);
                 }
                 placeBarsInPositioner();
                 updatePositions(true);
@@ -231,34 +269,11 @@ public class FancyStatusBars {
                 }
                 if (type == null) return;
 
-                // Remove from positioner first
+                // Remove from positioner first (in case bar was anchored)
                 if (target.anchor != null) barPositioner.removeBar(target.anchor, target.gridY, target);
 
-                // Reset layout
-                target.anchor = type.getDefaultAnchor();
-                target.gridY  = type.getDefaultGridY();
-                target.size   = 1;
-                target.enabled = true;
-                target.visible = true;
-                target.x = 0; target.y = 0; target.width = 0;
-
-                // gridX: place at end of its default row (avoids conflicting with other bars)
-                int count = 0;
-                for (StatusBar other : statusBars.values()) {
-                        if (other != target && other.anchor == target.anchor && other.gridY == target.gridY) count++;
-                }
-                target.gridX = count;
-
-                // Reset all visual customization
-                target.barHeight    = StatusBar.BAR_HEIGHT;
-                target.borderRadius = 0;
-                target.setIconPosition(StatusBar.IconPosition.LEFT);
-                target.setTextPosition(StatusBar.TextPosition.BAR_CENTER);
-                target.showMax    = false;
-                target.showOverflow = false;
-                target.textCustomOffX = 0; target.textCustomOffY = 0; target.textCustomScale = 1.0f;
-                target.iconCustomOffX = 0; target.iconCustomOffY = 0;
-                target.iconCustomW = StatusBar.ICON_SIZE; target.iconCustomH = StatusBar.ICON_SIZE;
+                // Apply preferred defaults for this bar
+                applyPreferredBarDefaults(type, target);
 
                 placeBarsInPositioner();
                 updatePositions(true);
