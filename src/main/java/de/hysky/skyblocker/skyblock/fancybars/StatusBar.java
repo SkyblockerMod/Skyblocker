@@ -37,6 +37,7 @@ import net.minecraft.util.StringRepresentable;
 public class StatusBar implements LayoutElement, Renderable, GuiEventListener, NarratableEntry {
         public static final int ICON_SIZE = 9;
         public static final int BAR_HEIGHT = 14;
+        public static final int MIN_BAR_HEIGHT = 9;
         private static final int BAR_BORDER_COLOR = 0xFF1A1A1A;
         private static final int BAR_BACKGROUND_COLOR = 0xFF2D2D2D;
 
@@ -78,6 +79,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
         public BarPositioner.@Nullable BarAnchor anchor = null;
 
         public int size = 1;
+        public int barHeight = BAR_HEIGHT;
 
         public float fill = 0;
         public float overflowFill = 0;
@@ -98,6 +100,12 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
         private IconPosition iconPosition = IconPosition.LEFT;
         private TextPosition textPosition = TextPosition.BAR_CENTER;
+
+        // Custom sub-element offsets (pixels, relative to bar origin)
+        public int textCustomOffX = 0;
+        public int textCustomOffY = 0;
+        public int iconCustomOffX = 0;
+        public int iconCustomOffY = 0;
 
         public boolean showMax = false;
         public boolean showOverflow = false;
@@ -128,29 +136,31 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
         public void renderBar(GuiGraphics context) {
                 if (renderWidth <= 0) return;
                 int transparency = transparency(-1);
-                int iconY = renderY + (BAR_HEIGHT - ICON_SIZE) / 2;
+                int iconY = renderY + (barHeight - ICON_SIZE) / 2;
                 switch (iconPosition) {
                         case LEFT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX, iconY, ICON_SIZE, ICON_SIZE, transparency);
                         case RIGHT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX + renderWidth - ICON_SIZE, iconY, ICON_SIZE, ICON_SIZE, transparency);
+                        case CUSTOM -> context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX + iconCustomOffX, renderY + iconCustomOffY, ICON_SIZE, ICON_SIZE, transparency);
                 }
 
-                int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
-                int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 1 : renderX;
+                boolean iconTakesSpace = iconPosition == IconPosition.LEFT || iconPosition == IconPosition.RIGHT;
+                int barWidth = iconTakesSpace ? renderWidth - ICON_SIZE - 1 : renderWidth;
+                int barX = iconPosition == IconPosition.LEFT ? renderX + ICON_SIZE + 1 : renderX;
 
-                context.fill(barX, renderY, barX + barWidth, renderY + BAR_HEIGHT, transparency(BAR_BORDER_COLOR));
-                context.fill(barX + 1, renderY + 1, barX + barWidth - 1, renderY + BAR_HEIGHT - 1, transparency(BAR_BACKGROUND_COLOR));
+                context.fill(barX, renderY, barX + barWidth, renderY + barHeight, transparency(BAR_BORDER_COLOR));
+                context.fill(barX + 1, renderY + 1, barX + barWidth - 1, renderY + barHeight - 1, transparency(BAR_BACKGROUND_COLOR));
                 drawBarFill(context, barX, barWidth);
         }
 
         protected void drawBarFill(GuiGraphics context, int barX, int barWidth) {
                 int fillPx = (int) ((barWidth - 2) * fill);
                 if (fillPx > 0) {
-                        context.fill(barX + 1, getY() + 1, barX + 1 + fillPx, getY() + BAR_HEIGHT - 1, transparency(colors[0].getRGB()));
+                        context.fill(barX + 1, getY() + 1, barX + 1 + fillPx, getY() + barHeight - 1, transparency(colors[0].getRGB()));
                 }
                 if (hasOverflow() && overflowFill > 0) {
                         int overflowPx = (int) ((barWidth - 2) * Math.min(overflowFill, 1));
                         if (overflowPx > 0) {
-                                context.fill(barX + 1, getY() + 1, barX + 1 + overflowPx, getY() + BAR_HEIGHT - 1, transparency(colors[1].getRGB()));
+                                context.fill(barX + 1, getY() + 1, barX + 1 + overflowPx, getY() + barHeight - 1, transparency(colors[1].getRGB()));
                         }
                 }
         }
@@ -170,10 +180,15 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
         public void renderText(GuiGraphics context) {
                 if (!showText()) return;
                 Font textRenderer = Minecraft.getInstance().font;
-                int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
-                int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 2 : renderX;
+
+                boolean iconTakesSpace = iconPosition == IconPosition.LEFT || iconPosition == IconPosition.RIGHT;
+                int barWidth = iconTakesSpace ? renderWidth - ICON_SIZE - 1 : renderWidth;
+                int barX = iconPosition == IconPosition.LEFT ? renderX + ICON_SIZE + 2 : renderX;
+
                 String stringValue = this.value.toString();
-                MutableComponent text = Component.literal(stringValue).withStyle(style -> style.withColor((textColor == null ? colors[0] : textColor).getRGB()));
+                // Use white text inside the bar for maximum contrast; fall back to type text color
+                int textArgb = textColor != null ? textColor.getRGB() : 0xFFFFFFFF;
+                MutableComponent text = Component.literal(stringValue).withStyle(style -> style.withColor(textArgb));
 
                 if (hasMax() && showMax && max != null) {
                         text.append("/").append(max.toString());
@@ -186,15 +201,15 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
                 int textWidth = textRenderer.width(text);
                 int x;
+                int y;
                 switch (textPosition) {
-                        case RIGHT -> x = barX + barWidth - textWidth;
-                        case CENTER -> x = this.renderX + (renderWidth - textWidth) / 2;
-                        case BAR_CENTER -> x = barX + (barWidth - textWidth) / 2;
-                        default -> x = barX;
+                        case RIGHT -> { x = barX + barWidth - textWidth - 2; y = renderY + (barHeight - 9) / 2 + 1; }
+                        case BAR_CENTER -> { x = barX + (barWidth - textWidth) / 2; y = renderY + (barHeight - 9) / 2 + 1; }
+                        case CUSTOM -> { x = renderX + textCustomOffX; y = renderY + textCustomOffY; }
+                        default -> { x = barX + 2; y = renderY + (barHeight - 9) / 2 + 1; } // LEFT is the default
                 }
-                int y = this.renderY + (BAR_HEIGHT - 9) / 2 + 1;
 
-                int color = transparency((textColor == null ? colors[0] : textColor).getRGB());
+                int color = transparency(textArgb);
                 int outlineColor = transparency(CommonColors.BLACK);
 
                 HudHelper.drawOutlinedText(context, Component.translationArg(text), x, y, color, outlineColor);
@@ -249,7 +264,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
         @Override
         public int getHeight() {
-                return BAR_HEIGHT;
+                return barHeight;
         }
 
         @Override
@@ -300,7 +315,6 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
         @Override
         public String toString() {
                 return new ToStringBuilder(this)
-                                .append("name", getName())
                                 .append("gridX", gridX)
                                 .append("gridY", gridY)
                                 .append("size", size)
@@ -331,10 +345,35 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 this.textPosition = textPosition;
         }
 
+        /**
+         * Returns the screen rectangle of the text for hit-testing in the config screen.
+         * Only meaningful when textPosition == CUSTOM.
+         */
+        public ScreenRectangle getTextHitArea(Font font) {
+                boolean iconTakesSpace = iconPosition == IconPosition.LEFT || iconPosition == IconPosition.RIGHT;
+                int barX = iconPosition == IconPosition.LEFT ? renderX + ICON_SIZE + 2 : renderX;
+                int tx = textPosition == TextPosition.CUSTOM ? renderX + textCustomOffX : barX;
+                int ty = textPosition == TextPosition.CUSTOM ? renderY + textCustomOffY : renderY + (barHeight - 9) / 2 + 1;
+                String sample = value.toString() + (showMax && max != null ? "/" + max : "");
+                int tw = Math.max(20, font.width(sample));
+                return new ScreenRectangle(tx, ty, tw, 9);
+        }
+
+        /**
+         * Returns the screen rectangle of the icon for hit-testing in the config screen.
+         * Only meaningful when iconPosition == CUSTOM.
+         */
+        public ScreenRectangle getIconHitArea() {
+                int ix = iconPosition == IconPosition.CUSTOM ? renderX + iconCustomOffX : renderX;
+                int iy = iconPosition == IconPosition.CUSTOM ? renderY + iconCustomOffY : renderY + (barHeight - ICON_SIZE) / 2;
+                return new ScreenRectangle(ix, iy, ICON_SIZE, ICON_SIZE);
+        }
+
         public enum IconPosition implements StringRepresentable {
                 LEFT,
                 RIGHT,
-                OFF;
+                OFF,
+                CUSTOM;
 
                 @Override
                 public String getSerializedName() {
@@ -343,6 +382,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
                 @Override
                 public String toString() {
+                        if (this == CUSTOM) return I18n.get("skyblocker.bars.config.commonPosition.CUSTOM");
                         return I18n.get("skyblocker.bars.config.commonPosition." + name());
                 }
         }
@@ -352,7 +392,8 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 CENTER,
                 BAR_CENTER,
                 RIGHT,
-                OFF;
+                OFF,
+                CUSTOM;
 
                 @Override
                 public String getSerializedName() {
@@ -361,8 +402,14 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
                 @Override
                 public String toString() {
-                        if (this == CENTER || this == BAR_CENTER) return I18n.get("skyblocker.bars.config.textPosition." + name());
-                        return I18n.get("skyblocker.bars.config.commonPosition." + name());
+                        return switch (this) {
+                                case BAR_CENTER -> I18n.get("skyblocker.bars.config.textPosition.BAR_CENTER");
+                                case LEFT -> I18n.get("skyblocker.bars.config.textPosition.LEFT");
+                                case RIGHT -> I18n.get("skyblocker.bars.config.textPosition.RIGHT");
+                                case CUSTOM -> I18n.get("skyblocker.bars.config.textPosition.CUSTOM");
+                                case CENTER -> I18n.get("skyblocker.bars.config.textPosition.BAR_CENTER"); // legacy
+                                default -> I18n.get("skyblocker.bars.config.commonPosition." + name());
+                        };
                 }
         }
 
@@ -406,9 +453,17 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 if (object.has("icon_position")) this.iconPosition = IconPosition.valueOf(object.get("icon_position").getAsString().trim());
                 // backwards compat teehee
                 if (object.has("show_text")) this.textPosition = object.get("show_text").getAsBoolean() ? TextPosition.BAR_CENTER : TextPosition.OFF;
-                if (object.has("text_position")) this.textPosition = TextPosition.valueOf(object.get("text_position").getAsString().trim());
+                if (object.has("text_position")) {
+                        TextPosition tp = TextPosition.valueOf(object.get("text_position").getAsString().trim());
+                        this.textPosition = tp == TextPosition.CENTER ? TextPosition.BAR_CENTER : tp;
+                }
                 if (object.has("show_max")) this.showMax = object.get("show_max").getAsBoolean();
                 if (object.has("show_overflow")) this.showOverflow = object.get("show_overflow").getAsBoolean();
+                if (object.has("bar_height")) this.barHeight = Math.max(MIN_BAR_HEIGHT, object.get("bar_height").getAsInt());
+                if (object.has("text_custom_off_x")) this.textCustomOffX = object.get("text_custom_off_x").getAsInt();
+                if (object.has("text_custom_off_y")) this.textCustomOffY = object.get("text_custom_off_y").getAsInt();
+                if (object.has("icon_custom_off_x")) this.iconCustomOffX = object.get("icon_custom_off_x").getAsInt();
+                if (object.has("icon_custom_off_y")) this.iconCustomOffY = object.get("icon_custom_off_y").getAsInt();
         }
 
         public JsonObject toJson() {
@@ -438,6 +493,15 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 object.addProperty("show_max", showMax);
                 object.addProperty("show_overflow", showOverflow);
                 object.addProperty("enabled", enabled);
+                object.addProperty("bar_height", barHeight);
+                if (iconPosition == IconPosition.CUSTOM) {
+                        object.addProperty("icon_custom_off_x", iconCustomOffX);
+                        object.addProperty("icon_custom_off_y", iconCustomOffY);
+                }
+                if (textPosition == TextPosition.CUSTOM) {
+                        object.addProperty("text_custom_off_x", textCustomOffX);
+                        object.addProperty("text_custom_off_y", textCustomOffY);
+                }
                 return object;
         }
 
@@ -450,7 +514,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 @Override
                 protected void drawBarFill(GuiGraphics context, int barX, int barWith) {
                         int top = getY() + 1;
-                        int bottom = getY() + BAR_HEIGHT - 1;
+                        int bottom = getY() + barHeight - 1;
                         int fillInner = barWith - 2;
                         if (hasOverflow() && overflowFill > 0) {
                                 if (overflowFill > fill && SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.IN_FRONT) {
@@ -485,14 +549,6 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 @Override
                 protected Identifier getIcon() {
                         return Utils.isInTheRift() ? CLOCK_ICON : super.getIcon();
-                }
-
-                @Override
-                public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
-                        if (Utils.isInTheRift() && text instanceof Integer time) {
-                                text = time < 60 ? time + "s" : String.format("%dm%02ds", time / 60, time % 60);
-                        }
-                        super.updateValues(fill, overflowFill, text, max, overflow);
                 }
         }
 }

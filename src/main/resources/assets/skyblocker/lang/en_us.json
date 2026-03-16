@@ -38,6 +38,7 @@
   "skyblocker.api.token.noProfileKeys": "Failed to get your profile keys! Some features of the mod may not work temporarily :( (Has your game been open for more than 24 hours?). To reactivate these features, restart the game.",
 
   "skyblocker.bars.config.air": "Air",
+  "skyblocker.bars.config.commonPosition.CUSTOM": "Custom",
   "skyblocker.bars.config.commonPosition.LEFT": "Left",
   "skyblocker.bars.config.commonPosition.OFF": "Off",
   "skyblocker.bars.config.commonPosition.RIGHT": "Right",
@@ -48,6 +49,7 @@
   "skyblocker.bars.config.resetToDefault": "Reset to Default",
   "skyblocker.bars.config.health": "Health",
   "skyblocker.bars.config.hide": "Hide",
+  "skyblocker.bars.config.show": "Show",
   "skyblocker.bars.config.icon": "Icon",
   "skyblocker.bars.config.intelligence": "Intelligence",
   "skyblocker.bars.config.mainColor": "Main Color",
@@ -59,6 +61,9 @@
   "skyblocker.bars.config.textColor": "Text Color",
   "skyblocker.bars.config.textPosition.BAR_CENTER": "Bar Center",
   "skyblocker.bars.config.textPosition.CENTER": "Center",
+  "skyblocker.bars.config.textPosition.CUSTOM": "Custom",
+  "skyblocker.bars.config.textPosition.LEFT": "Bar Left",
+  "skyblocker.bars.config.textPosition.RIGHT": "Bar Right",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
