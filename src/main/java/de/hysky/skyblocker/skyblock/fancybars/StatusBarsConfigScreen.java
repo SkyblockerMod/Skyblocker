@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.PopupScreen;
 import net.minecraft.client.gui.navigation.ScreenDirection;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
@@ -455,10 +455,7 @@ public class StatusBarsConfigScreen extends Screen {
                 values.forEach(this::setup);
                 updateScreenRects();
                 this.addRenderableWidget(Button.builder(Component.literal("?"),
-                                button -> minecraft.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.explanationTitle"))
-                                                .addButton(Component.translatable("gui.ok"), PopupScreen::onClose)
-                                                .setMessage(Component.translatable("skyblocker.bars.config.explanation"))
-                                                .build()))
+                                button -> minecraft.setScreen(new TipsScreen(this)))
                                 .bounds(width - 20, (height - 15) / 2, 15, 15)
                                 .build());
                 this.addRenderableWidget(Button.builder(Component.translatable("skyblocker.bars.config.resetToDefault"),
@@ -593,6 +590,85 @@ public class StatusBarsConfigScreen extends Screen {
                         return true;
                 }
                 return super.mouseReleased(click);
+        }
+
+        // ─────────────────────── Keyboard nudge ───────────────────────
+
+        @Override
+        public boolean keyPressed(KeyEvent keyEvent) {
+                int key = keyEvent.key();
+                boolean arrow = key == GLFW.GLFW_KEY_LEFT || key == GLFW.GLFW_KEY_RIGHT
+                                || key == GLFW.GLFW_KEY_UP || key == GLFW.GLFW_KEY_DOWN;
+
+                int mods = keyEvent.modifiers();
+                boolean shiftHeld = (mods & GLFW.GLFW_MOD_SHIFT) != 0;
+                boolean altHeld   = (mods & GLFW.GLFW_MOD_ALT)   != 0;
+
+                if (arrow && selectedBar != null && (shiftHeld || altHeld)) {
+                        boolean shift = shiftHeld;
+                        boolean alt   = altHeld;
+                        boolean left  = key == GLFW.GLFW_KEY_LEFT;
+                        boolean right = key == GLFW.GLFW_KEY_RIGHT;
+                        boolean up    = key == GLFW.GLFW_KEY_UP;
+                        boolean down  = key == GLFW.GLFW_KEY_DOWN;
+
+                        if (selectedSubElement == null) {
+                                // ── Bar ──
+                                if (shift && selectedBar.anchor == null) {
+                                        // Nudge position (floating bars only)
+                                        if (left)  selectedBar.x -= 1.0f / width;
+                                        if (right) selectedBar.x += 1.0f / width;
+                                        if (up)    selectedBar.y -= 1.0f / height;
+                                        if (down)  selectedBar.y += 1.0f / height;
+                                }
+                                if (alt) {
+                                        // Resize bar
+                                        if ((left || right) && selectedBar.anchor == null) {
+                                                int newW = selectedBar.getWidth() + (right ? 1 : -1);
+                                                selectedBar.setWidth(Math.max(BAR_MINIMUM_WIDTH, newW));
+                                                selectedBar.width = (float) selectedBar.getWidth() / width;
+                                        }
+                                        if (up || down) {
+                                                selectedBar.barHeight = Math.max(StatusBar.MIN_BAR_HEIGHT,
+                                                                selectedBar.barHeight + (down ? 1 : -1));
+                                        }
+                                }
+                        } else if ("text".equals(selectedSubElement)) {
+                                // ── Custom text ──
+                                if (shift) {
+                                        if (left)  selectedBar.textCustomOffX--;
+                                        if (right) selectedBar.textCustomOffX++;
+                                        if (up)    selectedBar.textCustomOffY--;
+                                        if (down)  selectedBar.textCustomOffY++;
+                                }
+                                if (alt) {
+                                        // LEFT/RIGHT scales text; UP/DOWN currently unused for text
+                                        float step = 0.05f;
+                                        if (left)  selectedBar.textCustomScale = Math.max(0.5f, selectedBar.textCustomScale - step);
+                                        if (right) selectedBar.textCustomScale = Math.min(4.0f, selectedBar.textCustomScale + step);
+                                }
+                        } else if ("icon".equals(selectedSubElement)) {
+                                // ── Custom icon ──
+                                if (shift) {
+                                        if (left)  selectedBar.iconCustomOffX--;
+                                        if (right) selectedBar.iconCustomOffX++;
+                                        if (up)    selectedBar.iconCustomOffY--;
+                                        if (down)  selectedBar.iconCustomOffY++;
+                                }
+                                if (alt) {
+                                        if (left)  selectedBar.iconCustomW = Math.max(4, selectedBar.iconCustomW - 1);
+                                        if (right) selectedBar.iconCustomW = Math.min(64, selectedBar.iconCustomW + 1);
+                                        if (up)    selectedBar.iconCustomH = Math.max(4, selectedBar.iconCustomH - 1);
+                                        if (down)  selectedBar.iconCustomH = Math.min(64, selectedBar.iconCustomH + 1);
+                                }
+                        }
+
+                        FancyStatusBars.updatePositions(true);
+                        updateScreenRects();
+                        return true;
+                }
+
+                return super.keyPressed(keyEvent);
         }
 
         @Override
