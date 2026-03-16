@@ -69,7 +69,6 @@ public class Utils {
 	public static final String PROFILE_ID_PREFIX = "Profile ID: ";
 	private static final String PROFILE_ID_SUGGEST_PREFIX = "CLICK THIS TO SUGGEST IT IN CHAT";
 	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
-	private static final HolderLookup.Provider LOOKUP = VanillaRegistries.createLookup();
 	private static boolean isOnHypixel = false;
 	private static boolean isOnSkyblock = false;
 
@@ -596,15 +595,6 @@ public class Utils {
 
 	public static String getUndashedUuid() {
 		return UndashedUuid.toString(getUuid());
-	}
-
-	/**
-	 * Tries to get the dynamic registry manager instance currently in use or else returns {@link #LOOKUP}
-	 */
-	public static HolderLookup.Provider getRegistryWrapperLookup() {
-		Minecraft client = Minecraft.getInstance();
-		// Null check on client for tests
-		return client != null && client.getConnection() != null && client.getConnection().registryAccess() != null ? client.getConnection().registryAccess() : LOOKUP;
 	}
 
 	/**

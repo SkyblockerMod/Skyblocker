@@ -10,6 +10,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.RegistryUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -53,7 +54,7 @@ public class CustomArmorTrims {
 		}
 		try {
 			TRIMS_CACHE.clear();
-			HolderLookup.Provider wrapperLookup = Utils.getRegistryWrapperLookup();
+			HolderLookup.Provider wrapperLookup = RegistryUtils.getRegistryWrapperLookup();
 			for (Reference<TrimMaterial> material : wrapperLookup.lookupOrThrow(Registries.TRIM_MATERIAL).listElements().toList()) {
 				for (Reference<TrimPattern> pattern : wrapperLookup.lookupOrThrow(Registries.TRIM_PATTERN).listElements().toList()) {
 					ArmorTrim trim = new ArmorTrim(material, pattern);

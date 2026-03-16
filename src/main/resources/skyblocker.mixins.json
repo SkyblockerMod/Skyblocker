@@ -8,7 +8,6 @@
     "AbstractContainerScreenMixin",
     "AbstractSignEditScreenMixin",
     "BatMixin",
-	"BlocksMixin",
     "BossHealthOverlayMixin",
     "CameraMixin",
     "ChestBlockEntityMixin",
