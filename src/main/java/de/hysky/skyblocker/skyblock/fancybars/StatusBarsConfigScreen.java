@@ -12,12 +12,10 @@ import de.hysky.skyblocker.skyblock.fancybars.BarPositioner.BarLocation;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.PopupScreen;
-import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.navigation.ScreenDirection;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -33,8 +31,6 @@ public class StatusBarsConfigScreen extends Screen {
         private static final float RESIZE_THRESHOLD = 0.75f;
         private static final int BAR_MINIMUM_WIDTH = 30;
         private static final int DRAG_THRESHOLD = 5;
-        // prioritize left and right cuz they are much smaller than up and down
-        private static final ScreenDirection[] DIRECTION_CHECK_ORDER = new ScreenDirection[]{ScreenDirection.LEFT, ScreenDirection.RIGHT, ScreenDirection.UP, ScreenDirection.DOWN};
 
         private final Map<ScreenRectangle, Pair<StatusBar, BarLocation>> rectToBar = new HashMap<>();
         /**
@@ -46,7 +42,6 @@ public class StatusBarsConfigScreen extends Screen {
         private @Nullable StatusBar cursorBar = null;
         private @Nullable StatusBar selectedBar = null;
         private ScreenPosition cursorOffset = new ScreenPosition(0, 0);
-        private BarLocation currentInsertLocation = new BarLocation(null, 0, 0);
 
         private boolean resizing = false;
         private boolean mouseButtonHeld = false;
@@ -63,9 +58,13 @@ public class StatusBarsConfigScreen extends Screen {
                 cursorBar = statusBar;
                 cursorBar.inMouse = true;
                 cursorBar.enabled = true;
-                currentInsertLocation = BarLocation.of(cursorBar);
+                // Capture rendered pixel width as normalized width so bar stays same size when free-floating
+                if (statusBar.getWidth() > 0) {
+                        statusBar.width = (float) statusBar.getWidth() / this.width;
+                }
                 if (statusBar.anchor != null)
                         FancyStatusBars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
+                statusBar.anchor = null;
                 FancyStatusBars.updatePositions(true);
                 cursorBar.setX(width + 5);
                 updateScreenRects();
@@ -93,79 +92,20 @@ public class StatusBarsConfigScreen extends Screen {
 
                 ScreenRectangle mouseRect = new ScreenRectangle(new ScreenPosition(mouseX - scaleFactor / 2, mouseY - scaleFactor / 2), scaleFactor, scaleFactor);
 
+                // Draw selection outline around selected bar (left-click)
+                if (selectedBar != null && cursorBar == null && selectedBar.enabled) {
+                        int sx = selectedBar.getX() - 1;
+                        int sy = selectedBar.getY() - 1;
+                        int sw = selectedBar.getWidth() + 2;
+                        int sh = selectedBar.getHeight() + 2;
+                        context.fill(sx, sy, sx + sw, sy + 1, 0xFFFFFF55);
+                        context.fill(sx, sy + sh - 1, sx + sw, sy + sh, 0xFFFFFF55);
+                        context.fill(sx, sy, sx + 1, sy + sh, 0xFFFFFF55);
+                        context.fill(sx + sw - 1, sy, sx + sw, sy + sh, 0xFFFFFF55);
+                }
+
                 if (cursorBar != null) {
                         cursorBar.renderCursor(context, mouseX + cursorOffset.x(), mouseY + cursorOffset.y(), delta);
-                        boolean inserted = false;
-                        boolean updatePositions = false;
-                        rectLoop:
-                        for (ScreenRectangle screenRect : rectToBar.keySet()) {
-                                for (ScreenDirection direction : DIRECTION_CHECK_ORDER) {
-                                        boolean overlaps = screenRect.getBorder(direction).step(direction).overlaps(mouseRect);
-
-                                        if (overlaps) {
-                                                Pair<StatusBar, BarLocation> barPair = rectToBar.get(screenRect);
-                                                BarLocation barSnap = barPair.right();
-                                                if (barSnap.barAnchor() == null) break;
-                                                if (direction.getAxis().equals(ScreenAxis.VERTICAL)) {
-                                                        int neighborInsertY = getNeighborInsertY(barSnap, !direction.isPositive());
-                                                        inserted = true;
-                                                        if (!currentInsertLocation.equals(barSnap.barAnchor(), barSnap.x(), neighborInsertY)) {
-                                                                if (cursorBar.anchor != null)
-                                                                        FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
-                                                                FancyStatusBars.barPositioner.addRow(barSnap.barAnchor(), neighborInsertY);
-                                                                FancyStatusBars.barPositioner.addBar(barSnap.barAnchor(), neighborInsertY, cursorBar);
-                                                                currentInsertLocation = BarLocation.of(cursorBar);
-                                                                updatePositions = true;
-                                                        }
-                                                } else {
-                                                        int neighborInsertX = getNeighborInsertX(barSnap, direction.isPositive());
-                                                        inserted = true;
-                                                        if (!currentInsertLocation.equals(barSnap.barAnchor(), neighborInsertX, barSnap.y())) {
-                                                                if (cursorBar.anchor != null)
-                                                                        FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
-                                                                FancyStatusBars.barPositioner.addBar(barSnap.barAnchor(), barSnap.y(), neighborInsertX, cursorBar);
-                                                                currentInsertLocation = BarLocation.of(cursorBar);
-                                                                updatePositions = true;
-                                                        }
-                                                }
-                                                break rectLoop;
-                                        }
-                                }
-                        }
-                        if (updatePositions) {
-                                FancyStatusBars.updatePositions(true);
-                                return;
-                        }
-                        // check for hovering empty anchors
-                        for (BarPositioner.BarAnchor barAnchor : BarPositioner.BarAnchor.allAnchors()) {
-                                ScreenRectangle anchorHitbox = barAnchor.getAnchorHitbox(barAnchor.getAnchorPosition(width, height));
-                                if (FancyStatusBars.barPositioner.getRowCount(barAnchor) != 0) {
-                                        // this fixes flickering
-                                        if (FancyStatusBars.barPositioner.getRowCount(barAnchor) == 1) {
-                                                LinkedList<StatusBar> row = FancyStatusBars.barPositioner.getRow(barAnchor, 0);
-                                                if (row.size() == 1 && row.getFirst() == cursorBar && anchorHitbox.overlaps(mouseRect)) inserted = true;
-                                        }
-                                        continue;
-                                }
-
-                                context.fill(anchorHitbox.left(), anchorHitbox.top(), anchorHitbox.right(), anchorHitbox.bottom(), 0x99FFFFFF);
-                                if (anchorHitbox.overlaps(mouseRect)) {
-                                        inserted = true;
-                                        if (currentInsertLocation.barAnchor() == barAnchor) continue;
-                                        if (cursorBar.anchor != null)
-                                                FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
-                                        FancyStatusBars.barPositioner.addRow(barAnchor);
-                                        FancyStatusBars.barPositioner.addBar(barAnchor, 0, cursorBar);
-                                        currentInsertLocation = BarLocation.of(cursorBar);
-                                        FancyStatusBars.updatePositions(true);
-                                }
-                        }
-                        if (!inserted) {
-                                if (cursorBar.anchor != null) FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
-                                currentInsertLocation = BarLocation.NULL;
-                                FancyStatusBars.updatePositions(true);
-                                cursorBar.setX(width + 5);
-                        }
                 } else { // Not dragging around a bar
                         if (resizing) { // actively resizing one or 2 bars
                                 int middleX; // the point between the 2 bars
@@ -267,27 +207,6 @@ public class StatusBarsConfigScreen extends Screen {
                 }
         }
 
-        private static int getNeighborInsertX(BarLocation barLocation, boolean right) {
-                BarPositioner.BarAnchor barAnchor = barLocation.barAnchor();
-                int gridX = barLocation.x();
-                if (barAnchor == null) return 0;
-                if (right) {
-                        return barAnchor.isRight() ? gridX + 1 : gridX;
-                } else {
-                        return barAnchor.isRight() ? gridX : gridX + 1;
-                }
-        }
-
-        private static int getNeighborInsertY(BarLocation barLocation, boolean up) {
-                BarPositioner.BarAnchor barAnchor = barLocation.barAnchor();
-                int gridY = barLocation.y();
-                if (barAnchor == null) return 0;
-                if (up) {
-                        return barAnchor.isUp() ? gridY + 1 : gridY;
-                } else {
-                        return barAnchor.isUp() ? gridY : gridY + 1;
-                }
-        }
 
         @Override
         protected void init() {
@@ -337,17 +256,27 @@ public class StatusBarsConfigScreen extends Screen {
         }
 
         private void onBarClick(StatusBar statusBar, MouseButtonEvent click) {
-                selectedBar = statusBar;
-                mouseButtonHeld = true;
-                dragStartX = (int) click.x();
-                dragStartY = (int) click.y();
-                cursorOffset = new ScreenPosition((int) (statusBar.getX() - click.x()), (int) (statusBar.getY() - click.y()));
-                int x = (int) Math.min(click.x() + 5, width - editBarWidget.getWidth());
-                int y = (int) Math.min(click.y() + 5, height - editBarWidget.getHeight());
-                editBarWidget.visible = true;
-                editBarWidget.setStatusBar(statusBar);
-                editBarWidget.setX(x);
-                editBarWidget.setY(y);
+                if (click.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                        // Left click: select bar (shows outline) and prepare for possible drag
+                        selectedBar = statusBar;
+                        mouseButtonHeld = true;
+                        dragStartX = (int) click.x();
+                        dragStartY = (int) click.y();
+                        cursorOffset = new ScreenPosition((int) (statusBar.getX() - click.x()), (int) (statusBar.getY() - click.y()));
+                        editBarWidget.visible = false;
+                } else if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+                        // Right click: show the customization panel, don't interfere with dragging
+                        selectedBar = statusBar;
+                        int x = (int) Math.min(click.x() + 5, width - editBarWidget.getWidth());
+                        int y = (int) Math.min(click.y() + 5, height - editBarWidget.getHeight());
+                        // Prime the auto-hide tracker so the widget doesn't vanish immediately
+                        editBarWidget.insideMouseX = (int) click.x();
+                        editBarWidget.insideMouseY = (int) click.y();
+                        editBarWidget.visible = true;
+                        editBarWidget.setStatusBar(statusBar);
+                        editBarWidget.setX(x);
+                        editBarWidget.setY(y);
+                }
         }
 
         private void updateScreenRects() {
@@ -365,13 +294,10 @@ public class StatusBarsConfigScreen extends Screen {
                 mouseButtonHeld = false;
                 if (cursorBar != null) {
                         cursorBar.inMouse = false;
-                        if (currentInsertLocation == BarLocation.NULL) {
-                                cursorBar.anchor = null;
-                                cursorBar.x = (float) ((click.x() + cursorOffset.x()) / width);
-                                cursorBar.y = (float) ((click.y() + cursorOffset.y()) / height);
-                                cursorBar.width = Math.clamp(cursorBar.width, (float) BAR_MINIMUM_WIDTH / width, 1);
-                        }
-                        currentInsertLocation = BarLocation.NULL;
+                        cursorBar.anchor = null;
+                        cursorBar.x = (float) ((click.x() + cursorOffset.x()) / width);
+                        cursorBar.y = (float) ((click.y() + cursorOffset.y()) / height);
+                        cursorBar.width = Math.clamp(cursorBar.width, (float) BAR_MINIMUM_WIDTH / width, 1);
                         cursorBar = null;
                         FancyStatusBars.updatePositions(true);
                         updateScreenRects();

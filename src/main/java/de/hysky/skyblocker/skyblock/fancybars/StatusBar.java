@@ -192,7 +192,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                         case BAR_CENTER -> x = barX + (barWidth - textWidth) / 2;
                         default -> x = barX;
                 }
-                int y = this.renderY + (BAR_HEIGHT - 9) / 2;
+                int y = this.renderY + (BAR_HEIGHT - 9) / 2 + 1;
 
                 int color = transparency((textColor == null ? colors[0] : textColor).getRGB());
                 int outlineColor = transparency(CommonColors.BLACK);
