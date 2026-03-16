@@ -4,7 +4,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.function.IntConsumer;
 
@@ -84,16 +86,17 @@ public class BorderRadiusDialog extends Screen {
         }
 
         @Override
-        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-                if (keyCode == 257 || keyCode == 335) { // ENTER or NUMPAD_ENTER
+        public boolean keyPressed(KeyEvent keyEvent) {
+                int key = keyEvent.key();
+                if (key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_KP_ENTER) {
                         confirm();
                         return true;
                 }
-                if (keyCode == 256) { // ESCAPE
+                if (key == GLFW.GLFW_KEY_ESCAPE) {
                         minecraft.setScreen(parent);
                         return true;
                 }
-                return super.keyPressed(keyCode, scanCode, modifiers);
+                return super.keyPressed(keyEvent);
         }
 
         @Override

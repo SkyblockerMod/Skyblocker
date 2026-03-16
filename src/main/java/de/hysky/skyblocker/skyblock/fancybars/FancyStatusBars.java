@@ -201,6 +201,20 @@ public class FancyStatusBars {
                         bar.width = 0;
                         String rowKey = type.getDefaultAnchor().name() + ":" + type.getDefaultGridY();
                         bar.gridX = rowCounts.merge(rowKey, 1, Integer::sum) - 1;
+                        // Reset all per-bar visual customization to defaults
+                        bar.barHeight = StatusBar.BAR_HEIGHT;
+                        bar.borderRadius = 0;
+                        bar.setIconPosition(StatusBar.IconPosition.LEFT);
+                        bar.setTextPosition(StatusBar.TextPosition.BAR_CENTER);
+                        bar.showMax = false;
+                        bar.showOverflow = false;
+                        bar.textCustomOffX = 0;
+                        bar.textCustomOffY = 0;
+                        bar.textCustomScale = 1.0f;
+                        bar.iconCustomOffX = 0;
+                        bar.iconCustomOffY = 0;
+                        bar.iconCustomW = StatusBar.ICON_SIZE;
+                        bar.iconCustomH = StatusBar.ICON_SIZE;
                 }
                 placeBarsInPositioner();
                 updatePositions(true);

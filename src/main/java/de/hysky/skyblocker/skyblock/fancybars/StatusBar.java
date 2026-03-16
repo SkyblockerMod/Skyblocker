@@ -107,6 +107,10 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
         public int textCustomOffY = 0;
         public int iconCustomOffX = 0;
         public int iconCustomOffY = 0;
+        // Custom sub-element scale / size
+        public float textCustomScale = 1.0f;
+        public int iconCustomW = ICON_SIZE;
+        public int iconCustomH = ICON_SIZE;
 
         public boolean showMax = false;
         public boolean showOverflow = false;
@@ -159,7 +163,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
         public void renderCustomIcon(GuiGraphics context) {
                 if (renderWidth <= 0 || iconPosition != IconPosition.CUSTOM) return;
                 context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(),
-                        renderX + iconCustomOffX, renderY + iconCustomOffY, ICON_SIZE, ICON_SIZE, transparency(-1));
+                        renderX + iconCustomOffX, renderY + iconCustomOffY, iconCustomW, iconCustomH, transparency(-1));
         }
 
         protected void drawBarFill(GuiGraphics context, int barX, int barWidth) {
@@ -275,7 +279,15 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 int color = transparency(textArgb);
                 int outlineColor = transparency(CommonColors.BLACK);
 
-                HudHelper.drawOutlinedText(context, Component.translationArg(text), x, y, color, outlineColor);
+                if (textPosition == TextPosition.CUSTOM && textCustomScale != 1.0f) {
+                        context.pose().pushMatrix();
+                        context.pose().translate((float) x, (float) y);
+                        context.pose().scale(textCustomScale, textCustomScale);
+                        HudHelper.drawOutlinedText(context, Component.translationArg(text), 0, 0, color, outlineColor);
+                        context.pose().popMatrix();
+                } else {
+                        HudHelper.drawOutlinedText(context, Component.translationArg(text), x, y, color, outlineColor);
+                }
         }
 
         public void renderCursor(GuiGraphics context, int mouseX, int mouseY, float delta) {
@@ -409,28 +421,39 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
         }
 
         /**
-         * Returns the screen rectangle of the text for hit-testing and outline drawing in the config screen.
-         * Only meaningful when textPosition == CUSTOM. Includes generous padding for easy clicking.
+         * Exact visible bounds of the custom text element. Used for outline drawing in the config screen.
          */
-        public ScreenRectangle getTextHitArea(Font font) {
+        public ScreenRectangle getTextVisualArea(Font font) {
                 int tx = renderX + textCustomOffX;
                 int ty = renderY + textCustomOffY;
                 String sample = value.toString() + (showMax && max != null ? "/" + max : "");
-                int tw = Math.max(24, font.width(sample));
-                int th = 9;
-                int pad = 8;
-                return new ScreenRectangle(tx - pad, ty - pad, tw + pad * 2, th + pad * 2);
+                int tw = Math.max(8, (int) (font.width(sample) * textCustomScale));
+                int th = Math.max(4, (int) (9 * textCustomScale));
+                return new ScreenRectangle(tx, ty, tw, th);
         }
 
         /**
-         * Returns the screen rectangle of the icon for hit-testing and outline drawing in the config screen.
-         * Only meaningful when iconPosition == CUSTOM. Includes generous padding for easy clicking.
+         * Exact visible bounds of the custom icon element. Used for outline drawing in the config screen.
          */
-        public ScreenRectangle getIconHitArea() {
-                int ix = renderX + iconCustomOffX;
-                int iy = renderY + iconCustomOffY;
+        public ScreenRectangle getIconVisualArea() {
+                return new ScreenRectangle(renderX + iconCustomOffX, renderY + iconCustomOffY,
+                        Math.max(4, iconCustomW), Math.max(4, iconCustomH));
+        }
+
+        /** Expanded hit area for clicking the custom text element (visual area + 8px padding on each side). */
+        public ScreenRectangle getTextHitArea(Font font) {
+                ScreenRectangle v = getTextVisualArea(font);
                 int pad = 8;
-                return new ScreenRectangle(ix - pad, iy - pad, ICON_SIZE + pad * 2, ICON_SIZE + pad * 2);
+                return new ScreenRectangle(v.position().x() - pad, v.position().y() - pad,
+                        v.width() + pad * 2, v.height() + pad * 2);
+        }
+
+        /** Expanded hit area for clicking the custom icon element (visual area + 8px padding on each side). */
+        public ScreenRectangle getIconHitArea() {
+                ScreenRectangle v = getIconVisualArea();
+                int pad = 8;
+                return new ScreenRectangle(v.position().x() - pad, v.position().y() - pad,
+                        v.width() + pad * 2, v.height() + pad * 2);
         }
 
         public enum IconPosition implements StringRepresentable {
@@ -529,6 +552,9 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 if (object.has("text_custom_off_y")) this.textCustomOffY = object.get("text_custom_off_y").getAsInt();
                 if (object.has("icon_custom_off_x")) this.iconCustomOffX = object.get("icon_custom_off_x").getAsInt();
                 if (object.has("icon_custom_off_y")) this.iconCustomOffY = object.get("icon_custom_off_y").getAsInt();
+                if (object.has("text_custom_scale")) this.textCustomScale = Math.max(0.5f, Math.min(4.0f, object.get("text_custom_scale").getAsFloat()));
+                if (object.has("icon_custom_w")) this.iconCustomW = Math.max(4, Math.min(64, object.get("icon_custom_w").getAsInt()));
+                if (object.has("icon_custom_h")) this.iconCustomH = Math.max(4, Math.min(64, object.get("icon_custom_h").getAsInt()));
         }
 
         public JsonObject toJson() {
@@ -563,10 +589,13 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 if (iconPosition == IconPosition.CUSTOM) {
                         object.addProperty("icon_custom_off_x", iconCustomOffX);
                         object.addProperty("icon_custom_off_y", iconCustomOffY);
+                        object.addProperty("icon_custom_w", iconCustomW);
+                        object.addProperty("icon_custom_h", iconCustomH);
                 }
                 if (textPosition == TextPosition.CUSTOM) {
                         object.addProperty("text_custom_off_x", textCustomOffX);
                         object.addProperty("text_custom_off_y", textCustomOffY);
+                        object.addProperty("text_custom_scale", textCustomScale);
                 }
                 return object;
         }
