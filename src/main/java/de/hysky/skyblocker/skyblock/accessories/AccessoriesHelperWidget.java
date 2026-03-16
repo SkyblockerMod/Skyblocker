@@ -207,7 +207,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		DoubleBooleanPair optionalPrice = ItemUtils.getItemPrice(stack);
 		double price;
 		if (optionalPrice.rightBoolean()) price = optionalPrice.firstDouble();
-		else price = ItemUtils.getCraftCost(stack.getSkyblockApiId());
+		else price = ItemUtils.getCraftCost(stack.getNeuName());
 		if (price <= 0) return OptionalDouble.empty();
 		return OptionalDouble.of(price);
 	}
