@@ -191,7 +191,8 @@ public class EggFinder {
 				LOGGER.info("[Skyblocker Egg Finder] Not sharing this egg to the WebSocket - matches previous location");
 				return true;
 			}
-			WsMessageHandler.sendLocationMessage(Service.EGG_WAYPOINTS, new EggWaypointMessage(eggType, eggType.egg.pos));
+			WsMessageHandler.sendLocationMessage(Service.EGG_WAYPOINTS,
+					new EggWaypointMessage(eggType, eggType.egg.pos, Long.MAX_VALUE));
 		} catch (IllegalArgumentException e) {
 			LOGGER.error("[Skyblocker Egg Finder] Failed to process an egg!", e);
 		}
