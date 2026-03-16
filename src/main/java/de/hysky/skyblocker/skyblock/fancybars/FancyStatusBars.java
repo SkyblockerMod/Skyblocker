@@ -220,6 +220,50 @@ public class FancyStatusBars {
                 updatePositions(true);
         }
 
+        /**
+         * Resets one bar to its default layout and visual settings without touching any other bar.
+         * Rebuilds the positioner so the bar re-occupies its default grid slot.
+         */
+        public static void resetSingleBar(StatusBar target) {
+                StatusBarType type = null;
+                for (java.util.Map.Entry<StatusBarType, StatusBar> e : statusBars.entrySet()) {
+                        if (e.getValue() == target) { type = e.getKey(); break; }
+                }
+                if (type == null) return;
+
+                // Remove from positioner first
+                if (target.anchor != null) barPositioner.removeBar(target.anchor, target.gridY, target);
+
+                // Reset layout
+                target.anchor = type.getDefaultAnchor();
+                target.gridY  = type.getDefaultGridY();
+                target.size   = 1;
+                target.enabled = true;
+                target.visible = true;
+                target.x = 0; target.y = 0; target.width = 0;
+
+                // gridX: place at end of its default row (avoids conflicting with other bars)
+                int count = 0;
+                for (StatusBar other : statusBars.values()) {
+                        if (other != target && other.anchor == target.anchor && other.gridY == target.gridY) count++;
+                }
+                target.gridX = count;
+
+                // Reset all visual customization
+                target.barHeight    = StatusBar.BAR_HEIGHT;
+                target.borderRadius = 0;
+                target.setIconPosition(StatusBar.IconPosition.LEFT);
+                target.setTextPosition(StatusBar.TextPosition.BAR_CENTER);
+                target.showMax    = false;
+                target.showOverflow = false;
+                target.textCustomOffX = 0; target.textCustomOffY = 0; target.textCustomScale = 1.0f;
+                target.iconCustomOffX = 0; target.iconCustomOffY = 0;
+                target.iconCustomW = StatusBar.ICON_SIZE; target.iconCustomH = StatusBar.ICON_SIZE;
+
+                placeBarsInPositioner();
+                updatePositions(true);
+        }
+
         @VisibleForTesting
         public static void placeBarsInPositioner() {
                 barPositioner.clear();

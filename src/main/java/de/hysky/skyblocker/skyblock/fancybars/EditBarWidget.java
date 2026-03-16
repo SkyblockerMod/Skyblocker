@@ -36,6 +36,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 
         private final RunnableOption hideOption;
         private final RunnableOption borderRadiusOption;
+        private final RunnableOption resetBarOption;
 
         private final StringWidget nameWidget;
 
@@ -46,7 +47,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 
         @SuppressWarnings("unchecked")
         public EditBarWidget(int x, int y, Screen parent) {
-                super(x, y, 100, 110, Component.literal("Edit bar"));
+                super(x, y, 100, 121, Component.literal("Edit bar"));
                 this.parent = parent;
 
                 Font textRenderer = Minecraft.getInstance().font;
@@ -106,7 +107,11 @@ public class EditBarWidget extends AbstractContainerWidget {
                 contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
                 borderRadiusOption = new RunnableOption(0, 99, getWidth(), translatable);
 
-                options = List.of(iconOption, textOption, showMaxOption, showOverflowOption, color1, color2, textColor, hideOption, borderRadiusOption);
+                translatable = Component.translatable("skyblocker.bars.config.resetBar");
+                contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
+                resetBarOption = new RunnableOption(0, 110, getWidth(), translatable);
+
+                options = List.of(iconOption, textOption, showMaxOption, showOverflowOption, color1, color2, textColor, hideOption, borderRadiusOption, resetBarOption);
 
                 setWidth(contentsWidth);
         }
@@ -203,6 +208,9 @@ public class EditBarWidget extends AbstractContainerWidget {
                                         statusBar.borderRadius = radius;
                                 }));
                 });
+
+                resetBarOption.active = true;
+                resetBarOption.setRunnable(() -> FancyStatusBars.resetSingleBar(statusBar));
 
                 MutableComponent formatted = statusBar.getName().copy().withStyle(ChatFormatting.BOLD);
                 nameWidget.setMessage(formatted);

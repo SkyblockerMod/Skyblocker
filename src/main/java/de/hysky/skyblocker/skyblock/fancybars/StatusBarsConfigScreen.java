@@ -341,6 +341,8 @@ public class StatusBarsConfigScreen extends Screen {
                                                                 BarLocation barLocation = barPair.right();
                                                                 StatusBar bar = barPair.left();
                                                                 if (!bar.enabled) break;
+                                                                // Only resize the selected bar
+                                                                if (bar != selectedBar || selectedSubElement != null) { resizeHover.first(null); break; }
                                                                 boolean right = direction.equals(ScreenDirection.RIGHT);
                                                                 if (barLocation.barAnchor() != null) {
                                                                         if (barLocation.barAnchor().getSizeRule().isTargetSize() && !FancyStatusBars.barPositioner.hasNeighbor(barLocation.barAnchor(), barLocation.y(), barLocation.x(), right)) break;
@@ -362,6 +364,8 @@ public class StatusBarsConfigScreen extends Screen {
                                                         Pair<StatusBar, BarLocation> barPair = rectToBar.get(screenRect);
                                                         StatusBar bar = barPair.left();
                                                         if (!bar.enabled || bar.anchor != null) continue;
+                                                        // Only resize the selected bar
+                                                        if (bar != selectedBar || selectedSubElement != null) continue;
                                                         for (ScreenDirection direction : new ScreenDirection[]{ScreenDirection.UP, ScreenDirection.DOWN}) {
                                                                 if (screenRect.getBorder(direction).step(direction).overlaps(mouseRect) && !editBarWidget.isMouseOver(mouseX, mouseY)) {
                                                                         resizeHeightHover.first(bar);
@@ -381,14 +385,14 @@ public class StatusBarsConfigScreen extends Screen {
 
         /** Yellow selection outline + directional move arrows around the bar. */
         private void drawBarOutlineWithArrows(GuiGraphics ctx, StatusBar bar) {
-                int x = bar.getX() - 1, y = bar.getY() - 1;
-                int w = bar.getWidth() + 2, h = bar.getHeight() + 2;
-                // 2px border
-                ctx.fill(x, y, x + w, y + 2, BAR_SEL_COLOR);
-                ctx.fill(x, y + h - 2, x + w, y + h, BAR_SEL_COLOR);
-                ctx.fill(x, y, x + 2, y + h, BAR_SEL_COLOR);
-                ctx.fill(x + w - 2, y, x + w, y + h, BAR_SEL_COLOR);
-                // Arrows at midpoints of each edge
+                int x = bar.getX(), y = bar.getY();
+                int w = bar.getWidth(), h = bar.getHeight();
+                // 1px inner border (drawn ON the bar edge, bar still fully visible underneath)
+                ctx.fill(x,         y,         x + w, y + 1,     BAR_SEL_COLOR);
+                ctx.fill(x,         y + h - 1, x + w, y + h,     BAR_SEL_COLOR);
+                ctx.fill(x,         y,         x + 1, y + h,     BAR_SEL_COLOR);
+                ctx.fill(x + w - 1, y,         x + w, y + h,     BAR_SEL_COLOR);
+                // Arrows at midpoints of each edge (outside the bar)
                 int mx = x + w / 2, my = y + h / 2;
                 fillLeftArrow(ctx,  x - 7,      my, BAR_SEL_COLOR);
                 fillRightArrow(ctx, x + w + 6,  my, BAR_SEL_COLOR);
@@ -404,11 +408,11 @@ public class StatusBarsConfigScreen extends Screen {
         private void drawCustomElementHandles(GuiGraphics ctx, ScreenRectangle area, boolean isText) {
                 int x = area.position().x(), y = area.position().y();
                 int w = area.width(), h = area.height();
-                // 2px border
-                ctx.fill(x, y, x + w, y + 2, HANDLE_COLOR);
-                ctx.fill(x, y + h - 2, x + w, y + h, HANDLE_COLOR);
-                ctx.fill(x, y, x + 2, y + h, HANDLE_COLOR);
-                ctx.fill(x + w - 2, y, x + w, y + h, HANDLE_COLOR);
+                // 1px border
+                ctx.fill(x,         y,         x + w, y + 1,     HANDLE_COLOR);
+                ctx.fill(x,         y + h - 1, x + w, y + h,     HANDLE_COLOR);
+                ctx.fill(x,         y,         x + 1, y + h,     HANDLE_COLOR);
+                ctx.fill(x + w - 1, y,         x + w, y + h,     HANDLE_COLOR);
                 // Move arrows
                 int mx = x + w / 2, my = y + h / 2;
                 fillLeftArrow(ctx,  x - 7,      my, HANDLE_COLOR);
@@ -500,36 +504,45 @@ public class StatusBarsConfigScreen extends Screen {
                         // ── Check if click lands on a CUSTOM text element ──
                         if (statusBar.getTextPosition() == StatusBar.TextPosition.CUSTOM
                                         && statusBar.getTextHitArea(minecraft.font).overlaps(clickRect)) {
+                                boolean alreadySelected = selectedBar == statusBar && "text".equals(selectedSubElement);
                                 selectedBar = statusBar;
                                 selectedSubElement = "text";
-                                mouseButtonHeld = true;
-                                subDragStartMouseX = cx; subDragStartMouseY = cy;
-                                subDragStartOffX = statusBar.textCustomOffX; subDragStartOffY = statusBar.textCustomOffY;
-                                draggingSubElement = true; draggingText = true;
                                 editBarWidget.visible = false;
+                                if (alreadySelected) {
+                                        mouseButtonHeld = true;
+                                        subDragStartMouseX = cx; subDragStartMouseY = cy;
+                                        subDragStartOffX = statusBar.textCustomOffX; subDragStartOffY = statusBar.textCustomOffY;
+                                        draggingSubElement = true; draggingText = true;
+                                }
                                 return;
                         }
 
                         // ── Check if click lands on a CUSTOM icon element ──
                         if (statusBar.getIconPosition() == StatusBar.IconPosition.CUSTOM
                                         && statusBar.getIconHitArea().overlaps(clickRect)) {
+                                boolean alreadySelected = selectedBar == statusBar && "icon".equals(selectedSubElement);
                                 selectedBar = statusBar;
                                 selectedSubElement = "icon";
-                                mouseButtonHeld = true;
-                                subDragStartMouseX = cx; subDragStartMouseY = cy;
-                                subDragStartOffX = statusBar.iconCustomOffX; subDragStartOffY = statusBar.iconCustomOffY;
-                                draggingSubElement = true; draggingText = false;
                                 editBarWidget.visible = false;
+                                if (alreadySelected) {
+                                        mouseButtonHeld = true;
+                                        subDragStartMouseX = cx; subDragStartMouseY = cy;
+                                        subDragStartOffX = statusBar.iconCustomOffX; subDragStartOffY = statusBar.iconCustomOffY;
+                                        draggingSubElement = true; draggingText = false;
+                                }
                                 return;
                         }
 
-                        // ── Click on bar body → select bar itself ──
+                        // ── Click on bar body → select if not yet; drag only if already selected ──
+                        boolean alreadyBarSelected = selectedBar == statusBar && selectedSubElement == null;
                         selectedBar = statusBar;
                         selectedSubElement = null;
-                        mouseButtonHeld = true;
-                        dragStartX = cx; dragStartY = cy;
-                        cursorOffset = new ScreenPosition(statusBar.getX() - cx, statusBar.getY() - cy);
                         editBarWidget.visible = false;
+                        if (alreadyBarSelected) {
+                                mouseButtonHeld = true;
+                                dragStartX = cx; dragStartY = cy;
+                                cursorOffset = new ScreenPosition(statusBar.getX() - cx, statusBar.getY() - cy);
+                        }
 
                 } else if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
                         selectedBar = statusBar;
@@ -722,26 +735,31 @@ public class StatusBarsConfigScreen extends Screen {
                                 if (bar.getTextPosition() == StatusBar.TextPosition.CUSTOM
                                                 && bar.getTextHitArea(minecraft.font).overlaps(clickRect)
                                                 && !isInBarBody(bar, cx, cy)) {
-                                        // Clicked custom text element that is OUTSIDE the bar body
-                                        if (selectedBar == bar && "text".equals(selectedSubElement) && tryStartSubElementResize(bar, cx, cy)) return true;
+                                        boolean alreadyTextSelected = selectedBar == bar && "text".equals(selectedSubElement);
+                                        if (alreadyTextSelected && tryStartSubElementResize(bar, cx, cy)) return true;
                                         selectedBar = bar; selectedSubElement = "text";
-                                        mouseButtonHeld = true;
-                                        subDragStartMouseX = cx; subDragStartMouseY = cy;
-                                        subDragStartOffX = bar.textCustomOffX; subDragStartOffY = bar.textCustomOffY;
-                                        draggingSubElement = true; draggingText = true;
                                         editBarWidget.visible = false;
+                                        if (alreadyTextSelected) {
+                                                mouseButtonHeld = true;
+                                                subDragStartMouseX = cx; subDragStartMouseY = cy;
+                                                subDragStartOffX = bar.textCustomOffX; subDragStartOffY = bar.textCustomOffY;
+                                                draggingSubElement = true; draggingText = true;
+                                        }
                                         return true;
                                 }
                                 if (bar.getIconPosition() == StatusBar.IconPosition.CUSTOM
                                                 && bar.getIconHitArea().overlaps(clickRect)
                                                 && !isInBarBody(bar, cx, cy)) {
-                                        if (selectedBar == bar && "icon".equals(selectedSubElement) && tryStartSubElementResize(bar, cx, cy)) return true;
+                                        boolean alreadyIconSelected = selectedBar == bar && "icon".equals(selectedSubElement);
+                                        if (alreadyIconSelected && tryStartSubElementResize(bar, cx, cy)) return true;
                                         selectedBar = bar; selectedSubElement = "icon";
-                                        mouseButtonHeld = true;
-                                        subDragStartMouseX = cx; subDragStartMouseY = cy;
-                                        subDragStartOffX = bar.iconCustomOffX; subDragStartOffY = bar.iconCustomOffY;
-                                        draggingSubElement = true; draggingText = false;
                                         editBarWidget.visible = false;
+                                        if (alreadyIconSelected) {
+                                                mouseButtonHeld = true;
+                                                subDragStartMouseX = cx; subDragStartMouseY = cy;
+                                                subDragStartOffX = bar.iconCustomOffX; subDragStartOffY = bar.iconCustomOffY;
+                                                draggingSubElement = true; draggingText = false;
+                                        }
                                         return true;
                                 }
                         }
