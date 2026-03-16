@@ -21,7 +21,7 @@ public class RoomPreview {
 
 	@Init
 	public static void init() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
 				dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE).then(ClientCommands.literal("dungeons")
 						.then(ClientCommands.literal("preview").then(ClientCommands.literal("loadRoom").then(argument("type", StringArgumentType.string()).suggests(DungeonManager::suggestRoomTypes)
 								.then(argument("room", StringArgumentType.string()).suggests((ctx, sB) -> DungeonManager.suggestRooms(ctx.getArgument("type", String.class), sB))
