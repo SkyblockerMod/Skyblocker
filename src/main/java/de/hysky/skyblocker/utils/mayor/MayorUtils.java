@@ -70,8 +70,7 @@ public class MayorUtils {
 		loadMayorPerkOverrides();
 
 		CompletableFuture.supplyAsync(() -> {
-			// Old URL: https://hysky.de/api/skyblock/election
-			try (Http.ApiResponse response = Http.sendCacheableGetRequest("https://api.hypixel.net/v2/resources/skyblock/election", null)) {
+			try (Http.ApiResponse response = Http.sendCacheableGetRequest("https://hysky.de/api/skyblock/election", null)) {
 				if (!response.ok()) {
 					throw new RuntimeException("Received bad http response: " + response.statusCode() + " " + response.content());
 				}

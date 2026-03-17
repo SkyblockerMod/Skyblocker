@@ -5,8 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
+import com.mojang.logging.LogUtils;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
@@ -25,6 +28,7 @@ import net.minecraft.util.CommonColors;
 
 // TODO should this support tab navigation?
 public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
+	private static final Logger LOGGER = LogUtils.getLogger();
 	@SuppressWarnings("unused")
 	private final ApiProfileResponse apiProfileResponse;
 	private final ApiProfile profile;
@@ -34,7 +38,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
 	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1));
-	private final FrameLayout contentLayout = new FrameLayout(BACKGROUND_WIDTH - PADDING * 2, BACKGROUND_HEIGHT - PADDING * 2);
+	private final FrameLayout contentLayout = new FrameLayout(CONTENT_WIDTH, CONTENT_HEIGHT);
 	private int selectedPageIndex;
 
 	protected ProfileViewerScreen(ApiProfileResponse apiProfileResponse, ApiProfile profile, GameProfile userProfile, ProfileMember member) {
@@ -60,10 +64,13 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 
 		for (ProfileViewerPage<?> page : this.pages) {
 			page.load(loadingInformation).thenAcceptAsync(layoutElement -> {
-				contentLayout.addChild(layoutElement, l -> l.alignVerticallyTop().alignHorizontallyLeft()); // custom layout setting cuz FrameLayout centers stuff by default
-				contentLayout.arrangeElements();
+				this.contentLayout.addChild(layoutElement, l -> l.alignVerticallyTop().alignHorizontallyLeft()); // custom layout setting cuz FrameLayout centers stuff by default
+				this.contentLayout.arrangeElements();
 				repositionElements();
-				loadedPages.add(page);
+				this.loadedPages.add(page);
+			}, this.minecraft).exceptionallyAsync(throwable -> {
+				LOGGER.error("[Skyblocker Profile Viewer] Failed to load {} page!", page.getName().getString(), throwable);
+				return null;
 			}, this.minecraft);
 		}
 	}
@@ -99,7 +106,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 		for (PageTabWidget widget : this.tabWidgets) {
 			widget.updatePosition(this.getBackgroundX(), this.getBackgroundY());
 		}
-		contentLayout.setPosition(this.getBackgroundX() + PADDING, this.getBackgroundY() + PADDING);
+		this.contentLayout.setPosition(this.getBackgroundX() + PADDING, this.getBackgroundY() + PADDING);
 	}
 
 	@Override
