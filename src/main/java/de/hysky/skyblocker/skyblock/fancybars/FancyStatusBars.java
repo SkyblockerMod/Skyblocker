@@ -209,43 +209,49 @@ public class FancyStatusBars {
                 bar.iconCustomOffX = 0; bar.iconCustomOffY = 0;
                 bar.iconCustomW = StatusBar.ICON_SIZE; bar.iconCustomH = StatusBar.ICON_SIZE;
                 bar.setIconPosition(StatusBar.IconPosition.LEFT);
-                // Per-bar hotbar-relative pixel layout
-                // offX = pixels from hotbar top-centre X, offY = pixels from hotbar top Y (negative = above)
-                // Reference layout derived at W=960, H=540 (1920×1080 physical at GUI scale 2).
-                // offX = floor(json_x * 960) - 480,  offY = floor(json_y * 540) - 518,  width = floor(json_size * 960)
+                // Hotbar-relative layout (GUI pixels from hotbar top-centre).
+                // offX from centre, offY from hotbar top (negative = above hotbar).
+                // Stat bars (H/I/D) tile across the hotbar width with 1px gaps.
+                // XP spans full hotbar width, 1px above hotbar. Speed/Air flank below.
                 switch (type) {
                         case HEALTH -> {
-                                bar.hotbarRelOffX = -88; bar.hotbarRelOffY = -30; bar.hotbarPixelWidth = 62;
+                                // left bar: spans -91 to -31  (width 60, 1px gap before intel)
+                                bar.hotbarRelOffX = -91; bar.hotbarRelOffY = -19; bar.hotbarPixelWidth = 60;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
                                 bar.textCustomOffX = 23; bar.textCustomOffY = -3;
                         }
                         case INTELLIGENCE -> {
-                                bar.hotbarRelOffX = -33; bar.hotbarRelOffY = -30; bar.hotbarPixelWidth = 62;
+                                // centre bar: spans -30 to 30  (width 60, 1px gaps either side)
+                                bar.hotbarRelOffX = -30; bar.hotbarRelOffY = -19; bar.hotbarPixelWidth = 60;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
                                 bar.textCustomOffX = 25; bar.textCustomOffY = -3;
                         }
                         case DEFENSE -> {
-                                bar.hotbarRelOffX = 23; bar.hotbarRelOffY = -30; bar.hotbarPixelWidth = 62;
+                                // right bar: spans 31 to 91  (width 60, 1px gap after intel)
+                                bar.hotbarRelOffX = 31; bar.hotbarRelOffY = -19; bar.hotbarPixelWidth = 60;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
                                 bar.textCustomOffX = 22; bar.textCustomOffY = -3;
                         }
                         case EXPERIENCE -> {
-                                bar.hotbarRelOffX = -91; bar.hotbarRelOffY = -16; bar.hotbarPixelWidth = 182;
+                                // full hotbar width, 1px above hotbar top  (bar height 9 → offY = -(9+1) = -10)
+                                bar.hotbarRelOffX = -91; bar.hotbarRelOffY = -10; bar.hotbarPixelWidth = 182;
                                 bar.borderRadius = 0;
                                 bar.setTextPosition(StatusBar.TextPosition.BAR_CENTER);
                                 bar.textCustomOffX = 0; bar.textCustomOffY = 0;
                         }
                         case SPEED -> {
-                                bar.hotbarRelOffX = -148; bar.hotbarRelOffY = 6; bar.hotbarPixelWidth = 62;
+                                // below-hotbar, 2px left of hotbar left edge (-91 - 2 - 60 = -153)
+                                bar.hotbarRelOffX = -153; bar.hotbarRelOffY = 6; bar.hotbarPixelWidth = 60;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
                                 bar.textCustomOffX = 28; bar.textCustomOffY = -3;
                         }
                         case AIR -> {
-                                bar.hotbarRelOffX = 88; bar.hotbarRelOffY = 6; bar.hotbarPixelWidth = 62;
+                                // below-hotbar, 2px right of hotbar right edge (91 + 2 = 93)
+                                bar.hotbarRelOffX = 93; bar.hotbarRelOffY = 6; bar.hotbarPixelWidth = 60;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
                                 bar.textCustomOffX = 29; bar.textCustomOffY = -2;
