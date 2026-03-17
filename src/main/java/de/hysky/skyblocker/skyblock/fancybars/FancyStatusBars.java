@@ -216,21 +216,21 @@ public class FancyStatusBars {
                 switch (type) {
                         case HEALTH -> {
                                 // left bar: spans -91 to -31  (width 60, 1px gap before intel)
-                                bar.hotbarRelOffX = -91; bar.hotbarRelOffY = -19; bar.hotbarPixelWidth = 60;
+                                bar.hotbarRelOffX = -91; bar.hotbarRelOffY = -21; bar.hotbarPixelWidth = 60;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
                                 bar.textCustomOffX = 23; bar.textCustomOffY = -3;
                         }
                         case INTELLIGENCE -> {
                                 // centre bar: spans -30 to 30  (width 60, 1px gaps either side)
-                                bar.hotbarRelOffX = -30; bar.hotbarRelOffY = -19; bar.hotbarPixelWidth = 60;
+                                bar.hotbarRelOffX = -30; bar.hotbarRelOffY = -21; bar.hotbarPixelWidth = 60;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
                                 bar.textCustomOffX = 25; bar.textCustomOffY = -3;
                         }
                         case DEFENSE -> {
                                 // right bar: spans 31 to 91  (width 60, 1px gap after intel)
-                                bar.hotbarRelOffX = 31; bar.hotbarRelOffY = -19; bar.hotbarPixelWidth = 60;
+                                bar.hotbarRelOffX = 31; bar.hotbarRelOffY = -21; bar.hotbarPixelWidth = 60;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
                                 bar.textCustomOffX = 22; bar.textCustomOffY = -3;
