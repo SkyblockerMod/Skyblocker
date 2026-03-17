@@ -9,12 +9,13 @@ import de.hysky.skyblocker.injected.EntityRenderMarker;
 import de.hysky.skyblocker.skyblock.dwarven.BlockBreakPrediction;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.render.GlowRenderer;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.BlockBreakingRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -59,32 +60,31 @@ public class LevelRendererMixin implements EntityRenderMarker {
 		}
 	}
 
-	@Inject(method = "submitEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;submit(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lnet/minecraft/client/renderer/state/CameraRenderState;DDDLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;)V"))
+	@Inject(method = "submitEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;submit(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lnet/minecraft/client/renderer/state/level/CameraRenderState;DDDLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;)V"))
 	private void skyblocker$markEntityStateBeingRendered(CallbackInfo ci, @Local EntityRenderState state) {
 		this.currentEntityStateBeingRendered = state;
 	}
 
-	@Inject(method = "submitEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;submit(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lnet/minecraft/client/renderer/state/CameraRenderState;DDDLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;)V", shift = At.Shift.AFTER))
+	@Inject(method = "submitEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;submit(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lnet/minecraft/client/renderer/state/level/CameraRenderState;DDDLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;)V", shift = At.Shift.AFTER))
 	private void skyblocker$clearEntityStateBeingRendered(CallbackInfo ci) {
 		this.currentEntityStateBeingRendered = null;
 	}
 
-	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V"))
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V"))
 	private void skyblocker$drawGlowVertexConsumers(CallbackInfo ci) {
 		GlowRenderer.getInstance().getGlowVertexConsumers().endOutlineBatch();
 	}
 
-	@WrapOperation(method = "extractBlockDestroyAnimation", at = @At(value = "NEW", target = "(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/core/BlockPos;I)Lnet/minecraft/client/renderer/state/BlockBreakingRenderState;"))
-	private BlockBreakingRenderState skyblocker$addBlockBreakingProgressRenderState(ClientLevel clientLevel, BlockPos blockPos, int i, Operation<BlockBreakingRenderState> original) {
+	@WrapOperation(method = "extractBlockDestroyAnimation", at = @At(value = "NEW", target = "(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Lnet/minecraft/client/renderer/state/level/BlockBreakingRenderState;"))
+	private BlockBreakingRenderState skyblocker$addBlockBreakingProgressRenderState(BlockPos pos, BlockState state, int progress, Operation<BlockBreakingRenderState> original) {
 		if (SkyblockerConfigManager.get().mining.blockBreakPrediction.enabled) {
-			int pingModifiedProgress = BlockBreakPrediction.getBlockBreakPrediction(blockPos, i);
-			return new BlockBreakingRenderState(blockPos, clientLevel.getBlockState(blockPos), pingModifiedProgress);
+			int pingModifiedProgress = BlockBreakPrediction.getBlockBreakPrediction(pos, progress);
+			return new BlockBreakingRenderState(pos, state, pingModifiedProgress);
 
 		}
 		//if the setting is not enabled do not modify anything
 		else {
-			return original.call(clientLevel, blockPos, i);
+			return original.call(pos, state, progress);
 		}
-
 	}
 }

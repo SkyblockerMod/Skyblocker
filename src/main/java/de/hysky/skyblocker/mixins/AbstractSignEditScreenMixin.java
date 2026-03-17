@@ -47,8 +47,8 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 		}
 	}
 
-	@Inject(method = "render", at = @At("HEAD"))
-	private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor graphics) {
+	@Inject(method = "extractRenderState", at = @At("HEAD"))
+	private void skyblocker$extractRenderStateSign(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor graphics) {
 		if (Utils.isOnSkyblock()) {
 			var config = SkyblockerConfigManager.get();
 			if (isSpeedInputSign() && config.general.speedPresets.enableSpeedPresets) {

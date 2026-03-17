@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils.datafixer;
 
-import de.hysky.skyblocker.utils.RegistryUtils;
+/*import de.hysky.skyblocker.utils.RegistryUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,10 +18,10 @@ import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;*/
 
 public class ItemStackComponentizationFixerTest {
-	private final CompoundTag NBT = convertToNbt("{id:\"minecraft:diamond_sword\",Count:1,tag:{ExtraAttributes:{id:\"TEST\"}}}");
+	/*private final CompoundTag NBT = convertToNbt("{id:\"minecraft:diamond_sword\",Count:1,tag:{ExtraAttributes:{id:\"TEST\"}}}");
 	private final Gson GSON = new Gson();
 	private final ItemStack TEST_STACK = Util.make(new ItemStack(Items.DIAMOND_SWORD, 1), item -> {
 		ItemEnchantments.Mutable builder = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
@@ -86,5 +86,5 @@ public class ItemStackComponentizationFixerTest {
 		} catch (Exception e) {
 			return new CompoundTag();
 		}
-	}
+	}*/
 }

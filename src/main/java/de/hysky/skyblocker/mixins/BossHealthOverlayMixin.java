@@ -24,7 +24,7 @@ public abstract class BossHealthOverlayMixin {
 	@Shadow
 	protected abstract void extractBar(GuiGraphicsExtractor graphics, int x, int y, BossEvent bossBar);
 
-	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true)
 	private void onRender(GuiGraphicsExtractor graphics, CallbackInfo ci) {
 		if (SkyblockerConfigManager.get().slayers.displayBossbar && SlayerBossBar.shouldRenderBossBar()) {
 			LerpingBossEvent bossBar = SlayerBossBar.updateBossBar();
