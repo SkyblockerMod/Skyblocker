@@ -52,8 +52,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 import org.slf4j.Logger;
 
 public class SkyblockerConfigManager {
@@ -85,7 +85,7 @@ public class SkyblockerConfigManager {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(configLiteral("config")).then(configLiteral("options"))));
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (get().uiAndVisuals.showConfigButton && screen instanceof ContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
-				Screens.getButtons(screen).add(Button
+				Screens.getWidgets(screen).add(Button
 						.builder(Component.literal("\uD83D\uDD27"), buttonWidget -> client.setScreen(createGUI(screen)))
 						.bounds(((AbstractContainerScreenAccessor) genericContainerScreen).getX() + ((AbstractContainerScreenAccessor) genericContainerScreen).getImageWidth() - 16, ((AbstractContainerScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
 						.tooltip(Tooltip.create(Component.translatable("skyblocker.config.title", Component.translatable("skyblocker.config.title.settings"))))

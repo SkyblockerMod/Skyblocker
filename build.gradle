@@ -196,8 +196,6 @@ dependencies {
 
 loom {
 	accessWidenerPath = file("src/main/resources/skyblocker.classtweaker")
-	// Temp fix
-	enableTransitiveAccessWideners = false
 
 	decompilers {
 		vineflower {
