@@ -82,6 +82,19 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
         public int barHeight = BAR_HEIGHT;
         public int borderRadius = 0;
 
+        /**
+         * When true the bar is positioned relative to the hotbar top-centre in
+         * GUI-pixel offsets that are scale-independent.  Once the user drags the
+         * bar this flag is cleared and the bar becomes free-floating (anchor = null).
+         */
+        public boolean hotbarRelative = false;
+        /** GUI-pixel offset from hotbar top-centre X (screenWidth/2). */
+        public int hotbarRelOffX = 0;
+        /** GUI-pixel offset from hotbar top Y (screenHeight - 22). Negative = above. */
+        public int hotbarRelOffY = 0;
+        /** Bar width in GUI pixels when in hotbar-relative mode. */
+        public int hotbarPixelWidth = 60;
+
         public float fill = 0;
         public float overflowFill = 0;
         public boolean inMouse = false;
@@ -523,18 +536,28 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 if (object.has("text_color")) this.textColor = new Color(Integer.parseInt(object.get("text_color").getAsString(), 16));
 
                 String maybeAnchor = object.get("anchor").getAsString().trim();
-                this.anchor = maybeAnchor.equals("null") ? null : BarPositioner.BarAnchor.valueOf(maybeAnchor);
-                if (!object.has("enabled")) {
-                        enabled = anchor != null;
-                } else enabled = object.get("enabled").getAsBoolean();
-                if (anchor != null) {
-                        this.size = object.get("size").getAsInt();
-                        this.gridX = object.get("x").getAsInt();
-                        this.gridY = object.get("y").getAsInt();
+                if (maybeAnchor.equals("HOTBAR_RELATIVE")) {
+                        this.anchor = null;
+                        this.hotbarRelative = true;
+                        this.hotbarRelOffX    = object.has("hotbar_off_x")     ? object.get("hotbar_off_x").getAsInt()     : 0;
+                        this.hotbarRelOffY    = object.has("hotbar_off_y")     ? object.get("hotbar_off_y").getAsInt()     : 0;
+                        this.hotbarPixelWidth = object.has("hotbar_pixel_w")   ? object.get("hotbar_pixel_w").getAsInt()   : 60;
+                        enabled = object.has("enabled") ? object.get("enabled").getAsBoolean() : true;
                 } else {
-                        this.width = object.get("size").getAsFloat();
-                        this.x = object.get("x").getAsFloat();
-                        this.y = object.get("y").getAsFloat();
+                        this.hotbarRelative = false;
+                        this.anchor = maybeAnchor.equals("null") ? null : BarPositioner.BarAnchor.valueOf(maybeAnchor);
+                        if (!object.has("enabled")) {
+                                enabled = anchor != null;
+                        } else enabled = object.get("enabled").getAsBoolean();
+                        if (anchor != null) {
+                                this.size = object.get("size").getAsInt();
+                                this.gridX = object.get("x").getAsInt();
+                                this.gridY = object.get("y").getAsInt();
+                        } else {
+                                this.width = object.get("size").getAsFloat();
+                                this.x = object.get("x").getAsFloat();
+                                this.y = object.get("y").getAsFloat();
+                        }
                 }
                 // these are optional too, why not
                 if (object.has("icon_position")) this.iconPosition = IconPosition.valueOf(object.get("icon_position").getAsString().trim());
@@ -567,14 +590,18 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 if (textColor != null) {
                         object.addProperty("text_color", Integer.toHexString(textColor.getRGB()).substring(2));
                 }
-                if (anchor != null) {
+                if (hotbarRelative) {
+                        object.addProperty("anchor", "HOTBAR_RELATIVE");
+                        object.addProperty("hotbar_off_x", hotbarRelOffX);
+                        object.addProperty("hotbar_off_y", hotbarRelOffY);
+                        object.addProperty("hotbar_pixel_w", hotbarPixelWidth);
+                } else if (anchor != null) {
                         object.addProperty("anchor", anchor.toString());
-                } else object.addProperty("anchor", "null");
-                if (anchor != null) {
                         object.addProperty("x", gridX);
                         object.addProperty("y", gridY);
                         object.addProperty("size", size);
                 } else {
+                        object.addProperty("anchor", "null");
                         object.addProperty("size", width);
                         object.addProperty("x", x);
                         object.addProperty("y", y);

@@ -127,9 +127,17 @@ public class StatusBarsConfigScreen extends Screen {
                 cursorBar = statusBar;
                 cursorBar.inMouse = true;
                 cursorBar.enabled = true;
-                if (statusBar.getWidth() > 0) statusBar.width = (float) statusBar.getWidth() / this.width;
                 if (statusBar.anchor != null)
                         FancyStatusBars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
+                // Detach from hotbar-relative anchor → convert current pixel position to screen fractions
+                if (statusBar.hotbarRelative) {
+                        statusBar.hotbarRelative = false;
+                        statusBar.x = (float) statusBar.getX() / this.width;
+                        statusBar.y = (float) statusBar.getY() / this.height;
+                        statusBar.width = (float) statusBar.getWidth() / this.width;
+                } else if (statusBar.getWidth() > 0) {
+                        statusBar.width = (float) statusBar.getWidth() / this.width;
+                }
                 statusBar.anchor = null;
                 FancyStatusBars.updatePositions(true);
                 cursorBar.setX(width + 5);
