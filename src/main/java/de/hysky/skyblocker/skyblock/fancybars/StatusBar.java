@@ -50,6 +50,10 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
                 return colors;
         }
 
+    	public void setColors(Color[] colors) {
+                this.colors = colors;
+        }
+
         public boolean hasOverflow() {
                 return type.hasOverflow();
         }
