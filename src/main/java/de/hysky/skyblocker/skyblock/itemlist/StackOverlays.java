@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.RegistryUtils;
 import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
 import io.github.moulberry.repo.data.NEUItem;
 import net.minecraft.core.component.DataComponentPatch;
@@ -38,7 +38,7 @@ public class StackOverlays {
 			if (overlayFile != null) {
 				//Read the overlay file and parse an ItemStack from it
 				String overlayData = Files.readString(overlayFile.getFile().getFsPath());
-				ItemStack overlayStack = ItemStack.CODEC.parse(Utils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), TagParser.parseCompoundFully(overlayData))
+				ItemStack overlayStack = ItemStack.CODEC.parse(RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), TagParser.parseCompoundFully(overlayData))
 						.setPartial(ItemStack.EMPTY)
 						.resultOrPartial(error -> logParseError(neuItem, error))
 						.get();

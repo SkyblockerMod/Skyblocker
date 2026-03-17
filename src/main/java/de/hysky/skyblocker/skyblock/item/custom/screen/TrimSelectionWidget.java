@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.RegistryUtils;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -47,7 +47,7 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 		patternNoneButton.setMessage(Component.translatable("gui.none"));
 		patternButtons.add(patternNoneButton);
 
-		Utils.getRegistryWrapperLookup().lookupOrThrow(Registries.TRIM_PATTERN).listElements()
+		RegistryUtils.getRegistryWrapperLookup().lookupOrThrow(Registries.TRIM_PATTERN).listElements()
 				// Sort them in alphabetical order
 				.sorted(Comparator.comparing(reference -> reference.value().description().getString()))
 				.map(reference -> new TrimElementButton.Pattern(
@@ -58,7 +58,7 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 		children.addAll(patternButtons);
 
 		// Materials
-		Utils.getRegistryWrapperLookup().lookupOrThrow(Registries.TRIM_MATERIAL).listElements()
+		RegistryUtils.getRegistryWrapperLookup().lookupOrThrow(Registries.TRIM_MATERIAL).listElements()
 				// Sort them in alphabetical order
 				.sorted(Comparator.comparing(reference -> reference.value().description().getString()))
 				.map(reference -> new TrimElementButton.Material(
