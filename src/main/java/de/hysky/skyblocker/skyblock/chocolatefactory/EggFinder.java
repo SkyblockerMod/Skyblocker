@@ -235,12 +235,11 @@ public class EggFinder {
 		}
 
 		public void onEggReceived() {
-			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.sendEggFoundMessages) return;
 			if (collected) {
 				egg.setFound();
-				return;
+			} else if (SkyblockerConfigManager.get().helpers.chocolateFactory.sendEggFoundMessages) {
+				sendEggMessage();
 			}
-			sendEggMessage();
 		}
 
 		public void sendEggMessage() {
