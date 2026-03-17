@@ -61,8 +61,7 @@ public class AbstractPopupScreen extends Screen {
 		this.backgroundScreen.clearFocus();
 	}
 
-	public static class EnterConfirmTextFieldWidget extends EditBox {
-
+	public static class EnterConfirmTextFieldWidget extends FilteredEditBox {
 		private final Runnable onEnter;
 
 		public EnterConfirmTextFieldWidget(Font font, int width, int height, Component text, Runnable onEnter) {

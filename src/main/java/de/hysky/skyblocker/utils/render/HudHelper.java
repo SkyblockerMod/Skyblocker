@@ -10,7 +10,7 @@ import com.mojang.blaze3d.textures.TextureFormat;
 
 import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import de.hysky.skyblocker.compatibility.ModernUICompatibility;
-import de.hysky.skyblocker.mixins.accessors.GuiGraphicsInvoker;
+import de.hysky.skyblocker.mixins.accessors.GuiGraphicsExtractorInvoker;
 import de.hysky.skyblocker.utils.render.gui.state.CustomShapeGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
@@ -133,7 +133,7 @@ public class HudHelper {
 
 		// Copy the main render target colour texture to our temporary one since you cannot read from and write to the same texture in a single draw.
 		RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(mainRenderTarget.getColorTexture(), blitTexture, 0, 0, 0, 0, 0, requiredWidth, requiredHeight);
-		((GuiGraphicsInvoker) graphics).invokeSubmitColoredRectangle(SkyblockerRenderPipelines.BLURRED_RECTANGLE, TextureSetup.singleTexture(blitTextureView, sampler), x0, y0, x1, y1, vertexColour, null);
+		((GuiGraphicsExtractorInvoker) graphics).invokeInnerFill(SkyblockerRenderPipelines.BLURRED_RECTANGLE, TextureSetup.singleTexture(blitTextureView, sampler), x0, y0, x1, y1, vertexColour, null);
 	}
 
 	public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {

@@ -20,7 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.EffectsInInventory;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -52,7 +53,7 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
 	}
 
 	@WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/EffectsInInventory;render(Lnet/minecraft/client/gui/GuiGraphics;II)V"))
-	private boolean skyblocker$dontDrawStatusEffects(EffectsInInventory statusEffectsDisplay, GuiGraphics context, int mouseX, int mouseY) {
+	private boolean skyblocker$dontDrawStatusEffects(EffectsInInventory statusEffectsDisplay, GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
 		return !(Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay || Utils.isInGarden() && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget);
 	}
 

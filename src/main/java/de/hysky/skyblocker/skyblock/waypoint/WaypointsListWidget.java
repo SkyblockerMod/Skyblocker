@@ -44,6 +44,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import de.hysky.skyblocker.utils.render.gui.CyclingIconButtonWidget;
+import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
 import de.hysky.skyblocker.utils.render.gui.NoopInput;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -425,21 +426,21 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			leftLayout.addChild(nameField, p -> p.paddingLeft(2));
 
 			leftLayout.addChild(new StringWidget(Component.literal("X:"), minecraft.font), p -> p.paddingLeft(2));
-			EditBox xField = new EditBox(minecraft.font, 26, 20, Component.literal("X"));
+			FilteredEditBox xField = new FilteredEditBox(minecraft.font, 26, 20, Component.literal("X"));
 			xField.setValue(Integer.toString(waypoint.pos.getX()));
 			xField.setFilter(this::checkInt);
 			xField.setResponder(this::updateX);
 			leftLayout.addChild(xField);
 
 			leftLayout.addChild(new StringWidget(Component.literal("Y:"), minecraft.font), p -> p.paddingLeft(2));
-			EditBox yField = new EditBox(minecraft.font, 26, 20, Component.literal("Y"));
+			FilteredEditBox yField = new FilteredEditBox(minecraft.font, 26, 20, Component.literal("Y"));
 			yField.setValue(Integer.toString(waypoint.pos.getY()));
 			yField.setFilter(this::checkInt);
 			yField.setResponder(this::updateY);
 			leftLayout.addChild(yField);
 
 			leftLayout.addChild(new StringWidget(Component.literal("Z:"), minecraft.font), p -> p.paddingLeft(2));
-			EditBox zField = new EditBox(minecraft.font, 26, 20, Component.literal("Z"));
+			FilteredEditBox zField = new FilteredEditBox(minecraft.font, 26, 20, Component.literal("Z"));
 			zField.setValue(Integer.toString(waypoint.pos.getZ()));
 			zField.setFilter(this::checkInt);
 			zField.setResponder(this::updateZ);

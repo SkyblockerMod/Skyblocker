@@ -147,7 +147,7 @@ public class ContainerSolverManager {
 		return currentSolver != null && currentSolver.onClickSlot(slot, stack, screenId, button);
 	}
 
-	public static void onDraw(GuiGraphicsExtractor context, AbstractContainerScreen<ChestMenu> handledScreen, List<Slot> slots) {
+	public static void onExtract(GuiGraphicsExtractor context, AbstractContainerScreen<ChestMenu> handledScreen, List<Slot> slots) {
 		if (currentSolver == null) return;
 
 		context.pose().pushMatrix();

@@ -12,8 +12,8 @@ import de.hysky.skyblocker.utils.render.GlowRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.state.BlockBreakingRenderState;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.level.BlockBreakingRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.core.BlockPos;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -49,7 +49,7 @@ public class LevelRendererMixin implements EntityRenderMarker {
 		return hasVanillaGlow || hasCustomGlow;
 	}
 
-	@Inject(method = "method_62214",
+	@Inject(method = "lambda$addMainPass$0",
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;shouldShowEntityOutlines()Z")),
 			at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;clearColorAndDepthTextures(Lcom/mojang/blaze3d/textures/GpuTexture;ILcom/mojang/blaze3d/textures/GpuTexture;D)V", ordinal = 0, shift = At.Shift.AFTER)
 	)
@@ -78,7 +78,7 @@ public class LevelRendererMixin implements EntityRenderMarker {
 	private BlockBreakingRenderState skyblocker$addBlockBreakingProgressRenderState(ClientLevel clientLevel, BlockPos blockPos, int i, Operation<BlockBreakingRenderState> original) {
 		if (SkyblockerConfigManager.get().mining.blockBreakPrediction.enabled) {
 			int pingModifiedProgress = BlockBreakPrediction.getBlockBreakPrediction(blockPos, i);
-			return new BlockBreakingRenderState(clientLevel, blockPos, pingModifiedProgress);
+			return new BlockBreakingRenderState(blockPos, clientLevel.getBlockState(blockPos), pingModifiedProgress);
 
 		}
 		//if the setting is not enabled do not modify anything

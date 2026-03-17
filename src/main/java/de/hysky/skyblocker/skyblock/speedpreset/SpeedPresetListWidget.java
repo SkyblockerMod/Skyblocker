@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.FrameLayout;
@@ -20,6 +19,8 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
 
 public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPresetListWidget.AbstractEntry> {
 
@@ -114,20 +115,20 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 
 	public class SpeedPresetEntry extends AbstractEntry {
 
-		protected final EditBox titleInput;
-		protected final EditBox speedInput;
+		protected final FilteredEditBox titleInput;
+		protected final FilteredEditBox speedInput;
 		protected final Button removeButton;
 
 		public SpeedPresetEntry(String title, String speed) {
 			var client = SpeedPresetListWidget.this.minecraft;
 
 			// All Xs and Ys are then set using the initPosition() method.
-			this.titleInput = new EditBox(client.font, 0, 0, 120, 20, Component.empty());
+			this.titleInput = new FilteredEditBox(client.font, 0, 0, 120, 20, Component.empty());
 			this.titleInput.setFilter(str -> str.isEmpty() || TITLE.matcher(str).matches());
 			this.titleInput.setValue(title);
 			this.titleInput.setMaxLength(16);
 			this.titleInput.setHint(Component.literal("newPreset").withStyle(ChatFormatting.DARK_GRAY));
-			this.speedInput = new EditBox(client.font, 0, 0, 50, 20, Component.empty());
+			this.speedInput = new FilteredEditBox(client.font, 0, 0, 50, 20, Component.empty());
 
 			this.speedInput.setFilter(str -> str.isEmpty() || NUMBER.matcher(str).matches());
 			this.speedInput.setValue(speed);

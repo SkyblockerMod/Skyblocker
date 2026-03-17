@@ -3,10 +3,10 @@ package de.hysky.skyblocker.skyblock.auction;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
+import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -22,7 +22,7 @@ public class EditBidPopup extends AbstractPopupScreen {
 
 	private final boolean signFront;
 
-	private EditBox textFieldWidget;
+	private FilteredEditBox textFieldWidget;
 
 	private boolean packetSent = false;
 

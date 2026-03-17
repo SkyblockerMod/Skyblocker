@@ -133,26 +133,33 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 		}
 
 		@SuppressWarnings("incomplete-switch")
-		private static float setVisibleAndGetOffset(HumanoidModel<?> bipedModel, EquipmentSlot slot) {
-			bipedModel.setAllVisible(false);
+		private static float setVisibleAndGetOffset(HumanoidModel<?> humanoidModel, EquipmentSlot slot) {
+			humanoidModel.head.visible = false;
+			humanoidModel.hat.visible = false;
+		    humanoidModel.body.visible = false;
+		    humanoidModel.rightArm.visible = false;
+		    humanoidModel.leftArm.visible = false;
+		    humanoidModel.rightLeg.visible = false;
+		    humanoidModel.leftLeg.visible = false;
+			
 			switch (slot) {
 				case HEAD:
-					bipedModel.head.visible = true;
-					bipedModel.hat.visible = true;
+					humanoidModel.head.visible = true;
+					humanoidModel.hat.visible = true;
 					return 4;
 				case CHEST:
-					bipedModel.body.visible = true;
-					bipedModel.rightArm.visible = true;
-					bipedModel.leftArm.visible = true;
+					humanoidModel.body.visible = true;
+					humanoidModel.rightArm.visible = true;
+					humanoidModel.leftArm.visible = true;
 					return -6;
 				case LEGS:
-					bipedModel.body.visible = true;
-					bipedModel.rightLeg.visible = true;
-					bipedModel.leftLeg.visible = true;
+					humanoidModel.body.visible = true;
+					humanoidModel.rightLeg.visible = true;
+					humanoidModel.leftLeg.visible = true;
 					return -14;
 				case FEET:
-					bipedModel.rightLeg.visible = true;
-					bipedModel.leftLeg.visible = true;
+					humanoidModel.rightLeg.visible = true;
+					humanoidModel.leftLeg.visible = true;
 					return -20;
 			}
 			return 0;
@@ -166,7 +173,6 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 			// Find item that provides given material
 			stack = BuiltInRegistries.ITEM.stream()
 					.filter(item -> Optional.ofNullable(item.components().get(DataComponents.PROVIDES_TRIM_MATERIAL))
-							.flatMap(c -> c.unwrap(Utils.getRegistryWrapperLookup()))
 							.map(provided -> provided.is(element))
 							.orElse(false)
 					)

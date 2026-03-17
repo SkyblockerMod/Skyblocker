@@ -11,11 +11,10 @@ import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class AbstractCustomHypixelGUI<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> implements ContainerListener {
-
 	public boolean isWaitingForServer = true;
+
 	public AbstractCustomHypixelGUI(T handler, Inventory inventory, Component title, int imageHeight) {
-		super(handler, inventory, title);
-		((AbstractContainerScreenAccessor) this).setImageHeight(imageHeight);
+		super(handler, inventory, title, 176, imageHeight);
 		this.inventoryLabelY = imageHeight - 94;
 		handler.addSlotListener(this);
 	}

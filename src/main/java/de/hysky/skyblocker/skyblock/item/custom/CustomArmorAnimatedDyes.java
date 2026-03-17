@@ -59,7 +59,7 @@ public class CustomArmorAnimatedDyes {
 		ItemStack heldItem = source.getPlayer().getMainHandItem();
 
 		if (Utils.isOnSkyblock() && heldItem != null && !heldItem.isEmpty()) {
-			if (heldItem.is(ItemTags.DYEABLE)) {
+			if (heldItem.is(ItemTags.CAULDRON_CAN_REMOVE_DYE)) {
 				String itemUuid = heldItem.getUuid();
 
 				if (!itemUuid.isEmpty()) {
