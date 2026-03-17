@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.Pair;
 import java.util.Collection;
@@ -125,8 +126,8 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 
 		private ItemList(int width, int height) {
 			super(0, 0, width, height, Component.literal("Item List"), 20);
-			Stream<ItemStack> icons = skullIcons.stream().map(pair -> {
-						ItemStack skull = ItemUtils.createSkull(ItemUtils.toTextureBase64(pair.right()));
+			Stream<FlexibleItemStack> icons = skullIcons.stream().map(pair -> {
+				FlexibleItemStack skull = ItemUtils.createSkull(ItemUtils.toTextureBase64(pair.right()));
 						skull.set(DataComponents.CUSTOM_NAME, Component.literal(pair.left()).withStyle(style -> style.withItalic(false)));
 						return skull;
 			});
@@ -148,9 +149,9 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 	private class ItemWidget extends AbstractWidget {
 		private final ItemStack item;
 
-		private ItemWidget(ItemStack stack) {
-			super(0, 0, 20, 20, Component.literal(stack.getHoverName().getString()));
-			item = new ItemStack(stack.getItem());
+		private ItemWidget(FlexibleItemStack stack) {
+			super(0, 0, 20, 20, Component.literal(stack.getStackOrThrow().getHoverName().getString()));
+			item = new ItemStack(stack.typeHolder());
 			item.copyFrom(DataComponents.PROFILE, stack);
 			String itemId = stack.getSkyblockId();
 			CompoundTag customData = new CompoundTag();

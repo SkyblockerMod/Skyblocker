@@ -5,6 +5,8 @@ import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.SubPageSelectButton;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +15,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public class CollectionsPage implements ProfileViewerPage {
 	private static final String[] COLLECTION_CATEGORIES = {"MINING", "FARMING", "COMBAT", "FISHING", "FORAGING", "RIFT"};
 	private static final int TOTAL_HEIGHT = 165;
-	private static final Map<String, ItemStack> ICON_MAP = Map.ofEntries(
+	private static final Map<String, FlexibleItemStack> ICON_MAP = Map.ofEntries(
 			Map.entry("MINING", Ico.STONE_PICKAXE),
 			Map.entry("FARMING", Ico.GOLDEN_HOE),
 			Map.entry("COMBAT", Ico.STONE_SWORD),

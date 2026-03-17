@@ -14,6 +14,8 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeResultButton;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
@@ -203,7 +205,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	 * Checks bazaar, lbin and craft cost.
 	 */
 	private static OptionalDouble getPrice(Accessory acc) {
-		ItemStack stack = ItemRepository.getItemStack(acc.id());
+		FlexibleItemStack stack = ItemRepository.getItemStack(acc.id());
 		if (stack == null) return OptionalDouble.empty();
 		DoubleBooleanPair optionalPrice = ItemUtils.getItemPrice(stack);
 		double price;
@@ -364,7 +366,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 
 		private void setSource(MagicPowerSource source) {
 			this.source = source;
-			setDisplayStack(source.icon());
+			setDisplayStack(source.icon().getStackOrThrow());
 		}
 
 		@Override
@@ -402,7 +404,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 			private final AccessoryInfo info;
 			private final @Nullable List<FormattedCharSequence> afterSelling;
 
-			private @Nullable ItemStack icon;
+			private @Nullable FlexibleItemStack icon;
 
 			private Source(AccessoryInfo info) {
 				this.info = info;
@@ -417,14 +419,14 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 							Component translatable = Component.translatable(
 									"skyblocker.accessoryHelper.afterSelling",
 									ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1),
-									accStack.getHoverName());
+									accStack.getStackOrThrow().getHoverName());
 							return Optional.of(Minecraft.getInstance().font.split(translatable, 170));
 						})
 						.orElse(null);
 			}
 
 			@Override
-			public ItemStack icon() {
+			public FlexibleItemStack icon() {
 				return icon != null ? icon : (icon = Optional.ofNullable(ItemRepository.getItemStack(info.accessory().id())).orElse(ItemUtils.getItemIdPlaceholder(info.accessory().id())));
 			}
 
@@ -435,7 +437,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 				}
 				info.highestOwned().ifPresent(owned -> AccessoriesContainerSolver.INSTANCE.highlightedAccessory = owned.id());
 				Minecraft client = Minecraft.getInstance();
-				List<FormattedCharSequence> tooltip = Screen.getTooltipFromItem(client, icon).stream().map(Component::getVisualOrderText).collect(Util.toMutableList());
+				List<FormattedCharSequence> tooltip = Screen.getTooltipFromItem(client, icon.getStackOrThrow()).stream().map(Component::getVisualOrderText).collect(Util.toMutableList());
 				tooltip.add(smoothLine.getVisualOrderText());
 				if (afterSelling != null) {
 					tooltip.addAll(afterSelling);
@@ -455,10 +457,10 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 				if (info.highestOwned().isPresent()) {
 					OptionalDouble ownedPrice = getPrice(info.highestOwned().get());
 					price -= ownedPrice.orElse(0);
-					ItemStack stack = ItemRepository.getItemStack(info.highestOwned().get().id());
+					FlexibleItemStack stack = ItemRepository.getItemStack(info.highestOwned().get().id());
 					originalMP = stack != null ? stack.getSkyblockRarity().getMP() : 0;
 				}
-				ItemStack stack = ItemRepository.getItemStack(info.accessory().id());
+				FlexibleItemStack stack = ItemRepository.getItemStack(info.accessory().id());
 				if (stack == null) return Double.MAX_VALUE;
 				int mp = stack.getSkyblockRarity().getMP() - originalMP;
 				return mp <= 0 ? Double.MAX_VALUE : price / mp;
@@ -469,17 +471,17 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 				if (icon == null) return;
 				LocalPlayer player = Minecraft.getInstance().player;
 				if (player == null) return;
-				WikiLookupManager.openWiki(icon, player, !Minecraft.getInstance().hasShiftDown());
+				WikiLookupManager.openWiki(icon.getStackOrThrow(), player, !Minecraft.getInstance().hasShiftDown());
 			}
 		}
 	}
 
 	private static class RecombobulateSource implements MagicPowerSource {
-		private final ItemStack icon;
+		private final FlexibleItemStack icon;
 		private final double pricePerMp;
 		private final List<Component> tooltip;
 		private RecombobulateSource(SkyblockItemRarity rarity) {
-			this.icon = ItemRepository.getItemStack("RECOMBOBULATOR_3000", ItemStack.EMPTY);
+			this.icon = ItemRepository.getItemStack("RECOMBOBULATOR_3000", Ico.BARRIER);
 			DoubleBooleanPair pair = ItemUtils.getItemPrice("RECOMBOBULATOR_3000");
 			double price = pair.rightBoolean() ? pair.leftDouble() : 6000000;
 			int mp = rarity.recombobulate().getMP() - rarity.getMP();
@@ -494,7 +496,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		}
 
 		@Override
-		public ItemStack icon() {
+		public FlexibleItemStack icon() {
 			return icon;
 		}
 
@@ -518,7 +520,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	}
 
 	private interface MagicPowerSource {
-		ItemStack icon();
+		FlexibleItemStack icon();
 
 		void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY);
 

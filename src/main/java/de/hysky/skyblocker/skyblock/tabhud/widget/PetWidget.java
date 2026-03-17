@@ -5,12 +5,14 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import java.util.List;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.ItemStack;
 
 @RegisterWidget
 public class PetWidget extends TabHudWidget {
@@ -19,7 +21,7 @@ public class PetWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	private String prevString = "";
-	private ItemStack icon = Ico.BONE;
+	private FlexibleItemStack icon = Ico.BONE;
 
 	public PetWidget() {
 		super("Pet", TITLE, ChatFormatting.YELLOW.getColor());
@@ -37,8 +39,9 @@ public class PetWidget extends TabHudWidget {
 				}
 				String petName = split[1].replace("✦", "").trim();
 				if (!petName.equals(prevString)) {
+					// FIXME performance
 					icon = ItemRepository.getItemsStream().filter(stack -> {
-						String string1 = stack.getHoverName().getString();
+						String string1 = stack.get(DataComponents.CUSTOM_NAME).getString();
 						if (!string1.contains("]")) return false;
 						String trim = string1.split("]")[1].trim();
 						return trim.equals(petName);

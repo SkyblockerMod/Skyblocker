@@ -50,8 +50,8 @@ public class DonationButton extends AbstractWidget {
 
 		// Determine the item stack to display
 		this.itemStack = !donation.isSet()
-				? ItemRepository.getItemStack(donation.getId())
-				: ItemRepository.getItemStack(MuseumItemCache.ARMOR_TO_ID.get(donation.getId()));
+				? ItemRepository.getItemStack(donation.getId()).getStackOrThrow()
+				: ItemRepository.getItemStack(MuseumItemCache.ARMOR_TO_ID.get(donation.getId())).getStackOrThrow();
 
 		buildTooltip();
 	}
@@ -97,7 +97,7 @@ public class DonationButton extends AbstractWidget {
 		// Set pieces display names
 		if (donation.isSet()) {
 			for (ObjectObjectMutablePair<String, PriceData> piece : donation.getSet()) {
-				ItemStack stack = ItemRepository.getItemStack(piece.left());
+				ItemStack stack = ItemRepository.getItemStack(piece.left()).getStackOrThrow();
 				if (stack != null) {
 					Component itemName = stack.getHoverName().copy();
 					if (soulbound) {

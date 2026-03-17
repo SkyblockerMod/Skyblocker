@@ -252,7 +252,7 @@ public class OverlayScreen extends Screen {
 	 */
 	private void extractItemAndTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, String id, Button button, int renderOffset) {
 		if (id.isEmpty()) return;
-		ItemStack item = getItemStack(id);
+		ItemStack item = getItemStack(id).getStackOrThrow();
 		if (item == null) return;
 		graphics.item(item, button.getX() + renderOffset, button.getY() + renderOffset);
 

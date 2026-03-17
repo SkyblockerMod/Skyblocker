@@ -217,7 +217,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 				}
 			}
 		}
-		ItemStack foundItemStack = ItemRepository.getItemStack(itemID);
+		ItemStack foundItemStack = ItemRepository.getItemStack(itemID).getStackOrThrow();
 		if (itemID.isEmpty()) {   // a bit dirty, but basically if itemID is empty then it is normal item and NOT category
 			lines.add(Component.empty()
 					.append(Component.literal("Bits Cost: ").withStyle(ChatFormatting.AQUA))

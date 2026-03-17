@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import java.awt.Color;
@@ -18,7 +19,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 
 public class SlayerWidget {
 	private final String slayerName;
@@ -29,7 +29,7 @@ public class SlayerWidget {
 	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
 	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 	private final Identifier item;
-	private final ItemStack drop;
+	private final FlexibleItemStack drop;
 	public static final Map<String, Identifier> HEAD_ICON = Map.ofEntries(
 			Map.entry("Zombie", SkyblockerMod.id("textures/gui/profile_viewer/zombie.png")),
 			Map.entry("Spider", SkyblockerMod.id("textures/gui/profile_viewer/spider.png")),
@@ -39,7 +39,7 @@ public class SlayerWidget {
 			Map.entry("Blaze", SkyblockerMod.id("textures/gui/profile_viewer/blaze.png"))
 	);
 
-	public static final Map<String, ItemStack> DROP_ICON = Map.ofEntries(
+	public static final Map<String, FlexibleItemStack> DROP_ICON = Map.ofEntries(
 			Map.entry("Zombie", Ico.FLESH),
 			Map.entry("Spider", Ico.STRING),
 			Map.entry("Wolf", Ico.MUTTON),
@@ -66,7 +66,7 @@ public class SlayerWidget {
 
 		int col2 = x + 113;
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, col2, y, 0, 0, 109, 26, 109, 26);
-		graphics.item(this.drop, col2 + 3, y + 5);
+		graphics.item(this.drop.getStackOrThrow(), col2 + 3, y + 5);
 		graphics.text(font, "§aKills: §r" + findTotalKills(), col2 + 30, y + 4, Color.white.hashCode(), true);
 		graphics.text(font, findTopTierKills(), findTopTierKills().equals("No Data") ? col2 + 30 : col2 + 29, y + 15, Color.white.hashCode(), true);
 

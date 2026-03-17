@@ -63,7 +63,7 @@ public class ItemPrice {
 
 	public static void itemPriceLookup(LocalPlayer player, ItemStack stack) {
 		String skyblockApiId = stack.getSkyblockApiId();
-		ItemStack neuStack = ItemRepository.getItemStack(stack.getNeuName());
+		ItemStack neuStack = ItemRepository.getItemStack(stack.getNeuName()).getStackOrThrow();
 		if (neuStack != null && !neuStack.isEmpty()) {
 			String itemName = ChatFormatting.stripFormatting(neuStack.getHoverName().getString());
 

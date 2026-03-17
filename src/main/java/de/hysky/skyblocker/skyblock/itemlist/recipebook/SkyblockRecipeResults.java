@@ -10,6 +10,7 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import org.joml.Vector2i;
@@ -145,7 +146,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 		}
 
 		//Render the resulting item's name
-		Component itemName = recipe.getOutputs().getFirst().getHoverName();
+		Component itemName = recipe.getOutputs().getFirst().getStackOrThrow().getHoverName();
 
 		if (textRenderer.width(itemName) > MAX_TEXT_WIDTH) {
 			FormattedText trimmed = FormattedText.composite(textRenderer.substrByWidth(itemName, MAX_TEXT_WIDTH), CommonComponents.ELLIPSIS);
@@ -210,8 +211,8 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			this.searchResults.clear();
 
 			//Search for stacks which contain the search term
-			for (ItemStack stack : ItemRepository.getItems()) {
-				String name = stack.getHoverName().getString().toLowerCase(Locale.ENGLISH);
+			for (FlexibleItemStack stack : ItemRepository.getItems()) {
+				String name = stack.getStackOrThrow().getHoverName().getString().toLowerCase(Locale.ENGLISH);
 				if (!filterOption.test(name)) continue;
 
 				List<String> lore = stack.skyblocker$getLoreStrings();
@@ -219,7 +220,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 				if (name.contains(query) || lore.stream()
 						.map(string -> string.toLowerCase(Locale.ENGLISH))
 						.anyMatch(line -> line.contains(query))) {
-					this.searchResults.add(stack);
+					this.searchResults.add(stack.getStackOrThrow());
 				}
 			}
 
@@ -248,19 +249,19 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 				case SkyblockCraftingRecipe craftingRecipe -> {
 					recipeIcon = new ItemStack(Items.CRAFTING_TABLE);
 					//Row 1
-					recipeSlotButtons.add(this.resultButtons.get(5).setDisplayStack(craftingRecipe.getGrid().getFirst()));
-					recipeSlotButtons.add(this.resultButtons.get(6).setDisplayStack(craftingRecipe.getGrid().get(1)));
-					recipeSlotButtons.add(this.resultButtons.get(7).setDisplayStack(craftingRecipe.getGrid().get(2)));
+					recipeSlotButtons.add(this.resultButtons.get(5).setDisplayStack(craftingRecipe.getGrid().getFirst().getStackOrThrow()));
+					recipeSlotButtons.add(this.resultButtons.get(6).setDisplayStack(craftingRecipe.getGrid().get(1).getStackOrThrow()));
+					recipeSlotButtons.add(this.resultButtons.get(7).setDisplayStack(craftingRecipe.getGrid().get(2).getStackOrThrow()));
 					//Row 2
-					recipeSlotButtons.add(this.resultButtons.get(10).setDisplayStack(craftingRecipe.getGrid().get(3)));
-					recipeSlotButtons.add(this.resultButtons.get(11).setDisplayStack(craftingRecipe.getGrid().get(4)));
-					recipeSlotButtons.add(this.resultButtons.get(12).setDisplayStack(craftingRecipe.getGrid().get(5)));
+					recipeSlotButtons.add(this.resultButtons.get(10).setDisplayStack(craftingRecipe.getGrid().get(3).getStackOrThrow()));
+					recipeSlotButtons.add(this.resultButtons.get(11).setDisplayStack(craftingRecipe.getGrid().get(4).getStackOrThrow()));
+					recipeSlotButtons.add(this.resultButtons.get(12).setDisplayStack(craftingRecipe.getGrid().get(5).getStackOrThrow()));
 					//Row 3
-					recipeSlotButtons.add(this.resultButtons.get(15).setDisplayStack(craftingRecipe.getGrid().get(6)));
-					recipeSlotButtons.add(this.resultButtons.get(16).setDisplayStack(craftingRecipe.getGrid().get(7)));
-					recipeSlotButtons.add(this.resultButtons.get(17).setDisplayStack(craftingRecipe.getGrid().get(8)));
+					recipeSlotButtons.add(this.resultButtons.get(15).setDisplayStack(craftingRecipe.getGrid().get(6).getStackOrThrow()));
+					recipeSlotButtons.add(this.resultButtons.get(16).setDisplayStack(craftingRecipe.getGrid().get(7).getStackOrThrow()));
+					recipeSlotButtons.add(this.resultButtons.get(17).setDisplayStack(craftingRecipe.getGrid().get(8).getStackOrThrow()));
 					//Result
-					recipeSlotButtons.add(this.resultButtons.get(14).setDisplayStack(craftingRecipe.getResult()));
+					recipeSlotButtons.add(this.resultButtons.get(14).setDisplayStack(craftingRecipe.getResult().getStackOrThrow()));
 				}
 				case SkyblockForgeRecipe forgeRecipe -> {
 
@@ -275,15 +276,15 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 					for (int i = 0; i < forgeRecipe.getInputs().size(); i++) {
 						int x = startX + (i % gridSize.x) * 25;
 						int y = startY + (i / gridSize.x) * 25;
-						recipeSlotButtons.add(new SkyblockRecipeResultButton(x, y).setDisplayStack(forgeRecipe.getInputs().get(i)));
+						recipeSlotButtons.add(new SkyblockRecipeResultButton(x, y).setDisplayStack(forgeRecipe.getInputs().get(i).getStackOrThrow()));
 					}
 					//Result
-					recipeSlotButtons.add(this.resultButtons.get(14).setDisplayStack(forgeRecipe.getResult()));
+					recipeSlotButtons.add(this.resultButtons.get(14).setDisplayStack(forgeRecipe.getResult().getStackOrThrow()));
 				}
 				case SkyblockNpcShopRecipe npcShopRecipe -> {
 					recipeIcon = new ItemStack(Items.GOLD_NUGGET);
 
-					recipeSlotButtons.add(this.resultButtons.get(8).setDisplayStack(npcShopRecipe.getNpcItem()));
+					recipeSlotButtons.add(this.resultButtons.get(8).setDisplayStack(npcShopRecipe.getNpcItem().getStackOrThrow()));
 
 					int slotsPerRow = 3;
 					int rows = npcShopRecipe.getInputs().size() / slotsPerRow + 1;
@@ -294,10 +295,10 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 					for (int i = 0; i < npcShopRecipe.getInputs().size(); i++) {
 						int x = startX + (i % slotsPerRow) * 25;
 						int y = startY + (i / slotsPerRow) * 25;
-						recipeSlotButtons.add(new SkyblockRecipeResultButton(x, y).setDisplayStack(npcShopRecipe.getInputs().get(i)));
+						recipeSlotButtons.add(new SkyblockRecipeResultButton(x, y).setDisplayStack(npcShopRecipe.getInputs().get(i).getStackOrThrow()));
 					}
 
-					recipeSlotButtons.add(this.resultButtons.get(14).setDisplayStack(npcShopRecipe.getOutputs().getFirst()));
+					recipeSlotButtons.add(this.resultButtons.get(14).setDisplayStack(npcShopRecipe.getOutputs().getFirst().getStackOrThrow()));
 
 				}
 				case null, default -> {}

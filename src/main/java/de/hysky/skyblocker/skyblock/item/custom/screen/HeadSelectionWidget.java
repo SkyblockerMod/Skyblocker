@@ -54,7 +54,7 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 		this.searchField.setResponder(this::filterButtons);
 
 		for (CustomHelmetTextures.NamedTexture tex : CustomHelmetTextures.getTextures()) {
-			ItemStack head = ProfileViewerUtils.createSkull(tex.texture());
+			ItemStack head = ProfileViewerUtils.createSkull(tex.texture()).getStackOrThrow();
 			HeadButton button = new HeadButton(tex.name(), tex.texture(), head, this::onClick);
 			this.allButtons.add(button);
 		}
@@ -364,7 +364,7 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 				return stack;
 			}
 
-			return Ico.BARRIER;
+			return Ico.BARRIER.getStackOrThrow();
 		}
 	}
 }

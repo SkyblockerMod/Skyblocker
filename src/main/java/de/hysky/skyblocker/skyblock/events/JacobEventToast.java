@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.events;
 
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.Minecraft;
@@ -10,20 +11,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import java.util.List;
 
 public class JacobEventToast extends EventToast {
 	private final List<String> crops;
 
-	private static final ItemStack DEFAULT_ITEM = new ItemStack(Items.IRON_HOE);
 	private static final Component CROPS = Component.translatable("skyblocker.events.crops");
 	private final int cropsWidth;
 
 	public JacobEventToast(long eventStartTime, String name, List<String> crops) {
-		super(eventStartTime, name, new ItemStack(Items.IRON_HOE));
+		super(eventStartTime, name, Ico.IRON_HOE);
 		this.crops = crops;
 		Font renderer = Minecraft.getInstance().font;
 		cropsWidth = renderer.width(CROPS);
@@ -48,7 +46,7 @@ public class JacobEventToast extends EventToast {
 			int x = 30 + cropsWidth + 4;
 			graphics.text(textRenderer, CROPS, 30, 7 + (16 - textRenderer.lineHeight) / 2, CommonColors.WHITE, false);
 			for (int i = 0; i < crops.size(); i++) {
-				graphics.item(JacobsContestWidget.FARM_DATA.getOrDefault(crops.get(i), DEFAULT_ITEM), x + i * (16 + 8), 7);
+				graphics.item(JacobsContestWidget.FARM_DATA.getOrDefault(crops.get(i), Ico.IRON_HOE).getStackOrThrow(), x + i * (16 + 8), 7);
 			}
 			// IDK how to make the items transparent, so I just redraw the texture on top
 			HudHelper.renderNineSliceColored(graphics, TEXTURE, 0, 0, width(), height(), ARGB.colorFromFloat((k >> 24) / 255f, 1f, 1f, 1f));
@@ -56,6 +54,6 @@ public class JacobEventToast extends EventToast {
 		}
 		extractTimer(graphics, 30, y);
 
-		graphics.fakeItem(icon, 8, height() / 2 - 8);
+		graphics.fakeItem(icon.getStackOrThrow(), 8, height() / 2 - 8);
 	}
 }

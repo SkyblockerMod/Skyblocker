@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.RepoDyeColors;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
@@ -21,7 +22,6 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -162,7 +162,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 			name = dyeId;
 			NEUItem item = NEURepoManager.getItemByNeuId(dyeId);
 			if (item != null) name = ChatFormatting.stripFormatting(item.getDisplayName());
-			dyeStack = ItemRepository.getItemStack(dyeId, Items.BARRIER.getDefaultInstance());
+			dyeStack = ItemRepository.getItemStack(dyeId, Ico.BARRIER).getStackOrThrow();
 			Component component = Component.literal(name).withColor(color);
 			this.setMessage(component);
 		}

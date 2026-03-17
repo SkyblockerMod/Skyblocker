@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
@@ -98,7 +99,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		if (cropItemId.equals("DOUBLE_PLANT") && client.level.getDefaultClockTime() >= 12000) {
 			cropItemId = "MOONFLOWER";
 		}
-		ItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
+		FlexibleItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
 
 		String counterText = FarmingHud.counterText();
 		String counterNumber = FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter());

@@ -190,7 +190,7 @@ public class ProfileViewerTextWidget {
 		matrices.scale(0.75f, 0.75f);
 		int rootAdjustedX = (int) ((root_x) / 0.75f);
 		int rootAdjustedY = (int) ((root_y) / 0.75f);
-		graphics.item(Ico.PAINTING, rootAdjustedX, rootAdjustedY + 8);
+		graphics.item(Ico.PAINTING.getStackOrThrow(), rootAdjustedX, rootAdjustedY + 8);
 		matrices.popMatrix();
 
 		graphics.text(textRenderer, "§n" + PROFILE_NAME, root_x + 14, root_y + 7, CommonColors.WHITE, true);

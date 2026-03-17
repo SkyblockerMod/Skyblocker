@@ -1,13 +1,14 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.layouts.SpacerElement;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * Abstract base class for an element that may be added to a Widget.
@@ -42,11 +43,11 @@ public abstract class Element {
 		return this.height;
 	}
 
-	public void extractIcon(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y) {
+	public void extractIcon(GuiGraphicsExtractor graphics, FlexibleItemStack icon, int x, int y) {
 		graphics.pose().pushMatrix();
 		graphics.pose().translate(x, y);
 		graphics.pose().scale((float) ICO_DIM.get() / 16);
-		graphics.item(icon, 0, 0);
+		graphics.item(icon.getStackOrThrow(), 0, 0);
 		graphics.pose().popMatrix();
 	}
 }

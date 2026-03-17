@@ -6,10 +6,10 @@ import org.jspecify.annotations.Nullable;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.CommonColors;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * Element that consists of an icon, some text and a progress bar.
@@ -22,7 +22,7 @@ class ProgressElement extends Element {
 	private static final int ICO_OFFS = 4;
 	private static final int COL_BG_BAR = 0xF0101010;
 
-	private final @Nullable ItemStack ico;
+	private final @Nullable FlexibleItemStack ico;
 	private final Component desc, bar;
 	private final float pcnt;
 	private final int color;
@@ -30,9 +30,9 @@ class ProgressElement extends Element {
 	private final int barW;
 
 	/**
-	 * @see Elements#progressComponent(ItemStack, Component, Component, float)
+	 * @see Elements#progressComponent(FlexibleItemStack, Component, Component, float)
 	 */
-	ProgressElement(@Nullable ItemStack ico, @Nullable Component description, @Nullable Component bar, float percent, int color) {
+	ProgressElement(@Nullable FlexibleItemStack ico, @Nullable Component description, @Nullable Component bar, float percent, int color) {
 		boolean showIcons = SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons;
 		if (description == null || bar == null) {
 			this.ico = showIcons ? Ico.BARRIER : null;
@@ -55,24 +55,24 @@ class ProgressElement extends Element {
 	}
 
 	/**
-	 * @see Elements#progressComponent(ItemStack, Component, Component, float)
+	 * @see Elements#progressComponent(FlexibleItemStack, Component, Component, float)
 	 */
-	ProgressElement(@Nullable ItemStack ico, @Nullable Component description, @Nullable Component bar, float percent) {
+	ProgressElement(@Nullable FlexibleItemStack ico, @Nullable Component description, @Nullable Component bar, float percent) {
 		this(ico, description, bar, percent, ColorUtils.percentToColor(percent));
 	}
 
 	/**
-	 * @see Elements#progressComponent(ItemStack, Component, float)
+	 * @see Elements#progressComponent(FlexibleItemStack, Component, float)
 	 */
-	ProgressElement(@Nullable ItemStack ico, @Nullable Component description, float percent, int color) {
+	ProgressElement(@Nullable FlexibleItemStack ico, @Nullable Component description, float percent, int color) {
 		// make sure percentages always have two decimals
 		this(ico, description, Component.nullToEmpty(String.format("%.2f%%", percent)), percent, color);
 	}
 
 	/**
-	 * @see Elements#progressComponent(ItemStack, Component, float)
+	 * @see Elements#progressComponent(FlexibleItemStack, Component, float)
 	 */
-	ProgressElement(@Nullable ItemStack ico, @Nullable Component description, float percent) {
+	ProgressElement(@Nullable FlexibleItemStack ico, @Nullable Component description, float percent) {
 		this(ico, description, percent, ColorUtils.percentToColor(percent));
 	}
 

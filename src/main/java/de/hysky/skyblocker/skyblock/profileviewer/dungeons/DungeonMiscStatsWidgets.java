@@ -48,7 +48,7 @@ public class DungeonMiscStatsWidgets {
 
 	public void extractRenderState(GuiGraphicsExtractor graphics, int x, int y) {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-		graphics.item(Ico.FEATHER, x + 2, y + 4);
+		graphics.item(Ico.FEATHER.getStackOrThrow(), x + 2, y + 4);
 
 		graphics.text(textRenderer, "Secrets " + secrets, x + 30, y + 4, Color.WHITE.getRGB(), true);
 		graphics.text(textRenderer, "Avg " + (totalRuns > 0 ? DF.format(secrets / (float) totalRuns) : 0) + "/Run", x + 30, y + 14, Color.WHITE.getRGB(), true);

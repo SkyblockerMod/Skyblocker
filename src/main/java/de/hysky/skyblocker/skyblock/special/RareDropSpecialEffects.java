@@ -81,6 +81,6 @@ public class RareDropSpecialEffects {
 			default -> "NONE";
 		};
 
-		return ItemRepository.getItemStack(itemId);
+		return ItemRepository.getItemStack(itemId).getStack();
 	}
 }

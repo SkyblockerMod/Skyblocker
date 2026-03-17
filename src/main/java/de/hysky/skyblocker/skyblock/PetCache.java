@@ -5,6 +5,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -150,8 +151,9 @@ public class PetCache {
 
 				//Find pet in NEU repo
 				ItemStack stack = ItemRepository.getItemsStream()
-						.filter(s -> s.getHoverName().getString().contains("] " + name))
+						.filter(s -> s.getStackOrThrow().getHoverName().getString().contains("] " + name))
 						.findFirst()
+						.map(FlexibleItemStack::getStackOrThrow)
 						.orElse(ItemStack.EMPTY);
 
 				if (!stack.isEmpty()) {

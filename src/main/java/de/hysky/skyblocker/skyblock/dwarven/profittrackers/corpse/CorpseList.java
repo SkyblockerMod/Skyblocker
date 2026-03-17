@@ -81,7 +81,7 @@ public class CorpseList extends ContainerObjectSelectionList<CorpseList.Abstract
 			case CorpseProfitTracker.JASPER_CRYSTAL -> Component.literal("Jasper Crystal").withStyle(ChatFormatting.LIGHT_PURPLE);
 			case CorpseProfitTracker.ENCHANTMENT_ICE_COLD_1 -> Component.literal("Enchanted Book (Ice Cold I)").withStyle(ChatFormatting.WHITE);
 			default -> {
-				ItemStack itemStack = ItemRepository.getItemStack(itemId);
+				ItemStack itemStack = ItemRepository.getItemStack(itemId).getStackOrThrow();
 				if (itemStack == null) {
 					LOGGER.error("Item stack for item ID {} is null", itemId);
 					yield Component.empty();

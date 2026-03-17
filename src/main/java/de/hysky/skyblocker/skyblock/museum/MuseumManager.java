@@ -171,14 +171,14 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 		excludedDonationIds.clear();
 		for (Donation item : donations) {
 			StringBuilder searchableContent = new StringBuilder();
-			ItemStack itemStack = ItemRepository.getItemStack(item.getId());
+			ItemStack itemStack = ItemRepository.getItemStack(item.getId()).getStackOrThrow();
 			if (itemStack != null) {
 				searchableContent.append(itemStack.getHoverName().getString())
 						.append(ItemUtils.getConcatenatedLore(itemStack));
 			}
 			if (item.getSet() != null && !item.getSet().isEmpty()) {
 				for (ObjectObjectMutablePair<String, PriceData> piece : item.getSet()) {
-					ItemStack pieceStack = ItemRepository.getItemStack(piece.left());
+					ItemStack pieceStack = ItemRepository.getItemStack(piece.left()).getStackOrThrow();
 					if (pieceStack != null) searchableContent.append(pieceStack.getHoverName().getString())
 							.append(ItemUtils.getConcatenatedLore(pieceStack));
 				}
@@ -209,7 +209,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 			int iconX = this.filterButton.getX() + (this.filterButton.getWidth() - 16) / 2;
 			int iconY = this.filterButton.getY() + (this.filterButton.getHeight() - 16) / 2;
 			filterButton.extractRenderState(graphics, mouseX, mouseY, a);
-			graphics.fakeItem(Ico.HOPPER, iconX, iconY);
+			graphics.fakeItem(Ico.HOPPER.getStackOrThrow(), iconX, iconY);
 		}
 
 		if (ItemRepository.filesImported()) {

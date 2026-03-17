@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.SkyblockTime;
@@ -158,7 +159,6 @@ public class UpcomingEventsTab implements RecipeTab {
 	}
 
 	private record JacobsTooltip(List<String> crops) implements ClientTooltipComponent {
-		private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 
 		@Override
 		public int getHeight(Font textRenderer) {
@@ -175,7 +175,7 @@ public class UpcomingEventsTab implements RecipeTab {
 			for (int i = 0; i < this.crops.size(); i++) {
 				String crop = this.crops.get(i);
 
-				graphics.fakeItem(JacobsContestWidget.FARM_DATA.getOrDefault(crop, BARRIER), x + 18 * i, y + 2);
+				graphics.fakeItem(JacobsContestWidget.FARM_DATA.getOrDefault(crop, Ico.BARRIER).getStackOrThrow(), x + 18 * i, y + 2);
 			}
 		}
 	}

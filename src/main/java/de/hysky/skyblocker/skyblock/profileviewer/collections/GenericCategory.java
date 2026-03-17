@@ -58,8 +58,8 @@ public class GenericCategory implements ProfileViewerPage {
 		JsonObject playerCollection = pProfile.getAsJsonObject("collection");
 
 		for (Collection collection : collectionsData.get(this.category)) {
-			ItemStack itemStack = ItemRepository.getItemStack(ICON_TRANSLATION.getOrDefault(collection.id(), collection.id()).replace(':', '-'));
-			itemStack = itemStack == null ? Ico.BARRIER.copy() : itemStack.copy();
+			ItemStack itemStack = ItemRepository.getItemStack(ICON_TRANSLATION.getOrDefault(collection.id(), collection.id()).replace(':', '-')).getStackOrThrow();
+			itemStack = itemStack == null ? Ico.BARRIER.getStackOrThrow().copy() : itemStack.copy();
 
 			if (itemStack.getItem().getName(itemStack).getString().equals("Barrier")) {
 				itemStack.set(DataComponents.CUSTOM_NAME, Component.nullToEmpty(collection.id()));

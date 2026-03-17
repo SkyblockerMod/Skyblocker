@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.events;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import java.util.List;
 import net.minecraft.ChatFormatting;
@@ -15,7 +16,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.item.ItemStack;
 
 public class EventToast implements Toast {
 	protected static final Identifier TEXTURE = SkyblockerMod.id("notification");
@@ -27,11 +27,11 @@ public class EventToast implements Toast {
 	protected final List<FormattedCharSequence> messageNow;
 	protected int messageWidth;
 	protected int messageNowWidth;
-	protected final ItemStack icon;
+	protected final FlexibleItemStack icon;
 
 	protected boolean started;
 
-	public EventToast(long eventStartTime, String name, ItemStack icon) {
+	public EventToast(long eventStartTime, String name, FlexibleItemStack icon) {
 		this.eventStartTime = eventStartTime;
 		MutableComponent formatted = Component.translatable("skyblocker.events.startsSoon", Component.literal(name).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.WHITE);
 		Font renderer = Minecraft.getInstance().font;
@@ -53,7 +53,7 @@ public class EventToast implements Toast {
 		y = 2 + extractMessage(graphics, 30, y, CommonColors.WHITE);
 		extractTimer(graphics, 30, y);
 
-		graphics.fakeItem(icon, 8, height()/2 - 8);
+		graphics.fakeItem(icon.getStackOrThrow(), 8, height()/2 - 8);
 	}
 
 	protected int extractMessage(GuiGraphicsExtractor graphics, int x, int y, int color) {

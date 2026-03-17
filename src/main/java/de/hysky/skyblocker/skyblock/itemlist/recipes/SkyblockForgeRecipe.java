@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import io.github.moulberry.repo.data.NEUForgeRecipe;
 import org.joml.Vector2i;
@@ -16,13 +17,12 @@ import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
-import net.minecraft.world.item.ItemStack;
 
 public class SkyblockForgeRecipe implements SkyblockRecipe {
 	public static final Identifier ID = SkyblockerMod.id("skyblock_forge");
 
-	private final List<ItemStack> inputs;
-	private final ItemStack output;
+	private final List<FlexibleItemStack> inputs;
+	private final FlexibleItemStack output;
 	private final String durationString;
 
 	public SkyblockForgeRecipe(NEUForgeRecipe forgeRecipe) {
@@ -32,7 +32,7 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 		durationString = SkyblockTime.formatTimeString(duration);
 	}
 
-	public ItemStack getResult() {
+	public FlexibleItemStack getResult() {
 		return output;
 	}
 
@@ -75,12 +75,12 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public List<ItemStack> getInputs() {
+	public List<FlexibleItemStack> getInputs() {
 		return inputs;
 	}
 
 	@Override
-	public List<ItemStack> getOutputs() {
+	public List<FlexibleItemStack> getOutputs() {
 		return Collections.singletonList(output);
 	}
 
@@ -95,7 +95,7 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 	}
 
 	public Identifier getRecipeIdentifier() {
-		return Identifier.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
+		return Identifier.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.count());
 	}
 
 	@Override

@@ -44,7 +44,7 @@ public class CompactorDeletorPreview {
 		List<IntObjectPair<ItemStack>> slots = customData.keySet()
 														.stream()
 														.filter(slot -> slot.contains(type.toLowerCase(Locale.ENGLISH).substring(0, 7)))
-														.map(slot -> IntObjectPair.of(Integer.parseInt(StringUtils.substringAfterLast(slot, "_")), ItemRepository.getItemStack(customData.getStringOr(slot, "")))).toList();
+														.map(slot -> IntObjectPair.of(Integer.parseInt(StringUtils.substringAfterLast(slot, "_")), ItemRepository.getItemStack(customData.getStringOr(slot, "")).getStackOrThrow())).toList();
 
 		List<ClientTooltipComponent> components = tooltips.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).collect(Collectors.toList());
 		IntIntPair dimensions = DIMENSIONS.getOrDefault(size, DEFAULT_DIMENSION);

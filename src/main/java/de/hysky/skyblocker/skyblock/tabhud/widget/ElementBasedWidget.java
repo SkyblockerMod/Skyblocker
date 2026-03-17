@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -19,7 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * Abstract base class for a element based Widget.
@@ -95,22 +95,22 @@ public abstract class ElementBasedWidget extends HudWidget {
 	 * added as such:
 	 * [ico] [string] [textB.formatted(fmt)]
 	 */
-	public final void addSimpleIcoText(@Nullable ItemStack ico, String string, ChatFormatting fmt, int idx) {
+	public final void addSimpleIcoText(@Nullable FlexibleItemStack ico, String string, ChatFormatting fmt, int idx) {
 		Component txt = simpleEntryText(idx, string, fmt);
 		this.addComponent(Elements.iconTextComponent(ico, txt));
 	}
 
-	public final void addSimpleIcoText(@Nullable ItemStack ico, String string, ChatFormatting fmt, String content) {
+	public final void addSimpleIcoText(@Nullable FlexibleItemStack ico, String string, ChatFormatting fmt, String content) {
 		Component txt = simpleEntryText(content, string, fmt);
 		this.addComponent(Elements.iconTextComponent(ico, txt));
 	}
 
-	public final void addSimpleIconTranslatableText(@Nullable ItemStack icon, @Translatable String translationKey, ChatFormatting formatting, String content) {
+	public final void addSimpleIconTranslatableText(@Nullable FlexibleItemStack icon, @Translatable String translationKey, ChatFormatting formatting, String content) {
 		Component text = simpleEntryTranslatableText(translationKey, content, formatting);
 		this.addComponent(Elements.iconTextComponent(icon, text));
 	}
 
-	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, ChatFormatting formatting, Component content) {
+	public final void addSimpleIconTranslatableText(FlexibleItemStack icon, @Translatable String translationKey, ChatFormatting formatting, Component content) {
 		Component text = simpleEntryTranslatableText(translationKey, content, formatting);
 		this.addComponent(Elements.iconTextComponent(icon, text));
 	}

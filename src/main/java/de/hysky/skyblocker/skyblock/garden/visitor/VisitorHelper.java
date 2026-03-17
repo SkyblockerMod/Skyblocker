@@ -18,6 +18,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -56,7 +57,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class VisitorHelper extends AbstractWidget {
 	private static final Set<Visitor> activeVisitors = new HashSet<>();
-	private static final Map<String, ItemStack> cachedItems = new HashMap<>();
+	private static final Map<String, FlexibleItemStack> cachedItems = new HashMap<>();
 	// Map of grouped items with their total amount and associated visitors
 	private static final Object2IntMap<Component> groupedItems = new Object2IntOpenHashMap<>();
 	private static final Map<Component, List<Visitor>> visitorsByItem = new LinkedHashMap<>();
@@ -183,7 +184,7 @@ public class VisitorHelper extends AbstractWidget {
 	/**
 	 * Retrieves a cached ItemStack or fetches it if not already cached.
 	 */
-	private static ItemStack getCachedItem(String itemName) {
+	private static FlexibleItemStack getCachedItem(String itemName) {
 		String cleanName = ChatFormatting.stripFormatting(itemName);
 		return cachedItems.computeIfAbsent(cleanName, name -> {
 			if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return ItemUtils.getNamedPlaceholder(itemName);
@@ -237,7 +238,7 @@ public class VisitorHelper extends AbstractWidget {
 			int textX = iconX + (int) (ICON_SIZE * 0.95f) + 4;
 			int yPosition = y + index * (LINE_HEIGHT + textRenderer.lineHeight);
 
-			ItemStack cachedStack = getCachedItem(itemName.getString());
+			ItemStack cachedStack = getCachedItem(itemName.getString()).getStackOrThrow();
 			graphics.pose().pushMatrix();
 			graphics.pose().translate(iconX, yPosition + (float) textRenderer.lineHeight / 2 - ICON_SIZE * 0.95f / 2);
 			graphics.pose().scale(0.95f, 0.95f);

@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.render.gui.ItemButtonWidget;
@@ -97,11 +98,11 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			.set(DataComponents.ITEM_NAME, Component.literal("None"))
 			.build());
 
-	private @Nullable ItemStack[] items;
+	private @Nullable FlexibleItemStack[] items;
 	private int hoveredSlot = -1;
 	private int editingSlotIcon = -1;
 	private long updateFromTabTime = System.currentTimeMillis();
-	private ItemStack[] customIconOptionsItems = new ItemStack[0];
+	private FlexibleItemStack[] customIconOptionsItems = new FlexibleItemStack[0];
 
 
 	public GardenPlotsWidget(int x, int y) {
@@ -131,13 +132,13 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	private void updatePlotItems() {
 		items = Arrays.stream(GardenPlots.GARDEN_PLOTS).map(gardenPlot -> {
 			if (gardenPlot == null) return null;
-			ItemStack itemStack = gardenPlot.customIcon()
+			FlexibleItemStack itemStack = gardenPlot.customIcon()
 					.map(s -> ItemRepository.getItemStack(s, ItemUtils.getItemIdPlaceholder(s)))
-					.orElseGet(() -> gardenPlot.icon().map(ItemStack::new, s -> ItemRepository.getItemStack(s, ItemUtils.getItemIdPlaceholder(s)))).copy();
+					.orElseGet(() -> gardenPlot.icon().map(FlexibleItemStack::new, s -> ItemRepository.getItemStack(s, ItemUtils.getItemIdPlaceholder(s)))).copy();
 			itemStack.set(DataComponents.CUSTOM_NAME, Component.literal(gardenPlot.name()).withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD));
 			return itemStack;
-		}).toArray(ItemStack[]::new);
-		items[12] = new ItemStack(Items.LODESTONE);
+		}).toArray(FlexibleItemStack[]::new);
+		items[12] = new FlexibleItemStack(Items.LODESTONE);
 		items[12].set(DataComponents.ITEM_NAME, Component.literal("The Barn"));
 	}
 
@@ -154,7 +155,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 		hoveredSlot = -1;
 		long timeMillis = System.currentTimeMillis();
-		@Nullable ItemStack[] stacks = editingSlotIcon >= 0 ? customIconOptionsItems : items;
+		@Nullable FlexibleItemStack[] stacks = editingSlotIcon >= 0 ? customIconOptionsItems : items;
 		for (int i = 0; i < stacks.length; i++) {
 			int slotX = 7 + (i % 5) * 18;
 			int slotY = 17 + (i / 5) * 18;
@@ -165,7 +166,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, slotX - 3, slotY - 3, 24, 24);
 			}
 
-			ItemStack item = stacks[i];
+			ItemStack item = stacks[i].getStackOrThrow();
 			// Still show hover highlight & pest outline in empty slots.
 			if (item == null) {
 				if (hovered)
@@ -275,10 +276,10 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			editingSlotIcon = hoveredSlot;
 			customIconOptionsItems = Arrays.stream(CUSTOM_ICON_OPTIONS).map(s -> {
 				if (s == null) return noneItem;
-				ItemStack stack = ItemRepository.getItemStack(s);
+				FlexibleItemStack stack = ItemRepository.getItemStack(s);
 				if (stack == null) return ItemUtils.getItemIdPlaceholder(s);
 				return stack;
-			}).toArray(ItemStack[]::new);
+			}).toArray(FlexibleItemStack[]::new);
 			return;
 		}
 

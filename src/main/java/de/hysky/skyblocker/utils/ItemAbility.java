@@ -1,8 +1,11 @@
 package de.hysky.skyblocker.utils;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.math.NumberUtils;
+
+import de.hysky.skyblocker.injected.SkyblockerStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +24,7 @@ public record ItemAbility(String name, Activation activation, OptionalInt manaCo
 	 * Use {@link ItemStack#skyblocker$getAbilities()}
 	 */
 	@Deprecated
-	public static List<ItemAbility> getAbilities(ItemStack stack) {
+	public static <T extends ItemInstance & SkyblockerStack> List<ItemAbility> getAbilities(T stack) {
 		List<String> strings = stack.skyblocker$getLoreStrings();
 		List<ItemAbility> abilities = new ArrayList<>(2); // items rarely have more than 2
 		String name = null;

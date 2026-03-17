@@ -12,6 +12,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -22,7 +23,6 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.slf4j.Logger;
 
@@ -41,20 +41,21 @@ public class EventNotifications {
 	public static final String MAYOR_JERRY = "Mayor Jerry";
 
 	public static final IntArrayList DEFAULT_REMINDERS = new IntArrayList(IntList.of(60, 60 * 5));
-	public static final Map<String, ItemStack> eventIcons = Map.ofEntries(
-			Map.entry("Dark Auction", new ItemStack(Items.NETHER_BRICK)),
-			Map.entry("Bonus Fishing Festival", new ItemStack(Items.FISHING_ROD)),
-			Map.entry("Bonus Mining Fiesta", new ItemStack(Items.IRON_PICKAXE)),
-			Map.entry(JACOBS, new ItemStack(Items.IRON_HOE)),
-			Map.entry("New Year Celebration", new ItemStack(Items.CAKE)),
-			Map.entry("Election Over!", new ItemStack(Items.JUKEBOX)),
-			Map.entry("Election Booth Opens", new ItemStack(Items.JUKEBOX)),
-			Map.entry(MAYOR_JERRY, Items.VILLAGER_SPAWN_EGG.getDefaultInstance()),
-			Map.entry("Spooky Festival", new ItemStack(Items.JACK_O_LANTERN)),
-			Map.entry("Season of Jerry", new ItemStack(Items.SNOWBALL)),
-			Map.entry("Jerry's Workshop Opens", new ItemStack(Items.SNOW_BLOCK)),
-			Map.entry("Traveling Zoo", new ItemStack(Items.HAY_BLOCK)) // change to the custom head one day
+	public static final Map<String, FlexibleItemStack> eventIcons = Map.ofEntries(
+			Map.entry("Dark Auction", new FlexibleItemStack(Items.NETHER_BRICK)),
+			Map.entry("Bonus Fishing Festival", new FlexibleItemStack(Items.FISHING_ROD)),
+			Map.entry("Bonus Mining Fiesta", new FlexibleItemStack(Items.IRON_PICKAXE)),
+			Map.entry(JACOBS, new FlexibleItemStack(Items.IRON_HOE)),
+			Map.entry("New Year Celebration", new FlexibleItemStack(Items.CAKE)),
+			Map.entry("Election Over!", new FlexibleItemStack(Items.JUKEBOX)),
+			Map.entry("Election Booth Opens", new FlexibleItemStack(Items.JUKEBOX)),
+			Map.entry(MAYOR_JERRY, new FlexibleItemStack(Items.VILLAGER_SPAWN_EGG)),
+			Map.entry("Spooky Festival", new FlexibleItemStack(Items.JACK_O_LANTERN)),
+			Map.entry("Season of Jerry", new FlexibleItemStack(Items.SNOWBALL)),
+			Map.entry("Jerry's Workshop Opens", new FlexibleItemStack(Items.SNOW_BLOCK)),
+			Map.entry("Traveling Zoo", new FlexibleItemStack(Items.HAY_BLOCK)) // change to the custom head one day
 	);
+	private static final FlexibleItemStack FALLBACK_ICON = new FlexibleItemStack(Items.PAPER);
 	private static long currentTime = System.currentTimeMillis() / 1000;
 
 	@Init
@@ -74,7 +75,7 @@ public class EventNotifications {
 												);
 											} else {
 												Minecraft.getInstance().getToastManager().addToast(
-														new EventToast(time, "Jacob's or something idk", new ItemStack(Items.PAPER))
+														new EventToast(time, "Jacob's or something idk", FALLBACK_ICON)
 												);
 											}
 											return 0;
@@ -158,7 +159,7 @@ public class EventNotifications {
 						);
 					} else {
 						instance.getToastManager().addToast(
-								new EventToast(skyblockEvent.start(), eventName, eventIcons.getOrDefault(eventName, new ItemStack(Items.PAPER)))
+								new EventToast(skyblockEvent.start(), eventName, eventIcons.getOrDefault(eventName, FALLBACK_ICON))
 						);
 					}
 					SoundEvent soundEvent = SkyblockerConfigManager.get().eventNotifications.reminderSound.getSoundEvent();

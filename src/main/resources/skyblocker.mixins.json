@@ -67,6 +67,7 @@
 		"accessors.ChatListenerAccessor",
 		"accessors.CheckboxAccessor",
 		"accessors.CustomDataAccessor",
+		"accessors.DataComponentPatchAccessor",
 		"accessors.DirectStateAccessInvoker",
 		"accessors.EditBoxAccessor",
 		"accessors.EnderManAccessor",

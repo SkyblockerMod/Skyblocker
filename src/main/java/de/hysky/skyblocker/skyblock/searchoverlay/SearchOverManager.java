@@ -16,6 +16,7 @@ import de.hysky.skyblocker.skyblock.museum.Donation;
 import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
@@ -259,6 +260,7 @@ public class SearchOverManager {
 				.filter(MuseumItemCache::hasItemInMuseum)
 				.map(ItemRepository::getItemStack)
 				.filter(Objects::nonNull)
+				.map(FlexibleItemStack::getStackOrThrow)
 				.map(ItemStack::getHoverName)
 				.map(Component::getString);
 
@@ -314,7 +316,7 @@ public class SearchOverManager {
 		if (name.isEmpty()) return "";
 		if (location != SearchLocation.MUSEUM || !MuseumItemCache.ARMOR_NAMES.containsValue(name)) {
 			return namesToNeuId.computeIfAbsent(name, (str) ->
-					ItemRepository.getItemsStream().filter(stack -> stack.getHoverName().getString().equals(str))
+					ItemRepository.getItemsStream().filter(stack -> stack.getStackOrThrow().getHoverName().getString().equals(str))
 							.map(SkyblockerStack::getNeuName).findFirst().orElse("")
 			);
 		}
