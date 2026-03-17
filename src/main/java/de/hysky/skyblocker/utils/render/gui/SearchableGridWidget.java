@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -28,7 +29,7 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 	private final int expectedWidgetWidth;
 
 	public SearchableGridWidget(int x, int y, int width, int height, Component message, int expectedWidgetWidth) {
-		super(x, y, width, height, message);
+		super(x, y, width, height, message, AbstractScrollArea.defaultSettings(8));
 		searchField = new EditBox(Minecraft.getInstance().font, width, TEXT_FIELD_HEIGHT, Component.translatable("gui.recipebook.search_hint"));
 		searchField.setHint(Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
 		searchField.setResponder(this::filterInternal);
@@ -90,7 +91,7 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 	private class WidgetsContainer extends AbstractContainerWidget {
 
 		private WidgetsContainer() {
-			super(0, 0, SearchableGridWidget.this.getWidth(), SearchableGridWidget.this.getHeight() - TEXT_FIELD_HEIGHT, Component.literal("Grid"));
+			super(0, 0, SearchableGridWidget.this.getWidth(), SearchableGridWidget.this.getHeight() - TEXT_FIELD_HEIGHT, Component.literal("Grid"), AbstractScrollArea.defaultSettings(8));
 		}
 
 		@Override

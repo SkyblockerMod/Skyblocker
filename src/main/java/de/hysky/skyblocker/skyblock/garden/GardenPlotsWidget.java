@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -104,7 +105,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 
 	public GardenPlotsWidget(int x, int y) {
-		super(x, y, 104, 132, Component.translatable("skyblocker.gardenPlots"));
+		super(x, y, 104, 132, Component.translatable("skyblocker.gardenPlots"), AbstractScrollArea.defaultSettings(8));
 		updatePlotItems();
 		updateInfestedFromTab();
 

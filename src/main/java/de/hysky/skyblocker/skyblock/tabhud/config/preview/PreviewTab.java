@@ -406,7 +406,7 @@ public class PreviewTab implements Tab {
 		private int height = 0;
 
 		private WidgetOptionsScrollable() {
-			super(0, 0, 0, 0, Component.literal("Widget Options Scrollable"));
+			super(0, 0, 0, 0, Component.literal("Widget Options Scrollable"), AbstractScrollArea.defaultSettings(8));
 		}
 
 		@Override

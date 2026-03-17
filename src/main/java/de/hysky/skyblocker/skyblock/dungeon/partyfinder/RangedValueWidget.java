@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -34,7 +35,7 @@ public class RangedValueWidget extends AbstractContainerWidget {
 	private final Button okButton;
 
 	public RangedValueWidget(PartyFinderScreen screen, Component name, int x, int y, int width, int slotId) {
-		super(x, y, width, 45, Component.empty());
+		super(x, y, width, 45, Component.empty(), AbstractScrollArea.defaultSettings(4));
 		this.slotId = slotId;
 		this.screen = screen;
 		this.name = name;

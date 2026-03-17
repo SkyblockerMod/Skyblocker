@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.utils.render;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.textures.GpuSampler;
@@ -37,7 +36,6 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import org.joml.Matrix3x2f;
 import org.joml.Vector2f;
-import org.lwjgl.glfw.GLFW;
 
 import java.awt.Color;
 import java.util.Optional;
@@ -60,7 +58,7 @@ public class HudHelper {
 	}
 
 	public static void drawHorizontalGradient(GuiGraphicsExtractor graphics, float startX, float startY, float endX, float endY, int colorStart, int colorEnd) {
-		graphics.guiRenderState.submitGuiElement(new HorizontalGradientGuiElementRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), (int) startX, (int) startY, (int) endX, (int) endY, colorStart, colorEnd, context.scissorStack.peek()));
+		graphics.guiRenderState.addGuiElement(new HorizontalGradientGuiElementRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(graphics.pose()), (int) startX, (int) startY, (int) endX, (int) endY, colorStart, colorEnd, graphics.scissorStack.peek()));
 	}
 
 	public static void drawBorder(GuiGraphicsExtractor context, int x, int y, int width, int height, int color) {
@@ -77,7 +75,7 @@ public class HudHelper {
 	 * @param color color of shape
 	 */
 	public static void drawCustomShape(GuiGraphicsExtractor graphics, List<Vector2f> vertices, int color) {
-		graphics.guiRenderState.submitGuiElement(new CustomShapeGuiElementRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), vertices, color, context.scissorStack.peek()));
+		graphics.guiRenderState.addGuiElement(new CustomShapeGuiElementRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(graphics.pose()), vertices, color, graphics.scissorStack.peek()));
 	}
 
 	/**
@@ -93,9 +91,9 @@ public class HudHelper {
 	}
 
 	public static <S> void drawEquipment(GuiGraphicsExtractor graphics, EquipmentLayerRenderer equipmentRenderer, EquipmentClientInfo.LayerType layerType, ResourceKey<EquipmentAsset> assetKey, Model<S> model, S state, ItemStack stack, int x1, int y1, int x2, int y2, float rotation, float scale, float offset) {
-		EquipmentGuiElementRenderState<S> renderState = new EquipmentGuiElementRenderState<>(equipmentRenderer, layerType, assetKey, model, state, stack, x1, y1, x2, y2, rotation, scale, offset, context.scissorStack.peek());
+		EquipmentGuiElementRenderState<S> renderState = new EquipmentGuiElementRenderState<>(equipmentRenderer, layerType, assetKey, model, state, stack, x1, y1, x2, y2, rotation, scale, offset, graphics.scissorStack.peek());
 
-		graphics.guiRenderState.submitPicturesInPictureState(renderState);
+		graphics.guiRenderState.addPicturesInPictureState(renderState);
 	}
 
 	public static void drawOutlinedText(GuiGraphicsExtractor graphics, Component text, int x, int y, int color, int outlineColor) {
@@ -111,8 +109,8 @@ public class HudHelper {
 		if (CaxtonCompatibility.drawOutlinedText(graphics, text, x, y, color, outlineColor)) return;
 		if (ModernUICompatibility.extractOutlinedText(graphics, text, outlineText, x, y, color, outlineColor)) return;
 
-		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.font, text, new Matrix3x2f(context.pose()), x, y, color, outlineColor, false, false, context.scissorStack.peek());
-		graphics.guiRenderState.submitText(renderState);
+		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.font, text, new Matrix3x2f(graphics.pose()), x, y, color, outlineColor, false, false, graphics.scissorStack.peek());
+		graphics.guiRenderState.addText(renderState);
 	}
 
 	/**
@@ -144,8 +142,9 @@ public class HudHelper {
 
 	// 1.21.10 Port: Temp fix for this?
 	// 1.21.11 Port: "nothing is more permanent than a temporary solution"
+	// 26.1 Port: still holds true!
 	public static boolean hasShiftDown() {
-		return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
+		return Minecraft.getInstance().hasShiftDown();
 	}
 
 	public static void close() {

@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 
@@ -15,7 +15,7 @@ public abstract class AbstractCustomHypixelGUI<T extends AbstractContainerMenu> 
 	public boolean isWaitingForServer = true;
 	public AbstractCustomHypixelGUI(T handler, Inventory inventory, Component title, int imageHeight) {
 		super(handler, inventory, title);
-		this.imageHeight = imageHeight;
+		((AbstractContainerScreenAccessor) this).setImageHeight(imageHeight);
 		this.inventoryLabelY = imageHeight - 94;
 		handler.addSlotListener(this);
 	}
@@ -23,7 +23,7 @@ public abstract class AbstractCustomHypixelGUI<T extends AbstractContainerMenu> 
 	protected void clickSlot(int slotID, int button) {
 		if (isWaitingForServer) return;
 		if (minecraft.gameMode == null || minecraft.player == null) return;
-		this.minecraft.gameMode.handleInventoryMouseClick(menu.containerId, slotID, button, ClickType.PICKUP, minecraft.player);
+		this.minecraft.gameMode.handleContainerInput(menu.containerId, slotID, button, ContainerInput.PICKUP, minecraft.player);
 		menu.getCarried().setCount(0);
 		isWaitingForServer = true;
 	}

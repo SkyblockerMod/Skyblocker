@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -30,7 +31,7 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 
 
 	public FinderSettingsContainer(int x, int y, int height) {
-		super(x, y, 336, height, Component.empty());
+		super(x, y, 336, height, Component.empty(), AbstractScrollArea.defaultSettings(4));
 	}
 
 	@Override

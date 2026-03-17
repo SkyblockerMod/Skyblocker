@@ -17,6 +17,7 @@ import java.util.function.Predicate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -48,7 +49,7 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 	private @Nullable HeadButton selectedButton;
 
 	public HeadSelectionWidget(int x, int y, int width, int height) {
-		super(x, y, width, height, Component.nullToEmpty("HeadSelection"));
+		super(x, y, width, height, Component.nullToEmpty("HeadSelection"), AbstractScrollArea.defaultSettings(4));
 		this.searchField = new EditBox(Minecraft.getInstance().font, x + 3, y + 3, width - 6, 12, Component.translatable("gui.recipebook.search_hint"));
 		this.searchField.setResponder(this::filterButtons);
 

@@ -12,6 +12,7 @@ import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
@@ -233,7 +234,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 		private final IdentifierTextField field;
 
 		private ModelFieldContainer(int width, int height) {
-			super(0, 0, width, height, Component.empty());
+			super(0, 0, width, height, Component.empty(), AbstractScrollArea.defaultSettings(4));
 			containerLayout = new FrameLayout();
 			field = containerLayout.addChild(new IdentifierTextField(width - 10, 20, identifier -> {
 				String uuid = armor[selectedSlot].getUuid();

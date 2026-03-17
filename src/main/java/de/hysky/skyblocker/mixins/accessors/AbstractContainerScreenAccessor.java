@@ -28,8 +28,16 @@ public interface AbstractContainerScreenAccessor {
 	@Accessor
 	int getImageHeight();
 
+	@Accessor
 	@Mutable
+	void setImageWidth(int imageWidth);
+
+	@Accessor
+	@Mutable
+	void setImageHeight(int imageHeight);
+
 	@Accessor("menu")
+	@Mutable
 	void setHandler(AbstractContainerMenu handler);
 
 	@Accessor("hoveredSlot")

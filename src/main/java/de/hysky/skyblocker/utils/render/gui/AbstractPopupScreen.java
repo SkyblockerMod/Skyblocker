@@ -29,19 +29,19 @@ public class AbstractPopupScreen extends Screen {
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
-		this.backgroundScreen.extractBackground(context, -1, -1, delta);
-		context.nextStratum();
-		this.backgroundScreen.extractRenderState(context, -1, -1, delta);
-		context.nextStratum();
-		this.extractTransparentBackground(context);
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		this.backgroundScreen.extractBackground(graphics, -1, -1, a);
+		graphics.nextStratum();
+		this.backgroundScreen.extractRenderState(graphics, -1, -1, a);
+		graphics.nextStratum();
+		this.extractTransparentBackground(graphics);
 	}
 
 	/**
 	 * These are the inner positions and size of the popup, not outer
 	 */
-	public static void extractPopupBackground(GuiGraphicsExtractor context, int x, int y, int width, int height) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
+	public static void extractPopupBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
 	}
 
 	@Override
@@ -65,16 +65,16 @@ public class AbstractPopupScreen extends Screen {
 
 		private final Runnable onEnter;
 
-		public EnterConfirmTextFieldWidget(Font textRenderer, int width, int height, Component text, Runnable onEnter) {
-			this(textRenderer, 0, 0, width, height, text, onEnter);
+		public EnterConfirmTextFieldWidget(Font font, int width, int height, Component text, Runnable onEnter) {
+			this(font, 0, 0, width, height, text, onEnter);
 		}
 
-		public EnterConfirmTextFieldWidget(Font textRenderer, int x, int y, int width, int height, Component text, Runnable onEnter) {
-			this(textRenderer, x, y, width, height, null, text, onEnter);
+		public EnterConfirmTextFieldWidget(Font font, int x, int y, int width, int height, Component text, Runnable onEnter) {
+			this(font, x, y, width, height, null, text, onEnter);
 		}
 
-		public EnterConfirmTextFieldWidget(Font textRenderer, int x, int y, int width, int height, @Nullable EditBox copyFrom, Component text, Runnable onEnter) {
-			super(textRenderer, x, y, width, height, copyFrom, text);
+		public EnterConfirmTextFieldWidget(Font font, int x, int y, int width, int height, @Nullable EditBox copyFrom, Component text, Runnable onEnter) {
+			super(font, x, y, width, height, copyFrom, text);
 			this.onEnter = onEnter;
 		}
 

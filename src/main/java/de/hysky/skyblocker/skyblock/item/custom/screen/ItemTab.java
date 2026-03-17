@@ -10,6 +10,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
@@ -140,7 +141,7 @@ public class ItemTab extends GridLayoutTab {
 		private final LinearLayout layout = LinearLayout.vertical().spacing(5);
 
 		private ItemSelector() {
-			super(0, 20, 0, 0, Component.literal("Item Selector"));
+			super(0, 20, 0, 0, Component.literal("Item Selector"), AbstractScrollArea.defaultSettings(8));
 			layout.addChild(SpacerElement.height(32)); // ITEM
 			selectItemButton = layout.addChild(Button.builder(Component.literal("Select Item"), b ->
 					Minecraft.getInstance().setScreen(new ItemSelectPopup(parentScreen, ItemTab.this::setCurrentItem))

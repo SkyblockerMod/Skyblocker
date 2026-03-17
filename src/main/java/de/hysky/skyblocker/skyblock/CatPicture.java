@@ -9,19 +9,17 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.render.state.EmptyRenderState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.ItemFrameRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.BlockStateDefinitions;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.MinecraftAccessor;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 
@@ -42,11 +40,9 @@ public class CatPicture {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private static void extractRenderState(EmptyRenderState state, LevelRenderState worldState, SubmitNodeCollector commandQueue) {
-		// Vanilla does this in the ItemFrameEntityRenderer
-		BlockState blockState = BlockStateDefinitions.getItemFrameFakeState(false, true);
-		BlockStateModel blockStateModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+		ItemFrameRenderState itemFrameState = new ItemFrameRenderState();
+		((MinecraftAccessor) Minecraft.getInstance()).getBlockModelResolver().updateForItemFrame(itemFrameState.frameModel, false, true);
 
 		PoseStack matrices = new PoseStack();
 		matrices.pushPose();
@@ -54,17 +50,7 @@ public class CatPicture {
 		matrices.mulPose(Axis.YP.rotationDegrees(180));
 
 		// Render Item Frame
-		commandQueue.submitBlockModel(
-				matrices,
-				RenderTypes.entitySolidZOffsetForward(TextureAtlas.LOCATION_BLOCKS),
-				blockStateModel,
-				1f,
-				1f,
-				1f,
-				LightCoordsUtil.FULL_BRIGHT,
-				OverlayTexture.NO_OVERLAY,
-				EntityRenderState.NO_OUTLINE
-		);
+		itemFrameState.frameModel.submitWithZOffset(matrices, commandQueue, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
 
 		// Render Kitty
 		matrices.translate(1, 1, 0);

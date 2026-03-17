@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import de.hysky.skyblocker.mixins.accessors.BlockEntityRenderStateAccessor;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
@@ -138,7 +139,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		float length = (float) RenderHelper.getCamera().position().subtract(pos.getCenter()).horizontalDistance();
 		BeaconRenderState state = new BeaconRenderState();
 		state.blockPos = pos;
-		state.blockState = Blocks.BEACON.defaultBlockState();
+		((BlockEntityRenderStateAccessor) state).setBlockState(Blocks.BEACON.defaultBlockState());
 		state.blockEntityType = BlockEntityType.BEACON;
 		state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
 		state.breakProgress = null;
