@@ -6,7 +6,7 @@ import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getLatestVersion
 
 import java.util.List;
 
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.RegistryUtils;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -30,7 +30,7 @@ public class LegacyItemStackFixer {
 
 	//Static import things to avoid class name conflicts
 	public static ItemStack fixLegacyStack(CompoundTag nbt) {
-		RegistryOps<Tag> ops = Utils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE);
+		RegistryOps<Tag> ops = RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE);
 		Dynamic<Tag> fixed = getFixer().update(TypeReferences.LEGACY_ITEM_STACK, new Dynamic<>(ops, nbt), getFirstVersion(), getLatestVersion());
 		ItemStack stack = ItemStack.CODEC.parse(fixed)
 				.setPartial(ItemStack.EMPTY)
