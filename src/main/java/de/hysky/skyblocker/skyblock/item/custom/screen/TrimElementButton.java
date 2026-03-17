@@ -136,12 +136,12 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 		private static float setVisibleAndGetOffset(HumanoidModel<?> humanoidModel, EquipmentSlot slot) {
 			humanoidModel.head.visible = false;
 			humanoidModel.hat.visible = false;
-		    humanoidModel.body.visible = false;
-		    humanoidModel.rightArm.visible = false;
-		    humanoidModel.leftArm.visible = false;
-		    humanoidModel.rightLeg.visible = false;
-		    humanoidModel.leftLeg.visible = false;
-			
+			humanoidModel.body.visible = false;
+			humanoidModel.rightArm.visible = false;
+			humanoidModel.leftArm.visible = false;
+			humanoidModel.rightLeg.visible = false;
+			humanoidModel.leftLeg.visible = false;
+
 			switch (slot) {
 				case HEAD:
 					humanoidModel.head.visible = true;

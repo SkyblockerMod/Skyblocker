@@ -156,7 +156,7 @@ dependencies {
 
 	// REI
 	//compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
-		//exclude group: "net.fabricmc.fabric-api" //Stop this from importing an old version of FAPI that crashes everything
+	//exclude group: "net.fabricmc.fabric-api" //Stop this from importing an old version of FAPI that crashes everything
 	//}
 	//runtimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
