@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegistryUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
@@ -109,7 +110,7 @@ public class BackpackPreview {
 	}
 
 	private static RegistryOps<Tag> getOps() {
-		return Utils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE);
+		return RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE);
 	}
 
 	private static void saveStorages() {
