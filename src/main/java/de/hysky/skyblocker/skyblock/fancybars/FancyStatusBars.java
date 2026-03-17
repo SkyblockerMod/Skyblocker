@@ -209,6 +209,8 @@ public class FancyStatusBars {
                 bar.iconCustomOffX = 0; bar.iconCustomOffY = 0;
                 bar.iconCustomW = StatusBar.ICON_SIZE; bar.iconCustomH = StatusBar.ICON_SIZE;
                 bar.setIconPosition(StatusBar.IconPosition.LEFT);
+			    bar.setColors(type.getColors().clone());
+                bar.setTextColor(type.getTextColor());
                 // Hotbar-relative layout (GUI pixels from hotbar top-centre).
                 // offX from centre, offY from hotbar top (negative = above hotbar).
                 // Stat bars (H/I/D) tile across the hotbar width with 1px gaps.
