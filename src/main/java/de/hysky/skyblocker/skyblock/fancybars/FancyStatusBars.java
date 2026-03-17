@@ -211,24 +211,26 @@ public class FancyStatusBars {
                 bar.setIconPosition(StatusBar.IconPosition.LEFT);
                 // Per-bar hotbar-relative pixel layout
                 // offX = pixels from hotbar top-centre X, offY = pixels from hotbar top Y (negative = above)
+                // Reference layout derived at W=960, H=540 (1920×1080 physical at GUI scale 2).
+                // offX = floor(json_x * 960) - 480,  offY = floor(json_y * 540) - 518,  width = floor(json_size * 960)
                 switch (type) {
                         case HEALTH -> {
-                                bar.hotbarRelOffX = -89; bar.hotbarRelOffY = -30; bar.hotbarPixelWidth = 57;
+                                bar.hotbarRelOffX = -88; bar.hotbarRelOffY = -30; bar.hotbarPixelWidth = 62;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
-                                bar.textCustomOffX = 26; bar.textCustomOffY = -3;
+                                bar.textCustomOffX = 23; bar.textCustomOffY = -3;
                         }
                         case INTELLIGENCE -> {
-                                bar.hotbarRelOffX = -30; bar.hotbarRelOffY = -30; bar.hotbarPixelWidth = 57;
+                                bar.hotbarRelOffX = -33; bar.hotbarRelOffY = -30; bar.hotbarPixelWidth = 62;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
-                                bar.textCustomOffX = 26; bar.textCustomOffY = -3;
+                                bar.textCustomOffX = 25; bar.textCustomOffY = -3;
                         }
                         case DEFENSE -> {
-                                bar.hotbarRelOffX = 29; bar.hotbarRelOffY = -30; bar.hotbarPixelWidth = 57;
+                                bar.hotbarRelOffX = 23; bar.hotbarRelOffY = -30; bar.hotbarPixelWidth = 62;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
-                                bar.textCustomOffX = 26; bar.textCustomOffY = -3;
+                                bar.textCustomOffX = 22; bar.textCustomOffY = -3;
                         }
                         case EXPERIENCE -> {
                                 bar.hotbarRelOffX = -91; bar.hotbarRelOffY = -16; bar.hotbarPixelWidth = 182;
@@ -237,16 +239,16 @@ public class FancyStatusBars {
                                 bar.textCustomOffX = 0; bar.textCustomOffY = 0;
                         }
                         case SPEED -> {
-                                bar.hotbarRelOffX = -148; bar.hotbarRelOffY = 4; bar.hotbarPixelWidth = 57;
+                                bar.hotbarRelOffX = -148; bar.hotbarRelOffY = 6; bar.hotbarPixelWidth = 62;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
-                                bar.textCustomOffX = 26; bar.textCustomOffY = -3;
+                                bar.textCustomOffX = 28; bar.textCustomOffY = -3;
                         }
                         case AIR -> {
-                                bar.hotbarRelOffX = 94; bar.hotbarRelOffY = 3; bar.hotbarPixelWidth = 57;
+                                bar.hotbarRelOffX = 88; bar.hotbarRelOffY = 6; bar.hotbarPixelWidth = 62;
                                 bar.borderRadius = 10;
                                 bar.setTextPosition(StatusBar.TextPosition.CUSTOM);
-                                bar.textCustomOffX = 26; bar.textCustomOffY = -2;
+                                bar.textCustomOffX = 29; bar.textCustomOffY = -2;
                         }
                 }
         }
