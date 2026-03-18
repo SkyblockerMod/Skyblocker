@@ -91,6 +91,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		addRenderableWidget(closeButton);
 
 		super.init();
+		repositionElements();
 	}
 
 	private void selectStaticDye(Button button, int dyeColor) {
