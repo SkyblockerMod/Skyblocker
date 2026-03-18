@@ -112,8 +112,8 @@ public class VisitorHelper extends AbstractWidget {
 	}
 
 	public static boolean shouldRender() {
-		boolean isHelperEnabled = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelper;
-		boolean isGardenMode = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelperGardenOnly;
+		boolean isHelperEnabled = SkyblockerConfigManager.get().farming.visitorHelper.enabled;
+		boolean isGardenMode = SkyblockerConfigManager.get().farming.visitorHelper.showInGardenOnly;
 		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getArea() == Area.Hub.BAZAAR);
 	}
 
@@ -245,7 +245,7 @@ public class VisitorHelper extends AbstractWidget {
 			context.pose().popMatrix();
 
 			MutableComponent name = cachedStack.getHoverName().copy();
-			MutableComponent itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
+			MutableComponent itemText = SkyblockerConfigManager.get().farming.visitorHelper.showInStacks && totalAmount >= 64
 					? name.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
 					: name.append(" x" + totalAmount);
 
@@ -301,7 +301,7 @@ public class VisitorHelper extends AbstractWidget {
 				int yPosition = y + index * (LINE_HEIGHT + textRenderer.lineHeight);
 
 				MutableComponent name = itemName.copy();
-				Component itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
+				Component itemText = SkyblockerConfigManager.get().farming.visitorHelper.showInStacks && totalAmount >= 64
 						? name.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
 						: name.append(" x" + totalAmount);
 

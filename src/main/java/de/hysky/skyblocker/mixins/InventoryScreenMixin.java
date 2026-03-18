@@ -53,14 +53,14 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
 
 	@WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/EffectsInInventory;render(Lnet/minecraft/client/gui/GuiGraphics;II)V"))
 	private boolean skyblocker$dontDrawStatusEffects(EffectsInInventory statusEffectsDisplay, GuiGraphics context, int mouseX, int mouseY) {
-		return !(Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay || Utils.isInGarden() && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget);
+		return !(Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay || Utils.isInGarden() && SkyblockerConfigManager.get().farming.plotsWidget.enabled);
 	}
 
 	// This makes it so that REI at least doesn't wrongly exclude the zone
 	@ModifyReturnValue(method = "showsActiveEffects", at = @At("RETURN"))
 	private boolean skyblocker$markStatusEffectsHidden(boolean original) {
 		// In the garden, status effects are shown when both hideStatusEffectOverlay and gardenPlotsWidget are false
-		if (Utils.isInGarden()) return original && !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay && !SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget;
+		if (Utils.isInGarden()) return original && !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay && !SkyblockerConfigManager.get().farming.plotsWidget.enabled;
 		// In the rest of Skyblock, status effects are shown when hideStatusEffectOverlay is false
 		if (Utils.isOnSkyblock()) return original && !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay;
 		// In vanilla, status effects are shown as normal
