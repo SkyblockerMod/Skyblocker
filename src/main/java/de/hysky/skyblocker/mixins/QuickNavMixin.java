@@ -25,7 +25,6 @@ public abstract class QuickNavMixin extends QuickNavScreenMixin {
 	@Inject(method = "init()V", at = @At(value = "TAIL"))
 	protected void skyblocker$initQuickNav(CallbackInfo ci) {
 		Screen instance = (Screen) (Object) this;
-		// Init Quick Nav
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().quickNav.enableQuickNav && Minecraft.getInstance().player != null && !Minecraft.getInstance().player.isCreative()) {
 			for (QuickNavButton quickNavButton : this.quickNavButtons = QuickNav.init(instance.getTitle().getString().trim())) {
 				instance.addWidget(quickNavButton);
