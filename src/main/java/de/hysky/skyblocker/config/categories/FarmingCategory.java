@@ -21,117 +21,127 @@ public class FarmingCategory {
 				.id(SkyblockerMod.id("config/farming"))
 				.name(Component.translatable("skyblocker.config.farming"))
 
-				//Garden
+				// Farming HUD
 				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.farming.garden"))
-						.collapsed(false)
+						.name(Component.translatable("skyblocker.config.farming.farmingHud"))
+						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.garden.enableHud"))
-								.binding(defaults.farming.garden.farmingHud.enableHud,
-										() -> config.farming.garden.farmingHud.enableHud,
-										newValue -> config.farming.garden.farmingHud.enableHud = newValue)
+								.name(Component.translatable("skyblocker.config.farming.farmingHud.enabled"))
+								.binding(defaults.farming.farmingHud.enabled,
+										() -> config.farming.farmingHud.enabled,
+										newValue -> config.farming.farmingHud.enabled = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(ButtonOption.createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.garden.farmingHud"))
+								.name(Component.translatable("skyblocker.config.farming.farmingHud.config"))
 								.prompt(Component.translatable("text.skyblocker.open"))
 								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GARDEN, FarmingHudWidget.getInstance().getInternalID(), screen)))
 								.build())
 						.option(Option.<FarmingConfig.Type>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.garden.farmingHud.type"))
-								.description(Component.translatable("skyblocker.config.farming.garden.farmingHud.type.@Tooltip"))
-								.binding(defaults.farming.garden.farmingHud.type,
-										() -> config.farming.garden.farmingHud.type,
-										newValue -> config.farming.garden.farmingHud.type = newValue)
+								.name(Component.translatable("skyblocker.config.farming.farmingHud.type"))
+								.description(Component.translatable("skyblocker.config.farming.farmingHud.type.@Tooltip"))
+								.binding(defaults.farming.farmingHud.type,
+										() -> config.farming.farmingHud.type,
+										newValue -> config.farming.farmingHud.type = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
+						.build())
+				// Pest Highlighter
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.farming.pestHighlighter"))
+						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.garden.dicerTitlePrevent"))
-								.binding(defaults.farming.garden.dicerTitlePrevent,
-										() -> config.farming.garden.dicerTitlePrevent,
-										newValue -> config.farming.garden.dicerTitlePrevent = newValue)
+								.name(Component.translatable("skyblocker.config.farming.pestHighlighter.enabled"))
+								.description(Component.translatable("skyblocker.config.farming.pestHighlighter.enabled.@Tooltip"))
+								.binding(defaults.farming.pestHighlighter.enabled,
+										() -> config.farming.pestHighlighter.enabled,
+										newValue -> config.farming.pestHighlighter.enabled = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.garden.pestHighlighter"))
-								.description(Component.translatable("skyblocker.config.farming.garden.pestHighlighter.@Tooltip"))
-								.binding(defaults.farming.garden.pestHighlighter,
-										() -> config.farming.garden.pestHighlighter,
-										newValue -> config.farming.garden.pestHighlighter = newValue)
+								.name(Component.translatable("skyblocker.config.farming.pestHighlighter.vinylHighlighter"))
+								.description(Component.translatable("skyblocker.config.farming.pestHighlighter.vinylHighlighter.@Tooltip"))
+								.binding(defaults.farming.pestHighlighter.vinylHighlighter,
+										() -> config.farming.pestHighlighter.vinylHighlighter,
+										newValue -> config.farming.pestHighlighter.vinylHighlighter = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.garden.vinylHighlighter"))
-								.description(Component.translatable("skyblocker.config.farming.garden.vinylHighlighter.@Tooltip"))
-								.binding(defaults.farming.garden.vinylHighlighter,
-										() -> config.farming.garden.vinylHighlighter,
-										newValue -> config.farming.garden.vinylHighlighter = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.garden.lockMouseTool"))
-								.binding(defaults.farming.garden.lockMouseTool,
-										() -> config.farming.garden.lockMouseTool,
-										newValue -> config.farming.garden.lockMouseTool = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.garden.lockMouseGround"))
-								.binding(defaults.farming.garden.lockMouseGroundOnly,
-										() -> config.farming.garden.lockMouseGroundOnly,
-										newValue -> config.farming.garden.lockMouseGroundOnly = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.garden.gardenPlotsWidget"))
-								.description(Component.translatable("skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip"))
-								.binding(defaults.farming.garden.gardenPlotsWidget,
-										() -> config.farming.garden.gardenPlotsWidget,
-										newValue -> config.farming.garden.gardenPlotsWidget = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.garden.closeScreenOnPlotClick"))
-								.description(Component.translatable("skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip"))
-								.binding(defaults.farming.garden.closeScreenOnPlotClick,
-										() -> config.farming.garden.closeScreenOnPlotClick,
-										newValue -> config.farming.garden.closeScreenOnPlotClick = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.garden.enableStereoHarmonyHelperForContest"))
-								.description(Component.translatable("skyblocker.config.farming.garden.enableStereoHarmonyHelperForContest.@Tooltip"))
-								.binding(defaults.farming.garden.enableStereoHarmonyHelperForContest,
-										() -> config.farming.garden.enableStereoHarmonyHelperForContest,
-										newValue -> config.farming.garden.enableStereoHarmonyHelperForContest = newValue)
+								.name(Component.translatable("skyblocker.config.farming.pestHighlighter.stereoHarmony"))
+								.description(Component.translatable("skyblocker.config.farming.pestHighlighter.stereoHarmony.@Tooltip"))
+								.binding(defaults.farming.pestHighlighter.enableStereoHarmonyHelperForContest,
+										() -> config.farming.pestHighlighter.enableStereoHarmonyHelperForContest,
+										newValue -> config.farming.pestHighlighter.enableStereoHarmonyHelperForContest = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
+				// Mouse Lock
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.farming.mouseLock"))
+						.collapsed(true)
+						.tags(Component.literal("camera lock"), Component.literal("sensitivity"), Component.literal("yaw pitch"))
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.mouseLock.lockMouseTool"))
+								.binding(defaults.farming.mouseLock.lockMouseTool,
+										() -> config.farming.mouseLock.lockMouseTool,
+										newValue -> config.farming.mouseLock.lockMouseTool = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.mouseLock.lockMouseGround"))
+								.binding(defaults.farming.mouseLock.lockMouseGroundOnly,
+										() -> config.farming.mouseLock.lockMouseGroundOnly,
+										newValue -> config.farming.mouseLock.lockMouseGroundOnly = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+				// Garden Plots Widget
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.farming.plotsWidget"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.plotsWidget.enabled"))
+								.description(Component.translatable("skyblocker.config.farming.plotsWidget.enabled.@Tooltip"))
+								.binding(defaults.farming.plotsWidget.enabled,
+										() -> config.farming.plotsWidget.enabled,
+										newValue -> config.farming.plotsWidget.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.plotsWidget.closeScreenOnPlotClick"))
+								.description(Component.translatable("skyblocker.config.farming.plotsWidget.closeScreenOnPlotClick.@Tooltip"))
+								.binding(defaults.farming.plotsWidget.closeScreenOnPlotClick,
+										() -> config.farming.plotsWidget.closeScreenOnPlotClick,
+										newValue -> config.farming.plotsWidget.closeScreenOnPlotClick = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+				// Visitor Helper
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.farming.visitorHelper"))
-						.collapsed(false)
+						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.visitorHelper.visitorHelper"))
-								.description(Component.translatable("skyblocker.config.farming.visitorHelper.visitorHelper.@Tooltip"))
-								.binding(defaults.farming.visitorHelper.visitorHelper,
-										() -> config.farming.visitorHelper.visitorHelper,
-										newValue -> config.farming.visitorHelper.visitorHelper = newValue)
+								.name(Component.translatable("skyblocker.config.farming.visitorHelper.enabled"))
+								.description(Component.translatable("skyblocker.config.farming.visitorHelper.enabled.@Tooltip"))
+								.binding(defaults.farming.visitorHelper.enabled,
+										() -> config.farming.visitorHelper.enabled,
+										newValue -> config.farming.visitorHelper.enabled = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly"))
-								.description(Component.translatable("skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly.@Tooltip"))
-								.binding(defaults.farming.visitorHelper.visitorHelperGardenOnly,
-										() -> config.farming.visitorHelper.visitorHelperGardenOnly,
-										newValue -> config.farming.visitorHelper.visitorHelperGardenOnly = newValue)
+								.name(Component.translatable("skyblocker.config.farming.visitorHelper.showInGardenOnly"))
+								.description(Component.translatable("skyblocker.config.farming.visitorHelper.showInGardenOnly.@Tooltip"))
+								.binding(defaults.farming.visitorHelper.showInGardenOnly,
+										() -> config.farming.visitorHelper.showInGardenOnly,
+										newValue -> config.farming.visitorHelper.showInGardenOnly = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper"))
-								.description(Component.translatable("skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip"))
-								.binding(defaults.farming.visitorHelper.showStacksInVisitorHelper,
-										() -> config.farming.visitorHelper.showStacksInVisitorHelper,
-										newValue -> config.farming.visitorHelper.showStacksInVisitorHelper = newValue)
+								.name(Component.translatable("skyblocker.config.farming.visitorHelper.showInStacks"))
+								.description(Component.translatable("skyblocker.config.farming.visitorHelper.showInStacks.@Tooltip"))
+								.binding(defaults.farming.visitorHelper.showInStacks,
+										() -> config.farming.visitorHelper.showInStacks,
+										newValue -> config.farming.visitorHelper.showInStacks = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

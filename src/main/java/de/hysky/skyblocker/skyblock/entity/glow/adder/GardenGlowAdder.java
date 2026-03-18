@@ -48,7 +48,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().farming.garden.pestHighlighter && Utils.isInGarden();
+		return SkyblockerConfigManager.get().farming.pestHighlighter.enabled && Utils.isInGarden();
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 	 * Matches the armor stand head with currently playing vinyl outside of Jacob's Contest.
 	 */
 	public static boolean doesPestMatchCurrentVinyl(ArmorStand entity) {
-		if (!SkyblockerConfigManager.get().farming.garden.vinylHighlighter)
+		if (!SkyblockerConfigManager.get().farming.pestHighlighter.vinylHighlighter)
 			return false;
 
 		String vinyl = VacuumCache.getVinyl();
