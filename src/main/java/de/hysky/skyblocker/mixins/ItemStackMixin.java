@@ -74,7 +74,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 	}
 
 	@ModifyExpressionValue(method = "addToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/component/TooltipDisplay;shows(Lnet/minecraft/core/component/DataComponentType;)Z"))
-	private boolean skyblocker$hideVanillaEnchants(boolean shouldDisplay, @Local TooltipProvider component) {
+	private boolean skyblocker$hideVanillaEnchants(boolean shouldDisplay, @Local(name = "component") TooltipProvider component) {
 		return shouldDisplay && !(Utils.isOnSkyblock() && component instanceof ItemEnchantments);
 	}
 
@@ -82,7 +82,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/core/DefaultedRegistry;getKey(Ljava/lang/Object;)Lnet/minecraft/resources/Identifier;")),
 			at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", shift = At.Shift.AFTER, ordinal = 0)
 	)
-	private void skyblocker$skyblockIdTooltip(CallbackInfo ci, @Local(argsOnly = true) Consumer<Component> textConsumer) {
+	private void skyblocker$skyblockIdTooltip(CallbackInfo ci, @Local(name = "builder") Consumer<Component> textConsumer) {
 		if (Utils.isOnSkyblock()) {
 			String skyblockId = getSkyblockId();
 

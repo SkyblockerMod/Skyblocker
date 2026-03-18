@@ -156,7 +156,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 	@SuppressWarnings("unchecked")
 	@Inject(method = "extractTooltip", at = @At("HEAD"))
-	private void skyblocker$beforeTooltipExtracted(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor graphics) {
+	private void skyblocker$beforeTooltipExtracted(CallbackInfo ci, @Local(name = "graphics") GuiGraphicsExtractor graphics) {
 		ContainerSolverManager.onExtract(graphics, (AbstractContainerScreen<ChestMenu>) (Object) this, this.menu.slots);
 	}
 
@@ -172,7 +172,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 			int y,
 			Identifier texture,
 			Operation<Void> original,
-			@Local(ordinal = 0) ItemStack stack
+			@Local(name = "item") ItemStack stack
 	) {
 		// Hide tooltips from items that have been visually replaced by a container solver with air (since the Slot#hasStack still passes)
 		if (ContainerSolverManager.getCurrentSolver() instanceof StackDisplayModifier && stack.isEmpty()) {
@@ -214,7 +214,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	}
 
 	@ModifyVariable(method = "extractSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)
-	private ItemStack skyblocker$modifyDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
+	private ItemStack skyblocker$modifyDisplayStack(ItemStack stack, @Local(name = "slot") Slot slot) {
 		return skyblocker$modifyDisplayStack(slot, stack, ContainerSolverManager.getCurrentSolver());
 	}
 
@@ -326,7 +326,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	}
 
 	@Inject(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;item(Lnet/minecraft/world/item/ItemStack;III)V"))
-	private void skyblocker$drawOnItem(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor graphics, @Local(argsOnly = true) Slot slot) {
+	private void skyblocker$drawOnItem(CallbackInfo ci, @Local(name = "graphics") GuiGraphicsExtractor graphics, @Local(name = "slot") Slot slot) {
 		if (Utils.isOnSkyblock()) {
 			ItemBackgroundManager.drawBackgrounds(slot.getItem(), graphics, slot.x, slot.y);
 		}
@@ -343,9 +343,9 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	}
 
 	@Inject(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;itemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V"))
-	private void skyblocker$drawSlotText(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor context, @Local(argsOnly = true) Slot slot) {
+	private void skyblocker$drawSlotText(CallbackInfo ci, @Local(name = "graphics") GuiGraphicsExtractor graphics, @Local(name = "slot") Slot slot) {
 		if (Utils.isOnSkyblock()) {
-			SlotTextManager.extractSlotText(context, font, slot);
+			SlotTextManager.extractSlotText(graphics, font, slot);
 		}
 	}
 }

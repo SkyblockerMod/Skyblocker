@@ -15,9 +15,9 @@ import de.hysky.skyblocker.mixins.accessors.DirectStateAccessInvoker;
 public class GlCommandEncoderMixin {
 
 	@WrapWithCondition(method = "writeToBuffer", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/DirectStateAccess;bufferSubData(IJLjava/nio/ByteBuffer;I)V"))
-	private static boolean skyblocker$replaceBufferData(DirectStateAccess manager, int buffer, long offset, ByteBuffer data, int usage, @Local(argsOnly = true) GpuBufferSlice gpuBufferSlice) {
-		if (offset == 0 && gpuBufferSlice.length() == gpuBufferSlice.buffer().size()) {
-			((DirectStateAccessInvoker) manager).invokeBufferData(buffer, data, gpuBufferSlice.buffer().usage());
+	private static boolean skyblocker$replaceBufferData(DirectStateAccess manager, int buffer, long offset, ByteBuffer data, int usage, @Local(name = "slice") GpuBufferSlice slice) {
+		if (offset == 0 && slice.length() == slice.buffer().size()) {
+			((DirectStateAccessInvoker) manager).invokeBufferData(buffer, data, slice.buffer().usage());
 
 			return false;
 		}

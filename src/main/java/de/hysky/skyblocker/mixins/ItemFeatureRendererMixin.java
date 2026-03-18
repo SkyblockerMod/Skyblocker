@@ -22,8 +22,8 @@ public class ItemFeatureRendererMixin {
 		return submit.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW ? submit.skyblocker$getCustomGlowColour() : operation.call(submit);
 	}
 
-	@ModifyVariable(method = "renderItem", at = @At("LOAD"), argsOnly = true, require = 2)
-	private OutlineBufferSource skyblocker$useCustomGlowConsumers(OutlineBufferSource original, @Local SubmitNodeStorage.ItemSubmit submit) {
+	@ModifyVariable(method = "renderItem", at = @At("LOAD"), name = "outlineBufferSource", require = 2)
+	private OutlineBufferSource skyblocker$useCustomGlowConsumers(OutlineBufferSource original, @Local(name = "submit") SubmitNodeStorage.ItemSubmit submit) {
 		return submit.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW ? GlowRenderer.getInstance().getGlowVertexConsumers() : original;
 	}
 }

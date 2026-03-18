@@ -55,7 +55,7 @@ public abstract class GuiMixin {
 	private boolean isQuiverSlot = false;
 
 	@Inject(method = "extractItemHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractSlot(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IILnet/minecraft/client/DeltaTracker;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/item/ItemStack;I)V", ordinal = 0))
-	public void skyblocker$extractHotbarItemLockOrBackground(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor graphics, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local Player player) {
+	public void skyblocker$extractHotbarItemLockOrBackground(CallbackInfo ci, @Local(name = "graphics") GuiGraphicsExtractor graphics, @Local(name = "i") int index, @Local(name = "x") int x, @Local(name = "y") int y, @Local(name = "player") Player player) {
 		if (Utils.isOnSkyblock()) {
 			ItemBackgroundManager.drawBackgrounds(player.getInventory().getNonEquipmentItems().get(index), graphics, x, y);
 

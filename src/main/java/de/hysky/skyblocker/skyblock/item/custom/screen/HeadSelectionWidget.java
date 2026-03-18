@@ -49,7 +49,7 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 	private @Nullable HeadButton selectedButton;
 
 	public HeadSelectionWidget(int x, int y, int width, int height) {
-		super(x, y, width, height, Component.nullToEmpty("HeadSelection"), AbstractScrollArea.defaultSettings(4));
+		super(x, y, width, height, Component.nullToEmpty("HeadSelection"), AbstractScrollArea.defaultSettings(8));
 		this.searchField = new EditBox(Minecraft.getInstance().font, x + 3, y + 3, width - 6, 12, Component.translatable("gui.recipebook.search_hint"));
 		this.searchField.setResponder(this::filterButtons);
 

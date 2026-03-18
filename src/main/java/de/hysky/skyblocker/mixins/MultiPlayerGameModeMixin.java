@@ -26,7 +26,7 @@ public class MultiPlayerGameModeMixin {
 			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/entity/player/Player;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;")
 	)
 	public void swingOnAbility(InteractionHand hand, Player playerEntity, MutableObject<?> mutableObject,
-							int sequence, CallbackInfoReturnable<Packet<?>> cir, @Local(ordinal = 0) ItemStack itemStack) {
+							int sequence, CallbackInfoReturnable<Packet<?>> cir, @Local(name = "itemStack") ItemStack itemStack) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.swingOnAbilities
 				&& SwingAnimation.hasAbility(itemStack)) {
 			swingHandWithoutPackets(playerEntity, hand);

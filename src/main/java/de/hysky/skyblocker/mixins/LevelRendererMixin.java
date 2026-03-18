@@ -40,7 +40,7 @@ public class LevelRendererMixin implements EntityRenderMarker {
 	}
 
 	@ModifyExpressionValue(method = "extractVisibleEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/state/EntityRenderState;appearsGlowing()Z"))
-	private boolean skyblocker$markCustomGlowUsedThisFrame(boolean hasVanillaGlow, @Local EntityRenderState entityRenderState) {
+	private boolean skyblocker$markCustomGlowUsedThisFrame(boolean hasVanillaGlow, @Local(name = "state") EntityRenderState entityRenderState) {
 		boolean hasCustomGlow = entityRenderState.getDataOrDefault(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR, MobGlow.NO_GLOW) != MobGlow.NO_GLOW;
 
 		if (hasCustomGlow) {
@@ -61,7 +61,7 @@ public class LevelRendererMixin implements EntityRenderMarker {
 	}
 
 	@Inject(method = "submitEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;submit(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lnet/minecraft/client/renderer/state/level/CameraRenderState;DDDLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;)V"))
-	private void skyblocker$markEntityStateBeingRendered(CallbackInfo ci, @Local EntityRenderState state) {
+	private void skyblocker$markEntityStateBeingRendered(CallbackInfo ci, @Local(name = "state") EntityRenderState state) {
 		this.currentEntityStateBeingRendered = state;
 	}
 
