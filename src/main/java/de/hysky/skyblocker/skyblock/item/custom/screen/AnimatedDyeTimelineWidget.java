@@ -5,7 +5,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.OkLabColor;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -200,7 +200,7 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 		@Override
 		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color);
-			HudHelper.drawBorder(graphics, getX(), getY(), getWidth(), getHeight(), isFocused() ? -1 : CommonColors.GRAY);
+			GuiHelper.border(graphics, getX(), getY(), getWidth(), getHeight(), isFocused() ? -1 : CommonColors.GRAY);
 		}
 
 		@Override

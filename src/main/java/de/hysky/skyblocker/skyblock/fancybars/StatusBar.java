@@ -8,7 +8,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jspecify.annotations.Nullable;
@@ -141,10 +141,10 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	}
 
 	protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWith) {
-		HudHelper.renderNineSliceColored(graphics, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
+		GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
 
 		if (hasOverflow() && overflowFill > 0) {
-			HudHelper.renderNineSliceColored(graphics, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
+			GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
 		}
 	}
 
@@ -190,7 +190,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		int color = transparency((textColor == null ? colors[0] : textColor).getRGB());
 		int outlineColor = transparency(CommonColors.BLACK);
 
-		HudHelper.drawOutlinedText(graphics, Component.translationArg(text), x, y, color, outlineColor);
+		GuiHelper.outlinedText(graphics, Component.translationArg(text), x, y, color, outlineColor);
 	}
 
 	public void extractCursor(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
@@ -444,14 +444,14 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWith) {
 			if (hasOverflow() && overflowFill > 0) {
 				if (overflowFill > fill && SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.IN_FRONT) {
-					HudHelper.renderNineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
-					HudHelper.renderNineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
 				} else {
-					HudHelper.renderNineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
-					HudHelper.renderNineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
 				}
 			} else {
-				HudHelper.renderNineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+				GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
 			}
 		}
 

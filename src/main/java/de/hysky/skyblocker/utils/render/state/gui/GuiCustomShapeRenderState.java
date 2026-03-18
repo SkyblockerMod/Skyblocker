@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.render.gui.state;
+package de.hysky.skyblocker.utils.render.state.gui;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Similar to {@link net.minecraft.client.gui.render.state.ColoredRectangleRenderState}
  */
-public record CustomShapeGuiElementRenderState(
+public record GuiCustomShapeRenderState(
 		RenderPipeline pipeline,
 		TextureSetup textureSetup,
 		Matrix3x2f matrix,
@@ -25,7 +25,7 @@ public record CustomShapeGuiElementRenderState(
 		int color,
 		@Nullable ScreenRectangle scissorArea,
 		@Nullable ScreenRectangle bounds) implements GuiElementRenderState {
-	public CustomShapeGuiElementRenderState(
+	public GuiCustomShapeRenderState(
 			RenderPipeline pipeline, TextureSetup textureSetup, Matrix3x2f pose, List<Vector2f> inputVertices, int color, @Nullable ScreenRectangle scissorArea
 	) {
 		this(pipeline, textureSetup, pose, inputVertices, color, scissorArea, createBounds(inputVertices, pose, scissorArea));

@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ public class SlayerWidget {
 
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
 		Color fillColor = slayerLevel.fill == 1 ? Color.MAGENTA : Color.green;
-		HudHelper.renderNineSliceColored(graphics, BAR_FILL, x + 30, y + 15, (int) (75 * slayerLevel.fill), 6, fillColor);
+		GuiHelper.nineSliceColored(graphics, BAR_FILL, x + 30, y + 15, (int) (75 * slayerLevel.fill), 6, fillColor);
 
 		if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22) {
 			List<Component> tooltipText = new ArrayList<>();

@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegistryUtils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import java.util.Optional;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
@@ -129,7 +129,7 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 			EquipmentClientInfo.LayerType layerType = slot == EquipmentSlot.LEGS ? EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS : EquipmentClientInfo.LayerType.HUMANOID;
 			float offset = setVisibleAndGetOffset(model, slot);
 
-			HudHelper.drawEquipment(graphics, equipmentRenderer, layerType, equippableComponent.assetId().orElse(EquipmentAssets.IRON), model, state, stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), rotation, 14, offset);
+			GuiHelper.equipment(graphics, equipmentRenderer, layerType, equippableComponent.assetId().orElse(EquipmentAssets.IRON), model, state, stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), rotation, 14, offset);
 		}
 
 		@SuppressWarnings("incomplete-switch")

@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import java.awt.Color;
@@ -95,7 +95,7 @@ public class SkillWidget {
 		}
 
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 12, 75, 6);
-		HudHelper.renderNineSliceColored(graphics, BAR_FILL, x + 30, y + 12, (int) (75 * SKILL_LEVEL.fill), 6, fillColor);
+		GuiHelper.nineSliceColored(graphics, BAR_FILL, x + 30, y + 12, (int) (75 * SKILL_LEVEL.fill), 6, fillColor);
 
 		if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 10 && mouseY < y + 19) {
 			List<Component> tooltipText = new ArrayList<>();

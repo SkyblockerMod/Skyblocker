@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 /**
@@ -78,7 +78,7 @@ public class TableElement extends Element {
 			int col = rowBorders[y];
 			if (col != 0) {
 				// shift slightly so the border does not clash with the widget outline
-				HudHelper.drawBorder(graphics, xpos, ypos + yOff, this.width + PAD_S, rowHeights[y], col);
+				GuiHelper.border(graphics, xpos, ypos + yOff, this.width + PAD_S, rowHeights[y], col);
 			}
 			yOff += rowHeights[y];
 		}

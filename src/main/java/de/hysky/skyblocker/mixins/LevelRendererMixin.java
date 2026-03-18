@@ -72,7 +72,7 @@ public class LevelRendererMixin implements EntityRenderMarker {
 
 	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V"))
 	private void skyblocker$drawGlowVertexConsumers(CallbackInfo ci) {
-		GlowRenderer.getInstance().getGlowVertexConsumers().endOutlineBatch();
+		GlowRenderer.getInstance().getGlowBufferSource().endOutlineBatch();
 	}
 
 	@WrapOperation(method = "extractBlockDestroyAnimation", at = @At(value = "NEW", target = "(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Lnet/minecraft/client/renderer/state/level/BlockBreakingRenderState;"))

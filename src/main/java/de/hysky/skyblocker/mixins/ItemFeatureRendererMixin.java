@@ -24,6 +24,6 @@ public class ItemFeatureRendererMixin {
 
 	@ModifyVariable(method = "renderItem", at = @At("LOAD"), name = "outlineBufferSource", require = 2)
 	private OutlineBufferSource skyblocker$useCustomGlowConsumers(OutlineBufferSource original, @Local(name = "submit") SubmitNodeStorage.ItemSubmit submit) {
-		return submit.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW ? GlowRenderer.getInstance().getGlowVertexConsumers() : original;
+		return submit.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW ? GlowRenderer.getInstance().getGlowBufferSource() : original;
 	}
 }

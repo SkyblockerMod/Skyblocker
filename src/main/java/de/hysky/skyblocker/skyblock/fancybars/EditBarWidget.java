@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
 import de.hysky.skyblocker.utils.EnumUtils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.awt.Color;
 import java.util.List;
@@ -274,7 +274,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 			}
 			Font textRenderer = Minecraft.getInstance().font;
 			graphics.text(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : CommonColors.GRAY, true);
-			HudHelper.drawBorder(graphics, getRight() - 10, getY() + 1, 9, 9, active ? -1 : CommonColors.GRAY);
+			GuiHelper.border(graphics, getRight() - 10, getY() + 1, 9, 9, active ? -1 : CommonColors.GRAY);
 			if (current && active) graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, CommonColors.WHITE);
 		}
 
@@ -320,7 +320,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 			}
 			Font textRenderer = Minecraft.getInstance().font;
 			graphics.text(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : CommonColors.GRAY, true);
-			HudHelper.drawBorder(graphics, getRight() - 10, getY() + 1, 9, 9, active ? -1 : CommonColors.GRAY);
+			GuiHelper.border(graphics, getRight() - 10, getY() + 1, 9, 9, active ? -1 : CommonColors.GRAY);
 			graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, active ? current : CommonColors.GRAY);
 		}
 

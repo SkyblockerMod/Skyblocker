@@ -7,7 +7,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
@@ -179,7 +179,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		@Override
 		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			LeapOverlay.this.hovered = DungeonMap.extractRenderState(graphics, getX(), getY(), CONFIG.get().scale, true, mouseX - getX(), mouseY - getY(), getChildAt(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
-			HudHelper.drawBorder(graphics, getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), CommonColors.WHITE);
+			GuiHelper.border(graphics, getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), CommonColors.WHITE);
 		}
 
 		@Override
@@ -220,7 +220,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 			int halfFontHeight = (int) (CLIENT.font.lineHeight * scale) >> 1;
 
 			//Draw Player Head
-			HudHelper.drawPlayerHead(graphics, baseX + 4, centreY - ((int) (HEAD_SIZE * scale) >> 1), (int) (HEAD_SIZE * scale), reference.uuid());
+			GuiHelper.playerHead(graphics, baseX + 4, centreY - ((int) (HEAD_SIZE * scale) >> 1), (int) (HEAD_SIZE * scale), reference.uuid());
 
 			//Draw class as heading
 			matrices.pushMatrix();

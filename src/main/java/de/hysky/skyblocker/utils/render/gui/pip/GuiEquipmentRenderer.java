@@ -1,10 +1,10 @@
-package de.hysky.skyblocker.utils.render.gui.special;
+package de.hysky.skyblocker.utils.render.gui.pip;
 
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
+import de.hysky.skyblocker.utils.render.state.gui.GuiEquipmentRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
@@ -12,25 +12,25 @@ import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.util.LightCoordsUtil;
 
-public class EquipmentGuiElementRenderer<S> extends PictureInPictureRenderer<EquipmentGuiElementRenderState<S>> {
+public class GuiEquipmentRenderer<S> extends PictureInPictureRenderer<GuiEquipmentRenderState<S>> {
 
-	private EquipmentGuiElementRenderer(PictureInPictureRendererRegistry.Context context) {
+	private GuiEquipmentRenderer(PictureInPictureRendererRegistry.Context context) {
 		super(context.bufferSource());
 	}
 
 	@Init
 	public static void init() {
-		PictureInPictureRendererRegistry.register(EquipmentGuiElementRenderer::new);
+		PictureInPictureRendererRegistry.register(GuiEquipmentRenderer::new);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Class<EquipmentGuiElementRenderState<S>> getRenderStateClass() {
-		return (Class<EquipmentGuiElementRenderState<S>>) (Object) EquipmentGuiElementRenderState.class;
+	public Class<GuiEquipmentRenderState<S>> getRenderStateClass() {
+		return (Class<GuiEquipmentRenderState<S>>) (Object) GuiEquipmentRenderState.class;
 	}
 
 	@Override
-	protected void renderToTexture(EquipmentGuiElementRenderState<S> state, PoseStack matrices) {
+	protected void renderToTexture(GuiEquipmentRenderState<S> state, PoseStack matrices) {
 		Minecraft client = Minecraft.getInstance();
 
 		matrices.pushPose();
@@ -58,7 +58,7 @@ public class EquipmentGuiElementRenderer<S> extends PictureInPictureRenderer<Equ
 	}
 
 	@Override
-	protected float getTranslateY(int height, int windowScaleFactor) {
+	protected float getTranslateY(int height, int guiScale) {
 		return height / 2;
 	}
 

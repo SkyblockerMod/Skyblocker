@@ -14,7 +14,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.render.gui.NoopInput;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -489,7 +489,7 @@ public class PreviewTab implements Tab {
 			int y = 5; // 30 / 6
 			int h = 20;
 
-			HudHelper.drawBorder(graphics, x, y + 1, w, h, CommonColors.WHITE);
+			GuiHelper.border(graphics, x, y + 1, w, h, CommonColors.WHITE);
 			for (int i = 0; i < 3; i++) {
 				for (int j = 0; j < 3; j++) {
 					int squareX = x + (i * getWidth()) / 3;

@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.render.gui.state;
+package de.hysky.skyblocker.utils.render.state.gui;
 
 import org.jspecify.annotations.Nullable;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 
-public record EquipmentGuiElementRenderState<S>(
+public record GuiEquipmentRenderState<S>(
 		EquipmentLayerRenderer equipmentRenderer,
 		EquipmentClientInfo.LayerType layerType,
 		ResourceKey<EquipmentAsset> assetKey,
@@ -27,7 +27,7 @@ public record EquipmentGuiElementRenderState<S>(
 		@Nullable ScreenRectangle scissorArea,
 		@Nullable ScreenRectangle bounds
 		) implements PictureInPictureRenderState {
-	public EquipmentGuiElementRenderState(
+	public GuiEquipmentRenderState(
 			EquipmentLayerRenderer equipmentRenderer,
 			EquipmentClientInfo.LayerType layerType,
 			ResourceKey<EquipmentAsset> assetKey,

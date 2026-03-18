@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.gui.ItemButtonWidget;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
@@ -174,7 +174,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
 
 				if (infested && (timeMillis & 512) != 0)
-					HudHelper.drawBorder(graphics, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
+					GuiHelper.border(graphics, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
 
 				continue;
 			}
@@ -203,7 +203,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			}
 
 			if (infested && (timeMillis & 512) != 0) {
-				HudHelper.drawBorder(graphics, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
+				GuiHelper.border(graphics, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
 			}
 
 			// tooltip

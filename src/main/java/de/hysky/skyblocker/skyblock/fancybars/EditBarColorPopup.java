@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import java.awt.Color;
 import java.util.List;
@@ -98,7 +98,7 @@ public class EditBarColorPopup extends AbstractPopupScreen {
 
 		@Override
 		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-			HudHelper.drawBorder(graphics, getX(), getY(), 15, 15, validColor ? -1 : 0xFFDD0000);
+			GuiHelper.border(graphics, getX(), getY(), 15, 15, validColor ? -1 : 0xFFDD0000);
 			graphics.fill(getX() + 1, getY() + 1, getX() + 14, getY() + 14, color);
 			textFieldWidget.extractWidgetRenderState(graphics, mouseX, mouseY, a);
 		}

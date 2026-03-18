@@ -27,7 +27,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class DungeonMapLabels {
@@ -204,7 +204,7 @@ public class DungeonMapLabels {
 		int y = lines.size() > 1 ? -(textRenderer.lineHeight / 2) * (lines.size() - 1) : 0;
 		for (FormattedCharSequence orderedText : lines) {
 			int textWidth = textRenderer.width(orderedText) / 2;
-			HudHelper.drawOutlinedText(graphics, orderedText, -textWidth, y, color, CommonColors.BLACK);
+			GuiHelper.outlinedText(graphics, orderedText, -textWidth, y, color, CommonColors.BLACK);
 			y += 9;
 		}
 	}

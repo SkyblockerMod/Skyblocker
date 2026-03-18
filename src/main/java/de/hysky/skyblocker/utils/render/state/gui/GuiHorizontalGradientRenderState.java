@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.render.gui.state;
+package de.hysky.skyblocker.utils.render.state.gui;
 
 import org.joml.Matrix3x2f;
 import org.jspecify.annotations.Nullable;
@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 /**
  * Similar to {@link net.minecraft.client.gui.render.state.ColoredRectangleRenderState}
  */
-public record HorizontalGradientGuiElementRenderState(
+public record GuiHorizontalGradientRenderState(
 		RenderPipeline pipeline,
 		TextureSetup textureSetup,
 		Matrix3x2f matrix,
@@ -24,7 +24,7 @@ public record HorizontalGradientGuiElementRenderState(
 		int colorEnd,
 		@Nullable ScreenRectangle scissorArea,
 		@Nullable ScreenRectangle bounds) implements GuiElementRenderState {
-	public HorizontalGradientGuiElementRenderState(
+	public GuiHorizontalGradientRenderState(
 			RenderPipeline pipeline, TextureSetup textureSetup, Matrix3x2f pose, int startX, int startY, int endX, int endY, int colorStart, int colorEnd, @Nullable ScreenRectangle scissorArea
 		) {
 			this(pipeline, textureSetup, pose, startX, startY, endX, endY, colorStart, colorEnd, scissorArea, createBounds(startX, startY, endX, endY, pose, scissorArea));

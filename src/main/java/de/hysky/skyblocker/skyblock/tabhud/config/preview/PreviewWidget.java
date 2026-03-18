@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -65,7 +65,7 @@ public class PreviewWidget extends AbstractWidget {
 		scaledScreenHeight = tab.parent.height / scale;
 
 		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
-		HudHelper.drawBorder(graphics, getX() - 1, getY() - 1, getWidth() + 2, getHeight() + 2, -1);
+		GuiHelper.border(graphics, getX() - 1, getY() - 1, getWidth() + 2, getHeight() + 2, -1);
 		graphics.enableScissor(getX(), getY(), getRight(), getBottom());
 		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
@@ -88,7 +88,7 @@ public class PreviewWidget extends AbstractWidget {
 
 		// HOVERED
 		if (hoveredWidget != null && !hoveredWidget.equals(selectedWidget)) {
-			HudHelper.drawBorder(
+			GuiHelper.border(
 					graphics,
 					hoveredWidget.getX() - 1,
 					hoveredWidget.getY() - 1,
@@ -100,7 +100,7 @@ public class PreviewWidget extends AbstractWidget {
 		// SELECTED
 		if (selectedWidget != null) {
 			//noinspection DataFlowIssue
-			HudHelper.drawBorder(
+			GuiHelper.border(
 					graphics,
 					selectedWidget.getX() - 1,
 					selectedWidget.getY() - 1,

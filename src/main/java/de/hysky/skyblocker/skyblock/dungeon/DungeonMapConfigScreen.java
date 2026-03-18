@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class DungeonMapConfigScreen extends Screen {
 
@@ -47,10 +47,10 @@ public class DungeonMapConfigScreen extends Screen {
 		float scoreScaling = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling;
 		int scoreWidth = (int) (font.width(DungeonScoreHUD.getFormattedScoreText()) * scoreScaling);
 		int scoreHeight = (int) (font.lineHeight * scoreScaling);
-		if (HudHelper.pointIsInArea(click.x(), click.y(), mapX, mapY, mapX + mapSize, mapY + mapSize) && click.button() == 0) {
+		if (GuiHelper.pointIsInArea(click.x(), click.y(), mapX, mapY, mapX + mapSize, mapY + mapSize) && click.button() == 0) {
 			mapX = (int) Math.max(Math.min(click.x() - (mapSize >> 1), this.width - mapSize), 0);
 			mapY = (int) Math.max(Math.min(click.y() - (mapSize >> 1), this.height - mapSize), 0);
-		} else if (HudHelper.pointIsInArea(click.x(), click.y(), scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight) && click.button() == 0) {
+		} else if (GuiHelper.pointIsInArea(click.x(), click.y(), scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight) && click.button() == 0) {
 			scoreX = (int) Math.max(Math.min(click.x() - (scoreWidth >> 1), this.width - scoreWidth), 0);
 			scoreY = (int) Math.max(Math.min(click.y() - (scoreHeight >> 1), this.height - scoreHeight), 0);
 		}
@@ -86,7 +86,7 @@ public class DungeonMapConfigScreen extends Screen {
 		int size = (int) (128 * scaling);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, EXAMPLE_MAP, x, y, 0, 0, size, size, size, size);
 
-		if (SkyblockerConfigManager.get().dungeons.dungeonMap.showOutline) HudHelper.drawBorder(graphics, x, y, size, size, CommonColors.LIGHT_GRAY);
+		if (SkyblockerConfigManager.get().dungeons.dungeonMap.showOutline) GuiHelper.border(graphics, x, y, size, size, CommonColors.LIGHT_GRAY);
 	}
 
 	public void extractHUDScore(GuiGraphicsExtractor graphics, int x, int y) {
