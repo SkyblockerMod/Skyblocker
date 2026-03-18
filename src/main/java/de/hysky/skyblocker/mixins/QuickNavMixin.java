@@ -11,6 +11,8 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
@@ -20,7 +22,7 @@ public abstract class QuickNavMixin extends QuickNavScreenMixin {
 	@Unique
 	private @Nullable List<QuickNavButton> quickNavButtons;
 
-	@Override
+	@Inject(method = "init()V", at = @At(value = "TAIL"))
 	protected void skyblocker$initQuickNav(CallbackInfo ci) {
 		Screen instance = (Screen) (Object) this;
 		// Init Quick Nav
