@@ -63,7 +63,7 @@ public class EggFinder {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> clearEggs());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> clearEggs());
 		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(EggFinder::onChatMessage);
 		WorldRenderExtractionCallback.EVENT.register(EggFinder::extractRendering);
@@ -86,7 +86,7 @@ public class EggFinder {
 			if (!isSpring) clearEggs();
 		});
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
 			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("shareLocation").then(argument("eggType", EggTypeArgumentType.eggType())
 					.executes(context -> {
 						EggType eggType = context.getArgument("eggType", EggType.class);
@@ -100,7 +100,7 @@ public class EggFinder {
 
 			if (!Debug.debugEnabled()) return;
 			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("resetFoundStatus")
-					.executes(context -> {
+					.executes(_ -> {
 						for (EggType type : EggType.entries) {
 							type.collected = false;
 							if (type.egg != null) type.egg.setMissing();
@@ -109,7 +109,7 @@ public class EggFinder {
 					}))));
 
 			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("clearWaypoints")
-					.executes(context -> {
+					.executes(_ -> {
 						clearEggs();
 						return Command.SINGLE_SUCCESS;
 					}))));
@@ -180,7 +180,7 @@ public class EggFinder {
 			if (client.player == null || client.level == null) return true;
 			List<ArmorStand> entities = client.level.getEntitiesOfClass(ArmorStand.class,
 					AABB.ofSize(client.player.position(), 4f, 4f, 4f),
-					(entity) -> EggFinder.checkIfEgg(entity, eggType)
+					entity -> EggFinder.checkIfEgg(entity, eggType)
 			);
 
 			if (entities.size() != 1) return true;

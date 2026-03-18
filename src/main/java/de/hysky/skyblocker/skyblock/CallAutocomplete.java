@@ -46,10 +46,10 @@ public class CallAutocomplete {
 					.toList();
 
 			commandNode = literal("call")
-					.requires(fccs -> Utils.isOnSkyblock())
+					.requires(_ -> Utils.isOnSkyblock())
 					.executes(CommandUtils.noOp)
 					.then(argument("contact", StringArgumentType.greedyString())
-							.suggests((context, builder) -> SharedSuggestionProvider.suggest(suggestions, builder))
+							.suggests((_, builder) -> SharedSuggestionProvider.suggest(suggestions, builder))
 							.executes(CommandUtils.noOp))
 					.build();
 		} catch (Exception e) {

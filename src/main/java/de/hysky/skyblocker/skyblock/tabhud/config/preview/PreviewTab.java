@@ -94,7 +94,7 @@ public class PreviewTab implements Tab {
 			if (screenLayer == currentScreenLayer) layerButtons[i].active = false;
 		}
 
-		restorePositioning = Button.builder(Component.literal("Restore Positioning"), button -> {
+		restorePositioning = Button.builder(Component.literal("Restore Positioning"), _ -> {
 					WidgetManager.getScreenBuilder(getCurrentLocation()).restorePositioningFromBackup();
 					updateWidgets();
 					onHudWidgetSelected(previewWidget.selectedWidget);
@@ -125,7 +125,7 @@ public class PreviewTab implements Tab {
 		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("enough lines bye")), placeHolderObjective).set(-9);
 		scoreboard.getOrCreatePlayerScore(createHolder(Component.literal("NEVER GONNA GIVE Y-")), placeHolderObjective).set(-10);
 
-		locationDropdown = parent.createLocationDropdown(location -> updateWidgets());
+		locationDropdown = parent.createLocationDropdown(_ -> updateWidgets());
 		updateWidgets();
 	}
 
@@ -283,7 +283,7 @@ public class PreviewTab implements Tab {
 
 		widgetOptions.addWidget(new StringWidget(width, 9, hudWidget.getDisplayName().copy().withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), client.font));
 		if (positionRule == null) {
-			widgetOptions.addWidget(Button.builder(Component.literal("Positioning: Auto"), button -> {
+			widgetOptions.addWidget(Button.builder(Component.literal("Positioning: Auto"), _ -> {
 						PositionRule rule = new PositionRule(
 								"screen",
 								PositionRule.Point.DEFAULT,
@@ -300,7 +300,7 @@ public class PreviewTab implements Tab {
 		} else {
 			// Normal hud widgets don't have auto.
 			if (hudWidget instanceof TabHudWidget) {
-				widgetOptions.addWidget(Button.builder(Component.literal("Positioning: Custom"), button -> {
+				widgetOptions.addWidget(Button.builder(Component.literal("Positioning: Custom"), _ -> {
 							screenBuilder.setPositionRule(hudWidget.getInternalID(), null);
 							updateWidgets();
 							onHudWidgetSelected(hudWidget);

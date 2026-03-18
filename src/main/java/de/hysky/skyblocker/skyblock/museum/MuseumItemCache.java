@@ -204,7 +204,7 @@ public class MuseumItemCache {
 
 				armorToId.forEach((setId, displayIdObject) -> ARMOR_TO_ID.put(setId, displayIdObject.getAsString()));
 				LOGGER.info("[Skyblocker] Loaded museum data");
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to load donations data", e);
 			}

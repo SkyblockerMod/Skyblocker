@@ -45,7 +45,7 @@ public class ProfileViewerTextWidget {
 			this.SKYBLOCK_LEVEL = playerProfile.getAsJsonObject("leveling").get("experience").getAsInt() / 100;
 			this.PURSE = playerProfile.getAsJsonObject("currencies").get("coin_purse").getAsDouble();
 			this.BANK = hypixelProfile.getAsJsonObject("banking").get("balance").getAsDouble();
-		} catch (Exception ignored) {}
+		} catch (Exception _) {}
 
 		this.NETWORTH = PURSE + BANK + getItemsNetworth(playerProfile);
 		this.MAGICAL_POWER = getMagicalPower(playerProfile);
@@ -100,7 +100,7 @@ public class ProfileViewerTextWidget {
 					accessories.put(name, item.getSkyblockRarity().getMP());
 				}
 			}
-		} catch (Exception ignored) {
+		} catch (Exception _) {
 			return -1;
 		}
 
@@ -161,7 +161,7 @@ public class ProfileViewerTextWidget {
 			for (ItemStack stack : new PetsInventoryItemLoader().loadItems(playerProfile)) {
 				value += addItemNetworth(top, stack);
 			}
-		} catch (Exception ignored) {}
+		} catch (Exception _) {}
 
 		List<ItemValue> list = new ArrayList<>(top);
 		list.sort(Comparator.comparingDouble(ItemValue::price).reversed());

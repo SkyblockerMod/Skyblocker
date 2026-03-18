@@ -44,7 +44,7 @@ public interface ChatMessageListener {
 	 * An event called when a game message is received. Register your listeners in {@link ChatMessageListener#init()}.
 	 */
 	Event<ChatMessageListener> EVENT = EventFactory.createArrayBacked(ChatMessageListener.class,
-			(listeners) -> (message, asString) -> {
+			listeners -> (message, asString) -> {
 				for (ChatMessageListener listener : listeners) {
 					ChatFilterResult result = listener.onMessage(message, asString);
 					if (result != ChatFilterResult.PASS) return result;

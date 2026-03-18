@@ -93,7 +93,7 @@ public class MetalDetector {
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(MetalDetector::getDistanceMessage);
 		WorldRenderExtractionCallback.EVENT.register(MetalDetector::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	/**

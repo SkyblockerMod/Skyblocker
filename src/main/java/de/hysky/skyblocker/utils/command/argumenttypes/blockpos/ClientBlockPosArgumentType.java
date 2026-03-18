@@ -31,6 +31,7 @@ public class ClientBlockPosArgumentType implements ArgumentType<ClientPosArgumen
 		return getLoadedBlockPos(context, context.getSource().getLevel(), name);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static BlockPos getLoadedBlockPos(CommandContext<FabricClientCommandSource> context, ClientLevel world, String name) throws CommandSyntaxException {
 		BlockPos blockPos = getBlockPos(context, name);
 		//FIXME Vanilla still uses this deprecated method, watch out in future updates in case this changes

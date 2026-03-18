@@ -95,9 +95,9 @@ public class BloodCampHelper {
 		ClientEntityEvents.ENTITY_LOAD.register(BloodCampHelper::onEntityLoad);
 		ClientEntityEvents.ENTITY_UNLOAD.register(BloodCampHelper::onEntityUnload);
 		WorldRenderExtractionCallback.EVENT.register(BloodCampHelper::extractRendering);
-		ClientTickEvents.END_CLIENT_TICK.register(client -> tick());
-		ClientPlayConnectionEvents.JOIN.register((h, s, c) -> reset());
-		ClientPlayConnectionEvents.DISCONNECT.register((h, c) -> reset());
+		ClientTickEvents.END_CLIENT_TICK.register(_ -> tick());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
+		ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> reset());
 	}
 
 	private static void onEntityLoad(Entity entity, ClientLevel world) {
@@ -122,7 +122,7 @@ public class BloodCampHelper {
 		long now = System.currentTimeMillis();
 		// Process any newly loaded zombies waiting to be checked
 		PENDING_WATCHERS.object2IntEntrySet().removeIf(e -> !e.getKey().isAlive());
-		PENDING_WATCHERS.replaceAll((z, ticks) -> ticks - 1);
+		PENDING_WATCHERS.replaceAll((_, ticks) -> ticks - 1);
 		PENDING_WATCHERS.object2IntEntrySet().removeIf(e -> {
 			if (e.getIntValue() <= 0) {
 				Zombie zombie = e.getKey();

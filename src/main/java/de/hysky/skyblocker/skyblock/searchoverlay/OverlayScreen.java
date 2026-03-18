@@ -79,7 +79,7 @@ public class OverlayScreen extends Screen {
 		GridLayout historyGridWidget = new GridLayout(startX, startY + historyOffset);
 		GridLayout.RowHelper historyAdder = historyGridWidget.createRowHelper(2);
 		for (int i = 0; i < historyLength; i++) {
-			historyButtons[i] = Button.builder(Component.empty(), (a) -> {
+			historyButtons[i] = Button.builder(Component.empty(), a -> {
 				SearchOverManager.search = a.getMessage().getString();
 				SearchOverManager.updateSearch(a.getMessage().getString());
 				onClose();

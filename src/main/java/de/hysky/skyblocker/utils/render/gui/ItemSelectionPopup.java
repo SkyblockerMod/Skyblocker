@@ -96,11 +96,11 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 	protected void init() {
 		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
 		addRenderableWidget(adder.addChild(new ItemList(300, (int) (height * 0.8f)), 2));
-		addRenderableWidget(adder.addChild(Button.builder(CommonComponents.GUI_CANCEL, b -> {
+		addRenderableWidget(adder.addChild(Button.builder(CommonComponents.GUI_CANCEL, _ -> {
 			onClose();
 			onDone.accept(null);
 		}).build()));
-		doneButton = Button.builder(CommonComponents.GUI_DONE, b -> {
+		doneButton = Button.builder(CommonComponents.GUI_DONE, _ -> {
 			onClose();
 			onDone.accept(selectedItem == null ? null : selectedItem.item);
 		}).build();

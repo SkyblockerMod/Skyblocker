@@ -26,7 +26,7 @@ public class FishingHelper {
 	@Init
 	public static void init() {
 		// Initiate wait for bobber to appear server-side upon cast
-		UseItemCallback.EVENT.register((player, world, hand) -> {
+		UseItemCallback.EVENT.register((player, _, hand) -> {
 			ItemStack stack = player.getItemInHand(hand);
 			if (!Utils.isOnSkyblock()) {
 				return InteractionResult.PASS;

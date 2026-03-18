@@ -33,11 +33,11 @@ public class EnderNodes {
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(EnderNodes::update, 20);
 		WorldRenderExtractionCallback.EVENT.register(EnderNodes::extractRendering);
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+		AttackBlockCallback.EVENT.register((_, _, _, pos, _) -> {
 			enderNodes.remove(pos);
 			return InteractionResult.PASS;
 		});
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ParticleEvents.FROM_SERVER.register(EnderNodes::onParticle);
 	}
 

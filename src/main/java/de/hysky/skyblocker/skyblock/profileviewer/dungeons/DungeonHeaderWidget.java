@@ -31,7 +31,7 @@ public class DungeonHeaderWidget {
 				avg += LevelFinder.getLevelInfo("Catacombs", CLASS_DATA.getAsJsonObject(element.toLowerCase(Locale.ENGLISH)).get("experience").getAsLong()).level;
 			}
 			classAvg = avg/classes.length;
-		}  catch (Exception ignored) {
+		}  catch (Exception _) {
 			this.classLevel = LevelFinder.getLevelInfo("", 0);
 			classAvg = 0;
 		}

@@ -74,7 +74,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 		infoTextWidget = new StringWidget(Component.literal("Can't Afford"), font).setMaxWidth(imageWidth - 10, StringWidget.TextOverflow.SCROLLING);
 		verticalLayout.addChild(infoTextWidget);
 
-		buyButton = Button.builder(isBinAuction ? Component.translatable("skyblocker.fancyAuctionHouse.buy") : Component.translatable("skyblocker.fancyAuctionHouse.bid"), button -> {
+		buyButton = Button.builder(isBinAuction ? Component.translatable("skyblocker.fancyAuctionHouse.buy") : Component.translatable("skyblocker.fancyAuctionHouse.bid"), _ -> {
 			if (buySlotID == -1) return;
 			clickSlot(buySlotID);
 		}).size(60, 15).build();
@@ -82,7 +82,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 		verticalLayout.visitWidgets(this::addRenderableWidget);
 		updateLayout();
 
-		Button backButton = new Button.Builder(Component.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
+		Button backButton = new Button.Builder(Component.literal("<"), _ -> this.clickSlot(BACK_BUTTON_SLOT))
 				.pos(leftPos + imageWidth - 16, topPos + 4)
 				.size(12, 12)
 				.tooltip(Tooltip.create(Component.literal("or press ESC!")))
@@ -282,7 +282,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 		// This really shouldn't be possible to be null in its ACTUAL use case.
 		//noinspection DataFlowIssue
 		return new PopupScreen.Builder(this, title)
-				.addButton(Component.translatable("text.skyblocker.confirm"), popupScreen -> this.minecraft.gameMode.handleContainerInput(this.minecraft.player.containerMenu.containerId, 11, 0, ContainerInput.PICKUP, minecraft.player))
+				.addButton(Component.translatable("text.skyblocker.confirm"), _ -> this.minecraft.gameMode.handleContainerInput(this.minecraft.player.containerMenu.containerId, 11, 0, ContainerInput.PICKUP, minecraft.player))
 				.addButton(Component.translatable("gui.cancel"), PopupScreen::onClose)
 				.addMessage((isBinAuction ? Component.translatable("skyblocker.fancyAuctionHouse.price") : Component.translatable("skyblocker.fancyAuctionHouse.newBid")).append(" ").append(priceText))
 				.onClose(() -> {

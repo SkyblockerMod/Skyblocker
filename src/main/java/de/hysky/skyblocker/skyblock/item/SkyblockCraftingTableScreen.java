@@ -50,7 +50,7 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 		}));
 		if (!menu.mirrorverse) {
 			moreCraftsButton = new ImageButton(this.leftPos + 152, topPos + 63, 16, 16, MORE_CRAFTS_TEXTURES,
-					button -> this.slotClicked(menu.slots.get(26), menu.slots.get(26).index, 0, ContainerInput.PICKUP));
+					_ -> this.slotClicked(menu.slots.get(26), menu.slots.get(26).index, 0, ContainerInput.PICKUP));
 			moreCraftsButton.setTooltipDelay(Duration.ofMillis(250L));
 			moreCraftsButton.setTooltip(Tooltip.create(Component.literal("More Crafts")));
 			this.addRenderableWidget(moreCraftsButton);

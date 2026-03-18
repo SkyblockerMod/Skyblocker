@@ -57,8 +57,8 @@ public class DungeonMapTexture {
 			dungeonMapTexture = new DynamicTexture(() -> "Skyblocker Dungeon Map", MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE, true);
 			minecraft.getTextureManager().register(ID, dungeonMapTexture);
 		});
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> clearMapImage());
-		DungeonEvents.ROOM_MATCHED.register((_room) -> onMapItemDataUpdate(DungeonMap.getMapIdComponent(null), true));
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> clearMapImage());
+		DungeonEvents.ROOM_MATCHED.register(_ -> onMapItemDataUpdate(DungeonMap.getMapIdComponent(null), true));
 		LevelRenderEvents.START_MAIN.register(DungeonMapTexture::uploadMapTexture);
 	}
 

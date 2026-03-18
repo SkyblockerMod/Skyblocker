@@ -99,7 +99,7 @@ public class FairySouls {
 					}
 				}
 				LOGGER.debug("[Skyblocker] Loaded found fairy souls");
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to load found fairy souls", e);
 			}

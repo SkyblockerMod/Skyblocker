@@ -156,7 +156,7 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 			super(0, 0, 0, 0, Component.empty(), AbstractScrollArea.defaultSettings(8));
 			this.closeButton = new ImageButton(14, 14, new WidgetSprites(
 					Identifier.withDefaultNamespace("widget/cross_button"), Identifier.withDefaultNamespace("widget/cross_button_highlighted")),
-					b -> visible = false,
+					_ -> visible = false,
 					Component.empty()
 					);
 		}

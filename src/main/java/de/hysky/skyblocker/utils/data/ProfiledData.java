@@ -178,7 +178,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @return The computed value, or null if not found.
 	 */
 	public @Nullable T computeIfAbsent(UUID uuid, String profileId, Supplier<T> valueSupplier) {
-		return getPlayerData(uuid).computeIfAbsent(profileId, _profileId -> valueSupplier.get());
+		return getPlayerData(uuid).computeIfAbsent(profileId, _ -> valueSupplier.get());
 	}
 
 	/**
@@ -208,6 +208,6 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @return The player data map.
 	 */
 	private Map<String, T> getPlayerData(UUID uuid) {
-		return getData().computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
+		return getData().computeIfAbsent(uuid, _ -> new Object2ObjectOpenHashMap<>());
 	}
 }

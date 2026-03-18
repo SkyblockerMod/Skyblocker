@@ -138,7 +138,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 
 		mainLayout.addChild(CycleButton.builder(f -> Component.translatable(f.toString()), filter)
 				.withValues(Filter.values())
-				.create(0, 0, filterWidth, 16, Component.translatable("skyblocker.accessoryHelper.filter"), (b, v) -> {
+				.create(0, 0, filterWidth, 16, Component.translatable("skyblocker.accessoryHelper.filter"), (_, v) -> {
 					filter = v;
 					updateFilter();
 					changePage(0);
@@ -146,7 +146,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		);
 		mainLayout.addChild(CycleButton.booleanBuilder(Component.translatable("skyblocker.accessoryHelper.highestTierOnly"), Component.translatable("skyblocker.accessoryHelper.allTiers"), showHighestTierOnly)
 				.displayOnlyValue()
-				.create(0, 0, filterWidth, 16, CommonComponents.EMPTY, (button, value) -> {
+				.create(0, 0, filterWidth, 16, CommonComponents.EMPTY, (_, value) -> {
 					showHighestTierOnly = value;
 					updateFilter();
 					changePage(0);
@@ -188,7 +188,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 
 	private void updateFilter() {
 		Predicate<AccessoryInfo> predicate = switch (filter) {
-			case ALL -> info -> true;
+			case ALL -> _ -> true;
 			case MISSING -> info -> info.highestOwned().isEmpty();
 			case UPGRADES -> info -> info.highestOwned().isPresent() && info.accessory().tier() > info.highestOwned().get().tier();
 		};
@@ -323,7 +323,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		private boolean toggled;
 
 		TabButton(Consumer<TabButton> onToggled) {
-			super(35, 27, RecipeBookTabButton.SPRITES, b -> {}, CommonComponents.EMPTY);
+			super(35, 27, RecipeBookTabButton.SPRITES, _ -> {}, CommonComponents.EMPTY);
 			this.onToggled = onToggled;
 		}
 

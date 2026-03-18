@@ -155,7 +155,7 @@ public class BlockBreakPrediction {
 
 	public static void addStrength(Location location, Block blockId, int strength, int breakingPower) {
 		blockStrengths
-				.computeIfAbsent(location, k -> new HashMap<>())
+				.computeIfAbsent(location, _ -> new HashMap<>())
 				.put(blockId, IntIntPair.of(strength, breakingPower));
 	}
 

@@ -42,7 +42,7 @@ public class EditBarColorPopup extends AbstractPopupScreen {
 		layout.addChild(colorSelector);
 
 		LinearLayout horizontal = LinearLayout.horizontal();
-		Button buttonWidget = Button.builder(Component.literal("Cancel"), button -> onClose()).width(80).build();
+		Button buttonWidget = Button.builder(Component.literal("Cancel"), _ -> onClose()).width(80).build();
 		horizontal.addChild(buttonWidget);
 		horizontal.addChild(Button.builder(Component.literal("Done"), this::done).width(80).build());
 
@@ -90,7 +90,7 @@ public class EditBarColorPopup extends AbstractPopupScreen {
 			try {
 				color = Integer.parseInt(text, 16) | 0xFF000000;
 				validColor = true;
-			} catch (NumberFormatException e) {
+			} catch (NumberFormatException _) {
 				color = 0;
 				validColor = false;
 			}

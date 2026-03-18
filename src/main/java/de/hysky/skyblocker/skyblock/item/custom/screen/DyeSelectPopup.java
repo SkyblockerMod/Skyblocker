@@ -70,7 +70,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		layout.addChild(new StringWidget(Component.translatable("skyblocker.customization.armor.pickDye.dyes", Component.translatable("skyblocker.customization.armor.pickDye.dyes.static")), font), headerLayout);
 		RepoDyeColors.STATIC_DYES.forEach((name, hex) ->
 				layout.addChild(new StaticDyeButton(
-						name, hex, (button) -> this.selectStaticDye(button, hex)
+						name, hex, button -> this.selectStaticDye(button, hex)
 				))
 		);
 		layout.addChild(SpacerElement.height(15));
@@ -78,7 +78,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		RepoDyeColors.ANIMATED_DYES.forEach((name, colors) -> {
 			if (name.startsWith("FAIRY")) return;
 			layout.addChild(new AnimatedDyeColor(
-					name, colors, (button) -> this.selectAnimatedDye(button, colors)
+					name, colors, button -> this.selectAnimatedDye(button, colors)
 			));
 		});
 

@@ -73,13 +73,13 @@ public class GoldorWaypointsManager {
 		WorldRenderExtractionCallback.EVENT.register(GoldorWaypointsManager::extractRendering);
 		ClientLifecycleEvents.CLIENT_STARTED.register(GoldorWaypointsManager::load);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(GoldorWaypointsManager::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
+		ClientPlayConnectionEvents.JOIN.register(((_, _, _) -> reset()));
 	}
 
 	private static void load(Minecraft client) {
 		CompletableFuture<Void> terminals = loadWaypoints(client, SkyblockerMod.id("dungeons/goldorwaypoints.json"));
 
-		terminals.whenComplete((_result, _throwable) -> loaded = true);
+		terminals.whenComplete((_, _) -> loaded = true);
 	}
 
 	private static CompletableFuture<Void> loadWaypoints(Minecraft client, Identifier file) {

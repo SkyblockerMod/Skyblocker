@@ -77,7 +77,7 @@ public class WishingCompassSolver {
 		UseItemCallback.EVENT.register(WishingCompassSolver::onItemInteract);
 		UseBlockCallback.EVENT.register(WishingCompassSolver::onBlockInteract);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(WishingCompassSolver::failMessageListener);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ParticleEvents.FROM_SERVER.register(WishingCompassSolver::onParticle);
 	}
 

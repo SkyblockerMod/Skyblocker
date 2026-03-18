@@ -34,7 +34,7 @@ public class SlayersPage implements ProfileViewerPage {
 		try {
 			return pProfile.getAsJsonObject("slayer").getAsJsonObject("slayer_bosses")
 					.getAsJsonObject(slayer).get("xp").getAsLong();
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return 0;
 		}
 	}

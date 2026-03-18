@@ -49,7 +49,7 @@ public abstract sealed class ExperimentSolver extends SimpleContainerSolver impl
 	public void start(ContainerScreen screen) {
 		state = State.REMEMBER;
 		//No reason to use the screen lambda argument given by `register` as it narrows down the type of our screen for no reason
-		ScreenEvents.afterTick(screen).register(ignored -> tick(screen));
+		ScreenEvents.afterTick(screen).register(_ -> tick(screen));
 	}
 
 	@Override

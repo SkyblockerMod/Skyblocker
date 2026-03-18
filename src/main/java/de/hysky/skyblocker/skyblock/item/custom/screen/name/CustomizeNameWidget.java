@@ -88,10 +88,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 
 		addFormattingButtons(builder);
 
-		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.customColor"), b ->
+		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.customColor"), _ ->
 				client.setScreen(ColorPopup.create(parent, color -> setStyle(Style.EMPTY.withColor(color))))
 		).size(48, 16).build(), 2, 17, 1, 3));
-		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.gradientColor"), b ->
+		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.gradientColor"), _ ->
 				client.setScreen(ColorPopup.createGradient(parent, this::createGradient))
 		).size(48, 16).build(), 3, 17, 1, 3));
 		builder.add(grid.addChild(new StringWidget(20 * 16, textRenderer.lineHeight, Component.translatable("skyblocker.customItemNames.screen.howToRemove").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY), textRenderer)/*.alignLeft()*/, 4, 0, 1, 20, LayoutSettings.defaults().paddingTop(2)));

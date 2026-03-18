@@ -336,7 +336,7 @@ public final class ItemUtils {
 				return PetInfo.CODEC.parse(JsonOps.INSTANCE, jsonElement)
 						.setPartial(PetInfo.EMPTY)
 						.getPartialOrThrow();
-			} catch (Exception ignored) {}
+			} catch (Exception _) {}
 		}
 
 		return PetInfo.EMPTY;

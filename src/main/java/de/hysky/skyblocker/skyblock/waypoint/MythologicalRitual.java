@@ -67,9 +67,9 @@ public class MythologicalRitual {
 		UseBlockCallback.EVENT.register(MythologicalRitual::onUseBlock);
 		UseItemCallback.EVENT.register(MythologicalRitual::onUseItem);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(MythologicalRitual::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("diana")
-				.then(literal("clearGriffinBurrows").executes(context -> {
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("diana")
+				.then(literal("clearGriffinBurrows").executes(_ -> {
 					reset();
 					return Command.SINGLE_SUCCESS;
 				}))

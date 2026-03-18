@@ -151,8 +151,8 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		ClientLifecycleEvents.CLIENT_STARTED.register(WaterboardOneFlow::loadSolutions);
 		UseBlockCallback.EVENT.register(INSTANCE::onUseBlock);
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
-				.then(literal("reset").executes(context -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
+				.then(literal("reset").executes(_ -> {
 					INSTANCE.softReset();
 					return Command.SINGLE_SUCCESS;
 				}))
@@ -160,7 +160,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		ServerTickCallback.EVENT.register(INSTANCE::onServerTick);
 
 		if (Debug.debugEnabled()) {
-			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
+			ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
 					.then(literal("setDoors").then(argument("combination", StringArgumentType.string()).executes(context -> {
 						String doorCombination = StringArgumentType.getString(context, "combination");
 						if (SOLUTIONS.get("1").getAsJsonObject().keySet().contains(doorCombination)) {
@@ -171,13 +171,13 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 						}
 						return Command.SINGLE_SUCCESS;
 					})))
-					.then(literal("toggleTimer").executes((context) -> {
+					.then(literal("toggleTimer").executes(context -> {
 						INSTANCE.timerEnabled = !INSTANCE.timerEnabled;
 						context.getSource().sendFeedback(Constants.PREFIX.get().append(
 								INSTANCE.timerEnabled ? "Timer enabled." : "Timer disabled."));
 						return Command.SINGLE_SUCCESS;
 					}))
-					.then(literal("modifyLever").then(argument("leverType", LeverType.LeverTypeArgumentType.leverType()).then(argument("times", StringArgumentType.greedyString()).executes((context) -> {
+					.then(literal("modifyLever").then(argument("leverType", LeverType.LeverTypeArgumentType.leverType()).then(argument("times", StringArgumentType.greedyString()).executes(context -> {
 						LeverType leverType = LeverType.LeverTypeArgumentType.getLeverType(context, "leverType");
 						if (leverType == null) {
 							context.getSource().sendError(Constants.PREFIX.get().append("Invalid lever type"));
@@ -190,13 +190,13 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 									times.add(Double.parseDouble(time));
 								}
 								INSTANCE.solution.put(leverType, times);
-							} catch (NumberFormatException e) {
+							} catch (NumberFormatException _) {
 								context.getSource().sendError(Constants.PREFIX.get().append("Times must be valid numbers or decimals"));
 							}
 						}
 						return Command.SINGLE_SUCCESS;
 					}))))
-					.then(literal("addMark").executes((context) -> {
+					.then(literal("addMark").executes(context -> {
 						if (INSTANCE.world == null || INSTANCE.room == null || INSTANCE.player == null) {
 							context.getSource().sendError(Constants.PREFIX.get().append("Solver not active"));
 							return Command.SINGLE_SUCCESS;
@@ -232,7 +232,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 						INSTANCE.marks.add(new Mark(INSTANCE.marks.size() + 1, pos));
 						return Command.SINGLE_SUCCESS;
 					}))
-					.then(literal("clearMarks").executes((context) -> {
+					.then(literal("clearMarks").executes(_ -> {
 						INSTANCE.marks.clear();
 						return Command.SINGLE_SUCCESS;
 					}))
@@ -467,7 +467,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 
 			if (solution != null) {
 				List<ObjectDoublePair<LeverType>> sortedTimes = solution.entrySet().stream()
-						.flatMap((entry) -> entry.getValue().doubleStream().mapToObj((time) -> ObjectDoublePair.of(entry.getKey(), time)))
+						.flatMap(entry -> entry.getValue().doubleStream().mapToObj(time -> ObjectDoublePair.of(entry.getKey(), time)))
 						// Sort by next use time, then by lever type
 						.sorted(Comparator
 								.<ObjectDoublePair<LeverType>>comparingDouble(p -> p.rightDouble() + (p.left() == LeverType.WATER ? 0.001 : 0.0))

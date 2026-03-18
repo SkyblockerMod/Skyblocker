@@ -43,7 +43,7 @@ public class DungeonMiscStatsWidgets {
 				totalRuns += runs;
 			}
 
-		} catch (Exception ignored) {}
+		} catch (Exception _) {}
 	}
 
 	public void extractRenderState(GuiGraphicsExtractor graphics, int x, int y) {

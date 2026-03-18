@@ -64,7 +64,7 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 			this.allButtons.add(button);
 		}
 
-		this.noneButton = new HeadButton("", null, new ItemStack(Items.BARRIER), _ignored -> onClick(null));
+		this.noneButton = new HeadButton("", null, new ItemStack(Items.BARRIER), _ -> onClick(null));
 
 		filterButtons("");
 	}

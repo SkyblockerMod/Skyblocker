@@ -135,7 +135,7 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 			this.speedInput.setMaxLength(3);
 			this.speedInput.setHint(Component.literal("0").withStyle(ChatFormatting.DARK_GRAY));
 
-			this.removeButton = Button.builder(Component.literal("-"), btn -> SpeedPresetListWidget.this.removeEntry(this))
+			this.removeButton = Button.builder(Component.literal("-"), _ -> SpeedPresetListWidget.this.removeEntry(this))
 					.bounds(0, 0, 20, 20)
 					.build();
 
@@ -177,7 +177,7 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 			if (isEmpty()) return null;
 			try {
 				return ObjectIntPair.of(titleInput.getValue(), Integer.parseInt(speedInput.getValue()));
-			} catch (NumberFormatException e) {
+			} catch (NumberFormatException _) {
 				return null;
 			}
 		}

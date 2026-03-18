@@ -83,7 +83,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		SkyblockEvents.PROFILE_CHANGE.register(INSTANCE::onProfileChange);
 
 		// @formatter:off // Don't you hate it when your format style for chained method calls makes a chain like this incredibly ugly?
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
 			literal(SkyblockerMod.NAMESPACE)
 				.then(literal("rewardTrackers")
 					.then(literal("corpse")
@@ -178,14 +178,14 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 						new ObjectArrayList<>(),
 						Instant.now()
 				);
-			} catch (IllegalArgumentException e) {
+			} catch (IllegalArgumentException _) {
 				LOGGER.error("Unknown corpse type `{}` for message: `{}`. Report this!", corpse, message);
 				return true;
 			}
 
 			try {
 				lastCorpseLoot.profit(lastCorpseLoot.profit() - type.getKeyPrice()); //Negated since the key price is a cost, not a reward
-			} catch (IllegalStateException e) { // This is thrown when the key price is not found
+			} catch (IllegalStateException _) { // This is thrown when the key price is not found
 				LOGGER.warn("No key price found for corpse type `{}`. Profit calculation will not be accurate, therefore it will not be sent to chat. It will still be added to the corpse history.", corpse);
 				lastCorpseLoot.markPriceDataIncomplete();
 			}
@@ -220,7 +220,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			}
 			try {
 				corpseLoot.profit(corpseLoot.profit() - corpseLoot.corpseType().getKeyPrice());
-			} catch (IllegalStateException e) {
+			} catch (IllegalStateException _) {
 				LOGGER.warn("No key price found for corpse type `{}`. Profit calculation will not be accurate.", corpseLoot.corpseType());
 				corpseLoot.markPriceDataIncomplete();
 			}

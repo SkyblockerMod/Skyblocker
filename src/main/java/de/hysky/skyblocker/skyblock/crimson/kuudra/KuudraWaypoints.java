@@ -67,7 +67,7 @@ public class KuudraWaypoints {
 		CompletableFuture<Void> safeSpots = loadWaypoints(client, SkyblockerMod.id("crimson/kuudra/safe_spot_waypoints.json"), SAFE_SPOT_WAYPOINTS, SAFE_SPOT_COLOR);
 		CompletableFuture<Void> pearls = loadWaypoints(client, SkyblockerMod.id("crimson/kuudra/pearl_waypoints.json"), PEARL_WAYPOINTS, PEARL_COLOR);
 
-		CompletableFuture.allOf(safeSpots, pearls).whenComplete((_result, _throwable) -> loaded = true);
+		CompletableFuture.allOf(safeSpots, pearls).whenComplete((_, _) -> loaded = true);
 	}
 
 	private static CompletableFuture<Void> loadWaypoints(Minecraft client, Identifier file, ObjectArrayList<Waypoint> list, float[] colorComponents) {

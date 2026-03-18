@@ -171,7 +171,7 @@ public class OtherLocationsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.resetName"))
 								.prompt(Component.translatable("skyblocker.config.otherLocations.end.resetText"))
-								.action(screen -> TheEnd.PROFILES_STATS.put(TheEnd.EndStats.EMPTY.get()))
+								.action(_ -> TheEnd.PROFILES_STATS.put(TheEnd.EndStats.EMPTY.get()))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.muteEndermanSounds"))

@@ -44,7 +44,7 @@ public class RangedValueWidget extends AbstractContainerWidget {
 		this.input.setVisible(false);
 		this.input.setMaxLength(3);
 		input.setResponder(this::updateConfirmButton);
-		this.okButton = Button.builder(Component.literal("✔"), (a) -> sendPacket())
+		this.okButton = Button.builder(Component.literal("✔"), _ -> sendPacket())
 				.bounds(x + width - 15, y + 25, 15, 15)
 				.build();
 		this.okButton.visible = false;
@@ -69,7 +69,7 @@ public class RangedValueWidget extends AbstractContainerWidget {
 				this.okButton.active = active1;
 				this.input.setGood(active1);
 			}
-		} catch (NumberFormatException e) {
+		} catch (NumberFormatException _) {
 			this.okButton.active = false;
 			this.input.setGood(false);
 		}
@@ -164,9 +164,9 @@ public class RangedValueWidget extends AbstractContainerWidget {
 		SignBlockEntity sign = screen.getSign();
 		String inputTrimmed = input.getValue().trim();
 		if (state == State.MODIFYING_MIN) {
-			try { min = Integer.parseInt(inputTrimmed); } catch (NumberFormatException ignored) {}
+			try { min = Integer.parseInt(inputTrimmed); } catch (NumberFormatException _) {}
 		} else if (state == State.MODIFYING_MAX) {
-			try { max = Integer.parseInt(inputTrimmed); } catch (NumberFormatException ignored) {}
+			try { max = Integer.parseInt(inputTrimmed); } catch (NumberFormatException _) {}
 		}
 		if (sign != null) {
 			Component[] messages = sign.getText(screen.isSignFront()).getMessages(screen.getClient().isTextFilteringEnabled());

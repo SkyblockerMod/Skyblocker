@@ -81,15 +81,15 @@ public class VisitorHelper extends AbstractWidget {
 
 	@Init
 	public static void initialize() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			if (!(screen instanceof AbstractContainerScreen<?> handledScreen) || !shouldRender()) return;
 
 			processVisitor = true;
-			ScreenEvents.afterTick(screen).register(_screen -> updateVisitors(handledScreen.getMenu()));
+			ScreenEvents.afterTick(screen).register(_ -> updateVisitors(handledScreen.getMenu()));
 			Screens.getWidgets(screen).add(new VisitorHelper(xOffset, yOffset));
 		});
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _buildContext) ->
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
 				dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("garden").then(literal("visitors")
 						.then(literal("removeAll").executes(ctx -> {
 							activeVisitors.clear();
@@ -108,7 +108,7 @@ public class VisitorHelper extends AbstractWidget {
 							updateItems();
 							ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatableEscape("skyblocker.farming.visitorHelper.command.removedVisitor", visitor.get().name())));
 							return Command.SINGLE_SUCCESS;
-						}).suggests((ctx, builder) -> SharedSuggestionProvider.suggest(activeVisitors.stream().map(Visitor::name).map(Component::getString), builder))))
+						}).suggests((_, builder) -> SharedSuggestionProvider.suggest(activeVisitors.stream().map(Visitor::name).map(Component::getString), builder))))
 				))));
 	}
 
@@ -176,7 +176,7 @@ public class VisitorHelper extends AbstractWidget {
 				int amount = entry.getIntValue();
 
 				groupedItems.put(itemName, groupedItems.getOrDefault(itemName, 0) + amount);
-				visitorsByItem.computeIfAbsent(itemName, k -> new LinkedList<>()).add(visitor);
+				visitorsByItem.computeIfAbsent(itemName, _ -> new LinkedList<>()).add(visitor);
 			}
 		}
 	}
@@ -186,7 +186,7 @@ public class VisitorHelper extends AbstractWidget {
 	 */
 	private static FlexibleItemStack getCachedItem(String itemName) {
 		String cleanName = ChatFormatting.stripFormatting(itemName);
-		return cachedItems.computeIfAbsent(cleanName, name -> {
+		return cachedItems.computeIfAbsent(cleanName, _ -> {
 			if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return ItemUtils.getNamedPlaceholder(itemName);
 
 			return NEURepoManager.getItemByName(itemName)

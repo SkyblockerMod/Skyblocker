@@ -379,7 +379,7 @@ public class Utils {
 				SlayerManager.checkSlayerQuest();
 				updateArea();
 			}
-		} catch (NullPointerException e) {
+		} catch (NullPointerException _) {
 			//Do nothing
 		}
 	}
@@ -604,7 +604,7 @@ public class Utils {
 	public static OptionalInt parseInt(String input) {
 		try {
 			return OptionalInt.of(Integer.parseInt(input));
-		} catch (NumberFormatException e) {
+		} catch (NumberFormatException _) {
 			return OptionalInt.empty();
 		}
 	}

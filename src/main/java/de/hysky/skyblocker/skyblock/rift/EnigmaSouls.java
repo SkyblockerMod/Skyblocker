@@ -80,7 +80,7 @@ public class EnigmaSouls {
 						SOUL_WAYPOINTS.get(PosUtils.parsePosString(foundSoul.getAsString())).setFound(profile.getKey());
 					}
 				}
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] There was an error while loading found enigma souls!", e);
 			}

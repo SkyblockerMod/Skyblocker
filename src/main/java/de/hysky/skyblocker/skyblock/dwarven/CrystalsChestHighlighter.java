@@ -47,7 +47,7 @@ public class CrystalsChestHighlighter {
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(CrystalsChestHighlighter::extractLocationFromMessage);
 		WorldRenderExtractionCallback.EVENT.register(CrystalsChestHighlighter::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		WorldEvents.BLOCK_STATE_UPDATE.register(CrystalsChestHighlighter::onBlockUpdate);
 		ParticleEvents.FROM_SERVER.register(CrystalsChestHighlighter::onParticle);
 		PlaySoundEvents.FROM_SERVER.register(CrystalsChestHighlighter::onSound);

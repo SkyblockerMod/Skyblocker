@@ -34,7 +34,7 @@ public class ChatPositionShare {
 
 	@Init
 	public static void init() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
 			dispatcher.register(
 					ClientCommands.literal("skyblocker").then(ClientCommands.literal("sharePosition").executes(context -> sharePlayerPosition(context.getSource())))
 					);

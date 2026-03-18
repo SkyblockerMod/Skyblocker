@@ -53,9 +53,9 @@ public class ItemPickupWidget extends ElementBasedWidget {
 		instance = this;
 
 		ClientReceiveMessageEvents.ALLOW_GAME.register(instance::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> changingLobby = true);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> changingLobby = true);
 		// Make changingLobby true for a short period while the player loads into a new lobby and their items are loading
-		SkyblockEvents.LOCATION_CHANGE.register(location -> Scheduler.INSTANCE.schedule(() -> changingLobby = false, LOBBY_CHANGE_DELAY));
+		SkyblockEvents.LOCATION_CHANGE.register(_ -> Scheduler.INSTANCE.schedule(() -> changingLobby = false, LOBBY_CHANGE_DELAY));
 	}
 
 	public static ItemPickupWidget getInstance() {

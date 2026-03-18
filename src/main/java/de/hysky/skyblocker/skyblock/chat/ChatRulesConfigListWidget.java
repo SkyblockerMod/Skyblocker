@@ -149,9 +149,9 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 
 			Button enabledButton = layout.addChild(Button.builder(enabledButtonText(), this::toggleEnabled).size(50, 20).build());
 
-			Button openConfigButton = layout.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.editRule"), a -> minecraft.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex))).size(50, 20).tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.editRule.@Tooltip"))).build());
+			Button openConfigButton = layout.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.editRule"), _ -> minecraft.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex))).size(50, 20).tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.editRule.@Tooltip"))).build());
 
-			Button deleteButton = layout.addChild(Button.builder(Component.translatable("selectServer.delete"), a ->
+			Button deleteButton = layout.addChild(Button.builder(Component.translatable("selectServer.delete"), _ ->
 				minecraft.setScreen(new ConfirmScreen(this::deleteEntry, Component.translatable("skyblocker.config.chat.chatRules.screen.deleteQuestion"), Component.translatable("skyblocker.config.chat.chatRules.screen.deleteWarning", chatRule.getName()), Component.translatable("selectServer.deleteButton"), CommonComponents.GUI_CANCEL))
 			).size(50, 20).build());
 

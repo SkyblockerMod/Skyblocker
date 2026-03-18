@@ -60,7 +60,7 @@ public class LividColor {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> LividColor.reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> LividColor.reset());
 		WorldRenderExtractionCallback.EVENT.register(LividColor::update);
 	}
 

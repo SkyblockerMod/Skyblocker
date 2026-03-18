@@ -26,7 +26,7 @@ public class DungeonFloorRunsWidget {
 	public DungeonFloorRunsWidget(JsonObject pProfile) {
 		try {
 			dungeonsStats = pProfile.getAsJsonObject("dungeons").getAsJsonObject("dungeon_types");
-		} catch (Exception ignored) {}
+		} catch (Exception _) {}
 	}
 
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
@@ -73,7 +73,7 @@ public class DungeonFloorRunsWidget {
 				}
 				columnX += 52;
 				elementY = y + 26;
-			} catch (Exception e) {
+			} catch (Exception _) {
 				return;
 			}
 		}

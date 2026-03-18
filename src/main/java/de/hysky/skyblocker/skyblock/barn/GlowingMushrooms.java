@@ -34,11 +34,11 @@ public class GlowingMushrooms {
 		ParticleEvents.FROM_SERVER.register(GlowingMushrooms::onParticle);
 		Scheduler.INSTANCE.scheduleCyclic(GlowingMushrooms::update, 1);
 		WorldRenderExtractionCallback.EVENT.register(GlowingMushrooms::extractRendering);
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+		AttackBlockCallback.EVENT.register((_, _, _, pos, _) -> {
 			if (shouldProcess()) glowingMushrooms.remove(pos);
 			return InteractionResult.PASS;
 		});
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	public static void onParticle(ClientboundLevelParticlesPacket packet) {

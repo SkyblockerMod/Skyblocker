@@ -14,10 +14,10 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 public class ViewstashAutocomplete {
 	public static LiteralCommandNode<FabricClientCommandSource> getCommandNode() {
 		return literal("viewstash")
-					.requires(fabricClientCommandSource -> Utils.isOnSkyblock())
+					.requires(_ -> Utils.isOnSkyblock())
 					.executes(CommandUtils.noOp)
 					.then(argument("stash", StringArgumentType.word())
-									.suggests((context, builder) -> SharedSuggestionProvider.suggest(Stream.of("material", "item"), builder))
+									.suggests((_, builder) -> SharedSuggestionProvider.suggest(Stream.of("material", "item"), builder))
 									.executes(CommandUtils.noOp)
 					).build();
 	}

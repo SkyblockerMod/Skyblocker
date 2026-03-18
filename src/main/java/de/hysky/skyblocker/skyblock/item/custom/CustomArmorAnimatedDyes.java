@@ -36,9 +36,9 @@ public class CustomArmorAnimatedDyes {
 	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register(CustomArmorAnimatedDyes::registerCommands);
-		WorldRenderExtractionCallback.EVENT.register(ignored -> ++frames);
+		WorldRenderExtractionCallback.EVENT.register(_ -> ++frames);
 		// have the animation restart on world change because why not?
-		SkyblockEvents.LOCATION_CHANGE.register(ignored -> cleanTrackers());
+		SkyblockEvents.LOCATION_CHANGE.register(_ -> cleanTrackers());
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {

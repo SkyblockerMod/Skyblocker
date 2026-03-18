@@ -154,7 +154,7 @@ public class PartyFinderScreen extends Screen {
 		searchField.setHint(SEARCH_TEXT);
 		searchField.setResponder(s -> partyEntryListWidget.setSearch(s));
 		// Refresh button
-		refreshButton = Button.builder(Component.literal("⟳").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)), (a) -> {
+		refreshButton = Button.builder(Component.literal("⟳").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)), _ -> {
 					if (refreshSlotId != -1) {
 						clickAndWaitForServer(refreshSlotId);
 						resetScroll = true;
@@ -165,7 +165,7 @@ public class PartyFinderScreen extends Screen {
 		refreshButton.active = false;
 
 		// Prev and next page buttons
-		previousPageButton = Button.builder(Component.literal("←"), (a) -> {
+		previousPageButton = Button.builder(Component.literal("←"), _ -> {
 					if (prevPageSlotId != -1) {
 						clickAndWaitForServer(prevPageSlotId);
 						resetScroll = true;
@@ -174,7 +174,7 @@ public class PartyFinderScreen extends Screen {
 				.pos(searchField.getX() + searchField.getWidth(), searchField.getY())
 				.size(12, 12).build();
 		previousPageButton.active = false;
-		nextPageButton = Button.builder(Component.literal("→"), (a) -> {
+		nextPageButton = Button.builder(Component.literal("→"), _ -> {
 					if (nextPageSlotId != -1) {
 						clickAndWaitForServer(nextPageSlotId);
 						resetScroll = true;
@@ -194,7 +194,7 @@ public class PartyFinderScreen extends Screen {
 		int searchButtonWidth = (partyEntryListWidget.getRowWidth() + 6) / 3 - 2 * searchButtonMargin;
 
 
-		partyFinderButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.partyFinder"), (a) -> {
+		partyFinderButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.partyFinder"), _ -> {
 					if (partyButtonSlotId != -1) {
 						setCurrentPage(Page.FINDER);
 						clickAndWaitForServer(partyButtonSlotId);
@@ -203,7 +203,7 @@ public class PartyFinderScreen extends Screen {
 				.pos(partyEntryListWidget.getRowLeft(), entryListTopY - 39)
 				.size(searchButtonWidth + searchButtonMargin, topRowButtonsHeight).build();
 
-		settingsButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.searchSettings"), (a) -> {
+		settingsButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.searchSettings"), _ -> {
 					if (settingsButtonSlotId != -1) {
 						setCurrentPage(Page.SETTINGS);
 						clickAndWaitForServer(settingsButtonSlotId);
@@ -212,7 +212,7 @@ public class PartyFinderScreen extends Screen {
 				.pos(partyEntryListWidget.getRowLeft() + searchButtonWidth + 3 * searchButtonMargin, entryListTopY - 39)
 				.size(searchButtonWidth, topRowButtonsHeight).build();
 
-		createPartyButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.createParty"), (a) -> {
+		createPartyButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.createParty"), _ -> {
 					if (createPartyButtonSlotId != -1) {
 						clickAndWaitForServer(createPartyButtonSlotId);
 					}
@@ -232,7 +232,7 @@ public class PartyFinderScreen extends Screen {
 		addRenderableWidget(createPartyButton);
 		addRenderableWidget(settingsContainer);
 		if (Debug.debugEnabled()) {
-			addRenderableWidget(Button.builder(Component.nullToEmpty("DEBUG"), (a) -> DEBUG = !DEBUG).bounds(width - 40, 0, 40, 20).build());
+			addRenderableWidget(Button.builder(Component.nullToEmpty("DEBUG"), _ -> DEBUG = !DEBUG).bounds(width - 40, 0, 40, 20).build());
 		}
 
 		dirtiedTime = System.currentTimeMillis();

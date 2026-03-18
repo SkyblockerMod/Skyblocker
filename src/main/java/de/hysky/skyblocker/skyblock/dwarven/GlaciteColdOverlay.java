@@ -26,7 +26,7 @@ public class GlaciteColdOverlay {
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(GlaciteColdOverlay::update, 20);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(GlaciteColdOverlay::coldReset);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, POWDER_SNOW_OUTLINE, (context, tickCounter) -> extract(context));
+		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, POWDER_SNOW_OUTLINE, (context, _) -> extract(context));
 	}
 
 	private static boolean coldReset(Component text, boolean b) {

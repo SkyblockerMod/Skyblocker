@@ -55,7 +55,7 @@ public class SlayerWidget {
 		this.drop = DROP_ICON.getOrDefault(slayer, Ico.BARRIER);
 		try {
 			this.slayerData = playerProfile.getAsJsonObject("slayer").getAsJsonObject("slayer_bosses").getAsJsonObject(this.slayerName.toLowerCase(Locale.ENGLISH));
-		} catch (Exception ignored) {}
+		} catch (Exception _) {}
 	}
 
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
@@ -89,7 +89,7 @@ public class SlayerWidget {
 				if (key.startsWith("boss_kills_tier_")) totalKills += this.slayerData.get(key).getAsInt();
 			}
 			return totalKills;
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return 0;
 		}
 	}
@@ -100,7 +100,7 @@ public class SlayerWidget {
 				String key = "boss_kills_tier_" + tier;
 				if (this.slayerData.has(key)) return "§cT" + (tier + 1) + " Kills: §r" + this.slayerData.get(key).getAsInt();
 			}
-		} catch (Exception ignored) {}
+		} catch (Exception _) {}
 		return "No Data";
 	}
 }

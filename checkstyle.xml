@@ -77,6 +77,10 @@
         </module>
         <module name="GenericWhitespace"/>
 
+        <module name="UnnecessaryParentheses">
+            <property name="tokens" value="LAMBDA"/>
+        </module>
+
         <module name="ArrayTypeStyle"/>
         <module name="DefaultComesLast">
             <property name="skipIfLastAndSharedWithCase" value="true"/>
@@ -88,6 +92,9 @@
 
         <module name="HexLiteralCase"/>
         <module name="UpperEll"/>
+
+        <module name="UnusedCatchParameterShouldBeUnnamed"/>
+        <module name="UnusedLambdaParameterShouldBeUnnamed"/>
 
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>

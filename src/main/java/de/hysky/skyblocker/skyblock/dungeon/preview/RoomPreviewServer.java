@@ -56,7 +56,7 @@ public class RoomPreviewServer {
 		ServerPlayerEvents.JOIN.register(RoomPreviewServer::onPlayerJoin);
 		ServerPlayerEvents.AFTER_RESPAWN.register((_, newP, _) -> applyNightVision(newP));
 		ServerLifecycleEvents.SERVER_STARTED.register(RoomPreviewServer::checkServer);
-		ServerLifecycleEvents.SERVER_STOPPING.register((_) -> RoomPreviewServer.reset());
+		ServerLifecycleEvents.SERVER_STOPPING.register(_ -> RoomPreviewServer.reset());
 	}
 
 	public static void onPlayerJoin(ServerPlayer player) {
@@ -100,7 +100,7 @@ public class RoomPreviewServer {
 		CLIENT.createWorldOpenFlows().createFreshLevel(SAVE_NAME,
 				new LevelSettings(SAVE_NAME, GameType.SPECTATOR, new LevelSettings.DifficultySettings(Difficulty.PEACEFUL, false, false), true, WorldDataConfiguration.DEFAULT),
 				new WorldOptions(SAVE_NAME.hashCode(), false, false),
-				(lookup) -> {
+				lookup -> {
 					var preset = WorldPresets.createFlatWorldDimensions(lookup);
 					var config = new FlatLevelGeneratorSettings(Optional.empty(), lookup.lookupOrThrow(Registries.BIOME).getOrThrow(ResourceKey.create(Registries.BIOME, Identifier.withDefaultNamespace("the_void"))), List.of());
 					return preset.replaceOverworldGenerator(lookup, new FlatLevelSource(config));

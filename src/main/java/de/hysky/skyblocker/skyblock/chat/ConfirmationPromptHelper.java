@@ -44,10 +44,10 @@ public class ConfirmationPromptHelper {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ConfirmationPromptHelper::onMessage);
-		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			//Don't check for the command being present in case the user opens the chat before the prompt is sent
 			if (Utils.isOnSkyblock() && screen instanceof ChatScreen && SkyblockerConfigManager.get().chat.confirmationPromptHelper) {
-				ScreenMouseEvents.beforeMouseClick(screen).register((_screen1, click) -> {
+				ScreenMouseEvents.beforeMouseClick(screen).register((_, click) -> {
 					if (hasCommand()) {
 						Minecraft client = Minecraft.getInstance();
 						if (client.screen instanceof ChatScreen) {	// Ignore clicks on other interactive elements
@@ -67,7 +67,7 @@ public class ConfirmationPromptHelper {
 				});
 			}
 		});
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> {
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> {
 			command = null;
 			commandFoundAt = 0;
 		});

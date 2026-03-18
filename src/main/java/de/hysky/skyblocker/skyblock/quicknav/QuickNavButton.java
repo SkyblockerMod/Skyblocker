@@ -94,7 +94,7 @@ public class QuickNavButton extends AbstractWidget {
 		Tooltip tip;
 		try {
 			setTooltip(tip = Tooltip.create(ComponentSerialization.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class)).getOrThrow().getFirst()));
-		} catch (Exception e) {
+		} catch (Exception _) {
 			setTooltip(tip = Tooltip.create(Component.literal(tooltip)));
 		}
 		this.tooltip = tip;

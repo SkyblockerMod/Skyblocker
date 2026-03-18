@@ -32,7 +32,7 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 	private static final Int2ObjectMap<ArmorStand> armorstands = new Int2ObjectOpenHashMap<>();
 
 	static {
-			ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> armorstands.remove(entity.getId()));
+			ClientEntityEvents.ENTITY_UNLOAD.register((entity, _) -> armorstands.remove(entity.getId()));
 	}
 
 	public TreeBreakProgressHud() {

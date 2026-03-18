@@ -49,7 +49,7 @@ public class DungeonClassWidget {
 			classData = playerProfile.getAsJsonObject("dungeons").getAsJsonObject("player_classes").getAsJsonObject(this.className.toLowerCase(Locale.ENGLISH));
 			classLevel = LevelFinder.getLevelInfo("Catacombs", classData.get("experience").getAsLong());
 			active = playerProfile.getAsJsonObject("dungeons").get("selected_dungeon_class").getAsString().equals(className.toLowerCase(Locale.ENGLISH));
-		} catch (Exception ignored) {
+		} catch (Exception _) {
 			classLevel = LevelFinder.getLevelInfo("", 0);
 		}
 	}

@@ -84,7 +84,7 @@ public class WarpAutocomplete {
 			JsonObject object;
 			try (BufferedReader reader = Files.newBufferedReader(FILE)) {
 				object = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
-			} catch (NoSuchFileException e) {
+			} catch (NoSuchFileException _) {
 				return Object2BooleanMaps.<String>emptyMap();
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to read warp autocomplete file", e);
@@ -96,10 +96,10 @@ public class WarpAutocomplete {
 
 	private static void createCommandNode(Object2BooleanMap<String> warps) {
 		commandNode = literal("warp")
-				.requires(fabricClientCommandSource -> Utils.isOnSkyblock())
+				.requires(_ -> Utils.isOnSkyblock())
 				.executes(CommandUtils.noOp)
 				.then(argument("destination", StringArgumentType.greedyString())
-						.suggests((context, builder) -> SharedSuggestionProvider.suggest(getEligibleWarps(warps), builder))
+						.suggests((_, builder) -> SharedSuggestionProvider.suggest(getEligibleWarps(warps), builder))
 						.executes(CommandUtils.noOp)
 				).build();
 	}

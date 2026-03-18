@@ -143,7 +143,7 @@ public class ItemTab extends GridLayoutTab {
 		private ItemSelector() {
 			super(0, 20, 0, 0, Component.literal("Item Selector"), AbstractScrollArea.defaultSettings(8));
 			layout.addChild(SpacerElement.height(32)); // ITEM
-			selectItemButton = layout.addChild(Button.builder(Component.literal("Select Item"), b ->
+			selectItemButton = layout.addChild(Button.builder(Component.literal("Select Item"), _ ->
 					Minecraft.getInstance().setScreen(new ItemSelectPopup(parentScreen, ItemTab.this::setCurrentItem))
 			).width(Button.SMALL_WIDTH).build());
 			layout.arrangeElements();

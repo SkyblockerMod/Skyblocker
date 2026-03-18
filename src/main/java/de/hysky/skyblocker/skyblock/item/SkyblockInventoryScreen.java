@@ -88,7 +88,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 			if (!Files.exists(resolve)) return EMPTY_EQUIPMENT.get();
 			try {
 				return CODEC.parse(NbtOps.INSTANCE, NbtIo.read(resolve)).getOrThrow();
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to load Equipment data", e);
 			}
@@ -114,7 +114,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 			else load(profileId);
 		}));
 
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client1 -> {
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> {
 			String profileId = Utils.getProfileId();
 			if (!profileId.isBlank()) {
 				CompletableFuture.runAsync(() -> save(profileId), Executors.newVirtualThreadPerTaskExecutor());

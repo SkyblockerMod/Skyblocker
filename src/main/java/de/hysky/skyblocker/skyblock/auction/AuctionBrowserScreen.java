@@ -101,7 +101,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 		resetFiltersButton.setTooltip(Tooltip.create(Component.literal("Reset Filters")));
 		resetFiltersButton.setTooltipDelay(Duration.ofMillis(500));
 
-		addRenderableWidget(new Button.Builder(Component.literal("<"), button -> this.clickSlot(BACK_BUTTON_SLOT))
+		addRenderableWidget(new Button.Builder(Component.literal("<"), _ -> this.clickSlot(BACK_BUTTON_SLOT))
 				.pos(leftPos + 98, topPos + 4)
 				.size(12, 12)
 				.build());

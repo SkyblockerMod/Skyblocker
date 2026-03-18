@@ -48,15 +48,15 @@ public class DungeonMap {
 
 	@Init
 	public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.MOB_EFFECTS, DUNGEON_MAP, (context, tickCounter) -> extract(context));
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommands.literal("skyblocker")
+		HudElementRegistry.attachElementAfter(VanillaHudElements.MOB_EFFECTS, DUNGEON_MAP, (context, _) -> extract(context));
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(ClientCommands.literal("skyblocker")
 				.then(ClientCommands.literal("hud")
 						.then(ClientCommands.literal("dungeon")
 								.executes(Scheduler.queueOpenScreenCommand(DungeonMapConfigScreen::new))
 						)
 				)
 		));
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	private static boolean shouldProcess() {

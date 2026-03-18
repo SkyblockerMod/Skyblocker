@@ -22,7 +22,7 @@ public class DungeonScoreHUD {
 
 	@Init
 	public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.OVERLAY_MESSAGE, DUNGEON_SCORE, (graphics, tickCounter) -> extractRenderState(graphics));
+		HudElementRegistry.attachElementAfter(VanillaHudElements.OVERLAY_MESSAGE, DUNGEON_SCORE, (graphics, _) -> extractRenderState(graphics));
 	}
 
 	//This is 4+5 wide, needed to offset the extra width from bold numbers (3×1 wide) in S+ and the "+" (6 wide) so that it doesn't go off the screen if the score is S+ and the hud element is at the right edge of the screen

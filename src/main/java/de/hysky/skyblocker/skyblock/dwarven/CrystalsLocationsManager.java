@@ -84,7 +84,7 @@ public class CrystalsLocationsManager {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(CrystalsLocationsManager::extractLocationFromMessage);
 		ClientCommandRegistrationCallback.EVENT.register(CrystalsLocationsManager::registerWaypointLocationCommands);
 		SkyblockEvents.LOCATION_CHANGE.register(CrystalsLocationsManager::onLocationChange);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 
 		// Nucleus Waypoints
 		WorldRenderExtractionCallback.EVENT.register(NucleusWaypoints::extractRendering);
@@ -163,7 +163,7 @@ public class CrystalsLocationsManager {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("crystalWaypoints")
 						.then(literal("add")
-								.executes(context -> {
+								.executes(_ -> {
 									if (CLIENT.player == null) {
 										return 0;
 									}
@@ -172,12 +172,12 @@ public class CrystalsLocationsManager {
 								})
 								.then(argument("pos", ClientBlockPosArgumentType.blockPos())
 										.then(argument("place", StringArgumentType.greedyString())
-												.suggests((context, builder) -> suggest(WAYPOINT_LOCATIONS.keySet(), builder))
+												.suggests((_, builder) -> suggest(WAYPOINT_LOCATIONS.keySet(), builder))
 												.executes(context -> addWaypointFromCommand(context.getSource(), getString(context, "place"), context.getArgument("pos", ClientPosArgument.class)))
 										)
 								))
 						.then(literal("share")
-								.executes(context -> {
+								.executes(_ -> {
 									if (CLIENT.player == null) {
 										return 0;
 									}
@@ -185,12 +185,12 @@ public class CrystalsLocationsManager {
 									return Command.SINGLE_SUCCESS;
 								})
 								.then(argument("place", StringArgumentType.greedyString())
-										.suggests((context, builder) -> suggest(WAYPOINT_LOCATIONS.keySet(), builder))
+										.suggests((_, builder) -> suggest(WAYPOINT_LOCATIONS.keySet(), builder))
 										.executes(context -> shareWaypoint(getString(context, "place")))
 								)
 						)
 						.then(literal("remove")
-								.executes(context -> {
+								.executes(_ -> {
 									if (CLIENT.player == null) {
 										return 0;
 									}
@@ -198,7 +198,7 @@ public class CrystalsLocationsManager {
 									return Command.SINGLE_SUCCESS;
 								})
 								.then(argument("place", StringArgumentType.greedyString())
-										.suggests((context, builder) -> suggest(WAYPOINT_LOCATIONS.keySet(), builder))
+										.suggests((_, builder) -> suggest(WAYPOINT_LOCATIONS.keySet(), builder))
 										.executes(context -> removeWaypoint(getString(context, "place")))
 								)
 						)

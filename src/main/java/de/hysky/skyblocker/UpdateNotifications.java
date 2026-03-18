@@ -185,7 +185,7 @@ public class UpdateNotifications {
 
 		try {
 			return DataResult.success(SemanticVersion.parse(formattedVersion));
-		} catch (VersionParsingException e) {
+		} catch (VersionParsingException _) {
 			return DataResult.error(() -> "Failed to parse semantic version from string: " + formattedVersion);
 		}
 	}

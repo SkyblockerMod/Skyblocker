@@ -258,7 +258,7 @@ public class ChatRule {
 
 		try {
 			this.pattern = Pattern.compile(filterText);
-		} catch (PatternSyntaxException ex) {
+		} catch (PatternSyntaxException _) {
 			this.enabled = false;
 			Minecraft client = Minecraft.getInstance();
 			if (client.player == null) return;

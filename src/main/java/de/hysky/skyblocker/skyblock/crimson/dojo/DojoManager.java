@@ -43,14 +43,14 @@ public class DojoManager {
 
 
 	protected enum DojoChallenges {
-		NONE("none", enabled -> false),
-		FORCE("Force", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableForceHelper),
-		STAMINA("Stamina", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableStaminaHelper),
-		MASTERY("Mastery", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableMasteryHelper),
-		DISCIPLINE("Discipline", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableDisciplineHelper),
-		SWIFTNESS("Swiftness", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableSwiftnessHelper),
-		CONTROL("Control", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableControlHelper),
-		TENACITY("Tenacity", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableTenacityHelper);
+		NONE("none", _ -> false),
+		FORCE("Force", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableForceHelper),
+		STAMINA("Stamina", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableStaminaHelper),
+		MASTERY("Mastery", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableMasteryHelper),
+		DISCIPLINE("Discipline", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableDisciplineHelper),
+		SWIFTNESS("Swiftness", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableSwiftnessHelper),
+		CONTROL("Control", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableControlHelper),
+		TENACITY("Tenacity", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableTenacityHelper);
 
 		private final String name;
 		private final BooleanPredicate enabled;
@@ -73,7 +73,7 @@ public class DojoManager {
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DojoManager::onMessage);
 		WorldRenderExtractionCallback.EVENT.register(DojoManager::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
 		ClientEntityEvents.ENTITY_UNLOAD.register(DojoManager::onEntityDespawn);
 		AttackEntityCallback.EVENT.register(DojoManager::onEntityAttacked);

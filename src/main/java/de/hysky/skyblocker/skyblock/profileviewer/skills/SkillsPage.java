@@ -54,7 +54,7 @@ public class SkillsPage implements ProfileViewerPage {
 
 				default -> -1;
 			};
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return 0;
 		}
 	}
@@ -67,7 +67,7 @@ public class SkillsPage implements ProfileViewerPage {
 				case "SKILL_RUNECRAFT" -> this.skills.get("SKILL_RUNECRAFTING").getAsLong();
 				default -> this.skills.get(skill).getAsLong();
 			};
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return 0;
 		}
 	}
@@ -76,7 +76,7 @@ public class SkillsPage implements ProfileViewerPage {
 		try {
 			JsonObject dungeonSkills = this.PLAYER_PROFILE.getAsJsonObject("dungeons").getAsJsonObject("dungeon_types");
 			return dungeonSkills.getAsJsonObject("catacombs").get("experience").getAsLong();
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return 0;
 		}
 	}

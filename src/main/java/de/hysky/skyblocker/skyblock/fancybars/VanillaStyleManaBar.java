@@ -55,17 +55,17 @@ public class VanillaStyleManaBar {
 	public static void init() {
 		Function<HudElement, HudElement> hideIfVanillaStyleManaBarEnabled = hudElement -> {
 			if (isEnabled())
-				return (context, tickCounter) -> {};
+				return (_, _) -> {};
 			return hudElement;
 		};
 
 		HudElementRegistry.replaceElement(VanillaHudElements.FOOD_BAR, hideIfVanillaStyleManaBarEnabled);
 		HudElementRegistry.replaceElement(VanillaHudElements.MOUNT_HEALTH, hideIfVanillaStyleManaBarEnabled);
 
-		HudElementRegistry.attachElementBefore(VanillaHudElements.FOOD_BAR, MANABAR_FOOD_HUD_ID, (context, tickCounter) -> {
+		HudElementRegistry.attachElementBefore(VanillaHudElements.FOOD_BAR, MANABAR_FOOD_HUD_ID, (context, _) -> {
 			if (isEnabled()) extractRenderState(context);
 		});
-		HudElementRegistry.attachElementBefore(VanillaHudElements.MOUNT_HEALTH, MANABAR_MOUNT_HUD_ID, (context, tickCounter) -> {
+		HudElementRegistry.attachElementBefore(VanillaHudElements.MOUNT_HEALTH, MANABAR_MOUNT_HUD_ID, (context, _) -> {
 			if (isEnabled()) extractRenderState(context);
 		});
 	}

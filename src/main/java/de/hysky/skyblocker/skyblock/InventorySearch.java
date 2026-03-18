@@ -33,14 +33,14 @@ public class InventorySearch {
 
 	@Init
 	public static void init() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			UIAndVisualsConfig.InventorySearchConfig inventorySearchConfig = SkyblockerConfigManager.get().uiAndVisuals.inventorySearch;
 			if (!inventorySearchConfig.enabled.isEnabled() || !(screen instanceof AbstractContainerScreen<?> handledScreen)) return;
 			openedHandledScreen = null;
 
 			if (inventorySearchConfig.clickableText) Screens.getWidgets(handledScreen).add(new SearchTextWidget(handledScreen));
 
-			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((screen1, input) -> {
+			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((_, input) -> {
 				if (input.key() == (inventorySearchConfig.ctrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && input.hasControlDownWithQuirk()) {
 					InventorySearch.showSearchBar(handledScreen);
 					return false;
@@ -76,7 +76,7 @@ public class InventorySearch {
 	}
 
 	public static boolean slotMatches(Slot slot) {
-		return slotToMatch.computeIfAbsent(slot.index, i -> slot.hasItem() &&
+		return slotToMatch.computeIfAbsent(slot.index, _ -> slot.hasItem() &&
 				(slot.getItem().getHoverName().getString().toLowerCase(Locale.ENGLISH).contains(search) || ItemUtils.getLoreLineIf(slot.getItem(), s -> s.toLowerCase(Locale.ENGLISH).contains(search)) != null));
 	}
 

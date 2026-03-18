@@ -89,7 +89,7 @@ public class Relics {
 					}
 				}
 				LOGGER.debug("[Skyblocker] Loaded found relics");
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to load found relics", e);
 			}

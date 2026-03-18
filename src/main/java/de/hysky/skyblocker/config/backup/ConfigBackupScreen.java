@@ -137,7 +137,7 @@ public class ConfigBackupScreen extends Screen {
 				for (Path backup : backups) {
 					addEntry(new BackupEntry(backup));
 				}
-			} catch (IOException e) {
+			} catch (IOException _) {
 				// ignored
 			}
 		}

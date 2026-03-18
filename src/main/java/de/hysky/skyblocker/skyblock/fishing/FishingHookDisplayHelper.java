@@ -24,7 +24,7 @@ public class FishingHookDisplayHelper {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> fishingHookArmorStand = null);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> fishingHookArmorStand = null);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.TITLE_AND_SUBTITLE, FISHING_HOOK_DISPLAY, FishingHookDisplayHelper::render);
 	}
 

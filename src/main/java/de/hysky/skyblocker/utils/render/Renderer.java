@@ -83,7 +83,7 @@ public class Renderer {
 		BatchedDraw draw = BATCHED_DRAWS.get(hash);
 
 		if (draw == null) {
-			ByteBufferBuilder allocator = ALLOCATORS.computeIfAbsent(hash, _hash -> new ByteBufferBuilder(RenderType.SMALL_BUFFER_SIZE));
+			ByteBufferBuilder allocator = ALLOCATORS.computeIfAbsent(hash, _ -> new ByteBufferBuilder(RenderType.SMALL_BUFFER_SIZE));
 			BufferBuilder bufferBuilder = new BufferBuilder(allocator, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
 			BATCHED_DRAWS.put(hash, new BatchedDraw(bufferBuilder, pipeline, textureSetup, alphaMultiplier));
 

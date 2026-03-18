@@ -30,7 +30,7 @@ public class BeaconHighlighter {
 	@Init
 	public static void init() {
 		WorldRenderExtractionCallback.EVENT.register(BeaconHighlighter::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(BeaconHighlighter::onMessage);
 		WorldEvents.BLOCK_STATE_UPDATE.register(BeaconHighlighter::onBlockStateUpdate);
 	}

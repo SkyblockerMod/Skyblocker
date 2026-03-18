@@ -88,7 +88,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 		INSTANCE.allRewards.init();
 
 		// @formatter:off // Don't you hate it when your format style for chained method calls makes a chain like this incredibly ugly?
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
 			literal(SkyblockerMod.NAMESPACE)
 				.then(literal("rewardTrackers")
 					.then(literal("powderMining")

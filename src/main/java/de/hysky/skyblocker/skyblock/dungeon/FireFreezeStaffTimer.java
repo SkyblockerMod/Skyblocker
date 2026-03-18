@@ -26,7 +26,7 @@ public class FireFreezeStaffTimer {
 	public static void init() {
 		HudElementRegistry.attachElementAfter(VanillaHudElements.OVERLAY_MESSAGE, FIRE_FREEZE_STAFF_TIMER, FireFreezeStaffTimer::extractRenderState);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(FireFreezeStaffTimer::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> FireFreezeStaffTimer.reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> FireFreezeStaffTimer.reset());
 		ServerTickCallback.EVENT.register(FireFreezeStaffTimer::onServerTick);
 	}
 

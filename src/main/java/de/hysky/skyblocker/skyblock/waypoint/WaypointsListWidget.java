@@ -412,13 +412,13 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			layout.addChild(leftLayout, LayoutSettings::alignHorizontallyLeft);
 			leftLayout.addChild(SpacerElement.width(6));
 
-			buttonUp = Button.builder(Component.nullToEmpty("↑"), button -> this.shiftWaypointIndex(-1))
+			buttonUp = Button.builder(Component.nullToEmpty("↑"), _ -> this.shiftWaypointIndex(-1))
 					.size(11, 11).build();
 			leftLayout.addChild(buttonUp);
-			buttonDown = Button.builder(Component.nullToEmpty("↓"), button -> this.shiftWaypointIndex(1))
+			buttonDown = Button.builder(Component.nullToEmpty("↓"), _ -> this.shiftWaypointIndex(1))
 					.size(11, 11).build();
 			leftLayout.addChild(buttonDown);
-			enabled = Checkbox.builder(Component.literal(""), minecraft.font).selected(screen.isEnabled(waypoint)).onValueChange((checkbox, checked) -> screen.enabledChanged(waypoint, checked)).build();
+			enabled = Checkbox.builder(Component.literal(""), minecraft.font).selected(screen.isEnabled(waypoint)).onValueChange((_, checked) -> screen.enabledChanged(waypoint, checked)).build();
 			leftLayout.addChild(enabled, p -> p.paddingLeft(4));
 			EditBox nameField = new EditBox(minecraft.font, 65, 20, Component.literal("Name"));
 			nameField.setValue(waypoint.getName().getString());
@@ -456,7 +456,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			leftLayout.addChild(colorField);
 
 			Component deleteText = Component.translatable("selectServer.deleteButton");
-			Button buttonDelete = SpriteIconButton.builder(deleteText, button -> {
+			Button buttonDelete = SpriteIconButton.builder(deleteText, _ -> {
 				groupEntry.group.waypoints().remove(waypoint);
 				WaypointsListWidget.this.updateEntries();
 			}, true).size(20, 20).sprite(DELETE_ICON, ICON_WIDTH, ICON_HEIGHT).build();
@@ -500,7 +500,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			try {
 				parseEmptiableInt(string);
 				return true;
-			} catch (NumberFormatException e) {
+			} catch (NumberFormatException _) {
 				return false;
 			}
 		}

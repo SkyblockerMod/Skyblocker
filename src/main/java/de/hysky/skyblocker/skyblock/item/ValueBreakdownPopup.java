@@ -53,13 +53,13 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 			SkyblockerMod.KEYBINDING_CATEGORY
 	));
 
-	private static final Function<String, Component> EMPTY = s -> Component.empty();
+	private static final Function<String, Component> EMPTY = _ -> Component.empty();
 	private static final Function<String, Component> ITEM_NAME = s -> {
 		NEUItem neuItem = NEURepoManager.getItemByNeuId(s);
 		if (neuItem == null) return Component.literal(s);
 		return TextTransformer.fromLegacy(neuItem.getDisplayName());
 	};
-	private static final LayoutAppender EMPTY_APPENDER = (r, c, l) -> {};
+	private static final LayoutAppender EMPTY_APPENDER = (_, _, _) -> {};
 
 	private static final Map<Calculation.Type, LayoutAppender> FORMATTERS = new EnumMap<>(Map.ofEntries(
 			Map.entry(Calculation.Type.STAR, new BasicListAppender(
@@ -222,10 +222,10 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 
 	@Init
 	public static void initClass() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((client, screen, _, _) -> {
 			if (!Utils.isOnSkyblock()) return;
 			if (screen instanceof AbstractContainerScreen<?> handledScreen) {
-				ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key) -> {
+				ScreenKeyboardEvents.afterKeyPress(screen).register((_, key) -> {
 					if (!KEY_BINDING.matches(key)) return;
 					Slot slot = ((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot();
 					if (slot == null || !slot.hasItem()) return;
@@ -242,7 +242,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 
 		this.map = new EnumMap<>(Calculation.Type.class);
 		for (Calculation calculation : networthResult.calculations()) {
-			map.computeIfAbsent(calculation.type(), ignored -> new ArrayList<>()).add(calculation);
+			map.computeIfAbsent(calculation.type(), _ -> new ArrayList<>()).add(calculation);
 		}
 	}
 
@@ -304,7 +304,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 
 	private static MultiLineTextWidget createTextWidget(Component text, Font textRenderer) {
 		MultiLineTextWidget widget = new MultiLineTextWidget(text, textRenderer);
-		widget.setComponentClickHandler(s -> {});
+		widget.setComponentClickHandler(_ -> {});
 
 		return widget;
 	}

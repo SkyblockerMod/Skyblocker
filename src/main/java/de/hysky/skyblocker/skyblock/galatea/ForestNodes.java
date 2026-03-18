@@ -38,14 +38,14 @@ public class ForestNodes {
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(ForestNodes::update, 20);
 		WorldRenderExtractionCallback.EVENT.register(ForestNodes::extractRendering);
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+		AttackBlockCallback.EVENT.register((_, _, _, pos, _) -> {
 			if (!shouldProcess()) {
 				return InteractionResult.PASS;
 			}
 			forestNodes.remove(pos);
 			return InteractionResult.PASS;
 		});
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+		UseBlockCallback.EVENT.register((_, _, _, hitResult) -> {
 			if (!shouldProcess()) {
 				return InteractionResult.PASS;
 			}
@@ -53,7 +53,7 @@ public class ForestNodes {
 			forestNodes.remove(pos);
 			return InteractionResult.PASS;
 		});
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ParticleEvents.FROM_SERVER.register(ForestNodes::onParticle);
 	}
 
@@ -91,7 +91,7 @@ public class ForestNodes {
 		List<Display.ItemDisplay> entities = world.getEntitiesOfClass(
 				Display.ItemDisplay.class,
 				AABB.ofSize(pos.getCenter(), 1.0, 1.0, 1.0),
-				entity -> true
+				_ -> true
 		);
 
 		// Count those with minecraft:string

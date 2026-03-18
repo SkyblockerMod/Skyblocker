@@ -114,17 +114,17 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 		ItemButtonWidget deskButton = new ItemButtonWidget(
 				getX() + 7, getBottom() - 24,
 				new ItemStack(Items.BOOK), Component.translatable("skyblocker.gardenPlots.openDesk"),
-				button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/desk", true)
+				_ -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/desk", true)
 		);
 		ItemButtonWidget spawnButton = new ItemButtonWidget(
 				getRight() - 7 - 40 - 2, getBottom() - 24,
 				new ItemStack(Items.ENDER_EYE), Component.translatable("skyblocker.gardenPlots.spawn"),
-				button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/warp garden", true)
+				_ -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/warp garden", true)
 		);
 		ItemButtonWidget setSpawnButton = new ItemButtonWidget(
 				getRight() - 7 - 20, getBottom() - 24,
 				new ItemStack(Math.random() < 0.001 ? Items.PINK_BED : Items.RED_BED), Component.translatable("skyblocker.gardenPlots.setSpawn"),
-				button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/setspawn", true)
+				_ -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/setspawn", true)
 		);
 		widgets = new ItemButtonWidget[]{deskButton, spawnButton, setSpawnButton};
 	}
@@ -142,6 +142,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 		items[12].set(DataComponents.ITEM_NAME, Component.literal("The Barn"));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		Font textRenderer = Minecraft.getInstance().font;
@@ -252,7 +253,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 				for (String s : split) {
 					try {
 						infectedPlots.add(GARDEN_PLOT_TO_SLOT.getOrDefault(Integer.parseInt(s.strip()), -1));
-					} catch (NumberFormatException ignored) {}
+					} catch (NumberFormatException _) {}
 				}
 				break;
 			}

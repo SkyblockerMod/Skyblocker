@@ -72,14 +72,14 @@ public class FancyStatusBars {
 	public static void init() {
 		Function<HudElement, HudElement> hideIfFancyStatusBarsEnabled = hudElement -> {
 			if (Utils.isOnSkyblock() && isEnabled())
-				return (context, tickCounter) -> {};
+				return (_, _) -> {};
 			return hudElement;
 		};
 
 		HudElementRegistry.replaceElement(VanillaHudElements.HEALTH_BAR, hudElement -> {
 			if (!Utils.isOnSkyblock() || !isEnabled()) return hudElement;
 			if (isHealthFancyBarEnabled()) {
-				return (context, tickCounter) -> {};
+				return (_, _) -> {};
 			} else if (isExperienceFancyBarEnabled()) {
 				return (context, tickCounter) -> {
 					Matrix3x2fStack pose = context.pose();
@@ -93,18 +93,18 @@ public class FancyStatusBars {
 		});
 		HudElementRegistry.replaceElement(VanillaHudElements.EXPERIENCE_LEVEL, hudElement -> {
 			if (!Utils.isOnSkyblock() || !isEnabled() || !isExperienceFancyBarEnabled()) return hudElement;
-			return (context, tickCounter) -> {};
+			return (_, _) -> {};
 		});
 		HudElementRegistry.replaceElement(VanillaHudElements.INFO_BAR, hudElement -> {
 			if (!Utils.isOnSkyblock() || !isEnabled() || !isExperienceFancyBarEnabled()) return hudElement;
-			return (context, tickCounter) -> {};
+			return (_, _) -> {};
 		});
 		HudElementRegistry.replaceElement(VanillaHudElements.ARMOR_BAR, hideIfFancyStatusBarsEnabled);
 		HudElementRegistry.replaceElement(VanillaHudElements.MOUNT_HEALTH, hideIfFancyStatusBarsEnabled);
 		HudElementRegistry.replaceElement(VanillaHudElements.FOOD_BAR, hideIfFancyStatusBarsEnabled);
 		HudElementRegistry.replaceElement(VanillaHudElements.AIR_BAR, hideIfFancyStatusBarsEnabled);
 
-		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, HUD_LAYER, (context, tickCounter) -> {
+		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, HUD_LAYER, (context, _) -> {
 			if (Utils.isOnSkyblock()) extractRenderState(context, Minecraft.getInstance());
 		});
 
@@ -146,13 +146,13 @@ public class FancyStatusBars {
 			LOGGER.error("[Skyblocker] Failed reading status bars config", throwable);
 			return null;
 		});
-		ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> saveBarConfig());
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> saveBarConfig());
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
 				ClientCommands.literal(SkyblockerMod.NAMESPACE)
 						.then(ClientCommands.literal("bars").executes(Scheduler.queueOpenScreenCommand(StatusBarsConfigScreen::new)))));
 
-		SkyblockEvents.LOCATION_CHANGE.register(location -> updatePositionsNextFrame = true);
+		SkyblockEvents.LOCATION_CHANGE.register(_ -> updatePositionsNextFrame = true);
 	}
 
 	/**
@@ -209,7 +209,7 @@ public class FancyStatusBars {
 	public static @Nullable JsonObject loadBarConfig() {
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
 			return SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
-		} catch (NoSuchFileException e) {
+		} catch (NoSuchFileException _) {
 			LOGGER.warn("[Skyblocker] No status bar config file found, using defaults");
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to load status bars config", e);

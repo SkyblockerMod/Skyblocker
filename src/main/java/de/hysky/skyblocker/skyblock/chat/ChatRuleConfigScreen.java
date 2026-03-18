@@ -91,7 +91,7 @@ public class ChatRuleConfigScreen extends Screen {
 	protected void init() {
 		Objects.requireNonNull(minecraft);
 		layout.addToHeader(new StringWidget(title, font));
-		layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, b -> onClose()).build());
+		layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
 		layout.addToContents(new ContentContainer());
 
 		content.defaultCellSetting().alignVerticallyMiddle().alignHorizontallyCenter().paddingTop(GRID_SPACING); // Have to separate them due to the toggleable layouts, did not think about that when I made them
@@ -118,17 +118,17 @@ public class ChatRuleConfigScreen extends Screen {
 		// Filter settings
 		LinearLayout filtersRow1 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
 		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getRegex())
-				.withTooltip(b -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (button, value) -> chatRule.setRegex(value)));
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
+				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (_, value) -> chatRule.setRegex(value)));
 		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIgnoreCase())
-				.withTooltip(b -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (button, value) -> chatRule.setIgnoreCase(value)));
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
+				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (_, value) -> chatRule.setIgnoreCase(value)));
 		LinearLayout filtersRow2 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
 		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getPartialMatch())
-				.withTooltip(b -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (button, value) -> chatRule.setPartialMatch(value)));
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
+				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (_, value) -> chatRule.setPartialMatch(value)));
 		filtersRow2.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
-						widget -> minecraft.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
+						_ -> minecraft.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
 				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip")))
 				.width(getWidth(1.5f))
 				.build());
@@ -140,8 +140,8 @@ public class ChatRuleConfigScreen extends Screen {
 		LinearLayout buttons = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
 
 		buttons.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getHideMessage())
-				.withTooltip(b -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"), (button, value) -> {
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip")))
+				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"), (_, value) -> {
 					chatRule.setHideMessage(value);
 					recreateLayout();
 				}));
@@ -159,7 +159,7 @@ public class ChatRuleConfigScreen extends Screen {
 		// using an optional since it doesn't allow null values.
 		buttons.addChild(CycleButton.builder(opt -> soundNames.get(opt.orElse(null)), Optional.ofNullable(chatRule.getCustomSound()))
 				.withValues(() -> true, displayedValues, availableValues)
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds"), (button, value) -> {
+				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds"), (_, value) -> {
 					chatRule.setCustomSound(value.orElse(null));
 					value.ifPresent(soundEvent -> minecraft.getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1.0F)));
 				})

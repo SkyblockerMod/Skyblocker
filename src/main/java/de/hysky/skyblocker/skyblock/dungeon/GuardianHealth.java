@@ -28,7 +28,7 @@ public class GuardianHealth {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(GuardianHealth::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> GuardianHealth.reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> GuardianHealth.reset());
 		WorldRenderExtractionCallback.EVENT.register(GuardianHealth::extractRendering);
 	}
 
@@ -40,7 +40,7 @@ public class GuardianHealth {
 		if (Utils.isInDungeons() && inBoss && client.player != null && client.level != null) {
 			List<Guardian> guardians =
 					client.level.getEntitiesOfClass(
-							Guardian.class, bossRoom, guardianEntity -> true);
+							Guardian.class, bossRoom, _ -> true);
 
 			for (Guardian guardian : guardians) {
 				List<ArmorStand> armorStands =

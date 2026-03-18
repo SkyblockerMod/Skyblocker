@@ -279,7 +279,7 @@ public class DungeonManager {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::updateAllRoomCheckmarks, 20);
 		WorldRenderExtractionCallback.EVENT.register(DungeonManager::extractRendering);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonManager::onChatMessage);
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
+		UseBlockCallback.EVENT.register((_, world, _, hitResult) -> onUseBlock(world, hitResult));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
 				.then(literal("markAsFound").then(markSecretsCommand(true)))
 				.then(literal("markAsMissing").then(markSecretsCommand(false)).then(markAllSecretsAsMissingCommand()))
@@ -291,7 +291,7 @@ public class DungeonManager {
 				.then(literal("removeWaypointRelatively").then(removeCustomWaypointCommand(true)))
 		))));
 		if (Debug.debugEnabled()) {
-			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
+			ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
 					.then(literal("matchAgainst").then(matchAgainstCommand()))
 					.then(literal("clearSubProcesses").executes(context -> {
 						if (currentRoom != null) {
@@ -329,7 +329,7 @@ public class DungeonManager {
 					}))
 			))));
 		}
-		ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
+		ClientPlayConnectionEvents.JOIN.register(((_, _, _) -> reset()));
 	}
 
 	private static void load() {
@@ -345,8 +345,8 @@ public class DungeonManager {
 			String dungeon = path[1];
 			String roomShape = path[2];
 			String room = path[3].substring(0, path[3].length() - ".skeleton".length());
-			ROOMS_DATA.computeIfAbsent(dungeon, dungeonKey -> new ConcurrentHashMap<>());
-			ROOMS_DATA.get(dungeon).computeIfAbsent(roomShape, roomShapeKey -> new ConcurrentHashMap<>());
+			ROOMS_DATA.computeIfAbsent(dungeon, _ -> new ConcurrentHashMap<>());
+			ROOMS_DATA.get(dungeon).computeIfAbsent(roomShape, _ -> new ConcurrentHashMap<>());
 			dungeonFutures.add(CompletableFuture.supplyAsync(() -> readRoom(resourceEntry.getValue()), Executors.newVirtualThreadPerTaskExecutor()).thenAcceptAsync(blocks -> {
 				Map<String, int[]> roomsMap = ROOMS_DATA.get(dungeon).get(roomShape);
 				roomsMap.put(room, blocks);
@@ -385,7 +385,7 @@ public class DungeonManager {
 						addCustomWaypoints(room, SecretWaypoint.LIST_CODEC.parse(JsonOps.INSTANCE, waypointsJson).resultOrPartial(LOGGER::error).orElseGet(ArrayList::new))
 				);
 				LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded custom dungeon secret waypoints");
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load custom dungeon secret waypoints", e);
 			}
@@ -419,7 +419,7 @@ public class DungeonManager {
 	}
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, Integer> markSecretsCommand(boolean found) {
-		return argument("secretIndex", IntegerArgumentType.integer()).suggests((provider, builder) -> {
+		return argument("secretIndex", IntegerArgumentType.integer()).suggests((_, builder) -> {
 			if (isCurrentRoomMatched()) {
 				//noinspection DataFlowIssue - checked above
 				IntStream.rangeClosed(1, currentRoom.getSecretCount()).forEach(builder::suggest);
@@ -537,7 +537,7 @@ public class DungeonManager {
 	}
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, String> matchAgainstCommand() {
-		return argument("room", StringArgumentType.string()).suggests((context, builder) -> SharedSuggestionProvider.suggest(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
+		return argument("room", StringArgumentType.string()).suggests((_, builder) -> SharedSuggestionProvider.suggest(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
 			if (!isClearingDungeon()) {
 				context.getSource().sendError(Constants.PREFIX.get().append("§cYou are not in a dungeon."));
 				return Command.SINGLE_SUCCESS;
@@ -1071,7 +1071,7 @@ public class DungeonManager {
 	}
 
 	public static void startFromRoomPreview(Room room) {
-		room.segments.forEach((segment) -> rooms.put(segment, room));
+		room.segments.forEach(segment -> rooms.put(segment, room));
 		currentRoom = room;
 		runEnded = true;
 	}

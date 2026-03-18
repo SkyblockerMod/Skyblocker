@@ -40,9 +40,9 @@ public class ChatRulesHandler {
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> CHAT_RULE_LIST.init());
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> CHAT_RULE_LIST.init());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
 				dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
 						.then(ClientCommands.literal("chatRules")
 								.executes(

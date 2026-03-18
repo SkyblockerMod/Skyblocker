@@ -315,7 +315,7 @@ public class SearchOverManager {
 	private static String getItemId(String name) {
 		if (name.isEmpty()) return "";
 		if (location != SearchLocation.MUSEUM || !MuseumItemCache.ARMOR_NAMES.containsValue(name)) {
-			return namesToNeuId.computeIfAbsent(name, (str) ->
+			return namesToNeuId.computeIfAbsent(name, str ->
 					ItemRepository.getItemsStream().filter(stack -> stack.getStackOrThrow().getHoverName().getString().equals(str))
 							.map(SkyblockerStack::getNeuName).findFirst().orElse("")
 			);

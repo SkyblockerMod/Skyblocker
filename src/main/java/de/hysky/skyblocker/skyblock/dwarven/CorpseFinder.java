@@ -57,7 +57,7 @@ public class CorpseFinder {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> {
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> {
 			isLocationCorrect = false;
 			corpsesByType.clear();
 		});
@@ -75,7 +75,7 @@ public class CorpseFinder {
 				}
 			}
 		});
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("corpseHelper")
 						.then(literal("shareLocation")
 								.then(argument("blockPos", ClientBlockPosArgumentType.blockPos())
@@ -113,7 +113,7 @@ public class CorpseFinder {
 		if (corpseType == CorpseType.UNKNOWN) return;
 
 		LOGGER.debug(PREFIX + "Triggered code for handleArmorStand and matched with ITEM_IDS");
-		List<Corpse> corpses = corpsesByType.computeIfAbsent(corpseType, k -> new ArrayList<>());
+		List<Corpse> corpses = corpsesByType.computeIfAbsent(corpseType, _ -> new ArrayList<>());
 		if (corpses.stream().noneMatch(c -> c.entity.blockPosition().equals(armorStand.blockPosition()))) {
 			Waypoint corpseWaypoint;
 			float[] color = getColors(corpseType.color);

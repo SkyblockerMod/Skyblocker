@@ -53,7 +53,7 @@ public abstract class AbstractBlockHighlighter {
 		ClientChunkEvents.CHUNK_LOAD.register(this::onChunkLoad);
 		ClientChunkEvents.CHUNK_UNLOAD.register(this::onChunkUnload);
 		WorldRenderExtractionCallback.EVENT.register(this::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> this.reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> this.reset());
 		WorldEvents.BLOCK_STATE_UPDATE.register(this::onBlockUpdate);
 	}
 
@@ -74,7 +74,7 @@ public abstract class AbstractBlockHighlighter {
 	protected void onChunkLoad(ClientLevel world, LevelChunk chunk) {
 		if (!shouldProcess()) return;
 
-		chunk.findBlocks(statePredicate, (pos, state) -> this.highlightedBlocks.add(pos.immutable()));
+		chunk.findBlocks(statePredicate, (pos, _) -> this.highlightedBlocks.add(pos.immutable()));
 	}
 
 	/**

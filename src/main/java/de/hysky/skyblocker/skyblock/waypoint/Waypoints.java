@@ -120,7 +120,7 @@ public class Waypoints {
 		try (BufferedReader reader = Files.newBufferedReader(WAYPOINTS_FILE)) {
 			List<WaypointGroup> waypointGroups = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
 			waypointGroups.forEach(Waypoints::putWaypointGroup);
-		} catch (NoSuchFileException ignored) {
+		} catch (NoSuchFileException _) {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading waypoints", e);
 		}
@@ -132,7 +132,7 @@ public class Waypoints {
 			}
 			Files.move(SKYBLOCKER_LEGACY_ORDERED_FILE, SkyblockerMod.CONFIG_DIR.resolve("legacy_ordered_waypoints.json"));
 			LOGGER.info("[Skyblocker Waypoints] Successfully migrated {} ordered waypoints from {} groups to waypoints!", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size());
-		} catch (NoSuchFileException | FileAlreadyExistsException ignored) {
+		} catch (NoSuchFileException | FileAlreadyExistsException _) {
 		} catch (IOException e) {
 			LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading legacy ordered waypoints", e);
 		}
@@ -208,7 +208,7 @@ public class Waypoints {
 		JsonArray waypointGroupsJson;
 		try {
 			waypointGroupsJson = SkyblockerMod.GSON.fromJson(waypointGroupsString, JsonObject.class).getAsJsonArray("categories");
-		} catch (JsonSyntaxException e) {
+		} catch (JsonSyntaxException _) {
 			// Handle the case where there is only a single json list of waypoints and no group data.
 			JsonObject waypointGroupJson = new JsonObject();
 			waypointGroupJson.addProperty("name", "New Group");

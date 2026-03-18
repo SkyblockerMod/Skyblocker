@@ -53,7 +53,7 @@ public class FarmingHud {
 
 	@Init
 	public static void init() {
-		ClientTickEvents.END_CLIENT_TICK.register(_minecraft -> {
+		ClientTickEvents.END_CLIENT_TICK.register(_ -> {
 			if (shouldRender()) {
 				if (!counter.isEmpty() && counter.peek().rightLong() + STATS_WINDOW < System.currentTimeMillis()) {
 					counter.poll();
@@ -72,7 +72,7 @@ public class FarmingHud {
 				}
 			}
 		});
-		ClientPlayerBlockBreakEvents.AFTER.register((world, player, pos, state) -> {
+		ClientPlayerBlockBreakEvents.AFTER.register((_, _, _, _) -> {
 			if (shouldRender()) {
 				blockBreaks.enqueue(System.currentTimeMillis());
 			}
@@ -104,7 +104,7 @@ public class FarmingHud {
 
 			return true;
 		});
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("hud").then(literal("farming")
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("hud").then(literal("farming")
 				.executes(Scheduler.queueOpenScreenCommand(() -> new WidgetsConfigurationScreen(Location.GARDEN, "hud_garden", null)))))));
 	}
 

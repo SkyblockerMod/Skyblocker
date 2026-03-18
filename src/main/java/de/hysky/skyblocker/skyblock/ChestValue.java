@@ -83,7 +83,7 @@ public class ChestValue {
 
 	@Init
 	public static void init() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
 				Component title = screen.getTitle();
 				String titleString = title.getString();
@@ -91,7 +91,7 @@ public class ChestValue {
 
 				if (chestType != null) {
 					if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator) {
-						ScreenEvents.afterTick(screen).register(ignored -> {
+						ScreenEvents.afterTick(screen).register(_ -> {
 							Component dungeonChestProfit = getRewardChestProfit(genericContainerScreen.getMenu(), chestType);
 							if (dungeonChestProfit != null)
 								addValueToContainer(genericContainerScreen, dungeonChestProfit, title);
@@ -102,7 +102,7 @@ public class ChestValue {
 					Screens.getWidgets(screen).add(Button
 							.builder(Component.literal("$"), buttonWidget -> {
 								Screens.getWidgets(screen).remove(buttonWidget);
-								ScreenEvents.afterTick(screen).register(ignored -> {
+								ScreenEvents.afterTick(screen).register(_ -> {
 									Component chestValue = getChestValue(genericContainerScreen.getMenu(), screenType);
 									if (chestValue != null) {
 										addValueToContainer(genericContainerScreen, chestValue, title);
@@ -319,7 +319,7 @@ public class ChestValue {
 					String source = coinsLine.split(":")[1];
 					try {
 						value += NumberFormat.getNumberInstance(java.util.Locale.US).parse(source.trim()).doubleValue();
-					} catch (ParseException e) {
+					} catch (ParseException _) {
 						LOGGER.warn("[Skyblocker] Failed to parse `{}`", source);
 					}
 					continue;

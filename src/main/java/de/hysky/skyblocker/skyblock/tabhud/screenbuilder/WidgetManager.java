@@ -132,7 +132,7 @@ public class WidgetManager {
 					}
 				}
 			}
-		} catch (NoSuchFileException e) {
+		} catch (NoSuchFileException _) {
 			LOGGER.warn("[Skyblocker] No hud widget config file found, using defaults");
 			fillDefaultConfig();
 		} catch (Exception e) {

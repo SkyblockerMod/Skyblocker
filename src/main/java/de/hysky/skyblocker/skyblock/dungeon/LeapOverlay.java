@@ -203,7 +203,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		private final PlayerReference reference;
 
 		private PlayerButton(int x, int y, int width, int height, PlayerReference reference) {
-			super(x, y, width, height, Component.empty(), b -> {}, ts -> Component.empty());
+			super(x, y, width, height, Component.empty(), _ -> {}, _ -> Component.empty());
 			this.reference = reference;
 		}
 

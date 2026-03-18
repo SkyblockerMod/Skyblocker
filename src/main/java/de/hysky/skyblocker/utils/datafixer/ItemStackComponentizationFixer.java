@@ -71,7 +71,7 @@ public class ItemStackComponentizationFixer {
 			stack.applyComponents(result.components());
 
 			return stack;
-		} catch (Exception ignored) {}
+		} catch (Exception _) {}
 
 		return ItemStack.EMPTY;
 	}

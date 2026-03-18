@@ -346,6 +346,6 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			onLocationChanged.accept(location);
 		},
 				locations.contains(currentLocation) ? currentLocation : Location.HUB,
-				(isOpen) -> previewTab.locationDropdownOpened(isOpen));
+				isOpen -> previewTab.locationDropdownOpened(isOpen));
 	}
 }

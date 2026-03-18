@@ -109,7 +109,7 @@ public class EventNotifications {
 			List<SkyblockEvent> parsedEvents = SkyblockEvent.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getPartialOrThrow();
 			for (SkyblockEvent event : parsedEvents) {
 				if (event.start() + event.duration() < currentTime) continue;
-				events.computeIfAbsent(event.event(), s -> new LinkedList<>()).add(event);
+				events.computeIfAbsent(event.event(), _ -> new LinkedList<>()).add(event);
 			}
 
 			for (Map.Entry<String, LinkedList<SkyblockEvent>> entry : events.entrySet()) {
@@ -119,7 +119,7 @@ public class EventNotifications {
 
 			SkyblockerConfigManager.update(config -> {
 				for (String s : events.keySet()) {
-					config.eventNotifications.eventsReminderTimes.computeIfAbsent(s, s1 -> DEFAULT_REMINDERS);
+					config.eventNotifications.eventsReminderTimes.computeIfAbsent(s, _ -> DEFAULT_REMINDERS);
 				}
 			});
 		}).exceptionally(EventNotifications::itBorked);
