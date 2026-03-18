@@ -35,6 +35,9 @@ accessible	field	net/minecraft/client/gui/Font$PreparedTextBuilder	y	F
 # Gets rid of a compiler error for Eclipse (I guess its more strict)
 accessible	class	net/minecraft/client/gui/components/AbstractSelectionList$Entry
 
+# Quick Nav
+accessible	method	net/minecraft/client/gui/screens/Screen	addWidget	(Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
+
 # Interface Injections
 inject-interface	net/minecraft/world/entity/Entity	de/hysky/skyblocker/injected/SkyblockerEntity
 inject-interface	net/minecraft/world/item/ItemStack	de/hysky/skyblocker/injected/SkyblockerStack

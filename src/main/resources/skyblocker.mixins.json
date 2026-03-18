@@ -48,6 +48,8 @@
 		"OptionsMixin",
 		"PingDebugMonitorMixin",
 		"PlayerTabOverlayMixin",
+		"QuickNavMixin",
+		"QuickNavScreenMixin",
 		"RenderFishMixin",
 		"RenderPipelineMixin",
 		"RenderSubmitMixin",
