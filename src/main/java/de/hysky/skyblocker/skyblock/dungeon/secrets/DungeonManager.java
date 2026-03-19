@@ -844,7 +844,7 @@ public class DungeonManager {
 
 		// Dungeon Events
 
-		if (message.equals("[NPC] Mort: You should find it useful if you get lost.")) {
+		if (message.equals("[NPC] Mort: Here, I found this map when I first entered the dungeon.")) {
 			DungeonEvents.DUNGEON_STARTED.invoker().onDungeonStarted();
 		}
 
