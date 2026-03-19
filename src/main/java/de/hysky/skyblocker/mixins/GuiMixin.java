@@ -22,7 +22,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -37,15 +36,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.OptionalInt;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 @Environment(EnvType.CLIENT)
 @Mixin(Gui.class)
 public abstract class GuiMixin {
 	@Unique
 	private static final Supplier<Identifier> SLOT_LOCK_ICON = () -> SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex;
-	@Unique
-	private static final Pattern DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
 
 	@Shadow
 	@Final
@@ -129,12 +125,5 @@ public abstract class GuiMixin {
 		}
 
 		return cooldownProgress;
-	}
-
-	@Inject(method = "setTitle", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$dicerTitlePrevent(Component title, CallbackInfo ci) {
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().farming.garden.dicerTitlePrevent && title != null && DICER_TITLE_BLACKLIST.matcher(title.getString()).matches()) {
-			ci.cancel();
-		}
 	}
 }

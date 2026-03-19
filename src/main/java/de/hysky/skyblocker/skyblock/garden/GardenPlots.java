@@ -80,7 +80,7 @@ public final class GardenPlots {
 						}
 
 				});
-			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) {
+			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.plotsWidget.enabled) {
 				GardenPlotsWidget widget = new GardenPlotsWidget(
 						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,
 						((AbstractContainerScreenAccessor) inventoryScreen).getY());

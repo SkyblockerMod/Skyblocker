@@ -57,7 +57,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 import org.slf4j.Logger;
 
 public class SkyblockerConfigManager {
-	public static final int CONFIG_VERSION = 7;
+	public static final int CONFIG_VERSION = 8;
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 	private static final Path CONFIG_FILE = CONFIG_DIR.resolve("skyblocker.json");
