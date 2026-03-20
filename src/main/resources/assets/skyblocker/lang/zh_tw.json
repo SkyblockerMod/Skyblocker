@@ -1004,7 +1004,7 @@
     "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "當發現屍體時自動在隊伍聊天中發送一則訊息。",
     "skyblocker.config.slayer.minibossSpawnAlert.@Tooltip": "當小型Boss生成時顯示一則警告訊息。",
     "skyblocker.config.slayer.slainTime": "獵殺完成時間",
-    "skyblocker.config.slayer.slainTime.@Tooltip": "當擊殺Boss後在聊天欄顯示此次擊殺所用時間。",
+    "skyblocker.config.slayer.slainTime.@Tooltip": "發送獵殺完成所用時間。",
     "skyblocker.config.uiAndVisuals.healthBars.enabled": "已啟用",
     "skyblocker.config.uiAndVisuals.healthBars.scale": "尺寸",
     "skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName": "從名稱中移除生命值",
