@@ -22,6 +22,7 @@ public class EventToast implements Toast {
 
 	private long toastTime = 0;
 	private final long eventStartTime;
+	private final long eventEndTime;
 
 	protected final List<FormattedCharSequence> message;
 	protected final List<FormattedCharSequence> messageNow;
@@ -31,8 +32,10 @@ public class EventToast implements Toast {
 
 	protected boolean started;
 
-	public EventToast(long eventStartTime, String name, FlexibleItemStack icon) {
+	public EventToast(long eventStartTime, long eventEndTime, String name, FlexibleItemStack icon) {
 		this.eventStartTime = eventStartTime;
+		this.eventEndTime = eventEndTime;
+
 		MutableComponent formatted = Component.translatable("skyblocker.events.startsSoon", Component.literal(name).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.WHITE);
 		Font renderer = Minecraft.getInstance().font;
 		message = renderer.split(formatted, 150);
@@ -43,8 +46,8 @@ public class EventToast implements Toast {
 		messageNowWidth = messageNow.stream().mapToInt(renderer::width).max().orElse(150);
 		this.icon = icon;
 		this.started = eventStartTime - System.currentTimeMillis() / 1000 < 0;
-
 	}
+
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, Font textRenderer, long startTime) {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
@@ -93,7 +96,9 @@ public class EventToast implements Toast {
 
 	@Override
 	public Visibility getWantedVisibility() {
-		return toastTime > 5_000 ? Visibility.HIDE : Visibility.SHOW;
+		long currentTime = System.currentTimeMillis() / 1000;
+		if (toastTime > 5_000 || currentTime > eventEndTime) return Visibility.HIDE;
+		return Visibility.SHOW;
 	}
 
 	@Override

@@ -20,8 +20,8 @@ public class JacobEventToast extends EventToast {
 	private static final Component CROPS = Component.translatable("skyblocker.events.crops");
 	private final int cropsWidth;
 
-	public JacobEventToast(long eventStartTime, String name, List<String> crops) {
-		super(eventStartTime, name, Ico.IRON_HOE);
+	public JacobEventToast(long eventStartTime, long eventEndTime, String name, List<String> crops) {
+		super(eventStartTime, eventEndTime, name, Ico.IRON_HOE);
 		this.crops = crops;
 		Font renderer = Minecraft.getInstance().font;
 		cropsWidth = renderer.width(CROPS);

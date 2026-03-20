@@ -66,22 +66,34 @@ public class EventNotifications {
 
 	public static LiteralArgumentBuilder<FabricClientCommandSource> debugToasts() {
 		return ClientCommands.literal("toasts").then(
-				ClientCommands.argument("time", IntegerArgumentType.integer(0))
-						.then(ClientCommands.argument("jacob", BoolArgumentType.bool()).executes(context -> {
-											long time = System.currentTimeMillis() / 1000 + context.getArgument("time", int.class);
-											if (context.getArgument("jacob", Boolean.class)) {
-												Minecraft.getInstance().getToastManager().addToast(
-														new JacobEventToast(time, "Jacob's farming contest", List.of("Cactus", "Cocoa Beans", "Pumpkin"))
-												);
-											} else {
-												Minecraft.getInstance().getToastManager().addToast(
-														new EventToast(time, "Jacob's or something idk", FALLBACK_ICON)
-												);
-											}
-											return 0;
-										}
-								)
+				ClientCommands.argument("time", IntegerArgumentType.integer(0)).then(
+						ClientCommands.argument("duration", IntegerArgumentType.integer(0)).then(
+								ClientCommands.argument("jacob", BoolArgumentType.bool()).executes(context -> {
+									long time = System.currentTimeMillis() / 1000 + context.getArgument("time", int.class);
+									int duration = context.getArgument("duration", int.class);
+									if (context.getArgument("jacob", Boolean.class)) {
+										Minecraft.getInstance().getToastManager().addToast(
+												new JacobEventToast(
+														time,
+														time + duration,
+														"Jacob's farming contest",
+														List.of("Cactus", "Cocoa Beans", "Pumpkin")
+												)
+										);
+									} else {
+										Minecraft.getInstance().getToastManager().addToast(
+												new EventToast(
+														time,
+														time + duration,
+														"Jacob's or something idk",
+														FALLBACK_ICON
+												)
+										);
+									}
+									return 0;
+								})
 						)
+				)
 		);
 	}
 
@@ -155,11 +167,21 @@ public class EventNotifications {
 					Minecraft instance = Minecraft.getInstance();
 					if (eventName.equals(JACOBS) && skyblockEvent.extras().left().isPresent()) {
 						instance.getToastManager().addToast(
-								new JacobEventToast(skyblockEvent.start(), eventName, skyblockEvent.extras().left().get())
+								new JacobEventToast(
+										skyblockEvent.start(),
+										skyblockEvent.start() + skyblockEvent.duration(),
+										eventName,
+										skyblockEvent.extras().left().get()
+								)
 						);
 					} else {
 						instance.getToastManager().addToast(
-								new EventToast(skyblockEvent.start(), eventName, eventIcons.getOrDefault(eventName, FALLBACK_ICON))
+								new EventToast(
+										skyblockEvent.start(),
+										skyblockEvent.start() + skyblockEvent.duration(),
+										eventName,
+										eventIcons.getOrDefault(eventName, FALLBACK_ICON)
+								)
 						);
 					}
 					SoundEvent soundEvent = SkyblockerConfigManager.get().eventNotifications.reminderSound.getSoundEvent();
