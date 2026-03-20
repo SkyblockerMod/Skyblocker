@@ -1,18 +1,18 @@
 package de.hysky.skyblocker.utils.config;
 
 import de.hysky.skyblocker.utils.SkyblockTime;
-/*import dev.isxander.yacl3.api.controller.ControllerBuilder;
+import dev.isxander.yacl3.api.controller.ControllerBuilder;
 import dev.isxander.yacl3.api.utils.Dimension;
 import dev.isxander.yacl3.gui.AbstractWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.string.IStringController;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.deps.moulconfig.gui.GuiOptionEditor;
-import net.azureaaron.dandelion.deps.moulconfig.processor.ProcessedOption;*/
+import net.azureaaron.dandelion.deps.moulconfig.processor.ProcessedOption;
 import net.azureaaron.dandelion.impl.controllers.IntegerControllerImpl;
-/*import net.azureaaron.dandelion.impl.moulconfig.MoulConfigDefinition;
+import net.azureaaron.dandelion.impl.moulconfig.MoulConfigDefinition;
 import net.azureaaron.dandelion.impl.moulconfig.editor.DandelionNumberFieldEditor;
-import org.jspecify.annotations.Nullable;*/
+import org.jspecify.annotations.Nullable;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,7 +71,7 @@ public class DurationController extends IntegerControllerImpl {
 		return s.isBlank();
 	}
 
-	/*@SuppressWarnings("UnstableApiUsage")
+	@SuppressWarnings("UnstableApiUsage")
 	@Override
 	public @Nullable GuiOptionEditor controllerMoulConfig(Option<Integer> option, ProcessedOption moulConfigOption, MoulConfigDefinition configDefinition) {
 		return new DurationControllerMoul(moulConfigOption, min(), max(), option.binding().defaultValue());
@@ -121,5 +121,5 @@ public class DurationController extends IntegerControllerImpl {
 		public AbstractWidget provideWidget(YACLScreen screen, Dimension<Integer> widgetDimension) {
 			return new DurationControllerWidget(this, screen, widgetDimension);
 		}
-	}*/
+	}
 }
