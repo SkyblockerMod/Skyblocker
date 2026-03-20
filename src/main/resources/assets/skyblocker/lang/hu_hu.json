@@ -1692,5 +1692,12 @@
     "skyblocker.farming.farmingHud.noData": "Nincs Adat",
     "skyblocker.farming.farmingHud.pitch": "Vízszintes Elfordulás: %s",
     "skyblocker.farming.farmingHud.yaw": "Függőleges Elfordulás: %s",
-    "skyblocker.config.farming.plotsWidget.enabled.@Tooltip": "Amíg a gardenben vagy, a felszerelésed jobb oldalán lesz egy widget, amivel gyorsan tudsz teleportálni az egyes plotokhoz. \n\nEmellett megmutatja, hogy melyik plotokon vannak kártevők (ehhez szükséges a Pests widget bekapcsolása és láthatósága a Tabban!).\n\nA plot ikonja személyre szabható a widgetben lévő plotra jobbklikkeléssel."
+    "skyblocker.config.farming.plotsWidget.enabled.@Tooltip": "Amíg a gardenben vagy, a felszerelésed jobb oldalán lesz egy widget, amivel gyorsan tudsz teleportálni az egyes plotokhoz. \n\nEmellett megmutatja, hogy melyik plotokon vannak kártevők (ehhez szükséges a Pests widget bekapcsolása és láthatósága a Tabban!).\n\nA plot ikonja személyre szabható a widgetben lévő plotra jobbklikkeléssel.",
+    "skyblocker.config.dungeons.rareRoomAlert": "Ritka Szoba Jelzés",
+    "skyblocker.config.dungeons.rareRoomAlert.enabled": "Engedélyezve",
+    "skyblocker.config.dungeons.rareRoomAlert.enabled.@Tooltip": "A képenyőre illetve a chatbe üzenetet ír, ha te vagy a partid* felfedezett egy ritka szobát (lásd lentebb) egy Dungeonban.",
+    "skyblocker.config.dungeons.rareRoomAlert.showForDuncan": "Mutatás 'Duncan'-hez",
+    "skyblocker.config.dungeons.rareRoomAlert.showForTomioka": "Mutatás 'Tomioka'-hoz",
+    "skyblocker.config.dungeons.rareRoomAlert.showForTrinity": "Mutatás 'Trinity'-hez",
+    "skyblocker.dungeons.rareRoomAlert.foundRoom": "%s ritka szoba megtalálva!"
 }
