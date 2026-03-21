@@ -744,6 +744,8 @@
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "無効な方程式",
     "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "メッセージが「=」で始まる場合にのみ電卓が表示されます。",
     "skyblocker.config.uiAndVisuals.inputCalculator.missingValueError": "演算子にオペランドがありません",
-    "emi.category.skyblocker.skyblock_crafting": "クラフト (Skyblock)",
-    "emi.category.skyblocker.skyblock_npc_shop": "NPC ショップ (Skyblock)"
+    "emi.category.skyblocker.skyblock_crafting": "クラフト（Skyblock）",
+    "emi.category.skyblocker.skyblock_npc_shop": "NPC ショップ (Skyblock)",
+    "skyblocker.config.farming.farmingHud.type.NPC": "NPC",
+    "skyblocker.config.dungeons.rareRoomAlert.enabled": "有効"
 }
