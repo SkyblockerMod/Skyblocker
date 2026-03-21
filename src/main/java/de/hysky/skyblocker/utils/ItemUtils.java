@@ -41,13 +41,19 @@ import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.objects.AtlasSprite;
+import net.minecraft.network.chat.contents.objects.ObjectInfo;
+import net.minecraft.network.chat.contents.objects.PlayerSprite;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
@@ -707,5 +713,22 @@ public final class ItemUtils {
 		stack.set(DataComponents.ITEM_NAME, Component.literal(itemId));
 		stack.set(DataComponents.CUSTOM_DATA, CustomData.of(Util.make(new CompoundTag(), c -> c.putString(ID, itemId))));
 		return stack;
+	}
+
+	/// Converts an {@code ItemInstance} to an icon using object text components.
+	///
+	/// For regular items, it will display the item from the atlas using sprite object text components.
+	///
+	/// For player heads, it will display the player head using player object text components.
+	public static MutableComponent getIcon(ItemInstance itemInstance) {
+		Item item = itemInstance.typeHolder().value();
+
+		ObjectInfo objectInfo = switch (item) {
+			case BlockItem _ when itemInstance.is(Items.PLAYER_HEAD) && itemInstance.get(DataComponents.PROFILE) != null -> new PlayerSprite(itemInstance.get(DataComponents.PROFILE), true);
+			case BlockItem _ -> new AtlasSprite(AtlasIds.BLOCKS, BuiltInRegistries.ITEM.getKey(item).withPath(itemId -> "block/" + itemId));
+			default -> new AtlasSprite(AtlasIds.ITEMS, BuiltInRegistries.ITEM.getKey(item).withPath(itemId -> "item/" + itemId));
+		};
+
+		return Component.object(objectInfo);
 	}
 }
