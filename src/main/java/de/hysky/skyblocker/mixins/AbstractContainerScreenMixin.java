@@ -7,6 +7,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.ChestValue;
 import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
@@ -422,5 +423,10 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		if (Utils.isOnSkyblock()) {
 			SlotTextManager.renderSlotText(context, font, slot);
 		}
+	}
+
+	@WrapOperation(method = "renderLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V", ordinal = 0))
+	private void skyblocker$hideChestName(GuiGraphics instance, Font font, Component component, int i, int j, int k, boolean bl, Operation<Void> original) {
+		if (!ChestValue.hideChestNameLabel) original.call(instance, font, component, i, j, k, bl);
 	}
 }
