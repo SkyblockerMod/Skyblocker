@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 
-public record EggWaypointMessage(EggFinder.EggType eggType, BlockPos coordinates, long expirationEpoch) implements Message<EggWaypointMessage> {
+public record EggWaypointMessage(EggFinder.EggType eggType, BlockPos coordinates, Optional<Long> expirationEpoch) implements Message<EggWaypointMessage> {
 	private static final Codec<EggWaypointMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			EggFinder.EggType.CODEC.fieldOf("eggType").forGetter(EggWaypointMessage::eggType),
 			BlockPos.CODEC.fieldOf("coordinates").forGetter(EggWaypointMessage::coordinates),
-			Codec.LONG.fieldOf("expirationEpoch").forGetter(EggWaypointMessage::expirationEpoch)
+			Codec.LONG.optionalFieldOf("expirationEpoch").forGetter(EggWaypointMessage::expirationEpoch)
 	).apply(instance, EggWaypointMessage::new));
 
 	private static final Codec<List<EggWaypointMessage>> LIST_CODEC = CODEC.listOf();
@@ -34,7 +34,7 @@ public record EggWaypointMessage(EggFinder.EggType eggType, BlockPos coordinates
 				long now = System.currentTimeMillis();
 
 				RenderHelper.runOnRenderThread(() -> waypoints.stream()
-						.filter(w -> w.expirationEpoch() > now)
+						.filter(w -> w.expirationEpoch.isPresent() && w.expirationEpoch().get() > now)
 						.forEach(EggFinder::onWebsocketMessage));
 			}
 
