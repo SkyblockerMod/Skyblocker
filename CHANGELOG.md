@@ -7,6 +7,7 @@
   * Shows a message on the screen when Trinity, Tomioka, or Duncan are discovered.
   * (Individually configurable)
 * Add an option to highlight Stereo Harmony vinyl pests separately
+* Add opacity option for Builder's Wand and Ruler preview
 * Improve Farming config category organization
 * Fix Carnival features not working
 * Fix some enchanted books not showing Price Tooltips in the Bazaar
@@ -16,7 +17,9 @@
 * Fix various Craft Price Tooltip issues
 * Fix Chocolate Egg Waypoints not hiding sometimes if already found
 * Fix Event Toasts showing after an event ends if the game was minimized
+* Fix Mayor Jerry Event Toast
 * Fix Sweep Details HUD not showing in the Foraging Camp
+* Fix Farming HUD BPS with Cactus Knife Mk.2 and Mk.3
 
 ## What's Changed
 * Enable sweep details widget in foraging camp by @IllagerCaptain in https://github.com/SkyblockerMod/Skyblocker/pull/2187
