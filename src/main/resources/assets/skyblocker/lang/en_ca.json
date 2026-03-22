@@ -71,7 +71,7 @@
     "skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor": "Teleport Overlay Colour",
     "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds.@Tooltip": "Displays a coloured background behind a Jacob's Farming Contest entry. The colour represents the medal earned during the contest.",
     "skyblocker.customization.armor.cannotCustomizeColor": "Cannot customize this piece's colour :(",
-    "skyblocker.customization.armor.resetColor": "Reset colour",
+    "skyblocker.customization.armor.resetColor": "Reset Colour",
     "skyblocker.customization.title": "Customize Your Armour",
     "skyblocker.customization.titleSecret": "Pimp Your Armour",
     "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "Display the skyblock fishing hook timer on the screen.\n\nOn crosshair: in the centre of screen\n\nIn HUD: in the fishing HUD",
