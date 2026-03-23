@@ -23,7 +23,7 @@ public enum Location implements StringRepresentable {
 	DWARVEN_MINES("mining_3", "Dwarven Mines"),
 	BACKWATER_BAYOU("fishing_1", "Backwater Bayou"),
 	DUNGEON_HUB("dungeon_hub", "Dungeon Hub"),
-	WINTER_ISLAND("winter", "Jerry's Workshop"),
+	WINTER_ISLAND("winter", "Jerry's Workshop", true),
 	THE_RIFT("rift", "The Rift"),
 	DARK_AUCTION("dark_auction", "Dark Auction"),
 	CRYSTAL_HOLLOWS("crystal_hollows", "Crystal Hollows"),
