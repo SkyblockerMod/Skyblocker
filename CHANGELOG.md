@@ -56,6 +56,8 @@
 * Fix Quick Nav Button 12 by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2251
 * Hide event toasts after event end by @WilliamTTran in https://github.com/SkyblockerMod/Skyblocker/pull/2219
 * Trinity/Other Rare Rooms Alert by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2231
+* More Compatible Way To Hide Chest Names by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2259
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2186
 
 ## New Contributors
 * @WilliamTTran made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2197
