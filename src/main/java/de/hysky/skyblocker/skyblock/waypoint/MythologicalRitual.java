@@ -34,6 +34,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
@@ -93,7 +94,7 @@ public class MythologicalRitual {
 				case ParticleType<?> type when ParticleTypes.CRIT.equals(type) || ParticleTypes.ENCHANT.equals(type) -> handleBurrowParticle(packet);
 				case ParticleType<?> type when ParticleTypes.DUST.equals(type) -> handleNextBurrowParticle(packet);
 				case ParticleType<?> type when ParticleTypes.DRIPPING_LAVA.equals(type) && packet.getCount() == 2 -> handleEchoBurrowParticle(packet);
-				case null, default -> {}
+				default -> {}
 			}
 		}
 	}
@@ -119,7 +120,13 @@ public class MythologicalRitual {
 	 */
 	private static void handleNextBurrowParticle(ClientboundLevelParticlesPacket packet) {
 		BlockPos pos = BlockPos.containing(packet.getX(), packet.getY(), packet.getZ());
-		GriffinBurrow burrow = griffinBurrows.get(pos.below(2));
+		BlockPos burrowPos;
+		if (Minecraft.getInstance().level != null) {
+			burrowPos = Minecraft.getInstance().level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, pos);
+		} else {
+			burrowPos = pos.below(2);
+		}
+		GriffinBurrow burrow = griffinBurrows.get(burrowPos);
 		if (burrow == null) {
 			return;
 		}
@@ -150,6 +157,8 @@ public class MythologicalRitual {
 		if (System.currentTimeMillis() > lastEchoTime + 10_000) {
 			return;
 		}
+		if (Minecraft.getInstance().level != null && !Minecraft.getInstance().level.getBlockState(BlockPos.containing(packet.getX(), packet.getY(), packet.getZ())).isAir()) return;
+
 		if (previousBurrow.echoBurrowDirection == null) {
 			previousBurrow.echoBurrowDirection = new Vec3[2];
 		}
@@ -287,12 +296,12 @@ public class MythologicalRitual {
 		 */
 		private TriState confirmed = TriState.FALSE;
 		private final SimpleRegression regression = new SimpleRegression();
-		private @Nullable Vec3[] nextBurrowLine;
+		private Vec3 @Nullable[] nextBurrowLine;
 		/**
 		 * The positions of the last two echo burrow particles.
 		 */
-		private @Nullable Vec3[] echoBurrowDirection;
-		private @Nullable Vec3[] echoBurrowLine;
+		private @Nullable Vec3 @Nullable[] echoBurrowDirection;
+		private Vec3 @Nullable[] echoBurrowLine;
 		private @Nullable BlockPos nextBurrowEstimatedPos;
 		/**
 		 * The line in the direction of the next burrow estimated by the previous burrow particles.

@@ -67,6 +67,8 @@ public class SkyblockerRenderPipelines {
 	public static void init() {
 		Renderer.excludePipelineFromBatching(CYLINDER);
 		Renderer.excludePipelineFromBatching(CIRCLE);
+		Renderer.excludePipelineFromBatching(LINES_THROUGH_WALLS);
+		Renderer.excludePipelineFromBatching(RenderPipelines.LINES);
 		IrisCompatibility.assignPipelines();
 	}
 }
