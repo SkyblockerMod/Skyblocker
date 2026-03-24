@@ -22,7 +22,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
@@ -94,7 +93,7 @@ public final class ItemUtils {
 
 	public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
 		return literal("dumpHeldItem").executes(context -> {
-			context.getSource().sendFeedback(Component.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(Utils.getRegistryWrapperLookup().createSerializationContext(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandItem()).getOrThrow())));
+			context.getSource().sendFeedback(Component.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(RegistryUtils.getRegistryWrapperLookup().createSerializationContext(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandItem()).getOrThrow())));
 			return Command.SINGLE_SUCCESS;
 		});
 	}
@@ -378,12 +377,8 @@ public final class ItemUtils {
 		return DoubleBooleanPair.of(0, false);
 	}
 
-	public static double getCraftCost(String skyblockApiId) {
-		NEUItem neuItem = NEURepoManager.getItemByNeuId(skyblockApiId);
-		if (neuItem != null && !neuItem.getRecipes().isEmpty()) {
-			return CraftPriceTooltip.getItemCost(neuItem.getRecipes().getFirst(), 0);
-		}
-		return 0;
+	public static double getCraftCost(String neuId) {
+		return CraftPriceTooltip.getItemCost(neuId);
 	}
 
 	/**

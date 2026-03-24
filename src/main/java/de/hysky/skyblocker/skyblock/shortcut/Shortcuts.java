@@ -71,6 +71,7 @@ public class Shortcuts {
 
 		// Dungeon
 		commands.put("/d", "/warp dungeon_hub");
+		commands.put("/dn", "/warp dungeon_hub");
 
 		// Chat channels
 		commands.put("/ca", "/chat all");

@@ -18,7 +18,6 @@ public final class PageTabWidget extends ProfileViewerWidget {
 	private static final int HEIGHT = 32;
 	/** Required for the button to be aligned with the background texture. */
 	private static final int HEIGHT_OFFSET = 4;
-	private static final int ITEM_SIZE = 16;
 	private final ItemStack icon;
 	private final int index;
 	private final IntConsumer pageSwitcher;

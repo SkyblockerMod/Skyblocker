@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.end.EndHudWidget;
@@ -54,6 +55,14 @@ public class OtherLocationsCategory {
 								.binding(defaults.otherLocations.barn.enableCallTrevorMessage,
 										() -> config.otherLocations.barn.enableCallTrevorMessage,
 										newValue -> config.otherLocations.barn.enableCallTrevorMessage = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter"))
+								.tags(CommonTags.ADDED_IN_6_2_0)
+								.binding(defaults.otherLocations.barn.enablePeltAnimalHighlighter,
+										() -> config.otherLocations.barn.enablePeltAnimalHighlighter,
+										newValue -> config.otherLocations.barn.enablePeltAnimalHighlighter = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

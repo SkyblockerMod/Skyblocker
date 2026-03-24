@@ -6,49 +6,64 @@ import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.FishingRodItem;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 
 public class FishingHelper {
 	private static final Title title = new Title("skyblocker.fishing.reelNow", ChatFormatting.GREEN);
 	protected static long startTime;
+
+	private static final int BOBBER_TIMEOUT_TICKS = 10;
+	private static int waitingForBobberTicks = 0;
+
 	@Init
 	public static void init() {
+		// Initiate wait for bobber to appear server-side upon cast
 		UseItemCallback.EVENT.register((player, world, hand) -> {
 			ItemStack stack = player.getItemInHand(hand);
 			if (!Utils.isOnSkyblock()) {
 				return InteractionResult.PASS;
 			}
-			if (stack.getItem() instanceof FishingRodItem) {
+			if (stack.is(Items.FISHING_ROD)) {
 				if (player.fishing == null) {
-					start(player);
+					waitingForBobberTicks = BOBBER_TIMEOUT_TICKS;
 				} else {
+					waitingForBobberTicks = 0;
 					reset();
 				}
 			}
 			return InteractionResult.PASS;
 		});
+
+		// Start fishing bobber timer and remove timer when no bobber detected after server grace period
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			if (client.player != null) {
+				if (waitingForBobberTicks > 0) {
+					if (client.player.fishing != null) {
+						waitingForBobberTicks = 0;
+						start(); // only start timer when bobber confirmed
+					} else {
+						waitingForBobberTicks--;
+					}
+				} else if (client.player.fishing == null) reset();
+			}
+		});
 	}
 
-	public static void start(Player player) {
+	public static void start() {
 		startTime = System.currentTimeMillis();
-		@SuppressWarnings("unused")
-		float yawRad = player.getYRot() * 0.017453292F;
 	}
 
 	public static void reset() {
 		startTime = 0;
-		//once amour stand is gone reset rod real timer
 	}
-
-
 
 	// Sends a title notification if a fish is caught
 	public static void checkIfFishWasCaught(ArmorStand armorStand) {
@@ -66,6 +81,4 @@ public class FishingHelper {
 			}
 		}
 	}
-
-
 }

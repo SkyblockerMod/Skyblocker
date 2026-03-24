@@ -246,5 +246,12 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.filter.@Tooltip": "Sohbet mesajıyla eşleşecek dize/düzen.",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "Mesajı Gizle",
     "skyblocker.chat.confirmationPromptNotification": "İstemi kabul etmek için 60 saniye içinde ekranın herhangi bir yerine tıklayın.",
-    "skyblocker.config.chat.chatRules.screen": "Sohbet Kuralalrı Yapılandırma..."
+    "skyblocker.config.chat.chatRules.screen": "Sohbet Kuralalrı Yapılandırma...",
+    "skyblocker.accessoryHelper.afterSelling": "%s sattıktan sonra %s",
+    "skyblocker.accessoryHelper.allTiers": "Tüm katmanları göster",
+    "emi.category.skyblocker.skyblock_forge": "Cüce Demirci (Skyblock)",
+    "key.skyblocker.debug.dumpHoveredItem": "Üzerinde Durulan Öğeyi Boşalt",
+    "key.skyblocker.debug.dumpNearbyEntities": "Yakındaki Varlıkları Boşalt",
+    "key.skyblocker.valueBreadownPopup": "Değer Dağılımı Açılır Penceresini Aç",
+    "key.category.skyblocker.main": "Skyblocker"
 }
