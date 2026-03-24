@@ -108,6 +108,7 @@ public class HelperCategory {
 								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.buildersWand.previewOpacity"))
+								.tags(CommonTags.ADDED_IN_6_2_0)
 								.binding(defaults.helpers.buildersWand.previewOpacity,
 										() -> config.helpers.buildersWand.previewOpacity,
 										newValue -> config.helpers.buildersWand.previewOpacity = newValue)

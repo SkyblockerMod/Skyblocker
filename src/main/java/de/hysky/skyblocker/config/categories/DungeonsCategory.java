@@ -790,10 +790,12 @@ public class DungeonsCategory {
 				// Rare Room Alert
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.dungeons.rareRoomAlert"))
+						.tags(CommonTags.ADDED_IN_6_2_0)
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.rareRoomAlert.enabled"))
 								.description(Component.translatable("skyblocker.config.dungeons.rareRoomAlert.enabled.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_2_0)
 								.binding(defaults.dungeons.rareRoomAlert.enabled,
 										() -> config.dungeons.rareRoomAlert.enabled,
 										newValue -> config.dungeons.rareRoomAlert.enabled = newValue)
@@ -801,6 +803,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.rareRoomAlert.showForTrinity"))
+								.tags(CommonTags.ADDED_IN_6_2_0)
 								.binding(defaults.dungeons.rareRoomAlert.showForTrinity,
 										() -> config.dungeons.rareRoomAlert.showForTrinity,
 										newValue -> config.dungeons.rareRoomAlert.showForTrinity = newValue)
@@ -808,6 +811,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.rareRoomAlert.showForTomioka"))
+								.tags(CommonTags.ADDED_IN_6_2_0)
 								.binding(defaults.dungeons.rareRoomAlert.showForTomioka,
 										() -> config.dungeons.rareRoomAlert.showForTomioka,
 										newValue -> config.dungeons.rareRoomAlert.showForTomioka = newValue)
@@ -815,6 +819,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.rareRoomAlert.showForDuncan"))
+								.tags(CommonTags.ADDED_IN_6_2_0)
 								.binding(defaults.dungeons.rareRoomAlert.showForDuncan,
 										() -> config.dungeons.rareRoomAlert.showForDuncan,
 										newValue -> config.dungeons.rareRoomAlert.showForDuncan = newValue)
