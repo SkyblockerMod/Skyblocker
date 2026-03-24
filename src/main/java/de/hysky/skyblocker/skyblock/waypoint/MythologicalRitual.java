@@ -157,7 +157,7 @@ public class MythologicalRitual {
 		if (System.currentTimeMillis() > lastEchoTime + 10_000) {
 			return;
 		}
-		if (Minecraft.getInstance().level != null && !Minecraft.getInstance().level.getBlockState(BlockPos.containing(packet.getX(), packet.getY(), packet.getZ())).isAir()) return;
+		if (Minecraft.getInstance().level != null && !Minecraft.getInstance().level.getBlockState(BlockPos.containing(packet.getX(), packet.getY() - 0.25, packet.getZ())).isAir()) return;
 
 		if (previousBurrow.echoBurrowDirection == null) {
 			previousBurrow.echoBurrowDirection = new Vec3[2];
