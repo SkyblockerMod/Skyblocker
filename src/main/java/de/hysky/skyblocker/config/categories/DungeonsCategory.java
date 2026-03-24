@@ -755,10 +755,12 @@ public class DungeonsCategory {
 								.build())
 						.build())
 
+				// Secret Sync
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.dungeons.secretSync"))
 						.collapsed(true)
 						// TODO: Add description when labels work properly on MoulConfig
+						// Soon?
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.secretSync.receiveMatchedRooms"))
 								.tags(CommonTags.ADDED_IN_5_10_0)
@@ -781,6 +783,41 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.secretSync.hideReceivedWaypoints,
 										() -> config.dungeons.secretSync.hideReceivedWaypoints,
 										newValue -> config.dungeons.secretSync.hideReceivedWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
+				// Rare Room Alert
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.dungeons.rareRoomAlert"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.rareRoomAlert.enabled"))
+								.description(Component.translatable("skyblocker.config.dungeons.rareRoomAlert.enabled.@Tooltip"))
+								.binding(defaults.dungeons.rareRoomAlert.enabled,
+										() -> config.dungeons.rareRoomAlert.enabled,
+										newValue -> config.dungeons.rareRoomAlert.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.rareRoomAlert.showForTrinity"))
+								.binding(defaults.dungeons.rareRoomAlert.showForTrinity,
+										() -> config.dungeons.rareRoomAlert.showForTrinity,
+										newValue -> config.dungeons.rareRoomAlert.showForTrinity = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.rareRoomAlert.showForTomioka"))
+								.binding(defaults.dungeons.rareRoomAlert.showForTomioka,
+										() -> config.dungeons.rareRoomAlert.showForTomioka,
+										newValue -> config.dungeons.rareRoomAlert.showForTomioka = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.rareRoomAlert.showForDuncan"))
+								.binding(defaults.dungeons.rareRoomAlert.showForDuncan,
+										() -> config.dungeons.rareRoomAlert.showForDuncan,
+										newValue -> config.dungeons.rareRoomAlert.showForDuncan = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

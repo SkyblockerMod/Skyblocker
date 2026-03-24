@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.RegistryUtils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -93,7 +93,7 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 			}
 
 			trim = new ArmorTrim(
-					Utils.getRegistryWrapperLookup().lookupOrThrow(Registries.TRIM_MATERIAL).getOrThrow(TrimMaterials.QUARTZ),
+					RegistryUtils.getRegistryWrapperLookup().lookupOrThrow(Registries.TRIM_MATERIAL).getOrThrow(TrimMaterials.QUARTZ),
 					Holder.direct(pattern));
 		}
 
@@ -166,7 +166,7 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 			// Find item that provides given material
 			stack = BuiltInRegistries.ITEM.stream()
 					.filter(item -> Optional.ofNullable(item.components().get(DataComponents.PROVIDES_TRIM_MATERIAL))
-							.flatMap(c -> c.unwrap(Utils.getRegistryWrapperLookup()))
+							.flatMap(c -> c.unwrap(RegistryUtils.getRegistryWrapperLookup()))
 							.map(provided -> provided.is(element))
 							.orElse(false)
 					)
