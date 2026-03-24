@@ -155,12 +155,13 @@ public class EventNotifications {
 				skyblockEvent = nextEvents.peekFirst();
 				if (skyblockEvent == null) continue;
 			}
+			if (!criterionMet()) continue;
 			String eventName = entry.getKey();
 			EventNotificationsConfig.EventConfig config = SkyblockerConfigManager.get().eventNotifications.events.getOrDefault(eventName, DEFAULT_REMINDERS);
 			if (!config.enabled) continue;
 
 			for (int reminderTime : config.reminderTimes) {
-				if (criterionMet() && currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
+				if (currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
 					Minecraft instance = Minecraft.getInstance();
 					if (eventName.equals(JACOBS) && skyblockEvent.extras().left().isPresent()) {
 						instance.getToastManager().addToast(
