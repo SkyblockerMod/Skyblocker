@@ -161,32 +161,31 @@ public class EventNotifications {
 			if (!config.enabled) continue;
 
 			for (int reminderTime : config.reminderTimes) {
-				if (currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
-					Minecraft instance = Minecraft.getInstance();
-					if (eventName.equals(JACOBS) && skyblockEvent.extras().left().isPresent()) {
-						instance.getToastManager().addToast(
-								new JacobEventToast(
-										skyblockEvent.start(),
-										skyblockEvent.start() + skyblockEvent.duration(),
-										eventName,
-										skyblockEvent.extras().left().get()
-								)
-						);
-					} else {
-						instance.getToastManager().addToast(
-								new EventToast(
-										skyblockEvent.start(),
-										skyblockEvent.start() + skyblockEvent.duration(),
-										eventName,
-										eventIcons.getOrDefault(eventName, new ItemStack(Items.PAPER))
-								)
-						);
-					}
-					SoundEvent soundEvent = SkyblockerConfigManager.get().eventNotifications.reminderSound.getSoundEvent();
-					if (soundEvent != null)
-						instance.getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1f, 1f));
-					break;
+				// Only show notification if last time we ticked was before the event, and we are now after the event start
+				if (newTime + reminderTime < skyblockEvent.start() || currentTime + reminderTime >= skyblockEvent.start()) continue;
+				Minecraft instance = Minecraft.getInstance();
+				if (eventName.equals(JACOBS) && skyblockEvent.extras().left().isPresent()) {
+					instance.getToastManager().addToast(
+							new JacobEventToast(
+									skyblockEvent.start(),
+									skyblockEvent.start() + skyblockEvent.duration(),
+									eventName,
+									skyblockEvent.extras().left().get()
+							)
+					);
+				} else {
+					instance.getToastManager().addToast(
+							new EventToast(
+									skyblockEvent.start(),
+									skyblockEvent.start() + skyblockEvent.duration(),
+									eventName,
+									eventIcons.getOrDefault(eventName, new ItemStack(Items.PAPER))
+							)
+					);
 				}
+				SoundEvent soundEvent = SkyblockerConfigManager.get().eventNotifications.reminderSound.getSoundEvent();
+				if (soundEvent != null) instance.getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1f, 1f));
+				break;
 			}
 		}
 		currentTime = newTime;
