@@ -33,4 +33,9 @@ public class GameRendererMixin {
 		}
 		return original;
 	}
+
+	@Inject(method = "render", at = @At(value = "CONSTANT", args = "stringValue=gui"))
+	private void skyblocker$onRenderGui(CallbackInfo ci) {
+		GuiHelper.updateScreenBlitTexture();
+	}
 }

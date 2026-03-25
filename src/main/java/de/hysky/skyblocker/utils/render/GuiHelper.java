@@ -48,6 +48,7 @@ public class GuiHelper {
 	 * Suitable for rendering two blurred rectangles at once
 	 */
 	private static final TexturePool BLIT_TEXTURE_POOL = TexturePool.create("Blit Pool", 4, GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_COPY_DST, TextureFormat.RGBA8);
+	private static int blitIndexForFrame = -1;
 
 	public static void nineSliceColored(GuiGraphicsExtractor graphics, Identifier texture, int x, int y, int width, int height, int argb) {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, width, height, argb);
@@ -119,21 +120,33 @@ public class GuiHelper {
 	 * @param radius The strength of the blur, must be positive.
 	 */
 	public static void blurredRectangle(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, int radius) {
-		RenderTarget mainRenderTarget = CLIENT.getMainRenderTarget();
-		int requiredWidth = mainRenderTarget.width;
-		int requiredHeight = mainRenderTarget.height;
+		if (blitIndexForFrame == -1) {
+			RenderTarget mainRenderTarget = CLIENT.getMainRenderTarget();
+			int requiredWidth = mainRenderTarget.width;
+			int requiredHeight = mainRenderTarget.height;
+			blitIndexForFrame = BLIT_TEXTURE_POOL.getNextAvailableIndex(requiredWidth, requiredHeight);
+		}
 
-		int index = BLIT_TEXTURE_POOL.getNextAvailableIndex(requiredWidth, requiredHeight);
-		GpuTexture blitTexture = BLIT_TEXTURE_POOL.getTexture(index);
-		GpuTextureView blitTextureView = BLIT_TEXTURE_POOL.getTextureView(index);
+		GpuTextureView blitTextureView = BLIT_TEXTURE_POOL.getTextureView(blitIndexForFrame);
 		// The sampler needs to be linear in order for the shader sampling interpolation trick to work properly
 		GpuSampler sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR);
 		// Pass the radius through the vertex colour - least painful way to do this
 		int vertexColour = ARGB.color(radius, 255, 255);
 
-		// Copy the main render target colour texture to our temporary one since you cannot read from and write to the same texture in a single draw.
-		RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(mainRenderTarget.getColorTexture(), blitTexture, 0, 0, 0, 0, 0, requiredWidth, requiredHeight);
 		((GuiGraphicsExtractorInvoker) graphics).invokeInnerFill(SkyblockerRenderPipelines.BLURRED_RECTANGLE, TextureSetup.singleTexture(blitTextureView, sampler), x0, y0, x1, y1, vertexColour, null);
+	}
+
+	public static void updateScreenBlitTexture() {
+		if (blitIndexForFrame != -1) {
+			RenderTarget mainRenderTarget = CLIENT.getMainRenderTarget();
+			int requiredWidth = mainRenderTarget.width;
+			int requiredHeight = mainRenderTarget.height;
+			GpuTextureView blitTextureView = BLIT_TEXTURE_POOL.getTextureView(blitIndexForFrame);
+
+			// Copy the main render target colour texture to our temporary one since you cannot read from and write to the same texture in a single draw.
+			RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(mainRenderTarget.getColorTexture(), blitTextureView.texture(), 0, 0, 0, 0, 0, requiredWidth, requiredHeight);
+			blitIndexForFrame = -1;
+		}
 	}
 
 	public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
