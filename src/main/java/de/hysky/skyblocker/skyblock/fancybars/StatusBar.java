@@ -33,6 +33,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.effect.MobEffects;
 
 public class StatusBar implements LayoutElement, Renderable, GuiEventListener, NarratableEntry {
 	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
@@ -478,6 +479,48 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 				text = time < 60 ? time + "s" : String.format("%dm%02ds", time / 60, time % 60);
 			}
 			super.updateValues(fill, overflowFill, text, max, overflow);
+		}
+	}
+
+	public static class HealthStatusBar extends StatusBar {
+		private static final Color WITHER_COLOR = new Color(76, 48, 57);
+		private static final Color POISON_COLOR = new Color(94, 78, 18);
+		private static final Identifier WITHER_ICON = SkyblockerMod.id("bars/icons/health_wither");
+		private static final Identifier POISON_ICON = SkyblockerMod.id("bars/icons/health_poison");
+
+		public HealthStatusBar(StatusBarType type) {
+			super(type);
+		}
+
+		@Override
+		protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWidth) {
+			Minecraft client = Minecraft.getInstance();
+			boolean withering = client.player != null && client.player.hasEffect(MobEffects.WITHER);
+			boolean poisoned = client.player != null && client.player.hasEffect(MobEffects.POISON);
+
+			int fillColor;
+			if (withering) {
+				fillColor = WITHER_COLOR.getRGB();
+			} else if (poisoned) {
+				fillColor = POISON_COLOR.getRGB();
+			} else {
+				fillColor = getColors()[0].getRGB();
+			}
+
+			GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWidth - 2) * fill), 5, transparency(fillColor));
+			if (hasOverflow() && overflowFill > 0) {
+				GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWidth - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+			}
+		}
+
+		@Override
+		protected Identifier getIcon() {
+			Minecraft client = Minecraft.getInstance();
+			if (client.player != null) {
+				if (client.player.hasEffect(MobEffects.WITHER)) return WITHER_ICON;
+				else if (client.player.hasEffect(MobEffects.POISON)) return POISON_ICON;
+			}
+			return super.getIcon();
 		}
 	}
 }

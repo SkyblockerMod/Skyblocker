@@ -4,6 +4,7 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
 import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
+import de.hysky.skyblocker.utils.render.gui.SoundSelectionPopup;
 import de.hysky.skyblocker.utils.render.gui.ToggleableLayoutWidget;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.ChatFormatting;
@@ -29,11 +30,13 @@ import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Util;
@@ -53,6 +56,7 @@ import java.util.function.Supplier;
 public class ChatRuleConfigScreen extends Screen {
 	private static final int COLUMN_WIDTH = 105;
 	private static final int GRID_SPACING = 2;
+	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
 	private static final ItemStack INVALID_ITEM = new ItemStack(Items.BARRIER);
 	private static final Component YES_TEXT = CommonComponents.GUI_YES.copy().withStyle(ChatFormatting.GREEN);
 	private static final Component NO_TEXT = CommonComponents.GUI_NO.copy().withStyle(ChatFormatting.RED);
@@ -79,6 +83,8 @@ public class ChatRuleConfigScreen extends Screen {
 
 	private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
 	private final GridLayout content = new GridLayout().columnSpacing(GRID_SPACING);
+	@SuppressWarnings("rawtypes")
+	private CycleButton soundButton;
 
 	public ChatRuleConfigScreen(Screen parent, int chatRuleIndex) {
 		super(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"));
@@ -157,13 +163,16 @@ public class ChatRuleConfigScreen extends Screen {
 			displayedValues.add(Optional.ofNullable(chatRule.getCustomSound()));
 		}
 		// using an optional since it doesn't allow null values.
-		buttons.addChild(CycleButton.builder(opt -> soundNames.get(opt.orElse(null)), Optional.ofNullable(chatRule.getCustomSound()))
+		soundButton = CycleButton.builder(opt -> soundNames.get(opt.orElse(null)), Optional.ofNullable(chatRule.getCustomSound()))
 				.withValues(() -> true, displayedValues, availableValues)
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds"), (_, value) -> {
+				.create(0, 0, getWidth(1.3f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds"), (_, value) -> {
 					chatRule.setCustomSound(value.orElse(null));
 					value.ifPresent(soundEvent -> minecraft.getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1.0F)));
-				})
-		).setTooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.@Tooltip")));
+				});
+		soundButton.setTooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.@Tooltip")));
+		buttons.addChild(soundButton);
+		//search button
+		buttons.addChild(new SoundSearchMenu(), LayoutSettings::alignHorizontallyRight);
 
 		// Chat message
 		EditBox chatMessageInput = new EditBox(font, getWidth(2), 20, Component.empty());
@@ -365,6 +374,39 @@ public class ChatRuleConfigScreen extends Screen {
 			minecraft.setScreen(new ItemSelectionPopup(ChatRuleConfigScreen.this, item -> {
 				if (item == null) return;
 				input.setValue(getItemString(item));
+			}));
+		}
+
+		@Override
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
+	}
+
+	private class SoundSearchMenu extends AbstractWidget {
+
+		private SoundSearchMenu() {
+			super(0, 0, 16, 16, Component.empty());
+			setTooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.search.@Tooltip")));
+		}
+
+		@Override
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+		}
+
+		@Override
+		public void setX(int x) {
+			super.setX(x);
+		}
+
+		@Override
+		public void onClick(MouseButtonEvent click, boolean doubled) {
+			super.onClick(click, doubled);
+			Objects.requireNonNull(minecraft);
+			minecraft.setScreen(new SoundSelectionPopup(ChatRuleConfigScreen.this, sound -> {
+				if (sound != null) {
+					chatRule.setCustomSound(sound);
+					soundButton.setMessage(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.custom").withStyle(ChatFormatting.YELLOW));
+				}
 			}));
 		}
 
