@@ -65,7 +65,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
 
 	private final Slot[] equipmentSlots = new Slot[4];
-	private ItemStack hoveredItem;
+	private @Nullable ItemStack hoveredItem;
 
 	private static void save(String profileId) {
 		try {
@@ -116,9 +116,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> {
 			String profileId = Utils.getProfileId();
-			if (!profileId.isBlank()) {
-				CompletableFuture.runAsync(() -> save(profileId), Executors.newVirtualThreadPerTaskExecutor());
-			}
+			if (!profileId.isBlank()) save(profileId);
 		});
 	}
 
