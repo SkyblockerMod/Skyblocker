@@ -19,7 +19,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -82,7 +82,7 @@ public class Waypoints {
 	public static void init() {
 		loadWaypoints();
 		ClientLifecycleEvents.CLIENT_STOPPING.register(Waypoints::saveWaypoints);
-		WorldRenderExtractionCallback.EVENT.register(Waypoints::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(Waypoints::extractRendering);
 		ClientCommandRegistrationCallback.EVENT.register(Waypoints::registerCommands);
 		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		Scheduler.INSTANCE.scheduleCyclic(Waypoints::tick, 1);

@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.galatea;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
@@ -52,7 +52,7 @@ public abstract class AbstractBlockHighlighter {
 	protected void init() {
 		ClientChunkEvents.CHUNK_LOAD.register(this::onChunkLoad);
 		ClientChunkEvents.CHUNK_UNLOAD.register(this::onChunkUnload);
-		WorldRenderExtractionCallback.EVENT.register(this::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(this::extractRendering);
 		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> this.reset());
 		WorldEvents.BLOCK_STATE_UPDATE.register(this::onBlockUpdate);
 	}

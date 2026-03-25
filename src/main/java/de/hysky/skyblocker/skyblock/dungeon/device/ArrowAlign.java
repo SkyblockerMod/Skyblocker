@@ -8,7 +8,7 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -37,7 +37,7 @@ public class ArrowAlign {
 	@Init
 	public static void init() {
 		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
-		WorldRenderExtractionCallback.EVENT.register(ArrowAlign::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(ArrowAlign::extractRendering);
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("device").then(literal("arrow-align")
 				.then(literal("solve").executes(_ -> {
 					findSolution();

@@ -12,7 +12,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -63,7 +63,7 @@ public class CorpseFinder {
 		});
 		SkyblockEvents.LOCATION_CHANGE.register(CorpseFinder::handleLocationChange);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(CorpseFinder::onChatMessage);
-		WorldRenderExtractionCallback.EVENT.register(CorpseFinder::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(CorpseFinder::extractRendering);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (!SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder || client.player == null) return;
 			if (!isLocationCorrect) return;

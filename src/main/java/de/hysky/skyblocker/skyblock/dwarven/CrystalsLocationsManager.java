@@ -13,7 +13,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -80,14 +80,14 @@ public class CrystalsLocationsManager {
 	public static void init() {
 		// Crystal Hollows Waypoints
 		Scheduler.INSTANCE.scheduleCyclic(CrystalsLocationsManager::update, 40);
-		WorldRenderExtractionCallback.EVENT.register(CrystalsLocationsManager::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(CrystalsLocationsManager::extractRendering);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(CrystalsLocationsManager::extractLocationFromMessage);
 		ClientCommandRegistrationCallback.EVENT.register(CrystalsLocationsManager::registerWaypointLocationCommands);
 		SkyblockEvents.LOCATION_CHANGE.register(CrystalsLocationsManager::onLocationChange);
 		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 
 		// Nucleus Waypoints
-		WorldRenderExtractionCallback.EVENT.register(NucleusWaypoints::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(NucleusWaypoints::extractRendering);
 	}
 
 	private static boolean extractLocationFromMessage(Component message, Boolean overlay) {

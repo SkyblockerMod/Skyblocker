@@ -7,7 +7,7 @@ import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
@@ -33,7 +33,7 @@ public class GlowingMushrooms {
 	public static void init() {
 		ParticleEvents.FROM_SERVER.register(GlowingMushrooms::onParticle);
 		Scheduler.INSTANCE.scheduleCyclic(GlowingMushrooms::update, 1);
-		WorldRenderExtractionCallback.EVENT.register(GlowingMushrooms::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(GlowingMushrooms::extractRendering);
 		AttackBlockCallback.EVENT.register((_, _, _, pos, _) -> {
 			if (shouldProcess()) glowingMushrooms.remove(pos);
 			return InteractionResult.PASS;

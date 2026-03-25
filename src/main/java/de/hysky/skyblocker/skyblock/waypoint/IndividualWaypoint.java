@@ -7,7 +7,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -30,7 +30,7 @@ public class IndividualWaypoint extends NamedWaypoint {
 	@Init
 	public static void init() {
 		ClientTickEvents.END_CLIENT_TICK.register(IndividualWaypoint::onTick);
-		WorldRenderExtractionCallback.EVENT.register(collector -> { if (waypoint != null) waypoint.extractRendering(collector); });
+		LevelRenderExtractionCallback.EVENT.register(collector -> { if (waypoint != null) waypoint.extractRendering(collector); });
 		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> waypoint = null);
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
 				ClientCommands.literal(SkyblockerMod.NAMESPACE).then(ClientCommands.literal("waypoints").then(ClientCommands.literal("individual")

@@ -22,7 +22,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -58,7 +58,7 @@ public class KuudraWaypoints {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(KuudraWaypoints::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(KuudraWaypoints::extractRendering);
 		ClientLifecycleEvents.CLIENT_STARTED.register(KuudraWaypoints::load);
 		Scheduler.INSTANCE.scheduleCyclic(KuudraWaypoints::tick, 20);
 	}

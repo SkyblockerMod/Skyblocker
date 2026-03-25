@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +73,7 @@ public class SweepOverlay {
 	@Init
 	public static void init() {
 		configCallback(SkyblockerConfigManager.get().foraging.sweepOverlay.sweepOverlayColor);
-		WorldRenderExtractionCallback.EVENT.register(SweepOverlay::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(SweepOverlay::extractRendering);
 	}
 
 	private static boolean isValidLocation() {

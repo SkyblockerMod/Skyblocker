@@ -4,7 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -29,7 +29,7 @@ public class GuardianHealth {
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(GuardianHealth::onChatMessage);
 		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> GuardianHealth.reset());
-		WorldRenderExtractionCallback.EVENT.register(GuardianHealth::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(GuardianHealth::extractRendering);
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {

@@ -13,7 +13,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.command.argumenttypes.EggTypeArgumentType;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -66,7 +66,7 @@ public class EggFinder {
 		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> clearEggs());
 		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(EggFinder::onChatMessage);
-		WorldRenderExtractionCallback.EVENT.register(EggFinder::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(EggFinder::extractRendering);
 
 		SkyblockTime.HOUR_CHANGE.register(hour -> {
 			if (!isSpring) return;
