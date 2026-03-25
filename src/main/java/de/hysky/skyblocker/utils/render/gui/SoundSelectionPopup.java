@@ -145,8 +145,8 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 
 	private class ListContainer extends AbstractContainerWidget {
 
-		ListContainer(int i, int j, int k, int l) {
-			super(i, j, k, l, Component.literal("List"), AbstractScrollArea.defaultSettings(8));
+		ListContainer(int x, int y, int width, int height) {
+			super(x, y, width, height, Component.literal("List"), AbstractScrollArea.defaultSettings(8));
 		}
 
 		@Override
