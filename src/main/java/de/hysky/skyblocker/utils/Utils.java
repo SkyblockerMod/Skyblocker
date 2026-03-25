@@ -193,6 +193,11 @@ public class Utils {
 		return location;
 	}
 
+	// Used in tests for location-specific branches
+	public static void setTestLocation(Location located) {
+		location = located;
+	}
+
 	/**
 	 * <b>Note: Under no circumstances should you skip checking the location if you also need the area.</b>
 	 *
