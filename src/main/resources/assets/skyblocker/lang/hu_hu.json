@@ -1699,5 +1699,8 @@
     "skyblocker.config.dungeons.rareRoomAlert.showForDuncan": "Mutatás 'Duncan'-hez",
     "skyblocker.config.dungeons.rareRoomAlert.showForTomioka": "Mutatás 'Tomioka'-hoz",
     "skyblocker.config.dungeons.rareRoomAlert.showForTrinity": "Mutatás 'Trinity'-hez",
-    "skyblocker.dungeons.rareRoomAlert.foundRoom": "%s ritka szoba megtalálva!"
+    "skyblocker.dungeons.rareRoomAlert.foundRoom": "%s ritka szoba megtalálva!",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.search.@Tooltip": "További hangok keresése",
+    "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "Haladó",
+    "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "Hangok mutatása rendes név nélkül"
 }
