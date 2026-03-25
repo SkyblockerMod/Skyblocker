@@ -5,7 +5,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.skyblock.crimson.CrimsonFaction;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.KuudraProfileData;
@@ -81,9 +80,12 @@ public class ChestValue {
 	public static final Pattern HEAVY_PEARL_PATTERN = Pattern.compile("Heavy Pearl(?: x(?<amount>\\d+))?");
 	private static final Pattern MINION_PATTERN = Pattern.compile("Minion (I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII)$");
 
+	public static boolean hideChestNameLabel = false;
+
 	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
+			hideChestNameLabel = false;
 			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
 				Component title = screen.getTitle();
 				String titleString = title.getString();
@@ -385,7 +387,7 @@ public class ChestValue {
 		int backgroundWidth = ((AbstractContainerScreenAccessor) genericContainerScreen).getImageWidth();
 		int y = ((AbstractContainerScreenAccessor) genericContainerScreen).getY();
 		int x = ((AbstractContainerScreenAccessor) genericContainerScreen).getX();
-		((ScreenAccessor) genericContainerScreen).setTitle(Component.empty());
+		hideChestNameLabel = true;
 		Font textRenderer = Minecraft.getInstance().font;
 		int chestValueWidth = Math.min(textRenderer.width(chestValue), Math.max((backgroundWidth - 8) / 2 - 2, backgroundWidth - 8 - textRenderer.width(title)));
 

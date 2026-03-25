@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.ChestValue;
 import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
@@ -347,5 +349,10 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		if (Utils.isOnSkyblock()) {
 			SlotTextManager.extractSlotText(graphics, font, slot);
 		}
+	}
+
+	@WrapWithCondition(method = "renderLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V", ordinal = 0))
+	private boolean skyblocker$hideChestName(GuiGraphicsExtractor graphics, Font font, Component component, int x, int y, int colour, boolean shadow) {
+		return !ChestValue.hideChestNameLabel;
 	}
 }

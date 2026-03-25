@@ -84,6 +84,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Blood Camp Helper**
 - **Dungeon Splits Widget**
 - **Door Key Highlighter**
+- **Rare Room Alerts** 
+    - Shows a message on screen when Trinity, Tomioka, or Duncan are discovered.
 
 ### Hunting Features:
 - **Forest Node Highlighter**
@@ -236,8 +238,12 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Copy amount to clipboard
 - **Garden Plots Widget**
 - **Speed Presets (Rancher's Boots)**
-- **Basic garden mouse locking feature (set mouse sensitivity to 0)**
+- **Mouse Locking** 
+    - (sets mouse sensitivity to 0)
 - **Pest Highlighter**
+    - Option to separately highlight pests for the active Stereo Harmony vinyl.
+- **Stereo Harmony Helper**
+    - Highlights the vinyl for the current Jacob's contest
 
 ### Visual Enhancements:
 - **Smooth AOTE**
@@ -352,6 +358,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Treasure Hunter*
     - *Hungry Hiker*
     - *Glowing Mushroom Highlighter*
+- **Pelt Animal Highlighter**
 
 ### Chat Features:
 - **Custom Chat Rules**
