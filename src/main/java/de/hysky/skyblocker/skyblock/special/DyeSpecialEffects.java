@@ -41,7 +41,7 @@ public class DyeSpecialEffects {
 				if (matcher.matches() && matcher.group("player").equals(CLIENT.getUser().getName())) {
 					ItemStack stack = findDyeStack(matcher.group("dye"));
 
-					if (!stack.isEmpty()) {
+					if (stack != null && !stack.isEmpty()) {
 						CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER, 30);
 						CLIENT.gameRenderer.displayItemActivation(stack);
 					}
