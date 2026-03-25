@@ -7,6 +7,7 @@ import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -171,16 +172,16 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 		excludedDonationIds.clear();
 		for (Donation item : donations) {
 			StringBuilder searchableContent = new StringBuilder();
-			ItemStack itemStack = ItemRepository.getItemStack(item.getId()).getStackOrThrow();
+			FlexibleItemStack itemStack = ItemRepository.getItemStack(item.getId());
 			if (itemStack != null) {
-				searchableContent.append(itemStack.getHoverName().getString())
-						.append(ItemUtils.getConcatenatedLore(itemStack));
+				searchableContent.append(itemStack.getStackOrThrow().getHoverName().getString())
+						.append(ItemUtils.getConcatenatedLore(itemStack.getStackOrThrow()));
 			}
 			if (item.getSet() != null && !item.getSet().isEmpty()) {
 				for (ObjectObjectMutablePair<String, PriceData> piece : item.getSet()) {
-					ItemStack pieceStack = ItemRepository.getItemStack(piece.left()).getStackOrThrow();
-					if (pieceStack != null) searchableContent.append(pieceStack.getHoverName().getString())
-							.append(ItemUtils.getConcatenatedLore(pieceStack));
+					FlexibleItemStack pieceStack = ItemRepository.getItemStack(piece.left());
+					if (pieceStack != null) searchableContent.append(pieceStack.getStackOrThrow().getHoverName().getString())
+							.append(ItemUtils.getConcatenatedLore(pieceStack.getStackOrThrow()));
 				}
 			}
 			if (!searchableContent.toString().toLowerCase(Locale.ENGLISH).contains(searchQuery.toLowerCase(Locale.ENGLISH))) {
