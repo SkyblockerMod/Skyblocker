@@ -44,12 +44,12 @@
   "accessWidener": "skyblocker.classtweaker",
   "depends": {
     "fabricloader": ">=0.18.4",
-    "fabric-api": ">=0.143.15+26.1",
-	"dandelion": ">=1.0.0-alpha.16+26.1-pre-3",
+    "fabric-api": ">=0.144.0+26.1",
+	"dandelion": ">=1.0.0-alpha.17+26.1",
     "yet_another_config_lib_v3": ">=3.9.0+26.1",
 	"fabric-language-kotlin": "*",
-    "hm-api": ">=1.0.3-alpha.1+26.1-pre-2",
-    "minecraft": "~26.1-",
+    "hm-api": ">=1.0.3+26.1",
+    "minecraft": "~26.1",
     "java": ">=25"
   },
   "conflicts": {
