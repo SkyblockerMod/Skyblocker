@@ -351,7 +351,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		}
 	}
 
-	@WrapWithCondition(method = "renderLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V", ordinal = 0))
+	@WrapWithCondition(method = "extractLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V", ordinal = 0))
 	private boolean skyblocker$hideChestName(GuiGraphicsExtractor graphics, Font font, Component component, int x, int y, int colour, boolean shadow) {
 		return !ChestValue.hideChestNameLabel;
 	}
