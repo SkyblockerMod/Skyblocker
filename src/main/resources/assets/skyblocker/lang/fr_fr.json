@@ -1497,7 +1497,7 @@
     "skyblocker.config.helpers.hoppitysHunt.enableEggFinder": "Activer les Marqueurs des Oeufs par WebSocket",
     "skyblocker.config.helpers.hoppitysHunt.waypointType": "Type de Marqueur d'Oeuf",
     "skyblocker.config.helpers.hoppitysHunt.showThroughWalls": "Afficher à Travers les Murs",
-    "skyblocker.config.helpers.hoppitysHunt.showThroughWalls.@Tooltip": "Afficher ou non les Marqueurs des Oeufs en Chocolat à travers les murs.",
+    "skyblocker.config.helpers.hoppitysHunt.showThroughWalls.@Tooltip": "Afficher les Marqueurs des Oeufs en Chocolat à travers les murs.",
     "skyblocker.config.dungeons.map.showRoomLabels": "Afficher les Noms des Salles",
     "skyblocker.tips.configureNewFeatures": "Configurez les nouvelles fonctionnalités de cette mise à jour avec /skyblocker config v%s.",
     "skyblocker.helpers.hoppitysHunt.unableToShareEgg": "Impossible de partager cet oeuf.",
@@ -1670,5 +1670,11 @@
     "skyblocker.events.tab.currentJerryMayor": "Maire %s",
     "skyblocker.config.helpers.buildersWand": "Builder's Wand",
     "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "Activer l'aperçu de la Builder's Wand et Builder's Ruler",
-    "skyblocker.config.helpers.buildersWand.previewOpacity": "Opacité de l'aperçu"
+    "skyblocker.config.helpers.buildersWand.previewOpacity": "Opacité de l'aperçu",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "Activer la surbrillance pour les annimaux à pelts",
+    "skyblocker.config.farming.farmingHud.type.NPC": "NPC",
+    "skyblocker.config.farming.farmingHud.type.BAZAAR": "Bazaar",
+    "skyblocker.config.dungeons.rareRoomAlert.enabled": "Activé",
+    "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "Avancé",
+    "skyblocker.customization.armor.pickDye.dyes": "-- %s Colorants --"
 }
