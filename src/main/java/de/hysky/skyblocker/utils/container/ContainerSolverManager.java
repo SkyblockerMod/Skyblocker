@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils.container;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.skyblock.NineFTMSolver;
 import de.hysky.skyblocker.skyblock.RaffleTaskHighlight;
 import de.hysky.skyblocker.skyblock.accessories.AccessoriesContainerSolver;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
@@ -78,6 +79,7 @@ public class ContainerSolverManager {
 			AccessoriesContainerSolver.INSTANCE,
 			new AnvilHelper(),
 			new RewardsHighlighter(),
+			NineFTMSolver.INSTANCE,
 	};
 	private static @Nullable ContainerSolver currentSolver = null;
 	private static @Nullable List<ColorHighlight> highlights;
