@@ -30,7 +30,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.function.Function;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class SlayerTimer {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("slayer_personal_best.json");
@@ -89,11 +89,11 @@ public class SlayerTimer {
 		LocalPlayer player = Minecraft.getInstance().player;
 		assert player != null;
 		if (currentPBMills != -1 && currentPBMills > newPBMills) {
-			player.displayClientMessage(Constants.PREFIX.get().append(
+			player.sendSystemMessage(Constants.PREFIX.get().append(
 					Component.translatable("skyblocker.slayer.slainTime", Component.literal(newPB).withStyle(ChatFormatting.YELLOW))
 							.append(" ")
-							.append(Component.translatable("skyblocker.slayer.personalBest").withStyle(ChatFormatting.LIGHT_PURPLE))), false);
-			player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.slayer.previousPersonalBest", Component.literal(currentPB).withStyle(ChatFormatting.YELLOW))), false);
+							.append(Component.translatable("skyblocker.slayer.personalBest").withStyle(ChatFormatting.LIGHT_PURPLE))));
+			player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.slayer.previousPersonalBest", Component.literal(currentPB).withStyle(ChatFormatting.YELLOW))));
 
 			TitleContainer.addTitleAndPlaySound(new Title("skyblocker.slayer.personalBest", ChatFormatting.AQUA), 100);
 			TitleContainer.addTitle(new Title(
@@ -103,7 +103,7 @@ public class SlayerTimer {
 
 			updateBestTime(slayerQuest, newPBMills);
 		} else {
-			player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.slayer.slainTime", Component.literal(newPB).withStyle(ChatFormatting.YELLOW))), false);
+			player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.slayer.slainTime", Component.literal(newPB).withStyle(ChatFormatting.YELLOW))));
 			if (currentPBMills == -1) {
 				updateBestTime(slayerQuest, newPBMills);
 			}
@@ -113,7 +113,7 @@ public class SlayerTimer {
 	private static long getPersonalBest(SlayerType slayerType, SlayerTier slayerTier) {
 		var profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
 		if (profileData != null) {
-			var typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
+			var typeData = profileData.computeIfAbsent(slayerType, _ -> new Object2ObjectOpenHashMap<>());
 			SlayerPersonalBest currentBest = typeData.get(slayerTier);
 			//noinspection ConstantConditions
 			return currentBest != null ? currentBest.bestTimeMillis() : -1;
@@ -125,7 +125,7 @@ public class SlayerTimer {
 	private static void updateBestTime(SlayerManager.SlayerQuest slayerQuest, long timeElapsed) {
 		var profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
 		if (profileData != null) {
-			var typeData = profileData.computeIfAbsent(slayerQuest.slayerType, _type -> new Object2ObjectOpenHashMap<>());
+			var typeData = profileData.computeIfAbsent(slayerQuest.slayerType, _ -> new Object2ObjectOpenHashMap<>());
 			typeData.put(slayerQuest.slayerTier, new SlayerPersonalBest(timeElapsed, System.currentTimeMillis()));
 			CACHED_SLAYER_STATS.save();
 		}

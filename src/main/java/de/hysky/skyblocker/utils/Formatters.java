@@ -70,7 +70,7 @@ public class Formatters {
 	public static Number parseNumber(String number) throws NumberFormatException {
 		try {
 			return SHORT_INTEGER_NUMBERS.parse(number.replace(",", ""));
-		} catch (ParseException e) {
+		} catch (ParseException _) {
 			throw new NumberFormatException("For input string: \"" + number + "\"");
 		}
 	}

@@ -21,7 +21,7 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 public abstract class ClientLevelMixin implements BlockGetter {
 
 	@Inject(method = "setServerVerifiedBlockState", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z"))
-	private void skyblocker$beforeBlockUpdate(CallbackInfo ci, @Local(argsOnly = true) BlockPos pos, @Share("old") LocalRef<BlockState> oldState) {
+	private void skyblocker$beforeBlockUpdate(CallbackInfo ci, @Local(name = "pos") BlockPos pos, @Share("old") LocalRef<BlockState> oldState) {
 		oldState.set(getBlockState(pos));
 	}
 
@@ -30,19 +30,19 @@ public abstract class ClientLevelMixin implements BlockGetter {
 	 * (e.g. store it in a field/list/map) make sure to duplicate it via {@link BlockPos#immutable()}.
 	 */
 	@Inject(method = "setServerVerifiedBlockState", at = @At("RETURN"))
-	private void skyblocker$afterBlockUpdate(CallbackInfo ci, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) BlockState state, @Share("old") LocalRef<BlockState> oldState) {
+	private void skyblocker$afterBlockUpdate(CallbackInfo ci, @Local(name = "pos") BlockPos pos, @Local(name = "blockState") BlockState state, @Share("old") LocalRef<BlockState> oldState) {
 		WorldEvents.BLOCK_STATE_UPDATE.invoker().onBlockStateUpdate(pos, oldState.get(), state);
 	}
 
 	@Inject(method = "playSeededSound(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/core/Holder;Lnet/minecraft/sounds/SoundSource;FFJ)V", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$allowSoundsFromEntity(CallbackInfo ci, @Local(argsOnly = true) Holder<SoundEvent> sound) {
+	private void skyblocker$allowSoundsFromEntity(CallbackInfo ci, @Local(name = "sound") Holder<SoundEvent> sound) {
 		if (!PlaySoundEvents.ALLOW_SOUND.invoker().allowSound(sound.value())) {
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "playSound(DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FFZJ)V", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$allowSounds(CallbackInfo ci, @Local(argsOnly = true) SoundEvent sound) {
+	private void skyblocker$allowSounds(CallbackInfo ci, @Local(name = "sound") SoundEvent sound) {
 		if (!PlaySoundEvents.ALLOW_SOUND.invoker().allowSound(sound)) {
 			ci.cancel();
 		}

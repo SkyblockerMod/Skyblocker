@@ -13,7 +13,8 @@ public record CrystalsWaypointSubscribeMessage(long timestamp) implements Messag
 
 	public static CrystalsWaypointSubscribeMessage create(ClientLevel world) {
 		//Current timestamp as seconds + ((26 mc days - mc time) / ticks per second)
-		long closeTime = (System.currentTimeMillis() / 1000L) + ((TWENTY_SIX_DAYS - world.getDayTime()) / 20L);
+		// TODO verify this is correct
+		long closeTime = (System.currentTimeMillis() / 1000L) + ((TWENTY_SIX_DAYS - world.getDefaultClockTime()) / 20L);
 
 		return new CrystalsWaypointSubscribeMessage(closeTime);
 	}

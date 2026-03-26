@@ -77,7 +77,7 @@ public class WishingCompassSolver {
 		UseItemCallback.EVENT.register(WishingCompassSolver::onItemInteract);
 		UseBlockCallback.EVENT.register(WishingCompassSolver::onBlockInteract);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(WishingCompassSolver::failMessageListener);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ParticleEvents.FROM_SERVER.register(WishingCompassSolver::onParticle);
 	}
 
@@ -115,7 +115,7 @@ public class WishingCompassSolver {
 		}
 		//make sure the data is in tab and if not tell the user
 		if (PlayerListManager.getPlayerStringList().stream().noneMatch(entry -> entry.startsWith("Active Effects:"))) {
-			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage")), false);
+			CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage")));
 			return false;
 		}
 		return PlayerListManager.getPlayerStringList().stream().anyMatch(entry -> entry.startsWith("King's Scent"));
@@ -136,7 +136,7 @@ public class WishingCompassSolver {
 
 		//make sure the data is in tab and if not tell the user
 		if (PlayerListManager.getPlayerStringList().stream().noneMatch(entry -> entry.equals("Crystals:"))) {
-			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabMessage")), false);
+			CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabMessage")));
 			return false;
 		}
 
@@ -202,7 +202,7 @@ public class WishingCompassSolver {
 				if (particleUsedCountOne >= PARTICLES_PER_LINE) {
 					currentState = SolverStates.WAITING_FOR_SECOND;
 					if (CLIENT.player != null) {
-						CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage").withStyle(ChatFormatting.GREEN)), false);
+						CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage").withStyle(ChatFormatting.GREEN)));
 					}
 				}
 			}
@@ -226,7 +226,7 @@ public class WishingCompassSolver {
 		}
 		Vec3 targetLocation = solve(startPosOne, startPosTwo, directionOne, directionTwo);
 		if (targetLocation == null) {
-			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.somethingWentWrongMessage").withStyle(ChatFormatting.RED)), false);
+			CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.somethingWentWrongMessage").withStyle(ChatFormatting.RED)));
 		} else {
 			//send message to player with location and name
 			Zone playerZone = getZoneOfLocation(startPosOne);
@@ -234,18 +234,17 @@ public class WishingCompassSolver {
 			//set to unknown if the target is to far from the region it's allowed to spawn in
 			if (!verifyLocation(playerZone, targetLocation)) {
 				location = MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN;
-				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.targetLocationToFar").withStyle(ChatFormatting.RED)), false);
+				CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.targetLocationToFar").withStyle(ChatFormatting.RED)));
 			}
 			//offset the jungle location to its doors
 			if (location == MiningLocationLabel.CrystalHollowsLocationsCategory.JUNGLE_TEMPLE) {
 				targetLocation = targetLocation.add(JUNGLE_TEMPLE_DOOR_OFFSET);
 			}
 
-			CLIENT.player.displayClientMessage(Constants.PREFIX.get()
+			CLIENT.player.sendSystemMessage(Constants.PREFIX.get()
 							.append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.foundMessage").withStyle(ChatFormatting.GREEN))
 							.append(Component.literal(location.getName()).withColor(location.getColor()))
-							.append(Component.literal(": " + (int) targetLocation.x() + " " + (int) targetLocation.y() + " " + (int) targetLocation.z())),
-					false);
+							.append(Component.literal(": " + (int) targetLocation.x() + " " + (int) targetLocation.y() + " " + (int) targetLocation.z())));
 
 			//add waypoint
 			CrystalsLocationsManager.addCustomWaypoint(location.getName(), BlockPos.containing(targetLocation));
@@ -334,7 +333,7 @@ public class WishingCompassSolver {
 			case NOT_STARTED -> {
 				//do not start if the player is in nucleus as this does not work well
 				if (currentZone == Zone.CRYSTAL_NUCLEUS) {
-					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.useOutsideNucleusMessage")), false);
+					CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.useOutsideNucleusMessage")));
 					return true;
 				}
 				startNewState(SolverStates.PROCESSING_FIRST_USE);
@@ -343,12 +342,12 @@ public class WishingCompassSolver {
 			case WAITING_FOR_SECOND -> {
 				//only continue if the player is far enough away from the first position to get a better reading
 				if (startPosOne.closerThan(playerPos, DISTANCE_BETWEEN_USES)) {
-					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.moveFurtherMessage")), false);
+					CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.moveFurtherMessage")));
 					return true;
 				} else {
 					//make sure the player is in the same zone as they used to first or restart
 					if (currentZone != getZoneOfLocation(startPosOne)) {
-						CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.changingZoneMessage")), false);
+						CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.changingZoneMessage")));
 						reset();
 						startNewState(SolverStates.PROCESSING_FIRST_USE);
 					} else {
@@ -361,10 +360,10 @@ public class WishingCompassSolver {
 				//if still looking for particles for line tell the user to wait
 				//else tell the user something went wrong and its starting again
 				if (System.currentTimeMillis() - particleLastUpdate < PARTICLES_MAX_DELAY) {
-					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.waitLongerMessage").withStyle(ChatFormatting.RED)), false);
+					CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.waitLongerMessage").withStyle(ChatFormatting.RED)));
 					return true;
 				} else {
-					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.couldNotDetectLastUseMessage").withStyle(ChatFormatting.RED)), false);
+					CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.couldNotDetectLastUseMessage").withStyle(ChatFormatting.RED)));
 					reset();
 					startNewState(SolverStates.PROCESSING_FIRST_USE);
 				}

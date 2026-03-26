@@ -4,8 +4,9 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.gui.ItemButtonWidget;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
@@ -16,8 +17,9 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -96,15 +98,15 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			.set(DataComponents.ITEM_NAME, Component.literal("None"))
 			.build());
 
-	private @Nullable ItemStack[] items;
+	private @Nullable FlexibleItemStack[] items;
 	private int hoveredSlot = -1;
 	private int editingSlotIcon = -1;
 	private long updateFromTabTime = System.currentTimeMillis();
-	private ItemStack[] customIconOptionsItems = new ItemStack[0];
+	private FlexibleItemStack[] customIconOptionsItems = new FlexibleItemStack[0];
 
 
 	public GardenPlotsWidget(int x, int y) {
-		super(x, y, 104, 132, Component.translatable("skyblocker.gardenPlots"));
+		super(x, y, 104, 132, Component.translatable("skyblocker.gardenPlots"), AbstractScrollArea.defaultSettings(8));
 		updatePlotItems();
 		updateInfestedFromTab();
 
@@ -112,17 +114,17 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 		ItemButtonWidget deskButton = new ItemButtonWidget(
 				getX() + 7, getBottom() - 24,
 				new ItemStack(Items.BOOK), Component.translatable("skyblocker.gardenPlots.openDesk"),
-				button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/desk", true)
+				_ -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/desk", true)
 		);
 		ItemButtonWidget spawnButton = new ItemButtonWidget(
 				getRight() - 7 - 40 - 2, getBottom() - 24,
 				new ItemStack(Items.ENDER_EYE), Component.translatable("skyblocker.gardenPlots.spawn"),
-				button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/warp garden", true)
+				_ -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/warp garden", true)
 		);
 		ItemButtonWidget setSpawnButton = new ItemButtonWidget(
 				getRight() - 7 - 20, getBottom() - 24,
 				new ItemStack(Math.random() < 0.001 ? Items.PINK_BED : Items.RED_BED), Component.translatable("skyblocker.gardenPlots.setSpawn"),
-				button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/setspawn", true)
+				_ -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/setspawn", true)
 		);
 		widgets = new ItemButtonWidget[]{deskButton, spawnButton, setSpawnButton};
 	}
@@ -130,30 +132,31 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	private void updatePlotItems() {
 		items = Arrays.stream(GardenPlots.GARDEN_PLOTS).map(gardenPlot -> {
 			if (gardenPlot == null) return null;
-			ItemStack itemStack = gardenPlot.customIcon()
+			FlexibleItemStack itemStack = gardenPlot.customIcon()
 					.map(s -> ItemRepository.getItemStack(s, ItemUtils.getItemIdPlaceholder(s)))
-					.orElseGet(() -> gardenPlot.icon().map(ItemStack::new, s -> ItemRepository.getItemStack(s, ItemUtils.getItemIdPlaceholder(s)))).copy();
+					.orElseGet(() -> gardenPlot.icon().map(FlexibleItemStack::new, s -> ItemRepository.getItemStack(s, ItemUtils.getItemIdPlaceholder(s)))).copy();
 			itemStack.set(DataComponents.CUSTOM_NAME, Component.literal(gardenPlot.name()).withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD));
 			return itemStack;
-		}).toArray(ItemStack[]::new);
-		items[12] = new ItemStack(Items.LODESTONE);
+		}).toArray(FlexibleItemStack[]::new);
+		items[12] = new FlexibleItemStack(Items.LODESTONE);
 		items[12].set(DataComponents.ITEM_NAME, Component.literal("The Barn"));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		Font textRenderer = Minecraft.getInstance().font;
-		Matrix3x2fStack matrices = context.pose();
+		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 
-		context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
+		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
 
-		context.drawString(textRenderer, editingSlotIcon < 0 ? getMessage() : Component.literal("Custom Icon"), 8, 6, CommonColors.DARK_GRAY, false);
+		graphics.text(textRenderer, editingSlotIcon < 0 ? getMessage() : Component.literal("Custom Icon"), 8, 6, CommonColors.DARK_GRAY, false);
 
 		hoveredSlot = -1;
 		long timeMillis = System.currentTimeMillis();
-		@Nullable ItemStack[] stacks = editingSlotIcon >= 0 ? customIconOptionsItems : items;
+		@Nullable FlexibleItemStack[] stacks = editingSlotIcon >= 0 ? customIconOptionsItems : items;
 		for (int i = 0; i < stacks.length; i++) {
 			int slotX = 7 + (i % 5) * 18;
 			int slotY = 17 + (i / 5) * 18;
@@ -161,17 +164,17 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			boolean infested = infectedPlots.contains(i);
 
 			if (hovered) {
-				context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, slotX - 3, slotY - 3, 24, 24);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, slotX - 3, slotY - 3, 24, 24);
 			}
 
-			ItemStack item = stacks[i];
+			ItemStack item = stacks[i].getStackOrThrow();
 			// Still show hover highlight & pest outline in empty slots.
 			if (item == null) {
 				if (hovered)
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
 
 				if (infested && (timeMillis & 512) != 0)
-					HudHelper.drawBorder(context, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
+					GuiHelper.border(graphics, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
 
 				continue;
 			}
@@ -179,28 +182,28 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			if (hovered) {
 				//noinspection deprecation
 				if (ClientTags.isInLocal(ConventionalItemTags.GLASS_PANES, item.getItem().builtInRegistryHolder().key())) {
-					context.renderItem(item, slotX + 1, slotY + 1);
+					graphics.item(item, slotX + 1, slotY + 1);
 				} else {
 					matrices.pushMatrix();
 					matrices.translate(slotX, slotY);
 					matrices.scale(1.125f, 1.125f);
-					context.renderItem(item, 0, 0);
+					graphics.item(item, 0, 0);
 					matrices.popMatrix();
 				}
-				context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
 				hoveredSlot = i;
 			} else
-				context.renderItem(item, slotX + 1, slotY + 1);
+				graphics.item(item, slotX + 1, slotY + 1);
 
 			if (editingSlotIcon >= 0) {
 				if (hovered) {
-					context.setComponentTooltipForNextFrame(textRenderer, List.of(item.getHoverName()), mouseX, mouseY);
+					graphics.setComponentTooltipForNextFrame(textRenderer, List.of(item.getHoverName()), mouseX, mouseY);
 				}
 				continue;
 			}
 
 			if (infested && (timeMillis & 512) != 0) {
-				HudHelper.drawBorder(context, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
+				GuiHelper.border(graphics, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
 			}
 
 			// tooltip
@@ -223,14 +226,14 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 										Component.empty(),
 										TP_TEXT
 								);
-				context.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
+				graphics.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
 			}
 		}
 
 		matrices.popMatrix();
 
 		for (ItemButtonWidget widget : widgets) {
-			widget.render(context, mouseX, mouseY, delta);
+			widget.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 
 
@@ -250,7 +253,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 				for (String s : split) {
 					try {
 						infectedPlots.add(GARDEN_PLOT_TO_SLOT.getOrDefault(Integer.parseInt(s.strip()), -1));
-					} catch (NumberFormatException ignored) {}
+					} catch (NumberFormatException _) {}
 				}
 				break;
 			}
@@ -274,10 +277,10 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			editingSlotIcon = hoveredSlot;
 			customIconOptionsItems = Arrays.stream(CUSTOM_ICON_OPTIONS).map(s -> {
 				if (s == null) return noneItem;
-				ItemStack stack = ItemRepository.getItemStack(s);
+				FlexibleItemStack stack = ItemRepository.getItemStack(s);
 				if (stack == null) return ItemUtils.getItemIdPlaceholder(s);
 				return stack;
-			}).toArray(ItemStack[]::new);
+			}).toArray(FlexibleItemStack[]::new);
 			return;
 		}
 

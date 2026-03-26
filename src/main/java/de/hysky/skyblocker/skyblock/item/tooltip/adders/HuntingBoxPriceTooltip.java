@@ -15,7 +15,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 	public HuntingBoxPriceTooltip(int priority) {
@@ -30,7 +30,7 @@ public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 		if (attribute != null && TooltipInfoType.BAZAAR.hasOrNullWarning(attribute.apiId())) {
 			int count = ItemUtils.getItemCountInHuntingBox(stack).orElse(1);
 			BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(attribute.apiId());
-			boolean holdingShift = HudHelper.hasShiftDown();
+			boolean holdingShift = GuiHelper.hasShiftDown();
 			String shardText = count > 1 ? "Shards" : "Shard";
 
 			lines.add(Component.literal(shardText + " Sell Price: ")

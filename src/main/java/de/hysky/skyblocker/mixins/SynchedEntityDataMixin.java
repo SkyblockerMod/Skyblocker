@@ -31,7 +31,7 @@ public abstract class SynchedEntityDataMixin {
 
 	@SuppressWarnings("ConstantValue")
 	@Inject(method = "assignValues", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/syncher/SynchedEntityData;assignValue(Lnet/minecraft/network/syncher/SynchedEntityData$DataItem;Lnet/minecraft/network/syncher/SynchedEntityData$DataValue;)V"))
-	private <T> void skyblocker$onWriteUpdatedEntries(CallbackInfo ci, @Local SynchedEntityData.DataItem<T> entry, @Local SynchedEntityData.DataValue<T> serializedEntry) {
+	private <T> void skyblocker$onWriteUpdatedEntries(CallbackInfo ci, @Local(name = "dataItem") SynchedEntityData.DataItem<T> entry, @Local(name = "item") SynchedEntityData.DataValue<T> serializedEntry) {
 		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.enableYangGlyphsNotification && entry.getAccessor() == EnderManAccessor.getDATA_CARRY_STATE() && entry.getValue() instanceof Optional<?> value && value.isPresent() && value.get() instanceof BlockState state && state.is(Blocks.BEACON) && ((Optional<?>) serializedEntry.value()).isEmpty()) {
 			Minecraft client = Minecraft.getInstance();
 			if (entity instanceof Entity entity && MobGlow.getArmorStands(entity).stream().anyMatch(armorStand -> armorStand.getName().getString().contains(client.getUser().getName()))) {

@@ -30,6 +30,7 @@ import de.hysky.skyblocker.utils.datafixer.JsonHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.azureaaron.dandelion.api.ConfigManager;
 import net.azureaaron.dandelion.api.DandelionConfigScreen;
+import net.azureaaron.dandelion.api.PlatformLinks;
 import net.azureaaron.dandelion.api.patching.ConfigPatch;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -52,8 +53,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 import org.slf4j.Logger;
 
 public class SkyblockerConfigManager {
@@ -82,11 +83,11 @@ public class SkyblockerConfigManager {
 		dataFix(CONFIG_FILE, CONFIG_DIR.resolve("skyblocker.json.old"));
 
 		CONFIG_MANAGER.load();
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(configLiteral("config")).then(configLiteral("options"))));
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(configLiteral("config")).then(configLiteral("options"))));
+		ScreenEvents.AFTER_INIT.register((client, screen, _, _) -> {
 			if (get().uiAndVisuals.showConfigButton && screen instanceof ContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
-				Screens.getButtons(screen).add(Button
-						.builder(Component.literal("\uD83D\uDD27"), buttonWidget -> client.setScreen(createGUI(screen)))
+				Screens.getWidgets(screen).add(Button
+						.builder(Component.literal("\uD83D\uDD27"), _ -> client.setScreen(createGUI(screen)))
 						.bounds(((AbstractContainerScreenAccessor) genericContainerScreen).getX() + ((AbstractContainerScreenAccessor) genericContainerScreen).getImageWidth() - 16, ((AbstractContainerScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
 						.tooltip(Tooltip.create(Component.translatable("skyblocker.config.title", Component.translatable("skyblocker.config.title.settings"))))
 						.build());
@@ -139,6 +140,10 @@ public class SkyblockerConfigManager {
 				.category(MiscCategory.create(defaults, config))
 				.categoryIf(Debug.debugEnabled(), DebugCategory.create(defaults, config))
 				.search(search)
+				.platformLinks(PlatformLinks.createBuilder()
+						.link(Component.literal("GitHub"), PlatformLinks.GITHUB_ICON, "https://github.com/SkyblockerMod/Skyblocker")
+						.link(Component.literal("Modrinth"), PlatformLinks.MODRINTH_ICON, "https://modrinth.com/mod/skyblocker-liap")
+						.build())
 		).generateScreen(parent, get().misc.configBackend);
 	}
 
@@ -163,7 +168,7 @@ public class SkyblockerConfigManager {
 	 */
 	private static LiteralArgumentBuilder<FabricClientCommandSource> configLiteral(String name) {
 		return literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
-				.then(argument("option", StringArgumentType.greedyString()).executes((ctx) -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("option", String.class)))));
+				.then(argument("option", StringArgumentType.greedyString()).executes(ctx -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("option", String.class)))));
 	}
 
 	public static void dataFix(Path configDir, Path backupDir) {

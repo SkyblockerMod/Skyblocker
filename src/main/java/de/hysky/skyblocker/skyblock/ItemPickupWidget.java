@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.SeparatorElement;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -52,9 +53,9 @@ public class ItemPickupWidget extends ElementBasedWidget {
 		instance = this;
 
 		ClientReceiveMessageEvents.ALLOW_GAME.register(instance::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> changingLobby = true);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> changingLobby = true);
 		// Make changingLobby true for a short period while the player loads into a new lobby and their items are loading
-		SkyblockEvents.LOCATION_CHANGE.register(location -> Scheduler.INSTANCE.schedule(() -> changingLobby = false, LOBBY_CHANGE_DELAY));
+		SkyblockEvents.LOCATION_CHANGE.register(_ -> Scheduler.INSTANCE.schedule(() -> changingLobby = false, LOBBY_CHANGE_DELAY));
 	}
 
 	public static ItemPickupWidget getInstance() {
@@ -64,7 +65,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 	/**
 	 * Searches the NEU REPO for the item linked to the name
 	 */
-	private static ItemStack getItem(String itemName) {
+	private static FlexibleItemStack getItem(String itemName) {
 		if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return ItemUtils.getNamedPlaceholder(itemName);
 		return NEURepoManager.getItemByName(itemName)
 				.stream()
@@ -87,7 +88,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 		Matcher matcher = CHANGE_REGEX.matcher(hoverMessage);
 		while (matcher.find()) {
 
-			ItemStack item = getItem(matcher.group(3));
+			ItemStack item = getItem(matcher.group(3)).getStackOrThrow();
 			//positive
 			int existingCount = 0;
 			if (matcher.group(1).equals("+")) {
@@ -152,7 +153,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 				addedCount.remove(item);
 				continue;
 			}
-			addSimpleIcoText(entry.item, itemName, ChatFormatting.GREEN, Formatters.DIFF_NUMBERS.format(entry.amount));
+			addSimpleIcoText(new FlexibleItemStack(entry.item), itemName, ChatFormatting.GREEN, Formatters.DIFF_NUMBERS.format(entry.amount));
 		}
 		//add negative changes
 		for (String item : removedCount.keySet()) {
@@ -162,7 +163,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 				removedCount.remove(item);
 				continue;
 			}
-			addSimpleIcoText(entry.item, itemName, ChatFormatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
+			addSimpleIcoText(new FlexibleItemStack(entry.item), itemName, ChatFormatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
 		}
 		if (split && !(this.addedSackCount.isEmpty() && this.removedSackCount.isEmpty())) {
 			// Remove the borders and some random 8 value I do not know where that comes from from the width of the widget to make it fit.
@@ -174,7 +175,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 					addedSackCount.remove(item);
 					continue;
 				}
-				addSimpleIcoText(entry.item, itemName, ChatFormatting.GREEN, Formatters.DIFF_NUMBERS.format(entry.amount));
+				addSimpleIcoText(new FlexibleItemStack(entry.item), itemName, ChatFormatting.GREEN, Formatters.DIFF_NUMBERS.format(entry.amount));
 			}
 			for (String item : removedSackCount.keySet()) {
 				ChangeData entry = removedSackCount.get(item);
@@ -183,7 +184,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 					removedSackCount.remove(item);
 					continue;
 				}
-				addSimpleIcoText(entry.item, itemName, ChatFormatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
+				addSimpleIcoText(new FlexibleItemStack(entry.item), itemName, ChatFormatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
 			}
 		}
 	}

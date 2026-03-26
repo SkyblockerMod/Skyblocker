@@ -10,7 +10,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -47,8 +47,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class MythologicalRitual {
 	private static final Pattern GRIFFIN_BURROW_DUG = Pattern.compile("(?<message>You dug out a Griffin Burrow!|You finished the Griffin burrow chain!) \\((?<index>\\d+)/(?<length>\\d+)\\)");
@@ -63,14 +63,14 @@ public class MythologicalRitual {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(MythologicalRitual::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(MythologicalRitual::extractRendering);
 		AttackBlockCallback.EVENT.register(MythologicalRitual::onAttackBlock);
 		UseBlockCallback.EVENT.register(MythologicalRitual::onUseBlock);
 		UseItemCallback.EVENT.register(MythologicalRitual::onUseItem);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(MythologicalRitual::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("diana")
-				.then(literal("clearGriffinBurrows").executes(context -> {
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("diana")
+				.then(literal("clearGriffinBurrows").executes(_ -> {
 					reset();
 					return Command.SINGLE_SUCCESS;
 				}))

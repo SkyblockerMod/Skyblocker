@@ -9,17 +9,17 @@ import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.RulerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.TestTextWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 public final class SlayersPage implements ProfileViewerPage<LoadingInformation> {
 	private final List<ProfileViewerWidget> widgets = new ArrayList<>();
 
 	@Override
-	public ItemStack getIcon() {
+	public FlexibleItemStack getIcon() {
 		return Ico.MADDOX_BATPHONE;
 	}
 

@@ -39,6 +39,7 @@ public sealed interface Area {
 	@Deprecated
 	record Unknown() implements Area {
 
+		@Deprecated
 		@Override
 		public String displayName() {
 			return "Unknown";

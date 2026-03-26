@@ -12,7 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
@@ -24,9 +24,9 @@ public class FireFreezeStaffTimer {
 
 	@Init
 	public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.OVERLAY_MESSAGE, FIRE_FREEZE_STAFF_TIMER, FireFreezeStaffTimer::onDraw);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.OVERLAY_MESSAGE, FIRE_FREEZE_STAFF_TIMER, FireFreezeStaffTimer::extractRenderState);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(FireFreezeStaffTimer::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> FireFreezeStaffTimer.reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> FireFreezeStaffTimer.reset());
 		ServerTickCallback.EVENT.register(FireFreezeStaffTimer::onServerTick);
 	}
 
@@ -34,7 +34,7 @@ public class FireFreezeStaffTimer {
 		if (timerActive) fireFreezeTimer -= 50;
 	}
 
-	private static void onDraw(GuiGraphics context, DeltaTracker tickCounter) {
+	private static void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker tickCounter) {
 		Minecraft client = Minecraft.getInstance();
 
 		if (client.screen != null) return;
@@ -56,7 +56,7 @@ public class FireFreezeStaffTimer {
 			int width = client.getWindow().getGuiScaledWidth() / 2;
 			int height = client.getWindow().getGuiScaledHeight() / 2;
 
-			context.drawCenteredString(renderer, Component.literal("Fire Freeze ").append(message), width, height, CommonColors.WHITE);
+			graphics.centeredText(renderer, Component.literal("Fire Freeze ").append(message), width, height, CommonColors.WHITE);
 		}
 	}
 

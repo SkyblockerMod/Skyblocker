@@ -19,7 +19,7 @@ import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.SlayersPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.screens.LoadingDotsText;
@@ -110,22 +110,22 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		// Reposition everything that is rendering
 		//this.repositionElements();
 		// Render the unselected buttons under the background
-		this.renderTabButtons(graphics, mouseX, mouseY, a, false);
+		this.extractTabButtons(graphics, mouseX, mouseY, a, false);
 		// Render the background
-		super.render(graphics, mouseX, mouseY, a);
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 		// Render the selected tab on top of the background
-		this.renderTabButtons(graphics, mouseX, mouseY, a, true);
+		this.extractTabButtons(graphics, mouseX, mouseY, a, true);
 
 		ProfileViewerPage<?> selectedPage = this.getSelectedPage();
 
 		// Render the loaded page or some generic loading text
 		if (this.loadedPages.contains(selectedPage)) {
 			for (ProfileViewerWidget widget : selectedPage.getWidgets()) {
-				widget.render(graphics, mouseX, mouseY, a);
+				widget.extractRenderState(graphics, mouseX, mouseY, a);
 			}
 		} else {
 			int centreX = this.getBackgroundX() + (BACKGROUND_WIDTH / 2);
@@ -137,19 +137,19 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 					.append(Component.literal(" page..."));
 			Component loadingDotsText = Component.literal(LoadingDotsText.get(timeLoadingPage));
 
-			graphics.drawCenteredString(this.font, pageLoadingText, centreX, centreY - this.font.lineHeight, CommonColors.WHITE);
-			graphics.drawCenteredString(this.font, loadingDotsText, centreX, centreY + this.font.lineHeight, CommonColors.WHITE);
+			graphics.centeredText(this.font, pageLoadingText, centreX, centreY - this.font.lineHeight, CommonColors.WHITE);
+			graphics.centeredText(this.font, loadingDotsText, centreX, centreY + this.font.lineHeight, CommonColors.WHITE);
 		}
 	}
 
-	private void renderTabButtons(GuiGraphics graphics, int mouseX, int mouseY, float a, boolean onlySelected) {
+	private void extractTabButtons(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, boolean onlySelected) {
 		for (PageTabWidget tabWidget : this.tabWidgets) {
 			// We need to render the selected tab button behind the screen
 			if (onlySelected && this.tabWidgets.indexOf(tabWidget) != this.selectedPageIndex) {
 				continue;
 			}
 
-			tabWidget.render(graphics, mouseX, mouseY, a);
+			tabWidget.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 	}
 }

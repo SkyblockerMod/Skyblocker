@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
-import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import de.hysky.skyblocker.utils.render.GuiHelper;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 /**
  * Meta-Element that consists of a grid of other components
@@ -72,13 +72,13 @@ public class TableElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int xpos, int ypos) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int xpos, int ypos) {
 		int yOff = 0;
 		for (int y = 0; y < rows; y++) {
 			int col = rowBorders[y];
 			if (col != 0) {
 				// shift slightly so the border does not clash with the widget outline
-				HudHelper.drawBorder(context, xpos, ypos + yOff, this.width + PAD_S, rowHeights[y], col);
+				GuiHelper.border(graphics, xpos, ypos + yOff, this.width + PAD_S, rowHeights[y], col);
 			}
 			yOff += rowHeights[y];
 		}
@@ -91,7 +91,7 @@ public class TableElement extends Element {
 				int lineX2 = xpos + xOff - PAD_S;
 				int lineY1 = ypos + 1;
 				int lineY2 = ypos + this.height - PAD_S - 1;
-				context.fill(lineX1, lineY1, lineX2, lineY2, this.color);
+				graphics.fill(lineX1, lineY1, lineX2, lineY2, this.color);
 			}
 			yOff = 0;
 			for (int y = 0; y < rows; y++) {
@@ -100,7 +100,7 @@ public class TableElement extends Element {
 					// indent the first column only when a border is drawn
 					int pad = x == 0 && rowBorders[y] != 0 ? PAD_L / 2 : 0;
 					// shift down so the element is vertically centered within the row border
-					comp.render(context, xpos + xOff + pad, ypos + yOff + (rowHeights[y] / 2 - comp.height / 2 + 1));
+					comp.extractRenderState(graphics, xpos + xOff + pad, ypos + yOff + (rowHeights[y] / 2 - comp.height / 2 + 1));
 				}
 				yOff += rowHeights[y];
 			}

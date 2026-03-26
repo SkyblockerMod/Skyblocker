@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
@@ -32,7 +32,7 @@ public class BuildersWandPreview {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(collector -> {
+		LevelRenderExtractionCallback.EVENT.register(collector -> {
 			if (!SkyblockerConfigManager.get().helpers.buildersWand.enableBuildersWandPreview || !Utils.isOnSkyblock() || client.player == null) return;
 			if (!Utils.isInPrivateIsland() && !Utils.isInGarden()) return;
 			if (!(client.hitResult instanceof BlockHitResult blockHitResult) || blockHitResult.getType() != HitResult.Type.BLOCK) return;

@@ -22,7 +22,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -58,7 +58,7 @@ public class KuudraWaypoints {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(KuudraWaypoints::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(KuudraWaypoints::extractRendering);
 		ClientLifecycleEvents.CLIENT_STARTED.register(KuudraWaypoints::load);
 		Scheduler.INSTANCE.scheduleCyclic(KuudraWaypoints::tick, 20);
 	}
@@ -67,7 +67,7 @@ public class KuudraWaypoints {
 		CompletableFuture<Void> safeSpots = loadWaypoints(client, SkyblockerMod.id("crimson/kuudra/safe_spot_waypoints.json"), SAFE_SPOT_WAYPOINTS, SAFE_SPOT_COLOR);
 		CompletableFuture<Void> pearls = loadWaypoints(client, SkyblockerMod.id("crimson/kuudra/pearl_waypoints.json"), PEARL_WAYPOINTS, PEARL_COLOR);
 
-		CompletableFuture.allOf(safeSpots, pearls).whenComplete((_result, _throwable) -> loaded = true);
+		CompletableFuture.allOf(safeSpots, pearls).whenComplete((_, _) -> loaded = true);
 	}
 
 	private static CompletableFuture<Void> loadWaypoints(Minecraft client, Identifier file, ObjectArrayList<Waypoint> list, float[] colorComponents) {

@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 
 public interface VanillaRenderer<S> {
 

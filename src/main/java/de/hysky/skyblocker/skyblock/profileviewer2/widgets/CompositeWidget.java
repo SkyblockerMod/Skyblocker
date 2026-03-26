@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public final class CompositeWidget extends ProfileViewerWidget {
@@ -10,7 +10,7 @@ public final class CompositeWidget extends ProfileViewerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 
 	}
 }

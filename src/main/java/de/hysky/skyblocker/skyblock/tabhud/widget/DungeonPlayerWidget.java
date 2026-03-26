@@ -7,12 +7,13 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlayerElement;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.ItemStack;
 
 // this widget shows info about a player in the current dungeon group
 public class DungeonPlayerWidget extends TabHudWidget {
@@ -56,7 +57,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 				DungeonClass dungeonClass = DungeonClass.from(cl);
 
 				ChatFormatting clf = ChatFormatting.GRAY;
-				ItemStack cli = dungeonClass.icon();
+				FlexibleItemStack cli = dungeonClass.icon();
 				if (dungeonClass != DungeonClass.UNKNOWN) {
 					clf = ChatFormatting.LIGHT_PURPLE;
 					cl += " " + m.group("level");

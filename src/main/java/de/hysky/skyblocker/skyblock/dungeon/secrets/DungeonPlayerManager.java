@@ -46,7 +46,7 @@ public class DungeonPlayerManager {
 		DungeonEvents.DUNGEON_LOADED.register(() -> dungeonLoaded = true);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonPlayerManager::updatePlayers, 1);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonPlayerManager::onPlayerGhost);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	public static @Nullable DungeonPlayer[] getPlayers() {
