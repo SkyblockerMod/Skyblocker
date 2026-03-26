@@ -103,13 +103,13 @@ public class SecretsTracker {
 	private static void sendResultMessage(String player, SecretData secretData) {
 		Player playerEntity = Minecraft.getInstance().player;
 		if (playerEntity == null) return;
-		playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.feedback", Component.literal(player).append(" (" + DungeonPlayerManager.getClassFromPlayer(player).displayName() + ")").withColor(0xF57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))), false);
+		playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.feedback", Component.literal(player).append(" (" + DungeonPlayerManager.getClassFromPlayer(player).displayName() + ")").withColor(0xF57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))));
 	}
 
 	private static void sendFailureMessage() {
 		Player playerEntity = Minecraft.getInstance().player;
 		if (playerEntity == null) return;
-		playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.failFeedback")), false);
+		playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.failFeedback")));
 	}
 
 	private static Component getCacheText(boolean cached, int cacheAge) {

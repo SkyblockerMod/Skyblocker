@@ -8,7 +8,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jspecify.annotations.Nullable;
@@ -17,7 +17,7 @@ import java.awt.Color;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -116,9 +116,9 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		renderBar(context);
-		if (enabled) renderText(context);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		extractBar(graphics);
+		if (enabled) extractText(graphics);
 	}
 
 	protected Identifier getIcon() {
@@ -126,26 +126,26 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	public void renderBar(GuiGraphics context) {
+	public void extractBar(GuiGraphicsExtractor graphics) {
 		if (renderWidth <= 0) return;
 		int transparency = transparency(-1);
 		switch (iconPosition) {
-			case LEFT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX, renderY, ICON_SIZE, ICON_SIZE, transparency);
-			case RIGHT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX + renderWidth - ICON_SIZE, renderY, ICON_SIZE, ICON_SIZE, transparency);
+			case LEFT -> graphics.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX, renderY, ICON_SIZE, ICON_SIZE, transparency);
+			case RIGHT -> graphics.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX + renderWidth - ICON_SIZE, renderY, ICON_SIZE, ICON_SIZE, transparency);
 		}
 
 		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 1 : renderX;
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
-		drawBarFill(context, barX, barWidth);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
+		extractBarFill(graphics, barX, barWidth);
 		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
 	}
 
-	protected void drawBarFill(GuiGraphics context, int barX, int barWith) {
-		HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
+	protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWith) {
+		GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
 
 		if (hasOverflow() && overflowFill > 0) {
-			HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
+			GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
 		}
 	}
 
@@ -161,7 +161,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		updateValues(resource.value() / (float) resource.max(), resource.overflow() / (float) resource.max(), resource.value(), resource.max(), resource.overflow() > 0 ? resource.overflow() : null);
 	}
 
-	public void renderText(GuiGraphics context) {
+	public void extractText(GuiGraphicsExtractor graphics) {
 		if (!showText()) return;
 		Font textRenderer = Minecraft.getInstance().font;
 		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
@@ -191,10 +191,10 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		int color = transparency((textColor == null ? colors[0] : textColor).getRGB());
 		int outlineColor = transparency(CommonColors.BLACK);
 
-		HudHelper.drawOutlinedText(context, Component.translationArg(text), x, y, color, outlineColor);
+		GuiHelper.outlinedText(graphics, Component.translationArg(text), x, y, color, outlineColor);
 	}
 
-	public void renderCursor(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void extractCursor(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		int temp_x = renderX;
 		int temp_y = renderY;
 		boolean temp_ghost = inMouse;
@@ -203,7 +203,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		renderY = mouseY;
 		inMouse = false;
 
-		render(context, mouseX, mouseY, delta);
+		extractRenderState(graphics, mouseX, mouseY, a);
 
 		renderX = temp_x;
 		renderY = temp_y;
@@ -442,17 +442,17 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		}
 
 		@Override
-		protected void drawBarFill(GuiGraphics context, int barX, int barWith) {
+		protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWith) {
 			if (hasOverflow() && overflowFill > 0) {
 				if (overflowFill > fill && SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.IN_FRONT) {
-					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
-					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
 				} else {
-					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
-					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
 				}
 			} else {
-				HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+				GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
 			}
 		}
 
@@ -493,7 +493,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		}
 
 		@Override
-		protected void drawBarFill(GuiGraphics context, int barX, int barWidth) {
+		protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWidth) {
 			Minecraft client = Minecraft.getInstance();
 			boolean withering = client.player != null && client.player.hasEffect(MobEffects.WITHER);
 			boolean poisoned = client.player != null && client.player.hasEffect(MobEffects.POISON);
@@ -507,9 +507,9 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 				fillColor = getColors()[0].getRGB();
 			}
 
-			HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWidth - 2) * fill), 5, transparency(fillColor));
+			GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWidth - 2) * fill), 5, transparency(fillColor));
 			if (hasOverflow() && overflowFill > 0) {
-				HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWidth - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+				GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWidth - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
 			}
 		}
 

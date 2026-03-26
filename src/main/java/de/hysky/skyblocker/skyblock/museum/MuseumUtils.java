@@ -60,7 +60,7 @@ public class MuseumUtils {
 				return Component.literal(setName).setStyle(nameStyle);
 			}
 		} else {
-			ItemStack stack = ItemRepository.getItemStack(id);
+			ItemStack stack = ItemRepository.getItemStack(id).getStackOrThrow();
 			if (stack != null) {
 				return stack.getHoverName();
 			}

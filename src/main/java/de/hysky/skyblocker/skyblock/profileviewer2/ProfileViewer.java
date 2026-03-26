@@ -27,8 +27,8 @@ import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.Pair;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -46,10 +46,10 @@ public class ProfileViewer {
 	public static void init() {
 		if (!Debug.debugEnabled()) return;
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, commandContext) -> {
-			LiteralArgumentBuilder<FabricClientCommandSource> pvCommandBuilder = ClientCommandManager.literal("pv2")
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
+			LiteralArgumentBuilder<FabricClientCommandSource> pvCommandBuilder = ClientCommands.literal("pv2")
 					.executes(Scheduler.queueOpenScreenFactoryCommand(context -> openProfileViewer(context.getSource(), context.getSource().getClient().getUser().getName())))
-					.then(ClientCommandManager.argument("name", StringArgumentType.string())
+					.then(ClientCommands.argument("name", StringArgumentType.string())
 							.suggests((context, builder) -> SharedSuggestionProvider.suggest(getPlayerSuggestions(context.getSource()), builder))
 							.executes(Scheduler.queueOpenScreenFactoryCommand(context -> openProfileViewer(context.getSource(), StringArgumentType.getString(context, "name")))));
 			dispatcher.register(pvCommandBuilder);

@@ -12,13 +12,14 @@ import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetStyleVisi
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.InsertTextVisitor;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.SetStyleVisitor;
 import de.hysky.skyblocker.utils.OkLabColor;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
@@ -72,7 +73,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 	private @Nullable Style insertAs;
 
 	public CustomizeNameWidget(Screen parent) {
-		super(0, 0, 0, 0, Component.literal("Customize Item Name"));
+		super(0, 0, 0, 0, Component.literal("Customize Item Name"), AbstractScrollArea.defaultSettings(4));
 		ImmutableList.Builder<AbstractWidget> builder = ImmutableList.builder();
 		// the gui is a grid of 20 columns, should be 16 px each
 		textField = grid.addChild(new TextField(), 1, 0, 1, 20);
@@ -87,10 +88,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 
 		addFormattingButtons(builder);
 
-		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.customColor"), b ->
+		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.customColor"), _ ->
 				client.setScreen(ColorPopup.create(parent, color -> setStyle(Style.EMPTY.withColor(color))))
 		).size(48, 16).build(), 2, 17, 1, 3));
-		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.gradientColor"), b ->
+		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.gradientColor"), _ ->
 				client.setScreen(ColorPopup.createGradient(parent, this::createGradient))
 		).size(48, 16).build(), 3, 17, 1, 3));
 		builder.add(grid.addChild(new StringWidget(20 * 16, textRenderer.lineHeight, Component.translatable("skyblocker.customItemNames.screen.howToRemove").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY), textRenderer)/*.alignLeft()*/, 4, 0, 1, 20, LayoutSettings.defaults().paddingTop(2)));
@@ -135,8 +136,8 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-		context.blitSprite(
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
+		graphics.blitSprite(
 				RenderPipelines.GUI_TEXTURED,
 				INNER_SPACE_TEXTURE,
 				getX(),
@@ -144,11 +145,11 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 				getWidth(),
 				getHeight());
 		if (Debug.debugEnabled()) {
-			context.drawString(textRenderer, Component.literal("Selection Start: " + selectionStart + ", Selection End: " + selectionEnd), getX(), getBottom(), -1);
-			context.drawString(textRenderer, Component.literal("Insert Style: " + (insertAs == null ? "null" : insertAs.toString())), getX(), getBottom() + 10, -1);
+			graphics.text(textRenderer, Component.literal("Selection Start: " + selectionStart + ", Selection End: " + selectionEnd), getX(), getBottom(), -1);
+			graphics.text(textRenderer, Component.literal("Insert Style: " + (insertAs == null ? "null" : insertAs.toString())), getX(), getBottom() + 10, -1);
 		}
 		for (AbstractWidget widget : widgets) {
-			widget.render(context, mouseX, mouseY, deltaTicks);
+			widget.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 		}
 	}
 
@@ -379,9 +380,9 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 		@Override
-		protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			this.renderDefaultSprite(context);
-			this.renderDefaultLabel(context.textRenderer());
+		protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			this.extractDefaultSprite(graphics);
+			this.extractDefaultLabel(graphics.textRenderer());
 		}
 	}
 
@@ -402,9 +403,9 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		public void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			this.renderDefaultSprite(context);
-			context.fill(getX() + 2, getY() + 2, getRight() - 2, getBottom() - 2, intColor);
+		public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			this.extractDefaultSprite(graphics);
+			graphics.fill(getX() + 2, getY() + 2, getRight() - 2, getBottom() - 2, intColor);
 		}
 
 		@Override
@@ -428,7 +429,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			if (renderedSelectionStart != selectionStart || renderedSelectionEnd != selectionEnd || updateMePrettyPlease) {
 				renderedSelectionStart = selectionStart;
 				renderedSelectionEnd = selectionEnd;
@@ -439,27 +440,27 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 				renderEnd = getRenderWidthVisitor.getWidths().secondInt();
 			}
 
-			context.fill(getX(), getY(), getRight(), getBottom(), CommonColors.BLACK);
-			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), isFocused() ? CommonColors.WHITE : CommonColors.GRAY);
+			graphics.fill(getX(), getY(), getRight(), getBottom(), CommonColors.BLACK);
+			GuiHelper.border(graphics, getX(), getY(), getWidth(), getHeight(), isFocused() ? CommonColors.WHITE : CommonColors.GRAY);
 			int textX = getTextX();
 			int textY = getY() + (getHeight() - textRenderer.lineHeight) / 2;
 
 			if (renderStart != renderEnd) {
-				context.fill(textX + renderStart, textY, textX + renderEnd, textY + textRenderer.lineHeight, CommonColors.BLUE);
+				graphics.fill(textX + renderStart, textY, textX + renderEnd, textY + textRenderer.lineHeight, CommonColors.BLUE);
 			}
 			if (this.isFocused()) {
-				context.vLine(textX + (selectionStart < selectionEnd ? renderStart : renderEnd) - 1, textY - 1, textY + textRenderer.lineHeight, CommonColors.WHITE);
+				graphics.verticalLine(textX + (selectionStart < selectionEnd ? renderStart : renderEnd) - 1, textY - 1, textY + textRenderer.lineHeight, CommonColors.WHITE);
 			}
 
-			context.drawString(textRenderer, text, textX, textY, -1, false);
+			graphics.text(textRenderer, text, textX, textY, -1, false);
 
-			this.handleCursor(context);
+			this.handleCursor(graphics);
 		}
 
 		@Override
-		protected void handleCursor(GuiGraphics context) {
+		protected void handleCursor(GuiGraphicsExtractor graphics) {
 			if (this.isHovered()) {
-				context.requestCursor(CursorTypes.IBEAM);
+				graphics.requestCursor(CursorTypes.IBEAM);
 			}
 		}
 

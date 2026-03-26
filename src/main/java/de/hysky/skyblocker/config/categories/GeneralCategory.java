@@ -34,7 +34,7 @@ public class GeneralCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.skyblockerScreen"))
 						.prompt(Component.translatable("text.skyblocker.open"))
-						.action(screen -> Minecraft.getInstance().setScreen(new SkyblockerScreen()))
+						.action(_ -> Minecraft.getInstance().setScreen(new SkyblockerScreen()))
 						.build())
 
 				// Disable All
@@ -248,7 +248,7 @@ public class GeneralCategory {
 								.binding(defaults.general.itemTooltip.enableCraftingCost,
 										() -> config.general.itemTooltip.enableCraftingCost,
 										newValue -> config.general.itemTooltip.enableCraftingCost = newValue)
-								.listener((ignored, updateType) -> {
+								.listener((_, updateType) -> {
 									if (updateType == UpdateType.VALUE_CHANGE) CraftPriceTooltip.clearCache();
 								})
 								.controller(ConfigUtils.createEnumController())

@@ -63,7 +63,7 @@ public class TimeTowerReminder {
 	private static void sendMessage() {
 		if (Minecraft.getInstance().player == null || !Utils.isOnSkyblock()) return;
 		if (SkyblockerConfigManager.get().helpers.chocolateFactory.enableTimeTowerReminder) {
-			Minecraft.getInstance().player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.chocolateFactory.sendTimeTowerReminderMessage").withStyle(ChatFormatting.RED)), false);
+			Minecraft.getInstance().player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.chocolateFactory.sendTimeTowerReminderMessage").withStyle(ChatFormatting.RED)));
 		}
 		File tempFile = SkyblockerMod.CONFIG_DIR.resolve(TIME_TOWER_FILE).toFile();
 		try {

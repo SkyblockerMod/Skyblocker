@@ -4,9 +4,9 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public interface WorldRenderExtractionCallback {
-	Event<WorldRenderExtractionCallback> EVENT = EventFactory.createArrayBacked(WorldRenderExtractionCallback.class, callbacks -> collector -> {
-		for (WorldRenderExtractionCallback callback : callbacks) {
+public interface LevelRenderExtractionCallback {
+	Event<LevelRenderExtractionCallback> EVENT = EventFactory.createArrayBacked(LevelRenderExtractionCallback.class, callbacks -> collector -> {
+		for (LevelRenderExtractionCallback callback : callbacks) {
 			callback.onExtract(collector);
 		}
 	});

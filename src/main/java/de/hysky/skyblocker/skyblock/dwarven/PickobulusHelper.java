@@ -7,7 +7,7 @@ import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import org.jspecify.annotations.Nullable;
@@ -124,7 +124,7 @@ public class PickobulusHelper {
 	@Init
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(PickobulusHelper::update, 1);
-		WorldRenderExtractionCallback.EVENT.register(PickobulusHelper::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(PickobulusHelper::extractRendering);
 	}
 
 	private static void update() {

@@ -32,7 +32,7 @@ public class CallMismyla extends ChatPatternListener {
 				style.withClickEvent(new ClickEvent.RunCommand("/call mismyla"))
 						.withColor(ChatFormatting.AQUA)
 		);
-		player.displayClientMessage(callMessage, false);
+		player.sendSystemMessage(callMessage);
 
 		return false;
 	}

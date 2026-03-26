@@ -5,6 +5,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -51,12 +52,12 @@ public class PetCache {
 	public static void init() {
 		CACHED_PETS.load();
 
-		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
+		ScreenEvents.BEFORE_INIT.register((_, screen, _, _) -> {
 			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
 				if (genericContainerScreen.getTitle().getString().startsWith("Pets")) {
 					shouldLook4Pets = true;
 
-					ScreenEvents.afterTick(screen).register(screen1 -> {
+					ScreenEvents.afterTick(screen).register(_ -> {
 						if (shouldLook4Pets) {
 							for (Slot slot : genericContainerScreen.getMenu().slots) {
 								ItemStack stack = slot.getItem();
@@ -128,7 +129,7 @@ public class PetCache {
 
 			//The index has nothing to do with the codepoint's position so we must track it ourselves
 			//The visitor automatically folds section symbols into regular Style instances so we don't need to care about those either :)
-			ordered.accept((index, style, codePoint) -> {
+			ordered.accept((_, style, _) -> {
 				if (codePointIndex.intValue() == nameIndex) {
 					color.setValue(style.getColor().getValue());
 
@@ -150,8 +151,9 @@ public class PetCache {
 
 				//Find pet in NEU repo
 				ItemStack stack = ItemRepository.getItemsStream()
-						.filter(s -> s.getHoverName().getString().contains("] " + name))
+						.filter(s -> s.getStackOrThrow().getHoverName().getString().contains("] " + name))
 						.findFirst()
+						.map(FlexibleItemStack::getStackOrThrow)
 						.orElse(ItemStack.EMPTY);
 
 				if (!stack.isEmpty()) {

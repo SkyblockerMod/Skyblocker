@@ -119,11 +119,11 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	public void start(ContainerScreen screen) {
 		resetState();
 		isInMenu = true;
-		ScreenEvents.afterTick(screen).register(s -> {
+		ScreenEvents.afterTick(screen).register(_ -> {
 			Int2ObjectMap<ItemStack> slots = getSlots(screen);
 			trackTargetPaneMovement(slots);
 		});
-		ScreenEvents.remove(screen).register(s -> resetState());
+		ScreenEvents.remove(screen).register(_ -> resetState());
 	}
 
 	@Override
@@ -389,7 +389,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 					if (currentSpeed >= 1 && currentSpeed <= 5) {
 						return currentSpeed;
 					}
-				} catch (NumberFormatException ignored) {
+				} catch (NumberFormatException _) {
 				}
 			}
 		}

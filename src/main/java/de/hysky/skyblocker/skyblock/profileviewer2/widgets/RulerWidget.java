@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.AbstractProfileViewerScreen;
-import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import de.hysky.skyblocker.utils.render.GuiHelper;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 
@@ -18,12 +18,12 @@ public final class RulerWidget extends ProfileViewerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		int borderWidth = AbstractProfileViewerScreen.BACKGROUND_WIDTH - (CONTENT_PADDING * 2);
 		int borderHeight = AbstractProfileViewerScreen.BACKGROUND_HEIGHT - (CONTENT_PADDING * 2);
 
 		// Content Border
-		HudHelper.drawBorder(graphics, this.getX(), this.getY(), borderWidth, borderHeight, CommonColors.HIGH_CONTRAST_DIAMOND);
+		GuiHelper.border(graphics, this.getX(), this.getY(), borderWidth, borderHeight, CommonColors.HIGH_CONTRAST_DIAMOND);
 		// Content Origin Point
 		graphics.fill(this.getX(), this.getY(), this.getX() + 1, this.getY() + 1, CommonColors.RED);
 	}

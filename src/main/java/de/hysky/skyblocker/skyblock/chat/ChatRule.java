@@ -258,11 +258,11 @@ public class ChatRule {
 
 		try {
 			this.pattern = Pattern.compile(filterText);
-		} catch (PatternSyntaxException ex) {
+		} catch (PatternSyntaxException _) {
 			this.enabled = false;
 			Minecraft client = Minecraft.getInstance();
 			if (client.player == null) return;
-			client.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)), false);
+			client.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)));
 		}
 	}
 

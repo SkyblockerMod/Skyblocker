@@ -3,8 +3,9 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -30,7 +31,7 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 
 
 	public FinderSettingsContainer(int x, int y, int height) {
-		super(x, y, 336, height, Component.empty());
+		super(x, y, 336, height, Component.empty(), AbstractScrollArea.defaultSettings(4));
 	}
 
 	@Override
@@ -169,8 +170,8 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 				//System.out.println("Min and max: " + minAndMax[0] + " " + minAndMax[1]);
 				int leMin = -1;
 				int leMax = -1;
-				try { leMin = Integer.parseInt(minAndMax[0].trim()); } catch (NumberFormatException ignored) {}
-				try { leMax = Integer.parseInt(minAndMax[1].trim()); } catch (NumberFormatException ignored) {}
+				try { leMin = Integer.parseInt(minAndMax[0].trim()); } catch (NumberFormatException _) {}
+				try { leMax = Integer.parseInt(minAndMax[1].trim()); } catch (NumberFormatException _) {}
 
 				widget.setMinAndMax(leMin, leMax);
 				return true;
@@ -275,15 +276,15 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		if (!visible || !isInitialized) return;
-		this.classLevelRange.render(context, mouseX, mouseY, delta);
-		this.dungeonLevelRange.render(context, mouseX, mouseY, delta);
+		this.classLevelRange.extractRenderState(graphics, mouseX, mouseY, a);
+		this.dungeonLevelRange.extractRenderState(graphics, mouseX, mouseY, a);
 
 		// Render the dropdowns last to fix overlap issue.
-		this.sortGroupsSelector.render(context, mouseX, mouseY, delta);
-		this.floorSelector.render(context, mouseX, mouseY, delta);
-		this.dungeonTypeSelector.render(context, mouseX, mouseY, delta);
+		this.sortGroupsSelector.extractRenderState(graphics, mouseX, mouseY, a);
+		this.floorSelector.extractRenderState(graphics, mouseX, mouseY, a);
+		this.dungeonTypeSelector.extractRenderState(graphics, mouseX, mouseY, a);
 	}
 
 	@Override

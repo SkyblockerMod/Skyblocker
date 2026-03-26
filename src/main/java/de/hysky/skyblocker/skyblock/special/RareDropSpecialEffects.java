@@ -3,12 +3,12 @@ package de.hysky.skyblocker.skyblock.special;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,14 +45,15 @@ public class RareDropSpecialEffects {
 	}
 
 	private static void triggerDropEffect(String itemName) {
-		ItemStack stack = getStackFromName(itemName);
-		if (stack != null && !stack.isEmpty()) {
+		FlexibleItemStack stack = getStackFromName(itemName);
+
+		if (stack != null && stack.getStack() != null && !stack.getStack().isEmpty()) {
 			CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.SCRAPE, 30);
-			CLIENT.gameRenderer.displayItemActivation(stack);
+			CLIENT.gameRenderer.displayItemActivation(stack.getStackOrThrow());
 		}
 	}
 
-	private static @Nullable ItemStack getStackFromName(String itemName) {
+	private static @Nullable FlexibleItemStack getStackFromName(String itemName) {
 		String itemId = switch (itemName) {
 			//Slayer
 			//Zombie

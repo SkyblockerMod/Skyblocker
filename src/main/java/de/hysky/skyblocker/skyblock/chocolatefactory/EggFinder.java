@@ -13,7 +13,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.command.argumenttypes.EggTypeArgumentType;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -47,8 +47,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class EggFinder {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Egg Finder");
@@ -63,10 +63,10 @@ public class EggFinder {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> clearEggs());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> clearEggs());
 		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(EggFinder::onChatMessage);
-		WorldRenderExtractionCallback.EVENT.register(EggFinder::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(EggFinder::extractRendering);
 
 		SkyblockTime.HOUR_CHANGE.register(hour -> {
 			if (!isSpring) return;
@@ -86,7 +86,7 @@ public class EggFinder {
 			if (!isSpring) clearEggs();
 		});
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
 			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("shareLocation").then(argument("eggType", EggTypeArgumentType.eggType())
 					.executes(context -> {
 						EggType eggType = context.getArgument("eggType", EggType.class);
@@ -100,7 +100,7 @@ public class EggFinder {
 
 			if (!Debug.debugEnabled()) return;
 			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("resetFoundStatus")
-					.executes(context -> {
+					.executes(_ -> {
 						for (EggType type : EggType.entries) {
 							type.collected = false;
 							if (type.egg != null) type.egg.setMissing();
@@ -109,7 +109,7 @@ public class EggFinder {
 					}))));
 
 			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("clearWaypoints")
-					.executes(context -> {
+					.executes(_ -> {
 						clearEggs();
 						return Command.SINGLE_SUCCESS;
 					}))));
@@ -180,7 +180,7 @@ public class EggFinder {
 			if (client.player == null || client.level == null) return true;
 			List<ArmorStand> entities = client.level.getEntitiesOfClass(ArmorStand.class,
 					AABB.ofSize(client.player.position(), 4f, 4f, 4f),
-					(entity) -> EggFinder.checkIfEgg(entity, eggType)
+					entity -> EggFinder.checkIfEgg(entity, eggType)
 			);
 
 			if (entities.size() != 1) return true;
@@ -244,12 +244,11 @@ public class EggFinder {
 
 		public void sendEggMessage() {
 			MutableComponent eggName = Component.translatable("skyblocker.helpers.hoppitysHunt.chocolateEgg", this.name).withColor(color);
-			Minecraft.getInstance().player.displayClientMessage(
+			Minecraft.getInstance().player.sendSystemMessage(
 					Constants.PREFIX.get().append(Component.translatable("skyblocker.helpers.hoppitysHunt.newEggDiscovered", eggName, egg.pos.toShortString())
 					).withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker eggFinder shareLocation " + this))
 							.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.helpers.hoppitysHunt.shareEggPrompt").withStyle(ChatFormatting.GREEN)))
-					),
-					false
+					)
 			);
 		}
 

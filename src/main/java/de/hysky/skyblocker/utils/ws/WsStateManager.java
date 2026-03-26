@@ -18,8 +18,8 @@ public class WsStateManager {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
-		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
+		ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> reset());
 	}
 
 	private static void reset() {

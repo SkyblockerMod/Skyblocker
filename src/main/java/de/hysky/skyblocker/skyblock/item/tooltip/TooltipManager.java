@@ -84,16 +84,16 @@ public class TooltipManager {
 
 	@Init
 	public static void init() {
-		ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
+		ItemTooltipCallback.EVENT.register((stack, _, _, lines) -> {
 			if (Minecraft.getInstance().screen instanceof AbstractContainerScreen<?> handledScreen) {
 				addToTooltip(((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot(), stack, lines);
 			} else {
 				addToTooltip(null, stack, lines);
 			}
 		});
-		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			onScreenChange(screen);
-			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders = List.of());
+			ScreenEvents.remove(screen).register(_ -> currentScreenAdders = List.of());
 		});
 	}
 

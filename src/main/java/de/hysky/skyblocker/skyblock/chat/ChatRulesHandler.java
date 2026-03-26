@@ -13,8 +13,8 @@ import de.hysky.skyblocker.utils.render.gui.BasicToast;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
@@ -40,11 +40,11 @@ public class ChatRulesHandler {
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> CHAT_RULE_LIST.init());
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> CHAT_RULE_LIST.init());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
-				dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-						.then(ClientCommandManager.literal("chatRules")
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
+				dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+						.then(ClientCommands.literal("chatRules")
 								.executes(
 										Scheduler.queueOpenScreenCommand(() -> new ChatRulesConfigScreen(null)))
 		)));
@@ -85,7 +85,7 @@ public class ChatRulesHandler {
 
 			// Show in action bar
 			if (rule.getActionBarMessage() != null && CLIENT.player != null) {
-				CLIENT.player.displayClientMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())), true);
+				CLIENT.player.sendOverlayMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())));
 			}
 
 			if (rule.getToastMessage() != null) {

@@ -43,8 +43,8 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public final class CorpseProfitTracker extends AbstractProfitTracker {
 	// Items without a proper item id or price
@@ -83,7 +83,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		SkyblockEvents.PROFILE_CHANGE.register(INSTANCE::onProfileChange);
 
 		// @formatter:off // Don't you hate it when your format style for chained method calls makes a chain like this incredibly ugly?
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
 			literal(SkyblockerMod.NAMESPACE)
 				.then(literal("rewardTrackers")
 					.then(literal("corpse")
@@ -137,12 +137,12 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			}
 			currentProfileRewards.add(lastCorpseLoot);
 			if (!lastCorpseLoot.isPriceDataComplete()) {
-				Minecraft.getInstance().gui.getChat().addMessage(
+				Minecraft.getInstance().gui.getChat().addClientSystemMessage(
 						Constants.PREFIX.get().append(Component.translatable("skyblocker.corpseTracker.somethingWentWrong").withStyle(ChatFormatting.GOLD))
 				);
 			} else {	// if forceEnglishCorpseProfitTracker is FALSE - use normal translation
 				if (!SkyblockerConfigManager.get().mining.glacite.forceEnglishCorpseProfitTracker) {
-					Minecraft.getInstance().gui.getChat().addMessage(
+					Minecraft.getInstance().gui.getChat().addClientSystemMessage(
 							Constants.PREFIX.get()
 									.append(Component.translatable("skyblocker.corpseTracker.corpseProfit", Component.literal(Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit()))
 											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED)))
@@ -152,7 +152,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 									)
 					);
 				} else {	// else, if forceEnglishCorpseProfitTracker is TRUE - force English translation
-					Minecraft.getInstance().gui.getChat().addMessage(
+					Minecraft.getInstance().gui.getChat().addClientSystemMessage(
 							Constants.PREFIX.get()
 									.append(Component.literal(String.format(CORPSE_PROFIT_MESSAGE, Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit())))
 											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED))
@@ -178,14 +178,14 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 						new ObjectArrayList<>(),
 						Instant.now()
 				);
-			} catch (IllegalArgumentException e) {
+			} catch (IllegalArgumentException _) {
 				LOGGER.error("Unknown corpse type `{}` for message: `{}`. Report this!", corpse, message);
 				return true;
 			}
 
 			try {
 				lastCorpseLoot.profit(lastCorpseLoot.profit() - type.getKeyPrice()); //Negated since the key price is a cost, not a reward
-			} catch (IllegalStateException e) { // This is thrown when the key price is not found
+			} catch (IllegalStateException _) { // This is thrown when the key price is not found
 				LOGGER.warn("No key price found for corpse type `{}`. Profit calculation will not be accurate, therefore it will not be sent to chat. It will still be added to the corpse history.", corpse);
 				lastCorpseLoot.markPriceDataIncomplete();
 			}
@@ -220,7 +220,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			}
 			try {
 				corpseLoot.profit(corpseLoot.profit() - corpseLoot.corpseType().getKeyPrice());
-			} catch (IllegalStateException e) {
+			} catch (IllegalStateException _) {
 				LOGGER.warn("No key price found for corpse type `{}`. Profit calculation will not be accurate.", corpseLoot.corpseType());
 				corpseLoot.markPriceDataIncomplete();
 			}
