@@ -34,7 +34,7 @@ public class McGrubberUpdater {
 
 	@Init
 	public static void init() {
-		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
+		ScreenEvents.BEFORE_INIT.register((_, screen, _, _) -> {
 			if (!Utils.isOnSkyblock() || !(screen instanceof ContainerScreen containerScreen)) {
 				return;
 			} else if (!SkyblockerConfigManager.get().otherLocations.rift.autoDetectMcGrubber) {
@@ -42,9 +42,9 @@ public class McGrubberUpdater {
 			}
 
 			if (Utils.isInTheRift() && containerScreen.getTitle().getString().equals(MOTES_GRUBBER)) {
-				ScreenEvents.remove(screen).register(_screen -> McGrubberUpdater.fromMotesGrubber(containerScreen));
+				ScreenEvents.remove(screen).register(_ -> McGrubberUpdater.fromMotesGrubber(containerScreen));
 			} else if (!Utils.isInTheRift() && containerScreen.getTitle().getString().equals(CONSUMABLE_ITEMS)) {
-				ScreenEvents.remove(screen).register(_screen -> McGrubberUpdater.fromConsumableItems(containerScreen));
+				ScreenEvents.remove(screen).register(_ -> McGrubberUpdater.fromConsumableItems(containerScreen));
 			}
 		});
 		ClientReceiveMessageEvents.ALLOW_GAME.register(McGrubberUpdater::fromOrbPickup);
