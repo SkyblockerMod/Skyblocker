@@ -13,12 +13,13 @@ public class FunUtils {
 	public static final Random RANDOM = new Random();
 
 	private static final String OBFUSCATED_NAME = "Corruptedblocker";
-	public static final List<String> FUN_NAMES = List.of("Skibidiblocker",
+	public static final List<String> FUN_NAMES = List.of(
 			"Skibidiblocker",
 			"Skiblocker",
 			OBFUSCATED_NAME,
 			"AAAAAAAAblocker",
-			"camelCaseBlocker");
+			"camelCaseBlocker"
+	);
 
 	public static Component getRandomFunName() {
 		return createUnpleasantGradient(FUN_NAMES.get(RANDOM.nextInt(FUN_NAMES.size())));
