@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
@@ -41,7 +43,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class ChatRuleConfigScreen extends Screen {
 	private static final int COLUMN_WIDTH = 105;
 	private static final int GRID_SPACING = 2;
 	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
-	private static final ItemStack INVALID_ITEM = new ItemStack(Items.BARRIER);
+	private static final FlexibleItemStack INVALID_ITEM = Ico.BARRIER;
 	private static final Component YES_TEXT = CommonComponents.GUI_YES.copy().withStyle(ChatFormatting.GREEN);
 	private static final Component NO_TEXT = CommonComponents.GUI_NO.copy().withStyle(ChatFormatting.RED);
 
@@ -263,15 +264,15 @@ public class ChatRuleConfigScreen extends Screen {
 		// Item input
 		contentAdder.addChild(new ToggleableLayoutWidget(itemInput, toastOptionsPredicate));
 		itemInput.setResponder(itemData -> {
-			ItemStack stack = ItemStackComponentizationFixer.fromItemString(itemData, 1);
+			FlexibleItemStack stack = new FlexibleItemStack(ItemStackComponentizationFixer.fromItemString(itemData, 1));
 			if (stack.isEmpty()) stack = INVALID_ITEM;
-			preview.stack = stack;
+			preview.stack = stack.getStackOrThrow();
 			ChatRule.ToastMessage message = chatRule.getToastMessage();
 			if (message == null) return;
-			message.icon = stack;
+			message.icon = Optional.of(stack);
 		});
 		itemInput.setTooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.@Tooltip")));
-		itemInput.setValue(chatRule.getToastMessage() != null ? getItemString(chatRule.getToastMessage().icon) : "minecraft:painting");
+		itemInput.setValue(chatRule.getToastMessage() != null ? getItemString(chatRule.getToastMessage().icon.map(FlexibleItemStack::getStack).orElse(ItemStack.EMPTY)) : "minecraft:painting");
 
 		// Duration slider
 		RangedSliderWidget sliderWidget = RangedSliderWidget.builder()

@@ -5,6 +5,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.TextTransformer;
 import de.hysky.skyblocker.utils.Utils;
@@ -22,6 +23,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.nio.file.Path;
@@ -90,7 +93,7 @@ public class ChatRulesHandler {
 
 			if (rule.getToastMessage() != null) {
 				ChatRule.ToastMessage toastMessage = rule.getToastMessage();
-				CLIENT.getToastManager().addToast(new BasicToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon));
+				CLIENT.getToastManager().addToast(new BasicToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon.map(FlexibleItemStack::getStack).orElse(ItemStack.EMPTY)));
 			}
 
 			// Play sound
