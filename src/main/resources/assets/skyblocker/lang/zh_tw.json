@@ -1699,5 +1699,8 @@
     "skyblocker.farming.farmingHud.farmingXPPerHour": "每小時農耕經驗值：%s",
     "skyblocker.farming.farmingHud.noData": "無資料",
     "skyblocker.farming.farmingHud.pitch": "俯仰角：%s",
-    "skyblocker.config.dungeons.rareRoomAlert.enabled.@Tooltip": "當你或你的隊友在地下城中發現稀有房間（如下）時，在螢幕上顯示標題並在聊天中顯示一條訊息。"
+    "skyblocker.config.dungeons.rareRoomAlert.enabled.@Tooltip": "當你或你的隊友在地下城中發現稀有房間（如下）時，在螢幕上顯示標題並在聊天中顯示一條訊息。",
+    "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "顯示沒有正確名稱的音效",
+    "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "進階",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.search.@Tooltip": "搜尋更多音效"
 }
