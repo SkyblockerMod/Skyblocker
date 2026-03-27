@@ -18,6 +18,6 @@ public class ConstantsTest {
 
 	@Test
 	void testPrefix() {
-		Assertions.assertEquals("empty[siblings=[literal{[}[style={color=gray}], empty[siblings=[literal{S}[style={color=#00FE4B}], literal{k}[style={color=#00FA6D}], literal{y}[style={color=#00F686}], literal{b}[style={color=#00F19B}], literal{l}[style={color=#00ECAE}], literal{o}[style={color=#00E7C0}], literal{c}[style={color=#00E2D0}], literal{k}[style={color=#00DCE0}], literal{e}[style={color=#01D6F0}], literal{r}[style={color=#14CFFE}]]], literal{] }[style={color=gray}]]]", Constants.PREFIX.get().toString());
+		Assertions.assertEquals("empty[siblings=[literal{[}[style={color=gray}], empty[siblings=[literal{S}[style={color=#00FF4C}], literal{k}[style={color=#00FB6D}], literal{y}[style={color=#00F686}], literal{b}[style={color=#00F29C}], literal{l}[style={color=#00EDAF}], literal{o}[style={color=#00E8C0}], literal{c}[style={color=#00E2D1}], literal{k}[style={color=#00DCE1}], literal{e}[style={color=#02D6F0}], literal{r}[style={color=#14D0FF}]]], literal{] }[style={color=gray}]]]", Constants.PREFIX.get().toString());
 	}
 }
