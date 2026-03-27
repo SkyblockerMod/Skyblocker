@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.Collection;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -58,8 +59,8 @@ public class GenericCategory implements ProfileViewerPage {
 		JsonObject playerCollection = pProfile.getAsJsonObject("collection");
 
 		for (Collection collection : collectionsData.get(this.category)) {
-			ItemStack itemStack = ItemRepository.getItemStack(ICON_TRANSLATION.getOrDefault(collection.id(), collection.id()).replace(':', '-')).getStackOrThrow();
-			itemStack = itemStack == null ? Ico.BARRIER.getStackOrThrow().copy() : itemStack.copy();
+			FlexibleItemStack flexible = ItemRepository.getItemStack(ICON_TRANSLATION.getOrDefault(collection.id(), collection.id()).replace(':', '-'));
+			ItemStack itemStack = flexible == null ? Ico.BARRIER.getStackOrThrow().copy() : flexible.getStackOrThrow().copy();
 
 			if (itemStack.getItem().getName(itemStack).getString().equals("Barrier")) {
 				itemStack.set(DataComponents.CUSTOM_NAME, Component.nullToEmpty(collection.id()));

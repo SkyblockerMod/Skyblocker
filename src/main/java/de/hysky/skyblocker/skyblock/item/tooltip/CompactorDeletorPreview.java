@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
@@ -19,6 +20,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPosition
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class CompactorDeletorPreview {
 	/**
@@ -41,10 +43,10 @@ public class CompactorDeletorPreview {
 		// Get items in compactor or deletor
 		CompoundTag customData = ItemUtils.getCustomData(stack);
 		// Get the slots and their items from the nbt, which is in the format personal_compact_<slot_number> or personal_deletor_<slot_number>
-		List<IntObjectPair<ItemStack>> slots = customData.keySet()
+		List<IntObjectPair<@Nullable FlexibleItemStack>> slots = customData.keySet()
 														.stream()
 														.filter(slot -> slot.contains(type.toLowerCase(Locale.ENGLISH).substring(0, 7)))
-														.map(slot -> IntObjectPair.of(Integer.parseInt(StringUtils.substringAfterLast(slot, "_")), ItemRepository.getItemStack(customData.getStringOr(slot, "")).getStackOrThrow())).toList();
+														.map(slot -> IntObjectPair.of(Integer.parseInt(StringUtils.substringAfterLast(slot, "_")), ItemRepository.getItemStack(customData.getStringOr(slot, "")))).toList();
 
 		List<ClientTooltipComponent> components = tooltips.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).collect(Collectors.toList());
 		IntIntPair dimensions = DIMENSIONS.getOrDefault(size, DEFAULT_DIMENSION);

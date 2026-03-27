@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -252,8 +253,9 @@ public class OverlayScreen extends Screen {
 	 */
 	private void extractItemAndTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, String id, Button button, int renderOffset) {
 		if (id.isEmpty()) return;
-		ItemStack item = getItemStack(id).getStackOrThrow();
-		if (item == null) return;
+		FlexibleItemStack flexible = getItemStack(id);
+		if (flexible == null) return;
+		ItemStack item = flexible.getStackOrThrow();
 		graphics.item(item, button.getX() + renderOffset, button.getY() + renderOffset);
 
 		// Draw tooltip
