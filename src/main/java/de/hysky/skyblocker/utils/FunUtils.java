@@ -14,33 +14,11 @@ public class FunUtils {
 
 	private static final String OBFUSCATED_NAME = "Corruptedblocker";
 	public static final List<String> FUN_NAMES = List.of("Skibidiblocker",
-			"Wynnblocker",
-			"Sillyblocker",
-			"Spicyblocker",
-			"Swagblocker",
-			"Hyblocker",
-			"Unpleasantblocker",
+			"Skibidiblocker",
 			"Skiblocker",
-			"Fortnite",
 			OBFUSCATED_NAME,
-			"Hellablocker",
-			"Gollyblocker",
-			"Grindblocker",
-			"Midblocker",
 			"AAAAAAAAblocker",
-			"Meowblocker",
-			"LMFAOblocker",
-			"76blocker",
-			"snake_case_blocker",
-			"camelCaseBlocker",
-			"PascalCaseBlocker",
-			"UPPER_CASE_BLOCKER",
-			"BBBBBBBBblocker",
-			"S-Scaryblocker",
-			"HarHarHarBlocker",
-			"Bri'ishblocker",
-			"Frenchblocker",
-			"Canadianblocker");
+			"camelCaseBlocker");
 
 	public static Component getRandomFunName() {
 		return createUnpleasantGradient(FUN_NAMES.get(RANDOM.nextInt(FUN_NAMES.size())));
@@ -56,6 +34,12 @@ public class FunUtils {
 		if (FUN_DISABLED) return false;
 		LocalDate date = LocalDate.now();
 		return date.getMonthValue() == 12 && (date.getDayOfMonth() == 24 || date.getDayOfMonth() == 25);
+	}
+
+	public static boolean shouldEnableSpookyFun() {
+		if (FUN_DISABLED) return false;
+		LocalDate date = LocalDate.now();
+		return date.getMonthValue() == 10 && date.getDayOfMonth() == 31;
 	}
 
 	public static Component createUnpleasantGradient(String string) {

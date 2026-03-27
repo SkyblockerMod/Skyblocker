@@ -28,6 +28,10 @@ public interface Constants {
 			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
 					.append(createSkyblockerGradient("Jollyblocker"))
 					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
+		} else if (FunUtils.shouldEnableSpookyFun()) {
+			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
+					.append(createSkyblockerGradient("S-Scaryblocker"))
+					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
 		}
 
 		return Component.empty()
