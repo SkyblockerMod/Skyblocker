@@ -10,6 +10,8 @@ import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -23,15 +25,14 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-// FIXME unhandled nullability
 public class DonationButton extends AbstractWidget {
 	private static final int SIZE = 33;
 	private static final int ITEM_OFFSET = 8;
 	private static final Font TEXT_RENDERER = Minecraft.getInstance().font;
-	private Donation donation = null;
+	private @Nullable Donation donation = null;
 	private @Nullable ItemStack itemStack = null;
-	private String textToRender;
-	private List<Component> tooltip;
+	private @Nullable String textToRender;
+	private @Nullable List<Component> tooltip;
 
 	protected DonationButton(int x, int y) {
 		super(x, y, SIZE, SIZE + 2, Component.empty());
@@ -72,6 +73,7 @@ public class DonationButton extends AbstractWidget {
 
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		assert donation != null && textToRender != null; // shouldn't be able to happen in-game, here to quiet down warnings
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, RecipeButton.SLOT_CRAFTABLE_SPRITE, this.getX(), this.getY(), this.width, this.height);
 
 		boolean hasPrice = donation.hasPrice();
@@ -88,6 +90,7 @@ public class DonationButton extends AbstractWidget {
 	 * Builds the tooltip for the button based on its associated donation data
 	 */
 	private void buildTooltip() {
+		assert donation != null; // shouldn't be able to happen in-game, here to quiet down warnings
 		List<Component> tooltip = new ArrayList<>();
 
 		boolean soulbound = itemStack != null && !itemStack.isEmpty() && ItemUtils.isSoulbound(itemStack);
@@ -160,7 +163,7 @@ public class DonationButton extends AbstractWidget {
 	}
 
 	protected List<Component> getItemTooltip() {
-		return this.tooltip;
+		return Objects.requireNonNull(this.tooltip, "Tried to get tooltip before button was initialized.");
 	}
 
 	@Override
