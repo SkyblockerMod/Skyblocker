@@ -115,9 +115,8 @@ public final class FlexibleItemStack implements ItemInstance, SkyblockerStack {
 		return this.copyWithCount(this.count());
 	}
 
-	// FIXME does not do a copy of the component patch
 	public FlexibleItemStack copyWithCount(int count) {
-		return new FlexibleItemStack(new ItemStackTemplate(this.template.typeHolder(), count, this.template.components()));
+		return new FlexibleItemStack(new ItemStackTemplate(this.template.typeHolder(), count, DataComponentPatchAccessor.invokeInit(new Reference2ObjectArrayMap<>(((DataComponentPatchAccessor) (Object) this.template.components()).getMap()))));
 	}
 
 	/**
