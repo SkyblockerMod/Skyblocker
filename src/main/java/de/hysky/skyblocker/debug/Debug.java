@@ -85,6 +85,7 @@ public class Debug {
 						.then(dumpBiome())
 						.then(dumpActionBar())
 						.then(auditMixins())
+						.then(prefixTest())
 				)
 		));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -201,6 +202,14 @@ public class Debug {
 				.executes(_ -> {
 					MixinEnvironment.getCurrentEnvironment().audit();
 
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> prefixTest() {
+		return literal("prefixTest")
+				.executes(context -> {
+					context.getSource().sendFeedback(Constants.PREFIX.get());
 					return Command.SINGLE_SUCCESS;
 				});
 	}
