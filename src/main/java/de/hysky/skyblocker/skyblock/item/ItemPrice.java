@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
@@ -63,7 +64,8 @@ public class ItemPrice {
 
 	public static void itemPriceLookup(LocalPlayer player, ItemStack stack) {
 		String skyblockApiId = stack.getSkyblockApiId();
-		ItemStack neuStack = ItemRepository.getItemStack(stack.getNeuName()).getStackOrThrow();
+		FlexibleItemStack flexible = ItemRepository.getItemStack(stack.getNeuName());
+		ItemStack neuStack = flexible == null ? null : flexible.getStackOrThrow();
 		if (neuStack != null && !neuStack.isEmpty()) {
 			String itemName = ChatFormatting.stripFormatting(neuStack.getHoverName().getString());
 

@@ -167,9 +167,9 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, slotX - 3, slotY - 3, 24, 24);
 			}
 
-			ItemStack item = stacks[i].getStackOrThrow();
+			FlexibleItemStack flexible = stacks[i];
 			// Still show hover highlight & pest outline in empty slots.
-			if (item == null) {
+			if (flexible == null) {
 				if (hovered)
 					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
 
@@ -178,6 +178,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 				continue;
 			}
+			ItemStack item = flexible.getStackOrThrow();
 
 			if (hovered) {
 				//noinspection deprecation

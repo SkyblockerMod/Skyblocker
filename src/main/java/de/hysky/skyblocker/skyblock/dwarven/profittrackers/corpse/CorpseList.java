@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
 import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import org.apache.commons.text.WordUtils;
 import org.jspecify.annotations.Nullable;
@@ -22,7 +23,6 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 public class CorpseList extends ContainerObjectSelectionList<CorpseList.AbstractEntry> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CorpseList.class);
@@ -81,12 +81,12 @@ public class CorpseList extends ContainerObjectSelectionList<CorpseList.Abstract
 			case CorpseProfitTracker.JASPER_CRYSTAL -> Component.literal("Jasper Crystal").withStyle(ChatFormatting.LIGHT_PURPLE);
 			case CorpseProfitTracker.ENCHANTMENT_ICE_COLD_1 -> Component.literal("Enchanted Book (Ice Cold I)").withStyle(ChatFormatting.WHITE);
 			default -> {
-				ItemStack itemStack = ItemRepository.getItemStack(itemId).getStackOrThrow();
+				FlexibleItemStack itemStack = ItemRepository.getItemStack(itemId);
 				if (itemStack == null) {
 					LOGGER.error("Item stack for item ID {} is null", itemId);
 					yield Component.empty();
 				}
-				yield itemStack.getHoverName();
+				yield itemStack.getStackOrThrow().getHoverName();
 			}
 		};
 	}

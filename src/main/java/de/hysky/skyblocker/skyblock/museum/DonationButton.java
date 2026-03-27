@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.museum;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
@@ -20,13 +21,15 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
+// FIXME unhandled nullability
 public class DonationButton extends AbstractWidget {
 	private static final int SIZE = 33;
 	private static final int ITEM_OFFSET = 8;
 	private static final Font TEXT_RENDERER = Minecraft.getInstance().font;
 	private Donation donation = null;
-	private ItemStack itemStack = null;
+	private @Nullable ItemStack itemStack = null;
 	private String textToRender;
 	private List<Component> tooltip;
 
@@ -34,7 +37,7 @@ public class DonationButton extends AbstractWidget {
 		super(x, y, SIZE, SIZE + 2, Component.empty());
 	}
 
-	protected ItemStack getDisplayStack() {
+	protected @Nullable ItemStack getDisplayStack() {
 		return this.itemStack;
 	}
 
@@ -49,10 +52,10 @@ public class DonationButton extends AbstractWidget {
 		this.textToRender = MuseumUtils.formatPrice(donation.getPriceData().getEffectivePrice());
 
 		// Determine the item stack to display
-		this.itemStack = !donation.isSet()
-				? ItemRepository.getItemStack(donation.getId()).getStackOrThrow()
-				: ItemRepository.getItemStack(MuseumItemCache.ARMOR_TO_ID.get(donation.getId())).getStackOrThrow();
-
+		FlexibleItemStack flexible = !donation.isSet()
+				? ItemRepository.getItemStack(donation.getId())
+				: ItemRepository.getItemStack(MuseumItemCache.ARMOR_TO_ID.get(donation.getId()));
+		this.itemStack = flexible == null ? null : flexible.getStackOrThrow();
 		buildTooltip();
 	}
 
@@ -97,8 +100,9 @@ public class DonationButton extends AbstractWidget {
 		// Set pieces display names
 		if (donation.isSet()) {
 			for (ObjectObjectMutablePair<String, PriceData> piece : donation.getSet()) {
-				ItemStack stack = ItemRepository.getItemStack(piece.left()).getStackOrThrow();
-				if (stack != null) {
+				FlexibleItemStack flexible = ItemRepository.getItemStack(piece.left());
+				if (flexible != null) {
+					ItemStack stack = flexible.getStackOrThrow();
 					Component itemName = stack.getHoverName().copy();
 					if (soulbound) {
 						tooltip.add(Component.literal("  ").append(itemName));
