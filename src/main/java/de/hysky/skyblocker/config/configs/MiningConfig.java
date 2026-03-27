@@ -175,8 +175,14 @@ public class MiningConfig {
 	 */
 	@Deprecated
 	public enum DwarvenHudStyle {
-		SIMPLE, FANCY, CLASSIC;
+		@Deprecated
+		SIMPLE,
+		@Deprecated
+		FANCY,
+		@Deprecated
+		CLASSIC;
 
+		@Deprecated
 		@Override
 		public String toString() {
 			return switch (this) {

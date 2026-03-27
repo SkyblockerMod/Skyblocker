@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.Pair;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -123,24 +123,24 @@ public class SkyblockRecipeBookWidget extends RecipeBookComponent<NoopRecipeScre
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (this.isVisible()) {
 			int left = accessor().invokeGetXOrigin();
 			int top = accessor().invokeGetYOrigin();
-			context.blit(RenderPipelines.GUI_TEXTURED, RECIPE_BOOK_LOCATION, left, top, 1.0f, 1.0f, IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, RECIPE_BOOK_LOCATION, left, top, 1.0f, 1.0f, IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
 
 			for (Pair<RecipeTab, SkyblockRecipeTabButton> tabButton : this.tabButtons) {
-				tabButton.right().render(context, mouseX, mouseY, delta);
+				tabButton.right().extractRenderState(graphics, mouseX, mouseY, delta);
 			}
 
-			this.currentTab.left().draw(context, left, top, mouseX, mouseY, delta);
+			this.currentTab.left().extractRenderState(graphics, left, top, mouseX, mouseY, delta);
 		}
 	}
 
 	@Override
-	public void renderTooltip(GuiGraphics context, int x, int y, @Nullable Slot slot) {
+	public void extractTooltip(GuiGraphicsExtractor graphics, int x, int y, @Nullable Slot slot) {
 		if (this.isVisible()) {
-			this.currentTab.left().drawTooltip(context, x, y);
+			this.currentTab.left().extractTooltip(graphics, x, y);
 		}
 	}
 

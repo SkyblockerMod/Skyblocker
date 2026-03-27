@@ -5,15 +5,15 @@ import java.util.concurrent.CompletableFuture;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 public sealed interface ProfileViewerPage<T> permits SkillsPage, SlayersPage {
 	/**
 	 * {@return the icon of the page}
 	 */
-	ItemStack getIcon();
+	FlexibleItemStack getIcon();
 
 	/**
 	 * {@return the name of the page}

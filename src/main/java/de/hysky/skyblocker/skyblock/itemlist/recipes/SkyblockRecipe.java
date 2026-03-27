@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import io.github.moulberry.repo.data.NEUIngredient;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -10,12 +11,11 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 
@@ -23,14 +23,14 @@ public interface SkyblockRecipe {
 	Logger LOGGER = LoggerFactory.getLogger(SkyblockRecipe.class);
 	NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
 
-	static ItemStack getItemStack(NEUIngredient input) {
-		if (input == NEUIngredient.SENTINEL_EMPTY) return Items.AIR.getDefaultInstance();
+	static FlexibleItemStack getItemStack(NEUIngredient input) {
+		if (input == NEUIngredient.SENTINEL_EMPTY) return FlexibleItemStack.EMPTY;
 
-		ItemStack stack = ItemRepository.getItemStack(input.getItemId());
+		FlexibleItemStack stack = ItemRepository.getItemStack(input.getItemId());
 		if (stack != null) {
 			return stack.copyWithCount((int) input.getAmount());
 		} else if (input.getItemId().equals("SKYBLOCK_COIN")) {
-			ItemStack itemStack = new ItemStack(Items.GOLD_NUGGET);
+			FlexibleItemStack itemStack = new FlexibleItemStack(Items.GOLD_NUGGET);
 			itemStack.set(DataComponents.ITEM_NAME, Component.literal("Skyblock Coins").withStyle(ChatFormatting.GOLD));
 			itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
 			String format = NUMBER_FORMAT.format(input.getAmount());
@@ -39,7 +39,7 @@ public interface SkyblockRecipe {
 		}
 
 		LOGGER.warn("[Skyblocker Recipe] Unable to find item {}", input.getItemId());
-		ItemStack fallbackStack = new ItemStack(Items.BARRIER);
+		FlexibleItemStack fallbackStack = new FlexibleItemStack(Items.BARRIER);
 		fallbackStack.set(DataComponents.ITEM_NAME, Component.literal(input.getItemId()));
 		return fallbackStack;
 	}
@@ -62,9 +62,9 @@ public interface SkyblockRecipe {
 		return null;
 	}
 
-	List<ItemStack> getInputs();
+	List<FlexibleItemStack> getInputs();
 
-	List<ItemStack> getOutputs();
+	List<FlexibleItemStack> getOutputs();
 
 	/**
 	 * Render some extra things, i.e an entity
@@ -74,7 +74,7 @@ public interface SkyblockRecipe {
 	 * @param mouseX mouse x
 	 * @param mouseY mouse y
 	 */
-	default void render(GuiGraphics context, int width, int height, double mouseX, double mouseY) {}
+	default void extractRenderState(GuiGraphicsExtractor graphics, int width, int height, double mouseX, double mouseY) {}
 
 	/**
 	 * Extra text like collection requirements
@@ -91,8 +91,8 @@ public interface SkyblockRecipe {
 	 */
 	Identifier getRecipeIdentifier();
 
-	record RecipeSlot(int x, int y, ItemStack stack, boolean showBackground) {
-		public RecipeSlot(int x, int y, ItemStack stack) {
+	record RecipeSlot(int x, int y, FlexibleItemStack stack, boolean showBackground) {
+		public RecipeSlot(int x, int y, FlexibleItemStack stack) {
 			this(x, y, stack, true);
 		}
 	}

@@ -24,7 +24,7 @@ public class VacuumCache {
 	public static void init() {
 		CACHED_VINYL.load();
 
-		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
+		ScreenEvents.BEFORE_INIT.register((_, screen, _, _) -> {
 			if (!Utils.isOnSkyblock() || !(screen instanceof ContainerScreen containerScreen)) {
 				return;
 			}
@@ -33,7 +33,7 @@ public class VacuumCache {
 				return;
 			}
 
-			ScreenEvents.remove(screen).register(_screen -> VacuumCache.update(containerScreen));
+			ScreenEvents.remove(screen).register(_ -> VacuumCache.update(containerScreen));
 		});
 	}
 

@@ -39,8 +39,8 @@ public class CorpseProfitScreen extends Screen {
 	@Override
 	protected void init() {
 		assert minecraft != null;
-		addRenderableOnly((context, mouseX, mouseY, delta) -> {
-			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.corpseTracker.screenTitle").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
+		addRenderableOnly((context, _, _, _) -> {
+			context.centeredText(minecraft.font, Component.translatable("skyblocker.corpseTracker.screenTitle").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
 		});
 
 		if (summaryView) addRenderableWidget(getRewardList());
@@ -59,7 +59,7 @@ public class CorpseProfitScreen extends Screen {
 
 		Component buttonText = summaryView ? Component.translatable("skyblocker.corpseTracker.historyView") : Component.translatable("skyblocker.corpseTracker.summaryView");
 		adder.addChild(Button.builder(buttonText, this::changeView).build());
-		adder.addChild(Button.builder(CommonComponents.GUI_DONE, button -> onClose()).build());
+		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
 		gridWidget.arrangeElements();
 		FrameLayout.centerInRectangle(gridWidget, 0, this.height - 64, this.width, 64);
 		gridWidget.visitWidgets(this::addRenderableWidget);

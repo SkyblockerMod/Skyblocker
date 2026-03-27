@@ -36,10 +36,10 @@ public class ItemLoader {
 				continue;
 			}
 
-			ItemStack stack = LegacyItemStackFixer.fixLegacyStack(nbt);
+			ItemStack stack = LegacyItemStackFixer.fixLegacyStack(nbt, ItemStack.CODEC);
 
 			if (stack.isEmpty()) {
-				ItemStack fallback = Ico.BARRIER.copy();
+				ItemStack fallback = Ico.BARRIER.getStackOrThrow().copy();
 
 				fallback.set(DataComponents.CUSTOM_NAME, Component.literal("Error: " + nbt.getCompoundOrEmpty("tag").getCompoundOrEmpty("ExtraAttributes").getString("id")));
 				itemList.add(fallback);
@@ -53,7 +53,7 @@ public class ItemLoader {
 			if (itemId.equals("PET")) {
 				PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getStringOr("petInfo", ""))).getOrThrow();
 				Pet pet = new Pet(petInfo);
-				itemList.add(pet.getIcon());
+				itemList.add(pet.getIcon().getStackOrThrow());
 				continue;
 			}
 

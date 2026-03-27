@@ -4,6 +4,8 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -11,14 +13,13 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.ItemStack;
 
 // this widget shows the status or results of the current election
 @RegisterWidget
 public class ElectionWidget extends TabHudWidget {
 	private static final MutableComponent TITLE = Component.literal("Election Info").withStyle(ChatFormatting.YELLOW,
 			ChatFormatting.BOLD);
-	private static final Map<String, ItemStack> MAYOR_DATA = Map.ofEntries(
+	private static final Map<String, FlexibleItemStack> MAYOR_DATA = Map.ofEntries(
 			Map.entry("Aatrox", Ico.DIA_SWORD),
 			Map.entry("Cole", Ico.IRON_PICKAXE),
 			Map.entry("Diana", Ico.BONE),

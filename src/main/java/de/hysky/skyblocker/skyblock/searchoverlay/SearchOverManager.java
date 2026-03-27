@@ -16,6 +16,7 @@ import de.hysky.skyblocker.skyblock.museum.Donation;
 import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
@@ -47,8 +48,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class SearchOverManager {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -86,8 +87,8 @@ public class SearchOverManager {
 
 	private static void registerSearchCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableCommands) {
-			dispatcher.register(literal("ahs").executes(context -> startCommand(true, "")));
-			dispatcher.register(literal("bzs").executes(context -> startCommand(false, "")));
+			dispatcher.register(literal("ahs").executes(_ -> startCommand(true, "")));
+			dispatcher.register(literal("bzs").executes(_ -> startCommand(false, "")));
 
 			dispatcher.register(literal("ahs").then(argument("item", StringArgumentType.greedyString())
 					.executes(context -> startCommand(true, StringArgumentType.getString(context, "item"))
@@ -259,6 +260,7 @@ public class SearchOverManager {
 				.filter(MuseumItemCache::hasItemInMuseum)
 				.map(ItemRepository::getItemStack)
 				.filter(Objects::nonNull)
+				.map(FlexibleItemStack::getStackOrThrow)
 				.map(ItemStack::getHoverName)
 				.map(Component::getString);
 
@@ -313,8 +315,8 @@ public class SearchOverManager {
 	private static String getItemId(String name) {
 		if (name.isEmpty()) return "";
 		if (location != SearchLocation.MUSEUM || !MuseumItemCache.ARMOR_NAMES.containsValue(name)) {
-			return namesToNeuId.computeIfAbsent(name, (str) ->
-					ItemRepository.getItemsStream().filter(stack -> stack.getHoverName().getString().equals(str))
+			return namesToNeuId.computeIfAbsent(name, str ->
+					ItemRepository.getItemsStream().filter(stack -> stack.getStackOrThrow().getHoverName().getString().equals(str))
 							.map(SkyblockerStack::getNeuName).findFirst().orElse("")
 			);
 		}
@@ -417,7 +419,7 @@ public class SearchOverManager {
 		}
 
 		// Write history to the config
-		SkyblockerConfigManager.update(_config -> {});
+		SkyblockerConfigManager.update(_ -> {});
 
 		//add pet level or dungeon starts if in ah
 		if (location == SearchLocation.AUCTION) {

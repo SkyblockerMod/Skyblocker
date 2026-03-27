@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.end.EndHudWidget;
@@ -58,6 +59,7 @@ public class OtherLocationsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter"))
+								.tags(CommonTags.ADDED_IN_6_2_0)
 								.binding(defaults.otherLocations.barn.enablePeltAnimalHighlighter,
 										() -> config.otherLocations.barn.enablePeltAnimalHighlighter,
 										newValue -> config.otherLocations.barn.enablePeltAnimalHighlighter = newValue)
@@ -171,7 +173,7 @@ public class OtherLocationsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.resetName"))
 								.prompt(Component.translatable("skyblocker.config.otherLocations.end.resetText"))
-								.action(screen -> TheEnd.PROFILES_STATS.put(TheEnd.EndStats.EMPTY.get()))
+								.action(_ -> TheEnd.PROFILES_STATS.put(TheEnd.EndStats.EMPTY.get()))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.muteEndermanSounds"))

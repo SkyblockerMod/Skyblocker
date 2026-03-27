@@ -12,6 +12,7 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.mixins.accessors.CustomDataAccessor;
 import de.hysky.skyblocker.skyblock.ChestValue;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
@@ -21,6 +22,7 @@ import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -34,18 +36,26 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.objects.AtlasSprite;
+import net.minecraft.network.chat.contents.objects.ObjectInfo;
+import net.minecraft.network.chat.contents.objects.PlayerSprite;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
@@ -67,7 +77,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public final class ItemUtils {
 	public static final String ID = "id";
@@ -76,7 +86,7 @@ public final class ItemUtils {
 	public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
 	private static final Codec<Holder<Item>> EMPTY_ALLOWING_ITEM_CODEC = BuiltInRegistries.ITEM.holderByNameCodec();
 	public static final Codec<ItemStack> EMPTY_ALLOWING_ITEMSTACK_CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
-			EMPTY_ALLOWING_ITEM_CODEC.fieldOf("id").forGetter(ItemStack::getItemHolder),
+			EMPTY_ALLOWING_ITEM_CODEC.fieldOf("id").forGetter(ItemStack::typeHolder),
 			Codec.INT.orElse(1).fieldOf("count").forGetter(ItemStack::getCount),
 			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
 	).apply(instance, ItemStack::new)));
@@ -110,7 +120,7 @@ public final class ItemUtils {
 	 *
 	 * <p><strong>Do not write directly to this instance, treat it as a read-only view.</strong>
 	 */
-	public static CompoundTag getCustomData(DataComponentHolder stack) {
+	public static CompoundTag getCustomData(DataComponentGetter stack) {
 		return ((CustomDataAccessor) (Object) stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)).getTag();
 	}
 
@@ -120,7 +130,7 @@ public final class ItemUtils {
 	 * @param stack the item stack to get the internal name from
 	 * @return an optional containing the Skyblock item id of the item stack
 	 */
-	public static Optional<String> getItemIdOptional(DataComponentHolder stack) {
+	public static Optional<String> getItemIdOptional(DataComponentGetter stack) {
 		CompoundTag customData = getCustomData(stack);
 		return customData.getString(ID);
 	}
@@ -134,7 +144,7 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getSkyblockId()}
 	 */
 	@Deprecated(since = "5.8.0")
-	public static String getItemId(DataComponentHolder stack) {
+	public static String getItemId(DataComponentGetter stack) {
 		return getCustomData(stack).getStringOr(ID, "");
 	}
 
@@ -144,7 +154,7 @@ public final class ItemUtils {
 	 * @param stack the item stack to get the UUID from
 	 * @return an optional containing the UUID of the item stack
 	 */
-	public static Optional<String> getItemUuidOptional(DataComponentHolder stack) {
+	public static Optional<String> getItemUuidOptional(DataComponentGetter stack) {
 		CompoundTag customData = getCustomData(stack);
 		return customData.getString(UUID);
 	}
@@ -158,7 +168,7 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getUuid()}
 	 */
 	@Deprecated(since = "5.8.0")
-	public static String getItemUuid(DataComponentHolder stack) {
+	public static String getItemUuid(DataComponentGetter stack) {
 		return getCustomData(stack).getStringOr(UUID, "");
 	}
 
@@ -169,8 +179,8 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getSkyblockApiId()} instead
 	 */
 	@Deprecated(since = "5.8.0")
-	public static String getSkyblockApiId(DataComponentHolder itemStack) {
-		CompoundTag customData = getCustomData(itemStack);
+	public static String getSkyblockApiId(DataComponentGetter stack) {
+		CompoundTag customData = getCustomData(stack);
 		String id = customData.getStringOr(ID, "");
 
 		// Transformation to API format.
@@ -215,8 +225,8 @@ public final class ItemUtils {
 					return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getIntOr(rune, 0);
 				}
 			}
-			case "ATTRIBUTE_SHARD" -> {
-				Attribute attribute = Attributes.getAttributeFromItemName(itemStack);
+			case String s when s.equals("ATTRIBUTE_SHARD") && stack instanceof DataComponentHolder holder -> {
+				Attribute attribute = Attributes.getAttributeFromItemName(holder);
 
 				if (attribute != null) return attribute.apiId();
 			}
@@ -242,15 +252,15 @@ public final class ItemUtils {
 			case "" -> {
 				Screen currentScreen = Minecraft.getInstance().screen;
 				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().startsWith("Superpairs")) {
-					ItemLore lore = itemStack.get(DataComponents.LORE);
+					ItemLore lore = stack.get(DataComponents.LORE);
 					if (lore == null) return id;
 					List<Component> lines = lore.lines();
 					if (lines.size() < 3) return id;
 					return EnchantedBookUtils.getApiIdByName(lines.get(2));
 				}
 
-				if (itemStack instanceof ItemStack realStack && itemStack.has(DataComponents.CUSTOM_NAME)) {
-					Component stackName = itemStack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+				if (stack instanceof ItemStack realStack && realStack.has(DataComponents.CUSTOM_NAME)) {
+					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
 					// Enchanted Books in the Bazaar
 					if (realStack.is(Items.ENCHANTED_BOOK)) return EnchantedBookUtils.getApiIdByName(stackName);
 					// Essences
@@ -260,6 +270,7 @@ public final class ItemUtils {
 					}
 				}
 			}
+			default -> {}
 		}
 		return id;
 	}
@@ -273,10 +284,10 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getNeuName()} instead
 	 */
 	@Deprecated(since = "5.8.0")
-	public static String getNeuId(ItemStack stack) {
+	public static String getNeuId(DataComponentGetter stack) {
 		if (stack == null) return "";
-		String id = stack.getSkyblockId();
 		CompoundTag customData = ItemUtils.getCustomData(stack);
+		String id = customData.getStringOr(ID, "");
 		return switch (id) {
 			case "ENCHANTED_BOOK" -> {
 				CompoundTag enchantments = customData.getCompoundOrEmpty("enchantments");
@@ -294,8 +305,8 @@ public final class ItemUtils {
 				yield rune.toUpperCase(Locale.ENGLISH) + "_RUNE;" + runes.getIntOr(rune, 0);
 			}
 			case "POTION" -> "POTION_" + customData.getStringOr("potion", "").toUpperCase(Locale.ENGLISH) + ";" + customData.getIntOr("potion_level", 0);
-			case "ATTRIBUTE_SHARD" -> {
-				Attribute attribute = Attributes.getAttributeFromItemName(stack);
+			case String s when s.equals("ATTRIBUTE_SHARD") && stack instanceof DataComponentHolder holder -> {
+				Attribute attribute = Attributes.getAttributeFromItemName(holder);
 				if (attribute == null) yield id;
 				yield attribute.neuId();
 			}
@@ -314,8 +325,8 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getPetInfo()} instead
 	 */
 	@Deprecated(since = "5.8.0")
-	public static PetInfo getPetInfo(ItemStack stack) {
-		if (!stack.getSkyblockId().equals("PET")) return PetInfo.EMPTY;
+	public static PetInfo getPetInfo(DataComponentGetter stack) {
+		if (!getCustomData(stack).getStringOr(ID, "").equals("PET")) return PetInfo.EMPTY;
 
 		String petInfo = getCustomData(stack).getStringOr("petInfo", "");
 
@@ -324,11 +335,14 @@ public final class ItemUtils {
 				JsonElement jsonElement = JsonParser.parseString(petInfo);
 
 				// Add item name into PetInfo to be used for wiki lookup
-				jsonElement.getAsJsonObject().addProperty("name", stack.getHoverName().getString());
+				if (stack instanceof ItemStack itemStack) {
+					jsonElement.getAsJsonObject().addProperty("name", itemStack.getHoverName().getString());
+				}
+
 				return PetInfo.CODEC.parse(JsonOps.INSTANCE, jsonElement)
 						.setPartial(PetInfo.EMPTY)
 						.getPartialOrThrow();
-			} catch (Exception ignored) {}
+			} catch (Exception _) {}
 		}
 
 		return PetInfo.EMPTY;
@@ -340,7 +354,7 @@ public final class ItemUtils {
 	 * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
 	 * and the {@code right boolean} indicating if the price was based on complete data.
 	 */
-	public static DoubleBooleanPair getItemPrice(ItemStack stack) {
+	public static DoubleBooleanPair getItemPrice(SkyblockerStack stack) {
 		return getItemPrice(stack.getSkyblockApiId(), false);
 	}
 
@@ -489,7 +503,7 @@ public final class ItemUtils {
 	 * @deprecated Consider using {@link ItemStack#skyblocker$getLoreStrings()} which caches text to string conversions.
 	 */
 	@Deprecated
-	public static List<Component> getLore(ItemStack stack) {
+	public static List<Component> getLore(DataComponentGetter stack) {
 		return stack.getOrDefault(DataComponents.LORE, ItemLore.EMPTY).styledLines();
 	}
 
@@ -497,8 +511,8 @@ public final class ItemUtils {
 		return ExtraCodecs.PROPERTY_MAP.parse(JsonOps.INSTANCE, JsonParser.parseString("[{\"name\":\"textures\",\"value\":\"" + textureValue + "\"}]")).getOrThrow();
 	}
 
-	public static String getHeadTexture(ItemStack stack) {
-		if (!stack.is(Items.PLAYER_HEAD) || !stack.has(DataComponents.PROFILE)) return "";
+	public static String getHeadTexture(ItemInstance stack) {
+		if (!stack.is(Items.PLAYER_HEAD)) return "";
 
 		ResolvableProfile profile = stack.get(DataComponents.PROFILE);
 		if (profile == null) return "";
@@ -522,14 +536,14 @@ public final class ItemUtils {
 		return Base64.getEncoder().encodeToString(str.getBytes());
 	}
 
-	public static ItemStack createSkull(String textureBase64) {
+	public static FlexibleItemStack createSkull(String textureBase64) {
 		GameProfile profile = new GameProfile(java.util.UUID.randomUUID(), "a", propertyMapWithTexture(textureBase64));
 		return createSkull(profile);
 	}
 
-	public static ItemStack createSkull(GameProfile profile) {
+	public static FlexibleItemStack createSkull(GameProfile profile) {
 		try {
-			ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
+			FlexibleItemStack stack = new FlexibleItemStack(Items.PLAYER_HEAD);
 			stack.set(DataComponents.PROFILE, ResolvableProfile.createResolved(profile));
 			return stack;
 		} catch (Exception e) {
@@ -537,11 +551,11 @@ public final class ItemUtils {
 		}
 	}
 
-	public static ItemStack getSkyblockerStack() {
+	public static FlexibleItemStack getSkyblockerStack() {
 		return createSkull("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=");
 	}
 
-	public static ItemStack getSkyblockerForgeStack() {
+	public static FlexibleItemStack getSkyblockerForgeStack() {
 		return createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzJkZGQ4OWE2YWU5NTdmNzY2ZDMwMDAxMWZmNDQ3MTQ4MWMzYmI2MWI2NzYwNzhhOGM2YzNjNDA4MzIwMWI1YzIifX19");
 	}
 
@@ -666,10 +680,10 @@ public final class ItemUtils {
 	 * @deprecated Use {@link ItemStack#getSkyblockRarity()} which caches the result.
 	 */
 	@Deprecated(since = "5.8.0")
-	public static SkyblockItemRarity getItemRarity(ItemStack stack) {
-		if (stack.isEmpty()) return SkyblockItemRarity.UNKNOWN;
+	public static <T extends ItemInstance & SkyblockerStack> SkyblockItemRarity getItemRarity(T stack) {
+		if (stack.is(Items.AIR)) return SkyblockItemRarity.UNKNOWN;
 
-		if (!stack.getSkyblockId().equals("PET")) {
+		if (!getCustomData(stack).getStringOr(ID, "").equals("PET")) {
 			return ItemUtils.getLore(stack)
 					.reversed()
 					.stream()
@@ -688,16 +702,33 @@ public final class ItemUtils {
 	/**
 	 * Gets a placeholder Barrier {@link ItemStack}, used to display items that could not be found in the item repository.
 	 */
-	public static ItemStack getNamedPlaceholder(String itemName) {
-		ItemStack stack = new ItemStack(Items.BARRIER);
+	public static FlexibleItemStack getNamedPlaceholder(String itemName) {
+		FlexibleItemStack stack = Ico.BARRIER.copy();
 		stack.set(DataComponents.CUSTOM_NAME, Component.literal(itemName));
 		return stack;
 	}
 
-	public static ItemStack getItemIdPlaceholder(String itemId) {
-		ItemStack stack = new ItemStack(Items.POISONOUS_POTATO);
+	public static FlexibleItemStack getItemIdPlaceholder(String itemId) {
+		FlexibleItemStack stack = Ico.POISONOUS_POTATO.copy();
 		stack.set(DataComponents.ITEM_NAME, Component.literal(itemId));
 		stack.set(DataComponents.CUSTOM_DATA, CustomData.of(Util.make(new CompoundTag(), c -> c.putString(ID, itemId))));
 		return stack;
+	}
+
+	/// Converts an {@code ItemInstance} to an icon using object text components.
+	///
+	/// For regular items, it will display the item from the atlas using sprite object text components.
+	///
+	/// For player heads, it will display the player head using player object text components.
+	public static MutableComponent getIcon(ItemInstance itemInstance) {
+		Item item = itemInstance.typeHolder().value();
+
+		ObjectInfo objectInfo = switch (item) {
+			case BlockItem _ when itemInstance.is(Items.PLAYER_HEAD) && itemInstance.get(DataComponents.PROFILE) != null -> new PlayerSprite(itemInstance.get(DataComponents.PROFILE), true);
+			case BlockItem _ -> new AtlasSprite(AtlasIds.BLOCKS, BuiltInRegistries.ITEM.getKey(item).withPath(itemId -> "block/" + itemId));
+			default -> new AtlasSprite(AtlasIds.ITEMS, BuiltInRegistries.ITEM.getKey(item).withPath(itemId -> "item/" + itemId));
+		};
+
+		return Component.object(objectInfo);
 	}
 }

@@ -83,7 +83,7 @@ public class SlayerBossBar {
 		try {
 			double numericValue = Double.parseDouble(value);
 			return (int) (numericValue * multiplier);
-		} catch (NumberFormatException e) {
+		} catch (NumberFormatException _) {
 			return 0;
 		}
 	}

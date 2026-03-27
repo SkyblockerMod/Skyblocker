@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils.render.gui.state;
+package de.hysky.skyblocker.utils.render.state.gui;
 
 import org.joml.Matrix3x2f;
 import org.jspecify.annotations.Nullable;
@@ -9,15 +9,15 @@ import net.minecraft.client.gui.Font.GlyphVisitor;
 import net.minecraft.client.gui.Font.PreparedText;
 import net.minecraft.client.gui.font.glyphs.BakedGlyph;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.render.state.GuiTextRenderState;
+import net.minecraft.client.renderer.state.gui.GuiTextRenderState;
 import net.minecraft.util.FormattedCharSequence;
 
-public class OutlinedTextGuiElementRenderState extends GuiTextRenderState {
+public class GuiOutlinedTextRenderState extends GuiTextRenderState {
 	private final int outlineColor;
 	private @Nullable OutlineGlyphDrawable preparation;
 	private @Nullable ScreenRectangle bounds;
 
-	public OutlinedTextGuiElementRenderState(
+	public GuiOutlinedTextRenderState(
 			Font textRenderer,
 			FormattedCharSequence orderedText,
 			Matrix3x2f matrix,

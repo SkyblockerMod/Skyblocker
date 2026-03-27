@@ -8,7 +8,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.CommandBuildContext;
@@ -23,11 +23,11 @@ public class CustomArmorDyeColors {
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-		dispatcher.register(ClientCommandManager.literal("skyblocker")
-				.then(ClientCommandManager.literal("custom")
-						.then(ClientCommandManager.literal("dyeColor")
+		dispatcher.register(ClientCommands.literal("skyblocker")
+				.then(ClientCommands.literal("custom")
+						.then(ClientCommands.literal("dyeColor")
 								.executes(context -> customizeDyeColor(context.getSource(), Integer.MIN_VALUE))
-								.then(ClientCommandManager.argument("hexCode", ColorArgumentType.hex())
+								.then(ClientCommands.argument("hexCode", ColorArgumentType.hex())
 										.executes(context -> customizeDyeColor(context.getSource(), ColorArgumentType.getIntFromHex(context, "hexCode")))))));
 	}
 
@@ -36,7 +36,7 @@ public class CustomArmorDyeColors {
 		ItemStack heldItem = source.getPlayer().getMainHandItem();
 
 		if (Utils.isOnSkyblock() && heldItem != null) {
-			if (heldItem.is(ItemTags.DYEABLE)) {
+			if (heldItem.is(ItemTags.CAULDRON_CAN_REMOVE_DYE)) {
 				String itemUuid = heldItem.getUuid();
 
 				if (!itemUuid.isEmpty()) {

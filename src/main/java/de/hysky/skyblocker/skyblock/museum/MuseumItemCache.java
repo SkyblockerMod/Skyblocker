@@ -58,7 +58,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class MuseumItemCache {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MuseumItemCache.class);
@@ -82,9 +82,9 @@ public class MuseumItemCache {
 	@Init
 	public static void init() {
 		loadMuseumItems();
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> MUSEUM_ITEM_CACHE.load());
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> MUSEUM_ITEM_CACHE.load());
 		ClientCommandRegistrationCallback.EVENT.register(MuseumItemCache::registerCommands);
-		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> onProfileChange());
+		SkyblockEvents.PROFILE_CHANGE.register((_, _) -> onProfileChange());
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
@@ -204,7 +204,7 @@ public class MuseumItemCache {
 
 				armorToId.forEach((setId, displayIdObject) -> ARMOR_TO_ID.put(setId, displayIdObject.getAsString()));
 				LOGGER.info("[Skyblocker] Loaded museum data");
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to load donations data", e);
 			}
@@ -257,7 +257,7 @@ public class MuseumItemCache {
 
 			// Check if the item has a donated downgrade
 			uncontributedItems.forEach(donation -> donation.setDiscount(donation.getDowngrades().stream()
-					.filter(downgrade -> donation.isCraftable())
+					.filter(_ -> donation.isCraftable())
 					.filter(downgrade -> uncontributedItems.stream().noneMatch(item -> item.getId().equals(downgrade)))
 					.map(downgrade -> ObjectDoublePair.of(downgrade, MuseumUtils.getSetCraftCost(downgrade)))
 					.findFirst()
@@ -326,7 +326,7 @@ public class MuseumItemCache {
 						//Set of all found item ids on profile
 						ObjectOpenHashSet<String> itemIds = new ObjectOpenHashSet<>();
 
-						donatedSets.forEach((s, __) -> {
+						donatedSets.forEach((s, _) -> {
 							Optional<Donation> donation = MUSEUM_DONATIONS.stream().filter(d -> d.getId().equals(s)).findFirst();
 							donation.ifPresent(value -> itemIds.addAll(value.getDowngrades()));
 							if (donation.isPresent()) {

@@ -16,6 +16,7 @@ body:
       label: Minecraft Version
       description: What version of Minecraft are you running? If you do not know what version you are using, look in the bottom left corner of the main menu in game.
       options:
+        - "26.1"
         - "1.21.11"
         - "1.21.9/1.21.10"
     validations:
@@ -25,7 +26,7 @@ body:
     attributes:
       label: Skyblocker Version
       description: What version of Skyblocker are you running? Every part is important! If you do not know what version you are using, look at the file name in your "mods" folder.
-      placeholder: ex. skyblocker-5.0.0+1.21.11.jar
+      placeholder: ex. skyblocker-6.0.0+26.1.jar
     validations:
       required: true
   - type: textarea
@@ -66,10 +67,10 @@ body:
           at de.hysky.skyblocker.utils.Scheduler.tick(Scheduler.java:76)
           at de.hysky.skyblocker.SkyblockerMod.tick(SkyblockerMod.java:116)
           at net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.lambda$static$2(ClientTickEvents.java:43)
-          at net.minecraft.class_310.handler$ble000$fabric-lifecycle-events-v1$onEndTick(class_310.java:11022)
-          at net.minecraft.class_310.method_1574(class_310.java:1957)
-          at net.minecraft.class_310.method_1523(class_310.java:1181)
-          at net.minecraft.class_310.method_1514(class_310.java:802)
+          at net.minecraft.client.Minecraft.handler$ble000$fabric-lifecycle-events-v1$onEndTick(Minecraft.java:11022)
+          at net.minecraft.client.Minecraft.tick(Minecraft.java:1957)
+          at net.minecraft.client.Minecraft.runTick(Minecraft.java:1181)
+          at net.minecraft.client.Minecraft.run(Minecraft.java:802)
           at net.minecraft.client.main.Main.main(Main.java:250)
       render: shell
   - type: textarea

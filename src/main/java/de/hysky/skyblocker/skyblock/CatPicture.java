@@ -4,24 +4,22 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.render.state.EmptyRenderState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.ItemFrameRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.BlockStateDefinitions;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.MinecraftAccessor;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 
@@ -32,21 +30,19 @@ public class CatPicture {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(CatPicture::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(CatPicture::extractRendering);
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
 		// TODO Bring back culling eventually, maybe just include more context in the collector
 		if (SkyblockerConfigManager.get().misc.cat && Utils.getLocation() == Location.HUB) {
-			collector.submitVanilla(EmptyRenderState.INSTANCE, CatPicture::render);
+			collector.submitVanilla(EmptyRenderState.INSTANCE, CatPicture::extractRenderState);
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	private static void render(EmptyRenderState state, LevelRenderState worldState, SubmitNodeCollector commandQueue) {
-		// Vanilla does this in the ItemFrameEntityRenderer
-		BlockState blockState = BlockStateDefinitions.getItemFrameFakeState(false, true);
-		BlockStateModel blockStateModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+	private static void extractRenderState(EmptyRenderState state, LevelRenderState worldState, SubmitNodeCollector commandQueue) {
+		ItemFrameRenderState itemFrameState = new ItemFrameRenderState();
+		((MinecraftAccessor) Minecraft.getInstance()).getBlockModelResolver().updateForItemFrame(itemFrameState.frameModel, false, true);
 
 		PoseStack matrices = new PoseStack();
 		matrices.pushPose();
@@ -54,17 +50,7 @@ public class CatPicture {
 		matrices.mulPose(Axis.YP.rotationDegrees(180));
 
 		// Render Item Frame
-		commandQueue.submitBlockModel(
-				matrices,
-				RenderTypes.entitySolidZOffsetForward(TextureAtlas.LOCATION_BLOCKS),
-				blockStateModel,
-				1f,
-				1f,
-				1f,
-				LightTexture.FULL_BRIGHT,
-				OverlayTexture.NO_OVERLAY,
-				EntityRenderState.NO_OUTLINE
-		);
+		itemFrameState.frameModel.submitWithZOffset(matrices, commandQueue, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
 
 		// Render Kitty
 		matrices.translate(1, 1, 0);
@@ -72,10 +58,10 @@ public class CatPicture {
 
 		commandQueue.submitCustomGeometry(matrices, RenderTypes.text(TEXTURE), (matricesEntry, buffer) -> {
 			float z = 1F - 1 / 16f - 1 / 2048f;
-			buffer.addVertex(matricesEntry, 0.0F, 1, z).setColor(CommonColors.WHITE).setUv(0.0F, 1.0F).setLight(LightTexture.FULL_BRIGHT);
-			buffer.addVertex(matricesEntry, 1, 1, z).setColor(CommonColors.WHITE).setUv(1.0F, 1.0F).setLight(LightTexture.FULL_BRIGHT);
-			buffer.addVertex(matricesEntry, 1, 0.0F, z).setColor(CommonColors.WHITE).setUv(1.0F, 0.0F).setLight(LightTexture.FULL_BRIGHT);
-			buffer.addVertex(matricesEntry, 0.0F, 0.0F, z).setColor(CommonColors.WHITE).setUv(0.0F, 0.0F).setLight(LightTexture.FULL_BRIGHT);
+			buffer.addVertex(matricesEntry, 0.0F, 1, z).setColor(CommonColors.WHITE).setUv(0.0F, 1.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
+			buffer.addVertex(matricesEntry, 1, 1, z).setColor(CommonColors.WHITE).setUv(1.0F, 1.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
+			buffer.addVertex(matricesEntry, 1, 0.0F, z).setColor(CommonColors.WHITE).setUv(1.0F, 0.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
+			buffer.addVertex(matricesEntry, 0.0F, 0.0F, z).setColor(CommonColors.WHITE).setUv(0.0F, 0.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
 		});
 
 		matrices.popPose();

@@ -11,12 +11,12 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 public class DungeonsSpecialEffects {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -38,11 +38,11 @@ public class DungeonsSpecialEffects {
 			Matcher matcher = DUNGEON_CHEST_PATTERN.matcher(stringForm);
 
 			if (matcher.matches()) {
-				ItemStack stack = getStackFromName(matcher.group("item"));
+				FlexibleItemStack stack = getStackFromName(matcher.group("item"));
 
-				if (stack != null && !stack.isEmpty()) {
+				if (stack != null && stack.getStack() != null && !stack.getStackOrThrow().isEmpty()) {
 					CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
-					CLIENT.gameRenderer.displayItemActivation(stack);
+					CLIENT.gameRenderer.displayItemActivation(stack.getStackOrThrow());
 				}
 			}
 		} catch (Exception e) { // In case there's a regex failure or something else bad happens
@@ -52,7 +52,7 @@ public class DungeonsSpecialEffects {
 		return true;
 	}
 
-	private static @Nullable ItemStack getStackFromName(String itemName) {
+	private static @Nullable FlexibleItemStack getStackFromName(String itemName) {
 		String itemId = switch (itemName) {
 			case "Recombobulator 3000" -> "RECOMBOBULATOR_3000";
 
