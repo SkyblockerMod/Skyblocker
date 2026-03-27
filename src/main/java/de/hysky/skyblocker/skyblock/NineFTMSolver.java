@@ -69,7 +69,7 @@ public class NineFTMSolver extends SimpleContainerSolver implements SlotTextAdde
 	@Override
 	public void start(ContainerScreen screen) {
 		isInMenu = true;
-		ScreenEvents.afterTick(screen).register(s -> trackChangedSlots(screen));
+		ScreenEvents.afterTick(screen).register(_ -> trackChangedSlots(screen));
 	}
 
 	@Override
