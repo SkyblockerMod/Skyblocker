@@ -45,7 +45,7 @@ public class StackOverlays {
 
 				if (!overlayStack.isEmpty()) {
 					//Apply the component changes from the overlay stack
-					DataComponentPatch changes = overlayStack.getTemplate().components();
+					DataComponentPatch changes = overlayStack.components();
 					stack.applyComponents(changes);
 				}
 			}
