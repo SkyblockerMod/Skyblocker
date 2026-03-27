@@ -54,6 +54,6 @@ public class RareRoomAlert {
 		TitleContainer.addTitle(new Title(Component.literal(roomName.toUpperCase(Locale.ENGLISH)).withStyle(ChatFormatting.LIGHT_PURPLE)), 100);
 		TitleContainer.playNotificationSound();
 
-		CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.rareRoomAlert.foundRoom", roomName)), false);
+		CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.rareRoomAlert.foundRoom", roomName)));
 	}
 }

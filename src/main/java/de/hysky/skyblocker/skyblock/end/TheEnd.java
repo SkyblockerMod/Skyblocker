@@ -10,7 +10,7 @@ import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -67,7 +67,7 @@ public class TheEnd {
 
 	@Init
 	public static void init() {
-		AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+		AttackEntityCallback.EVENT.register((_, _, _, entity, _) -> {
 			if (entity instanceof EnderMan enderman && isZealot(enderman)) {
 				HIT_ZEALOTS.add(enderman.getUUID());
 			}
@@ -88,10 +88,10 @@ public class TheEnd {
 		});
 
 		// Fix for when you join skyblock, and you are directly in the end
-		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> EndHudWidget.getInstance().update());
+		SkyblockEvents.PROFILE_CHANGE.register((_, _) -> EndHudWidget.getInstance().update());
 
 		// Reset when changing island
-		SkyblockEvents.LOCATION_CHANGE.register(location -> {
+		SkyblockEvents.LOCATION_CHANGE.register(_ -> {
 			resetLocation();
 			HIT_ZEALOTS.clear();
 		});
@@ -102,7 +102,7 @@ public class TheEnd {
 			return true;
 		});
 
-		WorldRenderExtractionCallback.EVENT.register(TheEnd::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(TheEnd::extractRendering);
 		PROFILES_STATS.init();
 	}
 

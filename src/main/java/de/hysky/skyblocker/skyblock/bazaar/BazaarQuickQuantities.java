@@ -21,11 +21,11 @@ public class BazaarQuickQuantities {
 		int y = 45;
 
 		buttons[0] = Button.builder(Component.nullToEmpty(String.valueOf(config.slot1Quantity)),
-				button -> onButtonPressed(messages, config.slot1Quantity)).bounds(x, y + 20, 50, 20).build();
+				_ -> onButtonPressed(messages, config.slot1Quantity)).bounds(x, y + 20, 50, 20).build();
 		buttons[1] = Button.builder(Component.nullToEmpty(String.valueOf(config.slot2Quantity)),
-				button -> onButtonPressed(messages, config.slot2Quantity)).bounds(x, y + 40, 50, 20).build();
+				_ -> onButtonPressed(messages, config.slot2Quantity)).bounds(x, y + 40, 50, 20).build();
 		buttons[2] = Button.builder(Component.nullToEmpty(String.valueOf(config.slot3Quantity)),
-				button -> onButtonPressed(messages, config.slot3Quantity)).bounds(x, y + 60, 50, 20).build();
+				_ -> onButtonPressed(messages, config.slot3Quantity)).bounds(x, y + 60, 50, 20).build();
 
 		String clipboard = client.keyboardHandler.getClipboard();
 		if (clipboard.length() <= 5 && NumberUtils.isCreatable(clipboard)) { // Only show option if clipboard is numeric
@@ -33,7 +33,7 @@ public class BazaarQuickQuantities {
 			text.withStyle(style -> style.withColor(ChatFormatting.AQUA));
 
 			buttons[3] = Button.builder(text,
-					button -> onButtonPressed(messages, clipboard)).bounds(x, y + 80, 50, 20).build();
+					_ -> onButtonPressed(messages, clipboard)).bounds(x, y + 80, 50, 20).build();
 		}
 		return buttons;
 	}

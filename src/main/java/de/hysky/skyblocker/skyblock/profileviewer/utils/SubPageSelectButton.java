@@ -1,17 +1,18 @@
 package de.hysky.skyblocker.skyblock.profileviewer.utils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.component.ItemLore;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public class SubPageSelectButton extends AbstractWidget {
 	private final ProfileViewerPage page;
@@ -19,10 +20,10 @@ public class SubPageSelectButton extends AbstractWidget {
 	private boolean toggled;
 
 	private static final WidgetSprites TEXTURES = new WidgetSprites(SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled_highlighted.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon_highlighted.png"));
-	private final ItemStack ICON;
+	private final FlexibleItemStack ICON;
 
-	public SubPageSelectButton(ProfileViewerPage page, int x, int y, int index, ItemStack item) {
-		super(x, y, 22, 22, item.getHoverName());
+	public SubPageSelectButton(ProfileViewerPage page, int x, int y, int index, FlexibleItemStack item) {
+		super(x, y, 22, 22, Component.literal("Placeholder"));
 		this.ICON = item;
 		this.toggled = index == 0;
 		this.index = index;
@@ -31,15 +32,15 @@ public class SubPageSelectButton extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURES.get(toggled, (mouseX > getX() && mouseX < getX() + 20 && mouseY > getY() && mouseY < getY() + 20)), this.getX(), this.getY(), 0, 0, 20, 20, 20, 20);
-		context.renderItem(ICON, this.getX() + 2, this.getY() + 2);
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURES.get(toggled, (mouseX > getX() && mouseX < getX() + 20 && mouseY > getY() && mouseY < getY() + 20)), this.getX(), this.getY(), 0, 0, 20, 20, 20, 20);
+		graphics.item(ICON.getStackOrThrow(), this.getX() + 2, this.getY() + 2);
 		if ((mouseX > getX() && mouseX < getX() + 20 && mouseY > getY() && mouseY < getY() + 20)) {
 			ItemLore lore = ICON.get(DataComponents.LORE);
-			if (lore != null) context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, lore.lines(), mouseX, mouseY + 10);
+			if (lore != null) graphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, lore.lines(), mouseX, mouseY + 10);
 		}
 
-		this.handleCursor(context);
+		this.handleCursor(graphics);
 	}
 
 	@Override

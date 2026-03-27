@@ -16,7 +16,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.util.Util;
@@ -41,14 +41,14 @@ public final class WikiLookupManager {
 
 	@Init
 	public static void init() {
-		officialWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+		officialWikiLookup = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.skyblocker.wikiLookup.official",
 				InputConstants.Type.KEYSYM,
 				GLFW.GLFW_KEY_F4,
 				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 
-		fandomWikiLookup = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+		fandomWikiLookup = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.skyblocker.wikiLookup.fandom",
 				InputConstants.Type.KEYSYM,
 				GLFW.GLFW_KEY_F1,
@@ -104,7 +104,7 @@ public final class WikiLookupManager {
 	public static void openWikiLink(String wikiLink, Player player) {
 		CompletableFuture.runAsync(() -> Util.getPlatform().openUri(wikiLink), Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
 			WikiLookupManager.LOGGER.error("[Skyblocker] Error while retrieving wiki article: {}", wikiLink, e);
-			player.displayClientMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
+			player.sendSystemMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."));
 			return null;
 		});
 	}

@@ -13,13 +13,13 @@ import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PlayerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.RulerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 public final class SkillsPage implements ProfileViewerPage<LoadingInformation> {
 	private static final int SPACING = 2;
@@ -27,7 +27,7 @@ public final class SkillsPage implements ProfileViewerPage<LoadingInformation> {
 	private final List<ProfileViewerWidget> widgets = new ArrayList<>();
 
 	@Override
-	public ItemStack getIcon() {
+	public FlexibleItemStack getIcon() {
 		return Ico.IRON_SWORD;
 	}
 

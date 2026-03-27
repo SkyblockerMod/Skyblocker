@@ -26,8 +26,6 @@ public class CameraMixin {
 			}
 		}
 
-
-
 		return original;
 	}
 }

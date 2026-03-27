@@ -7,10 +7,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.FrameLayout;
@@ -20,6 +19,8 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
 
 public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPresetListWidget.AbstractEntry> {
 
@@ -81,12 +82,12 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 		protected void updatePosition() {}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			this.children().forEach(child -> {
 				if (child instanceof LayoutElement widget)
 					widget.setY(this.getY());
 				if (child instanceof Renderable drawable)
-					drawable.render(context, mouseX, mouseY, deltaTicks);
+					drawable.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			});
 		}
 	}
@@ -94,11 +95,11 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 	public class TitleEntry extends AbstractEntry {
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// The line height is 25, the height of a single character is always 9.
 			// 25 - 9 = 16, 16 / 2 = 8, therefore the Y-offset should be 8.
-			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.config.general.speedPresets.config.title"), width / 2 - 50, this.getY() + 8, CommonColors.WHITE);
-			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.config.general.speedPresets.config.speed"), width / 2 + 50, this.getY() + 8, CommonColors.WHITE);
+			graphics.centeredText(minecraft.font, Component.translatable("skyblocker.config.general.speedPresets.config.title"), width / 2 - 50, this.getY() + 8, CommonColors.WHITE);
+			graphics.centeredText(minecraft.font, Component.translatable("skyblocker.config.general.speedPresets.config.speed"), width / 2 + 50, this.getY() + 8, CommonColors.WHITE);
 		}
 
 		@Override
@@ -114,27 +115,27 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 
 	public class SpeedPresetEntry extends AbstractEntry {
 
-		protected final EditBox titleInput;
-		protected final EditBox speedInput;
+		protected final FilteredEditBox titleInput;
+		protected final FilteredEditBox speedInput;
 		protected final Button removeButton;
 
 		public SpeedPresetEntry(String title, String speed) {
 			var client = SpeedPresetListWidget.this.minecraft;
 
 			// All Xs and Ys are then set using the initPosition() method.
-			this.titleInput = new EditBox(client.font, 0, 0, 120, 20, Component.empty());
+			this.titleInput = new FilteredEditBox(client.font, 0, 0, 120, 20, Component.empty());
 			this.titleInput.setFilter(str -> str.isEmpty() || TITLE.matcher(str).matches());
 			this.titleInput.setValue(title);
 			this.titleInput.setMaxLength(16);
 			this.titleInput.setHint(Component.literal("newPreset").withStyle(ChatFormatting.DARK_GRAY));
-			this.speedInput = new EditBox(client.font, 0, 0, 50, 20, Component.empty());
+			this.speedInput = new FilteredEditBox(client.font, 0, 0, 50, 20, Component.empty());
 
 			this.speedInput.setFilter(str -> str.isEmpty() || NUMBER.matcher(str).matches());
 			this.speedInput.setValue(speed);
 			this.speedInput.setMaxLength(3);
 			this.speedInput.setHint(Component.literal("0").withStyle(ChatFormatting.DARK_GRAY));
 
-			this.removeButton = Button.builder(Component.literal("-"), btn -> SpeedPresetListWidget.this.removeEntry(this))
+			this.removeButton = Button.builder(Component.literal("-"), _ -> SpeedPresetListWidget.this.removeEntry(this))
 					.bounds(0, 0, 20, 20)
 					.build();
 
@@ -176,7 +177,7 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 			if (isEmpty()) return null;
 			try {
 				return ObjectIntPair.of(titleInput.getValue(), Integer.parseInt(speedInput.getValue()));
-			} catch (NumberFormatException e) {
+			} catch (NumberFormatException _) {
 				return null;
 			}
 		}

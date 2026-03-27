@@ -35,7 +35,7 @@ import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.world.inventory.ChestMenu;
@@ -94,9 +94,9 @@ public class ContainerSolverManager {
 
 	@Init
 	public static void init() {
-		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.BEFORE_INIT.register((_, screen, _, _) -> {
 			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
-				ScreenEvents.remove(screen).register(screen1 -> clearScreen());
+				ScreenEvents.remove(screen).register(_ -> clearScreen());
 				onSetScreen(genericContainerScreen);
 			} else {
 				clearScreen();
@@ -147,7 +147,7 @@ public class ContainerSolverManager {
 		return currentSolver != null && currentSolver.onClickSlot(slot, stack, screenId, button);
 	}
 
-	public static void onDraw(GuiGraphics context, AbstractContainerScreen<ChestMenu> handledScreen, List<Slot> slots) {
+	public static void onExtract(GuiGraphicsExtractor context, AbstractContainerScreen<ChestMenu> handledScreen, List<Slot> slots) {
 		if (currentSolver == null) return;
 
 		context.pose().pushMatrix();

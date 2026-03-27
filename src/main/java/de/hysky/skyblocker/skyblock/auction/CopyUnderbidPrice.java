@@ -66,8 +66,8 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 
 		if (client.player != null) {
 			Component priceText = Component.literal(Formatters.INTEGER_NUMBERS.format(underbid)).withStyle(ChatFormatting.GOLD);
-			client.player.displayClientMessage(Constants.PREFIX.get()
-					.append(Component.translatable("skyblocker.copyUnderbidPrice.copied", priceText).withStyle(ChatFormatting.GRAY)), false);
+			client.player.sendSystemMessage(Constants.PREFIX.get()
+					.append(Component.translatable("skyblocker.copyUnderbidPrice.copied", priceText).withStyle(ChatFormatting.GRAY)));
 		}
 
 		copied = true;

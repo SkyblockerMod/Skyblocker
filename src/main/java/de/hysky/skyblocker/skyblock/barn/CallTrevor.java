@@ -32,7 +32,7 @@ public class CallTrevor extends ChatPatternListener {
 				style.withClickEvent(new ClickEvent.RunCommand("/call trevor"))
 						.withColor(ChatFormatting.AQUA)
 		);
-		player.displayClientMessage(callMessage, false);
+		player.sendSystemMessage(callMessage);
 
 		return false; // We do not actually want to filter the message.
 	}

@@ -15,7 +15,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 public abstract class RenderFishMixin {
 
 	@ModifyReturnValue(method = "shouldRender", at = @At("RETURN"))
-	private boolean skyblocker$render(boolean original, @Local(argsOnly = true) FishingHook fishingBobberEntity) {
+	private boolean skyblocker$render(boolean original, @Local(name = "entity") FishingHook fishingBobberEntity) {
 		//if rendered bobber is not the players and option to hide  others is enabled do not render the bobber
 		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().helpers.fishing.hideOtherPlayersRods
 				? original && Objects.equals(Minecraft.getInstance().player, fishingBobberEntity.getPlayerOwner())

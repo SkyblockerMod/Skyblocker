@@ -4,7 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DisciplineTestHelper;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -39,7 +39,7 @@ public class ZombieShootout {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(ZombieShootout::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(ZombieShootout::extractRendering);
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {

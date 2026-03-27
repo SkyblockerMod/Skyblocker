@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -19,7 +19,7 @@ public abstract class WidgetsListSlotEntry extends WidgetsListEntry {
 		this.icon = icon;
 	}
 
-	protected void renderIconAndText(GuiGraphics context, int y, int x, int entryHeight) {
-		renderIconAndText(context, icon, y, x, entryHeight);
+	protected void extractIconAndText(GuiGraphicsExtractor graphics, int y, int x, int entryHeight) {
+		super.extractIconAndText(graphics, this.icon, y, x, entryHeight);
 	}
 }

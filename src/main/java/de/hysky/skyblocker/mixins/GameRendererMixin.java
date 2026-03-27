@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapTexture;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GlowRenderer;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.Renderer;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,7 +20,7 @@ public class GameRendererMixin {
 	private void skyblocker$onGameRendererClose(CallbackInfo ci) {
 		Renderer.close();
 		GlowRenderer.getInstance().close();
-		HudHelper.close();
+		GuiHelper.close();
 		DungeonMapTexture.close();
 	}
 
@@ -32,5 +32,10 @@ public class GameRendererMixin {
 			return Math.clamp(strength / 100.0F, 0, 1);
 		}
 		return original;
+	}
+
+	@Inject(method = "render", at = @At(value = "CONSTANT", args = "stringValue=gui"))
+	private void skyblocker$onRenderGui(CallbackInfo ci) {
+		GuiHelper.updateScreenBlitTexture();
 	}
 }

@@ -7,12 +7,12 @@ import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import net.minecraft.client.gui.GuiGraphics;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
-import net.minecraft.world.item.ItemStack;
 
 public final class LevelBarWidget extends ProfileViewerWidget {
 	private static final Identifier BACKGROUND = SkyblockerMod.id("profile_viewer2/basic_background");
@@ -29,7 +29,7 @@ public final class LevelBarWidget extends ProfileViewerWidget {
 	private static final int BAR_OFFSET = TEXT_Y_OFFSET + getFont().lineHeight + 1;
 	private static final int BAR_WIDTH = 75;
 	private static final int BAR_HEIGHT = 6;
-	private final ItemStack icon;
+	private final FlexibleItemStack icon;
 	private final double barFillPercentage;
 	private final Color barFillColour;
 
@@ -37,7 +37,7 @@ public final class LevelBarWidget extends ProfileViewerWidget {
 		this(width, Ico.BARRIER, Component.literal("Placeholder"), 0.75d, Color.CYAN);
 	}
 
-	public LevelBarWidget(int width, ItemStack icon, Component label, double barFillPercentage, Color barFillColour) {
+	public LevelBarWidget(int width, FlexibleItemStack icon, Component label, double barFillPercentage, Color barFillColour) {
 		super(0, 0, width, HEIGHT, label);
 		this.icon = icon;
 		this.barFillPercentage = barFillPercentage;
@@ -58,19 +58,19 @@ public final class LevelBarWidget extends ProfileViewerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		// Background
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.getX(), this.getY() + ICON_BOX_Y_OFFSET, ICON_BOX_SIZE, ICON_BOX_SIZE);
 
 		// Icon
-		graphics.renderFakeItem(this.icon, this.getX() + (ICON_BOX_SIZE - ITEM_SIZE) / 2, this.getY() + ICON_BOX_Y_OFFSET + (ICON_BOX_SIZE - ITEM_SIZE) / 2);
+		graphics.fakeItem(this.icon.getStackOrThrow(), this.getX() + (ICON_BOX_SIZE - ITEM_SIZE) / 2, this.getY() + ICON_BOX_Y_OFFSET + (ICON_BOX_SIZE - ITEM_SIZE) / 2);
 
 		// Content Area background
 		int contentAreaWidth = this.getWidth() - CONTENT_BOX_OFFSET;
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.getX() + CONTENT_BOX_OFFSET, this.getY(), contentAreaWidth, HEIGHT);
 
 		// Label
-		graphics.drawString(getFont(), this.getMessage(), this.getX() + CONTENT_OFFSET, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
+		graphics.text(getFont(), this.getMessage(), this.getX() + CONTENT_OFFSET, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
 
 		// Bars
 		int barFillWidth = (int) (this.barFillPercentage * BAR_WIDTH);

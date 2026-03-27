@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.RegistryUtils;
 import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
@@ -13,7 +14,6 @@ import io.github.moulberry.repo.data.NEUItem;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * Handles applying "overlays" to modern {@code ItemStack}s from the NEU Repository. Overlays are already in the modern components
@@ -30,7 +30,7 @@ public class StackOverlays {
 	/**
 	 * Applies the necessary overlay for the {@code stack} if applicable.
 	 */
-	protected static void applyOverlay(NEUItem neuItem, ItemStack stack) {
+	protected static void applyOverlay(NEUItem neuItem, FlexibleItemStack stack) {
 		try {
 			ItemOverlayFile overlayFile = NEURepoManager.getStackOverlays(DATA_VERSION).get(neuItem.getSkyblockItemId());
 
@@ -38,15 +38,15 @@ public class StackOverlays {
 			if (overlayFile != null) {
 				//Read the overlay file and parse an ItemStack from it
 				String overlayData = Files.readString(overlayFile.getFile().getFsPath());
-				ItemStack overlayStack = ItemStack.CODEC.parse(RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), TagParser.parseCompoundFully(overlayData))
-						.setPartial(ItemStack.EMPTY)
+				FlexibleItemStack overlayStack = FlexibleItemStack.CODEC.parse(RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), TagParser.parseCompoundFully(overlayData))
+						.setPartial(FlexibleItemStack.EMPTY)
 						.resultOrPartial(error -> logParseError(neuItem, error))
 						.get();
 
 				if (!overlayStack.isEmpty()) {
 					//Apply the component changes from the overlay stack
-					DataComponentPatch changes = overlayStack.getComponentsPatch();
-					stack.applyComponentsAndValidate(changes);
+					DataComponentPatch changes = overlayStack.components();
+					stack.applyComponents(changes);
 				}
 			}
 		} catch (Exception e) {

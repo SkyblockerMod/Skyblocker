@@ -42,13 +42,13 @@ public class MirrorverseWaypoints {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(WAYPOINTS_JSON)) {
 				JsonArray sections = JsonParser.parseReader(reader).getAsJsonObject().get("sections").getAsJsonArray();
 
-				/// Lava Path
+				// Lava Path
 				LAVA_PATH_WAYPOINTS = loadWaypoints(sections.get(0).getAsJsonObject().get("waypoints").getAsJsonArray());
 
-				/// Upside Down Parkour
+				// Upside Down Parkour
 				UPSIDE_DOWN_WAYPOINTS = loadWaypoints(sections.get(1).getAsJsonObject().get("waypoints").getAsJsonArray());
 
-				/// Turbulator Parkour
+				// Turbulator Parkour
 				TURBULATOR_WAYPOINTS = loadWaypoints(sections.get(2).getAsJsonObject().get("waypoints").getAsJsonArray());
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Mirrorverse Waypoints failed to load ;(", e);

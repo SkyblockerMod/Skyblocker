@@ -57,7 +57,7 @@ public class NewYearCakesHelper extends SimpleContainerSolver {
 
 	public boolean addCake(int year) {
 		if (year < 0) return false;
-		return cakes.computeIfAbsent(Utils.getProfile(), _profile -> new IntOpenHashSet()).add(year);
+		return cakes.computeIfAbsent(Utils.getProfile(), _ -> new IntOpenHashSet()).add(year);
 	}
 
 	private boolean onChatMessage(Component message, boolean overlay) {

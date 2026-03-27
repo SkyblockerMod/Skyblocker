@@ -53,7 +53,7 @@ public class IrisCompatibility {
 			Objects.requireNonNull(GET_IRIS_PROGRAM, "Iris Program handle must be present to assign a pipeline.");
 
 			REGISTER_PIPELINE.invoke(GET_IRIS_API.invoke(), pipeline, GET_IRIS_PROGRAM.invoke(irisProgramName));
-		} catch (IllegalStateException ignored) {
+		} catch (IllegalStateException _) {
 			//The pipeline was probably already registered
 		} catch (Throwable e) {
 			LOGGER.error("[Skyblocker Iris Compatibility] Failed to assign pipeline {} to {}.", pipeline.getLocation(), irisProgramName, e);
@@ -67,7 +67,7 @@ public class IrisCompatibility {
 			MethodType type = MethodType.methodType(irisApiClass);
 
 			return lookup.findStatic(irisApiClass, "getInstance", type);
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return null;
 		}
 	}
@@ -80,7 +80,7 @@ public class IrisCompatibility {
 			MethodType type = MethodType.methodType(void.class, RenderPipeline.class, irisProgramClass);
 
 			return lookup.findVirtual(irisApiClass, "assignPipeline", type);
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return null;
 		}
 	}
@@ -93,7 +93,7 @@ public class IrisCompatibility {
 			MethodHandle enumValueOf = lookup.findStatic(Enum.class, "valueOf", type);
 
 			return MethodHandles.insertArguments(enumValueOf, 0, irisProgramClass);
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return null;
 		}
 	}

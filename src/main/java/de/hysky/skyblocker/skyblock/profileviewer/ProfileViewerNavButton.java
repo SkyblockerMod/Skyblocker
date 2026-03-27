@@ -2,15 +2,16 @@ package de.hysky.skyblocker.skyblock.profileviewer;
 
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import java.util.Map;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 
 public class ProfileViewerNavButton extends AbstractWidget {
 	private static final Identifier BUTTON_TEXTURES_TOGGLED = Identifier.parse("container/creative_inventory/tab_top_selected_2");
@@ -18,9 +19,9 @@ public class ProfileViewerNavButton extends AbstractWidget {
 	private boolean toggled;
 	private final int index;
 	private final ProfileViewerScreen screen;
-	private final ItemStack icon;
+	private final FlexibleItemStack icon;
 
-	private static final Map<String, ItemStack> HEAD_ICON = Map.ofEntries(
+	private static final Map<String, FlexibleItemStack> HEAD_ICON = Map.ofEntries(
 			Map.entry("Skills", Ico.IRON_SWORD),
 			Map.entry("Slayers", ProfileViewerUtils.createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzkzMzZkN2NjOTVjYmY2Njg5ZjVlOGM5NTQyOTRlYzhkMWVmYzQ5NGE0MDMxMzI1YmI0MjdiYzgxZDU2YTQ4NGQifX19")),
 			Map.entry("Pets", Ico.BONE),
@@ -38,10 +39,10 @@ public class ProfileViewerNavButton extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, toggled ? BUTTON_TEXTURES_TOGGLED : BUTTON_TEXTURES, this.getX(), this.getY(), this.width, this.height - ((this.toggled) ? 0 : 4));
-		context.renderItem(this.icon, this.getX() + 6, this.getY() + (this.toggled ? 7 : 9));
-		this.handleCursor(context);
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, toggled ? BUTTON_TEXTURES_TOGGLED : BUTTON_TEXTURES, this.getX(), this.getY(), this.width, this.height - ((this.toggled) ? 0 : 4));
+		graphics.item(this.icon.getStackOrThrow(), this.getX() + 6, this.getY() + (this.toggled ? 7 : 9));
+		this.handleCursor(graphics);
 	}
 
 	@Override
