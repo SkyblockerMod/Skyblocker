@@ -264,8 +264,9 @@ public class ChatRuleConfigScreen extends Screen {
 		// Item input
 		contentAdder.addChild(new ToggleableLayoutWidget(itemInput, toastOptionsPredicate));
 		itemInput.setResponder(itemData -> {
-			FlexibleItemStack stack = new FlexibleItemStack(ItemStackComponentizationFixer.fromItemString(itemData, 1));
-			if (stack.isEmpty()) stack = INVALID_ITEM;
+			ItemStack parsedStack = ItemStackComponentizationFixer.fromItemString(itemData, 1);
+			if (parsedStack.isEmpty()) parsedStack = INVALID_ITEM.getStackOrThrow();
+			FlexibleItemStack stack = new FlexibleItemStack(parsedStack);
 			preview.stack = stack.getStackOrThrow();
 			ChatRule.ToastMessage message = chatRule.getToastMessage();
 			if (message == null) return;
