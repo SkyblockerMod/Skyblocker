@@ -32,6 +32,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
@@ -94,9 +95,9 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	private final ItemButtonWidget[] widgets;
 	private final IntList infectedPlots = new IntArrayList(8);
 	@SuppressWarnings("deprecation")
-	private final ItemStack noneItem = new ItemStack(Items.BARRIER.builtInRegistryHolder(), 1, DataComponentPatch.builder()
+	private final FlexibleItemStack noneItem = new FlexibleItemStack(new ItemStackTemplate(Items.BARRIER.builtInRegistryHolder(), 1, DataComponentPatch.builder()
 			.set(DataComponents.ITEM_NAME, Component.literal("None"))
-			.build());
+			.build()));
 
 	private @Nullable FlexibleItemStack[] items;
 	private int hoveredSlot = -1;
