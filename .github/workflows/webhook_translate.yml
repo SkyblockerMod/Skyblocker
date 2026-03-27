@@ -3,7 +3,7 @@ name: translate update
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - src/main/resources/assets/skyblocker/lang/en_us.json
 
