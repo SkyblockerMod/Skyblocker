@@ -1700,5 +1700,8 @@
     "skyblocker.farming.farmingHud.noData": "无数据",
     "skyblocker.farming.farmingHud.pitch": "俯仰角：%s",
     "skyblocker.farming.farmingHud.yaw": "偏航角：%s",
-    "skyblocker.config.farming.visitorHelper.enabled.@Tooltip": "通过分组相似订单，复制所需物品数量以及更快地打开集市购买商品，更轻松地应对访客。"
+    "skyblocker.config.farming.visitorHelper.enabled.@Tooltip": "通过分组相似订单，复制所需物品数量以及更快地打开集市购买商品，更轻松地应对访客。",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.search.@Tooltip": "搜索更多音效",
+    "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "进阶",
+    "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "显示没有正确名称的音效"
 }
