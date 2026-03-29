@@ -22,6 +22,7 @@ import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.IMEPreeditOverlay;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -33,6 +34,7 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.PreeditEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
@@ -417,8 +419,8 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 	 * Used to capture inputs and render the text. Most logic is done in the screen itself
 	 */
 	private class TextField extends AbstractWidget {
+		private @Nullable IMEPreeditOverlay preeditOverlay;
 		private int renderedSelectionStart;
-
 		private int renderedSelectionEnd;
 		private boolean updateMePrettyPlease = false;
 		private int renderStart;
@@ -453,6 +455,11 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 			}
 
 			graphics.text(textRenderer, text, textX, textY, -1, false);
+
+			if (this.preeditOverlay != null) {
+				this.preeditOverlay.updateInputPosition(textX, textY);
+				graphics.setPreeditOverlay(this.preeditOverlay);
+			}
 
 			this.handleCursor(graphics);
 		}
@@ -511,6 +518,16 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		}
 
 		@Override
+		public boolean preeditUpdated(@Nullable final PreeditEvent event) {
+			if (this.isActive()) {
+				this.preeditOverlay = event != null ? new IMEPreeditOverlay(event, CustomizeNameWidget.this.textRenderer, 9 + 1) : null;
+				return true;
+			}
+
+			return super.preeditUpdated(event);
+		}
+
+		@Override
 		public void onClick(MouseButtonEvent click, boolean doubled) {
 			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) click.x() - getTextX());
 			text.visit(getClickedPositionVisitor, Style.EMPTY);
@@ -528,6 +545,16 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 
 		private int getTextX() {
 			return getX() + 2;
+		}
+
+		@Override
+		public void setFocused(final boolean focused) {
+			super.setFocused(focused);
+
+			// Required for IME support
+			if (focused) {
+				Minecraft.getInstance().onTextInputFocusChange(this, focused);
+			}
 		}
 
 		@Override
