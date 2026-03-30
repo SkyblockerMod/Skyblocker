@@ -1704,5 +1704,6 @@
     "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "Haladó",
     "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "Hangok mutatása rendes név nélkül",
     "skyblocker.config.general.itemList.enableItemList.@Tooltip": "Hozzáadja a Skyblock tárgyakat a támogatott tárgylista modokhoz (REI és JEI).",
-    "skyblocker.config.general.itemList.enableRecipeBook": "Receptkönyv Engedélyezése"
+    "skyblocker.config.general.itemList.enableRecipeBook": "Receptkönyv Engedélyezése",
+    "skyblocker.config.general.itemList.enableRecipeBook.@Tooltip": "Hozzáadja a Skyblock tárgyakat és recepteket az eszköztárban lévő recepteskönyvbe."
 }
