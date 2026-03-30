@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public class SkyblockRecipeResultButton extends AbstractWidget {
-	//Corresponds to AnimatedResultButton#field_32415
+	// Corresponds to RecipeButton#BACKGROUND_SIZE
 	private static final int SIZE = 25;
 	private static final int ITEM_OFFSET = 4;
 

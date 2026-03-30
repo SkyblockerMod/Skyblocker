@@ -13,8 +13,8 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 /**
  * Implementation of an {@link RecipeBookMenu} that does not do anything.
  */
-public class NoopRecipeScreenHandler extends RecipeBookMenu {
-	protected NoopRecipeScreenHandler(int syncId) {
+public class NoopRecipeBookMenu extends RecipeBookMenu {
+	protected NoopRecipeBookMenu(int syncId) {
 		super(MenuType.GENERIC_9x6, syncId);
 	}
 
