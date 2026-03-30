@@ -31,10 +31,10 @@ import org.jspecify.annotations.Nullable;
 /**
  * Based on {@link net.minecraft.client.gui.screens.recipebook.RecipeBookComponent}.
  */
-public class SkyblockRecipeBookWidget extends RecipeBookComponent<NoopRecipeScreenHandler> {
+public class SkyblockRecipeBookComponent extends RecipeBookComponent<NoopRecipeBookMenu> {
 	protected static final int IMAGE_WIDTH = RecipeBookComponent.IMAGE_WIDTH;
 	private static final int IMAGE_HEIGHT = RecipeBookComponent.IMAGE_HEIGHT;
-	//Corresponds to field_32410 in RecipeBookWidget
+	// Corresponds to OFFSET_X_POSITION in RecipeBookComponent
 	private static final int OFFSET_X_POSITION = 86;
 	// 81 is the search field's width, 4 is the space between it and the toggle crafting button, and 26 is the toggle crafting button's width, which we replace
 	// with the filtering button. 26 - 14 - 4 = 12 - 4 = 8 (The additional space left to the search field.)
@@ -52,8 +52,8 @@ public class SkyblockRecipeBookWidget extends RecipeBookComponent<NoopRecipeScre
 
 	protected CyclingTextureWidget<FilterOption> filterOption;
 
-	public SkyblockRecipeBookWidget(AbstractContainerMenu screenHandler) {
-		super(new NoopRecipeScreenHandler(screenHandler.containerId), List.of());
+	public SkyblockRecipeBookComponent(AbstractContainerMenu screenHandler) {
+		super(new NoopRecipeBookMenu(screenHandler.containerId), List.of());
 	}
 
 	@Override

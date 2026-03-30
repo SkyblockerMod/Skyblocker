@@ -12,7 +12,7 @@ import net.minecraft.world.item.Items;
 /**
  * The Skyblock Crafting Tab which handles the mouse clicks & rendering for the results page and the search field.
  */
-record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, SkyblockRecipeResults results) implements RecipeTab {
+record SkyblockCraftingTab(SkyblockRecipeBookComponent recipeBook, ItemStack icon, SkyblockRecipeResults results) implements RecipeTab {
 	static final ItemStack CRAFTING_TABLE = new ItemStack(Items.CRAFTING_TABLE);
 
 	@Override
@@ -30,7 +30,7 @@ record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, 
 			results.draw(context, x, y, mouseX, mouseY, delta);
 		} else {
 			//68 is from 137 / 2 and 137 is the height from which the page flip buttons are rendered
-			context.drawCenteredString(Minecraft.getInstance().font, "Loading...", x + (SkyblockRecipeBookWidget.IMAGE_WIDTH / 2), y + 68, 0xFFFFFFFF);
+			context.drawCenteredString(Minecraft.getInstance().font, "Loading...", x + (SkyblockRecipeBookComponent.IMAGE_WIDTH / 2), y + 68, 0xFFFFFFFF);
 		}
 	}
 
