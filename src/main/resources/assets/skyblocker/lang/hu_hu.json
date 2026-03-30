@@ -1153,7 +1153,7 @@
     "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay.@Tooltip": "Egyedi átfedés mutatása a Spirit Leap-hez, ami egyszerűvé és egyenletessé teszi a csapattársakhoz való ugrást.",
     "skyblocker.config.dungeons.spiritLeapOverlay.scale": "Spirit Leap Átfedés Mérete",
     "skyblocker.config.dungeons.spiritLeapOverlay.showMap": "Dungeon Térkép Mutatása a Spirit Leap Átfedésben",
-    "skyblocker.config.general.itemList.enableItemList": "Tárgylista Engedélyezése",
+    "skyblocker.config.general.itemList.enableItemList": "Tárgylista Kompatibilitás Engedélyezése",
     "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Ikonokat mutat a rendelések tetején ami mutatja azok jelenlegi állapotát.\n\n%s: A megrendelés hamarosan lejár\n%s: A megrendelés lejárt\n%s: A megrendelés valamennyire megtelt, tárgyak/érmék begyűjthetőek\n%s: A megrendelés teljesen megtelt",
     "skyblocker.config.chat.filter.hideMimicKill.@Tooltip": "Kiszűri a \"Mimic dead!\" és \"Mimic killed!\" üzeneteket a chatből.",
     "skyblocker.partyFinder.error.name": "Parti Kereső hiba!",
@@ -1699,5 +1699,10 @@
     "skyblocker.config.dungeons.rareRoomAlert.showForDuncan": "Mutatás 'Duncan'-hez",
     "skyblocker.config.dungeons.rareRoomAlert.showForTomioka": "Mutatás 'Tomioka'-hoz",
     "skyblocker.config.dungeons.rareRoomAlert.showForTrinity": "Mutatás 'Trinity'-hez",
-    "skyblocker.dungeons.rareRoomAlert.foundRoom": "%s ritka szoba megtalálva!"
+    "skyblocker.dungeons.rareRoomAlert.foundRoom": "%s ritka szoba megtalálva!",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.search.@Tooltip": "További hangok keresése",
+    "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "Haladó",
+    "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "Hangok mutatása rendes név nélkül",
+    "skyblocker.config.general.itemList.enableItemList.@Tooltip": "Hozzáadja a Skyblock tárgyakat a támogatott tárgylista modokhoz (REI és JEI).",
+    "skyblocker.config.general.itemList.enableRecipeBook": "Receptkönyv Engedélyezése"
 }
