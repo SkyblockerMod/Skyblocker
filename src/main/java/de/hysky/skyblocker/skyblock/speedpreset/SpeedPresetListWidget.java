@@ -1,49 +1,51 @@
 package de.hysky.skyblocker.skyblock.speedpreset;
 
+import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import java.util.List;
-import java.util.Objects;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.layouts.FrameLayout;
-import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPresetListWidget.AbstractEntry> {
-
 	private static final Pattern NUMBER = Pattern.compile("^-?\\d+(\\.\\d+)?$");
 	// Alphanumeric sequence that doesn't start with a number.
 	private static final Pattern TITLE = Pattern.compile("^[a-zA-Z]\\w*$");
 
 	public SpeedPresetListWidget(int width, int height, int y) {
 		super(Minecraft.getInstance(), width, height, y, 25);
-		var instance = SpeedPresets.getInstance();
+		SpeedPresets instance = SpeedPresets.getInstance();
 		addEntry(new TitleEntry());
-		if (!instance.getPresets().isEmpty())
+		if (!instance.getPresets().isEmpty()) {
 			instance.getPresets().forEach((title, speed) -> this.addEntry(new SpeedPresetEntry(title, String.valueOf(speed))));
-		else this.addEntry(new SpeedPresetEntry("", ""));
+		} else {
+			this.addEntry(new SpeedPresetEntry("", ""));
+		}
 	}
 
 	@Override
 	public int getRowWidth() {
-		return super.getRowWidth() + 104;
+		return 190;
 	}
 
 	public boolean hasBeenChanged() {
-		var instance = SpeedPresets.getInstance();
+		SpeedPresets instance = SpeedPresets.getInstance();
 		// If there are fewer children than presets, some were removed, and all further checks are pointless
 		if (children().size() < instance.getPresets().size()) return true;
 		var childrenMap = this.children().stream()
@@ -60,15 +62,16 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 	}
 
 	public void newEntry() {
-		var entry = new SpeedPresetEntry("", "");
+		SpeedPresetEntry entry = new SpeedPresetEntry("", "");
 		this.addEntry(entry);
+		entry.updatePosition();
 		this.centerScrollOn(entry);
 		this.setSelected(entry);
 		this.setFocused(entry);
 	}
 
 	public void save() {
-		var instance = SpeedPresets.getInstance();
+		SpeedPresets instance = SpeedPresets.getInstance();
 		instance.getPresets().clear();
 		children().stream()
 				.filter(SpeedPresetEntry.class::isInstance)
@@ -119,27 +122,29 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 		protected final FilteredEditBox speedInput;
 		protected final Button removeButton;
 
-		public SpeedPresetEntry(String title, String speed) {
-			var client = SpeedPresetListWidget.this.minecraft;
+		protected final LinearLayout layout;
 
-			// All Xs and Ys are then set using the initPosition() method.
-			this.titleInput = new FilteredEditBox(client.font, 0, 0, 120, 20, Component.empty());
+		public SpeedPresetEntry(String title, String speed) {
+			Font font = Minecraft.getInstance().font;
+
+			layout = LinearLayout.horizontal();
+			layout.spacing(2);
+
+			this.titleInput = layout.addChild(new FilteredEditBox(font, 120, 20, Component.empty()));
 			this.titleInput.setFilter(str -> str.isEmpty() || TITLE.matcher(str).matches());
 			this.titleInput.setValue(title);
 			this.titleInput.setMaxLength(16);
 			this.titleInput.setHint(Component.literal("newPreset").withStyle(ChatFormatting.DARK_GRAY));
-			this.speedInput = new FilteredEditBox(client.font, 0, 0, 50, 20, Component.empty());
 
+			this.speedInput = layout.addChild(new FilteredEditBox(font, 50, 20, Component.empty()));
 			this.speedInput.setFilter(str -> str.isEmpty() || NUMBER.matcher(str).matches());
 			this.speedInput.setValue(speed);
 			this.speedInput.setMaxLength(3);
 			this.speedInput.setHint(Component.literal("0").withStyle(ChatFormatting.DARK_GRAY));
 
-			this.removeButton = Button.builder(Component.literal("-"), _ -> SpeedPresetListWidget.this.removeEntry(this))
-					.bounds(0, 0, 20, 20)
-					.build();
-
-			this.updatePosition();
+			this.removeButton = layout.addChild(Button.builder(Component.literal("-"), _ -> SpeedPresetListWidget.this.removeEntry(this))
+					.size(20, 20)
+					.build());
 		}
 
 		@Override
@@ -154,8 +159,8 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 
 		public void save() {
 			var mapping = getMapping();
-			if (mapping != null)
-				SpeedPresets.getInstance().setPreset(mapping.key(), mapping.valueInt());
+			if (mapping == null) return;
+			SpeedPresets.getInstance().setPreset(mapping.key(), mapping.valueInt());
 		}
 
 		protected boolean isEmpty() {
@@ -164,13 +169,8 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 
 		@Override
 		protected void updatePosition() {
-			var grid = new GridLayout();
-			grid.spacing(2);
-			grid.addChild(titleInput, 0, 0, 1, 3);
-			grid.addChild(speedInput, 0, 3, 1, 2);
-			grid.addChild(removeButton, 0, 5, 1, 1);
-			grid.arrangeElements();
-			FrameLayout.alignInRectangle(grid, 0, 0, width, defaultEntryHeight, 0.5f, 0.5f);
+			layout.setPosition(getRowLeft(), getY());
+			layout.arrangeElements();
 		}
 
 		protected @Nullable ObjectIntPair<String> getMapping() {
