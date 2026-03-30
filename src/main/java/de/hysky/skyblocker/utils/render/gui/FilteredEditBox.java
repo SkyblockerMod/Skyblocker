@@ -80,6 +80,7 @@ public class FilteredEditBox extends EditBox {
 					String newValue = new StringBuilder(this.getValue()).delete(start, end).toString();
 
 					if (this.filter.test(newValue)) {
+						this.setValue(newValue);
 						this.setCursorPosition(start);
 						accessor.invokeOnValueChange(this.getValue());
 						this.moveCursorTo(start, false);
