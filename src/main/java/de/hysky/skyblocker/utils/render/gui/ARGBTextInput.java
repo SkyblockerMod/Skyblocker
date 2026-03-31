@@ -12,7 +12,7 @@ import java.util.function.IntConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.CharacterEvent;
@@ -118,7 +118,7 @@ public class ARGBTextInput extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		int selectionStart = textRenderer.width(input.substring(0, index));
 		int selectionEnd = textRenderer.width(input.substring(0, index + 1));
 		int textX = getX() + (drawBackground ? 3 : 0);

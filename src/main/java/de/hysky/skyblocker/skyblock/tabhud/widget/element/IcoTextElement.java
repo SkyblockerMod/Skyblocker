@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +32,7 @@ class IcoTextElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int x, int y) {
+	public void render(GuiGraphicsExtractor graphics, int x, int y) {
 		int offset = SkyblockerConfigManager.get().uiAndVisuals.tabHud.compactWidgets ? 2 : 4;
 		renderIcon(graphics, ico, x, y);
 		graphics.drawString(txtRend, text, x + ICO_DIM.get() + PAD_L, y + offset, CommonColors.WHITE, false);

@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 
@@ -74,7 +74,7 @@ public class VanillaStyleManaBar {
 		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar  && !FancyStatusBars.isEnabled();
 	}
 
-	private static void drawNotch(GuiGraphics graphics, int column, int row, NotchType notchtype, boolean isHalf, boolean isBlinking) {
+	private static void drawNotch(GuiGraphicsExtractor graphics, int column, int row, NotchType notchtype, boolean isHalf, boolean isBlinking) {
 		int top = graphics.guiHeight() - 39;       // Top of mana bar area
 		int right = graphics.guiWidth() / 2 + 91;  // Rightmost point of mana bar area
 
@@ -88,7 +88,7 @@ public class VanillaStyleManaBar {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, right - column * 8 - 9, top - row * 10, 9, 9);
 	}
 
-	public static boolean render(GuiGraphics graphics) {
+	public static boolean render(GuiGraphicsExtractor graphics) {
 		StatusBarTracker.Resource mana = StatusBarTracker.getMana();
 
 		// Detect loss of mana to start blinking

@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.AbstractProfileViewerScreen;
 import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 
@@ -18,7 +18,7 @@ public final class RulerWidget extends ProfileViewerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		int borderWidth = AbstractProfileViewerScreen.BACKGROUND_WIDTH - (CONTENT_PADDING * 2);
 		int borderHeight = AbstractProfileViewerScreen.BACKGROUND_HEIGHT - (CONTENT_PADDING * 2);
 

@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -49,7 +49,7 @@ public class EventToast implements Toast {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, Font textRenderer, long startTime) {
+	public void render(GuiGraphicsExtractor graphics, Font textRenderer, long startTime) {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
 
 		int y = (height() - getInnerContentsHeight())/2;
@@ -59,7 +59,7 @@ public class EventToast implements Toast {
 		graphics.renderFakeItem(icon, 8, height()/2 - 8);
 	}
 
-	protected int drawMessage(GuiGraphics graphics, int x, int y, int color) {
+	protected int drawMessage(GuiGraphicsExtractor graphics, int x, int y, int color) {
 		Font textRenderer = Minecraft.getInstance().font;
 		for (FormattedCharSequence orderedText : started ? messageNow : message) {
 			graphics.drawString(textRenderer, orderedText, x, y, color, false);
@@ -68,7 +68,7 @@ public class EventToast implements Toast {
 		return y;
 	}
 
-	protected void drawTimer(GuiGraphics graphics, int x, int y) {
+	protected void drawTimer(GuiGraphicsExtractor graphics, int x, int y) {
 		long currentTime = System.currentTimeMillis() / 1000;
 		int timeTillEvent = (int) (eventStartTime - currentTime);
 		started = timeTillEvent < 0;

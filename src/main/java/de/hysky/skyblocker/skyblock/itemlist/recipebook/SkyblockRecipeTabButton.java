@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -19,7 +19,7 @@ public class SkyblockRecipeTabButton extends ImageButton {
 	}
 
 	@Override
-	public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (this.sprites != null) {
 			int x = this.getX();
 
@@ -38,7 +38,7 @@ public class SkyblockRecipeTabButton extends ImageButton {
 	}
 
 	@Override
-	protected void handleCursor(GuiGraphics graphics) {
+	protected void handleCursor(GuiGraphicsExtractor graphics) {
 		if (!this.selected) {
 			super.handleCursor(graphics);
 		}

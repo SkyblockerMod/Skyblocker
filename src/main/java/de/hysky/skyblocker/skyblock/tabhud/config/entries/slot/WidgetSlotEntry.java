@@ -5,7 +5,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -45,7 +45,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void renderTooltip(GuiGraphics graphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
+	public void renderTooltip(GuiGraphicsExtractor graphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
 		if (mouseX >= x && mouseX <= x + entryWidth - 110 && mouseY >= y && mouseY <= y + entryHeight) {
 			@SuppressWarnings("deprecation")
 			List<Component> lore = ItemUtils.getLore(icon);
@@ -64,7 +64,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+	public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 		int textY = this.getY() + (this.getHeight() - 9) / 2;
 		Font textRenderer = Minecraft.getInstance().font;
 		renderIconAndText(graphics, this.getY(), this.getX(), this.getHeight());

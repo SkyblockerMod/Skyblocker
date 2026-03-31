@@ -5,7 +5,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
@@ -24,7 +24,7 @@ public class BooleanSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void renderTooltip(GuiGraphics graphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
+	public void renderTooltip(GuiGraphicsExtractor graphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
 		if (mouseX >= x && mouseX <= x + entryWidth - 70 && mouseY >= y && mouseY <= y + entryHeight) {
 			@SuppressWarnings("deprecation")
 			List<Component> lore = ItemUtils.getLore(icon);
@@ -38,7 +38,7 @@ public class BooleanSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+	public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 		renderIconAndText(graphics, this.getY(), this.getX(), this.getHeight());
 		enableButton.setPosition(this.getX() + this.getWidth() - 70, this.getY() + (this.getHeight() - 12) / 2);
 		enableButton.render(graphics, mouseX, mouseY, deltaTicks);

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
@@ -82,7 +82,7 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		searchField.render(graphics, mouseX, mouseY, deltaTicks);
 		widgetsContainer.render(graphics, mouseX, mouseY, deltaTicks);
 	}
@@ -131,7 +131,7 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			graphics.enableScissor(getX(), getY(), getRight(), getBottom());
 			for (AbstractWidget widget : filteredWidgets) {
 				if (isVisible(widget)) widget.render(graphics, mouseX, mouseY, deltaTicks);

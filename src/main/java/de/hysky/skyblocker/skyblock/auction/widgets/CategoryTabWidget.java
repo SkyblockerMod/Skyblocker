@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import de.hysky.skyblocker.utils.render.gui.SideTabButtonWidget;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +19,7 @@ public class CategoryTabWidget extends SideTabButtonWidget {
 	}
 
 	@Override
-	public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.renderContents(graphics, mouseX, mouseY, delta);
 
 		if (isMouseOver(mouseX, mouseY)) {

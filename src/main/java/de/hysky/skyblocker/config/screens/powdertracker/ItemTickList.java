@@ -4,7 +4,7 @@ import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import java.util.Collection;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -93,7 +93,7 @@ public class ItemTickList<T> extends ContainerObjectSelectionList<ItemTickList.I
 		}
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			for (Checkbox child : children) {
 				child.setX(this.getX());
 				child.setY(this.getY());

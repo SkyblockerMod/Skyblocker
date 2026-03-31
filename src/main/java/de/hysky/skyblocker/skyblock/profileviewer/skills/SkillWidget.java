@@ -15,7 +15,7 @@ import java.util.Map;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -80,7 +80,7 @@ public class SkillWidget {
 
 	}
 
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
 		graphics.renderItem(this.stack, x + 3, y + 2);
 		graphics.drawString(textRenderer, SKILL_NAME + " " + SKILL_LEVEL.level, x + 31, y + 2, Color.white.hashCode(), false);
 

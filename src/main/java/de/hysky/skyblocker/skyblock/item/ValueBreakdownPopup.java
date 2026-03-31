@@ -22,7 +22,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.ScrollableLayout;
 import net.minecraft.client.gui.layouts.LayoutSettings;
@@ -278,13 +278,13 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		super.render(graphics, mouseX, mouseY, deltaTicks);
 		graphics.drawCenteredString(font, title, width / 2, 15, -1);
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.renderBackground(graphics, mouseX, mouseY, delta);
 		drawPopupBackground(graphics, scrollable.getX(), scrollable.getY(), scrollable.getWidth(), scrollable.getHeight());
 	}

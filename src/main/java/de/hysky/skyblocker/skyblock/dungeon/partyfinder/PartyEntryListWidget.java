@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -91,7 +91,7 @@ public class PartyEntryListWidget extends ContainerObjectSelectionList<PartyEntr
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		//graphics.drawGuiTexture(BACKGROUND_TEXTURE, x, top-8, getRowWidth()+16+6, bottom-top+16);
 
 		if (children().isEmpty()) {
@@ -102,10 +102,10 @@ public class PartyEntryListWidget extends ContainerObjectSelectionList<PartyEntr
 	}
 
 	@Override
-	protected void renderListSeparators(GuiGraphics graphics) {
+	protected void renderListSeparators(GuiGraphicsExtractor graphics) {
 	}
 
 	@Override
-	protected void renderListBackground(GuiGraphics graphics) {
+	protected void renderListBackground(GuiGraphicsExtractor graphics) {
 	}
 }

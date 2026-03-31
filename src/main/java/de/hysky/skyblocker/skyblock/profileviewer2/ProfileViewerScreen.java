@@ -19,7 +19,7 @@ import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.SlayersPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.screens.LoadingDotsText;
@@ -110,7 +110,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		// Reposition everything that is rendering
 		//this.repositionElements();
 		// Render the unselected buttons under the background
@@ -142,7 +142,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 		}
 	}
 
-	private void renderTabButtons(GuiGraphics graphics, int mouseX, int mouseY, float a, boolean onlySelected) {
+	private void renderTabButtons(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, boolean onlySelected) {
 		for (PageTabWidget tabWidget : this.tabWidgets) {
 			// We need to render the selected tab button behind the screen
 			if (onlySelected && this.tabWidgets.indexOf(tabWidget) != this.selectedPageIndex) {

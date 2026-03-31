@@ -9,7 +9,7 @@ import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import io.github.moulberry.repo.data.NEUItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ScrollableLayout;
 import net.minecraft.client.gui.components.StringWidget;
@@ -44,7 +44,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.renderBackground(graphics, mouseX, mouseY, delta);
 		drawPopupBackground(graphics, scrollableLayout.getX(), scrollableLayout.getY(), scrollableLayout.getWidth(), scrollableLayout.getHeight());
 	}
@@ -168,14 +168,14 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		protected void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			this.renderDefaultSprite(graphics);
 			graphics.renderItem(dyeStack, this.getX() + TEXT_OFFSET, this.getY() + 1);
 			renderName(graphics, delta);
 		}
 
-		protected void renderName(GuiGraphics graphics, float f) {
-			graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
+		protected void renderName(GuiGraphicsExtractor graphics, float f) {
+			graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
 					getMessage(), getX() + TEXT_MARGIN + TEXT_OFFSET + 16,
 					getRight() - TEXT_MARGIN, getY() + TEXT_MARGIN, getBottom() - TEXT_MARGIN
 			);
@@ -195,7 +195,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderName(GuiGraphics graphics, float delta) {
+		protected void renderName(GuiGraphicsExtractor graphics, float delta) {
 			lastChange += delta;
 			if (lastChange > 2) {
 				lastChange = 0;

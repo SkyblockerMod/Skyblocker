@@ -4,7 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.StringWidget;
@@ -56,7 +56,7 @@ public class EditBidPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.renderBackground(graphics, mouseX, mouseY, delta);
 		drawPopupBackground(graphics, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.enabled) {

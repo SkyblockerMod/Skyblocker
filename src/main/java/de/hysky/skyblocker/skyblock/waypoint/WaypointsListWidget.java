@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -110,7 +110,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 	}
 
 	@Override
-	protected void renderListItems(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+	protected void renderListItems(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		super.renderListItems(graphics, mouseX, mouseY, deltaTicks);
 		insertPosition = null;
 		int insertButtonY;
@@ -372,7 +372,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		}
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			layout.setPosition(this.getX(), this.getY());
 			for (AbstractWidget child : children) {
 				child.render(graphics, mouseX, mouseY, deltaTicks);
@@ -547,7 +547,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		}
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			layout.setPosition(this.getX(), this.getY());
 			boolean showButtons = hovered && mouseY >= buttonUp.getY() - 1 && mouseY <= buttonUp.getBottom();
 			buttonUp.visible = showButtons;
@@ -582,7 +582,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		}
 
 		@Override
-		protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		protected void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			int padding = 1;
 			graphics.fill(getX() + padding, getY() + padding, getRight() - padding, getBottom() - padding, isHovered() ? CommonColors.WHITE : CommonColors.BLACK);
 			graphics.fill(getX() + padding + 1, getY() + padding + 1, getRight() - padding - 1, getBottom() - padding - 1, this.color);

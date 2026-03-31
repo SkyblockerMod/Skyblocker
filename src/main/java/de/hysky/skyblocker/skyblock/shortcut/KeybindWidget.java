@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphicsExtractor.HoveredTextEffects;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
@@ -78,7 +78,7 @@ public class KeybindWidget extends Button {
 	}
 
 	@Override
-	protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+	protected void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		this.renderDefaultSprite(graphics);
 		this.renderDefaultLabel(graphics.textRenderer(HoveredTextEffects.NONE));
 	}

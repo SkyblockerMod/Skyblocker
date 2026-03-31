@@ -44,7 +44,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.util.CommonColors;
@@ -147,11 +147,11 @@ public class SlotTextManager {
 		return text;
 	}
 
-	public static void renderSlotText(GuiGraphics graphics, Font textRenderer, Slot slot) {
+	public static void renderSlotText(GuiGraphicsExtractor graphics, Font textRenderer, Slot slot) {
 		renderSlotText(graphics, textRenderer, slot, slot.getItem(), slot.index, slot.x, slot.y);
 	}
 
-	public static void renderSlotText(GuiGraphics graphics, Font textRenderer, @Nullable Slot slot, ItemStack stack, int slotId, int x, int y) {
+	public static void renderSlotText(GuiGraphicsExtractor graphics, Font textRenderer, @Nullable Slot slot, ItemStack stack, int slotId, int x, int y) {
 		List<SlotText> textList = getText(slot, stack, slotId);
 		if (textList.isEmpty()) return;
 		Matrix3x2fStack matrices = graphics.pose();

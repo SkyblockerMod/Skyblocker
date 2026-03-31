@@ -26,7 +26,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.KeyEvent;
@@ -129,12 +129,12 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphicsExtractor graphics, float delta, int mouseX, int mouseY) {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.render(graphics, mouseX, mouseY, delta);
 		for (CategoryTabWidget categoryTabWidget : categoryTabWidgets) {
 			categoryTabWidget.render(graphics, mouseX, mouseY, delta);
@@ -176,7 +176,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	}
 
 	@Override
-	protected void renderSlot(GuiGraphics graphics, Slot slot, int mouseX, int mouseY) {
+	protected void renderSlot(GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.highlightCheapBIN && slot.hasItem() && isSlotHighlighted.getOrDefault(slot.index, false)) {
 			HudHelper.drawBorder(graphics, slot.x, slot.y, 16, 16, new Color(0, 255, 0, 100).getRGB());
 		}
@@ -362,7 +362,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
 		// Code taken mostly from YACL by isxander. Love you <3
 		@Override
-		public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		public void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			this.renderDefaultSprite(graphics);
 			Font font = Minecraft.getInstance().font;
 			Matrix3x2fStack matrices = graphics.pose();

@@ -4,7 +4,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
@@ -34,7 +34,7 @@ public class JacobEventToast extends EventToast {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, Font textRenderer, long startTime) {
+	public void render(GuiGraphicsExtractor graphics, Font textRenderer, long startTime) {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
 
 		int y = (height() - getInnerContentsHeight()) / 2;

@@ -15,7 +15,7 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
@@ -68,7 +68,7 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, List<AbstractWidget> widgets, float delta) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, List<AbstractWidget> widgets, float delta) {
 		super.renderWidget(graphics, widgets, delta);
 		TitleContainer.render(graphics, EXAMPLES, widgets.getFirst().getX(), widgets.getFirst().getY(), delta, renderScale, direction, alignment);
 		graphics.drawCenteredString(font, "Press Q/E to change Alignment: " + alignment, width / 2, font.lineHeight * 2, Color.WHITE.getRGB());

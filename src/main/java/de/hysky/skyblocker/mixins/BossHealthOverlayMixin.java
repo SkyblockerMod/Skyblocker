@@ -3,7 +3,7 @@ package de.hysky.skyblocker.mixins;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerBossBar;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.BossHealthOverlay;
 import net.minecraft.client.gui.components.LerpingBossEvent;
 import net.minecraft.util.CommonColors;
@@ -22,10 +22,10 @@ public abstract class BossHealthOverlayMixin {
 	private Minecraft minecraft;
 
 	@Shadow
-	protected abstract void drawBar(GuiGraphics graphics, int x, int y, BossEvent bossBar);
+	protected abstract void drawBar(GuiGraphicsExtractor graphics, int x, int y, BossEvent bossBar);
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
-	private void onRender(GuiGraphics graphics, CallbackInfo ci) {
+	private void onRender(GuiGraphicsExtractor graphics, CallbackInfo ci) {
 		if (SkyblockerConfigManager.get().slayers.displayBossbar && SlayerBossBar.shouldRenderBossBar()) {
 			LerpingBossEvent bossBar = SlayerBossBar.updateBossBar();
 

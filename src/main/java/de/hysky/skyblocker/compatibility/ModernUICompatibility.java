@@ -4,7 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.FormattedCharSequence;
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class ModernUICompatibility {
 	// text engine changes require game reboot so it's good enough to check only once
 	private static final boolean IS_TEXT_ENGINE_ENABLED = isTextEngineEnabled();
 
-	public static boolean drawOutlinedText(GuiGraphics graphics, FormattedCharSequence text, FormattedCharSequence outlineText, int x, int y, int color, int outlineColor) {
+	public static boolean drawOutlinedText(GuiGraphicsExtractor graphics, FormattedCharSequence text, FormattedCharSequence outlineText, int x, int y, int color, int outlineColor) {
 		if (!IS_TEXT_ENGINE_ENABLED) return false;
 
 		final float offset = 0.5f; // default value of ModernTextRenderer.sOutlineOffset

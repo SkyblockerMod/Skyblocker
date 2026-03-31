@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -186,7 +186,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 	}
 
 	@Override
-	public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+	public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 		int x = this.getX();
 		int y = this.getY();
 		int entryWidth = this.getWidth();
@@ -303,7 +303,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			Font textRenderer = Minecraft.getInstance().font;
 			graphics.drawCenteredString(textRenderer, Component.translatable("skyblocker.partyFinder.noParties"), this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2 - textRenderer.lineHeight / 2, CommonColors.WHITE);
 		}
@@ -318,7 +318,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			super.renderContent(graphics, mouseX, mouseY, hovered, deltaTicks);
 
 			Matrix3x2fStack matrices = graphics.pose();

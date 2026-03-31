@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.nbt.CompoundTag;
@@ -34,7 +34,7 @@ public class CompactorDeletorPreview {
 	public static final Pattern NAME = Pattern.compile("PERSONAL_(?<type>COMPACTOR|DELETOR)_(?<size>\\d+)");
 	private static final Minecraft client = Minecraft.getInstance();
 
-	public static boolean drawPreview(GuiGraphics graphics, ItemStack stack, List<Component> tooltips, String type, String size, int x, int y) {
+	public static boolean drawPreview(GuiGraphicsExtractor graphics, ItemStack stack, List<Component> tooltips, String type, String size, int x, int y) {
 		int targetIndex = getTargetIndex(tooltips);
 		if (targetIndex == -1) return false;
 

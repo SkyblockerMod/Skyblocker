@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
@@ -30,7 +30,7 @@ public class PlayerElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int x, int y) {
+	public void render(GuiGraphicsExtractor graphics, int x, int y) {
 		PlayerFaceRenderer.draw(graphics, tex, x, y, SKIN_ICO_DIM, true, false, -1);
 		graphics.drawString(txtRend, name, x + SKIN_ICO_DIM + PAD_S, y, CommonColors.WHITE, false);
 	}

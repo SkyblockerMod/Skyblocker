@@ -14,7 +14,7 @@ import java.util.Map;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -54,7 +54,7 @@ public class DungeonClassWidget {
 		}
 	}
 
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
 		graphics.renderItem(stack, x + 3, y + 5);
 		if (active) graphics.blit(RenderPipelines.GUI_TEXTURED, ACTIVE_TEXTURE, x + 3, y + 5, 0, 0, 16, 16, 16, 16);

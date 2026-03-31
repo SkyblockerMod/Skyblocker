@@ -3,8 +3,8 @@ package de.hysky.skyblocker.utils.render.gui;
 import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphicsExtractor.HoveredTextEffects;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -54,7 +54,7 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		dropdownList.visible = open;
 		dropdownList.render(graphics, mouseX, mouseY, delta);
 		graphics.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, CommonColors.BLACK);
@@ -170,7 +170,7 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 
 
 		@Override
-		protected void renderScrollbar(GuiGraphics graphics, int mouseX, int mouseY) {
+		protected void renderScrollbar(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
 			if (this.scrollbarVisible()) {
 				int i = this.scrollBarX();
 				int j = this.scrollerHeight();
@@ -214,16 +214,16 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		// Background
 
 		@Override
-		protected void renderListSeparators(GuiGraphics graphics) {}
+		protected void renderListSeparators(GuiGraphicsExtractor graphics) {}
 
 		@Override
-		protected void renderListBackground(GuiGraphics graphics) {
+		protected void renderListBackground(GuiGraphicsExtractor graphics) {
 			graphics.fill(getX(), getY(), getRight(), getBottom(), 0xFF << 24);
 			HudHelper.drawBorder(graphics, getX(), getY(), getWidth(), getHeight(), -1);
 		}
 
 		@Override
-		protected void enableScissor(GuiGraphics graphics) {
+		protected void enableScissor(GuiGraphicsExtractor graphics) {
 			graphics.enableScissor(this.getX(), this.getY() + 1, this.getRight(), this.getBottom() - 1);
 		}
 	}
@@ -247,7 +247,7 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// drawScrollableText does some weird stuff with the y value, so we put startY = y and endY = y + 11 which makes the text render on the same line as the tick mark below (y + 2).
 			graphics.textRenderer(HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(Component.literal(entry.toString()).withStyle(Style.EMPTY.withUnderlined(hovered)), this.getX() + 10, this.getX() + this.getWidth(), this.getY(), this.getY() + 11);
 			if (selected == this.entry) {

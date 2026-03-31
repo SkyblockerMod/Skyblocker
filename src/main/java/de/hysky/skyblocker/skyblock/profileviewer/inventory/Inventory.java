@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
@@ -49,7 +49,7 @@ public class Inventory implements ProfileViewerPage {
 		this.totalPages = (int) Math.ceil((double) containerList.size() / itemsPerPage);
 	}
 
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int rootYAdjusted = rootY + (26 - dimensions.leftInt() * 3);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted, 0, 0, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);

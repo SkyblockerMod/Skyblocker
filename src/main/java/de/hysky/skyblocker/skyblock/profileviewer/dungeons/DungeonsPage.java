@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class DungeonsPage implements ProfileViewerPage {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ProfileUtils.class);
@@ -28,7 +28,7 @@ public class DungeonsPage implements ProfileViewerPage {
 		}
 	}
 
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		dungeonHeaderWidget.render(graphics, rootX, rootY);
 		dungeonFloorRunsWidget.render(graphics, mouseX, mouseY, rootX + 113, rootY + 56);
 		dungeonMiscStatsWidgets.render(graphics, rootX + 113, rootY);

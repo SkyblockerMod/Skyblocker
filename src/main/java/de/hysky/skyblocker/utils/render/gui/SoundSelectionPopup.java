@@ -3,7 +3,7 @@ package de.hysky.skyblocker.utils.render.gui;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -137,7 +137,7 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.renderBackground(graphics, mouseX, mouseY, delta);
 		drawPopupBackground(graphics, gridWidget.getX(), gridWidget.getY(), gridWidget.getWidth(), gridWidget.getHeight());
 	}
@@ -169,7 +169,7 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			graphics.enableScissor(getX(), getY(), getRight(), getBottom());
 			for (AbstractWidget widget : filteredWidgets) {
 				if (isVisible(widget)) widget.render(graphics, mouseX, mouseY, deltaTicks);
@@ -218,7 +218,7 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		public void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			super.renderWidget(graphics, mouseX, mouseY, delta);
 			if (selectedSound == sound) {
 				graphics.fill(RenderPipelines.GUI, this.getX(), this.getY(), this.getRight(), this.getBottom(), 0x3000FF00);

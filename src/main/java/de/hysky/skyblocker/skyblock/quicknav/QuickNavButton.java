@@ -13,7 +13,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.PopupScreen;
 import net.minecraft.client.gui.components.Tooltip;
@@ -165,7 +165,7 @@ public class QuickNavButton extends AbstractWidget {
 	 * @param mouseY  the y-coordinate of the mouse cursor
 	 */
 	@Override
-	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		this.updateCoordinates();
 
 		// Note that this changes the return value of `toggled()`, so do not call it after this point.

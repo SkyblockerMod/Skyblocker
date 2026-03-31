@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -156,7 +156,7 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			graphics.drawCenteredString(font, path.getFileName().toString(), this.getContentXMiddle(), this.getY() + 7, 0xFFFFFFFF);
 			if (isMouseOver(mouseX, mouseY)) graphics.requestCursor(CursorTypes.POINTING_HAND);
 		}
@@ -250,7 +250,7 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		protected void renderScrollbar(GuiGraphics graphics, int mouseX, int mouseY) {
+		protected void renderScrollbar(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
 			super.renderScrollbar(graphics, mouseX, mouseY);
 			if (scrollbarVisible()) {
 				int scrollBarX = scrollBarX();
@@ -292,7 +292,7 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			int color = 0xFFFFFFFF;
 			if (path != null && changedPaths.contains(path)) {
 				color = 0xFFFFFF55;

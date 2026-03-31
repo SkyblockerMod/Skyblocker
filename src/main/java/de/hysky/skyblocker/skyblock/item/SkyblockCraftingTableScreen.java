@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.item;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookComponent;
 import java.time.Duration;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -71,7 +71,7 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (this.recipeBook.isVisible() && this.narrow) {
 			this.renderBackground(graphics, mouseX, mouseY, delta);
 			this.recipeBook.render(graphics, mouseX, mouseY, delta);
@@ -85,7 +85,7 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 	}
 
 	@Override
-	protected void renderSlot(GuiGraphics graphics, Slot slot, int mouseX, int mouseY) {
+	protected void renderSlot(GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY) {
 		ItemStack stack = slot.getItem();
 		if (slot.index == 23 && stack.is(Items.BARRIER)) return;
 		if (stack.is(Items.GRAY_STAINED_GLASS_PANE) && stack.getSkyblockId().isEmpty()) return;
@@ -93,7 +93,7 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphicsExtractor graphics, float delta, int mouseX, int mouseY) {
 		int i = this.leftPos;
 		int j = (this.height - this.imageHeight) / 2;
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, 256, 256);

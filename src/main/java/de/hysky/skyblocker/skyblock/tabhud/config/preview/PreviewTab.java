@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -356,7 +356,7 @@ public class PreviewTab implements Tab {
 			// padding thing
 			widgetOptions.addWidget(new AbstractWidget(0, 0, width, 20, Component.empty()) {
 				@Override
-				protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+				protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 				}
 
 				@Override
@@ -432,7 +432,7 @@ public class PreviewTab implements Tab {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			this.renderScrollbar(graphics, mouseX, mouseY);
 			height = 0;
 			for (AbstractWidget widget : widgets) {
@@ -478,7 +478,7 @@ public class PreviewTab implements Tab {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			hoveredPoint = null;
 			graphics.drawString(client.font, getMessage(), getX(), getY(), CommonColors.WHITE, true);
 			graphics.pose().pushMatrix();

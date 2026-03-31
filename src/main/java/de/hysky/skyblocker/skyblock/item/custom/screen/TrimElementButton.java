@@ -7,7 +7,7 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import java.util.Optional;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -63,12 +63,12 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 	}
 
 	@Override
-	public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+	public void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		this.renderDefaultSprite(graphics);
 		draw(graphics);
 	}
 
-	abstract void draw(GuiGraphics graphics);
+	abstract void draw(GuiGraphicsExtractor graphics);
 
 	public static final class Pattern extends TrimElementButton {
 		private static final int DEFAULT_ROTATION = 15;
@@ -112,7 +112,7 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 		}
 
 		@Override
-		void draw(GuiGraphics graphics) {
+		void draw(GuiGraphicsExtractor graphics) {
 			if (trim == null) {
 				graphics.renderItem(BARRIER, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
 				return;
@@ -176,7 +176,7 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 		}
 
 		@Override
-		void draw(GuiGraphics graphics) {
+		void draw(GuiGraphicsExtractor graphics) {
 			graphics.renderItem(stack, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
 		}
 	}

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import org.jspecify.annotations.Nullable;
 
@@ -173,7 +173,7 @@ public class ScreenBuilder {
 	/**
 	 * Renders the widgets present on the specified layer. Doesn't scale with the config option.
 	 */
-	public void renderWidgets(GuiGraphics graphics, WidgetManager.ScreenLayer screenLayer) {
+	public void renderWidgets(GuiGraphicsExtractor graphics, WidgetManager.ScreenLayer screenLayer) {
 		List<HudWidget> widgetsToRender = getHudWidgets(screenLayer);
 
 		for (HudWidget widget : widgetsToRender) {
@@ -193,9 +193,9 @@ public class ScreenBuilder {
 	/**
 	 * Builds and renders the given {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager.ScreenLayer WidgetManager.ScreenLayer}, which
 	 * {@link #updateWidgetLists(boolean) updates the widget lists (for all screen layers)}, {@link #updateWidgets(WidgetManager.ScreenLayer) updates the widgets (for the current screen layer)},
-	 * {@link #positionWidgets(int, int) positions the widgets}, and {@link #renderWidgets(GuiGraphics, WidgetManager.ScreenLayer) renders the widgets}.
+	 * {@link #positionWidgets(int, int) positions the widgets}, and {@link #renderWidgets(GuiGraphicsExtractor, WidgetManager.ScreenLayer) renders the widgets}.
 	 */
-	public void run(GuiGraphics graphics, int screenW, int screenH, WidgetManager.ScreenLayer screenLayer) {
+	public void run(GuiGraphicsExtractor graphics, int screenW, int screenH, WidgetManager.ScreenLayer screenLayer) {
 		boolean widgetListsChanged = updateWidgetLists(false);
 
 		updateWidgets(screenLayer);

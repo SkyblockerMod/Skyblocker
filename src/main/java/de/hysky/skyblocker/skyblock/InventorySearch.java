@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
@@ -119,7 +119,7 @@ public class InventorySearch {
 		}
 
 		@Override
-		public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		public void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			if (isHovered() != hoveredState) {
 				hoveredState = active = isHovered();
 				if (hoveredState) setMessage(underlinedText);
@@ -141,7 +141,7 @@ public class InventorySearch {
 		}
 
 		@Override
-		public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		public void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			super.renderWidget(graphics, mouseX, mouseY, deltaTicks);
 			graphics.drawCenteredString(textRenderer, message, getX() + width / 2, getY() - 1 - textRenderer.lineHeight, CommonColors.WHITE);
 		}

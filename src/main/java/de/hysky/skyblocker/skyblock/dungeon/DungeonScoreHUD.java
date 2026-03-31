@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -28,7 +28,7 @@ public class DungeonScoreHUD {
 	//This is 4+5 wide, needed to offset the extra width from bold numbers (3×1 wide) in S+ and the "+" (6 wide) so that it doesn't go off the screen if the score is S+ and the hud element is at the right edge of the screen
 	private static final Component extraSpace = Component.literal(" ").append(Component.literal(" ").withStyle(ChatFormatting.BOLD));
 
-	private static void render(GuiGraphics graphics) {
+	private static void render(GuiGraphicsExtractor graphics) {
 		if (Utils.isInDungeons() && DungeonScore.isDungeonStarted() && SkyblockerConfigManager.get().dungeons.dungeonScore.enableScoreHUD) {
 			int x = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX;
 			int y = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY;
@@ -36,7 +36,7 @@ public class DungeonScoreHUD {
 		}
 	}
 
-	public static void render(GuiGraphics graphics, int x, int y) {
+	public static void render(GuiGraphicsExtractor graphics, int x, int y) {
 		float scale = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling;
 		Matrix3x2fStack matrixStack = graphics.pose();
 		matrixStack.pushMatrix();

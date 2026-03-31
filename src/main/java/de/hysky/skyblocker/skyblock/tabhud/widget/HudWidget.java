@@ -5,7 +5,7 @@ import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import java.util.Objects;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public abstract class HudWidget extends AbstractWidget {
@@ -56,7 +56,7 @@ public abstract class HudWidget extends AbstractWidget {
 	public abstract boolean isEnabledIn(Location location);
 
 	/**
-	 * Perform all your logic here. Or in the {@link #renderWidget(GuiGraphics, int, int, float)} method if you feel like it.
+	 * Perform all your logic here. Or in the {@link #renderWidget(GuiGraphicsExtractor, int, int, float)} method if you feel like it.
 	 * But this will be called much less often. See usages of it.
 	 *
 	 * @see #shouldUpdateBeforeRendering()
@@ -72,14 +72,14 @@ public abstract class HudWidget extends AbstractWidget {
 		return false;
 	}
 
-	protected abstract void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta);
+	protected abstract void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta);
 
-	public final void render(GuiGraphics graphics) {
+	public final void render(GuiGraphicsExtractor graphics) {
 		render(graphics, -1, -1, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks());
 	}
 
 	@Override
-	public final void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public final void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		renderWidget(graphics, mouseX, mouseY, delta);
 	}
 

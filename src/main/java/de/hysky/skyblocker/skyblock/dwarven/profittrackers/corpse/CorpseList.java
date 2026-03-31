@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.StringWidget;
@@ -104,7 +104,7 @@ public class CorpseList extends ContainerObjectSelectionList<CorpseList.Abstract
 		protected List<AbstractWidget> children;
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {}
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {}
 
 		@Override
 		public List<? extends NarratableEntry> narratables() {
@@ -138,7 +138,7 @@ public class CorpseList extends ContainerObjectSelectionList<CorpseList.Abstract
 		}
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			if (drawBorder) HudHelper.drawBorder(graphics, this.getX(), this.getY(), this.getWidth(), this.getHeight() + 1, BORDER_COLOR);
 			for (var child : children) {
 				child.setX(this.getX() + INNER_MARGIN);
@@ -192,7 +192,7 @@ public class CorpseList extends ContainerObjectSelectionList<CorpseList.Abstract
 		// Name  | amount | total price | price per unit
 		// 33.3% | 16.6%  | 25%         | 25%
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			int x = this.getX();
 			int y = this.getY();
 			int entryWidth = this.getWidth();

@@ -13,7 +13,7 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -192,7 +192,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		// Render the background texture for the widget
 		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
 		searchField.render(graphics, mouseX, mouseY, delta);
@@ -239,7 +239,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 		}
 	}
 
-	public void drawTooltip(GuiGraphics graphics, int x, int y) {
+	public void drawTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 		// Draw the tooltip of the hovered result button if one is hovered over
 		if (this.hoveredDonationButton != null) {
 			graphics.setComponentTooltipForNextFrame(TEXT_RENDERER, hoveredDonationButton.getItemTooltip(), x, y, null);

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import java.awt.Color;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -178,7 +178,7 @@ public class ColorPickerWidget extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		int color = 0x80_60_60_60;
 		// Hue
 		graphics.fill(hRect.left() - 1, hRect.top() - 1, hRect.right() + 1, hRect.bottom() + 1, color);
@@ -236,7 +236,7 @@ public class ColorPickerWidget extends AbstractWidget {
 		}
 	}
 
-	private void drawThumb(GuiGraphics graphics, ScreenRectangle rect, int thumbX) {
+	private void drawThumb(GuiGraphicsExtractor graphics, ScreenRectangle rect, int thumbX) {
 		graphics.fill(rect.left() + thumbX - 1, rect.top(), rect.left() + thumbX + 2, rect.bottom(), CommonColors.BLACK);
 		graphics.fill(rect.left() + thumbX, rect.top() - 1, rect.left() + thumbX + 1, rect.bottom() + 1, CommonColors.BLACK);
 		graphics.fill(rect.left() + thumbX, rect.top(), rect.left() + thumbX + 1, rect.bottom(), CommonColors.WHITE);

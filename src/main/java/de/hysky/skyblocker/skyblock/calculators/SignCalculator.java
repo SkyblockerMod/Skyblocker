@@ -5,7 +5,7 @@ import de.hysky.skyblocker.utils.Calculator;
 import de.hysky.skyblocker.utils.Formatters;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.VisibleForTesting;
 
@@ -16,7 +16,7 @@ public class SignCalculator {
 	private static double output;
 	private static Component error;
 
-	public static void renderCalculator(GuiGraphics graphics, String message, int renderX, int renderY) {
+	public static void renderCalculator(GuiGraphicsExtractor graphics, String message, int renderX, int renderY) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.requiresEquals && !message.startsWith("=")) {
 			output = -1;
 			error = null;
@@ -60,7 +60,7 @@ public class SignCalculator {
 		return Long.toString(Math.round(output));
 	}
 
-	private static void render(GuiGraphics graphics, String input, int renderX, int renderY) {
+	private static void render(GuiGraphicsExtractor graphics, String input, int renderX, int renderY) {
 		Component text;
 		if (output == -1) {
 			text = error != null ? error : Component.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").withStyle(ChatFormatting.RED);

@@ -10,7 +10,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -74,7 +74,7 @@ public interface SkyblockRecipe {
 	 * @param mouseX mouse x
 	 * @param mouseY mouse y
 	 */
-	default void render(GuiGraphics graphics, int width, int height, double mouseX, double mouseY) {}
+	default void render(GuiGraphicsExtractor graphics, int width, int height, double mouseX, double mouseY) {}
 
 	/**
 	 * Extra text like collection requirements

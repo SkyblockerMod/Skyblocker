@@ -7,7 +7,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 
@@ -81,7 +81,7 @@ class ProgressElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int x, int y) {
+	public void render(GuiGraphicsExtractor graphics, int x, int y) {
 		int componentX = x + PAD_L;
 		if (ico != null) {
 			renderIcon(graphics, ico, x, y + ICO_OFFS);

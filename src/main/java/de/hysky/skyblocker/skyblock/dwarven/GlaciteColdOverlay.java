@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -61,7 +61,7 @@ public class GlaciteColdOverlay {
 	/**
 	 * @see Gui#renderTextureOverlay as this is a carbon copy of it
 	 */
-	private static void renderOverlay(GuiGraphics graphics, Identifier texture, float opacity) {
+	private static void renderOverlay(GuiGraphicsExtractor graphics, Identifier texture, float opacity) {
 		int white = ARGB.white(opacity);
 		graphics.blit(
 			RenderPipelines.GUI_TEXTURED,
@@ -78,7 +78,7 @@ public class GlaciteColdOverlay {
 		);
 	}
 
-	public static void render(GuiGraphics graphics) {
+	public static void render(GuiGraphicsExtractor graphics) {
 		if (Utils.isInDwarvenMines() && SkyblockerConfigManager.get().mining.glacite.coldOverlay) {
 			renderOverlay(graphics, POWDER_SNOW_OUTLINE, cold / 100f);
 		}

@@ -12,7 +12,7 @@ import org.joml.Vector2ic;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -96,7 +96,7 @@ public class CrystalsHudWidget extends HudWidget {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		float scale = SkyblockerConfigManager.get().mining.crystalsHud.mapScaling;
 
 		//make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)

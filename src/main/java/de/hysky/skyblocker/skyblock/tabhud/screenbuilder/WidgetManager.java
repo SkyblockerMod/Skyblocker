@@ -23,7 +23,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import org.joml.Matrix3x2fStack;
@@ -81,7 +81,7 @@ public class WidgetManager {
 		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false));
 	}
 
-	private static void render(GuiGraphics graphics, boolean hud) {
+	private static void render(GuiGraphicsExtractor graphics, boolean hud) {
 		if (!Utils.isOnSkyblock()) return;
 		Minecraft client = Minecraft.getInstance();
 
@@ -101,7 +101,7 @@ public class WidgetManager {
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
-	private static void render(GuiGraphics graphics, int w, int h, boolean hud) {
+	private static void render(GuiGraphicsExtractor graphics, int w, int h, boolean hud) {
 		Minecraft client = Minecraft.getInstance();
 		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
 		if (client.options.keyPlayerList.isDown()) {

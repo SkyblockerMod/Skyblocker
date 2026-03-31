@@ -4,7 +4,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
@@ -16,9 +16,9 @@ public abstract class WidgetsListEntry extends ContainerObjectSelectionList.Entr
 	public static final Component ENABLED_TEXT = Component.literal("ENABLED").withStyle(ChatFormatting.GREEN);
 	public static final Component DISABLED_TEXT = Component.literal("DISABLED").withStyle(ChatFormatting.RED);
 
-	public void renderTooltip(GuiGraphics graphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {}
+	public void renderTooltip(GuiGraphicsExtractor graphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {}
 
-	public void drawBorder(GuiGraphics graphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+	public void drawBorder(GuiGraphicsExtractor graphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 		if (hovered) HudHelper.drawBorder(graphics, x, y, entryWidth, entryHeight, -1);
 	}
 
@@ -27,7 +27,7 @@ public abstract class WidgetsListEntry extends ContainerObjectSelectionList.Entr
 		return List.of();
 	}
 
-	protected void renderIconAndText(GuiGraphics graphics, ItemStack icon, int y, int x, int entryHeight) {
+	protected void renderIconAndText(GuiGraphicsExtractor graphics, ItemStack icon, int y, int x, int entryHeight) {
 		Font textRenderer = Minecraft.getInstance().font;
 		graphics.renderItem(icon, x + 2, y + (entryHeight - 16) / 2);
 		graphics.drawString(textRenderer, icon.getHoverName(), x + 20, y + (entryHeight - 9) / 2, CommonColors.WHITE, true);

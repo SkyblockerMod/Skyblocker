@@ -18,7 +18,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -116,7 +116,7 @@ public abstract class ElementBasedWidget extends HudWidget {
 	}
 
 	@Override
-	public final void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public final void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			Options options = Minecraft.getInstance().options;
 			int textBackgroundColor = options.getBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
@@ -173,11 +173,11 @@ public abstract class ElementBasedWidget extends HudWidget {
 		prevH = h;
 	}
 
-	private void drawHLine(GuiGraphics graphics, int xpos, int ypos, int width) {
+	private void drawHLine(GuiGraphicsExtractor graphics, int xpos, int ypos, int width) {
 		graphics.fill(xpos, ypos, xpos + width, ypos + 1, this.color);
 	}
 
-	private void drawVLine(GuiGraphics graphics, int xpos, int ypos, int height) {
+	private void drawVLine(GuiGraphicsExtractor graphics, int xpos, int ypos, int height) {
 		graphics.fill(xpos, ypos, xpos + 1, ypos + height, this.color);
 	}
 

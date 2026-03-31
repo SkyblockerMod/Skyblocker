@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.PopupScreen;
 import net.minecraft.client.gui.components.StringWidget;
@@ -142,12 +142,12 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphicsExtractor graphics, float delta, int mouseX, int mouseY) {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.render(graphics, mouseX, mouseY, delta);
 
 		if (isWaitingForServer) graphics.drawString(font, "Waiting...", 0, 0, CommonColors.WHITE, true);
@@ -175,7 +175,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 	}
 
 	@Override
-	protected void renderTooltip(GuiGraphics graphics, int x, int y) {
+	protected void renderTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 		super.renderTooltip(graphics, x, y);
 		if (x > this.leftPos + 75 && x < this.leftPos + 75 + 26 && y > this.topPos + 13 && y < this.topPos + 13 + 26) {
 			graphics.setComponentTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(menu.getSlot(13).getItem()), x, y);

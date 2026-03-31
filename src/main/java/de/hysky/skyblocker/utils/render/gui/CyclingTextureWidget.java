@@ -5,7 +5,7 @@ import de.hysky.skyblocker.utils.EnumUtils;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -59,7 +59,7 @@ public class CyclingTextureWidget<T extends Enum<T> & Supplier<Identifier>> exte
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		var button = BUTTON.get(this.active, this.isHoveredOrFocused());
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, button, this.getX(),
 				this.getY(), width, height);

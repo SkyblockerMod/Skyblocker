@@ -13,7 +13,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
@@ -183,7 +183,7 @@ public class ProfileViewerTextWidget {
 		return p;
 	}
 
-	public void render(GuiGraphics graphics, Font textRenderer, int root_x, int root_y, int mouseX, int mouseY) {
+	public void render(GuiGraphicsExtractor graphics, Font textRenderer, int root_x, int root_y, int mouseX, int mouseY) {
 		// Profile Icon
 		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();

@@ -19,7 +19,7 @@ import java.util.Map;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -108,7 +108,7 @@ public class GenericCategory implements ProfileViewerPage {
 
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		Component categoryTitle = Component.literal(category.charAt(0) + category.substring(1).toLowerCase(Locale.ENGLISH) + " Collections").withStyle(ChatFormatting.BOLD);
 		graphics.drawString(textRenderer, categoryTitle, rootX + 88 - (textRenderer.width(categoryTitle) / 2), rootY, Color.DARK_GRAY.getRGB(), false);
 

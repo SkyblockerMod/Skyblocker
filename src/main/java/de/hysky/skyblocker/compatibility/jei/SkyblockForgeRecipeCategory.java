@@ -7,7 +7,7 @@ import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.types.IRecipeType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public final class SkyblockForgeRecipeCategory extends AbstractSkyblockRecipeCategory<SkyblockForgeRecipe> {
@@ -19,7 +19,7 @@ public final class SkyblockForgeRecipeCategory extends AbstractSkyblockRecipeCat
 	}
 
 	@Override
-	public void draw(SkyblockForgeRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+	public void draw(SkyblockForgeRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
 		IDrawableStatic recipeArrow = this.guiHelper.getRecipeArrow();
 		int arrowYOffset = (this.getHeight() - recipeArrow.getHeight()) / 2;
 		recipeArrow.draw(graphics, 61, arrowYOffset);

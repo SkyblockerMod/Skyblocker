@@ -14,7 +14,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.library.plugins.vanilla.crafting.CraftingRecipeCategory;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -32,12 +32,12 @@ public abstract sealed class AbstractSkyblockRecipeCategory<T extends SkyblockRe
 	}
 
 	@Override
-	public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+	public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
 		IDrawableStatic recipeArrow = this.guiHelper.getRecipeArrow();
 		recipeArrow.draw(graphics, 61, (this.getHeight() - recipeArrow.getHeight()) / 2);
 	}
 
-	protected void drawTooltip(GuiGraphics graphics, Component text, double mouseX, double mouseY) {
+	protected void drawTooltip(GuiGraphicsExtractor graphics, Component text, double mouseX, double mouseY) {
 		// Tooltip drawing is deferred so we need the current position (since it doesn't save the matrix) and we cannot draw it immediately
 		// because things will not layer correctly.
 		Vector2f transformedPosition = graphics.pose().transformPosition((int) mouseX, (int) mouseY, new Vector2f());

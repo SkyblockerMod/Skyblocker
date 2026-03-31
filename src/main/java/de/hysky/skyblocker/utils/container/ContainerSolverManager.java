@@ -35,7 +35,7 @@ import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.world.inventory.ChestMenu;
@@ -147,7 +147,7 @@ public class ContainerSolverManager {
 		return currentSolver != null && currentSolver.onClickSlot(slot, stack, screenId, button);
 	}
 
-	public static void onDraw(GuiGraphics graphics, AbstractContainerScreen<ChestMenu> handledScreen, List<Slot> slots) {
+	public static void onDraw(GuiGraphicsExtractor graphics, AbstractContainerScreen<ChestMenu> handledScreen, List<Slot> slots) {
 		if (currentSolver == null) return;
 
 		graphics.pose().pushMatrix();

@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
@@ -21,7 +21,7 @@ public class SeparatorElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int x, int y) {
+	public void render(GuiGraphicsExtractor graphics, int x, int y) {
 		int parentWidth = this.getParent().getWidth();
 		if (text != null && !text.equals(Component.nullToEmpty(""))) {
 			graphics.fill(x - (ElementBasedWidget.BORDER_SZE_E / 2), y + this.height / 2, x + 2, y + this.height / 2 + 1, 0xFF55FFFF);

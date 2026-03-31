@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer.utils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -31,7 +31,7 @@ public class SubPageSelectButton extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURES.get(toggled, (mouseX > getX() && mouseX < getX() + 20 && mouseY > getY() && mouseY < getY() + 20)), this.getX(), this.getY(), 0, 0, 20, 20, 20, 20);
 		graphics.renderItem(ICON, this.getX() + 2, this.getY() + 2);
 		if ((mouseX > getX() && mouseX < getX() + 20 && mouseY > getY() && mouseY < getY() + 20)) {

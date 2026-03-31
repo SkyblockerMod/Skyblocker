@@ -17,7 +17,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
@@ -63,21 +63,21 @@ public class DungeonMap {
 		return Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss();
 	}
 
-	private static void render(GuiGraphics graphics) {
+	private static void render(GuiGraphicsExtractor graphics) {
 		DungeonsConfig.DungeonMap dungeonMap = SkyblockerConfigManager.get().dungeons.dungeonMap;
 		if (shouldProcess() && dungeonMap.enableMap) {
 			render(graphics, dungeonMap.mapX, dungeonMap.mapY, dungeonMap.mapScaling, dungeonMap.fancyMap);
 		}
 	}
 
-	public static void render(GuiGraphics graphics, int x, int y, float scale, boolean fancy) {
+	public static void render(GuiGraphicsExtractor graphics, int x, int y, float scale, boolean fancy) {
 		render(graphics, x, y, scale, fancy, Integer.MIN_VALUE, Integer.MIN_VALUE, null);
 	}
 
 	/**
 	 * @return the {@link UUID} of the hovered player head, or null if no player head is hovered.
 	 */
-	public static @Nullable UUID render(GuiGraphics graphics, int x, int y, float scale, boolean fancy, int mouseX, int mouseY, @Nullable UUID enlarge) {
+	public static @Nullable UUID render(GuiGraphicsExtractor graphics, int x, int y, float scale, boolean fancy, int mouseX, int mouseY, @Nullable UUID enlarge) {
 		Minecraft client = Minecraft.getInstance();
 		DungeonsConfig.DungeonMap dungeonMap = SkyblockerConfigManager.get().dungeons.dungeonMap;
 		if (client.player == null || client.level == null) return null;
@@ -110,7 +110,7 @@ public class DungeonMap {
 		} else return cachedMapIdComponent != null ? cachedMapIdComponent : DEFAULT_MAP_ID_COMPONENT;
 	}
 
-	private static @Nullable UUID renderPlayerHeads(GuiGraphics graphics, Level world, MapItemSavedData state, double mouseX, double mouseY, @Nullable UUID enlarge) {
+	private static @Nullable UUID renderPlayerHeads(GuiGraphicsExtractor graphics, Level world, MapItemSavedData state, double mouseX, double mouseY, @Nullable UUID enlarge) {
 		if (!DungeonManager.isClearingDungeon()) return null;
 
 		// Used to index through the player list to find which dungeon player corresponds to which map decoration.

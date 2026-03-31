@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
@@ -58,7 +58,7 @@ public class InventoryPage implements ProfileViewerPage {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int startingY = rootY + (TOTAL_HEIGHT - inventorySelectButtons.size() * 21) / 2;
 		for (int i = 0; i < inventorySelectButtons.size(); i++) {
 			inventorySelectButtons.get(i).setX(rootX);

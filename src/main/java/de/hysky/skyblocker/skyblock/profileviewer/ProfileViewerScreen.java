@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -113,7 +113,7 @@ public class ProfileViewerScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		synchronized (this) {
 			super.render(graphics, mouseX, mouseY, delta);
 		}
@@ -140,7 +140,7 @@ public class ProfileViewerScreen extends Screen {
 		}
 	}
 
-	private void drawPlayerEntity(GuiGraphics graphics, String username, int rootX, int rootY, int mouseX, int mouseY) {
+	private void drawPlayerEntity(GuiGraphicsExtractor graphics, String username, int rootX, int rootY, int mouseX, int mouseY) {
 		if (entity != null)
 			renderEntityInInventoryFollowsMouse(graphics, rootX + 9, rootY + 16, rootX + 89, rootY + 124, 42, 0.0625F, mouseX, mouseY, entity);
 		graphics.drawCenteredString(font, username.length() > 15 ? username.substring(0, 15) : username, rootX + 47, rootY + 14, Color.WHITE.getRGB());

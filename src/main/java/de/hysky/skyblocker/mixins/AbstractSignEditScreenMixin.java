@@ -8,7 +8,7 @@ import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresets;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
@@ -49,7 +49,7 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 	}
 
 	@Inject(method = "render", at = @At("HEAD"))
-	private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) GuiGraphics graphics) {
+	private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor graphics) {
 		if (Utils.isOnSkyblock()) {
 			var config = SkyblockerConfigManager.get();
 			if (isSpeedInputSign() && config.general.speedPresets.enableSpeedPresets) {

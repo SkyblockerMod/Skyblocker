@@ -16,7 +16,7 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -135,7 +135,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		graphics.blitSprite(
 				RenderPipelines.GUI_TEXTURED,
 				INNER_SPACE_TEXTURE,
@@ -379,7 +379,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 		@Override
-		protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		protected void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			this.renderDefaultSprite(graphics);
 			this.renderDefaultLabel(graphics.textRenderer());
 		}
@@ -402,7 +402,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		public void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			this.renderDefaultSprite(graphics);
 			graphics.fill(getX() + 2, getY() + 2, getRight() - 2, getBottom() - 2, intColor);
 		}
@@ -428,7 +428,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			if (renderedSelectionStart != selectionStart || renderedSelectionEnd != selectionEnd || updateMePrettyPlease) {
 				renderedSelectionStart = selectionStart;
 				renderedSelectionEnd = selectionEnd;
@@ -457,7 +457,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void handleCursor(GuiGraphics graphics) {
+		protected void handleCursor(GuiGraphicsExtractor graphics) {
 			if (this.isHovered()) {
 				graphics.requestCursor(CursorTypes.IBEAM);
 			}

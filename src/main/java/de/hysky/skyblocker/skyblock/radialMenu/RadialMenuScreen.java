@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenDirection;
@@ -229,7 +229,7 @@ public class RadialMenuScreen extends Screen implements ContainerListener {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		super.render(graphics, mouseX, mouseY, deltaTicks);
 
 		//render menu title

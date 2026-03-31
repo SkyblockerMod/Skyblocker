@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
@@ -29,7 +29,7 @@ public class AbstractPopupScreen extends Screen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		this.backgroundScreen.renderBackground(graphics, -1, -1, delta);
 		graphics.nextStratum();
 		this.backgroundScreen.render(graphics, -1, -1, delta);
@@ -40,7 +40,7 @@ public class AbstractPopupScreen extends Screen {
 	/**
 	 * These are the inner positions and size of the popup, not outer
 	 */
-	public static void drawPopupBackground(GuiGraphics graphics, int x, int y, int width, int height) {
+	public static void drawPopupBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
 	}
 

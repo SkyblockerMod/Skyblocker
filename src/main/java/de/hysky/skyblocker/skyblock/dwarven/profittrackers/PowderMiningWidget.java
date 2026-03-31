@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 
@@ -23,7 +23,7 @@ public class PowderMiningWidget extends HudWidget {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		var set = PowderMiningTracker.getShownRewards().object2IntEntrySet();
 		if (set.isEmpty()) {
 			setDimensions(0, 0);

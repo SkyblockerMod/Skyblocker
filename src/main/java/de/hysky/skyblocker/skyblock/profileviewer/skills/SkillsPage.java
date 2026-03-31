@@ -7,7 +7,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
@@ -36,7 +36,7 @@ public class SkillsPage implements ProfileViewerPage {
 		}
 	}
 
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int column2 = rootX + 113;
 		for (int i = 0; i < skillWidgets.size(); i++) {
 			int x = (i < 6) ? rootX : column2;

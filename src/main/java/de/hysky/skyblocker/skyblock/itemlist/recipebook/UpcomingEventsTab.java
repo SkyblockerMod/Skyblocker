@@ -14,7 +14,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -45,7 +45,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	public void initialize(Minecraft client, int parentLeft, int parentTop) {}
 
 	@Override
-	public void draw(GuiGraphics graphics, int x, int y, int mouseX, int mouseY, float delta) {
+	public void draw(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta) {
 		x += 9;
 		y += 9;
 
@@ -72,7 +72,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	}
 
 	@Override
-	public void drawTooltip(GuiGraphics graphics, int x, int y) {
+	public void drawTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 		if (this.hovered != null) {
 			graphics.renderTooltip(CLIENT.font, this.hovered.getTooltip(), x, y, DefaultTooltipPositioner.INSTANCE, null);
 		}
@@ -100,7 +100,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	private record EventRenderer(String eventName, LinkedList<EventNotifications.SkyblockEvent> events) {
 		private static final int HEIGHT = 20;
 
-		private void render(GuiGraphics graphics, int x, int y, int mouseX, int mouseY) {
+		private void render(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY) {
 			long time = System.currentTimeMillis() / 1000;
 			Font textRenderer = CLIENT.font;
 
@@ -171,7 +171,7 @@ public class UpcomingEventsTab implements RecipeTab {
 		}
 
 		@Override
-		public void renderImage(Font textRenderer, int x, int y, int width, int height, GuiGraphics graphics) {
+		public void renderImage(Font textRenderer, int x, int y, int width, int height, GuiGraphicsExtractor graphics) {
 			for (int i = 0; i < this.crops.size(); i++) {
 				String crop = this.crops.get(i);
 

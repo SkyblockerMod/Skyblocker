@@ -8,7 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
@@ -112,7 +112,7 @@ public class DungeonMapLabels {
 		};
 	}
 
-	protected static void renderRoomNames(GuiGraphics graphics) {
+	protected static void renderRoomNames(GuiGraphicsExtractor graphics) {
 		if (!SkyblockerConfigManager.get().dungeons.dungeonMap.showRoomLabels) return;
 
 		Font textRenderer = Minecraft.getInstance().font;
@@ -200,7 +200,7 @@ public class DungeonMapLabels {
 		return (int) (maxWidth * MAX_WIDTH_SCALAR);
 	}
 
-	private static void drawText(GuiGraphics graphics, Font textRenderer, List<FormattedCharSequence> lines, int color) {
+	private static void drawText(GuiGraphicsExtractor graphics, Font textRenderer, List<FormattedCharSequence> lines, int color) {
 		int y = lines.size() > 1 ? -(textRenderer.lineHeight / 2) * (lines.size() - 1) : 0;
 		for (FormattedCharSequence orderedText : lines) {
 			int textWidth = textRenderer.width(orderedText) / 2;

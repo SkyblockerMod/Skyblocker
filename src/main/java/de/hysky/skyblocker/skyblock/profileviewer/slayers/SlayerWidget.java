@@ -14,7 +14,7 @@ import java.util.Map;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -58,7 +58,7 @@ public class SlayerWidget {
 		} catch (Exception ignored) {}
 	}
 
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
 		Font font = Minecraft.getInstance().font;
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, this.item, x + 1, y + 3, 0, 0, 20, 20, 20, 20);

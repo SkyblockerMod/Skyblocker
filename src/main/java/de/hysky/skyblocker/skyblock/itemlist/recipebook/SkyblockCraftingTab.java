@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Mth;
@@ -21,7 +21,7 @@ record SkyblockCraftingTab(SkyblockRecipeBookComponent recipeBook, ItemStack ico
 	}
 
 	@Override
-	public void draw(GuiGraphics graphics, int x, int y, int mouseX, int mouseY, float delta) {
+	public void draw(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta) {
 		assert recipeBook.searchBox != null;
 
 		if (ItemRepository.filesImported()) {
@@ -35,7 +35,7 @@ record SkyblockCraftingTab(SkyblockRecipeBookComponent recipeBook, ItemStack ico
 	}
 
 	@Override
-	public void drawTooltip(GuiGraphics graphics, int x, int y) {
+	public void drawTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 		if (ItemRepository.filesImported()) results.drawTooltip(graphics, x, y);
 	}
 

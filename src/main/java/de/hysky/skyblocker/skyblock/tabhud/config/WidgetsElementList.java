@@ -5,7 +5,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -59,7 +59,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.renderWidget(graphics, mouseX, mouseY, delta);
 		WidgetsListEntry hoveredEntry = getHovered();
 		if (hoveredEntry != null) {
@@ -80,7 +80,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	}
 
 	@Override
-	protected void renderItem(GuiGraphics graphics, int mouseX, int mouseY, float delta, WidgetsListEntry entry) {
+	protected void renderItem(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, WidgetsListEntry entry) {
 		super.renderItem(graphics, mouseX, mouseY, delta, entry);
 		if (!enableEditing || this.getSelected() != entry) return;
 

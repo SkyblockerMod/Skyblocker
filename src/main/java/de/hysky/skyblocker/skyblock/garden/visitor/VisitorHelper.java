@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenPosition;
@@ -200,7 +200,7 @@ public class VisitorHelper extends AbstractWidget {
 	/**
 	 * Draws the visitor items and their associated information.
 	 */
-	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+	public void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		if (activeVisitors.isEmpty()) return;
 
 		Font textRenderer = Minecraft.getInstance().font;
@@ -334,7 +334,7 @@ public class VisitorHelper extends AbstractWidget {
 		updateItems();
 	}
 
-	private static void drawTextWithHoverUnderline(GuiGraphics graphics, Font textRenderer, Component text, int x, int y, double mouseX, double mouseY) {
+	private static void drawTextWithHoverUnderline(GuiGraphicsExtractor graphics, Font textRenderer, Component text, int x, int y, double mouseX, double mouseY) {
 		graphics.drawString(textRenderer, text, x, y, CommonColors.WHITE, true);
 
 		if (isMouseOverText(textRenderer, text, x, y, mouseX, mouseY)) {

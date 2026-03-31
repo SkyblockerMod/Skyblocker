@@ -20,7 +20,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.FrameLayout;
@@ -177,7 +177,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			LeapOverlay.this.hovered = DungeonMap.render(graphics, getX(), getY(), CONFIG.get().scale, true, mouseX - getX(), mouseY - getY(), getChildAt(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
 			HudHelper.drawBorder(graphics, getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), CommonColors.WHITE);
 		}
@@ -208,7 +208,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		}
 
 		@Override
-		protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		protected void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			Identifier texture = this.isHoveredOrFocused() || reference.uuid().equals(LeapOverlay.this.hovered) ? BUTTON_HIGHLIGHTED : BUTTON;
 			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 

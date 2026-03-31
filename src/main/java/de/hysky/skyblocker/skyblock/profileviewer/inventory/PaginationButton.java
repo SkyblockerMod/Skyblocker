@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -29,7 +29,7 @@ public class PaginationButton extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX(), this.getY(), 0, 0, 12, 17, 12, 17);
 		if (isMouseOver(mouseX, mouseY)) graphics.blit(RenderPipelines.GUI_TEXTURED, HIGHLIGHT, this.getX(), this.getY(), 0, 0, 12, 17, 12, 17);
 	}

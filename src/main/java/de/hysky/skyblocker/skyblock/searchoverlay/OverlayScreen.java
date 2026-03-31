@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -212,7 +212,7 @@ public class OverlayScreen extends Screen {
 	 * @param delta delta
 	 */
 	@Override
-	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.renderBackground(graphics, mouseX, mouseY, delta);
 		//find max height
 		int maxHeight = rowHeight * (1 + suggestionButtons.length + historyButtons.length);
@@ -226,7 +226,7 @@ public class OverlayScreen extends Screen {
 	 * Renders the search icon, label for the history and item Stacks for item names
 	 */
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.render(graphics, mouseX, mouseY, delta);
 		int renderOffset = (rowHeight - 16) / 2;
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, finishedButton.getX() + renderOffset, finishedButton.getY() + renderOffset, 16, 16);
@@ -251,7 +251,7 @@ public class OverlayScreen extends Screen {
 	/**
 	 * Draws the item and tooltip for the given button
 	 */
-	private void drawItemAndTooltip(GuiGraphics graphics, int mouseX, int mouseY, String id, Button button, int renderOffset) {
+	private void drawItemAndTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, String id, Button button, int renderOffset) {
 		if (id.isEmpty()) return;
 		ItemStack item = getItemStack(id);
 		if (item == null) return;

@@ -25,7 +25,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.LoadingDotsText;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -251,7 +251,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight());
 		String prevHighlighted = AccessoriesContainerSolver.INSTANCE.highlightedAccessory;
 		AccessoriesContainerSolver.INSTANCE.highlightedAccessory = null;
@@ -305,7 +305,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, textures.get(true, isHovered()), getX(), getY(), getWidth(), getHeight());
 			if (isHovered()) graphics.requestCursor(CursorTypes.POINTING_HAND);
 		}
@@ -325,7 +325,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		}
 
 		@Override
-		public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		public void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			int x = this.getX();
 			if (this.toggled) x -= 2;
 
@@ -367,7 +367,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			super.renderWidget(graphics, mouseX, mouseY, delta);
 			ItemStack stack = getDisplayStack();
 			if (isHovered() && stack != null && source != null) {
@@ -428,7 +428,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 			}
 
 			@Override
-			public void drawTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+			public void drawTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
 				if (icon == null) {
 					return;
 				}
@@ -498,7 +498,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		}
 
 		@Override
-		public void drawTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+		public void drawTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
 			Font textRenderer = Minecraft.getInstance().font;
 			graphics.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
 		}
@@ -519,7 +519,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	private interface MagicPowerSource {
 		ItemStack icon();
 
-		void drawTooltip(GuiGraphics graphics, int mouseX, int mouseY);
+		void drawTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY);
 
 		double pricePerMp();
 

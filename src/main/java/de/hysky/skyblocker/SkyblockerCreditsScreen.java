@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -251,7 +251,7 @@ public class SkyblockerCreditsScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.render(graphics, mouseX, mouseY, a);
 		this.renderVignette(graphics);
 
@@ -292,17 +292,17 @@ public class SkyblockerCreditsScreen extends Screen {
 		graphics.pose().popMatrix();
 	}
 
-	private void renderVignette(GuiGraphics graphics) {
+	private void renderVignette(GuiGraphicsExtractor graphics) {
 		graphics.blit(RenderPipelines.VIGNETTE, VIGNETTE, 0, 0, 0f, 0f, this.width, this.height, this.width, this.height);
 	}
 
-	private void renderLogo(GuiGraphics graphics, int width, int heightOffset) {
+	private void renderLogo(GuiGraphicsExtractor graphics, int width, int heightOffset) {
 		int logoX = width / 2 - 128;
 		graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO, logoX, heightOffset, 0f, 0f, 256, 64, 256, 64, CommonColors.WHITE);
 	}
 
 	@Override
-	protected void renderMenuBackground(GuiGraphics graphics, int x, int y, int width, int height) {
+	protected void renderMenuBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
 		float v = this.scroll * 0.5f;
 		Screen.renderMenuBackgroundTexture(graphics, Screen.MENU_BACKGROUND, 0, 0, 0f, v, width, height);
 	}

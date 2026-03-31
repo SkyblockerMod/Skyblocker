@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import java.awt.Color;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -34,7 +34,7 @@ public class DungeonMapConfigScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.render(graphics, mouseX, mouseY, delta);
 		renderHUDMap(graphics, mapX, mapY);
 		renderHUDScore(graphics, scoreX, scoreY);
@@ -81,7 +81,7 @@ public class DungeonMapConfigScreen extends Screen {
 		this.minecraft.setScreen(parent);
 	}
 
-	public void renderHUDMap(GuiGraphics graphics, int x, int y) {
+	public void renderHUDMap(GuiGraphicsExtractor graphics, int x, int y) {
 		float scaling = SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling;
 		int size = (int) (128 * scaling);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, EXAMPLE_MAP, x, y, 0, 0, size, size, size, size);
@@ -89,7 +89,7 @@ public class DungeonMapConfigScreen extends Screen {
 		if (SkyblockerConfigManager.get().dungeons.dungeonMap.showOutline) HudHelper.drawBorder(graphics, x, y, size, size, CommonColors.LIGHT_GRAY);
 	}
 
-	public void renderHUDScore(GuiGraphics graphics, int x, int y) {
+	public void renderHUDScore(GuiGraphicsExtractor graphics, int x, int y) {
 		DungeonScoreHUD.render(graphics, x, y);
 	}
 }

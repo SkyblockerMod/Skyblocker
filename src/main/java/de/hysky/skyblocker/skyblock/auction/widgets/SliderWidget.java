@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -37,7 +37,7 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends A
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (posProgress < current.getOffset()) {
 			posProgress += delta * 5;
 			if (posProgress > current.getOffset()) posProgress = current.getOffset();

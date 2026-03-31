@@ -13,7 +13,7 @@ import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -143,7 +143,7 @@ public class BackpackPreview {
 		}
 	}
 
-	public static boolean renderPreview(GuiGraphics graphics, Screen screen, int index, int mouseX, int mouseY) {
+	public static boolean renderPreview(GuiGraphicsExtractor graphics, Screen screen, int index, int mouseX, int mouseY) {
 		if (index >= 9 && index < 18) index -= 9;
 		else if (index >= 27 && index < 45) index -= 18;
 		else return false;

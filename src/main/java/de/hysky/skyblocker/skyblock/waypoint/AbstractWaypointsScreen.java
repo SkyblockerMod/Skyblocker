@@ -12,7 +12,7 @@ import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -208,7 +208,7 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			// Set the cursor to default to prevent widgets from below taking over the shape when they cannot be interacted with
 			if (this.isHovered()) {
 				graphics.requestCursor(CursorType.DEFAULT);

@@ -5,8 +5,8 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphicsExtractor.HoveredTextEffects;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -77,7 +77,7 @@ public class OptionDropdownWidget extends AbstractSelectionList<OptionDropdownWi
 	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	@Override
-	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (isOpen) {
 			if (animationProgress < 1) animationProgress += delta * 0.5f;
 			else if (animationProgress != 1) animationProgress = 1;
@@ -101,11 +101,11 @@ public class OptionDropdownWidget extends AbstractSelectionList<OptionDropdownWi
 	}
 
 	@Override
-	protected void renderListSeparators(GuiGraphics graphics) {
+	protected void renderListSeparators(GuiGraphicsExtractor graphics) {
 	}
 
 	@Override
-	protected void renderListBackground(GuiGraphics graphics) {
+	protected void renderListBackground(GuiGraphicsExtractor graphics) {
 	}
 
 	public void open(List<Option> entries, int backButtonId) {
@@ -150,7 +150,7 @@ public class OptionDropdownWidget extends AbstractSelectionList<OptionDropdownWi
 		}
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			int x = this.getX();
 			int y = this.getY();
 			graphics.drawString(Minecraft.getInstance().font, name, x, y + 1, 0xFFD0D0D0, false);
@@ -176,7 +176,7 @@ public class OptionDropdownWidget extends AbstractSelectionList<OptionDropdownWi
 		}
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			Matrix3x2fStack matrices = graphics.pose();
 			matrices.pushMatrix();
 			int iconY = this.getY() + 1;

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenPosition;
@@ -57,7 +57,7 @@ public class PreviewWidget extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		hoveredWidget = null;
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
 		scaledRatio = ratio * scale;
@@ -143,7 +143,7 @@ public class PreviewWidget extends AbstractWidget {
 		graphics.disableScissor();
 	}
 
-	private void renderUnits(GuiGraphics graphics, PositionRule rule, int deltaX, int deltaY, int thisAnchorX, int thisAnchorY, int translatedX, int translatedY) {
+	private void renderUnits(GuiGraphicsExtractor graphics, PositionRule rule, int deltaX, int deltaY, int thisAnchorX, int thisAnchorY, int translatedX, int translatedY) {
 		boolean xUnitOnTop = rule.relativeY() > 0;
 		if (xUnitOnTop && thisAnchorY < 10) xUnitOnTop = false;
 		if (!xUnitOnTop && thisAnchorY > scaledScreenHeight - 10) xUnitOnTop = true;

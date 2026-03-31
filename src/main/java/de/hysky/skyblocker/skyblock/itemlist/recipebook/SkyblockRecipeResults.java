@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
 import net.minecraft.client.input.KeyEvent;
@@ -89,7 +89,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	}
 
 	@Override
-	public void draw(GuiGraphics graphics, int x, int y, int mouseX, int mouseY, float delta) {
+	public void draw(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta) {
 		Font textRenderer = this.client.font;
 
 		//Reset the hovered text
@@ -128,7 +128,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	}
 
 	//TODO enable scissor?
-	private void drawRecipeDisplay(GuiGraphics graphics, Font textRenderer, int x, int y, int mouseX, int mouseY) {
+	private void drawRecipeDisplay(GuiGraphicsExtractor graphics, Font textRenderer, int x, int y, int mouseX, int mouseY) {
 		SkyblockRecipe recipe = this.recipeResults.get(this.currentPage);
 		//Render the "Craft Text" which is usually a requirement (e.g. Wolf Slayer 7)
 		String craftText = recipe.getExtraText().getString();
@@ -168,7 +168,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	}
 
 	@Override
-	public void drawTooltip(GuiGraphics graphics, int x, int y) {
+	public void drawTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 		if (this.client.screen != null) {
 			//Draw the tooltip of the hovered result button if one is hovered over
 			if (this.hoveredResultButton != null && !this.hoveredResultButton.getDisplayStack().isEmpty()) {

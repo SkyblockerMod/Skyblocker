@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
@@ -47,7 +47,7 @@ public class CollectionsPage implements ProfileViewerPage {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int startingY = rootY + (TOTAL_HEIGHT - collectionSelectButtons.size() * 21) / 2;
 		for (int i = 0; i < collectionSelectButtons.size(); i++) {
 			collectionSelectButtons.get(i).setX(rootX);

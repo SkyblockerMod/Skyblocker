@@ -18,7 +18,7 @@ import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -144,10 +144,10 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 
 	/**
 	 * Draws the equipment slots in the foreground layer after vanilla slots are drawn
-	 * in {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen#render(GuiGraphics, int, int, float) HandledScreen#render(DrawContext, int, int, float)}.
+	 * in {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen#render(GuiGraphicsExtractor, int, int, float) HandledScreen#render(DrawContext, int, int, float)}.
 	 */
 	@Override
-	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
 		for (Slot equipmentSlot : equipmentSlots) {
 			boolean hovered = isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY);
 
@@ -162,7 +162,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	}
 
 	@Override
-	protected void renderTooltip(GuiGraphics graphics, int x, int y) {
+	protected void renderTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 		super.renderTooltip(graphics, x, y);
 
 		hoveredItem = null;
@@ -186,7 +186,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphicsExtractor graphics, float delta, int mouseX, int mouseY) {
 		super.renderBg(graphics, delta, mouseX, mouseY);
 		for (int i = 0; i < 3; i++) {
 			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, leftPos + 76, topPos + 7 + i * 18, 18, 18);
@@ -196,7 +196,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	}
 
 	@Override
-	protected void renderSlot(GuiGraphics graphics, Slot slot, int mouseX, int mouseY) {
+	protected void renderSlot(GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY) {
 		super.renderSlot(graphics, slot, mouseX, mouseY);
 		if (slot instanceof EquipmentSlot && !slot.hasItem()) {
 			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, EMPTY_SLOT, slot.x, slot.y, 16, 16);

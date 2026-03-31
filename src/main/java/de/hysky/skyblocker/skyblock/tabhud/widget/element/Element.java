@@ -4,7 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +24,7 @@ public abstract class Element {
 
 	private LayoutElement parent = SpacerElement.width(0);
 
-	public abstract void render(GuiGraphics graphics, int x, int y);
+	public abstract void render(GuiGraphicsExtractor graphics, int x, int y);
 
 	public void setParent(LayoutElement parent) {
 		this.parent = parent;
@@ -42,7 +42,7 @@ public abstract class Element {
 		return this.height;
 	}
 
-	public void renderIcon(GuiGraphics graphics, ItemStack icon, int x, int y) {
+	public void renderIcon(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y) {
 		graphics.pose().pushMatrix();
 		graphics.pose().translate(x, y);
 		graphics.pose().scale((float) ICO_DIM.get() / 16);

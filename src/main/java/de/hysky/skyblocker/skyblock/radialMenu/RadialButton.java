@@ -5,7 +5,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -63,7 +63,7 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		//change color  and radius when hovered
 		boolean hovered = getHovered.getAsBoolean();
 		int color = hovered ? 0xFE000000 : 0x77000000; //darker when hovered

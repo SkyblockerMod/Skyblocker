@@ -5,7 +5,7 @@ import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import java.awt.Color;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -60,19 +60,19 @@ public abstract class HudConfigScreen extends Screen {
 	}
 
 	@Override
-	public final void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public final void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.render(graphics, mouseX, mouseY, delta);
 		renderWidget(graphics, widgets, delta);
 		graphics.drawCenteredString(font, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
 	}
 
 	/**
-	 * Renders the widgets using the default {@link AbstractWidget#render(GuiGraphics, int, int, float)} method. Override to change the behavior.
+	 * Renders the widgets using the default {@link AbstractWidget#render(GuiGraphicsExtractor, int, int, float)} method. Override to change the behavior.
 	 *
 	 * @param graphics the context to render in
 	 * @param widgets the widgets to render
 	 */
-	protected void renderWidget(GuiGraphics graphics, List<AbstractWidget> widgets, float delta) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, List<AbstractWidget> widgets, float delta) {
 		for (AbstractWidget widget : widgets) {
 			widget.render(graphics, -1, -1, delta);
 		}

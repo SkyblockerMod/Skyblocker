@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
 import de.hysky.skyblocker.utils.render.HudHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 /**
  * Meta-Element that consists of a grid of other components
@@ -72,7 +72,7 @@ public class TableElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int xpos, int ypos) {
+	public void render(GuiGraphicsExtractor graphics, int xpos, int ypos) {
 		int yOff = 0;
 		for (int y = 0; y < rows; y++) {
 			int col = rowBorders[y];

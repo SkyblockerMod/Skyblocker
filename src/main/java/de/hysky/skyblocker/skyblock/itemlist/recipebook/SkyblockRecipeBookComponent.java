@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.Pair;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -123,7 +123,7 @@ public class SkyblockRecipeBookComponent extends RecipeBookComponent<NoopRecipeB
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (this.isVisible()) {
 			int left = accessor().invokeGetXOrigin();
 			int top = accessor().invokeGetYOrigin();
@@ -138,7 +138,7 @@ public class SkyblockRecipeBookComponent extends RecipeBookComponent<NoopRecipeB
 	}
 
 	@Override
-	public void renderTooltip(GuiGraphics graphics, int x, int y, @Nullable Slot slot) {
+	public void renderTooltip(GuiGraphicsExtractor graphics, int x, int y, @Nullable Slot slot) {
 		if (this.isVisible()) {
 			this.currentTab.left().drawTooltip(graphics, x, y);
 		}

@@ -4,7 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +21,7 @@ public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRari
 	}
 
 	@Override
-	protected void draw(GuiGraphics graphics, int x, int y, SkyblockItemRarity rarity) {
+	protected void draw(GuiGraphicsExtractor graphics, int x, int y, SkyblockItemRarity rarity) {
 		if (rarity == SkyblockItemRarity.UNKNOWN) return;
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, getSprite(), x, y, 16, 16,
 				ARGB.colorFromFloat(

@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -41,7 +41,7 @@ public class CompactorPreviewTooltipComponent implements ClientTooltipComponent 
 	 * 2 columns is not currently supported and will have an empty third column.
 	 */
 	@Override
-	public void renderImage(Font textRenderer, int x, int y, int width, int height, GuiGraphics graphics) {
+	public void renderImage(Font textRenderer, int x, int y, int width, int height, GuiGraphicsExtractor graphics) {
 		// Draw the background with `dimensions.leftInt()` rows and `columns` columns with some texture math
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, columns * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + columns * 18 + 7, y, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);

@@ -11,7 +11,7 @@ import java.util.Map;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -29,7 +29,7 @@ public class DungeonFloorRunsWidget {
 		} catch (Exception ignored) {}
 	}
 
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) {
+	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 110, 109, 110);
 		graphics.drawString(textRenderer, Component.literal("Floor Runs").withStyle(ChatFormatting.BOLD), x + 6, y + 4, Color.WHITE.getRGB(), true);
 

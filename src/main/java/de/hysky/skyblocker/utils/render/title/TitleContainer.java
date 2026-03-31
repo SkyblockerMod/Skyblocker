@@ -12,7 +12,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.CommonColors;
@@ -130,11 +130,11 @@ public class TitleContainer {
 		titles.remove(title);
 	}
 
-	private static void render(GuiGraphics graphics, DeltaTracker tickCounter) {
+	private static void render(GuiGraphicsExtractor graphics, DeltaTracker tickCounter) {
 		render(graphics, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getGameTimeDeltaPartialTick(true));
 	}
 
-	protected static void render(GuiGraphics graphics, Set<Title> titles, int xPos, int yPos, float tickDelta) {
+	protected static void render(GuiGraphicsExtractor graphics, Set<Title> titles, int xPos, int yPos, float tickDelta) {
 		UIAndVisualsConfig.TitleContainer config = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
 
 		// Calculate Scale to use
@@ -146,7 +146,7 @@ public class TitleContainer {
 		render(graphics, titles, xPos, yPos, tickDelta, scale, direction, alignment);
 	}
 
-	protected static void render(GuiGraphics graphics, Set<Title> titles, int xPos, int yPos, float tickDelta, float scale, UIAndVisualsConfig.Direction direction, UIAndVisualsConfig.Alignment alignment) {
+	protected static void render(GuiGraphicsExtractor graphics, Set<Title> titles, int xPos, int yPos, float tickDelta, float scale, UIAndVisualsConfig.Direction direction, UIAndVisualsConfig.Alignment alignment) {
 		if (titles.isEmpty()) return;
 		Font textRenderer = Minecraft.getInstance().font;
 

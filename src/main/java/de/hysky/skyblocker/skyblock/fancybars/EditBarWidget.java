@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.StringWidget;
@@ -97,7 +97,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 	public int insideMouseY = 0;
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (isHovered()) {
 			insideMouseX = mouseX;
 			insideMouseY = mouseY;
@@ -186,7 +186,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			if (isMouseOver(mouseX, mouseY)) {
 				graphics.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
@@ -218,7 +218,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			if (isMouseOver(mouseX, mouseY)) {
 				graphics.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
@@ -267,7 +267,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			if (isMouseOver(mouseX, mouseY)) {
 				graphics.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
@@ -313,7 +313,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			if (isMouseOver(mouseX, mouseY)) {
 				graphics.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
