@@ -159,7 +159,7 @@
     "skyblocker.tips.discord": "請加入我們的Discord（https://discord.gg/aNNJHQykck）以了解Skyblocker的最新消息！",
     "skyblocker.partyFinder.tabs.createParty": "創建隊伍",
     "skyblocker.config.general.itemList": "物品列表",
-    "skyblocker.config.general.itemList.enableItemList": "啟用物品列表",
+    "skyblocker.config.general.itemList.enableItemList": "啟用物品列表相容",
     "skyblocker.config.general.shortcuts": "快捷指令",
     "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "始終生效，即使在原版游戲中也是！使用「/skyblocker shortcuts」編輯快捷指令。以下選項必須至少啟用一個方可生效。",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudScale": "花俏的Tab HUD縮放大小",
@@ -1702,5 +1702,8 @@
     "skyblocker.config.dungeons.rareRoomAlert.enabled.@Tooltip": "當你或你的隊友在地下城中發現稀有房間（如下）時，在螢幕上顯示標題並在聊天中顯示一條訊息。",
     "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "顯示沒有正確名稱的音效",
     "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "進階",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.search.@Tooltip": "搜尋更多音效"
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.search.@Tooltip": "搜尋更多音效",
+    "skyblocker.config.general.itemList.enableItemList.@Tooltip": "將Skyblock物品及配方加入支援的物品列表模組（REI和JEI）中。",
+    "skyblocker.config.general.itemList.enableRecipeBook": "啟用配方書",
+    "skyblocker.config.general.itemList.enableRecipeBook.@Tooltip": "將Skyblock物品及配方添加到物品欄的配方書中。"
 }
