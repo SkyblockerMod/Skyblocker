@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class DropdownWidget<T> extends AbstractContainerWidget {
 	private static final Minecraft client = Minecraft.getInstance();
@@ -58,7 +58,7 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		dropdownList.visible = open;
 		dropdownList.render(graphics, mouseX, mouseY, delta);
 		graphics.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, CommonColors.BLACK);
-		HudHelper.drawBorder(graphics, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, CommonColors.WHITE);
+		GuiHelper.drawBorder(graphics, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, CommonColors.WHITE);
 		graphics.text(client.font, ">", getX() + 4, getY() + 6, CommonColors.LIGHTER_GRAY, true);
 		graphics.text(client.font, selected.toString(), getX() + 12, getY() + 6, CommonColors.WHITE, true);
 		if (isMouseOver(mouseX, mouseY)) graphics.requestCursor(CursorTypes.POINTING_HAND);
@@ -219,7 +219,7 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		@Override
 		protected void renderListBackground(GuiGraphicsExtractor graphics) {
 			graphics.fill(getX(), getY(), getRight(), getBottom(), 0xFF << 24);
-			HudHelper.drawBorder(graphics, getX(), getY(), getWidth(), getHeight(), -1);
+			GuiHelper.drawBorder(graphics, getX(), getY(), getWidth(), getHeight(), -1);
 		}
 
 		@Override

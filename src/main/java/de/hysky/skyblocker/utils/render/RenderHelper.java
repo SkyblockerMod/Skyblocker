@@ -35,7 +35,7 @@ public class RenderHelper {
 		ProfilerFiller profiler = Profiler.get();
 		profiler.push("skyblockerPrimitiveCollection");
 		collector = new PrimitiveCollectorImpl(context.worldState(), context.frustum());
-		WorldRenderExtractionCallback.EVENT.invoker().onExtract(collector);
+		LevelRenderExtractionCallback.EVENT.invoker().onExtract(collector);
 		collector.endCollection();
 		profiler.pop();
 	}

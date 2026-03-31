@@ -22,7 +22,7 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -346,7 +346,7 @@ public class VisitorHelper extends AbstractWidget {
 	 * Checks if the mouse is over a specific rectangular region.
 	 */
 	private static boolean isMouseOverText(Font textRenderer, Component text, int x, int y, double mouseX, double mouseY) {
-		return HudHelper.pointIsInArea(mouseX, mouseY, x, y, x + textRenderer.width(text), y + textRenderer.lineHeight);
+		return GuiHelper.pointIsInArea(mouseX, mouseY, x, y, x + textRenderer.width(text), y + textRenderer.lineHeight);
 	}
 
 	@Override

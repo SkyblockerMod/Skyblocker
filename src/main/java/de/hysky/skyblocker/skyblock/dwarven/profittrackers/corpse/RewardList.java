@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
 import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.Reference2IntArrayMap;
@@ -137,7 +137,7 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 
 		@Override
 		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			if (drawBorder) HudHelper.drawBorder(graphics, this.getX(), this.getY(), this.getWidth(), this.getHeight() + 1, BORDER_COLOR);
+			if (drawBorder) GuiHelper.drawBorder(graphics, this.getX(), this.getY(), this.getWidth(), this.getHeight() + 1, BORDER_COLOR);
 			for (var child : children) {
 				child.setX(this.getX() + INNER_MARGIN);
 				child.setY(this.getY() + INNER_MARGIN);
@@ -204,9 +204,9 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 			int entryWidth = this.getWidth();
 			int entryHeight = this.getHeight();
 			// The +1 is to make the borders stack on top of each other
-			HudHelper.drawBorder(graphics, x, y, entryWidth, entryHeight + 1, BORDER_COLOR);
-			HudHelper.drawBorder(graphics, x + entryWidth / 3, y, entryWidth / 6 + 2, entryHeight + 1, BORDER_COLOR);
-			HudHelper.drawBorder(graphics, x + entryWidth / 2, y, entryWidth / 4, entryHeight + 1, BORDER_COLOR);
+			GuiHelper.drawBorder(graphics, x, y, entryWidth, entryHeight + 1, BORDER_COLOR);
+			GuiHelper.drawBorder(graphics, x + entryWidth / 3, y, entryWidth / 6 + 2, entryHeight + 1, BORDER_COLOR);
+			GuiHelper.drawBorder(graphics, x + entryWidth / 2, y, entryWidth / 4, entryHeight + 1, BORDER_COLOR);
 
 			int entryY = y + INNER_MARGIN;
 			if (itemName != null) {

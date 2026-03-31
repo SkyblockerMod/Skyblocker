@@ -15,7 +15,7 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -74,7 +74,7 @@ public class FairySouls {
 		loadFairySouls();
 		ClientLifecycleEvents.CLIENT_STOPPING.register(FairySouls::saveFoundFairySouls);
 		ClientCommandRegistrationCallback.EVENT.register(FairySouls::registerCommands);
-		WorldRenderExtractionCallback.EVENT.register(FairySouls::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(FairySouls::extractRendering);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(FairySouls::onChatMessage);
 	}
 

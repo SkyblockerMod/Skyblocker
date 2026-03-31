@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.radialMenu;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -85,7 +85,7 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 		vertices.add(getPos(center, startAngle + arcLength / 2, external));
 
 		//draw background
-		HudHelper.drawCustomShape(graphics, vertices, color);
+		GuiHelper.drawCustomShape(graphics, vertices, color);
 
 		//render icon
 		float iconAngle = startAngle + (arcLength / 2);
@@ -96,7 +96,7 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 		SlotTextManager.renderSlotText(graphics, CLIENT.font, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
 
 		//render tooltip
-		if (hovered && (HudHelper.hasShiftDown() || SkyblockerConfigManager.get().uiAndVisuals.radialMenu.tooltipsWithoutShift)) {
+		if (hovered && (GuiHelper.hasShiftDown() || SkyblockerConfigManager.get().uiAndVisuals.radialMenu.tooltipsWithoutShift)) {
 			// Backpack Preview
 			if (CLIENT.screen != null && CLIENT.screen.getTitle().getString().equals("Storage")) {
 				BackpackPreview.renderPreview(graphics, CLIENT.screen, linkedSlot, mouseX, mouseY);

@@ -9,7 +9,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -90,8 +90,8 @@ public class DungeonMap {
 		graphics.pose().translate(x, y);
 		graphics.pose().scale(scale, scale);
 
-		if (dungeonMap.backgroundBlur) HudHelper.submitBlurredRectangle(graphics, 0, 0, 128, 128, 5);
-		if (dungeonMap.showOutline) HudHelper.drawBorder(graphics, 0, 0, 128, 128, CommonColors.LIGHT_GRAY);
+		if (dungeonMap.backgroundBlur) GuiHelper.submitBlurredRectangle(graphics, 0, 0, 128, 128, 5);
+		if (dungeonMap.showOutline) GuiHelper.drawBorder(graphics, 0, 0, 128, 128, CommonColors.LIGHT_GRAY);
 
 		DungeonMapTexture.blitMap(graphics);
 		DungeonMapLabels.renderRoomNames(graphics);
@@ -155,8 +155,8 @@ public class DungeonMap {
 				graphics.pose().scale(2, 2);
 				hovered = player.uuid();
 			}
-			HudHelper.drawPlayerHead(graphics, -4, -4, 8, player.uuid());
-			HudHelper.drawBorder(graphics, -5, -5, 10, 10, dungeonPlayer.dungeonClass().color());
+			GuiHelper.drawPlayerHead(graphics, -4, -4, 8, player.uuid());
+			GuiHelper.drawBorder(graphics, -5, -5, 10, 10, dungeonPlayer.dungeonClass().color());
 			graphics.fill(-1, -7, 1, -5, dungeonPlayer.dungeonClass().color());
 			graphics.pose().popMatrix();
 		}

@@ -10,7 +10,7 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public abstract class WidgetsListEntry extends ContainerObjectSelectionList.Entry<WidgetsListEntry> {
 	public static final Component ENABLED_TEXT = Component.literal("ENABLED").withStyle(ChatFormatting.GREEN);
@@ -19,7 +19,7 @@ public abstract class WidgetsListEntry extends ContainerObjectSelectionList.Entr
 	public void renderTooltip(GuiGraphicsExtractor graphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {}
 
 	public void drawBorder(GuiGraphicsExtractor graphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		if (hovered) HudHelper.drawBorder(graphics, x, y, entryWidth, entryHeight, -1);
+		if (hovered) GuiHelper.drawBorder(graphics, x, y, entryWidth, entryHeight, -1);
 	}
 
 	@Override

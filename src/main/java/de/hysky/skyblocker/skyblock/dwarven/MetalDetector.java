@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -92,7 +92,7 @@ public class MetalDetector {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(MetalDetector::getDistanceMessage);
-		WorldRenderExtractionCallback.EVENT.register(MetalDetector::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(MetalDetector::extractRendering);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 	}
 

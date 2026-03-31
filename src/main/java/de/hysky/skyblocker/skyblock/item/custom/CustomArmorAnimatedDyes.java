@@ -12,7 +12,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -36,7 +36,7 @@ public class CustomArmorAnimatedDyes {
 	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register(CustomArmorAnimatedDyes::registerCommands);
-		WorldRenderExtractionCallback.EVENT.register(ignored -> ++frames);
+		LevelRenderExtractionCallback.EVENT.register(ignored -> ++frames);
 		// have the animation restart on world change because why not?
 		SkyblockEvents.LOCATION_CHANGE.register(ignored -> cleanTrackers());
 	}

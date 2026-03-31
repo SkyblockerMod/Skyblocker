@@ -7,7 +7,7 @@ import de.hysky.skyblocker.skyblock.entity.glow.adder.DungeonGlowAdder;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.Renderable;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.world.entity.Entity;
@@ -23,7 +23,7 @@ public class MobBoundingBoxes {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(MobBoundingBoxes::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(MobBoundingBoxes::extractRendering);
 	}
 
 	public static boolean shouldDrawMobBoundingBox(Entity entity) {

@@ -44,7 +44,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
 
-public class HudHelper {
+public class GuiHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	/**
 	 * Suitable for rendering two blurred rectangles at once

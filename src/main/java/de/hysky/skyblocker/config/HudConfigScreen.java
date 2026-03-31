@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.config;
 
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import java.awt.Color;
@@ -91,7 +91,7 @@ public abstract class HudConfigScreen extends Screen {
 	public final boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (click.button() == 0) {
 			for (AbstractWidget widget : widgets) {
-				if (HudHelper.pointIsInArea(click.x(), click.y(), widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
+				if (GuiHelper.pointIsInArea(click.x(), click.y(), widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
 					draggingWidget = widget;
 					mouseClickRelativeX = click.x() - widget.getX() - getWidgetXOffset(widget);
 					mouseClickRelativeY = click.y() - widget.getY();

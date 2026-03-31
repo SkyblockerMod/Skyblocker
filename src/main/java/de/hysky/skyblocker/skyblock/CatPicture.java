@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.render.state.EmptyRenderState;
 import net.minecraft.client.Minecraft;
@@ -32,7 +32,7 @@ public class CatPicture {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(CatPicture::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(CatPicture::extractRendering);
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {

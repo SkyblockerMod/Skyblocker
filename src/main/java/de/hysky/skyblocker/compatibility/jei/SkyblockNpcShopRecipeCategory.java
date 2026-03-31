@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.compatibility.jei;
 
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -30,7 +30,7 @@ public final class SkyblockNpcShopRecipeCategory extends AbstractSkyblockRecipeC
 		int itemY = arrowYOffset - ITEM_SIZE - NPC_ITEM_PADDING;
 		graphics.item(recipe.getNpcItem(), itemX, itemY);
 
-		if (HudHelper.pointIsInArea(mouseX, mouseY, itemX, itemY, itemX + ITEM_SIZE, itemY + ITEM_SIZE)) {
+		if (GuiHelper.pointIsInArea(mouseX, mouseY, itemX, itemY, itemX + ITEM_SIZE, itemY + ITEM_SIZE)) {
 			this.drawTooltip(graphics, recipe.getNpcItem().getHoverName(), mouseX, mouseY);
 		}
 	}

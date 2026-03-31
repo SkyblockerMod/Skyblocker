@@ -5,7 +5,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ public class DungeonClassWidget {
 		graphics.text(textRenderer, className + " " + classLevel.level, x + 31, y + 5, Color.WHITE.getRGB(), false);
 		Color fillColor = classLevel.level >= CLASS_CAP ? Color.MAGENTA : Color.GREEN;
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
-		HudHelper.renderNineSliceColored(graphics, BAR_FILL, x + 30, y + 15, (int) (75 * classLevel.fill), 6, fillColor);
+		GuiHelper.renderNineSliceColored(graphics, BAR_FILL, x + 30, y + 15, (int) (75 * classLevel.fill), 6, fillColor);
 
 		if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22) {
 			List<Component> tooltipText = new ArrayList<>();

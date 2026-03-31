@@ -12,7 +12,7 @@ import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetStyleVisi
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.InsertTextVisitor;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.SetStyleVisitor;
 import de.hysky.skyblocker.utils.OkLabColor;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -440,7 +440,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 			}
 
 			graphics.fill(getX(), getY(), getRight(), getBottom(), CommonColors.BLACK);
-			HudHelper.drawBorder(graphics, getX(), getY(), getWidth(), getHeight(), isFocused() ? CommonColors.WHITE : CommonColors.GRAY);
+			GuiHelper.drawBorder(graphics, getX(), getY(), getWidth(), getHeight(), isFocused() ? CommonColors.WHITE : CommonColors.GRAY);
 			int textX = getTextX();
 			int textY = getY() + (getHeight() - textRenderer.lineHeight) / 2;
 

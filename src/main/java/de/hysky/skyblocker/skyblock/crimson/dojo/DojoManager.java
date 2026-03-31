@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.booleans.BooleanPredicate;
@@ -72,7 +72,7 @@ public class DojoManager {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DojoManager::onMessage);
-		WorldRenderExtractionCallback.EVENT.register(DojoManager::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(DojoManager::extractRendering);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 		ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
 		ClientEntityEvents.ENTITY_UNLOAD.register(DojoManager::onEntityDespawn);

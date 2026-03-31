@@ -6,7 +6,7 @@ import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -61,7 +61,7 @@ public class LividColor {
 	@Init
 	public static void init() {
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> LividColor.reset());
-		WorldRenderExtractionCallback.EVENT.register(LividColor::update);
+		LevelRenderExtractionCallback.EVENT.register(LividColor::update);
 	}
 
 	private static void update(PrimitiveCollector collector) {

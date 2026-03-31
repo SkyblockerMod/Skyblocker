@@ -2,7 +2,7 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import java.awt.Color;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -188,7 +188,7 @@ public class ColorPickerWidget extends AbstractWidget {
 			float segmentLength = (float) hRect.width() / rainbowColors.length;
 			float startX = hRect.left() + segmentLength * i;
 			float endX = hRect.left() + segmentLength * (i + 1);
-			HudHelper.drawHorizontalGradient(graphics, startX, hRect.top(), endX, hRect.bottom(), startColor, endColor);
+			GuiHelper.drawHorizontalGradient(graphics, startX, hRect.top(), endX, hRect.bottom(), startColor, endColor);
 		}
 		drawThumb(graphics, hRect, (int) hThumbX);
 
@@ -198,7 +198,7 @@ public class ColorPickerWidget extends AbstractWidget {
 		int pickerY = svRect.top();
 		int pickerEndX = svRect.right();
 		int pickerEndY = svRect.bottom();
-		HudHelper.drawHorizontalGradient(graphics, pickerX, pickerY, pickerEndX, pickerEndY, -1, svColor);
+		GuiHelper.drawHorizontalGradient(graphics, pickerX, pickerY, pickerEndX, pickerEndY, -1, svColor);
 		graphics.fillGradient(pickerX, pickerY, pickerEndX, pickerEndY, 1, 0xFF_00_00_00);
 
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SV_THUMB_TEXTURE,
@@ -210,7 +210,7 @@ public class ColorPickerWidget extends AbstractWidget {
 		// Alpha
 		if (hasAlpha) {
 			graphics.fill(aRect.left() - 1, aRect.top() - 1, aRect.right() + 1, aRect.bottom() + 1, color);
-			HudHelper.drawHorizontalGradient(graphics, aRect.left(), aRect.top(), aRect.right(), aRect.bottom(), CommonColors.BLACK, CommonColors.WHITE);
+			GuiHelper.drawHorizontalGradient(graphics, aRect.left(), aRect.top(), aRect.right(), aRect.bottom(), CommonColors.BLACK, CommonColors.WHITE);
 
 			drawThumb(graphics, aRect, (int) aThumbX);
 

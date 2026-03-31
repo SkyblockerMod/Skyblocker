@@ -10,7 +10,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -63,7 +63,7 @@ public class MythologicalRitual {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(MythologicalRitual::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(MythologicalRitual::extractRendering);
 		AttackBlockCallback.EVENT.register(MythologicalRitual::onAttackBlock);
 		UseBlockCallback.EVENT.register(MythologicalRitual::onUseBlock);
 		UseItemCallback.EVENT.register(MythologicalRitual::onUseItem);

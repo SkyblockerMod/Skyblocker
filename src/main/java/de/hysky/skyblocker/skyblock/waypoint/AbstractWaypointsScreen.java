@@ -5,7 +5,7 @@ import com.google.common.collect.MultimapBuilder;
 import com.mojang.blaze3d.platform.cursor.CursorType;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
@@ -215,7 +215,7 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 			}
 
 			graphics.fill(getX(), getY(), getRight(), getBottom(), ARGB.color(0.6f, 0));
-			HudHelper.drawBorder(graphics, getX(), getY(), getWidth(), getHeight(), CommonColors.WHITE);
+			GuiHelper.drawBorder(graphics, getX(), getY(), getWidth(), getHeight(), CommonColors.WHITE);
 			for (AbstractWidget child : children) {
 				child.render(graphics, mouseX, mouseY, deltaTicks);
 			}

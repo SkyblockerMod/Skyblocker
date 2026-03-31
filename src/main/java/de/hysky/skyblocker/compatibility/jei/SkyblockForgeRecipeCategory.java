@@ -2,7 +2,7 @@ package de.hysky.skyblocker.compatibility.jei;
 
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -24,7 +24,7 @@ public final class SkyblockForgeRecipeCategory extends AbstractSkyblockRecipeCat
 		int arrowYOffset = (this.getHeight() - recipeArrow.getHeight()) / 2;
 		recipeArrow.draw(graphics, 61, arrowYOffset);
 
-		if (HudHelper.pointIsInArea(mouseX, mouseY, 61, arrowYOffset, 61 + recipeArrow.getWidth(), arrowYOffset + recipeArrow.getHeight())) {
+		if (GuiHelper.pointIsInArea(mouseX, mouseY, 61, arrowYOffset, 61 + recipeArrow.getWidth(), arrowYOffset + recipeArrow.getHeight())) {
 			this.drawTooltip(graphics, Component.literal(recipe.getDurationString()), mouseX, mouseY);
 		}
 	}
