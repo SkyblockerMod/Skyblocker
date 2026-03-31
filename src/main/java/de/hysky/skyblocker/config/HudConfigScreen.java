@@ -63,7 +63,7 @@ public abstract class HudConfigScreen extends Screen {
 	public final void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.render(graphics, mouseX, mouseY, delta);
 		renderWidget(graphics, widgets, delta);
-		graphics.drawCenteredString(font, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
+		graphics.centeredText(font, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
 	}
 
 	/**

@@ -53,8 +53,8 @@ public class UpcomingEventsTab implements RecipeTab {
 		graphics.enableScissor(x, y, x + 131, y + 150);
 
 		//Draw the title area
-		graphics.renderFakeItem(CLOCK, x, y + 4);
-		graphics.drawString(CLIENT.font, "Upcoming Events", x + 17, y + 7, CommonColors.WHITE);
+		graphics.fakeItem(CLOCK, x, y + 4);
+		graphics.text(CLIENT.font, "Upcoming Events", x + 17, y + 7, CommonColors.WHITE);
 
 		int eventsY = y + 7 + 24;
 		this.hovered = null;
@@ -74,7 +74,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	@Override
 	public void drawTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 		if (this.hovered != null) {
-			graphics.renderTooltip(CLIENT.font, this.hovered.getTooltip(), x, y, DefaultTooltipPositioner.INSTANCE, null);
+			graphics.tooltip(CLIENT.font, this.hovered.getTooltip(), x, y, DefaultTooltipPositioner.INSTANCE, null);
 		}
 	}
 
@@ -104,18 +104,18 @@ public class UpcomingEventsTab implements RecipeTab {
 			long time = System.currentTimeMillis() / 1000;
 			Font textRenderer = CLIENT.font;
 
-			graphics.drawString(textRenderer, Component.literal(eventName).withStyle(Style.EMPTY.withUnderlined(isMouseOver(mouseX, mouseY, x, y))), x, y, CommonColors.WHITE);
+			graphics.text(textRenderer, Component.literal(eventName).withStyle(Style.EMPTY.withUnderlined(isMouseOver(mouseX, mouseY, x, y))), x, y, CommonColors.WHITE);
 
 			if (events.isEmpty()) {
-				graphics.drawString(textRenderer, Component.literal(" ").append(Component.translatable("skyblocker.events.tab.noMore")), x, y + textRenderer.lineHeight, CommonColors.GRAY, false);
+				graphics.text(textRenderer, Component.literal(" ").append(Component.translatable("skyblocker.events.tab.noMore")), x, y + textRenderer.lineHeight, CommonColors.GRAY, false);
 			} else if (events.peekFirst().start() > time) {
 				Component formatted = Component.literal(" ").append(Component.translatable("skyblocker.events.tab.startsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() - time)))).withStyle(ChatFormatting.YELLOW);
 
-				graphics.drawString(textRenderer, formatted, x, y + textRenderer.lineHeight, CommonColors.WHITE);
+				graphics.text(textRenderer, formatted, x, y + textRenderer.lineHeight, CommonColors.WHITE);
 			} else {
 				Component formatted = Component.literal(" ").append(Component.translatable("skyblocker.events.tab.endsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).withStyle(ChatFormatting.GREEN);
 
-				graphics.drawString(textRenderer, formatted, x, y + textRenderer.lineHeight, CommonColors.WHITE);
+				graphics.text(textRenderer, formatted, x, y + textRenderer.lineHeight, CommonColors.WHITE);
 			}
 		}
 
@@ -175,7 +175,7 @@ public class UpcomingEventsTab implements RecipeTab {
 			for (int i = 0; i < this.crops.size(); i++) {
 				String crop = this.crops.get(i);
 
-				graphics.renderFakeItem(JacobsContestWidget.FARM_DATA.getOrDefault(crop, BARRIER), x + 18 * i, y + 2);
+				graphics.fakeItem(JacobsContestWidget.FARM_DATA.getOrDefault(crop, BARRIER), x + 18 * i, y + 2);
 			}
 		}
 	}

@@ -149,7 +149,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
 
-		graphics.drawString(textRenderer, editingSlotIcon < 0 ? getMessage() : Component.literal("Custom Icon"), 8, 6, CommonColors.DARK_GRAY, false);
+		graphics.text(textRenderer, editingSlotIcon < 0 ? getMessage() : Component.literal("Custom Icon"), 8, 6, CommonColors.DARK_GRAY, false);
 
 		hoveredSlot = -1;
 		long timeMillis = System.currentTimeMillis();
@@ -179,18 +179,18 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			if (hovered) {
 				//noinspection deprecation
 				if (ClientTags.isInLocal(ConventionalItemTags.GLASS_PANES, item.getItem().builtInRegistryHolder().key())) {
-					graphics.renderItem(item, slotX + 1, slotY + 1);
+					graphics.item(item, slotX + 1, slotY + 1);
 				} else {
 					matrices.pushMatrix();
 					matrices.translate(slotX, slotY);
 					matrices.scale(1.125f, 1.125f);
-					graphics.renderItem(item, 0, 0);
+					graphics.item(item, 0, 0);
 					matrices.popMatrix();
 				}
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
 				hoveredSlot = i;
 			} else
-				graphics.renderItem(item, slotX + 1, slotY + 1);
+				graphics.item(item, slotX + 1, slotY + 1);
 
 			if (editingSlotIcon >= 0) {
 				if (hovered) {

@@ -29,6 +29,6 @@ public class ItemButtonWidget extends Button {
 	@Override
 	protected void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		this.renderDefaultSprite(graphics);
-		graphics.renderItem(this.item, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
+		graphics.item(this.item, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
 	}
 }

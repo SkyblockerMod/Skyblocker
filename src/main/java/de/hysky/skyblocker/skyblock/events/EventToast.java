@@ -56,13 +56,13 @@ public class EventToast implements Toast {
 		y = 2 + drawMessage(graphics, 30, y, CommonColors.WHITE);
 		drawTimer(graphics, 30, y);
 
-		graphics.renderFakeItem(icon, 8, height()/2 - 8);
+		graphics.fakeItem(icon, 8, height()/2 - 8);
 	}
 
 	protected int drawMessage(GuiGraphicsExtractor graphics, int x, int y, int color) {
 		Font textRenderer = Minecraft.getInstance().font;
 		for (FormattedCharSequence orderedText : started ? messageNow : message) {
-			graphics.drawString(textRenderer, orderedText, x, y, color, false);
+			graphics.text(textRenderer, orderedText, x, y, color, false);
 			y += textRenderer.lineHeight;
 		}
 		return y;
@@ -77,7 +77,7 @@ public class EventToast implements Toast {
 		Component time = SkyblockTime.formatTime(timeTillEvent);
 
 		Font textRenderer = Minecraft.getInstance().font;
-		graphics.drawString(textRenderer, time, x, y, CommonColors.SOFT_YELLOW, false);
+		graphics.text(textRenderer, time, x, y, CommonColors.SOFT_YELLOW, false);
 	}
 
 	@Override

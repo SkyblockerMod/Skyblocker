@@ -43,6 +43,6 @@ public class WidgetEntry extends WidgetsListEntry {
 		int textY = this.getY() + (this.getHeight() - 9) / 2;
 		enableButton.setPosition(this.getX() + this.getWidth() - 110, this.getY() + (this.getHeight() - 12) / 2);
 		enableButton.render(graphics, mouseX, mouseY, deltaTicks);
-		graphics.drawString(Minecraft.getInstance().font, widget.getDisplayName(), this.getX() + 2, textY, CommonColors.WHITE);
+		graphics.text(Minecraft.getInstance().font, widget.getDisplayName(), this.getX() + 2, textY, CommonColors.WHITE);
 	}
 }

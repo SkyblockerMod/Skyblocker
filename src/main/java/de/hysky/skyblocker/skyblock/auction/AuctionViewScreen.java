@@ -150,7 +150,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		super.render(graphics, mouseX, mouseY, delta);
 
-		if (isWaitingForServer) graphics.drawString(font, "Waiting...", 0, 0, CommonColors.WHITE, true);
+		if (isWaitingForServer) graphics.text(font, "Waiting...", 0, 0, CommonColors.WHITE, true);
 
 		Matrix3x2fStack matrices = graphics.pose();
 
@@ -159,8 +159,8 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 		matrices.scale(1.375f, 1.375f);
 		//matrices.translate(0, 0, 100f);
 		ItemStack stack = menu.getSlot(13).getItem();
-		graphics.renderItem(stack, 0, 0);
-		graphics.renderItemDecorations(font, stack, 0, 0);
+		graphics.item(stack, 0, 0);
+		graphics.itemDecorations(font, stack, 0, 0);
 		matrices.popMatrix();
 
 		if (!isBinAuction && buyState != BuyState.COLLECT_AUCTION) {

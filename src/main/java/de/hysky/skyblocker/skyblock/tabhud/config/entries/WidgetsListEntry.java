@@ -29,8 +29,8 @@ public abstract class WidgetsListEntry extends ContainerObjectSelectionList.Entr
 
 	protected void renderIconAndText(GuiGraphicsExtractor graphics, ItemStack icon, int y, int x, int entryHeight) {
 		Font textRenderer = Minecraft.getInstance().font;
-		graphics.renderItem(icon, x + 2, y + (entryHeight - 16) / 2);
-		graphics.drawString(textRenderer, icon.getHoverName(), x + 20, y + (entryHeight - 9) / 2, CommonColors.WHITE, true);
+		graphics.item(icon, x + 2, y + (entryHeight - 16) / 2);
+		graphics.text(textRenderer, icon.getHoverName(), x + 20, y + (entryHeight - 9) / 2, CommonColors.WHITE, true);
 	}
 
 }

@@ -188,7 +188,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		if (insertButtonY <= getY() || insertButtonY >= getBottom() || mX > 32) return;
 		boolean hovering = isMouseOver(mouseX, mouseY) && Math.abs(mouseY - insertButtonY) <= 6 && mX < 16 && mX >= -8;
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, hovering ? INSERT_HIGHLIGHTED_TEXTURE : INSERT_TEXTURE, getRowLeft(), insertButtonY - 5, 48, 11);
-		if (Debug.debugEnabled()) graphics.drawString(minecraft.font, String.valueOf(position), getX(), getY(), -1, true);
+		if (Debug.debugEnabled()) graphics.text(minecraft.font, String.valueOf(position), getX(), getY(), -1, true);
 		if (hovering) {
 			insertPosition = new InsertPosition(groupEntry, position);
 			graphics.requestCursor(CursorTypes.POINTING_HAND);

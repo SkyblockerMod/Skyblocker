@@ -49,7 +49,7 @@ public class CompactorPreviewTooltipComponent implements ClientTooltipComponent 
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + columns * 18 + 7, y + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
 
 		//Draw name - I don't think it needs to be translatable
-		graphics.drawString(textRenderer, "Contents", x + 8, y + 6, 0xFF404040, false);
+		graphics.text(textRenderer, "Contents", x + 8, y + 6, 0xFF404040, false);
 
 		for (IntObjectPair<ItemStack> entry : items) {
 			int itemX = x + entry.leftInt() % dimensions.rightInt() * 18 + 8;
@@ -61,8 +61,8 @@ public class CompactorPreviewTooltipComponent implements ClientTooltipComponent 
 				itemX += 18;
 			}
 			if (entry.right() != null) {
-				graphics.renderItem(entry.right(), itemX, itemY);
-				graphics.renderItemDecorations(textRenderer, entry.right(), itemX, itemY);
+				graphics.item(entry.right(), itemX, itemY);
+				graphics.itemDecorations(textRenderer, entry.right(), itemX, itemY);
 			}
 			// Draw a disabled slot to fill the right slot if there is only one column
 			if (dimensions.rightInt() == 1) {

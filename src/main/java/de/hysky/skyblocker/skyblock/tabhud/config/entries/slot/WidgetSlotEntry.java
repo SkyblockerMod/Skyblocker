@@ -78,7 +78,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 				enableButton.render(graphics, mouseX, mouseY, deltaTicks);
 			}
 		} else {
-			graphics.drawString(textRenderer, "LOCKED", this.getX() + this.getWidth() - 50, textY, CommonColors.RED, true);
+			graphics.text(textRenderer, "LOCKED", this.getX() + this.getWidth() - 50, textY, CommonColors.RED, true);
 		}
 	}
 

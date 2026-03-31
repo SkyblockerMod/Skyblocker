@@ -189,7 +189,7 @@ public class ItemTab extends GridLayoutTab {
 			}
 			matrices.translate(x, y);
 			matrices.scale(2);
-			graphics.renderItem(currentItem, 0, 0);
+			graphics.item(currentItem, 0, 0);
 			matrices.popMatrix();
 			selectItemButton.render(graphics, mouseX, mouseY, deltaTicks);
 		}

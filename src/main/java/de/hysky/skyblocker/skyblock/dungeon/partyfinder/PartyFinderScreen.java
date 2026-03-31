@@ -260,23 +260,23 @@ public class PartyFinderScreen extends Screen {
 			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
 		}
 		if (DEBUG) {
-			graphics.drawString(font, currentPage.toString(), 0, 0, CommonColors.WHITE, true);
-			graphics.drawString(font, "Truly a party finder", 20, 20, CommonColors.WHITE, true);
+			graphics.text(font, currentPage.toString(), 0, 0, CommonColors.WHITE, true);
+			graphics.text(font, "Truly a party finder", 20, 20, CommonColors.WHITE, true);
 			if (sign != null) {
-				graphics.drawString(font, "You are in a sign btw", 20, 30, CommonColors.WHITE, true);
+				graphics.text(font, "You are in a sign btw", 20, 30, CommonColors.WHITE, true);
 			} else {
-				graphics.drawString(font, String.valueOf(refreshSlotId), width - 25, 30, CommonColors.WHITE, true);
-				graphics.drawString(font, String.valueOf(prevPageSlotId), width - 25, 40, CommonColors.WHITE, true);
-				graphics.drawString(font, String.valueOf(nextPageSlotId), width - 25, 50, CommonColors.WHITE, true);
+				graphics.text(font, String.valueOf(refreshSlotId), width - 25, 30, CommonColors.WHITE, true);
+				graphics.text(font, String.valueOf(prevPageSlotId), width - 25, 40, CommonColors.WHITE, true);
+				graphics.text(font, String.valueOf(nextPageSlotId), width - 25, 50, CommonColors.WHITE, true);
 				for (int i = 0; i < handler.slots.size(); i++) {
-					graphics.renderItem(handler.slots.get(i).getItem(), (i % 9) * 16, (i / 9) * 16);
+					graphics.item(handler.slots.get(i).getItem(), (i % 9) * 16, (i / 9) * 16);
 				}
-				graphics.drawString(font, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), CommonColors.WHITE, true);
+				graphics.text(font, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), CommonColors.WHITE, true);
 			}
 		}
 		if (isWaitingForServer()) {
 			String s = "Waiting for server...";
-			graphics.drawString(font, s, this.width - font.width(s) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
+			graphics.text(font, s, this.width - font.width(s) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
 		}
 	}
 

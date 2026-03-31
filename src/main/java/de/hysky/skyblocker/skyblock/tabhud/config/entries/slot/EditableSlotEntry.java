@@ -46,7 +46,7 @@ public class EditableSlotEntry extends WidgetsListSlotEntry {
 		Font textRenderer = Minecraft.getInstance().font;
 		renderIconAndText(graphics, this.getY(), this.getX(), this.getHeight());
 		if (locked) {
-			graphics.drawString(textRenderer, "LOCKED", this.getX() + this.getWidth() - 50, textY, CommonColors.RED, true);
+			graphics.text(textRenderer, "LOCKED", this.getX() + this.getWidth() - 50, textY, CommonColors.RED, true);
 		} else {
 			editButton.setPosition(this.getX() + this.getWidth() - 40, this.getY() + (this.getHeight() - 12) / 2);
 			editButton.render(graphics, mouseX, mouseY, deltaTicks);

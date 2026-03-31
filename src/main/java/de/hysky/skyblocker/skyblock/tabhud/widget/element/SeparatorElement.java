@@ -25,7 +25,7 @@ public class SeparatorElement extends Element {
 		int parentWidth = this.getParent().getWidth();
 		if (text != null && !text.equals(Component.nullToEmpty(""))) {
 			graphics.fill(x - (ElementBasedWidget.BORDER_SZE_E / 2), y + this.height / 2, x + 2, y + this.height / 2 + 1, 0xFF55FFFF);
-			graphics.drawString(txtRend, text, x + 4, y, 0xFF55FFFF, false);
+			graphics.text(txtRend, text, x + 4, y, 0xFF55FFFF, false);
 			graphics.fill(x + textWidth + 2 + 4, y + this.height / 2, x + parentWidth - ElementBasedWidget.BORDER_SZE_E - ElementBasedWidget.BORDER_SZE_W + 2, y + this.height / 2 + 1, 0xFF55FFFF);
 		} else {
 			graphics.fill(x - 2, y + this.height / 2, x + parentWidth - ElementBasedWidget.BORDER_SZE_E - ElementBasedWidget.BORDER_SZE_W + 2, y + this.height / 2 + 1, 0xFF55FFFF);

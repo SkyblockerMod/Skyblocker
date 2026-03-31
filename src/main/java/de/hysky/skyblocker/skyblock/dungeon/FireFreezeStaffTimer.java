@@ -56,7 +56,7 @@ public class FireFreezeStaffTimer {
 			int width = client.getWindow().getGuiScaledWidth() / 2;
 			int height = client.getWindow().getGuiScaledHeight() / 2;
 
-			graphics.drawCenteredString(renderer, Component.literal("Fire Freeze ").append(message), width, height, CommonColors.WHITE);
+			graphics.centeredText(renderer, Component.literal("Fire Freeze ").append(message), width, height, CommonColors.WHITE);
 		}
 	}
 

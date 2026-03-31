@@ -30,7 +30,7 @@ record SkyblockCraftingTab(SkyblockRecipeBookComponent recipeBook, ItemStack ico
 			results.draw(graphics, x, y, mouseX, mouseY, delta);
 		} else {
 			//68 is from 137 / 2 and 137 is the height from which the page flip buttons are rendered
-			graphics.drawCenteredString(Minecraft.getInstance().font, "Loading...", x + (SkyblockRecipeBookComponent.IMAGE_WIDTH / 2), y + 68, 0xFFFFFFFF);
+			graphics.centeredText(Minecraft.getInstance().font, "Loading...", x + (SkyblockRecipeBookComponent.IMAGE_WIDTH / 2), y + 68, 0xFFFFFFFF);
 		}
 	}
 

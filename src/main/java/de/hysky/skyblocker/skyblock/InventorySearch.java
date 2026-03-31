@@ -143,7 +143,7 @@ public class InventorySearch {
 		@Override
 		public void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			super.renderWidget(graphics, mouseX, mouseY, deltaTicks);
-			graphics.drawCenteredString(textRenderer, message, getX() + width / 2, getY() - 1 - textRenderer.lineHeight, CommonColors.WHITE);
+			graphics.centeredText(textRenderer, message, getX() + width / 2, getY() - 1 - textRenderer.lineHeight, CommonColors.WHITE);
 		}
 
 		@Override

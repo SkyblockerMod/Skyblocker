@@ -46,7 +46,7 @@ public class PlayerWidget extends AbstractWidget {
 		Quaternionf rotation = new Quaternionf().rotationXYZ(-xRotation * Mth.DEG_TO_RAD, -yRotation * Mth.DEG_TO_RAD, FLIP_ROTATION);
 
 		EntityRenderState renderState = InventoryScreenInvoker.invokeExtractRenderState(this.player);
-		graphics.submitEntityRenderState(renderState, size, translation, rotation, null, getX(), getY(), this.getRight(), this.getBottom());
+		graphics.entity(renderState, size, translation, rotation, null, getX(), getY(), this.getRight(), this.getBottom());
 	}
 
 	@Override

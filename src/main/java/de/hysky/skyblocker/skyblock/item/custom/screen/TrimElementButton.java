@@ -114,7 +114,7 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 		@Override
 		void draw(GuiGraphicsExtractor graphics) {
 			if (trim == null) {
-				graphics.renderItem(BARRIER, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
+				graphics.item(BARRIER, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
 				return;
 			}
 			if (isHovered()) {
@@ -177,7 +177,7 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 
 		@Override
 		void draw(GuiGraphicsExtractor graphics) {
-			graphics.renderItem(stack, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
+			graphics.item(stack, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
 		}
 	}
 

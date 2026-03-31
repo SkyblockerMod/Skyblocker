@@ -40,7 +40,7 @@ public class ProfileViewerNavButton extends AbstractWidget {
 	@Override
 	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, toggled ? BUTTON_TEXTURES_TOGGLED : BUTTON_TEXTURES, this.getX(), this.getY(), this.width, this.height - ((this.toggled) ? 0 : 4));
-		graphics.renderItem(this.icon, this.getX() + 6, this.getY() + (this.toggled ? 7 : 9));
+		graphics.item(this.icon, this.getX() + 6, this.getY() + (this.toggled ? 7 : 9));
 		this.handleCursor(graphics);
 	}
 

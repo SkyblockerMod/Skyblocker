@@ -56,10 +56,10 @@ public class DungeonClassWidget {
 
 	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-		graphics.renderItem(stack, x + 3, y + 5);
+		graphics.item(stack, x + 3, y + 5);
 		if (active) graphics.blit(RenderPipelines.GUI_TEXTURED, ACTIVE_TEXTURE, x + 3, y + 5, 0, 0, 16, 16, 16, 16);
 
-		graphics.drawString(textRenderer, className + " " + classLevel.level, x + 31, y + 5, Color.WHITE.getRGB(), false);
+		graphics.text(textRenderer, className + " " + classLevel.level, x + 31, y + 5, Color.WHITE.getRGB(), false);
 		Color fillColor = classLevel.level >= CLASS_CAP ? Color.MAGENTA : Color.GREEN;
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
 		HudHelper.renderNineSliceColored(graphics, BAR_FILL, x + 30, y + 15, (int) (75 * classLevel.fill), 6, fillColor);

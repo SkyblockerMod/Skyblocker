@@ -41,7 +41,7 @@ public class DungeonScoreHUD {
 		Matrix3x2fStack matrixStack = graphics.pose();
 		matrixStack.pushMatrix();
 		matrixStack.scale(scale, scale);
-		graphics.drawString(Minecraft.getInstance().font, getFormattedScoreText(), (int) (x / scale), (int) (y / scale), 0xFFFFFFFF);
+		graphics.text(Minecraft.getInstance().font, getFormattedScoreText(), (int) (x / scale), (int) (y / scale), 0xFFFFFFFF);
 		matrixStack.popMatrix();
 	}
 

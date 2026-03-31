@@ -158,7 +158,7 @@ public class BackpackPreview {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
 
 		Font textRenderer = Minecraft.getInstance().font;
-		graphics.drawString(textRenderer, storages[index].name(), x + 8, y + 6, 0xFF404040, false);
+		graphics.text(textRenderer, storages[index].name(), x + 8, y + 6, 0xFF404040, false);
 
 		for (int i = 9; i < storages[index].size(); ++i) {
 			ItemStack currentStack = storages[index].getStack(i);
@@ -171,8 +171,8 @@ public class BackpackPreview {
 				graphics.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
 			}
 
-			graphics.renderItem(currentStack, itemX, itemY);
-			graphics.renderItemDecorations(textRenderer, currentStack, itemX, itemY);
+			graphics.item(currentStack, itemX, itemY);
+			graphics.itemDecorations(textRenderer, currentStack, itemX, itemY);
 			SlotTextManager.renderSlotText(graphics, textRenderer, null, currentStack, i, itemX, itemY);
 		}
 

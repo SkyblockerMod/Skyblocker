@@ -36,14 +36,14 @@ public class PowderMiningWidget extends HudWidget {
 		for (Object2IntMap.Entry<Component> entry : set) {
 			Component price = Component.literal(Formatters.INTEGER_NUMBERS.format(entry.getIntValue())).withColor(CommonColors.WHITE);
 			Component text = entry.getKey().copy().append(" ").append(price);
-			graphics.drawString(CLIENT.font, text, x, tempY, CommonColors.WHITE);
+			graphics.text(CLIENT.font, text, x, tempY, CommonColors.WHITE);
 
 			tempY += 10;
 			int width = CLIENT.font.width(text);
 			if (width > maxWidth) maxWidth = width;
 		}
 		tempY += 10;
-		graphics.drawString(CLIENT.font, Component.translatable("skyblocker.powderTracker.profit", Formatters.DOUBLE_NUMBERS.format(PowderMiningTracker.getProfit())).withStyle(ChatFormatting.GOLD), x, tempY, CommonColors.WHITE);
+		graphics.text(CLIENT.font, Component.translatable("skyblocker.powderTracker.profit", Formatters.DOUBLE_NUMBERS.format(PowderMiningTracker.getProfit())).withStyle(ChatFormatting.GOLD), x, tempY, CommonColors.WHITE);
 
 		setDimensions(maxWidth, tempY - y + 10);
 	}

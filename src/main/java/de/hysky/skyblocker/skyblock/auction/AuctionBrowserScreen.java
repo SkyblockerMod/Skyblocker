@@ -141,7 +141,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 		}
 		if (isWaitingForServer) {
 			String waiting = "Waiting for server...";
-			graphics.drawString(font, waiting, this.width - font.width(waiting) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
+			graphics.text(font, waiting, this.width - font.width(waiting) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
 		}
 
 		Matrix3x2fStack matrices = graphics.pose();
@@ -149,7 +149,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 		matrices.translate(leftPos, topPos);
 		// Search
 		graphics.enableScissor(7, 4, 97, 16);
-		graphics.drawString(font, Component.literal(search).withStyle(Style.EMPTY.withUnderlined(onSearchField(mouseX, mouseY))), 9, 6, CommonColors.WHITE, true);
+		graphics.text(font, Component.literal(search).withStyle(Style.EMPTY.withUnderlined(onSearchField(mouseX, mouseY))), 9, 6, CommonColors.WHITE, true);
 		graphics.disableScissor();
 
 		// Scrollbar
@@ -164,7 +164,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3);
 			else graphics.blitSprite(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3, ARGB.color(137, 137, 137));
 		}
-		graphics.drawString(font, String.format("%d/%d", currentPage, totalPages), 111, 6, CommonColors.GRAY, false);
+		graphics.text(font, String.format("%d/%d", currentPage, totalPages), 111, 6, CommonColors.GRAY, false);
 		if (totalPages <= 1)
 			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, 18, 12, 15);
 		else
@@ -371,7 +371,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 			matrices.pushMatrix();
 			matrices.translate(((this.getX() + this.width / 2f) - font.width(getMessage()) * textScale / 2) + 1, (float) this.getY() + (this.height - font.lineHeight * textScale) / 2f - 1);
 			matrices.scale(textScale, textScale);
-			graphics.drawString(font, getMessage(), 0, 0, CommonColors.WHITE | Mth.ceil(this.alpha * 255.0F) << 24, true);
+			graphics.text(font, getMessage(), 0, 0, CommonColors.WHITE | Mth.ceil(this.alpha * 255.0F) << 24, true);
 			matrices.popMatrix();
 		}
 	}

@@ -137,7 +137,7 @@ public class SkyblockerScreen extends Screen {
 			int iconX = x - 34;
 			int iconY = y - 13;
 
-			graphics.drawString(textRenderer, orderedText, x, y, CommonColors.WHITE);
+			graphics.text(textRenderer, orderedText, x, y, CommonColors.WHITE);
 			graphics.blit(RenderPipelines.GUI_TEXTURED, this.icon, iconX, iconY, 0, 0, 32, 32, 32, 32);
 		}
 

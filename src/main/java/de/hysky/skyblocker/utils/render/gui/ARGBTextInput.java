@@ -144,7 +144,7 @@ public class ARGBTextInput extends AbstractWidget {
 					CommonColors.WHITE
 			);
 		}
-		graphics.drawString(
+		graphics.text(
 				textRenderer,
 				visitor -> {
 					int start = hasAlpha ? 0 : 1;

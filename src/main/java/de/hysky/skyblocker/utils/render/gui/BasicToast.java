@@ -54,13 +54,13 @@ public class BasicToast implements Toast {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
 		int offset;
 		if (icon != null) {
-			graphics.renderFakeItem(icon, 4, 4);
+			graphics.fakeItem(icon, 4, 4);
 			offset = 20;
 		} else {
 			offset = 0;
 		}
 		for (int i = 0; i < lines.size(); i++) {
-			graphics.drawString(textRenderer, lines.get(i), 4 + offset, 8 + i * 12, -1, false);
+			graphics.text(textRenderer, lines.get(i), 4 + offset, 8 + i * 12, -1, false);
 		}
 	}
 

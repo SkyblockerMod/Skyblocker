@@ -224,10 +224,10 @@ public class VisitorHelper extends AbstractWidget {
 				graphics.pose().pushMatrix();
 				graphics.pose().translate(x, yPosition + (float) textRenderer.lineHeight / 2 - ICON_SIZE * 0.95f / 2);
 				graphics.pose().scale(0.95f, 0.95f);
-				graphics.renderItem(visitor.head(), 0, 0);
+				graphics.item(visitor.head(), 0, 0);
 				graphics.pose().popMatrix();
 
-				graphics.drawString(textRenderer, visitor.name(), x + (int) (ICON_SIZE * 0.95f) + 4, yPosition, CommonColors.WHITE, true);
+				graphics.text(textRenderer, visitor.name(), x + (int) (ICON_SIZE * 0.95f) + 4, yPosition, CommonColors.WHITE, true);
 
 				index++;
 			}
@@ -241,7 +241,7 @@ public class VisitorHelper extends AbstractWidget {
 			graphics.pose().pushMatrix();
 			graphics.pose().translate(iconX, yPosition + (float) textRenderer.lineHeight / 2 - ICON_SIZE * 0.95f / 2);
 			graphics.pose().scale(0.95f, 0.95f);
-			graphics.renderItem(cachedStack, 0, 0);
+			graphics.item(cachedStack, 0, 0);
 			graphics.pose().popMatrix();
 
 			MutableComponent name = cachedStack.getHoverName().copy();
@@ -335,10 +335,10 @@ public class VisitorHelper extends AbstractWidget {
 	}
 
 	private static void drawTextWithHoverUnderline(GuiGraphicsExtractor graphics, Font textRenderer, Component text, int x, int y, double mouseX, double mouseY) {
-		graphics.drawString(textRenderer, text, x, y, CommonColors.WHITE, true);
+		graphics.text(textRenderer, text, x, y, CommonColors.WHITE, true);
 
 		if (isMouseOverText(textRenderer, text, x, y, mouseX, mouseY)) {
-			graphics.hLine(x, x + textRenderer.width(text), y + textRenderer.lineHeight, CommonColors.WHITE);
+			graphics.horizontalLine(x, x + textRenderer.width(text), y + textRenderer.lineHeight, CommonColors.WHITE);
 		}
 	}
 

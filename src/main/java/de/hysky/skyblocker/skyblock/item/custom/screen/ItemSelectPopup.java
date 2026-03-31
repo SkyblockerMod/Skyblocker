@@ -107,9 +107,9 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 			int x = getX() + 1;
 			int y = getY() + 1;
 			if (isHovered()) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_TEXTURE, getX() - 3, getY() - 3, 24, 24);
-			graphics.renderItem(item, x, y);
+			graphics.item(item, x, y);
 			if (isHovered()) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_TEXTURE, getX() - 3, getY() - 3, 24, 24);
-			if (!selectable) graphics.renderItem(BARRIER, x, y);
+			if (!selectable) graphics.item(BARRIER, x, y);
 
 		}
 

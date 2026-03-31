@@ -191,7 +191,7 @@ public class TitleContainer {
 			graphics.pose().scale(scale, scale);
 
 			//Draw text
-			graphics.drawString(textRenderer, title.getText(), 0, 0, CommonColors.WHITE);
+			graphics.text(textRenderer, title.getText(), 0, 0, CommonColors.WHITE);
 			graphics.pose().popMatrix();
 
 			//Calculate the x and y positions for the next title

@@ -125,12 +125,12 @@ public class PreviewWidget extends AbstractWidget {
 
 				renderUnits(graphics, rule, deltaX, deltaY, thisAnchorX, thisAnchorY, translatedX, translatedY);
 
-				graphics.hLine(translatedX, thisAnchorX, thisAnchorY + 1, 0xAAAA0000);
-				graphics.vLine(translatedX + 1, translatedY, thisAnchorY, 0xAAAA0000);
+				graphics.horizontalLine(translatedX, thisAnchorX, thisAnchorY + 1, 0xAAAA0000);
+				graphics.verticalLine(translatedX + 1, translatedY, thisAnchorY, 0xAAAA0000);
 
 
-				graphics.hLine(translatedX, thisAnchorX, thisAnchorY, CommonColors.RED);
-				graphics.vLine(translatedX, translatedY, thisAnchorY, CommonColors.RED);
+				graphics.horizontalLine(translatedX, thisAnchorX, thisAnchorY, CommonColors.RED);
+				graphics.verticalLine(translatedX, translatedY, thisAnchorY, CommonColors.RED);
 			}
 		}
 
@@ -160,12 +160,12 @@ public class PreviewWidget extends AbstractWidget {
 		if (Math.abs(xUnit) < 15 || Math.abs(yUnit) < 15) {
 			String text = "x: " + xUnitText + " y: " + yUnitText;
 			int textX = thisAnchorX < scaledScreenWidth / 2 ? (int) (scaledScreenWidth - tab.client.font.width(text) - 5) : 5;
-			graphics.drawString(tab.client.font, text, textX, 2, CommonColors.RED);
+			graphics.text(tab.client.font, text, textX, 2, CommonColors.RED);
 		}
 		// X
-		graphics.drawCenteredString(tab.client.font, xUnitText, thisAnchorX - (xUnit) / 2, xUnitOnTop ? thisAnchorY - 9 : thisAnchorY + 2, CommonColors.SOFT_RED);
+		graphics.centeredText(tab.client.font, xUnitText, thisAnchorX - (xUnit) / 2, xUnitOnTop ? thisAnchorY - 9 : thisAnchorY + 2, CommonColors.SOFT_RED);
 		// Y
-		graphics.drawString(tab.client.font, yUnitText, yUnitOnRight ? translatedX + 2 : translatedX - 1 - yUnitTextWidth, thisAnchorY - (yUnit - 9) / 2, CommonColors.SOFT_RED, true);
+		graphics.text(tab.client.font, yUnitText, yUnitOnRight ? translatedX + 2 : translatedX - 1 - yUnitTextWidth, thisAnchorY - (yUnit - 9) / 2, CommonColors.SOFT_RED, true);
 	}
 
 	@Override

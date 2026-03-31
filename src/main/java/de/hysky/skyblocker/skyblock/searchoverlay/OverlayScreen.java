@@ -231,7 +231,7 @@ public class OverlayScreen extends Screen {
 		int renderOffset = (rowHeight - 16) / 2;
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, finishedButton.getX() + renderOffset, finishedButton.getY() + renderOffset, 16, 16);
 		if (historyButtons.length > 0 && historyButtons[0] != null) {
-			graphics.drawString(font, Component.translatable("skyblocker.config.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
+			graphics.text(font, Component.translatable("skyblocker.config.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
 		}
 
 		//draw item stacks and tooltip to buttons
@@ -255,7 +255,7 @@ public class OverlayScreen extends Screen {
 		if (id.isEmpty()) return;
 		ItemStack item = getItemStack(id);
 		if (item == null) return;
-		graphics.renderItem(item, button.getX() + renderOffset, button.getY() + renderOffset);
+		graphics.item(item, button.getX() + renderOffset, button.getY() + renderOffset);
 
 		// Draw tooltip
 		if (button.isMouseOver(mouseX, mouseY)) {

@@ -55,7 +55,7 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 			if (isSpeedInputSign() && config.general.speedPresets.enableSpeedPresets) {
 				var presets = SpeedPresets.getInstance();
 				if (presets.hasPreset(messages[0])) {
-					graphics.drawCenteredString(this.font, Component.literal(String.format("%s » %d", messages[0], presets.getPreset(messages[0]))).withStyle(ChatFormatting.GREEN),
+					graphics.centeredText(this.font, Component.literal(String.format("%s » %d", messages[0], presets.getPreset(messages[0]))).withStyle(ChatFormatting.GREEN),
 							graphics.guiWidth() / 2, 55, 0xFFFFFFFF);
 				}
 			}

@@ -68,6 +68,6 @@ public class SignCalculator {
 			text = Component.literal(input + " = " + Formatters.DOUBLE_NUMBERS.format(output)).withStyle(ChatFormatting.GREEN);
 		}
 
-		graphics.drawCenteredString(CLIENT.font, text, renderX, renderY, 0xFFFFFFFF);
+		graphics.centeredText(CLIENT.font, text, renderX, renderY, 0xFFFFFFFF);
 	}
 }

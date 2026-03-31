@@ -88,7 +88,7 @@ public abstract class GuiMixin {
 		return prevQuiverSlot;
 	}
 
-	@WrapOperation(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V"))
+	@WrapOperation(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;itemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V"))
 	private void skyblocker$drawQuiverAmount(GuiGraphicsExtractor graphics, Font textRenderer, ItemStack stack, int x, int y, Operation<Void> original) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.trueQuiverCount && isQuiverSlot && isQuiverItem(stack)) {
 			String arrow = ItemUtils.getLoreLineIf(stack, s -> s.trim().startsWith("Active Arrow"));
@@ -109,7 +109,7 @@ public abstract class GuiMixin {
 				return;
 			}
 			String format = Formatters.SHORT_INTEGER_NUMBERS.format(anInt.getAsInt());
-			graphics.renderItemDecorations(textRenderer, stack, x, y, format);
+			graphics.itemDecorations(textRenderer, stack, x, y, format);
 		} else {
 			original.call(graphics, textRenderer, stack, x, y);
 		}

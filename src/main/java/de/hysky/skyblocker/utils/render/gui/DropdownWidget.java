@@ -59,8 +59,8 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		dropdownList.render(graphics, mouseX, mouseY, delta);
 		graphics.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, CommonColors.BLACK);
 		HudHelper.drawBorder(graphics, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, CommonColors.WHITE);
-		graphics.drawString(client.font, ">", getX() + 4, getY() + 6, CommonColors.LIGHTER_GRAY, true);
-		graphics.drawString(client.font, selected.toString(), getX() + 12, getY() + 6, CommonColors.WHITE, true);
+		graphics.text(client.font, ">", getX() + 4, getY() + 6, CommonColors.LIGHTER_GRAY, true);
+		graphics.text(client.font, selected.toString(), getX() + 12, getY() + 6, CommonColors.WHITE, true);
 		if (isMouseOver(mouseX, mouseY)) graphics.requestCursor(CursorTypes.POINTING_HAND);
 	}
 
@@ -251,7 +251,7 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 			// drawScrollableText does some weird stuff with the y value, so we put startY = y and endY = y + 11 which makes the text render on the same line as the tick mark below (y + 2).
 			graphics.textRenderer(HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(Component.literal(entry.toString()).withStyle(Style.EMPTY.withUnderlined(hovered)), this.getX() + 10, this.getX() + this.getWidth(), this.getY(), this.getY() + 11);
 			if (selected == this.entry) {
-				graphics.drawString(client.font, "✔", this.getX() + 1, this.getY() + 2, 0xFFFFFFFF);
+				graphics.text(client.font, "✔", this.getX() + 1, this.getY() + 2, 0xFFFFFFFF);
 			}
 		}
 

@@ -144,8 +144,8 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 				getWidth(),
 				getHeight());
 		if (Debug.debugEnabled()) {
-			graphics.drawString(textRenderer, Component.literal("Selection Start: " + selectionStart + ", Selection End: " + selectionEnd), getX(), getBottom(), -1);
-			graphics.drawString(textRenderer, Component.literal("Insert Style: " + (insertAs == null ? "null" : insertAs.toString())), getX(), getBottom() + 10, -1);
+			graphics.text(textRenderer, Component.literal("Selection Start: " + selectionStart + ", Selection End: " + selectionEnd), getX(), getBottom(), -1);
+			graphics.text(textRenderer, Component.literal("Insert Style: " + (insertAs == null ? "null" : insertAs.toString())), getX(), getBottom() + 10, -1);
 		}
 		for (AbstractWidget widget : widgets) {
 			widget.render(graphics, mouseX, mouseY, deltaTicks);
@@ -448,10 +448,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 				graphics.fill(textX + renderStart, textY, textX + renderEnd, textY + textRenderer.lineHeight, CommonColors.BLUE);
 			}
 			if (this.isFocused()) {
-				graphics.vLine(textX + (selectionStart < selectionEnd ? renderStart : renderEnd) - 1, textY - 1, textY + textRenderer.lineHeight, CommonColors.WHITE);
+				graphics.verticalLine(textX + (selectionStart < selectionEnd ? renderStart : renderEnd) - 1, textY - 1, textY + textRenderer.lineHeight, CommonColors.WHITE);
 			}
 
-			graphics.drawString(textRenderer, text, textX, textY, -1, false);
+			graphics.text(textRenderer, text, textX, textY, -1, false);
 
 			this.handleCursor(graphics);
 		}

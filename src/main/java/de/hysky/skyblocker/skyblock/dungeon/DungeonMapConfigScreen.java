@@ -38,7 +38,7 @@ public class DungeonMapConfigScreen extends Screen {
 		super.render(graphics, mouseX, mouseY, delta);
 		renderHUDMap(graphics, mapX, mapY);
 		renderHUDScore(graphics, scoreX, scoreY);
-		graphics.drawCenteredString(font, "Right Click To Reset Position", width >> 1, height >> 1, Color.GRAY.getRGB());
+		graphics.centeredText(font, "Right Click To Reset Position", width >> 1, height >> 1, Color.GRAY.getRGB());
 	}
 
 	@Override

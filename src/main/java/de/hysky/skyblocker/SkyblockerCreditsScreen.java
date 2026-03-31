@@ -280,9 +280,9 @@ public class SkyblockerCreditsScreen extends Screen {
 				FormattedCharSequence line = this.lines.get(i);
 
 				if (this.centredLines.contains(i)) {
-					graphics.drawCenteredString(this.font, line, logoX + 128, yPos, CommonColors.WHITE);
+					graphics.centeredText(this.font, line, logoX + 128, yPos, CommonColors.WHITE);
 				} else {
-					graphics.drawString(this.font, line, logoX, yPos, CommonColors.WHITE);
+					graphics.text(this.font, line, logoX, yPos, CommonColors.WHITE);
 				}
 			}
 

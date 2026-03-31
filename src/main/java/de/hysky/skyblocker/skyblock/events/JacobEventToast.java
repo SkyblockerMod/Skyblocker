@@ -46,9 +46,9 @@ public class JacobEventToast extends EventToast {
 
 
 			int x = 30 + cropsWidth + 4;
-			graphics.drawString(textRenderer, CROPS, 30, 7 + (16 - textRenderer.lineHeight) / 2, CommonColors.WHITE, false);
+			graphics.text(textRenderer, CROPS, 30, 7 + (16 - textRenderer.lineHeight) / 2, CommonColors.WHITE, false);
 			for (int i = 0; i < crops.size(); i++) {
-				graphics.renderItem(JacobsContestWidget.FARM_DATA.getOrDefault(crops.get(i), DEFAULT_ITEM), x + i * (16 + 8), 7);
+				graphics.item(JacobsContestWidget.FARM_DATA.getOrDefault(crops.get(i), DEFAULT_ITEM), x + i * (16 + 8), 7);
 			}
 			// IDK how to make the items transparent, so I just redraw the texture on top
 			HudHelper.renderNineSliceColored(graphics, TEXTURE, 0, 0, width(), height(), ARGB.colorFromFloat((k >> 24) / 255f, 1f, 1f, 1f));
@@ -56,6 +56,6 @@ public class JacobEventToast extends EventToast {
 		}
 		drawTimer(graphics, 30, y);
 
-		graphics.renderFakeItem(icon, 8, height() / 2 - 8);
+		graphics.fakeItem(icon, 8, height() / 2 - 8);
 	}
 }

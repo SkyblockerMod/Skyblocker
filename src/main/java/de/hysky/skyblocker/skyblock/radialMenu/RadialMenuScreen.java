@@ -233,13 +233,13 @@ public class RadialMenuScreen extends Screen implements ContainerListener {
 		super.render(graphics, mouseX, mouseY, deltaTicks);
 
 		//render menu title
-		graphics.drawCenteredString(font, getTitle(), width / 2, height / 2 - font.lineHeight, 0xFFFFFFFF);
+		graphics.centeredText(font, getTitle(), width / 2, height / 2 - font.lineHeight, 0xFFFFFFFF);
 		//draw separation line
 		int textWidth = font.width(getTitle());
-		graphics.hLine(width / 2 - textWidth / 2, width / 2 + textWidth / 2, height / 2, 0xFFFFFFFF);
+		graphics.horizontalLine(width / 2 - textWidth / 2, width / 2 + textWidth / 2, height / 2, 0xFFFFFFFF);
 		//render current option name
 		if (buttonsHoveredIndex != -1 && buttonsHoveredIndex < buttons.size()) {
-			graphics.drawCenteredString(font, buttons.get(buttonsHoveredIndex).getName(), width / 2, height / 2 + 2, 0xFFFFFFFF); // + 2 to move out of way of line.
+			graphics.centeredText(font, buttons.get(buttonsHoveredIndex).getName(), width / 2, height / 2 + 2, 0xFFFFFFFF); // + 2 to move out of way of line.
 		}
 	}
 

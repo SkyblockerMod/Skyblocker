@@ -191,7 +191,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 				graphics.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
 			Font textRenderer = Minecraft.getInstance().font;
-			graphics.drawString(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? CommonColors.WHITE : CommonColors.GRAY, true);
+			graphics.text(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? CommonColors.WHITE : CommonColors.GRAY, true);
 		}
 
 		@Override
@@ -223,9 +223,9 @@ public class EditBarWidget extends AbstractContainerWidget {
 				graphics.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
 			Font textRenderer = Minecraft.getInstance().font;
-			graphics.drawString(textRenderer, getMessage(), getX() + 1, getY() + 1, CommonColors.WHITE, true);
+			graphics.text(textRenderer, getMessage(), getX() + 1, getY() + 1, CommonColors.WHITE, true);
 			String string = current.toString();
-			graphics.drawString(textRenderer, string, getRight() - textRenderer.width(string) - 1, getY() + 1, CommonColors.WHITE, true);
+			graphics.text(textRenderer, string, getRight() - textRenderer.width(string) - 1, getY() + 1, CommonColors.WHITE, true);
 		}
 
 		public void setCurrent(T current) {
@@ -272,7 +272,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 				graphics.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
 			Font textRenderer = Minecraft.getInstance().font;
-			graphics.drawString(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : CommonColors.GRAY, true);
+			graphics.text(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : CommonColors.GRAY, true);
 			HudHelper.drawBorder(graphics, getRight() - 10, getY() + 1, 9, 9, active ? -1 : CommonColors.GRAY);
 			if (current && active) graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, CommonColors.WHITE);
 		}
@@ -318,7 +318,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 				graphics.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
 			Font textRenderer = Minecraft.getInstance().font;
-			graphics.drawString(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : CommonColors.GRAY, true);
+			graphics.text(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : CommonColors.GRAY, true);
 			HudHelper.drawBorder(graphics, getRight() - 10, getY() + 1, 9, 9, active ? -1 : CommonColors.GRAY);
 			graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, active ? current : CommonColors.GRAY);
 		}

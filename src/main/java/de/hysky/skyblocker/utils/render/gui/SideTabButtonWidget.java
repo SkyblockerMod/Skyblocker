@@ -28,7 +28,7 @@ public class SideTabButtonWidget extends ImageButton {
 		int x = getX();
 		if (this.selected) x -= 2;
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, identifier, x, this.getY(), this.width, this.height);
-		graphics.renderItem(icon, x + 9, getY() + 5);
+		graphics.item(icon, x + 9, getY() + 5);
 	}
 
 	@Override

@@ -226,14 +226,14 @@ public class LeapOverlay extends Screen implements ContainerListener {
 			matrices.pushMatrix();
 			matrices.translate(centreX, this.getY() + halfFontHeight);
 			matrices.scale(scale, scale);
-			graphics.drawCenteredString(CLIENT.font, reference.dungeonClass().displayName(), 0, 0, reference.dungeonClass().color());
+			graphics.centeredText(CLIENT.font, reference.dungeonClass().displayName(), 0, 0, reference.dungeonClass().color());
 			matrices.popMatrix();
 
 			//Draw name next to head
 			matrices.pushMatrix();
 			matrices.translate(baseX + HEAD_SIZE * scale + 8, centreY - halfFontHeight);
 			matrices.scale(scale, scale);
-			graphics.drawString(CLIENT.font, Component.literal(reference.name()), 0, 0, CommonColors.WHITE);
+			graphics.text(CLIENT.font, Component.literal(reference.name()), 0, 0, CommonColors.WHITE);
 			matrices.popMatrix();
 
 			if (reference.status() != null) {
@@ -241,7 +241,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 				matrices.pushMatrix();
 				matrices.translate(centreX, this.getY() + this.getHeight() - (halfFontHeight * 3));
 				matrices.scale(scale, scale);
-				graphics.drawCenteredString(CLIENT.font, reference.status().text.get(), 0, 0, CommonColors.WHITE);
+				graphics.centeredText(CLIENT.font, reference.status().text.get(), 0, 0, CommonColors.WHITE);
 				matrices.popMatrix();
 
 				//Overlay

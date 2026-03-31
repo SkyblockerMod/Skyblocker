@@ -87,7 +87,7 @@ class ProgressElement extends Element {
 			renderIcon(graphics, ico, x, y + ICO_OFFS);
 			componentX += ICO_DIM.get();
 		}
-		graphics.drawString(txtRend, desc, componentX, y, CommonColors.WHITE, false);
+		graphics.text(txtRend, desc, componentX, y, CommonColors.WHITE, false);
 
 		int barY = y + txtRend.lineHeight + PAD_S;
 		int endOffsX = ((int) (this.barW * (this.pcnt / 100f)));
@@ -98,6 +98,6 @@ class ProgressElement extends Element {
 		// Only turn text dark when it is wider than the filled bar and the filled bar is bright.
 		// The + 4 is because the text is indented 3 pixels and 1 extra pixel to the right as buffer.
 		boolean textDark = endOffsX >= textWidth + 4 && this.colorIsBright;
-		graphics.drawString(txtRend, bar, componentX + 3, barY + 2, textDark ? CommonColors.BLACK : CommonColors.WHITE, !textDark);
+		graphics.text(txtRend, bar, componentX + 3, barY + 2, textDark ? CommonColors.BLACK : CommonColors.WHITE, !textDark);
 	}
 }

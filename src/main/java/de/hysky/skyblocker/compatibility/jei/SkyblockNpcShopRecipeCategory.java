@@ -28,7 +28,7 @@ public final class SkyblockNpcShopRecipeCategory extends AbstractSkyblockRecipeC
 
 		int itemX = 61 + ((recipeArrow.getWidth() - ITEM_SIZE) / 2);
 		int itemY = arrowYOffset - ITEM_SIZE - NPC_ITEM_PADDING;
-		graphics.renderItem(recipe.getNpcItem(), itemX, itemY);
+		graphics.item(recipe.getNpcItem(), itemX, itemY);
 
 		if (HudHelper.pointIsInArea(mouseX, mouseY, itemX, itemY, itemX + ITEM_SIZE, itemY + ITEM_SIZE)) {
 			this.drawTooltip(graphics, recipe.getNpcItem().getHoverName(), mouseX, mouseY);

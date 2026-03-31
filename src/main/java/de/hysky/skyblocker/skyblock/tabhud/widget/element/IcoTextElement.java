@@ -35,6 +35,6 @@ class IcoTextElement extends Element {
 	public void render(GuiGraphicsExtractor graphics, int x, int y) {
 		int offset = SkyblockerConfigManager.get().uiAndVisuals.tabHud.compactWidgets ? 2 : 4;
 		renderIcon(graphics, ico, x, y);
-		graphics.drawString(txtRend, text, x + ICO_DIM.get() + PAD_L, y + offset, CommonColors.WHITE, false);
+		graphics.text(txtRend, text, x + ICO_DIM.get() + PAD_L, y + offset, CommonColors.WHITE, false);
 	}
 }

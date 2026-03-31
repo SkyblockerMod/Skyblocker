@@ -110,14 +110,14 @@ public class GenericCategory implements ProfileViewerPage {
 	@Override
 	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		Component categoryTitle = Component.literal(category.charAt(0) + category.substring(1).toLowerCase(Locale.ENGLISH) + " Collections").withStyle(ChatFormatting.BOLD);
-		graphics.drawString(textRenderer, categoryTitle, rootX + 88 - (textRenderer.width(categoryTitle) / 2), rootY, Color.DARK_GRAY.getRGB(), false);
+		graphics.text(textRenderer, categoryTitle, rootX + 88 - (textRenderer.width(categoryTitle) / 2), rootY, Color.DARK_GRAY.getRGB(), false);
 
 		for (int i = 0; i < collections.size(); i++) {
 			int x = rootX + 2 + (i % COLUMNS) * COLUMN_GAP;
 			int y = rootY + 19 + (i / COLUMNS) * ROW_GAP;
 
 			graphics.blit(RenderPipelines.GUI_TEXTURED, BUTTON_TEXTURE, x - 3, y - 3, 0, 0, 22, 22, 22, 22);
-			graphics.renderItem(collections.get(i), x, y);
+			graphics.item(collections.get(i), x, y);
 
 			ItemStack itemStack = collections.get(i);
 			List<Component> lore = itemStack.getOrDefault(DataComponents.LORE, ItemLore.EMPTY).lines();
@@ -130,7 +130,7 @@ public class GenericCategory implements ProfileViewerPage {
 						Color colour = itemStack.hasFoil() ? Color.MAGENTA : Color.darkGray;
 						//DO NOT CHANGE THIS METHOD CALL! Aaron's Mod mixes in here to provide chroma text for max collections
 						//and changing the method called here will break that! Consult Aaron before making any changes :)
-						graphics.drawString(textRenderer, Component.literal(RomanNumerals.decimalToRoman(cTier)), x + 9 - (textRenderer.width(RomanNumerals.decimalToRoman(cTier)) / 2), y + 21, colour.getRGB(), false);
+						graphics.text(textRenderer, Component.literal(RomanNumerals.decimalToRoman(cTier)), x + 9 - (textRenderer.width(RomanNumerals.decimalToRoman(cTier)) / 2), y + 21, colour.getRGB(), false);
 					}
 					break;
 				}

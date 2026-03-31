@@ -81,8 +81,8 @@ public class SkillWidget {
 	}
 
 	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
-		graphics.renderItem(this.stack, x + 3, y + 2);
-		graphics.drawString(textRenderer, SKILL_NAME + " " + SKILL_LEVEL.level, x + 31, y + 2, Color.white.hashCode(), false);
+		graphics.item(this.stack, x + 3, y + 2);
+		graphics.text(textRenderer, SKILL_NAME + " " + SKILL_LEVEL.level, x + 31, y + 2, Color.white.hashCode(), false);
 
 		Color fillColor = Color.green;
 		if (SKILL_LEVEL.level >= SKILL_CAP.getInt(SKILL_NAME)) {

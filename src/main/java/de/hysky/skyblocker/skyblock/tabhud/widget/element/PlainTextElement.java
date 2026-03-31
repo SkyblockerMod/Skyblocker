@@ -33,7 +33,7 @@ public class PlainTextElement extends Element {
 	public void render(GuiGraphicsExtractor graphics, int x, int y) {
 		int yOffset = 0;
 		for (Component line : lines) {
-			graphics.drawString(txtRend, line, x + PAD_L, y + yOffset, CommonColors.WHITE, false);
+			graphics.text(txtRend, line, x + PAD_L, y + yOffset, CommonColors.WHITE, false);
 			yOffset += txtRend.lineHeight + PAD_S;
 		}
 	}

@@ -157,7 +157,7 @@ public class ConfigBackupScreen extends Screen {
 
 		@Override
 		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			graphics.drawCenteredString(font, path.getFileName().toString(), this.getContentXMiddle(), this.getY() + 7, 0xFFFFFFFF);
+			graphics.centeredText(font, path.getFileName().toString(), this.getContentXMiddle(), this.getY() + 7, 0xFFFFFFFF);
 			if (isMouseOver(mouseX, mouseY)) graphics.requestCursor(CursorTypes.POINTING_HAND);
 		}
 
@@ -297,7 +297,7 @@ public class ConfigBackupScreen extends Screen {
 			if (path != null && changedPaths.contains(path)) {
 				color = 0xFFFFFF55;
 			}
-			graphics.drawString(font, text, this.getX() + 2, this.getY() + 2, color, false);
+			graphics.text(font, text, this.getX() + 2, this.getY() + 2, color, false);
 		}
 	}
 }

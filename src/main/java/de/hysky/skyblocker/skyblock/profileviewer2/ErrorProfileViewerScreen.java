@@ -18,7 +18,7 @@ public final class ErrorProfileViewerScreen extends AbstractProfileViewerScreen 
 
 		int middleX = graphics.guiWidth() / 2;
 		int middleY = graphics.guiHeight() / 2;
-		graphics.drawCenteredString(this.font, "Encountered an error.", middleX, middleY, CommonColors.WHITE);
-		graphics.drawCenteredString(this.font, this.reason, middleX, middleY + 9, CommonColors.WHITE);
+		graphics.centeredText(this.font, "Encountered an error.", middleX, middleY, CommonColors.WHITE);
+		graphics.centeredText(this.font, this.reason, middleX, middleY + 9, CommonColors.WHITE);
 	}
 }

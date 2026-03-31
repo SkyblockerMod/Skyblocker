@@ -55,7 +55,7 @@ public class FishingHookDisplayHelper {
 			// Scale the text by 3x
 			graphics.pose().pushMatrix();
 			graphics.pose().scale(3.0F, 3.0F);
-			graphics.drawCenteredString(client.font, armorStandName, (int) (x / 3.0F), (int) (y / 3.0F), 0xFFFFFF00);
+			graphics.centeredText(client.font, armorStandName, (int) (x / 3.0F), (int) (y / 3.0F), 0xFFFFFF00);
 			graphics.pose().popMatrix();
 		}
 		//else update the tab

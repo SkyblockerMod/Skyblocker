@@ -480,7 +480,7 @@ public class PreviewTab implements Tab {
 		@Override
 		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			hoveredPoint = null;
-			graphics.drawString(client.font, getMessage(), getX(), getY(), CommonColors.WHITE, true);
+			graphics.text(client.font, getMessage(), getX(), getY(), CommonColors.WHITE, true);
 			graphics.pose().pushMatrix();
 			graphics.pose().translate(getX(), getY() + 10);
 			// Rectangle thing

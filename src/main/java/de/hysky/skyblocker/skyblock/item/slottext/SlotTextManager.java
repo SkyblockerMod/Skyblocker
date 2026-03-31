@@ -175,7 +175,7 @@ public class SlotTextManager {
 					case BOTTOM_RIGHT -> matrices.translate(16f - length, 16f - textRenderer.lineHeight + 2f);
 				}
 			}
-			graphics.drawString(textRenderer, slotText.text(), x, y, CommonColors.WHITE, true);
+			graphics.text(textRenderer, slotText.text(), x, y, CommonColors.WHITE, true);
 			matrices.popMatrix();
 		}
 	}

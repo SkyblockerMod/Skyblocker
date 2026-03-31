@@ -46,7 +46,7 @@ public abstract class Element {
 		graphics.pose().pushMatrix();
 		graphics.pose().translate(x, y);
 		graphics.pose().scale((float) ICO_DIM.get() / 16);
-		graphics.renderItem(icon, 0, 0);
+		graphics.item(icon, 0, 0);
 		graphics.pose().popMatrix();
 	}
 }

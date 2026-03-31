@@ -197,8 +197,8 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 
 		@Override
 		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			graphics.drawCenteredString(minecraft.font, targetName, getContentXMiddle() - 85, getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
-			graphics.drawCenteredString(minecraft.font, replacementName, getContentXMiddle() + 85, getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
+			graphics.centeredText(minecraft.font, targetName, getContentXMiddle() - 85, getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
+			graphics.centeredText(minecraft.font, replacementName, getContentXMiddle() + 85, getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
 			if (tooltip != null && isMouseOver(mouseX, mouseY)) {
 				graphics.setTooltipForNextFrame(tooltip, mouseX, mouseY);
 			}
@@ -234,7 +234,7 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 
 		@Override
 		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			graphics.drawCenteredString(minecraft.font, text, this.getWidth() / 2, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
+			graphics.centeredText(minecraft.font, text, this.getWidth() / 2, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
 		}
 	}
 
@@ -259,7 +259,7 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			replacement.setY(this.getY() + TEXT_FIELD_PADDING);
 			replacement.render(graphics, mouseX, mouseY, deltaTicks);
-			graphics.drawCenteredString(minecraft.font, "→", this.getX() + this.getWidth() / 2, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
+			graphics.centeredText(minecraft.font, "→", this.getX() + this.getWidth() / 2, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
 		}
 
 		@Override

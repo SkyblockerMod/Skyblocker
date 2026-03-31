@@ -91,8 +91,8 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 		float iconAngle = startAngle + (arcLength / 2);
 		Vector2f iconPos = getPos(center, iconAngle, (internal + external) / 2);
 		iconPos.sub(8, 8);
-		graphics.renderItem(icon, (int) iconPos.x, (int) iconPos.y);
-		graphics.renderItemDecorations(CLIENT.font, icon, (int) iconPos.x, (int) iconPos.y);
+		graphics.item(icon, (int) iconPos.x, (int) iconPos.y);
+		graphics.itemDecorations(CLIENT.font, icon, (int) iconPos.x, (int) iconPos.y);
 		SlotTextManager.renderSlotText(graphics, CLIENT.font, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
 
 		//render tooltip

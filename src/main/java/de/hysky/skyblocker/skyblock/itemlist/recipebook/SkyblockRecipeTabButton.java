@@ -33,7 +33,7 @@ public class SkyblockRecipeTabButton extends ImageButton {
 
 			//Render item icon
 			int offset = this.selected ? -2 : 0;
-			graphics.renderFakeItem(this.icon, this.getX() + 9 + offset, this.getY() + 5);
+			graphics.fakeItem(this.icon, this.getX() + 9 + offset, this.getY() + 5);
 		}
 	}
 

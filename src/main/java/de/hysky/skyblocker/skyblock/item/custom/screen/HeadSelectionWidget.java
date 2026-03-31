@@ -320,7 +320,7 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 
 		@Override
 		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-			graphics.renderItem(this.getHead(), getX() + 2, getY() + 2);
+			graphics.item(this.getHead(), getX() + 2, getY() + 2);
 			if (this.selected) {
 				graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
 			}

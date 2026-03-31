@@ -73,11 +73,11 @@ public class DonationButton extends AbstractWidget {
 
 		boolean hasPrice = donation.hasPrice();
 		if (itemStack != null && !itemStack.isEmpty()) {
-			graphics.renderFakeItem(itemStack, this.getX() + ITEM_OFFSET, this.getY() + (hasPrice ? 4 : 8));
+			graphics.fakeItem(itemStack, this.getX() + ITEM_OFFSET, this.getY() + (hasPrice ? 4 : 8));
 		}
 
 		if (hasPrice) {
-			graphics.drawCenteredString(TEXT_RENDERER, textToRender, this.getX() + (this.width / 2), this.getY() + ITEM_OFFSET + 13, 0xFF00FF00);
+			graphics.centeredText(TEXT_RENDERER, textToRender, this.getX() + (this.width / 2), this.getY() + ITEM_OFFSET + 13, 0xFF00FF00);
 		}
 	}
 

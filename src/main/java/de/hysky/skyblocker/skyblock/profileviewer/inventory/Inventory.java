@@ -56,14 +56,14 @@ public class Inventory implements ProfileViewerPage {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7, 256, 256);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
 
-		graphics.drawString(textRenderer,  I18n.get("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
+		graphics.text(textRenderer,  I18n.get("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
 
 		if (containerList.size() > itemsPerPage) {
 			previousPage.setX(rootX + 44);
 			previousPage.setY(rootY + 136);
 			previousPage.render(graphics, mouseX, mouseY, delta);
 
-			graphics.drawCenteredString(textRenderer, "Page: " + (activePage + 1) + "/" + totalPages, rootX + 88, rootY + 140, Color.WHITE.getRGB());
+			graphics.centeredText(textRenderer, "Page: " + (activePage + 1) + "/" + totalPages, rootX + 88, rootY + 140, Color.WHITE.getRGB());
 
 			nextPage.setX(rootX + 121);
 			nextPage.setY(rootY + 136);
@@ -89,8 +89,8 @@ public class Inventory implements ProfileViewerPage {
 				graphics.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
 			}
 
-			graphics.renderItem(stack, x, y);
-			graphics.renderItemDecorations(textRenderer, stack, x, y);
+			graphics.item(stack, x, y);
+			graphics.itemDecorations(textRenderer, stack, x, y);
 			SlotTextManager.renderSlotText(graphics, textRenderer, null, stack, i, x, y);
 
 			if (mouseX > x - 2 && mouseX < x + 16 + 1 && mouseY > y - 2 && mouseY < y + 16 + 1) {

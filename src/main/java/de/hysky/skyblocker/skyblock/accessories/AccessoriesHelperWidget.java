@@ -262,8 +262,8 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 			refreshWhenDoneLoading = true;
 			int x = getX() + getWidth() / 2;
 			int y = getY() + getHeight() / 4;
-			graphics.drawCenteredString(Minecraft.getInstance().font, "Loading...", x, y, -1);
-			graphics.drawCenteredString(Minecraft.getInstance().font, LoadingDotsText.get(Util.getMillis()), x, y + 10, -1);
+			graphics.centeredText(Minecraft.getInstance().font, "Loading...", x, y, -1);
+			graphics.centeredText(Minecraft.getInstance().font, LoadingDotsText.get(Util.getMillis()), x, y + 10, -1);
 		} else if (refreshWhenDoneLoading) {
 			refreshWhenDoneLoading = false;
 			refreshData();

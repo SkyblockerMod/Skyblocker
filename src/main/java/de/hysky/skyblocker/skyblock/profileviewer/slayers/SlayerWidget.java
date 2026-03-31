@@ -62,13 +62,13 @@ public class SlayerWidget {
 		Font font = Minecraft.getInstance().font;
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, this.item, x + 1, y + 3, 0, 0, 20, 20, 20, 20);
-		graphics.drawString(font, slayerName + " " + slayerLevel.level, x + 31, y + 5, Color.white.hashCode(), false);
+		graphics.text(font, slayerName + " " + slayerLevel.level, x + 31, y + 5, Color.white.hashCode(), false);
 
 		int col2 = x + 113;
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, col2, y, 0, 0, 109, 26, 109, 26);
-		graphics.renderItem(this.drop, col2 + 3, y + 5);
-		graphics.drawString(font, "§aKills: §r" + findTotalKills(), col2 + 30, y + 4, Color.white.hashCode(), true);
-		graphics.drawString(font, findTopTierKills(), findTopTierKills().equals("No Data") ? col2 + 30 : col2 + 29, y + 15, Color.white.hashCode(), true);
+		graphics.item(this.drop, col2 + 3, y + 5);
+		graphics.text(font, "§aKills: §r" + findTotalKills(), col2 + 30, y + 4, Color.white.hashCode(), true);
+		graphics.text(font, findTopTierKills(), findTopTierKills().equals("No Data") ? col2 + 30 : col2 + 29, y + 15, Color.white.hashCode(), true);
 
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
 		Color fillColor = slayerLevel.fill == 1 ? Color.MAGENTA : Color.green;

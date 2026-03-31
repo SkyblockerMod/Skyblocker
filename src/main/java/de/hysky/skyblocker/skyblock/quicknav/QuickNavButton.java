@@ -185,7 +185,7 @@ public class QuickNavButton extends AbstractWidget {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, tabTexture, this.getX(), this.getY(), this.width, this.height, renderInFront ? ARGB.color(alpha, -1) : -1);
 		// Render the button icon
 		int yOffset = this.index < 7 ? 1 : -1;
-		graphics.renderItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
+		graphics.item(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
 
 		this.handleCursor(graphics);
 	}

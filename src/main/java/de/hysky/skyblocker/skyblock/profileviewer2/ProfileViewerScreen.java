@@ -137,8 +137,8 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 					.append(Component.literal(" page..."));
 			Component loadingDotsText = Component.literal(LoadingDotsText.get(timeLoadingPage));
 
-			graphics.drawCenteredString(this.font, pageLoadingText, centreX, centreY - this.font.lineHeight, CommonColors.WHITE);
-			graphics.drawCenteredString(this.font, loadingDotsText, centreX, centreY + this.font.lineHeight, CommonColors.WHITE);
+			graphics.centeredText(this.font, pageLoadingText, centreX, centreY - this.font.lineHeight, CommonColors.WHITE);
+			graphics.centeredText(this.font, loadingDotsText, centreX, centreY + this.font.lineHeight, CommonColors.WHITE);
 		}
 	}
 

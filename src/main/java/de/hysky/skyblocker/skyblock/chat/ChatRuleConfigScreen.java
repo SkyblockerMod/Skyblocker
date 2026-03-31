@@ -358,7 +358,7 @@ public class ChatRuleConfigScreen extends Screen {
 
 		@Override
 		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
-			graphics.renderFakeItem(stack, getX(), getY());
+			graphics.fakeItem(stack, getX(), getY());
 		}
 
 		@Override

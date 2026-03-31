@@ -105,7 +105,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			Component text = Component.translatable("gui.recipebook.page", this.currentPage + 1, this.pageCount);
 			int width = textRenderer.width(text);
 
-			graphics.drawString(textRenderer, text, x - width / 2 + 73, y + 141, CommonColors.WHITE, false);
+			graphics.text(textRenderer, text, x - width / 2 + 73, y + 141, CommonColors.WHITE, false);
 		}
 
 		//Render the results
@@ -141,7 +141,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 				craftText = textRenderer.plainSubstrByWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS_STRING;
 			}
 
-			graphics.drawString(textRenderer, craftText, x + 11, y + 31, CommonColors.WHITE);
+			graphics.text(textRenderer, craftText, x + 11, y + 31, CommonColors.WHITE);
 		}
 
 		//Render the resulting item's name
@@ -151,20 +151,20 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			FormattedText trimmed = FormattedText.composite(textRenderer.substrByWidth(itemName, MAX_TEXT_WIDTH), CommonComponents.ELLIPSIS);
 			FormattedCharSequence ordered = Language.getInstance().getVisualOrder(trimmed);
 
-			graphics.drawString(textRenderer, ordered, x + 11, y + 43, CommonColors.WHITE);
+			graphics.text(textRenderer, ordered, x + 11, y + 43, CommonColors.WHITE);
 
 			//Set the resulting item's name as hovered text if we're hovering over it since the text got truncated
 			if (isMouseHoveringText(x + 11, y + 43, mouseX, mouseY)) this.hoveredText = itemName;
 		} else {
-			graphics.drawString(textRenderer, itemName, x + 11, y + 43, CommonColors.WHITE);
+			graphics.text(textRenderer, itemName, x + 11, y + 43, CommonColors.WHITE);
 		}
 
 		//Draw the arrow that points to the recipe's result
-		graphics.drawString(textRenderer, "▶", x + 96, y + 90, 0xAAFFFFFF);
+		graphics.text(textRenderer, "▶", x + 96, y + 90, 0xAAFFFFFF);
 		if (this.hoveredText == null && mouseX >= x + 86 && mouseY >= y + 81 && mouseX < x + 86 + 25 && mouseY < y + 81 + 25 && recipe instanceof SkyblockForgeRecipe forgeRecipe) {
 			this.hoveredText = Component.nullToEmpty(forgeRecipe.getDurationString());
 		}
-		if (recipeIcon != null) graphics.renderItem(recipeIcon, x + 115, y + 61);
+		if (recipeIcon != null) graphics.item(recipeIcon, x + 115, y + 61);
 	}
 
 	@Override

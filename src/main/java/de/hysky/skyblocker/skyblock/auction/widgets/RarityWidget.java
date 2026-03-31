@@ -52,10 +52,10 @@ public class RarityWidget extends AbstractWidget {
 			matrices.pushMatrix();
 			matrices.translate(0f, 5.5f);
 			matrices.scale(scale, scale);
-			graphics.drawCenteredString(textRenderer, current, (int) (24 / scale), -textRenderer.lineHeight / 2, color);
+			graphics.centeredText(textRenderer, current, (int) (24 / scale), -textRenderer.lineHeight / 2, color);
 			matrices.popMatrix();
 		} else {
-			graphics.drawCenteredString(textRenderer, current, 24, 2, color);
+			graphics.centeredText(textRenderer, current, 24, 2, color);
 		}
 
 		matrices.popMatrix();

@@ -280,7 +280,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	@Override
 	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		super.render(graphics, mouseX, mouseY, deltaTicks);
-		graphics.drawCenteredString(font, title, width / 2, 15, -1);
+		graphics.centeredText(font, title, width / 2, 15, -1);
 	}
 
 	@Override

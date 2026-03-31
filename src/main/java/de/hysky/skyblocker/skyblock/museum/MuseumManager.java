@@ -202,14 +202,14 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 			int iconY = this.sortButton.getY() + (this.sortButton.getHeight() - 16) / 2;
 			ItemStack stack = ITEM_SORTER.getCurrentSortingItem();
 			sortButton.render(graphics, mouseX, mouseY, delta);
-			graphics.renderFakeItem(stack, iconX, iconY);
+			graphics.fakeItem(stack, iconX, iconY);
 		}
 
 		if (this.filterButton.active) {
 			int iconX = this.filterButton.getX() + (this.filterButton.getWidth() - 16) / 2;
 			int iconY = this.filterButton.getY() + (this.filterButton.getHeight() - 16) / 2;
 			filterButton.render(graphics, mouseX, mouseY, delta);
-			graphics.renderFakeItem(Ico.HOPPER, iconX, iconY);
+			graphics.fakeItem(Ico.HOPPER, iconX, iconY);
 		}
 
 		if (ItemRepository.filesImported()) {
@@ -218,7 +218,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 				Component text = Component.translatable("gui.recipebook.page", currentPage + 1, this.pageCount);
 				int width = TEXT_RENDERER.width(text);
 
-				graphics.drawString(TEXT_RENDERER, text, getX() - width / 2 + 73, getY() + 137, -1, false);
+				graphics.text(TEXT_RENDERER, text, getX() - width / 2 + 73, getY() + 137, -1, false);
 			}
 
 			// Render donation buttons
@@ -235,7 +235,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 
 			drawTooltip(graphics, mouseX, mouseY);
 		} else {
-			graphics.drawCenteredString(TEXT_RENDERER, "Loading...", getX() + (BACKGROUND_WIDTH / 2), getY() + (BACKGROUND_HEIGHT / 2), CommonColors.WHITE);
+			graphics.centeredText(TEXT_RENDERER, "Loading...", getX() + (BACKGROUND_WIDTH / 2), getY() + (BACKGROUND_HEIGHT / 2), CommonColors.WHITE);
 		}
 	}
 

@@ -197,9 +197,9 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 			}
 
 			for (int i = 0; i < armor.length; i++) {
-				graphics.renderItem(armor[i], getX() + 4 + i * 20, getY() + 4);
+				graphics.item(armor[i], getX() + 4 + i * 20, getY() + 4);
 				if (!selectable[i] && !armor[i].isEmpty()) {
-					graphics.renderItem(BARRIER, getX() + 4 + i * 20, getY() + 4);
+					graphics.item(BARRIER, getX() + 4 + i * 20, getY() + 4);
 				}
 			}
 			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_SELECTION_TEXTURE, getX() + selectedSlot * 20, getY(), 24, 24);

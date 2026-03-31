@@ -56,38 +56,38 @@ public class ModernUICompatibility {
 		// https://github.com/BloCamLimb/ModernUI-MC/blob/3.12.0.4/common/src/main/java/icyllis/modernui/mc/text/mixin/MixinContextualBar.java
 		pose.pushMatrix()
 				.translate(offset, 0);
-		graphics.drawString(textRenderer, outlineText, x, y, outlineColor, false);
+		graphics.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(offset, offset);
-		graphics.drawString(textRenderer, outlineText, x, y, outlineColor, false);
+		graphics.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(offset, -offset);
-		graphics.drawString(textRenderer, outlineText, x, y, outlineColor, false);
+		graphics.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(-offset, 0);
-		graphics.drawString(textRenderer, outlineText, x, y, outlineColor, false);
+		graphics.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(-offset, offset);
-		graphics.drawString(textRenderer, outlineText, x, y, outlineColor, false);
+		graphics.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(-offset, -offset);
-		graphics.drawString(textRenderer, outlineText, x, y, outlineColor, false);
+		graphics.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(0, offset);
-		graphics.drawString(textRenderer, outlineText, x, y, outlineColor, false);
+		graphics.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(0, -offset);
-		graphics.drawString(textRenderer, outlineText, x, y, outlineColor, false);
+		graphics.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 
-		graphics.drawString(textRenderer, text, x, y, color, false);
+		graphics.text(textRenderer, text, x, y, color, false);
 		return true;
 	}
 }

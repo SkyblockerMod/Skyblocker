@@ -51,8 +51,8 @@ public class SkyblockRecipeResultButton extends AbstractWidget {
 		Minecraft client = Minecraft.getInstance();
 
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, RecipeButton.SLOT_CRAFTABLE_SPRITE, this.getX(), this.getY(), this.width, this.height);
-		graphics.renderFakeItem(itemStack, this.getX() + ITEM_OFFSET, this.getY() + ITEM_OFFSET);
-		graphics.renderItemDecorations(client.font, itemStack, this.getX() + ITEM_OFFSET, this.getY() + ITEM_OFFSET);
+		graphics.fakeItem(itemStack, this.getX() + ITEM_OFFSET, this.getY() + ITEM_OFFSET);
+		graphics.itemDecorations(client.font, itemStack, this.getX() + ITEM_OFFSET, this.getY() + ITEM_OFFSET);
 	}
 
 	protected static List<Component> getTooltip(ItemStack stack) {

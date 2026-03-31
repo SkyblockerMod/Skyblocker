@@ -136,14 +136,14 @@ public class ProfileViewerScreen extends Screen {
 			profileViewerPages[activePage].markWidgetsAsVisible();
 			profileViewerPages[activePage].render(graphics, mouseX, mouseY, delta, rootX + 93, rootY + 7);
 		} else {
-			graphics.drawCenteredString(font, profileNotFound ? errorMessage : "Loading...", rootX + 200, rootY + 80, Color.WHITE.getRGB());
+			graphics.centeredText(font, profileNotFound ? errorMessage : "Loading...", rootX + 200, rootY + 80, Color.WHITE.getRGB());
 		}
 	}
 
 	private void drawPlayerEntity(GuiGraphicsExtractor graphics, String username, int rootX, int rootY, int mouseX, int mouseY) {
 		if (entity != null)
 			renderEntityInInventoryFollowsMouse(graphics, rootX + 9, rootY + 16, rootX + 89, rootY + 124, 42, 0.0625F, mouseX, mouseY, entity);
-		graphics.drawCenteredString(font, username.length() > 15 ? username.substring(0, 15) : username, rootX + 47, rootY + 14, Color.WHITE.getRGB());
+		graphics.centeredText(font, username.length() > 15 ? username.substring(0, 15) : username, rootX + 47, rootY + 14, Color.WHITE.getRGB());
 	}
 
 	private CompletableFuture<Void> fetchPlayerData(String username) {

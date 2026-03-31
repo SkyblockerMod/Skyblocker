@@ -128,7 +128,7 @@ public abstract class ElementBasedWidget extends HudWidget {
 		int strHeightHalf = txtRend.lineHeight / 2;
 		int strAreaWidth = txtRend.width(title) + 4;
 
-		graphics.drawString(txtRend, title, x + 8, y + 2, this.color, false);
+		graphics.text(txtRend, title, x + 8, y + 2, this.color, false);
 
 		// Only draw borders if not in minimal mode
 		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal()) {

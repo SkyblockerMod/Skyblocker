@@ -1,5 +1,34 @@
 tiny	2	0	intermediary	named
 c	net/minecraft/class_332	net/minecraft/client/gui/GuiGraphicsExtractor
+	m	(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V	method_25300	centeredText
+	m	(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;III)V	method_27534	centeredText
+	m	(Lnet/minecraft/client/gui/Font;Lnet/minecraft/util/FormattedCharSequence;III)V	method_35719	centeredText
+	m	(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V	method_25303	text
+	m	(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;III)V	method_27535	text
+	m	(Lnet/minecraft/client/gui/Font;Lnet/minecraft/util/FormattedCharSequence;III)V	method_35720	text
+	m	(Lnet/minecraft/client/gui/Font;Lnet/minecraft/util/FormattedCharSequence;IIIZ)V	method_51430	text
+	m	(Lnet/minecraft/client/gui/Font;Ljava/lang/String;IIIZ)V	method_51433	text
+	m	(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V	method_51439	text
+	m	(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/FormattedText;IIIIZ)V	method_51440	textWithWordWrap
+	m	(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/FormattedText;IIII)V	method_65179	textWithWordWrap
+	m	(IIII)V	method_51738	horizontalLine
+	m	(Lnet/minecraft/world/item/ItemStack;II)V	method_51445	fakeItem
+	m	(Lnet/minecraft/world/item/ItemStack;III)V	method_55231	fakeItem
+	m	(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;III)V	method_51423	item
+	m	(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;III)V	method_51425	item
+	m	(Lnet/minecraft/world/item/ItemStack;II)V	method_51427	item
+	m	(Lnet/minecraft/world/item/ItemStack;III)V	method_51428	item
+	m	(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V	method_51431	itemDecorations
+	m	(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V	method_51432	itemDecorations
+	m	(Lnet/minecraft/client/gui/Font;Ljava/util/List;IILnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;Lnet/minecraft/resources/Identifier;)V	method_51435	tooltip
+	m	(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;FLorg/joml/Vector3f;Lorg/joml/Quaternionf;Lorg/joml/Quaternionf;IIII)V	method_70856	entity
+	m	(Lnet/minecraft/client/renderer/state/MapRenderState;)V	method_70857	map
+	m	(IIII)V	method_51742	verticalLine
 c	net/minecraft/class_332$class_8214	net/minecraft/client/gui/GuiGraphicsExtractor$ScissorStack
 c	net/minecraft/class_332$class_12228	net/minecraft/client/gui/GuiGraphicsExtractor$HoveredTextEffects
 c	net/minecraft/class_332$class_12229	net/minecraft/client/gui/GuiGraphicsExtractor$RenderingTextCollector
+
+c	net/minecraft/class_11246	net/minecraft/client/gui/render/state/GuiRenderState
+	m	(Lnet/minecraft/client/gui/render/state/GuiElementRenderState;)V	method_70919	addGuiElement
+	m	(Lnet/minecraft/client/gui/render/state/pip/PictureInPictureRenderState;)V	method_70922	addPicturesInPictureState
+	m	(Lnet/minecraft/client/gui/render/state/GuiTextRenderState;)V	method_70921	addText

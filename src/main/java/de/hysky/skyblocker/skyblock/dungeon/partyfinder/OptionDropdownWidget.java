@@ -86,9 +86,9 @@ public class OptionDropdownWidget extends AbstractSelectionList<OptionDropdownWi
 		}
 
 		if (PartyFinderScreen.DEBUG) {
-			graphics.drawString(Minecraft.getInstance().font, String.valueOf(slotId), getX(), getY() - 10, CommonColors.RED, true);
-			graphics.drawString(Minecraft.getInstance().font, String.valueOf(backButtonId), getX() + 50, getY() - 10, CommonColors.RED, true);
-			graphics.drawString(minecraft.font, String.valueOf(animationProgress), getX() - 10, getY(), CommonColors.GREEN, true);
+			graphics.text(Minecraft.getInstance().font, String.valueOf(slotId), getX(), getY() - 10, CommonColors.RED, true);
+			graphics.text(Minecraft.getInstance().font, String.valueOf(backButtonId), getX() + 50, getY() - 10, CommonColors.RED, true);
+			graphics.text(minecraft.font, String.valueOf(animationProgress), getX() - 10, getY(), CommonColors.GREEN, true);
 		}
 		if (isOpen) {
 			int listHeight = Math.min(getHeight(), contentHeight() - header.getHeight() - 4);
@@ -153,13 +153,13 @@ public class OptionDropdownWidget extends AbstractSelectionList<OptionDropdownWi
 		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			int x = this.getX();
 			int y = this.getY();
-			graphics.drawString(Minecraft.getInstance().font, name, x, y + 1, 0xFFD0D0D0, false);
+			graphics.text(Minecraft.getInstance().font, name, x, y + 1, 0xFFD0D0D0, false);
 			int offset = 10;
 			graphics.fill(x - 2, y + offset, x - 3 + OptionDropdownWidget.this.getWidth(), y + 15 + offset, 0xFFF0F0F0);
 			graphics.fill(x - 1, y + 1 + offset, x - 3 + OptionDropdownWidget.this.getWidth() - 1, y + 14 + offset, CommonColors.BLACK);
 			if (selectedOption != null) {
-				graphics.drawString(Minecraft.getInstance().font, selectedOption.message, x + 2, y + 3 + offset, CommonColors.WHITE, true);
-			} else graphics.drawString(Minecraft.getInstance().font, "???", x + 2, y + 3 + offset, CommonColors.WHITE, true);
+				graphics.text(Minecraft.getInstance().font, selectedOption.message, x + 2, y + 3 + offset, CommonColors.WHITE, true);
+			} else graphics.text(Minecraft.getInstance().font, "???", x + 2, y + 3 + offset, CommonColors.WHITE, true);
 		}
 	}
 
@@ -183,15 +183,15 @@ public class OptionDropdownWidget extends AbstractSelectionList<OptionDropdownWi
 			matrices.translate(this.getX(), iconY);
 			matrices.scale(0.8f, 0.8f);
 			matrices.translate(-this.getX(), -iconY);
-			graphics.renderItem(icon, this.getX(), iconY);
+			graphics.item(icon, this.getX(), iconY);
 			matrices.popMatrix();
 
-			if (PartyFinderScreen.DEBUG) graphics.drawString(minecraft.font, String.valueOf(optionSlotId), this.getX() + 8, this.getY(), CommonColors.RED, true);
+			if (PartyFinderScreen.DEBUG) graphics.text(minecraft.font, String.valueOf(optionSlotId), this.getX() + 8, this.getY(), CommonColors.RED, true);
 			MutableComponent text = Component.literal(message).withStyle(Style.EMPTY.withUnderlined(hovered));
 			if (minecraft.font.width(text) >= this.getWidth() - 14) {
 				graphics.textRenderer(HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(text, this.getX() + 14, this.getX() + this.getWidth(), getY() + 3, this.getY() + 3 + minecraft.font.lineHeight);
 			} else {
-				graphics.drawString(minecraft.font, text, this.getX() + 14, this.getY() + 3, CommonColors.WHITE, false);
+				graphics.text(minecraft.font, text, this.getX() + 14, this.getY() + 3, CommonColors.WHITE, false);
 			}
 		}
 

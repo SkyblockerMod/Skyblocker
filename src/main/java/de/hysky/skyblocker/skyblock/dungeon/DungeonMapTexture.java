@@ -193,7 +193,7 @@ public class DungeonMapTexture {
 	}
 
 	protected static void blitMap(GuiGraphicsExtractor graphics) {
-		graphics.submitMapRenderState(MAP_RENDER_STATE);
+		graphics.map(MAP_RENDER_STATE);
 	}
 
 	public static void close() {

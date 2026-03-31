@@ -63,14 +63,14 @@ public final class LevelBarWidget extends ProfileViewerWidget {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.getX(), this.getY() + ICON_BOX_Y_OFFSET, ICON_BOX_SIZE, ICON_BOX_SIZE);
 
 		// Icon
-		graphics.renderFakeItem(this.icon, this.getX() + (ICON_BOX_SIZE - ITEM_SIZE) / 2, this.getY() + ICON_BOX_Y_OFFSET + (ICON_BOX_SIZE - ITEM_SIZE) / 2);
+		graphics.fakeItem(this.icon, this.getX() + (ICON_BOX_SIZE - ITEM_SIZE) / 2, this.getY() + ICON_BOX_Y_OFFSET + (ICON_BOX_SIZE - ITEM_SIZE) / 2);
 
 		// Content Area background
 		int contentAreaWidth = this.getWidth() - CONTENT_BOX_OFFSET;
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.getX() + CONTENT_BOX_OFFSET, this.getY(), contentAreaWidth, HEIGHT);
 
 		// Label
-		graphics.drawString(getFont(), this.getMessage(), this.getX() + CONTENT_OFFSET, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
+		graphics.text(getFont(), this.getMessage(), this.getX() + CONTENT_OFFSET, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
 
 		// Bars
 		int barFillWidth = (int) (this.barFillPercentage * BAR_WIDTH);

@@ -30,7 +30,7 @@ public abstract class BossHealthOverlayMixin {
 			LerpingBossEvent bossBar = SlayerBossBar.updateBossBar();
 
 			int textWidth = this.minecraft.font.width(bossBar.getName());
-			graphics.drawString(this.minecraft.font, bossBar.getName(), graphics.guiWidth() / 2 - textWidth / 2, 3, CommonColors.WHITE);
+			graphics.text(this.minecraft.font, bossBar.getName(), graphics.guiWidth() / 2 - textWidth / 2, 3, CommonColors.WHITE);
 
 			this.drawBar(graphics, (graphics.guiWidth() / 2) - 91, 12, bossBar);
 

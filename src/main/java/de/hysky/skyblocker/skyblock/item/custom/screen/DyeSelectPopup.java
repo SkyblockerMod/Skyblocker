@@ -170,7 +170,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		@Override
 		protected void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			this.renderDefaultSprite(graphics);
-			graphics.renderItem(dyeStack, this.getX() + TEXT_OFFSET, this.getY() + 1);
+			graphics.item(dyeStack, this.getX() + TEXT_OFFSET, this.getY() + 1);
 			renderName(graphics, delta);
 		}
 

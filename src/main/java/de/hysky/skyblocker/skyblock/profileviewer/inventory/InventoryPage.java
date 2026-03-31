@@ -67,7 +67,7 @@ public class InventoryPage implements ProfileViewerPage {
 		}
 
 		if (inventorySubPages[activePage] == null) {
-			graphics.drawString(textRenderer, "No data...", rootX + 92, rootY + 72, Color.DARK_GRAY.getRGB(), false);
+			graphics.text(textRenderer, "No data...", rootX + 92, rootY + 72, Color.DARK_GRAY.getRGB(), false);
 			return;
 		}
 

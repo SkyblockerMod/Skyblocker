@@ -71,10 +71,10 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	protected void renderWidget(GuiGraphicsExtractor graphics, List<AbstractWidget> widgets, float delta) {
 		super.renderWidget(graphics, widgets, delta);
 		TitleContainer.render(graphics, EXAMPLES, widgets.getFirst().getX(), widgets.getFirst().getY(), delta, renderScale, direction, alignment);
-		graphics.drawCenteredString(font, "Press Q/E to change Alignment: " + alignment, width / 2, font.lineHeight * 2, Color.WHITE.getRGB());
-		graphics.drawCenteredString(font, "Press R to change Direction: " + direction, width / 2, font.lineHeight * 3 + 5, Color.WHITE.getRGB());
-		graphics.drawCenteredString(font, "Press +/- to change Scale", width / 2, font.lineHeight * 4 + 10, Color.WHITE.getRGB());
-		graphics.drawCenteredString(font, "Right Click To Reset Position", width / 2, font.lineHeight * 5 + 15, Color.GRAY.getRGB());
+		graphics.centeredText(font, "Press Q/E to change Alignment: " + alignment, width / 2, font.lineHeight * 2, Color.WHITE.getRGB());
+		graphics.centeredText(font, "Press R to change Direction: " + direction, width / 2, font.lineHeight * 3 + 5, Color.WHITE.getRGB());
+		graphics.centeredText(font, "Press +/- to change Scale", width / 2, font.lineHeight * 4 + 10, Color.WHITE.getRGB());
+		graphics.centeredText(font, "Right Click To Reset Position", width / 2, font.lineHeight * 5 + 15, Color.GRAY.getRGB());
 
 		int selectionWidth = getSelectionWidth();
 		int x1 = switch (alignment) {
@@ -86,10 +86,10 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 		int x2 = x1 + selectionWidth;
 		int y2 = y1 + getSelectionHeight();
 
-		graphics.hLine(x1, x2, y1, Color.RED.getRGB());
-		graphics.hLine(x1, x2, y2, Color.RED.getRGB());
-		graphics.vLine(x1, y1, y2, Color.RED.getRGB());
-		graphics.vLine(x2, y1, y2, Color.RED.getRGB());
+		graphics.horizontalLine(x1, x2, y1, Color.RED.getRGB());
+		graphics.horizontalLine(x1, x2, y2, Color.RED.getRGB());
+		graphics.verticalLine(x1, y1, y2, Color.RED.getRGB());
+		graphics.verticalLine(x2, y1, y2, Color.RED.getRGB());
 	}
 
 	private void updateWidgetDimensions() {

@@ -20,7 +20,7 @@ public final class LoadingProfileViewerScreen extends AbstractProfileViewerScree
 		int centreY = this.getBackgroundY() + (BACKGROUND_HEIGHT / 2);
 		long timeLoading = System.currentTimeMillis() - this.start;
 
-		graphics.drawCenteredString(this.font, "Loading", centreX, centreY - this.font.lineHeight, CommonColors.WHITE);
-		graphics.drawCenteredString(this.font, LoadingDotsText.get(timeLoading), centreX, centreY + this.font.lineHeight, CommonColors.WHITE);
+		graphics.centeredText(this.font, "Loading", centreX, centreY - this.font.lineHeight, CommonColors.WHITE);
+		graphics.centeredText(this.font, LoadingDotsText.get(timeLoading), centreX, centreY + this.font.lineHeight, CommonColors.WHITE);
 	}
 }

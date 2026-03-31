@@ -58,7 +58,7 @@ public class PlayerInventory implements ProfileViewerPage {
 			graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootY + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7, 256, 256);
 			graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootY + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
 		}
-		graphics.drawString(textRenderer,  I18n.get("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootY + 7, Color.DARK_GRAY.getRGB(), false);
+		graphics.text(textRenderer,  I18n.get("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootY + 7, Color.DARK_GRAY.getRGB(), false);
 	}
 
 	private void drawContainerItems(GuiGraphicsExtractor graphics, int rootX, int rootY, IntIntPair dimensions, int startIndex, int endIndex, int mouseX, int mouseY) {
@@ -78,8 +78,8 @@ public class PlayerInventory implements ProfileViewerPage {
 				graphics.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
 			}
 
-			graphics.renderItem(stack, x, y);
-			graphics.renderItemDecorations(textRenderer, stack, x, y);
+			graphics.item(stack, x, y);
+			graphics.itemDecorations(textRenderer, stack, x, y);
 			SlotTextManager.renderSlotText(graphics, textRenderer, null, stack, i, x, y);
 
 			if (mouseX > x - 2 && mouseX < x + 16 + 1 && mouseY > y - 2 && mouseY < y + 16 + 1) {

@@ -13,6 +13,6 @@ public final class TestTextWidget extends ProfileViewerWidget {
 
 	@Override
 	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-		graphics.drawString(getFont(), this.getMessage(), this.getX(), this.getY(), CommonColors.WHITE);
+		graphics.text(getFont(), this.getMessage(), this.getX(), this.getY(), CommonColors.WHITE);
 	}
 }

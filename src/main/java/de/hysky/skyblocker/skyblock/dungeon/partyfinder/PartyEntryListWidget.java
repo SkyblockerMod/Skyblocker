@@ -97,7 +97,7 @@ public class PartyEntryListWidget extends ContainerObjectSelectionList<PartyEntr
 		if (children().isEmpty()) {
 			Component string = Component.translatable("skyblocker.partyFinder.loadingError");
 			Font textRenderer = Minecraft.getInstance().font;
-			graphics.drawWordWrap(textRenderer, string, getRowLeft(), getY() + 10, getRowWidth(), 0xFFFFFFFF, false);
+			graphics.textWithWordWrap(textRenderer, string, getRowLeft(), getY() + 10, getRowWidth(), 0xFFFFFFFF, false);
 		} else super.renderWidget(graphics, mouseX, mouseY, delta);
 	}
 
