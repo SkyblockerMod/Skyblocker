@@ -32,7 +32,7 @@ public enum Location implements StringRepresentable {
 	/**
 	 * The freezing cold Glacite Mineshafts! *brr... so cold... :(*
 	 *
-	 * <p>This location might not exist according to the API? Try using {@link Area#GLACITE_MINESHAFTS}.
+	 * <p>This location might not exist according to the API? Try using {@link Area.DwarvenMines#GLACITE_MINESHAFTS}.
 	 */
 	GLACITE_MINESHAFTS("mineshaft", "Glacite Mineshafts"),
 	/**
