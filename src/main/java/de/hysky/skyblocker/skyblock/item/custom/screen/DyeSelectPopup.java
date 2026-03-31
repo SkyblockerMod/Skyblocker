@@ -44,9 +44,9 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, scrollableLayout.getX(), scrollableLayout.getY(), scrollableLayout.getWidth(), scrollableLayout.getHeight());
+	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		super.renderBackground(graphics, mouseX, mouseY, delta);
+		drawPopupBackground(graphics, scrollableLayout.getX(), scrollableLayout.getY(), scrollableLayout.getWidth(), scrollableLayout.getHeight());
 	}
 
 	@Override
@@ -168,14 +168,14 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-			this.renderDefaultSprite(guiGraphics);
-			guiGraphics.renderItem(dyeStack, this.getX() + TEXT_OFFSET, this.getY() + 1);
-			renderName(guiGraphics, delta);
+		protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+			this.renderDefaultSprite(graphics);
+			graphics.renderItem(dyeStack, this.getX() + TEXT_OFFSET, this.getY() + 1);
+			renderName(graphics, delta);
 		}
 
-		protected void renderName(GuiGraphics guiGraphics, float f) {
-			guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
+		protected void renderName(GuiGraphics graphics, float f) {
+			graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(
 					getMessage(), getX() + TEXT_MARGIN + TEXT_OFFSET + 16,
 					getRight() - TEXT_MARGIN, getY() + TEXT_MARGIN, getBottom() - TEXT_MARGIN
 			);
@@ -195,7 +195,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderName(GuiGraphics guiGraphics, float delta) {
+		protected void renderName(GuiGraphics graphics, float delta) {
 			lastChange += delta;
 			if (lastChange > 2) {
 				lastChange = 0;
@@ -203,7 +203,7 @@ public class DyeSelectPopup extends AbstractPopupScreen {
 				setMessage(animatedNames.get(index));
 				if (index == animatedNames.size() - 1) index = 0;
 			}
-			super.renderName(guiGraphics, delta);
+			super.renderName(graphics, delta);
 		}
 	}
 

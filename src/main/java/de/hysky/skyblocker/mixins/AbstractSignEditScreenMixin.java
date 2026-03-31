@@ -49,19 +49,19 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 	}
 
 	@Inject(method = "render", at = @At("HEAD"))
-	private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) GuiGraphics context) {
+	private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) GuiGraphics graphics) {
 		if (Utils.isOnSkyblock()) {
 			var config = SkyblockerConfigManager.get();
 			if (isSpeedInputSign() && config.general.speedPresets.enableSpeedPresets) {
 				var presets = SpeedPresets.getInstance();
 				if (presets.hasPreset(messages[0])) {
-					context.drawCenteredString(this.font, Component.literal(String.format("%s » %d", messages[0], presets.getPreset(messages[0]))).withStyle(ChatFormatting.GREEN),
-							context.guiWidth() / 2, 55, 0xFFFFFFFF);
+					graphics.drawCenteredString(this.font, Component.literal(String.format("%s » %d", messages[0], presets.getPreset(messages[0]))).withStyle(ChatFormatting.GREEN),
+							graphics.guiWidth() / 2, 55, 0xFFFFFFFF);
 				}
 			}
 			//if the sign is being used to enter number send it to the sign calculator
 			else if (isInputSign() && config.uiAndVisuals.inputCalculator.enabled) {
-				SignCalculator.renderCalculator(context, messages[0], context.guiWidth() / 2, 55);
+				SignCalculator.renderCalculator(graphics, messages[0], graphics.guiWidth() / 2, 55);
 			}
 		}
 	}

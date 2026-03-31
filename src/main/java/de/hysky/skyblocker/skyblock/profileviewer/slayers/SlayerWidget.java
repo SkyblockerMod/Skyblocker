@@ -58,27 +58,27 @@ public class SlayerWidget {
 		} catch (Exception ignored) {}
 	}
 
-	public void render(GuiGraphics context, int mouseX, int mouseY, int x, int y) {
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) {
 		Font font = Minecraft.getInstance().font;
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-		context.blit(RenderPipelines.GUI_TEXTURED, this.item, x + 1, y + 3, 0, 0, 20, 20, 20, 20);
-		context.drawString(font, slayerName + " " + slayerLevel.level, x + 31, y + 5, Color.white.hashCode(), false);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, this.item, x + 1, y + 3, 0, 0, 20, 20, 20, 20);
+		graphics.drawString(font, slayerName + " " + slayerLevel.level, x + 31, y + 5, Color.white.hashCode(), false);
 
 		int col2 = x + 113;
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, col2, y, 0, 0, 109, 26, 109, 26);
-		context.renderItem(this.drop, col2 + 3, y + 5);
-		context.drawString(font, "§aKills: §r" + findTotalKills(), col2 + 30, y + 4, Color.white.hashCode(), true);
-		context.drawString(font, findTopTierKills(), findTopTierKills().equals("No Data") ? col2 + 30 : col2 + 29, y + 15, Color.white.hashCode(), true);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, col2, y, 0, 0, 109, 26, 109, 26);
+		graphics.renderItem(this.drop, col2 + 3, y + 5);
+		graphics.drawString(font, "§aKills: §r" + findTotalKills(), col2 + 30, y + 4, Color.white.hashCode(), true);
+		graphics.drawString(font, findTopTierKills(), findTopTierKills().equals("No Data") ? col2 + 30 : col2 + 29, y + 15, Color.white.hashCode(), true);
 
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 15, 75, 6);
 		Color fillColor = slayerLevel.fill == 1 ? Color.MAGENTA : Color.green;
-		HudHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * slayerLevel.fill), 6, fillColor);
+		HudHelper.renderNineSliceColored(graphics, BAR_FILL, x + 30, y + 15, (int) (75 * slayerLevel.fill), 6, fillColor);
 
 		if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22) {
 			List<Component> tooltipText = new ArrayList<>();
 			tooltipText.add(Component.literal(this.slayerName).withStyle(ChatFormatting.GREEN));
 			tooltipText.add(Component.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.slayerLevel.xp)).withStyle(ChatFormatting.GOLD));
-			context.setComponentTooltipForNextFrame(font, tooltipText, mouseX, mouseY);
+			graphics.setComponentTooltipForNextFrame(font, tooltipText, mouseX, mouseY);
 		}
 	}
 

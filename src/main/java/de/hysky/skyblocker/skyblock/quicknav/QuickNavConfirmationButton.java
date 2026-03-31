@@ -29,8 +29,8 @@ public class QuickNavConfirmationButton extends QuickNavButton {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderWidget(context, mouseX, mouseY, delta);
+	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		super.renderWidget(graphics, mouseX, mouseY, delta);
 		if (toggled()) return;
 		if (isDoubleClick() == showingConfirmTooltip) return;
 		showingConfirmTooltip = !showingConfirmTooltip;

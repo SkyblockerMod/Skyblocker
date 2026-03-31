@@ -63,7 +63,7 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
 		//change color  and radius when hovered
 		boolean hovered = getHovered.getAsBoolean();
 		int color = hovered ? 0xFE000000 : 0x77000000; //darker when hovered
@@ -71,7 +71,7 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 		float external = hovered ? externalRadius + 5 : externalRadius;
 
 		//get bounding box
-		Vector2i center = new Vector2i(context.guiWidth() / 2, context.guiHeight() / 2);
+		Vector2i center = new Vector2i(graphics.guiWidth() / 2, graphics.guiHeight() / 2);
 		List<Vector2f> vertices = new ArrayList<>();
 		//first background rectangle
 		vertices.add(getPos(center, startAngle, internal));
@@ -85,24 +85,24 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 		vertices.add(getPos(center, startAngle + arcLength / 2, external));
 
 		//draw background
-		HudHelper.drawCustomShape(context, vertices, color);
+		HudHelper.drawCustomShape(graphics, vertices, color);
 
 		//render icon
 		float iconAngle = startAngle + (arcLength / 2);
 		Vector2f iconPos = getPos(center, iconAngle, (internal + external) / 2);
 		iconPos.sub(8, 8);
-		context.renderItem(icon, (int) iconPos.x, (int) iconPos.y);
-		context.renderItemDecorations(CLIENT.font, icon, (int) iconPos.x, (int) iconPos.y);
-		SlotTextManager.renderSlotText(context, CLIENT.font, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
+		graphics.renderItem(icon, (int) iconPos.x, (int) iconPos.y);
+		graphics.renderItemDecorations(CLIENT.font, icon, (int) iconPos.x, (int) iconPos.y);
+		SlotTextManager.renderSlotText(graphics, CLIENT.font, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
 
 		//render tooltip
 		if (hovered && (HudHelper.hasShiftDown() || SkyblockerConfigManager.get().uiAndVisuals.radialMenu.tooltipsWithoutShift)) {
 			// Backpack Preview
 			if (CLIENT.screen != null && CLIENT.screen.getTitle().getString().equals("Storage")) {
-				BackpackPreview.renderPreview(context, CLIENT.screen, linkedSlot, mouseX, mouseY);
+				BackpackPreview.renderPreview(graphics, CLIENT.screen, linkedSlot, mouseX, mouseY);
 			} else {
 				//normal tooltips
-				context.setTooltipForNextFrame(CLIENT.font, icon, mouseX, mouseY);
+				graphics.setTooltipForNextFrame(CLIENT.font, icon, mouseX, mouseY);
 			}
 		}
 	}

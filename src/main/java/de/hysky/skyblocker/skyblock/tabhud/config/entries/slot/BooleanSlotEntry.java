@@ -24,11 +24,11 @@ public class BooleanSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void renderTooltip(GuiGraphics context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
+	public void renderTooltip(GuiGraphics graphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
 		if (mouseX >= x && mouseX <= x + entryWidth - 70 && mouseY >= y && mouseY <= y + entryHeight) {
 			@SuppressWarnings("deprecation")
 			List<Component> lore = ItemUtils.getLore(icon);
-			context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, lore.subList(0, Math.max(lore.size() - 2, 0)), mouseX, mouseY);
+			graphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, lore.subList(0, Math.max(lore.size() - 2, 0)), mouseX, mouseY);
 		}
 	}
 
@@ -38,9 +38,9 @@ public class BooleanSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-		renderIconAndText(context, this.getY(), this.getX(), this.getHeight());
+	public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		renderIconAndText(graphics, this.getY(), this.getX(), this.getHeight());
 		enableButton.setPosition(this.getX() + this.getWidth() - 70, this.getY() + (this.getHeight() - 12) / 2);
-		enableButton.render(context, mouseX, mouseY, deltaTicks);
+		enableButton.render(graphics, mouseX, mouseY, deltaTicks);
 	}
 }

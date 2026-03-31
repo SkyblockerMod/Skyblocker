@@ -61,26 +61,26 @@ public class GlaciteColdOverlay {
 	/**
 	 * @see Gui#renderTextureOverlay as this is a carbon copy of it
 	 */
-	private static void renderOverlay(GuiGraphics context, Identifier texture, float opacity) {
+	private static void renderOverlay(GuiGraphics graphics, Identifier texture, float opacity) {
 		int white = ARGB.white(opacity);
-		context.blit(
+		graphics.blit(
 			RenderPipelines.GUI_TEXTURED,
 			texture,
 			0,
 			0,
 			0.0F,
 			0.0F,
-			context.guiWidth(),
-			context.guiHeight(),
-			context.guiWidth(),
-			context.guiHeight(),
+			graphics.guiWidth(),
+			graphics.guiHeight(),
+			graphics.guiWidth(),
+			graphics.guiHeight(),
 			white
 		);
 	}
 
-	public static void render(GuiGraphics context) {
+	public static void render(GuiGraphics graphics) {
 		if (Utils.isInDwarvenMines() && SkyblockerConfigManager.get().mining.glacite.coldOverlay) {
-			renderOverlay(context, POWDER_SNOW_OUTLINE, cold / 100f);
+			renderOverlay(graphics, POWDER_SNOW_OUTLINE, cold / 100f);
 		}
 	}
 }

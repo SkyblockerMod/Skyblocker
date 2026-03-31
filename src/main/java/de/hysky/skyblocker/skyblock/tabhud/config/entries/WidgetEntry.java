@@ -29,7 +29,7 @@ public class WidgetEntry extends WidgetsListEntry {
 	}
 
 	@Override
-	public void renderTooltip(GuiGraphics context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
+	public void renderTooltip(GuiGraphics graphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
 
 	}
 
@@ -39,10 +39,10 @@ public class WidgetEntry extends WidgetsListEntry {
 	}
 
 	@Override
-	public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+	public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 		int textY = this.getY() + (this.getHeight() - 9) / 2;
 		enableButton.setPosition(this.getX() + this.getWidth() - 110, this.getY() + (this.getHeight() - 12) / 2);
-		enableButton.render(context, mouseX, mouseY, deltaTicks);
-		context.drawString(Minecraft.getInstance().font, widget.getDisplayName(), this.getX() + 2, textY, CommonColors.WHITE);
+		enableButton.render(graphics, mouseX, mouseY, deltaTicks);
+		graphics.drawString(Minecraft.getInstance().font, widget.getDisplayName(), this.getX() + 2, textY, CommonColors.WHITE);
 	}
 }

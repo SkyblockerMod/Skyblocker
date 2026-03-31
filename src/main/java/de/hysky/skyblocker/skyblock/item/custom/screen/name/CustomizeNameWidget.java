@@ -135,8 +135,8 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-		context.blitSprite(
+	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		graphics.blitSprite(
 				RenderPipelines.GUI_TEXTURED,
 				INNER_SPACE_TEXTURE,
 				getX(),
@@ -144,11 +144,11 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 				getWidth(),
 				getHeight());
 		if (Debug.debugEnabled()) {
-			context.drawString(textRenderer, Component.literal("Selection Start: " + selectionStart + ", Selection End: " + selectionEnd), getX(), getBottom(), -1);
-			context.drawString(textRenderer, Component.literal("Insert Style: " + (insertAs == null ? "null" : insertAs.toString())), getX(), getBottom() + 10, -1);
+			graphics.drawString(textRenderer, Component.literal("Selection Start: " + selectionStart + ", Selection End: " + selectionEnd), getX(), getBottom(), -1);
+			graphics.drawString(textRenderer, Component.literal("Insert Style: " + (insertAs == null ? "null" : insertAs.toString())), getX(), getBottom() + 10, -1);
 		}
 		for (AbstractWidget widget : widgets) {
-			widget.render(context, mouseX, mouseY, deltaTicks);
+			widget.render(graphics, mouseX, mouseY, deltaTicks);
 		}
 	}
 
@@ -379,9 +379,9 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 		@Override
-		protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			this.renderDefaultSprite(context);
-			this.renderDefaultLabel(context.textRenderer());
+		protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+			this.renderDefaultSprite(graphics);
+			this.renderDefaultLabel(graphics.textRenderer());
 		}
 	}
 
@@ -402,9 +402,9 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		public void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			this.renderDefaultSprite(context);
-			context.fill(getX() + 2, getY() + 2, getRight() - 2, getBottom() - 2, intColor);
+		public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+			this.renderDefaultSprite(graphics);
+			graphics.fill(getX() + 2, getY() + 2, getRight() - 2, getBottom() - 2, intColor);
 		}
 
 		@Override
@@ -428,7 +428,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
 			if (renderedSelectionStart != selectionStart || renderedSelectionEnd != selectionEnd || updateMePrettyPlease) {
 				renderedSelectionStart = selectionStart;
 				renderedSelectionEnd = selectionEnd;
@@ -439,27 +439,27 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 				renderEnd = getRenderWidthVisitor.getWidths().secondInt();
 			}
 
-			context.fill(getX(), getY(), getRight(), getBottom(), CommonColors.BLACK);
-			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), isFocused() ? CommonColors.WHITE : CommonColors.GRAY);
+			graphics.fill(getX(), getY(), getRight(), getBottom(), CommonColors.BLACK);
+			HudHelper.drawBorder(graphics, getX(), getY(), getWidth(), getHeight(), isFocused() ? CommonColors.WHITE : CommonColors.GRAY);
 			int textX = getTextX();
 			int textY = getY() + (getHeight() - textRenderer.lineHeight) / 2;
 
 			if (renderStart != renderEnd) {
-				context.fill(textX + renderStart, textY, textX + renderEnd, textY + textRenderer.lineHeight, CommonColors.BLUE);
+				graphics.fill(textX + renderStart, textY, textX + renderEnd, textY + textRenderer.lineHeight, CommonColors.BLUE);
 			}
 			if (this.isFocused()) {
-				context.vLine(textX + (selectionStart < selectionEnd ? renderStart : renderEnd) - 1, textY - 1, textY + textRenderer.lineHeight, CommonColors.WHITE);
+				graphics.vLine(textX + (selectionStart < selectionEnd ? renderStart : renderEnd) - 1, textY - 1, textY + textRenderer.lineHeight, CommonColors.WHITE);
 			}
 
-			context.drawString(textRenderer, text, textX, textY, -1, false);
+			graphics.drawString(textRenderer, text, textX, textY, -1, false);
 
-			this.handleCursor(context);
+			this.handleCursor(graphics);
 		}
 
 		@Override
-		protected void handleCursor(GuiGraphics context) {
+		protected void handleCursor(GuiGraphics graphics) {
 			if (this.isHovered()) {
-				context.requestCursor(CursorTypes.IBEAM);
+				graphics.requestCursor(CursorTypes.IBEAM);
 			}
 		}
 

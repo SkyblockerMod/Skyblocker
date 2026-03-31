@@ -81,9 +81,9 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x, y, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		super.renderBackground(graphics, mouseX, mouseY, delta);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x, y, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 	}
 
 	private class ItemWidget extends AbstractWidget {
@@ -103,13 +103,13 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
 			int x = getX() + 1;
 			int y = getY() + 1;
-			if (isHovered()) context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_TEXTURE, getX() - 3, getY() - 3, 24, 24);
-			context.renderItem(item, x, y);
-			if (isHovered()) context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_TEXTURE, getX() - 3, getY() - 3, 24, 24);
-			if (!selectable) context.renderItem(BARRIER, x, y);
+			if (isHovered()) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_TEXTURE, getX() - 3, getY() - 3, 24, 24);
+			graphics.renderItem(item, x, y);
+			if (isHovered()) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_TEXTURE, getX() - 3, getY() - 3, 24, 24);
+			if (!selectable) graphics.renderItem(BARRIER, x, y);
 
 		}
 

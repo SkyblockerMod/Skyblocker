@@ -21,17 +21,17 @@ public final class SkyblockNpcShopRecipeCategory extends AbstractSkyblockRecipeC
 	}
 
 	@Override
-	public void draw(SkyblockNpcShopRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics context, double mouseX, double mouseY) {
+	public void draw(SkyblockNpcShopRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
 		IDrawableStatic recipeArrow = this.guiHelper.getRecipeArrow();
 		int arrowYOffset = (this.getHeight() - recipeArrow.getHeight()) / 2;
-		recipeArrow.draw(context, 61, arrowYOffset);
+		recipeArrow.draw(graphics, 61, arrowYOffset);
 
 		int itemX = 61 + ((recipeArrow.getWidth() - ITEM_SIZE) / 2);
 		int itemY = arrowYOffset - ITEM_SIZE - NPC_ITEM_PADDING;
-		context.renderItem(recipe.getNpcItem(), itemX, itemY);
+		graphics.renderItem(recipe.getNpcItem(), itemX, itemY);
 
 		if (HudHelper.pointIsInArea(mouseX, mouseY, itemX, itemY, itemX + ITEM_SIZE, itemY + ITEM_SIZE)) {
-			this.drawTooltip(context, recipe.getNpcItem().getHoverName(), mouseX, mouseY);
+			this.drawTooltip(graphics, recipe.getNpcItem().getHoverName(), mouseX, mouseY);
 		}
 	}
 }

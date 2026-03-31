@@ -47,21 +47,21 @@ public class CollectionsPage implements ProfileViewerPage {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int startingY = rootY + (TOTAL_HEIGHT - collectionSelectButtons.size() * 21) / 2;
 		for (int i = 0; i < collectionSelectButtons.size(); i++) {
 			collectionSelectButtons.get(i).setX(rootX);
 			collectionSelectButtons.get(i).setY(startingY + i * 21);
-			collectionSelectButtons.get(i).render(context, mouseX, mouseY, delta);
+			collectionSelectButtons.get(i).render(graphics, mouseX, mouseY, delta);
 		}
 
 		if (collections[activePage] == null) {
-			context.drawString(textRenderer, "No data...", rootX + 92, rootY + 72, Color.DARK_GRAY.getRGB(), false);
+			graphics.drawString(textRenderer, "No data...", rootX + 92, rootY + 72, Color.DARK_GRAY.getRGB(), false);
 			return;
 		}
 
 		collections[activePage].markWidgetsAsVisible();
-		collections[activePage].render(context, mouseX, mouseY, delta, rootX + 35, rootY + 6);
+		collections[activePage].render(graphics, mouseX, mouseY, delta, rootX + 35, rootY + 6);
 	}
 
 	public void onNavButtonClick(SubPageSelectButton selectButton) {

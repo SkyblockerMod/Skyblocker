@@ -357,8 +357,8 @@ public class ChatRuleConfigScreen extends Screen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.renderFakeItem(stack, getX(), getY());
+		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+			graphics.renderFakeItem(stack, getX(), getY());
 		}
 
 		@Override
@@ -388,8 +388,8 @@ public class ChatRuleConfigScreen extends Screen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 		}
 
 		@Override
@@ -437,15 +437,15 @@ public class ChatRuleConfigScreen extends Screen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.enableScissor(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height);
+		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+			graphics.enableScissor(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height);
 
 			for (AbstractWidget clickableWidget : this.children) {
-				clickableWidget.render(context, mouseX, mouseY, deltaTicks);
+				clickableWidget.render(graphics, mouseX, mouseY, deltaTicks);
 			}
 
-			context.disableScissor();
-			this.renderScrollbar(context, mouseX, mouseY);
+			graphics.disableScissor();
+			this.renderScrollbar(graphics, mouseX, mouseY);
 		}
 
 		@Override

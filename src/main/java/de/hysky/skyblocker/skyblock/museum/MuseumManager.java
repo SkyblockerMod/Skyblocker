@@ -192,24 +192,24 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		// Render the background texture for the widget
-		context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
-		searchField.render(context, mouseX, mouseY, delta);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
+		searchField.render(graphics, mouseX, mouseY, delta);
 
 		if (this.sortButton.active) {
 			int iconX = this.sortButton.getX() + (this.sortButton.getWidth() - 16) / 2;
 			int iconY = this.sortButton.getY() + (this.sortButton.getHeight() - 16) / 2;
 			ItemStack stack = ITEM_SORTER.getCurrentSortingItem();
-			sortButton.render(context, mouseX, mouseY, delta);
-			context.renderFakeItem(stack, iconX, iconY);
+			sortButton.render(graphics, mouseX, mouseY, delta);
+			graphics.renderFakeItem(stack, iconX, iconY);
 		}
 
 		if (this.filterButton.active) {
 			int iconX = this.filterButton.getX() + (this.filterButton.getWidth() - 16) / 2;
 			int iconY = this.filterButton.getY() + (this.filterButton.getHeight() - 16) / 2;
-			filterButton.render(context, mouseX, mouseY, delta);
-			context.renderFakeItem(Ico.HOPPER, iconX, iconY);
+			filterButton.render(graphics, mouseX, mouseY, delta);
+			graphics.renderFakeItem(Ico.HOPPER, iconX, iconY);
 		}
 
 		if (ItemRepository.filesImported()) {
@@ -218,31 +218,31 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 				Component text = Component.translatable("gui.recipebook.page", currentPage + 1, this.pageCount);
 				int width = TEXT_RENDERER.width(text);
 
-				context.drawString(TEXT_RENDERER, text, getX() - width / 2 + 73, getY() + 137, -1, false);
+				graphics.drawString(TEXT_RENDERER, text, getX() - width / 2 + 73, getY() + 137, -1, false);
 			}
 
 			// Render donation buttons
 			this.hoveredDonationButton = null;
 			for (DonationButton resultButton : donationButtons) {
-				resultButton.render(context, mouseX, mouseY, delta);
+				resultButton.render(graphics, mouseX, mouseY, delta);
 
 				if (resultButton.visible && resultButton.isHovered()) this.hoveredDonationButton = resultButton;
 			}
 
 			// Render the page flip buttons
-			if (this.prevPageButton.active) this.prevPageButton.render(context, mouseX, mouseY, delta);
-			if (this.nextPageButton.active) this.nextPageButton.render(context, mouseX, mouseY, delta);
+			if (this.prevPageButton.active) this.prevPageButton.render(graphics, mouseX, mouseY, delta);
+			if (this.nextPageButton.active) this.nextPageButton.render(graphics, mouseX, mouseY, delta);
 
-			drawTooltip(context, mouseX, mouseY);
+			drawTooltip(graphics, mouseX, mouseY);
 		} else {
-			context.drawCenteredString(TEXT_RENDERER, "Loading...", getX() + (BACKGROUND_WIDTH / 2), getY() + (BACKGROUND_HEIGHT / 2), CommonColors.WHITE);
+			graphics.drawCenteredString(TEXT_RENDERER, "Loading...", getX() + (BACKGROUND_WIDTH / 2), getY() + (BACKGROUND_HEIGHT / 2), CommonColors.WHITE);
 		}
 	}
 
-	public void drawTooltip(GuiGraphics context, int x, int y) {
+	public void drawTooltip(GuiGraphics graphics, int x, int y) {
 		// Draw the tooltip of the hovered result button if one is hovered over
 		if (this.hoveredDonationButton != null) {
-			context.setComponentTooltipForNextFrame(TEXT_RENDERER, hoveredDonationButton.getItemTooltip(), x, y, null);
+			graphics.setComponentTooltipForNextFrame(TEXT_RENDERER, hoveredDonationButton.getItemTooltip(), x, y, null);
 		}
 	}
 

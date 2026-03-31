@@ -74,7 +74,7 @@ public interface SkyblockRecipe {
 	 * @param mouseX mouse x
 	 * @param mouseY mouse y
 	 */
-	default void render(GuiGraphics context, int width, int height, double mouseX, double mouseY) {}
+	default void render(GuiGraphics graphics, int width, int height, double mouseX, double mouseY) {}
 
 	/**
 	 * Extra text like collection requirements

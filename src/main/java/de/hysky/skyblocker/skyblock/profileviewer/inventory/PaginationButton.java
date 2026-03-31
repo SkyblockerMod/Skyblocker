@@ -29,9 +29,9 @@ public class PaginationButton extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX(), this.getY(), 0, 0, 12, 17, 12, 17);
-		if (isMouseOver(mouseX, mouseY)) context.blit(RenderPipelines.GUI_TEXTURED, HIGHLIGHT, this.getX(), this.getY(), 0, 0, 12, 17, 12, 17);
+	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX(), this.getY(), 0, 0, 12, 17, 12, 17);
+		if (isMouseOver(mouseX, mouseY)) graphics.blit(RenderPipelines.GUI_TEXTURED, HIGHLIGHT, this.getX(), this.getY(), 0, 0, 12, 17, 12, 17);
 	}
 
 	@Override

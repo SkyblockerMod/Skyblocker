@@ -141,15 +141,15 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		Font textRenderer = Minecraft.getInstance().font;
-		Matrix3x2fStack matrices = context.pose();
+		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 
-		context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
+		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
 
-		context.drawString(textRenderer, editingSlotIcon < 0 ? getMessage() : Component.literal("Custom Icon"), 8, 6, CommonColors.DARK_GRAY, false);
+		graphics.drawString(textRenderer, editingSlotIcon < 0 ? getMessage() : Component.literal("Custom Icon"), 8, 6, CommonColors.DARK_GRAY, false);
 
 		hoveredSlot = -1;
 		long timeMillis = System.currentTimeMillis();
@@ -161,17 +161,17 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			boolean infested = infectedPlots.contains(i);
 
 			if (hovered) {
-				context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, slotX - 3, slotY - 3, 24, 24);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, slotX - 3, slotY - 3, 24, 24);
 			}
 
 			ItemStack item = stacks[i];
 			// Still show hover highlight & pest outline in empty slots.
 			if (item == null) {
 				if (hovered)
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
 
 				if (infested && (timeMillis & 512) != 0)
-					HudHelper.drawBorder(context, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
+					HudHelper.drawBorder(graphics, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
 
 				continue;
 			}
@@ -179,28 +179,28 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			if (hovered) {
 				//noinspection deprecation
 				if (ClientTags.isInLocal(ConventionalItemTags.GLASS_PANES, item.getItem().builtInRegistryHolder().key())) {
-					context.renderItem(item, slotX + 1, slotY + 1);
+					graphics.renderItem(item, slotX + 1, slotY + 1);
 				} else {
 					matrices.pushMatrix();
 					matrices.translate(slotX, slotY);
 					matrices.scale(1.125f, 1.125f);
-					context.renderItem(item, 0, 0);
+					graphics.renderItem(item, 0, 0);
 					matrices.popMatrix();
 				}
-				context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, slotX - 3, slotY - 3, 24, 24);
 				hoveredSlot = i;
 			} else
-				context.renderItem(item, slotX + 1, slotY + 1);
+				graphics.renderItem(item, slotX + 1, slotY + 1);
 
 			if (editingSlotIcon >= 0) {
 				if (hovered) {
-					context.setComponentTooltipForNextFrame(textRenderer, List.of(item.getHoverName()), mouseX, mouseY);
+					graphics.setComponentTooltipForNextFrame(textRenderer, List.of(item.getHoverName()), mouseX, mouseY);
 				}
 				continue;
 			}
 
 			if (infested && (timeMillis & 512) != 0) {
-				HudHelper.drawBorder(context, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
+				HudHelper.drawBorder(graphics, slotX + 1, slotY + 1, 16, 16, CommonColors.RED);
 			}
 
 			// tooltip
@@ -223,14 +223,14 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 										Component.empty(),
 										TP_TEXT
 								);
-				context.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
+				graphics.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
 			}
 		}
 
 		matrices.popMatrix();
 
 		for (ItemButtonWidget widget : widgets) {
-			widget.render(context, mouseX, mouseY, delta);
+			widget.render(graphics, mouseX, mouseY, delta);
 		}
 
 

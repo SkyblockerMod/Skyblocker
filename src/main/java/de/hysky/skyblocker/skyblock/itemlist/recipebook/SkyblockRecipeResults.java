@@ -89,7 +89,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	}
 
 	@Override
-	public void draw(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
+	public void draw(GuiGraphics graphics, int x, int y, int mouseX, int mouseY, float delta) {
 		Font textRenderer = this.client.font;
 
 		//Reset the hovered text
@@ -97,7 +97,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 
 		//If we have selected an item to view recipes for then show the recipe view specific stuff (e.g. name, requirement)
 		if (this.recipeView) {
-			drawRecipeDisplay(context, textRenderer, x, y, mouseX, mouseY);
+			drawRecipeDisplay(graphics, textRenderer, x, y, mouseX, mouseY);
 		}
 
 		//Render the page count
@@ -105,30 +105,30 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			Component text = Component.translatable("gui.recipebook.page", this.currentPage + 1, this.pageCount);
 			int width = textRenderer.width(text);
 
-			context.drawString(textRenderer, text, x - width / 2 + 73, y + 141, CommonColors.WHITE, false);
+			graphics.drawString(textRenderer, text, x - width / 2 + 73, y + 141, CommonColors.WHITE, false);
 		}
 
 		//Render the results
 		this.hoveredResultButton = null;
 
 		for (SkyblockRecipeResultButton resultButton : recipeView ? recipeSlotButtons : resultButtons) {
-			resultButton.render(context, mouseX, mouseY, delta);
+			resultButton.render(graphics, mouseX, mouseY, delta);
 
 			if (resultButton.visible && resultButton.isHoveredOrFocused()) this.hoveredResultButton = resultButton;
 		}
 
 		//Render the page flip buttons
 		if (this.prevPageButton != null) {
-			this.prevPageButton.render(context, mouseX, mouseY, delta);
+			this.prevPageButton.render(graphics, mouseX, mouseY, delta);
 		}
 
 		if (this.nextPageButton != null) {
-			this.nextPageButton.render(context, mouseX, mouseY, delta);
+			this.nextPageButton.render(graphics, mouseX, mouseY, delta);
 		}
 	}
 
 	//TODO enable scissor?
-	private void drawRecipeDisplay(GuiGraphics context, Font textRenderer, int x, int y, int mouseX, int mouseY) {
+	private void drawRecipeDisplay(GuiGraphics graphics, Font textRenderer, int x, int y, int mouseX, int mouseY) {
 		SkyblockRecipe recipe = this.recipeResults.get(this.currentPage);
 		//Render the "Craft Text" which is usually a requirement (e.g. Wolf Slayer 7)
 		String craftText = recipe.getExtraText().getString();
@@ -141,7 +141,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 				craftText = textRenderer.plainSubstrByWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS_STRING;
 			}
 
-			context.drawString(textRenderer, craftText, x + 11, y + 31, CommonColors.WHITE);
+			graphics.drawString(textRenderer, craftText, x + 11, y + 31, CommonColors.WHITE);
 		}
 
 		//Render the resulting item's name
@@ -151,34 +151,34 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			FormattedText trimmed = FormattedText.composite(textRenderer.substrByWidth(itemName, MAX_TEXT_WIDTH), CommonComponents.ELLIPSIS);
 			FormattedCharSequence ordered = Language.getInstance().getVisualOrder(trimmed);
 
-			context.drawString(textRenderer, ordered, x + 11, y + 43, CommonColors.WHITE);
+			graphics.drawString(textRenderer, ordered, x + 11, y + 43, CommonColors.WHITE);
 
 			//Set the resulting item's name as hovered text if we're hovering over it since the text got truncated
 			if (isMouseHoveringText(x + 11, y + 43, mouseX, mouseY)) this.hoveredText = itemName;
 		} else {
-			context.drawString(textRenderer, itemName, x + 11, y + 43, CommonColors.WHITE);
+			graphics.drawString(textRenderer, itemName, x + 11, y + 43, CommonColors.WHITE);
 		}
 
 		//Draw the arrow that points to the recipe's result
-		context.drawString(textRenderer, "▶", x + 96, y + 90, 0xAAFFFFFF);
+		graphics.drawString(textRenderer, "▶", x + 96, y + 90, 0xAAFFFFFF);
 		if (this.hoveredText == null && mouseX >= x + 86 && mouseY >= y + 81 && mouseX < x + 86 + 25 && mouseY < y + 81 + 25 && recipe instanceof SkyblockForgeRecipe forgeRecipe) {
 			this.hoveredText = Component.nullToEmpty(forgeRecipe.getDurationString());
 		}
-		if (recipeIcon != null) context.renderItem(recipeIcon, x + 115, y + 61);
+		if (recipeIcon != null) graphics.renderItem(recipeIcon, x + 115, y + 61);
 	}
 
 	@Override
-	public void drawTooltip(GuiGraphics context, int x, int y) {
+	public void drawTooltip(GuiGraphics graphics, int x, int y) {
 		if (this.client.screen != null) {
 			//Draw the tooltip of the hovered result button if one is hovered over
 			if (this.hoveredResultButton != null && !this.hoveredResultButton.getDisplayStack().isEmpty()) {
 				ItemStack stack = this.hoveredResultButton.getDisplayStack();
 				Identifier tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
 
-				context.setComponentTooltipForNextFrame(this.client.font, SkyblockRecipeResultButton.getTooltip(stack), x, y, tooltipStyle);
+				graphics.setComponentTooltipForNextFrame(this.client.font, SkyblockRecipeResultButton.getTooltip(stack), x, y, tooltipStyle);
 			} else if (this.hoveredText != null) {
 				//Draw text as a tooltip if it got truncated & we're hovering over it (for recipe display)
-				context.setTooltipForNextFrame(this.client.font, this.hoveredText, x, y);
+				graphics.setTooltipForNextFrame(this.client.font, this.hoveredText, x, y);
 			}
 		}
 	}

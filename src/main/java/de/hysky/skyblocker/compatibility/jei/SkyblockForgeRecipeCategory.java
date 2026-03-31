@@ -19,13 +19,13 @@ public final class SkyblockForgeRecipeCategory extends AbstractSkyblockRecipeCat
 	}
 
 	@Override
-	public void draw(SkyblockForgeRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics context, double mouseX, double mouseY) {
+	public void draw(SkyblockForgeRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
 		IDrawableStatic recipeArrow = this.guiHelper.getRecipeArrow();
 		int arrowYOffset = (this.getHeight() - recipeArrow.getHeight()) / 2;
-		recipeArrow.draw(context, 61, arrowYOffset);
+		recipeArrow.draw(graphics, 61, arrowYOffset);
 
 		if (HudHelper.pointIsInArea(mouseX, mouseY, 61, arrowYOffset, 61 + recipeArrow.getWidth(), arrowYOffset + recipeArrow.getHeight())) {
-			this.drawTooltip(context, Component.literal(recipe.getDurationString()), mouseX, mouseY);
+			this.drawTooltip(graphics, Component.literal(recipe.getDurationString()), mouseX, mouseY);
 		}
 	}
 

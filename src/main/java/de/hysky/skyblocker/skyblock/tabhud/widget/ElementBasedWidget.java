@@ -116,34 +116,34 @@ public abstract class ElementBasedWidget extends HudWidget {
 	}
 
 	@Override
-	public final void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public final void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			Options options = Minecraft.getInstance().options;
 			int textBackgroundColor = options.getBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
-			context.fill(x + 1, y, x + w - 1, y + h, textBackgroundColor);
-			context.fill(x, y + 1, x + 1, y + h - 1, textBackgroundColor);
-			context.fill(x + w - 1, y + 1, x + w, y + h - 1, textBackgroundColor);
+			graphics.fill(x + 1, y, x + w - 1, y + h, textBackgroundColor);
+			graphics.fill(x, y + 1, x + 1, y + h - 1, textBackgroundColor);
+			graphics.fill(x + w - 1, y + 1, x + w, y + h - 1, textBackgroundColor);
 		}
 
 		int strHeightHalf = txtRend.lineHeight / 2;
 		int strAreaWidth = txtRend.width(title) + 4;
 
-		context.drawString(txtRend, title, x + 8, y + 2, this.color, false);
+		graphics.drawString(txtRend, title, x + 8, y + 2, this.color, false);
 
 		// Only draw borders if not in minimal mode
 		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal()) {
-			this.drawHLine(context, x + 2, y + 1 + strHeightHalf, 4);
-			this.drawHLine(context, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
-			this.drawHLine(context, x + 2, y + h - 2, w - 4);
+			this.drawHLine(graphics, x + 2, y + 1 + strHeightHalf, 4);
+			this.drawHLine(graphics, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
+			this.drawHLine(graphics, x + 2, y + h - 2, w - 4);
 
-			this.drawVLine(context, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
-			this.drawVLine(context, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.drawVLine(graphics, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.drawVLine(graphics, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
 		}
 
 		int yOffs = y + BORDER_SZE_N;
 
 		for (Element c : elements) {
-			c.render(context, x + BORDER_SZE_W, yOffs);
+			c.render(graphics, x + BORDER_SZE_W, yOffs);
 			yOffs += c.getHeight() + Element.PAD_L;
 		}
 	}
@@ -173,12 +173,12 @@ public abstract class ElementBasedWidget extends HudWidget {
 		prevH = h;
 	}
 
-	private void drawHLine(GuiGraphics context, int xpos, int ypos, int width) {
-		context.fill(xpos, ypos, xpos + width, ypos + 1, this.color);
+	private void drawHLine(GuiGraphics graphics, int xpos, int ypos, int width) {
+		graphics.fill(xpos, ypos, xpos + width, ypos + 1, this.color);
 	}
 
-	private void drawVLine(GuiGraphics context, int xpos, int ypos, int height) {
-		context.fill(xpos, ypos, xpos + 1, ypos + height, this.color);
+	private void drawVLine(GuiGraphics graphics, int xpos, int ypos, int height) {
+		graphics.fill(xpos, ypos, xpos + 1, ypos + height, this.color);
 	}
 
 	/**

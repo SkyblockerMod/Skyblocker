@@ -34,11 +34,11 @@ public class DungeonMapConfigScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
-		renderHUDMap(context, mapX, mapY);
-		renderHUDScore(context, scoreX, scoreY);
-		context.drawCenteredString(font, "Right Click To Reset Position", width >> 1, height >> 1, Color.GRAY.getRGB());
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		super.render(graphics, mouseX, mouseY, delta);
+		renderHUDMap(graphics, mapX, mapY);
+		renderHUDScore(graphics, scoreX, scoreY);
+		graphics.drawCenteredString(font, "Right Click To Reset Position", width >> 1, height >> 1, Color.GRAY.getRGB());
 	}
 
 	@Override
@@ -81,15 +81,15 @@ public class DungeonMapConfigScreen extends Screen {
 		this.minecraft.setScreen(parent);
 	}
 
-	public void renderHUDMap(GuiGraphics context, int x, int y) {
+	public void renderHUDMap(GuiGraphics graphics, int x, int y) {
 		float scaling = SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling;
 		int size = (int) (128 * scaling);
-		context.blit(RenderPipelines.GUI_TEXTURED, EXAMPLE_MAP, x, y, 0, 0, size, size, size, size);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, EXAMPLE_MAP, x, y, 0, 0, size, size, size, size);
 
-		if (SkyblockerConfigManager.get().dungeons.dungeonMap.showOutline) HudHelper.drawBorder(context, x, y, size, size, CommonColors.LIGHT_GRAY);
+		if (SkyblockerConfigManager.get().dungeons.dungeonMap.showOutline) HudHelper.drawBorder(graphics, x, y, size, size, CommonColors.LIGHT_GRAY);
 	}
 
-	public void renderHUDScore(GuiGraphics context, int x, int y) {
-		DungeonScoreHUD.render(context, x, y);
+	public void renderHUDScore(GuiGraphics graphics, int x, int y) {
+		DungeonScoreHUD.render(graphics, x, y);
 	}
 }

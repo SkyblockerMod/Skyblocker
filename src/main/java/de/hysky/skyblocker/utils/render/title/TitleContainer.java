@@ -130,11 +130,11 @@ public class TitleContainer {
 		titles.remove(title);
 	}
 
-	private static void render(GuiGraphics context, DeltaTracker tickCounter) {
-		render(context, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getGameTimeDeltaPartialTick(true));
+	private static void render(GuiGraphics graphics, DeltaTracker tickCounter) {
+		render(graphics, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getGameTimeDeltaPartialTick(true));
 	}
 
-	protected static void render(GuiGraphics context, Set<Title> titles, int xPos, int yPos, float tickDelta) {
+	protected static void render(GuiGraphics graphics, Set<Title> titles, int xPos, int yPos, float tickDelta) {
 		UIAndVisualsConfig.TitleContainer config = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
 
 		// Calculate Scale to use
@@ -143,10 +143,10 @@ public class TitleContainer {
 		UIAndVisualsConfig.Direction direction = config.direction;
 		UIAndVisualsConfig.Alignment alignment = config.alignment;
 
-		render(context, titles, xPos, yPos, tickDelta, scale, direction, alignment);
+		render(graphics, titles, xPos, yPos, tickDelta, scale, direction, alignment);
 	}
 
-	protected static void render(GuiGraphics context, Set<Title> titles, int xPos, int yPos, float tickDelta, float scale, UIAndVisualsConfig.Direction direction, UIAndVisualsConfig.Alignment alignment) {
+	protected static void render(GuiGraphics graphics, Set<Title> titles, int xPos, int yPos, float tickDelta, float scale, UIAndVisualsConfig.Direction direction, UIAndVisualsConfig.Alignment alignment) {
 		if (titles.isEmpty()) return;
 		Font textRenderer = Minecraft.getInstance().font;
 
@@ -186,13 +186,13 @@ public class TitleContainer {
 			title.y = Mth.lerp(tickDelta * 0.5F, title.y, y);
 
 			//Translate the matrix to the texts position and scale
-			context.pose().pushMatrix();
-			context.pose().translate(title.x, title.y);
-			context.pose().scale(scale, scale);
+			graphics.pose().pushMatrix();
+			graphics.pose().translate(title.x, title.y);
+			graphics.pose().scale(scale, scale);
 
 			//Draw text
-			context.drawString(textRenderer, title.getText(), 0, 0, CommonColors.WHITE);
-			context.pose().popMatrix();
+			graphics.drawString(textRenderer, title.getText(), 0, 0, CommonColors.WHITE);
+			graphics.pose().popMatrix();
 
 			//Calculate the x and y positions for the next title
 			if (direction == UIAndVisualsConfig.Direction.HORIZONTAL) {

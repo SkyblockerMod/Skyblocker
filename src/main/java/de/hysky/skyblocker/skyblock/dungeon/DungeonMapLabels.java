@@ -112,16 +112,16 @@ public class DungeonMapLabels {
 		};
 	}
 
-	protected static void renderRoomNames(GuiGraphics context) {
+	protected static void renderRoomNames(GuiGraphics graphics) {
 		if (!SkyblockerConfigManager.get().dungeons.dungeonMap.showRoomLabels) return;
 
 		Font textRenderer = Minecraft.getInstance().font;
 		for (RoomLabel label : LABELS.values()) {
-			context.pose().pushMatrix();
-			context.pose().translate(label.x, label.y);
-			context.pose().scale(LABEL_SCALE);
-			drawText(context, textRenderer, label.textLines, label.color);
-			context.pose().popMatrix();
+			graphics.pose().pushMatrix();
+			graphics.pose().translate(label.x, label.y);
+			graphics.pose().scale(LABEL_SCALE);
+			drawText(graphics, textRenderer, label.textLines, label.color);
+			graphics.pose().popMatrix();
 		}
 	}
 
@@ -200,11 +200,11 @@ public class DungeonMapLabels {
 		return (int) (maxWidth * MAX_WIDTH_SCALAR);
 	}
 
-	private static void drawText(GuiGraphics context, Font textRenderer, List<FormattedCharSequence> lines, int color) {
+	private static void drawText(GuiGraphics graphics, Font textRenderer, List<FormattedCharSequence> lines, int color) {
 		int y = lines.size() > 1 ? -(textRenderer.lineHeight / 2) * (lines.size() - 1) : 0;
 		for (FormattedCharSequence orderedText : lines) {
 			int textWidth = textRenderer.width(orderedText) / 2;
-			HudHelper.drawOutlinedText(context, orderedText, -textWidth, y, color, CommonColors.BLACK);
+			HudHelper.drawOutlinedText(graphics, orderedText, -textWidth, y, color, CommonColors.BLACK);
 			y += 9;
 		}
 	}

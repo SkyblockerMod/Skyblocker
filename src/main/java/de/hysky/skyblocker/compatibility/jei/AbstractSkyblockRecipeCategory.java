@@ -32,16 +32,16 @@ public abstract sealed class AbstractSkyblockRecipeCategory<T extends SkyblockRe
 	}
 
 	@Override
-	public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics context, double mouseX, double mouseY) {
+	public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
 		IDrawableStatic recipeArrow = this.guiHelper.getRecipeArrow();
-		recipeArrow.draw(context, 61, (this.getHeight() - recipeArrow.getHeight()) / 2);
+		recipeArrow.draw(graphics, 61, (this.getHeight() - recipeArrow.getHeight()) / 2);
 	}
 
-	protected void drawTooltip(GuiGraphics context, Component text, double mouseX, double mouseY) {
+	protected void drawTooltip(GuiGraphics graphics, Component text, double mouseX, double mouseY) {
 		// Tooltip drawing is deferred so we need the current position (since it doesn't save the matrix) and we cannot draw it immediately
 		// because things will not layer correctly.
-		Vector2f transformedPosition = context.pose().transformPosition((int) mouseX, (int) mouseY, new Vector2f());
-		context.setTooltipForNextFrame(text, (int) transformedPosition.x(), (int) transformedPosition.y());
+		Vector2f transformedPosition = graphics.pose().transformPosition((int) mouseX, (int) mouseY, new Vector2f());
+		graphics.setTooltipForNextFrame(text, (int) transformedPosition.x(), (int) transformedPosition.y());
 	}
 
 	@Override

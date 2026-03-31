@@ -25,11 +25,11 @@ public class DefaultSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void renderTooltip(GuiGraphics context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
+	public void renderTooltip(GuiGraphics graphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
 		if (mouseX >= x && mouseX <= x + entryWidth - 80 && mouseY >= y && mouseY <= y + entryHeight) {
 			@SuppressWarnings("deprecation")
 			List<Component> lore = ItemUtils.getLore(icon);
-			context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, lore.subList(0, Math.max(lore.size() - 2, 0)), mouseX, mouseY);
+			graphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, lore.subList(0, Math.max(lore.size() - 2, 0)), mouseX, mouseY);
 		}
 	}
 
@@ -39,11 +39,11 @@ public class DefaultSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-		renderIconAndText(context, this.getY(), this.getX(), this.getHeight());
+	public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		renderIconAndText(graphics, this.getY(), this.getX(), this.getHeight());
 		rightClick.setPosition(this.getX() + this.getWidth() - 40, this.getY() + (this.getHeight() - 12) / 2);
-		rightClick.render(context, mouseX, mouseY, deltaTicks);
+		rightClick.render(graphics, mouseX, mouseY, deltaTicks);
 		leftClick.setPosition(this.getX() + this.getWidth() - 80, this.getY() + (this.getHeight() - 12) / 2);
-		leftClick.render(context, mouseX, mouseY, deltaTicks);
+		leftClick.render(graphics, mouseX, mouseY, deltaTicks);
 	}
 }

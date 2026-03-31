@@ -173,11 +173,11 @@ public class ScreenBuilder {
 	/**
 	 * Renders the widgets present on the specified layer. Doesn't scale with the config option.
 	 */
-	public void renderWidgets(GuiGraphics context, WidgetManager.ScreenLayer screenLayer) {
+	public void renderWidgets(GuiGraphics graphics, WidgetManager.ScreenLayer screenLayer) {
 		List<HudWidget> widgetsToRender = getHudWidgets(screenLayer);
 
 		for (HudWidget widget : widgetsToRender) {
-			widget.render(context);
+			widget.render(graphics);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class ScreenBuilder {
 	 * {@link #updateWidgetLists(boolean) updates the widget lists (for all screen layers)}, {@link #updateWidgets(WidgetManager.ScreenLayer) updates the widgets (for the current screen layer)},
 	 * {@link #positionWidgets(int, int) positions the widgets}, and {@link #renderWidgets(GuiGraphics, WidgetManager.ScreenLayer) renders the widgets}.
 	 */
-	public void run(GuiGraphics context, int screenW, int screenH, WidgetManager.ScreenLayer screenLayer) {
+	public void run(GuiGraphics graphics, int screenW, int screenH, WidgetManager.ScreenLayer screenLayer) {
 		boolean widgetListsChanged = updateWidgetLists(false);
 
 		updateWidgets(screenLayer);
@@ -205,7 +205,7 @@ public class ScreenBuilder {
 			positionWidgets(screenW, screenH);
 		}
 
-		renderWidgets(context, screenLayer);
+		renderWidgets(graphics, screenLayer);
 	}
 
 

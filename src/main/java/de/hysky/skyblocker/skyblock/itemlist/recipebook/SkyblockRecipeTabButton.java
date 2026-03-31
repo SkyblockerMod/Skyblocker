@@ -19,7 +19,7 @@ public class SkyblockRecipeTabButton extends ImageButton {
 	}
 
 	@Override
-	public void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		if (this.sprites != null) {
 			int x = this.getX();
 
@@ -29,18 +29,18 @@ public class SkyblockRecipeTabButton extends ImageButton {
 			}
 
 			//Render main texture
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(true, this.selected), x, this.getY(), this.width, this.height);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(true, this.selected), x, this.getY(), this.width, this.height);
 
 			//Render item icon
 			int offset = this.selected ? -2 : 0;
-			context.renderFakeItem(this.icon, this.getX() + 9 + offset, this.getY() + 5);
+			graphics.renderFakeItem(this.icon, this.getX() + 9 + offset, this.getY() + 5);
 		}
 	}
 
 	@Override
-	protected void handleCursor(GuiGraphics context) {
+	protected void handleCursor(GuiGraphics graphics) {
 		if (!this.selected) {
-			super.handleCursor(context);
+			super.handleCursor(graphics);
 		}
 	}
 

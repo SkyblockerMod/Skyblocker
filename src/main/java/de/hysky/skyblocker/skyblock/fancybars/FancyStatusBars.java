@@ -360,18 +360,18 @@ public class FancyStatusBars {
 		return SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && (!Utils.isInTheRift() || SkyblockerConfigManager.get().uiAndVisuals.bars.enableBarsRift);
 	}
 
-	public static boolean render(GuiGraphics context, Minecraft client) {
+	public static boolean render(GuiGraphics graphics, Minecraft client) {
 		LocalPlayer player = client.player;
 		if (!isEnabled() || player == null) return false;
 
 		Collection<StatusBar> barCollection = statusBars.values();
 		for (StatusBar statusBar : barCollection) {
 			if (!statusBar.enabled || !statusBar.visible) continue;
-			statusBar.renderBar(context);
+			statusBar.renderBar(graphics);
 		}
 		for (StatusBar statusBar : barCollection) {
 			if (!statusBar.enabled || !statusBar.visible) continue;
-			statusBar.renderText(context);
+			statusBar.renderText(graphics);
 		}
 
 		if (Utils.isInTheRift()) {

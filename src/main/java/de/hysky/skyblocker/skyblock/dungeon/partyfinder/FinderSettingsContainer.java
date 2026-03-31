@@ -275,15 +275,15 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		if (!visible || !isInitialized) return;
-		this.classLevelRange.render(context, mouseX, mouseY, delta);
-		this.dungeonLevelRange.render(context, mouseX, mouseY, delta);
+		this.classLevelRange.render(graphics, mouseX, mouseY, delta);
+		this.dungeonLevelRange.render(graphics, mouseX, mouseY, delta);
 
 		// Render the dropdowns last to fix overlap issue.
-		this.sortGroupsSelector.render(context, mouseX, mouseY, delta);
-		this.floorSelector.render(context, mouseX, mouseY, delta);
-		this.dungeonTypeSelector.render(context, mouseX, mouseY, delta);
+		this.sortGroupsSelector.render(graphics, mouseX, mouseY, delta);
+		this.floorSelector.render(graphics, mouseX, mouseY, delta);
+		this.dungeonTypeSelector.render(graphics, mouseX, mouseY, delta);
 	}
 
 	@Override

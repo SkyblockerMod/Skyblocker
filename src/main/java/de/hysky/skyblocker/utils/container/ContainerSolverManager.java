@@ -147,20 +147,20 @@ public class ContainerSolverManager {
 		return currentSolver != null && currentSolver.onClickSlot(slot, stack, screenId, button);
 	}
 
-	public static void onDraw(GuiGraphics context, AbstractContainerScreen<ChestMenu> handledScreen, List<Slot> slots) {
+	public static void onDraw(GuiGraphics graphics, AbstractContainerScreen<ChestMenu> handledScreen, List<Slot> slots) {
 		if (currentSolver == null) return;
 
-		context.pose().pushMatrix();
-		context.pose().translate(((AbstractContainerScreenAccessor) handledScreen).getX(), ((AbstractContainerScreenAccessor) handledScreen).getY());
+		graphics.pose().pushMatrix();
+		graphics.pose().translate(((AbstractContainerScreenAccessor) handledScreen).getX(), ((AbstractContainerScreenAccessor) handledScreen).getY());
 
 		if (highlights == null) highlights = currentSolver.getColors(slotMap(currentSolver instanceof ContainerAndInventorySolver ? slots : slots.subList(0, handledScreen.getMenu().getRowCount() * 9)));
 		for (ColorHighlight highlight : highlights) {
 			Slot slot = slots.get(highlight.slot());
 			int color = highlight.color();
-			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, color);
+			graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, color);
 		}
 
-		context.pose().popMatrix();
+		graphics.pose().popMatrix();
 	}
 
 	public static Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {

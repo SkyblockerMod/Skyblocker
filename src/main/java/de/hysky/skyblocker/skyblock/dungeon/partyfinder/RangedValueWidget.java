@@ -75,27 +75,27 @@ public class RangedValueWidget extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.drawString(Minecraft.getInstance().font, name, getX(), getY(), 0xFFD0D0D0, false);
+	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		graphics.drawString(Minecraft.getInstance().font, name, getX(), getY(), 0xFFD0D0D0, false);
 		int textOffset = 10;
 		if (!visible) return;
 		final Font textRenderer = screen.getClient().font;
 		if (PartyFinderScreen.DEBUG) {
-			context.drawString(textRenderer, String.valueOf(slotId), getX(), getY() - 10, 0xFFFF0000, true);
-			context.drawString(textRenderer, String.valueOf(minSlotId), getX() + 20, getY() - 10, 0xFFFF0000, true);
-			context.drawString(textRenderer, String.valueOf(maxSlotId), getX() + 40, getY() - 10, 0xFFFF0000, true);
-			context.drawString(textRenderer, String.valueOf(backSlotId), getX() + 60, getY() - 10, 0xFFFF0000, true);
+			graphics.drawString(textRenderer, String.valueOf(slotId), getX(), getY() - 10, 0xFFFF0000, true);
+			graphics.drawString(textRenderer, String.valueOf(minSlotId), getX() + 20, getY() - 10, 0xFFFF0000, true);
+			graphics.drawString(textRenderer, String.valueOf(maxSlotId), getX() + 40, getY() - 10, 0xFFFF0000, true);
+			graphics.drawString(textRenderer, String.valueOf(backSlotId), getX() + 60, getY() - 10, 0xFFFF0000, true);
 		}
-		this.input.render(context, mouseX, mouseY, delta);
-		this.okButton.render(context, mouseX, mouseY, delta);
+		this.input.render(graphics, mouseX, mouseY, delta);
+		this.okButton.render(graphics, mouseX, mouseY, delta);
 		if (Objects.requireNonNull(this.state) == State.CLOSED) {
-			context.fill(getX(), getY() + textOffset, getX() + width, getY() + 15 + textOffset, 0xFFFFFFFF);
-			context.fill(getX() + 1, getY() + 1 + textOffset, getX() + width - 1, getY() + 14 + textOffset, 0xFF000000);
-			context.drawString(textRenderer, min + " - " + max, getX() + 3, getY() + 3 + textOffset, 0xFFFFFFFF, false);
+			graphics.fill(getX(), getY() + textOffset, getX() + width, getY() + 15 + textOffset, 0xFFFFFFFF);
+			graphics.fill(getX() + 1, getY() + 1 + textOffset, getX() + width - 1, getY() + 14 + textOffset, 0xFF000000);
+			graphics.drawString(textRenderer, min + " - " + max, getX() + 3, getY() + 3 + textOffset, 0xFFFFFFFF, false);
 		} else {
-			context.fill(getX(), getY() + textOffset, getX() + width, getY() + 15 + textOffset, 0xFFFFFFFF);
-			context.fill(getX() + 1, getY() + 1 + textOffset, getX() + width - 1, getY() + 14 + textOffset, 0xFF000000);
-			context.drawCenteredString(textRenderer, "-", getX() + (width >> 1), getY() + 3 + textOffset, 0xFFFFFFFF);
+			graphics.fill(getX(), getY() + textOffset, getX() + width, getY() + 15 + textOffset, 0xFFFFFFFF);
+			graphics.fill(getX() + 1, getY() + 1 + textOffset, getX() + width - 1, getY() + 14 + textOffset, 0xFF000000);
+			graphics.drawCenteredString(textRenderer, "-", getX() + (width >> 1), getY() + 3 + textOffset, 0xFFFFFFFF);
 			int selectedColor = 0xFFFFFF00;
 			int unselectedColor = 0xFFD0D0D0;
 
@@ -105,18 +105,18 @@ public class RangedValueWidget extends AbstractContainerWidget {
 			// Minimum
 			int minStartX = getX() + 1;
 			int minEndX = getX() + (width >> 1) - 6;
-			context.fill(minStartX, getY() + 1 + textOffset, minEndX, getY() + 14 + textOffset, state == State.MODIFYING_MIN ? selectedColor : (mouseOverMin ? 0xFFFFFFFF : unselectedColor));
-			context.fill(minStartX + 1, getY() + 2 + textOffset, minEndX - 1, getY() + 13 + textOffset, 0xFF000000);
+			graphics.fill(minStartX, getY() + 1 + textOffset, minEndX, getY() + 14 + textOffset, state == State.MODIFYING_MIN ? selectedColor : (mouseOverMin ? 0xFFFFFFFF : unselectedColor));
+			graphics.fill(minStartX + 1, getY() + 2 + textOffset, minEndX - 1, getY() + 13 + textOffset, 0xFF000000);
 
-			context.drawCenteredString(textRenderer, String.valueOf(min), (minStartX + minEndX) >> 1, getY() + 3 + textOffset, 0xFFFFFFFF);
+			graphics.drawCenteredString(textRenderer, String.valueOf(min), (minStartX + minEndX) >> 1, getY() + 3 + textOffset, 0xFFFFFFFF);
 
 			// Maximum
 			int maxStartX = getX() + (width >> 1) + 5;
 			int maxEndX = getX() + width - 1;
-			context.fill(maxStartX, getY() + 1 + textOffset, maxEndX, getY() + 14 + textOffset, state == State.MODIFYING_MAX ? selectedColor : (mouseOverMax ? 0xFFFFFFFF : unselectedColor));
-			context.fill(maxStartX + 1, getY() + 2 + textOffset, maxEndX - 1, getY() + 13 + textOffset, 0xFF000000);
+			graphics.fill(maxStartX, getY() + 1 + textOffset, maxEndX, getY() + 14 + textOffset, state == State.MODIFYING_MAX ? selectedColor : (mouseOverMax ? 0xFFFFFFFF : unselectedColor));
+			graphics.fill(maxStartX + 1, getY() + 2 + textOffset, maxEndX - 1, getY() + 13 + textOffset, 0xFF000000);
 
-			context.drawCenteredString(textRenderer, String.valueOf(max), (maxStartX + maxEndX) >> 1, getY() + 3 + textOffset, 0xFFFFFFFF);
+			graphics.drawCenteredString(textRenderer, String.valueOf(max), (maxStartX + maxEndX) >> 1, getY() + 3 + textOffset, 0xFFFFFFFF);
 		}
 	}
 

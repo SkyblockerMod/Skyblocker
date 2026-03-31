@@ -71,34 +71,34 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		if (this.recipeBook.isVisible() && this.narrow) {
-			this.renderBackground(context, mouseX, mouseY, delta);
-			this.recipeBook.render(context, mouseX, mouseY, delta);
+			this.renderBackground(graphics, mouseX, mouseY, delta);
+			this.recipeBook.render(graphics, mouseX, mouseY, delta);
 		} else {
-			super.render(context, mouseX, mouseY, delta);
-			this.recipeBook.render(context, mouseX, mouseY, delta);
-			this.recipeBook.renderGhostRecipe(context, true);
+			super.render(graphics, mouseX, mouseY, delta);
+			this.recipeBook.render(graphics, mouseX, mouseY, delta);
+			this.recipeBook.renderGhostRecipe(graphics, true);
 		}
-		this.renderTooltip(context, mouseX, mouseY);
-		this.recipeBook.renderTooltip(context, mouseX, mouseY, null);
+		this.renderTooltip(graphics, mouseX, mouseY);
+		this.recipeBook.renderTooltip(graphics, mouseX, mouseY, null);
 	}
 
 	@Override
-	protected void renderSlot(GuiGraphics context, Slot slot, int mouseX, int mouseY) {
+	protected void renderSlot(GuiGraphics graphics, Slot slot, int mouseX, int mouseY) {
 		ItemStack stack = slot.getItem();
 		if (slot.index == 23 && stack.is(Items.BARRIER)) return;
 		if (stack.is(Items.GRAY_STAINED_GLASS_PANE) && stack.getSkyblockId().isEmpty()) return;
-		super.renderSlot(context, slot, mouseX, mouseY);
+		super.renderSlot(graphics, slot, mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {
 		int i = this.leftPos;
 		int j = (this.height - this.imageHeight) / 2;
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 		//4 px of margin to allow some space for custom resource packs that have size differences on the crafting table/inventory textures
-		if (!menu.mirrorverse) context.blit(RenderPipelines.GUI_TEXTURED, QUICK_CRAFT, i + 143, j - 3, 0, 0, 37, 90, 37, 90);
+		if (!menu.mirrorverse) graphics.blit(RenderPipelines.GUI_TEXTURED, QUICK_CRAFT, i + 143, j - 3, 0, 0, 37, 90, 37, 90);
 	}
 
 	@Override

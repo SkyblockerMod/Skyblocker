@@ -189,19 +189,19 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
-		context.enableScissor(getX() + 2, getY() + 2, getX() + getWidth() - 2, getY() + getHeight() - 2);
+	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+		graphics.enableScissor(getX() + 2, getY() + 2, getX() + getWidth() - 2, getY() + getHeight() - 2);
 
 		int scrollY = (int) this.scrollAmount();
 		for (AbstractWidget widget : this.children) {
 			widget.setY(widget.getY() - scrollY);
-			widget.render(context, mouseX, mouseY, delta);
+			widget.render(graphics, mouseX, mouseY, delta);
 			widget.setY(widget.getY() + scrollY);
 		}
 
-		renderScrollbar(context, mouseX, mouseY);
-		context.disableScissor();
+		renderScrollbar(graphics, mouseX, mouseY);
+		graphics.disableScissor();
 	}
 
 	@Override

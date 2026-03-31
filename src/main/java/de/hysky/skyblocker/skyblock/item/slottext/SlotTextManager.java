@@ -147,14 +147,14 @@ public class SlotTextManager {
 		return text;
 	}
 
-	public static void renderSlotText(GuiGraphics context, Font textRenderer, Slot slot) {
-		renderSlotText(context, textRenderer, slot, slot.getItem(), slot.index, slot.x, slot.y);
+	public static void renderSlotText(GuiGraphics graphics, Font textRenderer, Slot slot) {
+		renderSlotText(graphics, textRenderer, slot, slot.getItem(), slot.index, slot.x, slot.y);
 	}
 
-	public static void renderSlotText(GuiGraphics context, Font textRenderer, @Nullable Slot slot, ItemStack stack, int slotId, int x, int y) {
+	public static void renderSlotText(GuiGraphics graphics, Font textRenderer, @Nullable Slot slot, ItemStack stack, int slotId, int x, int y) {
 		List<SlotText> textList = getText(slot, stack, slotId);
 		if (textList.isEmpty()) return;
-		Matrix3x2fStack matrices = context.pose();
+		Matrix3x2fStack matrices = graphics.pose();
 
 		for (SlotText slotText : textList) {
 			matrices.pushMatrix();
@@ -175,7 +175,7 @@ public class SlotTextManager {
 					case BOTTOM_RIGHT -> matrices.translate(16f - length, 16f - textRenderer.lineHeight + 2f);
 				}
 			}
-			context.drawString(textRenderer, slotText.text(), x, y, CommonColors.WHITE, true);
+			graphics.drawString(textRenderer, slotText.text(), x, y, CommonColors.WHITE, true);
 			matrices.popMatrix();
 		}
 	}

@@ -29,7 +29,7 @@ public class LegacyAttributeBackground extends ColoredItemBackground<Integer> {
 	}
 
 	@Override
-	protected void draw(GuiGraphics context, int x, int y, Integer color) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, getSprite(), x, y, 16, 16, color);
+	protected void draw(GuiGraphics graphics, int x, int y, Integer color) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, getSprite(), x, y, 16, 16, color);
 	}
 }

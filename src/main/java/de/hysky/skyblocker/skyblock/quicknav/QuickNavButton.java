@@ -165,7 +165,7 @@ public class QuickNavButton extends AbstractWidget {
 	 * @param mouseY  the y-coordinate of the mouse cursor
 	 */
 	@Override
-	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		this.updateCoordinates();
 
 		// Note that this changes the return value of `toggled()`, so do not call it after this point.
@@ -182,12 +182,12 @@ public class QuickNavButton extends AbstractWidget {
 		Identifier tabTexture = Identifier.withDefaultNamespace("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (renderInFront ? "selected" : "unselected") + "_" + (index % 7 + 1));
 
 		// Render the button texture, always with full alpha if it's not rendering in front
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, tabTexture, this.getX(), this.getY(), this.width, this.height, renderInFront ? ARGB.color(alpha, -1) : -1);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, tabTexture, this.getX(), this.getY(), this.width, this.height, renderInFront ? ARGB.color(alpha, -1) : -1);
 		// Render the button icon
 		int yOffset = this.index < 7 ? 1 : -1;
-		context.renderItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
+		graphics.renderItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
 
-		this.handleCursor(context);
+		this.handleCursor(graphics);
 	}
 
 	@Override

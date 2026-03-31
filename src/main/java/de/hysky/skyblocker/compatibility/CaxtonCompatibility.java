@@ -60,10 +60,10 @@ public final class CaxtonCompatibility {
 	private static final MethodHandle HANDLE = createHandle();
 	private static boolean errored = false;
 
-	public static boolean drawOutlinedText(GuiGraphics context, FormattedCharSequence text, float x, float y, int color, int outlineColor) {
+	public static boolean drawOutlinedText(GuiGraphics graphics, FormattedCharSequence text, float x, float y, int color, int outlineColor) {
 		if (HANDLE == null || errored) return false;
 		try {
-			HANDLE.invoke(context, Minecraft.getInstance().font, text, x, y, color, outlineColor);
+			HANDLE.invoke(graphics, Minecraft.getInstance().font, text, x, y, color, outlineColor);
 		} catch (Throwable e) {
 			LOGGER.error("[Skyblocker Caxton Compat] Could not invoke drawText4Way", e);
 			errored = true;

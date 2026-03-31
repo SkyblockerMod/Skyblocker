@@ -80,9 +80,9 @@ public class SkillWidget {
 
 	}
 
-	public void render(GuiGraphics context, int mouseX, int mouseY, int x, int y) {
-		context.renderItem(this.stack, x + 3, y + 2);
-		context.drawString(textRenderer, SKILL_NAME + " " + SKILL_LEVEL.level, x + 31, y + 2, Color.white.hashCode(), false);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) {
+		graphics.renderItem(this.stack, x + 3, y + 2);
+		graphics.drawString(textRenderer, SKILL_NAME + " " + SKILL_LEVEL.level, x + 31, y + 2, Color.white.hashCode(), false);
 
 		Color fillColor = Color.green;
 		if (SKILL_LEVEL.level >= SKILL_CAP.getInt(SKILL_NAME)) {
@@ -94,14 +94,14 @@ public class SkillWidget {
 			fillColor = Color.YELLOW;
 		}
 
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 12, 75, 6);
-		HudHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 12, (int) (75 * SKILL_LEVEL.fill), 6, fillColor);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 12, 75, 6);
+		HudHelper.renderNineSliceColored(graphics, BAR_FILL, x + 30, y + 12, (int) (75 * SKILL_LEVEL.fill), 6, fillColor);
 
 		if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 10 && mouseY < y + 19) {
 			List<Component> tooltipText = new ArrayList<>();
 			tooltipText.add(Component.literal(this.SKILL_NAME).withStyle(ChatFormatting.GREEN));
 			tooltipText.add(Component.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.SKILL_LEVEL.xp)).withStyle(ChatFormatting.GOLD));
-			context.setComponentTooltipForNextFrame(textRenderer, tooltipText, mouseX, mouseY);
+			graphics.setComponentTooltipForNextFrame(textRenderer, tooltipText, mouseX, mouseY);
 		}
 	}
 }

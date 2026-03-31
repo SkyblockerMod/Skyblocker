@@ -74,9 +74,9 @@ public class VanillaStyleManaBar {
 		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar  && !FancyStatusBars.isEnabled();
 	}
 
-	private static void drawNotch(GuiGraphics context, int column, int row, NotchType notchtype, boolean isHalf, boolean isBlinking) {
-		int top = context.guiHeight() - 39;       // Top of mana bar area
-		int right = context.guiWidth() / 2 + 91;  // Rightmost point of mana bar area
+	private static void drawNotch(GuiGraphics graphics, int column, int row, NotchType notchtype, boolean isHalf, boolean isBlinking) {
+		int top = graphics.guiHeight() - 39;       // Top of mana bar area
+		int right = graphics.guiWidth() / 2 + 91;  // Rightmost point of mana bar area
 
 		Identifier texture = switch (notchtype) {
 			case CONTAINER -> isBlinking ? CONTAINER_BLINK_TEXTURE : CONTAINER_TEXTURE;
@@ -85,10 +85,10 @@ public class VanillaStyleManaBar {
 			case OVERFLOW_DARK -> !isHalf ? (isBlinking ? OVERFLOW_DARK_FULL_BLINK_TEXTURE : OVERFLOW_DARK_FULL_TEXTURE) : (isBlinking ? OVERFLOW_DARK_HALF_BLINK_TEXTURE : OVERFLOW_DARK_HALF_TEXTURE);
 		};
 
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, texture, right - column * 8 - 9, top - row * 10, 9, 9);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, right - column * 8 - 9, top - row * 10, 9, 9);
 	}
 
-	public static boolean render(GuiGraphics context) {
+	public static boolean render(GuiGraphics graphics) {
 		StatusBarTracker.Resource mana = StatusBarTracker.getMana();
 
 		// Detect loss of mana to start blinking
@@ -142,15 +142,15 @@ public class VanillaStyleManaBar {
 			boolean overflowBlinkNotch = i < overflowBlinkNotches;
 			boolean overflowBlinkNotchIsHalf = overflowBlinkNotch && overflowBlinkNotches - 1 == i && overflowBlinkHalfNotches % 2 == 1;
 
-			drawNotch(context, column, row, NotchType.CONTAINER, false, blinking);
+			drawNotch(graphics, column, row, NotchType.CONTAINER, false, blinking);
 			if (manaNotches > 0) { // There is normal mana left, display normal mana
-				if (overflowNotch) drawNotch(context, column, row, NotchType.OVERFLOW_DARK, overflowNotchIsHalf, blinking);
-				if (manaBlinkNotch && blinking) drawNotch(context, column, row, NotchType.MANA, manaBlinkNotchIsHalf, true);
-				if (manaNotch) drawNotch(context, column, row, NotchType.MANA, manaNotchIsHalf, false);
+				if (overflowNotch) drawNotch(graphics, column, row, NotchType.OVERFLOW_DARK, overflowNotchIsHalf, blinking);
+				if (manaBlinkNotch && blinking) drawNotch(graphics, column, row, NotchType.MANA, manaBlinkNotchIsHalf, true);
+				if (manaNotch) drawNotch(graphics, column, row, NotchType.MANA, manaNotchIsHalf, false);
 			} else { // There is no normal mana left, display overflow mana
-				if (manaBlinkNotch && blinking) drawNotch(context, column, row, NotchType.MANA, manaBlinkNotchIsHalf, true);
-				if (overflowBlinkNotch && blinking) drawNotch(context, column, row, NotchType.OVERFLOW, overflowBlinkNotchIsHalf, true);
-				if (overflowNotch) drawNotch(context, column, row, NotchType.OVERFLOW, overflowNotchIsHalf, false);
+				if (manaBlinkNotch && blinking) drawNotch(graphics, column, row, NotchType.MANA, manaBlinkNotchIsHalf, true);
+				if (overflowBlinkNotch && blinking) drawNotch(graphics, column, row, NotchType.OVERFLOW, overflowBlinkNotchIsHalf, true);
+				if (overflowNotch) drawNotch(graphics, column, row, NotchType.OVERFLOW, overflowNotchIsHalf, false);
 			}
 		}
 

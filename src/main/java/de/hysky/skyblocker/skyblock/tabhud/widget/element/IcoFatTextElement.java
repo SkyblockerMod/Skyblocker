@@ -34,10 +34,10 @@ class IcoFatTextElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int x, int y) {
+	public void render(GuiGraphics graphics, int x, int y) {
 		int textX = x + ICO_DIM.get() + PAD_L;
-		renderIcon(context, ico, x, y + ICO_OFFS);
-		context.drawString(txtRend, line1, textX, y, CommonColors.WHITE, false);
-		context.drawString(txtRend, line2, textX, y + txtRend.lineHeight + PAD_S, CommonColors.WHITE, false);
+		renderIcon(graphics, ico, x, y + ICO_OFFS);
+		graphics.drawString(txtRend, line1, textX, y, CommonColors.WHITE, false);
+		graphics.drawString(txtRend, line2, textX, y + txtRend.lineHeight + PAD_S, CommonColors.WHITE, false);
 	}
 }

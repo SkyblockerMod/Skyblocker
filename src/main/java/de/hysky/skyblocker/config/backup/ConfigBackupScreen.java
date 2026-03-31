@@ -156,9 +156,9 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			context.drawCenteredString(font, path.getFileName().toString(), this.getContentXMiddle(), this.getY() + 7, 0xFFFFFFFF);
-			if (isMouseOver(mouseX, mouseY)) context.requestCursor(CursorTypes.POINTING_HAND);
+		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			graphics.drawCenteredString(font, path.getFileName().toString(), this.getContentXMiddle(), this.getY() + 7, 0xFFFFFFFF);
+			if (isMouseOver(mouseX, mouseY)) graphics.requestCursor(CursorTypes.POINTING_HAND);
 		}
 
 		@Override
@@ -250,8 +250,8 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		protected void renderScrollbar(GuiGraphics context, int mouseX, int mouseY) {
-			super.renderScrollbar(context, mouseX, mouseY);
+		protected void renderScrollbar(GuiGraphics graphics, int mouseX, int mouseY) {
+			super.renderScrollbar(graphics, mouseX, mouseY);
 			if (scrollbarVisible()) {
 				int scrollBarX = scrollBarX();
 				int listWidgetY = getY();
@@ -265,7 +265,7 @@ public class ConfigBackupScreen extends Screen {
 						// height - scrollbarThumbHeight - 2 because we draw a two pixel high indicator.
 						// scrollbarThumbHeight thumb height calculations so the changed line is in view when the indicator is in the middle of the scrollbar thumb.
 						int barY = entryY * (height - scrollbarThumbHeight - 2) / (totalHeight - defaultEntryHeight) + listWidgetY + scrollbarThumbHeight / 2;
-						context.fill(scrollBarX, barY, scrollBarX + 6, barY + 2, 0xFFFFFF55);
+						graphics.fill(scrollBarX, barY, scrollBarX + 6, barY + 2, 0xFFFFFF55);
 					}
 				}
 			}
@@ -292,12 +292,12 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			int color = 0xFFFFFFFF;
 			if (path != null && changedPaths.contains(path)) {
 				color = 0xFFFFFF55;
 			}
-			context.drawString(font, text, this.getX() + 2, this.getY() + 2, color, false);
+			graphics.drawString(font, text, this.getX() + 2, this.getY() + 2, color, false);
 		}
 	}
 }

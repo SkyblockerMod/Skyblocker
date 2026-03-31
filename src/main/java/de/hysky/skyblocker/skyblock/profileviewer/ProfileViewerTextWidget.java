@@ -183,31 +183,31 @@ public class ProfileViewerTextWidget {
 		return p;
 	}
 
-	public void render(GuiGraphics context, Font textRenderer, int root_x, int root_y, int mouseX, int mouseY) {
+	public void render(GuiGraphics graphics, Font textRenderer, int root_x, int root_y, int mouseX, int mouseY) {
 		// Profile Icon
-		Matrix3x2fStack matrices = context.pose();
+		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
 		matrices.scale(0.75f, 0.75f);
 		int rootAdjustedX = (int) ((root_x) / 0.75f);
 		int rootAdjustedY = (int) ((root_y) / 0.75f);
-		context.renderItem(Ico.PAINTING, rootAdjustedX, rootAdjustedY + 8);
+		graphics.renderItem(Ico.PAINTING, rootAdjustedX, rootAdjustedY + 8);
 		matrices.popMatrix();
 
-		context.drawString(textRenderer, "§n" + PROFILE_NAME, root_x + 14, root_y + 7, CommonColors.WHITE, true);
-		context.drawString(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 9 + ROW_GAP, CommonColors.WHITE, true);
-		context.drawString(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 8 + ROW_GAP * 2, CommonColors.WHITE, true);
-		context.drawString(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 7 + ROW_GAP * 3, CommonColors.WHITE, true);
+		graphics.drawString(textRenderer, "§n" + PROFILE_NAME, root_x + 14, root_y + 7, CommonColors.WHITE, true);
+		graphics.drawString(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 9 + ROW_GAP, CommonColors.WHITE, true);
+		graphics.drawString(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 8 + ROW_GAP * 2, CommonColors.WHITE, true);
+		graphics.drawString(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 7 + ROW_GAP * 3, CommonColors.WHITE, true);
 		String nwString = "§6NW:§r " + ProfileViewerUtils.numLetterFormat(NETWORTH);
 
 		int nwX = root_x + 2;
 		int nwY = root_y + 7 + ROW_GAP * 4;
-		context.drawString(textRenderer, nwString, nwX, nwY, CommonColors.WHITE, true);
+		graphics.drawString(textRenderer, nwString, nwX, nwY, CommonColors.WHITE, true);
 		if (mouseX >= nwX && mouseX <= nwX + textRenderer.width(nwString)
 				&& mouseY >= nwY && mouseY <= nwY + textRenderer.lineHeight) {
-			context.setComponentTooltipForNextFrame(textRenderer, networthTooltip, mouseX, mouseY);
+			graphics.setComponentTooltipForNextFrame(textRenderer, networthTooltip, mouseX, mouseY);
 		}
 
-		context.drawString(textRenderer, "§6MP:§r " + MAGICAL_POWER, root_x + 2, root_y + 7 + ROW_GAP * 5, CommonColors.WHITE, true);
+		graphics.drawString(textRenderer, "§6MP:§r " + MAGICAL_POWER, root_x + 2, root_y + 7 + ROW_GAP * 5, CommonColors.WHITE, true);
 	}
 
 	private record ItemValue(String name, double price) {}

@@ -23,7 +23,7 @@ public class PowderMiningWidget extends HudWidget {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		var set = PowderMiningTracker.getShownRewards().object2IntEntrySet();
 		if (set.isEmpty()) {
 			setDimensions(0, 0);
@@ -36,14 +36,14 @@ public class PowderMiningWidget extends HudWidget {
 		for (Object2IntMap.Entry<Component> entry : set) {
 			Component price = Component.literal(Formatters.INTEGER_NUMBERS.format(entry.getIntValue())).withColor(CommonColors.WHITE);
 			Component text = entry.getKey().copy().append(" ").append(price);
-			context.drawString(CLIENT.font, text, x, tempY, CommonColors.WHITE);
+			graphics.drawString(CLIENT.font, text, x, tempY, CommonColors.WHITE);
 
 			tempY += 10;
 			int width = CLIENT.font.width(text);
 			if (width > maxWidth) maxWidth = width;
 		}
 		tempY += 10;
-		context.drawString(CLIENT.font, Component.translatable("skyblocker.powderTracker.profit", Formatters.DOUBLE_NUMBERS.format(PowderMiningTracker.getProfit())).withStyle(ChatFormatting.GOLD), x, tempY, CommonColors.WHITE);
+		graphics.drawString(CLIENT.font, Component.translatable("skyblocker.powderTracker.profit", Formatters.DOUBLE_NUMBERS.format(PowderMiningTracker.getProfit())).withStyle(ChatFormatting.GOLD), x, tempY, CommonColors.WHITE);
 
 		setDimensions(maxWidth, tempY - y + 10);
 	}

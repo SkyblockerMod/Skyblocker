@@ -186,63 +186,63 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 	}
 
 	@Override
-	public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+	public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 		int x = this.getX();
 		int y = this.getY();
 		int entryWidth = this.getWidth();
 		int entryHeight = this.getHeight();
-		Matrix3x2fStack matrices = context.pose();
+		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
 		matrices.translate(x, y);
 
 		Font textRenderer = Minecraft.getInstance().font;
 		if (hovered && !isLocked) {
-			context.blit(RenderPipelines.GUI_TEXTURED, PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
-			if (!(this instanceof YourParty)) context.drawString(textRenderer, JOIN_TEXT, 148, 6, CommonColors.WHITE, false);
-		} else context.blit(RenderPipelines.GUI_TEXTURED, PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
+			if (!(this instanceof YourParty)) graphics.drawString(textRenderer, JOIN_TEXT, 148, 6, CommonColors.WHITE, false);
+		} else graphics.blit(RenderPipelines.GUI_TEXTURED, PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
 		int mouseXLocal = mouseX - x;
 		int mouseYLocal = mouseY - y;
 
-		context.drawString(textRenderer, this.partyLeader.toText(), 18, 6, CommonColors.WHITE, true);
+		graphics.drawString(textRenderer, this.partyLeader.toText(), 18, 6, CommonColors.WHITE, true);
 
 		if (PartyFinderScreen.DEBUG) {
-			context.drawString(textRenderer, String.valueOf(slotID), 166, 6, CommonColors.WHITE, true);
+			graphics.drawString(textRenderer, String.valueOf(slotID), 166, 6, CommonColors.WHITE, true);
 			if (hovered) {
-				context.drawString(textRenderer, "H", 160, 6, CommonColors.WHITE, true);
+				graphics.drawString(textRenderer, "H", 160, 6, CommonColors.WHITE, true);
 			}
 		}
-		PlayerFaceRenderer.draw(context, partyLeaderSkin, 6, 6, 8, true, false, -1);
+		PlayerFaceRenderer.draw(graphics, partyLeaderSkin, 6, 6, 8, true, false, -1);
 		for (int i = 0; i < partyMembers.length; i++) {
 			Player partyMember = partyMembers[i];
 			if (partyMember == null) continue;
-			context.drawString(textRenderer, partyMember.toText(), 17 + 136 * (i % 2), 24 + 14 * (i / 2), CommonColors.WHITE);
-			PlayerFaceRenderer.draw(context, partyMember.skinTexture, 6 + 136 * (i % 2), 24 + 14 * (i / 2), 8, true, false, -1);
+			graphics.drawString(textRenderer, partyMember.toText(), 17 + 136 * (i % 2), 24 + 14 * (i / 2), CommonColors.WHITE);
+			PlayerFaceRenderer.draw(graphics, partyMember.skinTexture, 6 + 136 * (i % 2), 24 + 14 * (i / 2), 8, true, false, -1);
 		}
 
 		if (minClassLevel > 0) {
-			context.drawString(textRenderer, Component.nullToEmpty("Class " + minClassLevel), 278, 25, CommonColors.WHITE);
+			graphics.drawString(textRenderer, Component.nullToEmpty("Class " + minClassLevel), 278, 25, CommonColors.WHITE);
 			if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 22 && mouseYLocal <= 35) {
-				context.setTooltipForNextFrame(textRenderer, Component.translatable("skyblocker.partyFinder.partyCard.minClassLevel", minClassLevel), mouseX, mouseY);
+				graphics.setTooltipForNextFrame(textRenderer, Component.translatable("skyblocker.partyFinder.partyCard.minClassLevel", minClassLevel), mouseX, mouseY);
 			}
 		}
 
 		if (minCatacombsLevel > 0) {
-			context.drawString(textRenderer, Component.nullToEmpty("Cata " + minCatacombsLevel), 278, 43, CommonColors.WHITE);
+			graphics.drawString(textRenderer, Component.nullToEmpty("Cata " + minCatacombsLevel), 278, 43, CommonColors.WHITE);
 			if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 40 && mouseYLocal <= 53) {
-				context.setTooltipForNextFrame(textRenderer, Component.translatable("skyblocker.partyFinder.partyCard.minDungeonLevel", minCatacombsLevel), mouseX, mouseY);
+				graphics.setTooltipForNextFrame(textRenderer, Component.translatable("skyblocker.partyFinder.partyCard.minDungeonLevel", minCatacombsLevel), mouseX, mouseY);
 			}
 		}
 		ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
 		stack.set(DataComponents.PROFILE, SKULL_CACHE.computeIfAbsent("SkyblockerCustomPFSkull" + dungeon + floor, name -> ResolvableProfile.createResolved(new GameProfile(UUID.randomUUID(), name, floorSkullProperties))));
-		context.renderItem(stack, 317, 3);
+		graphics.renderItem(stack, 317, 3);
 
 		int textWidth = textRenderer.width(floor);
-		context.drawString(textRenderer, floor, 314 - textWidth, 7, 0xA0000000, false);
+		graphics.drawString(textRenderer, floor, 314 - textWidth, 7, 0xA0000000, false);
 
-		context.drawString(textRenderer, note, 5, 52, CommonColors.WHITE, true);
+		graphics.drawString(textRenderer, note, 5, 52, CommonColors.WHITE, true);
 
 		if (isLocked) {
-			context.fill(0, 0, entryWidth, entryHeight, 0x90000000); // darken
+			graphics.fill(0, 0, entryWidth, entryHeight, 0x90000000); // darken
 			matrices.pushMatrix();
 			matrices.translate((float) entryWidth / 2, (float) entryHeight / 2);
 
@@ -250,8 +250,8 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 			int textHeight = textRenderer.lineHeight;
 
 			// The locked text can sometimes overlap with player names, so a background is drawn to make keep it visible.
-			context.fill(-lockWidth / 2, -2, lockWidth / 2, textHeight, 0x7F000000); // Colors.BLACK with 1/2 alpha
-			context.drawCenteredString(textRenderer, lockReason, 0, 0, CommonColors.SOFT_RED);
+			graphics.fill(-lockWidth / 2, -2, lockWidth / 2, textHeight, 0x7F000000); // Colors.BLACK with 1/2 alpha
+			graphics.drawCenteredString(textRenderer, lockReason, 0, 0, CommonColors.SOFT_RED);
 
 			matrices.popMatrix();
 		}
@@ -303,9 +303,9 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			Font textRenderer = Minecraft.getInstance().font;
-			context.drawCenteredString(textRenderer, Component.translatable("skyblocker.partyFinder.noParties"), this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2 - textRenderer.lineHeight / 2, CommonColors.WHITE);
+			graphics.drawCenteredString(textRenderer, Component.translatable("skyblocker.partyFinder.noParties"), this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2 - textRenderer.lineHeight / 2, CommonColors.WHITE);
 		}
 	}
 
@@ -318,17 +318,17 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			super.renderContent(context, mouseX, mouseY, hovered, deltaTicks);
+		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			super.renderContent(graphics, mouseX, mouseY, hovered, deltaTicks);
 
-			Matrix3x2fStack matrices = context.pose();
+			Matrix3x2fStack matrices = graphics.pose();
 			matrices.pushMatrix();
 			matrices.translate(this.getX(), this.getY());
 
 			hovered = hovered & slotID != -1;
 
 			Font textRenderer = Minecraft.getInstance().font;
-			context.drawString(textRenderer, hovered ? DE_LIST_TEXT : YOUR_PARTY_TEXT, 148, 6, CommonColors.WHITE, false);
+			graphics.drawString(textRenderer, hovered ? DE_LIST_TEXT : YOUR_PARTY_TEXT, 148, 6, CommonColors.WHITE, false);
 
 			matrices.popMatrix();
 		}

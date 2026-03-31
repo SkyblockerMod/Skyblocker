@@ -118,25 +118,25 @@ public class ARGBTextInput extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		int selectionStart = textRenderer.width(input.substring(0, index));
 		int selectionEnd = textRenderer.width(input.substring(0, index + 1));
 		int textX = getX() + (drawBackground ? 3 : 0);
 		int textY = getY() + (getHeight() - textRenderer.lineHeight) / 2;
 		if (drawBackground) {
-			context.fill(getX(), getY(), getRight(), getBottom(), isFocused() ? CommonColors.WHITE : CommonColors.GRAY);
-			context.fill(getX() + 1, getY() + 1, getRight() - 1, getBottom() - 1, CommonColors.BLACK);
+			graphics.fill(getX(), getY(), getRight(), getBottom(), isFocused() ? CommonColors.WHITE : CommonColors.GRAY);
+			graphics.fill(getX() + 1, getY() + 1, getRight() - 1, getBottom() - 1, CommonColors.BLACK);
 		}
 
 		if (isFocused()) {
-			context.fill(
+			graphics.fill(
 					textX + selectionStart,
 					textY,
 					textX + selectionEnd,
 					textY + textRenderer.lineHeight,
 					0xFF_00_BB_FF
 			);
-			context.fill(
+			graphics.fill(
 					textX + selectionStart,
 					textY + textRenderer.lineHeight - 1,
 					textX + selectionEnd,
@@ -144,7 +144,7 @@ public class ARGBTextInput extends AbstractWidget {
 					CommonColors.WHITE
 			);
 		}
-		context.drawString(
+		graphics.drawString(
 				textRenderer,
 				visitor -> {
 					int start = hasAlpha ? 0 : 1;
@@ -160,7 +160,7 @@ public class ARGBTextInput extends AbstractWidget {
 		);
 
 		if (this.isHovered()) {
-			context.requestCursor(CursorTypes.IBEAM);
+			graphics.requestCursor(CursorTypes.IBEAM);
 		}
 	}
 

@@ -28,7 +28,7 @@ public class FishingHookDisplayHelper {
 		HudElementRegistry.attachElementAfter(VanillaHudElements.TITLE_AND_SUBTITLE, FISHING_HOOK_DISPLAY, FishingHookDisplayHelper::render);
 	}
 
-	public static void render(GuiGraphics context, DeltaTracker tickDelta) {
+	public static void render(GuiGraphics graphics, DeltaTracker tickDelta) {
 		if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.OFF) return;
 
 
@@ -53,10 +53,10 @@ public class FishingHookDisplayHelper {
 			int y = screenHeight / 2; // Position near the top
 
 			// Scale the text by 3x
-			context.pose().pushMatrix();
-			context.pose().scale(3.0F, 3.0F);
-			context.drawCenteredString(client.font, armorStandName, (int) (x / 3.0F), (int) (y / 3.0F), 0xFFFFFF00);
-			context.pose().popMatrix();
+			graphics.pose().pushMatrix();
+			graphics.pose().scale(3.0F, 3.0F);
+			graphics.drawCenteredString(client.font, armorStandName, (int) (x / 3.0F), (int) (y / 3.0F), 0xFFFFFF00);
+			graphics.pose().popMatrix();
 		}
 		//else update the tab
 		else {

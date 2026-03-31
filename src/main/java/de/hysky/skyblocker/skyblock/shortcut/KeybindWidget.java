@@ -78,8 +78,8 @@ public class KeybindWidget extends Button {
 	}
 
 	@Override
-	protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-		this.renderDefaultSprite(context);
-		this.renderDefaultLabel(context.textRenderer(HoveredTextEffects.NONE));
+	protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+		this.renderDefaultSprite(graphics);
+		this.renderDefaultLabel(graphics.textRenderer(HoveredTextEffects.NONE));
 	}
 }

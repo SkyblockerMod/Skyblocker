@@ -114,9 +114,9 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, gridWidget.getX(), gridWidget.getY(), gridWidget.getWidth(), gridWidget.getHeight());
+	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		super.renderBackground(graphics, mouseX, mouseY, delta);
+		drawPopupBackground(graphics, gridWidget.getX(), gridWidget.getY(), gridWidget.getWidth(), gridWidget.getHeight());
 	}
 
 	private class ItemList extends SearchableGridWidget {
@@ -159,13 +159,13 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.renderItem(item, getX() + 2, getY() + 2);
+		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+			graphics.renderItem(item, getX() + 2, getY() + 2);
 			if (selectedItem == this) {
-				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
+				graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
 			}
 			if (isHovered()) {
-				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
+				graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
 			}
 		}
 

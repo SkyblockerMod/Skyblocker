@@ -81,17 +81,17 @@ public class WidgetManager {
 		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false));
 	}
 
-	private static void render(GuiGraphics context, boolean hud) {
+	private static void render(GuiGraphics graphics, boolean hud) {
 		if (!Utils.isOnSkyblock()) return;
 		Minecraft client = Minecraft.getInstance();
 
 		if (client.screen instanceof WidgetsConfigurationScreen) return;
 		Window window = client.getWindow();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
-		Matrix3x2fStack matrices = context.pose();
+		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
 		matrices.scale(scale, scale);
-		WidgetManager.render(context, (int) (window.getGuiScaledWidth() / scale), (int) (window.getGuiScaledHeight() / scale), hud);
+		WidgetManager.render(graphics, (int) (window.getGuiScaledWidth() / scale), (int) (window.getGuiScaledHeight() / scale), hud);
 		matrices.popMatrix();
 	}
 
@@ -101,18 +101,18 @@ public class WidgetManager {
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
-	private static void render(GuiGraphics context, int w, int h, boolean hud) {
+	private static void render(GuiGraphics graphics, int w, int h, boolean hud) {
 		Minecraft client = Minecraft.getInstance();
 		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
 		if (client.options.keyPlayerList.isDown()) {
 			if (hud || TabHud.shouldRenderVanilla()) return;
 			if (TabHud.toggleSecondary.isDown()) {
-				screenBuilder.run(context, w, h, ScreenLayer.SECONDARY_TAB);
+				screenBuilder.run(graphics, w, h, ScreenLayer.SECONDARY_TAB);
 			} else {
-				screenBuilder.run(context, w, h, ScreenLayer.MAIN_TAB);
+				screenBuilder.run(graphics, w, h, ScreenLayer.MAIN_TAB);
 			}
 		} else if (hud) {
-			screenBuilder.run(context, w, h, ScreenLayer.HUD);
+			screenBuilder.run(graphics, w, h, ScreenLayer.HUD);
 		}
 	}
 

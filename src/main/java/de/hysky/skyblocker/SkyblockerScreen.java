@@ -109,8 +109,8 @@ public class SkyblockerScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		super.render(graphics, mouseX, mouseY, delta);
 	}
 
 	private static class IconTextWidget extends StringWidget {
@@ -122,7 +122,7 @@ public class SkyblockerScreen extends Screen {
 		}
 
 		@Override
-		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 			Component text = this.getMessage();
 			Font textRenderer = this.getFont();
 
@@ -137,8 +137,8 @@ public class SkyblockerScreen extends Screen {
 			int iconX = x - 34;
 			int iconY = y - 13;
 
-			context.drawString(textRenderer, orderedText, x, y, CommonColors.WHITE);
-			context.blit(RenderPipelines.GUI_TEXTURED, this.icon, iconX, iconY, 0, 0, 32, 32, 32, 32);
+			graphics.drawString(textRenderer, orderedText, x, y, CommonColors.WHITE);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, this.icon, iconX, iconY, 0, 0, 32, 32, 32, 32);
 		}
 
 		private FormattedCharSequence trim(Component text, int width) {

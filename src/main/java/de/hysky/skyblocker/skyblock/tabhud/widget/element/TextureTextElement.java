@@ -23,9 +23,9 @@ public class TextureTextElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int x, int y) {
+	public void render(GuiGraphics graphics, int x, int y) {
 		int offset = SkyblockerConfigManager.get().uiAndVisuals.tabHud.compactWidgets ? 2 : 4;
-		context.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
-		context.drawString(txtRend, text, x + textureWidth + PAD_L, y + offset, CommonColors.WHITE, false);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+		graphics.drawString(txtRend, text, x + textureWidth + PAD_L, y + offset, CommonColors.WHITE, false);
 	}
 }

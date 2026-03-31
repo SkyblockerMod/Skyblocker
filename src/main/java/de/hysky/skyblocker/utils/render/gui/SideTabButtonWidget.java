@@ -22,13 +22,13 @@ public class SideTabButtonWidget extends ImageButton {
 	}
 
 	@Override
-	public void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		if (sprites == null) return;
 		Identifier identifier = sprites.get(true, this.selected);
 		int x = getX();
 		if (this.selected) x -= 2;
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, identifier, x, this.getY(), this.width, this.height);
-		context.renderItem(icon, x + 9, getY() + 5);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, identifier, x, this.getY(), this.width, this.height);
+		graphics.renderItem(icon, x + 9, getY() + 5);
 	}
 
 	@Override

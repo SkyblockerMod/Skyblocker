@@ -60,21 +60,21 @@ public abstract class HudConfigScreen extends Screen {
 	}
 
 	@Override
-	public final void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
-		renderWidget(context, widgets, delta);
-		context.drawCenteredString(font, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
+	public final void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		super.render(graphics, mouseX, mouseY, delta);
+		renderWidget(graphics, widgets, delta);
+		graphics.drawCenteredString(font, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
 	}
 
 	/**
 	 * Renders the widgets using the default {@link AbstractWidget#render(GuiGraphics, int, int, float)} method. Override to change the behavior.
 	 *
-	 * @param context the context to render in
+	 * @param graphics the context to render in
 	 * @param widgets the widgets to render
 	 */
-	protected void renderWidget(GuiGraphics context, List<AbstractWidget> widgets, float delta) {
+	protected void renderWidget(GuiGraphics graphics, List<AbstractWidget> widgets, float delta) {
 		for (AbstractWidget widget : widgets) {
-			widget.render(context, -1, -1, delta);
+			widget.render(graphics, -1, -1, delta);
 		}
 	}
 

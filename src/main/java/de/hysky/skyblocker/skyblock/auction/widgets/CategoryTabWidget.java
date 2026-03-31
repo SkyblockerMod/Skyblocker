@@ -19,11 +19,11 @@ public class CategoryTabWidget extends SideTabButtonWidget {
 	}
 
 	@Override
-	public void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderContents(context, mouseX, mouseY, delta);
+	public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		super.renderContents(graphics, mouseX, mouseY, delta);
 
 		if (isMouseOver(mouseX, mouseY)) {
-			context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, icon.getTooltipLines(TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL), mouseX, mouseY);
+			graphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, icon.getTooltipLines(TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL), mouseX, mouseY);
 		}
 	}
 

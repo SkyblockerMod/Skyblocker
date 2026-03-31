@@ -53,12 +53,12 @@ public abstract class ColoredItemBackground<T> {
 	/**
 	 * Performs the actual background rendering using the resolved color key.
 	 *
-	 * @param context  The rendering context
+	 * @param graphics  The rendering context
 	 * @param x        Slot x position
 	 * @param y        Slot y position
 	 * @param colorKey The color key, e.g. an enum or RGB integer
 	 */
-	protected abstract void draw(GuiGraphics context, int x, int y, T colorKey);
+	protected abstract void draw(GuiGraphics graphics, int x, int y, T colorKey);
 
 	/**
 	 * Whether this background renderer is enabled.
@@ -74,14 +74,14 @@ public abstract class ColoredItemBackground<T> {
 	 * key is found.
 	 *
 	 * @param stack   The {@link ItemStack} to check
-	 * @param context The rendering context
+	 * @param graphics The rendering context
 	 * @param x       The slot's x position
 	 * @param y       The slot's y position
 	 */
-	public final void tryDraw(ItemStack stack, GuiGraphics context, int x, int y) {
+	public final void tryDraw(ItemStack stack, GuiGraphics graphics, int x, int y) {
 		T value = getColorKey(stack, cache);
 		if (value != null) {
-			draw(context, x, y, value);
+			draw(graphics, x, y, value);
 		}
 	}
 

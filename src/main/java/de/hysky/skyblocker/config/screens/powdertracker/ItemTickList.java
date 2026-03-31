@@ -93,13 +93,13 @@ public class ItemTickList<T> extends ContainerObjectSelectionList<ItemTickList.I
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			for (Checkbox child : children) {
 				child.setX(this.getX());
 				child.setY(this.getY());
 				child.setWidth(this.getWidth());
 				child.setHeight(this.getHeight());
-				child.render(context, mouseX, mouseY, deltaTicks);
+				child.render(graphics, mouseX, mouseY, deltaTicks);
 			}
 		}
 

@@ -56,11 +56,11 @@ public class EditBidPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
+	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		super.renderBackground(graphics, mouseX, mouseY, delta);
+		drawPopupBackground(graphics, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.enabled) {
-			SignCalculator.renderCalculator(context, textFieldWidget.getValue(), context.guiWidth() / 2, textFieldWidget.getY() - 8);
+			SignCalculator.renderCalculator(graphics, textFieldWidget.getValue(), graphics.guiWidth() / 2, textFieldWidget.getY() - 8);
 		}
 	}
 

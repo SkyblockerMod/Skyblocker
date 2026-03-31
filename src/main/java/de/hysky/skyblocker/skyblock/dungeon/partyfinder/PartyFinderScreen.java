@@ -250,41 +250,41 @@ public class PartyFinderScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		if (!settingsContainer.canInteract(null)) {
-			context.fill(0, 0, width, height, 0x40000000);
+			graphics.fill(0, 0, width, height, 0x40000000);
 		}
-		super.render(context, mouseX, mouseY, delta);
+		super.render(graphics, mouseX, mouseY, delta);
 
 		if (searchField.visible) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
 		}
 		if (DEBUG) {
-			context.drawString(font, currentPage.toString(), 0, 0, CommonColors.WHITE, true);
-			context.drawString(font, "Truly a party finder", 20, 20, CommonColors.WHITE, true);
+			graphics.drawString(font, currentPage.toString(), 0, 0, CommonColors.WHITE, true);
+			graphics.drawString(font, "Truly a party finder", 20, 20, CommonColors.WHITE, true);
 			if (sign != null) {
-				context.drawString(font, "You are in a sign btw", 20, 30, CommonColors.WHITE, true);
+				graphics.drawString(font, "You are in a sign btw", 20, 30, CommonColors.WHITE, true);
 			} else {
-				context.drawString(font, String.valueOf(refreshSlotId), width - 25, 30, CommonColors.WHITE, true);
-				context.drawString(font, String.valueOf(prevPageSlotId), width - 25, 40, CommonColors.WHITE, true);
-				context.drawString(font, String.valueOf(nextPageSlotId), width - 25, 50, CommonColors.WHITE, true);
+				graphics.drawString(font, String.valueOf(refreshSlotId), width - 25, 30, CommonColors.WHITE, true);
+				graphics.drawString(font, String.valueOf(prevPageSlotId), width - 25, 40, CommonColors.WHITE, true);
+				graphics.drawString(font, String.valueOf(nextPageSlotId), width - 25, 50, CommonColors.WHITE, true);
 				for (int i = 0; i < handler.slots.size(); i++) {
-					context.renderItem(handler.slots.get(i).getItem(), (i % 9) * 16, (i / 9) * 16);
+					graphics.renderItem(handler.slots.get(i).getItem(), (i % 9) * 16, (i / 9) * 16);
 				}
-				context.drawString(font, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), CommonColors.WHITE, true);
+				graphics.drawString(font, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), CommonColors.WHITE, true);
 			}
 		}
 		if (isWaitingForServer()) {
 			String s = "Waiting for server...";
-			context.drawString(font, s, this.width - font.width(s) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
+			graphics.drawString(font, s, this.width - font.width(s) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
 		}
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		this.renderTransparentBackground(context);
+	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		this.renderTransparentBackground(graphics);
 		int i = partyEntryListWidget.getRowWidth() + 16 + 6;
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
 	}
 
 	@Override

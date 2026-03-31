@@ -22,17 +22,17 @@ public abstract class BossHealthOverlayMixin {
 	private Minecraft minecraft;
 
 	@Shadow
-	protected abstract void drawBar(GuiGraphics context, int x, int y, BossEvent bossBar);
+	protected abstract void drawBar(GuiGraphics graphics, int x, int y, BossEvent bossBar);
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
-	private void onRender(GuiGraphics context, CallbackInfo ci) {
+	private void onRender(GuiGraphics graphics, CallbackInfo ci) {
 		if (SkyblockerConfigManager.get().slayers.displayBossbar && SlayerBossBar.shouldRenderBossBar()) {
 			LerpingBossEvent bossBar = SlayerBossBar.updateBossBar();
 
 			int textWidth = this.minecraft.font.width(bossBar.getName());
-			context.drawString(this.minecraft.font, bossBar.getName(), context.guiWidth() / 2 - textWidth / 2, 3, CommonColors.WHITE);
+			graphics.drawString(this.minecraft.font, bossBar.getName(), graphics.guiWidth() / 2 - textWidth / 2, 3, CommonColors.WHITE);
 
-			this.drawBar(context, (context.guiWidth() / 2) - 91, 12, bossBar);
+			this.drawBar(graphics, (graphics.guiWidth() / 2) - 91, 12, bossBar);
 
 			ci.cancel();
 		}

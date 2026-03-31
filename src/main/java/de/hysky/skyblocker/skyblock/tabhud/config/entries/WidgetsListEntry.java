@@ -16,10 +16,10 @@ public abstract class WidgetsListEntry extends ContainerObjectSelectionList.Entr
 	public static final Component ENABLED_TEXT = Component.literal("ENABLED").withStyle(ChatFormatting.GREEN);
 	public static final Component DISABLED_TEXT = Component.literal("DISABLED").withStyle(ChatFormatting.RED);
 
-	public void renderTooltip(GuiGraphics context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {}
+	public void renderTooltip(GuiGraphics graphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {}
 
-	public void drawBorder(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		if (hovered) HudHelper.drawBorder(context, x, y, entryWidth, entryHeight, -1);
+	public void drawBorder(GuiGraphics graphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		if (hovered) HudHelper.drawBorder(graphics, x, y, entryWidth, entryHeight, -1);
 	}
 
 	@Override
@@ -27,10 +27,10 @@ public abstract class WidgetsListEntry extends ContainerObjectSelectionList.Entr
 		return List.of();
 	}
 
-	protected void renderIconAndText(GuiGraphics context, ItemStack icon, int y, int x, int entryHeight) {
+	protected void renderIconAndText(GuiGraphics graphics, ItemStack icon, int y, int x, int entryHeight) {
 		Font textRenderer = Minecraft.getInstance().font;
-		context.renderItem(icon, x + 2, y + (entryHeight - 16) / 2);
-		context.drawString(textRenderer, icon.getHoverName(), x + 20, y + (entryHeight - 9) / 2, CommonColors.WHITE, true);
+		graphics.renderItem(icon, x + 2, y + (entryHeight - 16) / 2);
+		graphics.drawString(textRenderer, icon.getHoverName(), x + 20, y + (entryHeight - 9) / 2, CommonColors.WHITE, true);
 	}
 
 }

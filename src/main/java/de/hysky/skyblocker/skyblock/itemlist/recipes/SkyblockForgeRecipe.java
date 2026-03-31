@@ -108,10 +108,10 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int width, int height, double mouseX, double mouseY) {
+	public void render(GuiGraphics graphics, int width, int height, double mouseX, double mouseY) {
 		// Render the duration of the recipe in hours by dividing by 3600
 		ScreenPosition arrowLocation = getArrowLocation(width, height);
 		if (arrowLocation != null)
-			context.drawCenteredString(Minecraft.getInstance().font, durationString, arrowLocation.x() + 12, arrowLocation.y() - 10, CommonColors.WHITE);
+			graphics.drawCenteredString(Minecraft.getInstance().font, durationString, arrowLocation.x() + 12, arrowLocation.y() - 10, CommonColors.WHITE);
 	}
 }

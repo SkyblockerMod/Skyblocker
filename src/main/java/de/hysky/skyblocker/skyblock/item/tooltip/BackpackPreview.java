@@ -143,7 +143,7 @@ public class BackpackPreview {
 		}
 	}
 
-	public static boolean renderPreview(GuiGraphics context, Screen screen, int index, int mouseX, int mouseY) {
+	public static boolean renderPreview(GuiGraphics graphics, Screen screen, int index, int mouseX, int mouseY) {
 		if (index >= 9 && index < 18) index -= 9;
 		else if (index >= 27 && index < 45) index -= 18;
 		else return false;
@@ -154,26 +154,26 @@ public class BackpackPreview {
 		int x = mouseX + 184 >= screen.width ? mouseX - 188 : mouseX + 8;
 		int y = Math.max(0, mouseY - 16);
 
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 176, rows * 18 + 17, 256, 256);
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 176, rows * 18 + 17, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
 
 		Font textRenderer = Minecraft.getInstance().font;
-		context.drawString(textRenderer, storages[index].name(), x + 8, y + 6, 0xFF404040, false);
+		graphics.drawString(textRenderer, storages[index].name(), x + 8, y + 6, 0xFF404040, false);
 
 		for (int i = 9; i < storages[index].size(); ++i) {
 			ItemStack currentStack = storages[index].getStack(i);
 			int itemX = x + (i - 9) % 9 * 18 + 8;
 			int itemY = y + (i - 9) / 9 * 18 + 18;
 
-			ItemBackgroundManager.drawBackgrounds(currentStack, context, itemX, itemY);
+			ItemBackgroundManager.drawBackgrounds(currentStack, graphics, itemX, itemY);
 
 			if (ItemProtection.isItemProtected(currentStack)) {
-				context.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
+				graphics.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
 			}
 
-			context.renderItem(currentStack, itemX, itemY);
-			context.renderItemDecorations(textRenderer, currentStack, itemX, itemY);
-			SlotTextManager.renderSlotText(context, textRenderer, null, currentStack, i, itemX, itemY);
+			graphics.renderItem(currentStack, itemX, itemY);
+			graphics.renderItemDecorations(textRenderer, currentStack, itemX, itemY);
+			SlotTextManager.renderSlotText(graphics, textRenderer, null, currentStack, i, itemX, itemY);
 		}
 
 		return true;

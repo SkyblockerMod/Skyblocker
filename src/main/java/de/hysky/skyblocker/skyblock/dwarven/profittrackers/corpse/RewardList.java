@@ -102,7 +102,7 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 		protected List<AbstractWidget> children;
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {}
+		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {}
 
 		@Override
 		public List<? extends NarratableEntry> narratables() {
@@ -136,13 +136,13 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			if (drawBorder) HudHelper.drawBorder(context, this.getX(), this.getY(), this.getWidth(), this.getHeight() + 1, BORDER_COLOR);
+		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			if (drawBorder) HudHelper.drawBorder(graphics, this.getX(), this.getY(), this.getWidth(), this.getHeight() + 1, BORDER_COLOR);
 			for (var child : children) {
 				child.setX(this.getX() + INNER_MARGIN);
 				child.setY(this.getY() + INNER_MARGIN);
 				child.setWidth(this.getWidth() - 2 * INNER_MARGIN);
-				child.render(context, mouseX, mouseY, deltaTicks);
+				child.render(graphics, mouseX, mouseY, deltaTicks);
 			}
 		}
 	}
@@ -198,37 +198,37 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 		// Name  | amount | total price | price per unit
 		// 33.3% | 16.6%  | 25%         | 25%
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			int x = this.getX();
 			int y = this.getY();
 			int entryWidth = this.getWidth();
 			int entryHeight = this.getHeight();
 			// The +1 is to make the borders stack on top of each other
-			HudHelper.drawBorder(context, x, y, entryWidth, entryHeight + 1, BORDER_COLOR);
-			HudHelper.drawBorder(context, x + entryWidth / 3, y, entryWidth / 6 + 2, entryHeight + 1, BORDER_COLOR);
-			HudHelper.drawBorder(context, x + entryWidth / 2, y, entryWidth / 4, entryHeight + 1, BORDER_COLOR);
+			HudHelper.drawBorder(graphics, x, y, entryWidth, entryHeight + 1, BORDER_COLOR);
+			HudHelper.drawBorder(graphics, x + entryWidth / 3, y, entryWidth / 6 + 2, entryHeight + 1, BORDER_COLOR);
+			HudHelper.drawBorder(graphics, x + entryWidth / 2, y, entryWidth / 4, entryHeight + 1, BORDER_COLOR);
 
 			int entryY = y + INNER_MARGIN;
 			if (itemName != null) {
 				itemName.setX(x + INNER_MARGIN);
 				itemName.setY(entryY);
 				itemName.setMaxWidth(entryWidth / 3 - 2 * INNER_MARGIN, StringWidget.TextOverflow.SCROLLING);
-				itemName.render(context, mouseX, mouseY, deltaTicks);
+				itemName.render(graphics, mouseX, mouseY, deltaTicks);
 			}
 
 			if (amount != null) {
 				position(amount, x + entryWidth / 3 + INNER_MARGIN, entryWidth / 6 - 2 * INNER_MARGIN, entryY);
-				amount.render(context, mouseX, mouseY, deltaTicks);
+				amount.render(graphics, mouseX, mouseY, deltaTicks);
 			}
 
 			if (totalPrice != null) {
 				position(totalPrice, x + entryWidth / 2 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, entryY);
-				totalPrice.render(context, mouseX, mouseY, deltaTicks);
+				totalPrice.render(graphics, mouseX, mouseY, deltaTicks);
 			}
 
 			if (pricePerUnit != null) {
 				position(pricePerUnit, x + 3 * entryWidth / 4 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, entryY);
-				pricePerUnit.render(context, mouseX, mouseY, deltaTicks);
+				pricePerUnit.render(graphics, mouseX, mouseY, deltaTicks);
 			}
 		}
 

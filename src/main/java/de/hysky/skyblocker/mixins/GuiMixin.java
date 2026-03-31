@@ -51,18 +51,18 @@ public abstract class GuiMixin {
 	private boolean isQuiverSlot = false;
 
 	@Inject(method = "renderItemHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;IILnet/minecraft/client/DeltaTracker;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/item/ItemStack;I)V", ordinal = 0))
-	public void skyblocker$renderHotbarItemLockOrBackground(CallbackInfo ci, @Local(argsOnly = true) GuiGraphics context, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local Player player) {
+	public void skyblocker$renderHotbarItemLockOrBackground(CallbackInfo ci, @Local(argsOnly = true) GuiGraphics graphics, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local Player player) {
 		if (Utils.isOnSkyblock()) {
-			ItemBackgroundManager.drawBackgrounds(player.getInventory().getNonEquipmentItems().get(index), context, x, y);
+			ItemBackgroundManager.drawBackgrounds(player.getInventory().getNonEquipmentItems().get(index), graphics, x, y);
 
 			// slot lock
 			if (HotbarSlotLock.isLocked(index)) {
-				context.blit(RenderPipelines.GUI_TEXTURED, SLOT_LOCK_ICON.get(), x, y, 0, 0, 16, 16, 16, 16);
+				graphics.blit(RenderPipelines.GUI_TEXTURED, SLOT_LOCK_ICON.get(), x, y, 0, 0, 16, 16, 16, 16);
 			}
 
 			//item protection
 			if (ItemProtection.isItemProtected(player.getInventory().getNonEquipmentItems().get(index))) {
-				context.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
+				graphics.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
 			}
 			isQuiverSlot = index == 8;
 		}
@@ -89,29 +89,29 @@ public abstract class GuiMixin {
 	}
 
 	@WrapOperation(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V"))
-	private void skyblocker$drawQuiverAmount(GuiGraphics instance, Font textRenderer, ItemStack stack, int x, int y, Operation<Void> original) {
+	private void skyblocker$drawQuiverAmount(GuiGraphics graphics, Font textRenderer, ItemStack stack, int x, int y, Operation<Void> original) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.trueQuiverCount && isQuiverSlot && isQuiverItem(stack)) {
 			String arrow = ItemUtils.getLoreLineIf(stack, s -> s.trim().startsWith("Active Arrow"));
 			if (arrow == null) {
-				original.call(instance, textRenderer, stack, x, y);
+				original.call(graphics, textRenderer, stack, x, y);
 				return;
 			}
 			int i = arrow.lastIndexOf('(');
 			int j = arrow.lastIndexOf(')');
 			if (i == -1 || j == -1 || i > j) {
-				original.call(instance, textRenderer, stack, x, y);
+				original.call(graphics, textRenderer, stack, x, y);
 				return;
 			}
 			arrow = arrow.substring(i + 1, j);
 			OptionalInt anInt = Utils.parseInt(arrow);
 			if (anInt.isEmpty()) {
-				original.call(instance, textRenderer, stack, x, y);
+				original.call(graphics, textRenderer, stack, x, y);
 				return;
 			}
 			String format = Formatters.SHORT_INTEGER_NUMBERS.format(anInt.getAsInt());
-			instance.renderItemDecorations(textRenderer, stack, x, y, format);
+			graphics.renderItemDecorations(textRenderer, stack, x, y, format);
 		} else {
-			original.call(instance, textRenderer, stack, x, y);
+			original.call(graphics, textRenderer, stack, x, y);
 		}
 	}
 

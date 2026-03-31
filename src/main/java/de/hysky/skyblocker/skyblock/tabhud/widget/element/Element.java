@@ -24,7 +24,7 @@ public abstract class Element {
 
 	private LayoutElement parent = SpacerElement.width(0);
 
-	public abstract void render(GuiGraphics context, int x, int y);
+	public abstract void render(GuiGraphics graphics, int x, int y);
 
 	public void setParent(LayoutElement parent) {
 		this.parent = parent;
@@ -42,11 +42,11 @@ public abstract class Element {
 		return this.height;
 	}
 
-	public void renderIcon(GuiGraphics context, ItemStack icon, int x, int y) {
-		context.pose().pushMatrix();
-		context.pose().translate(x, y);
-		context.pose().scale((float) ICO_DIM.get() / 16);
-		context.renderItem(icon, 0, 0);
-		context.pose().popMatrix();
+	public void renderIcon(GuiGraphics graphics, ItemStack icon, int x, int y) {
+		graphics.pose().pushMatrix();
+		graphics.pose().translate(x, y);
+		graphics.pose().scale((float) ICO_DIM.get() / 16);
+		graphics.renderItem(icon, 0, 0);
+		graphics.pose().popMatrix();
 	}
 }

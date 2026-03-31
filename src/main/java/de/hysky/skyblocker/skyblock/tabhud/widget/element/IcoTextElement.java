@@ -32,9 +32,9 @@ class IcoTextElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int x, int y) {
+	public void render(GuiGraphics graphics, int x, int y) {
 		int offset = SkyblockerConfigManager.get().uiAndVisuals.tabHud.compactWidgets ? 2 : 4;
-		renderIcon(context, ico, x, y);
-		context.drawString(txtRend, text, x + ICO_DIM.get() + PAD_L, y + offset, CommonColors.WHITE, false);
+		renderIcon(graphics, ico, x, y);
+		graphics.drawString(txtRend, text, x + ICO_DIM.get() + PAD_L, y + offset, CommonColors.WHITE, false);
 	}
 }

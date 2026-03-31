@@ -142,25 +142,25 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
-		context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+	protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {
+		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		super.render(graphics, mouseX, mouseY, delta);
 
-		if (isWaitingForServer) context.drawString(font, "Waiting...", 0, 0, CommonColors.WHITE, true);
+		if (isWaitingForServer) graphics.drawString(font, "Waiting...", 0, 0, CommonColors.WHITE, true);
 
-		Matrix3x2fStack matrices = context.pose();
+		Matrix3x2fStack matrices = graphics.pose();
 
 		matrices.pushMatrix();
 		matrices.translate(leftPos + 77, topPos + 14);
 		matrices.scale(1.375f, 1.375f);
 		//matrices.translate(0, 0, 100f);
 		ItemStack stack = menu.getSlot(13).getItem();
-		context.renderItem(stack, 0, 0);
-		context.renderItemDecorations(font, stack, 0, 0);
+		graphics.renderItem(stack, 0, 0);
+		graphics.renderItemDecorations(font, stack, 0, 0);
 		matrices.popMatrix();
 
 		if (!isBinAuction && buyState != BuyState.COLLECT_AUCTION) {
@@ -171,14 +171,14 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 			}
 		}
 
-		renderTooltip(context, mouseX, mouseY);
+		renderTooltip(graphics, mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderTooltip(GuiGraphics context, int x, int y) {
-		super.renderTooltip(context, x, y);
+	protected void renderTooltip(GuiGraphics graphics, int x, int y) {
+		super.renderTooltip(graphics, x, y);
 		if (x > this.leftPos + 75 && x < this.leftPos + 75 + 26 && y > this.topPos + 13 && y < this.topPos + 13 + 26) {
-			context.setComponentTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(menu.getSlot(13).getItem()), x, y);
+			graphics.setComponentTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(menu.getSlot(13).getItem()), x, y);
 		}
 	}
 

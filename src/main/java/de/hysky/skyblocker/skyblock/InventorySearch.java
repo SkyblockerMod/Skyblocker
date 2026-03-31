@@ -119,14 +119,14 @@ public class InventorySearch {
 		}
 
 		@Override
-		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 			if (isHovered() != hoveredState) {
 				hoveredState = active = isHovered();
 				if (hoveredState) setMessage(underlinedText);
 				else setMessage(normalText);
 			}
 
-			super.renderWidget(context, mouseX, mouseY, delta);
+			super.renderWidget(graphics, mouseX, mouseY, delta);
 		}
 	}
 
@@ -141,9 +141,9 @@ public class InventorySearch {
 		}
 
 		@Override
-		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			super.renderWidget(context, mouseX, mouseY, deltaTicks);
-			context.drawCenteredString(textRenderer, message, getX() + width / 2, getY() - 1 - textRenderer.lineHeight, CommonColors.WHITE);
+		public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+			super.renderWidget(graphics, mouseX, mouseY, deltaTicks);
+			graphics.drawCenteredString(textRenderer, message, getX() + width / 2, getY() - 1 - textRenderer.lineHeight, CommonColors.WHITE);
 		}
 
 		@Override

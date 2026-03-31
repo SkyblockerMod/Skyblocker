@@ -19,7 +19,7 @@ public abstract class WidgetsListSlotEntry extends WidgetsListEntry {
 		this.icon = icon;
 	}
 
-	protected void renderIconAndText(GuiGraphics context, int y, int x, int entryHeight) {
-		renderIconAndText(context, icon, y, x, entryHeight);
+	protected void renderIconAndText(GuiGraphics graphics, int y, int x, int entryHeight) {
+		renderIconAndText(graphics, icon, y, x, entryHeight);
 	}
 }

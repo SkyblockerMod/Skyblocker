@@ -34,7 +34,7 @@ public class FireFreezeStaffTimer {
 		if (timerActive) fireFreezeTimer -= 50;
 	}
 
-	private static void onDraw(GuiGraphics context, DeltaTracker tickCounter) {
+	private static void onDraw(GuiGraphics graphics, DeltaTracker tickCounter) {
 		Minecraft client = Minecraft.getInstance();
 
 		if (client.screen != null) return;
@@ -56,7 +56,7 @@ public class FireFreezeStaffTimer {
 			int width = client.getWindow().getGuiScaledWidth() / 2;
 			int height = client.getWindow().getGuiScaledHeight() / 2;
 
-			context.drawCenteredString(renderer, Component.literal("Fire Freeze ").append(message), width, height, CommonColors.WHITE);
+			graphics.drawCenteredString(renderer, Component.literal("Fire Freeze ").append(message), width, height, CommonColors.WHITE);
 		}
 	}
 

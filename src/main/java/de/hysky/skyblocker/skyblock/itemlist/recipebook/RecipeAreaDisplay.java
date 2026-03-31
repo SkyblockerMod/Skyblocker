@@ -11,9 +11,9 @@ import net.minecraft.client.input.MouseButtonEvent;
 public interface RecipeAreaDisplay {
 	void initialize(Minecraft client, int parentLeft, int parentTop);
 
-	void draw(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta);
+	void draw(GuiGraphics graphics, int x, int y, int mouseX, int mouseY, float delta);
 
-	void drawTooltip(GuiGraphics context, int x, int y);
+	void drawTooltip(GuiGraphics graphics, int x, int y);
 
 	boolean mouseClicked(MouseButtonEvent click, boolean doubled);
 

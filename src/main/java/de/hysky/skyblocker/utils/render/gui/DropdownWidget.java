@@ -54,14 +54,14 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		dropdownList.visible = open;
-		dropdownList.render(context, mouseX, mouseY, delta);
-		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, CommonColors.BLACK);
-		HudHelper.drawBorder(context, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, CommonColors.WHITE);
-		context.drawString(client.font, ">", getX() + 4, getY() + 6, CommonColors.LIGHTER_GRAY, true);
-		context.drawString(client.font, selected.toString(), getX() + 12, getY() + 6, CommonColors.WHITE, true);
-		if (isMouseOver(mouseX, mouseY)) context.requestCursor(CursorTypes.POINTING_HAND);
+		dropdownList.render(graphics, mouseX, mouseY, delta);
+		graphics.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, CommonColors.BLACK);
+		HudHelper.drawBorder(graphics, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, CommonColors.WHITE);
+		graphics.drawString(client.font, ">", getX() + 4, getY() + 6, CommonColors.LIGHTER_GRAY, true);
+		graphics.drawString(client.font, selected.toString(), getX() + 12, getY() + 6, CommonColors.WHITE, true);
+		if (isMouseOver(mouseX, mouseY)) graphics.requestCursor(CursorTypes.POINTING_HAND);
 	}
 
 	@Override
@@ -170,13 +170,13 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 
 
 		@Override
-		protected void renderScrollbar(GuiGraphics context, int mouseX, int mouseY) {
+		protected void renderScrollbar(GuiGraphics graphics, int mouseX, int mouseY) {
 			if (this.scrollbarVisible()) {
 				int i = this.scrollBarX();
 				int j = this.scrollerHeight();
 				int k = this.scrollBarY();
 				// Modified from DrawContext#drawVerticalLine
-				context.fill(i, k + 1, i + 2, k + j, -1);
+				graphics.fill(i, k + 1, i + 2, k + j, -1);
 			}
 		}
 
@@ -214,17 +214,17 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		// Background
 
 		@Override
-		protected void renderListSeparators(GuiGraphics context) {}
+		protected void renderListSeparators(GuiGraphics graphics) {}
 
 		@Override
-		protected void renderListBackground(GuiGraphics context) {
-			context.fill(getX(), getY(), getRight(), getBottom(), 0xFF << 24);
-			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), -1);
+		protected void renderListBackground(GuiGraphics graphics) {
+			graphics.fill(getX(), getY(), getRight(), getBottom(), 0xFF << 24);
+			HudHelper.drawBorder(graphics, getX(), getY(), getWidth(), getHeight(), -1);
 		}
 
 		@Override
-		protected void enableScissor(GuiGraphics context) {
-			context.enableScissor(this.getX(), this.getY() + 1, this.getRight(), this.getBottom() - 1);
+		protected void enableScissor(GuiGraphics graphics) {
+			graphics.enableScissor(this.getX(), this.getY() + 1, this.getRight(), this.getBottom() - 1);
 		}
 	}
 
@@ -247,11 +247,11 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// drawScrollableText does some weird stuff with the y value, so we put startY = y and endY = y + 11 which makes the text render on the same line as the tick mark below (y + 2).
-			context.textRenderer(HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(Component.literal(entry.toString()).withStyle(Style.EMPTY.withUnderlined(hovered)), this.getX() + 10, this.getX() + this.getWidth(), this.getY(), this.getY() + 11);
+			graphics.textRenderer(HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(Component.literal(entry.toString()).withStyle(Style.EMPTY.withUnderlined(hovered)), this.getX() + 10, this.getX() + this.getWidth(), this.getY(), this.getY() + 11);
 			if (selected == this.entry) {
-				context.drawString(client.font, "✔", this.getX() + 1, this.getY() + 2, 0xFFFFFFFF);
+				graphics.drawString(client.font, "✔", this.getX() + 1, this.getY() + 2, 0xFFFFFFFF);
 			}
 		}
 

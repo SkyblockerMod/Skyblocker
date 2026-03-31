@@ -72,15 +72,15 @@ public abstract class HudWidget extends AbstractWidget {
 		return false;
 	}
 
-	protected abstract void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta);
+	protected abstract void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta);
 
-	public final void render(GuiGraphics context) {
-		render(context, -1, -1, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks());
+	public final void render(GuiGraphics graphics) {
+		render(graphics, -1, -1, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks());
 	}
 
 	@Override
-	public final void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		renderWidget(context, mouseX, mouseY, delta);
+	public final void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		renderWidget(graphics, mouseX, mouseY, delta);
 	}
 
 	/**

@@ -137,9 +137,9 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, gridWidget.getX(), gridWidget.getY(), gridWidget.getWidth(), gridWidget.getHeight());
+	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		super.renderBackground(graphics, mouseX, mouseY, delta);
+		drawPopupBackground(graphics, gridWidget.getX(), gridWidget.getY(), gridWidget.getWidth(), gridWidget.getHeight());
 	}
 
 	private class ListContainer extends AbstractContainerWidget {
@@ -169,13 +169,13 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.enableScissor(getX(), getY(), getRight(), getBottom());
+		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+			graphics.enableScissor(getX(), getY(), getRight(), getBottom());
 			for (AbstractWidget widget : filteredWidgets) {
-				if (isVisible(widget)) widget.render(context, mouseX, mouseY, deltaTicks);
+				if (isVisible(widget)) widget.render(graphics, mouseX, mouseY, deltaTicks);
 			}
-			renderScrollbar(context, mouseX, mouseY);
-			context.disableScissor();
+			renderScrollbar(graphics, mouseX, mouseY);
+			graphics.disableScissor();
 		}
 
 		@Override
@@ -218,12 +218,12 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-			super.renderWidget(context, mouseX, mouseY, delta);
+		public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+			super.renderWidget(graphics, mouseX, mouseY, delta);
 			if (selectedSound == sound) {
-				context.fill(RenderPipelines.GUI, this.getX(), this.getY(), this.getRight(), this.getBottom(), 0x3000FF00);
+				graphics.fill(RenderPipelines.GUI, this.getX(), this.getY(), this.getRight(), this.getBottom(), 0x3000FF00);
 			} else if (this.isHovered) {
-				context.fill(RenderPipelines.GUI, this.getX(), this.getY(), this.getRight(), this.getBottom(), 0x20FFFFFF);
+				graphics.fill(RenderPipelines.GUI, this.getX(), this.getY(), this.getRight(), this.getBottom(), 0x20FFFFFF);
 			}
 		}
 

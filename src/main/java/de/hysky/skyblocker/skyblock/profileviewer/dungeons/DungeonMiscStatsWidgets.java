@@ -46,17 +46,17 @@ public class DungeonMiscStatsWidgets {
 		} catch (Exception ignored) {}
 	}
 
-	public void render(GuiGraphics context, int x, int y) {
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-		context.renderItem(Ico.FEATHER, x + 2, y + 4);
+	public void render(GuiGraphics graphics, int x, int y) {
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+		graphics.renderItem(Ico.FEATHER, x + 2, y + 4);
 
-		context.drawString(textRenderer, "Secrets " + secrets, x + 30, y + 4, Color.WHITE.getRGB(), true);
-		context.drawString(textRenderer, "Avg " + (totalRuns > 0 ? DF.format(secrets / (float) totalRuns) : 0) + "/Run", x + 30, y + 14, Color.WHITE.getRGB(), true);
+		graphics.drawString(textRenderer, "Secrets " + secrets, x + 30, y + 4, Color.WHITE.getRGB(), true);
+		graphics.drawString(textRenderer, "Avg " + (totalRuns > 0 ? DF.format(secrets / (float) totalRuns) : 0) + "/Run", x + 30, y + 14, Color.WHITE.getRGB(), true);
 
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + 28, 0, 0, 109, 26, 109, 26);
-		context.blit(RenderPipelines.GUI_TEXTURED, RUN_ICON, x + 4, y + 33, 0, 0, 14, 16, 14, 16);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + 28, 0, 0, 109, 26, 109, 26);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, RUN_ICON, x + 4, y + 33, 0, 0, 14, 16, 14, 16);
 
-		context.drawString(textRenderer, "§aNormal §r" + dungeonRuns.getOrDefault("catacombs", 0), x + 30, y + 32, Color.WHITE.getRGB(), true);
-		context.drawString(textRenderer, "§cMaster §r" + dungeonRuns.getOrDefault("master_catacombs", 0), x + 30, y + 42, Color.WHITE.getRGB(), true);
+		graphics.drawString(textRenderer, "§aNormal §r" + dungeonRuns.getOrDefault("catacombs", 0), x + 30, y + 32, Color.WHITE.getRGB(), true);
+		graphics.drawString(textRenderer, "§cMaster §r" + dungeonRuns.getOrDefault("master_catacombs", 0), x + 30, y + 42, Color.WHITE.getRGB(), true);
 	}
 }

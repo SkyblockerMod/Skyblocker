@@ -29,19 +29,19 @@ public class AbstractPopupScreen extends Screen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		this.backgroundScreen.renderBackground(context, -1, -1, delta);
-		context.nextStratum();
-		this.backgroundScreen.render(context, -1, -1, delta);
-		context.nextStratum();
-		this.renderTransparentBackground(context);
+	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		this.backgroundScreen.renderBackground(graphics, -1, -1, delta);
+		graphics.nextStratum();
+		this.backgroundScreen.render(graphics, -1, -1, delta);
+		graphics.nextStratum();
+		this.renderTransparentBackground(graphics);
 	}
 
 	/**
 	 * These are the inner positions and size of the popup, not outer
 	 */
-	public static void drawPopupBackground(GuiGraphics context, int x, int y, int width, int height) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
+	public static void drawPopupBackground(GuiGraphics graphics, int x, int y, int width, int height) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
 	}
 
 	@Override

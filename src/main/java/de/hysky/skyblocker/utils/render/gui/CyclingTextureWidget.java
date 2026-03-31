@@ -59,15 +59,15 @@ public class CyclingTextureWidget<T extends Enum<T> & Supplier<Identifier>> exte
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		var button = BUTTON.get(this.active, this.isHoveredOrFocused());
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, button, this.getX(),
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, button, this.getX(),
 				this.getY(), width, height);
-		context.blit(RenderPipelines.GUI_TEXTURED, getCurrent().get(),
+		graphics.blit(RenderPipelines.GUI_TEXTURED, getCurrent().get(),
 				this.getX(), this.getY(), 0, 0, width, height, width, height);
 
 		if (this.isHovered()) {
-			context.requestCursor(CursorTypes.POINTING_HAND);
+			graphics.requestCursor(CursorTypes.POINTING_HAND);
 		}
 	}
 

@@ -81,23 +81,23 @@ class ProgressElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int x, int y) {
+	public void render(GuiGraphics graphics, int x, int y) {
 		int componentX = x + PAD_L;
 		if (ico != null) {
-			renderIcon(context, ico, x, y + ICO_OFFS);
+			renderIcon(graphics, ico, x, y + ICO_OFFS);
 			componentX += ICO_DIM.get();
 		}
-		context.drawString(txtRend, desc, componentX, y, CommonColors.WHITE, false);
+		graphics.drawString(txtRend, desc, componentX, y, CommonColors.WHITE, false);
 
 		int barY = y + txtRend.lineHeight + PAD_S;
 		int endOffsX = ((int) (this.barW * (this.pcnt / 100f)));
-		context.fill(componentX + endOffsX, barY, componentX + this.barW, barY + BAR_HEIGHT, COL_BG_BAR);
-		context.fill(componentX, barY, componentX + endOffsX, barY + BAR_HEIGHT, this.color);
+		graphics.fill(componentX + endOffsX, barY, componentX + this.barW, barY + BAR_HEIGHT, COL_BG_BAR);
+		graphics.fill(componentX, barY, componentX + endOffsX, barY + BAR_HEIGHT, this.color);
 
 		int textWidth = txtRend.width(bar);
 		// Only turn text dark when it is wider than the filled bar and the filled bar is bright.
 		// The + 4 is because the text is indented 3 pixels and 1 extra pixel to the right as buffer.
 		boolean textDark = endOffsX >= textWidth + 4 && this.colorIsBright;
-		context.drawString(txtRend, bar, componentX + 3, barY + 2, textDark ? CommonColors.BLACK : CommonColors.WHITE, !textDark);
+		graphics.drawString(txtRend, bar, componentX + 3, barY + 2, textDark ? CommonColors.BLACK : CommonColors.WHITE, !textDark);
 	}
 }

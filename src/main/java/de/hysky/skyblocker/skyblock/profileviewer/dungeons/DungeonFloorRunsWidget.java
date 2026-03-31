@@ -29,9 +29,9 @@ public class DungeonFloorRunsWidget {
 		} catch (Exception ignored) {}
 	}
 
-	public void render(GuiGraphics context, int mouseX, int mouseY, int x, int y) {
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 110, 109, 110);
-		context.drawString(textRenderer, Component.literal("Floor Runs").withStyle(ChatFormatting.BOLD), x + 6, y + 4, Color.WHITE.getRGB(), true);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) {
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 110, 109, 110);
+		graphics.drawString(textRenderer, Component.literal("Floor Runs").withStyle(ChatFormatting.BOLD), x + 6, y + 4, Color.WHITE.getRGB(), true);
 
 		int columnX = x + 4;
 		int elementY = y + 15;
@@ -46,7 +46,7 @@ public class DungeonFloorRunsWidget {
 					if (entry.getKey().equals("total")) continue;
 
 					String textToRender = String.format((dungeon.equals("catacombs") ? "§aF" : "§cM") + "%s§r %s", entry.getKey(), entry.getValue().getAsInt());
-					context.drawString(textRenderer, textToRender, columnX + 2, elementY + 2, Color.WHITE.getRGB(), true);
+					graphics.drawString(textRenderer, textToRender, columnX + 2, elementY + 2, Color.WHITE.getRGB(), true);
 					if (!entry.getKey().equals("0") && mouseX >= columnX && mouseX <= columnX + 40 && mouseY >= elementY && mouseY <= elementY + 9) {
 						List<Component> tooltipText = new ArrayList<>();
 						tooltipText.add(Component.literal("Personal Bests").withStyle(ChatFormatting.BOLD, ChatFormatting.LIGHT_PURPLE));
@@ -66,7 +66,7 @@ public class DungeonFloorRunsWidget {
 							tooltipText.add(Component.literal("Completion:  " + formatTime(fastestTimes.get(entry.getKey()).getAsLong())).withStyle(ChatFormatting.GOLD));
 						}
 
-						context.setComponentTooltipForNextFrame(textRenderer, tooltipText, mouseX, mouseY);
+						graphics.setComponentTooltipForNextFrame(textRenderer, tooltipText, mouseX, mouseY);
 					}
 
 					elementY += 11;
