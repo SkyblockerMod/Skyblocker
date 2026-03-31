@@ -28,7 +28,7 @@
     "skyblocker.config.quickNav": "快速导航",
     "skyblocker.config.quickNav.enableQuickNav": "启用快速导航",
     "skyblocker.config.general.itemList": "物品列表",
-    "skyblocker.config.general.itemList.enableItemList": "启用物品列表",
+    "skyblocker.config.general.itemList.enableItemList": "启用物品列表兼容",
     "skyblocker.config.otherLocations": "位置",
     "skyblocker.config.otherLocations.barn": "农业岛屿",
     "skyblocker.config.otherLocations.barn.solveHungryHiker": "饥饿的旅行者所需物品提示",
@@ -1703,5 +1703,8 @@
     "skyblocker.config.farming.visitorHelper.enabled.@Tooltip": "通过分组相似订单，复制所需物品数量以及更快地打开集市购买商品，更轻松地应对访客。",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.search.@Tooltip": "搜索更多音效",
     "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "进阶",
-    "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "显示没有正确名称的音效"
+    "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "显示没有正确名称的音效",
+    "skyblocker.config.general.itemList.enableItemList.@Tooltip": "将Skyblock物品及配方添加到受支持的物品列表模组（REI和JEI）中。",
+    "skyblocker.config.general.itemList.enableRecipeBook": "启用配方书",
+    "skyblocker.config.general.itemList.enableRecipeBook.@Tooltip": "将Skyblock物品及配方添加到物品栏的配方书中。"
 }
