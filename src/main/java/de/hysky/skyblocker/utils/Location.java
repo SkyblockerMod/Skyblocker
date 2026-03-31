@@ -17,7 +17,7 @@ public enum Location implements StringRepresentable {
 	SPIDERS_DEN("combat_1", "Spider's Den", true),
 	@Deprecated BLAZING_FORTRESS("combat_2", "Blazing Fortress"),
 	THE_END("combat_3", "The End", true),
-	CRIMSON_ISLE("crimson_isle", "Crimson Isle"),
+	CRIMSON_ISLE("crimson_isle", "Crimson Isle", true),
 	GOLD_MINE("mining_1", "Gold Mine", true),
 	DEEP_CAVERNS("mining_2", "Deep Caverns"),
 	DWARVEN_MINES("mining_3", "Dwarven Mines"),
