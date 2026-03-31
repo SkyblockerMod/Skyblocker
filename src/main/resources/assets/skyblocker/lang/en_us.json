@@ -3,10 +3,10 @@
   "argument.color.hex.invalidString": "Hex integer must be exactly 6 characters long, found %s characters.",
   "argument.color.rgb.incomplete": "Incomplete (expected 3 color values).",
 
-  "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
-  "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)",
-  "emi.category.skyblocker.skyblock_info": "Skyblock Info",
-  "emi.category.skyblocker.skyblock_npc_shop": "NPC Shops (Skyblock)",
+  "emi.category.skyblocker.skyblock_crafting": "Crafting (SkyBlock)",
+  "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (SkyBlock)",
+  "emi.category.skyblocker.skyblock_info": "SkyBlock Info",
+  "emi.category.skyblocker.skyblock_npc_shop": "NPC Shops (SkyBlock)",
 
   "key.category.skyblocker.main": "Skyblocker",
   "key.skyblocker.debug.dumpHoveredItem": "Dump Hovered Item",
@@ -122,7 +122,7 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration.@Tooltip": "How long the toast stays on screen.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon": "Toast Icon:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.@Tooltip": "Input the item to use as an icon, in the same format as the /give command.",
-  "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.iconPreview.@Tooltip": "Click to open the skyblock item selector.",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.iconPreview.@Tooltip": "Click to open the SkyBlock item selector.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "True",
 
   "skyblocker.config.chat.confirmationPromptHelper": "Chat Confirmation Prompt Helper",
@@ -260,7 +260,7 @@
   "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreTitle.@Tooltip": "Display a title when reaching %s score in dungeons.",
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD": "Enable Score HUD",
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.@Tooltip": "Displays the dungeon score in the HUD.",
-  "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nNote: This only works correctly if death messages are enabled in your Skyblock settings. If you want to hide death messages, use this mod's Hide Player Death Messages setting instead to allow further processing of death messages.",
+  "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nNote: This only works correctly if death messages are enabled in your SkyBlock settings. If you want to hide death messages, use this mod's Hide Player Death Messages setting instead to allow further processing of death messages.",
   "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Score HUD Scaling",
 
   "skyblocker.config.dungeons.dungeonSplits": "Dungeon Splits Widget",
@@ -715,12 +715,12 @@
   "skyblocker.config.helpers.fishing.changeTimerColor": "Change Timer At 20s",
   "skyblocker.config.helpers.fishing.changeTimerColor.@Tooltip": "Changes timer to green after 20 seconds has passed",
   "skyblocker.config.helpers.fishing.enableFishingHelper": "Enable Fishing Helper",
-  "skyblocker.config.helpers.fishing.enableFishingHelper.@Tooltip": "Displays title message when a fish is on the hook. This relies on Skyblock setting → Fishing Status Holograms being enabled.",
+  "skyblocker.config.helpers.fishing.enableFishingHelper.@Tooltip": "Displays title message when a fish is on the hook. This relies on SkyBlock setting → Fishing Status Holograms being enabled.",
   "skyblocker.config.helpers.fishing.enableFishingHud": "Enable Fishing HUD",
   "skyblocker.config.helpers.fishing.enableFishingTimer": "Enable Bobber Timer",
   "skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip": "Adds bobber lifetime to HUD.",
   "skyblocker.config.helpers.fishing.fishingHookDisplay": "Fishing Hook Display",
-  "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "Display the skyblock fishing hook timer on the screen.\n\nOn crosshair: in the center of screen\n\nIn HUD: in the fishing HUD",
+  "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "Display the SkyBlock fishing hook timer on the screen.\n\nOn crosshair: in the center of screen\n\nIn HUD: in the fishing HUD",
   "skyblocker.config.helpers.fishing.fishingHookDisplay.CROSSHAIR": "On Crosshair",
   "skyblocker.config.helpers.fishing.fishingHookDisplay.HUD": "In HUD",
   "skyblocker.config.helpers.fishing.fishingHookDisplay.OFF": "Off",
@@ -951,9 +951,9 @@
 
   "skyblocker.config.misc.richPresence": "Discord RPC",
   "skyblocker.config.misc.richPresence.customMessage": "Custom Message",
-  "skyblocker.config.misc.richPresence.cycleMode": "Cycle Skyblock Info",
+  "skyblocker.config.misc.richPresence.cycleMode": "Cycle SkyBlock Info",
   "skyblocker.config.misc.richPresence.enableRichPresence": "Enabled",
-  "skyblocker.config.misc.richPresence.info": "Skyblock Info",
+  "skyblocker.config.misc.richPresence.info": "SkyBlock Info",
   "skyblocker.config.misc.richPresence.info.@Tooltip": "This value doesn't matter if you are cycling.",
   "skyblocker.config.misc.richPresence.info.BITS": "BITS",
   "skyblocker.config.misc.richPresence.info.LOCATION": "LOCATION",
@@ -999,8 +999,8 @@
 
   "skyblocker.config.quickNav": "Quick Navigation",
   "skyblocker.config.quickNav.button": "Button %s",
-  "skyblocker.config.quickNav.button.chooseSkyblockItem": "Choose Skyblock Item",
-  "skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip": "Select a Skyblock icon or item to fill this button with.",
+  "skyblocker.config.quickNav.button.chooseSkyblockItem": "Choose SkyBlock Item",
+  "skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip": "Select a SkyBlock icon or item to fill this button with.",
   "skyblocker.config.quickNav.button.clickEvent": "Click Event",
   "skyblocker.config.quickNav.button.doubleClick": "Require Double Click",
   "skyblocker.config.quickNav.button.item.components": "Item Components",
@@ -1156,7 +1156,7 @@
   "skyblocker.config.uiAndVisuals.compactorDeletorPreview": "Enable Compactor/Deletor Preview",
 
   "skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues": "Correct Transparent Skin Pixels",
-  "skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues.@Tooltip": "When enabled, the alpha values of pixels in skin textures are no longer stripped while in Skyblock.\n\nThis results in the \"filler\" pixels on items using Player Heads to now be completely transparent, although this may have some side effects in odd cases.",
+  "skyblocker.config.uiAndVisuals.dontStripSkinAlphaValues.@Tooltip": "When enabled, the alpha values of pixels in skin textures are no longer stripped while in SkyBlock.\n\nThis results in the \"filler\" pixels on items using Player Heads to now be completely transparent, although this may have some side effects in odd cases.",
 
   "skyblocker.config.uiAndVisuals.fancyAuctionHouse": "Fancy Auction House",
   "skyblocker.config.uiAndVisuals.fancyAuctionHouse.enabled": "Enabled",
@@ -1201,7 +1201,7 @@
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",
 
   "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "Hide Status Effect Overlay",
-  "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay.@Tooltip": "Hide Vanilla potion effect animations from various buff items in Skyblock.",
+  "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay.@Tooltip": "Hide Vanilla potion effect animations from various buff items in SkyBlock.",
 
   "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.badNotationError": "Equation is not in RPN",
@@ -1234,7 +1234,7 @@
   "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText.@Tooltip": "Shows a clickable text at the top of the screen to open the search field.",
   "skyblocker.config.uiAndVisuals.inventorySearch.state.EVERYWHERE": "Everywhere",
   "skyblocker.config.uiAndVisuals.inventorySearch.state.OFF": "Off",
-  "skyblocker.config.uiAndVisuals.inventorySearch.state.SKYBLOCK": "Skyblock Only",
+  "skyblocker.config.uiAndVisuals.inventorySearch.state.SKYBLOCK": "SkyBlock Only",
 
   "skyblocker.config.uiAndVisuals.itemCooldown": "Item Cooldown",
   "skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns": "Enable Item Cooldown",
@@ -1288,7 +1288,7 @@
   "skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions.@Tooltip": "The maximum number of suggested items to show.",
 
   "skyblocker.config.uiAndVisuals.showConfigButton": "Show Config Button",
-  "skyblocker.config.uiAndVisuals.showConfigButton.@Tooltip": "Adds a button in the skyblock menu to open the Skyblocker config.",
+  "skyblocker.config.uiAndVisuals.showConfigButton.@Tooltip": "Adds a button in the SkyBlock Menu to open the Skyblocker config.",
 
   "skyblocker.config.uiAndVisuals.showCustomizeButton": "Show Customize Armor Button",
   "skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip": "Adds a little paint brush icon in your inventory next to the player model to open the Armor Customization screen.",
@@ -1335,8 +1335,8 @@
   "skyblocker.config.uiAndVisuals.slotText.rancherBoots": "Rancher Boots Speed",
   "skyblocker.config.uiAndVisuals.slotText.separator": "Individual Toggles",
   "skyblocker.config.uiAndVisuals.slotText.skillLevel": "Skill Level",
-  "skyblocker.config.uiAndVisuals.slotText.skyblockGuide": "Skyblock Guide",
-  "skyblocker.config.uiAndVisuals.slotText.skyblockLevel": "Skyblock Level",
+  "skyblocker.config.uiAndVisuals.slotText.skyblockGuide": "SkyBlock Guide",
+  "skyblocker.config.uiAndVisuals.slotText.skyblockLevel": "SkyBlock Level",
   "skyblocker.config.uiAndVisuals.slotText.statsTuning": "Stats Tuning",
   "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "Displays your assigned and unassigned tuning points.",
   "skyblocker.config.uiAndVisuals.slotText.yourEssence": "Your Essence",
@@ -1473,7 +1473,7 @@
   "skyblocker.customAnimatedDyes.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom animated dye.",
   "skyblocker.customAnimatedDyes.notDyeable": "§cThis item isn't a dyeable armor piece!",
   "skyblocker.customAnimatedDyes.removed": "Removed this item's custom animated dye.",
-  "skyblocker.customAnimatedDyes.unableToSetDye": "§cUnable to set a custom animated dye. Please check if you are in Skyblock and holding an item.",
+  "skyblocker.customAnimatedDyes.unableToSetDye": "§cUnable to set a custom animated dye. Please check if you are in SkyBlock and holding an item.",
 
   "skyblocker.customArmorTrims.added": "§fSet a custom armor trim for your currently held item!",
   "skyblocker.customArmorTrims.invalidMaterialOrPattern": "§cYou supplied either an invalid material or an invalid trim pattern!",
@@ -1481,7 +1481,7 @@
   "skyblocker.customArmorTrims.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom armor trim!",
   "skyblocker.customArmorTrims.notAnArmorPiece": "§cThis item isn't an armor piece!",
   "skyblocker.customArmorTrims.removed": "§fRemoved this item's custom armor trim.",
-  "skyblocker.customArmorTrims.unableToSetTrim": "§cUnable to set a custom armor trim. Please check if you are in Skyblock and holding an item.",
+  "skyblocker.customArmorTrims.unableToSetTrim": "§cUnable to set a custom armor trim. Please check if you are in SkyBlock and holding an item.",
 
   "skyblocker.customDyeColors.added": "§fSet a custom dye color for your currently held item!",
   "skyblocker.customDyeColors.invalidHex": "§cInvalid HEX color code!",
@@ -1489,12 +1489,12 @@
   "skyblocker.customDyeColors.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom dye color!",
   "skyblocker.customDyeColors.notDyeable": "§cThis item isn't a dyeable armor piece!",
   "skyblocker.customDyeColors.removed": "§fRemoved this item's custom dye color.",
-  "skyblocker.customDyeColors.unableToSetColor": "§cUnable to set a custom dye color. Please check if you are in Skyblock and holding an item.",
+  "skyblocker.customDyeColors.unableToSetColor": "§cUnable to set a custom dye color. Please check if you are in SkyBlock and holding an item.",
 
   "skyblocker.customItemNames.added": "Set a custom name for your currently held item!",
   "skyblocker.customItemNames.noItem": "You aren't holding an item!",
   "skyblocker.customItemNames.noItemUuid": "You must be holding an item that has a UUID to set a custom item name!",
-  "skyblocker.customItemNames.notOnSkyblock": "You can only set custom item names while in Skyblock!",
+  "skyblocker.customItemNames.notOnSkyblock": "You can only set custom item names while in SkyBlock!",
   "skyblocker.customItemNames.screen.customColor": "Custom",
   "skyblocker.customItemNames.screen.customColorTitle": "Custom Color",
   "skyblocker.customItemNames.screen.gradientColor": "Gradient",
@@ -1534,10 +1534,10 @@
   "skyblocker.disableAll.confirmYes": "[Disable All]",
   "skyblocker.disableAll.failed": "Failed to disable all features.",
   "skyblocker.disableAll.notPending": "Run /skyblocker disableAll first.",
-  "skyblocker.disableAll.popup.description": "Disables all of Skyblocker's features. Use this carefully.",
+  "skyblocker.disableAll.popup.description": "Disables all Skyblocker features. Use this carefully.",
   "skyblocker.disableAll.popup.seriousWarning": "This action is irreversible.",
   "skyblocker.disableAll.popup.title": "Disable All Features",
-  "skyblocker.disableAll.popup.warning": "Are you sure that you want to disable all of Skyblocker's features? %s",
+  "skyblocker.disableAll.popup.warning": "Are you sure that you want to disable all Skyblocker features? %s",
   "skyblocker.disableAll.success": "All features disabled.",
   "skyblocker.disableAll.toast.title": "Skyblocker Disable All",
 
@@ -1692,7 +1692,7 @@
   "skyblocker.itemProtection.added": "§fYour %s will now be protected! §o*your item now feels a little safer :')*",
   "skyblocker.itemProtection.noItemUuid": "§cYou must be holding an item that has a uuid to protect it!",
   "skyblocker.itemProtection.removed": "§fYour %s will §nno longer be protected§f :( - §lBeware of the dangers in doing this!",
-  "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item. Please check if you are in Skyblock and holding an item.",
+  "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item. Please check if you are in SkyBlock and holding an item.",
 
   "skyblocker.itemTooltip.nullMessage": "Item price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
@@ -1725,7 +1725,7 @@
   "skyblocker.museum.resyncFailure.itemRepo": "Item repository hasn't loaded yet",
   "skyblocker.museum.resyncFailure.itemRepo.@Tooltip": "Try again in a few minutes!",
   "skyblocker.museum.resyncFailure.profile": "Unknown profile",
-  "skyblocker.museum.resyncFailure.profile.@Tooltip": "Rejoin Skyblock and try again in a few minutes!",
+  "skyblocker.museum.resyncFailure.profile.@Tooltip": "Rejoin SkyBlock and try again in a few minutes!",
   "skyblocker.museum.resyncFailure.unknownError": "Unknown Error",
   "skyblocker.museum.resyncSuccess": "Successfully resynced your museum item donations!",
 
@@ -1770,7 +1770,7 @@
 
   "skyblocker.rei.skyblockInfo.failedToFind": "Unable to find!",
   "skyblocker.rei.transfer.failed": "Failed to open recipe!\nCheck chat for more info.",
-  "skyblocker.rei.transfer.noRecipe": "No Skyblock recipe found!",
+  "skyblocker.rei.transfer.noRecipe": "No SkyBlock recipe found!",
 
   "skyblocker.relics.markAllFound": "Marked all relics as found",
   "skyblocker.relics.markAllMissing": "Marked all relics as missing",
@@ -1887,7 +1887,7 @@
 
   "skyblocker.utils.locationUpdateError": "Failed to update your location! Some features of the mod may not work properly :(",
   "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "Advanced",
-  "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "Show sounds without a propper name",
+  "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "Show sounds without a proper name",
 
   "skyblocker.valueBreakdownPopup": "Skyblocker Estimated Value Breakdown",
   "skyblocker.valueBreakdownPopup.baseItemPrice": "Base item price: %s",
