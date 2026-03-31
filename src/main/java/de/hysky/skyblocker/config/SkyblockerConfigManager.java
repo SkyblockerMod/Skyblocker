@@ -30,6 +30,7 @@ import de.hysky.skyblocker.utils.datafixer.JsonHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.azureaaron.dandelion.api.ConfigManager;
 import net.azureaaron.dandelion.api.DandelionConfigScreen;
+import net.azureaaron.dandelion.api.PlatformLinks;
 import net.azureaaron.dandelion.api.patching.ConfigPatch;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -139,6 +140,10 @@ public class SkyblockerConfigManager {
 				.category(MiscCategory.create(defaults, config))
 				.categoryIf(Debug.debugEnabled(), DebugCategory.create(defaults, config))
 				.search(search)
+				.platformLinks(PlatformLinks.createBuilder()
+						.link(Component.literal("GitHub"), PlatformLinks.GITHUB_ICON, "https://github.com/SkyblockerMod/Skyblocker")
+						.link(Component.literal("Modrinth"), PlatformLinks.MODRINTH_ICON, "https://modrinth.com/mod/skyblocker-liap")
+						.build())
 		).generateScreen(parent, get().misc.configBackend);
 	}
 
