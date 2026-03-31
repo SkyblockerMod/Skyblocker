@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import net.minecraft.client.gui.Font;
@@ -8,15 +9,16 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class CompactorPreviewTooltipComponent implements ClientTooltipComponent {
 	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
 	private static final Identifier DISABLED_SLOT = Identifier.withDefaultNamespace("container/crafter/disabled_slot");
-	private final Iterable<IntObjectPair<ItemStack>> items;
+	private final Iterable<IntObjectPair<@Nullable FlexibleItemStack>> items;
 	private final IntIntPair dimensions;
 	private final int columns;
 
-	CompactorPreviewTooltipComponent(Iterable<IntObjectPair<ItemStack>> items, IntIntPair dimensions) {
+	CompactorPreviewTooltipComponent(Iterable<IntObjectPair<@Nullable FlexibleItemStack>> items, IntIntPair dimensions) {
 		this.items = items;
 		this.dimensions = dimensions;
 		this.columns = Math.max(dimensions.rightInt(), 3);
@@ -51,7 +53,7 @@ public class CompactorPreviewTooltipComponent implements ClientTooltipComponent 
 		//Draw name - I don't think it needs to be translatable
 		graphics.text(textRenderer, "Contents", x + 8, y + 6, 0xFF404040, false);
 
-		for (IntObjectPair<ItemStack> entry : items) {
+		for (IntObjectPair<@Nullable FlexibleItemStack> entry : items) {
 			int itemX = x + entry.leftInt() % dimensions.rightInt() * 18 + 8;
 			int itemY = y + entry.leftInt() / dimensions.rightInt() * 18 + 18;
 
@@ -60,9 +62,11 @@ public class CompactorPreviewTooltipComponent implements ClientTooltipComponent 
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, DISABLED_SLOT, itemX - 1, itemY - 1, 18, 18);
 				itemX += 18;
 			}
-			if (entry.right() != null) {
-				graphics.item(entry.right(), itemX, itemY);
-				graphics.itemDecorations(textRenderer, entry.right(), itemX, itemY);
+			FlexibleItemStack flexible = entry.right();
+			if (flexible != null) {
+				ItemStack item = flexible.getStackOrThrow();
+				graphics.item(item, itemX, itemY);
+				graphics.itemDecorations(textRenderer, item, itemX, itemY);
 			}
 			// Draw a disabled slot to fill the right slot if there is only one column
 			if (dimensions.rightInt() == 1) {

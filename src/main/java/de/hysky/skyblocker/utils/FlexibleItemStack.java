@@ -6,9 +6,13 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.serialization.DataResult.Error;
 
 import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.mixins.accessors.DataComponentPatchAccessor;
@@ -20,24 +24,27 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 
-/**
- * Acts as a wrapper around {@code ItemStackTemplates}, allowing more flexible use of them and
- * for performant conversions into ItemStacks.
- */
+/// Allows for the flexibility when working with {@link ItemStack ItemStacks} in any situation.
 public final class FlexibleItemStack implements ItemInstance, SkyblockerStack {
-	public static final MapCodec<FlexibleItemStack> MAP_CODEC = ItemStackTemplate.MAP_CODEC.xmap(FlexibleItemStack::new, FlexibleItemStack::getTemplate);
-	public static final Codec<FlexibleItemStack> CODEC = ItemStackTemplate.CODEC.xmap(FlexibleItemStack::new, FlexibleItemStack::getTemplate);
-	@SuppressWarnings("deprecation")
-	// TODO make this an air item sometime later, mainly for usage with recipe air spaces
-	public static final FlexibleItemStack EMPTY = new FlexibleItemStack(new ItemStackTemplate(Items.BARRIER.builtInRegistryHolder(), 1, DataComponentPatchAccessor.invokeInit(new Reference2ObjectArrayMap<>())));
+	private static final Logger LOGGER = LogUtils.getLogger();
+	public static final MapCodec<FlexibleItemStack> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+			Item.CODEC.fieldOf(FIELD_ID).forGetter(FlexibleItemStack::typeHolder),
+			ExtraCodecs.intRange(1, Item.ABSOLUTE_MAX_STACK_SIZE).optionalFieldOf(FIELD_COUNT, 1).forGetter(FlexibleItemStack::count),
+			DataComponentPatch.CODEC.optionalFieldOf(FIELD_COMPONENTS, DataComponentPatch.EMPTY).forGetter(FlexibleItemStack::components)
+			).apply(instance, FlexibleItemStack::new));
+	public static final Codec<FlexibleItemStack> CODEC = Codec.withAlternative(MAP_CODEC.codec(), Item.CODEC, item -> new FlexibleItemStack(item.value()));
+	public static final FlexibleItemStack EMPTY = new FlexibleItemStack((Void) null);
 	private static final DataComponentGetter FALLBACK_COMPONENT_GETTER = new FallbackComponentGetter();
-	private final ItemStackTemplate template;
+	private final Holder<Item> item;
+	private final int count;
+	private final DataComponentPatch components;
 	private @Nullable ItemStack itemStack;
 	private @Nullable String skyblockId;
 	private @Nullable String skyblockApiId;
@@ -48,56 +55,72 @@ public final class FlexibleItemStack implements ItemInstance, SkyblockerStack {
 	private @Nullable PetInfo petInfo;
 	private @Nullable SkyblockItemRarity skyblockRarity;
 
-	public FlexibleItemStack(ItemStackTemplate template) {
-		this.template = Objects.requireNonNull(template);
+	/// Creates a new {@code FlexibleItemStack} and copies the {@code components}.
+	public FlexibleItemStack(Holder<Item> item, int count, @Nullable DataComponentPatch components) {
+		DataComponentPatch copy = DataComponentPatchAccessor.invokeInit((components == null || components == DataComponentPatch.EMPTY) ? new Reference2ObjectArrayMap<>() : new Reference2ObjectArrayMap<>(((DataComponentPatchAccessor) (Object) components).getMap()));
+		this.item = item;
+		this.count = count;
+		this.components = copy;
 	}
 
 	@SuppressWarnings("deprecation")
 	public FlexibleItemStack(Item item) {
-		this(new ItemStackTemplate(item.builtInRegistryHolder(), 1, DataComponentPatchAccessor.invokeInit(new Reference2ObjectArrayMap<>())));
+		this(item.builtInRegistryHolder(), 1, null);
+	}
+
+	public FlexibleItemStack(ItemStackTemplate template) {
+		this(template.item(), template.count(), template.components());
 	}
 
 	public FlexibleItemStack(ItemStack stack) {
-		this(ItemStackTemplate.fromNonEmptyStack(stack));
+		this(stack.typeHolder(), stack.count(), stack.getComponentsPatch());
+
+		// This statement would be first however Checkstyle does not support flexible constructors and instead errors while parsing the file
+		// https://github.com/checkstyle/checkstyle/issues/17052
+		if (stack.isEmpty()) {
+			throw new IllegalStateException("Stack must be non-empty");
+		}
 	}
 
+	@SuppressWarnings("deprecation")
+	private FlexibleItemStack(@Nullable Void voidMarker) {
+		this(Items.AIR.builtInRegistryHolder(), 0, null);
+	}
 
 	@Override
 	public Holder<Item> typeHolder() {
-		return this.template.typeHolder();
+		return this.item;
 	}
 
-	/**
-	 * {@return the associated component value, if available}
-	 */
+	@Override
+	public int count() {
+		return this.count;
+	}
+
+	public DataComponentPatch components() {
+		return this.components;
+	}
+
+	/// {@return the associated component value, if available}
 	@Override
 	public <T> @Nullable T get(DataComponentType<? extends T> type) {
 		if (this.itemStack != null) {
 			return this.itemStack.get(type);
 		} else {
-			return this.template.components().get(FALLBACK_COMPONENT_GETTER, type);
+			return this.components.get(FALLBACK_COMPONENT_GETTER, type);
 		}
 	}
 
-	@Override
-	public int count() {
-		return this.template.count();
-	}
-
-	/**
-	 * Updates the associated data component value.
-	 */
+	/// Updates the associated data component value.
 	public <T> void set(DataComponentType<T> type, T value) {
 		if (this.itemStack != null) {
 			this.itemStack.set(type, value);
 		}
 
-		((DataComponentPatchAccessor) (Object) this.template.components()).getMap().put(type, Optional.of(value));
+		((DataComponentPatchAccessor) (Object) this.components).getMap().put(type, Optional.of(value));
 	}
 
-	/**
-	 * Applies the {@code patch} components on this instance.
-	 */
+	/// Applies the {@code patch} components on this instance.
 	@SuppressWarnings("unchecked")
 	public void applyComponents(DataComponentPatch patch) {
 		for (Map.Entry<DataComponentType<?>, Optional<?>> entry : patch.entrySet()) {
@@ -107,8 +130,9 @@ public final class FlexibleItemStack implements ItemInstance, SkyblockerStack {
 		}
 	}
 
+	/// {@return whether this instance represents the {@link #EMPTY} value}
 	public boolean isEmpty() {
-		return this == EMPTY;
+		return this == EMPTY || this.item.value() == Items.AIR;
 	}
 
 	public FlexibleItemStack copy() {
@@ -116,46 +140,55 @@ public final class FlexibleItemStack implements ItemInstance, SkyblockerStack {
 	}
 
 	public FlexibleItemStack copyWithCount(int count) {
-		return new FlexibleItemStack(new ItemStackTemplate(this.template.typeHolder(), count, this.template.components()));
+		return new FlexibleItemStack(this.item, count, this.components);
 	}
 
-	/**
-	 * {@return the backing template}
-	 */
-	public ItemStackTemplate getTemplate() {
-		return this.template;
+	/// Converts this instance to a {@code ItemStackTemplate}.
+	public ItemStackTemplate toTemplate() {
+		return new ItemStackTemplate(this.item, this.count, this.components);
 	}
 
-	/**
-	 * {@return the {@code ItemStack} or null}
-	 */
+	/// {@return the {@code ItemStack} or null}
 	public @Nullable ItemStack getStack() {
 		this.tryCreateStack();
 
 		return this.itemStack;
 	}
 
-	/**
-	 * {@return the {@code ItemStack} or throws an exception}
-	 *
-	 * @throws NullPointerException if the player is not currently in a world or, if the item or its components are not bound
-	 */
+	/// {@return the {@code ItemStack} or throws an exception}
+	///
+	/// @throws NullPointerException if the player is not currently in a world, or if the item or its components are not bound
 	public ItemStack getStackOrThrow() {
 		this.tryCreateStack();
 
 		return Objects.requireNonNull(this.itemStack, "Not in a world yet (no components bound)");
 	}
 
+	/// {@return the {@code ItemStack} or {@link ItemStack#EMPTY}}
+	public ItemStack getStackOrEmpty() {
+		this.tryCreateStack();
+
+		return this.itemStack == null ? ItemStack.EMPTY : this.itemStack;
+	}
+
 	private void tryCreateStack() {
 		Holder<Item> typeHolder = this.typeHolder();
 
-		if (typeHolder.isBound() && typeHolder.areComponentsBound()) {
+		if (this.isEmpty()) {
+			this.itemStack = ItemStack.EMPTY;
+		} else if (typeHolder.isBound() && typeHolder.areComponentsBound()) {
 			if (this.itemStack == null) {
-				this.itemStack = this.template.create();
+				ItemStack result = new ItemStack(this.item, this.count, this.components);
+				Optional<Error<ItemStack>> error = ItemStack.validateStrict(result).error();
+
+				if (error.isPresent()) {
+					LOGGER.warn("[Skyblocker Flexible Item Stack] Can't create item stack with properties {}, error: {}", this, error.get().message());
+				} else {
+					this.itemStack = result;
+				}
 			}
 		} else {
 			this.itemStack = null;
-
 		}
 	}
 

@@ -58,7 +58,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 	private final List<DonationButton> donationButtons = Lists.newArrayListWithCapacity(BUTTONS_PER_PAGE);
 	private final Button filterButton;
 	private final Button sortButton;
-	private DonationButton hoveredDonationButton;
+	private @Nullable DonationButton hoveredDonationButton;
 	private int pageCount = 0;
 
 	public MuseumManager(Screen screen, int x, int y, int backgroundWidth) {

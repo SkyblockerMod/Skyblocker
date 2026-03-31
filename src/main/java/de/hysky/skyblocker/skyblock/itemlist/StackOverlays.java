@@ -11,6 +11,7 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.RegistryUtils;
 import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
 import io.github.moulberry.repo.data.NEUItem;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.TagParser;
@@ -24,8 +25,7 @@ import net.minecraft.nbt.TagParser;
  */
 public class StackOverlays {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	/** Data Version for 1.21.11 */
-	private static final int DATA_VERSION = 4671;
+	private static final int DATA_VERSION = SharedConstants.getCurrentVersion().dataVersion().version();
 
 	/**
 	 * Applies the necessary overlay for the {@code stack} if applicable.
@@ -45,7 +45,7 @@ public class StackOverlays {
 
 				if (!overlayStack.isEmpty()) {
 					//Apply the component changes from the overlay stack
-					DataComponentPatch changes = overlayStack.getTemplate().components();
+					DataComponentPatch changes = overlayStack.components();
 					stack.applyComponents(changes);
 				}
 			}

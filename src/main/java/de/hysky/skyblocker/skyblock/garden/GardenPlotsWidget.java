@@ -32,6 +32,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
@@ -94,15 +95,15 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	private final ItemButtonWidget[] widgets;
 	private final IntList infectedPlots = new IntArrayList(8);
 	@SuppressWarnings("deprecation")
-	private final ItemStack noneItem = new ItemStack(Items.BARRIER.builtInRegistryHolder(), 1, DataComponentPatch.builder()
+	private final FlexibleItemStack noneItem = new FlexibleItemStack(new ItemStackTemplate(Items.BARRIER.builtInRegistryHolder(), 1, DataComponentPatch.builder()
 			.set(DataComponents.ITEM_NAME, Component.literal("None"))
-			.build());
+			.build()));
 
-	private @Nullable FlexibleItemStack[] items;
+	private @Nullable ItemStack[] items;
 	private int hoveredSlot = -1;
 	private int editingSlotIcon = -1;
 	private long updateFromTabTime = System.currentTimeMillis();
-	private FlexibleItemStack[] customIconOptionsItems = new FlexibleItemStack[0];
+	private ItemStack[] customIconOptionsItems = new ItemStack[0];
 
 
 	public GardenPlotsWidget(int x, int y) {
@@ -132,13 +133,14 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	private void updatePlotItems() {
 		items = Arrays.stream(GardenPlots.GARDEN_PLOTS).map(gardenPlot -> {
 			if (gardenPlot == null) return null;
-			FlexibleItemStack itemStack = gardenPlot.customIcon()
+			ItemStack itemStack = gardenPlot.customIcon()
 					.map(s -> ItemRepository.getItemStack(s, ItemUtils.getItemIdPlaceholder(s)))
-					.orElseGet(() -> gardenPlot.icon().map(FlexibleItemStack::new, s -> ItemRepository.getItemStack(s, ItemUtils.getItemIdPlaceholder(s)))).copy();
+					.map(FlexibleItemStack::getStackOrThrow)
+					.orElseGet(() -> gardenPlot.icon().map(FlexibleItemStack::new, s -> ItemRepository.getItemStack(s, ItemUtils.getItemIdPlaceholder(s))).getStackOrThrow()).copy();
 			itemStack.set(DataComponents.CUSTOM_NAME, Component.literal(gardenPlot.name()).withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD));
 			return itemStack;
-		}).toArray(FlexibleItemStack[]::new);
-		items[12] = new FlexibleItemStack(Items.LODESTONE);
+		}).toArray(ItemStack[]::new);
+		items[12] = new ItemStack(Items.LODESTONE);
 		items[12].set(DataComponents.ITEM_NAME, Component.literal("The Barn"));
 	}
 
@@ -156,7 +158,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 		hoveredSlot = -1;
 		long timeMillis = System.currentTimeMillis();
-		@Nullable FlexibleItemStack[] stacks = editingSlotIcon >= 0 ? customIconOptionsItems : items;
+		@Nullable ItemStack[] stacks = editingSlotIcon >= 0 ? customIconOptionsItems : items;
 		for (int i = 0; i < stacks.length; i++) {
 			int slotX = 7 + (i % 5) * 18;
 			int slotY = 17 + (i / 5) * 18;
@@ -167,7 +169,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, slotX - 3, slotY - 3, 24, 24);
 			}
 
-			ItemStack item = stacks[i].getStackOrThrow();
+			ItemStack item = stacks[i];
 			// Still show hover highlight & pest outline in empty slots.
 			if (item == null) {
 				if (hovered)
@@ -280,7 +282,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 				FlexibleItemStack stack = ItemRepository.getItemStack(s);
 				if (stack == null) return ItemUtils.getItemIdPlaceholder(s);
 				return stack;
-			}).toArray(FlexibleItemStack[]::new);
+			}).map(FlexibleItemStack::getStackOrThrow).toArray(ItemStack[]::new);
 			return;
 		}
 

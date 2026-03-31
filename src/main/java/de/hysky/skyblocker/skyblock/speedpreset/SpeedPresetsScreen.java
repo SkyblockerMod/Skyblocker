@@ -1,20 +1,20 @@
 package de.hysky.skyblocker.skyblock.speedpreset;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.layouts.FrameLayout;
-import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.CommonColors;
+import org.jspecify.annotations.Nullable;
 
 public class SpeedPresetsScreen extends Screen {
-
 	protected final Screen parent;
-	protected SpeedPresetListWidget list;
+
+	protected @Nullable HeaderAndFooterLayout layout;
+	protected @Nullable SpeedPresetListWidget list;
 
 	public SpeedPresetsScreen(Screen parent) {
 		super(Component.translatable("skyblocker.config.general.speedPresets.config"));
@@ -25,44 +25,37 @@ public class SpeedPresetsScreen extends Screen {
 	protected void init() {
 		if (this.list == null)
 			this.list = new SpeedPresetListWidget(0, 0, 24);
-		this.list.setSize(this.width, this.height - 24 - 32);
-		this.list.updatePosition();
-		this.addRenderableWidget(this.list);
 
-		var grid = new GridLayout();
-		grid.spacing(4);
-		var doneButton = Button.builder(CommonComponents.GUI_DONE,
+		HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
+		layout.addTitleHeader(this.title, font);
+
+		list.setWidth(layout.getWidth());
+		list.setHeight(layout.getContentHeight());
+		layout.addToContents(this.list);
+
+		LinearLayout footerLayout = LinearLayout.horizontal();
+		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE,
 						_ -> {
 							this.list.save();
-							assert this.minecraft != null;
 							this.minecraft.setScreen(parent);
 						})
 				.width(Math.max(font.width(CommonComponents.GUI_DONE) + 8, 100))
-				.build();
-		grid.addChild(doneButton, 0, 0, 1, 2);
-		var plusButton = Button.builder(Component.literal("+"),
+				.build(), s -> s.paddingRight(2));
+		footerLayout.addChild(Button.builder(Component.literal("+"),
 						_ -> list.newEntry())
 				.width(20)
-				.build();
-		grid.addChild(plusButton, 0, 2, 1, 1);
-		grid.arrangeElements();
-		FrameLayout.alignInRectangle(grid, 0, this.height - 24, this.width, 24, 0.5f, 0.5f);
-		grid.visitWidgets(this::addRenderableWidget);
-	}
+				.build(), s -> s.paddingLeft(2));
+		layout.addToFooter(footerLayout);
 
-	@Override
-	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		super.extractRenderState(graphics, mouseX, mouseY, delta);
-		assert this.minecraft != null;
-		var renderer = this.minecraft.font;
-		graphics.centeredText(renderer, this.title, this.width / 2,
-				8, CommonColors.WHITE);
+		layout.visitWidgets(this::addRenderableWidget);
+		layout.arrangeElements();
+		list.refreshScrollAmount();
+		list.updatePosition();
 	}
 
 	@Override
 	public void onClose() {
-		assert this.minecraft != null;
-		if (this.list.hasBeenChanged()) {
+		if (this.list != null && this.list.hasBeenChanged()) {
 			minecraft.setScreen(new ConfirmScreen(confirmedAction -> {
 				if (confirmedAction) {
 					this.minecraft.setScreen(parent);
