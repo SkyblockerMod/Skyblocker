@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -9,11 +8,6 @@ public class ConstantsTest {
 	@BeforeAll
 	static void beforeAll() {
 		System.setProperty("skyblocker.iAmABoringPersonAndHateFun", "true");
-	}
-
-	@AfterAll
-	static void afterAll() {
-		System.setProperty("skyblocker.iAmABoringPersonAndHateFun", "");
 	}
 
 	@Test
