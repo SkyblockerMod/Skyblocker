@@ -13,7 +13,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookWidget;
+import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookComponent;
 import de.hysky.skyblocker.utils.Utils;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -44,7 +44,7 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
 
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractRecipeBookScreen;<init>(Lnet/minecraft/world/inventory/RecipeBookMenu;Lnet/minecraft/client/gui/screens/recipebook/RecipeBookComponent;Lnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/network/chat/Component;)V"))
 	private static RecipeBookComponent<?> skyblocker$replaceRecipeBook(RecipeBookComponent<?> original, @Local(name = "player") Player player) {
-		return SkyblockerConfigManager.get().general.itemList.enableItemList && Utils.isOnSkyblock() ? new SkyblockRecipeBookWidget(player.inventoryMenu) : original;
+		return SkyblockerConfigManager.get().general.itemList.enableRecipeBook && Utils.isOnSkyblock() ? new SkyblockRecipeBookComponent(player.inventoryMenu) : original;
 	}
 
 	@ModifyArg(method = "getRecipeBookButtonPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/navigation/ScreenPosition;<init>(II)V"), index = 0)

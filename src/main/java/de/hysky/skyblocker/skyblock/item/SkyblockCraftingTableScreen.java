@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookWidget;
+import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookComponent;
 import java.time.Duration;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ImageButton;
@@ -28,7 +28,7 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 	);
 
 	protected static final Identifier QUICK_CRAFT = SkyblockerMod.id("textures/gui/sprites/quick_craft/quick_craft_overlay.png");
-	private final SkyblockRecipeBookWidget recipeBook = new SkyblockRecipeBookWidget(menu);
+	private final SkyblockRecipeBookComponent recipeBook = new SkyblockRecipeBookComponent(menu);
 	private boolean narrow;
 	private ImageButton moreCraftsButton;
 

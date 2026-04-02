@@ -90,6 +90,8 @@ public class GeneralConfig {
 	}
 
 	public static class ItemList {
+		public boolean enableRecipeBook = true;
+
 		public boolean enableItemList = true;
 
 		public boolean enableCollapsibleEntries = true;

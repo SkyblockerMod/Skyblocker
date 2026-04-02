@@ -179,7 +179,16 @@ public class GeneralCategory {
 						.name(Component.translatable("skyblocker.config.general.itemList"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.itemList.enableRecipeBook"))
+								.description(Component.translatable("skyblocker.config.general.itemList.enableRecipeBook.@Tooltip"))
+								.binding(defaults.general.itemList.enableRecipeBook,
+										() -> config.general.itemList.enableRecipeBook,
+										newValue -> config.general.itemList.enableRecipeBook = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemList.enableItemList"))
+								.description(Component.translatable("skyblocker.config.general.itemList.enableItemList.@Tooltip"))
 								.binding(defaults.general.itemList.enableItemList,
 										() -> config.general.itemList.enableItemList,
 										newValue -> config.general.itemList.enableItemList = newValue)
