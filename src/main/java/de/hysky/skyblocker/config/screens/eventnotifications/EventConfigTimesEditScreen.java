@@ -8,7 +8,7 @@ import de.hysky.skyblocker.utils.config.DurationController;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -48,8 +48,8 @@ public class EventConfigTimesEditScreen extends Screen {
 		list.replaceEntries(eventConfig.reminderTimes.intStream().sorted().mapToObj(Entry::new).toList());
 
 		LinearLayout footerLayout = LinearLayout.horizontal().spacing(2);
-		footerLayout.addChild(Button.builder(Component.translatable("skyblocker.config.eventNotifications.screen.addReminder"), b -> list.addEntry(new Entry(5 * 60))).build());
-		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE, b -> onClose()).build());
+		footerLayout.addChild(Button.builder(Component.translatable("skyblocker.config.eventNotifications.screen.addReminder"), _ -> list.addEntry(new Entry(5 * 60))).build());
+		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
 		layout.addToFooter(footerLayout);
 		layout.visitWidgets(this::addRenderableWidget);
 		repositionElements();
@@ -63,7 +63,7 @@ public class EventConfigTimesEditScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		SkyblockerConfigManager.update(c -> eventConfig.reminderTimes = list.children().stream()
+		SkyblockerConfigManager.update(_ -> eventConfig.reminderTimes = list.children().stream()
 				.map(e -> e.box)
 				.filter(b -> b.valid)
 				.mapToInt(b -> b.seconds)
@@ -99,7 +99,7 @@ public class EventConfigTimesEditScreen extends Screen {
 
 		private Entry(int seconds) {
 			box = new TimeEditBox(seconds);
-			Button buttonDelete = SpriteIconButton.builder(Component.translatable("selectServer.deleteButton"), ignored -> list.removeEntry(this), true).size(20, 20).sprite(DELETE_ICON, ICON_WIDTH, ICON_HEIGHT).build();
+			Button buttonDelete = SpriteIconButton.builder(Component.translatable("selectServer.deleteButton"), _ -> list.removeEntry(this), true).size(20, 20).sprite(DELETE_ICON, ICON_WIDTH, ICON_HEIGHT).build();
 			entryLayout.addChild(box);
 			entryLayout.addChild(buttonDelete);
 			entryLayout.arrangeElements();
@@ -112,10 +112,10 @@ public class EventConfigTimesEditScreen extends Screen {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics guiGraphics, int i, int j, boolean bl, float f) {
+		public void extractContent(GuiGraphicsExtractor guiGraphics, int i, int j, boolean bl, float f) {
 			entryLayout.setPosition(getContentRight() - entryLayout.getWidth(), getContentY());
 			for (AbstractWidget widget : widgets) {
-				widget.render(guiGraphics, i, j, f);
+				widget.extractRenderState(guiGraphics, i, j, f);
 			}
 		}
 
@@ -135,7 +135,7 @@ public class EventConfigTimesEditScreen extends Screen {
 			this.seconds = seconds;
 			setResponder(this::onUpdate);
 			setValue(SkyblockTime.formatTime(seconds).getString());
-			addFormatter((string, _firstCharacterIndex) -> FormattedCharSequence.forward(string, valid ? Style.EMPTY : Style.EMPTY.applyFormat(ChatFormatting.RED)));
+			addFormatter((string, _) -> FormattedCharSequence.forward(string, valid ? Style.EMPTY : Style.EMPTY.applyFormat(ChatFormatting.RED)));
 		}
 
 		private void onUpdate(String s) {
