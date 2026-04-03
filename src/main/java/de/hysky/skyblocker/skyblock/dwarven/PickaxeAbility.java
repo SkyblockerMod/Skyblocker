@@ -33,7 +33,7 @@ public final class PickaxeAbility {
 
 	@Init
 	public static void init() {
-		ClientTickEvents.END_WORLD_TICK.register(level -> {
+		ClientTickEvents.END_LEVEL_TICK.register(_ -> {
 			findPickaxeAbility(Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem());
 			if (cachedAbility == null || cooldownTime >= cooldown || cooldownTime < 0) return;
 			cooldownTime++;
