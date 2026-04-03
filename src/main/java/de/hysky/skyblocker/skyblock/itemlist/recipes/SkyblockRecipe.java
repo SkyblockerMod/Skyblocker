@@ -28,7 +28,10 @@ public interface SkyblockRecipe {
 
 		FlexibleItemStack stack = ItemRepository.getItemStack(input.getItemId());
 		if (stack != null) {
-			return stack.copyWithCount((int) input.getAmount());
+			int amount = (int) input.getAmount();
+			FlexibleItemStack copy = stack.copyWithCount(amount);
+			if (amount > 1) copy.set(DataComponents.MAX_STACK_SIZE, amount);
+			return copy;
 		} else if (input.getItemId().equals("SKYBLOCK_COIN")) {
 			FlexibleItemStack itemStack = new FlexibleItemStack(Items.GOLD_NUGGET);
 			itemStack.set(DataComponents.ITEM_NAME, Component.literal("Skyblock Coins").withStyle(ChatFormatting.GOLD));
