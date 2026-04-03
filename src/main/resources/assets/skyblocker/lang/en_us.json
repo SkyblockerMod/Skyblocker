@@ -115,6 +115,7 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.custom": "Custom",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.none": "None",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling": "Pling",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.search.@Tooltip": "Search more sounds",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "Zombie",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.toast": "Toast:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration": "Toast Duration",
@@ -543,7 +544,10 @@
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableCollapsibleEntries": "Enable Collapsible Entry Groups",
   "skyblocker.config.general.itemList.enableCollapsibleEntries.@Tooltip": "Group together similar items into one entry which can be expanded by clicking on it.\n\nRequires rejoining or reloading REI plugins to apply!",
-  "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
+  "skyblocker.config.general.itemList.enableItemList": "Enable Item List Compatibility",
+  "skyblocker.config.general.itemList.enableItemList.@Tooltip": "Adds the SkyBlock items and recipes in supported item list mods (REI and JEI).",
+  "skyblocker.config.general.itemList.enableRecipeBook": "Enable Recipe Book",
+  "skyblocker.config.general.itemList.enableRecipeBook.@Tooltip": "Adds the SkyBlock items and recipes into the recipe book in the inventory.",
   "skyblocker.config.general.itemList.filter.all": "All",
   "skyblocker.config.general.itemList.filter.entities": "Entities",
   "skyblocker.config.general.itemList.filter.items": "Items",
@@ -1885,6 +1889,8 @@
   "skyblocker.updateRepository.success": "Updated the local repository successfully.",
 
   "skyblocker.utils.locationUpdateError": "Failed to update your location! Some features of the mod may not work properly :(",
+  "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "Advanced",
+  "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "Show sounds without a propper name",
 
   "skyblocker.valueBreakdownPopup": "Skyblocker Estimated Value Breakdown",
   "skyblocker.valueBreakdownPopup.baseItemPrice": "Base item price: %s",

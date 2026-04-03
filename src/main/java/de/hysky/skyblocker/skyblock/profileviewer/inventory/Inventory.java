@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
@@ -49,25 +49,25 @@ public class Inventory implements ProfileViewerPage {
 		this.totalPages = (int) Math.ceil((double) containerList.size() / itemsPerPage);
 	}
 
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int rootYAdjusted = rootY + (26 - dimensions.leftInt() * 3);
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted, 0, 0, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7, 256, 256);
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted, 0, 0, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
 
-		context.drawString(textRenderer,  I18n.get("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
+		graphics.text(textRenderer,  I18n.get("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
 
 		if (containerList.size() > itemsPerPage) {
 			previousPage.setX(rootX + 44);
 			previousPage.setY(rootY + 136);
-			previousPage.render(context, mouseX, mouseY, delta);
+			previousPage.extractRenderState(graphics, mouseX, mouseY, delta);
 
-			context.drawCenteredString(textRenderer, "Page: " + (activePage + 1) + "/" + totalPages, rootX + 88, rootY + 140, Color.WHITE.getRGB());
+			graphics.centeredText(textRenderer, "Page: " + (activePage + 1) + "/" + totalPages, rootX + 88, rootY + 140, Color.WHITE.getRGB());
 
 			nextPage.setX(rootX + 121);
 			nextPage.setY(rootY + 136);
-			nextPage.render(context, mouseX, mouseY, delta);
+			nextPage.extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 
 		int startIndex = activePage * itemsPerPage;
@@ -83,22 +83,22 @@ public class Inventory implements ProfileViewerPage {
 			int x = rootX + 8 + column * 18;
 			int y = rootYAdjusted + 18 + row * 18;
 
-			ItemBackgroundManager.drawBackgrounds(stack, context, x, y);
+			ItemBackgroundManager.drawBackgrounds(stack, graphics, x, y);
 
 			if (ItemProtection.isItemProtected(stack)) {
-				context.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
+				graphics.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
 			}
 
-			context.renderItem(stack, x, y);
-			context.renderItemDecorations(textRenderer, stack, x, y);
-			SlotTextManager.renderSlotText(context, textRenderer, null, stack, i, x, y);
+			graphics.item(stack, x, y);
+			graphics.itemDecorations(textRenderer, stack, x, y);
+			SlotTextManager.extractSlotText(graphics, textRenderer, null, stack, i, x, y);
 
 			if (mouseX > x - 2 && mouseX < x + 16 + 1 && mouseY > y - 2 && mouseY < y + 16 + 1) {
 				tooltip = stack.getTooltipLines(Item.TooltipContext.EMPTY, CLIENT.player, CLIENT.options.advancedItemTooltips ? TooltipFlag.ADVANCED : TooltipFlag.NORMAL);
 			}
 		}
 
-		if (!tooltip.isEmpty()) context.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
+		if (!tooltip.isEmpty()) graphics.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
 	}
 
 	public void nextPage() {

@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.debug;
 
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -26,7 +26,7 @@ public class SnapshotDebug {
 
 	static void init() {
 		if (Debug.debugEnabled()) {
-			WorldRenderExtractionCallback.EVENT.register(SnapshotDebug::extractRendering);
+			LevelRenderExtractionCallback.EVENT.register(SnapshotDebug::extractRendering);
 		}
 	}
 

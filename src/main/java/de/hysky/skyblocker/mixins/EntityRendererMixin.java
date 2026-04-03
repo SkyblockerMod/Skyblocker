@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class EntityRendererMixin {
 
 	@Inject(method = "extractRenderState", at = @At("TAIL"))
-	private void skyblocker$customGlow(CallbackInfo ci, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) EntityRenderState state) {
+	private void skyblocker$customGlow(CallbackInfo ci, @Local(name = "entity") Entity entity, @Local(name = "state") EntityRenderState state) {
 		boolean allowGlowInLivid = LividColor.allowGlow();
 		boolean customGlow = MobGlow.hasOrComputeMobGlow(entity);
 		boolean allowGlow = allowGlowInLivid && state.appearsGlowing() || customGlow;
@@ -45,15 +45,15 @@ public class EntityRendererMixin {
 
 	// This is meant to be separate from the previous injection for organizational purposes.
 	@Inject(method = "extractRenderState", at = @At(value = "TAIL"))
-	private void skyblocker$mobBoundingBox(CallbackInfo ci, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) float partialTick) {
+	private void skyblocker$mobBoundingBox(CallbackInfo ci, @Local(name = "entity") Entity entity, @Local(name = "partialTicks") float partialTicks) {
 		if (MobBoundingBoxes.shouldDrawMobBoundingBox(entity)) {
-			MobBoundingBoxes.submitBox2BeRendered(Boxes.lerpEntityBoundingBox(entity, partialTick), MobBoundingBoxes.getBoxColor(entity));
+			MobBoundingBoxes.submitBox2BeRendered(Boxes.lerpEntityBoundingBox(entity, partialTicks), MobBoundingBoxes.getBoxColor(entity));
 			return;
 		}
 
 		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.HITBOX)) {
 			float[] color = ColorUtils.getFloatComponents(SkyblockerConfigManager.get().slayers.highlightColor.getRGB());
-			MobBoundingBoxes.submitBox2BeRendered(Boxes.lerpEntityBoundingBox(entity, partialTick), color);
+			MobBoundingBoxes.submitBox2BeRendered(Boxes.lerpEntityBoundingBox(entity, partialTicks), color);
 		}
 	}
 

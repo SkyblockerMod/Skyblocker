@@ -28,7 +28,7 @@ public final class DisableAllPopup {
 		Component confirmPrefix = Component.translatable("text.skyblocker.confirm").withColor(CommonColors.RED).withStyle(style -> style.withBold(true));
 		Component confirmComponent = new CountdownComponent(DELAY_S, TimeUnit.SECONDS, confirmPrefix, Style.EMPTY);
 		PopupScreen.Builder builder = new PopupScreen.Builder(parent, Component.translatable("skyblocker.disableAll.popup.title"))
-				.setMessage(Component.translatable("skyblocker.disableAll.popup.warning", Component.translatable("skyblocker.disableAll.popup.seriousWarning").withColor(CommonColors.SOFT_RED)))
+				.addMessage(Component.translatable("skyblocker.disableAll.popup.warning", Component.translatable("skyblocker.disableAll.popup.seriousWarning").withColor(CommonColors.SOFT_RED)))
 				.addButton(confirmComponent, this::tryReset)
 				.addButton(CommonComponents.GUI_CANCEL, PopupScreen::onClose);
 

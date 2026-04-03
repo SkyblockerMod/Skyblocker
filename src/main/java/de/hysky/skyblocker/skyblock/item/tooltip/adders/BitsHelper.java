@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -217,7 +218,8 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 				}
 			}
 		}
-		ItemStack foundItemStack = ItemRepository.getItemStack(itemID);
+		FlexibleItemStack flexibleItemStack = ItemRepository.getItemStack(itemID);
+		ItemStack foundItemStack = flexibleItemStack == null ? null : flexibleItemStack.getStackOrThrow();
 		if (itemID.isEmpty()) {   // a bit dirty, but basically if itemID is empty then it is normal item and NOT category
 			lines.add(Component.empty()
 					.append(Component.literal("Bits Cost: ").withStyle(ChatFormatting.AQUA))

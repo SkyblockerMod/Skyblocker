@@ -7,13 +7,14 @@ import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -57,7 +58,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 	private final List<DonationButton> donationButtons = Lists.newArrayListWithCapacity(BUTTONS_PER_PAGE);
 	private final Button filterButton;
 	private final Button sortButton;
-	private DonationButton hoveredDonationButton;
+	private @Nullable DonationButton hoveredDonationButton;
 	private int pageCount = 0;
 
 	public MuseumManager(Screen screen, int x, int y, int backgroundWidth) {
@@ -72,8 +73,8 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 		this.searchField.setHint(Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
 
 		// Initialize page navigation buttons
-		this.nextPageButton = new ImageButton(getX() + 93, getY() + 133, 12, 17, RecipeBookPage.PAGE_FORWARD_SPRITES, _ignored -> {});
-		this.prevPageButton = new ImageButton(getX() + 38, getY() + 133, 12, 17, RecipeBookPage.PAGE_BACKWARD_SPRITES, _ignored -> {});
+		this.nextPageButton = new ImageButton(getX() + 93, getY() + 133, 12, 17, RecipeBookPage.PAGE_FORWARD_SPRITES, _ -> {});
+		this.prevPageButton = new ImageButton(getX() + 38, getY() + 133, 12, 17, RecipeBookPage.PAGE_BACKWARD_SPRITES, _ -> {});
 
 		donations = MuseumItemCache.getDonations();
 		ITEM_FILTER.updateCategories();
@@ -113,7 +114,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 		ITEM_SORTER.applySort(filteredDonations);
 		updateSearchResults(false);
 
-		Screens.getButtons(screen).add(this);
+		Screens.getWidgets(screen).add(this);
 		screen.setFocused(this);
 	}
 
@@ -171,16 +172,16 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 		excludedDonationIds.clear();
 		for (Donation item : donations) {
 			StringBuilder searchableContent = new StringBuilder();
-			ItemStack itemStack = ItemRepository.getItemStack(item.getId());
+			FlexibleItemStack itemStack = ItemRepository.getItemStack(item.getId());
 			if (itemStack != null) {
-				searchableContent.append(itemStack.getHoverName().getString())
-						.append(ItemUtils.getConcatenatedLore(itemStack));
+				searchableContent.append(itemStack.getStackOrThrow().getHoverName().getString())
+						.append(ItemUtils.getConcatenatedLore(itemStack.getStackOrThrow()));
 			}
 			if (item.getSet() != null && !item.getSet().isEmpty()) {
 				for (ObjectObjectMutablePair<String, PriceData> piece : item.getSet()) {
-					ItemStack pieceStack = ItemRepository.getItemStack(piece.left());
-					if (pieceStack != null) searchableContent.append(pieceStack.getHoverName().getString())
-							.append(ItemUtils.getConcatenatedLore(pieceStack));
+					FlexibleItemStack pieceStack = ItemRepository.getItemStack(piece.left());
+					if (pieceStack != null) searchableContent.append(pieceStack.getStackOrThrow().getHoverName().getString())
+							.append(ItemUtils.getConcatenatedLore(pieceStack.getStackOrThrow()));
 				}
 			}
 			if (!searchableContent.toString().toLowerCase(Locale.ENGLISH).contains(searchQuery.toLowerCase(Locale.ENGLISH))) {
@@ -192,24 +193,24 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		// Render the background texture for the widget
-		context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
-		searchField.render(context, mouseX, mouseY, delta);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
+		searchField.extractRenderState(graphics, mouseX, mouseY, a);
 
 		if (this.sortButton.active) {
 			int iconX = this.sortButton.getX() + (this.sortButton.getWidth() - 16) / 2;
 			int iconY = this.sortButton.getY() + (this.sortButton.getHeight() - 16) / 2;
 			ItemStack stack = ITEM_SORTER.getCurrentSortingItem();
-			sortButton.render(context, mouseX, mouseY, delta);
-			context.renderFakeItem(stack, iconX, iconY);
+			sortButton.extractRenderState(graphics, mouseX, mouseY, a);
+			graphics.fakeItem(stack, iconX, iconY);
 		}
 
 		if (this.filterButton.active) {
 			int iconX = this.filterButton.getX() + (this.filterButton.getWidth() - 16) / 2;
 			int iconY = this.filterButton.getY() + (this.filterButton.getHeight() - 16) / 2;
-			filterButton.render(context, mouseX, mouseY, delta);
-			context.renderFakeItem(Ico.HOPPER, iconX, iconY);
+			filterButton.extractRenderState(graphics, mouseX, mouseY, a);
+			graphics.fakeItem(Ico.HOPPER.getStackOrThrow(), iconX, iconY);
 		}
 
 		if (ItemRepository.filesImported()) {
@@ -218,31 +219,31 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 				Component text = Component.translatable("gui.recipebook.page", currentPage + 1, this.pageCount);
 				int width = TEXT_RENDERER.width(text);
 
-				context.drawString(TEXT_RENDERER, text, getX() - width / 2 + 73, getY() + 137, -1, false);
+				graphics.text(TEXT_RENDERER, text, getX() - width / 2 + 73, getY() + 137, -1, false);
 			}
 
 			// Render donation buttons
 			this.hoveredDonationButton = null;
 			for (DonationButton resultButton : donationButtons) {
-				resultButton.render(context, mouseX, mouseY, delta);
+				resultButton.extractRenderState(graphics, mouseX, mouseY, a);
 
 				if (resultButton.visible && resultButton.isHovered()) this.hoveredDonationButton = resultButton;
 			}
 
 			// Render the page flip buttons
-			if (this.prevPageButton.active) this.prevPageButton.render(context, mouseX, mouseY, delta);
-			if (this.nextPageButton.active) this.nextPageButton.render(context, mouseX, mouseY, delta);
+			if (this.prevPageButton.active) this.prevPageButton.extractRenderState(graphics, mouseX, mouseY, a);
+			if (this.nextPageButton.active) this.nextPageButton.extractRenderState(graphics, mouseX, mouseY, a);
 
-			drawTooltip(context, mouseX, mouseY);
+			extractTooltip(graphics, mouseX, mouseY);
 		} else {
-			context.drawCenteredString(TEXT_RENDERER, "Loading...", getX() + (BACKGROUND_WIDTH / 2), getY() + (BACKGROUND_HEIGHT / 2), CommonColors.WHITE);
+			graphics.centeredText(TEXT_RENDERER, "Loading...", getX() + (BACKGROUND_WIDTH / 2), getY() + (BACKGROUND_HEIGHT / 2), CommonColors.WHITE);
 		}
 	}
 
-	public void drawTooltip(GuiGraphics context, int x, int y) {
+	public void extractTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 		// Draw the tooltip of the hovered result button if one is hovered over
 		if (this.hoveredDonationButton != null) {
-			context.setComponentTooltipForNextFrame(TEXT_RENDERER, hoveredDonationButton.getItemTooltip(), x, y, null);
+			graphics.setComponentTooltipForNextFrame(TEXT_RENDERER, hoveredDonationButton.getItemTooltip(), x, y, null);
 		}
 	}
 

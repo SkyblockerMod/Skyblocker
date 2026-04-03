@@ -19,7 +19,7 @@ import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -44,7 +44,7 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.util.List;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class Debug {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -71,9 +71,9 @@ public class Debug {
 	public static void init() {
 		if (!debugEnabled()) return;
 		SnapshotDebug.init();
-		KeyMapping dumpNearbyEntitiesKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
-		KeyMapping dumpHoveredItemKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
+		KeyMapping dumpNearbyEntitiesKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
+		KeyMapping dumpHoveredItemKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
 				literal(SkyblockerMod.NAMESPACE).then(literal("debug")
 						.then(dumpPlayersCommand())
 						.then(ItemUtils.dumpHeldItemCommand())
@@ -85,6 +85,7 @@ public class Debug {
 						.then(dumpBiome())
 						.then(dumpActionBar())
 						.then(auditMixins())
+						.then(prefixTest())
 				)
 		));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -99,21 +100,21 @@ public class Debug {
 							return writeView.buildResult();
 						})
 						.map(NbtUtils::toPrettyComponent)
-						.forEach(text -> client.player.displayClientMessage(text, false));
+						.forEach(text -> client.player.sendSystemMessage(text));
 				keyDown = true;
 			} else if (!dumpNearbyEntitiesKey.consumeClick() && keyDown) {
 				keyDown = false;
 			}
 		});
-		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.BEFORE_INIT.register((client, screen, _, _) -> {
 			if (!(screen instanceof AbstractContainerScreen<?> handledScreen)) return;
-			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, keyInput) -> {
+			ScreenKeyboardEvents.afterKeyPress(screen).register((_, keyInput) -> {
 				Slot focusedSlot = ((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot();
 				if (dumpHoveredItemKey.matches(keyInput) && client.player != null && focusedSlot != null && focusedSlot.hasItem()) {
 					if (!keyInput.hasShiftDown()) {
-						client.player.displayClientMessage(Constants.PREFIX.get().append("Hovered Item: ").append(SkyblockerConfigManager.get().debug.dumpFormat.format(focusedSlot.getItem())), false);
+						client.player.sendSystemMessage(Constants.PREFIX.get().append("Hovered Item: ").append(SkyblockerConfigManager.get().debug.dumpFormat.format(focusedSlot.getItem())));
 					} else {
-						client.player.displayClientMessage(Constants.PREFIX.get().append("Held Item NW Calcs: ").append(Component.literal(SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getItem()).calculations()).getOrThrow()))), false);
+						client.player.sendSystemMessage(Constants.PREFIX.get().append("Held Item NW Calcs: ").append(Component.literal(SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getItem()).calculations()).getOrThrow()))));
 					}
 				}
 			});
@@ -123,7 +124,7 @@ public class Debug {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> dumpPlayersCommand() {
 		return literal("dumpPlayers")
 				.executes(context -> {
-					context.getSource().getWorld().players().forEach(player -> context.getSource().sendFeedback(Component.nullToEmpty("'" + player.getName().getString() + "'")));
+					context.getSource().getLevel().players().forEach(player -> context.getSource().sendFeedback(Component.nullToEmpty("'" + player.getName().getString() + "'")));
 					return Command.SINGLE_SUCCESS;
 				});
 	}
@@ -149,7 +150,7 @@ public class Debug {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> dumpArmorStandHeadTextures() {
 		return literal("dumpArmorStandHeadTextures")
 				.executes(context -> {
-					List<ArmorStand> armorStands = context.getSource().getWorld().getEntitiesOfClass(ArmorStand.class, context.getSource().getPlayer().getBoundingBox().inflate(8d), EntitySelector.ENTITY_NOT_BEING_RIDDEN);
+					List<ArmorStand> armorStands = context.getSource().getLevel().getEntitiesOfClass(ArmorStand.class, context.getSource().getPlayer().getBoundingBox().inflate(8d), EntitySelector.ENTITY_NOT_BEING_RIDDEN);
 
 					for (ArmorStand armorStand : armorStands) {
 						Iterable<ItemStack> equippedItems = ItemUtils.getArmor(armorStand);
@@ -167,7 +168,7 @@ public class Debug {
 		return literal("dumpBiome")
 				.executes(context -> {
 					FabricClientCommandSource source = context.getSource();
-					Holder<Biome> biome = source.getWorld().getBiome(source.getPlayer().blockPosition());
+					Holder<Biome> biome = source.getLevel().getBiome(source.getPlayer().blockPosition());
 
 					if (biome != null && biome.value() != null) {
 						String biomeData = Biome.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, biome.value())
@@ -198,9 +199,17 @@ public class Debug {
 
 	private static LiteralArgumentBuilder<FabricClientCommandSource> auditMixins() {
 		return literal("auditMixins")
-				.executes(context -> {
+				.executes(_ -> {
 					MixinEnvironment.getCurrentEnvironment().audit();
 
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> prefixTest() {
+		return literal("prefixTest")
+				.executes(context -> {
+					context.getSource().sendFeedback(Constants.PREFIX.get());
 					return Command.SINGLE_SUCCESS;
 				});
 	}

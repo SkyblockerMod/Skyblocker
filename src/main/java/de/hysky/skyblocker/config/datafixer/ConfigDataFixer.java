@@ -65,7 +65,9 @@ public class ConfigDataFixer {
 		Schema schema8 = builder.addSchema(8, Schema::new);
 		builder.addFixer(new ConfigFix7Farming(schema8, true));
 		Schema schema9 = builder.addSchema(9, Schema::new);
-		builder.addFixer(new ConfigFix8EventNotifications(schema9, true));
+		builder.addFixer(new ConfigFix8ItemList(schema9, true));
+		Schema schema10 = builder.addSchema(10, Schema::new);
+		builder.addFixer(new ConfigFix8EventNotifications(schema10, true));
 
 		return dataFixer = builder.build().fixer();
 	}

@@ -5,7 +5,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -59,29 +59,29 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderWidget(context, mouseX, mouseY, delta);
+	public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		super.extractWidgetRenderState(graphics, mouseX, mouseY, delta);
 		WidgetsListEntry hoveredEntry = getHovered();
 		if (hoveredEntry != null) {
-			hoveredEntry.renderTooltip(context, hoveredEntry.getX(), hoveredEntry.getY(), hoveredEntry.getWidth(), hoveredEntry.getHeight(), mouseX, mouseY);
+			hoveredEntry.extractTooltip(graphics, hoveredEntry.getX(), hoveredEntry.getY(), hoveredEntry.getWidth(), hoveredEntry.getHeight(), mouseX, mouseY);
 		}
 		if (backButton != null) {
-			backButton.render(context, mouseX, mouseY, delta);
+			backButton.extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 
 		if (!enableEditing || this.getSelected() == null) return;
 		if (rightUpArrowHovered || rightDownArrowHovered) {
-			context.setTooltipForNextFrame(minecraft.font, Component.literal("Move widget"), mouseX, mouseY);
+			graphics.setTooltipForNextFrame(minecraft.font, Component.literal("Move widget"), mouseX, mouseY);
 		}
 
 		if (leftUpArrowHovered || leftDownArrowHovered) {
-			context.setTooltipForNextFrame(minecraft.font, Component.literal("Change selection"), mouseX, mouseY);
+			graphics.setTooltipForNextFrame(minecraft.font, Component.literal("Change selection"), mouseX, mouseY);
 		}
 	}
 
 	@Override
-	protected void renderItem(GuiGraphics context, int mouseX, int mouseY, float delta, WidgetsListEntry entry) {
-		super.renderItem(context, mouseX, mouseY, delta, entry);
+	protected void extractItem(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, WidgetsListEntry entry) {
+		super.extractItem(graphics, mouseX, mouseY, delta, entry);
 		if (!enableEditing || this.getSelected() != entry) return;
 
 		int x = entry.getX();
@@ -97,13 +97,13 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 		rightDownArrowHovered = rightXGood && isOnDown;
 		leftUpArrowHovered = leftXGood && isOnUp;
 		leftDownArrowHovered = leftXGood && isOnDown;
-		context.fill(getRowRight() + 2, y + 5, getRowRight() + 15, y + 27, MOVE_COLOR);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, rightUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, getRowRight() - 15, y, 32, 32);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, rightDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, getRowRight() - 15, y, 32, 32);
+		graphics.fill(getRowRight() + 2, y + 5, getRowRight() + 15, y + 27, MOVE_COLOR);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, rightUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, getRowRight() - 15, y, 32, 32);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, rightDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, getRowRight() - 15, y, 32, 32);
 
-		context.fill(x - 15, y + 5, x - 2, y + 27, SELECT_COLOR);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 32, y, 32, 32);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 32, y, 32, 32);
+		graphics.fill(x - 15, y + 5, x - 2, y + 27, SELECT_COLOR);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 32, y, 32, 32);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 32, y, 32, 32);
 	}
 
 	@Override

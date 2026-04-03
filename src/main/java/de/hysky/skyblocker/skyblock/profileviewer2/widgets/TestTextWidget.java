@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 
@@ -12,7 +12,7 @@ public final class TestTextWidget extends ProfileViewerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float a) {
-		graphics.drawString(getFont(), this.getMessage(), this.getX(), this.getY(), CommonColors.WHITE);
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		graphics.text(getFont(), this.getMessage(), this.getX(), this.getY(), CommonColors.WHITE);
 	}
 }

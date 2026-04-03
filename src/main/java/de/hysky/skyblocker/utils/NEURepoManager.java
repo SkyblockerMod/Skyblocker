@@ -17,7 +17,7 @@ import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
 import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
 import io.github.moulberry.repo.util.NEUId;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -92,9 +92,9 @@ public class NEURepoManager {
 	 */
 	@Init
 	public static void init() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-						.then(ClientCommandManager.literal("updateRepository").executes(context -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
+				dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+						.then(ClientCommands.literal("updateRepository").executes(context -> {
 							deleteAndDownloadRepository(context.getSource().getPlayer());
 							return Command.SINGLE_SUCCESS;
 						}))
@@ -210,7 +210,7 @@ public class NEURepoManager {
 		}
 
 		Minecraft.getInstance().execute(() ->
-			player.displayClientMessage(Constants.PREFIX.get().append(text), false)
+			player.sendSystemMessage(Constants.PREFIX.get().append(text))
 		);
 	}
 

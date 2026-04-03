@@ -34,7 +34,7 @@ public class GeneralCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.skyblockerScreen"))
 						.prompt(Component.translatable("text.skyblocker.open"))
-						.action(screen -> Minecraft.getInstance().setScreen(new SkyblockerScreen()))
+						.action(_ -> Minecraft.getInstance().setScreen(new SkyblockerScreen()))
 						.build())
 
 				// Disable All
@@ -179,7 +179,16 @@ public class GeneralCategory {
 						.name(Component.translatable("skyblocker.config.general.itemList"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.itemList.enableRecipeBook"))
+								.description(Component.translatable("skyblocker.config.general.itemList.enableRecipeBook.@Tooltip"))
+								.binding(defaults.general.itemList.enableRecipeBook,
+										() -> config.general.itemList.enableRecipeBook,
+										newValue -> config.general.itemList.enableRecipeBook = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemList.enableItemList"))
+								.description(Component.translatable("skyblocker.config.general.itemList.enableItemList.@Tooltip"))
 								.binding(defaults.general.itemList.enableItemList,
 										() -> config.general.itemList.enableItemList,
 										newValue -> config.general.itemList.enableItemList = newValue)
@@ -248,7 +257,7 @@ public class GeneralCategory {
 								.binding(defaults.general.itemTooltip.enableCraftingCost,
 										() -> config.general.itemTooltip.enableCraftingCost,
 										newValue -> config.general.itemTooltip.enableCraftingCost = newValue)
-								.listener((ignored, updateType) -> {
+								.listener((_, updateType) -> {
 									if (updateType == UpdateType.VALUE_CHANGE) CraftPriceTooltip.clearCache();
 								})
 								.controller(ConfigUtils.createEnumController())
