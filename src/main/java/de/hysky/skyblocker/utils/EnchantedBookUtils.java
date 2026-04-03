@@ -5,8 +5,10 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 public final class EnchantedBookUtils {
 	private static final Map<String, String> API_ID_OVERRIDES = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
@@ -22,7 +24,7 @@ public final class EnchantedBookUtils {
 
 				String actualId = NEURepoManager.getConstants().getBazaarStocks().getBazaarStockOrDefault(itemId);
 				if (itemId.equals(actualId)) return; // not in bazaar stocks
-				String guessId = getApiIdByName(TextTransformer.fromLegacy(item.getLore().getFirst()));
+				String guessId = getApiIdByName(TextTransformer.fromLegacy(getEnchantNameFromLore(item.getLore())));
 				if (guessId.equals(actualId)) return; // not renamed
 				API_ID_OVERRIDES.put(guessId, actualId);
 			});
@@ -41,5 +43,13 @@ public final class EnchantedBookUtils {
 		boolean isUltimate = !enchantName.getSiblings().isEmpty() && enchantName.getSiblings().getLast().getStyle().isBold();
 		String id = "ENCHANTMENT_" + (isUltimate ? "ULTIMATE_" : "") + String.join("_", parts);
 		return API_ID_OVERRIDES.getOrDefault(id, id);
+	}
+
+	public static String getEnchantNameFromLore(List<String> lore) {
+		Optional<String> line = lore.stream()
+				.filter(x -> !x.contains("Combinable in Anvil"))
+				.filter(x -> !x.isEmpty())
+				.findFirst();
+		return line.orElse("");
 	}
 }
