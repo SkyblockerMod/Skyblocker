@@ -249,6 +249,15 @@ public final class ItemUtils {
 					return EnchantedBookUtils.getApiIdByName(lines.get(2));
 				}
 
+				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().endsWith("Experimentation Table RNG")) {
+					Component stackName = itemStack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+					return switch (stackName.getString()) {
+							case "Titanic Experience Bottle" -> "TITANIC_EXP_BOTTLE";
+							case "Grand Experience Bottle" -> "GRAND_EXP_BOTTLE";
+							default -> EnchantedBookUtils.getApiIdByName(stackName);
+					};
+				}
+
 				if (itemStack instanceof ItemStack realStack && itemStack.has(DataComponents.CUSTOM_NAME)) {
 					Component stackName = itemStack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
 					// Enchanted Books in the Bazaar
