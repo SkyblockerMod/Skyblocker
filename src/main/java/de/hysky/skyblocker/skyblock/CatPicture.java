@@ -40,23 +40,23 @@ public class CatPicture {
 		}
 	}
 
-	private static void extractRenderState(EmptyRenderState state, LevelRenderState worldState, SubmitNodeCollector commandQueue) {
+	private static void extractRenderState(EmptyRenderState state, LevelRenderState levelState, SubmitNodeCollector submitNodeCollector) {
 		ItemFrameRenderState itemFrameState = new ItemFrameRenderState();
 		((MinecraftAccessor) Minecraft.getInstance()).getBlockModelResolver().updateForItemFrame(itemFrameState.frameModel, false, true);
 
 		PoseStack matrices = new PoseStack();
 		matrices.pushPose();
-		matrices.translate(-worldState.cameraRenderState.pos.x + RENDER_POSITION.x + 1, -worldState.cameraRenderState.pos.y + RENDER_POSITION.y, -worldState.cameraRenderState.pos.z + RENDER_POSITION.z + 1);
+		matrices.translate(-levelState.cameraRenderState.pos.x + RENDER_POSITION.x + 1, -levelState.cameraRenderState.pos.y + RENDER_POSITION.y, -levelState.cameraRenderState.pos.z + RENDER_POSITION.z + 1);
 		matrices.mulPose(Axis.YP.rotationDegrees(180));
 
 		// Render Item Frame
-		itemFrameState.frameModel.submitWithZOffset(matrices, commandQueue, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+		itemFrameState.frameModel.submitWithZOffset(matrices, submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
 
 		// Render Kitty
 		matrices.translate(1, 1, 0);
 		matrices.mulPose(Axis.ZP.rotationDegrees(180.0F));
 
-		commandQueue.submitCustomGeometry(matrices, RenderTypes.text(TEXTURE), (matricesEntry, buffer) -> {
+		submitNodeCollector.submitCustomGeometry(matrices, RenderTypes.text(TEXTURE), (matricesEntry, buffer) -> {
 			float z = 1F - 1 / 16f - 1 / 2048f;
 			buffer.addVertex(matricesEntry, 0.0F, 1, z).setColor(CommonColors.WHITE).setUv(0.0F, 1.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
 			buffer.addVertex(matricesEntry, 1, 1, z).setColor(CommonColors.WHITE).setUv(1.0F, 1.0F).setLight(LightCoordsUtil.FULL_BRIGHT);

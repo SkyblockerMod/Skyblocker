@@ -44,9 +44,9 @@
   "accessWidener": "skyblocker.classtweaker",
   "depends": {
     "fabricloader": ">=0.18.5",
-    "fabric-api": ">=0.144.3+26.1",
+    "fabric-api": ">=0.145.3+26.1.1",
 	"dandelion": ">=1.0.0-alpha.18+26.1",
-    "yet_another_config_lib_v3": ">=3.9.0+26.1",
+    "yet_another_config_lib_v3": ">=3.9.2+26.1",
 	"fabric-language-kotlin": "*",
     "hm-api": ">=1.0.3+26.1",
     "minecraft": "~26.1",
@@ -56,7 +56,8 @@
   },
   "breaks": {
     "forcecloseworldloadingscreen": "<=2.2.0",
-    "skyblockmod": "<=1.10.7"
+    "skyblockmod": "<=1.10.7",
+	"sodium": "<=0.8.7"
   },
   "custom": {
     "modmenu": {
