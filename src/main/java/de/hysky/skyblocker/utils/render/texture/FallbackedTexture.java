@@ -69,11 +69,11 @@ public interface FallbackedTexture<T> extends Supplier<T> {
 	@Init
 	static void init() {
 		Identifier id = SkyblockerMod.id("fallback_texture_reloader");
-		ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(id,
-				(sharedState, executor, preparationBarrier, executor2) -> CompletableFuture
+		ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(id,
+				(_, executor, preparationBarrier, _) -> CompletableFuture
 						.supplyAsync(() -> Unit.INSTANCE, executor)
 						.thenCompose(preparationBarrier::wait)
-						.thenAcceptAsync(unit -> UPDATE_CALLBACKS.forEach(Runnable::run)));
-		ResourceLoader.get(PackType.CLIENT_RESOURCES).addReloaderOrdering(ResourceReloaderKeys.AFTER_VANILLA, id);
+						.thenAcceptAsync(_ -> UPDATE_CALLBACKS.forEach(Runnable::run)));
+		ResourceLoader.get(PackType.CLIENT_RESOURCES).addListenerOrdering(ResourceReloaderKeys.AFTER_VANILLA, id);
 	}
 }

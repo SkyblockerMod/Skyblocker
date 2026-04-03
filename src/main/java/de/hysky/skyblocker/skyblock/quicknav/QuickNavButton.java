@@ -39,6 +39,8 @@ public class QuickNavButton extends AbstractWidget {
 	private static final long TOGGLE_DURATION = 1000;
 	@SuppressWarnings("unchecked")
 	private static final @Nullable FallbackedTexture<Identifier>[] TAB_TEXTURES = new FallbackedTexture[14];
+	@SuppressWarnings("unchecked")
+	private static final @Nullable FallbackedTexture<Identifier>[] TAB_TEXTURES_SELECTED = new FallbackedTexture[14];
 
 	private final int index;
 	private final boolean toggled;
@@ -193,10 +195,11 @@ public class QuickNavButton extends AbstractWidget {
 	}
 
 	private Identifier getTexture() {
-		FallbackedTexture<Identifier> texture = TAB_TEXTURES[index];
+		var textures = renderInFront ? TAB_TEXTURES_SELECTED : TAB_TEXTURES;
+		FallbackedTexture<Identifier> texture = textures[index];
 		if (texture != null) return texture.get();
 		// Construct the texture identifier based on the index and toggled state
-		return (TAB_TEXTURES[index] = FallbackedTexture.ofGuiSprite(
+		return (textures[index] = FallbackedTexture.ofGuiSprite(
 				SkyblockerMod.id("quick_nav/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (renderInFront ? "selected" : "unselected") + "_" + (index % 7 + 1)),
 				Identifier.withDefaultNamespace("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (renderInFront ? "selected" : "unselected") + "_" + (index % 7 + 1))
 		)).get();

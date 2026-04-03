@@ -64,7 +64,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	private static final Identifier SLOT_TEXTURE = Identifier.withDefaultNamespace("container/slot");
 	private static final Identifier EMPTY_SLOT = SkyblockerMod.id("equipment/empty_icon");
 	private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
-	private static final FallbackedTexture<Identifier> BACKGROUND = FallbackedTexture.ofTexture(
+	public static final FallbackedTexture<Identifier> BACKGROUND = FallbackedTexture.ofTexture(
 			SkyblockerMod.id("textures/gui/container/skyblock_inventory.png"),
 			INVENTORY_LOCATION);
 
@@ -148,7 +148,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 
 	/**
 	 * Draws the equipment slots in the foreground layer after vanilla slots are drawn
-	 * in {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen#render(GuiGraphics, int, int, float) HandledScreen#render(DrawContext, int, int, float)}.
+	 * in {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen#extractRenderState(GuiGraphicsExtractor, int, int, float)} (GuiGraphics, int, int, float) HandledScreen#render(DrawContext, int, int, float)}.
 	 */
 	@Override
 	protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
@@ -191,15 +191,8 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 
 	@Override
 	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-		if (BACKGROUND.isUsingFallback()) {
-			super.extractBackground(graphics, mouseX, mouseY, a);
-		} else {
-			int x = this.leftPos;
-			int y = this.topPos;
-			context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND.get(), x, y, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
-			renderEntityInInventoryFollowsMouse(context, x + 26, y + 8, x + 75, y + 78, 30, 0.0625F, mouseX, mouseY, this.minecraft.player);
-			return;
-		}
+		super.extractBackground(graphics, mouseX, mouseY, a);
+		if (!BACKGROUND.isUsingFallback()) return;
 		for (int i = 0; i < 3; i++) {
 			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, leftPos + 76, topPos + 7 + i * 18, 18, 18);
 		}

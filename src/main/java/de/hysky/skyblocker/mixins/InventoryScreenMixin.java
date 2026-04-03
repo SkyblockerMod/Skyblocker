@@ -1,10 +1,14 @@
 package de.hysky.skyblocker.mixins;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
 import de.hysky.skyblocker.injected.RecipeBookHolder;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 
+import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
+import net.minecraft.resources.Identifier;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -65,6 +69,13 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
 		// In the rest of Skyblock, status effects are shown when hideStatusEffectOverlay is false
 		if (Utils.isOnSkyblock()) return original && !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay;
 		// In vanilla, status effects are shown as normal
+		return original;
+	}
+
+	@ModifyExpressionValue(method = "extractBackground", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;INVENTORY_LOCATION:Lnet/minecraft/resources/Identifier;", opcode = Opcodes.GETSTATIC))
+	private Identifier skyblocker$getBackground(Identifier original) {
+		// gotta do this, if I don't call super in SkyblockInventoryScreen quick nav doesn't get rendered
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory) return SkyblockInventoryScreen.BACKGROUND.get();
 		return original;
 	}
 
