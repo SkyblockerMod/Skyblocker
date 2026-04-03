@@ -3,9 +3,9 @@ package de.hysky.skyblocker.utils.render.gui;
 import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class DropdownWidget<T> extends AbstractContainerWidget {
 	private static final Minecraft client = Minecraft.getInstance();
@@ -31,7 +31,7 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 	private int maxHeight;
 
 	public DropdownWidget(Minecraft minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected, Consumer<Boolean> openedCallback) {
-		super(x, y, width, HEADER_HEIGHT, Component.empty());
+		super(x, y, width, HEADER_HEIGHT, Component.empty(), AbstractScrollArea.defaultSettings(4));
 		this.maxHeight = maxHeight;
 		this.entries = entries;
 		this.selectCallback = selectCallback;
@@ -54,14 +54,14 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		dropdownList.visible = open;
-		dropdownList.render(context, mouseX, mouseY, delta);
-		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, CommonColors.BLACK);
-		HudHelper.drawBorder(context, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, CommonColors.WHITE);
-		context.drawString(client.font, ">", getX() + 4, getY() + 6, CommonColors.LIGHTER_GRAY, true);
-		context.drawString(client.font, selected.toString(), getX() + 12, getY() + 6, CommonColors.WHITE, true);
-		if (isMouseOver(mouseX, mouseY)) context.requestCursor(CursorTypes.POINTING_HAND);
+		dropdownList.extractRenderState(graphics, mouseX, mouseY, delta);
+		graphics.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, CommonColors.BLACK);
+		GuiHelper.border(graphics, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, CommonColors.WHITE);
+		graphics.text(client.font, ">", getX() + 4, getY() + 6, CommonColors.LIGHTER_GRAY, true);
+		graphics.text(client.font, selected.toString(), getX() + 12, getY() + 6, CommonColors.WHITE, true);
+		if (isMouseOver(mouseX, mouseY)) graphics.requestCursor(CursorTypes.POINTING_HAND);
 	}
 
 	@Override
@@ -170,13 +170,13 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 
 
 		@Override
-		protected void renderScrollbar(GuiGraphics context, int mouseX, int mouseY) {
-			if (this.scrollbarVisible()) {
+		protected void extractScrollbar(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+			if (this.scrollable()) {
 				int i = this.scrollBarX();
 				int j = this.scrollerHeight();
 				int k = this.scrollBarY();
-				// Modified from DrawContext#drawVerticalLine
-				context.fill(i, k + 1, i + 2, k + j, -1);
+				// Modified from GuiGraphicsExtractor#verticalLine
+				graphics.fill(i, k + 1, i + 2, k + j, -1);
 			}
 		}
 
@@ -214,17 +214,17 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		// Background
 
 		@Override
-		protected void renderListSeparators(GuiGraphics context) {}
+		protected void extractListSeparators(GuiGraphicsExtractor graphics) {}
 
 		@Override
-		protected void renderListBackground(GuiGraphics context) {
-			context.fill(getX(), getY(), getRight(), getBottom(), 0xFF << 24);
-			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), -1);
+		protected void extractListBackground(GuiGraphicsExtractor graphics) {
+			graphics.fill(getX(), getY(), getRight(), getBottom(), 0xFF << 24);
+			GuiHelper.border(graphics, getX(), getY(), getWidth(), getHeight(), -1);
 		}
 
 		@Override
-		protected void enableScissor(GuiGraphics context) {
-			context.enableScissor(this.getX(), this.getY() + 1, this.getRight(), this.getBottom() - 1);
+		protected void enableScissor(GuiGraphicsExtractor graphics) {
+			graphics.enableScissor(this.getX(), this.getY() + 1, this.getRight(), this.getBottom() - 1);
 		}
 	}
 
@@ -247,11 +247,11 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// drawScrollableText does some weird stuff with the y value, so we put startY = y and endY = y + 11 which makes the text render on the same line as the tick mark below (y + 2).
-			context.textRenderer(HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(Component.literal(entry.toString()).withStyle(Style.EMPTY.withUnderlined(hovered)), this.getX() + 10, this.getX() + this.getWidth(), this.getY(), this.getY() + 11);
+			graphics.textRenderer(GuiGraphicsExtractor.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(Component.literal(entry.toString()).withStyle(Style.EMPTY.withUnderlined(hovered)), this.getX() + 10, this.getX() + this.getWidth(), this.getY(), this.getY() + 11);
 			if (selected == this.entry) {
-				context.drawString(client.font, "✔", this.getX() + 1, this.getY() + 2, 0xFFFFFFFF);
+				graphics.text(client.font, "✔", this.getX() + 1, this.getY() + 2, 0xFFFFFFFF);
 			}
 		}
 

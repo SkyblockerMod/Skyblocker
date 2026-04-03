@@ -85,8 +85,8 @@ public class SlayerManager {
 		SLAYERS_DATA.load();
 		ClientReceiveMessageEvents.ALLOW_GAME.register(SlayerManager::onChatMessage);
 		SkyblockEvents.MAYOR_CHANGE.register(SlayerManager::onMayorChange);
-		SkyblockEvents.PROFILE_CHANGE.register((_prev, _profile) -> slayerQuest = null);
-		ClientPlayConnectionEvents.JOIN.register((_c, _p, _m) -> bossFight = null);
+		SkyblockEvents.PROFILE_CHANGE.register((_, _) -> slayerQuest = null);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> bossFight = null);
 		AttackEntityCallback.EVENT.register(SlayerManager::onEntityAttack);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);

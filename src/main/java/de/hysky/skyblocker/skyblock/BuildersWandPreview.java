@@ -4,7 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
@@ -31,8 +31,8 @@ public class BuildersWandPreview {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(collector -> {
-			if (!SkyblockerConfigManager.get().helpers.enableBuildersWandPreview || !Utils.isOnSkyblock() || client.player == null) return;
+		LevelRenderExtractionCallback.EVENT.register(collector -> {
+			if (!SkyblockerConfigManager.get().helpers.buildersWand.enableBuildersWandPreview || !Utils.isOnSkyblock() || client.player == null) return;
 			if (!Utils.isInPrivateIsland() && !Utils.isInGarden()) return;
 			if (!(client.hitResult instanceof BlockHitResult blockHitResult) || blockHitResult.getType() != HitResult.Type.BLOCK) return;
 			ItemStack stack = client.player.getMainHandItem();
@@ -101,8 +101,8 @@ public class BuildersWandPreview {
 
 		BlockPos.MutableBlockPos pos = startPos.mutable();
 		for (int i = 0; i < MAX_BLOCKS && checkPos(startPos, pos, client.level.getBlockState(pos), isSneaking, startBlock); i++) {
-			if (isSneaking) collector.submitFilledBox(pos, RED, 0.5f, true);
-			else extractBlockPreview(collector, pos, Blocks.DIRT.defaultBlockState());
+			if (isSneaking) collector.submitFilledBox(pos.immutable(), RED, SkyblockerConfigManager.get().helpers.buildersWand.previewOpacity, true);
+			else extractBlockPreview(collector, pos.immutable(), Blocks.DIRT.defaultBlockState());
 			pos.move(client.player.getDirection());
 		}
 	}
@@ -116,6 +116,6 @@ public class BuildersWandPreview {
 	}
 
 	private static void extractBlockPreview(PrimitiveCollector collector, BlockPos pos, BlockState state) {
-		collector.submitBlockHologram(pos, state);
+		collector.submitBlockHologram(pos, state, SkyblockerConfigManager.get().helpers.buildersWand.previewOpacity);
 	}
 }

@@ -49,7 +49,7 @@ public class ThreeWeirdos extends DungeonPuzzle {
 
 			return true;
 		});
-		UseBlockCallback.EVENT.register((player, world, hand, blockHitResult) -> {
+		UseBlockCallback.EVENT.register((_, _, _, blockHitResult) -> {
 			if (blockHitResult.getType() == HitResult.Type.BLOCK && blockHitResult.getBlockPos().equals(pos)) {
 				pos = null;
 			}

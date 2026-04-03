@@ -93,7 +93,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 	private static class InventoryContainerHandler implements IGuiContainerHandler<InventoryScreen> {
 		@Override
 		public List<Rect2i> getGuiExtraAreas(InventoryScreen containerScreen) {
-			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.isInGarden()) return List.of();
+			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().farming.plotsWidget.enabled || !Utils.isInGarden()) return List.of();
 			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) containerScreen;
 			return List.of(new Rect2i(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
 		}

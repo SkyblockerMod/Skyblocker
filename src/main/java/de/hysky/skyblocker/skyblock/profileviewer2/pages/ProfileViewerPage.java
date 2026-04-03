@@ -5,14 +5,15 @@ import java.util.concurrent.CompletableFuture;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 public sealed interface ProfileViewerPage<T> permits SkillsPage, SlayersPage {
 	/**
 	 * {@return the icon of the page}
 	 */
-	ItemStack getIcon();
+	FlexibleItemStack getIcon();
 
 	/**
 	 * {@return the name of the page}
@@ -24,12 +25,12 @@ public sealed interface ProfileViewerPage<T> permits SkillsPage, SlayersPage {
 	 *
 	 * <p>Allows pages to optionally construct additional state off-thread before building widgets.
 	 */
-	CompletableFuture<Void> load(LoadingInformation info);
+	CompletableFuture<LayoutElement> load(LoadingInformation info);
 
 	/**
 	 * Builds the widgets of this page, the {@code data} comes from the result of {@link #load(LoadingInformation)}.
 	 */
-	void buildWidgets(T data);
+	LayoutElement buildWidgets(T data);
 
 	/**
 	 * {@return the widgets this page is composed of}

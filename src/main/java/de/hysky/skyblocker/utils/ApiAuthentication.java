@@ -31,7 +31,7 @@ import java.util.Base64;
 import java.util.Objects;
 import java.util.UUID;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 /**
  * This class is responsible for communicating with the API to retrieve a fully custom token used to gain access to more privileged APIs
@@ -42,8 +42,7 @@ public class ApiAuthentication {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final String MINECRAFT_VERSION = SharedConstants.getCurrentVersion().name();
-	// Old URL: https://hysky.de/api/aaron/authenticate
-	private static final String AUTH_URL = "https://api.azureaaron.net/authenticate";
+	private static final String AUTH_URL = "https://hysky.de/api/aaron/authenticate";
 	private static final String CONTENT_TYPE = "application/json";
 	private static final String ALGORITHM = "SHA256withRSA";
 
@@ -53,10 +52,10 @@ public class ApiAuthentication {
 	@Init
 	public static void init() {
 		//Update token after the profileKeys instance is initialized
-		ClientLifecycleEvents.CLIENT_STARTED.register(_client -> updateToken());
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> updateToken());
 		if (Debug.debugEnabled()) {
-			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-					dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("updateToken").executes(context -> {
+			ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
+					dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("updateToken").executes(_ -> {
 						updateToken();
 						return Command.SINGLE_SUCCESS;
 					})))
@@ -152,7 +151,7 @@ public class ApiAuthentication {
 			if (retryAfter != -1) Scheduler.INSTANCE.schedule(ApiAuthentication::updateToken, retryAfter, true);
 
 			if (CLIENT.player != null && !sentWarningOnce) {
-				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(warningMessage), false);
+				CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(warningMessage));
 				sentWarningOnce = true;
 			}
 		});

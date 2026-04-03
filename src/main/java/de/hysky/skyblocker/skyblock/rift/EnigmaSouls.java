@@ -42,7 +42,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class EnigmaSouls {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnigmaSouls.class);
@@ -79,7 +79,7 @@ public class EnigmaSouls {
 						SOUL_WAYPOINTS.get(PosUtils.parsePosString(foundSoul.getAsString())).setFound(profile.getKey());
 					}
 				}
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] There was an error while loading found enigma souls!", e);
 			}
@@ -90,7 +90,7 @@ public class EnigmaSouls {
 		Map<String, BlockPosSet> foundSouls = new HashMap<>();
 		for (ProfileAwareWaypoint soul : SOUL_WAYPOINTS.values()) {
 			for (String profile : soul.foundProfiles) {
-				foundSouls.computeIfAbsent(profile, profile_ -> new BlockPosSet());
+				foundSouls.computeIfAbsent(profile, _ -> new BlockPosSet());
 				foundSouls.get(profile).add(soul.pos);
 			}
 		}

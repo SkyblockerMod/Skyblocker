@@ -16,7 +16,7 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -46,7 +46,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class FairySouls {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FairySouls.class);
@@ -73,7 +73,7 @@ public class FairySouls {
 		loadFairySouls();
 		ClientLifecycleEvents.CLIENT_STOPPING.register(FairySouls::saveFoundFairySouls);
 		ClientCommandRegistrationCallback.EVENT.register(FairySouls::registerCommands);
-		WorldRenderExtractionCallback.EVENT.register(FairySouls::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(FairySouls::extractRendering);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(FairySouls::onChatMessage);
 	}
 
@@ -98,7 +98,7 @@ public class FairySouls {
 					}
 				}
 				LOGGER.debug("[Skyblocker] Loaded found fairy souls");
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to load found fairy souls", e);
 			}
@@ -111,8 +111,8 @@ public class FairySouls {
 		for (Map.Entry<String, Map<BlockPos, ProfileAwareWaypoint>> fairiesForLocation : fairySouls.entrySet()) {
 			for (ProfileAwareWaypoint fairySoul : fairiesForLocation.getValue().values()) {
 				for (String profile : fairySoul.foundProfiles) {
-					foundFairies.computeIfAbsent(profile, profile_ -> new HashMap<>());
-					foundFairies.get(profile).computeIfAbsent(fairiesForLocation.getKey(), location_ -> new BlockPosSet());
+					foundFairies.computeIfAbsent(profile, _ -> new HashMap<>());
+					foundFairies.get(profile).computeIfAbsent(fairiesForLocation.getKey(), _ -> new BlockPosSet<>());
 					foundFairies.get(profile).get(fairiesForLocation.getKey()).add(fairySoul.pos);
 				}
 			}

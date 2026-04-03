@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.utils;
 
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import net.minecraft.world.item.ItemStack;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public enum Skill {
 	ALCHEMY("Alchemy", 50, Ico.BREWING_STAND),
@@ -9,38 +9,44 @@ public enum Skill {
 	CATACOMBS("Catacombs", 50, Ico.CATACOMBS),
 	COMBAT("Combat", 60, Ico.STONE_SWORD),
 	ENCHANTING("Enchanting", 60, Ico.ENCHANTING_TABLE),
-	FARMING("Farming", 50, Ico.GOLDEN_HOE),
+	FARMING("Farming", 50, 60, Ico.GOLDEN_HOE),
 	FISHING("Fishing", 50, Ico.FISH_ROD),
-	FORAGING("Foraging", 50, Ico.JUNGLE_SAPLING),
+	FORAGING("Foraging", 50, 54, Ico.JUNGLE_SAPLING),
 	HUNTING("Hunting", 25, Ico.LEAD),
 	MINING("Mining", 60, Ico.STONE_PICKAXE),
 	RUNECRAFTING("Runecrafting", 25, Ico.MAGMA_CREAM),
 	SOCIAL("Social", 25, Ico.EMERALD),
-	TAMING("Taming", 50, Ico.BONE);
+	TAMING("Taming", 50, 60, Ico.SPAWN_EGG);
 
 	private final String name;
 	private final int baseCap;
-	private final ItemStack icon;
+	private final int absoluteCap;
+	private final FlexibleItemStack icon;
 
-	Skill(String name, int baseCap, ItemStack itemStack) {
+	Skill(String name, int baseCap, FlexibleItemStack icon) {
+		this(name, baseCap, baseCap, icon);
+	}
+
+	Skill(String name, int baseCap, int absoluteCap, FlexibleItemStack icon) {
 		this.name = name;
 		this.baseCap = baseCap;
-		this.icon = itemStack;
+		this.absoluteCap = absoluteCap;
+		this.icon = icon;
 	}
 
-	public LevelInfo getLevelInfo(double experience) {
-		return LevelCalculator.getSkillLevel((long) experience, this);
-	}
-
-	public String getName() {
+	public String getFriendlyName() {
 		return this.name;
 	}
 
-	public int baseCap() {
+	public int getBaseCap() {
 		return this.baseCap;
 	}
 
-	public ItemStack getIcon() {
+	public int getAbsoluteCap() {
+		return this.absoluteCap;
+	}
+
+	public FlexibleItemStack getIcon() {
 		return this.icon;
 	}
 }

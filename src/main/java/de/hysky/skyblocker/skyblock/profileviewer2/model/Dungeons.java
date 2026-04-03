@@ -44,8 +44,8 @@ public class Dungeons {
 	public static class ClassStats {
 		public double experience;
 
-		public LevelInfo getLevelInfo() {
-			return LevelCalculator.getSkillLevel((long) this.experience, Skill.CATACOMBS);
+		public LevelInfo getLevelInfo(ProfileMember member) {
+			return LevelCalculator.getSkillLevel((long) this.experience, Skill.CATACOMBS, member);
 		}
 	}
 

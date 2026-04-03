@@ -4,7 +4,7 @@ import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -51,8 +51,8 @@ public abstract class AbstractBlockHighlighter {
 	protected void init() {
 		ClientChunkEvents.CHUNK_LOAD.register(this::onChunkLoad);
 		ClientChunkEvents.CHUNK_UNLOAD.register(this::onChunkUnload);
-		WorldRenderExtractionCallback.EVENT.register(this::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> this.reset());
+		LevelRenderExtractionCallback.EVENT.register(this::extractRendering);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> this.reset());
 		WorldEvents.BLOCK_STATE_UPDATE.register(this::onBlockUpdate);
 	}
 
@@ -73,7 +73,7 @@ public abstract class AbstractBlockHighlighter {
 	protected void onChunkLoad(ClientLevel world, LevelChunk chunk) {
 		if (!shouldProcess()) return;
 
-		chunk.findBlocks(statePredicate, (pos, state) -> this.highlightedBlocks.add(pos));
+		chunk.findBlocks(statePredicate, (pos, _) -> this.highlightedBlocks.add(pos));
 	}
 
 	/**

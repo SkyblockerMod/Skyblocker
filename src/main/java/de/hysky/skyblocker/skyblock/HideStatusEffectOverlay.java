@@ -9,8 +9,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 public final class HideStatusEffectOverlay {
 	@Init
 	public static void init() {
-		HudElementRegistry.replaceElement(VanillaHudElements.STATUS_EFFECTS, hudElement -> {
-			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay) return (context, tickCounter) -> {};
+		HudElementRegistry.replaceElement(VanillaHudElements.MOB_EFFECTS, hudElement -> {
+			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay) return (_, _) -> {};
 			return hudElement;
 		});
 	}

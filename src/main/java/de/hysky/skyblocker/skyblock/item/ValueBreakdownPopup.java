@@ -15,14 +15,14 @@ import io.github.moulberry.repo.data.NEUItem;
 import net.azureaaron.networth.Calculation;
 import net.azureaaron.networth.NetworthResult;
 import net.azureaaron.networth.utils.ItemConstants;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.ScrollableLayout;
 import net.minecraft.client.gui.layouts.LayoutSettings;
@@ -34,6 +34,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.Slot;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -46,19 +47,19 @@ import java.util.function.Function;
 
 public class ValueBreakdownPopup extends AbstractPopupScreen {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final KeyMapping KEY_BINDING = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+	private static final KeyMapping KEY_BINDING = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.skyblocker.valueBreadownPopup",
 			GLFW.GLFW_KEY_I,
 			SkyblockerMod.KEYBINDING_CATEGORY
 	));
 
-	private static final Function<String, Component> EMPTY = s -> Component.empty();
+	private static final Function<String, Component> EMPTY = _ -> Component.empty();
 	private static final Function<String, Component> ITEM_NAME = s -> {
 		NEUItem neuItem = NEURepoManager.getItemByNeuId(s);
 		if (neuItem == null) return Component.literal(s);
 		return TextTransformer.fromLegacy(neuItem.getDisplayName());
 	};
-	private static final LayoutAppender EMPTY_APPENDER = (r, c, l) -> {};
+	private static final LayoutAppender EMPTY_APPENDER = (_, _, _) -> {};
 
 	private static final Map<Calculation.Type, LayoutAppender> FORMATTERS = new EnumMap<>(Map.ofEntries(
 			Map.entry(Calculation.Type.STAR, new BasicListAppender(
@@ -221,10 +222,10 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 
 	@Init
 	public static void initClass() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((client, screen, _, _) -> {
 			if (!Utils.isOnSkyblock()) return;
 			if (screen instanceof AbstractContainerScreen<?> handledScreen) {
-				ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key) -> {
+				ScreenKeyboardEvents.afterKeyPress(screen).register((_, key) -> {
 					if (!KEY_BINDING.matches(key)) return;
 					Slot slot = ((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot();
 					if (slot == null || !slot.hasItem()) return;
@@ -241,7 +242,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 
 		this.map = new EnumMap<>(Calculation.Type.class);
 		for (Calculation calculation : networthResult.calculations()) {
-			map.computeIfAbsent(calculation.type(), ignored -> new ArrayList<>()).add(calculation);
+			map.computeIfAbsent(calculation.type(), _ -> new ArrayList<>()).add(calculation);
 		}
 	}
 
@@ -278,15 +279,15 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-		super.render(context, mouseX, mouseY, deltaTicks);
-		context.drawCenteredString(font, title, width / 2, 15, -1);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
+		graphics.centeredText(font, title, width / 2, 15, CommonColors.WHITE);
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, scrollable.getX(), scrollable.getY(), scrollable.getWidth(), scrollable.getHeight());
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractBackground(graphics, mouseX, mouseY, a);
+		extractPopupBackground(graphics, scrollable.getX(), scrollable.getY(), scrollable.getWidth(), scrollable.getHeight());
 	}
 
 	private static Component getCoinsText(double price) {
@@ -303,7 +304,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 
 	private static MultiLineTextWidget createTextWidget(Component text, Font textRenderer) {
 		MultiLineTextWidget widget = new MultiLineTextWidget(text, textRenderer);
-		widget.setComponentClickHandler(s -> {});
+		widget.setComponentClickHandler(_ -> {});
 
 		return widget;
 	}

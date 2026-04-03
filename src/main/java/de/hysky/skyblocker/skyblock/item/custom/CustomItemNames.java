@@ -10,8 +10,8 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.arguments.ComponentArgument;
@@ -27,14 +27,14 @@ public class CustomItemNames {
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-		dispatcher.register(ClientCommandManager.literal("skyblocker")
-				.then(ClientCommandManager.literal("custom")
-						.then(ClientCommandManager.literal("renameItem")
+		dispatcher.register(ClientCommands.literal("skyblocker")
+				.then(ClientCommands.literal("custom")
+						.then(ClientCommands.literal("renameItem")
 								.executes(context -> openScreen(context.getSource()))
-								.then(ClientCommandManager.argument("textComponent", ComponentArgument.textComponent(registryAccess))
+								.then(ClientCommands.argument("textComponent", ComponentArgument.textComponent(registryAccess))
 										.executes(context -> renameItem(context.getSource(), context.getArgument("textComponent", Component.class))))
 								// greedy string will only consume the arg if the text component parsing fails.
-								.then(ClientCommandManager.argument("basicText", StringArgumentType.greedyString())
+								.then(ClientCommands.argument("basicText", StringArgumentType.greedyString())
 										.executes(context -> renameItem(context.getSource(), Component.nullToEmpty(context.getArgument("basicText", String.class))))))));
 	}
 

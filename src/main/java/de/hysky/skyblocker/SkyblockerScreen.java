@@ -5,10 +5,10 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.Tips;
 import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.StringWidget;
@@ -57,8 +57,8 @@ public class SkyblockerScreen extends Screen {
 
 	@Init
 	public static void initClass() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
+			dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
 					.executes(Scheduler.queueOpenScreenCommand(SkyblockerScreen::new)));
 		});
 	}
@@ -72,24 +72,24 @@ public class SkyblockerScreen extends Screen {
 		gridWidget.defaultCellSetting().alignHorizontallyCenter();
 		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
 
-		adder.addChild(Button.builder(CONFIGURATION_TEXT, button -> this.openConfig()).width(BUTTON_WIDTH).build(), 2);
+		adder.addChild(Button.builder(CONFIGURATION_TEXT, _ -> this.openConfig()).width(BUTTON_WIDTH).build(), 2);
 		adder.addChild(Button.builder(SOURCE_TEXT, ConfirmLinkScreen.confirmLink(this, "https://github.com/SkyblockerMod/Skyblocker")).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(REPORT_BUGS_TEXT, ConfirmLinkScreen.confirmLink(this, "https://github.com/SkyblockerMod/Skyblocker/issues")).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(WEBSITE_TEXT, ConfirmLinkScreen.confirmLink(this, "https://hysky.de/")).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(TRANSLATE_TEXT, ConfirmLinkScreen.confirmLink(this, "https://translate.hysky.de/")).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(MODRINTH_TEXT, ConfirmLinkScreen.confirmLink(this, "https://modrinth.com/mod/skyblocker-liap")).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(DISCORD_TEXT, ConfirmLinkScreen.confirmLink(this, "https://discord.gg/aNNJHQykck")).width(HALF_BUTTON_WIDTH).build());
-		adder.addChild(Button.builder(CommonComponents.GUI_DONE, button -> this.onClose()).width(BUTTON_WIDTH).build(), 2);
+		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> this.onClose()).width(BUTTON_WIDTH).build(), 2);
 
 		GridLayout footerGridWidget = this.layout.addToFooter(new GridLayout()).spacing(SPACING).rowSpacing(0);
 		footerGridWidget.defaultCellSetting().alignHorizontallyCenter();
 		GridLayout.RowHelper footerAdder = footerGridWidget.createRowHelper(2);
 		footerAdder.addChild(tip = new MultiLineTextWidget(Tips.nextTip(), this.font).setCentered(true).setMaxWidth((int) (this.width * 0.7)), 2);
-		footerAdder.addChild(Button.builder(Component.translatable("skyblocker.tips.previous"), button -> {
+		footerAdder.addChild(Button.builder(Component.translatable("skyblocker.tips.previous"), _ -> {
 			tip.setMessage(Tips.previousTip());
 			layout.arrangeElements();
 		}).build());
-		footerAdder.addChild(Button.builder(Component.translatable("skyblocker.tips.next"), button -> {
+		footerAdder.addChild(Button.builder(Component.translatable("skyblocker.tips.next"), _ -> {
 			tip.setMessage(Tips.nextTip());
 			layout.arrangeElements();
 		}).build());
@@ -109,8 +109,8 @@ public class SkyblockerScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+		super.extractRenderState(context, mouseX, mouseY, delta);
 	}
 
 	private static class IconTextWidget extends StringWidget {
@@ -122,7 +122,7 @@ public class SkyblockerScreen extends Screen {
 		}
 
 		@Override
-		public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 			Component text = this.getMessage();
 			Font textRenderer = this.getFont();
 
@@ -137,8 +137,8 @@ public class SkyblockerScreen extends Screen {
 			int iconX = x - 34;
 			int iconY = y - 13;
 
-			context.drawString(textRenderer, orderedText, x, y, CommonColors.WHITE);
-			context.blit(RenderPipelines.GUI_TEXTURED, this.icon, iconX, iconY, 0, 0, 32, 32, 32, 32);
+			graphics.text(textRenderer, orderedText, x, y, CommonColors.WHITE);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, this.icon, iconX, iconY, 0, 0, 32, 32, 32, 32);
 		}
 
 		private FormattedCharSequence trim(Component text, int width) {

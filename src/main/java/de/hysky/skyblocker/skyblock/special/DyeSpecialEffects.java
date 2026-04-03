@@ -4,13 +4,16 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Optional;
@@ -38,7 +41,7 @@ public class DyeSpecialEffects {
 				if (matcher.matches() && matcher.group("player").equals(CLIENT.getUser().getName())) {
 					ItemStack stack = findDyeStack(matcher.group("dye"));
 
-					if (!stack.isEmpty()) {
+					if (stack != null && !stack.isEmpty()) {
 						CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER, 30);
 						CLIENT.gameRenderer.displayItemActivation(stack);
 					}
@@ -51,11 +54,11 @@ public class DyeSpecialEffects {
 		return true;
 	}
 
-	private static ItemStack findDyeStack(String dyeName) {
-		Optional<ItemStack> dye = ItemRepository.getItemsStream()
-				.filter(stack -> stack.getHoverName().getString().equals(dyeName))
+	private static @Nullable ItemStack findDyeStack(String dyeName) {
+		Optional<FlexibleItemStack> dye = ItemRepository.getItemsStream()
+				.filter(stack -> stack.get(DataComponents.CUSTOM_NAME).getString().equals(dyeName))
 				.findFirst();
 
-		return dye.orElse(ItemStack.EMPTY);
+		return dye.map(FlexibleItemStack::getStack).orElse(ItemStack.EMPTY);
 	}
 }

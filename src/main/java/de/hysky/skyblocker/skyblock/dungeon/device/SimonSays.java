@@ -9,7 +9,7 @@ import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -43,8 +43,8 @@ public class SimonSays {
 	@Init
 	public static void init() {
 		UseBlockCallback.EVENT.register(SimonSays::onBlockInteract);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-		WorldRenderExtractionCallback.EVENT.register(SimonSays::extractRendering);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
+		LevelRenderExtractionCallback.EVENT.register(SimonSays::extractRendering);
 		WorldEvents.BLOCK_STATE_UPDATE.register(SimonSays::onBlockUpdate);
 	}
 

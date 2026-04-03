@@ -34,8 +34,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
@@ -69,7 +67,6 @@ public class Utils {
 	public static final String PROFILE_ID_PREFIX = "Profile ID: ";
 	private static final String PROFILE_ID_SUGGEST_PREFIX = "CLICK THIS TO SUGGEST IT IN CHAT";
 	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
-	private static final HolderLookup.Provider LOOKUP = VanillaRegistries.createLookup();
 	private static boolean isOnHypixel = false;
 	private static boolean isOnSkyblock = false;
 
@@ -196,6 +193,11 @@ public class Utils {
 		return location;
 	}
 
+	// Used in tests for location-specific branches
+	public static void setTestLocation(Location located) {
+		location = located;
+	}
+
 	/**
 	 * <b>Note: Under no circumstances should you skip checking the location if you also need the area.</b>
 	 *
@@ -252,7 +254,7 @@ public class Utils {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
-		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
+		ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> onDisconnect());
 
 		//Register Mod API stuff
 		HypixelNetworking.registerToEvents(Util.make(new Object2IntOpenHashMap<>(), map -> map.put(LocationUpdateS2CPacket.ID, 1)));
@@ -382,7 +384,7 @@ public class Utils {
 				SlayerManager.checkSlayerQuest();
 				updateArea();
 			}
-		} catch (NullPointerException e) {
+		} catch (NullPointerException _) {
 			//Do nothing
 		}
 	}
@@ -448,7 +450,7 @@ public class Utils {
 				HypixelNetworking.sendPlayerInfoC2SPacket(1);
 			}
 
-			case LocationUpdateS2CPacket(var serverName, var serverType, var _lobbyName, var mode, var mapName) -> {
+			case LocationUpdateS2CPacket(var serverName, var serverType, _, var mode, var mapName) -> {
 				Utils.server = serverName;
 				String previousServerType = Utils.gameType;
 				Utils.gameType = serverType.orElse("");
@@ -479,13 +481,13 @@ public class Utils {
 				LocalPlayer player = Minecraft.getInstance().player;
 
 				if (player != null) {
-					player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.utils.locationUpdateError").withStyle(ChatFormatting.RED)), false);
+					player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.utils.locationUpdateError").withStyle(ChatFormatting.RED)));
 				}
 
 				LOGGER.error("[Skyblocker] Failed to update your current location! Some features of the mod may not work correctly :( - Error: {}", error);
 			}
 
-			case PlayerInfoS2CPacket(var playerRank, var packageRank, var monthlyPackageRank, var _prefix) -> {
+			case PlayerInfoS2CPacket(var playerRank, var packageRank, var monthlyPackageRank, _) -> {
 				rank = RankType.getEffectiveRank(playerRank, packageRank, monthlyPackageRank);
 			}
 
@@ -585,7 +587,7 @@ public class Utils {
 	public static void sendMessageToBypassEvents(Component message) {
 		Minecraft client = Minecraft.getInstance();
 
-		client.gui.getChat().addMessage(message);
+		client.gui.getChat().addClientSystemMessage(message);
 		((ChatListenerAccessor) client.getChatListener()).invokeLogSystemMessage(message, Instant.now());
 		client.getNarrator().saySystemQueued(message);
 	}
@@ -599,15 +601,6 @@ public class Utils {
 	}
 
 	/**
-	 * Tries to get the dynamic registry manager instance currently in use or else returns {@link #LOOKUP}
-	 */
-	public static HolderLookup.Provider getRegistryWrapperLookup() {
-		Minecraft client = Minecraft.getInstance();
-		// Null check on client for tests
-		return client != null && client.getConnection() != null && client.getConnection().registryAccess() != null ? client.getConnection().registryAccess() : LOOKUP;
-	}
-
-	/**
 	 * Parses an int from a string
 	 * @param input the string to parse
 	 * @return the int parsed or an empty optional if it failed
@@ -616,7 +609,7 @@ public class Utils {
 	public static OptionalInt parseInt(String input) {
 		try {
 			return OptionalInt.of(Integer.parseInt(input));
-		} catch (NumberFormatException e) {
+		} catch (NumberFormatException _) {
 			return OptionalInt.empty();
 		}
 	}

@@ -8,7 +8,7 @@ import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import org.jspecify.annotations.Nullable;
@@ -124,7 +124,7 @@ public class PickobulusHelper {
 	@Init
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(PickobulusHelper::update, 1);
-		WorldRenderExtractionCallback.EVENT.register(PickobulusHelper::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(PickobulusHelper::extractRendering);
 	}
 
 	private static void update() {
@@ -190,7 +190,8 @@ public class PickobulusHelper {
 									|| blocks[i][j][k - 1].isAir() || blocks[i][j][k + 1].isAir();
 					if (!exposed) continue;
 
-					if (Utils.getArea() == Area.DwarvenMines.GLACITE_TUNNELS) handleGlaciteTunnels(pos, state, i, j, k);
+					if (Utils.getArea() == Area.DwarvenMines.GLACITE_TUNNELS
+							|| Utils.getArea() == Area.DwarvenMines.GREAT_GLACITE_LAKE) handleGlaciteTunnels(pos, state, i, j, k);
 					else if (Utils.getArea() == Area.DwarvenMines.GLACITE_MINESHAFTS) handleGlaciteMineshafts(pos, state, i, j, k);
 					else switch (Utils.getLocation()) {
 						case GOLD_MINE, DEEP_CAVERNS, DWARVEN_MINES -> handleConvertIntoBedrock(pos, state, i, j, k);

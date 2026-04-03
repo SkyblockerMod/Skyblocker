@@ -8,7 +8,7 @@
  \
 [![Discord](https://img.shields.io/discord/879732108745125969?logo=discord&labelColor=cecece&color=7289DA&label=)](https://discord.com/invite/aNNJHQykck)
 
-Hypixel Skyblock Mod for Minecraft 1.21.11
+Hypixel Skyblock Mod for Minecraft 26.1
 
 Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/installation) or use our [Modpack](https://modrinth.com/modpack/skyblocker-modpack)
 ## Features
@@ -84,6 +84,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Blood Camp Helper**
 - **Dungeon Splits Widget**
 - **Door Key Highlighter**
+- **Rare Room Alerts** 
+    - Shows a message on screen when Trinity, Tomioka, or Duncan are discovered.
 
 ### Hunting Features:
 - **Forest Node Highlighter**
@@ -148,13 +150,14 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Catacombs**
 - **Container:**
     - Inventory
-    - Enderchest
+    - Ender Chest
     - Backpack
     - Wardrobe
     - Pets
     - Accessory Bag
 - **Collections**
-- **Networth Calculation**
+- **Net Worth Calculation**
+- **Magical Power Calculation**
 
 ### Dwarven Mines / Crystal Hollows / Glacite Mining:
 - **Dwarven Mines:**
@@ -235,15 +238,18 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Copy amount to clipboard
 - **Garden Plots Widget**
 - **Speed Presets (Rancher's Boots)**
-- **Basic garden mouse locking feature (set mouse sensitivity to 0)**
+- **Mouse Locking** 
+    - (sets mouse sensitivity to 0)
 - **Pest Highlighter**
+    - Option to separately highlight pests for the active Stereo Harmony vinyl.
+- **Stereo Harmony Helper**
+    - Highlights the vinyl for the current Jacob's contest
 
 ### Visual Enhancements:
 - **Smooth AOTE**
 - **Compact damage**
 - **Waypoints for commissions in dwarven mines and glacite tunnels**
 - **Fancy Tab HUD:** Fully configurable, allowing individual widgets to be freely placed on the main screen.
-- **1.8 Hitbox for Levers, Mushrooms, and Cacti**
 - **Hide Status Effect Overlay**
 - **Personal Compactor/Deletor Preview**
 - **Hide Fake Players in Social Interactions Screen**
@@ -352,6 +358,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Treasure Hunter*
     - *Hungry Hiker*
     - *Glowing Mushroom Highlighter*
+- **Pelt Animal Highlighter**
 
 ### Chat Features:
 - **Custom Chat Rules**

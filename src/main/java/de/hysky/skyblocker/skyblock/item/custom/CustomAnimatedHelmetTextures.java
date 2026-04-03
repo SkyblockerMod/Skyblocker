@@ -40,7 +40,7 @@ public class CustomAnimatedHelmetTextures {
 	@Init
 	public static void init() {
 		NEURepoManager.runAsyncAfterLoad(CustomAnimatedHelmetTextures::loadAnimatedHeads);
-		ClientTickEvents.END_CLIENT_TICK.register(_client -> ticks++);
+		ClientTickEvents.END_CLIENT_TICK.register(_ -> ticks++);
 	}
 
 	private static void loadAnimatedHeads() {

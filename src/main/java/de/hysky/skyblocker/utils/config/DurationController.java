@@ -26,10 +26,12 @@ public class DurationController extends IntegerControllerImpl {
 		super(0, Integer.MAX_VALUE, 1, false);
 	}
 
+	@SuppressWarnings("unused")
 	private static String toString(int duration) {
 		return SkyblockTime.formatTime(duration).getString();
 	}
 
+	@SuppressWarnings("unused")
 	private static int fromString(String value) {
 		Matcher hoursMatcher = hoursPattern.matcher(value);
 		Matcher minutesMatcher = minutesPattern.matcher(value);
@@ -48,6 +50,7 @@ public class DurationController extends IntegerControllerImpl {
 		return result;
 	}
 
+	@SuppressWarnings("unused")
 	private static boolean isValid(String s) {
 		Matcher hoursMatcher = hoursPattern.matcher(s);
 		Matcher minutesMatcher = minutesPattern.matcher(s);

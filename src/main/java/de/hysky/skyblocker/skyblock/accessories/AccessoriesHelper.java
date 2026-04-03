@@ -45,12 +45,12 @@ public class AccessoriesHelper {
 	@Init
 	public static void init() {
 		COLLECTED_ACCESSORIES.init();
-		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			if (Utils.isOnSkyblock() && TooltipInfoType.ACCESSORIES.isTooltipEnabled() && !Utils.getProfileId().isEmpty() && screen instanceof ContainerScreen genericContainerScreen) {
 				Matcher matcher = ACCESSORY_BAG_TITLE.matcher(genericContainerScreen.getTitle().getString());
 
 				if (matcher.matches()) {
-					ScreenEvents.afterTick(screen).register(_screen -> {
+					ScreenEvents.afterTick(screen).register(_ -> {
 						ChestMenu handler = genericContainerScreen.getMenu();
 						int page = matcher.group("page") != null ? Integer.parseInt(matcher.group("page")) : 1;
 

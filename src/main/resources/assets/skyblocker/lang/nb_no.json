@@ -11,8 +11,6 @@
     "skyblocker.config.general.itemTooltip.avg.BOTH": "Begge",
     "skyblocker.config.general.itemTooltip.enableLowestBIN": "Aktiver laveste BIN-pris",
     "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Aktiver Bazaar kjøp/salg Pris",
-    "skyblocker.config.general.hitbox": "Treffbokser",
-    "skyblocker.config.general.hitbox.oldLeverHitbox": "Aktiver 1.8 spak Treffboks",
     "skyblocker.config.misc.richPresence": "Discord-rik tilstedeværelse",
     "skyblocker.config.misc.richPresence.info": "Skyblock-informasjon",
     "skyblocker.config.misc.richPresence.info.PURSE": "VESKE",

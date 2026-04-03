@@ -7,7 +7,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
@@ -20,7 +20,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.FrameLayout;
@@ -39,7 +39,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -177,9 +177,9 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-			LeapOverlay.this.hovered = DungeonMap.render(context, getX(), getY(), CONFIG.get().scale, true, mouseX - getX(), mouseY - getY(), getChildAt(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
-			HudHelper.drawBorder(context, getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), CommonColors.WHITE);
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			LeapOverlay.this.hovered = DungeonMap.extractRenderState(graphics, getX(), getY(), CONFIG.get().scale, true, mouseX - getX(), mouseY - getY(), getChildAt(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
+			GuiHelper.border(graphics, getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), CommonColors.WHITE);
 		}
 
 		@Override
@@ -203,16 +203,16 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		private final PlayerReference reference;
 
 		private PlayerButton(int x, int y, int width, int height, PlayerReference reference) {
-			super(x, y, width, height, Component.empty(), b -> {}, ts -> Component.empty());
+			super(x, y, width, height, Component.empty(), _ -> {}, _ -> Component.empty());
 			this.reference = reference;
 		}
 
 		@Override
-		protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
+		protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			Identifier texture = this.isHoveredOrFocused() || reference.uuid().equals(LeapOverlay.this.hovered) ? BUTTON_HIGHLIGHTED : BUTTON;
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
-			Matrix3x2fStack matrices = context.pose();
+			Matrix3x2fStack matrices = graphics.pose();
 			float scale = CONFIG.get().scale;
 			int baseX = this.getX() + BORDER_THICKNESS;
 			int centreX = this.getX() + (this.getWidth() >> 1);
@@ -220,20 +220,20 @@ public class LeapOverlay extends Screen implements ContainerListener {
 			int halfFontHeight = (int) (CLIENT.font.lineHeight * scale) >> 1;
 
 			//Draw Player Head
-			HudHelper.drawPlayerHead(context, baseX + 4, centreY - ((int) (HEAD_SIZE * scale) >> 1), (int) (HEAD_SIZE * scale), reference.uuid());
+			GuiHelper.playerHead(graphics, baseX + 4, centreY - ((int) (HEAD_SIZE * scale) >> 1), (int) (HEAD_SIZE * scale), reference.uuid());
 
 			//Draw class as heading
 			matrices.pushMatrix();
 			matrices.translate(centreX, this.getY() + halfFontHeight);
 			matrices.scale(scale, scale);
-			context.drawCenteredString(CLIENT.font, reference.dungeonClass().displayName(), 0, 0, reference.dungeonClass().color());
+			graphics.centeredText(CLIENT.font, reference.dungeonClass().displayName(), 0, 0, reference.dungeonClass().color());
 			matrices.popMatrix();
 
 			//Draw name next to head
 			matrices.pushMatrix();
 			matrices.translate(baseX + HEAD_SIZE * scale + 8, centreY - halfFontHeight);
 			matrices.scale(scale, scale);
-			context.drawString(CLIENT.font, Component.literal(reference.name()), 0, 0, CommonColors.WHITE);
+			graphics.text(CLIENT.font, Component.literal(reference.name()), 0, 0, CommonColors.WHITE);
 			matrices.popMatrix();
 
 			if (reference.status() != null) {
@@ -241,11 +241,11 @@ public class LeapOverlay extends Screen implements ContainerListener {
 				matrices.pushMatrix();
 				matrices.translate(centreX, this.getY() + this.getHeight() - (halfFontHeight * 3));
 				matrices.scale(scale, scale);
-				context.drawCenteredString(CLIENT.font, reference.status().text.get(), 0, 0, CommonColors.WHITE);
+				graphics.centeredText(CLIENT.font, reference.status().text.get(), 0, 0, CommonColors.WHITE);
 				matrices.popMatrix();
 
 				//Overlay
-				context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), reference.status().overlayColor);
+				graphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), reference.status().overlayColor);
 			}
 		}
 
@@ -277,7 +277,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		}
 
 		private void clickSlot() {
-			CLIENT.gameMode.handleInventoryMouseClick(this.syncId(), this.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, ClickType.PICKUP, CLIENT.player);
+			CLIENT.gameMode.handleContainerInput(this.syncId(), this.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, ContainerInput.PICKUP, CLIENT.player);
 			if (CONFIG.get().enableLeapMessage) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + CONFIG.get().leapMessage.replaceAll("\\[name]", this.name), true);
 			}

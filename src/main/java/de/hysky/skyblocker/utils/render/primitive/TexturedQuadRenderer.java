@@ -10,7 +10,7 @@ import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 
 public final class TexturedQuadRenderer implements PrimitiveRenderer<TexturedQuadRenderState> {
 	protected static final TexturedQuadRenderer INSTANCE = new TexturedQuadRenderer();

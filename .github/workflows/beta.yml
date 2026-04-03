@@ -11,7 +11,7 @@ on:
   merge_group:
   push:
     branches:
-      - master
+      - main
       - bleeding-edge
       - '**-backport'
     paths-ignore:
@@ -39,10 +39,10 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set jar name
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         if: ${{ !inputs.skip_modify_version }}
         with:
           result-encoding: string
@@ -63,20 +63,20 @@ jobs:
             file = file.toString().split("\n").map(e => e.trim().startsWith("mod_version") ? `${e}-${buildType}-${commitSha.substring(0, 7)}` : e).join("\n");
             fs.writeFileSync("./gradle.properties", file);
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
         with:
           distribution: 'microsoft'
-          java-version: '21'
+          java-version: '25'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
       - name: Build with Gradle
         run: ./gradlew build
 
       - name: Store reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: reports
           path: |
@@ -84,7 +84,7 @@ jobs:
             **/build/test-results/
 
       - name: Process artifacts
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         id: fname
         with:
           result-encoding: string
@@ -93,7 +93,7 @@ jobs:
             return fs.readdirSync("build/libs/").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && e.endsWith(".jar"))[0].replace(".jar", "");
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.fname.outputs.result }}
           path: build/libs/
@@ -103,21 +103,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/checkout@v6
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
         with:
           distribution: 'microsoft'
-          java-version: '21'
+          java-version: '25'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Run client gametest with Xvfb
         uses: modmuss50/xvfb-action@v1
         with:
           run: ./gradlew runClientGametest
       - name: Upload test screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: Test Screenshots

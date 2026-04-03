@@ -37,7 +37,8 @@ public class GeneralConfig {
 
 	public SpecialEffects specialEffects = new SpecialEffects();
 
-	public Hitbox hitbox = new Hitbox();
+	@Deprecated
+	public transient Hitbox hitbox = new Hitbox();
 
 	public List<Integer> lockedSlots = new ArrayList<>();
 
@@ -89,6 +90,8 @@ public class GeneralConfig {
 	}
 
 	public static class ItemList {
+		public boolean enableRecipeBook = true;
+
 		public boolean enableItemList = true;
 
 		public boolean enableCollapsibleEntries = true;
@@ -225,15 +228,19 @@ public class GeneralConfig {
 		public boolean rareDyeDropEffects = true;
 	}
 
+	@Deprecated
 	public static class Hitbox {
-		public boolean oldCactusHitbox = false;
+		@Deprecated
+		public transient boolean oldCactusHitbox = false;
 
 		@Deprecated
 		public transient boolean oldFarmlandHitbox = false;
 
-		public boolean oldLeverHitbox = false;
+		@Deprecated
+		public transient boolean oldLeverHitbox = false;
 
-		public boolean oldMushroomHitbox = false;
+		@Deprecated
+		public transient boolean oldMushroomHitbox = false;
 	}
 
 }

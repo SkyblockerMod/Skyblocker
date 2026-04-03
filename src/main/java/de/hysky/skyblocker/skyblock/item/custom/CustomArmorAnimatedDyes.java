@@ -12,7 +12,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -25,8 +25,8 @@ import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.List;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class CustomArmorAnimatedDyes {
 	private static final Object2ObjectOpenHashMap<AnimatedDye, AnimatedDyeStateTracker> STATE_TRACKER_MAP = new Object2ObjectOpenHashMap<>();
@@ -36,9 +36,9 @@ public class CustomArmorAnimatedDyes {
 	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register(CustomArmorAnimatedDyes::registerCommands);
-		WorldRenderExtractionCallback.EVENT.register(ignored -> ++frames);
+		LevelRenderExtractionCallback.EVENT.register(_ -> ++frames);
 		// have the animation restart on world change because why not?
-		SkyblockEvents.LOCATION_CHANGE.register(ignored -> cleanTrackers());
+		SkyblockEvents.LOCATION_CHANGE.register(_ -> cleanTrackers());
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
@@ -59,7 +59,7 @@ public class CustomArmorAnimatedDyes {
 		ItemStack heldItem = source.getPlayer().getMainHandItem();
 
 		if (Utils.isOnSkyblock() && heldItem != null && !heldItem.isEmpty()) {
-			if (heldItem.is(ItemTags.DYEABLE)) {
+			if (heldItem.is(ItemTags.CAULDRON_CAN_REMOVE_DYE)) {
 				String itemUuid = heldItem.getUuid();
 
 				if (!itemUuid.isEmpty()) {
