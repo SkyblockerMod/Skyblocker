@@ -9,8 +9,8 @@ import com.mojang.serialization.Dynamic;
 import java.util.Map;
 import java.util.function.Function;
 
-public class ConfigFix8EventNotifications extends ConfigDataFix {
-	public ConfigFix8EventNotifications(Schema outputSchema, boolean changesType) {
+public class ConfigFix9EventNotifications extends ConfigDataFix {
+	public ConfigFix9EventNotifications(Schema outputSchema, boolean changesType) {
 		super(outputSchema, changesType);
 	}
 
