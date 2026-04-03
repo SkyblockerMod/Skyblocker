@@ -6,7 +6,7 @@ import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -29,8 +29,8 @@ public class BeaconHighlighter {
 	 */
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(BeaconHighlighter::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		LevelRenderExtractionCallback.EVENT.register(BeaconHighlighter::extractRendering);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(BeaconHighlighter::onMessage);
 		WorldEvents.BLOCK_STATE_UPDATE.register(BeaconHighlighter::onBlockStateUpdate);
 	}

@@ -2,10 +2,11 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -27,7 +28,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 		String footertext = PlayerListManager.getFooter();
 
 		if (footertext == null || !footertext.contains("Dungeon Buffs")) {
-			this.addComponent(new PlainTextComponent(Component.literal("No data").withStyle(ChatFormatting.GRAY)));
+			this.addComponent(new PlainTextElement(Component.literal("No data").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
@@ -35,7 +36,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 		String[] lines = interesting.split("\n");
 
 		if (!lines[1].startsWith("Blessing")) {
-			this.addComponent(new PlainTextComponent(Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
+			this.addComponent(new PlainTextElement(Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
@@ -50,7 +51,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 				break;
 			}
 			int color = getBlessingColor(line);
-			this.addComponent(new PlainTextComponent(Component.literal(line).withStyle(style -> style.withColor(color))));
+			this.addComponent(new PlainTextElement(Component.literal(line).withStyle(style -> style.withColor(color))));
 		}
 
 	}

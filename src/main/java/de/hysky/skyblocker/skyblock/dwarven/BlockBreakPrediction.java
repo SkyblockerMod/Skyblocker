@@ -127,7 +127,7 @@ public class BlockBreakPrediction {
 		//make sure the data is in tab and if not tell the user
 		if (speed.isEmpty()) {
 			if (!sentWarningMessage) {
-				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.blockBreakPrediction.enableStatsMessage")).withStyle(ChatFormatting.RED), false);
+				CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.blockBreakPrediction.enableStatsMessage")).withStyle(ChatFormatting.RED));
 				sentWarningMessage = true;
 			}
 			return -1;
@@ -155,7 +155,7 @@ public class BlockBreakPrediction {
 
 	public static void addStrength(Location location, Block blockId, int strength, int breakingPower) {
 		blockStrengths
-				.computeIfAbsent(location, k -> new HashMap<>())
+				.computeIfAbsent(location, _ -> new HashMap<>())
 				.put(blockId, IntIntPair.of(strength, breakingPower));
 	}
 
@@ -173,7 +173,7 @@ public class BlockBreakPrediction {
 						for (Location location : skyblockBlockType.onlyIn) {
 							//if its mithril edit it to the actual strength as that is not in the repo
 							if (data.name.equals("Mithril Ore")) {
-								Block block = LegacyLookup.get(skyblockBlockType.itemId, skyblockBlockType.damage);
+								Block block = getBlockFromRepo(skyblockBlockType.itemId);
 								if (block == Blocks.GRAY_WOOL || block == Blocks.CYAN_TERRACOTTA) {
 									addStrength(location, block, 500, data.breakingPower);
 								} else if (block == Blocks.LIGHT_BLUE_WOOL) {
@@ -184,7 +184,7 @@ public class BlockBreakPrediction {
 								continue;
 							}
 
-							addStrength(location, LegacyLookup.get(skyblockBlockType.itemId, skyblockBlockType.damage), data.blockStrength, data.breakingPower);
+							addStrength(location, getBlockFromRepo(skyblockBlockType.itemId), data.blockStrength, data.breakingPower);
 						}
 					}
 
@@ -210,96 +210,15 @@ public class BlockBreakPrediction {
 		).apply(instance, BlockFile::new));
 	}
 
-	public record SkyblockBlock(String itemId, int damage, List<Location> onlyIn) {
+	public record SkyblockBlock(String itemId, List<Location> onlyIn) {
 		private static final Codec<SkyblockBlock> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("itemId").forGetter(SkyblockBlock::itemId),
-				Codec.INT.fieldOf("damage").forGetter(SkyblockBlock::damage),
 				Location.CODEC.listOf().fieldOf("onlyIn").forGetter(SkyblockBlock::onlyIn)
 		).apply(instance, SkyblockBlock::new));
 		public static final Codec<List<SkyblockBlock>> LIST_CODEC = CODEC.listOf();
 	}
 
-	// I don't like this code but don't see another way to do it, but it basically removes the point from loading it from the repo
-	public static class LegacyLookup {
-
-		public static final Map<String, String> TABLE = new HashMap<>();
-
-		static {
-
-			// ---- STAINED GLASS ----
-			put("minecraft:stained_glass,0", "minecraft:white_stained_glass");
-			put("minecraft:stained_glass,1", "minecraft:orange_stained_glass");
-			put("minecraft:stained_glass,3", "minecraft:light_blue_stained_glass");
-			put("minecraft:stained_glass,4", "minecraft:yellow_stained_glass");
-			put("minecraft:stained_glass,5", "minecraft:lime_stained_glass");
-			put("minecraft:stained_glass,6", "minecraft:pink_stained_glass");
-			put("minecraft:stained_glass,10", "minecraft:purple_stained_glass");
-			put("minecraft:stained_glass,11", "minecraft:blue_stained_glass");
-			put("minecraft:stained_glass,12", "minecraft:brown_stained_glass");
-			put("minecraft:stained_glass,13", "minecraft:green_stained_glass");
-			put("minecraft:stained_glass,14", "minecraft:red_stained_glass");
-			put("minecraft:stained_glass,15", "minecraft:black_stained_glass");
-
-			// ---- STAINED GLASS PANES ----
-			put("minecraft:stained_glass_pane,0", "minecraft:white_stained_glass_pane");
-			put("minecraft:stained_glass_pane,1", "minecraft:orange_stained_glass_pane");
-			put("minecraft:stained_glass_pane,3", "minecraft:light_blue_stained_glass_pane");
-			put("minecraft:stained_glass_pane,4", "minecraft:yellow_stained_glass_pane");
-			put("minecraft:stained_glass_pane,5", "minecraft:lime_stained_glass_pane");
-			put("minecraft:stained_glass_pane,6", "minecraft:pink_stained_glass_pane");
-			put("minecraft:stained_glass_pane,10", "minecraft:purple_stained_glass_pane");
-			put("minecraft:stained_glass_pane,11", "minecraft:blue_stained_glass_pane");
-			put("minecraft:stained_glass_pane,12", "minecraft:brown_stained_glass_pane");
-			put("minecraft:stained_glass_pane,13", "minecraft:green_stained_glass_pane");
-			put("minecraft:stained_glass_pane,14", "minecraft:red_stained_glass_pane");
-			put("minecraft:stained_glass_pane,15", "minecraft:black_stained_glass_pane");
-
-			// ---- TERRACOTTA ----
-			put("minecraft:stained_hardened_clay,7", "minecraft:gray_terracotta");
-			put("minecraft:stained_hardened_clay,8", "minecraft:light_gray_terracotta");
-			put("minecraft:stained_hardened_clay,9", "minecraft:cyan_terracotta");
-			put("minecraft:stained_hardened_clay,12", "minecraft:brown_terracotta");
-			put("minecraft:stained_hardened_clay,15", "minecraft:black_terracotta");
-			put("minecraft:hardened_clay,0", "minecraft:terracotta");
-
-			// ---- WOOL ----
-			put("minecraft:wool,3", "minecraft:light_blue_wool");
-			put("minecraft:wool,7", "minecraft:gray_wool");
-			put("minecraft:wool,8", "minecraft:light_gray_wool");
-
-			// ---- PRISMARINE ----
-			put("minecraft:prismarine,0", "minecraft:prismarine");
-			put("minecraft:prismarine,1", "minecraft:prismarine_bricks");
-			put("minecraft:prismarine,2", "minecraft:dark_prismarine");
-
-			// ---- SIMPLE BLOCKS ----
-			put("minecraft:packed_ice,0", "minecraft:packed_ice");
-			put("minecraft:stone,0", "minecraft:stone");
-			put("minecraft:stone,4", "minecraft:polished_diorite");
-			put("minecraft:cobblestone,0", "minecraft:cobblestone");
-			put("minecraft:clay,0", "minecraft:clay");
-
-			put("minecraft:coal_block,0", "minecraft:coal_block");
-			put("minecraft:diamond_block,0", "minecraft:diamond_block");
-			put("minecraft:emerald_block,0", "minecraft:emerald_block");
-			put("minecraft:gold_block,0", "minecraft:gold_block");
-			put("minecraft:iron_block,0", "minecraft:iron_block");
-			put("minecraft:lapis_block,0", "minecraft:lapis_block");
-			put("minecraft:quartz_block,0", "minecraft:quartz_block");
-			put("minecraft:redstone_block,0", "minecraft:redstone_block");
-			put("minecraft:sponge,0", "minecraft:sponge");
-
-			put("minecraft:red_sandstone,0", "minecraft:red_sandstone");
-		}
-
-		private static void put(String legacyKey, String modernId) {
-			TABLE.put(legacyKey, modernId);
-		}
-
-		public static Block get(String id, int damage) {
-			return BuiltInRegistries.BLOCK.getValue(Identifier.parse(TABLE.get(id + "," + damage)));
-		}
+	public static Block getBlockFromRepo(String id) {
+		return BuiltInRegistries.BLOCK.getValue(Identifier.tryParse(id));
 	}
-
-
 }

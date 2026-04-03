@@ -38,7 +38,7 @@ public class ItemTooltip {
 
 	public static void nullWarning() {
 		if (!sentNullWarning && client.player != null) {
-			LOGGER.warn(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemTooltip.nullMessage")).getString());
+			LOGGER.warn(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemTooltip.nullMessage").withStyle(ChatFormatting.RED)).getString());
 			sentNullWarning = true;
 		}
 	}

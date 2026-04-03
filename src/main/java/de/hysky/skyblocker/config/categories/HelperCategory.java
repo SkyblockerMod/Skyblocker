@@ -15,6 +15,7 @@ import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.controllers.FloatController;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -73,14 +74,6 @@ public class HelperCategory {
 								newValue -> config.helpers.enableCopyUnderbidPrice = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-				// Builder's Wand and Ruler Preview
-				.option(Option.<Boolean>createBuilder()
-						.name(Component.translatable("skyblocker.config.helpers.enableBuildersWandPreview"))
-						.binding(defaults.helpers.enableBuildersWandPreview,
-								() -> config.helpers.enableBuildersWandPreview,
-								newValue -> config.helpers.enableBuildersWandPreview = newValue)
-						.controller(ConfigUtils.createBooleanController())
-						.build())
 				// Anvil Helper
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.helpers.enableAnvilHelper"))
@@ -95,11 +88,34 @@ public class HelperCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.helpers.enableAccessoriesHelperWidget"))
 						.description(Component.translatable("skyblocker.config.helpers.enableAccessoriesHelperWidget.@Tooltip"))
+						.tags(CommonTags.ADDED_IN_6_0_0)
 						.binding(defaults.helpers.enableAccessoriesHelperWidget,
 								() -> config.helpers.enableAccessoriesHelperWidget,
 								newValue -> config.helpers.enableAccessoriesHelperWidget = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+
+				// Builder's Wand and Ruler Preview
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.helpers.buildersWand"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.buildersWand.enableBuildersWandPreview"))
+								.binding(defaults.helpers.buildersWand.enableBuildersWandPreview,
+										() -> config.helpers.buildersWand.enableBuildersWandPreview,
+										newValue -> config.helpers.buildersWand.enableBuildersWandPreview = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.buildersWand.previewOpacity"))
+								.tags(CommonTags.ADDED_IN_6_2_0)
+								.binding(defaults.helpers.buildersWand.previewOpacity,
+										() -> config.helpers.buildersWand.previewOpacity,
+										newValue -> config.helpers.buildersWand.previewOpacity = newValue)
+								.controller(FloatController.createBuilder().range(0f, 1f).slider(0.05f).build())
+								.build())
+						.build()
+				)
 
 				//Mythological Ritual
 				.group(OptionGroup.createBuilder()

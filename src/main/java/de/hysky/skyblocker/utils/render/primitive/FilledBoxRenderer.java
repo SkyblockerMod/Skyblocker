@@ -6,7 +6,7 @@ import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.FilledBoxRenderState;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 
 public final class FilledBoxRenderer implements PrimitiveRenderer<FilledBoxRenderState> {
 	protected static final FilledBoxRenderer INSTANCE = new FilledBoxRenderer();

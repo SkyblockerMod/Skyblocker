@@ -23,7 +23,7 @@ import org.joml.Vector2ic;
 import org.jspecify.annotations.Nullable;
 
 import static de.hysky.skyblocker.skyblock.dungeon.puzzle.IceFill.boardToString;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class IcePath extends DungeonPuzzle {
 	@Init
 	public static void init() {
 		if (Debug.debugEnabled()) {
-			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
+			ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
 					.then(literal("printBoard").executes(context -> {
 						context.getSource().sendFeedback(Constants.PREFIX.get().append(boardToString(INSTANCE.silverfishBoard)));
 						return Command.SINGLE_SUCCESS;
@@ -82,7 +82,7 @@ public class IcePath extends DungeonPuzzle {
 			}
 		}
 
-		List<Silverfish> entities = client.level.getEntitiesOfClass(Silverfish.class, AABB.ofSize(Vec3.atCenterOf(room.relativeToActual(new BlockPos(15, 66, 16))), 16, 16, 16), silverfishEntity -> true);
+		List<Silverfish> entities = client.level.getEntitiesOfClass(Silverfish.class, AABB.ofSize(Vec3.atCenterOf(room.relativeToActual(new BlockPos(15, 66, 16))), 16, 16, 16), _ -> true);
 		if (entities.isEmpty()) {
 			return;
 		}

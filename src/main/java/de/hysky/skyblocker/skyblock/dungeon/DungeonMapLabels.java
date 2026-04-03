@@ -8,7 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
@@ -27,7 +27,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class DungeonMapLabels {
@@ -37,7 +37,7 @@ public class DungeonMapLabels {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((_n, _p, _c) -> DungeonMapLabels.clearLabels());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> DungeonMapLabels.clearLabels());
 		DungeonEvents.DUNGEON_ENDED.register(DungeonMapLabels::clearLabels);
 		DungeonEvents.ROOM_MATCHED.register(DungeonMapLabels::onRoomMatched);
 		Scheduler.INSTANCE.scheduleCyclic(() -> updateRoomNames(null), 20);
@@ -112,16 +112,16 @@ public class DungeonMapLabels {
 		};
 	}
 
-	protected static void renderRoomNames(GuiGraphics context) {
+	protected static void extractRoomNames(GuiGraphicsExtractor graphics) {
 		if (!SkyblockerConfigManager.get().dungeons.dungeonMap.showRoomLabels) return;
 
 		Font textRenderer = Minecraft.getInstance().font;
 		for (RoomLabel label : LABELS.values()) {
-			context.pose().pushMatrix();
-			context.pose().translate(label.x, label.y);
-			context.pose().scale(LABEL_SCALE);
-			drawText(context, textRenderer, label.textLines, label.color);
-			context.pose().popMatrix();
+			graphics.pose().pushMatrix();
+			graphics.pose().translate(label.x, label.y);
+			graphics.pose().scale(LABEL_SCALE);
+			extractText(graphics, textRenderer, label.textLines, label.color);
+			graphics.pose().popMatrix();
 		}
 	}
 
@@ -200,11 +200,11 @@ public class DungeonMapLabels {
 		return (int) (maxWidth * MAX_WIDTH_SCALAR);
 	}
 
-	private static void drawText(GuiGraphics context, Font textRenderer, List<FormattedCharSequence> lines, int color) {
+	private static void extractText(GuiGraphicsExtractor graphics, Font textRenderer, List<FormattedCharSequence> lines, int color) {
 		int y = lines.size() > 1 ? -(textRenderer.lineHeight / 2) * (lines.size() - 1) : 0;
 		for (FormattedCharSequence orderedText : lines) {
 			int textWidth = textRenderer.width(orderedText) / 2;
-			HudHelper.drawOutlinedText(context, orderedText, -textWidth, y, color, CommonColors.BLACK);
+			GuiHelper.outlinedText(graphics, orderedText, -textWidth, y, color, CommonColors.BLACK);
 			y += 9;
 		}
 	}

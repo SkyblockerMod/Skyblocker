@@ -10,7 +10,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -37,15 +37,15 @@ public class ForestNodes {
 	@Init
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(ForestNodes::update, 20);
-		WorldRenderExtractionCallback.EVENT.register(ForestNodes::extractRendering);
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+		LevelRenderExtractionCallback.EVENT.register(ForestNodes::extractRendering);
+		AttackBlockCallback.EVENT.register((_, _, _, pos, _) -> {
 			if (!shouldProcess()) {
 				return InteractionResult.PASS;
 			}
 			forestNodes.remove(pos);
 			return InteractionResult.PASS;
 		});
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+		UseBlockCallback.EVENT.register((_, _, _, hitResult) -> {
 			if (!shouldProcess()) {
 				return InteractionResult.PASS;
 			}
@@ -53,7 +53,7 @@ public class ForestNodes {
 			forestNodes.remove(pos);
 			return InteractionResult.PASS;
 		});
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ParticleEvents.FROM_SERVER.register(ForestNodes::onParticle);
 	}
 
@@ -91,13 +91,13 @@ public class ForestNodes {
 		List<Display.ItemDisplay> entities = world.getEntitiesOfClass(
 				Display.ItemDisplay.class,
 				AABB.ofSize(pos.getCenter(), 1.0, 1.0, 1.0),
-				entity -> true
+				_ -> true
 		);
 
 		// Count those with minecraft:string
 		return (int) entities.stream()
 				.filter(entity -> {
-					ItemStack stack = entity.getItemStack();
+					ItemStack stack = entity.itemRenderState().itemStack();
 					return !stack.isEmpty() && stack.getItem().equals(Items.STRING);
 				})
 				.count();

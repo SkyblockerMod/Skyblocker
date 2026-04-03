@@ -94,7 +94,7 @@ public class StructureToSkeleton {
 		int initialSize = blockData.size();
 		List<Integer> blockNums = blockData.stream()
 				.map(SkeletonBlock::compress)
-				.filter((num) -> num > 0)
+				.filter(num -> num > 0)
 				.sorted().toList();
 		if (blockNums.size() != initialSize) throw new RuntimeException("Negative block number detected..");
 

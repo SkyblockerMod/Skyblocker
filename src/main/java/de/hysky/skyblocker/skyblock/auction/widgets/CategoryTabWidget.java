@@ -5,7 +5,7 @@ import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import de.hysky.skyblocker.utils.render.gui.SideTabButtonWidget;
 import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -37,11 +37,11 @@ public class CategoryTabWidget extends SideTabButtonWidget {
 	}
 
 	@Override
-	public void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderContents(context, mouseX, mouseY, delta);
+	public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractContents(graphics, mouseX, mouseY, a);
 
 		if (isMouseOver(mouseX, mouseY)) {
-			context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, icon.getTooltipLines(TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL), mouseX, mouseY);
+			graphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, icon.getTooltipLines(TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL), mouseX, mouseY);
 		}
 	}
 

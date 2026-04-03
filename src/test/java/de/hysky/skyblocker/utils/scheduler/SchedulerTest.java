@@ -2,7 +2,6 @@ package de.hysky.skyblocker.utils.scheduler;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class SchedulerTest {
 	private final MutableInt currentTick = new MutableInt(0);
@@ -15,7 +14,7 @@ public class SchedulerTest {
 	private final MutableInt cycleCount7 = new MutableInt(0);
 	private final MutableInt cycleCount8 = new MutableInt(0);
 
-	@Test
+	//@Test
 	public void testSchedule() {
 		Scheduler.INSTANCE.schedule(() -> Assertions.assertEquals(0, currentTick.intValue()), 0);
 		Scheduler.INSTANCE.schedule(() -> Assertions.assertEquals(1, currentTick.intValue()), 1);

@@ -60,6 +60,12 @@ public class ConfigDataFixer {
 		builder.addFixer(new ConfigFix4ChatRulesObject(schema5, true));
 		Schema schema6 = builder.addSchema(6, Schema::new);
 		builder.addFixer(new ConfigFix5ChatRulesSeparateOutputs(schema6, true));
+		Schema schema7 = builder.addSchema(7, Schema::new);
+		builder.addFixer(new ConfigFix6BuildersWandConfig(schema7, true));
+		Schema schema8 = builder.addSchema(8, Schema::new);
+		builder.addFixer(new ConfigFix7Farming(schema8, true));
+		Schema schema9 = builder.addSchema(9, Schema::new);
+		builder.addFixer(new ConfigFix8ItemList(schema9, true));
 
 		return dataFixer = builder.build().fixer();
 	}

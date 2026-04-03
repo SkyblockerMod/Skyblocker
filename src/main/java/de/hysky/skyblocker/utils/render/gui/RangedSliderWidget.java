@@ -73,7 +73,7 @@ public class RangedSliderWidget extends AbstractSliderButton {
 		private int x, y, width = Button.DEFAULT_WIDTH, height = Button.DEFAULT_HEIGHT;
 		private double value, min = 0, max = 1, step;
 		private Double2ObjectFunction<Component> formatter = d -> Component.literal(Formatters.DOUBLE_NUMBERS.format(d));
-		private DoubleConsumer callback = d -> {};
+		private DoubleConsumer callback = _ -> {};
 
 		private Builder() {}
 

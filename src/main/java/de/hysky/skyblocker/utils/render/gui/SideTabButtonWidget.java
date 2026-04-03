@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton;
@@ -18,7 +18,7 @@ public class SideTabButtonWidget extends ImageButton {
 	}
 
 	public SideTabButtonWidget(int x, int y, boolean toggled, WidgetSprites sprites, ItemStack icon) {
-		super(x, y, 35, 27, sprites, _ignored -> {});
+		super(x, y, 35, 27, sprites, _ -> {});
 		this.icon = icon.copy();
 	}
 
@@ -27,12 +27,12 @@ public class SideTabButtonWidget extends ImageButton {
 	}
 
 	@Override
-	public void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		Identifier identifier = sprites.get(true, this.selected);
 		int x = getX();
 		if (this.selected) x -= 2;
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, identifier, x, this.getY(), this.width, this.height);
-		context.renderItem(icon, x + 9, getY() + 5);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, identifier, x, this.getY(), this.width, this.height);
+		graphics.item(icon, x + 9, getY() + 5);
 	}
 
 	@Override

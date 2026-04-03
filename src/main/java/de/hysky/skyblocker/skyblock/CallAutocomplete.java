@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 import java.io.InputStream;
 import java.util.List;
@@ -46,10 +46,10 @@ public class CallAutocomplete {
 					.toList();
 
 			commandNode = literal("call")
-					.requires(fccs -> Utils.isOnSkyblock())
+					.requires(_ -> Utils.isOnSkyblock())
 					.executes(CommandUtils.noOp)
 					.then(argument("contact", StringArgumentType.greedyString())
-							.suggests((context, builder) -> SharedSuggestionProvider.suggest(suggestions, builder))
+							.suggests((_, builder) -> SharedSuggestionProvider.suggest(suggestions, builder))
 							.executes(CommandUtils.noOp))
 					.build();
 		} catch (Exception e) {
