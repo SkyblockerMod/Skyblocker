@@ -12,11 +12,12 @@ import net.minecraft.network.chat.Component;
  * <p>Widgets may be clickable however do note that you must manually set {@link AbstractWidget#active} to {@code true}
  * in order for that to work properly as widgets are automatically set to be inactive.
  */
-public abstract sealed class ProfileViewerWidget extends AbstractWidget permits BasicInfoBoxWidget, CompositeWidget, PageTabWidget, PlayerWidget, RulerWidget, TestTextWidget {
+public abstract sealed class ProfileViewerWidget extends AbstractWidget permits BasicInfoBoxWidget, CompositeWidget, LevelBarWidget, PageTabWidget, PlayerWidget, RulerWidget, TestTextWidget {
 	/**
 	 * The padding needed to match vanilla in rendering inside of the "content" area of the Profile Viewer's background (leaving space from the border).
 	 */
 	protected static final int CONTENT_PADDING = 8;
+	protected static final int ITEM_SIZE = 16;
 	private final boolean padToContent;
 	/**
 	 * The X position of this widget relative to the origin point of the Profile Viewer's background.

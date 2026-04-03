@@ -1,4 +1,4 @@
-classTweaker v1 named
+classTweaker v1 official
 
 # Command Argument Types
 accessible	field	net/minecraft/commands/arguments/coordinates/BlockPosArgument	EXAMPLES	Ljava/util/Collection;
@@ -25,8 +25,8 @@ extendable	method	net/minecraft/client/gui/screens/recipebook/RecipeBookComponen
 accessible	field	net/minecraft/world/level/block/CarpetBlock	SHAPE	Lnet/minecraft/world/phys/shapes/VoxelShape;
 
 # Hud Rendering
-extendable	class	net/minecraft/client/gui/render/state/GuiTextRenderState
-accessible	field	net/minecraft/client/gui/render/state/GuiTextRenderState	includeEmpty	Z
+extendable	class	net/minecraft/client/renderer/state/gui/GuiTextRenderState
+accessible	field	net/minecraft/client/renderer/state/gui/GuiTextRenderState	includeEmpty	Z
 accessible	class	net/minecraft/client/gui/Font$PreparedTextBuilder
 accessible	field	net/minecraft/client/gui/Font$PreparedTextBuilder	x	F
 accessible	field	net/minecraft/client/gui/Font$PreparedTextBuilder	y	F
@@ -34,6 +34,9 @@ accessible	field	net/minecraft/client/gui/Font$PreparedTextBuilder	y	F
 # Custom Screens
 # Gets rid of a compiler error for Eclipse (I guess its more strict)
 accessible	class	net/minecraft/client/gui/components/AbstractSelectionList$Entry
+
+# Quick Nav
+accessible	method	net/minecraft/client/gui/screens/Screen	addWidget	(Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
 
 # Interface Injections
 inject-interface	net/minecraft/world/entity/Entity	de/hysky/skyblocker/injected/SkyblockerEntity

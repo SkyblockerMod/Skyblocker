@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import io.github.moulberry.repo.data.NEUIngredient;
 import java.util.ArrayList;
@@ -9,15 +10,14 @@ import java.util.Locale;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public class SkyblockCraftingRecipe implements SkyblockRecipe {
 	public static final Identifier ID = SkyblockerMod.id("skyblock_crafting");
 
 	private final Component craftText;
-	private final List<ItemStack> grid = new ArrayList<>(9);
-	private final ItemStack result;
+	private final List<FlexibleItemStack> grid = new ArrayList<>(9);
+	private final FlexibleItemStack result;
 
 	public SkyblockCraftingRecipe(NEUCraftingRecipe neuCraftingRecipe) {
 		this.craftText = neuCraftingRecipe.getExtraText() != null ? Component.literal(neuCraftingRecipe.getExtraText()) : Component.empty();
@@ -27,11 +27,11 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
 		result = SkyblockRecipe.getItemStack(neuCraftingRecipe.getOutput());
 	}
 
-	public List<ItemStack> getGrid() {
+	public List<FlexibleItemStack> getGrid() {
 		return grid;
 	}
 
-	public ItemStack getResult() {
+	public FlexibleItemStack getResult() {
 		return result;
 	}
 
@@ -54,12 +54,12 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public List<ItemStack> getInputs() {
+	public List<FlexibleItemStack> getInputs() {
 		return grid;
 	}
 
 	@Override
-	public List<ItemStack> getOutputs() {
+	public List<FlexibleItemStack> getOutputs() {
 		return List.of(result);
 	}
 
@@ -75,7 +75,7 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
 
 	@Override
 	public Identifier getRecipeIdentifier() {
-		return Identifier.fromNamespaceAndPath("skyblock", getResult().getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + getResult().getCount());
+		return Identifier.fromNamespaceAndPath("skyblock", getResult().getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + getResult().count());
 
 	}
 

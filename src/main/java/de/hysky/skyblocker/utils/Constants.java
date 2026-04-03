@@ -12,6 +12,7 @@ import net.minecraft.network.chat.MutableComponent;
  * Holds generic static constants
  */
 public interface Constants {
+	@SuppressWarnings("UnnecessaryUnicodeEscape")
 	String LEVEL_EMBLEMS = "\u2E15\u273F\u2741\u2E19\u03B1\u270E\u2615\u2616\u2663\u213B\u2694\u27B6\u26A1\u2604\u269A\u2693\u2620\u269B\u2666\u2660\u2764\u2727\u238A\u1360\u262C\u269D\u29C9\uA214\u32D6\u2E0E\u26A0\uA541\u3020\u30C4\u2948\u2622\u2623\u273E\u269C\u0BD0\u0A6D\u2742\u16C3\u3023\u10F6\u0444\u266A\u266B\u04C3\u26C1\u26C3\u16DD\u2618\uA598\uA03E\u1C6A\u03A3\u09EB\u2603\u2654\u26C2\u0FC7\uA925\uA56A\u2592\u2600\u2729\u272C\u272D\u272F\u2736\u2733\u2734\u2737\u2738\u2739\u273A\u12DE";
 	/**
 	 * Pattern for player names in the chat. For tab player names, use {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#PLAYER_NAME_PATTERN PlayerListManager#PLAYER_NAME_PATTERN}.
@@ -21,52 +22,32 @@ public interface Constants {
 	Supplier<MutableComponent> PREFIX = () -> {
 		if (FunUtils.shouldEnableFun()) {
 			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
-					.append(Component.literal("S").withColor(0x00FF4C))
-					.append(Component.literal("k").withColor(0x02FA60))
-					.append(Component.literal("i").withColor(0x04F574))
-					.append(Component.literal("b").withColor(0x07EF88))
-					.append(Component.literal("i").withColor(0x09EA9C))
-					.append(Component.literal("d").withColor(0x0BE5AF))
-					.append(Component.literal("i").withColor(0x0DE0C3))
-					.append(Component.literal("b").withColor(0x10DAD7))
-					.append(Component.literal("l").withColor(0x12D5EB))
-					.append(Component.literal("o").withColor(0x14D0FF))
-					.append(Component.literal("c").withColor(0x16CBFF))
-					.append(Component.literal("k").withColor(0x18C6FF))
-					.append(Component.literal("e").withColor(0x1AC1FF))
-					.append(Component.literal("r").withColor(0x1CBBFF))
+					.append(FunUtils.getRandomFunName())
 					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
 		} else if (FunUtils.shouldEnableChristmasFun()) {
 			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
-					.append(Component.literal("J").withColor(0x00FF4C))
-					.append(Component.literal("o").withColor(0x02FA60))
-					.append(Component.literal("l").withColor(0x04F574))
-					.append(Component.literal("l").withColor(0x07EF88))
-					.append(Component.literal("y").withColor(0x09EA9C))
-					.append(Component.literal("b").withColor(0x0BE5AF))
-					.append(Component.literal("l").withColor(0x0DE0C3))
-					.append(Component.literal("o").withColor(0x10DAD7))
-					.append(Component.literal("c").withColor(0x12D5EB))
-					.append(Component.literal("k").withColor(0x14D0FF))
-					.append(Component.literal("e").withColor(0x16CBFF))
-					.append(Component.literal("r").withColor(0x18C6FF))
+					.append(createSkyblockerGradient("Jollyblocker"))
+					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
+		} else if (FunUtils.shouldEnableSpookyFun()) {
+			return Component.empty().append(Component.literal("[").withStyle(ChatFormatting.GRAY))
+					.append(createSkyblockerGradient("S-Scaryblocker"))
 					.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
 		}
 
 		return Component.empty()
 				.append(Component.literal("[").withStyle(ChatFormatting.GRAY))
-				.append(Component.literal("S").withColor(0x00FF4C))
-				.append(Component.literal("k").withColor(0x02FA60))
-				.append(Component.literal("y").withColor(0x04F574))
-				.append(Component.literal("b").withColor(0x07EF88))
-				.append(Component.literal("l").withColor(0x09EA9C))
-				.append(Component.literal("o").withColor(0x0BE5AF))
-				.append(Component.literal("c").withColor(0x0DE0C3))
-				.append(Component.literal("k").withColor(0x10DAD7))
-				.append(Component.literal("e").withColor(0x12D5EB))
-				.append(Component.literal("r").withColor(0x14D0FF))
+				.append(createSkyblockerGradient("Skyblocker"))
 				.append(Component.literal("] ").withStyle(ChatFormatting.GRAY));
 	};
+
+	static Component createSkyblockerGradient(String string) {
+		MutableComponent component = Component.empty();
+		for (int i = 0; i < string.length(); i++) {
+			component.append(Component.literal(string.substring(i, i + 1))
+					.withColor(OkLabColor.interpolate(0x00FF4C, 0x14D0FF, (float) i/(string.length()-1))));
+		}
+		return component;
+	}
 
 
 	List<String> SEYMOUR_IDS = List.of("VELVET_TOP_HAT", "CASHMERE_JACKET", "SATIN_TROUSERS", "OXFORD_SHOES");

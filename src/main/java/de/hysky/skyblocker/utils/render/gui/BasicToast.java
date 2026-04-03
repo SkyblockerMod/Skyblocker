@@ -3,7 +3,7 @@ package de.hysky.skyblocker.utils.render.gui;
 import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -50,17 +50,17 @@ public class BasicToast implements Toast {
 	}
 
 	@Override
-	public void render(GuiGraphics context, Font textRenderer, long startTime) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
+	public void extractRenderState(GuiGraphicsExtractor graphics, Font textRenderer, long startTime) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
 		int offset;
 		if (icon != null) {
-			context.renderFakeItem(icon, 4, 4);
+			graphics.fakeItem(icon, 4, 4);
 			offset = 20;
 		} else {
 			offset = 0;
 		}
 		for (int i = 0; i < lines.size(); i++) {
-			context.drawString(textRenderer, lines.get(i), 4 + offset, 8 + i * 12, -1, false);
+			graphics.text(textRenderer, lines.get(i), 4 + offset, 8 + i * 12, -1, false);
 		}
 	}
 

@@ -25,13 +25,13 @@ public class ChatRulesConfigScreen extends Screen {
 		chatRulesConfigListWidget = layout.addToContents(new ChatRulesConfigListWidget(minecraft, this, width, layout.getContentHeight(), layout.getHeaderHeight()));
 		LinearLayout footerLayout = layout.addToFooter(new LinearLayout(0, 0, LinearLayout.Orientation.HORIZONTAL));
 		footerLayout.defaultCellSetting().paddingHorizontal(5).paddingVertical(2);
-		footerLayout.addChild(Button.builder(CommonComponents.GUI_CANCEL, button -> {
+		footerLayout.addChild(Button.builder(CommonComponents.GUI_CANCEL, _ -> {
 			if (minecraft != null) onClose();
 		}).build());
 		footerLayout.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.new"),
-				buttonNew -> chatRulesConfigListWidget.addRuleAfterSelected()
+				_ -> chatRulesConfigListWidget.addRuleAfterSelected()
 		).build());
-		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE, button -> {
+		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> {
 			chatRulesConfigListWidget.saveRules();
 			if (minecraft != null) {
 				onClose();

@@ -63,7 +63,7 @@ public class UpdateNotifications {
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = CONFIG.init());
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> loaded = CONFIG.init());
 		SkyblockEvents.JOIN.register(() -> Objects.requireNonNull(loaded).thenRunAsync(UpdateNotifications::tryCheckForNewVersion, Minecraft.getInstance()));
 	}
 
@@ -103,7 +103,7 @@ public class UpdateNotifications {
 							return;
 						}
 
-						MINECRAFT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)), false);
+						MINECRAFT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)));
 						SystemToast.add(MINECRAFT.getToastManager(), TOAST_TYPE, Component.translatable("skyblocker.updateNotifications.newUpdateToast.title"), Component.translatableEscape("skyblocker.updateNotifications.newUpdateToast.description", newVersion.version()));
 					});
 				}
@@ -130,7 +130,7 @@ public class UpdateNotifications {
 					.withClickEvent(new ClickEvent.RunCommand("/skyblocker config " + versionTagString)));
 			Component newVersionText = Component.translatable("skyblocker.updateNotifications.configureNewVersion", SkyblockerMod.VERSION, configureText);
 
-			MINECRAFT.player.displayClientMessage(Constants.PREFIX.get().append(newVersionText), false);
+			MINECRAFT.player.sendSystemMessage(Constants.PREFIX.get().append(newVersionText));
 			setConfig(config -> config.withNewestVersionUsed(currentModVersion));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Update Notifications] Failed to introduce the new update!", e);
@@ -185,7 +185,7 @@ public class UpdateNotifications {
 
 		try {
 			return DataResult.success(SemanticVersion.parse(formattedVersion));
-		} catch (VersionParsingException e) {
+		} catch (VersionParsingException _) {
 			return DataResult.error(() -> "Failed to parse semantic version from string: " + formattedVersion);
 		}
 	}

@@ -68,8 +68,8 @@ public class PlayerData {
 		return this.experience.getOrDefault("SKILL_" + skill.name(), 0.0d);
 	}
 
-	public LevelInfo getSkillLevel(Skill skill) {
-		return LevelCalculator.getSkillLevel((long) getSkillExperience(skill), skill);
+	public LevelInfo getSkillLevel(Skill skill, ProfileMember member) {
+		return LevelCalculator.getSkillLevel((long) getSkillExperience(skill), skill, member);
 	}
 
 	/**

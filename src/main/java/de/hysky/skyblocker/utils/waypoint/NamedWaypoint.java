@@ -54,7 +54,7 @@ public class NamedWaypoint extends Waypoint {
 	static final Codec<NamedWaypoint> SKYBLOCKER_LEGACY_ORDERED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			BlockPos.CODEC.fieldOf("pos").forGetter(waypoint -> waypoint.pos),
 			Codec.floatRange(0, 1).listOf().xmap(Floats::toArray, FloatArrayList::new).optionalFieldOf("colorComponents", new float[0]).forGetter(waypoint -> waypoint.colorComponents)
-	).apply(instance, (pos, colorComponents) -> new OrderedNamedWaypoint(pos, "", new float[]{0, 1, 0})));
+	).apply(instance, (pos, _) -> new OrderedNamedWaypoint(pos, "", new float[]{0, 1, 0})));
 
 	public static final Comparator<NamedWaypoint> NAME_COMPARATOR = new NameComparator();
 
@@ -207,7 +207,7 @@ public class NamedWaypoint extends Waypoint {
 				int i1 = Integer.parseInt(num1);
 				int i2 = Integer.parseInt(num2);
 				return Integer.compare(i1, i2);
-			} catch (NumberFormatException e) {
+			} catch (NumberFormatException _) {
 				return string1.compareTo(string2);
 			}
 		}

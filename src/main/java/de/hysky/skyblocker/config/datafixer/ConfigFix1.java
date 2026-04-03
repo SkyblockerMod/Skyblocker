@@ -6,10 +6,10 @@ import com.mojang.datafixers.schemas.Schema;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.OptionalDynamic;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import java.util.Locale;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.world.item.ItemStack;
 
 public class ConfigFix1 extends ConfigDataFix {
 	public ConfigFix1(Schema outputSchema, boolean changesType) {
@@ -192,9 +192,9 @@ public class ConfigFix1 extends ConfigDataFix {
 			if (extraNbt.length() > 2) itemNbt += "," + extraNbt;
 			itemNbt += "}";
 
-			ItemStack fixed = ItemStackComponentizationFixer.fixUpItem(TagParser.parseCompoundFully(itemNbt));
+			FlexibleItemStack fixed = ItemStackComponentizationFixer.fixUpFlexibleItem(TagParser.parseCompoundFully(itemNbt));
 
-			return nbt.createString(ItemStackComponentizationFixer.componentsAsString(fixed));
+			return nbt.createString(ItemStackComponentizationFixer.componentsAsString(fixed.components()));
 		} catch (Exception e) {
 			ConfigDataFixer.LOGGER.error(LogUtils.FATAL_MARKER, "[Skyblocker Config Data Fixer] Failed to convert nbt to components!", e);
 		}

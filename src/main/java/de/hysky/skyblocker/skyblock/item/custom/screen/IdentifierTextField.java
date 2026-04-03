@@ -19,7 +19,7 @@ class IdentifierTextField extends EditBox {
 		super(Minecraft.getInstance().font, width, height, Component.empty());
 		super.setResponder(this::onChanged);
 		this.callback = callback;
-		addFormatter((string, _firstCharacterIndex) -> FormattedCharSequence.forward(string, valid ? Style.EMPTY : Style.EMPTY.applyFormat(ChatFormatting.RED)));
+		addFormatter((string, _) -> FormattedCharSequence.forward(string, valid ? Style.EMPTY : Style.EMPTY.applyFormat(ChatFormatting.RED)));
 	}
 
 	private void onChanged(String s) {

@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,10 +50,10 @@ public class RngMeterAutocomplete {
 
 	private static LiteralCommandNode<FabricClientCommandSource> createCommandNode(String command) {
 		return literal(command)
-				.requires(source -> Utils.isOnSkyblock())
+				.requires(_ -> Utils.isOnSkyblock())
 				.executes(CommandUtils.noOp)
 				.then(argument("type", StringArgumentType.string())
-						.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.keySet(), builder))
+						.suggests((_, builder) -> SharedSuggestionProvider.suggest(rngMeters.keySet(), builder))
 						.executes(CommandUtils.noOp)
 						.then(argument("subtype", StringArgumentType.string())
 								.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.getOrDefault(StringArgumentType.getString(context, "type"), List.of()), builder))

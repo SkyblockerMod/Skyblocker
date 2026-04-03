@@ -49,9 +49,9 @@ public final class GardenPlots {
 
 	@Init
 	public static void init() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			if (screen instanceof ContainerScreen containerScreen && screen.getTitle().getString().trim().equals("Configure Plots")) {
-				ScreenEvents.remove(screen).register(ignored -> {
+				ScreenEvents.remove(screen).register(_ -> {
 					ChestMenu screenHandler = containerScreen.getMenu();
 					// Take plot icons and names
 					for (int row = 0; row < 5; row++)
@@ -80,11 +80,11 @@ public final class GardenPlots {
 						}
 
 				});
-			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) {
+			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.plotsWidget.enabled) {
 				GardenPlotsWidget widget = new GardenPlotsWidget(
 						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,
 						((AbstractContainerScreenAccessor) inventoryScreen).getY());
-				Screens.getButtons(inventoryScreen).add(widget);
+				Screens.getWidgets(inventoryScreen).add(widget);
 
 				inventoryScreen.registerRecipeBookToggleCallback(() -> widget.setPosition(
 						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,
@@ -99,7 +99,7 @@ public final class GardenPlots {
 			else load(profileId);
 		}));
 
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client1 -> {
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> {
 			String profileId = Utils.getProfileId();
 			if (!profileId.isBlank()) {
 				CompletableFuture.runAsync(() -> save(profileId), Executors.newVirtualThreadPerTaskExecutor());
@@ -137,7 +137,7 @@ public final class GardenPlots {
 							return GardenPlot.CODEC.decode(JsonOps.INSTANCE, jsonElement).result().map(Pair::getFirst).orElseThrow();
 						}
 				).toArray(GardenPlot[]::new);
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to load Equipment data", e);
 			}

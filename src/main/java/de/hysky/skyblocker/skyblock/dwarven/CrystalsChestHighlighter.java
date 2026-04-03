@@ -6,7 +6,7 @@ import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -46,8 +46,8 @@ public class CrystalsChestHighlighter {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(CrystalsChestHighlighter::extractLocationFromMessage);
-		WorldRenderExtractionCallback.EVENT.register(CrystalsChestHighlighter::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		LevelRenderExtractionCallback.EVENT.register(CrystalsChestHighlighter::extractRendering);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		WorldEvents.BLOCK_STATE_UPDATE.register(CrystalsChestHighlighter::onBlockUpdate);
 		ParticleEvents.FROM_SERVER.register(CrystalsChestHighlighter::onParticle);
 		PlaySoundEvents.FROM_SERVER.register(CrystalsChestHighlighter::onSound);

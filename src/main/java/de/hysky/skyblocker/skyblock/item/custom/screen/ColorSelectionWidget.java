@@ -7,16 +7,14 @@ import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
+import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
-import java.io.Closeable;
-import java.util.List;
-import java.util.stream.Stream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -44,11 +42,16 @@ import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.Equippable;
 
+import java.io.Closeable;
+import java.util.List;
+import java.util.stream.Stream;
+
 public class ColorSelectionWidget extends AbstractContainerWidget implements Closeable {
 	private static final int PADDING = 3;
 
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 	private static final Component RESET_COLOR_TEXT = Component.translatable("skyblocker.customization.armor.resetColor");
+	private static final Component PICK_DYE_COLOR_TEXT = Component.translatable("skyblocker.customization.armor.pickDye");
 	private static final Component CANNOT_CUSTOMIZE_COLOR_TEXT = Component.translatable("skyblocker.customization.armor.cannotCustomizeColor");
 	private static final Component ANIMATED_TEXT = Component.translatable("skyblocker.customization.armor.animated");
 	private static final Component CYCLE_BACK_TEXT = Component.translatable("skyblocker.customization.armor.cycleBack");
@@ -66,6 +69,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 	private final Slider durationSlider;
 
 	private final Button resetColorButton;
+	private final Button pickDyeButton;
 	private final Checkbox animatedCheckbox;
 	private final StringWidget notCustomizableText;
 
@@ -78,7 +82,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 	private final List<AbstractWidget> children;
 
 	public ColorSelectionWidget(int x, int y, int width, int height, Font textRenderer) {
-		super(x, y, width, height, Component.nullToEmpty("ColorSelectionWidget"));
+		super(x, y, width, height, Component.nullToEmpty("ColorSelectionWidget"), AbstractScrollArea.defaultSettings(4));
 		int height1 = Math.min(Math.min(2 * height / 3, width / 5), height - 40); // 40 is the height of slider + timeline + some padding/margin
 
 		colorPicker = new ColorPickerWidget(0, 0, height1 * 2, height1);
@@ -87,7 +91,8 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 		argbTextInput.setOnChange(this::onTextInputColorChanged);
 		timelineWidget = new AnimatedDyeTimelineWidget(0, 0, getWidth() - 6, 15, this::onTimelineFrameSelected);
 
-		resetColorButton = Button.builder(RESET_COLOR_TEXT, this::onRemoveCustomColor).width(Math.min(150, x + width - argbTextInput.getRight() - 5)).build();
+		resetColorButton = Button.builder(RESET_COLOR_TEXT, this::onRemoveCustomColor).width(75).build();
+		pickDyeButton = Button.builder(PICK_DYE_COLOR_TEXT, this::onClickPickDye).width(75).build();
 
 		notCustomizableText = new StringWidget(CANNOT_CUSTOMIZE_COLOR_TEXT, textRenderer);
 		FrameLayout.centerInRectangle(notCustomizableText, getX(), getY(), getWidth(), getHeight());
@@ -130,7 +135,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 		});
 		durationSlider.setTooltip(Tooltip.create(DURATION_TOOLTIP_TEXT));
 
-		children = List.of(colorPicker, argbTextInput, timelineWidget, resetColorButton, animatedCheckbox, notCustomizableText, cycleBackCheckbox, delaySlider, durationSlider);
+		children = List.of(colorPicker, argbTextInput, timelineWidget, resetColorButton, pickDyeButton, animatedCheckbox, notCustomizableText, cycleBackCheckbox, delaySlider, durationSlider);
 		int w = getWidth() - PADDING * 2;
 		int h = getHeight() - PADDING * 2;
 		layout = new FrameLayout(w, h);
@@ -138,7 +143,8 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 
 		GridLayout grid = new GridLayout().spacing(3);
 		grid.addChild(argbTextInput, 0, 1);
-		grid.addChild(resetColorButton, 0, 2, 1, 3, LayoutSettings::alignHorizontallyRight);
+		grid.addChild(resetColorButton, 0, 1, 1, 3, LayoutSettings::alignHorizontallyRight);
+		grid.addChild(pickDyeButton, 0, 2, 1, 4, LayoutSettings::alignHorizontallyRight);
 		grid.addChild(animatedCheckbox, 1, 1, 1, 2);
 		grid.addChild(delaySlider, 1, 3, 1, 2, LayoutSettings::alignHorizontallyRight);
 		grid.addChild(cycleBackCheckbox, 2, 1, 1, 2);
@@ -259,6 +265,32 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 		SkyblockerConfigManager.updateOnly(config -> config.general.customAnimatedDyes.put(itemUuid, newDye));
 	}
 
+	private void onClickPickDye(Button button) {
+		Minecraft client = Minecraft.getInstance();
+		if (client.screen == null) return;
+		client.setScreen(new DyeSelectPopup(client.screen, this::setFromSolidDye, this::setFromAnimatedDye));
+	}
+
+	private void setFromSolidDye(Button button, int hex) {
+		this.onRemoveCustomColor(button);
+		this.onPickerColorChanged(hex, true);
+	}
+
+	private void setFromAnimatedDye(Button button, List<CustomArmorAnimatedDyes.Keyframe> keyFrames, boolean cycleBack) {
+		this.onRemoveCustomColor(button);
+		this.animated = true;
+		((CheckboxAccessor) animatedCheckbox).setSelected(true);
+		((CheckboxAccessor) cycleBackCheckbox).setSelected(cycleBack);
+		durationSlider.setValue(10);
+		changeVisibilities();
+
+		String itemUuid = currentItem.getUuid();
+		CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(keyFrames, cycleBack, 0, 10);
+		SkyblockerConfigManager.updateOnly(config -> config.general.customAnimatedDyes.put(itemUuid, newDye));
+		timelineWidget.setAnimatedDye(itemUuid);
+		timelineWidget.recreateImage(); // have to do this too for some reason
+	}
+
 	private void changeVisibilities() {
 		colorPicker.visible = customizable;
 		argbTextInput.visible = customizable;
@@ -269,6 +301,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 		durationSlider.visible = customizable && animated;
 
 		resetColorButton.visible = customizable;
+		pickDyeButton.visible = customizable;
 		animatedCheckbox.visible = customizable;
 		notCustomizableText.visible = !customizable;
 	}
@@ -289,10 +322,10 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
 		for (AbstractWidget child : children) {
-			child.render(context, mouseX, mouseY, delta);
+			child.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 	}
 

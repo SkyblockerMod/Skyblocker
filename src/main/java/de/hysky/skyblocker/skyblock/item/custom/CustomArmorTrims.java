@@ -10,10 +10,11 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.RegistryUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
@@ -53,7 +54,7 @@ public class CustomArmorTrims {
 		}
 		try {
 			TRIMS_CACHE.clear();
-			HolderLookup.Provider wrapperLookup = Utils.getRegistryWrapperLookup();
+			HolderLookup.Provider wrapperLookup = RegistryUtils.getRegistryWrapperLookup();
 			for (Reference<TrimMaterial> material : wrapperLookup.lookupOrThrow(Registries.TRIM_MATERIAL).listElements().toList()) {
 				for (Reference<TrimPattern> pattern : wrapperLookup.lookupOrThrow(Registries.TRIM_PATTERN).listElements().toList()) {
 					ArmorTrim trim = new ArmorTrim(material, pattern);
@@ -70,14 +71,14 @@ public class CustomArmorTrims {
 	}
 
 	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-		dispatcher.register(ClientCommandManager.literal("skyblocker")
-				.then(ClientCommandManager.literal("custom")
-						.then(ClientCommandManager.literal("armorTrim")
+		dispatcher.register(ClientCommands.literal("skyblocker")
+				.then(ClientCommands.literal("custom")
+						.then(ClientCommands.literal("armorTrim")
 								.executes(context -> customizeTrim(context.getSource(), null, null))
-								.then(ClientCommandManager.argument("material", IdentifierArgument.id())
+								.then(ClientCommands.argument("material", IdentifierArgument.id())
 										.suggests(getIdSuggestionProvider(Registries.TRIM_MATERIAL))
 										.executes(context -> customizeTrim(context.getSource(), context.getArgument("material", Identifier.class), null))
-										.then(ClientCommandManager.argument("pattern", IdentifierArgument.id())
+										.then(ClientCommands.argument("pattern", IdentifierArgument.id())
 												.suggests(getIdSuggestionProvider(Registries.TRIM_PATTERN))
 												.executes(context -> customizeTrim(context.getSource(), context.getArgument("material", Identifier.class), context.getArgument("pattern", Identifier.class))))))));
 	}

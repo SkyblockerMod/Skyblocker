@@ -5,7 +5,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.skyblock.crimson.CrimsonFaction;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.KuudraProfileData;
@@ -81,9 +80,12 @@ public class ChestValue {
 	public static final Pattern HEAVY_PEARL_PATTERN = Pattern.compile("Heavy Pearl(?: x(?<amount>\\d+))?");
 	private static final Pattern MINION_PATTERN = Pattern.compile("Minion (I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII)$");
 
+	public static boolean hideChestNameLabel = false;
+
 	@Init
 	public static void init() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
+			hideChestNameLabel = false;
 			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
 				Component title = screen.getTitle();
 				String titleString = title.getString();
@@ -91,7 +93,7 @@ public class ChestValue {
 
 				if (chestType != null) {
 					if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator) {
-						ScreenEvents.afterTick(screen).register(ignored -> {
+						ScreenEvents.afterTick(screen).register(_ -> {
 							Component dungeonChestProfit = getRewardChestProfit(genericContainerScreen.getMenu(), chestType);
 							if (dungeonChestProfit != null)
 								addValueToContainer(genericContainerScreen, dungeonChestProfit, title);
@@ -99,10 +101,10 @@ public class ChestValue {
 					}
 				} else if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
 					ScreenType screenType = determineScreenType(titleString);
-					Screens.getButtons(screen).add(Button
+					Screens.getWidgets(screen).add(Button
 							.builder(Component.literal("$"), buttonWidget -> {
-								Screens.getButtons(screen).remove(buttonWidget);
-								ScreenEvents.afterTick(screen).register(ignored -> {
+								Screens.getWidgets(screen).remove(buttonWidget);
+								ScreenEvents.afterTick(screen).register(_ -> {
 									Component chestValue = getChestValue(genericContainerScreen.getMenu(), screenType);
 									if (chestValue != null) {
 										addValueToContainer(genericContainerScreen, chestValue, title);
@@ -319,7 +321,7 @@ public class ChestValue {
 					String source = coinsLine.split(":")[1];
 					try {
 						value += NumberFormat.getNumberInstance(java.util.Locale.US).parse(source.trim()).doubleValue();
-					} catch (ParseException e) {
+					} catch (ParseException _) {
 						LOGGER.warn("[Skyblocker] Failed to parse `{}`", source);
 					}
 					continue;
@@ -381,21 +383,21 @@ public class ChestValue {
 	}
 
 	private static void addValueToContainer(ContainerScreen genericContainerScreen, Component chestValue, Component title) {
-		Screens.getButtons(genericContainerScreen).removeIf(ChestValueTextWidget.class::isInstance);
+		Screens.getWidgets(genericContainerScreen).removeIf(ChestValueTextWidget.class::isInstance);
 		int backgroundWidth = ((AbstractContainerScreenAccessor) genericContainerScreen).getImageWidth();
 		int y = ((AbstractContainerScreenAccessor) genericContainerScreen).getY();
 		int x = ((AbstractContainerScreenAccessor) genericContainerScreen).getX();
-		((ScreenAccessor) genericContainerScreen).setTitle(Component.empty());
+		hideChestNameLabel = true;
 		Font textRenderer = Minecraft.getInstance().font;
 		int chestValueWidth = Math.min(textRenderer.width(chestValue), Math.max((backgroundWidth - 8) / 2 - 2, backgroundWidth - 8 - textRenderer.width(title)));
 
 		StringWidget chestValueWidget = new ChestValueTextWidget(chestValueWidth, textRenderer.lineHeight, chestValue, textRenderer);
 		chestValueWidget.setPosition(x + backgroundWidth - chestValueWidget.getWidth() - 4, y + 6);
-		Screens.getButtons(genericContainerScreen).add(chestValueWidget);
+		Screens.getWidgets(genericContainerScreen).add(chestValueWidget);
 
 		ChestValueTextWidget chestTitleWidget = new ChestValueTextWidget(backgroundWidth - 8 - chestValueWidth - 2, textRenderer.lineHeight, title.copy().withStyle(Style.EMPTY.withColor(4210752)), textRenderer);
 		chestTitleWidget.setPosition(x + 8, y + 6);
-		Screens.getButtons(genericContainerScreen).add(chestTitleWidget);
+		Screens.getWidgets(genericContainerScreen).add(chestTitleWidget);
 	}
 
 	private static ScreenType determineScreenType(String rawTitleString) {

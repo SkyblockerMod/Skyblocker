@@ -104,7 +104,7 @@ public class JsonData<T> {
 	 */
 	public CompletableFuture<Void> init() {
 		// Make sure saving always completes by waiting on the save CompletableFuture.
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> save().join());
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> save().join());
 		return load();
 	}
 
@@ -126,7 +126,7 @@ public class JsonData<T> {
 			parsed.resultOrPartial(s -> LOGGER.error("[Skyblocker Json Data] Failed to parse data from file: `{}`. {}", file, s))
 					.ifPresent(t -> data = t); // Atomic operation to prevent concurrent modification
 			createBackup = parsed.isError();
-		} catch (NoSuchFileException ignored) {
+		} catch (NoSuchFileException _) {
 		} catch (Exception e) {
 			createBackup = true;
 			LOGGER.error("[Skyblocker Json Data] Failed to load data from file: `{}`", file, e);

@@ -8,28 +8,31 @@ import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
+
+import java.util.Objects;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
-public class FishingHudWidget extends ComponentBasedWidget {
+public class FishingHudWidget extends ElementBasedWidget {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Vec3 BARN_LOCATION = new Vec3(108, 89, -252);
 
-	private static FishingHudWidget instance;
+	private static @Nullable FishingHudWidget instance;
 
 	public static FishingHudWidget getInstance() {
-		return instance;
+		return Objects.requireNonNull(instance, "FishingHudWidget not initialized");
 	}
 
 	public FishingHudWidget() {
@@ -84,8 +87,8 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	@Override
 	public void updateContent() {
 		if (Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen) {
-			addComponent(Components.progressComponent(Ico.SALMON_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty("3/5"), 60, ColorUtils.percentToColor(40)));
-			addComponent(Components.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), Component.nullToEmpty("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100));
+			addComponent(Elements.progressComponent(Ico.SALMON_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty("3/5"), 60, ColorUtils.percentToColor(40)));
+			addComponent(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), Component.nullToEmpty("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100));
 			return;
 		}
 		//creature counter
@@ -94,8 +97,8 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			ObjectFloatPair<Component> timer = SeaCreatureTracker.getTimerText(SeaCreatureTracker.getOldestSeaCreatureAge());
 			int seaCreatureCap = SeaCreatureTracker.getSeaCreatureCap();
 			float seaCreaturePercent = (float) SeaCreatureTracker.seaCreatureCount() / seaCreatureCap * 100;
-			addComponent(Components.progressComponent(Ico.TROPICAL_FISH_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty(SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap), seaCreaturePercent, ColorUtils.percentToColor(100 - seaCreaturePercent)));
-			addComponent(Components.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), timer.left(), timer.rightFloat()));
+			addComponent(Elements.progressComponent(Ico.TROPICAL_FISH_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty(SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap), seaCreaturePercent, ColorUtils.percentToColor(100 - seaCreaturePercent)));
+			addComponent(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), timer.left(), timer.rightFloat()));
 		}
 		//bobber timer
 		if (SkyblockerConfigManager.get().helpers.fishing.enableFishingTimer && FishingHelper.startTime != 0) {
@@ -109,7 +112,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 				maxTime = 20;
 			}
 			time = Math.clamp(time, 0, maxTime);
-			addComponent(Components.progressComponent(Ico.CLOCK, Component.nullToEmpty("Bobber Time"), SkyblockTime.formatTime(maxTime - time),  100 - (time / maxTime) * 100));
+			addComponent(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Bobber Time"), SkyblockTime.formatTime(maxTime - time),  100 - (time / maxTime) * 100));
 		}
 		// rod reel timer
 		if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD && FishingHookDisplayHelper.fishingHookArmorStand != null) {

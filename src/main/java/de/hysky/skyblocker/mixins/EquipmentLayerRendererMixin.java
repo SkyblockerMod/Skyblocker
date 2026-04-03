@@ -19,7 +19,7 @@ import net.minecraft.world.item.equipment.EquipmentAssets;
 public class EquipmentLayerRendererMixin {
 
 	@ModifyVariable(method = "renderLayers(Lnet/minecraft/client/resources/model/EquipmentClientInfo$LayerType;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lnet/minecraft/world/item/ItemStack;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/resources/Identifier;II)V", at = @At("HEAD"), argsOnly = true)
-	private ResourceKey<EquipmentAsset> customArmorModel(ResourceKey<EquipmentAsset> assetKey, @Local(argsOnly = true) ItemStack stack) {
+	private ResourceKey<EquipmentAsset> customArmorModel(ResourceKey<EquipmentAsset> assetKey, @Local(name = "itemStack") ItemStack stack) {
 		if (Utils.isOnSkyblock() && !stack.getUuid().isEmpty()) {
 			Identifier identifier = SkyblockerConfigManager.get().general.customArmorModel.get(stack.getUuid());
 			return identifier == null ? assetKey : ResourceKey.create(EquipmentAssets.ROOT_ID, identifier);

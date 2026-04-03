@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -20,14 +20,14 @@ public class VisitorsWidget extends TabHudWidget {
 	@Override
 	protected void updateContent(List<Component> lines) {
 		String string = lines.getFirst().getString().replaceAll("[()]", "");
-		addComponent(new PlainTextComponent(
+		addComponent(new PlainTextElement(
 						Component.literal(string).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD).append(
 								Component.literal(" visitor(s)").withStyle(ChatFormatting.WHITE))
 				)
 		);
 
 		for (int i = 1; i < lines.size(); i++) {
-			addComponent(new PlainTextComponent(lines.get(i)));
+			addComponent(new PlainTextElement(lines.get(i)));
 		}
 	}
 }

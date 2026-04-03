@@ -4,7 +4,8 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -14,23 +15,26 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
+
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @RegisterWidget
-public class TreeBreakProgressHud extends ComponentBasedWidget {
+public class TreeBreakProgressHud extends ElementBasedWidget {
 
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GALATEA);
-	private static TreeBreakProgressHud instance;
-	private static Int2ObjectMap<ArmorStand> armorstands = new Int2ObjectOpenHashMap<ArmorStand>();
+	private static @Nullable TreeBreakProgressHud instance;
+	private static final Int2ObjectMap<ArmorStand> armorstands = new Int2ObjectOpenHashMap<>();
 
 	static {
-			ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> armorstands.remove(entity.getId()));
+			ClientEntityEvents.ENTITY_UNLOAD.register((entity, _) -> armorstands.remove(entity.getId()));
 	}
+
 	public TreeBreakProgressHud() {
 		super(Component.literal("Tree Break Progress").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), ChatFormatting.GREEN.getColor(), "hud_treeprogress");
 		instance = this;
@@ -49,7 +53,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 	}
 
 	public static TreeBreakProgressHud getInstance() {
-		return instance;
+		return Objects.requireNonNull(instance, "TreeBreakProgressHud not initialized");
 	}
 
 	@Override
@@ -74,7 +78,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 		return super.shouldRender(location) && isOwnTree(getClosestTree());
 	}
 
-	private ArmorStand getClosestTree() {
+	private @Nullable ArmorStand getClosestTree() {
 		if (CLIENT.player == null) return null;
 		return armorstands.values().stream()
 			.filter(entity -> {
@@ -86,7 +90,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 			.orElse(null);
 	}
 
-	private boolean isOwnTree(ArmorStand tree) {
+	private boolean isOwnTree(@Nullable ArmorStand tree) {
 		if (CLIENT.player == null) return false;
 		if (tree == null) return false;
 		Vec3 treePos = tree.position();
@@ -124,7 +128,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 
 		String closestName = closest.getName().getString();
 		String treeName = closestName.contains("FIG") ? "Fig Tree" : "Mangrove Tree";
-		ItemStack woodIcon = closestName.contains("FIG") ? Ico.STRIPPED_SPRUCE_WOOD : Ico.MANGROVE_LOG;
+		FlexibleItemStack woodIcon = closestName.contains("FIG") ? Ico.STRIPPED_SPRUCE_WOOD : Ico.MANGROVE_LOG;
 		addSimpleIcoText(woodIcon, treeName + " ", ChatFormatting.GREEN, closestName.replaceAll("[^0-9%]", ""));
 	}
 

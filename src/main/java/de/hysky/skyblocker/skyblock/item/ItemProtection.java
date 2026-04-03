@@ -8,10 +8,10 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -36,7 +36,7 @@ public class ItemProtection {
 
 	@Init
 	public static void init() {
-		itemProtection = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+		itemProtection = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.skyblocker.itemProtection",
 				GLFW.GLFW_KEY_V,
 				SkyblockerMod.KEYBINDING_CATEGORY
@@ -52,8 +52,8 @@ public class ItemProtection {
 	}
 
 	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-		dispatcher.register(ClientCommandManager.literal("skyblocker")
-				.then(ClientCommandManager.literal("protectItem")
+		dispatcher.register(ClientCommands.literal("skyblocker")
+				.then(ClientCommands.literal("protectItem")
 						.executes(context -> protectMyItem(context.getSource()))));
 	}
 
@@ -89,12 +89,12 @@ public class ItemProtection {
 			return;
 		}
 		if (!Utils.isOnSkyblock()) {
-			playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.unableToProtect")), false);
+			playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.unableToProtect")));
 			return;
 		}
 
 		if (heldItem.isEmpty()) {
-			playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.noItemUuid")), false);
+			playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.noItemUuid")));
 			return;
 		}
 
@@ -104,16 +104,16 @@ public class ItemProtection {
 			if (!SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid)) {
 				SkyblockerConfigManager.update(config -> config.general.protectedItems.add(itemUuid));
 				if (notifyConfiguration) {
-					playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.added", heldItem.getHoverName())), false);
+					playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.added", heldItem.getHoverName())));
 				}
 			} else {
 				SkyblockerConfigManager.update(config -> config.general.protectedItems.remove(itemUuid));
 				if (notifyConfiguration) {
-					playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.removed", heldItem.getHoverName())), false);
+					playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.removed", heldItem.getHoverName())));
 				}
 			}
 		} else {
-			playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.noItemUuid")), false);
+			playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.noItemUuid")));
 		}
 	}
 

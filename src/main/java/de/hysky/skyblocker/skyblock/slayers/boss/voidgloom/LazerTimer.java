@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.slayers.boss.voidgloom;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -14,7 +14,7 @@ public class LazerTimer {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(LazerTimer::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(LazerTimer::extractRendering);
 	}
 
 	public static void tick() {

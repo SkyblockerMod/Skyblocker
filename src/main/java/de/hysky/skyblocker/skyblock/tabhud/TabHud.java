@@ -6,7 +6,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.KeyMapping;
@@ -19,12 +19,12 @@ public class TabHud {
 
 	@Init
 	public static void init() {
-		toggleSecondary = KeyBindingHelper.registerKeyBinding(
+		toggleSecondary = KeyMappingHelper.registerKeyMapping(
 				new KeyMapping("key.skyblocker.toggleA",
 						InputConstants.Type.KEYSYM,
 						GLFW.GLFW_KEY_Z,
 						SkyblockerMod.KEYBINDING_CATEGORY));
-		defaultTgl = KeyBindingHelper.registerKeyBinding(
+		defaultTgl = KeyMappingHelper.registerKeyMapping(
 				new KeyMapping("key.skyblocker.defaultTgl",
 						InputConstants.Type.KEYSYM,
 						GLFW.GLFW_KEY_M,
@@ -32,7 +32,7 @@ public class TabHud {
 
 		HudElementRegistry.replaceElement(VanillaHudElements.PLAYER_LIST, hudElement -> {
 			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.shouldRenderVanilla() || Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen) return hudElement;
-			return (context, tickCounter) -> {};
+			return (_, _) -> {};
 		});
 	}
 
