@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.PopupScreen;
 import net.minecraft.client.gui.navigation.ScreenAxis;
@@ -55,10 +55,10 @@ public class StatusBarsConfigScreen extends Screen {
 
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, width / 2 - HOTBAR_WIDTH / 2, height - 22, HOTBAR_WIDTH, 22);
-		editBarWidget.render(context, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, width / 2 - HOTBAR_WIDTH / 2, height - 22, HOTBAR_WIDTH, 22);
+		editBarWidget.extractRenderState(graphics, mouseX, mouseY, a);
 
 		Window window = minecraft.getWindow();
 		int scaleFactor = window.calculateScale(0, minecraft.isEnforceUnicode()) - window.getGuiScale() + 3;
@@ -67,7 +67,7 @@ public class StatusBarsConfigScreen extends Screen {
 		ScreenRectangle mouseRect = new ScreenRectangle(new ScreenPosition(mouseX - scaleFactor / 2, mouseY - scaleFactor / 2), scaleFactor, scaleFactor);
 
 		if (cursorBar != null) {
-			cursorBar.renderCursor(context, mouseX + cursorOffset.x(), mouseY + cursorOffset.y(), delta);
+			cursorBar.extractCursor(graphics, mouseX + cursorOffset.x(), mouseY + cursorOffset.y(), a);
 			boolean inserted = false;
 			boolean updatePositions = false;
 			rectLoop:
@@ -121,7 +121,7 @@ public class StatusBarsConfigScreen extends Screen {
 					continue;
 				}
 
-				context.fill(anchorHitbox.left(), anchorHitbox.top(), anchorHitbox.right(), anchorHitbox.bottom(), 0x99FFFFFF);
+				graphics.fill(anchorHitbox.left(), anchorHitbox.top(), anchorHitbox.right(), anchorHitbox.bottom(), 0x99FFFFFF);
 				if (anchorHitbox.overlaps(mouseRect)) {
 					inserted = true;
 					if (currentInsertLocation.barAnchor() == barAnchor) continue;
@@ -229,7 +229,7 @@ public class StatusBarsConfigScreen extends Screen {
 							}
 							resizeHover.first(bar);
 							resizeHover.right(right);
-							context.requestCursor(CursorTypes.RESIZE_EW);
+							graphics.requestCursor(CursorTypes.RESIZE_EW);
 							break rectLoop;
 						} else {
 							resizeHover.first(null);
@@ -273,9 +273,9 @@ public class StatusBarsConfigScreen extends Screen {
 		values.forEach(this::setup);
 		updateScreenRects();
 		this.addRenderableWidget(Button.builder(Component.literal("?"),
-						button -> minecraft.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.explanationTitle"))
+						_ -> minecraft.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.explanationTitle"))
 								.addButton(Component.translatable("gui.ok"), PopupScreen::onClose)
-								.setMessage(Component.translatable("skyblocker.bars.config.explanation"))
+								.addMessage(Component.translatable("skyblocker.bars.config.explanation"))
 								.build()))
 				.bounds(width - 20, (height - 15) / 2, 15, 15)
 				.build());

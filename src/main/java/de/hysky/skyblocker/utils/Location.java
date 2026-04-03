@@ -11,19 +11,19 @@ import net.minecraft.util.StringRepresentable;
 public enum Location implements StringRepresentable {
 	PRIVATE_ISLAND("dynamic", "Private Island"),
 	GARDEN("garden", "Garden"),
-	HUB("hub", "Hub"),
-	THE_FARMING_ISLAND("farming_1", "The Farming Islands"),
+	HUB("hub", "Hub", true),
+	THE_FARMING_ISLAND("farming_1", "The Farming Islands", true),
 	THE_PARK("foraging_1", "The Park", true),
-	SPIDERS_DEN("combat_1", "Spider's Den"),
+	SPIDERS_DEN("combat_1", "Spider's Den", true),
 	@Deprecated BLAZING_FORTRESS("combat_2", "Blazing Fortress"),
-	THE_END("combat_3", "The End"),
-	CRIMSON_ISLE("crimson_isle", "Crimson Isle"),
-	GOLD_MINE("mining_1", "Gold Mine"),
+	THE_END("combat_3", "The End", true),
+	CRIMSON_ISLE("crimson_isle", "Crimson Isle", true),
+	GOLD_MINE("mining_1", "Gold Mine", true),
 	DEEP_CAVERNS("mining_2", "Deep Caverns"),
 	DWARVEN_MINES("mining_3", "Dwarven Mines"),
 	BACKWATER_BAYOU("fishing_1", "Backwater Bayou"),
 	DUNGEON_HUB("dungeon_hub", "Dungeon Hub"),
-	WINTER_ISLAND("winter", "Jerry's Workshop"),
+	WINTER_ISLAND("winter", "Jerry's Workshop", true),
 	THE_RIFT("rift", "The Rift"),
 	DARK_AUCTION("dark_auction", "Dark Auction"),
 	CRYSTAL_HOLLOWS("crystal_hollows", "Crystal Hollows"),
@@ -32,7 +32,7 @@ public enum Location implements StringRepresentable {
 	/**
 	 * The freezing cold Glacite Mineshafts! *brr... so cold... :(*
 	 *
-	 * <p>This location might not exist according to the API? Try using {@link Area#GLACITE_MINESHAFTS}.
+	 * <p>This location might not exist according to the API? Try using {@link Area.DwarvenMines#GLACITE_MINESHAFTS}.
 	 */
 	GLACITE_MINESHAFTS("mineshaft", "Glacite Mineshafts"),
 	/**

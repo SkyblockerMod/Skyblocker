@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -26,7 +26,7 @@ public class GlaciteColdOverlay {
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(GlaciteColdOverlay::update, 20);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(GlaciteColdOverlay::coldReset);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, POWDER_SNOW_OUTLINE, (context, tickCounter) -> render(context));
+		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, POWDER_SNOW_OUTLINE, (context, _) -> extract(context));
 	}
 
 	private static boolean coldReset(Component text, boolean b) {
@@ -61,26 +61,26 @@ public class GlaciteColdOverlay {
 	/**
 	 * @see Gui#renderTextureOverlay as this is a carbon copy of it
 	 */
-	private static void renderOverlay(GuiGraphics context, Identifier texture, float opacity) {
+	private static void extractOverlay(GuiGraphicsExtractor graphics, Identifier texture, float opacity) {
 		int white = ARGB.white(opacity);
-		context.blit(
+		graphics.blit(
 			RenderPipelines.GUI_TEXTURED,
 			texture,
 			0,
 			0,
 			0.0F,
 			0.0F,
-			context.guiWidth(),
-			context.guiHeight(),
-			context.guiWidth(),
-			context.guiHeight(),
+			graphics.guiWidth(),
+			graphics.guiHeight(),
+			graphics.guiWidth(),
+			graphics.guiHeight(),
 			white
 		);
 	}
 
-	public static void render(GuiGraphics context) {
+	public static void extract(GuiGraphicsExtractor graphics) {
 		if (Utils.isInDwarvenMines() && SkyblockerConfigManager.get().mining.glacite.coldOverlay) {
-			renderOverlay(context, POWDER_SNOW_OUTLINE, cold / 100f);
+			extractOverlay(graphics, POWDER_SNOW_OUTLINE, cold / 100f);
 		}
 	}
 }

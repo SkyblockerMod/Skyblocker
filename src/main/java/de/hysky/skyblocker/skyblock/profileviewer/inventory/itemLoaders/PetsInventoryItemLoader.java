@@ -32,7 +32,7 @@ public class PetsInventoryItemLoader extends ItemLoader {
 
 		List<ItemStack> itemList = new ArrayList<>();
 		for (Pet pet : petList) {
-			itemList.add(pet.getIcon());
+			itemList.add(pet.getIcon().getStackOrThrow());
 		}
 		return itemList;
 	}

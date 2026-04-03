@@ -155,9 +155,6 @@ public class UIAndVisualsConfig {
 
 		public Alignment alignment = Alignment.MIDDLE;
 
-		public float getRenderScale() {
-			return titleContainerScale * 0.03f;
-		}
 	}
 
 	public enum Direction {
@@ -183,7 +180,7 @@ public class UIAndVisualsConfig {
 
 		public int tabHudScale = 100;
 
-		public boolean showVanillaTabByDefault = false;
+		public boolean showVanillaTabByDefault = true;
 
 		public TabHudStyle style = TabHudStyle.FANCY;
 
@@ -304,12 +301,16 @@ public class UIAndVisualsConfig {
 	@SuppressWarnings("DeprecatedIsStillUsed")
 	@Deprecated
 	public static class LegacyBarPositions {
+		@Deprecated
 		public LegacyBarPosition healthBarPosition = LegacyBarPosition.LAYER1;
 
+		@Deprecated
 		public LegacyBarPosition manaBarPosition = LegacyBarPosition.LAYER1;
 
+		@Deprecated
 		public LegacyBarPosition defenceBarPosition = LegacyBarPosition.RIGHT;
 
+		@Deprecated
 		public LegacyBarPosition experienceBarPosition = LegacyBarPosition.LAYER2;
 	}
 

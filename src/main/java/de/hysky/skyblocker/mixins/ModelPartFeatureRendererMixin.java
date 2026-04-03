@@ -22,8 +22,8 @@ public class ModelPartFeatureRendererMixin {
 		return command.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW ? command.skyblocker$getCustomGlowColour() : operation.call(command);
 	}
 
-	@ModifyVariable(method = "render", at = @At("LOAD"), argsOnly = true, require = 2)
-	private OutlineBufferSource skyblocker$useCustomGlowConsumers(OutlineBufferSource original, @Local SubmitNodeStorage.ModelPartSubmit command) {
-		return command.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW ? GlowRenderer.getInstance().getGlowVertexConsumers() : original;
+	@ModifyVariable(method = "render", at = @At("LOAD"), name = "outlineBufferSource", require = 2)
+	private OutlineBufferSource skyblocker$useCustomGlowConsumers(OutlineBufferSource original, @Local(name = "modelPartSubmit") SubmitNodeStorage.ModelPartSubmit submit) {
+		return submit.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW ? GlowRenderer.getInstance().getGlowBufferSource() : original;
 	}
 }

@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import de.hysky.skyblocker.skyblock.item.tooltip.AccessoriesHelper;
+import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import it.unimi.dsi.fastutil.Pair;

@@ -27,7 +27,7 @@ public class ResourcePackCompatibility {
 
 	@Init(priority = -1)
 	public static void init() {
-		ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(SkyblockerMod.id("pack_compatibility_listener"), new ReloadListener());
+		ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(SkyblockerMod.id("pack_compatibility_listener"), new ReloadListener());
 	}
 
 	private static final class ReloadListener extends SimplePreparableReloadListener<List<Pair<String, ResourcePackOptions>>>  {

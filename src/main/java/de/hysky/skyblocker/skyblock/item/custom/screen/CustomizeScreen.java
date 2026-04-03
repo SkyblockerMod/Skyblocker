@@ -11,13 +11,13 @@ import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.tabs.TabManager;
@@ -32,6 +32,9 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+
+import org.apache.commons.lang3.function.Consumers;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Map;
@@ -42,7 +45,7 @@ public class CustomizeScreen extends Screen {
 	static final Logger LOGGER = LogUtils.getLogger();
 	static final Minecraft CLIENT = Minecraft.getInstance();
 
-	private final Screen previousScreen;
+	private final @Nullable Screen previousScreen;
 	private final Map<String, PreviousConfig> previousConfigs = new Object2ObjectOpenHashMap<>();
 
 	private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
@@ -55,16 +58,16 @@ public class CustomizeScreen extends Screen {
 
 	@Init
 	public static void initThings() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
-				ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("custom").executes(Scheduler.queueOpenScreenCommand(() -> new CustomizeScreen(null, false))))
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
+				ClientCommands.literal(SkyblockerMod.NAMESPACE).then(ClientCommands.literal("custom").executes(Scheduler.queueOpenScreenCommand(() -> new CustomizeScreen(null, false))))
 		));
-		ScreenEvents.AFTER_INIT.register((client1, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showCustomizeButton && screen instanceof InventoryScreen inventoryScreen) {
 				CustomizeButton button = new CustomizeButton(
 						((AbstractContainerScreenAccessor) inventoryScreen).getX() + 63,
 						((AbstractContainerScreenAccessor) inventoryScreen).getY() + 10
 				);
-				Screens.getButtons(inventoryScreen).add(button);
+				Screens.getWidgets(inventoryScreen).add(button);
 				inventoryScreen.registerRecipeBookToggleCallback(() -> button.setPosition(
 						((AbstractContainerScreenAccessor) inventoryScreen).getX() + 63,
 						((AbstractContainerScreenAccessor) inventoryScreen).getY() + 10
@@ -73,7 +76,7 @@ public class CustomizeScreen extends Screen {
 		});
 	}
 
-	public CustomizeScreen(Screen previousScreen, boolean item) {
+	public CustomizeScreen(@Nullable Screen previousScreen, boolean item) {
 		super((Math.random() < 0.01 ? Component.translatable("skyblocker.customization.titleSecret") : Component.translatable("skyblocker.customization.title")).withStyle(ChatFormatting.GRAY).withStyle(style -> style.withShadowColor(0)));
 		this.previousScreen = previousScreen;
 		this.item = item;
@@ -115,8 +118,8 @@ public class CustomizeScreen extends Screen {
 		tabNavigation.selectTab(item ? 1 : 0, false);
 		addRenderableWidget(tabNavigation);
 
-		addRenderableWidget(footerLayout.addChild(Button.builder(Component.translatable("gui.cancel"), b -> cancel()).build()));
-		addRenderableWidget(footerLayout.addChild(Button.builder(Component.translatable("gui.done"), b -> onClose()).build()));
+		addRenderableWidget(footerLayout.addChild(Button.builder(Component.translatable("gui.cancel"), _ -> cancel()).build()));
+		addRenderableWidget(footerLayout.addChild(Button.builder(Component.translatable("gui.done"), _ -> onClose()).build()));
 		footerLayout.arrangeElements();
 		repositionElements();
 	}
@@ -130,39 +133,41 @@ public class CustomizeScreen extends Screen {
 	}
 
 	private void cancel() {
-		previousConfigs.forEach((uuid, previousConfig) -> {
-			previousConfig.armorTrimId().ifPresentOrElse(
-					trim -> SkyblockerConfigManager.get().general.customArmorTrims.put(uuid, trim),
-					() -> SkyblockerConfigManager.get().general.customArmorTrims.remove(uuid)
-			);
-			previousConfig.color().ifPresentOrElse(
-					i -> SkyblockerConfigManager.get().general.customDyeColors.put(uuid, i),
-					() -> SkyblockerConfigManager.get().general.customDyeColors.removeInt(uuid)
-			);
-			previousConfig.animatedDye().ifPresentOrElse(
-					animatedDye -> SkyblockerConfigManager.get().general.customAnimatedDyes.put(uuid, animatedDye),
-					() -> SkyblockerConfigManager.get().general.customAnimatedDyes.remove(uuid)
-			);
-			previousConfig.helmetTexture().ifPresentOrElse(
-					tex -> SkyblockerConfigManager.get().general.customHelmetTextures.put(uuid, tex),
-					() -> SkyblockerConfigManager.get().general.customHelmetTextures.remove(uuid)
-			);
-			previousConfig.itemName().ifPresentOrElse(
-					text -> SkyblockerConfigManager.get().general.customItemNames.put(uuid, text),
-					() -> SkyblockerConfigManager.get().general.customItemNames.remove(uuid)
-			);
-			previousConfig.glint().ifPresentOrElse(
-					b -> SkyblockerConfigManager.get().general.customGlint.put(uuid, b.booleanValue()),
-					() -> SkyblockerConfigManager.get().general.customGlint.removeBoolean(uuid)
-			);
-			previousConfig.itemModel().ifPresentOrElse(
-					identifier -> SkyblockerConfigManager.get().general.customItemModel.put(uuid, identifier),
-					() -> SkyblockerConfigManager.get().general.customItemModel.remove(uuid)
-			);
-			previousConfig.armorModel().ifPresentOrElse(
-					identifier -> SkyblockerConfigManager.get().general.customArmorModel.put(uuid, identifier),
-					() -> SkyblockerConfigManager.get().general.customArmorModel.remove(uuid)
-			);
+		SkyblockerConfigManager.updateOnly(config -> {
+			previousConfigs.forEach((uuid, previousConfig) -> {
+				previousConfig.armorTrimId().ifPresentOrElse(
+						trim -> config.general.customArmorTrims.put(uuid, trim),
+						() -> config.general.customArmorTrims.remove(uuid)
+				);
+				previousConfig.color().ifPresentOrElse(
+						i -> config.general.customDyeColors.put(uuid, i),
+						() -> config.general.customDyeColors.removeInt(uuid)
+				);
+				previousConfig.animatedDye().ifPresentOrElse(
+						animatedDye -> config.general.customAnimatedDyes.put(uuid, animatedDye),
+						() -> config.general.customAnimatedDyes.remove(uuid)
+				);
+				previousConfig.helmetTexture().ifPresentOrElse(
+						tex -> config.general.customHelmetTextures.put(uuid, tex),
+						() -> config.general.customHelmetTextures.remove(uuid)
+				);
+				previousConfig.itemName().ifPresentOrElse(
+						text -> config.general.customItemNames.put(uuid, text),
+						() -> config.general.customItemNames.remove(uuid)
+				);
+				previousConfig.glint().ifPresentOrElse(
+						b -> config.general.customGlint.put(uuid, b.booleanValue()),
+						() -> config.general.customGlint.removeBoolean(uuid)
+				);
+				previousConfig.itemModel().ifPresentOrElse(
+						identifier -> config.general.customItemModel.put(uuid, identifier),
+						() -> config.general.customItemModel.remove(uuid)
+				);
+				previousConfig.armorModel().ifPresentOrElse(
+						identifier -> config.general.customArmorModel.put(uuid, identifier),
+						() -> config.general.customArmorModel.remove(uuid)
+				);
+			});
 		});
 		onClose();
 	}
@@ -177,15 +182,15 @@ public class CustomizeScreen extends Screen {
 	@Override
 	protected void repositionElements() {
 		int i = tabNavigation.getRectangle().bottom();
-		tabNavigation.setWidth(width);
+		tabNavigation.updateWidth(width);
 		tabNavigation.arrangeElements();
 		footerLayout.setPosition((width - footerLayout.getWidth()) / 2, height - footerLayout.getHeight() - 5);
 		tabManager.setTabArea(new ScreenRectangle(0, i, width, footerLayout.getY() - i - 2));
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 		//context.drawCenteredTextWithShadow(textRenderer, getTitle(), this.width / 2, footerLayout.getY() + footerLayout.getHeight() + 2, Colors.WHITE);
 	}
 
@@ -203,9 +208,8 @@ public class CustomizeScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		assert minecraft != null;
-		SkyblockerConfigManager.update(config -> {});
 		minecraft.setScreen(previousScreen);
+		SkyblockerConfigManager.update(Consumers.nop());
 	}
 
 	private record PreviousConfig(Optional<CustomArmorTrims.ArmorTrimId> armorTrimId,
@@ -227,9 +231,9 @@ public class CustomizeScreen extends Screen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight(), isHovered() ? 0xFFFAFA96 : 0x80FFFFFF);
-			this.handleCursor(context);
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight(), isHovered() ? 0xFFFAFA96 : 0x80FFFFFF);
+			this.handleCursor(graphics);
 		}
 
 		@Override

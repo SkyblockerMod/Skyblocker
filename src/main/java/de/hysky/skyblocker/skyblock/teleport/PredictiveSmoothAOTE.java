@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CarpetBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.block.WebBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
@@ -377,11 +379,11 @@ public class PredictiveSmoothAOTE {
 		//check mines shafts
 		if (Utils.getMap().equals("Mineshaft")) {
 			return false;
-		} else if (Utils.getIslandArea().equals("⏣ Jungle Temple")) { //do not allow in jungle temple
+		} else if (Utils.getArea() == Area.CrystalHollows.JUNGLE_TEMPLE) { //do not allow in jungle temple
 			return false;
-		} else if (Utils.getLocation() == Location.PRIVATE_ISLAND && !Utils.getIslandArea().equals("⏣ Your Island")) { //do not allow it when visiting
+		} else if (Utils.getLocation() == Location.PRIVATE_ISLAND && Utils.getArea() != Area.PrivateIsland.YOUR_ISLAND) { //do not allow it when visiting
 			return false;
-		} else if (Utils.getIslandArea().equals("⏣ Dojo")) { //do not allow in dojo
+		} else if (Utils.getArea() == Area.CrimsonIsle.DOJO) { //do not allow in dojo
 			return false;
 		} else if (Utils.isInDungeons()) { //check places in dungeons where you can't teleport
 			if (DungeonManager.isInBoss() && DungeonManager.getBoss() == DungeonBoss.MAXOR) {
@@ -499,7 +501,7 @@ public class PredictiveSmoothAOTE {
 		Block block = blockState.getBlock();
 		VoxelShape shape = blockState.getCollisionShape(CLIENT.level, blockPos);
 
-		return shape.isEmpty() || block instanceof CarpetBlock || block instanceof FlowerPotBlock || (block.equals(Blocks.SNOW) && blockState.getValue(BlockStateProperties.LAYERS) <= 3);
+		return shape.isEmpty() || block instanceof CarpetBlock || block instanceof FlowerPotBlock || block instanceof WebBlock || (block.equals(Blocks.SNOW) && blockState.getValue(BlockStateProperties.LAYERS) <= 3);
 	}
 
 	/**

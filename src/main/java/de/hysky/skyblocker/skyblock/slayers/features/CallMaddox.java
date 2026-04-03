@@ -19,7 +19,7 @@ public class CallMaddox {
 						.withColor(ChatFormatting.AQUA)
 		);
 
-		player.displayClientMessage(text, false);
+		player.sendSystemMessage(text);
 	}
 
 	// This is also called when the slayer is cancelled.

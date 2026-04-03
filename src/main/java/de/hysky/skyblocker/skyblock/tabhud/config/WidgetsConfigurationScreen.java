@@ -17,8 +17,8 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.client.gui.components.tabs.TabManager;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -45,8 +45,8 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	private @Nullable ChestMenu handler;
 	private String titleLowercase;
 	public final boolean noHandler;
-	private WidgetManager.ScreenLayer widgetsLayer = null;
-	private Screen parent = null;
+	private WidgetManager.@Nullable ScreenLayer widgetsLayer = null;
+	private @Nullable Screen parent = null;
 
 	private boolean tabPreview = false;
 	private PreviewTab previewTab;
@@ -68,7 +68,9 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			Map.entry("crimson isle", Location.CRIMSON_ISLE),
 			Map.entry("kuudra", Location.KUUDRAS_HOLLOW),
 			Map.entry("the rift", Location.THE_RIFT),
-			Map.entry("jerry's workshop", Location.WINTER_ISLAND)
+			Map.entry("jerry's workshop", Location.WINTER_ISLAND),
+			Map.entry("galatea", Location.GALATEA),
+			Map.entry("backwater bayou", Location.BACKWATER_BAYOU)
 	);
 	private Location currentLocation = Utils.getLocation();
 
@@ -82,10 +84,10 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 
 	// Tabs and stuff
 	private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
-	private TabNavigationBar tabNavigation;
-	private WidgetsListTab widgetsListTab;
+	private @Nullable TabNavigationBar tabNavigation;
+	private @Nullable WidgetsListTab widgetsListTab;
 
-	private boolean switchingToPopup = false;
+	public static boolean overrideWidgetsScreen = false;
 
 	/**
 	 * Register the /skyblocker hud command, which will open /widgets if on Skyblock and Fancy Tab Hud is enabled.
@@ -93,17 +95,22 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	 */
 	@Init
 	public static void initCommands() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("hud").executes((ctx) -> {
-				if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
-					MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
-				} else {
-					Location currentLocation = Utils.isOnSkyblock() ? Utils.getLocation() : Location.HUB;
-					MessageScheduler.queueOpenScreen(new WidgetsConfigurationScreen(currentLocation, WidgetManager.ScreenLayer.MAIN_TAB, null));
-				}
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
+			dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE).then(ClientCommands.literal("hud").executes(_ -> {
+				openWidgetsConfigScreen(null);
 				return Command.SINGLE_SUCCESS;
 			})));
 		});
+	}
+
+	public static void openWidgetsConfigScreen(@Nullable Screen screen) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
+			overrideWidgetsScreen = true;
+			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
+		} else {
+			Location currentLocation = Utils.isOnSkyblock() ? Utils.getLocation() : Location.HUB;
+			MessageScheduler.queueOpenScreen(new WidgetsConfigurationScreen(currentLocation, WidgetManager.ScreenLayer.MAIN_TAB, screen));
+		}
 	}
 
 	/**
@@ -143,7 +150,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	 * @param targetLocation    open the preview to this location
 	 * @param widgetLayerToGoTo go to this widget's layer
 	 */
-	public WidgetsConfigurationScreen(Location targetLocation, String widgetLayerToGoTo, Screen parent) {
+	public WidgetsConfigurationScreen(Location targetLocation, String widgetLayerToGoTo, @Nullable Screen parent) {
 		this(null, "", targetLocation, WidgetManager.getScreenBuilder(targetLocation).getPositionRuleOrDefault(widgetLayerToGoTo).screenLayer());
 		this.parent = parent;
 	}
@@ -154,7 +161,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	 * @param targetLocation open the preview to this location
 	 * @param layerToGo      go to this layer
 	 */
-	public WidgetsConfigurationScreen(Location targetLocation, WidgetManager.ScreenLayer layerToGo, Screen parent) {
+	public WidgetsConfigurationScreen(Location targetLocation, WidgetManager.ScreenLayer layerToGo, @Nullable Screen parent) {
 		this(null, "", targetLocation, layerToGo);
 		this.parent = parent;
 	}
@@ -174,7 +181,6 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 		updateCustomWidgets();
 
 		this.tabNavigation.selectTab(0, false);
-		switchingToPopup = false;
 		this.addRenderableWidget(tabNavigation);
 		this.repositionElements();
 	}
@@ -182,7 +188,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	@Override
 	protected void repositionElements() {
 		if (this.tabNavigation != null) {
-			this.tabNavigation.setWidth(this.width);
+			this.tabNavigation.updateWidth(this.width);
 			this.tabNavigation.arrangeElements();
 			int i = this.tabNavigation.getRectangle().bottom();
 			ScreenRectangle screenRect = new ScreenRectangle(0, i, this.width, this.height - i - 5);
@@ -258,7 +264,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 				widgetsListTab.hopper(null);
 			}
 		}
-		if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRowCount() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50) {
+		if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRowCount() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50 || slotId == 51) {
 			widgetsListTab.onSlotChange(slotId, stack);
 		}
 	}
@@ -297,7 +303,6 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			widgetsListTab.hopper(slotThirteenBacklog.skyblocker$getLoreStrings());
 			slotThirteenBacklog = null;
 		}
-		assert this.minecraft != null;
 		assert this.minecraft.player != null;
 		if (!this.minecraft.player.isAlive() || this.minecraft.player.isRemoved()) {
 			this.minecraft.player.closeContainer();
@@ -306,7 +311,6 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 
 	@Override
 	public void onClose() {
-		assert this.minecraft != null;
 		if (handler != null) {
 			assert this.minecraft.player != null;
 			this.minecraft.player.closeContainer();
@@ -322,12 +326,12 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	@Override
 	public void removed() {
 		if (handler == null) return;
-		if (!switchingToPopup && this.minecraft != null && this.minecraft.player != null) {
+		overrideWidgetsScreen = false;
+		if (this.minecraft.player != null) {
 			this.handler.removed(this.minecraft.player);
 		}
 		handler.removeSlotListener(this);
 		Scheduler.INSTANCE.schedule(PlayerListManager::updateList, 1);
-		SkyblockerConfigManager.save();
 	}
 
 	@Override
@@ -342,6 +346,6 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			onLocationChanged.accept(location);
 		},
 				locations.contains(currentLocation) ? currentLocation : Location.HUB,
-				(isOpen) -> previewTab.locationDropdownOpened(isOpen));
+				isOpen -> previewTab.locationDropdownOpened(isOpen));
 	}
 }

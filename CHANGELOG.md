@@ -1,3 +1,299 @@
+# Release 6.2.0
+
+## Highlight
+* Add Animated and Static Dye Selection in /skyblocker custom
+* Add Pelt Animal Glow
+* Add Dungeon Rare Room Alerts
+  * Shows a message on the screen when Trinity, Tomioka, or Duncan are discovered.
+  * (Individually configurable)
+* Add an option to highlight Stereo Harmony vinyl pests separately
+* Add opacity option for Builder's Wand and Ruler preview
+* Improve Farming config category organization
+* Fix Carnival features not working
+* Fix some enchanted books not showing Price Tooltips in the Bazaar
+* Fix Event Notifications not saving properly
+* Fix Fishing Hud Bobber Timer not clearing sometimes
+* Fix Pickobulus not showing in the Great Glacite Lake
+* Fix various Craft Price Tooltip issues
+* Fix Chocolate Egg Waypoints not hiding sometimes if already found
+* Fix Event Toasts showing after an event ends if the game was minimized
+* Fix Mayor Jerry Event Toast
+* Fix Sweep Details HUD not showing in the Foraging Camp
+* Fix Farming HUD BPS with Cactus Knife Mk.2 and Mk.3
+
+## What's Changed
+* Enable sweep details widget in foraging camp by @IllagerCaptain in https://github.com/SkyblockerMod/Skyblocker/pull/2187
+* Fix Carnival Features by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2190
+* Fix WS Connection Error Message by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2191
+* fix: Handle enchantment book ids in bazaar by @WilliamTTran in https://github.com/SkyblockerMod/Skyblocker/pull/2197
+* Change Dragon's Lair Color by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2200
+* rename Component to Element by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2199
+* Add option for Stereo Harmony to color pests differently by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2125
+* Show hover highlight & pest outline in empty garden widget slots by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2121
+* Update .editorconfig by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2142
+* Fix Event Notifications Default Reminders Not Saving by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2209
+* Clear bobber timer when switching servers by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2205
+* Fix Mayor Jerry Event Notifications by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2160
+* Change VacuumCache to ScreenEvents#remove by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2204
+* Accessory helper bugfix by @Ownwn in https://github.com/SkyblockerMod/Skyblocker/pull/2207
+* Add Dye Color Selection by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2213
+* add opacity option to builders wand preview by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2094
+* Fix pickob not appearing in glacite lake by @WilliamTTran in https://github.com/SkyblockerMod/Skyblocker/pull/2220
+* Fix Two Minor Issues by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2225
+* Minor Farming Hud Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2223
+* Add pelt animal glow by @CornerMercury in https://github.com/SkyblockerMod/Skyblocker/pull/2202
+* Adds /dn command by @Beast9265 in https://github.com/SkyblockerMod/Skyblocker/pull/2201
+* Remove fishing bobber timer after swapping to non-rod item by @WilliamTTran in https://github.com/SkyblockerMod/Skyblocker/pull/2218
+* Fix stealing cursor forever by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2233
+* Fix Various Craft Price Tooltip Issues by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2230
+* Fix API Id for Renamed Enchanted Books by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2221
+* Revert "Temporary migration from some hysky redirects" by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2238
+* Remove Jank BlocksMixin by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2244
+* Bump dependency versions by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2245
+* Remove waypoints for already found eggs by @WilliamTTran in https://github.com/SkyblockerMod/Skyblocker/pull/2243
+* Adjust spacing and padding in SkillsPage layout by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/2250
+* Revamp Farming Config Category by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2208
+* Fix Quick Nav Button 12 by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2251
+* Hide event toasts after event end by @WilliamTTran in https://github.com/SkyblockerMod/Skyblocker/pull/2219
+* Trinity/Other Rare Rooms Alert by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2231
+* More Compatible Way To Hide Chest Names by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2259
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2186
+
+## New Contributors
+* @WilliamTTran made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2197
+* @CornerMercury made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2202
+* @Beast9265 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2201
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.1.1+1.21.11...v6.2.0+1.21.11
+
+___
+
+# Release 6.1.1
+
+## Highlight
+* Add Xalx Crystal Hollows waypoint
+* Optimize Sven Pup name tag hiding
+* Fix Dungeon Chest Profit not working
+* Fix Museum Overlay not working
+* Fix Client side mining animations not working
+* Fix Corpse Profit Tracker not accounting for newer items
+* Fix End Stone Protector location being outdated
+* Fix being able to drop protected items in dungeon secret chests
+* Fix some settings in `/skyblocker hud` not saving properly
+
+## What's Changed
+* Fix Museum Overlay by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2174
+* Fix End Stone Protector Location by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2181
+* Add new items for Corpse Profit Tracker by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2183
+* Add Xalx CH Waypoint by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2164
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.1.0+1.21.11...v6.1.1+1.21.11
+
+___
+
+# Release 6.1.0
+
+## Highlight
+* Various fixes for the 0.24.2 SkyBlock update
+* Add MP Calculation in the Profile Viewer
+* Remove 1.8 Lever, Cactus, and Mushroom Hitboxes
+* Improve Fire Freeze Staff Timer
+    * The timer should now be more accurate during server lag
+* Improve the Museum resync failure messages 
+* Fix some plot icons not saving correctly for the Garden Plots Widget
+* Fix Bazaar/NPC Price Tooltips not counting compost correctly in the Composter
+* Fix Sweep Details not being hidden in the Garden
+* Fix the Profile Viewer sometimes getting stuck loading when an error occurs
+* Fix Museum donatable items sometimes showing multiple times
+
+## What's Changed
+* Add workflow option to not modify mod version by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2145
+* Minor PV Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2150
+* Add MP to PV by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2151
+* The start of the journey towards Profile Viewer v2 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/2156
+* Profile Viewer v2: Page & Widget/UI by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/2162
+* Handle sweep details in unclean garden plots by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2147
+* Fix Egg Finder not being disabled properly by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2158
+* Use getPartialOrThrow() for CH Waypoints by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2159
+* Minor Room Preview Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2153
+* Fix Some Plot Icons Not Saving Correctly by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2152
+* Small Config Grammar Fix by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2163
+* Check for item count in composter for NPC/bazaar prices by @GrowlingGrizzly in https://github.com/SkyblockerMod/Skyblocker/pull/2165
+* pv2 layout based suggestion by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2168
+* Use Server Ticks for the Fire Freeze Staff Timer by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2052
+* Improve Museum Resync Feedback + Other Museum Stuff by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2140
+* 0.24.2 Update Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2170
+
+## New Contributors
+* @GrowlingGrizzly made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2165
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.0.3+1.21.11...v6.1.0+1.21.11
+
+___
+
+# Release 6.0.3
+
+## Highlight
+ * Rework Update Notifications system
+   * Add prompt to configure new updates after installing them
+   * Add better algorithm for determining which version a user should update to
+   * Fix update notifications not working
+ * Add Disable All button to the config
+   * Opens a prompt where you can disable all of Skyblocker's features after waiting 10 seconds
+ * Fix Accessory Helper loading issues
+ * Fix greyscale fonts not rendering properly in in-world text
+ * Fix Pickobulus helper working on Private Islands
+ * Fix Pickobulus widget not updating if the helper is disabled
+ * Fix Smooth AOTE crash
+ * Fix empty tab list widgets appearing
+ * Fix Mirrorverse waypoints being visible from the Château
+ * Fix NEU Repo Scheduler errors
+
+## What's Changed
+* Fix NEURepoManager Scheduler Errors by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2127
+* Accessory helper loading changes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2130
+* Fix smooth aote bug by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/2131
+* still update pickobulus widget even if helper is disabled by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2134
+* fix grayscale fonts not rendering properly in in-world text by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2133
+* Hide mirrorverse waypoints when outside of the mirrorverse by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2139
+* Hide tab list widgets that have no content by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2137
+* Hide Pickobulus Helper on Private Island by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2143
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.0.2+1.21.11...v6.0.3+1.21.11
+
+___
+
+# Release 6.0.2
+
+## Highlight
+ * Add Pumpkin option for Custom Plot Icons
+ * Add loading text for the Accessory Helper
+ * Fix Rift talismans showing in the Accessory Helper
+ * Fix block break predictions not working
+ * Fix Garden Plots Widget not using slot highlight textures
+ * Fix Garden Plots Widget magnifying glass panes when hovering
+ * Fix button border being hard coded with PV buttons
+ * Fix NPE with Wiki Lookups
+ * Fix slot range with Choose Pet Level Slot Text Adder
+ * Fix widget list scroll not resetting sometimes
+ * Fix ordering of Slayers config options
+ * Fix ambiguous wording with the Raw Craft Cost options
+
+## What's Changed
+* Change some configs by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/2100
+* Move border in /pv buttons to sprites by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2101
+* accessory helper changes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2105
+* fix NPE in wiki lookup by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2114
+* hide rift talismans from accessory helper by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2118
+* Fix Slot Range for Choose Pet Level Adder by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2117
+* Fix Widgets List scroll not resetting sometimes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2116
+* Add Pumpkin option for Custom Plot Icon by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2115
+* fix block break prediction by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2106
+* Less ambiguous wording in crafting tooltip option by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2109
+* fix GardenPlotsWidget issues that make eljay slightly upset by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2119
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.0.1+1.21.11...v6.0.2+1.21.11
+
+___
+
+# Release 6.0.1
+
+## Highlight
+* Fix Item Customization not updating until the menu is reopened
+* Fix Search Overlay History not being removed until the menu is reopened
+* Update default Quick Navigation AH and BZ UI Titles
+
+## What's Changed
+* Fix AH & bazaar quick navigation regexes for co-op players by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2098
+
+## New Contributors
+* @LJNeon made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2098
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.0.0+1.21.11...v6.0.1+1.21.11
+
+___
+
+# Release 6.0.0
+
+## Highlight
+* Add Accessory Helper
+* Add Client Side Mining Animations
+* Add Custom Plot Icons for the Garden Plot Widgets
+    * Allows changing plot icons to be any crop.
+* Add Garden Chip Level Slot Text
+* Add a command to remove visitors from Visitor Helper
+  * `/skyblocker garden visitor remove <visitorName>`
+  * `/skyblocker garden visitor removeAll`
+* Add "Show Toast" option for Chat Filters
+* Add Adaptive Dungeon Waypoint Box Sizes
+    * When enabled, the waypoints vary in size depending on type.
+* Add Config Patching
+* Improve Widget Configuration Screen
+  * Note: `/widgets` and `/tab` will now open the default Hypixel menu,
+  * Only `/skyblocker hud` will open this screen now!
+  * Fix scroll resetting when moving or selecting widgets
+  * Add "Reset" and "Reset All" buttons
+  * Allow clicking on widgets to select and move them
+    * Because of how the Hypixel menu works, you may have to click multiple times. 
+    * If this happens, it is shown in a toast message.
+* Improve mod compatibility with custom name tags
+* Improve Water Board One-Flow Solver
+    * The timers should now be more accurate during server lag
+* Improve slayer features
+  * Add a toggle for alerting on other player's minibosses
+  * Add highlighting for unclaimed slayer level rewards
+  * Add a toggle for muting blazes, wolves, and spiders
+  * Add a toggle for hiding Sven Pup nametags
+  * Add chat filters for some slayer chat messages
+  * Fix slayer boss detection
+* Improve accuracy for Farming HUD's Block Breaks and Farming XP metrics
+* Fix Bazaar Price Tooltip not working for Essences
+* Fix "Confirm Command Execution" Popup on some commands
+* Fix Powder Mining Tracker HUD not clearing with the command
+* Fix Config option grammar
+* Fix Visitor Helper showing with no visitors
+* Fix some items not showing properly in Museum Search Overlay
+* Fix Spirit Pet not working for Croesus Profit
+* Update Crypt and Super Tall fairy souls
+
+## What's Changed
+* Chip level slot text by @ADON15c in https://github.com/SkyblockerMod/Skyblocker/pull/2032
+* Fix Room Preview Scheduler warning by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2036
+* Add config game test by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1925
+* Fix Price Tooltip for Essences by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2035
+* Small Room Preview Fix by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2040
+* Fix Powder Mining Tracker HUD not clearing with the command by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2044
+* oops by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2048
+* Add Kuudra Tentacle in Croesus Profit by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2053
+* Item Ability API by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1941
+* Chat Rules Fixes by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1195
+* Rename Silverfish to Ice Path by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2046
+* Improve mod compatibility with custom name tags by @lunaynx in https://github.com/SkyblockerMod/Skyblocker/pull/2050
+* status bar fixes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2065
+* Fix Confirm Command Execution Popup by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2067
+* Update Crypt & Super Tall Fairy Soul Waypoints by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2060
+* Use Server Ticks for Waterboard One Flow Solver by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2045
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2064
+* Slayers Fixes and new Features by @7azeemm in https://github.com/SkyblockerMod/Skyblocker/pull/1932
+* More Farming Stuff by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2066
+* Widgets Screen Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2011
+* Fix "Waiting For Server" Text Showing With No Handler by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2083
+* Fix Farming Tools in Museum Search Overlay by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2082
+* Remove Fancy AH Escape Override by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2080
+* add "show toast" to chat filters by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2079
+* backup file if it fails to load in JsonData by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2049
+* custom plot icons in GardenPlotsWidget by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2075
+* Minor Fancy AH Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2085
+* Accessory helper by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1889
+* Client side mining animations  by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1959
+* Fix Search Overlay History Not Saving by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2096
+* Fix Title Container Not Saving by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2095
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2076
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.0.0-beta.2+1.21.11...v6.0.0+1.21.11
+
+___
+
 # Release 6.0.0 (Beta #2)
 
 ## Highlight
@@ -16,7 +312,7 @@
 * Add some missing tooltips/descriptions
 * Update compact damage precision option
     * If you changed this after Beta #1, you will have to set it again!
-* Improve resourcepack compatability for Fancy AH textures
+* Improve resourcepack compatibility for Fancy AH textures
 * Fix Bazaar Price tooltip for Enchanted Books in Superpairs
 * Fix command key inputs being bound to control for Mac users on 1.21.11
 * Fix score fluctuating after blood room is completed
@@ -135,7 +431,7 @@ ___
 * Fix Barrier placeholders not showing the proper item name
 * Fix Dungeons special effects not showing sometimes on items from Croesus
 * Use Fabric Events for Fancy Status Bars
-  * Fixes a mod compatability issue
+  * Fixes a mod compatibility issue
 
 ## What's Changed
 * Fix Sacks Item Value by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1935
