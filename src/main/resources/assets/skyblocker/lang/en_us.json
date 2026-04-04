@@ -446,8 +446,11 @@
   "skyblocker.config.farming": "Farming",
 
   "skyblocker.config.farming.farmingHud": "Farming HUD",
+  "skyblocker.config.farming.farmingHud.coins": "Show calculated hourly profits",
   "skyblocker.config.farming.farmingHud.config": "Farming HUD Config...",
+  "skyblocker.config.farming.farmingHud.counter": "Show cultivating & crops per minute",
   "skyblocker.config.farming.farmingHud.enabled": "Enable Farming HUD",
+  "skyblocker.config.farming.farmingHud.experience": "Show farming skill progress & xp gains",
   "skyblocker.config.farming.farmingHud.type": "Use Price Value From",
   "skyblocker.config.farming.farmingHud.type.@Tooltip": "The source to use when calculating profit in the Farming HUD.\n'Both' uses the highest price.",
   "skyblocker.config.farming.farmingHud.type.BAZAAR": "Bazaar",

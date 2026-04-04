@@ -37,6 +37,20 @@ public class FarmingCategory {
 								.prompt(Component.translatable("text.skyblocker.open"))
 								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GARDEN, FarmingHudWidget.getInstance().getInternalID(), screen)))
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.farmingHud.counter"))
+								.binding(defaults.farming.farmingHud.counter,
+										() -> config.farming.farmingHud.counter,
+										newValue -> config.farming.farmingHud.counter = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.farmingHud.coins"))
+								.binding(defaults.farming.farmingHud.coins,
+										() -> config.farming.farmingHud.coins,
+										newValue -> config.farming.farmingHud.coins = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<FarmingConfig.Type>createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.farmingHud.type"))
 								.description(Component.translatable("skyblocker.config.farming.farmingHud.type.@Tooltip"))
@@ -44,6 +58,13 @@ public class FarmingCategory {
 										() -> config.farming.farmingHud.type,
 										newValue -> config.farming.farmingHud.type = newValue)
 								.controller(ConfigUtils.createEnumController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.farmingHud.experience"))
+								.binding(defaults.farming.farmingHud.experience,
+										() -> config.farming.farmingHud.experience,
+										newValue -> config.farming.farmingHud.experience = newValue)
+								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
 				// Pest Highlighter
