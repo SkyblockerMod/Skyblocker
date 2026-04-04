@@ -1426,6 +1426,8 @@
   "skyblocker.config.uiAndVisuals.waypoints.lineWidth": "Line Width",
   "skyblocker.config.uiAndVisuals.waypoints.renderLine": "Render Line",
   "skyblocker.config.uiAndVisuals.waypoints.renderLine.@Tooltip": "Renders a line going from your cursor to the next waypoint (Ordered groups only).",
+  "skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius": "Waypoint Activation Radius",
+  "skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius.@Tooltip": "How close you have to be to a waypoint in an ordered group to switch to it.",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType": "Waypoint Type",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "Waypoint: Displays a highlight and a beacon beam.\n\nOutlined Waypoint: Displays both a waypoint and an outline.\n\nHighlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote": "\n\n\nThis option does not apply to all waypoints. Some waypoints such as secret waypoints have their own waypoint type option.",
