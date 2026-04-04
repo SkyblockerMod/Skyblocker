@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.FarmingConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
@@ -94,7 +94,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 			addComponent(new PlainTextElement(Component.literal("Nothing to show :p")));
 			return;
 		}
-		SkyblockerConfig config = SkyblockerConfigManager.get();
+		FarmingConfig.FarmingHud config = SkyblockerConfigManager.get().farming.farmingHud;
 		ItemStack farmingToolStack = client.player.getMainHandItem();
 		String itemId = farmingToolStack.getSkyblockId();
 		String cropItemId = FARMING_TOOLS.getOrDefault(itemId, "");
@@ -104,18 +104,18 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		FlexibleItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
 		float cropsPerMinute = FarmingHud.cropsPerMinute();
 
-		if (config.farming.farmingHud.counter) {
+		if (config.counter) {
 			String counterText = FarmingHud.counterText();
 			String counterNumber = FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter());
 			if (FarmingHud.CounterType.NONE.matchesText(counterText)) counterNumber = "";
 			addSimpleIcoText(cropStack, counterText, ChatFormatting.YELLOW, counterNumber);
 			addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.cropsPerMin", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
 		}
-		if (config.farming.farmingHud.coins) {
+		if (config.coins) {
 			addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.farming.farmingHud.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
 		}
 		addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.blocksPerSec", ChatFormatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
-		if (config.farming.farmingHud.experience) {
+		if (config.experience) {
 			//noinspection DataFlowIssue
 			addComponent(Elements.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.farming.farmingHud.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
 			addSimpleIconTranslatableText(Ico.LIME_DYE, "skyblocker.farming.farmingHud.farmingXPPerHour", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
