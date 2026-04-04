@@ -66,6 +66,7 @@ public class CatPicture {
 	private static void update() {
 		if (!Utils.isOnSkyblock()) return;
 		moveAround = FunUtils.shouldEnableFun();
+		if (!moveAround) return;
 		ClientLevel level = Minecraft.getInstance().level;
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (level == null || player == null) return;
