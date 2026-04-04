@@ -99,7 +99,7 @@ public class ItemTickList<T> extends ContainerObjectSelectionList<ItemTickList.I
 				child.setY(this.getY());
 				child.setWidth(this.getWidth());
 				child.setHeight(this.getHeight());
-				child.render(graphics, mouseX, mouseY, deltaTicks);
+				child.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
 		}
 

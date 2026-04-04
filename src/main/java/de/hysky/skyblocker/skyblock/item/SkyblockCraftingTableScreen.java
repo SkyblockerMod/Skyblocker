@@ -71,13 +71,13 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (this.recipeBook.isVisible() && this.narrow) {
-			this.renderBackground(graphics, mouseX, mouseY, delta);
-			this.recipeBook.render(graphics, mouseX, mouseY, delta);
+			this.extractBackground(graphics, mouseX, mouseY, delta);
+			this.recipeBook.extractRenderState(graphics, mouseX, mouseY, delta);
 		} else {
-			super.render(graphics, mouseX, mouseY, delta);
-			this.recipeBook.render(graphics, mouseX, mouseY, delta);
+			super.extractRenderState(graphics, mouseX, mouseY, delta);
+			this.recipeBook.extractRenderState(graphics, mouseX, mouseY, delta);
 			this.recipeBook.renderGhostRecipe(graphics, true);
 		}
 		this.renderTooltip(graphics, mouseX, mouseY);

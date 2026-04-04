@@ -217,7 +217,7 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 			graphics.fill(getX(), getY(), getRight(), getBottom(), ARGB.color(0.6f, 0));
 			GuiHelper.drawBorder(graphics, getX(), getY(), getWidth(), getHeight(), CommonColors.WHITE);
 			for (AbstractWidget child : children) {
-				child.render(graphics, mouseX, mouseY, deltaTicks);
+				child.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
 			if (!isFocused() &&
 					(mouseX <= getX() - 50 || mouseX >= getRight() + 50 || mouseY <= getY() - 50 || mouseY >= getBottom() + 50)) visible = false;

@@ -116,7 +116,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		renderBar(graphics);
 		if (enabled) renderText(graphics);
 	}
@@ -203,7 +203,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		renderY = mouseY;
 		inMouse = false;
 
-		render(graphics, mouseX, mouseY, delta);
+		extractRenderState(graphics, mouseX, mouseY, delta);
 
 		renderX = temp_x;
 		renderY = temp_y;

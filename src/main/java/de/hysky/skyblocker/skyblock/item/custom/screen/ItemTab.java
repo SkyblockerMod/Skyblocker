@@ -191,7 +191,7 @@ public class ItemTab extends GridLayoutTab {
 			matrices.scale(2);
 			graphics.item(currentItem, 0, 0);
 			matrices.popMatrix();
-			selectItemButton.render(graphics, mouseX, mouseY, deltaTicks);
+			selectItemButton.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 		}
 
 		@Override

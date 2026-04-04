@@ -123,14 +123,14 @@ public class SkyblockRecipeBookComponent extends RecipeBookComponent<NoopRecipeB
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (this.isVisible()) {
 			int left = accessor().invokeGetXOrigin();
 			int top = accessor().invokeGetYOrigin();
 			graphics.blit(RenderPipelines.GUI_TEXTURED, RECIPE_BOOK_LOCATION, left, top, 1.0f, 1.0f, IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
 
 			for (Pair<RecipeTab, SkyblockRecipeTabButton> tabButton : this.tabButtons) {
-				tabButton.right().render(graphics, mouseX, mouseY, delta);
+				tabButton.right().extractRenderState(graphics, mouseX, mouseY, delta);
 			}
 
 			this.currentTab.left().draw(graphics, left, top, mouseX, mouseY, delta);

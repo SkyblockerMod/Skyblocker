@@ -34,8 +34,8 @@ public class DungeonMapConfigScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		super.render(graphics, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		super.extractRenderState(graphics, mouseX, mouseY, delta);
 		renderHUDMap(graphics, mapX, mapY);
 		renderHUDScore(graphics, scoreX, scoreY);
 		graphics.centeredText(font, "Right Click To Reset Position", width >> 1, height >> 1, Color.GRAY.getRGB());
@@ -90,6 +90,6 @@ public class DungeonMapConfigScreen extends Screen {
 	}
 
 	public void renderHUDScore(GuiGraphicsExtractor graphics, int x, int y) {
-		DungeonScoreHUD.render(graphics, x, y);
+		DungeonScoreHUD.extractRenderState(graphics, x, y);
 	}
 }

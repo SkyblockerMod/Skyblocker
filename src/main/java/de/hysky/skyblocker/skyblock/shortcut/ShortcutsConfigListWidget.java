@@ -258,7 +258,7 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		@Override
 		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			replacement.setY(this.getY() + TEXT_FIELD_PADDING);
-			replacement.render(graphics, mouseX, mouseY, deltaTicks);
+			replacement.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			graphics.centeredText(minecraft.font, "→", this.getX() + this.getWidth() / 2, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
 		}
 
@@ -319,7 +319,7 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			super.renderContent(graphics, mouseX, mouseY, hovered, deltaTicks);
 			target.setY(this.getY() + TEXT_FIELD_PADDING);
-			target.render(graphics, mouseX, mouseY, deltaTicks);
+			target.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 		}
 
 		@Override
@@ -395,7 +395,7 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			super.renderContent(graphics, mouseX, mouseY, hovered, deltaTicks);
 			keybindButton.setY(this.getY() + TEXT_FIELD_PADDING);
-			keybindButton.render(graphics, mouseX, mouseY, deltaTicks);
+			keybindButton.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			if (duplicate) {
 				graphics.fill(keybindButton.getX() - 6, this.getY(), keybindButton.getX() - 3, this.getY() + this.getHeight(), CommonColors.YELLOW);
 			}

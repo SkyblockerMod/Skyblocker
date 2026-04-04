@@ -296,7 +296,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 					getWidth(),
 					getHeight()
 			);
-			this.field.render(graphics, mouseX, mouseY, deltaTicks);
+			this.field.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			this.drawLabel(graphics.textRenderer(HoveredTextEffects.NONE));
 		}
 

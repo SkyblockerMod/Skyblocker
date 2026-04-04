@@ -113,9 +113,9 @@ public class ProfileViewerScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		synchronized (this) {
-			super.render(graphics, mouseX, mouseY, delta);
+			super.extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 
 		int rootX = width / 2 - GUI_WIDTH / 2;
@@ -125,16 +125,16 @@ public class ProfileViewerScreen extends Screen {
 		for (ProfileViewerNavButton button : profileViewerNavButtons) {
 			button.setX(rootX + button.getIndex() * 28 + 4);
 			button.setY(rootY - 28);
-			button.render(graphics, mouseX, mouseY, delta);
+			button.extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 
 
-		if (textWidget != null) textWidget.render(graphics, font, rootX + 8, rootY + 120, mouseX, mouseY);
+		if (textWidget != null) textWidget.extractRenderState(graphics, font, rootX + 8, rootY + 120, mouseX, mouseY);
 		drawPlayerEntity(graphics, playerName != null ? playerName : "Loading...", rootX, rootY, mouseX, mouseY);
 
 		if (profileViewerPages[activePage] != null) {
 			profileViewerPages[activePage].markWidgetsAsVisible();
-			profileViewerPages[activePage].render(graphics, mouseX, mouseY, delta, rootX + 93, rootY + 7);
+			profileViewerPages[activePage].extractRenderState(graphics, mouseX, mouseY, delta, rootX + 93, rootY + 7);
 		} else {
 			graphics.centeredText(font, profileNotFound ? errorMessage : "Loading...", rootX + 200, rootY + 80, Color.WHITE.getRGB());
 		}

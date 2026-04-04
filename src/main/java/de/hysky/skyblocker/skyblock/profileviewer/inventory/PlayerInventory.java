@@ -34,7 +34,7 @@ public class PlayerInventory implements ProfileViewerPage {
 	}
 
 	// Z-STACKING forces this nonsense of separating the Background texture and Item Drawing :(
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		drawContainerTextures(graphics, "armor", rootX, rootY + 108, IntIntPair.of(1, 4));
 		drawContainerTextures(graphics, "inventory", rootX, rootY + 2, IntIntPair.of(4, 9));
 		drawContainerTextures(graphics, "equipment", rootX + 90, rootY + 108, IntIntPair.of(1, 4));

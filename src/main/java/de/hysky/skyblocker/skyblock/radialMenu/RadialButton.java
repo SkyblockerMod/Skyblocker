@@ -63,7 +63,7 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		//change color  and radius when hovered
 		boolean hovered = getHovered.getAsBoolean();
 		int color = hovered ? 0xFE000000 : 0x77000000; //darker when hovered

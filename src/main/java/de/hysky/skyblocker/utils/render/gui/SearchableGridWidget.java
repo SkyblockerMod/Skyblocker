@@ -83,8 +83,8 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 
 	@Override
 	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
-		searchField.render(graphics, mouseX, mouseY, deltaTicks);
-		widgetsContainer.render(graphics, mouseX, mouseY, deltaTicks);
+		searchField.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
+		widgetsContainer.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 	}
 
 	private class WidgetsContainer extends AbstractContainerWidget {
@@ -134,9 +134,9 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			graphics.enableScissor(getX(), getY(), getRight(), getBottom());
 			for (AbstractWidget widget : filteredWidgets) {
-				if (isVisible(widget)) widget.render(graphics, mouseX, mouseY, deltaTicks);
+				if (isVisible(widget)) widget.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
-			renderScrollbar(graphics, mouseX, mouseY);
+			extractScrollbar(graphics, mouseX, mouseY);
 			graphics.disableScissor();
 		}
 

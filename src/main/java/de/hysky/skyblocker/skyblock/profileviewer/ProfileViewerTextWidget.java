@@ -183,7 +183,7 @@ public class ProfileViewerTextWidget {
 		return p;
 	}
 
-	public void render(GuiGraphicsExtractor graphics, Font textRenderer, int root_x, int root_y, int mouseX, int mouseY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, Font textRenderer, int root_x, int root_y, int mouseX, int mouseY) {
 		// Profile Icon
 		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();

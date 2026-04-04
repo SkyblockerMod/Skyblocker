@@ -80,7 +80,7 @@ public class SkillWidget {
 
 	}
 
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
 		graphics.item(this.stack, x + 3, y + 2);
 		graphics.text(textRenderer, SKILL_NAME + " " + SKILL_LEVEL.level, x + 31, y + 2, Color.white.hashCode(), false);
 

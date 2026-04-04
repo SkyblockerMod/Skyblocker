@@ -24,7 +24,7 @@ public abstract class Element {
 
 	private LayoutElement parent = SpacerElement.width(0);
 
-	public abstract void render(GuiGraphicsExtractor graphics, int x, int y);
+	public abstract void extractRenderState(GuiGraphicsExtractor graphics, int x, int y);
 
 	public void setParent(LayoutElement parent) {
 		this.parent = parent;

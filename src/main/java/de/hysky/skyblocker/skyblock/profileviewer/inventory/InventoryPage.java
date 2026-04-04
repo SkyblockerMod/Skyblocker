@@ -58,12 +58,12 @@ public class InventoryPage implements ProfileViewerPage {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int startingY = rootY + (TOTAL_HEIGHT - inventorySelectButtons.size() * 21) / 2;
 		for (int i = 0; i < inventorySelectButtons.size(); i++) {
 			inventorySelectButtons.get(i).setX(rootX);
 			inventorySelectButtons.get(i).setY(startingY + i * 21);
-			inventorySelectButtons.get(i).render(graphics, mouseX, mouseY, delta);
+			inventorySelectButtons.get(i).extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 
 		if (inventorySubPages[activePage] == null) {
@@ -72,7 +72,7 @@ public class InventoryPage implements ProfileViewerPage {
 		}
 
 		inventorySubPages[activePage].markWidgetsAsVisible();
-		inventorySubPages[activePage].render(graphics, mouseX, mouseY, delta, rootX + 35, rootY + 6);
+		inventorySubPages[activePage].extractRenderState(graphics, mouseX, mouseY, delta, rootX + 35, rootY + 6);
 	}
 
 	public void onNavButtonClick(SubPageSelectButton clickedButton) {

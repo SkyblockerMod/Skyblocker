@@ -25,8 +25,8 @@ record SkyblockCraftingTab(SkyblockRecipeBookComponent recipeBook, ItemStack ico
 		assert recipeBook.searchBox != null;
 
 		if (ItemRepository.filesImported()) {
-			recipeBook.searchBox.render(graphics, mouseX, mouseY, delta);
-			recipeBook.filterOption.render(graphics, mouseX, mouseY, delta);
+			recipeBook.searchBox.extractRenderState(graphics, mouseX, mouseY, delta);
+			recipeBook.filterOption.extractRenderState(graphics, mouseX, mouseY, delta);
 			results.draw(graphics, x, y, mouseX, mouseY, delta);
 		} else {
 			//68 is from 137 / 2 and 137 is the height from which the page flip buttons are rendered

@@ -76,12 +76,12 @@ public class WidgetManager {
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
 
 		// Renders the hud (always on screen) widgets.
-		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, FANCY_TAB_HUD, (context, tickCounter) -> render(context, true));
+		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, FANCY_TAB_HUD, (context, tickCounter) -> extractRenderState(context, true));
 		// Renders the tab widgets
-		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false));
+		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> extractRenderState(context, false));
 	}
 
-	private static void render(GuiGraphicsExtractor graphics, boolean hud) {
+	private static void extractRenderState(GuiGraphicsExtractor graphics, boolean hud) {
 		if (!Utils.isOnSkyblock()) return;
 		Minecraft client = Minecraft.getInstance();
 
@@ -91,7 +91,7 @@ public class WidgetManager {
 		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
 		matrices.scale(scale, scale);
-		WidgetManager.render(graphics, (int) (window.getGuiScaledWidth() / scale), (int) (window.getGuiScaledHeight() / scale), hud);
+		WidgetManager.extractRenderState(graphics, (int) (window.getGuiScaledWidth() / scale), (int) (window.getGuiScaledHeight() / scale), hud);
 		matrices.popMatrix();
 	}
 
@@ -101,7 +101,7 @@ public class WidgetManager {
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
-	private static void render(GuiGraphicsExtractor graphics, int w, int h, boolean hud) {
+	private static void extractRenderState(GuiGraphicsExtractor graphics, int w, int h, boolean hud) {
 		Minecraft client = Minecraft.getInstance();
 		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
 		if (client.options.keyPlayerList.isDown()) {

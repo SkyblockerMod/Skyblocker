@@ -32,3 +32,13 @@ c	net/minecraft/class_11246	net/minecraft/client/gui/render/state/GuiRenderState
 	m	(Lnet/minecraft/client/gui/render/state/GuiElementRenderState;)V	method_70919	addGuiElement
 	m	(Lnet/minecraft/client/gui/render/state/pip/PictureInPictureRenderState;)V	method_70922	addPicturesInPictureState
 	m	(Lnet/minecraft/client/gui/render/state/GuiTextRenderState;)V	method_70921	addText
+
+c	net/minecraft/class_4068	net/minecraft/client/gui/components/Renderable
+	m	(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V	method_25394	extractRenderState
+
+c	net/minecraft/class_437	net/minecraft/client/gui/screens/Screen
+	m	(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V	method_25420	extractBackground
+	m	(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V	method_47413	extractRenderStateWithTooltipAndSubtitles
+
+c	net/minecraft/class_7528	net/minecraft/client/gui/components/AbstractScrollArea
+	m	(Lnet/minecraft/client/gui/GuiGraphicsExtractor;II)V	method_44396	extractScrollbar

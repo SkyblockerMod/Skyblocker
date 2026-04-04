@@ -433,7 +433,7 @@ public class PreviewTab implements Tab {
 
 		@Override
 		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-			this.renderScrollbar(graphics, mouseX, mouseY);
+			this.extractScrollbar(graphics, mouseX, mouseY);
 			height = 0;
 			for (AbstractWidget widget : widgets) {
 				widget.setX(getX() + 1);
@@ -441,7 +441,7 @@ public class PreviewTab implements Tab {
 
 				height += widget.getHeight() + 1;
 				if (isNotVisible(widget.getY(), widget.getBottom(), widget.getHeight())) continue;
-				widget.render(graphics, mouseX, mouseY, delta);
+				widget.extractRenderState(graphics, mouseX, mouseY, delta);
 			}
 		}
 

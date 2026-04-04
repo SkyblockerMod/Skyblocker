@@ -29,10 +29,10 @@ public class AbstractPopupScreen extends Screen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		this.backgroundScreen.renderBackground(graphics, -1, -1, delta);
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		this.backgroundScreen.extractBackground(graphics, -1, -1, delta);
 		graphics.nextStratum();
-		this.backgroundScreen.render(graphics, -1, -1, delta);
+		this.backgroundScreen.extractRenderState(graphics, -1, -1, delta);
 		graphics.nextStratum();
 		this.renderTransparentBackground(graphics);
 	}

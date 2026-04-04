@@ -156,7 +156,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		}
 	}
 
-	@WrapOperation(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderBg(Lnet/minecraft/client/gui/GuiGraphicsExtractor;FII)V"))
+	@WrapOperation(method = "extractBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderBg(Lnet/minecraft/client/gui/GuiGraphicsExtractor;FII)V"))
 	private void skyblocker$DrawMuseumOverlayBackground(AbstractContainerScreen<?> instance, GuiGraphicsExtractor graphics, float delta, int mouseX, int mouseY, Operation<Void> original) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && minecraft != null && minecraft.player != null && getTitle().getString().contains("Museum")) {
 			// Custom museum overlay background drawing
@@ -207,13 +207,13 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	/**
 	 * Draws the unselected tabs in front of the background blur, but behind the main inventory, similar to creative inventory tabs
 	 */
-	@Inject(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderBg(Lnet/minecraft/client/gui/GuiGraphicsExtractor;FII)V"))
+	@Inject(method = "extractBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderBg(Lnet/minecraft/client/gui/GuiGraphicsExtractor;FII)V"))
 	private void skyblocker$drawUnselectedQuickNavButtons(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		if (quickNavButtons != null) for (QuickNavButton quickNavButton : quickNavButtons) {
 			// Render the button behind the main inventory background if it's not toggled or if it's still fading in
 			if (!quickNavButton.toggled() || quickNavButton.getAlpha() < 255) {
 				quickNavButton.setRenderInFront(false);
-				quickNavButton.render(graphics, mouseX, mouseY, delta);
+				quickNavButton.extractRenderState(graphics, mouseX, mouseY, delta);
 			}
 		}
 	}
@@ -221,12 +221,12 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	/**
 	 * Draws the selected tab in front of the background blur and the main inventory, similar to creative inventory tabs
 	 */
-	@Inject(method = "renderBackground", at = @At("RETURN"))
+	@Inject(method = "extractBackground", at = @At("RETURN"))
 	private void skyblocker$drawSelectedQuickNavButtons(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		if (quickNavButtons != null) for (QuickNavButton quickNavButton : quickNavButtons) {
 			if (quickNavButton.toggled()) {
 				quickNavButton.setRenderInFront(true);
-				quickNavButton.render(graphics, mouseX, mouseY, delta);
+				quickNavButton.extractRenderState(graphics, mouseX, mouseY, delta);
 			}
 		}
 	}

@@ -28,12 +28,12 @@ public class DungeonsPage implements ProfileViewerPage {
 		}
 	}
 
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
-		dungeonHeaderWidget.render(graphics, rootX, rootY);
-		dungeonFloorRunsWidget.render(graphics, mouseX, mouseY, rootX + 113, rootY + 56);
-		dungeonMiscStatsWidgets.render(graphics, rootX + 113, rootY);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+		dungeonHeaderWidget.extractRenderState(graphics, rootX, rootY);
+		dungeonFloorRunsWidget.extractRenderState(graphics, mouseX, mouseY, rootX + 113, rootY + 56);
+		dungeonMiscStatsWidgets.extractRenderState(graphics, rootX + 113, rootY);
 		for (int i = 0; i < dungeonClassWidgetsList.size(); i++) {
-			dungeonClassWidgetsList.get(i).render(graphics, mouseX, mouseY, rootX, rootY + 28 + i * 28);
+			dungeonClassWidgetsList.get(i).extractRenderState(graphics, mouseX, mouseY, rootX, rootY + 28 + i * 28);
 		}
 	}
 }

@@ -89,7 +89,7 @@ public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPre
 				if (child instanceof LayoutElement widget)
 					widget.setY(this.getY());
 				if (child instanceof Renderable drawable)
-					drawable.render(graphics, mouseX, mouseY, deltaTicks);
+					drawable.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			});
 		}
 	}

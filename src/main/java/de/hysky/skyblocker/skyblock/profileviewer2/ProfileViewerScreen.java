@@ -110,13 +110,13 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		// Reposition everything that is rendering
 		//this.repositionElements();
 		// Render the unselected buttons under the background
 		this.renderTabButtons(graphics, mouseX, mouseY, a, false);
 		// Render the background
-		super.render(graphics, mouseX, mouseY, a);
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 		// Render the selected tab on top of the background
 		this.renderTabButtons(graphics, mouseX, mouseY, a, true);
 
@@ -125,7 +125,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 		// Render the loaded page or some generic loading text
 		if (this.loadedPages.contains(selectedPage)) {
 			for (ProfileViewerWidget widget : selectedPage.getWidgets()) {
-				widget.render(graphics, mouseX, mouseY, a);
+				widget.extractRenderState(graphics, mouseX, mouseY, a);
 			}
 		} else {
 			int centreX = this.getBackgroundX() + (BACKGROUND_WIDTH / 2);
@@ -149,7 +149,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 				continue;
 			}
 
-			tabWidget.render(graphics, mouseX, mouseY, a);
+			tabWidget.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 	}
 }

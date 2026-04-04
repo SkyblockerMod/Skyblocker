@@ -143,7 +143,7 @@ public abstract class ElementBasedWidget extends HudWidget {
 		int yOffs = y + BORDER_SZE_N;
 
 		for (Element c : elements) {
-			c.render(graphics, x + BORDER_SZE_W, yOffs);
+			c.extractRenderState(graphics, x + BORDER_SZE_W, yOffs);
 			yOffs += c.getHeight() + Element.PAD_L;
 		}
 	}

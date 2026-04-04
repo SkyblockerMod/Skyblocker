@@ -324,7 +324,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
 		for (AbstractWidget child : children) {
-			child.render(graphics, mouseX, mouseY, delta);
+			child.extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 	}
 

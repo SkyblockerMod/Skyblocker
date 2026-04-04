@@ -250,8 +250,8 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		protected void renderScrollbar(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-			super.renderScrollbar(graphics, mouseX, mouseY);
+		protected void extractScrollbar(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+			super.extractScrollbar(graphics, mouseX, mouseY);
 			if (scrollbarVisible()) {
 				int scrollBarX = scrollBarX();
 				int listWidgetY = getY();

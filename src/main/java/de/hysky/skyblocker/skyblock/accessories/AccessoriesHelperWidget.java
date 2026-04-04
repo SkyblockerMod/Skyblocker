@@ -256,7 +256,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		String prevHighlighted = AccessoriesContainerSolver.INSTANCE.highlightedAccessory;
 		AccessoriesContainerSolver.INSTANCE.highlightedAccessory = null;
 		for (AbstractWidget widget : widgets) {
-			widget.render(graphics, mouseX, mouseY, deltaTicks);
+			widget.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 		}
 		if (!ItemRepository.filesImported() || TooltipInfoType.ACCESSORIES.getData() == null) {
 			refreshWhenDoneLoading = true;

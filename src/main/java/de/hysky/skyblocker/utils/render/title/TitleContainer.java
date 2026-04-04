@@ -38,7 +38,7 @@ public class TitleContainer {
 
 	@Init
 	public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.TITLE_AND_SUBTITLE, TITLE_CONTAINER, TitleContainer::render);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.TITLE_AND_SUBTITLE, TITLE_CONTAINER, TitleContainer::extractRenderState);
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
 				.then(ClientCommandManager.literal("hud")
 						.then(ClientCommandManager.literal("titleContainer")
@@ -130,11 +130,11 @@ public class TitleContainer {
 		titles.remove(title);
 	}
 
-	private static void render(GuiGraphicsExtractor graphics, DeltaTracker tickCounter) {
-		render(graphics, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getGameTimeDeltaPartialTick(true));
+	private static void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker tickCounter) {
+		extractRenderState(graphics, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getGameTimeDeltaPartialTick(true));
 	}
 
-	protected static void render(GuiGraphicsExtractor graphics, Set<Title> titles, int xPos, int yPos, float tickDelta) {
+	protected static void extractRenderState(GuiGraphicsExtractor graphics, Set<Title> titles, int xPos, int yPos, float tickDelta) {
 		UIAndVisualsConfig.TitleContainer config = SkyblockerConfigManager.get().uiAndVisuals.titleContainer;
 
 		// Calculate Scale to use
@@ -143,10 +143,10 @@ public class TitleContainer {
 		UIAndVisualsConfig.Direction direction = config.direction;
 		UIAndVisualsConfig.Alignment alignment = config.alignment;
 
-		render(graphics, titles, xPos, yPos, tickDelta, scale, direction, alignment);
+		extractRenderState(graphics, titles, xPos, yPos, tickDelta, scale, direction, alignment);
 	}
 
-	protected static void render(GuiGraphicsExtractor graphics, Set<Title> titles, int xPos, int yPos, float tickDelta, float scale, UIAndVisualsConfig.Direction direction, UIAndVisualsConfig.Alignment alignment) {
+	protected static void extractRenderState(GuiGraphicsExtractor graphics, Set<Title> titles, int xPos, int yPos, float tickDelta, float scale, UIAndVisualsConfig.Direction direction, UIAndVisualsConfig.Alignment alignment) {
 		if (titles.isEmpty()) return;
 		Font textRenderer = Minecraft.getInstance().font;
 

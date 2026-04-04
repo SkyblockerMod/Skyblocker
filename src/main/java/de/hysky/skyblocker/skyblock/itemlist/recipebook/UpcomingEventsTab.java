@@ -60,7 +60,7 @@ public class UpcomingEventsTab implements RecipeTab {
 		this.hovered = null;
 
 		for (EventRenderer eventRenderer : this.events) {
-			eventRenderer.render(graphics, x + 1, eventsY, mouseX, mouseY);
+			eventRenderer.extractRenderState(graphics, x + 1, eventsY, mouseX, mouseY);
 
 			//If we're hovering over this event then set it as the hovered one to show a tooltip
 			if (GuiHelper.pointIsInArea(mouseX, mouseY, x, y, x + 131, y + 150) && EventRenderer.isMouseOver(mouseX, mouseY, x + 1, eventsY)) this.hovered = eventRenderer;
@@ -100,7 +100,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	private record EventRenderer(String eventName, LinkedList<EventNotifications.SkyblockEvent> events) {
 		private static final int HEIGHT = 20;
 
-		private void render(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY) {
+		private void extractRenderState(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY) {
 			long time = System.currentTimeMillis() / 1000;
 			Font textRenderer = CLIENT.font;
 

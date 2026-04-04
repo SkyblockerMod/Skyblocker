@@ -195,20 +195,20 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		// Render the background texture for the widget
 		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
-		searchField.render(graphics, mouseX, mouseY, delta);
+		searchField.extractRenderState(graphics, mouseX, mouseY, delta);
 
 		if (this.sortButton.active) {
 			int iconX = this.sortButton.getX() + (this.sortButton.getWidth() - 16) / 2;
 			int iconY = this.sortButton.getY() + (this.sortButton.getHeight() - 16) / 2;
 			ItemStack stack = ITEM_SORTER.getCurrentSortingItem();
-			sortButton.render(graphics, mouseX, mouseY, delta);
+			sortButton.extractRenderState(graphics, mouseX, mouseY, delta);
 			graphics.fakeItem(stack, iconX, iconY);
 		}
 
 		if (this.filterButton.active) {
 			int iconX = this.filterButton.getX() + (this.filterButton.getWidth() - 16) / 2;
 			int iconY = this.filterButton.getY() + (this.filterButton.getHeight() - 16) / 2;
-			filterButton.render(graphics, mouseX, mouseY, delta);
+			filterButton.extractRenderState(graphics, mouseX, mouseY, delta);
 			graphics.fakeItem(Ico.HOPPER, iconX, iconY);
 		}
 
@@ -224,14 +224,14 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 			// Render donation buttons
 			this.hoveredDonationButton = null;
 			for (DonationButton resultButton : donationButtons) {
-				resultButton.render(graphics, mouseX, mouseY, delta);
+				resultButton.extractRenderState(graphics, mouseX, mouseY, delta);
 
 				if (resultButton.visible && resultButton.isHovered()) this.hoveredDonationButton = resultButton;
 			}
 
 			// Render the page flip buttons
-			if (this.prevPageButton.active) this.prevPageButton.render(graphics, mouseX, mouseY, delta);
-			if (this.nextPageButton.active) this.nextPageButton.render(graphics, mouseX, mouseY, delta);
+			if (this.prevPageButton.active) this.prevPageButton.extractRenderState(graphics, mouseX, mouseY, delta);
+			if (this.nextPageButton.active) this.nextPageButton.extractRenderState(graphics, mouseX, mouseY, delta);
 
 			drawTooltip(graphics, mouseX, mouseY);
 		} else {

@@ -81,7 +81,7 @@ class ProgressElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int x, int y) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int x, int y) {
 		int componentX = x + PAD_L;
 		if (ico != null) {
 			renderIcon(graphics, ico, x, y + ICO_OFFS);

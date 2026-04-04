@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import org.jspecify.annotations.Nullable;
 
 public interface ProfileViewerPage {
-	void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY);
+	void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY);
 	default @Nullable List<AbstractWidget> getButtons() {
 		return null;
 	}

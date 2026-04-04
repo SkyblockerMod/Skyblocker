@@ -28,8 +28,8 @@ public abstract sealed class AbstractProfileViewerScreen extends Screen permits 
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-		super.render(graphics, mouseX, mouseY, a);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.getBackgroundX(), this.getBackgroundY(), 0f, 0f, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
 	}
 }

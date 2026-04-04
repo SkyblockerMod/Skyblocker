@@ -42,7 +42,7 @@ public class WidgetEntry extends WidgetsListEntry {
 	public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 		int textY = this.getY() + (this.getHeight() - 9) / 2;
 		enableButton.setPosition(this.getX() + this.getWidth() - 110, this.getY() + (this.getHeight() - 12) / 2);
-		enableButton.render(graphics, mouseX, mouseY, deltaTicks);
+		enableButton.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 		graphics.text(Minecraft.getInstance().font, widget.getDisplayName(), this.getX() + 2, textY, CommonColors.WHITE);
 	}
 }

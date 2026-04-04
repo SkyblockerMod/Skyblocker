@@ -89,7 +89,7 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 				textureWidth, textureHeight
 		);
 		for (KeyframeWidget frame : keyframes) {
-			frame.render(graphics, mouseX, mouseY, delta);
+			frame.extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 	}
 

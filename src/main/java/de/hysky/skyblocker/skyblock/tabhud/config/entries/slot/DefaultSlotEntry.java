@@ -42,8 +42,8 @@ public class DefaultSlotEntry extends WidgetsListSlotEntry {
 	public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 		renderIconAndText(graphics, this.getY(), this.getX(), this.getHeight());
 		rightClick.setPosition(this.getX() + this.getWidth() - 40, this.getY() + (this.getHeight() - 12) / 2);
-		rightClick.render(graphics, mouseX, mouseY, deltaTicks);
+		rightClick.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 		leftClick.setPosition(this.getX() + this.getWidth() - 80, this.getY() + (this.getHeight() - 12) / 2);
-		leftClick.render(graphics, mouseX, mouseY, deltaTicks);
+		leftClick.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 	}
 }

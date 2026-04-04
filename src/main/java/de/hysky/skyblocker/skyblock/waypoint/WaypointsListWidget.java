@@ -375,7 +375,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			layout.setPosition(this.getX(), this.getY());
 			for (AbstractWidget child : children) {
-				child.render(graphics, mouseX, mouseY, deltaTicks);
+				child.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
 		}
 	}
@@ -553,7 +553,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			buttonUp.visible = showButtons;
 			buttonDown.visible = showButtons;
 			for (AbstractWidget child : children) {
-				child.render(graphics, mouseX, mouseY, deltaTicks);
+				child.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
 		}
 	}

@@ -68,9 +68,9 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphicsExtractor graphics, List<AbstractWidget> widgets, float delta) {
-		super.renderWidget(graphics, widgets, delta);
-		TitleContainer.render(graphics, EXAMPLES, widgets.getFirst().getX(), widgets.getFirst().getY(), delta, renderScale, direction, alignment);
+	protected void extractRenderState(GuiGraphicsExtractor graphics, List<AbstractWidget> widgets, float delta) {
+		super.extractRenderState(graphics, widgets, delta);
+		TitleContainer.extractRenderState(graphics, EXAMPLES, widgets.getFirst().getX(), widgets.getFirst().getY(), delta, renderScale, direction, alignment);
 		graphics.centeredText(font, "Press Q/E to change Alignment: " + alignment, width / 2, font.lineHeight * 2, Color.WHITE.getRGB());
 		graphics.centeredText(font, "Press R to change Direction: " + direction, width / 2, font.lineHeight * 3 + 5, Color.WHITE.getRGB());
 		graphics.centeredText(font, "Press +/- to change Scale", width / 2, font.lineHeight * 4 + 10, Color.WHITE.getRGB());

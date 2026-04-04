@@ -48,7 +48,7 @@ public class DungeonMap {
 
 	@Init
 	public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.STATUS_EFFECTS, DUNGEON_MAP, (context, tickCounter) -> render(context));
+		HudElementRegistry.attachElementAfter(VanillaHudElements.STATUS_EFFECTS, DUNGEON_MAP, (context, tickCounter) -> extractRenderState(context));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
 				.then(ClientCommandManager.literal("hud")
 						.then(ClientCommandManager.literal("dungeon")
@@ -63,21 +63,21 @@ public class DungeonMap {
 		return Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss();
 	}
 
-	private static void render(GuiGraphicsExtractor graphics) {
+	private static void extractRenderState(GuiGraphicsExtractor graphics) {
 		DungeonsConfig.DungeonMap dungeonMap = SkyblockerConfigManager.get().dungeons.dungeonMap;
 		if (shouldProcess() && dungeonMap.enableMap) {
-			render(graphics, dungeonMap.mapX, dungeonMap.mapY, dungeonMap.mapScaling, dungeonMap.fancyMap);
+			extractRenderState(graphics, dungeonMap.mapX, dungeonMap.mapY, dungeonMap.mapScaling, dungeonMap.fancyMap);
 		}
 	}
 
-	public static void render(GuiGraphicsExtractor graphics, int x, int y, float scale, boolean fancy) {
-		render(graphics, x, y, scale, fancy, Integer.MIN_VALUE, Integer.MIN_VALUE, null);
+	public static void extractRenderState(GuiGraphicsExtractor graphics, int x, int y, float scale, boolean fancy) {
+		extractRenderState(graphics, x, y, scale, fancy, Integer.MIN_VALUE, Integer.MIN_VALUE, null);
 	}
 
 	/**
 	 * @return the {@link UUID} of the hovered player head, or null if no player head is hovered.
 	 */
-	public static @Nullable UUID render(GuiGraphicsExtractor graphics, int x, int y, float scale, boolean fancy, int mouseX, int mouseY, @Nullable UUID enlarge) {
+	public static @Nullable UUID extractRenderState(GuiGraphicsExtractor graphics, int x, int y, float scale, boolean fancy, int mouseX, int mouseY, @Nullable UUID enlarge) {
 		Minecraft client = Minecraft.getInstance();
 		DungeonsConfig.DungeonMap dungeonMap = SkyblockerConfigManager.get().dungeons.dungeonMap;
 		if (client.player == null || client.level == null) return null;

@@ -86,8 +86,8 @@ public class RangedValueWidget extends AbstractContainerWidget {
 			graphics.text(textRenderer, String.valueOf(maxSlotId), getX() + 40, getY() - 10, 0xFFFF0000, true);
 			graphics.text(textRenderer, String.valueOf(backSlotId), getX() + 60, getY() - 10, 0xFFFF0000, true);
 		}
-		this.input.render(graphics, mouseX, mouseY, delta);
-		this.okButton.render(graphics, mouseX, mouseY, delta);
+		this.input.extractRenderState(graphics, mouseX, mouseY, delta);
+		this.okButton.extractRenderState(graphics, mouseX, mouseY, delta);
 		if (Objects.requireNonNull(this.state) == State.CLOSED) {
 			graphics.fill(getX(), getY() + textOffset, getX() + width, getY() + 15 + textOffset, 0xFFFFFFFF);
 			graphics.fill(getX() + 1, getY() + 1 + textOffset, getX() + width - 1, getY() + 14 + textOffset, 0xFF000000);

@@ -49,7 +49,7 @@ public class EditableSlotEntry extends WidgetsListSlotEntry {
 			graphics.text(textRenderer, "LOCKED", this.getX() + this.getWidth() - 50, textY, CommonColors.RED, true);
 		} else {
 			editButton.setPosition(this.getX() + this.getWidth() - 40, this.getY() + (this.getHeight() - 12) / 2);
-			editButton.render(graphics, mouseX, mouseY, deltaTicks);
+			editButton.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 		}
 	}
 }

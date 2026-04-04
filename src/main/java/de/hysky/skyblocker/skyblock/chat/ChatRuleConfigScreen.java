@@ -441,11 +441,11 @@ public class ChatRuleConfigScreen extends Screen {
 			graphics.enableScissor(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height);
 
 			for (AbstractWidget clickableWidget : this.children) {
-				clickableWidget.render(graphics, mouseX, mouseY, deltaTicks);
+				clickableWidget.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
 
 			graphics.disableScissor();
-			this.renderScrollbar(graphics, mouseX, mouseY);
+			this.extractScrollbar(graphics, mouseX, mouseY);
 		}
 
 		@Override

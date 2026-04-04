@@ -196,11 +196,11 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 		int scrollY = (int) this.scrollAmount();
 		for (AbstractWidget widget : this.children) {
 			widget.setY(widget.getY() - scrollY);
-			widget.render(graphics, mouseX, mouseY, delta);
+			widget.extractRenderState(graphics, mouseX, mouseY, delta);
 			widget.setY(widget.getY() + scrollY);
 		}
 
-		renderScrollbar(graphics, mouseX, mouseY);
+		extractScrollbar(graphics, mouseX, mouseY);
 		graphics.disableScissor();
 	}
 

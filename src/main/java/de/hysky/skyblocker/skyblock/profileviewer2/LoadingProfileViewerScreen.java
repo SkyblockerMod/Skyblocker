@@ -13,8 +13,8 @@ public final class LoadingProfileViewerScreen extends AbstractProfileViewerScree
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-		super.render(graphics, mouseX, mouseY, a);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 
 		int centreX = this.getBackgroundX() + (BACKGROUND_WIDTH / 2);
 		int centreY = this.getBackgroundY() + (BACKGROUND_HEIGHT / 2);

@@ -29,7 +29,7 @@ public class DungeonFloorRunsWidget {
 		} catch (Exception ignored) {}
 	}
 
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 110, 109, 110);
 		graphics.text(textRenderer, Component.literal("Floor Runs").withStyle(ChatFormatting.BOLD), x + 6, y + 4, Color.WHITE.getRGB(), true);
 

@@ -34,7 +34,7 @@ class IcoFatTextElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int x, int y) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int x, int y) {
 		int textX = x + ICO_DIM.get() + PAD_L;
 		renderIcon(graphics, ico, x, y + ICO_OFFS);
 		graphics.text(txtRend, line1, textX, y, CommonColors.WHITE, false);

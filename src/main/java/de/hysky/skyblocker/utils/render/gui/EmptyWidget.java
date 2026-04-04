@@ -4,5 +4,5 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class EmptyWidget extends AbstractWidget {
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {}
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {}
 }

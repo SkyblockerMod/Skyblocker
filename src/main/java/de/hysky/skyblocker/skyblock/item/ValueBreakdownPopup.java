@@ -277,14 +277,14 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
-		super.render(graphics, mouseX, mouseY, deltaTicks);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
+		super.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 		graphics.centeredText(font, title, width / 2, 15, -1);
 	}
 
 	@Override
-	public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		super.renderBackground(graphics, mouseX, mouseY, delta);
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		super.extractBackground(graphics, mouseX, mouseY, delta);
 		drawPopupBackground(graphics, scrollable.getX(), scrollable.getY(), scrollable.getWidth(), scrollable.getHeight());
 	}
 

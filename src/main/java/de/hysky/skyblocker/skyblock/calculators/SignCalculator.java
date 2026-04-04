@@ -16,7 +16,7 @@ public class SignCalculator {
 	private static double output;
 	private static Component error;
 
-	public static void renderCalculator(GuiGraphicsExtractor graphics, String message, int renderX, int renderY) {
+	public static void extractCalculator(GuiGraphicsExtractor graphics, String message, int renderX, int renderY) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.requiresEquals && !message.startsWith("=")) {
 			output = -1;
 			error = null;

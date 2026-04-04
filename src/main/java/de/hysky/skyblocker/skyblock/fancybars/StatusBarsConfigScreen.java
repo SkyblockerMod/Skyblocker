@@ -55,10 +55,10 @@ public class StatusBarsConfigScreen extends Screen {
 
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		super.render(graphics, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		super.extractRenderState(graphics, mouseX, mouseY, delta);
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, width / 2 - HOTBAR_WIDTH / 2, height - 22, HOTBAR_WIDTH, 22);
-		editBarWidget.render(graphics, mouseX, mouseY, delta);
+		editBarWidget.extractRenderState(graphics, mouseX, mouseY, delta);
 
 		Window window = minecraft.getWindow();
 		int scaleFactor = window.calculateScale(0, minecraft.isEnforceUnicode()) - window.getGuiScale() + 3;

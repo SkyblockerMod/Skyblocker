@@ -78,8 +78,8 @@ public class ShortcutsConfigScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		super.render(graphics, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		super.extractRenderState(graphics, mouseX, mouseY, delta);
 		graphics.centeredText(this.font, this.title, this.width / 2, 16, CommonColors.WHITE);
 	}
 

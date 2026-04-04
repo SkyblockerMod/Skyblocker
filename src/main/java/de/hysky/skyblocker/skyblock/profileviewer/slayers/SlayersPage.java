@@ -24,9 +24,9 @@ public class SlayersPage implements ProfileViewerPage {
 		}
 	}
 
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		for (int i = 0; i < slayerWidgets.size(); i++) {
-			slayerWidgets.get(i).render(graphics, mouseX, mouseY, rootX, rootY + i * ROW_GAP);
+			slayerWidgets.get(i).extractRenderState(graphics, mouseX, mouseY, rootX, rootY + i * ROW_GAP);
 		}
 	}
 

@@ -48,8 +48,8 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 		}
 	}
 
-	@Inject(method = "render", at = @At("HEAD"))
-	private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor graphics) {
+	@Inject(method = "extractRenderState", at = @At("HEAD"))
+	private void skyblocker$extractRenderStateSign(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor graphics) {
 		if (Utils.isOnSkyblock()) {
 			var config = SkyblockerConfigManager.get();
 			if (isSpeedInputSign() && config.general.speedPresets.enableSpeedPresets) {
@@ -61,7 +61,7 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 			}
 			//if the sign is being used to enter number send it to the sign calculator
 			else if (isInputSign() && config.uiAndVisuals.inputCalculator.enabled) {
-				SignCalculator.renderCalculator(graphics, messages[0], graphics.guiWidth() / 2, 55);
+				SignCalculator.extractCalculator(graphics, messages[0], graphics.guiWidth() / 2, 55);
 			}
 		}
 	}

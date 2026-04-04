@@ -212,8 +212,8 @@ public class OverlayScreen extends Screen {
 	 * @param delta delta
 	 */
 	@Override
-	public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		super.renderBackground(graphics, mouseX, mouseY, delta);
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		super.extractBackground(graphics, mouseX, mouseY, delta);
 		//find max height
 		int maxHeight = rowHeight * (1 + suggestionButtons.length + historyButtons.length);
 		if (historyButtons.length > 0) { //add space for history label if it could exist
@@ -226,8 +226,8 @@ public class OverlayScreen extends Screen {
 	 * Renders the search icon, label for the history and item Stacks for item names
 	 */
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		super.render(graphics, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		super.extractRenderState(graphics, mouseX, mouseY, delta);
 		int renderOffset = (rowHeight - 16) / 2;
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, finishedButton.getX() + renderOffset, finishedButton.getY() + renderOffset, 16, 16);
 		if (historyButtons.length > 0 && historyButtons[0] != null) {

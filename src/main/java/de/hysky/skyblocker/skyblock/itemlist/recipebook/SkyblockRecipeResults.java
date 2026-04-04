@@ -112,18 +112,18 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 		this.hoveredResultButton = null;
 
 		for (SkyblockRecipeResultButton resultButton : recipeView ? recipeSlotButtons : resultButtons) {
-			resultButton.render(graphics, mouseX, mouseY, delta);
+			resultButton.extractRenderState(graphics, mouseX, mouseY, delta);
 
 			if (resultButton.visible && resultButton.isHoveredOrFocused()) this.hoveredResultButton = resultButton;
 		}
 
 		//Render the page flip buttons
 		if (this.prevPageButton != null) {
-			this.prevPageButton.render(graphics, mouseX, mouseY, delta);
+			this.prevPageButton.extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 
 		if (this.nextPageButton != null) {
-			this.nextPageButton.render(graphics, mouseX, mouseY, delta);
+			this.nextPageButton.extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 	}
 

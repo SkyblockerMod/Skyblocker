@@ -66,7 +66,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 			hoveredEntry.renderTooltip(graphics, hoveredEntry.getX(), hoveredEntry.getY(), hoveredEntry.getWidth(), hoveredEntry.getHeight(), mouseX, mouseY);
 		}
 		if (backButton != null) {
-			backButton.render(graphics, mouseX, mouseY, delta);
+			backButton.extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 
 		if (!enableEditing || this.getSelected() == null) return;

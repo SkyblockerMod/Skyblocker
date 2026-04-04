@@ -110,8 +110,8 @@ public class EditBarWidget extends AbstractContainerWidget {
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 		TooltipRenderUtil.renderTooltipBackground(graphics, 0, 0, getWidth(), getHeight(), null);
-		nameWidget.render(graphics, mouseX, mouseY, delta);
-		for (AbstractWidget option : options) option.render(graphics, mouseX - getX(), mouseY - getY(), delta);
+		nameWidget.extractRenderState(graphics, mouseX, mouseY, delta);
+		for (AbstractWidget option : options) option.extractRenderState(graphics, mouseX - getX(), mouseY - getY(), delta);
 		matrices.popMatrix();
 	}
 

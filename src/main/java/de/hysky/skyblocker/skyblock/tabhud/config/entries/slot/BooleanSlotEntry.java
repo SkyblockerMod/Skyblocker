@@ -41,6 +41,6 @@ public class BooleanSlotEntry extends WidgetsListSlotEntry {
 	public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 		renderIconAndText(graphics, this.getY(), this.getX(), this.getHeight());
 		enableButton.setPosition(this.getX() + this.getWidth() - 70, this.getY() + (this.getHeight() - 12) / 2);
-		enableButton.render(graphics, mouseX, mouseY, deltaTicks);
+		enableButton.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 	}
 }

@@ -54,7 +54,7 @@ public class DungeonClassWidget {
 		}
 	}
 
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
 		graphics.item(stack, x + 3, y + 5);
 		if (active) graphics.blit(RenderPipelines.GUI_TEXTURED, ACTIVE_TEXTURE, x + 3, y + 5, 0, 0, 16, 16, 16, 16);

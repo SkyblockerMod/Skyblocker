@@ -49,7 +49,7 @@ public class Inventory implements ProfileViewerPage {
 		this.totalPages = (int) Math.ceil((double) containerList.size() / itemsPerPage);
 	}
 
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int rootYAdjusted = rootY + (26 - dimensions.leftInt() * 3);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootYAdjusted, 0, 0, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);
@@ -61,13 +61,13 @@ public class Inventory implements ProfileViewerPage {
 		if (containerList.size() > itemsPerPage) {
 			previousPage.setX(rootX + 44);
 			previousPage.setY(rootY + 136);
-			previousPage.render(graphics, mouseX, mouseY, delta);
+			previousPage.extractRenderState(graphics, mouseX, mouseY, delta);
 
 			graphics.centeredText(textRenderer, "Page: " + (activePage + 1) + "/" + totalPages, rootX + 88, rootY + 140, Color.WHITE.getRGB());
 
 			nextPage.setX(rootX + 121);
 			nextPage.setY(rootY + 136);
-			nextPage.render(graphics, mouseX, mouseY, delta);
+			nextPage.extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 
 		int startIndex = activePage * itemsPerPage;

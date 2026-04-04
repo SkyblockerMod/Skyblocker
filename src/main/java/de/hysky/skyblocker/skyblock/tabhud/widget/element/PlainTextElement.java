@@ -30,7 +30,7 @@ public class PlainTextElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int x, int y) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int x, int y) {
 		int yOffset = 0;
 		for (Component line : lines) {
 			graphics.text(txtRend, line, x + PAD_L, y + yOffset, CommonColors.WHITE, false);

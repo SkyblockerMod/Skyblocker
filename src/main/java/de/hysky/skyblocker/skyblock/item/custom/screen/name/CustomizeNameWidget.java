@@ -148,7 +148,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 			graphics.text(textRenderer, Component.literal("Insert Style: " + (insertAs == null ? "null" : insertAs.toString())), getX(), getBottom() + 10, -1);
 		}
 		for (AbstractWidget widget : widgets) {
-			widget.render(graphics, mouseX, mouseY, deltaTicks);
+			widget.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 		}
 	}
 

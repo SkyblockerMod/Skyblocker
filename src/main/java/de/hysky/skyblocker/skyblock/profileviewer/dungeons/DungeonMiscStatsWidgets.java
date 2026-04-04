@@ -46,7 +46,7 @@ public class DungeonMiscStatsWidgets {
 		} catch (Exception ignored) {}
 	}
 
-	public void render(GuiGraphicsExtractor graphics, int x, int y) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int x, int y) {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
 		graphics.item(Ico.FEATHER, x + 2, y + 4);
 

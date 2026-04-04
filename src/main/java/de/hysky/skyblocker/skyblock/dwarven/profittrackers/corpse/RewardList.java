@@ -142,7 +142,7 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 				child.setX(this.getX() + INNER_MARGIN);
 				child.setY(this.getY() + INNER_MARGIN);
 				child.setWidth(this.getWidth() - 2 * INNER_MARGIN);
-				child.render(graphics, mouseX, mouseY, deltaTicks);
+				child.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
 		}
 	}
@@ -213,22 +213,22 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 				itemName.setX(x + INNER_MARGIN);
 				itemName.setY(entryY);
 				itemName.setMaxWidth(entryWidth / 3 - 2 * INNER_MARGIN, StringWidget.TextOverflow.SCROLLING);
-				itemName.render(graphics, mouseX, mouseY, deltaTicks);
+				itemName.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
 
 			if (amount != null) {
 				position(amount, x + entryWidth / 3 + INNER_MARGIN, entryWidth / 6 - 2 * INNER_MARGIN, entryY);
-				amount.render(graphics, mouseX, mouseY, deltaTicks);
+				amount.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
 
 			if (totalPrice != null) {
 				position(totalPrice, x + entryWidth / 2 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, entryY);
-				totalPrice.render(graphics, mouseX, mouseY, deltaTicks);
+				totalPrice.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
 
 			if (pricePerUnit != null) {
 				position(pricePerUnit, x + 3 * entryWidth / 4 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, entryY);
-				pricePerUnit.render(graphics, mouseX, mouseY, deltaTicks);
+				pricePerUnit.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
 		}
 

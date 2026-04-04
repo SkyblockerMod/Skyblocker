@@ -251,8 +251,8 @@ public class SkyblockerCreditsScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-		super.render(graphics, mouseX, mouseY, a);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 		this.renderVignette(graphics);
 
 		this.scroll = Math.max(0f, this.scroll + a * this.scrollSpeed);

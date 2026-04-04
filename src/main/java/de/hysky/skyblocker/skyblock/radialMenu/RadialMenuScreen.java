@@ -229,8 +229,8 @@ public class RadialMenuScreen extends Screen implements ContainerListener {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
-		super.render(graphics, mouseX, mouseY, deltaTicks);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
+		super.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 
 		//render menu title
 		graphics.centeredText(font, getTitle(), width / 2, height / 2 - font.lineHeight, 0xFFFFFFFF);

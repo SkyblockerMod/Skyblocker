@@ -185,7 +185,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 		@Override
 		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// Widgets
-			layout.visitWidgets((child) -> child.render(graphics, mouseX, mouseY, deltaTicks));
+			layout.visitWidgets((child) -> child.extractRenderState(graphics, mouseX, mouseY, deltaTicks));
 			// Text
 			graphics.centeredText(minecraft.font, chatRule.getName(), getX() + 60, this.getY() + 8, CommonColors.WHITE);
 		}

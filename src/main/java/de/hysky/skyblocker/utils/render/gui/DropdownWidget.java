@@ -56,7 +56,7 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 	@Override
 	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		dropdownList.visible = open;
-		dropdownList.render(graphics, mouseX, mouseY, delta);
+		dropdownList.extractRenderState(graphics, mouseX, mouseY, delta);
 		graphics.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, CommonColors.BLACK);
 		GuiHelper.drawBorder(graphics, getX(), getY(), getWidth(), HEADER_HEIGHT + 1, CommonColors.WHITE);
 		graphics.text(client.font, ">", getX() + 4, getY() + 6, CommonColors.LIGHTER_GRAY, true);
@@ -170,7 +170,7 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 
 
 		@Override
-		protected void renderScrollbar(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+		protected void extractScrollbar(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
 			if (this.scrollbarVisible()) {
 				int i = this.scrollBarX();
 				int j = this.scrollerHeight();

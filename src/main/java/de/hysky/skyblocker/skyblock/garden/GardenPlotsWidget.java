@@ -230,7 +230,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 		matrices.popMatrix();
 
 		for (ItemButtonWidget widget : widgets) {
-			widget.render(graphics, mouseX, mouseY, delta);
+			widget.extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 
 

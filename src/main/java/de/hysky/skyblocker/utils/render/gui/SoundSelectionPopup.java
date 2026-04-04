@@ -137,8 +137,8 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		super.renderBackground(graphics, mouseX, mouseY, delta);
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		super.extractBackground(graphics, mouseX, mouseY, delta);
 		drawPopupBackground(graphics, gridWidget.getX(), gridWidget.getY(), gridWidget.getWidth(), gridWidget.getHeight());
 	}
 
@@ -172,9 +172,9 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 		protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 			graphics.enableScissor(getX(), getY(), getRight(), getBottom());
 			for (AbstractWidget widget : filteredWidgets) {
-				if (isVisible(widget)) widget.render(graphics, mouseX, mouseY, deltaTicks);
+				if (isVisible(widget)) widget.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
-			renderScrollbar(graphics, mouseX, mouseY);
+			extractScrollbar(graphics, mouseX, mouseY);
 			graphics.disableScissor();
 		}
 

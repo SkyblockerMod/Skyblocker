@@ -58,7 +58,7 @@ public class SlayerWidget {
 		} catch (Exception ignored) {}
 	}
 
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
 		Font font = Minecraft.getInstance().font;
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, this.item, x + 1, y + 3, 0, 0, 20, 20, 20, 20);

@@ -108,7 +108,7 @@ public class GenericCategory implements ProfileViewerPage {
 
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		Component categoryTitle = Component.literal(category.charAt(0) + category.substring(1).toLowerCase(Locale.ENGLISH) + " Collections").withStyle(ChatFormatting.BOLD);
 		graphics.text(textRenderer, categoryTitle, rootX + 88 - (textRenderer.width(categoryTitle) / 2), rootY, Color.DARK_GRAY.getRGB(), false);
 

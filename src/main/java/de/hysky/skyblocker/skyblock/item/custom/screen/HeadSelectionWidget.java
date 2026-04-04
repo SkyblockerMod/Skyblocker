@@ -170,7 +170,7 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
 
-		searchField.render(graphics, mouseX, mouseY, delta);
+		searchField.extractRenderState(graphics, mouseX, mouseY, delta);
 
 		int startY = searchField.getBottom() + 3;
 		int startX = getX() + 2;
@@ -186,13 +186,13 @@ public class HeadSelectionWidget extends AbstractContainerWidget {
 				continue;
 			}
 			b.setY(y);
-			b.render(graphics, mouseX, mouseY, delta);
+			b.extractRenderState(graphics, mouseX, mouseY, delta);
 			if (b.isMouseOver(mouseX, mouseY) && mouseX >= startX && mouseX < endX && mouseY >= startY && mouseY < endY) {
 				hovered = b;
 			}
 			b.setY(originalY);
 		}
-		renderScrollbar(graphics, mouseX, mouseY);
+		extractScrollbar(graphics, mouseX, mouseY);
 		graphics.disableScissor();
 
 		if (hovered != null && !hovered.name.isEmpty()) {

@@ -72,7 +72,7 @@ public class TableElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphicsExtractor graphics, int xpos, int ypos) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int xpos, int ypos) {
 		int yOff = 0;
 		for (int y = 0; y < rows; y++) {
 			int col = rowBorders[y];
@@ -100,7 +100,7 @@ public class TableElement extends Element {
 					// indent the first column only when a border is drawn
 					int pad = x == 0 && rowBorders[y] != 0 ? PAD_L / 2 : 0;
 					// shift down so the element is vertically centered within the row border
-					comp.render(graphics, xpos + xOff + pad, ypos + yOff + (rowHeights[y] / 2 - comp.height / 2 + 1));
+					comp.extractRenderState(graphics, xpos + xOff + pad, ypos + yOff + (rowHeights[y] / 2 - comp.height / 2 + 1));
 				}
 				yOff += rowHeights[y];
 			}

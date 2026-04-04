@@ -177,7 +177,7 @@ public class ScreenBuilder {
 		List<HudWidget> widgetsToRender = getHudWidgets(screenLayer);
 
 		for (HudWidget widget : widgetsToRender) {
-			widget.render(graphics);
+			widget.extractRenderState(graphics);
 		}
 	}
 
