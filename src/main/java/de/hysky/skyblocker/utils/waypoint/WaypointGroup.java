@@ -7,6 +7,7 @@ import de.hysky.skyblocker.annotations.GenEquals;
 import de.hysky.skyblocker.annotations.GenHashCode;
 import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import java.util.Comparator;
@@ -40,7 +41,6 @@ public class WaypointGroup {
 		waypoints.forEach(enabled ? Waypoint::setMissing : Waypoint::setFound);
 		return new WaypointGroup(name, Location.UNKNOWN, waypoints, true, true, DEFAULT_TYPE);
 	}));
-	public static final int WAYPOINT_ACTIVATION_RADIUS = 2;
 
 	private final String name;
 	private final Location island;
@@ -162,9 +162,10 @@ public class WaypointGroup {
 		if (Minecraft.getInstance().player == null || !ordered || waypoints.isEmpty()) return;
 		for (int i = 0; i < waypoints.size(); i++) {
 			NamedWaypoint waypoint = waypoints.get(i);
-			boolean notBackwards = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowGoingBackwards || i > currentIndex;
-			boolean notSkipping = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowSkippingWaypoints || i == (currentIndex + 1) % waypoints.size() || i == (currentIndex - 1 + waypoints.size()) % waypoints.size();
-			if (notBackwards && notSkipping && waypoint.pos.closerToCenterThan(Minecraft.getInstance().player.position(), WAYPOINT_ACTIVATION_RADIUS)) {
+			UIAndVisualsConfig.Waypoints config = SkyblockerConfigManager.get().uiAndVisuals.waypoints;
+			boolean notBackwards = config.allowGoingBackwards || i > currentIndex;
+			boolean notSkipping = config.allowSkippingWaypoints || i == (currentIndex + 1) % waypoints.size() || i == (currentIndex - 1 + waypoints.size()) % waypoints.size();
+			if (notBackwards && notSkipping && waypoint.pos.closerToCenterThan(Minecraft.getInstance().player.position(), config.waypointActivationRadius)) {
 				currentIndex = i;
 			}
 		}
