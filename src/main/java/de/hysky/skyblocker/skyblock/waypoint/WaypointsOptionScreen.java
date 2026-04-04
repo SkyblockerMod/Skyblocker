@@ -63,9 +63,9 @@ public class WaypointsOptionScreen extends Screen {
 		);
 		adder.addChild(RangedSliderWidget.builder()
 				.optionFormatter(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius"), Formatters.FLOAT_NUMBERS)
-				.callback(value -> waypoints.lineWidth = (float) value)
+				.callback(value -> waypoints.waypointActivationRadius = (float) value)
 				.minMax(1, 10)
-				.defaultValue(waypoints.lineWidth)
+				.defaultValue(waypoints.waypointActivationRadius)
 				.step(0.5)
 				.build()).setTooltip(Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius.@Tooltip")));
 		adder.addChild(SpacerElement.width(0));
