@@ -265,8 +265,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 		}
 		layout.addChild(SpacerElement.height(10));
 		layout.addChild(createTextWidget(Component.translatable("skyblocker.valueBreakdownPopup.total", getCoinsText(networthResult.price())), font), LayoutSettings::alignHorizontallyRight);
-		scrollable = new ScrollableLayout(minecraft, layout, 300);
-		scrollable.setMaxHeight(200);
+		scrollable = new ScrollableLayout(minecraft, layout, 200);
 		scrollable.visitWidgets(this::addRenderableWidget);
 		super.init();
 	}
