@@ -336,6 +336,8 @@ public class UIAndVisualsConfig {
 
 		public boolean allowGoingBackwards = true;
 
+		public float waypointActivationRadius = 2f;
+
 		public boolean enableChatWaypoints = true;
 	}
 

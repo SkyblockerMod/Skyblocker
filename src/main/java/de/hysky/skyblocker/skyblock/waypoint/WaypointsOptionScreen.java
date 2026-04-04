@@ -16,6 +16,7 @@ import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.layouts.LayoutSettings;
 import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -60,6 +61,14 @@ public class WaypointsOptionScreen extends Screen {
 				.step(0.5)
 				.build()
 		);
+		adder.addChild(RangedSliderWidget.builder()
+				.optionFormatter(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius"), Formatters.FLOAT_NUMBERS)
+				.callback(value -> waypoints.waypointActivationRadius = (float) value)
+				.minMax(1, 10)
+				.defaultValue(waypoints.waypointActivationRadius)
+				.step(0.5)
+				.build()).setTooltip(Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius.@Tooltip")));
+		adder.addChild(SpacerElement.width(0));
 		adder.addChild(new StringWidget(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.lineColor"), font), 2, LayoutSettings.defaults().alignHorizontallyCenter().paddingTop(4));
 		LinearLayout colorLayout = LinearLayout.horizontal();
 		adder.addChild(colorLayout, 2, LayoutSettings.defaults().alignHorizontallyCenter());

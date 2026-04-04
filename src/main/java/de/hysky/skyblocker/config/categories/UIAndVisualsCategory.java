@@ -511,6 +511,15 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.waypoints.allowSkippingWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius.@Tooltip"))
+								.binding(defaults.uiAndVisuals.waypoints.waypointActivationRadius,
+										() -> config.uiAndVisuals.waypoints.waypointActivationRadius,
+										newValue -> config.uiAndVisuals.waypoints.waypointActivationRadius = newValue)
+								.controller(FloatController.createBuilder().range(1f, 10f).slider(0.5f).build())
+								.build()
+						)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip"))
