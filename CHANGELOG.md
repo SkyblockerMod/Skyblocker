@@ -2,20 +2,21 @@
 
 ## Highlight
 * Add support for 26.1.1
-* Add Sound Selection Menu
-* Add IME support to custom text boxes
 * Add Ordered Waypoint Activation Radius option
 * Add Poison and Wither effect to the Fancy Health Bar
+* Add Sound Selection Menu
+* Add IME support to custom text boxes
 * Add Sanctuary 1x1 Dungeon room
 * Separate the Recipe Book Integration option
 * Fix Event Notifications config bugs
+* Fix action bar parsing with Crop Fever
 * Fix some text boxes having too low character limits
-* Fix item stack crashes
-* Fix stored equipment data rarely corrupting
+* Fix Item Stack crashes
+* Fix stored Equipment data corrupting rarely
 * Fix Chat Rules with toasts not loading
 * Fix expired Hoppity eggs not being removed
 * Fix Fancy Bars absorption value accuracy
-* Fix Speed Preset bugs
+* Fix Speed Preset Screen bugs
 * Fix customization player model not having the correct skin customization
 * Fix Mythological Ritual helper bugs
 * Fix Enchanted Book id conversions
@@ -25,7 +26,6 @@
 * Fix an ultra-rare Pet Widget performance issue
 * Fix Aspect of the Leech tier 3 not working with Teleport Overlays
 * Fix some spelling errors
-* Fix action bar parsing with Crop Fever
 
 ## What's Changed
 * Add sound selection menu by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/2090
