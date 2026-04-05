@@ -48,7 +48,6 @@ public class DurationController extends IntegerControllerImpl {
 		return result;
 	}
 
-	@SuppressWarnings("unused")
 	public static boolean isValid(String s) {
 		Matcher hoursMatcher = HOURS_PATTERN.matcher(s);
 		Matcher minutesMatcher = MINUTES_PATTERN.matcher(s);

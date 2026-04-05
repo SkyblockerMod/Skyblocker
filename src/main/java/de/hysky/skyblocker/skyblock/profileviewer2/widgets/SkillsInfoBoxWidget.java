@@ -27,8 +27,8 @@ public final class SkillsInfoBoxWidget extends BasicInfoBoxWidget {
 	}
 
 	@Override
-	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-		super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
+	protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.renderWidget(graphics, mouseX, mouseY, a);
 
 		graphics.pose().pushMatrix();
 		graphics.pose().translate(INFO_OFFSET, INFO_OFFSET);
@@ -40,7 +40,7 @@ public final class SkillsInfoBoxWidget extends BasicInfoBoxWidget {
 		// Offset by 1 upwards so that the painting does not intersect the joined text
 		graphics.pose().translate(this.getX(), this.getY() - 1);
 		graphics.pose().scale(0.75f);
-		graphics.fakeItem(Ico.PAINTING.getStackOrThrow(), 0, 0);
+		graphics.fakeItem(Ico.PAINTING, 0, 0);
 		graphics.pose().popMatrix();
 
 		// The item is scaled down to 12x12 so we use 12 as the base x offset and offset by 2 more so that there's space between
