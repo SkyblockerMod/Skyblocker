@@ -5,9 +5,9 @@
 * Add Sound Selection Menu
 * Add IME support to custom text boxes
 * Add Ordered Waypoint Activation Radius option
-* Add Poison and Wither effect to the fancy health bar
-* Add Sanctuary 1x1 dungeon room
-* Add separate Recipe Book Integration option
+* Add Poison and Wither effect to the Fancy Health Bar
+* Add Sanctuary 1x1 Dungeon room
+* Separate the Recipe Book Integration option
 * Fix Event Notifications config bugs
 * Fix some text boxes having too low character limits
 * Fix item stack crashes
@@ -16,14 +16,14 @@
 * Fix expired Hoppity eggs not being removed
 * Fix Fancy Bars absorption value accuracy
 * Fix Speed Preset bugs
-* Fix customization player model not having the correct parts
+* Fix customization player model not having the correct skin customization
 * Fix Mythological Ritual helper bugs
-* Fix enchanted book id conversions
+* Fix Enchanted Book id conversions
 * Fix outdated Cultivating thresholds
-* Fix item stack sizes with recipes
-* Fix Quick Navigation auction house regex
-* Fix ultra-rare Pet Widget performance issue
-* Fix Aspect of the Leech tier 2 not working with Teleport Overlays
+* Fix Item Stack sizes in recipes
+* Fix Quick Navigation Auction House regex
+* Fix an ultra-rare Pet Widget performance issue
+* Fix Aspect of the Leech tier 3 not working with Teleport Overlays
 * Fix some spelling errors
 * Fix action bar parsing with Crop Fever
 
