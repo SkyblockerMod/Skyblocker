@@ -11,12 +11,11 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
@@ -40,7 +39,7 @@ public class EventNotifications {
 	public static final String JACOBS = "Jacob's Farming Contest";
 	public static final String MAYOR_JERRY = "Mayor Jerry";
 
-	public static final IntArrayList DEFAULT_REMINDERS = new IntArrayList(IntList.of(60, 60 * 5));
+	public static final EventNotificationsConfig.EventConfig DEFAULT_REMINDERS = new EventNotificationsConfig.EventConfig();
 	public static final Map<String, ItemStack> eventIcons = Map.ofEntries(
 			Map.entry("Dark Auction", new ItemStack(Items.NETHER_BRICK)),
 			Map.entry("Bonus Fishing Festival", new ItemStack(Items.FISHING_ROD)),
@@ -130,7 +129,7 @@ public class EventNotifications {
 
 			SkyblockerConfigManager.update(config -> {
 				for (String s : events.keySet()) {
-					config.eventNotifications.eventsReminderTimes.computeIfAbsent(s, s1 -> DEFAULT_REMINDERS);
+					config.eventNotifications.events.computeIfAbsent(s, s1 -> DEFAULT_REMINDERS);
 				}
 			});
 		}).exceptionally(EventNotifications::itBorked);
@@ -156,38 +155,37 @@ public class EventNotifications {
 				skyblockEvent = nextEvents.peekFirst();
 				if (skyblockEvent == null) continue;
 			}
+			if (!criterionMet()) continue;
 			String eventName = entry.getKey();
-			// Cannot be changed to fast util due to casting issues
-			List<Integer> reminderTimes = SkyblockerConfigManager.get().eventNotifications.eventsReminderTimes.getOrDefault(eventName, DEFAULT_REMINDERS);
-			if (reminderTimes.isEmpty()) continue;
+			EventNotificationsConfig.EventConfig config = SkyblockerConfigManager.get().eventNotifications.events.getOrDefault(eventName, DEFAULT_REMINDERS);
+			if (!config.enabled) continue;
 
-			for (int reminderTime : reminderTimes) {
-				if (criterionMet() && currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
-					Minecraft instance = Minecraft.getInstance();
-					if (eventName.equals(JACOBS) && skyblockEvent.extras().left().isPresent()) {
-						instance.getToastManager().addToast(
-								new JacobEventToast(
-										skyblockEvent.start(),
-										skyblockEvent.start() + skyblockEvent.duration(),
-										eventName,
-										skyblockEvent.extras().left().get()
-								)
-						);
-					} else {
-						instance.getToastManager().addToast(
-								new EventToast(
-										skyblockEvent.start(),
-										skyblockEvent.start() + skyblockEvent.duration(),
-										eventName,
-										eventIcons.getOrDefault(eventName, new ItemStack(Items.PAPER))
-								)
-						);
-					}
-					SoundEvent soundEvent = SkyblockerConfigManager.get().eventNotifications.reminderSound.getSoundEvent();
-					if (soundEvent != null)
-						instance.getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1f, 1f));
-					break;
+			for (int reminderTime : config.reminderTimes) {
+				// Only show notification if last time we ticked was before the event, and we are now after the event start
+				if (newTime + reminderTime < skyblockEvent.start() || currentTime + reminderTime >= skyblockEvent.start()) continue;
+				Minecraft instance = Minecraft.getInstance();
+				if (eventName.equals(JACOBS) && skyblockEvent.extras().left().isPresent()) {
+					instance.getToastManager().addToast(
+							new JacobEventToast(
+									skyblockEvent.start(),
+									skyblockEvent.start() + skyblockEvent.duration(),
+									eventName,
+									skyblockEvent.extras().left().get()
+							)
+					);
+				} else {
+					instance.getToastManager().addToast(
+							new EventToast(
+									skyblockEvent.start(),
+									skyblockEvent.start() + skyblockEvent.duration(),
+									eventName,
+									eventIcons.getOrDefault(eventName, new ItemStack(Items.PAPER))
+							)
+					);
 				}
+				SoundEvent soundEvent = SkyblockerConfigManager.get().eventNotifications.reminderSound.getSoundEvent();
+				if (soundEvent != null) instance.getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1f, 1f));
+				break;
 			}
 		}
 		currentTime = newTime;
