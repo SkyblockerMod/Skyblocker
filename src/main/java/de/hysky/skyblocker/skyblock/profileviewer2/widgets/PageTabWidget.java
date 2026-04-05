@@ -50,5 +50,7 @@ public final class PageTabWidget extends ProfileViewerWidget {
 
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 		graphics.fakeItem(this.icon.getStackOrThrow(), this.getX() + (this.getWidth() - ITEM_SIZE) / 2, this.getY() + iconYOffset + (this.getHeight() - ITEM_SIZE) / 2);
+
+		super.handleCursor(graphics);
 	}
 }
