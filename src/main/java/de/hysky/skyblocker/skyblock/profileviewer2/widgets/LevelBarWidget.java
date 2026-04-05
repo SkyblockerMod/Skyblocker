@@ -20,6 +20,7 @@ public final class LevelBarWidget extends ProfileViewerWidget {
 	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
 	private static final int HEIGHT = 26;
 	private static final int ICON_BOX_SIZE = 22;
+	// The icon box is 2px smaller on all sides
 	private static final int ICON_BOX_Y_OFFSET = 2;
 	// The gap of 4 is for space between icon & content box
 	private static final int CONTENT_BOX_OFFSET = ICON_BOX_SIZE + 4;

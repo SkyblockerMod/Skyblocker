@@ -19,8 +19,8 @@ public final class PlayerWidget extends ProfileViewerWidget {
 	private static final int NAME_TAG_Y_OFFSET = 2;
 	private final ProfileViewerPlayer entity;
 
-	public PlayerWidget(int x, int y, GameProfile playerProfile) {
-		super(x, y, WIDTH, HEIGHT, Component.empty());
+	public PlayerWidget(GameProfile playerProfile) {
+		super(0, 0, WIDTH, HEIGHT, Component.empty());
 		this.entity = new ProfileViewerPlayer(playerProfile);
 	}
 

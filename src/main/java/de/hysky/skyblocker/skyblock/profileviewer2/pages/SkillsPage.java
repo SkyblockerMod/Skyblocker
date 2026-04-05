@@ -7,11 +7,11 @@ import java.util.concurrent.CompletableFuture;
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.BasicInfoBoxWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.LevelBarWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PlayerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.RulerWidget;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.SkillsInfoBoxWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -51,8 +51,8 @@ public final class SkillsPage implements ProfileViewerPage<LoadingInformation> {
 
 		// Player & Basic Info side
 		LinearLayout leftSectionLayout = LinearLayout.vertical().spacing(SPACING);
-		this.widgets.add(leftSectionLayout.addChild(new PlayerWidget(0, 0, info.mainMember())));
-		this.widgets.add(leftSectionLayout.addChild(new BasicInfoBoxWidget(0, 0, PlayerWidget.WIDTH, 71)));
+		this.widgets.add(leftSectionLayout.addChild(new PlayerWidget(info.mainMember())));
+		this.widgets.add(leftSectionLayout.addChild(new SkillsInfoBoxWidget(PlayerWidget.WIDTH, 71, info.profile(), info.member())));
 		pageLayout.addChild(leftSectionLayout);
 
 		// Spacing between left and right section
