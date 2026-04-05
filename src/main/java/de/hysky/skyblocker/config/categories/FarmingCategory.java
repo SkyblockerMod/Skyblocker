@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.FarmingConfig;
@@ -61,6 +62,7 @@ public class FarmingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.pestHighlighter.vinylHighlighter"))
 								.description(Component.translatable("skyblocker.config.farming.pestHighlighter.vinylHighlighter.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_2_0)
 								.binding(defaults.farming.pestHighlighter.vinylHighlighter,
 										() -> config.farming.pestHighlighter.vinylHighlighter,
 										newValue -> config.farming.pestHighlighter.vinylHighlighter = newValue)
