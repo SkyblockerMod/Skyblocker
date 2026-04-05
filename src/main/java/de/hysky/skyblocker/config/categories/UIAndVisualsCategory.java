@@ -514,6 +514,7 @@ public class UIAndVisualsCategory {
 						.option(Option.<Float>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_3_0)
 								.binding(defaults.uiAndVisuals.waypoints.waypointActivationRadius,
 										() -> config.uiAndVisuals.waypoints.waypointActivationRadius,
 										newValue -> config.uiAndVisuals.waypoints.waypointActivationRadius = newValue)
