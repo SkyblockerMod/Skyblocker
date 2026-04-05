@@ -256,6 +256,7 @@ public class ChatRuleConfigScreen extends Screen {
 		contentAdder.addChild(new ToggleableLayoutWidget(textAndIcon, toastOptionsPredicate));
 
 		EditBox itemInput = new EditBox(font, getWidth(1), 20, Component.empty());
+		itemInput.setMaxLength(300);
 		ToastIconPreview preview = textAndIcon.addChild(new ToastIconPreview(itemInput), LayoutSettings::alignHorizontallyRight);
 		textAndIcon.addChild(new MultiLineTextWidget(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon"), font), LayoutSettings::alignHorizontallyLeft).setMaxWidth(getWidth(1) - preview.getWidth()).setCentered(false);
 
