@@ -165,7 +165,7 @@ dependencies {
 	//localRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
 	// JEI (Using modrinth repo since official release is in mojmap and doesn't work)
-	//compileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
+	compileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
 	//runtimeOnly "maven.modrinth:jei:${project.jei_version}-fabric"
 
 	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
@@ -211,7 +211,6 @@ sourceSets {
 	main {
 		java {
 			exclude("**/compatibility/rei/**")
-			exclude("**/compatibility/jei/**")
 			exclude("**/compatibility/emi/**")
 		}
 	}
