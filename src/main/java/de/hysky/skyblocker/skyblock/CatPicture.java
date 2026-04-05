@@ -20,11 +20,14 @@ import net.minecraft.client.renderer.entity.state.ItemFrameRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.world.entity.animal.feline.CatSoundVariants;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -42,7 +45,8 @@ public class CatPicture {
 	//private static final Box CULLING_BOX = new Box(RENDER_POSITION.x, RENDER_POSITION.y, RENDER_POSITION.z, RENDER_POSITION.x + 1, RENDER_POSITION.y + 1, RENDER_POSITION.z + 1/16d);
 	private static final Identifier TEXTURE = SkyblockerMod.id("textures/cat.png");
 	private static float rotation = 180;
-	private static boolean moveAround = false;
+	private static boolean recipeBookEasterEgg = false;
+	private static boolean moveAround = FunUtils.shouldEnableFun();
 
 	@Init
 	public static void init() {
@@ -50,6 +54,14 @@ public class CatPicture {
 		Scheduler.INSTANCE.scheduleCyclic(CatPicture::update, 61);
 		SkyblockEvents.LOCATION_CHANGE.register(_ -> resetPosition());
 		SkyblockEvents.LEAVE.register(CatPicture::resetPosition);
+	}
+
+	public static void recipeBook() {
+		if (recipeBookEasterEgg) return;
+		recipeBookEasterEgg = true;
+		moveAround = true;
+		renderPosition = null;
+		Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.CAT_SOUNDS.get(CatSoundVariants.SoundSet.CLASSIC).adultSounds().ambientSound(), 1));
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
@@ -65,7 +77,6 @@ public class CatPicture {
 
 	private static void update() {
 		if (!Utils.isOnSkyblock()) return;
-		moveAround = FunUtils.shouldEnableFun();
 		if (!moveAround) return;
 		ClientLevel level = Minecraft.getInstance().level;
 		LocalPlayer player = Minecraft.getInstance().player;
