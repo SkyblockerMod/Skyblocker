@@ -1,0 +1,28 @@
+{
+  "info": {
+    "name": "Locked Away"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 19,
+      "y": 71,
+      "z": 5
+    },
+    {
+      "secretName": "1 - Stonk",
+      "category": "stonk",
+      "x": 22,
+      "y": 76,
+      "z": 27
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 26,
+      "y": 75,
+      "z": 29
+    }
+  ]
+}

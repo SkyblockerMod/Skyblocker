@@ -1,78 +1,69 @@
 package de.hysky.skyblocker.skyblock;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.render.state.EmptyRenderState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.ItemFrameRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.world.phys.Vec3;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.MinecraftAccessor;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.FrustumUtils;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.BlockModelRenderer;
-import net.minecraft.client.render.model.BlockStateManagers;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
-import org.joml.Matrix4f;
 
 public class CatPicture {
-
-	private static final Vec3d RENDER_POSITION = new Vec3d(6, 72, -92);
-	private static final Box CULLING_BOX = new Box(RENDER_POSITION.x, RENDER_POSITION.y, RENDER_POSITION.z, RENDER_POSITION.x + 1, RENDER_POSITION.y + 1, RENDER_POSITION.z + 1/16d);
+	private static final Vec3 RENDER_POSITION = new Vec3(-3, 79, 3);
+	//private static final Box CULLING_BOX = new Box(RENDER_POSITION.x, RENDER_POSITION.y, RENDER_POSITION.z, RENDER_POSITION.x + 1, RENDER_POSITION.y + 1, RENDER_POSITION.z + 1/16d);
 	private static final Identifier TEXTURE = SkyblockerMod.id("textures/cat.png");
 
 	@Init
 	public static void init() {
-		WorldRenderEvents.AFTER_ENTITIES.register(CatPicture::render);
+		LevelRenderExtractionCallback.EVENT.register(CatPicture::extractRendering);
 	}
 
-	private static void render(WorldRenderContext context) {
-		if (!SkyblockerConfigManager.get().misc.cat ||
-				Utils.getLocation() != Location.HUB ||
-				!FrustumUtils.isVisible(CULLING_BOX)
-		) return;
-		BlockState blockState = BlockStateManagers.getStateForItemFrame(false, true);
-		BlockStateModel blockStateModel = MinecraftClient.getInstance().getBlockRenderManager().getModel(blockState);
-		VertexConsumerProvider vertexConsumerProvider = context.consumers();
-		MatrixStack matrixStack = context.matrixStack();
-		if (matrixStack == null || vertexConsumerProvider == null) return;
+	private static void extractRendering(PrimitiveCollector collector) {
+		// TODO Bring back culling eventually, maybe just include more context in the collector
+		if (SkyblockerConfigManager.get().misc.cat && Utils.getLocation() == Location.HUB) {
+			collector.submitVanilla(EmptyRenderState.INSTANCE, CatPicture::extractRenderState);
+		}
+	}
 
-		matrixStack.push();
-		Vec3d pos = context.camera().getPos();
-		matrixStack.translate(-pos.x + RENDER_POSITION.x + 1, -pos.y + RENDER_POSITION.y, -pos.z + RENDER_POSITION.z + 1);
-		matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
-		// Render item frame
-		MatrixStack.Entry peek = matrixStack.peek();
-		BlockModelRenderer.render(
-				peek,
-				vertexConsumerProvider.getBuffer(RenderLayer.getEntitySolidZOffsetForward(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)),
-				blockStateModel,
-				1.0F,
-				1.0F,
-				1.0F,
-				15,
-				OverlayTexture.DEFAULT_UV
-		);
-		// Render kitty
-		matrixStack.translate(1, 1, 0);
-		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180.0F));
-		Matrix4f matrix4f = peek.getPositionMatrix();
-		VertexConsumer cat = vertexConsumerProvider.getBuffer(RenderLayer.getText(TEXTURE));
-		float z = 1F - 1 / 16f - 1 / 2048f;
-		cat.vertex(matrix4f, 0.0F, 1, z).color(-1).texture(0.0F, 1.0F).light(15);
-		cat.vertex(matrix4f, 1, 1, z).color(-1).texture(1.0F, 1.0F).light(15);
-		cat.vertex(matrix4f, 1, 0.0F, z).color(-1).texture(1.0F, 0.0F).light(15);
-		cat.vertex(matrix4f, 0.0F, 0.0F, z).color(-1).texture(0.0F, 0.0F).light(15);
-		matrixStack.pop();
+	private static void extractRenderState(EmptyRenderState state, LevelRenderState levelState, SubmitNodeCollector submitNodeCollector) {
+		ItemFrameRenderState itemFrameState = new ItemFrameRenderState();
+		((MinecraftAccessor) Minecraft.getInstance()).getBlockModelResolver().updateForItemFrame(itemFrameState.frameModel, false, true);
+
+		PoseStack matrices = new PoseStack();
+		matrices.pushPose();
+		matrices.translate(-levelState.cameraRenderState.pos.x + RENDER_POSITION.x + 1, -levelState.cameraRenderState.pos.y + RENDER_POSITION.y, -levelState.cameraRenderState.pos.z + RENDER_POSITION.z + 1);
+		matrices.mulPose(Axis.YP.rotationDegrees(180));
+
+		// Render Item Frame
+		itemFrameState.frameModel.submitWithZOffset(matrices, submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+
+		// Render Kitty
+		matrices.translate(1, 1, 0);
+		matrices.mulPose(Axis.ZP.rotationDegrees(180.0F));
+
+		submitNodeCollector.submitCustomGeometry(matrices, RenderTypes.text(TEXTURE), (matricesEntry, buffer) -> {
+			float z = 1F - 1 / 16f - 1 / 2048f;
+			buffer.addVertex(matricesEntry, 0.0F, 1, z).setColor(CommonColors.WHITE).setUv(0.0F, 1.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
+			buffer.addVertex(matricesEntry, 1, 1, z).setColor(CommonColors.WHITE).setUv(1.0F, 1.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
+			buffer.addVertex(matricesEntry, 1, 0.0F, z).setColor(CommonColors.WHITE).setUv(1.0F, 0.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
+			buffer.addVertex(matricesEntry, 0.0F, 0.0F, z).setColor(CommonColors.WHITE).setUv(0.0F, 0.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
+		});
+
+		matrices.popPose();
 	}
 }

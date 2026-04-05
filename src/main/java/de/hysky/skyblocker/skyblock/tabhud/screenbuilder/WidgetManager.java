@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -21,12 +22,10 @@ import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.Window;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.StringIdentifiable;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.StringRepresentable;
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 
@@ -48,6 +47,7 @@ public class WidgetManager {
 	private static final Identifier FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
 	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
 
+	@SuppressWarnings("unused")
 	private static final int VERSION = 2;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
@@ -62,38 +62,36 @@ public class WidgetManager {
 	// we probably want this to run pretty early?
 	@Init(priority = -1)
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> {
 
 			instantiateWidgets();
 			for (int i = 1; i < 6; i++) {
 				DungeonPlayerWidget widget = new DungeonPlayerWidget(i);
 				addWidgetInstance(widget);
 			}
-
-			fillDefaultConfig();
 			loadConfig();
 
 		});
 
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> saveConfig());
 
 		// Renders the hud (always on screen) widgets.
-		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, FANCY_TAB_HUD, (context, tickCounter) -> render(context, true));
+		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, FANCY_TAB_HUD, (context, _) -> extractRenderState(context, true));
 		// Renders the tab widgets
-		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false));
+		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, _) -> extractRenderState(context, false));
 	}
 
-	private static void render(DrawContext context, boolean hud) {
+	private static void extractRenderState(GuiGraphicsExtractor context, boolean hud) {
 		if (!Utils.isOnSkyblock()) return;
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 
-		if (client.currentScreen instanceof WidgetsConfigurationScreen) return;
+		if (client.screen instanceof WidgetsConfigurationScreen) return;
 		Window window = client.getWindow();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
-		Matrix3x2fStack matrices = context.getMatrices();
+		Matrix3x2fStack matrices = context.pose();
 		matrices.pushMatrix();
 		matrices.scale(scale, scale);
-		WidgetManager.render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale), hud);
+		WidgetManager.extractRenderState(context, (int) (window.getGuiScaledWidth() / scale), (int) (window.getGuiScaledHeight() / scale), hud);
 		matrices.popMatrix();
 	}
 
@@ -103,12 +101,12 @@ public class WidgetManager {
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
-	private static void render(DrawContext context, int w, int h, boolean hud) {
-		MinecraftClient client = MinecraftClient.getInstance();
+	private static void extractRenderState(GuiGraphicsExtractor context, int w, int h, boolean hud) {
+		Minecraft client = Minecraft.getInstance();
 		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
-		if (client.options.playerListKey.isPressed()) {
+		if (client.options.keyPlayerList.isDown()) {
 			if (hud || TabHud.shouldRenderVanilla()) return;
-			if (TabHud.toggleSecondary.isPressed()) {
+			if (TabHud.toggleSecondary.isDown()) {
 				screenBuilder.run(context, w, h, ScreenLayer.SECONDARY_TAB);
 			} else {
 				screenBuilder.run(context, w, h, ScreenLayer.MAIN_TAB);
@@ -134,8 +132,9 @@ public class WidgetManager {
 					}
 				}
 			}
-		} catch (NoSuchFileException e) {
+		} catch (NoSuchFileException _) {
 			LOGGER.warn("[Skyblocker] No hud widget config file found, using defaults");
+			fillDefaultConfig();
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to load hud widgets config", e);
 		}
@@ -167,12 +166,6 @@ public class WidgetManager {
 		screenBuilder.setPositionRule(
 				"hud_end",
 				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().otherLocations.end.x, SkyblockerConfigManager.get().otherLocations.end.y, WidgetManager.ScreenLayer.HUD)
-		);
-
-		screenBuilder = getScreenBuilder(Location.GARDEN);
-		screenBuilder.setPositionRule(
-				"hud_farming",
-				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().farming.garden.farmingHud.x, SkyblockerConfigManager.get().farming.garden.farmingHud.y, WidgetManager.ScreenLayer.HUD)
 		);
 
 		for (Location loc : new Location[]{Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES}) {
@@ -222,7 +215,7 @@ public class WidgetManager {
 	/**
 	 * @implNote !! The 3 first ones shouldn't be moved, ordinal is used in some places
 	 */
-	public enum ScreenLayer implements StringIdentifiable {
+	public enum ScreenLayer implements StringRepresentable {
 		MAIN_TAB,
 		SECONDARY_TAB,
 		HUD,
@@ -231,7 +224,7 @@ public class WidgetManager {
 		 */
 		DEFAULT;
 
-		public static final Codec<ScreenLayer> CODEC = StringIdentifiable.createCodec(ScreenLayer::values);
+		public static final Codec<ScreenLayer> CODEC = StringRepresentable.fromEnum(ScreenLayer::values);
 
 		@Override
 		public String toString() {
@@ -244,7 +237,7 @@ public class WidgetManager {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name();
 		}
 	}

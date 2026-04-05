@@ -31,7 +31,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
 			default -> true;
 		};
-    }
+	}
 
 	@Override
 	public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {

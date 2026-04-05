@@ -1,15 +1,16 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard;
 
 import java.util.Locale;
+import net.minecraft.commands.arguments.StringRepresentableArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import org.jspecify.annotations.Nullable;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.command.argument.EnumArgumentType;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.BlockPos;
 
 public class Waterboard {
 	public static final int BOARD_MIN_X = 6;
@@ -20,7 +21,7 @@ public class Waterboard {
 	// The top center of the grid, between the first two toggleable blocks
 	public static final BlockPos WATER_ENTRANCE_POSITION = new BlockPos(15, 78, 26);
 
-	public enum LeverType implements StringIdentifiable {
+	public enum LeverType implements StringRepresentable {
 		COAL(Blocks.COAL_BLOCK, new BlockPos(20, 61, 10), DyeColor.RED, new BlockPos[]{
 				new BlockPos(0, -2, 0), new BlockPos(2, -1, 1),
 				null, new BlockPos(5, -1, 0)
@@ -47,14 +48,14 @@ public class Waterboard {
 		}),
 		WATER(Blocks.LAVA, new BlockPos(15, 60, 5), DyeColor.LIGHT_BLUE, null);
 
-		private static final Codec<LeverType> CODEC = StringIdentifiable.createCodec(LeverType::values);
+		private static final Codec<LeverType> CODEC = StringRepresentable.fromEnum(LeverType::values);
 
 		public final Block block;
 		public final BlockPos leverPos;
 		public final DyeColor color;
 		// Holds positions where the corresponding block is present in the initial state of each variant, offset from the water entrance position
 		// This is more reliable at detecting if the lever is active than looking at the lever's block state
-		public final BlockPos[] initialPositions;
+		public final @Nullable BlockPos[] initialPositions;
 
 		LeverType(Block block, BlockPos leverPos, DyeColor color, BlockPos[] initialPositions) {
 			this.block = block;
@@ -63,7 +64,7 @@ public class Waterboard {
 			this.initialPositions = initialPositions;
 		}
 
-		public static LeverType fromName(String name) {
+		public static @Nullable LeverType fromName(String name) {
 			for (LeverType leverType : LeverType.values()) {
 				if (leverType.name().equalsIgnoreCase(name)) {
 					return leverType;
@@ -72,7 +73,7 @@ public class Waterboard {
 			return null;
 		}
 
-		public static LeverType fromBlock(Block block) {
+		public static @Nullable LeverType fromBlock(Block block) {
 			for (LeverType leverType : LeverType.values()) {
 				if (leverType.block == block) {
 					return leverType;
@@ -81,7 +82,7 @@ public class Waterboard {
 			return null;
 		}
 
-		public static LeverType fromPos(BlockPos leverPos) {
+		public static @Nullable LeverType fromPos(BlockPos leverPos) {
 			for (LeverType leverType : LeverType.values()) {
 				if (leverPos.equals(leverType.leverPos)) {
 					return leverType;
@@ -91,11 +92,11 @@ public class Waterboard {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name().toLowerCase(Locale.ENGLISH);
 		}
 
-		public static class LeverTypeArgumentType extends EnumArgumentType<LeverType> {
+		public static class LeverTypeArgumentType extends StringRepresentableArgument<LeverType> {
 			private LeverTypeArgumentType() {
 				super(CODEC, LeverType::values);
 			}

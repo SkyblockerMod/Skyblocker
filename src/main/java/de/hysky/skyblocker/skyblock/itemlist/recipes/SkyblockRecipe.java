@@ -1,46 +1,49 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import io.github.moulberry.repo.data.NEUIngredient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
 
 public interface SkyblockRecipe {
 	Logger LOGGER = LoggerFactory.getLogger(SkyblockRecipe.class);
 	NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
 
-	static ItemStack getItemStack(NEUIngredient input) {
-		if (input == NEUIngredient.SENTINEL_EMPTY) return Items.AIR.getDefaultStack();
+	static FlexibleItemStack getItemStack(NEUIngredient input) {
+		if (input == NEUIngredient.SENTINEL_EMPTY) return FlexibleItemStack.EMPTY;
 
-		ItemStack stack = ItemRepository.getItemStack(input.getItemId());
+		FlexibleItemStack stack = ItemRepository.getItemStack(input.getItemId());
 		if (stack != null) {
-			return stack.copyWithCount((int) input.getAmount());
+			int amount = (int) input.getAmount();
+			FlexibleItemStack copy = stack.copyWithCount(amount);
+			if (amount > 1) copy.set(DataComponents.MAX_STACK_SIZE, amount);
+			return copy;
 		} else if (input.getItemId().equals("SKYBLOCK_COIN")) {
-			ItemStack itemStack = new ItemStack(Items.GOLD_NUGGET);
-			itemStack.set(DataComponentTypes.ITEM_NAME, Text.literal("Skyblock Coins").formatted(Formatting.GOLD));
-			itemStack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+			FlexibleItemStack itemStack = new FlexibleItemStack(Items.GOLD_NUGGET);
+			itemStack.set(DataComponents.ITEM_NAME, Component.literal("Skyblock Coins").withStyle(ChatFormatting.GOLD));
+			itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
 			String format = NUMBER_FORMAT.format(input.getAmount());
-			itemStack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.literal(format).formatted(Formatting.GOLD).styled(style -> style.withItalic(false)).append(Text.literal(" coins")))));
+			itemStack.set(DataComponents.LORE, new ItemLore(List.of(Component.literal(format).withStyle(ChatFormatting.GOLD).withStyle(style -> style.withItalic(false)).append(Component.literal(" coins")))));
 			return itemStack;
 		}
 
 		LOGGER.warn("[Skyblocker Recipe] Unable to find item {}", input.getItemId());
-		ItemStack fallbackStack = new ItemStack(Items.BARRIER);
-		fallbackStack.set(DataComponentTypes.ITEM_NAME, Text.literal(input.getItemId()));
+		FlexibleItemStack fallbackStack = new FlexibleItemStack(Items.BARRIER);
+		fallbackStack.set(DataComponents.ITEM_NAME, Component.literal(input.getItemId()));
 		return fallbackStack;
 	}
 
@@ -58,13 +61,13 @@ public interface SkyblockRecipe {
 	 */
 	List<RecipeSlot> getOutputSlots(int width, int height);
 
-	default @Nullable ScreenPos getArrowLocation(int width, int height) {
+	default @Nullable ScreenPosition getArrowLocation(int width, int height) {
 		return null;
 	}
 
-	List<ItemStack> getInputs();
+	List<FlexibleItemStack> getInputs();
 
-	List<ItemStack> getOutputs();
+	List<FlexibleItemStack> getOutputs();
 
 	/**
 	 * Render some extra things, i.e an entity
@@ -74,12 +77,12 @@ public interface SkyblockRecipe {
 	 * @param mouseX mouse x
 	 * @param mouseY mouse y
 	 */
-	default void render(DrawContext context, int width, int height, double mouseX, double mouseY) {}
+	default void extractRenderState(GuiGraphicsExtractor graphics, int width, int height, double mouseX, double mouseY) {}
 
 	/**
 	 * Extra text like collection requirements
 	 */
-	Text getExtraText();
+	Component getExtraText();
 
 	/**
 	 * Identifier used for REI, EMI. Also used in the recipe book for the name
@@ -91,8 +94,8 @@ public interface SkyblockRecipe {
 	 */
 	Identifier getRecipeIdentifier();
 
-	record RecipeSlot(int x, int y, ItemStack stack, boolean showBackground) {
-		public RecipeSlot(int x, int y, ItemStack stack) {
+	record RecipeSlot(int x, int y, FlexibleItemStack stack, boolean showBackground) {
+		public RecipeSlot(int x, int y, FlexibleItemStack stack) {
 			this(x, y, stack, true);
 		}
 	}

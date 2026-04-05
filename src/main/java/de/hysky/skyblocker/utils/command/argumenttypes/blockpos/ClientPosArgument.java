@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.utils.command.argumenttypes.blockpos;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * This interface, its 2 implementations and ClientBlockPosArgumentType are all copied from minecraft
@@ -11,12 +11,12 @@ import net.minecraft.util.math.Vec3d;
  * This removes the need for hacky workarounds such as creating new ServerCommandSources with null or 0 on every argument.
  */
 public interface ClientPosArgument {
-	Vec3d toAbsolutePos(FabricClientCommandSource source);
+	Vec3 toAbsolutePos(FabricClientCommandSource source);
 
-	Vec2f toAbsoluteRotation(FabricClientCommandSource source);
+	Vec2 toAbsoluteRotation(FabricClientCommandSource source);
 
 	default BlockPos toAbsoluteBlockPos(FabricClientCommandSource source) {
-		return BlockPos.ofFloored(this.toAbsolutePos(source));
+		return BlockPos.containing(this.toAbsolutePos(source));
 	}
 
 	boolean isXRelative();

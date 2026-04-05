@@ -3,15 +3,14 @@ package de.hysky.skyblocker.skyblock.hunting;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.RomanNumerals;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 //TODO: Add required amount of shards to reach max level in the tooltip via a TooltipAdder implementation once people get enough shards to figure them out
 //      It can be seen by clicking on the attribute but that's too much effort, we could bring that up a layer, into the tooltip of the attribute
@@ -27,12 +26,12 @@ public class AttributeLevelHelper extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slot == null || stack.isEmpty()) return List.of();
-		if (slot.id <= 9 || slot.id >= 44) return List.of(); // Don't need to process the first row and the last row
-		if (stack.isOf(Items.BLACK_STAINED_GLASS_PANE)) return List.of();
+		if (slot.index <= 9 || slot.index >= 44) return List.of(); // Don't need to process the first row and the last row
+		if (stack.is(Items.BLACK_STAINED_GLASS_PANE)) return List.of();
 
-		Text customName = stack.getCustomName();
+		Component customName = stack.getCustomName();
 		if (customName == null) return List.of();
 
 		String itemName = customName.getString();
@@ -42,6 +41,6 @@ public class AttributeLevelHelper extends SimpleSlotTextAdder {
 		int level = RomanNumerals.romanToDecimal(levelText);
 		if (level < 1 || level > 10) return List.of(); // Should not go beyond these bounds, but just in case.
 
-		return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(level == 10 ? SlotText.GOLD : SlotText.CREAM));
+		return SlotText.bottomRightList(Component.literal(String.valueOf(level)).withColor(level == 10 ? SlotText.GOLD : SlotText.CREAM));
 	}
 }

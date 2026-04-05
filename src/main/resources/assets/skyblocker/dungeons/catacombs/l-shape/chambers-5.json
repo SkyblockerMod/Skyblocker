@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "Chambers"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 25,
+      "y": 82,
+      "z": 16
+    },
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 4,
+      "y": 82,
+      "z": 15
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 15,
+      "y": 83,
+      "z": 2
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 37,
+      "y": 81,
+      "z": 60
+    },
+    {
+      "secretName": "2 - Bat",
+      "category": "bat",
+      "x": 33,
+      "y": 83,
+      "z": 57
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 55,
+      "y": 79,
+      "z": 38
+    },
+    {
+      "secretName": "3 - Stonk",
+      "category": "stonk",
+      "x": 8,
+      "y": 69,
+      "z": 38
+    },
+    {
+      "secretName": "3 - Lever",
+      "category": "lever",
+      "x": 55,
+      "y": 71,
+      "z": 37
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 4,
+      "y": 70,
+      "z": 27
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 7,
+      "y": 69,
+      "z": 40
+    },
+    {
+      "secretName": "4 - Entrance Water",
+      "category": "entrance",
+      "x": 51,
+      "y": 67,
+      "z": 49
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 53,
+      "y": 57,
+      "z": 47
+    },
+    {
+      "secretName": "5 - Superboom",
+      "category": "superboom",
+      "x": 11,
+      "y": 70,
+      "z": 57
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 4,
+      "y": 69,
+      "z": 57
+    },
+    {
+      "secretName": "Prince",
+      "category": "prince",
+      "x": 19,
+      "y": 91,
+      "z": 37
+    }
+  ]
+}

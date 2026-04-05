@@ -2,26 +2,26 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import io.github.moulberry.repo.data.NEUNpcShopRecipe;
-import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 public class SkyblockNpcShopRecipe implements SkyblockRecipe {
-	public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_npc_shop");
+	public static final Identifier ID = SkyblockerMod.id("skyblock_npc_shop");
 	private static final int SLOT_SIZE = 18;
 	private static final int ARROW_LENGTH = 24;
 	private static final int ARROW_PADDING = 3;
 
-	private final ItemStack npcShop;
-	private final List<ItemStack> inputs;
-	private final ItemStack output;
+	private final FlexibleItemStack npcShop;
+	private final List<FlexibleItemStack> inputs;
+	private final FlexibleItemStack output;
 
 	public SkyblockNpcShopRecipe(NEUNpcShopRecipe shopRecipe) {
 		npcShop = ItemRepository.getItemStack(shopRecipe.getIsSoldBy().getSkyblockItemId());
@@ -91,39 +91,39 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public @Nullable ScreenPos getArrowLocation(int width, int height) {
+	public @Nullable ScreenPosition getArrowLocation(int width, int height) {
 		int centerX = getCenterX(width);
 		int centerY = height / 2;
 		if (inputs.size() == 7 || inputs.size() == 8) centerX += SLOT_SIZE;
-		return new ScreenPos(centerX - ARROW_LENGTH / 2 - 1, centerY);
+		return new ScreenPosition(centerX - ARROW_LENGTH / 2 - 1, centerY);
 	}
 
-	public ItemStack getNpcItem() {
+	public FlexibleItemStack getNpcItem() {
 		return npcShop;
 	}
 
 	@Override
-	public List<ItemStack> getInputs() {
+	public List<FlexibleItemStack> getInputs() {
 		return inputs;
 	}
 
 	@Override
-	public List<ItemStack> getOutputs() {
+	public List<FlexibleItemStack> getOutputs() {
 		return Collections.singletonList(output);
 	}
 
 	@Override
-	public Text getExtraText() {
-		return Text.empty();
+	public Component getExtraText() {
+		return Component.empty();
 	}
 
 	@Override
 	public Identifier getCategoryIdentifier() {
-		return IDENTIFIER;
+		return ID;
 	}
 
 	@Override
 	public Identifier getRecipeIdentifier() {
-		return Identifier.of("skyblock", output.getSkyblockId());
+		return Identifier.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.count());
 	}
 }

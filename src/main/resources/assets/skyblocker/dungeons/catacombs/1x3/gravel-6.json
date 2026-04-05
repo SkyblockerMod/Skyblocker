@@ -1,0 +1,84 @@
+{
+  "info": {
+    "name": "Gravel"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Lever",
+      "category": "lever",
+      "x": 63,
+      "y": 69,
+      "z": 26
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 35,
+      "y": 69,
+      "z": 11
+    },
+    {
+      "secretName": "1 - Stonk",
+      "category": "stonk",
+      "x": 33,
+      "y": 70,
+      "z": 11
+    },
+    {
+      "secretName": "2/3 - Entrance Vines",
+      "category": "entrance",
+      "x": 69,
+      "y": 82,
+      "z": 14
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 68,
+      "y": 87,
+      "z": 14
+    },
+    {
+      "secretName": "3 - Wither Essence",
+      "category": "wither",
+      "x": 66,
+      "y": 87,
+      "z": 14
+    },
+    {
+      "secretName": "4/5 Entrance",
+      "category": "entrance",
+      "x": 82,
+      "y": 74,
+      "z": 3
+    },
+    {
+      "secretName": "4 - Item",
+      "category": "item",
+      "x": 88,
+      "y": 69,
+      "z": 8
+    },
+    {
+      "secretName": "5 - Wither Essence",
+      "category": "wither",
+      "x": 92,
+      "y": 69,
+      "z": 3
+    },
+    {
+      "secretName": "6 - Entrance Vines",
+      "category": "entrance",
+      "x": 35,
+      "y": 84,
+      "z": 9
+    },
+    {
+      "secretName": "6 - Bat",
+      "category": "bat",
+      "x": 37,
+      "y": 89,
+      "z": 12
+    }
+  ]
+}

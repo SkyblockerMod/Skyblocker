@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "Archway"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 11,
+      "y": 70,
+      "z": 5
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 1,
+      "y": 70,
+      "z": 2
+    },
+    {
+      "secretName": "2/3 - Entrance",
+      "category": "entrance",
+      "x": 4,
+      "y": 70,
+      "z": 19
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 7,
+      "y": 82,
+      "z": 26
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 24,
+      "y": 89,
+      "z": 16
+    },
+    {
+      "secretName": "3 - Item",
+      "category": "item",
+      "x": 53,
+      "y": 89,
+      "z": 13
+    }
+  ]
+}

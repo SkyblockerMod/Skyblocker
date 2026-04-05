@@ -1,12 +1,12 @@
 plugins {
 	// Building
-	id 'fabric-loom' version "${loom_version}"
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 	id "de.hysky.skyblocker.annotation-processor"
-	id "com.diffplug.spotless" version "7.2.1"
+	id "com.diffplug.spotless" version "${spotless_version}"
 	id "checkstyle"
 	// Publishing
 	id 'maven-publish'
-	id "me.modmuss50.mod-publish-plugin" version "0.8.1"
+	id "me.modmuss50.mod-publish-plugin" version "${mod_publish_plugin_version}"
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -126,14 +126,6 @@ repositories {
 		}
 	}
 
-	maven {
-		url = "https://maven.notenoughupdates.org/releases"
-
-		content {
-			includeGroup "org.notenoughupdates.moulconfig"
-		}
-	}
-
 	//mavenLocal()
 }
 
@@ -141,52 +133,44 @@ dependencies {
 	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	//Layered Yarn & Mojmap - used to fill in intermediary names
-	mappings loom.layered {
-		//Using Mojmap breaks runClient, so uncomment only for snapshots when temp mappings are needed
-		//officialMojangMappings()
-		mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
-	}
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Loom does not always add this
 	implementation "ca.weblite:java-objc-bridge:1.1"
 
 	// Fabric API
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	// Dandelion
-	include modImplementation("net.azureaaron:dandelion:${project.dandelion_version}")
+	// Dandelion (also shades in MoulConfig)
+	include implementation("net.azureaaron:dandelion:${project.dandelion_version}")
 
 	// YACL
-	include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
-
-	// MoulConfig - Dandelion shades it in already
-	//modImplementation("org.notenoughupdates.moulconfig:${project.moulconfig_flavour}:${project.moulconfig_version}")
+	include implementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
 
 	// HM API (Hypixel Mod API Library)
-	include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
+	include implementation("net.azureaaron:hm-api:${project.hm_api_version}")
 
 	// Mod Menu
-	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
+	implementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	// REI
-	modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
-		exclude group: "net.fabricmc.fabric-api" //Stop this from importing an old version of FAPI that crashes everything
-	}
-	//modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	//compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
+	//exclude group: "net.fabricmc.fabric-api" //Stop this from importing an old version of FAPI that crashes everything
+	//}
+	//runtimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	// EMI
-	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
-	//modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
+	//compileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
+	//localRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
 	// JEI (Using modrinth repo since official release is in mojmap and doesn't work)
-	modCompileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
-	//modRuntimeOnly "maven.modrinth:jei:${project.jei_version}-fabric"
+	//compileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
+	//runtimeOnly "maven.modrinth:jei:${project.jei_version}-fabric"
 
 	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
 
-	include modImplementation("meteordevelopment:discord-ipc:1.1")
+	include implementation("meteordevelopment:discord-ipc:1.1")
 
 	// NEU RepoParser
 	include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
@@ -207,14 +191,29 @@ dependencies {
 	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
 
 	// Fabric Language Kotlin for using MoulConfig - we are still a Java-exclusive mod
-	modImplementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
+	implementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/skyblocker.accesswidener")
+	accessWidenerPath = file("src/main/resources/skyblocker.classtweaker")
 
-	mixin {
-		useLegacyMixinAp = false
+	decompilers {
+		vineflower {
+			options.put(
+					// Makes lambda names easy to find for Mixins
+					"mark-corresponding-synthetics", "1"
+					)
+		}
+	}
+}
+
+sourceSets {
+	main {
+		java {
+			exclude("**/compatibility/rei/**")
+			exclude("**/compatibility/jei/**")
+			exclude("**/compatibility/emi/**")
+		}
 	}
 }
 
@@ -231,21 +230,22 @@ base {
 	archivesName = project.archives_base_name
 }
 
-processResources {
+tasks.withType(ProcessResources).configureEach {
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand "version": inputs.properties.version
 	}
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 25
+	it.options.compilerArgs << "-Xmaxerrs" << "2000"
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {
@@ -264,7 +264,7 @@ spotless {
 	java {
 		removeUnusedImports()
 		importOrder('java', 'javax', '', 'de.hysky')
-		//indentWithTabs() // TODO: turn on when more files are converted to tabs
+		leadingSpacesToTabs()
 		trimTrailingWhitespace()
 		endWithNewline()
 		lineEndings = com.diffplug.spotless.LineEnding.UNIX
@@ -274,7 +274,7 @@ spotless {
 		target 'src/**/lang/en_us.json'
 		targetExclude 'src/**/generated/**'
 
-		gson()/*.sortByKeys()*/.indentWithSpaces(2) // TODO: turn on `sortByKeys` in the future
+		gson().sortByKeys().indentWithSpaces(2)
 		// Note: a stem is a part of a key between dots, e.g. "skyblocker.config.chat" has three stems: "skyblocker", "config", and "chat".
 		replaceRegex \
 				"Separate different first stems",
@@ -325,8 +325,12 @@ spotless {
 }
 
 checkstyle {
-	toolVersion = "10.20.2"
+	toolVersion = "${checkstyle_version}"
 	configFile = rootProject.file("checkstyle.xml")
+	configProperties = [
+		"suppressionsFile": rootProject.file("checkstyle-suppressions.xml"),
+		"cacheFile": layout.buildDirectory.file("checkstyle/checkstyle-cache.txt").get().asFile
+	]
 }
 
 def truncateChangelog = { String text, int limit ->
@@ -345,12 +349,20 @@ def truncateChangelog = { String text, int limit ->
 }
 
 publishMods {
-	file = remapJar.archiveFile
-	changelog = System.getenv('CHANGELOG')
+	file = jar.archiveFile
+	changelog = System.getenv('CHANGELOG_HIGHLIGHT')
 	version = "v${project.version}"
 	displayName = "Skyblocker ${mod_version} for ${minecraft_version}"
 	modLoaders.add("fabric")
-	type = STABLE
+	type = project.version.contains("alpha") ? ALPHA : project.version.contains("beta") ? BETA : STABLE
+
+	github {
+		accessToken = System.getenv("GITHUB_TOKEN")
+		repository = "SkyblockerMod/Skyblocker"
+		commitish = System.getenv("REF_NAME")
+		tagName = publishMods.version
+		changelog = System.getenv("CHANGELOG")
+	}
 
 	modrinth {
 		accessToken = System.getenv("MODRINTH_TOKEN")
@@ -381,6 +393,7 @@ publishMods {
 			def truncatedChangelog = truncateChangelog(it, 1850)
 			header + truncatedChangelog
 		}
+		setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
 	}
 }
 

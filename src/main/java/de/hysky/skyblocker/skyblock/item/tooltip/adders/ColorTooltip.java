@@ -4,16 +4,16 @@ import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.StringIdentifiable;
-import org.jetbrains.annotations.Nullable;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class ColorTooltip extends SimpleTooltipAdder {
 	private static final long WITHER_GLITCHED_AFTER_DATE = 1605830400000L;
@@ -28,16 +28,16 @@ public class ColorTooltip extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		final String internalID = stack.getSkyblockId();
-		if (TooltipInfoType.COLOR.hasOrNullWarning(internalID) && stack.contains(DataComponentTypes.DYED_COLOR)) {
+		if (TooltipInfoType.COLOR.hasOrNullWarning(internalID) && stack.has(DataComponents.DYED_COLOR)) {
 			//DyedColorComponent#getColor can be ARGB so we mask out the alpha bits
-			int dyeColor = stack.get(DataComponentTypes.DYED_COLOR).rgb() & 0x00FFFFFF;
+			int dyeColor = stack.get(DataComponents.DYED_COLOR).rgb() & 0x00FFFFFF;
 			String colorHex = String.format("%06X", dyeColor);
 			String expectedHex = getExpectedHex(internalID);
 
 			boolean correctLine = false;
-			for (Text text : lines) {
+			for (Component text : lines) {
 				String existingTooltip = text.getString() + " ";
 				if (existingTooltip.startsWith("Color: ")) {
 					correctLine = true;
@@ -53,14 +53,14 @@ public class ColorTooltip extends SimpleTooltipAdder {
 		}
 	}
 
-	private static void addExoticTooltip(List<Text> lines, ItemStack stack, String internalID, String colorHex, String expectedHex, String existingTooltip) {
+	private static void addExoticTooltip(List<Component> lines, ItemStack stack, String internalID, String colorHex, String expectedHex, String existingTooltip) {
 		if (expectedHex != null && !colorHex.equalsIgnoreCase(expectedHex) && !isException(internalID, colorHex) && !intendedDyed(ItemUtils.getCustomData(stack))) {
 			final DyeType type = checkDyeType(stack, colorHex);
-			lines.add(1, Text.literal(existingTooltip + Formatting.DARK_GRAY + "(")
+			lines.add(1, Component.literal(existingTooltip + ChatFormatting.DARK_GRAY + "(")
 					.append(type.getTranslatedText())
-					.append(Text.literal(" - "))
-					.append(Text.literal("#" + colorHex).withColor(Integer.decode("0x" + colorHex)))
-					.append(Text.literal(")").formatted(Formatting.DARK_GRAY)));
+					.append(Component.literal(" - "))
+					.append(Component.literal("#" + colorHex).withColor(Integer.decode("0x" + colorHex)))
+					.append(Component.literal(")").withStyle(ChatFormatting.DARK_GRAY)));
 		}
 	}
 
@@ -99,7 +99,7 @@ public class ColorTooltip extends SimpleTooltipAdder {
 		};
 	}
 
-	private static boolean intendedDyed(NbtCompound customData) {
+	private static boolean intendedDyed(CompoundTag customData) {
 		return customData.contains("dye_item");
 	}
 
@@ -128,29 +128,29 @@ public class ColorTooltip extends SimpleTooltipAdder {
 		};
 	}
 
-	private enum DyeType implements StringIdentifiable {
-		CRYSTAL("crystal", Formatting.AQUA),
-		FAIRY("fairy", Formatting.LIGHT_PURPLE),
-		OG_FAIRY("og_fairy", Formatting.DARK_PURPLE),
-		SPOOK("spook", Formatting.RED),
-		GLITCHED("glitched", Formatting.BLUE),
-		EXOTIC("exotic", Formatting.GOLD);
+	private enum DyeType implements StringRepresentable {
+		CRYSTAL("crystal", ChatFormatting.AQUA),
+		FAIRY("fairy", ChatFormatting.LIGHT_PURPLE),
+		OG_FAIRY("og_fairy", ChatFormatting.DARK_PURPLE),
+		SPOOK("spook", ChatFormatting.RED),
+		GLITCHED("glitched", ChatFormatting.BLUE),
+		EXOTIC("exotic", ChatFormatting.GOLD);
 
 		private final String name;
-		private final Formatting formatting;
+		private final ChatFormatting formatting;
 
-		DyeType(String name, Formatting formatting) {
+		DyeType(String name, ChatFormatting formatting) {
 			this.name = name;
 			this.formatting = formatting;
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name;
 		}
 
-		public MutableText getTranslatedText() {
-			return Text.translatable("skyblocker.exotic." + name).formatted(formatting);
+		public MutableComponent getTranslatedText() {
+			return Component.translatable("skyblocker.exotic." + name).withStyle(formatting);
 		}
 	}
 

@@ -1,0 +1,21 @@
+{
+  "info": {
+    "name": "Multicolored"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 26,
+      "y": 70,
+      "z": 11
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 25,
+      "y": 70,
+      "z": 4
+    }
+  ]
+}

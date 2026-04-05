@@ -1,0 +1,63 @@
+{
+  "info": {
+    "name": "Hallway"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 29,
+      "y": 75,
+      "z": 5
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 28,
+      "y": 69,
+      "z": 3
+    },
+    {
+      "secretName": "2 - Lever",
+      "category": "lever",
+      "x": 92,
+      "y": 76,
+      "z": 20
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 74,
+      "y": 70,
+      "z": 3
+    },
+    {
+      "secretName": "2 - Stonk",
+      "category": "stonk",
+      "x": 52,
+      "y": 70,
+      "z": 5
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 54,
+      "y": 69,
+      "z": 5
+    },
+    {
+      "secretName": "3 - Entrance Vines",
+      "category": "entrance",
+      "x": 83,
+      "y": 81,
+      "z": 1
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 85,
+      "y": 85,
+      "z": 6
+    }
+  ]
+}

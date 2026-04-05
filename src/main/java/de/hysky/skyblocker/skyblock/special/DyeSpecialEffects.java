@@ -4,13 +4,16 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Optional;
@@ -19,27 +22,28 @@ import java.util.regex.Pattern;
 
 public class DyeSpecialEffects {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	@VisibleForTesting
-	protected static final Pattern DROP_PATTERN = Pattern.compile("WOW! (?:\\[[A-Z+]+\\] )?(?<player>[A-Za-z0-9_]+) found (?<dye>[A-Za-z ]+ Dye)(?: #[\\d,]+)?!");
+	// WOW! (?:\[[A-Z+]+] )?(?<player>[A-Za-z0-9_]+) found (?:a|an) (?<dye>[A-Za-z ]+ Dye)(?: #[\d,]+)?!
+	protected static final Pattern DROP_PATTERN = Pattern.compile("WOW! (?:\\[[A-Z+]+] )?(?<player>[A-Za-z0-9_]+) found (?:a|an) (?<dye>[A-Za-z ]+ Dye)(?: #[\\d,]+)?!");
 
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DyeSpecialEffects::displayDyeDropEffect);
 	}
 
-	private static boolean displayDyeDropEffect(Text message, boolean overlay) {
+	private static boolean displayDyeDropEffect(Component message, boolean overlay) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.specialEffects.rareDyeDropEffects && !overlay) {
 			try {
 				String stringForm = message.getString();
 				Matcher matcher = DROP_PATTERN.matcher(stringForm);
 
-				if (matcher.matches() && matcher.group("player").equals(CLIENT.getSession().getUsername())) {
+				if (matcher.matches() && matcher.group("player").equals(CLIENT.getUser().getName())) {
 					ItemStack stack = findDyeStack(matcher.group("dye"));
 
-					if (!stack.isEmpty()) {
-						CLIENT.particleManager.addEmitter(CLIENT.player, ParticleTypes.TRIAL_SPAWNER_DETECTION, 30);
-						CLIENT.gameRenderer.showFloatingItem(stack);
+					if (stack != null && !stack.isEmpty()) {
+						CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER, 30);
+						CLIENT.gameRenderer.displayItemActivation(stack);
 					}
 				}
 			} catch (Exception e) {
@@ -50,11 +54,11 @@ public class DyeSpecialEffects {
 		return true;
 	}
 
-	private static ItemStack findDyeStack(String dyeName) {
-		Optional<ItemStack> dye = ItemRepository.getItemsStream()
-				.filter(stack -> stack.getName().getString().equals(dyeName))
+	private static @Nullable ItemStack findDyeStack(String dyeName) {
+		Optional<FlexibleItemStack> dye = ItemRepository.getItemsStream()
+				.filter(stack -> stack.get(DataComponents.CUSTOM_NAME).getString().equals(dyeName))
 				.findFirst();
 
-		return dye.orElse(ItemStack.EMPTY);
+		return dye.map(FlexibleItemStack::getStack).orElse(ItemStack.EMPTY);
 	}
 }

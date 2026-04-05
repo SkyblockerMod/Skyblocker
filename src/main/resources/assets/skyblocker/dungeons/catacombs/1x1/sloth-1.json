@@ -1,0 +1,28 @@
+{
+  "info": {
+    "name": "Sloth"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 7,
+      "y": 70,
+      "z": 20
+    },
+    {
+      "secretName": "1 - Stonk",
+      "category": "stonk",
+      "x": 10,
+      "y": 69,
+      "z": 22
+    },
+    {
+      "secretName": "1 - Item",
+      "category": "item",
+      "x": 9,
+      "y": 69,
+      "z": 22
+    }
+  ]
+}

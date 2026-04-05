@@ -5,8 +5,6 @@ import java.util.OptionalInt;
 
 import com.google.gson.JsonObject;
 
-import net.minecraft.util.annotation.MethodsReturnNonnullByDefault;
-
 /**
  * Helper methods to assist in retrieving values nested in JSON objects.
  *
@@ -15,7 +13,6 @@ import net.minecraft.util.annotation.MethodsReturnNonnullByDefault;
  * @author AzureAaron
  * @see <a href="https://github.com/AzureAaron/aaron-mod/blob/1.20/src/main/java/net/azureaaron/mod/utils/JsonHelper.java">Aaron's Mod's JSON Helper</a>
  */
-@MethodsReturnNonnullByDefault
 public class JsonHelper {
 
 	public static OptionalInt getInt(JsonObject root, String path) {

@@ -1,55 +1,57 @@
 package de.hysky.skyblocker.utils.render;
 
+import org.jspecify.annotations.Nullable;
+
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTextureView;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
-import de.hysky.skyblocker.utils.render.state.CameraRenderState;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.*;
-import net.minecraft.client.texture.TextureSetup;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.profiler.Profiler;
-import net.minecraft.util.profiler.Profilers;
-import net.minecraft.util.shape.VoxelShape;
-
-import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.minecraft.client.Camera;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class RenderHelper {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static PrimitiveCollectorImpl collector;
 
 	@Init
 	public static void init() {
-		WorldRenderEvents.AFTER_SETUP.register(RenderHelper::startFrame);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(RenderHelper::executeDraws);
+		LevelRenderEvents.END_EXTRACTION.register(RenderHelper::startExtraction);
+		LevelRenderEvents.COLLECT_SUBMITS.register(RenderHelper::submitVanillaSubmittables);
+		LevelRenderEvents.END_MAIN.register(RenderHelper::executeDraws);
 	}
 
-	private static void startFrame(WorldRenderContext context) {
-		collector = new PrimitiveCollectorImpl();
-
-		WorldRenderExtractionCallback.EVENT.invoker().onExtract(collector);
+	private static void startExtraction(LevelExtractionContext context) {
+		ProfilerFiller profiler = Profiler.get();
+		profiler.push("skyblockerPrimitiveCollection");
+		collector = new PrimitiveCollectorImpl(context.levelState(), context.levelState().cameraRenderState.cullFrustum);
+		LevelRenderExtractionCallback.EVENT.invoker().onExtract(collector);
 		collector.endCollection();
+		profiler.pop();
 	}
 
-	private static void executeDraws(WorldRenderContext context) {
-		Profiler profiler = Profilers.get();
+	private static void submitVanillaSubmittables(LevelRenderContext context) {
+		ProfilerFiller profiler = Profiler.get();
+		profiler.push("skyblockerSubmitVanillaSubmittables");
+		collector.dispatchVanillaSubmittables(context.levelState(), context.submitNodeCollector());
+		profiler.pop();
+	}
+
+	private static void executeDraws(LevelRenderContext context) {
+		ProfilerFiller profiler = Profiler.get();
 
 		profiler.push("skyblockerSubmitPrimitives");
-		CameraRenderState cameraState = new CameraRenderState();
-		cameraState.pos = context.camera().getPos();
-		cameraState.rotation = new Quaternionf(context.camera().getRotation());
-		cameraState.pitch = context.camera().getPitch();
-		cameraState.yaw = context.camera().getYaw();
-
-		collector.dispatchPrimitivesToRenderers(cameraState);
+		collector.dispatchPrimitivesToRenderers(context.levelState().cameraRenderState);
 		collector = null;
 		profiler.pop();
 
@@ -66,12 +68,21 @@ public class RenderHelper {
 		}
 	}
 
-	public static RenderTickCounter getTickCounter() {
-		return CLIENT.getRenderTickCounter();
+	/**
+	 * A version of {@link RenderSystem#assertOnRenderThread()} that allows for a custom error message.
+	 */
+	public static void assertOnRenderThread(String message) {
+		if (!RenderSystem.isOnRenderThread()) {
+			throw new IllegalStateException(message);
+		}
+	}
+
+	public static DeltaTracker getTickCounter() {
+		return CLIENT.getDeltaTracker();
 	}
 
 	public static Camera getCamera() {
-		return CLIENT.gameRenderer.getCamera();
+		return CLIENT.gameRenderer.getMainCamera();
 	}
 
 	/**
@@ -81,31 +92,13 @@ public class RenderHelper {
 	 * @param pos   The position of the block.
 	 * @return The bounding box of the block.
 	 */
-	@Nullable
-	public static Box getBlockBoundingBox(ClientWorld world, BlockPos pos) {
+	public static @Nullable AABB getBlockBoundingBox(ClientLevel world, BlockPos pos) {
 		return getBlockBoundingBox(world, world.getBlockState(pos), pos);
 	}
 
-	@Nullable
-	public static Box getBlockBoundingBox(ClientWorld world, BlockState state, BlockPos pos) {
-		VoxelShape shape = state.getOutlineShape(world, pos).asCuboid();
+	public static @Nullable AABB getBlockBoundingBox(ClientLevel world, BlockState state, BlockPos pos) {
+		VoxelShape shape = state.getShape(world, pos).singleEncompassing();
 
-		return shape.isEmpty() ? null : shape.getBoundingBox().offset(pos);
-	}
-
-	//The method names for TextureSetup are very... odd and misleading...
-
-	/**
-	 * Returns a {@code TextureSetup} with a single texture input only.
-	 */
-	public static TextureSetup singleTexture(GpuTextureView texture) {
-		return TextureSetup.withoutGlTexture(texture);
-	}
-
-	/**
-	 * Returns a {@code TextureSetup} with the texture input and a lightmap.
-	 */
-	public static TextureSetup textureWithLightmap(GpuTextureView texture) {
-		return TextureSetup.of(texture);
+		return shape.isEmpty() ? null : shape.bounds().move(pos);
 	}
 }

@@ -1,14 +1,13 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class FossilCalculations {
 	protected static final List<Structures.permutation> POSSIBLE_STATES = getAllPossibleStates();
@@ -38,7 +37,7 @@ public class FossilCalculations {
 		int[] total = new int[EXCAVATOR_WIDTH * EXCAVATOR_HEIGHT];
 		minimumTiles = EXCAVATOR_WIDTH * EXCAVATOR_HEIGHT;
 		AtomicInteger fossilCount = new AtomicInteger();
-		Arrays.stream(tiles.state()).forEach(row -> Arrays.stream(row).forEach(tile -> {if (tile.equals(Structures.TileState.FOSSIL)) fossilCount.getAndIncrement(); }));
+		Arrays.stream(tiles.state()).forEach(row -> Arrays.stream(row).forEach(tile -> { if (tile.equals(Structures.TileState.FOSSIL)) fossilCount.getAndIncrement(); }));
 
 		//loop though tile options and if they are valid
 		List<Structures.permutation> validStates = new ArrayList<>();

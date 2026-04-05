@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "Mini Rail Track"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 22,
+      "y": 70,
+      "z": 3
+    },
+    {
+      "secretName": "2 - Bat",
+      "category": "bat",
+      "x": 5,
+      "y": 77,
+      "z": 23
+    },
+    {
+      "secretName": "1 - Bat",
+      "category": "bat",
+      "x": 20,
+      "y": 70,
+      "z": 9
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 6,
+      "y": 72,
+      "z": 23
+    },
+    {
+      "secretName": "3 - Entrance behind Lava",
+      "category": "entrance",
+      "x": 15,
+      "y": 60,
+      "z": 3
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 28,
+      "y": 63,
+      "z": 7
+    }
+  ]
+}

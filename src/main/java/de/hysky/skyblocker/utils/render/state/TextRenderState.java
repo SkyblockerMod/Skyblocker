@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.utils.render.state;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.gui.Font;
+import net.minecraft.world.phys.Vec3;
 
 public class TextRenderState {
-	public TextRenderer.GlyphDrawable glyphs;
-	public Vec3d pos;
+	public Font.PreparedText glyphs;
+	public Vec3 pos;
 	public float scale;
 	public float yOffset;
 	public boolean throughWalls;

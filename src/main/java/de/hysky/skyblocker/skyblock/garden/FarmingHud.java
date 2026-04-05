@@ -14,17 +14,15 @@ import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 import it.unimi.dsi.fastutil.longs.LongLongPair;
 import it.unimi.dsi.fastutil.longs.LongPriorityQueue;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.AbstractNbtNumber;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NumericTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,42 +35,44 @@ import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class FarmingHud {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
-	private static final Identifier FARMING_HUD = SkyblockerMod.id("farming_hud");
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
 	private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?<percent>[\\d,]+(?:\\.\\d+)?%|[\\d,]+/[\\d,]+)\\)");
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static final Minecraft client = Minecraft.getInstance();
+	private static final int STATS_WINDOW = 5_000;
+
 	private static CounterType counterType = CounterType.NONE;
 	private static final Deque<LongLongPair> counter = new ArrayDeque<>();
 	private static final LongPriorityQueue blockBreaks = new LongArrayFIFOQueue();
 	private static final Queue<FloatLongPair> farmingXp = new ArrayDeque<>();
+
 	private static float farmingXpPercentProgress;
 
 	@Init
 	public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.STATUS_EFFECTS, FARMING_HUD, (context, tickCounter) -> {
+		ClientTickEvents.END_CLIENT_TICK.register(_ -> {
 			if (shouldRender()) {
-				if (!counter.isEmpty() && counter.peek().rightLong() + 5000 < System.currentTimeMillis()) {
+				if (!counter.isEmpty() && counter.peek().rightLong() + STATS_WINDOW < System.currentTimeMillis()) {
 					counter.poll();
 				}
-				if (!blockBreaks.isEmpty() && blockBreaks.firstLong() + 1000 < System.currentTimeMillis()) {
+				if (!blockBreaks.isEmpty() && blockBreaks.firstLong() + STATS_WINDOW < System.currentTimeMillis()) {
 					blockBreaks.dequeueLong();
 				}
-				if (!farmingXp.isEmpty() && farmingXp.peek().rightLong() + 1000 < System.currentTimeMillis()) {
+				if (!farmingXp.isEmpty() && farmingXp.peek().rightLong() + STATS_WINDOW < System.currentTimeMillis()) {
 					farmingXp.poll();
 				}
 
 				assert client.player != null;
-				ItemStack stack = client.player.getMainHandStack();
-				if (stack == null || tryGetCounter(stack, CounterType.CULTIVATING) && tryGetCounter(stack, CounterType.COUNTER)) {
+				ItemStack stack = client.player.getMainHandItem();
+				if (tryGetCounter(stack, CounterType.CULTIVATING)) {
 					counterType = CounterType.NONE;
 				}
 			}
 		});
-		ClientPlayerBlockBreakEvents.AFTER.register((world, player, pos, state) -> {
+		ClientPlayerBlockBreakEvents.AFTER.register((_, _, _, _) -> {
 			if (shouldRender()) {
 				blockBreaks.enqueue(System.currentTimeMillis());
 			}
@@ -80,18 +80,18 @@ public class FarmingHud {
 		// Cactus blocks broken with the Cactus Knife do not register above
 		// The server replaces the blocks with air.
 		WorldEvents.BLOCK_STATE_UPDATE.register((pos, oldState, newState) -> {
-			if (client.player == null || client.world == null || !shouldRender()) return;
+			if (client.player == null || client.level == null || !shouldRender()) return;
 			if (oldState == null) return; // oldState is null if it gets broken on the client.
-			if (!newState.isAir() || !oldState.isOf(Blocks.CACTUS)) return; // Cactus was replaced with air
-			if (!client.world.getBlockState(pos.down()).isOf(Blocks.CACTUS)) return; // Don't count any blocks above one that was broken.
-			if (client.player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) > 64) return; // check if within 8 blocks of the player
-			if (!client.player.getMainHandStack().getNeuName().equals("CACTUS_KNIFE")) return;
+			if (!newState.isAir() || !oldState.is(Blocks.CACTUS)) return; // Cactus was replaced with air
+			if (!client.level.getBlockState(pos.below()).is(Blocks.CACTUS)) return; // Don't count any blocks above one that was broken.
+			if (client.player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > 64) return; // check if within 8 blocks of the player
+			if (!client.player.getMainHandItem().getNeuName().startsWith("CACTUS_KNIFE")) return;
 			blockBreaks.enqueue(System.currentTimeMillis());
 		});
 
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 			if (shouldRender() && overlay) {
-				Matcher matcher = FARMING_XP.matcher(Formatting.strip(message.getString()));
+				Matcher matcher = FARMING_XP.matcher(ChatFormatting.stripFormatting(message.getString()));
 				if (matcher.find()) {
 					try {
 						farmingXp.offer(FloatLongPair.of(NUMBER_FORMAT.parse(matcher.group("xp")).floatValue(), System.currentTimeMillis()));
@@ -104,14 +104,15 @@ public class FarmingHud {
 
 			return true;
 		});
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("hud").then(literal("farming")
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("hud").then(literal("farming")
 				.executes(Scheduler.queueOpenScreenCommand(() -> new WidgetsConfigurationScreen(Location.GARDEN, "hud_garden", null)))))));
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private static boolean tryGetCounter(ItemStack stack, CounterType counterType) {
-		NbtCompound customData = ItemUtils.getCustomData(stack);
-		if (customData.isEmpty() || !(customData.get(counterType.nbtKey) instanceof AbstractNbtNumber)) return true;
-		long count = customData.getLong(counterType.nbtKey, 0);
+		CompoundTag customData = ItemUtils.getCustomData(stack);
+		if (customData.isEmpty() || !(customData.get(counterType.nbtKey) instanceof NumericTag)) return true;
+		long count = customData.getLongOr(counterType.nbtKey, 0);
 		if (FarmingHud.counterType != counterType) {
 			counter.clear();
 			FarmingHud.counterType = counterType;
@@ -123,7 +124,7 @@ public class FarmingHud {
 	}
 
 	private static boolean shouldRender() {
-		return SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud && client.player != null && Utils.getLocation() == Location.GARDEN;
+		return SkyblockerConfigManager.get().farming.farmingHud.enabled && client.player != null && Utils.getLocation() == Location.GARDEN;
 	}
 
 	public static String counterText() {
@@ -164,8 +165,7 @@ public class FarmingHud {
 	}
 
 	public enum CounterType {
-		NONE("", "No Counter"),
-		COUNTER("mined_crops", "Counter: "),
+		NONE("", "No Cultivating Counter"),
 		CULTIVATING("farmed_cultivating", "Cultivating Counter: ");
 
 		private final String nbtKey;

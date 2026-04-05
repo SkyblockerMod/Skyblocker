@@ -1,31 +1,37 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.util.StringRepresentable;
+import org.jspecify.annotations.Nullable;
 
-public enum SlayerTier implements StringIdentifiable {
-	UNKNOWN("unknown", Formatting.WHITE),
-	I("I", Formatting.GREEN),
-	II("II", Formatting.YELLOW),
-	III("III", Formatting.RED),
-	IV("IV", Formatting.DARK_RED),
-	V("V", Formatting.DARK_PURPLE);
-	public static final Codec<SlayerTier> CODEC = StringIdentifiable.createCodec(SlayerTier::values);
+public enum SlayerTier implements StringRepresentable {
+	I("I", ChatFormatting.GREEN),
+	II("II", ChatFormatting.YELLOW),
+	III("III", ChatFormatting.RED),
+	IV("IV", ChatFormatting.DARK_RED),
+	V("V", ChatFormatting.DARK_PURPLE);
+
+	public static final Codec<SlayerTier> CODEC = StringRepresentable.fromEnum(SlayerTier::values);
 	public final String name;
-	public final Formatting color;
+	public final ChatFormatting color;
 
-	SlayerTier(String name, Formatting color) {
+	SlayerTier(String name, ChatFormatting color) {
 		this.name = name;
 		this.color = color;
 	}
 
-	public boolean isUnknown() {
-		return this == UNKNOWN;
+	public static SlayerTier valueOf(@Nullable String name, String slayerName) {
+		// These don't have the tier in their names (armorStand), so name parameter is null
+		if (slayerName.contains("Conjoined Brood")) return SlayerTier.V;
+		if (slayerName.contains("Atoned Horror")) return SlayerTier.V;
+		if (slayerName.contains("Bloodfiend") && name == null) return SlayerTier.V;
+		if (name == null) return SlayerTier.I;
+		return SlayerTier.valueOf(name);
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return name;
 	}
 }

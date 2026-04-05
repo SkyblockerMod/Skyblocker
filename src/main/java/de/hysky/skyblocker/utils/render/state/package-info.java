@@ -11,4 +11,7 @@
  *
  * @author AzureAaron
  */
+@NullMarked
 package de.hysky.skyblocker.utils.render.state;
+
+import org.jspecify.annotations.NullMarked;

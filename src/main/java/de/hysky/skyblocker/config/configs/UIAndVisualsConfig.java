@@ -6,16 +6,15 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.util.Formatting;
-
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.resources.language.I18n;
 
 public class UIAndVisualsConfig {
 
@@ -45,13 +44,15 @@ public class UIAndVisualsConfig {
 
 	public boolean trueQuiverCount = true;
 
-    public ChestValue chestValue = new ChestValue();
+	public ChestValue chestValue = new ChestValue();
 
 	public ItemCooldown itemCooldown = new ItemCooldown();
 
 	public boolean museumOverlay = true;
 
 	public SlotText slotText = new SlotText();
+
+	public RadialMenu radialMenu = new RadialMenu();
 
 	public InventorySearchConfig inventorySearch = new InventorySearchConfig();
 
@@ -88,9 +89,9 @@ public class UIAndVisualsConfig {
 	public static class ChestValue {
 		public boolean enableChestValue = true;
 
-		public Formatting color = Formatting.DARK_GREEN;
+		public ChatFormatting color = ChatFormatting.DARK_GREEN;
 
-		public Formatting incompleteColor = Formatting.BLUE;
+		public ChatFormatting incompleteColor = ChatFormatting.BLUE;
 	}
 
 	public static class ItemCooldown {
@@ -103,6 +104,16 @@ public class UIAndVisualsConfig {
 		public Object2BooleanOpenHashMap<String> textEnabled = new Object2BooleanOpenHashMap<>();
 
 		public boolean slotTextToggled = true;
+
+	}
+
+	public static class RadialMenu {
+		public boolean enabled = false;
+
+		public boolean tooltipsWithoutShift = false;
+
+		public Object2BooleanOpenHashMap<String> enabledMenus = new Object2BooleanOpenHashMap<>();
+
 
 	}
 
@@ -120,7 +131,7 @@ public class UIAndVisualsConfig {
 
 			@Override
 			public String toString() {
-				return I18n.translate("skyblocker.config.uiAndVisuals.inventorySearch.state." + this.name());
+				return I18n.get("skyblocker.config.uiAndVisuals.inventorySearch.state." + this.name());
 			}
 
 			public boolean isEnabled() {
@@ -144,9 +155,6 @@ public class UIAndVisualsConfig {
 
 		public Alignment alignment = Alignment.MIDDLE;
 
-		public float getRenderScale() {
-			return titleContainerScale * 0.03f;
-		}
 	}
 
 	public enum Direction {
@@ -154,7 +162,7 @@ public class UIAndVisualsConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.uiAndVisuals.titleContainer.direction." + name());
+			return I18n.get("skyblocker.config.uiAndVisuals.titleContainer.direction." + name());
 		}
 	}
 
@@ -163,7 +171,7 @@ public class UIAndVisualsConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.uiAndVisuals.titleContainer.alignment." + name());
+			return I18n.get("skyblocker.config.uiAndVisuals.titleContainer.alignment." + name());
 		}
 	}
 
@@ -172,7 +180,7 @@ public class UIAndVisualsConfig {
 
 		public int tabHudScale = 100;
 
-		public boolean showVanillaTabByDefault = false;
+		public boolean showVanillaTabByDefault = true;
 
 		public TabHudStyle style = TabHudStyle.FANCY;
 
@@ -221,22 +229,22 @@ public class UIAndVisualsConfig {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.uiAndVisuals.tabHud.style." + name());
+			return I18n.get("skyblocker.config.uiAndVisuals.tabHud.style." + name());
 		}
 	}
 
 	public enum NameSorting {
 		DEFAULT,
-		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
-		SKYBLOCK_LEVEL(Comparator.<PlayerListEntry>comparingInt(ple -> matchPlayerName(ple.getDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
+		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
+		SKYBLOCK_LEVEL(Comparator.<PlayerInfo>comparingInt(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
 
-		public final Comparator<PlayerListEntry> comparator;
+		public final Comparator<PlayerInfo> comparator;
 
 		NameSorting() {
 			this(null);
 		}
 
-		NameSorting(Comparator<PlayerListEntry> comparator) {
+		NameSorting(Comparator<PlayerInfo> comparator) {
 			this.comparator = comparator;
 		}
 
@@ -264,6 +272,12 @@ public class UIAndVisualsConfig {
 	public static class Bars {
 		public boolean enableBars = true;
 
+		public boolean enableBarsRift = true;
+
+		public boolean riftHealthHP = false;
+
+		public boolean enableVanillaStyleManaBar = false;
+
 		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
 
 		// Kept in for backwards compatibility, remove if needed
@@ -287,12 +301,16 @@ public class UIAndVisualsConfig {
 	@SuppressWarnings("DeprecatedIsStillUsed")
 	@Deprecated
 	public static class LegacyBarPositions {
+		@Deprecated
 		public LegacyBarPosition healthBarPosition = LegacyBarPosition.LAYER1;
 
+		@Deprecated
 		public LegacyBarPosition manaBarPosition = LegacyBarPosition.LAYER1;
 
+		@Deprecated
 		public LegacyBarPosition defenceBarPosition = LegacyBarPosition.RIGHT;
 
+		@Deprecated
 		public LegacyBarPosition experienceBarPosition = LegacyBarPosition.LAYER2;
 	}
 
@@ -307,6 +325,18 @@ public class UIAndVisualsConfig {
 		public boolean enableWaypoints = true;
 
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+
+		public boolean renderLine = true;
+
+		public Color lineColor = new Color(0, 255, 0, 255);
+
+		public float lineWidth = 5f;
+
+		public boolean allowSkippingWaypoints = true;
+
+		public boolean allowGoingBackwards = true;
+
+		public float waypointActivationRadius = 2f;
 
 		public boolean enableChatWaypoints = true;
 	}
@@ -396,7 +426,10 @@ public class UIAndVisualsConfig {
 	public static class CompactDamage {
 		public boolean enabled = true;
 
-		public int precision = 1;
+		@Deprecated
+		public transient int precision = 1;
+
+		public int maxPrecision = 4;
 
 		public Color normalDamageColor = new Color(0xFFFFFF);
 

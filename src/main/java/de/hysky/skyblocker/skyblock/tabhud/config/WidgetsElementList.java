@@ -1,111 +1,114 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Map;
 
-public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
-	static final Identifier MOVE_UP_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("transferable_list/move_up_highlighted");
-	static final Identifier MOVE_UP_TEXTURE = Identifier.ofVanilla("transferable_list/move_up");
-	static final Identifier MOVE_DOWN_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("transferable_list/move_down_highlighted");
-	static final Identifier MOVE_DOWN_TEXTURE = Identifier.ofVanilla("transferable_list/move_down");
+public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsListEntry> {
+	static final Identifier MOVE_UP_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_up_highlighted");
+	static final Identifier MOVE_UP_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_up");
+	static final Identifier MOVE_DOWN_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down_highlighted");
+	static final Identifier MOVE_DOWN_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_down");
 
-	static final WidgetsListEntry SEPARATOR = new WidgetsListEntry() {
-
-		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of("- Skyblocker Widgets -"), x + entryWidth / 2, y + (entryHeight - 9) / 2, Colors.WHITE);
-		}
-
-		@Override
-		public List<? extends Element> children() {
-			return List.of();
-		}
-
-		@Override
-		public void drawBorder(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {}
-	};
+	final int SELECT_COLOR = 0x761111FF;
+	final int MOVE_COLOR = 0x76FF3333;
 
 	private final WidgetsListTab parent;
+	private @Nullable Button backButton;
 	private boolean rightUpArrowHovered = false;
 	private boolean rightDownArrowHovered = false;
 	private boolean leftUpArrowHovered = false;
 	private boolean leftDownArrowHovered = false;
 
-	private int editingPosition = -1;
+	private boolean enableEditing = false;
+	public static int editingPosition = -1;
+	public static int maxPosition = -1;
+	public static boolean isOnSecondPage = false;
 
-	public WidgetsElementList(WidgetsListTab parent, MinecraftClient minecraftClient, int width, int height, int y) {
+	public WidgetsElementList(WidgetsListTab parent, Minecraft minecraftClient, int width, int height, int y) {
 		super(minecraftClient, width, height, y, 32);
 		this.parent = parent;
 	}
 
-	private int x, y, entryWidth, entryHeight;
+	@Override
+	public @Nullable WidgetsListEntry getSelected() {
+		if (!enableEditing) return super.getSelected();
+		if (editingPosition < 0 || editingPosition >= this.children().size()) return null;
+		WidgetsListEntry entry = this.children().get(editingPosition);
+		if (!(entry instanceof WidgetSlotEntry widgetSlotEntry) || widgetSlotEntry.getState() != WidgetSlotEntry.State.ENABLED) return null;
+		return entry;
+	}
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		if (parent.listNeedsUpdate()) {
-			ArrayList<Int2ObjectMap.Entry<WidgetsListSlotEntry>> entries = new ArrayList<>(parent.getEntries());
-			clearEntries();
-			entries.stream()
-					.sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))
-					.map(Map.Entry::getValue)
-					.forEach(this::addEntry);
-			if (!parent.getCustomWidgetEntries().isEmpty() && parent.shouldShowCustomWidgetEntries()) {
-				if (!children().isEmpty()) addEntry(SEPARATOR);
-				parent.getCustomWidgetEntries().forEach(this::addEntry);
-			}
-			setScrollY(getScrollY());
+	protected boolean entriesCanBeSelected() {
+		return true;
+	}
+
+	@Override
+	public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		super.extractWidgetRenderState(graphics, mouseX, mouseY, delta);
+		WidgetsListEntry hoveredEntry = getHovered();
+		if (hoveredEntry != null) {
+			hoveredEntry.extractTooltip(graphics, hoveredEntry.getX(), hoveredEntry.getY(), hoveredEntry.getWidth(), hoveredEntry.getHeight(), mouseX, mouseY);
 		}
-		super.renderWidget(context, mouseX, mouseY, delta);
-		WidgetsListEntry hoveredEntry = getHoveredEntry();
-		if (hoveredEntry != null) hoveredEntry.renderTooltip(context, x, y, entryWidth, entryHeight, mouseX, mouseY);
+		if (backButton != null) {
+			backButton.extractRenderState(graphics, mouseX, mouseY, delta);
+		}
+
+		if (!enableEditing || this.getSelected() == null) return;
 		if (rightUpArrowHovered || rightDownArrowHovered) {
-			context.drawTooltip(client.textRenderer, Text.literal("Move widget"), mouseX, mouseY);
+			graphics.setTooltipForNextFrame(minecraft.font, Component.literal("Move widget"), mouseX, mouseY);
 		}
+
 		if (leftUpArrowHovered || leftDownArrowHovered) {
-			context.drawTooltip(client.textRenderer, Text.literal("Change selection"), mouseX, mouseY);
+			graphics.setTooltipForNextFrame(minecraft.font, Component.literal("Change selection"), mouseX, mouseY);
 		}
 	}
 
 	@Override
-	protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, int index, int x, int y, int entryWidth, int entryHeight) {
-		super.renderEntry(context, mouseX, mouseY, delta, index, x, y, entryWidth, entryHeight);
-		if (index == editingPosition) {
-			boolean rightXGood = mouseX >= x + entryWidth && mouseX < x + entryWidth + 15;
-			boolean leftXGood = mouseX >= x - 16 && mouseX < x - 1;
-			boolean isOnUp = mouseY >= y && mouseY < y + entryHeight / 2;
-			boolean isOnDown = mouseY >= y + entryHeight / 2 && mouseY < y + entryHeight;
-			rightUpArrowHovered = rightXGood && isOnUp;
-			rightDownArrowHovered = rightXGood && isOnDown;
-			leftUpArrowHovered = leftXGood && isOnUp;
-			leftDownArrowHovered = leftXGood && isOnDown;
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, rightUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, getRowRight() - 16, y, 32, 32);
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, rightDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, getRowRight() - 16, y, 32, 32);
+	protected void extractItem(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, WidgetsListEntry entry) {
+		super.extractItem(graphics, mouseX, mouseY, delta, entry);
+		if (!enableEditing || this.getSelected() != entry) return;
 
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 33, y, 32, 32);
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 33, y, 32, 32);
-		}
-		if (Objects.equals(getHoveredEntry(), getEntry(index))) {
-			this.x = x;
-			this.y = y;
-			this.entryWidth = entryWidth;
-			this.entryHeight = entryHeight;
-		}
+		int x = entry.getX();
+		int y = entry.getY();
+		int entryHeight = entry.getHeight();
+		int halfHeight = entryHeight / 2;
+
+		boolean rightXGood = mouseX >= getRowRight() + 2 && mouseX < getRowRight() + 15;
+		boolean leftXGood = mouseX >= x - 15 && mouseX < x - 2;
+		boolean isOnUp = mouseY >= y + 5 && mouseY < y + halfHeight;
+		boolean isOnDown = mouseY >= y + halfHeight && mouseY < y + entryHeight - 5;
+		rightUpArrowHovered = rightXGood && isOnUp;
+		rightDownArrowHovered = rightXGood && isOnDown;
+		leftUpArrowHovered = leftXGood && isOnUp;
+		leftDownArrowHovered = leftXGood && isOnDown;
+		graphics.fill(getRowRight() + 2, y + 5, getRowRight() + 15, y + 27, MOVE_COLOR);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, rightUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, getRowRight() - 15, y, 32, 32);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, rightDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, getRowRight() - 15, y, 32, 32);
+
+		graphics.fill(x - 15, y + 5, x - 2, y + 27, SELECT_COLOR);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 32, y, 32, 32);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 32, y, 32, 32);
 	}
 
 	@Override
-	protected int getScrollbarX() {
-		return super.getScrollbarX() + (editingPosition != -1 ? 15 : 0);
+	protected int scrollBarX() {
+		return super.scrollBarX() + (editingPosition != -1 ? 15 : 0);
 	}
 
 	@Override
@@ -113,13 +116,41 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 		return 280;
 	}
 
-	public void setEditingPosition(int editingPosition) {
-		this.editingPosition = editingPosition;
+	public void setEditingPosition(boolean enable, int editing, int max) {
+		this.enableEditing = enable;
+		editingPosition = editing;
+		maxPosition = max;
+	}
+
+	public void setIsOnSecondPage(boolean secondPage) {
+		isOnSecondPage = secondPage;
+		if (secondPage) {
+			editingPosition -= 21;
+			refreshScrollAmount();
+		}
+	}
+
+	public void setBackButton(Button backButton) {
+		this.backButton = backButton;
+	}
+
+	public void updateList() {
+		ArrayList<Int2ObjectMap.Entry<WidgetsListSlotEntry>> entries = new ArrayList<>(parent.getEntries());
+		clearEntries();
+		entries.stream()
+				.sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))
+				.map(Map.Entry::getValue)
+				.forEach(this::addEntry);
+		if (!parent.getCustomWidgetEntries().isEmpty() && parent.shouldShowCustomWidgetEntries()) {
+			if (!children().isEmpty()) addEntry(new SeparatorEntry());
+			parent.getCustomWidgetEntries().forEach(this::addEntry);
+		}
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (editingPosition == -1) return super.mouseClicked(mouseX, mouseY, button);
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+		if (backButton != null && backButton.mouseClicked(click, doubled)) return true;
+		if (!enableEditing || this.getSelected() == null) return super.mouseClicked(click, doubled);
 		if (rightUpArrowHovered) {
 			parent.shiftClickAndWaitForServer(13, 1);
 			return true;
@@ -130,10 +161,12 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 		}
 		if (leftUpArrowHovered) {
 			parent.clickAndWaitForServer(13, 1);
+			return true;
 		}
 		if (leftDownArrowHovered) {
 			parent.clickAndWaitForServer(13, 0);
+			return true;
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 }

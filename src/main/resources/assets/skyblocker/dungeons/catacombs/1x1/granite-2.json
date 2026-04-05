@@ -1,0 +1,28 @@
+{
+  "info": {
+    "name": "Granite"
+  },
+  "secrets": [
+    {
+      "secretName": "1/2 - Entrance Water",
+      "category": "entrance",
+      "x": 17,
+      "y": 70,
+      "z": 25
+    },
+    {
+      "secretName": "1 - Wither Essence",
+      "category": "wither",
+      "x": 13,
+      "y": 61,
+      "z": 29
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 14,
+      "y": 61,
+      "z": 24
+    }
+  ]
+}

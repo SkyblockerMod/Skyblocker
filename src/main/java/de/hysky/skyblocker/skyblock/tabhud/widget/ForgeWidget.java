@@ -2,64 +2,64 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import java.util.List;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 // this widget shows what you're forging right now.
 // for locked slots, the unlock requirement is shown
 @RegisterWidget
 public class ForgeWidget extends TabHudWidget {
 
-	private static final MutableText TITLE = Text.literal("Forges").formatted(Formatting.DARK_AQUA,
-			Formatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Forges").withStyle(ChatFormatting.DARK_AQUA,
+			ChatFormatting.BOLD);
 
 	public ForgeWidget() {
-		super("Forges", TITLE, Formatting.DARK_AQUA.getColorValue());
+		super("Forges", TITLE, ChatFormatting.DARK_AQUA.getColor());
 	}
 
 	@Override
-	public void updateContent(List<Text> lines) {
+	public void updateContent(List<Component> lines) {
 		boolean b = lines.getFirst().getString().trim().startsWith("(");
 		for (int i = b ? 1 : 0, slot = 1; i < lines.size(); i++, slot++) {
 			String trim = lines.get(i).getString().trim();
 
-			Component c;
-			Text l1, l2;
+			Element c;
+			Component l1, l2;
 
 			switch (trim.substring(3)) {
 				case "LOCKED" -> {
-					l1 = Text.literal("Locked").formatted(Formatting.RED);
+					l1 = Component.literal("Locked").withStyle(ChatFormatting.RED);
 					l2 = switch (slot) {
-						case 3 -> Text.literal("Needs HotM 3").formatted(Formatting.GRAY);
-						case 4 -> Text.literal("Needs HotM 4").formatted(Formatting.GRAY);
-						case 5 -> Text.literal("Needs HotM 5").formatted(Formatting.GRAY);
-						case 6 -> Text.literal("Needs HotM 6").formatted(Formatting.GRAY);
-						case 7 -> Text.literal("Needs HotM 7").formatted(Formatting.GRAY);
-						default -> Text.literal("This message should not appear").formatted(Formatting.RED, Formatting.BOLD);
+						case 3 -> Component.literal("Needs HotM 3").withStyle(ChatFormatting.GRAY);
+						case 4 -> Component.literal("Needs HotM 4").withStyle(ChatFormatting.GRAY);
+						case 5 -> Component.literal("Needs HotM 5").withStyle(ChatFormatting.GRAY);
+						case 6 -> Component.literal("Needs HotM 6").withStyle(ChatFormatting.GRAY);
+						case 7 -> Component.literal("Needs HotM 7").withStyle(ChatFormatting.GRAY);
+						default -> Component.literal("This message should not appear").withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
 					};
-					c = Components.iconFatTextComponent(Ico.BARRIER, l1, l2);
+					c = Elements.iconFatTextComponent(Ico.BARRIER, l1, l2);
 				}
 				case "EMPTY" -> {
-					l1 = Text.literal("Empty").formatted(Formatting.GRAY);
-					c = Components.iconTextComponent(Ico.FURNACE, l1);
+					l1 = Component.literal("Empty").withStyle(ChatFormatting.GRAY);
+					c = Elements.iconTextComponent(Ico.FURNACE, l1);
 				}
 				default -> {
 					String[] parts = trim.split(": ");
 					if (parts.length != 2) {
-						c = Components.iconFatTextComponent();
+						c = Elements.iconFatTextComponent();
 					} else {
-						l1 = Text.literal(parts[0].substring(3)).formatted(Formatting.YELLOW);
+						l1 = Component.literal(parts[0].substring(3)).withStyle(ChatFormatting.YELLOW);
 						if (parts[1].equals("Ready!")) {
-							l2 = Text.literal("Done!").formatted(Formatting.GREEN);
+							l2 = Component.literal("Done!").withStyle(ChatFormatting.GREEN);
 						} else {
-							l2 = Text.literal("Done in: ").formatted(Formatting.GRAY).append(Text.literal(parts[1]).formatted(Formatting.WHITE));
+							l2 = Component.literal("Done in: ").withStyle(ChatFormatting.GRAY).append(Component.literal(parts[1]).withStyle(ChatFormatting.WHITE));
 						}
-						c = Components.iconFatTextComponent(Ico.CAMPFIRE, l1, l2);
+						c = Elements.iconFatTextComponent(Ico.CAMPFIRE, l1, l2);
 					}
 				}
 			}

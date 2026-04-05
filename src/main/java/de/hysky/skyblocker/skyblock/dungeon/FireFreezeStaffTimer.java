@@ -1,68 +1,77 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ServerTickCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 
 public class FireFreezeStaffTimer {
-	private static final Identifier FIRE_FREEZE_STAFF_TIMER = Identifier.of("skyblocker", "fire_freeze_staff_timer");
-    private static long fireFreezeTimer;
+	private static final Identifier FIRE_FREEZE_STAFF_TIMER = SkyblockerMod.id("fire_freeze_staff_timer");
+	private static long fireFreezeTimer;
+	private static boolean timerActive = false;
 
-    @Init
-    public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.OVERLAY_MESSAGE, FIRE_FREEZE_STAFF_TIMER, FireFreezeStaffTimer::onDraw);
-        ClientReceiveMessageEvents.ALLOW_GAME.register(FireFreezeStaffTimer::onChatMessage);
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> FireFreezeStaffTimer.reset());
-    }
+	@Init
+	public static void init() {
+		HudElementRegistry.attachElementAfter(VanillaHudElements.OVERLAY_MESSAGE, FIRE_FREEZE_STAFF_TIMER, FireFreezeStaffTimer::extractRenderState);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(FireFreezeStaffTimer::onChatMessage);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> FireFreezeStaffTimer.reset());
+		ServerTickCallback.EVENT.register(FireFreezeStaffTimer::onServerTick);
+	}
 
-    private static void onDraw(DrawContext context, RenderTickCounter tickCounter) {
-        MinecraftClient client = MinecraftClient.getInstance();
+	private static void onServerTick() {
+		if (timerActive) fireFreezeTimer -= 50;
+	}
 
-        if (client.currentScreen != null) return;
+	private static void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker tickCounter) {
+		Minecraft client = Minecraft.getInstance();
 
-        if (SkyblockerConfigManager.get().dungeons.theProfessor.fireFreezeStaffTimer && fireFreezeTimer != 0) {
-            long now = System.currentTimeMillis();
+		if (client.screen != null) return;
 
-            if (now >= fireFreezeTimer + 5000) {
-                reset();
-                return;
-            }
+		if (SkyblockerConfigManager.get().dungeons.theProfessor.fireFreezeStaffTimer && fireFreezeTimer != 0) {
+			if (fireFreezeTimer <= -5000) {
+				reset();
+				return;
+			}
 
-            String message =
-                    fireFreezeTimer > now
-                            ? String.format("%.2f", (float) (fireFreezeTimer - now) / 1000) + "s"
-                            : "NOW";
+			Component message;
+			if (fireFreezeTimer > 0) {
+				message = Component.literal("in ").append(Component.literal(String.format("%.2f", (float) (fireFreezeTimer) / 1000) + "s").withStyle(ChatFormatting.YELLOW));
+			} else {
+				message = Component.literal("NOW").withStyle(ChatFormatting.RED);
+			}
 
-            TextRenderer renderer = client.textRenderer;
-            int width = client.getWindow().getScaledWidth() / 2;
-            int height = client.getWindow().getScaledHeight() / 2;
+			Font renderer = client.font;
+			int width = client.getWindow().getGuiScaledWidth() / 2;
+			int height = client.getWindow().getGuiScaledHeight() / 2;
 
-            context.drawCenteredTextWithShadow(
-                    renderer, "Fire freeze in: " + message, width, height, Colors.WHITE);
-        }
-    }
+			graphics.centeredText(renderer, Component.literal("Fire Freeze ").append(message), width, height, CommonColors.WHITE);
+		}
+	}
 
-    private static void reset() {
-        fireFreezeTimer = 0;
-    }
+	private static void reset() {
+		fireFreezeTimer = 0;
+		timerActive = false;
+	}
 
-    private static boolean onChatMessage(Text text, boolean overlay) {
-        if (!overlay && SkyblockerConfigManager.get().dungeons.theProfessor.fireFreezeStaffTimer && Formatting.strip(text.getString())
-                .equals("[BOSS] The Professor: Oh? You found my Guardians' one weakness?")) {
-            fireFreezeTimer = System.currentTimeMillis() + 5000L;
-        }
+	private static boolean onChatMessage(Component text, boolean overlay) {
+		if (!overlay && SkyblockerConfigManager.get().dungeons.theProfessor.fireFreezeStaffTimer && ChatFormatting.stripFormatting(text.getString())
+				.equals("[BOSS] The Professor: Oh? You found my Guardians' one weakness?")) {
+			fireFreezeTimer = 5700L;
+			timerActive = true;
+		}
 
-        return true;
-    }
+		return true;
+	}
 }

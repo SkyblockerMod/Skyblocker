@@ -1,0 +1,56 @@
+{
+  "info": {
+    "name": "Double Diamond"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 6,
+      "y": 70,
+      "z": 10
+    },
+    {
+      "secretName": "1 - Wither Essence",
+      "category": "wither",
+      "x": 6,
+      "y": 69,
+      "z": 6
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 24,
+      "y": 65,
+      "z": 23
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 26,
+      "y": 86,
+      "z": 17
+    },
+    {
+      "secretName": "3 - Stonk",
+      "category": "stonk",
+      "x": 10,
+      "y": 83,
+      "z": 19
+    },
+    {
+      "secretName": "3 - Lever",
+      "category": "lever",
+      "x": 24,
+      "y": 88,
+      "z": 26
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 11,
+      "y": 82,
+      "z": 19
+    }
+  ]
+}

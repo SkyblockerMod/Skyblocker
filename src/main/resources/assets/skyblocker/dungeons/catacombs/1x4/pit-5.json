@@ -1,0 +1,56 @@
+{
+  "info": {
+    "name": "Pit"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 20,
+      "y": 91,
+      "z": 9
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 113,
+      "y": 92,
+      "z": 28
+    },
+    {
+      "secretName": "3/4 - Superboom",
+      "category": "superboom",
+      "x": 8,
+      "y": 77,
+      "z": 23
+    },
+    {
+      "secretName": "3 - Bat",
+      "category": "bat",
+      "x": 7,
+      "y": 77,
+      "z": 27
+    },
+    {
+      "secretName": "4 - Item",
+      "category": "item",
+      "x": 3,
+      "y": 76,
+      "z": 26
+    },
+    {
+      "secretName": "5 - Entrance Ladder",
+      "category": "entrance",
+      "x": 1,
+      "y": 72,
+      "z": 4
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 7,
+      "y": 65,
+      "z": 7
+    }
+  ]
+}

@@ -8,7 +8,7 @@
  \
 [![Discord](https://img.shields.io/discord/879732108745125969?logo=discord&labelColor=cecece&color=7289DA&label=)](https://discord.com/invite/aNNJHQykck)
 
-Hypixel Skyblock Mod for Minecraft 1.21.8
+Hypixel Skyblock Mod for Minecraft 26.1
 
 Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/installation) or use our [Modpack](https://modrinth.com/modpack/skyblocker-modpack)
 ## Features
@@ -19,9 +19,15 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 ### Dungeon Features:
 - **Fancy Party Finder GUI**
 - **Secrets Waypoint Highlight:** Fully customizable
-- **Fancy Minimap & Score**
+- **Room and Secret Syncing**
+- **Fancy Minimap**
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
+    - Room Labels
+        - Can show either the Room Name, Secrets Found, or Both
+    - Hidable room checkmarks
+    - Configurable outline and background blur
+- **Score Calculation**
 - **Starred Mob Glow**
 - **Croesus Helper:**
     - Highlight not opened chests
@@ -30,16 +36,19 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Three Weirdos*
     - *Blaze*
     - *Creeper Beams*
-    - *Quiz - Ouro the Omniscient*
-    - *Tic Tac Toe*
+    - *Quiz* (Ouro the Omniscient)
+    - *Tic-tac-toe*
     - *Waterboard* (one flow)
     - *Silverfish*
     - *Ice Fill*
     - *Boulder*
-    - *Simon Says*
-    - *Lights On*
     - *Teleport Maze*
-    - Terminal (F7/M7):
+    - Devices (F7/M7):
+        - *Simon Says*
+        - *Lights On*
+        - *Arrow Align*
+        - *Target Practice*
+    - Terminals (F7/M7):
         - *Order*
         - *Coloured Items*
         - *Item Name*
@@ -51,14 +60,18 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **F3/M3 Fire Freeze Staff Timer**
 - **F3/M3 Guardian Health Display**
 - **F5/M5 Livid Color Highlight**
-- **F7/M7 Terminal/Device Waypoints/Highlight**
+- **F7/M7 Terminal/Device Waypoints/Highlight and HUD**
 - **Reparty:** Auto-rejoin and `/rp` command.
-- **AOTV & Pearl Secret Waypoints**
+- **Secret Waypoints**
+    - AOTV / Ender Pearl
+    - Dungeonbreaker / Stonk
+- **Room Preview**
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
 - **Salvage Helper**
+    - Donated to Museum Only option
 - **Sellable Dungeon Item Highlighter**
-- **Resourcepack recoloring textures in dungeons**
+- **Resource Pack recoloring textures in dungeons**
 - **Score title and sound**
 - **Mimic & Prince Messages**
 - **Prevent teammates glow during Livid**
@@ -71,6 +84,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Blood Camp Helper**
 - **Dungeon Splits Widget**
 - **Door Key Highlighter**
+- **Rare Room Alerts** 
+    - Shows a message on screen when Trinity, Tomioka, or Duncan are discovered.
 
 ### Hunting Features:
 - **Forest Node Highlighter**
@@ -103,6 +118,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Low arrow poison warning**
 - **Kuudra glow**
 - **Kuudra danger warning**
+- **Croesus/Vesuvius Helper**
+- **Chest Profit Calculator**
 
 ### Crimson Isles:
 - **Dojo helper**
@@ -133,13 +150,14 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Catacombs**
 - **Container:**
     - Inventory
-    - Enderchest
+    - Ender Chest
     - Backpack
     - Wardrobe
     - Pets
     - Accessory Bag
 - **Collections**
-- **Networth Calculation**
+- **Net Worth Calculation**
+- **Magical Power Calculation**
 
 ### Dwarven Mines / Crystal Hollows / Glacite Mining:
 - **Dwarven Mines:**
@@ -171,6 +189,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Powder HUD**
 - **Ordered Waypoints**
     - Basic ordered waypoint commands
+- **Pickobulus Helper**
 
 ### Rift Features:
 - **Mirrorverse Waypoints**
@@ -180,7 +199,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 ### Spider's Den Features:
 - **Hidden Relic Helper**
 
-### Slayer Helper:
+### Slayer Features:
 - **Vampire:**
     - Effigy Waypoints
     - Healing Melon Indicator
@@ -191,18 +210,19 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Yang Glyph Notification
     - Nukekubi Head Highlighting
     - Laser phase Timer
-- **Blaze Slayer:**
+- **Blaze:**
     - Attunement highlighting
     - Fire Pillar Countdown Notifications
 - **General:**
-    - Bossbars
     - Slayer HUD
-    - Boss slain time
-    - Personal Best slain time
-    - Boss and MiniBoss spawn alert
-    - Mute Enderman sounds
-    - Slayer (Mini)Bosses Highlighting
-    - Glow Effect Slayer Mob Highlighting
+    - Bossbars
+    - Boss Kill Time
+        - Personal Bests
+    - Boss and MiniBoss spawn alerts
+    - Mute Blaze, Wolf, Spider, and Enderman sounds
+    - Slayer Boss and Mini-Boss Highlighting
+        - Glow Effect or Bounding Box options
+    - Highlight unclaimed level
 
 ### Garden Features:
 - **Farming HUD:**
@@ -218,16 +238,18 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Copy amount to clipboard
 - **Garden Plots Widget**
 - **Speed Presets (Rancher's Boots)**
-- **Disable title and chat messages for Melon/Pumpkin Dicer**
-- **Basic garden mouse locking feature (set mouse sensitivity to 0)**
+- **Mouse Locking** 
+    - (sets mouse sensitivity to 0)
 - **Pest Highlighter**
+    - Option to separately highlight pests for the active Stereo Harmony vinyl.
+- **Stereo Harmony Helper**
+    - Highlights the vinyl for the current Jacob's contest
 
 ### Visual Enhancements:
 - **Smooth AOTE**
 - **Compact damage**
 - **Waypoints for commissions in dwarven mines and glacite tunnels**
 - **Fancy Tab HUD:** Fully configurable, allowing individual widgets to be freely placed on the main screen.
-- **1.8 Hitbox for Levers, Mushrooms, and Cacti**
 - **Hide Status Effect Overlay**
 - **Personal Compactor/Deletor Preview**
 - **Hide Fake Players in Social Interactions Screen**
@@ -246,11 +268,16 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
         - *Location*
 - **Ender Nodes Helper**
 - **Powder mining tracker**
-- **Special Effects for rare dye drops**
+- **Special Effects for rare drops**
+    - Dye drops
+    - Dungeons drops
+    - Slayer drops
 - **Entity health bars**
 - **Fishing HUD**
 - **Museum HUD**
 - **Gyrokinetic Wand Overlay**
+- **Radial Menus**
+- **Vanilla-like Mana Bar**
 
 ### User Interface Enhancements:
 - **Equipment in inventory**
@@ -287,6 +314,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *HOTM*
     - *HOTF*
     - *Bestiary*
+    - *Hunting Toolkit Indicator*
+    - *Garden Chip Level*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
@@ -304,11 +333,13 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Estimated Item Value*
     - *Skyblock ID*
     - *Bazaar Reorder Helper*
-- **Quick Navigation:** Fully customizable (Item selector) fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
+    - *Evolution Item Progress*
+- **Quick Navigation:** Fully customizable fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
+    - Item Selector
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
     - Crafting
     - Forge
-- **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
+- **Backpack Preview:** After opening a backpack or ender chest once, you can hover over it and hold Shift to preview its contents.
 - **New Year Cakes Helper**
 - **Fancy Crafting Table**
 - **Info Screen**
@@ -320,12 +351,14 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Sack Message Prices**
 - **Bazaar order tracker**
 - **Builder's wand preview**
+- **Item Value Breakdown Popup**
 
 ### Barn Features:
 - **Barn Solver:**
     - *Treasure Hunter*
     - *Hungry Hiker*
     - *Glowing Mushroom Highlighter*
+- **Pelt Animal Highlighter**
 
 ### Chat Features:
 - **Custom Chat Rules**
@@ -355,12 +388,13 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Helper (Includes sound notifications)
     - Fishing rod timer (change color after 20 seconds)
     - Hide other rods
-    - Ingame fishing hook timer display
+    - In-game fishing hook timer display
 - **Mythological Ritual Helper**
     - Estimates Diana griffin burrow positions
-- **Chocolate factory Helper**
+- **Chocolate Factory Helper**
+- **Hoppity's Hunt Helper**
 - **Jerry timer**
-- **Wardrobe helper based on hotbar keybinds**
+- **Wardrobe Keybinds**
 - **Carnival Helpers**
 - **Bits Helper**
 - **Math teacher helper**
@@ -368,6 +402,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Disable All Command**
 - **Abiphone Call Prompts**
     - Adds clickable messages in chat to quickly call Trevor the Trapper, Maddox, and Queen Mismyla
+- **Anvil Helper**
+- **Accessory Helper**
 
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
@@ -380,7 +416,6 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
 - **Wiki Lookup:** Press F4 to open the wiki page about a hovered item, pet, garden visitor, or calendar event.
-- **OptiFabric Compatibility**
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
 - **True Quiver Count**
@@ -398,6 +433,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Keybind/Keybind Combo Shortcuts
 - **Config Backups**
 - **Iris shader support**
+- **Block Break Prediction**
 
 
 </details>
@@ -408,9 +444,9 @@ ___
 
 |            command             |                                       option                                       | comment                                                                                                                                                                                                                                                                                   |
 |:------------------------------:|:----------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|          /skyblocker           |                                                                                    | opens info screen                                                                                                                                                                                                                                                                         |
-|       /skyblocker config       |                                                                                    | open config menu (modMenu not needed)                                                                                                                                                                                                                                                     |
-|      /skyblocker options       |                                                                                    | open config menu (modMenu not needed)                                                                                                                                                                                                                                                     |
+|          /skyblocker           |                                                                                    | open info screen                                                                                                                                                                                                                                                                         |
+|       /skyblocker config       |                                                                                    | open config menu (Mod Menu not needed)                                                                                                                                                                                                                                                    |
+|      /skyblocker options       |                                                                                    | open config menu (Mod Menu not needed)                                                                                                                                                                                                                                                    |
 |        /skyblocker hud         |                       dwarven / dungeonmap / titleContainer                        | move dwarven, dungeonmap or titleContainer                                                                                                                                                                                                                                                |
 |     /skyblocker shortcuts      |                                                                                    | add/edit shortcuts                                                                                                                                                                                                                                                                        |
 |       /skyblocker custom       |                         renameItem /  armorTrim / dyeColor                         | Item and Armour customisation                                                                                                                                                                                                                                                             |

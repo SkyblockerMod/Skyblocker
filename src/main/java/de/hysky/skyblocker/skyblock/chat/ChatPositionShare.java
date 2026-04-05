@@ -6,17 +6,16 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.Vec3d;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,24 +34,25 @@ public class ChatPositionShare {
 
 	@Init
 	public static void init() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
 			dispatcher.register(
-					ClientCommandManager.literal("skyblocker").then(ClientCommandManager.literal("sharePosition").executes(context -> sharePlayerPosition(context.getSource())))
+					ClientCommands.literal("skyblocker").then(ClientCommands.literal("sharePosition").executes(context -> sharePlayerPosition(context.getSource())))
 					);
 			dispatcher.register(
-					ClientCommandManager.literal("skyblocker").then(ClientCommandManager.literal("shareCoords").executes(context -> sharePlayerPosition(context.getSource())))
+					ClientCommands.literal("skyblocker").then(ClientCommands.literal("shareCoords").executes(context -> sharePlayerPosition(context.getSource())))
 					);
 		});
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatPositionShare::onMessage);
 	}
 
+	@SuppressWarnings("deprecation")
 	private static int sharePlayerPosition(FabricClientCommandSource source) {
-		Vec3d pos = source.getPosition();
-		MessageScheduler.INSTANCE.sendMessageAfterCooldown("x: " + (int) pos.getX() + ", y: " + (int) pos.getY() + ", z: " + (int) pos.getZ() + " | " + Utils.getIslandArea(), true);
+		Vec3 pos = source.getPosition();
+		MessageScheduler.INSTANCE.sendMessageAfterCooldown("x: " + (int) pos.x() + ", y: " + (int) pos.y() + ", z: " + (int) pos.z() + " | " + Utils.getIslandArea(), true);
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static boolean onMessage(Text text, boolean overlay) {
+	private static boolean onMessage(Component text, boolean overlay) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableChatWaypoints) {
 			String message = text.getString();
 
@@ -81,16 +81,16 @@ public class ChatPositionShare {
 		return true;
 	}
 
-	private static void requestWaypoint(String x, String y, String z, @NotNull String area) {
+	private static void requestWaypoint(String x, String y, String z, String area) {
 		String command = "/skyblocker waypoints individual " + x + " " + y + " " + z + " " + area;
-		MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.waypoints.chat.display", x, y, z).formatted(Formatting.AQUA)
-				.styled(style -> style
+		MutableComponent requestMessage = Constants.PREFIX.get().append(Component.translatable("skyblocker.waypoints.chat.display", x, y, z).withStyle(ChatFormatting.AQUA)
+				.withStyle(style -> style
 						.withClickEvent(new ClickEvent.RunCommand(command.trim()))
 						)
 				);
 		if (!area.isEmpty()) {
-			requestMessage = requestMessage.append(" at ").append(Text.literal(area).formatted(Formatting.AQUA));
+			requestMessage = requestMessage.append(" at ").append(Component.literal(area).withStyle(ChatFormatting.AQUA));
 		}
-		MinecraftClient.getInstance().player.sendMessage(requestMessage, false);
+		Minecraft.getInstance().player.sendSystemMessage(requestMessage);
 	}
 }

@@ -1,35 +1,37 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen.name;
 
-
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.*;
-import net.minecraft.text.Text;
-
 import java.util.function.IntConsumer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.LayoutSettings;
+import net.minecraft.client.gui.layouts.SpacerElement;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class ColorPopup extends AbstractPopupScreen {
 
-	private final GridWidget layout = new GridWidget();
+	private final GridLayout layout = new GridLayout();
 
 	private final boolean gradient;
 	private final GradientConsumer gradientConsumer;
 	private final IntIntPair currentColor = new IntIntMutablePair(-1, -1);
 
 	private ColorPopup(Screen backgroundScreen, GradientConsumer gradientConsumer, boolean gradient) {
-		super(Text.literal("Color Popup"), backgroundScreen);
+		super(Component.literal("Color Popup"), backgroundScreen);
 		this.gradientConsumer = gradientConsumer;
 		this.gradient = gradient;
-		layout.getMainPositioner().alignHorizontalCenter();
+		layout.defaultCellSetting().alignHorizontallyCenter();
 	}
 
 	private ColorPopup(Screen backgroundScreen, IntConsumer consumer) {
-		this(backgroundScreen, ((start, end) -> consumer.accept(start)), false);
+		this(backgroundScreen, ((start, _) -> consumer.accept(start)), false);
 	}
 
 	public static ColorPopup create(Screen backgroundScreen, IntConsumer colorConsumer) {
@@ -42,88 +44,88 @@ public class ColorPopup extends AbstractPopupScreen {
 
 	@Override
 	protected void init() {
-		GridWidget.Adder adder = layout.createAdder(2);
-		addDrawableChild(adder.add(new TextWidget(Text.translatable("skyblocker.customItemNames.screen.customColorTitle"), textRenderer), 2));
+		GridLayout.RowHelper adder = layout.createRowHelper(2);
+		addRenderableWidget(adder.addChild(new StringWidget(Component.translatable("skyblocker.customItemNames.screen.customColorTitle"), font), 2));
 		if (gradient) {
 			createLayoutGradient(adder);
 		} else {
 			createLayout(adder);
 		}
-		adder.add(EmptyWidget.ofHeight(15), 2);
-		addDrawableChild(adder.add(ButtonWidget.builder(Text.translatable("gui.cancel"), b -> close()).build(), Positioner.create().alignRight().marginRight(2)));
-		addDrawableChild(adder.add(ButtonWidget.builder(Text.translatable("gui.done"), b -> {
+		adder.addChild(SpacerElement.height(15), 2);
+		addRenderableWidget(adder.addChild(Button.builder(Component.translatable("gui.cancel"), _ -> onClose()).build(), LayoutSettings.defaults().alignHorizontallyRight().paddingRight(2)));
+		addRenderableWidget(adder.addChild(Button.builder(Component.translatable("gui.done"), _ -> {
 			gradientConsumer.accept(currentColor.firstInt(), currentColor.secondInt());
-			close();
-		}).build(), Positioner.create().alignLeft().marginLeft(2)));
+			onClose();
+		}).build(), LayoutSettings.defaults().alignHorizontallyLeft().paddingLeft(2)));
 		super.init();
 	}
 
 	@Override
-	protected void refreshWidgetPositions() {
-		super.refreshWidgetPositions();
-		layout.refreshPositions();
+	protected void repositionElements() {
+		super.repositionElements();
+		layout.arrangeElements();
 		layout.setPosition((width - layout.getWidth()) / 2, (height - layout.getHeight()) / 2);
 	}
 
 	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractBackground(graphics, mouseX, mouseY, a);
+		extractPopupBackground(graphics, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
 	}
 
-	private void createLayout(GridWidget.Adder adder) {
+	private void createLayout(GridLayout.RowHelper adder) {
 		ColorPickerWidget colorPicker = new ColorPickerWidget(0, 0, 200, 100);
-		ARGBTextInput argb = new ARGBTextInput(0, 0, textRenderer, true, false);
-		addDrawableChild(colorPicker);
-		addDrawableChild(argb);
+		ARGBTextInput argb = new ARGBTextInput(0, 0, font, true, false);
+		addRenderableWidget(colorPicker);
+		addRenderableWidget(argb);
 
 		argb.setOnChange(color -> {
-			colorPicker.setRGBColor(color);
+			colorPicker.setARGBColor(color);
 			currentColor.first(color);
 		});
-		colorPicker.setOnColorChange((color, mouseRelease) -> {
+		colorPicker.setOnColorChange((color, _) -> {
 			argb.setARGBColor(color);
 			currentColor.first(color);
 		});
 
-		adder.add(colorPicker, 2);
-		adder.add(argb, 2);
+		adder.addChild(colorPicker, 2);
+		adder.addChild(argb, 2);
 	}
 
-	private void createLayoutGradient(GridWidget.Adder adder) {
+	private void createLayoutGradient(GridLayout.RowHelper adder) {
 		ColorPickerWidget colorPickerStart = new ColorPickerWidget(0, 0, 200, 100);
-		ARGBTextInput argbStart = new ARGBTextInput(0, 0, textRenderer, true, false);
+		ARGBTextInput argbStart = new ARGBTextInput(0, 0, font, true, false);
 		ColorPickerWidget colorPickerEnd = new ColorPickerWidget(0, 0, 200, 100);
-		ARGBTextInput argbEnd = new ARGBTextInput(0, 0, textRenderer, true, false);
-		addDrawableChild(colorPickerStart);
-		addDrawableChild(argbStart);
-		addDrawableChild(colorPickerEnd);
-		addDrawableChild(argbEnd);
+		ARGBTextInput argbEnd = new ARGBTextInput(0, 0, font, true, false);
+		addRenderableWidget(colorPickerStart);
+		addRenderableWidget(argbStart);
+		addRenderableWidget(colorPickerEnd);
+		addRenderableWidget(argbEnd);
 
 		argbStart.setOnChange(color -> {
-			colorPickerStart.setRGBColor(color);
+			colorPickerStart.setARGBColor(color);
 			currentColor.first(color);
 		});
-		colorPickerStart.setOnColorChange((color, mouseRelease) -> {
+		colorPickerStart.setOnColorChange((color, _) -> {
 			argbStart.setARGBColor(color);
 			currentColor.first(color);
 		});
 		argbEnd.setOnChange(color -> {
-			colorPickerEnd.setRGBColor(color);
+			colorPickerEnd.setARGBColor(color);
 			currentColor.second(color);
 		});
-		colorPickerEnd.setOnColorChange((color, mouseRelease) -> {
+		colorPickerEnd.setOnColorChange((color, _) -> {
 			argbEnd.setARGBColor(color);
 			currentColor.second(color);
 		});
 
-		addDrawableChild(adder.add(new TextWidget(Text.translatable("skyblocker.customItemNames.screen.gradientStart"), textRenderer)));
-		addDrawableChild(adder.add(new TextWidget(Text.translatable("skyblocker.customItemNames.screen.gradientEnd"), textRenderer)));
+		addRenderableWidget(adder.addChild(new StringWidget(Component.translatable("skyblocker.customItemNames.screen.gradientStart"), font)));
+		addRenderableWidget(adder.addChild(new StringWidget(Component.translatable("skyblocker.customItemNames.screen.gradientEnd"), font)));
 
-		adder.add(colorPickerStart);
-		adder.add(colorPickerEnd);
-		adder.add(argbStart);
-		adder.add(argbEnd);
+		adder.addChild(colorPickerStart);
+		adder.addChild(colorPickerEnd);
+		adder.addChild(argbStart);
+		adder.addChild(argbEnd);
 	}
 
 	@FunctionalInterface

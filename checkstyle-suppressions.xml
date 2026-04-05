@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC "-//Puppy Crawl//DTD SuppressionFilter Configuration 1.2//EN" "https://www.puppycrawl.com/dtds/suppressions_1_2.dtd">
+<suppressions>
+    <!-- Do not require packages in the test or game test source set to have package-info files -->
+    <suppress checks="JavadocPackage" files="src[\/\\](?:game)?test[\/\\]java"/>
+</suppressions>

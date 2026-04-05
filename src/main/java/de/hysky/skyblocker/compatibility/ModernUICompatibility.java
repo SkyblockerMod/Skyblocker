@@ -2,11 +2,10 @@ package de.hysky.skyblocker.compatibility;
 
 import com.mojang.logging.LogUtils;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.FormattedCharSequence;
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 
@@ -46,50 +45,49 @@ public class ModernUICompatibility {
 	// text engine changes require game reboot so it's good enough to check only once
 	private static final boolean IS_TEXT_ENGINE_ENABLED = isTextEngineEnabled();
 
-	public static boolean drawOutlinedText(DrawContext context, Text text, int x, int y, int color, int outlineColor) {
+	public static boolean extractOutlinedText(GuiGraphicsExtractor context, FormattedCharSequence text, FormattedCharSequence outlineText, int x, int y, int color, int outlineColor) {
 		if (!IS_TEXT_ENGINE_ENABLED) return false;
 
 		final float offset = 0.5f; // default value of ModernTextRenderer.sOutlineOffset
 
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		OrderedText outlineText = Text.literal(text.getString()).asOrderedText(); // make a copy with no styles
-		Matrix3x2fStack pose = context.getMatrices();
+		Font textRenderer = Minecraft.getInstance().font;
+		Matrix3x2fStack pose = context.pose();
 
 		// https://github.com/BloCamLimb/ModernUI-MC/blob/3.12.0.4/common/src/main/java/icyllis/modernui/mc/text/mixin/MixinContextualBar.java
 		pose.pushMatrix()
 				.translate(offset, 0);
-		context.drawText(textRenderer, outlineText, x, y, outlineColor, false);
+		context.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(offset, offset);
-		context.drawText(textRenderer, outlineText, x, y, outlineColor, false);
+		context.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(offset, -offset);
-		context.drawText(textRenderer, outlineText, x, y, outlineColor, false);
+		context.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(-offset, 0);
-		context.drawText(textRenderer, outlineText, x, y, outlineColor, false);
+		context.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(-offset, offset);
-		context.drawText(textRenderer, outlineText, x, y, outlineColor, false);
+		context.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(-offset, -offset);
-		context.drawText(textRenderer, outlineText, x, y, outlineColor, false);
+		context.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(0, offset);
-		context.drawText(textRenderer, outlineText, x, y, outlineColor, false);
+		context.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 		pose.pushMatrix()
 				.translate(0, -offset);
-		context.drawText(textRenderer, outlineText, x, y, outlineColor, false);
+		context.text(textRenderer, outlineText, x, y, outlineColor, false);
 		pose.popMatrix();
 
-		context.drawText(textRenderer, text.asOrderedText(), x, y, color, false);
+		context.text(textRenderer, text, x, y, color, false);
 		return true;
 	}
 }

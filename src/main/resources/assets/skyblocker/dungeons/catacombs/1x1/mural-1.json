@@ -1,0 +1,21 @@
+{
+  "info": {
+    "name": "Mural"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 18,
+      "y": 78,
+      "z": 15
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 26,
+      "y": 83,
+      "z": 7
+    }
+  ]
+}

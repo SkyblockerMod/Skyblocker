@@ -4,10 +4,9 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import net.minecraft.text.Text;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
 
 public class AdFilter extends ChatPatternListener {
 	private static final Pattern[] AD_FILTERS = new Pattern[] {
@@ -24,7 +23,7 @@ public class AdFilter extends ChatPatternListener {
 	}
 
 	@Override
-	public boolean onMatch(Text _message, Matcher matcher) {
+	public boolean onMatch(Component _message, Matcher matcher) {
 		String message = matcher.group(2);
 		for (Pattern adFilter : AD_FILTERS)
 			if (adFilter.matcher(message).find())

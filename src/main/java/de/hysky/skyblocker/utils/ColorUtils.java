@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.DyeColor;
 
 public class ColorUtils {
 	/**
@@ -13,9 +13,9 @@ public class ColorUtils {
 	 */
 	public static float[] getFloatComponents(int color) {
 		return new float[] {
-				ColorHelper.getRedFloat(color),
-				ColorHelper.getGreenFloat(color),
-				ColorHelper.getBlueFloat(color),
+				ARGB.redFloat(color),
+				ARGB.greenFloat(color),
+				ARGB.blueFloat(color),
 		};
 	}
 
@@ -23,7 +23,7 @@ public class ColorUtils {
 	 * @param dye The dye from which the entity color will be used for the components.
 	 */
 	public static float[] getFloatComponents(DyeColor dye) {
-		return getFloatComponents(dye.getEntityColor());
+		return getFloatComponents(dye.getTextureDiffuseColor());
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class ColorUtils {
 	 * @return an int representing a color, where 100% = green and 0% = red
 	 */
 	public static int percentToColor(float pcnt) {
-		return MathHelper.hsvToRgb(pcnt / 300, 1, 1);
+		return Mth.hsvToRgb(pcnt / 300, 1, 1);
 	}
 
 	/**

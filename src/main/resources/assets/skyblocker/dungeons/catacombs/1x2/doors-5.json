@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "Doors"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 5,
+      "y": 87,
+      "z": 28
+    },
+    {
+      "secretName": "2 - Under Crypt",
+      "category": "superboom",
+      "x": 38,
+      "y": 59,
+      "z": 27
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 31,
+      "y": 51,
+      "z": 17
+    },
+    {
+      "secretName": "3 - Superboom",
+      "category": "superboom",
+      "x": 56,
+      "y": 59,
+      "z": 15
+    },
+    {
+      "secretName": "3 - Stonk",
+      "category": "stonk",
+      "x": 57,
+      "y": 59,
+      "z": 15
+    },
+    {
+      "secretName": "3 - Lever",
+      "category": "lever",
+      "x": 61,
+      "y": 59,
+      "z": 15
+    },
+    {
+      "secretName": "3 - Bat or Item",
+      "category": "bat",
+      "x": 48,
+      "y": 59,
+      "z": 15
+    },
+    {
+      "secretName": "4/5 - Lever",
+      "category": "lever",
+      "x": 45,
+      "y": 59,
+      "z": 15
+    },
+    {
+      "secretName": "4/5 - Lever",
+      "category": "lever",
+      "x": 50,
+      "y": 59,
+      "z": 1
+    },
+    {
+      "secretName": "4/5 - Lever",
+      "category": "lever",
+      "x": 43,
+      "y": 59,
+      "z": 15
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 8,
+      "y": 58,
+      "z": 17
+    },
+    {
+      "secretName": "4 - Stonk",
+      "category": "stonk",
+      "x": 8,
+      "y": 59,
+      "z": 18
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 8,
+      "y": 58,
+      "z": 13
+    },
+    {
+      "secretName": "5 - Stonk",
+      "category": "stonk",
+      "x": 8,
+      "y": 59,
+      "z": 18
+    },
+    {
+      "secretName": "Prince",
+      "category": "prince",
+      "x": 38,
+      "y": 60,
+      "z": 27
+    }
+  ]
+}

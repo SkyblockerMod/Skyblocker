@@ -1,44 +1,50 @@
 package de.hysky.skyblocker.skyblock.speedpreset;
 
+import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.widget.*;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidget.AbstractEntry> {
-
+public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPresetListWidget.AbstractEntry> {
 	private static final Pattern NUMBER = Pattern.compile("^-?\\d+(\\.\\d+)?$");
 	// Alphanumeric sequence that doesn't start with a number.
 	private static final Pattern TITLE = Pattern.compile("^[a-zA-Z]\\w*$");
 
 	public SpeedPresetListWidget(int width, int height, int y) {
-		super(MinecraftClient.getInstance(), width, height, y, 25);
-		var instance = SpeedPresets.getInstance();
+		super(Minecraft.getInstance(), width, height, y, 25);
+		SpeedPresets instance = SpeedPresets.getInstance();
 		addEntry(new TitleEntry());
-		if (!instance.getPresets().isEmpty())
+		if (!instance.getPresets().isEmpty()) {
 			instance.getPresets().forEach((title, speed) -> this.addEntry(new SpeedPresetEntry(title, String.valueOf(speed))));
-		else this.addEntry(new SpeedPresetEntry("", ""));
+		} else {
+			this.addEntry(new SpeedPresetEntry("", ""));
+		}
 	}
 
 	@Override
 	public int getRowWidth() {
-		return super.getRowWidth() + 104;
+		return 190;
 	}
 
 	public boolean hasBeenChanged() {
-		var instance = SpeedPresets.getInstance();
+		SpeedPresets instance = SpeedPresets.getInstance();
 		// If there are fewer children than presets, some were removed, and all further checks are pointless
 		if (children().size() < instance.getPresets().size()) return true;
 		var childrenMap = this.children().stream()
@@ -55,34 +61,35 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 	}
 
 	public void newEntry() {
-		var entry = new SpeedPresetEntry("", "");
+		SpeedPresetEntry entry = new SpeedPresetEntry("", "");
 		this.addEntry(entry);
+		entry.updatePosition();
 		this.centerScrollOn(entry);
 		this.setSelected(entry);
 		this.setFocused(entry);
 	}
 
 	public void save() {
-		var instance = SpeedPresets.getInstance();
+		SpeedPresets instance = SpeedPresets.getInstance();
 		instance.getPresets().clear();
 		children().stream()
-				  .filter(SpeedPresetEntry.class::isInstance)
-				  .map(SpeedPresetEntry.class::cast)
-				  .forEach(SpeedPresetEntry::save);
+				.filter(SpeedPresetEntry.class::isInstance)
+				.map(SpeedPresetEntry.class::cast)
+				.forEach(SpeedPresetEntry::save);
 		instance.savePresets(); // Write down the changes.
 	}
 
-	public abstract static class AbstractEntry extends ElementListWidget.Entry<AbstractEntry> {
+	public abstract static class AbstractEntry extends ContainerObjectSelectionList.Entry<AbstractEntry> {
 
 		protected void updatePosition() {}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			this.children().forEach(child -> {
-				if (child instanceof Widget widget)
-					widget.setY(y);
-				if (child instanceof Drawable drawable)
-					drawable.render(context, mouseX, mouseY, tickDelta);
+				if (child instanceof LayoutElement widget)
+					widget.setY(this.getY());
+				if (child instanceof Renderable drawable)
+					drawable.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			});
 		}
 	}
@@ -90,90 +97,86 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 	public class TitleEntry extends AbstractEntry {
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// The line height is 25, the height of a single character is always 9.
 			// 25 - 9 = 16, 16 / 2 = 8, therefore the Y-offset should be 8.
-			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.general.speedPresets.config.title"), width / 2 - 50, y + 8, Colors.WHITE);
-			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.general.speedPresets.config.speed"), width / 2 + 50, y + 8, Colors.WHITE);
+			graphics.centeredText(minecraft.font, Component.translatable("skyblocker.config.general.speedPresets.config.title"), width / 2 - 50, this.getY() + 8, CommonColors.WHITE);
+			graphics.centeredText(minecraft.font, Component.translatable("skyblocker.config.general.speedPresets.config.speed"), width / 2 + 50, this.getY() + 8, CommonColors.WHITE);
 		}
 
 		@Override
-		public List<? extends Selectable> selectableChildren() {
+		public List<? extends NarratableEntry> narratables() {
 			return List.of();
 		}
 
 		@Override
-		public List<? extends Element> children() {
+		public List<? extends GuiEventListener> children() {
 			return List.of();
 		}
 	}
 
 	public class SpeedPresetEntry extends AbstractEntry {
 
-		protected final TextFieldWidget titleInput;
-		protected final TextFieldWidget speedInput;
-		protected final ButtonWidget removeButton;
+		protected final FilteredEditBox titleInput;
+		protected final FilteredEditBox speedInput;
+		protected final Button removeButton;
+
+		protected final LinearLayout layout;
 
 		public SpeedPresetEntry(String title, String speed) {
-			var client = SpeedPresetListWidget.this.client;
+			Font font = Minecraft.getInstance().font;
 
-			// All Xs and Ys are then set using the initPosition() method.
-			this.titleInput = new TextFieldWidget(client.textRenderer, 0, 0, 120, 20, Text.empty());
-			this.titleInput.setTextPredicate(str -> str.isEmpty() || TITLE.matcher(str).matches());
-			this.titleInput.setText(title);
+			layout = LinearLayout.horizontal();
+			layout.spacing(2);
+
+			this.titleInput = layout.addChild(new FilteredEditBox(font, 120, 20, Component.empty()));
+			this.titleInput.setFilter(str -> str.isEmpty() || TITLE.matcher(str).matches());
+			this.titleInput.setValue(title);
 			this.titleInput.setMaxLength(16);
-			this.titleInput.setPlaceholder(Text.literal("newPreset").formatted(Formatting.DARK_GRAY));
-			this.speedInput = new TextFieldWidget(client.textRenderer, 0, 0, 50, 20, Text.empty());
+			this.titleInput.setHint(Component.literal("newPreset").withStyle(ChatFormatting.DARK_GRAY));
 
-			this.speedInput.setTextPredicate(str -> str.isEmpty() || NUMBER.matcher(str).matches());
-			this.speedInput.setText(speed);
+			this.speedInput = layout.addChild(new FilteredEditBox(font, 50, 20, Component.empty()));
+			this.speedInput.setFilter(str -> str.isEmpty() || NUMBER.matcher(str).matches());
+			this.speedInput.setValue(speed);
 			this.speedInput.setMaxLength(3);
-			this.speedInput.setPlaceholder(Text.literal("0").formatted(Formatting.DARK_GRAY));
+			this.speedInput.setHint(Component.literal("0").withStyle(ChatFormatting.DARK_GRAY));
 
-			this.removeButton = ButtonWidget.builder(Text.literal("-"), btn -> SpeedPresetListWidget.this.removeEntry(this))
-					.dimensions(0, 0, 20, 20)
-					.build();
-
-			this.updatePosition();
+			this.removeButton = layout.addChild(Button.builder(Component.literal("-"), _ -> SpeedPresetListWidget.this.removeEntry(this))
+					.size(20, 20)
+					.build());
 		}
 
 		@Override
-		public List<? extends Selectable> selectableChildren() {
+		public List<? extends NarratableEntry> narratables() {
 			return List.of(titleInput, speedInput, removeButton);
 		}
 
 		@Override
-		public List<? extends Element> children() {
+		public List<? extends GuiEventListener> children() {
 			return List.of(titleInput, speedInput, removeButton);
 		}
 
 		public void save() {
 			var mapping = getMapping();
-			if (mapping != null)
-				SpeedPresets.getInstance().setPreset(mapping.key(), mapping.valueInt());
+			if (mapping == null) return;
+			SpeedPresets.getInstance().setPreset(mapping.key(), mapping.valueInt());
 		}
 
 		protected boolean isEmpty() {
-			return titleInput.getText().isEmpty() && speedInput.getText().isEmpty();
+			return titleInput.getValue().isEmpty() && speedInput.getValue().isEmpty();
 		}
 
 		@Override
 		protected void updatePosition() {
-			var grid = new GridWidget();
-			grid.setSpacing(2);
-			grid.add(titleInput, 0, 0, 1, 3);
-			grid.add(speedInput, 0, 3, 1, 2);
-			grid.add(removeButton, 0, 5, 1, 1);
-			grid.refreshPositions();
-			SimplePositioningWidget.setPos(grid, 0, 0, width, itemHeight, 0.5f, 0.5f);
+			layout.setPosition(getRowLeft(), getY());
+			layout.arrangeElements();
 		}
 
-		@Nullable
-		protected ObjectIntPair<String> getMapping() {
+		protected @Nullable ObjectIntPair<String> getMapping() {
 			if (isEmpty()) return null;
 			try {
-				return ObjectIntPair.of(titleInput.getText(), Integer.parseInt(speedInput.getText()));
-			} catch (NumberFormatException e) {
+				return ObjectIntPair.of(titleInput.getValue(), Integer.parseInt(speedInput.getValue()));
+			} catch (NumberFormatException _) {
 				return null;
 			}
 		}

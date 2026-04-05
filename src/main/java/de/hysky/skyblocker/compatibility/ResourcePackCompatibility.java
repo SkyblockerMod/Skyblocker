@@ -6,55 +6,48 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import it.unimi.dsi.fastutil.Pair;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.resource.SinglePreparationResourceReloader;
-import net.minecraft.resource.metadata.ResourceMetadataSerializer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
-import org.jetbrains.annotations.Nullable;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.metadata.MetadataSectionType;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class ResourcePackCompatibility {
-
-	public static final Logger LOGGER = LogUtils.getLogger();
-
+	private static final Logger LOGGER = LogUtils.getLogger();
 	public static ResourcePackOptions options = ResourcePackOptions.EMPTY;
 
 	@Init(priority = -1)
 	public static void init() {
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener());
+		ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(SkyblockerMod.id("pack_compatibility_listener"), new ReloadListener());
 	}
 
-	private static final class ReloadListener extends SinglePreparationResourceReloader<List<Pair<String, ResourcePackOptions>>> implements IdentifiableResourceReloadListener {
-
-		private static final ResourceMetadataSerializer<String> ID_SERIALIZER = new ResourceMetadataSerializer<>(
+	private static final class ReloadListener extends SimplePreparableReloadListener<List<Pair<String, ResourcePackOptions>>>  {
+		private static final MetadataSectionType<String> ID_SERIALIZER = new MetadataSectionType<>(
 				"resource_pack_id",
 				Codec.STRING
 		);
-		private static final ResourceMetadataSerializer<ResourcePackOptions> SKYBLOCKER_SERIALIZER = new ResourceMetadataSerializer<>(
+		private static final MetadataSectionType<ResourcePackOptions> SKYBLOCKER_SERIALIZER = new MetadataSectionType<>(
 				"skyblocker",
 				ResourcePackOptions.CODEC
 		);
 
 		@Override
-		public Identifier getFabricId() {
-			return SkyblockerMod.id("reload_listener");
-		}
-
-		@Override
-		protected List<Pair<String, ResourcePackOptions>> prepare(ResourceManager manager, Profiler profiler) {
-			return manager.streamResourcePacks().map(
+		protected List<Pair<String, ResourcePackOptions>> prepare(ResourceManager manager, ProfilerFiller profiler) {
+			return manager.listPacks().map(
 					resourcePack -> {
 						try {
-							return Pair.of(resourcePack.parseMetadata(ID_SERIALIZER), resourcePack.parseMetadata(SKYBLOCKER_SERIALIZER));
+							return Pair.of(resourcePack.getMetadataSection(ID_SERIALIZER), resourcePack.getMetadataSection(SKYBLOCKER_SERIALIZER));
 						} catch (IOException e) {
-							LOGGER.error("Failed to parse resource pack metadata", e);
+							LOGGER.error("[Skyblocker ResourcePack Compat] Failed to parse resource pack metadata", e);
 							return null;
 						}
 					}
@@ -62,10 +55,10 @@ public class ResourcePackCompatibility {
 		}
 
 		@Override
-		protected void apply(List<Pair<String, ResourcePackOptions>> prepared, ResourceManager manager, Profiler profiler) {
+		protected void apply(List<Pair<String, ResourcePackOptions>> prepared, ResourceManager manager, ProfilerFiller profiler) {
 			if (prepared.stream().anyMatch(p -> "FURFSKY_GUI".equals(p.first()))) {
 				options = new ResourcePackOptions(Optional.of(true), Optional.of(true), Optional.of(false));
-				LOGGER.info("FURFSKY_GUI detected. Enabling compatibility names.");
+				LOGGER.info("[Skyblocker ResourcePack Compat] FURFSKY_GUI detected. Enabling compatibility names.");
 				return;
 			}
 			List<ResourcePackOptions> list = new ArrayList<>(prepared.stream().map(Pair::right).filter(Objects::nonNull).toList());
@@ -74,7 +67,7 @@ public class ResourcePackCompatibility {
 			} else {
 				options = ResourcePackOptions.EMPTY;
 			}
-			LOGGER.info(options.toString());
+			LOGGER.info("[Skyblocker ResourcePack Compat] " + options.toString());
 
 		}
 	}

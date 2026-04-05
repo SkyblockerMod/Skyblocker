@@ -1,17 +1,16 @@
 package de.hysky.skyblocker.utils.ws;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.util.StringRepresentable;
 
-import net.minecraft.util.StringIdentifiable;
-
-public enum Type implements StringIdentifiable {
+public enum Type implements StringRepresentable {
 	SUBSCRIBE("subscribe"),
 	INITIAL_MESSAGE("initialMessage"),
 	PUBLISH("publish"),
 	RESPONSE("response"),
 	UNSUBSCRIBE("unsubscribe");
 
-	public static final Codec<Type> CODEC = StringIdentifiable.createBasicCodec(Type::values);
+	public static final Codec<Type> CODEC = StringRepresentable.fromValues(Type::values);
 
 	private final String id;
 
@@ -20,7 +19,7 @@ public enum Type implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return this.id;
 	}
 }

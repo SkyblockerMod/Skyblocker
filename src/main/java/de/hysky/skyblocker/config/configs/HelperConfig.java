@@ -3,10 +3,9 @@ package de.hysky.skyblocker.config.configs;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import net.minecraft.client.resource.language.I18n;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.resources.language.I18n;
 
 public class HelperConfig {
 	public boolean enableNewYearCakesHelper = true;
@@ -19,7 +18,11 @@ public class HelperConfig {
 
 	public boolean enableCopyUnderbidPrice = false;
 
-	public boolean enableBuildersWandPreview = true;
+	public boolean enableAnvilHelper = true;
+
+	public boolean enableAccessoriesHelperWidget = true;
+
+	public BuildersWand buildersWand = new BuildersWand();
 
 	public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
@@ -40,6 +43,12 @@ public class HelperConfig {
 	public ItemPrice itemPrice = new ItemPrice();
 
 	public GreatSpookEvent greatSpookEvent = new GreatSpookEvent();
+
+	public static class BuildersWand {
+		public boolean enableBuildersWandPreview = true;
+
+		public float previewOpacity = 0.5f;
+	}
 
 	public static class MythologicalRitual {
 		public boolean enableMythologicalRitualHelper = true;
@@ -103,7 +112,7 @@ public class HelperConfig {
 
 			@Override
 			public String toString() {
-				return I18n.translate("skyblocker.config.helpers.fishing.fishingHookDisplay." + name());
+				return I18n.get("skyblocker.config.helpers.fishing.fishingHookDisplay." + name());
 			}
 		}
 	}
@@ -119,15 +128,19 @@ public class HelperConfig {
 	public static class ChocolateFactory {
 		public boolean enableChocolateFactoryHelper = true;
 
+		public boolean enableTimeTowerReminder = true;
+
+		public boolean straySound = true;
+
+		// Hoppity's Hunt
+
 		public boolean enableEggFinder = true;
 
 		public boolean sendEggFoundMessages = true;
 
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 
-		public boolean enableTimeTowerReminder = true;
-
-		public boolean straySound = true;
+		public boolean showThroughWalls = false;
 	}
 
 	public static class Carnival {

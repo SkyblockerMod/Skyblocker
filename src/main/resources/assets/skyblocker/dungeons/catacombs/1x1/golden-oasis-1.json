@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "Golden Oasis"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Redstone Skull (right click)",
+      "category": "key",
+      "x": 12,
+      "y": 71,
+      "z": 8
+    },
+    {
+      "secretName": "1 - Lever",
+      "category": "lever",
+      "x": 29,
+      "y": 71,
+      "z": 25
+    },
+    {
+      "secretName": "1 - Place Skull",
+      "category": "key",
+      "x": 9,
+      "y": 71,
+      "z": 3
+    },
+    {
+      "secretName": "2/3 - Entrance",
+      "category": "entrance",
+      "x": 28,
+      "y": 69,
+      "z": 25
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 13,
+      "y": 63,
+      "z": 25
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 12,
+      "y": 63,
+      "z": 23
+    }
+  ]
+}

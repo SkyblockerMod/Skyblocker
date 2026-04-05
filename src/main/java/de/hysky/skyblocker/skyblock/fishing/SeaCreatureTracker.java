@@ -11,19 +11,19 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
-import java.util.*;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import java.util.LinkedHashMap;
+import java.util.SequencedMap;
 import java.util.regex.Pattern;
 
 public class SeaCreatureTracker {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern DOUBLE_HOOK_PATTERN = Pattern.compile("Double Hook!(?: Woot woot!)?");
 
 	private static final SequencedMap<Entity, LiveSeaCreature> seaCreatures = new LinkedHashMap<>();
@@ -37,11 +37,11 @@ public class SeaCreatureTracker {
 		ClientEntityEvents.ENTITY_UNLOAD.register(SeaCreatureTracker::onEntityDespawn);
 	}
 
-	private static void onEntityDespawn(Entity entity, ClientWorld clientWorld) {
+	private static void onEntityDespawn(Entity entity, ClientLevel clientWorld) {
 		seaCreatures.remove(entity);
 	}
 
-	public static void onEntitySpawn(ArmorStandEntity armorStand) {
+	public static void onEntitySpawn(ArmorStand armorStand) {
 		if (!armorStand.isInvisible() || !armorStand.hasCustomName() || !armorStand.isCustomNameVisible() || lastCatch == null) {
 			return;
 		}
@@ -67,9 +67,9 @@ public class SeaCreatureTracker {
 		if (!SkyblockerConfigManager.get().helpers.fishing.seaCreatureTimerNotification || !isCreaturesAlive()) return;
 		//if the timer is about to finish show notification
 		if (Math.abs(SkyblockerConfigManager.get().helpers.fishing.timerLength * 1000L - getOldestSeaCreatureAge()) < 100) {
-			TitleContainer.addTitle(new Title(Text.translatable("skyblocker.config.helpers.fishing.seaCreatureTimerNotification.notification").formatted(Formatting.RED)), 60);
+			TitleContainer.addTitle(new Title(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureTimerNotification.notification").withStyle(ChatFormatting.RED)), 60);
 			if (CLIENT.player == null) return;
-			CLIENT.player.playSound(SoundEvents.ENTITY_ARROW_HIT_PLAYER, 100f, 0.1f);
+			CLIENT.player.playSound(SoundEvents.ARROW_HIT_PLAYER, 100f, 0.1f);
 		}
 	}
 
@@ -82,9 +82,9 @@ public class SeaCreatureTracker {
 		SeaCreature lastCreature = seaCreatures.sequencedValues().getLast().seaCreature;
 		SkyblockItemRarity lastCreatureRarity = lastCreature.rarity;
 		if (lastCreatureRarity.compareTo(rarityThreshold) >= 0) {
-			TitleContainer.addTitle(new Title(Text.literal(lastCreature.name).formatted(lastCreatureRarity.formatting)), 60);
+			TitleContainer.addTitle(new Title(Component.literal(lastCreature.name).withStyle(lastCreatureRarity.formatting)), 60);
 			if (CLIENT.player == null) return;
-			CLIENT.player.playSound(SoundEvents.ENTITY_ARROW_HIT_PLAYER, 100f, 0.1f);
+			CLIENT.player.playSound(SoundEvents.ARROW_HIT_PLAYER, 100f, 0.1f);
 		}
 	}
 
@@ -94,9 +94,9 @@ public class SeaCreatureTracker {
 	private static void checkCapNotification() {
 		if (!SkyblockerConfigManager.get().helpers.fishing.seaCreatureCapNotification) return;
 		if (seaCreatureCount() == getSeaCreatureCap()) {
-			TitleContainer.addTitle(new Title(Text.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification.notification").formatted(Formatting.RED)), 60);
+			TitleContainer.addTitle(new Title(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification.notification").withStyle(ChatFormatting.RED)), 60);
 			if (CLIENT.player == null) return;
-			CLIENT.player.playSound(SoundEvents.ENTITY_ARROW_HIT_PLAYER, 100f, 0.1f);
+			CLIENT.player.playSound(SoundEvents.ARROW_HIT_PLAYER, 100f, 0.1f);
 		}
 	}
 
@@ -104,9 +104,9 @@ public class SeaCreatureTracker {
 	 * Looks for a message that is sent when a sea creature is fished up
 	 */
 	@SuppressWarnings("SameReturnValue")
-	private static boolean onChatMessage(Text text, boolean overlay) {
+	private static boolean onChatMessage(Component text, boolean overlay) {
 		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHud || overlay) return true;
-		String message = Formatting.strip(text.getString());
+		String message = ChatFormatting.stripFormatting(text.getString());
 		//see if it's a double hook
 		if (DOUBLE_HOOK_PATTERN.matcher(message).find()) {
 			doubleHook = true;
@@ -144,9 +144,9 @@ public class SeaCreatureTracker {
 	}
 
 
-	protected static ObjectFloatPair<Text> getTimerText(long currentTime) {
+	protected static ObjectFloatPair<Component> getTimerText(long currentTime) {
 		long maxTime = SkyblockerConfigManager.get().helpers.fishing.timerLength * 1000L;
-		Text time = SkyblockTime.formatTime((maxTime - currentTime) / 1000f);
+		Component time = SkyblockTime.formatTime((maxTime - currentTime) / 1000f);
 		//get how far through the timer is
 		float percentage = (float) (maxTime - currentTime) / maxTime * 100;
 

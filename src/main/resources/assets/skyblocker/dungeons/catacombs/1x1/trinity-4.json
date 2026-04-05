@@ -1,0 +1,70 @@
+{
+  "info": {
+    "name": "Trinity"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 19,
+      "y": 76,
+      "z": 29
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 14,
+      "y": 75,
+      "z": 27
+    },
+    {
+      "secretName": "2/3/4 - Entrance",
+      "category": "entrance",
+      "x": 10,
+      "y": 77,
+      "z": 22
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 7,
+      "y": 74,
+      "z": 27
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 11,
+      "y": 86,
+      "z": 22
+    },
+    {
+      "secretName": "3 - Bat",
+      "category": "bat",
+      "x": 8,
+      "y": 87,
+      "z": 18
+    },
+    {
+      "secretName": "4 - Entrance",
+      "category": "entrance",
+      "x": 7,
+      "y": 92,
+      "z": 16
+    },
+    {
+      "secretName": "4 - Superboom",
+      "category": "superboom",
+      "x": 17,
+      "y": 91,
+      "z": 24
+    },
+    {
+      "secretName": "4 - Bat",
+      "category": "bat",
+      "x": 2,
+      "y": 94,
+      "z": 26
+    }
+  ]
+}

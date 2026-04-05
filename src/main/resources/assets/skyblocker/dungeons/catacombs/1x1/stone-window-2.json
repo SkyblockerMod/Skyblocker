@@ -1,0 +1,42 @@
+{
+  "info": {
+    "name": "Stone Window"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Item",
+      "category": "item",
+      "x": 28,
+      "y": 71,
+      "z": 4
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 4,
+      "y": 70,
+      "z": 7
+    },
+    {
+      "secretName": "2 - Bat",
+      "category": "bat",
+      "x": 3,
+      "y": 70,
+      "z": 11
+    },
+    {
+      "secretName": "Fairy Soul - Entrance",
+      "category": "entrance",
+      "x": 26,
+      "y": 78,
+      "z": 9
+    },
+    {
+      "secretName": "Fairy Soul",
+      "category": "fairysoul",
+      "x": 28,
+      "y": 77,
+      "z": 3
+    }
+  ]
+}

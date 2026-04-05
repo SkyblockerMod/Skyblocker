@@ -1,0 +1,84 @@
+{
+  "info": {
+    "name": "Grass Ruin"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 46,
+      "y": 81,
+      "z": 24
+    },
+    {
+      "secretName": "1 - Stonk",
+      "category": "stonk",
+      "x": 46,
+      "y": 80,
+      "z": 24
+    },
+    {
+      "secretName": "1 - Wither Essence",
+      "category": "wither",
+      "x": 48,
+      "y": 81,
+      "z": 24
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 16,
+      "y": 106,
+      "z": 17
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 11,
+      "y": 107,
+      "z": 10
+    },
+    {
+      "secretName": "3 - Lever 1",
+      "category": "lever",
+      "x": 31,
+      "y": 82,
+      "z": 28
+    },
+    {
+      "secretName": "3 - Entrance 1",
+      "category": "entrance",
+      "x": 31,
+      "y": 64,
+      "z": 17
+    },
+    {
+      "secretName": "3 - Entrance 2",
+      "category": "entrance",
+      "x": 34,
+      "y": 58,
+      "z": 14
+    },
+    {
+      "secretName": "3 - Lever 2",
+      "category": "lever",
+      "x": 31,
+      "y": 53,
+      "z": 24
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 3,
+      "y": 55,
+      "z": 14
+    },
+    {
+      "secretName": "Prince",
+      "category": "prince",
+      "x": 58,
+      "y": 95,
+      "z": 15
+    }
+  ]
+}

@@ -4,9 +4,9 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 
 public class RiftGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")
@@ -17,7 +17,7 @@ public class RiftGlowAdder extends MobGlowAdder {
 
 	@Override
 	public int computeColour(Entity entity) {
-		return entity instanceof PlayerEntity p && SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow && p.getName().getString().equals("Blobbercyst ") ? Formatting.GREEN.getColorValue() : NO_GLOW;
+		return entity instanceof Player p && SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow && p.getName().getString().equals("Blobbercyst ") ? ChatFormatting.GREEN.getColor() : NO_GLOW;
 	}
 
 	@Override
