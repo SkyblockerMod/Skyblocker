@@ -62,7 +62,7 @@ public class CallAutocomplete {
 	}
 
 	private static String formatDefaultCallName(String npcName) {
-		return npcName.toLowerCase(Locale.ENGLISH).replaceAll("\\s", "");
+		return npcName.toLowerCase(Locale.ENGLISH);
 	}
 
 	private record AbiphoneContact(Optional<List<String>> callNames) {
