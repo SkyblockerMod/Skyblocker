@@ -309,6 +309,7 @@
   "skyblocker.config.dungeons.map.showOutline": "Show Outline",
   "skyblocker.config.dungeons.map.showRoomLabels": "Show Room Labels",
   "skyblocker.config.dungeons.map.showSelfHead": "Show Self Head",
+  "skyblocker.config.dungeons.map.showSelfHead.@Tooltip": "This feature will not work if user uses /nick and making it hard to determine their identity.",
 
   "skyblocker.config.dungeons.mimicMessage": "Mimic Message",
   "skyblocker.config.dungeons.mimicMessage.sendMimicMessage": "Enable Mimic Message",
