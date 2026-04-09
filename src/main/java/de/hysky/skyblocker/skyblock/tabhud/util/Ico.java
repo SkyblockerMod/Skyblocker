@@ -111,4 +111,5 @@ public class Ico {
 	public static final FlexibleItemStack SUNFLOWER = new FlexibleItemStack(Items.SUNFLOWER);
 	public static final FlexibleItemStack BLUE_ORCHID = new FlexibleItemStack(Items.BLUE_ORCHID);
 	public static final FlexibleItemStack ROSE_BUSH = new FlexibleItemStack(Items.ROSE_BUSH);
+	public static final FlexibleItemStack GOLD_NUGGET = new FlexibleItemStack(Items.GOLD_NUGGET);
 }

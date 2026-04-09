@@ -44,7 +44,7 @@
   "accessWidener": "skyblocker.classtweaker",
   "depends": {
     "fabricloader": ">=0.18.5",
-    "fabric-api": ">=0.145.1+26.1",
+    "fabric-api": ">=0.145.3+26.1.1",
 	"dandelion": ">=1.0.0-alpha.18+26.1",
     "yet_another_config_lib_v3": ">=3.9.2+26.1",
 	"fabric-language-kotlin": "*",
