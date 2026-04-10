@@ -360,7 +360,7 @@ public class ChatRule {
 			if (!m.find()) return replaceMessage; // shouldn't happen but you never know
 			try {
 				m.appendReplacement(sb, replaceMessage);
-			} catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+			} catch (IndexOutOfBoundsException | IllegalArgumentException _) {
 				return replaceMessage;
 			}
 			return sb.substring(m.start());
