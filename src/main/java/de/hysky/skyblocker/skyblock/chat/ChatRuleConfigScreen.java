@@ -15,6 +15,7 @@ import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
@@ -59,8 +60,6 @@ public class ChatRuleConfigScreen extends Screen {
 	private static final int GRID_SPACING = 2;
 	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
 	private static final FlexibleItemStack INVALID_ITEM = Ico.BARRIER;
-	private static final Component YES_TEXT = CommonComponents.GUI_YES.copy().withStyle(ChatFormatting.GREEN);
-	private static final Component NO_TEXT = CommonComponents.GUI_NO.copy().withStyle(ChatFormatting.RED);
 
 	private final Map<@Nullable SoundEvent, Component> soundNames = Util.make(new Object2ObjectOpenHashMap<>(), map -> {
 		map.put(SoundEvents.NOTE_BLOCK_PLING.value(), Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling").withStyle(ChatFormatting.YELLOW));
@@ -124,20 +123,35 @@ public class ChatRuleConfigScreen extends Screen {
 
 		// Filter settings
 		LinearLayout filtersRow1 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
-		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getRegex())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (_, value) -> chatRule.setRegex(value)));
-		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIgnoreCase())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (_, value) -> chatRule.setIgnoreCase(value)));
-		LinearLayout filtersRow2 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
-		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getPartialMatch())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (_, value) -> chatRule.setPartialMatch(value)));
-		filtersRow2.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
+		filtersRow1.addChild(Checkbox.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), minecraft.font)
+				.selected(chatRule.getRegex())
+				.onValueChange((_, value) -> chatRule.setRegex(value))
+				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
+				.maxWidth(getWidth(1.5f))
+				.build());
+		filtersRow1.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
 						_ -> minecraft.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
 				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip")))
 				.width(getWidth(1.5f))
+				.build());
+		LinearLayout filtersRow2 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
+		filtersRow2.addChild(Checkbox.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting"), minecraft.font)
+				.selected(chatRule.getIncludeFormatting())
+				.onValueChange((_, value) -> chatRule.setIncludeFormatting(value))
+				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting.@Tooltip")))
+				.maxWidth(getWidth(1f))
+				.build());
+		filtersRow2.addChild(Checkbox.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), minecraft.font)
+				.selected(chatRule.getPartialMatch())
+				.onValueChange((_, value) -> chatRule.setPartialMatch(value))
+				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
+				.maxWidth(getWidth(1f))
+				.build());
+		filtersRow2.addChild(Checkbox.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), minecraft.font)
+				.selected(chatRule.getIgnoreCase())
+				.onValueChange((_, value) -> chatRule.setIgnoreCase(value))
+				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
+				.maxWidth(getWidth(1f))
 				.build());
 
 		// ==== Outputs
@@ -146,12 +160,15 @@ public class ChatRuleConfigScreen extends Screen {
 
 		LinearLayout buttons = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
 
-		buttons.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getHideMessage())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"), (_, value) -> {
+		buttons.addChild(Checkbox.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"), minecraft.font)
+				.selected(chatRule.getHideMessage())
+				.onValueChange((_, value) -> {
 					chatRule.setHideMessage(value);
 					recreateLayout();
-				}));
+				})
+				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip")))
+				.maxWidth(getWidth(1.5f))
+				.build());
 
 		// Sound
 		// In case the user has a sound not in the list added to the config. We abuse the fact that we can have alternative values.

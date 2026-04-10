@@ -18,7 +18,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -56,8 +55,8 @@ public class ChatRulesHandler {
 	@VisibleForTesting
 	static List<ChatRule> getDefaultChatRules() {
 		return new ArrayList<>(List.of(
-				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, null, null, null, null, null),
-				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, new ChatRule.AnnouncementMessage("&1Ability", 3000), null, SoundEvents.ARROW_HIT_PLAYER)
+				new ChatRule("Clean Hub Chat", false, true, true, true, false, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, null, null, null, null, null),
+				new ChatRule("Mining Ability Alert", false, true, false, true, false, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, new ChatRule.AnnouncementMessage("&1Ability", 3000), null, SoundEvents.ARROW_HIT_PLAYER)
 		));
 	}
 
@@ -68,10 +67,9 @@ public class ChatRulesHandler {
 		if (overlay || !Utils.isOnSkyblock()) return true;
 		List<ChatRule> rules = CHAT_RULE_LIST.getData();
 		if (!CHAT_RULE_LIST.isLoaded() || rules.isEmpty()) return true;
-		String plain = ChatFormatting.stripFormatting(message.getString());
 
 		for (ChatRule rule : rules) {
-			ChatRule.Match match = rule.isMatch(plain);
+			ChatRule.Match match = rule.isMatch(message.getString());
 			if (!match.matches()) continue;
 
 			// Get a replacement message

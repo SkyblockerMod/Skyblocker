@@ -92,6 +92,8 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip": "Remove the message from chat.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase": "Ignore Case",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip": "If the filter is case-sensitive.",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting": "Include Formatting",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting.@Tooltip": "Whether formatting characters should be kept or stripped.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.inputs": "Inputs:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.locations": "Edit Locations",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip": "Whitelist of locations where the filter will work.",
